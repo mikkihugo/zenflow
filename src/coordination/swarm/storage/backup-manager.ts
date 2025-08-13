@@ -86,7 +86,7 @@ export class SwarmBackupManager extends EventEmitter {
     const backupPath = path.join(
       this.backupsPath,
       'daily',
-      `${backupId}.tar.gz`,
+      `${backupId}.tar.gz`
     );
 
     this.emit('backup:started', { type: 'daily', id: backupId });
@@ -175,14 +175,14 @@ export class SwarmBackupManager extends EventEmitter {
       if (file.endsWith('.json')) {
         const content = await fs.readFile(
           path.join(metadataPath, file),
-          'utf8',
+          'utf8'
         );
         backups.push(JSON.parse(content));
       }
     }
 
     return backups.sort(
-      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
     );
   }
 
@@ -230,7 +230,7 @@ export class SwarmBackupManager extends EventEmitter {
 
   private async createCompressedArchive(
     sourcePath: string,
-    outputPath: string,
+    outputPath: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const tar = spawn('tar', [
@@ -264,7 +264,7 @@ export class SwarmBackupManager extends EventEmitter {
     const metadataPath = path.join(
       this.backupsPath,
       'metadata',
-      `${metadata?.id}.json`,
+      `${metadata?.id}.json`
     );
     await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
   }
@@ -275,13 +275,13 @@ export class SwarmBackupManager extends EventEmitter {
   }
 
   private async getBackupMetadata(
-    backupId: string,
+    backupId: string
   ): Promise<BackupMetadata | null> {
     try {
       const metadataPath = path.join(
         this.backupsPath,
         'metadata',
-        `${backupId}.json`,
+        `${backupId}.json`
       );
       const content = await fs.readFile(metadataPath, 'utf8');
       return JSON.parse(content);
@@ -292,12 +292,12 @@ export class SwarmBackupManager extends EventEmitter {
 
   private async restoreFromDailyBackup(
     swarmId: string,
-    backup: BackupMetadata,
+    backup: BackupMetadata
   ): Promise<void> {
     const backupPath = path.join(
       this.backupsPath,
       'daily',
-      `${backup.id}.tar.gz`,
+      `${backup.id}.tar.gz`
     );
     const swarmsPath = path.join(this.claudeZenPath, 'swarms', 'active');
 
@@ -321,7 +321,7 @@ export class SwarmBackupManager extends EventEmitter {
     const backupPath = path.join(
       this.backupsPath,
       'daily',
-      `${backupId}.tar.gz`,
+      `${backupId}.tar.gz`
     );
     try {
       await fs.unlink(backupPath);
@@ -333,7 +333,7 @@ export class SwarmBackupManager extends EventEmitter {
     const metadataPath = path.join(
       this.backupsPath,
       'metadata',
-      `${backupId}.json`,
+      `${backupId}.json`
     );
     try {
       await fs.unlink(metadataPath);
@@ -377,7 +377,7 @@ export class SwarmBackupManager extends EventEmitter {
             this.emit('backup:error', { type: 'daily', error });
           });
         },
-        24 * 60 * 60 * 1000,
+        24 * 60 * 60 * 1000
       ); // 24 hours
     }, timeUntilBackup);
   }

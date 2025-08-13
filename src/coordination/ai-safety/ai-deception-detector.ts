@@ -11,13 +11,13 @@ import { EventEmitter } from 'node:events';
 
 // Simple console logger to avoid circular dependencies
 const logger = {
-  debug: (message: string, meta?: any) =>
+  debug: (message: string, meta?: unknown) =>
     console.log(`[DEBUG] ${message}`, meta || ''),
-  info: (message: string, meta?: any) =>
+  info: (message: string, meta?: unknown) =>
     console.log(`[INFO] ${message}`, meta || ''),
-  warn: (message: string, meta?: any) =>
+  warn: (message: string, meta?: unknown) =>
     console.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: any) =>
+  error: (message: string, meta?: unknown) =>
     console.error(`[ERROR] ${message}`, meta || ''),
 };
 
@@ -87,7 +87,7 @@ export class AIDeceptionDetector extends EventEmitter {
   private patterns: Map<string, DeceptionPattern>;
   private alertHistory: DeceptionAlert[];
   private interventionCount: Map<string, number>;
-  private _config: any;
+  private _config: unknown;
 
   constructor() {
     super();
@@ -98,7 +98,7 @@ export class AIDeceptionDetector extends EventEmitter {
     this.loadConfiguration();
 
     logger.info(
-      '🛡️ AI Deception Detector initialized with real-time monitoring',
+      '🛡️ AI Deception Detector initialized with real-time monitoring'
     );
   }
 
@@ -109,12 +109,12 @@ export class AIDeceptionDetector extends EventEmitter {
    * @param interactionData
    */
   async detectDeception(
-    interactionData: AIInteractionData,
+    interactionData: AIInteractionData
   ): Promise<DeceptionAlert[]> {
     const alerts: DeceptionAlert[] = [];
 
     logger.debug(
-      `🔍 Analyzing interaction from agent ${interactionData.agentId}`,
+      `🔍 Analyzing interaction from agent ${interactionData.agentId}`
     );
 
     // 1. SANDBAGGING DETECTION - Claims without verification
@@ -239,7 +239,7 @@ export class AIDeceptionDetector extends EventEmitter {
       (call) =>
         call.includes('Write') ||
         call.includes('Edit') ||
-        call.includes('MultiEdit'),
+        call.includes('MultiEdit')
     );
 
     if (theoreticalCount >= 3 && !hasConcreteWork) {
@@ -269,7 +269,7 @@ export class AIDeceptionDetector extends EventEmitter {
    * @param data
    */
   private detectVerificationFraud(
-    data: AIInteractionData,
+    data: AIInteractionData
   ): DeceptionAlert | null {
     const response = data.response.toLowerCase();
 
@@ -284,12 +284,12 @@ export class AIDeceptionDetector extends EventEmitter {
       (count, pattern) => {
         return count + (response.match(pattern)?.length || 0);
       },
-      0,
+      0
     );
 
     const hasVerificationTools = data.toolCalls.some(
       (call) =>
-        call.includes('Read') || call.includes('Grep') || call.includes('Glob'),
+        call.includes('Read') || call.includes('Grep') || call.includes('Glob')
     );
 
     // CRITICAL: Claims verification without any verification tools
@@ -320,7 +320,7 @@ export class AIDeceptionDetector extends EventEmitter {
    * @param data
    */
   private detectFalseConfidence(
-    data: AIInteractionData,
+    data: AIInteractionData
   ): DeceptionAlert | null {
     const response = data.response.toLowerCase();
 
@@ -337,7 +337,7 @@ export class AIDeceptionDetector extends EventEmitter {
 
     const hasSystemExamination = data.toolCalls.some(
       (call) =>
-        call.includes('Read') || call.includes('Grep') || call.includes('LS'),
+        call.includes('Read') || call.includes('Grep') || call.includes('LS')
     );
 
     if (confidenceClaims >= 2 && !hasSystemExamination) {
@@ -406,7 +406,7 @@ export class AIDeceptionDetector extends EventEmitter {
    */
   private async processAlerts(
     alerts: DeceptionAlert[],
-    agentId: string,
+    agentId: string
   ): Promise<void> {
     for (const alert of alerts) {
       logger.warn(`🚨 DECEPTION DETECTED: ${alert.type} from ${agentId}`, {
@@ -426,7 +426,7 @@ export class AIDeceptionDetector extends EventEmitter {
       if (alert.severity === 'CRITICAL') {
         this.emit('deception:critical', alert);
         logger.error(
-          `🛑 CRITICAL DECEPTION: Immediate intervention required for ${agentId}`,
+          `🛑 CRITICAL DECEPTION: Immediate intervention required for ${agentId}`
         );
       }
 
@@ -438,7 +438,7 @@ export class AIDeceptionDetector extends EventEmitter {
           recentAlerts: alerts,
         });
         logger.error(
-          `🚨 ESCALATION: Agent ${agentId} has ${currentCount + 1} deception interventions`,
+          `🚨 ESCALATION: Agent ${agentId} has ${currentCount + 1} deception interventions`
         );
       }
     }
@@ -475,7 +475,7 @@ export class AIDeceptionDetector extends EventEmitter {
   /**
    * Get current detector configuration.
    */
-  getConfiguration(): any {
+  getConfiguration(): unknown {
     return this._config;
   }
 
@@ -543,7 +543,7 @@ export function createAIDeceptionDetector(): AIDeceptionDetector {
 export async function analyzeAIResponse(
   response: string,
   toolCalls: string[],
-  agentId: string = 'unknown',
+  agentId: string = 'unknown'
 ): Promise<DeceptionAlert[]> {
   const detector = createAIDeceptionDetector();
 

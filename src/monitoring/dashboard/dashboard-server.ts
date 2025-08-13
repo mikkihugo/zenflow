@@ -38,7 +38,7 @@ export interface DashboardData {
 
 export class DashboardServer extends EventEmitter {
   private app: express.Application;
-  private server: any;
+  private server: unknown;
   private io: SocketIOServer;
   private config: DashboardConfig;
   private isRunning = false;
@@ -85,15 +85,15 @@ export class DashboardServer extends EventEmitter {
       const corsOrigins = this.config.corsOrigins || getCORSOrigins();
       res.header(
         'Access-Control-Allow-Origin',
-        Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins,
+        Array.isArray(corsOrigins) ? corsOrigins.join(',') : corsOrigins
       );
       res.header(
         'Access-Control-Allow-Headers',
-        'Origin, X-Requested-With, Content-Type, Accept',
+        'Origin, X-Requested-With, Content-Type, Accept'
       );
       res.header(
         'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS',
+        'GET, POST, PUT, DELETE, OPTIONS'
       );
       next();
     });
@@ -123,7 +123,7 @@ export class DashboardServer extends EventEmitter {
       socket.on('dashboard:request-optimizations', () => {
         socket.emit(
           'dashboard:optimizations',
-          this.dashboardData.optimizations,
+          this.dashboardData.optimizations
         );
       });
 
@@ -217,7 +217,7 @@ export class DashboardServer extends EventEmitter {
     }
 
     return new Promise((resolve, reject) => {
-      this.server.listen(this.config.port, (err: any) => {
+      this.server.listen(this.config.port, (err: unknown) => {
         if (err) {
           reject(err);
           return;
@@ -269,12 +269,12 @@ export class DashboardServer extends EventEmitter {
 
     // Create alerts for critical anomalies
     const criticalAnomalies = insights.anomalies.filter(
-      (a) => a.severity === 'critical',
+      (a) => a.severity === 'critical'
     );
     for (const anomaly of criticalAnomalies) {
       this.addAlert(
         'error',
-        `Critical anomaly detected: ${anomaly.description}`,
+        `Critical anomaly detected: ${anomaly.description}`
       );
     }
 
@@ -282,7 +282,7 @@ export class DashboardServer extends EventEmitter {
     if (insights.predictions.resourceExhaustion.length > 0) {
       this.addAlert(
         'warning',
-        `Resource exhaustion predicted: ${insights.predictions.resourceExhaustion.join(', ')}`,
+        `Resource exhaustion predicted: ${insights.predictions.resourceExhaustion.join(', ')}`
       );
     }
 
@@ -290,12 +290,12 @@ export class DashboardServer extends EventEmitter {
     if (insights.healthScore < 50) {
       this.addAlert(
         'error',
-        `System health critically low: ${insights.healthScore.toFixed(1)}%`,
+        `System health critically low: ${insights.healthScore.toFixed(1)}%`
       );
     } else if (insights.healthScore < 70) {
       this.addAlert(
         'warning',
-        `System health below optimal: ${insights.healthScore.toFixed(1)}%`,
+        `System health below optimal: ${insights.healthScore.toFixed(1)}%`
       );
     }
 
@@ -313,7 +313,7 @@ export class DashboardServer extends EventEmitter {
 
     // Create alerts for failed optimizations
     const recentFailures = optimizations.filter(
-      (o) => !o.success && Date.now() - o.executionTime < 60000,
+      (o) => !o.success && Date.now() - o.executionTime < 60000
     );
     for (const failure of recentFailures) {
       this.addAlert('warning', `Optimization failed: ${failure.error}`);
@@ -350,7 +350,7 @@ export class DashboardServer extends EventEmitter {
   /**
    * Generate dashboard summary.
    */
-  private generateDashboardSummary(): any {
+  private generateDashboardSummary(): unknown {
     const metrics = this.dashboardData.metrics;
     const insights = this.dashboardData.insights;
     const optimizations = this.dashboardData.optimizations;
@@ -360,11 +360,11 @@ export class DashboardServer extends EventEmitter {
     }
 
     const recentOptimizations = optimizations.filter(
-      (o) => Date.now() - o.executionTime < 3600000, // Last hour
+      (o) => Date.now() - o.executionTime < 3600000 // Last hour
     );
 
     const successfulOptimizations = recentOptimizations.filter(
-      (o) => o.success,
+      (o) => o.success
     );
 
     return {
@@ -395,7 +395,7 @@ export class DashboardServer extends EventEmitter {
           successfulOptimizations.length > 0
             ? successfulOptimizations.reduce(
                 (sum, o) => sum + o.impact.performance,
-                0,
+                0
               ) / successfulOptimizations.length
             : 0,
       },
@@ -412,8 +412,8 @@ export class DashboardServer extends EventEmitter {
    * @param format
    */
   private async handleExportRequest(
-    socket: any,
-    format: 'json' | 'csv',
+    socket: unknown,
+    format: 'json' | 'csv'
   ): Promise<void> {
     try {
       const data = this.generateExportData(format);
@@ -437,7 +437,7 @@ export class DashboardServer extends EventEmitter {
    */
   private handleExportResponse(
     res: express.Response,
-    format: 'json' | 'csv',
+    format: 'json' | 'csv'
   ): void {
     try {
       const data = this.generateExportData(format);
@@ -446,11 +446,11 @@ export class DashboardServer extends EventEmitter {
 
       res.setHeader(
         'Content-Disposition',
-        `attachment; filename="${filename}"`,
+        `attachment; filename="${filename}"`
       );
       res.setHeader(
         'Content-Type',
-        format === 'json' ? 'application/json' : 'text/csv',
+        format === 'json' ? 'application/json' : 'text/csv'
       );
       res.send(data);
     } catch (error) {
@@ -486,13 +486,13 @@ export class DashboardServer extends EventEmitter {
    *
    * @param data
    */
-  private convertToCsv(data: any): string {
+  private convertToCsv(data: unknown): string {
     const lines: string[] = [];
 
     // Summary section
     lines.push('DASHBOARD SUMMARY');
     lines.push(
-      'Timestamp,Health Score,CPU Usage,Memory Usage,Alerts,Optimizations',
+      'Timestamp,Health Score,CPU Usage,Memory Usage,Alerts,Optimizations'
     );
     const summary = data?.summary;
     lines.push(
@@ -503,7 +503,7 @@ export class DashboardServer extends EventEmitter {
         summary.system?.memoryUsage || 0,
         summary.alerts?.total || 0,
         summary.optimizations?.total || 0,
-      ].join(','),
+      ].join(',')
     );
 
     lines.push('');
@@ -511,14 +511,14 @@ export class DashboardServer extends EventEmitter {
     // Alerts section
     lines.push('ALERTS');
     lines.push('ID,Type,Message,Timestamp');
-    data?.alerts?.forEach((alert: any) => {
+    data?.alerts?.forEach((alert: unknown) => {
       lines.push(
         [
           alert.id,
           alert.type,
           `"${alert.message.replace(/"/g, '""')}"`,
           new Date(alert.timestamp).toISOString(),
-        ].join(','),
+        ].join(',')
       );
     });
 
@@ -527,9 +527,9 @@ export class DashboardServer extends EventEmitter {
     // Optimizations section
     lines.push('OPTIMIZATIONS');
     lines.push(
-      'Action ID,Success,Performance Impact,Efficiency Impact,Execution Time',
+      'Action ID,Success,Performance Impact,Efficiency Impact,Execution Time'
     );
-    data?.optimizations.forEach((opt: any) => {
+    data?.optimizations.forEach((opt: unknown) => {
       lines.push(
         [
           opt.actionId,
@@ -537,7 +537,7 @@ export class DashboardServer extends EventEmitter {
           opt.impact?.performance || 0,
           opt.impact?.efficiency || 0,
           opt.executionTime,
-        ].join(','),
+        ].join(',')
       );
     });
 

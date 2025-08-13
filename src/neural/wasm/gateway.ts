@@ -76,7 +76,7 @@ class NeuralWasmGatewayImpl {
    * @param ctx
    */
   async execute<T = unknown>(
-    ctx: WasmExecutionContext,
+    ctx: WasmExecutionContext
   ): Promise<WasmExecutionResult<T>> {
     const start = performance.now?.() ?? Date.now();
     try {
@@ -87,7 +87,7 @@ class NeuralWasmGatewayImpl {
         data: { task: ctx.task } as unknown as T,
         durationMs: (performance.now?.() ?? Date.now()) - start,
       };
-    } catch (e: any) {
+    } catch (e: unknown) {
       return {
         success: false,
         error: e?.message || 'WASM execution failed',

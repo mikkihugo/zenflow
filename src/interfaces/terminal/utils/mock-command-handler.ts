@@ -17,16 +17,16 @@ const logger = getLogger('mock-command-handler');
 export interface CommandResult {
   success: boolean;
   message?: string;
-  data?: any;
+  data?: unknown;
   error?: string;
   timestamp?: Date;
 }
 
 export interface CommandContext {
   args: string[];
-  flags: Record<string, any>;
+  flags: Record<string, unknown>;
   cwd: string;
-  config?: any;
+  config?: unknown;
 }
 
 /**
@@ -43,20 +43,20 @@ export class MockCommandHandler {
    */
   static async executeInit(
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult> {
     try {
       const projectName = args[0] || 'claude-zen-project';
       const template = flags.template || 'basic';
 
       logger.debug(
-        `Initializing project: ${projectName} with template: ${template}`,
+        `Initializing project: ${projectName} with template: ${template}`
       );
 
       // For now, provide a mock implementation since CLI structure has changed
       // TODO: Integrate with actual CLI commands when available
       logger.info(
-        `Mock: Initializing project ${projectName} with template ${template}`,
+        `Mock: Initializing project ${projectName} with template ${template}`
       );
 
       const result = {
@@ -88,7 +88,7 @@ export class MockCommandHandler {
    */
   static async executeStatus(
     _args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult> {
     try {
       logger.debug('Getting system status');
@@ -150,7 +150,7 @@ export class MockCommandHandler {
    */
   static async executeSwarm(
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult> {
     try {
       const action = args[0];
@@ -243,7 +243,7 @@ export class MockCommandHandler {
    */
   static async executeMCP(
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult> {
     try {
       const action = args[0];
@@ -317,7 +317,7 @@ export class MockCommandHandler {
    */
   static async executeWorkspace(
     args: string[],
-    _flags: Record<string, any>,
+    _flags: Record<string, unknown>
   ): Promise<CommandResult> {
     try {
       const action = args[0];
@@ -413,7 +413,7 @@ export class MockCommandHandler {
   static async executeCommand(
     command: string,
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult> {
     logger.debug(`Delegating command execution to engine: ${command}`);
 
@@ -425,7 +425,7 @@ export class MockCommandHandler {
         flags,
         {
           cwd: process.cwd(),
-        },
+        }
       );
 
       // Convert engine result to expected format

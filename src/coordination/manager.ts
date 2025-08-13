@@ -100,7 +100,7 @@ export class CoordinationManager extends EventEmitter {
 
     if (this.heartbeatTimer) {
       clearInterval(this.heartbeatTimer);
-      delete (this as any).heartbeatTimer;
+      (this as any).heartbeatTimer = undefined;
     }
 
     this.isRunning = false;
@@ -171,7 +171,7 @@ export class CoordinationManager extends EventEmitter {
     type: string;
     priority: number;
     requiredCapabilities?: string[];
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   }): Promise<void> {
     const task: Task = {
       id: taskConfig?.id,
@@ -287,15 +287,15 @@ export class CoordinationManager extends EventEmitter {
 
   private setupEventHandlers(): void {
     if (this._eventBus) {
-      this._eventBus.on('agent:heartbeat', (data: any) => {
+      this._eventBus.on('agent:heartbeat', (data: unknown) => {
         this.updateAgentHeartbeat(data?.agentId);
       });
 
-      this._eventBus.on('task:completed', (data: any) => {
+      this._eventBus.on('task:completed', (data: unknown) => {
         this.updateTaskStatus(data?.taskId, 'completed');
       });
 
-      this._eventBus.on('task:failed', (data: any) => {
+      this._eventBus.on('task:failed', (data: unknown) => {
         this.updateTaskStatus(data?.taskId, 'failed');
       });
     }

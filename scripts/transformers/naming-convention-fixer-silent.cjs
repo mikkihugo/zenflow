@@ -142,7 +142,9 @@ function getImprovedFileName(fileName) {
 function hasGenericPrefix(name) {
   const lowerName = name.toLowerCase();
   return Object.keys(GENERIC_PREFIXES).some(
-    (prefix) => lowerName.startsWith(prefix.replace('-', '')) || lowerName.startsWith(prefix)
+    (prefix) =>
+      lowerName.startsWith(prefix.replace('-', '')) ||
+      lowerName.startsWith(prefix)
   );
 }
 

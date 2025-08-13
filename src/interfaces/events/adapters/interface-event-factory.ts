@@ -146,7 +146,7 @@ class InterfaceEventManager
       await this.routeInterfaceEvent(enrichedEvent);
 
       this.logger.debug(
-        `Interface event emitted: ${event.interface}:${event.action}`,
+        `Interface event emitted: ${event.interface}:${event.action}`
       );
     } catch (error) {
       this.interfaceMetrics.errorCount++;
@@ -196,7 +196,7 @@ class InterfaceEventManager
     this.subscriptions.websocket.set(subscriptionId, listener);
 
     this.logger.debug(
-      `WebSocket event subscription created: ${subscriptionId}`,
+      `WebSocket event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -317,7 +317,7 @@ class InterfaceEventManager
         'interface:websocket',
         'interface:user',
       ],
-      this.handleInterfaceEvent.bind(this),
+      this.handleInterfaceEvent.bind(this)
     );
   }
 
@@ -401,7 +401,7 @@ class InterfaceEventManager
 
   private async notifySubscribers(
     subscribers: Map<string, (event: InterfaceEvent) => void>,
-    event: InterfaceEvent,
+    event: InterfaceEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
       async (listener) => {
@@ -410,7 +410,7 @@ class InterfaceEventManager
         } catch (error) {
           this.logger.error('Interface event listener failed:', error);
         }
-      },
+      }
     );
 
     await Promise.allSettled(notifications);
@@ -464,7 +464,7 @@ export class InterfaceEventManagerFactory
 {
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {
     this.logger.debug('InterfaceEventManagerFactory initialized');
   }
@@ -491,7 +491,7 @@ export class InterfaceEventManagerFactory
     await this.configureInterfaceManager(manager, optimizedConfig);
 
     this.logger.info(
-      `Interface event manager created successfully: ${config.name}`,
+      `Interface event manager created successfully: ${config.name}`
     );
     return manager;
   }
@@ -511,13 +511,13 @@ export class InterfaceEventManagerFactory
     // Validate interface-specific settings
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Interface managers should support at least 100 listeners for UI responsiveness',
+        'Interface managers should support at least 100 listeners for UI responsiveness'
       );
     }
 
     if (config.processing?.timeout && config.processing.timeout > 1000) {
       this.logger.warn(
-        'Interface processing timeout > 1000ms may impact UI responsiveness',
+        'Interface processing timeout > 1000ms may impact UI responsiveness'
       );
     }
   }
@@ -526,7 +526,7 @@ export class InterfaceEventManagerFactory
    * Apply interface-optimized default configuration.
    */
   private applyInterfaceDefaults(
-    config: EventManagerConfig,
+    config: EventManagerConfig
   ): EventManagerConfig {
     return {
       ...config,
@@ -556,13 +556,13 @@ export class InterfaceEventManagerFactory
    */
   private async configureInterfaceManager(
     manager: InterfaceEventManager,
-    config: EventManagerConfig,
+    config: EventManagerConfig
   ): Promise<void> {
     // Start monitoring if enabled
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Interface event manager monitoring started: ${config.name}`,
+        `Interface event manager monitoring started: ${config.name}`
       );
     }
 
@@ -574,7 +574,7 @@ export class InterfaceEventManagerFactory
         } catch (error) {
           this.logger.error(
             `Interface manager health check failed: ${config.name}`,
-            error,
+            error
           );
         }
       }, config.monitoring.healthCheckInterval);

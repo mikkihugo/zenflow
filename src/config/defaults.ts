@@ -122,7 +122,7 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
         (() => {
           if (process.env['NODE_ENV'] === 'production') {
             throw new Error(
-              'ANTHROPIC_API_KEY environment variable is required in production',
+              'ANTHROPIC_API_KEY environment variable is required in production'
             );
           }
           return null; // Allow null in development
@@ -154,7 +154,7 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
       enableMetrics: process.env['ENABLE_METRICS'] !== 'false',
       metricsInterval: Number.parseInt(
         process.env['METRICS_INTERVAL'] || '10000',
-        10,
+        10
       ),
     },
     logging: {
@@ -167,7 +167,7 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
     performance: {
       enableProfiling: process.env['ENABLE_PROFILING'] === 'true',
       sampleRate: Number.parseFloat(
-        process.env['PROFILE_SAMPLE_RATE'] || '0.1',
+        process.env['PROFILE_SAMPLE_RATE'] || '0.1'
       ),
       enableTracing: process.env['ENABLE_TRACING'] === 'true',
     },
@@ -177,7 +177,7 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
   network: {
     defaultTimeout: Number.parseInt(
       process.env['DEFAULT_TIMEOUT'] || '30000',
-      10,
+      10
     ),
     maxRetries: Number.parseInt(process.env['MAX_RETRIES'] || '3', 10),
     retryDelay: Number.parseInt(process.env['RETRY_DELAY'] || '1000', 10),
@@ -337,12 +337,12 @@ export interface ConfigValidationSchema {
   required: string[]; // Required environment variables
   optional: string[]; // Optional with defaults
   validation: {
-    [key: string]: (value: any) => boolean;
+    [key: string]: (value: unknown) => boolean;
   };
   production: {
     enforced: string[]; // Must be set in production
     forbidden: string[]; // Cannot be set in production
-    fallbacks: { [key: string]: any }; // Safe fallbacks
+    fallbacks: { [key: string]: unknown }; // Safe fallbacks
   };
   portRanges: {
     development: { min: number; max: number };
@@ -704,15 +704,15 @@ export const PORT_ALLOCATION_BY_ENV = {
   production: {
     'interfaces.mcp.http.port': Number.parseInt(
       process.env['CLAUDE_MCP_PORT'] || '3000',
-      10,
+      10
     ),
     'interfaces.web.port': Number.parseInt(
       process.env['CLAUDE_WEB_PORT'] || '3456',
-      10,
+      10
     ),
     'monitoring.dashboard.port': Number.parseInt(
       process.env['CLAUDE_MONITOR_PORT'] || '3457',
-      10,
+      10
     ),
   },
   test: {
@@ -855,7 +855,7 @@ export class URLBuilder {
    */
   getServiceBaseURL(
     service: 'mcp' | 'web' | 'monitoring',
-    overrides: Partial<URLBuilderConfig> = {},
+    overrides: Partial<URLBuilderConfig> = {}
   ): string {
     switch (service) {
       case 'mcp':
@@ -881,7 +881,7 @@ export class URLBuilder {
     protocol: string,
     host: string,
     port: number,
-    path: string,
+    path: string
   ): string {
     const shouldOmitPort =
       (protocol === 'http' && port === 80) ||
@@ -946,7 +946,7 @@ export const getWebDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getWebDashboardURL(overrides);
 
 export const getMonitoringDashboardURL = (
-  overrides?: Partial<URLBuilderConfig>,
+  overrides?: Partial<URLBuilderConfig>
 ) => defaultURLBuilder.getMonitoringDashboardURL(overrides);
 
 export const getCORSOrigins = () => defaultURLBuilder.getCORSOrigins();

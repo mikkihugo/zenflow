@@ -123,7 +123,7 @@ export class IntegratedErrorHandler {
       throw new SystemError(
         `Error system initialization failed: ${error instanceof Error ? error.message : String(error)}`,
         'ERROR_SYSTEM_INIT_FAILED',
-        'critical',
+        'critical'
       );
     }
   }
@@ -338,7 +338,7 @@ export class IntegratedErrorHandler {
         this.emergencyMode = true;
         logger.error(`Emergency shutdown triggered: ${shutdownReason}`);
         await systemResilienceOrchestrator.initiateEmergencyShutdown(
-          shutdownReason,
+          shutdownReason
         );
       }
     } catch (error) {
@@ -352,15 +352,15 @@ export class IntegratedErrorHandler {
       useRecovery?: boolean;
       useFallback?: boolean;
       reportToMonitoring?: boolean;
-    } = {},
+    } = {}
   ): Promise<{
     recovered: boolean;
-    result?: any;
+    result?: unknown;
     finalError?: BaseClaudeZenError;
   }> {
     if (!this.initialized) {
       logger.warn(
-        'Error handling system not initialized, using basic handling',
+        'Error handling system not initialized, using basic handling'
       );
       throw error;
     }
@@ -389,7 +389,7 @@ export class IntegratedErrorHandler {
         finalError: new SystemError(
           'System in emergency mode - functionality limited',
           'EMERGENCY_MODE_ACTIVE',
-          'critical',
+          'critical'
         ),
       };
     }
@@ -410,7 +410,7 @@ export class IntegratedErrorHandler {
             circuitBreakerThreshold: this.config.circuitBreakerThreshold,
             fallbackEnabled: finalOptions?.useFallback,
             gracefulDegradation: true,
-          },
+          }
         );
         return {
           recovered: true,
@@ -432,7 +432,7 @@ export class IntegratedErrorHandler {
   }
   private classifyError(
     error: Error,
-    context: Partial<ErrorContext>,
+    context: Partial<ErrorContext>
   ): BaseClaudeZenError {
     // Use MCP error classifier if this is from an MCP operation
     if (context.component === 'MCP' || context.operation?.includes('mcp')) {
@@ -459,7 +459,7 @@ export class IntegratedErrorHandler {
         error.message,
         undefined,
         context.operation,
-        'medium',
+        'medium'
       );
     }
     if (
@@ -485,7 +485,7 @@ export class IntegratedErrorHandler {
       error.message,
       'UNCLASSIFIED_ERROR',
       'medium',
-      context,
+      context
     );
   }
   public async executeWithErrorHandling<T>(
@@ -501,7 +501,7 @@ export class IntegratedErrorHandler {
         maxRetries?: number;
         fallbackEnabled?: boolean;
       };
-    } = {},
+    } = {}
   ): Promise<T> {
     if (!this.initialized) {
       return await operation();
@@ -509,7 +509,7 @@ export class IntegratedErrorHandler {
     try {
       // Execute with resilience patterns if specified
       if (options?.resilience) {
-        const resilienceOptions: any = {};
+        const resilienceOptions: unknown = {};
         if (options?.resilience?.bulkhead)
           resilienceOptions.bulkhead = options?.resilience?.bulkhead;
         if (options?.resilience?.errorBoundary)
@@ -521,7 +521,7 @@ export class IntegratedErrorHandler {
 
         return await systemResilienceOrchestrator.executeWithResilience(
           operation,
-          resilienceOptions,
+          resilienceOptions
         );
       }
       return await operation();
@@ -540,10 +540,10 @@ export class IntegratedErrorHandler {
   public getSystemStatus(): {
     initialized: boolean;
     emergencyMode: boolean;
-    errorHandling: any;
-    monitoring: any;
-    resilience: any;
-    recovery: any;
+    errorHandling: unknown;
+    monitoring: unknown;
+    resilience: unknown;
+    recovery: unknown;
   } {
     if (!this.initialized) {
       return {
@@ -579,7 +579,7 @@ export class IntegratedErrorHandler {
       // If emergency shutdown is needed
       if (this.emergencyMode) {
         await systemResilienceOrchestrator.initiateEmergencyShutdown(
-          'System shutdown requested',
+          'System shutdown requested'
         );
       }
       this.initialized = false;
@@ -597,7 +597,7 @@ export class IntegratedErrorHandler {
 // Global instance
 let globalErrorHandler: IntegratedErrorHandler | null = null;
 export function initializeErrorHandling(
-  config?: Partial<ErrorHandlingConfig>,
+  config?: Partial<ErrorHandlingConfig>
 ): Promise<void> {
   if (globalErrorHandler) {
     logger.warn('Global error handler already initialized');
@@ -611,17 +611,17 @@ export function getErrorHandler(): IntegratedErrorHandler {
     throw new SystemError(
       'Error handling system not initialized. Call initializeErrorHandling() first.',
       'ERROR_HANDLER_NOT_INITIALIZED',
-      'critical',
+      'critical'
     );
   }
   return globalErrorHandler;
 }
 export async function handleErrorGlobally(
   error: Error,
-  context?: Partial<ErrorContext>,
+  context?: Partial<ErrorContext>
 ): Promise<{
   recovered: boolean;
-  result?: any;
+  result?: unknown;
   finalError?: BaseClaudeZenError;
 }> {
   return getErrorHandler().handleError(error, context);
@@ -629,15 +629,15 @@ export async function handleErrorGlobally(
 export async function executeWithErrorHandling<T>(
   operation: () => Promise<T>,
   context: Partial<ErrorContext>,
-  options?: any,
+  options?: unknown
 ): Promise<T> {
   return getErrorHandler().executeWithErrorHandling(
     operation,
     context,
-    options,
+    options
   );
 }
-export function getSystemStatus(): any {
+export function getSystemStatus(): unknown {
   if (!globalErrorHandler) {
     return { initialized: false };
   }

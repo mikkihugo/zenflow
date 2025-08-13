@@ -12,7 +12,7 @@ import { access, readdir, stat } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import BeamLanguageParser from '../../../parsers/beam-language-parser.js';
 import EnvironmentDetector, {
@@ -140,7 +140,8 @@ export const Menu: React.FC<MenuProps> = ({
     {
       label: '📋 ADR Manager',
       value: 'adr-manager',
-      description: 'View and manage Architecture Decision Records with comments and approvals',
+      description:
+        'View and manage Architecture Decision Records with comments and approvals',
     },
     {
       label: '⚙️ Settings',
@@ -205,7 +206,7 @@ export const Menu: React.FC<MenuProps> = ({
         ];
       }
     },
-    [],
+    []
   );
 
   // Check if path should be ignored
@@ -229,7 +230,7 @@ export const Menu: React.FC<MenuProps> = ({
       }
       return false;
     },
-    [],
+    []
   );
 
   // Load real project data for main screen
@@ -414,19 +415,10 @@ export const Menu: React.FC<MenuProps> = ({
 
   const getSystemStatusBadge = () => {
     if (swarmStatus) {
-      return (
-        <StatusBadge
-          status={swarmStatus.status}
-          variant="minimal"
-        />
-      );
+      return <StatusBadge status={swarmStatus.status} variant="minimal" />;
     }
     return (
-      <StatusBadge
-        status="active"
-        text="System Ready"
-        variant="minimal"
-      />
+      <StatusBadge status="active" text="System Ready" variant="minimal" />
     );
   };
 
@@ -439,11 +431,7 @@ export const Menu: React.FC<MenuProps> = ({
 
     const { status: badgeStatus, text } = statusMap[status];
     return (
-      <StatusBadge
-        status={badgeStatus as any}
-        text={text}
-        variant="minimal"
-      />
+      <StatusBadge status={badgeStatus as any} text={text} variant="minimal" />
     );
   };
 
@@ -485,11 +473,12 @@ export const Menu: React.FC<MenuProps> = ({
           onHighlight={(item) => setSelectedItem(item)}
           itemComponent={({ isSelected, label }) => (
             <Text color={isSelected ? 'cyan' : 'white'} bold={isSelected}>
-              {isSelected ? '▶ ' : '  '}{label}
+              {isSelected ? '▶ ' : '  '}
+              {label}
             </Text>
           )}
         />
-        
+
         {/* Compact description */}
         {selectedItem?.description && (
           <Text dimColor>{selectedItem.description}</Text>

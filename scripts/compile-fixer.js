@@ -44,7 +44,7 @@ class CompileFixer {
     lines.forEach((line) => {
       // Parse: src/file.ts(123,45): error TS2345: Message
       const match = line.match(
-        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/,
+        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/
       );
       if (match) {
         const [, filePath, line, col, errorCode, message] = match;
@@ -69,7 +69,7 @@ class CompileFixer {
   // Fix ONE file with ALL its compilation errors, then lint it
   async fixSingleFile(filePath, errors) {
     console.log(
-      `\n🔧 Fixing ${filePath} (${errors.length} compilation errors)`,
+      `\n🔧 Fixing ${filePath} (${errors.length} compilation errors)`
     );
 
     if (!fs.existsSync(filePath)) {
@@ -97,7 +97,7 @@ class CompileFixer {
 
         if (stillHasErrors) {
           console.log(
-            `  📊 Some compilation errors remain (may need manual fixes)`,
+            `  📊 Some compilation errors remain (may need manual fixes)`
           );
         } else {
           console.log(`  🎉 File compiles successfully!`);
@@ -306,7 +306,7 @@ class CompileFixer {
 
   async runUntilCompiles() {
     console.log(
-      '🚀 Pure Compilation Fixer - Fix TypeScript errors until compilation succeeds!\n',
+      '🚀 Pure Compilation Fixer - Fix TypeScript errors until compilation succeeds!\n'
     );
 
     let iteration = 1;
@@ -332,7 +332,7 @@ class CompileFixer {
       }
 
       console.log(
-        `📊 Fixing ${fileErrors.size} files with compilation errors...`,
+        `📊 Fixing ${fileErrors.size} files with compilation errors...`
       );
 
       let iterationFixes = 0;

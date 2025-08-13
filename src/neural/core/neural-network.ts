@@ -97,7 +97,7 @@ export interface TrainingResult {
 
 export interface CognitiveState {
   agentId: string;
-  cognitivePattern: any;
+  cognitivePattern: unknown;
   neuralArchitecture: {
     layers: number;
     neurons: number;
@@ -109,11 +109,11 @@ export interface CognitiveState {
     bestLoss: number;
     isTraining: boolean;
   };
-  performance: any;
+  performance: unknown;
   adaptationHistoryLength: number;
 }
 
-let wasmModule: any = null;
+let wasmModule: unknown = null;
 
 export async function initializeNeuralWasm() {
   if (wasmModule) return wasmModule;
@@ -124,7 +124,7 @@ export async function initializeNeuralWasm() {
       // Use require-style dynamic import to avoid TypeScript resolution issues
       const wasmModulePath = '../wasm/ruv_swarm_wasm.js';
       const importedWasmModule = await eval(
-        `import('${wasmModulePath}')`,
+        `import('${wasmModulePath}')`
       ).catch(() => null);
 
       if (importedWasmModule) {
@@ -151,9 +151,9 @@ export async function initializeNeuralWasm() {
 }
 
 export class NeuralNetwork {
-  private network: any;
+  private network: unknown;
 
-  constructor(wasm: any, config: NetworkConfig) {
+  constructor(wasm: unknown, config: NetworkConfig) {
     this.network = new wasm['WasmNeuralNetwork'](config);
   }
 
@@ -178,21 +178,21 @@ export class NeuralNetwork {
   }
 
   // Getter method to access the internal network for training
-  getInternalNetwork(): any {
+  getInternalNetwork(): unknown {
     return this.network;
   }
 }
 
 export class NeuralTrainer {
-  private trainer: any;
+  private trainer: unknown;
 
-  constructor(wasm: any, config: TrainingConfig) {
+  constructor(wasm: unknown, config: TrainingConfig) {
     this.trainer = new wasm['WasmTrainer'](config);
   }
 
   async trainEpoch(
     network: NeuralNetwork,
-    data: TrainingDataConfig,
+    data: TrainingDataConfig
   ): Promise<number> {
     return this.trainer['train_epoch'](network.getInternalNetwork(), data);
   }
@@ -201,29 +201,29 @@ export class NeuralTrainer {
     network: NeuralNetwork,
     data: TrainingDataConfig,
     targetError: number,
-    maxEpochs: number,
+    maxEpochs: number
   ): Promise<TrainingResult> {
     return this.trainer['train_until_target'](
       network.getInternalNetwork(),
       data,
       targetError,
-      maxEpochs,
+      maxEpochs
     );
   }
 
-  getTrainingHistory(): any[] {
+  getTrainingHistory(): unknown[] {
     return this.trainer['get_training_history']();
   }
 
-  getAlgorithmInfo(): any {
+  getAlgorithmInfo(): unknown {
     return this.trainer['get_algorithm_info']();
   }
 }
 
 export class AgentNeuralManager {
-  private manager: any;
+  private manager: unknown;
 
-  constructor(wasm: any) {
+  constructor(wasm: unknown) {
     this.manager = new wasm['AgentNeuralNetworkManager']();
   }
 
@@ -233,18 +233,18 @@ export class AgentNeuralManager {
 
   async trainAgentNetwork(
     agentId: string,
-    data: TrainingDataConfig,
-  ): Promise<any> {
+    data: TrainingDataConfig
+  ): Promise<unknown> {
     return this.manager['train_agent_network'](agentId, data);
   }
 
   async getAgentInference(
     agentId: string,
-    inputs: number[],
+    inputs: number[]
   ): Promise<number[]> {
     return this.manager['get_agent_inference'](
       agentId,
-      new Float32Array(inputs),
+      new Float32Array(inputs)
     );
   }
 
@@ -254,67 +254,67 @@ export class AgentNeuralManager {
 
   async fineTuneDuringExecution(
     agentId: string,
-    experienceData: any,
-  ): Promise<any> {
+    experienceData: unknown
+  ): Promise<unknown> {
     return this.manager['fine_tune_during_execution'](agentId, experienceData);
   }
 }
 
 export class ActivationFunctions {
-  static async getAll(wasm: any): Promise<[string, string][]> {
+  static async getAll(wasm: unknown): Promise<[string, string][]> {
     return wasm['ActivationFunctionManager']?.['get_all_functions']();
   }
 
   static async test(
-    wasm: any,
+    wasm: unknown,
     name: string,
     input: number,
-    steepness: number = 1.0,
+    steepness: number = 1.0
   ): Promise<number> {
     return wasm['ActivationFunctionManager']?.['test_activation_function'](
       name,
       input,
-      steepness,
+      steepness
     );
   }
 
   static async compare(
-    wasm: any,
-    input: number,
+    wasm: unknown,
+    input: number
   ): Promise<Record<string, number>> {
     return wasm['ActivationFunctionManager']?.['compare_functions'](input);
   }
 
-  static async getProperties(wasm: any, name: string): Promise<any> {
+  static async getProperties(wasm: unknown, name: string): Promise<unknown> {
     return wasm['ActivationFunctionManager']?.['get_function_properties'](name);
   }
 }
 
 export class CascadeTrainer {
-  private trainer: any;
+  private trainer: unknown;
 
   constructor(
-    private wasm: any,
+    private wasm: unknown,
     config: CascadeConfig | null,
     network: NeuralNetwork,
-    data: TrainingDataConfig,
+    data: TrainingDataConfig
   ) {
     this.trainer = new wasm['WasmCascadeTrainer'](
       config || this.getDefaultConfig(),
       network.getInternalNetwork(),
-      data,
+      data
     );
   }
 
-  async train(): Promise<any> {
+  async train(): Promise<unknown> {
     return this.trainer.train();
   }
 
-  getConfig(): any {
+  getConfig(): unknown {
     return this.trainer['get_config']();
   }
 
-  static getDefaultConfig(wasm: any): CascadeConfig {
+  static getDefaultConfig(wasm: unknown): CascadeConfig {
     return wasm['WasmCascadeTrainer']?.['create_default_config']();
   }
 
@@ -325,14 +325,14 @@ export class CascadeTrainer {
 
 // High-level helper functions
 export async function createNeuralNetwork(
-  config: NetworkConfig,
+  config: NetworkConfig
 ): Promise<NeuralNetwork> {
   const wasm = await initializeNeuralWasm();
   return new NeuralNetwork(wasm, config);
 }
 
 export async function createTrainer(
-  config: TrainingConfig,
+  config: TrainingConfig
 ): Promise<NeuralTrainer> {
   const wasm = await initializeNeuralWasm();
   return new NeuralTrainer(wasm, config);

@@ -339,7 +339,7 @@ export class SPARCMCPTools {
    * @param name
    * @param args
    */
-  async handleOldToolCall(name: string, args: any): Promise<any> {
+  async handleOldToolCall(name: string, args: unknown): Promise<unknown> {
     switch (name) {
       case 'sparc_create_project':
         return this.handleCreateProject(args);
@@ -367,7 +367,7 @@ export class SPARCMCPTools {
     }
   }
 
-  private async handleCreateProject(args: any): Promise<any> {
+  private async handleCreateProject(args: unknown): Promise<unknown> {
     const projectSpec: ProjectSpecification = {
       name: args.name,
       domain: args.domain as ProjectDomain,
@@ -398,7 +398,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleExecutePhase(args: any): Promise<any> {
+  private async handleExecutePhase(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -429,7 +429,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleGetProjectStatus(args: any): Promise<any> {
+  private async handleGetProjectStatus(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -472,7 +472,7 @@ export class SPARCMCPTools {
     return basicStatus;
   }
 
-  private async handleGenerateArtifacts(args: any): Promise<any> {
+  private async handleGenerateArtifacts(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -498,7 +498,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleValidateCompletion(args: any): Promise<any> {
+  private async handleValidateCompletion(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -524,7 +524,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleListProjects(args: any): Promise<any> {
+  private async handleListProjects(args: unknown): Promise<unknown> {
     let projects = Array.from(this.activeProjects.values());
 
     if (args.domain) {
@@ -545,7 +545,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleRefineImplementation(args: any): Promise<any> {
+  private async handleRefineImplementation(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -553,7 +553,7 @@ export class SPARCMCPTools {
 
     const refinementResult = await this.sparcEngine.refineImplementation(
       project,
-      args.feedback,
+      args.feedback
     );
 
     return {
@@ -652,7 +652,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleApplyTemplate(args: any): Promise<any> {
+  private async handleApplyTemplate(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -666,7 +666,7 @@ export class SPARCMCPTools {
     };
   }
 
-  private async handleExecuteFullWorkflow(args: any): Promise<any> {
+  private async handleExecuteFullWorkflow(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -835,8 +835,8 @@ export class SPARCMCPTools {
    * @param args
    */
   public async handleGenerateProjectManagementArtifacts(
-    args: any,
-  ): Promise<any> {
+    args: unknown
+  ): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -850,7 +850,7 @@ export class SPARCMCPTools {
       const results =
         await this.projectManagement.createAllProjectManagementArtifacts(
           project,
-          args.artifactTypes || ['all'],
+          args.artifactTypes || ['all']
         );
 
       return {
@@ -950,7 +950,7 @@ export class SPARCMCPTools {
    *
    * @param args
    */
-  public async handleCreateEpic(args: any): Promise<any> {
+  public async handleCreateEpic(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -987,7 +987,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to create epic: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to create epic: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -997,7 +997,7 @@ export class SPARCMCPTools {
    *
    * @param args
    */
-  public async handleAddToRoadmap(args: any): Promise<any> {
+  public async handleAddToRoadmap(args: unknown): Promise<unknown> {
     const project = this.activeProjects.get(args.projectId);
     if (!project) {
       throw new Error(`Project not found: ${args.projectId}`);
@@ -1006,7 +1006,7 @@ export class SPARCMCPTools {
     try {
       await this.roadmapManager.addProjectToRoadmap(
         project,
-        args.targetQuarter,
+        args.targetQuarter
       );
 
       return {
@@ -1019,7 +1019,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to add to roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to add to roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -1029,14 +1029,14 @@ export class SPARCMCPTools {
    *
    * @param args
    */
-  public async handleGenerateDomainRoadmap(args: any): Promise<any> {
+  public async handleGenerateDomainRoadmap(args: unknown): Promise<unknown> {
     try {
       const roadmap = await this.roadmapManager.generateDomainRoadmap(
         args.domain,
         {
           start: args.timeframe.startQuarter,
           end: args.timeframe.endQuarter,
-        },
+        }
       );
 
       return {
@@ -1061,7 +1061,7 @@ export class SPARCMCPTools {
       };
     } catch (error) {
       throw new Error(
-        `Failed to generate domain roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Failed to generate domain roadmap: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -1072,7 +1072,7 @@ export class SPARCMCPTools {
    * @param toolName
    * @param args
    */
-  public async handleToolCall(toolName: string, args: any): Promise<any> {
+  public async handleToolCall(toolName: string, args: unknown): Promise<unknown> {
     try {
       switch (toolName) {
         case 'sparc_create_project':

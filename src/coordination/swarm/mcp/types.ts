@@ -125,10 +125,10 @@ export interface MCPTool {
   description: string;
 
   /** Parameter schema defining tool inputs and validation */
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 
   /** Async handler function that executes the tool logic */
-  handler: (params: any) => Promise<MCPToolResult>;
+  handler: (params: unknown) => Promise<MCPToolResult>;
 
   /** Tool category for organization and filtering */
   category: 'coordination' | 'swarm' | 'system' | 'neural' | 'memory';
@@ -197,7 +197,7 @@ export interface MCPToolResult {
   success?: boolean;
 
   /** Primary result data from tool execution (optional) */
-  data?: any;
+  data?: unknown;
 
   /** Error message if execution failed (optional) */
   error?: string;
@@ -277,7 +277,7 @@ export interface MCPRequest {
   method: string;
 
   /** Method parameters (optional) */
-  params?: any;
+  params?: unknown;
 
   /** Request identifier for response correlation (optional) */
   id?: string | number;
@@ -333,7 +333,7 @@ export interface MCPRequest {
  */
 export interface MCPResponse {
   /** Successful result data (optional, mutually exclusive with error) */
-  result?: any;
+  result?: unknown;
 
   /** Error information if request failed (optional, mutually exclusive with result) */
   error?: {
@@ -344,7 +344,7 @@ export interface MCPResponse {
     message: string;
 
     /** Additional error context data (optional) */
-    data?: any;
+    data?: unknown;
   };
 
   /** Request identifier for correlation (optional) */

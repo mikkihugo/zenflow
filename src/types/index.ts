@@ -46,7 +46,7 @@ export type {
 
 // Type guards and utilities
 export function isZenSwarm(
-  obj: any,
+  obj: unknown
 ): obj is import('./shared-types.ts').ZenSwarm {
   return (
     obj &&
@@ -57,7 +57,7 @@ export function isZenSwarm(
 }
 
 export function isSwarmAgent(
-  obj: any,
+  obj: unknown
 ): obj is import('./shared-types.ts').SwarmAgent {
   return (
     obj &&
@@ -68,7 +68,7 @@ export function isSwarmAgent(
 }
 
 export function isSystemEvent(
-  obj: any,
+  obj: unknown
 ): obj is import('./shared-types.ts').SystemEvent {
   return (
     obj &&

@@ -38,8 +38,8 @@ const advancedMCPToolsManager = {
         tool.name.toLowerCase().includes(query.toLowerCase()) ||
         tool.description.toLowerCase().includes(query.toLowerCase()) ||
         tool.metadata.tags.some((tag) =>
-          tag.toLowerCase().includes(query.toLowerCase()),
-        ),
+          tag.toLowerCase().includes(query.toLowerCase())
+        )
     );
     return { tools: filtered };
   },
@@ -68,7 +68,7 @@ const advancedMCPToolsManager = {
     return advancedToolRegistry.getTool(name) !== undefined;
   },
 
-  async executeTool(name: string, params: any) {
+  async executeTool(name: string, params: unknown) {
     const tool = advancedToolRegistry.getTool(name);
     if (!tool) {
       throw new Error(`Tool '${name}' not found`);
@@ -106,7 +106,7 @@ export interface MCPServerConfig {
 export class HTTPMCPServer {
   private server: McpServer;
   private expressApp: express.Application;
-  private httpServer: any;
+  private httpServer: unknown;
   private config: MCPServerConfig;
   private isRunning: boolean = false;
 
@@ -133,7 +133,7 @@ export class HTTPMCPServer {
           prompts: {},
           resources: {},
         },
-      },
+      }
     );
 
     // Register tools list handler
@@ -173,7 +173,7 @@ export class HTTPMCPServer {
     // Body parsing - MUST come before routes
     this.expressApp.use(express.json({ limit: '10mb' }));
     this.expressApp.use(
-      express.raw({ type: 'application/octet-stream', limit: '10mb' }),
+      express.raw({ type: 'application/octet-stream', limit: '10mb' })
     );
 
     // CORS support using centralized configuration
@@ -192,11 +192,11 @@ export class HTTPMCPServer {
 
       res.header(
         'Access-Control-Allow-Methods',
-        'GET, POST, PUT, DELETE, OPTIONS',
+        'GET, POST, PUT, DELETE, OPTIONS'
       );
       res.header(
         'Access-Control-Allow-Headers',
-        'Content-Type, Authorization, X-MCP-Client-Info, Last-Event-ID, MCP-Session-ID',
+        'Content-Type, Authorization, X-MCP-Client-Info, Last-Event-ID, MCP-Session-ID'
       );
       res.header('Access-Control-Allow-Credentials', 'true');
 
@@ -325,7 +325,7 @@ export class HTTPMCPServer {
             },
           ],
         };
-      },
+      }
     );
 
     // Project status tool
@@ -382,7 +382,7 @@ export class HTTPMCPServer {
           });
         }
 
-        let result: any;
+        let result: unknown;
         if (format === 'summary') {
           result = {
             summary: `Project: ${status.project.name} (${status.project.status})`,
@@ -403,7 +403,7 @@ export class HTTPMCPServer {
             },
           ],
         };
-      },
+      }
     );
 
     // Register advanced tools from claude-zen
@@ -463,7 +463,7 @@ export class HTTPMCPServer {
                     timestamp: new Date().toISOString(),
                   },
                   null,
-                  2,
+                  2
                 ),
               },
             ],
@@ -479,7 +479,7 @@ export class HTTPMCPServer {
             ],
           };
         }
-      },
+      }
     );
 
     // Advanced tool execution proxy
@@ -506,7 +506,7 @@ export class HTTPMCPServer {
 
           const result = await advancedMCPToolsManager.executeTool(
             toolName,
-            params,
+            params
           );
 
           return {
@@ -521,7 +521,7 @@ export class HTTPMCPServer {
                     executedAt: new Date().toISOString(),
                   },
                   null,
-                  2,
+                  2
                 ),
               },
             ],
@@ -540,13 +540,13 @@ export class HTTPMCPServer {
                     executedAt: new Date().toISOString(),
                   },
                   null,
-                  2,
+                  2
                 ),
               },
             ],
           };
         }
-      },
+      }
     );
 
     // Tool statistics endpoint
@@ -579,16 +579,16 @@ export class HTTPMCPServer {
                   generatedAt: new Date().toISOString(),
                 },
                 null,
-                2,
+                2
               ),
             },
           ],
         };
-      },
+      }
     );
 
     logger.info(
-      `✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`,
+      `✅ Registered 3 proxy tools for ${advancedMCPToolsManager.getToolCount()} advanced tools`
     );
   }
 
@@ -614,10 +614,10 @@ export class HTTPMCPServer {
             title: tool.metadata?.title || tool.name,
             description: tool.description,
           },
-          async (params: any) => {
+          async (params: unknown) => {
             const result = await advancedMCPToolsManager.executeTool(
               tool.name,
-              params,
+              params
             );
 
             // Ensure result is in proper MCP format
@@ -651,7 +651,7 @@ export class HTTPMCPServer {
                 },
               ],
             };
-          },
+          }
         );
 
         registeredCount++;
@@ -661,7 +661,7 @@ export class HTTPMCPServer {
     }
 
     logger.info(
-      `✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`,
+      `✅ Integrated ${registeredCount}/${tools.length} advanced tools as native MCP tools`
     );
   }
 
@@ -673,7 +673,7 @@ export class HTTPMCPServer {
     const transports: Record<string, StreamableHTTPServerTransport> = {};
 
     // POST handler for MCP requests
-    const mcpPostHandler = async (req: any, res: any) => {
+    const mcpPostHandler = async (req: unknown, res: unknown) => {
       try {
         let sessionId = req.headers['mcp-session-id'] as string;
         let transport = sessionId ? transports[sessionId] : undefined;
@@ -686,7 +686,7 @@ export class HTTPMCPServer {
           sessionId = randomUUID();
           // Placeholder for transport initialization when SDK is available
           transport = {
-            handleRequest: async (req: any, res: any, body?: any) => {
+            handleRequest: async (req: unknown, res: unknown, body?: unknown) => {
               res.json({ error: 'MCP SDK not available' });
             },
             close: async () => {},
@@ -744,7 +744,7 @@ export class HTTPMCPServer {
     };
 
     // GET handler for SSE streaming
-    const mcpGetHandler = async (req: any, res: any) => {
+    const mcpGetHandler = async (req: unknown, res: unknown) => {
       try {
         const sessionId = req.headers['mcp-session-id'] as string;
         const transport = sessionId ? transports[sessionId] : undefined;
@@ -764,7 +764,7 @@ export class HTTPMCPServer {
     };
 
     // DELETE handler for session termination
-    const mcpDeleteHandler = async (req: any, res: any) => {
+    const mcpDeleteHandler = async (req: unknown, res: unknown) => {
       try {
         const sessionId = req.headers['mcp-session-id'] as string;
         const transport = sessionId ? transports[sessionId] : undefined;
@@ -860,10 +860,10 @@ export class HTTPMCPServer {
           logger.info(`   MCP Endpoint: ${url}/mcp`);
 
           resolve();
-        },
+        }
       );
 
-      this.httpServer.on('error', (error: any) => {
+      this.httpServer.on('error', (error: unknown) => {
         if (error.code === 'EADDRINUSE') {
           reject(new Error(`Port ${this.config.port} is already in use`));
         } else {
@@ -893,7 +893,7 @@ export class HTTPMCPServer {
   /**
    * Get server status.
    */
-  getStatus(): any {
+  getStatus(): unknown {
     return {
       running: this.isRunning,
       config: this.config,

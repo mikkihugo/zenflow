@@ -21,7 +21,7 @@ import type { ProjectSpecification } from '../../coordination/swarm/sparc/types/
 export function createSPARCTemplateCommands(): Command {
   const sparcTemplateCmd = new Command('spec');
   sparcTemplateCmd.description(
-    'SPARC specification generation with template engine',
+    'SPARC specification generation with template engine'
   );
 
   const templateEngine = new TemplateEngine();
@@ -40,18 +40,18 @@ export function createSPARCTemplateCommands(): Command {
   sparcTemplateCmd
     .command('generate')
     .description(
-      'Generate specification from project requirements using templates',
+      'Generate specification from project requirements using templates'
     )
     .requiredOption('--name <name>', 'Project name')
     .requiredOption(
       '--domain <domain>',
-      'Project domain (memory-systems|neural-networks|rest-api|swarm-coordination)',
+      'Project domain (memory-systems|neural-networks|rest-api|swarm-coordination)'
     )
     .option('--template <templateId>', 'Specific template ID to use')
     .option(
       '--complexity <level>',
       'Project complexity (simple|moderate|high|complex|enterprise)',
-      'moderate',
+      'moderate'
     )
     .option('--requirements <requirements...>', 'List of project requirements')
     .option('--constraints <constraints...>', 'List of project constraints')
@@ -73,7 +73,7 @@ export function createSPARCTemplateCommands(): Command {
           // Validate template compatibility first
           const compatibility = specEngine.validateTemplateCompatibility(
             projectSpec,
-            options?.template,
+            options?.template
           );
 
           if (compatibility.warnings.length > 0) {
@@ -82,7 +82,7 @@ export function createSPARCTemplateCommands(): Command {
 
           if (!compatibility.compatible) {
             logger.error(
-              '❌ Template is not compatible with project specification',
+              '❌ Template is not compatible with project specification'
             );
             return;
           }
@@ -90,7 +90,7 @@ export function createSPARCTemplateCommands(): Command {
           // Generate with specific template
           specification = await specEngine.generateSpecificationFromTemplate(
             projectSpec,
-            options?.template,
+            options?.template
           );
         } else {
           // Auto-select best template
@@ -141,13 +141,13 @@ export function createSPARCTemplateCommands(): Command {
           await specEngine.validateSpecificationCompleteness(specification);
 
         if (validation.results.length > 0) {
-          validation.results.forEach((result: any) => {
+          validation.results.forEach((result: unknown) => {
             const _status = result?.passed ? '✅' : '❌';
           });
         }
 
         if (validation.recommendations.length > 0) {
-          validation.recommendations.forEach((_rec: any) => {});
+          validation.recommendations.forEach((_rec: unknown) => {});
         }
 
         process.exit(validation.overall ? 0 : 1);
@@ -180,7 +180,7 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
 
   // Functional Requirements
   markdown += `## Functional Requirements (${specification.functionalRequirements.length})\n\n`;
-  specification.functionalRequirements.forEach((req: any, index: number) => {
+  specification.functionalRequirements.forEach((req: unknown, index: number) => {
     markdown += `### ${index + 1}. ${req.title}\n`;
     markdown += `**Priority:** ${req.priority}\n`;
     markdown += `**Description:** ${req.description}\n\n`;
@@ -201,7 +201,7 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
   ) {
     markdown += `## Non-Functional Requirements (${specification.nonFunctionalRequirements.length})\n\n`;
     specification.nonFunctionalRequirements.forEach(
-      (req: any, index: number) => {
+      (req: unknown, index: number) => {
         markdown += `### ${index + 1}. ${req.title}\n`;
         markdown += `**Priority:** ${req.priority}\n`;
         markdown += `**Description:** ${req.description}\n\n`;
@@ -213,14 +213,14 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
           });
           markdown += `\n`;
         }
-      },
+      }
     );
   }
 
   // Constraints
   if (specification.constraints && specification.constraints.length > 0) {
     markdown += `## System Constraints (${specification.constraints.length})\n\n`;
-    specification.constraints.forEach((constraint: any, index: number) => {
+    specification.constraints.forEach((constraint: unknown, index: number) => {
       markdown += `${index + 1}. **${constraint.type}**: ${constraint.description}\n`;
     });
     markdown += `\n`;
@@ -232,7 +232,7 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
     markdown += `**Overall Risk Level:** ${specification.riskAssessment.overallRisk}\n\n`;
 
     markdown += `### Identified Risks\n`;
-    specification.riskAssessment.risks.forEach((risk: any, index: number) => {
+    specification.riskAssessment.risks.forEach((risk: unknown, index: number) => {
       markdown += `${index + 1}. **${risk.category}**: ${risk.description}\n`;
       markdown += `   - Probability: ${risk.probability}\n`;
       markdown += `   - Impact: ${risk.impact}\n\n`;
@@ -242,7 +242,7 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
   // Success Metrics
   if (specification.successMetrics && specification.successMetrics.length > 0) {
     markdown += `## Success Metrics (${specification.successMetrics.length})\n\n`;
-    specification.successMetrics.forEach((metric: any, index: number) => {
+    specification.successMetrics.forEach((metric: unknown, index: number) => {
       markdown += `${index + 1}. **${metric.name}**: ${metric.target}\n`;
       markdown += `   - ${metric.description}\n`;
       markdown += `   - Measurement: ${metric.measurement}\n\n`;

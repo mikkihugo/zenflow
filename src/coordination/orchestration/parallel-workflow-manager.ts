@@ -71,7 +71,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   constructor(
     eventBus: TypeSafeEventBus,
     memory: MemorySystem,
-    config: Partial<ParallelWorkflowManagerConfig> = {},
+    config: Partial<ParallelWorkflowManagerConfig> = {}
   ) {
     super();
 
@@ -171,7 +171,7 @@ export class ParallelWorkflowManager extends EventEmitter {
       parallelProcessing?: boolean;
       enableGates?: boolean;
       dependencies?: string[];
-    },
+    }
   ): Promise<string> {
     const streamId = this.generateStreamId(level, name);
 
@@ -219,7 +219,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     switch (level) {
       case OrchestrationLevel.PORTFOLIO:
         this.state.portfolioStreams.push(
-          stream as WorkflowStream<PortfolioItem>,
+          stream as WorkflowStream<PortfolioItem>
         );
         break;
       case OrchestrationLevel.PROGRAM:
@@ -227,7 +227,7 @@ export class ParallelWorkflowManager extends EventEmitter {
         break;
       case OrchestrationLevel.SWARM_EXECUTION:
         this.state.executionStreams.push(
-          stream as WorkflowStream<SwarmExecutionItem>,
+          stream as WorkflowStream<SwarmExecutionItem>
         );
         break;
     }
@@ -244,7 +244,7 @@ export class ParallelWorkflowManager extends EventEmitter {
       streamId,
       'idle',
       'idle',
-      'Stream created',
+      'Stream created'
     );
 
     return streamId;
@@ -255,7 +255,7 @@ export class ParallelWorkflowManager extends EventEmitter {
    */
   async addWorkItem<TWorkItem>(
     streamId: string,
-    workItem: TWorkItem,
+    workItem: TWorkItem
   ): Promise<boolean> {
     const stream = this.findStream(streamId);
     if (!stream) {
@@ -304,7 +304,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     await this.updateStreamStatus(
       streamId,
       'active',
-      'Starting stream processing',
+      'Starting stream processing'
     );
 
     try {
@@ -314,7 +314,7 @@ export class ParallelWorkflowManager extends EventEmitter {
           await this.updateStreamStatus(
             streamId,
             'blocked',
-            'Dependencies not satisfied',
+            'Dependencies not satisfied'
           );
           break;
         }
@@ -336,7 +336,7 @@ export class ParallelWorkflowManager extends EventEmitter {
         await this.updateStreamStatus(
           streamId,
           'completed',
-          'All work items processed',
+          'All work items processed'
         );
       }
     } catch (error) {
@@ -347,7 +347,7 @@ export class ParallelWorkflowManager extends EventEmitter {
       await this.updateStreamStatus(
         streamId,
         'failed',
-        `Processing failed: ${error}`,
+        `Processing failed: ${error}`
       );
     }
   }
@@ -377,7 +377,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     await this.updateStreamStatus(
       streamId,
       'active',
-      'Resuming stream processing',
+      'Resuming stream processing'
     );
 
     // Continue processing
@@ -399,7 +399,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     toLevel: OrchestrationLevel,
     toItemId: string,
     type: 'blocks' | 'enables' | 'informs',
-    impact: number = 0.5,
+    impact: number = 0.5
   ): Promise<string> {
     const dependencyId = this.generateDependencyId();
 
@@ -432,7 +432,7 @@ export class ParallelWorkflowManager extends EventEmitter {
    */
   async resolveDependency(dependencyId: string): Promise<boolean> {
     const dependency = this.state.crossLevelDependencies.find(
-      (d) => d.id === dependencyId,
+      (d) => d.id === dependencyId
     );
     if (!dependency) {
       return false;
@@ -446,7 +446,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     // Emit dependency resolved event
     await this.emitCrossLevelDependencyEvent(
       'cross.level.dependency.resolved',
-      dependency,
+      dependency
     );
 
     this.logger.info('Dependency resolved', { dependencyId });
@@ -458,10 +458,10 @@ export class ParallelWorkflowManager extends EventEmitter {
    */
   async blockDependency(
     dependencyId: string,
-    reason: string,
+    reason: string
   ): Promise<boolean> {
     const dependency = this.state.crossLevelDependencies.find(
-      (d) => d.id === dependencyId,
+      (d) => d.id === dependencyId
     );
     if (!dependency) {
       return false;
@@ -478,7 +478,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     // Emit dependency blocked event
     await this.emitCrossLevelDependencyEvent(
       'cross.level.dependency.blocked',
-      dependency,
+      dependency
     );
 
     this.logger.warn('Dependency blocked', { dependencyId, reason });
@@ -510,7 +510,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     switch (stream.level) {
       case OrchestrationLevel.PORTFOLIO: {
         const portfolioWIP = this.calculateLevelWIP(
-          OrchestrationLevel.PORTFOLIO,
+          OrchestrationLevel.PORTFOLIO
         );
         return portfolioWIP < this.config.wipLimits.portfolioItems;
       }
@@ -522,7 +522,7 @@ export class ParallelWorkflowManager extends EventEmitter {
 
       case OrchestrationLevel.SWARM_EXECUTION: {
         const executionWIP = this.calculateLevelWIP(
-          OrchestrationLevel.SWARM_EXECUTION,
+          OrchestrationLevel.SWARM_EXECUTION
         );
         return executionWIP < this.config.wipLimits.executionItems;
       }
@@ -536,7 +536,7 @@ export class ParallelWorkflowManager extends EventEmitter {
    * Adjust WIP limits based on performance
    */
   async adjustWIPLimits(
-    recommendations: OptimizationRecommendation[],
+    recommendations: OptimizationRecommendation[]
   ): Promise<void> {
     for (const rec of recommendations) {
       if (rec.type === 'wip_adjustment' && rec.priority !== 'low') {
@@ -640,13 +640,13 @@ export class ParallelWorkflowManager extends EventEmitter {
       overallThroughput: this.calculateOverallThroughput(),
       levelThroughput: {
         [OrchestrationLevel.PORTFOLIO]: this.calculateLevelThroughput(
-          OrchestrationLevel.PORTFOLIO,
+          OrchestrationLevel.PORTFOLIO
         ),
         [OrchestrationLevel.PROGRAM]: this.calculateLevelThroughput(
-          OrchestrationLevel.PROGRAM,
+          OrchestrationLevel.PROGRAM
         ),
         [OrchestrationLevel.SWARM_EXECUTION]: this.calculateLevelThroughput(
-          OrchestrationLevel.SWARM_EXECUTION,
+          OrchestrationLevel.SWARM_EXECUTION
         ),
       },
       averageCycleTime: this.calculateAverageCycleTime(),
@@ -719,7 +719,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'parallel-workflow-manager:state',
+        'parallel-workflow-manager:state'
       );
       if (persistedState) {
         this.state = { ...this.state, ...persistedState };
@@ -760,7 +760,7 @@ export class ParallelWorkflowManager extends EventEmitter {
 
         // Auto-apply low-risk recommendations
         const autoApplyable = recommendations.filter(
-          (r) => r.effort < 0.3 && r.priority !== 'critical',
+          (r) => r.effort < 0.3 && r.priority !== 'critical'
         );
 
         for (const rec of autoApplyable) {
@@ -784,7 +784,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   private async updateStreamStatus(
     streamId: string,
     status: StreamStatus,
-    reason: string,
+    reason: string
   ): Promise<void> {
     const stream = this.findStream(streamId);
     if (!stream) return;
@@ -800,7 +800,7 @@ export class ParallelWorkflowManager extends EventEmitter {
     streamId: string,
     previousStatus: StreamStatus,
     newStatus: StreamStatus,
-    reason: string,
+    reason: string
   ): Promise<void> {
     const stream = this.findStream(streamId);
     if (!stream) return;
@@ -825,7 +825,7 @@ export class ParallelWorkflowManager extends EventEmitter {
 
   private async emitWIPLimitExceeded(
     streamId: string,
-    stream: WorkflowStream,
+    stream: WorkflowStream
   ): Promise<void> {
     const event: WIPLimitExceededEvent = {
       id: `wip-limit-${Date.now()}`,
@@ -846,7 +846,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async emitBottleneckDetected(
-    bottleneck: BottleneckInfo,
+    bottleneck: BottleneckInfo
   ): Promise<void> {
     const event: BottleneckDetectedEvent = {
       id: `bottleneck-${Date.now()}`,
@@ -866,7 +866,7 @@ export class ParallelWorkflowManager extends EventEmitter {
 
   private async emitCrossLevelDependencyEvent(
     type: 'cross.level.dependency.resolved' | 'cross.level.dependency.blocked',
-    dependency: CrossLevelDependency,
+    dependency: CrossLevelDependency
   ): Promise<void> {
     const event: CrossLevelDependencyEvent = {
       id: `dependency-${Date.now()}`,
@@ -908,15 +908,15 @@ export class ParallelWorkflowManager extends EventEmitter {
     return (
       this.state.portfolioStreams.reduce(
         (sum, s) => sum + s.inProgress.length,
-        0,
+        0
       ) +
       this.state.programStreams.reduce(
         (sum, s) => sum + s.inProgress.length,
-        0,
+        0
       ) +
       this.state.executionStreams.reduce(
         (sum, s) => sum + s.inProgress.length,
-        0,
+        0
       )
     );
   }
@@ -978,7 +978,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async detectLevelBottlenecks(
-    level: OrchestrationLevel,
+    level: OrchestrationLevel
   ): Promise<BottleneckInfo[]> {
     // Implementation would analyze level-specific bottlenecks
     return [];
@@ -990,7 +990,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async analyzeBottleneckForOptimization(
-    bottleneck: BottleneckInfo,
+    bottleneck: BottleneckInfo
   ): Promise<OptimizationRecommendation | null> {
     // Implementation would analyze bottleneck and generate recommendations
     return null;
@@ -1007,7 +1007,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async applyOptimizationRecommendation(
-    recommendation: OptimizationRecommendation,
+    recommendation: OptimizationRecommendation
   ): Promise<void> {
     // Implementation would apply the optimization
     this.logger.info('Applied optimization recommendation', {
@@ -1022,7 +1022,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async processAvailableWorkItems(
-    stream: WorkflowStream,
+    stream: WorkflowStream
   ): Promise<void> {
     // Move items from workItems to inProgress based on WIP limits
     const availableCapacity = stream.wipLimit - stream.inProgress.length;
@@ -1064,7 +1064,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   private async findAffectedStreams(
-    dependency: CrossLevelDependency,
+    dependency: CrossLevelDependency
   ): Promise<string[]> {
     // Find streams that are affected by this dependency
     return [];

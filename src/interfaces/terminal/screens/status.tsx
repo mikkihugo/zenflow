@@ -7,7 +7,7 @@
 
 import os from 'node:os';
 import { Box, Text, useInput } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import {
   Header,
@@ -26,7 +26,7 @@ export interface SystemStatus {
   components: {
     mcp: { status: string; port?: number; endpoints?: string[] };
     swarm: { status: string; agents: number; topology: string };
-    memory: { status: string; usage: any; sessions: number };
+    memory: { status: string; usage: unknown; sessions: number };
     terminal: { status: string; mode: string; active: boolean };
   };
   environment: {
@@ -141,7 +141,7 @@ export const Status: React.FC<StatusProps> = ({
   };
 
   const getComponentStatusBadge = (status: string) => {
-    const statusMap: Record<string, any> = {
+    const statusMap: Record<string, unknown> = {
       ready: { status: 'active', text: 'Ready' },
       active: { status: 'active', text: 'Active' },
       error: { status: 'error', text: 'Error' },
@@ -160,20 +160,13 @@ export const Status: React.FC<StatusProps> = ({
 
   if (isLoading) {
     return (
-      <Box
-        flexDirection="column"
-        height="100%"
-      >
+      <Box flexDirection="column" height="100%">
         <Header
           title="System Status"
           swarmStatus={swarmStatus}
           showBorder={true}
         />
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
           <LoadingSpinner text="Loading system status..." />
         </Box>
       </Box>
@@ -182,19 +175,9 @@ export const Status: React.FC<StatusProps> = ({
 
   if (!systemStatus) {
     return (
-      <Box
-        flexDirection="column"
-        height="100%"
-      >
-        <Header
-          title="System Status"
-          showBorder={true}
-        />
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          alignItems="center"
-        >
+      <Box flexDirection="column" height="100%">
+        <Header title="System Status" showBorder={true} />
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
           <Text color="red">❌ Failed to load system status</Text>
         </Box>
       </Box>
@@ -202,30 +185,18 @@ export const Status: React.FC<StatusProps> = ({
   }
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       <Header
         title="System Status & Health"
         swarmStatus={swarmStatus}
         showBorder={true}
       />
 
-      <Box
-        flexGrow={1}
-        paddingX={2}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2}>
+        <Box flexDirection="column" width="100%">
           {/* Overall Status */}
           <Box marginBottom={2}>
-            <Text
-              bold
-              color="cyan"
-            >
+            <Text bold color="cyan">
               🖥️ System Overview
             </Text>
             <Box
@@ -233,10 +204,7 @@ export const Status: React.FC<StatusProps> = ({
               flexDirection="row"
               justifyContent="space-between"
             >
-              <Box
-                flexDirection="column"
-                width="50%"
-              >
+              <Box flexDirection="column" width="50%">
                 <Text>
                   Version: <Text color="green">{systemStatus.version}</Text>
                 </Text>
@@ -252,10 +220,7 @@ export const Status: React.FC<StatusProps> = ({
                   <Text color="cyan">{formatUptime(systemStatus.uptime)}</Text>
                 </Text>
               </Box>
-              <Box
-                flexDirection="column"
-                width="50%"
-              >
+              <Box flexDirection="column" width="50%">
                 <Text>
                   Platform:{' '}
                   <Text color="yellow">
@@ -275,10 +240,7 @@ export const Status: React.FC<StatusProps> = ({
 
           {/* Components */}
           <Box marginBottom={2}>
-            <Text
-              bold
-              color="cyan"
-            >
+            <Text bold color="cyan">
               🔧 Components Status
             </Text>
             <Box marginTop={1}>
@@ -298,31 +260,22 @@ export const Status: React.FC<StatusProps> = ({
                         <Text dimColor> ({component.agents} agents)</Text>
                       )}
                     </Box>
-                    <Box
-                      width="30%"
-                      justifyContent="flex-end"
-                    >
+                    <Box width="30%" justifyContent="flex-end">
                       {getComponentStatusBadge(component.status)}
                     </Box>
                   </Box>
-                ),
+                )
               )}
             </Box>
           </Box>
 
           {/* Memory Usage */}
           <Box marginBottom={2}>
-            <Text
-              bold
-              color="cyan"
-            >
+            <Text bold color="cyan">
               💾 Memory Usage
             </Text>
             <Box marginTop={1}>
-              <Box
-                flexDirection="row"
-                justifyContent="space-between"
-              >
+              <Box flexDirection="row" justifyContent="space-between">
                 <Text>
                   RSS:{' '}
                   <Text color="yellow">
@@ -336,15 +289,12 @@ export const Status: React.FC<StatusProps> = ({
                   </Text>
                 </Text>
               </Box>
-              <Box
-                flexDirection="row"
-                justifyContent="space-between"
-              >
+              <Box flexDirection="row" justifyContent="space-between">
                 <Text>
                   Heap Total:{' '}
                   <Text color="cyan">
                     {formatBytes(
-                      systemStatus.components.memory.usage.heapTotal,
+                      systemStatus.components.memory.usage.heapTotal
                     )}
                   </Text>
                 </Text>
@@ -360,10 +310,7 @@ export const Status: React.FC<StatusProps> = ({
 
           {/* Performance */}
           <Box marginBottom={1}>
-            <Text
-              bold
-              color="cyan"
-            >
+            <Text bold color="cyan">
               📊 Performance
             </Text>
             <Box marginTop={1}>

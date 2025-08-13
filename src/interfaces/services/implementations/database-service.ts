@@ -123,7 +123,7 @@ export class DatabaseService extends BaseService implements IService {
     } catch (error) {
       this.logger.error(
         `Health check failed for database service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -131,8 +131,8 @@ export class DatabaseService extends BaseService implements IService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing database operation: ${operation}`);
 
@@ -179,7 +179,7 @@ export class DatabaseService extends BaseService implements IService {
   // Database Service Specific Methods
   // ============================================
 
-  private async executeQuery(sql: string, parameters?: any[]): Promise<any> {
+  private async executeQuery(sql: string, parameters?: unknown[]): Promise<unknown> {
     if (!sql) {
       throw new Error('SQL query is required');
     }
@@ -216,8 +216,8 @@ export class DatabaseService extends BaseService implements IService {
   }
 
   private async executeTransaction(
-    queries: Array<{ sql: string; parameters?: any[] }>,
-  ): Promise<any> {
+    queries: Array<{ sql: string; parameters?: unknown[] }>
+  ): Promise<unknown> {
     if (!queries || queries.length === 0) {
       throw new Error('Transaction queries are required');
     }
@@ -230,7 +230,7 @@ export class DatabaseService extends BaseService implements IService {
     this.logger.debug(`Executing transaction with ${queries.length} queries`);
 
     // Simulate transaction
-    const results: any[] = [];
+    const results: unknown[] = [];
     try {
       for (const query of queries) {
         const result = await this.simulateQuery(query.sql, query.parameters);
@@ -242,7 +242,7 @@ export class DatabaseService extends BaseService implements IService {
         results,
         affectedRows: results.reduce(
           (sum, r) => sum + (r.affectedRows || 0),
-          0,
+          0
         ),
       };
     } catch (error) {
@@ -251,11 +251,11 @@ export class DatabaseService extends BaseService implements IService {
     }
   }
 
-  private getConnection(name: string = 'default'): any {
+  private getConnection(name: string = 'default'): unknown {
     return this.connections.get(name);
   }
 
-  private async createConnection(name: string, config: any): Promise<any> {
+  private async createConnection(name: string, config: unknown): Promise<unknown> {
     this.logger.info(`Creating database connection: ${name}`);
 
     const connection = {
@@ -291,7 +291,7 @@ export class DatabaseService extends BaseService implements IService {
     return true;
   }
 
-  private async runMigrations(): Promise<any> {
+  private async runMigrations(): Promise<unknown> {
     const config = this.config as DatabaseServiceConfig;
 
     if (!config?.migrations?.enabled) {
@@ -325,7 +325,7 @@ export class DatabaseService extends BaseService implements IService {
     };
   }
 
-  private async rollbackMigration(steps: number = 1): Promise<any> {
+  private async rollbackMigration(steps: number = 1): Promise<unknown> {
     this.logger.info(`Rolling back ${steps} migration(s)`);
 
     const rolledBack: string[] = [];
@@ -345,7 +345,7 @@ export class DatabaseService extends BaseService implements IService {
     };
   }
 
-  private async performBackup(): Promise<any> {
+  private async performBackup(): Promise<unknown> {
     const config = this.config as DatabaseServiceConfig;
 
     if (!config?.backup?.enabled) {
@@ -372,7 +372,7 @@ export class DatabaseService extends BaseService implements IService {
     return backup;
   }
 
-  private async performRestore(backupPath: string): Promise<any> {
+  private async performRestore(backupPath: string): Promise<unknown> {
     if (!backupPath) {
       throw new Error('Backup path is required');
     }
@@ -394,7 +394,7 @@ export class DatabaseService extends BaseService implements IService {
     return result;
   }
 
-  private getDatabaseStats(): any {
+  private getDatabaseStats(): unknown {
     const connection = this.getConnection('default');
 
     return {
@@ -446,7 +446,7 @@ export class DatabaseService extends BaseService implements IService {
     }
   }
 
-  private async simulateQuery(sql: string, _parameters?: any[]): Promise<any> {
+  private async simulateQuery(sql: string, _parameters?: unknown[]): Promise<unknown> {
     // Simulate query execution time
     const queryTime = Math.random() * 50 + 10; // 10-60ms
     await new Promise((resolve) => setTimeout(resolve, queryTime));
@@ -500,15 +500,15 @@ export class DatabaseService extends BaseService implements IService {
     };
   }
 
-  private generateMockRows(count: number): any[] {
-    const rows: any[] = [];
+  private generateMockRows(count: number): unknown[] {
+    const rows: unknown[] = [];
 
     for (let i = 1; i <= count; i++) {
       rows.push({
         id: i,
         name: `Item ${i}`,
         created_at: new Date(
-          Date.now() - Math.random() * 86400000 * 30,
+          Date.now() - Math.random() * 86400000 * 30
         ).toISOString(), // Random date within 30 days
       });
     }
@@ -516,7 +516,7 @@ export class DatabaseService extends BaseService implements IService {
     return rows;
   }
 
-  private async executeSimpleQuery(sql: string): Promise<any> {
+  private async executeSimpleQuery(sql: string): Promise<unknown> {
     // Simple query for health checks
     return await this.simulateQuery(sql);
   }

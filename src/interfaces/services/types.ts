@@ -519,7 +519,7 @@ export class ServiceConfigFactory {
    */
   static createDataServiceConfig(
     name: string,
-    options?: Partial<DataServiceConfig>,
+    options?: Partial<DataServiceConfig>
   ): DataServiceConfig {
     return {
       name,
@@ -555,7 +555,7 @@ export class ServiceConfigFactory {
    */
   static createWebServiceConfig(
     name: string,
-    options?: Partial<WebServiceConfig>,
+    options?: Partial<WebServiceConfig>
   ): WebServiceConfig {
     return {
       name,
@@ -606,7 +606,7 @@ export class ServiceConfigFactory {
    */
   static createCoordinationServiceConfig(
     name: string,
-    options?: Partial<CoordinationServiceConfig>,
+    options?: Partial<CoordinationServiceConfig>
   ): CoordinationServiceConfig {
     return {
       name,
@@ -659,7 +659,7 @@ export class ServiceConfigFactory {
    */
   static createNeuralServiceConfig(
     name: string,
-    options?: Partial<NeuralServiceConfig>,
+    options?: Partial<NeuralServiceConfig>
   ): NeuralServiceConfig {
     return {
       name,
@@ -713,7 +713,7 @@ export class ServiceConfigFactory {
    */
   static createMemoryServiceConfig(
     name: string,
-    options?: Partial<MemoryServiceConfig>,
+    options?: Partial<MemoryServiceConfig>
   ): MemoryServiceConfig {
     return {
       name,
@@ -765,7 +765,7 @@ export class ServiceConfigFactory {
    */
   static createDatabaseServiceConfig(
     name: string,
-    options?: Partial<DatabaseServiceConfig>,
+    options?: Partial<DatabaseServiceConfig>
   ): DatabaseServiceConfig {
     return {
       name,
@@ -821,7 +821,7 @@ export class ServiceConfigFactory {
    */
   static createMonitoringServiceConfig(
     name: string,
-    options?: Partial<MonitoringServiceConfig>,
+    options?: Partial<MonitoringServiceConfig>
   ): MonitoringServiceConfig {
     return {
       name,
@@ -875,7 +875,7 @@ export class ServiceConfigFactory {
    */
   static createIntegrationServiceConfig(
     name: string,
-    options?: Partial<IntegrationServiceConfig>,
+    options?: Partial<IntegrationServiceConfig>
   ): IntegrationServiceConfig {
     return {
       name,
@@ -935,7 +935,7 @@ export class ServiceConfigFactory {
    */
   static createInfrastructureServiceConfig(
     name: string,
-    options?: Partial<InfrastructureServiceConfig>,
+    options?: Partial<InfrastructureServiceConfig>
   ): InfrastructureServiceConfig {
     return {
       name,
@@ -1031,7 +1031,7 @@ export class ServiceConfigFactory {
    */
   static createWorkflowServiceConfig(
     name: string,
-    options?: Partial<WorkflowServiceConfig>,
+    options?: Partial<WorkflowServiceConfig>
   ): WorkflowServiceConfig {
     return {
       name,
@@ -1087,7 +1087,7 @@ export class ServiceConfigFactory {
  * @example
  */
 export function isDataServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is DataServiceConfig {
   return [
     ServiceType.DATA,
@@ -1097,7 +1097,7 @@ export function isDataServiceConfig(
 }
 
 export function isWebServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is WebServiceConfig {
   return [
     ServiceType.WEB,
@@ -1108,7 +1108,7 @@ export function isWebServiceConfig(
 }
 
 export function isCoordinationServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is CoordinationServiceConfig {
   return [
     ServiceType.COORDINATION,
@@ -1120,7 +1120,7 @@ export function isCoordinationServiceConfig(
 }
 
 export function isNeuralServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is NeuralServiceConfig {
   return [
     ServiceType.NEURAL,
@@ -1130,23 +1130,23 @@ export function isNeuralServiceConfig(
 }
 
 export function isMemoryServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is MemoryServiceConfig {
   return [ServiceType.MEMORY, ServiceType.CACHE, ServiceType.SESSION].includes(
-    config?.type as ServiceType,
+    config?.type as ServiceType
   );
 }
 
 export function isDatabaseServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is DatabaseServiceConfig {
   return [ServiceType.DATABASE, ServiceType.VECTOR, ServiceType.GRAPH].includes(
-    config?.type as ServiceType,
+    config?.type as ServiceType
   );
 }
 
 export function isIntegrationServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is IntegrationServiceConfig {
   return [
     ServiceType.API,
@@ -1156,7 +1156,7 @@ export function isIntegrationServiceConfig(
 }
 
 export function isInfrastructureServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is InfrastructureServiceConfig {
   return [
     ServiceType.INFRASTRUCTURE,
@@ -1166,7 +1166,7 @@ export function isInfrastructureServiceConfig(
 }
 
 export function isMonitoringServiceConfig(
-  config: AnyServiceConfig,
+  config: AnyServiceConfig
 ): config is MonitoringServiceConfig {
   return [
     ServiceType.HEALTH,

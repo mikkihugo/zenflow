@@ -56,12 +56,12 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
     adapter: DatabaseAdapter,
     logger: ILogger,
     tableName: string,
-    entitySchema?: Record<string, any>,
+    entitySchema?: Record<string, unknown>,
     options?: {
       maxSize?: number;
       ttlDefault?: number;
       cleanupInterval?: number;
-    },
+    }
   ) {
     super(adapter, logger, tableName, entitySchema);
 
@@ -103,7 +103,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
 
     this.ttlTimers.set(key, timer);
     this.logger.debug(
-      `TTL set for entity ${id}, expires at: ${entry.expiresAt}`,
+      `TTL set for entity ${id}, expires at: ${entry.expiresAt}`
     );
   }
 
@@ -221,7 +221,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
       }
 
       this.logger.debug(
-        `Cleared cache with pattern '${pattern}': ${clearedCount} entries`,
+        `Cleared cache with pattern '${pattern}': ${clearedCount} entries`
       );
     } else {
       // Clear all cache entries
@@ -338,12 +338,12 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
     return deleted;
   }
 
-  protected mapRowToEntity(row: any): T {
+  protected mapRowToEntity(row: unknown): T {
     return row as T;
   }
 
-  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
-    return entity as Record<string, any>;
+  protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
+    return entity as Record<string, unknown>;
   }
 
   /**
@@ -352,7 +352,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
    * @param customQuery
    */
   override async executeCustomQuery<R = any>(
-    customQuery: CustomQuery,
+    customQuery: CustomQuery
   ): Promise<R> {
     if (customQuery.type === 'memory') {
       const query = customQuery.query as any;
@@ -387,7 +387,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
   private async storeInMemory(
     id: string | number,
     entity: T,
-    ttlSeconds?: number,
+    ttlSeconds?: number
   ): Promise<void> {
     await this.ensureSpace();
 
@@ -439,7 +439,7 @@ export class MemoryDao<T> extends BaseDao<T> implements IMemoryRepository<T> {
 
     // Sort by access time (oldest first)
     allEntries.sort(
-      (a, b) => a.entry.accessedAt.getTime() - b.entry.accessedAt.getTime(),
+      (a, b) => a.entry.accessedAt.getTime() - b.entry.accessedAt.getTime()
     );
 
     // Evict 25% of entries

@@ -341,8 +341,8 @@ async function waitForProcessExit(process: ChildProcess, timeout: number) {
 
 async function cleanupE2EState() {
   // Final cleanup
-  delete process.env.CLAUDE_ZEN_E2E_MODE;
-  delete process.env.CLAUDE_ZEN_TEST_TIMEOUT;
+  process.env.CLAUDE_ZEN_E2E_MODE = undefined;
+  process.env.CLAUDE_ZEN_TEST_TIMEOUT = undefined;
 
   // Generate E2E test report
   await generateE2EReport();
@@ -358,7 +358,7 @@ async function generateE2EReport() {
       avgDuration:
         global.testMetrics.operations.reduce(
           (sum, op) => sum + op.duration,
-          0,
+          0
         ) / global.testMetrics.operations.length || 0,
     },
   };
@@ -452,7 +452,7 @@ global.createE2EClient = (serviceName: string): E2EHttpClient => {
 };
 
 global.runE2EWorkflow = async (
-  workflow: WorkflowStep[],
+  workflow: WorkflowStep[]
 ): Promise<WorkflowResult[]> => {
   const results: WorkflowResult[] = [];
   for (const step of workflow) {
@@ -505,7 +505,7 @@ async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
 
 global.measureE2EPerformance = async (
   operation: () => Promise<unknown>,
-  expectedMaxTime: number,
+  expectedMaxTime: number
 ): Promise<PerformanceMeasurement> => {
   const start = Date.now();
   const result = await operation();
@@ -605,6 +605,6 @@ declare global {
   function runE2EWorkflow(workflow: WorkflowStep[]): Promise<WorkflowResult[]>;
   function measureE2EPerformance(
     operation: () => Promise<unknown>,
-    expectedMaxTime: number,
+    expectedMaxTime: number
   ): Promise<PerformanceMeasurement>;
 }

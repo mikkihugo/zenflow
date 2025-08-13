@@ -48,7 +48,7 @@ export class RecoveryIntegration extends EventEmitter {
   };
   public optimizationInterval: NodeJS.Timeout | null;
 
-  constructor(options: any = {}) {
+  constructor(options: unknown = {}) {
     super();
 
     this.options = {
@@ -143,11 +143,11 @@ export class RecoveryIntegration extends EventEmitter {
         {
           error: error.message,
           component: 'recovery-integration',
-        },
+        }
       );
       this.logger.error(
         'Recovery Integration initialization failed',
-        integrationError,
+        integrationError
       );
       throw integrationError;
     }
@@ -187,7 +187,7 @@ export class RecoveryIntegration extends EventEmitter {
           connectionTimeout: 30000,
           healthCheckInterval: 30000,
           persistenceEnabled: true,
-        },
+        }
       );
     }
 
@@ -201,7 +201,7 @@ export class RecoveryIntegration extends EventEmitter {
           enableTrendAnalysis: true,
           metricsRetentionPeriod: 86400000, // 24 hours
           aggregationInterval: 60000, // 1 minute
-        },
+        }
       );
     }
 
@@ -247,7 +247,7 @@ export class RecoveryIntegration extends EventEmitter {
 
       this.performanceMetrics.componentStartupTimes.set(
         name,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       this.logger.debug(`Component initialized: ${name}`, {
@@ -371,7 +371,7 @@ export class RecoveryIntegration extends EventEmitter {
     this.logger.info('Component integrations completed', {
       totalIntegrations: integrations.length,
       successfulIntegrations: Array.from(
-        this.integrationStatus.values(),
+        this.integrationStatus.values()
       ).filter((status) => status.status === 'success').length,
     });
   }
@@ -466,7 +466,7 @@ export class RecoveryIntegration extends EventEmitter {
         'Failed to start recovery integration system',
         {
           error: error.message,
-        },
+        }
       );
       this.logger.error('Recovery Integration start failed', startError);
       throw startError;
@@ -555,7 +555,7 @@ export class RecoveryIntegration extends EventEmitter {
             `Failed to propagate ${integrationType} to ${name}`,
             {
               error: error.message,
-            },
+            }
           );
         }
       }
@@ -580,7 +580,7 @@ export class RecoveryIntegration extends EventEmitter {
     // Register with connection manager if it has MCP connections
     if (this.connectionManager && swarmInstance.mcpConnections) {
       for (const [connectionId, connectionConfig] of Object.entries(
-        swarmInstance.mcpConnections,
+        swarmInstance.mcpConnections
       )) {
         await this.connectionManager.registerConnection({
           id: connectionId,
@@ -612,7 +612,7 @@ export class RecoveryIntegration extends EventEmitter {
       const connectionStatus = this.connectionManager.getConnectionStatus();
       if (connectionStatus && connectionStatus.connections) {
         for (const [connectionId, connection] of Object.entries(
-          connectionStatus.connections,
+          connectionStatus.connections
         )) {
           if (connection.metadata?.swarmId === swarmId) {
             await this.connectionManager.removeConnection(connectionId);
@@ -721,10 +721,10 @@ export class RecoveryIntegration extends EventEmitter {
     return {
       ...this.performanceMetrics,
       componentStartupTimes: Object.fromEntries(
-        this.performanceMetrics.componentStartupTimes,
+        this.performanceMetrics.componentStartupTimes
       ),
       integrationLatency: Object.fromEntries(
-        this.performanceMetrics.integrationLatency,
+        this.performanceMetrics.integrationLatency
       ),
       currentMemoryUsage: memUsage,
       timestamp: new Date(),
@@ -835,7 +835,7 @@ export class RecoveryIntegration extends EventEmitter {
     if (validationErrors.length > 0) {
       throw ErrorFactory.createError(
         'configuration',
-        `Configuration validation failed: ${validationErrors.join(', ')}`,
+        `Configuration validation failed: ${validationErrors.join(', ')}`
       );
     }
 
@@ -893,7 +893,7 @@ export class RecoveryIntegration extends EventEmitter {
   /**
    * Export comprehensive system data.
    */
-  exportSystemData(): any {
+  exportSystemData(): unknown {
     return {
       timestamp: new Date(),
       status: this.getSystemStatus(),

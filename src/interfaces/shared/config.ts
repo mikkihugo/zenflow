@@ -112,7 +112,7 @@ export class ConfigurationUtils {
    * @param overrides
    */
   static mergeWithDefaults<T extends Partial<InterfaceConfig>>(
-    overrides: T,
+    overrides: T
   ): T & InterfaceConfig {
     const current = getInterfaceConfig();
     return {
@@ -139,11 +139,11 @@ export class ConfigurationUtils {
     if (
       configOverrides?.verbosity &&
       !['quiet', 'normal', 'verbose', 'debug'].includes(
-        configOverrides?.verbosity,
+        configOverrides?.verbosity
       )
     ) {
       errors.push(
-        'Invalid verbosity. Must be one of: quiet, normal, verbose, debug',
+        'Invalid verbosity. Must be one of: quiet, normal, verbose, debug'
       );
     }
 
@@ -151,12 +151,12 @@ export class ConfigurationUtils {
       const interval = configOverrides?.refreshInterval;
       if (interval < INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL) {
         errors.push(
-          `Refresh interval must be >= ${INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL}ms`,
+          `Refresh interval must be >= ${INTERFACE_CONSTANTS.MIN_REFRESH_INTERVAL}ms`
         );
       }
       if (interval > INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL) {
         errors.push(
-          `Refresh interval must be <= ${INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL}ms`,
+          `Refresh interval must be <= ${INTERFACE_CONSTANTS.MAX_REFRESH_INTERVAL}ms`
         );
       }
     }
@@ -185,7 +185,7 @@ export class ConfigurationUtils {
    * @param theme
    */
   static getColorScheme(
-    theme?: 'dark' | 'light' | 'auto',
+    theme?: 'dark' | 'light' | 'auto'
   ): typeof COLOR_SCHEMES.dark {
     const currentTheme =
       theme || config?.get('interfaces.shared.theme') || 'dark';
@@ -218,7 +218,7 @@ export class ConfigurationUtils {
       if (!result?.valid) {
         logger.error(
           `Failed to update interfaces.shared.${key}:`,
-          result?.errors,
+          result?.errors
         );
         return false;
       }
@@ -240,9 +240,9 @@ export class ConfigurationUtils {
    * @param callback
    */
   static onConfigChange(
-    callback: (config: InterfaceConfig) => void,
+    callback: (config: InterfaceConfig) => void
   ): () => void {
-    const handler = (event: any) => {
+    const handler = (event: unknown) => {
       if (event.path.startsWith('interfaces.shared.')) {
         callback(getInterfaceConfig());
       }

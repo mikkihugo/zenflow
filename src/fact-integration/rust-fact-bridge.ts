@@ -24,7 +24,7 @@ export interface FactProcessingRequest {
   /** Template ID to use */
   templateId: string;
   /** Context data to process */
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   /** Processing options */
   options?: {
     timeout?: number;
@@ -36,7 +36,7 @@ export interface FactProcessingRequest {
 export interface FactProcessingResult {
   templateId: string;
   templateName: string;
-  result: any;
+  result: unknown;
   metadata: {
     processedAt: string;
     priority: string;
@@ -144,7 +144,7 @@ export class RustFactBridge extends EventEmitter {
   async processToolKnowledge(
     toolName: string,
     version: string,
-    knowledgeType: 'docs' | 'snippets' | 'examples' | 'best-practices' = 'docs',
+    knowledgeType: 'docs' | 'snippets' | 'examples' | 'best-practices' = 'docs'
   ): Promise<{
     tool: string;
     version: string;
@@ -173,13 +173,13 @@ export class RustFactBridge extends EventEmitter {
         const githubAnalysis = await this.enhanceWithGitHubKnowledge(
           toolName,
           version,
-          knowledgeType,
+          knowledgeType
         );
         return this.mergeFACTAndGitHubKnowledge(factResult, githubAnalysis);
       } catch (error) {
         console.warn(
           `GitHub enhancement failed for ${toolName}@${version}:`,
-          error,
+          error
         );
         return factResult;
       }
@@ -194,8 +194,8 @@ export class RustFactBridge extends EventEmitter {
   private async enhanceWithGitHubKnowledge(
     toolName: string,
     version: string,
-    knowledgeType: string,
-  ): Promise<any> {
+    knowledgeType: string
+  ): Promise<unknown> {
     // Use GitHub analyzer to get real code examples
     const { GitHubCodeAnalyzer } = await import('./github-code-analyzer.js');
     const analyzer = new GitHubCodeAnalyzer();
@@ -204,7 +204,7 @@ export class RustFactBridge extends EventEmitter {
     if (this.isBeamEcosystemTool(toolName)) {
       const hexAnalysis = await analyzer.analyzeHexPackageRepos(
         toolName,
-        version,
+        version
       );
       return analyzer.generateFACTEntries(toolName, version, hexAnalysis);
     }
@@ -214,15 +214,15 @@ export class RustFactBridge extends EventEmitter {
       analyzer,
       toolName,
       version,
-      knowledgeType,
+      knowledgeType
     );
   }
 
   private async analyzeGeneralToolRepos(
-    analyzer: any,
+    analyzer: unknown,
     toolName: string,
     version: string,
-    knowledgeType: string,
+    knowledgeType: string
   ) {
     // Search for repositories with tool examples
     const searchQueries = [
@@ -232,9 +232,9 @@ export class RustFactBridge extends EventEmitter {
       `${toolName} getting started`,
     ];
 
-    const allSnippets: any[] = [];
-    const allPatterns: any[] = [];
-    const sources: any[] = [];
+    const allSnippets: unknown[] = [];
+    const allPatterns: unknown[] = [];
+    const sources: unknown[] = [];
 
     // This would need GitHub search implementation
     // For now, return structured format
@@ -249,8 +249,8 @@ export class RustFactBridge extends EventEmitter {
   }
 
   private shouldEnhanceWithGitHub(
-    factResult: any,
-    knowledgeType: string,
+    factResult: unknown,
+    knowledgeType: string
   ): boolean {
     // Enhance with GitHub if:
     // 1. No snippets/examples found in FACT
@@ -285,7 +285,7 @@ export class RustFactBridge extends EventEmitter {
     return beamTools.includes(toolName.toLowerCase());
   }
 
-  private mergeFACTAndGitHubKnowledge(factResult: any, githubResult: any): any {
+  private mergeFACTAndGitHubKnowledge(factResult: unknown, githubResult: unknown): unknown {
     return {
       ...factResult,
       snippets: [
@@ -392,7 +392,7 @@ export class RustFactBridge extends EventEmitter {
    */
   private executeCommand(
     command: string,
-    args: string[] = [],
+    args: string[] = []
   ): Promise<{
     stdout: string;
     stderr: string;
@@ -421,14 +421,14 @@ export class RustFactBridge extends EventEmitter {
           resolve({ stdout, stderr, code: code || 0 });
         } else {
           reject(
-            new Error(`Rust FACT process exited with code ${code}: ${stderr}`),
+            new Error(`Rust FACT process exited with code ${code}: ${stderr}`)
           );
         }
       });
 
       child.on('error', (error) => {
         reject(
-          new Error(`Failed to spawn Rust FACT process: ${error.message}`),
+          new Error(`Failed to spawn Rust FACT process: ${error.message}`)
         );
       });
     });

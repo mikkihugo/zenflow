@@ -32,7 +32,7 @@ class MemoryIntegrationTest {
       process.cwd(),
       'test',
       'data',
-      'test-memory-integration.db',
+      'test-memory-integration.db'
     );
   }
 
@@ -156,7 +156,7 @@ class MemoryIntegrationTest {
     // Verify it's in runtime memory
     const runtimeNotifications = this.hooks.sessionData.notifications;
     const foundInRuntime = runtimeNotifications.some(
-      (n) => n.type === notification.type && n.message === notification.message,
+      (n) => n.type === notification.type && n.message === notification.message
     );
 
     if (!foundInRuntime) {
@@ -167,7 +167,7 @@ class MemoryIntegrationTest {
     const dbNotifications =
       await this.hooks.getNotificationsFromDatabase('test-agent');
     const foundInDb = dbNotifications.some(
-      (n) => n.type === notification.type && n.message === notification.message,
+      (n) => n.type === notification.type && n.message === notification.message
     );
 
     if (!foundInDb) {
@@ -195,13 +195,13 @@ class MemoryIntegrationTest {
         progress: 0.75,
         dependencies: ['database-setup', 'auth-implementation'],
       },
-      agent1Id,
+      agent1Id
     );
 
     // Agent 2 retrieves the shared memory
     const sharedMemory = await this.hooks.getSharedMemory(
       'shared-task-status',
-      agent1Id,
+      agent1Id
     );
 
     if (!sharedMemory || sharedMemory.currentTask !== 'building-api') {
@@ -211,7 +211,7 @@ class MemoryIntegrationTest {
     // Verify it's actually in the database
     const dbMemory = await this.persistence.getAgentMemory(
       agent1Id,
-      'shared-task-status',
+      'shared-task-status'
     );
 
     if (!dbMemory || dbMemory.value.currentTask !== 'building-api') {
@@ -249,7 +249,7 @@ class MemoryIntegrationTest {
 
     // Now test MCP tools integration
     const integrated = await this.mcpTools.integrateHookNotifications(
-      this.hooks,
+      this.hooks
     );
 
     if (!integrated) {
@@ -271,7 +271,7 @@ class MemoryIntegrationTest {
     // Verify we can filter by type
     const errorNotifications = await this.mcpTools.getCrossAgentNotifications(
       null,
-      'error',
+      'error'
     );
     const errorFound = errorNotifications.some((n) => n.type === 'error');
 
@@ -327,11 +327,11 @@ class MemoryIntegrationTest {
       await this.hooks.agentCompleteHook(completionData);
 
       const retryAgent = this.hooks.sessionData.agents.get(
-        completionData.agentId,
+        completionData.agentId
       );
       if (!(retryAgent && retryAgent.lastCompletion)) {
         throw new Error(
-          'Agent completion not found in runtime memory after retry',
+          'Agent completion not found in runtime memory after retry'
         );
       }
     }
@@ -339,7 +339,7 @@ class MemoryIntegrationTest {
     // Verify completion is in database
     const dbCompletion = await this.persistence.getAgentMemory(
       completionData.agentId,
-      `completion/${completionData.taskId}`,
+      `completion/${completionData.taskId}`
     );
 
     if (!dbCompletion || dbCompletion.value.taskId !== completionData.taskId) {
@@ -354,7 +354,7 @@ class MemoryIntegrationTest {
 
     // Get the final agent state for validation
     const finalAgent = this.hooks.sessionData.agents.get(
-      completionData.agentId,
+      completionData.agentId
     );
 
     return {
@@ -382,7 +382,7 @@ class MemoryIntegrationTest {
     // Verify it's still in runtime memory
     const runtimeNotifications = this.hooks.sessionData.notifications;
     const found = runtimeNotifications.some(
-      (n) => n.type === 'resilience-test',
+      (n) => n.type === 'resilience-test'
     );
 
     if (!found) {
@@ -426,7 +426,7 @@ class MemoryIntegrationTest {
     const reportPath = path.join(
       process.cwd(),
       'test',
-      'memory-integration-report.json',
+      'memory-integration-report.json'
     );
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
     return report;
@@ -437,19 +437,19 @@ class MemoryIntegrationTest {
 
     // Run all tests
     await this.runTest('Basic Notification Storage', () =>
-      this.testBasicNotificationStorage(),
+      this.testBasicNotificationStorage()
     );
     await this.runTest('Cross-Agent Memory Access', () =>
-      this.testCrossAgentMemoryAccess(),
+      this.testCrossAgentMemoryAccess()
     );
     await this.runTest('MCP-Hook Integration', () =>
-      this.testMCPHookIntegration(),
+      this.testMCPHookIntegration()
     );
     await this.runTest('Agent Completion Coordination', () =>
-      this.testAgentCompletion(),
+      this.testAgentCompletion()
     );
     await this.runTest('Memory System Resilience', () =>
-      this.testMemorySystemResilience(),
+      this.testMemorySystemResilience()
     );
 
     const report = await this.generateReport();

@@ -70,7 +70,7 @@ class NeuralNetwork {
 
   train(
     data: Array<{ input: number[]; output: number[] }>,
-    options: { epochs: number; learningRate?: number },
+    options: { epochs: number; learningRate?: number }
   ) {
     const learningRate = options?.learningRate || 0.5;
     let finalError = 0;

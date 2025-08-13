@@ -39,7 +39,7 @@ class EnhancedLogger implements ILogger {
    *
    * @param config
    */
-  upgradeWithConfig(config: any): void {
+  upgradeWithConfig(config: unknown): void {
     try {
       // This will be called AFTER config system is fully loaded
       const centralConfig = config?.getAll?.();
@@ -53,19 +53,19 @@ class EnhancedLogger implements ILogger {
     }
   }
 
-  debug(message: string, meta?: any): void {
+  debug(message: string, meta?: unknown): void {
     this.bootstrapLogger.debug(message, meta);
   }
 
-  info(message: string, meta?: any): void {
+  info(message: string, meta?: unknown): void {
     this.bootstrapLogger.info(message, meta);
   }
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     this.bootstrapLogger.warn(message, meta);
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     this.bootstrapLogger.error(message, meta);
   }
 }
@@ -91,7 +91,7 @@ export class Logger extends EnhancedLogger {
  * @param config
  * @example
  */
-export function upgradeAllLoggersWithConfig(config: any): void {
+export function upgradeAllLoggersWithConfig(config: unknown): void {
   for (const logger of loggerRegistry.values()) {
     logger.upgradeWithConfig(config);
   }

@@ -7,7 +7,7 @@
 
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import React from 'react';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import {
   Header,
@@ -151,37 +151,18 @@ export const MCPServers: React.FC<MCPServersProps> = ({
     };
 
     const { status, text } = statusMap[server.status];
-    return (
-      <StatusBadge
-        status={status as any}
-        text={text}
-        variant="minimal"
-      />
-    );
+    return <StatusBadge status={status as any} text={text} variant="minimal" />;
   };
 
   const renderServersTable = () => (
-    <Box
-      flexDirection="column"
-      marginBottom={2}
-    >
+    <Box flexDirection="column" marginBottom={2}>
       <Text bold>📋 MCP Servers:</Text>
       <Box marginBottom={1} />
 
       {servers.map((server) => (
-        <Box
-          key={server.name}
-          justifyContent="space-between"
-          marginBottom={1}
-        >
-          <Box
-            flexDirection="column"
-            width="60%"
-          >
-            <Text
-              bold
-              color="cyan"
-            >
+        <Box key={server.name} justifyContent="space-between" marginBottom={1}>
+          <Box flexDirection="column" width="60%">
+            <Text bold color="cyan">
               {server.name}
             </Text>
             <Text dimColor>
@@ -197,20 +178,13 @@ export const MCPServers: React.FC<MCPServersProps> = ({
 
   if (isLoading) {
     return (
-      <Box
-        flexDirection="column"
-        height="100%"
-      >
+      <Box flexDirection="column" height="100%">
         <Header
           title="MCP Servers"
           swarmStatus={swarmStatus}
           showBorder={true}
         />
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          alignItems="center"
-        >
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
           <LoadingSpinner text="Loading MCP servers..." />
         </Box>
       </Box>
@@ -218,24 +192,15 @@ export const MCPServers: React.FC<MCPServersProps> = ({
   }
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       <Header
         title="MCP Servers Management"
         swarmStatus={swarmStatus}
         showBorder={true}
       />
 
-      <Box
-        flexGrow={1}
-        paddingX={2}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2}>
+        <Box flexDirection="column" width="100%">
           {renderServersTable()}
 
           <Text bold>Select an action:</Text>

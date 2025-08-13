@@ -52,7 +52,7 @@ export class MonitoringService extends BaseService implements IService {
     this.initializeAlertSystem();
 
     this.logger.info(
-      `Monitoring service ${this.name} initialized successfully`,
+      `Monitoring service ${this.name} initialized successfully`
     );
   }
 
@@ -121,7 +121,7 @@ export class MonitoringService extends BaseService implements IService {
       if (memoryUsage > 100 * 1024 * 1024) {
         // 100MB threshold
         this.logger.warn(
-          `High memory usage in monitoring service: ${memoryUsage} bytes`,
+          `High memory usage in monitoring service: ${memoryUsage} bytes`
         );
         return false;
       }
@@ -130,7 +130,7 @@ export class MonitoringService extends BaseService implements IService {
     } catch (error) {
       this.logger.error(
         `Health check failed for monitoring service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -138,8 +138,8 @@ export class MonitoringService extends BaseService implements IService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing monitoring operation: ${operation}`);
 
@@ -154,7 +154,7 @@ export class MonitoringService extends BaseService implements IService {
         return this.recordMetric(
           params?.name,
           params?.value,
-          params?.timestamp,
+          params?.timestamp
         ) as T;
 
       case 'create-alert':
@@ -181,7 +181,7 @@ export class MonitoringService extends BaseService implements IService {
       case 'export-metrics':
         return (await this.exportMetrics(
           params?.format,
-          params?.timeRange,
+          params?.timeRange
         )) as T;
 
       default:
@@ -193,8 +193,8 @@ export class MonitoringService extends BaseService implements IService {
   // Monitoring Service Specific Methods
   // ============================================
 
-  private async collectMetrics(source?: string): Promise<any> {
-    const collectedMetrics: any = {};
+  private async collectMetrics(source?: string): Promise<unknown> {
+    const collectedMetrics: unknown = {};
 
     if (source) {
       // Collect from specific source
@@ -227,14 +227,14 @@ export class MonitoringService extends BaseService implements IService {
 
   private getMetrics(
     metricName?: string,
-    timeRange?: { start: number; end: number },
-  ): any {
+    timeRange?: { start: number; end: number }
+  ): unknown {
     if (metricName) {
       const metricData = this.metrics.get(metricName) || [];
 
       if (timeRange) {
         return metricData?.filter(
-          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end,
+          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
         );
       }
 
@@ -242,11 +242,11 @@ export class MonitoringService extends BaseService implements IService {
     }
 
     // Return all metrics
-    const allMetrics: any = {};
+    const allMetrics: unknown = {};
     for (const [name, data] of this.metrics.entries()) {
       if (timeRange) {
         allMetrics[name] = data?.filter(
-          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end,
+          (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
         );
       } else {
         allMetrics[name] = data;
@@ -256,7 +256,7 @@ export class MonitoringService extends BaseService implements IService {
     return allMetrics;
   }
 
-  private recordMetric(name: string, value: any, timestamp?: number): boolean {
+  private recordMetric(name: string, value: unknown, timestamp?: number): boolean {
     if (!name) {
       throw new Error('Metric name is required');
     }
@@ -294,7 +294,7 @@ export class MonitoringService extends BaseService implements IService {
     return true;
   }
 
-  private createAlert(alertConfig: any): any {
+  private createAlert(alertConfig: unknown): unknown {
     const alertId = `alert-${Date.now()}`;
     const alert = {
       id: alertId,
@@ -315,7 +315,7 @@ export class MonitoringService extends BaseService implements IService {
     return alert;
   }
 
-  private updateAlert(alertId: string, config: any): any {
+  private updateAlert(alertId: string, config: unknown): unknown {
     const alert = this.alerts.get(alertId);
     if (!alert) {
       throw new Error(`Alert not found: ${alertId}`);
@@ -336,7 +336,7 @@ export class MonitoringService extends BaseService implements IService {
     return deleted;
   }
 
-  private getAlerts(status?: 'active' | 'inactive' | 'triggered'): any[] {
+  private getAlerts(status?: 'active' | 'inactive' | 'triggered'): unknown[] {
     const alerts = Array.from(this.alerts.values());
 
     if (status) {
@@ -346,7 +346,7 @@ export class MonitoringService extends BaseService implements IService {
     return alerts;
   }
 
-  private async triggerAlert(alertId: string, data?: any): Promise<any> {
+  private async triggerAlert(alertId: string, data?: unknown): Promise<unknown> {
     const alert = this.alerts.get(alertId);
     if (!alert) {
       throw new Error(`Alert not found: ${alertId}`);
@@ -369,7 +369,7 @@ export class MonitoringService extends BaseService implements IService {
     };
   }
 
-  private getMonitoringStats(): any {
+  private getMonitoringStats(): unknown {
     const config = this.config as MonitoringServiceConfig;
 
     return {
@@ -402,8 +402,8 @@ export class MonitoringService extends BaseService implements IService {
 
   private async exportMetrics(
     format: 'json' | 'csv' = 'json',
-    timeRange?: { start: number; end: number },
-  ): Promise<any> {
+    timeRange?: { start: number; end: number }
+  ): Promise<unknown> {
     const metrics = this.getMetrics(undefined, timeRange);
 
     if (format === 'json') {
@@ -484,7 +484,7 @@ export class MonitoringService extends BaseService implements IService {
               'console',
             ],
           });
-        },
+        }
       );
     }
   }
@@ -524,7 +524,7 @@ export class MonitoringService extends BaseService implements IService {
     }
   }
 
-  private evaluateAlert(alert: any): void {
+  private evaluateAlert(alert: unknown): void {
     const metricData = this.metrics.get(alert.metric);
     if (!metricData || metricData.length === 0) {
       return;
@@ -573,8 +573,8 @@ export class MonitoringService extends BaseService implements IService {
     }
   }
 
-  private async sendAlertNotifications(alert: any, data?: any): Promise<any[]> {
-    const notifications: any[] = [];
+  private async sendAlertNotifications(alert: unknown, data?: unknown): Promise<any[]> {
+    const notifications: unknown[] = [];
 
     for (const channel of alert.channels) {
       try {
@@ -591,9 +591,9 @@ export class MonitoringService extends BaseService implements IService {
 
   private async sendNotification(
     channel: string,
-    alert: any,
-    data?: any,
-  ): Promise<any> {
+    alert: unknown,
+    data?: unknown
+  ): Promise<unknown> {
     const message = `Alert: ${alert.name} - ${data?.value} ${alert.condition} ${alert.threshold}`;
 
     switch (channel) {
@@ -627,7 +627,7 @@ export class MonitoringService extends BaseService implements IService {
     return totalSize;
   }
 
-  private convertMetricsToCSV(metrics: any): string {
+  private convertMetricsToCSV(metrics: unknown): string {
     const csvLines: string[] = [];
     csvLines.push('timestamp,metric,value'); // Header
 

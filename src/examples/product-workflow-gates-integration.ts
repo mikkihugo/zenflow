@@ -34,7 +34,7 @@ class MockMemorySystem implements Partial<MemorySystem> {
     logger.info('Mock memory system initialized');
   }
 
-  async store(key: string, data: any, namespace?: string): Promise<void> {
+  async store(key: string, data: unknown, namespace?: string): Promise<void> {
     const fullKey = namespace ? `${namespace}:${key}` : key;
     this.storage.set(fullKey, data);
     logger.debug('Stored data', {
@@ -43,16 +43,16 @@ class MockMemorySystem implements Partial<MemorySystem> {
     });
   }
 
-  async retrieve(key: string, namespace?: string): Promise<any> {
+  async retrieve(key: string, namespace?: string): Promise<unknown> {
     const fullKey = namespace ? `${namespace}:${key}` : key;
     return this.storage.get(fullKey) || null;
   }
 
   async search(
     pattern: string,
-    namespace?: string,
-  ): Promise<Record<string, any>> {
-    const results: Record<string, any> = {};
+    namespace?: string
+  ): Promise<Record<string, unknown>> {
+    const results: Record<string, unknown> = {};
     const searchPattern = namespace ? `${namespace}:${pattern}` : pattern;
 
     for (const [key, value] of this.storage) {
@@ -133,7 +133,7 @@ export class ProductWorkflowGatesIntegrationDemo {
         defaultTimeout: 300000,
         enableMetrics: true,
         enablePersistence: true,
-      },
+      }
     );
   }
 
@@ -181,12 +181,12 @@ export class ProductWorkflowGatesIntegrationDemo {
     // Show gate definitions
     const gateDefinitions = this.engine.getGateDefinitions();
     console.log(
-      `🚪 Gate Definitions: ${gateDefinitions.size} gates configured`,
+      `🚪 Gate Definitions: ${gateDefinitions.size} gates configured`
     );
 
     for (const [stepName, gate] of gateDefinitions) {
       console.log(
-        `   • ${stepName}: ${gate.title} (${gate.priority} priority)`,
+        `   • ${stepName}: ${gate.title} (${gate.priority} priority)`
       );
     }
 
@@ -197,7 +197,7 @@ export class ProductWorkflowGatesIntegrationDemo {
     // Show AGUI adapter statistics
     const stats = this.engine.getGateStatistics();
     console.log(
-      `📈 AGUI Statistics: ${stats.totalDecisionAudits} decisions logged, ${stats.activeGates} active gates`,
+      `📈 AGUI Statistics: ${stats.totalDecisionAudits} decisions logged, ${stats.activeGates} active gates`
     );
 
     console.log('='.repeat(80) + '\n');
@@ -246,7 +246,7 @@ export class ProductWorkflowGatesIntegrationDemo {
           canExecuteSteps: ['*'],
           canAccessResources: ['*'],
         },
-      },
+      }
     );
 
     if (!workflowResult.success) {
@@ -283,13 +283,13 @@ export class ProductWorkflowGatesIntegrationDemo {
 
         // Display progress
         console.log(
-          `⏱️  Iteration ${iterationCount}: Status = ${workflowStatus.status}`,
+          `⏱️  Iteration ${iterationCount}: Status = ${workflowStatus.status}`
         );
         console.log(
-          `   Current Step: ${workflowStatus.productFlow.currentStep}`,
+          `   Current Step: ${workflowStatus.productFlow.currentStep}`
         );
         console.log(
-          `   Completed Steps: ${workflowStatus.productFlow.completedSteps.length}`,
+          `   Completed Steps: ${workflowStatus.productFlow.completedSteps.length}`
         );
         console.log(`   Progress: ${workflowStatus.progress.percentage}%`);
 
@@ -301,7 +301,7 @@ export class ProductWorkflowGatesIntegrationDemo {
           // Simulate gate decisions for demo
           for (const [gateId, gateRequest] of pendingGates) {
             console.log(
-              `      Gate: ${gateRequest.workflowContext.stepName} - ${gateRequest.question}`,
+              `      Gate: ${gateRequest.workflowContext.stepName} - ${gateRequest.question}`
             );
 
             // Auto-approve gates for demo (in real scenario, this would be human decisions)
@@ -348,15 +348,15 @@ export class ProductWorkflowGatesIntegrationDemo {
 
   private async simulateGateDecision(
     gateId: string,
-    gateRequest: any,
+    gateRequest: unknown
   ): Promise<void> {
     console.log(`   🤖 Auto-approving gate: ${gateId}`);
     console.log(`      Question: ${gateRequest.question}`);
     console.log(
-      `      Business Impact: ${gateRequest.workflowContext.businessImpact}`,
+      `      Business Impact: ${gateRequest.workflowContext.businessImpact}`
     );
     console.log(
-      `      Stakeholders: ${gateRequest.workflowContext.stakeholders.join(', ')}`,
+      `      Stakeholders: ${gateRequest.workflowContext.stakeholders.join(', ')}`
     );
 
     // In a real scenario, this would be handled by the AGUI system
@@ -429,7 +429,7 @@ export async function runProductWorkflowGatesDemo(): Promise<void> {
 export async function runInteractiveDemo(): Promise<void> {
   console.log('\n🎯 Interactive Product Workflow Gates Demo');
   console.log(
-    'This demo will show you each step of the workflow with gate integration.\n',
+    'This demo will show you each step of the workflow with gate integration.\n'
   );
 
   const demo = new ProductWorkflowGatesIntegrationDemo();

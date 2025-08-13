@@ -14,8 +14,8 @@ async function main() {
   console.warn(chalk.blue.bold('🏗️ Claude Code Flow Infrastructure Test Suite'));
   console.warn(
     chalk.gray(
-      'Testing critical infrastructure components for 92/100 quality score\n',
-    ),
+      'Testing critical infrastructure components for 92/100 quality score\n'
+    )
   );
 
   try {
@@ -42,7 +42,7 @@ async function main() {
             : ''
         : `(${result.error})`;
       console.warn(
-        `${component.toUpperCase().padEnd(20)} ${status} ${chalk.gray(details)}`,
+        `${component.toUpperCase().padEnd(20)} ${status} ${chalk.gray(details)}`
       );
     }
 
@@ -76,7 +76,7 @@ async function main() {
                 ? chalk.yellow
                 : chalk.green;
         console.warn(
-          `\n  ${priorityColor(rec.priority)} - ${chalk.bold(rec.component)}`,
+          `\n  ${priorityColor(rec.priority)} - ${chalk.bold(rec.component)}`
         );
         console.warn(`    Issue: ${rec.issue}`);
         console.warn(`    Action: ${chalk.cyan(rec.action)}`);

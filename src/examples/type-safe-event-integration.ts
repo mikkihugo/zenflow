@@ -87,27 +87,27 @@ export class EventDrivenCoordinationSystem {
     // Register handlers for agent lifecycle events
     this.eventBus.registerHandler(
       'agent.created',
-      this.handleAgentCreated.bind(this),
+      this.handleAgentCreated.bind(this)
     );
     this.eventBus.registerHandler(
       'agent.destroyed',
-      this.handleAgentDestroyed.bind(this),
+      this.handleAgentDestroyed.bind(this)
     );
 
     // Register handlers for task management events
     this.eventBus.registerHandler(
       'task.assigned',
-      this.handleTaskAssigned.bind(this),
+      this.handleTaskAssigned.bind(this)
     );
     this.eventBus.registerHandler(
       'task.completed',
-      this.handleTaskCompleted.bind(this),
+      this.handleTaskCompleted.bind(this)
     );
 
     // Register handlers for swarm state changes
     this.eventBus.registerHandler(
       'swarm.state.changed',
-      this.handleSwarmStateChanged.bind(this),
+      this.handleSwarmStateChanged.bind(this)
     );
 
     logger.info('Event-driven coordination system initialized');
@@ -146,14 +146,14 @@ export class EventDrivenCoordinationSystem {
         source: 'coordination-system',
         priority: EventPriority.HIGH,
         tags: [`agent-type:${agentConfig.type}`, 'lifecycle:creation'],
-      },
+      }
     );
 
     const result = await this.eventBus.emitEvent(agentCreatedEvent);
 
     if (!result.success) {
       throw new Error(
-        `Failed to emit agent creation event: ${result.error?.message}`,
+        `Failed to emit agent creation event: ${result.error?.message}`
       );
     }
 
@@ -198,7 +198,7 @@ export class EventDrivenCoordinationSystem {
         correlationId,
         source: 'task-coordinator',
         priority: EventPriority.NORMAL,
-      },
+      }
     );
 
     // Route the event from workflows domain to coordination domain
@@ -206,7 +206,7 @@ export class EventDrivenCoordinationSystem {
       taskAssignedEvent,
       Domain.WORKFLOWS,
       Domain.COORDINATION,
-      'task_assignment',
+      'task_assignment'
     );
 
     if (!result.success) {
@@ -245,7 +245,7 @@ export class EventDrivenCoordinationSystem {
       validator.trackCrossings(
         Domain.CORE,
         Domain.COORDINATION,
-        'agent_creation',
+        'agent_creation'
       );
 
       // Additional business logic would go here
@@ -275,13 +275,13 @@ export class EventDrivenCoordinationSystem {
               recoverable: true,
             },
           },
-          { correlationId: event.metadata?.correlationId },
-        ),
+          { correlationId: event.metadata?.correlationId }
+        )
       );
     }
   }
 
-  private async handleAgentDestroyed(event: any): Promise<void> {
+  private async handleAgentDestroyed(event: unknown): Promise<void> {
     const { agentId, reason } = event.payload;
 
     logger.info('Processing agent destruction', { agentId, reason });
@@ -327,7 +327,7 @@ export class EventDrivenCoordinationSystem {
           correlationId: event.metadata?.correlationId,
           causationId: event.id,
           source: 'task-executor',
-        },
+        }
       );
 
       await this.eventBus.emitEvent(taskCompletedEvent);
@@ -350,7 +350,7 @@ export class EventDrivenCoordinationSystem {
     // Trigger next task in workflow if applicable
   }
 
-  private async handleSwarmStateChanged(event: any): Promise<void> {
+  private async handleSwarmStateChanged(event: unknown): Promise<void> {
     const { swarmId, previousState, newState, agentCount } = event.payload;
 
     logger.info('Processing swarm state change', {
@@ -377,7 +377,7 @@ export class AGUIValidationSystem {
     string,
     {
       requestId: string;
-      context: any;
+      context: unknown;
       timeout: NodeJS.Timeout;
       resolve: (approved: boolean) => void;
     }
@@ -389,19 +389,19 @@ export class AGUIValidationSystem {
     // Register AGUI event handlers
     this.eventBus.registerHandler(
       'human.validation.requested',
-      this.handleValidationRequest.bind(this),
+      this.handleValidationRequest.bind(this)
     );
     this.eventBus.registerHandler(
       'human.validation.completed',
-      this.handleValidationCompleted.bind(this),
+      this.handleValidationCompleted.bind(this)
     );
     this.eventBus.registerHandler(
       'agui.gate.opened',
-      this.handleGateOpened.bind(this),
+      this.handleGateOpened.bind(this)
     );
     this.eventBus.registerHandler(
       'agui.gate.closed',
-      this.handleGateClosed.bind(this),
+      this.handleGateClosed.bind(this)
     );
 
     logger.info('AGUI validation system initialized');
@@ -410,13 +410,13 @@ export class AGUIValidationSystem {
   // Request human validation with type safety
   async requestHumanValidation(
     validationType: 'approval' | 'selection' | 'input' | 'review',
-    context: any,
+    context: unknown,
     options: {
       priority?: EventPriority;
       timeout?: number;
       correlationId?: string;
-    } = {},
-  ): Promise<{ approved: boolean; input?: any; feedback?: string }> {
+    } = {}
+  ): Promise<{ approved: boolean; input?: unknown; feedback?: string }> {
     const requestId = `val-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const correlationId = options.correlationId || createCorrelationId();
     const timeout = options.timeout || 300000; // 5 minutes default
@@ -445,7 +445,7 @@ export class AGUIValidationSystem {
         correlationId,
         source: 'agui-validation-system',
         priority: options.priority || EventPriority.NORMAL,
-      },
+      }
     );
 
     // Emit the validation request
@@ -453,7 +453,7 @@ export class AGUIValidationSystem {
 
     if (!result.success) {
       throw new Error(
-        `Failed to request human validation: ${result.error?.message}`,
+        `Failed to request human validation: ${result.error?.message}`
       );
     }
 
@@ -479,9 +479,9 @@ export class AGUIValidationSystem {
   // AGUI Gate Pattern for controlled operations
   async openAGUIGate(
     gateType: string,
-    context: any,
-    requiresApproval: boolean = true,
-  ): Promise<{ approved: boolean; duration: number; humanInput?: any }> {
+    context: unknown,
+    requiresApproval: boolean = true
+  ): Promise<{ approved: boolean; duration: number; humanInput?: unknown }> {
     const gateId = `gate-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
     const correlationId = createCorrelationId();
 
@@ -504,7 +504,7 @@ export class AGUIValidationSystem {
           context,
         },
       },
-      { correlationId, source: 'agui-gate-system' },
+      { correlationId, source: 'agui-gate-system' }
     );
 
     const result = await this.eventBus.emitEvent(gateOpenedEvent);
@@ -519,7 +519,7 @@ export class AGUIValidationSystem {
         gateId,
         true,
         0,
-        correlationId,
+        correlationId
       );
       return closeResult;
     }
@@ -537,8 +537,8 @@ export class AGUIValidationSystem {
     approved: boolean,
     duration: number,
     correlationId: string,
-    humanInput?: any,
-  ): Promise<{ approved: boolean; duration: number; humanInput?: any }> {
+    humanInput?: unknown
+  ): Promise<{ approved: boolean; duration: number; humanInput?: unknown }> {
     const gateClosedEvent: AGUIGateClosedEvent = createEvent(
       'agui.gate.closed',
       Domain.INTERFACES,
@@ -550,7 +550,7 @@ export class AGUIValidationSystem {
           humanInput,
         },
       },
-      { correlationId, source: 'agui-gate-system' },
+      { correlationId, source: 'agui-gate-system' }
     );
 
     await this.eventBus.emitEvent(gateClosedEvent);
@@ -560,7 +560,7 @@ export class AGUIValidationSystem {
 
   // Event handlers
   private async handleValidationRequest(
-    event: HumanValidationRequestedEvent,
+    event: HumanValidationRequestedEvent
   ): Promise<void> {
     const { requestId, validationType, context, priority } = event.payload;
 
@@ -593,7 +593,7 @@ export class AGUIValidationSystem {
           correlationId: event.metadata?.correlationId,
           causationId: event.id,
           source: 'human-operator',
-        },
+        }
       );
 
       await this.eventBus.emitEvent(completedEvent);
@@ -601,7 +601,7 @@ export class AGUIValidationSystem {
   }
 
   private async handleValidationCompleted(
-    event: HumanValidationCompletedEvent,
+    event: HumanValidationCompletedEvent
   ): Promise<void> {
     const { requestId, approved, feedback } = event.payload;
 
@@ -663,19 +663,19 @@ export class CrossDomainWorkflowOrchestrator {
     // Register workflow event handlers
     this.eventBus.registerHandler(
       'workflow.started',
-      this.handleWorkflowStarted.bind(this),
+      this.handleWorkflowStarted.bind(this)
     );
     this.eventBus.registerHandler(
       'workflow.completed',
-      this.handleWorkflowCompleted.bind(this),
+      this.handleWorkflowCompleted.bind(this)
     );
     this.eventBus.registerHandler(
       'workflow.failed',
-      this.handleWorkflowFailed.bind(this),
+      this.handleWorkflowFailed.bind(this)
     );
     this.eventBus.registerHandler(
       'workflow.step.completed',
-      this.handleWorkflowStepCompleted.bind(this),
+      this.handleWorkflowStepCompleted.bind(this)
     );
 
     logger.info('Cross-domain workflow orchestrator initialized');
@@ -685,8 +685,8 @@ export class CrossDomainWorkflowOrchestrator {
   async executeComplexWorkflow(
     workflowId: string,
     definition: WorkflowDefinition,
-    context: WorkflowContext,
-  ): Promise<{ success: boolean; result?: any; error?: Error }> {
+    context: WorkflowContext
+  ): Promise<{ success: boolean; result?: unknown; error?: Error }> {
     const correlationId = createCorrelationId();
 
     logger.info('Starting complex workflow execution', {
@@ -707,7 +707,7 @@ export class CrossDomainWorkflowOrchestrator {
             startTime: new Date(),
           },
         },
-        { correlationId, source: 'workflow-orchestrator' },
+        { correlationId, source: 'workflow-orchestrator' }
       );
 
       let result = await this.eventBus.emitEvent(workflowStartedEvent);
@@ -726,14 +726,14 @@ export class CrossDomainWorkflowOrchestrator {
             agentCount: 2,
           },
         },
-        { correlationId, causationId: workflowStartedEvent.id },
+        { correlationId, causationId: workflowStartedEvent.id }
       );
 
       result = await this.eventBus.routeCrossDomainEvent(
         agentAllocationEvent,
         Domain.WORKFLOWS,
         Domain.COORDINATION,
-        'agent_allocation',
+        'agent_allocation'
       );
 
       if (!result.success) {
@@ -753,19 +753,19 @@ export class CrossDomainWorkflowOrchestrator {
             timeout: 30000,
           },
         },
-        { correlationId },
+        { correlationId }
       );
 
       result = await this.eventBus.routeCrossDomainEvent(
         validationEvent,
         Domain.WORKFLOWS,
         Domain.INTERFACES,
-        'human_validation',
+        'human_validation'
       );
 
       if (!result.success) {
         throw new Error(
-          `Failed to request validation: ${result.error?.message}`,
+          `Failed to request validation: ${result.error?.message}`
         );
       }
 
@@ -780,14 +780,14 @@ export class CrossDomainWorkflowOrchestrator {
             parameters: { accuracy: 0.95, speed: 'high' },
           },
         },
-        { correlationId },
+        { correlationId }
       );
 
       result = await this.eventBus.routeCrossDomainEvent(
         neuralOptimizationEvent,
         Domain.WORKFLOWS,
         Domain.NEURAL,
-        'neural_optimization',
+        'neural_optimization'
       );
 
       // 5. Store results in database domain
@@ -801,14 +801,14 @@ export class CrossDomainWorkflowOrchestrator {
             collection: 'workflow-results',
           },
         },
-        { correlationId },
+        { correlationId }
       );
 
       await this.eventBus.routeCrossDomainEvent(
         dataStorageEvent,
         Domain.WORKFLOWS,
         Domain.DATABASE,
-        'result_storage',
+        'result_storage'
       );
 
       logger.info('Complex workflow completed successfully', {
@@ -835,7 +835,7 @@ export class CrossDomainWorkflowOrchestrator {
             failedStep: 0,
           },
         },
-        { correlationId },
+        { correlationId }
       );
 
       await this.eventBus.emitEvent(failureEvent);
@@ -849,7 +849,7 @@ export class CrossDomainWorkflowOrchestrator {
 
   // Event handlers for workflow orchestration
   private async handleWorkflowStarted(
-    event: WorkflowStartedEvent,
+    event: WorkflowStartedEvent
   ): Promise<void> {
     const { workflowId, definition, startTime } = event.payload;
 
@@ -864,7 +864,7 @@ export class CrossDomainWorkflowOrchestrator {
   }
 
   private async handleWorkflowCompleted(
-    event: WorkflowCompletedEvent,
+    event: WorkflowCompletedEvent
   ): Promise<void> {
     const { workflowId, result, duration } = event.payload;
 
@@ -880,7 +880,7 @@ export class CrossDomainWorkflowOrchestrator {
   }
 
   private async handleWorkflowFailed(
-    event: WorkflowFailedEvent,
+    event: WorkflowFailedEvent
   ): Promise<void> {
     const { workflowId, error, failedStep } = event.payload;
 
@@ -897,7 +897,7 @@ export class CrossDomainWorkflowOrchestrator {
   }
 
   private async handleWorkflowStepCompleted(
-    event: WorkflowStepCompletedEvent,
+    event: WorkflowStepCompletedEvent
   ): Promise<void> {
     const { workflowId, stepIndex, stepResult } = event.payload;
 
@@ -933,7 +933,7 @@ export class EventSystemAnalytics {
       {
         priority: -1, // Low priority so it runs after business logic
         trackMetrics: false, // Don't track metrics for metrics collection
-      },
+      }
     );
 
     // Set up periodic metrics reporting
@@ -989,8 +989,8 @@ export class EventSystemAnalytics {
 
   // Get comprehensive analytics report
   getAnalyticsReport(): {
-    metrics: any;
-    performanceStats: any;
+    metrics: unknown;
+    performanceStats: unknown;
     eventHistory: BaseEvent[];
     recommendations: string[];
   } {
@@ -1003,20 +1003,20 @@ export class EventSystemAnalytics {
     // Generate recommendations based on metrics
     if (metrics.failureRate > 0.05) {
       recommendations.push(
-        'High failure rate detected. Consider reviewing error handling.',
+        'High failure rate detected. Consider reviewing error handling.'
       );
     }
 
     if (metrics.averageProcessingTime > 1000) {
       recommendations.push(
-        'High average processing time. Consider optimizing handlers.',
+        'High average processing time. Consider optimizing handlers.'
       );
     }
 
     if (metrics.memoryUsage > 50000000) {
       // 50MB
       recommendations.push(
-        'High memory usage. Consider reducing event history size.',
+        'High memory usage. Consider reducing event history size.'
       );
     }
 
@@ -1069,7 +1069,7 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     const validationResult = await aguiSystem.requestHumanValidation(
       'approval',
       { action: 'deploy', environment: 'demo' },
-      { priority: EventPriority.HIGH, timeout: 10000 },
+      { priority: EventPriority.HIGH, timeout: 10000 }
     );
 
     logger.info('Human validation result', { validationResult });
@@ -1078,7 +1078,7 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     const gateResult = await aguiSystem.openAGUIGate(
       'deployment-gate',
       { target: 'demo-environment' },
-      true,
+      true
     );
 
     logger.info('AGUI gate result', { gateResult });
@@ -1098,7 +1098,7 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     const workflowResult = await workflowOrchestrator.executeComplexWorkflow(
       'demo-workflow',
       workflowDefinition,
-      workflowContext,
+      workflowContext
     );
 
     logger.info('Workflow execution result', { workflowResult });
@@ -1115,7 +1115,7 @@ export async function demonstrateCompleteIntegration(): Promise<void> {
     await eventBus.shutdown();
 
     logger.info(
-      'Complete event system integration demonstration completed successfully',
+      'Complete event system integration demonstration completed successfully'
     );
   } catch (error) {
     logger.error('Integration demonstration failed', {

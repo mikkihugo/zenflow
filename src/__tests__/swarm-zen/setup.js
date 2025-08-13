@@ -63,7 +63,7 @@ if (typeof WebAssembly === 'undefined') {
         instance: {
           exports: {},
         },
-      }),
+      })
     ),
     Module: vi.fn(),
     Instance: vi.fn(),

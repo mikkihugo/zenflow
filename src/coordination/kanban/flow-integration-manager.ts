@@ -332,7 +332,7 @@ export class FlowIntegrationManager extends EventEmitter {
    * Integrate with specific level orchestrator
    */
   private async integrateLevelOrchestrator(
-    level: FlowIntegrationLevel,
+    level: FlowIntegrationLevel
   ): Promise<void> {
     try {
       // Dynamic import of orchestrator
@@ -372,7 +372,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private async addIntegrationPoint(
     orchestrator: unknown,
     point: IntegrationPoint,
-    level: string,
+    level: string
   ): Promise<void> {
     try {
       switch (point.type) {
@@ -403,7 +403,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private async integrateWIPManagement(
     orchestrator: unknown,
     point: IntegrationPoint,
-    level: string,
+    level: string
   ): Promise<void> {
     // Add WIP management hooks to orchestrator methods
     for (const method of point.targetMethods) {
@@ -435,7 +435,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private async integrateBottleneckDetection(
     orchestrator: unknown,
     point: IntegrationPoint,
-    level: string,
+    level: string
   ): Promise<void> {
     // Add bottleneck monitoring to orchestrator methods
     for (const method of point.targetMethods) {
@@ -484,7 +484,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private async integrateMetricsCollection(
     orchestrator: unknown,
     point: IntegrationPoint,
-    level: string,
+    level: string
   ): Promise<void> {
     // Add metrics collection hooks
     for (const method of point.targetMethods) {
@@ -518,7 +518,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private async integrateResourceOptimization(
     orchestrator: unknown,
     point: IntegrationPoint,
-    level: string,
+    level: string
   ): Promise<void> {
     // Add resource tracking to orchestrator methods
     for (const method of point.targetMethods) {
@@ -536,7 +536,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
           if (!resourceCheck.available) {
             console.log(
-              `Resources not available for ${method}, optimizing allocation`,
+              `Resources not available for ${method}, optimizing allocation`
             );
             await this.resourceManager.optimizeResourceAllocation(level);
           }
@@ -562,7 +562,7 @@ export class FlowIntegrationManager extends EventEmitter {
    */
   private async enableLevelMonitoring(
     level: string,
-    orchestrator: unknown,
+    orchestrator: unknown
   ): Promise<void> {
     // Set up monitoring for the specific level
     setInterval(async () => {
@@ -580,7 +580,7 @@ export class FlowIntegrationManager extends EventEmitter {
    */
   private async enableLevelOptimization(
     level: string,
-    orchestrator: unknown,
+    orchestrator: unknown
   ): Promise<void> {
     // Set up optimization for the specific level
     const optimization: ActiveOptimization = {
@@ -669,12 +669,12 @@ export class FlowIntegrationManager extends EventEmitter {
         flowStatus,
         bottleneckStatus,
         metricsStatus,
-        resourceStatus,
+        resourceStatus
       );
 
       // Get active bottlenecks
       const bottlenecks = this.mapBottlenecks(
-        bottleneckStatus.activeBottlenecks,
+        bottleneckStatus.activeBottlenecks
       );
 
       // Get unified resource status
@@ -684,7 +684,7 @@ export class FlowIntegrationManager extends EventEmitter {
       // Calculate overall health
       const overallHealth = this.calculateOverallHealth(
         unifiedMetrics,
-        bottlenecks,
+        bottlenecks
       );
 
       return {
@@ -780,10 +780,10 @@ export class FlowIntegrationManager extends EventEmitter {
 
       // Calculate overall status
       const failedTests = validationResults.results.filter(
-        (r) => r.status === 'failed',
+        (r) => r.status === 'failed'
       );
       const warningTests = validationResults.results.filter(
-        (r) => r.status === 'warning',
+        (r) => r.status === 'warning'
       );
 
       if (failedTests.length > 0) {
@@ -936,7 +936,7 @@ export class FlowIntegrationManager extends EventEmitter {
         issues,
         recommendations: this.generateOptimizationRecommendations(
           wipResult,
-          issues,
+          issues
         ),
         executionTime,
       };
@@ -989,7 +989,7 @@ export class FlowIntegrationManager extends EventEmitter {
       // Validate detection accuracy
       const detectionAccuracy = this.validateBottleneckDetection(
         simulatedBottleneck,
-        detectionResult,
+        detectionResult
       );
 
       // Test resolution
@@ -1025,7 +1025,7 @@ export class FlowIntegrationManager extends EventEmitter {
         issues,
         recommendations: this.generateBottleneckRecommendations(
           detectionResult,
-          issues,
+          issues
         ),
         executionTime,
       };
@@ -1089,7 +1089,7 @@ export class FlowIntegrationManager extends EventEmitter {
       const accuracy = this.validateResourceManagement(
         allocationResult,
         scalingResult,
-        optimizationResult,
+        optimizationResult
       );
 
       // Check for issues
@@ -1117,7 +1117,7 @@ export class FlowIntegrationManager extends EventEmitter {
         issues,
         recommendations: this.generateResourceRecommendations(
           scalingResult,
-          issues,
+          issues
         ),
         executionTime,
       };
@@ -1187,7 +1187,7 @@ export class FlowIntegrationManager extends EventEmitter {
         issues,
         recommendations: this.generateResilienceRecommendations(
           accuracy,
-          issues,
+          issues
         ),
         executionTime,
       };
@@ -1264,7 +1264,7 @@ export class FlowIntegrationManager extends EventEmitter {
         issues,
         recommendations: this.generateLoadTestRecommendations(
           loadTestResult,
-          issues,
+          issues
         ),
         executionTime,
       };
@@ -1305,7 +1305,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private async queueWorkItem(
     level: string,
     method: string,
-    args: unknown[],
+    args: unknown[]
   ): Promise<unknown> {
     // Implementation for queuing work items when WIP limits are reached
     return new Promise((resolve) => {
@@ -1315,7 +1315,7 @@ export class FlowIntegrationManager extends EventEmitter {
     });
   }
 
-  private sanitizeResult(result: unknown): any {
+  private sanitizeResult(result: unknown): unknown {
     // Sanitize result for metrics collection
     if (typeof result === 'object' && result !== null) {
       return { type: typeof result, keys: Object.keys(result).length };
@@ -1337,7 +1337,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private async collectLevelMetrics(
     level: string,
-    orchestrator: unknown,
+    orchestrator: unknown
   ): Promise<unknown> {
     // Collect metrics for specific level
     return {
@@ -1351,7 +1351,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private async analyzeLevelHealth(
     level: string,
-    metrics: unknown,
+    metrics: unknown
   ): Promise<void> {
     // Analyze health of specific level
     if (metrics.efficiency < 0.7) {
@@ -1368,7 +1368,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private async runLevelOptimization(
     optimization: ActiveOptimization,
-    orchestrator: unknown,
+    orchestrator: unknown
   ): Promise<void> {
     // Run optimization for specific level
     const interval = setInterval(async () => {
@@ -1415,7 +1415,7 @@ export class FlowIntegrationManager extends EventEmitter {
   }
 
   private calculateUnifiedResourceStatus(
-    resourceStatus: unknown,
+    resourceStatus: unknown
   ): UnifiedResourceStatus {
     // Calculate unified resource status
     return {
@@ -1430,7 +1430,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private calculateOverallHealth(
     metrics: UnifiedPerformanceMetrics,
-    bottlenecks: FlowBottleneck[],
+    bottlenecks: FlowBottleneck[]
   ): number {
     // Calculate overall system health score
     const metricsScore =
@@ -1440,7 +1440,7 @@ export class FlowIntegrationManager extends EventEmitter {
   }
 
   private async checkPerformanceThresholds(
-    metrics: UnifiedPerformanceMetrics,
+    metrics: UnifiedPerformanceMetrics
   ): Promise<void> {
     // Check if performance metrics exceed thresholds
     const thresholds = this.config.performanceThresholds;
@@ -1535,7 +1535,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private validateBottleneckDetection(
     simulated: unknown,
-    detected: unknown,
+    detected: unknown
   ): number {
     return detected && detected.bottlenecks?.length > 0 ? 0.92 : 0.4;
   }
@@ -1543,7 +1543,7 @@ export class FlowIntegrationManager extends EventEmitter {
   private validateResourceManagement(
     allocation: unknown,
     scaling: unknown,
-    optimization: unknown,
+    optimization: unknown
   ): number {
     let score = 0;
     if (allocation) score += 0.33;
@@ -1554,7 +1554,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private generateOptimizationRecommendations(
     result: unknown,
-    issues: TestIssue[],
+    issues: TestIssue[]
   ): string[] {
     const recommendations = ['Monitor WIP optimization effectiveness'];
     if (issues.length > 0) {
@@ -1565,7 +1565,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private generateBottleneckRecommendations(
     result: unknown,
-    issues: TestIssue[],
+    issues: TestIssue[]
   ): string[] {
     const recommendations = ['Continue monitoring bottleneck patterns'];
     if (issues.length > 0) {
@@ -1576,7 +1576,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private generateResourceRecommendations(
     result: unknown,
-    issues: TestIssue[],
+    issues: TestIssue[]
   ): string[] {
     const recommendations = ['Monitor resource utilization trends'];
     if (issues.length > 0) {
@@ -1587,7 +1587,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private generateResilienceRecommendations(
     accuracy: number,
-    issues: TestIssue[],
+    issues: TestIssue[]
   ): string[] {
     const recommendations = ['Maintain current resilience measures'];
     if (accuracy < 0.8) {
@@ -1598,7 +1598,7 @@ export class FlowIntegrationManager extends EventEmitter {
 
   private generateLoadTestRecommendations(
     result: unknown,
-    issues: TestIssue[],
+    issues: TestIssue[]
   ): string[] {
     const recommendations = ['Monitor system performance under normal load'];
     if (issues.length > 0) {

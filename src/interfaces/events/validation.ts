@@ -51,7 +51,7 @@ export interface ValidationResult {
     validator: string;
     timestamp: Date;
     version: string;
-    context: Record<string, any>;
+    context: Record<string, unknown>;
   };
 }
 
@@ -84,7 +84,7 @@ export interface ValidationError {
   suggestion?: string;
 
   /** Error context */
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 /**
@@ -106,7 +106,7 @@ export interface ValidationWarning {
   impact: 'low' | 'medium' | 'high';
 
   /** Warning context */
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 /**
@@ -149,7 +149,7 @@ export interface EventTypeSchema {
     {
       type: 'string' | 'number' | 'boolean' | 'object' | 'array';
       format?: string;
-      enum?: any[];
+      enum?: unknown[];
       minimum?: number;
       maximum?: number;
       pattern?: string;
@@ -264,7 +264,7 @@ export class UELValidationFramework {
    */
   validateEventType<T extends SystemEvent>(
     event: T,
-    schema?: EventTypeSchema,
+    schema?: EventTypeSchema
   ): ValidationResult {
     const startTime = Date.now();
     const errors: ValidationError[] = [];
@@ -292,13 +292,13 @@ export class UELValidationFramework {
 
         // Validate property types
         for (const [property, definition] of Object.entries(
-          eventSchema.properties,
+          eventSchema.properties
         )) {
           if (property in event) {
             const value = (event as any)[property];
             const isValidType = this.validatePropertyType(
               value,
-              definition.type,
+              definition.type
             );
 
             if (!isValidType) {
@@ -363,7 +363,7 @@ export class UELValidationFramework {
         event,
         errors,
         warnings,
-        recommendations,
+        recommendations
       );
 
       const validationTime = Date.now() - startTime;
@@ -372,7 +372,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical' || e.severity === 'high',
+            (e) => e.severity === 'critical' || e.severity === 'high'
           ).length === 0,
         score,
         errors,
@@ -526,7 +526,7 @@ export class UELValidationFramework {
    */
   async validateSystemHealth(
     eventManager: EventManager,
-    config?: Partial<HealthValidationConfig>,
+    config?: Partial<HealthValidationConfig>
   ): Promise<ValidationResult> {
     const startTime = Date.now();
     const errors: ValidationError[] = [];
@@ -541,8 +541,8 @@ export class UELValidationFramework {
         new Promise<never>((_, reject) =>
           setTimeout(
             () => reject(new Error('Health check timeout')),
-            healthConfig?.timeout,
-          ),
+            healthConfig?.timeout
+          )
         ),
       ]);
 
@@ -624,7 +624,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical' || e.severity === 'high',
+            (e) => e.severity === 'critical' || e.severity === 'high'
           ).length === 0,
         score,
         errors,
@@ -686,7 +686,7 @@ export class UELValidationFramework {
   async validateIntegration(
     eventManager: EventManager,
     registry: EventRegistry,
-    config?: Partial<IntegrationValidationConfig>,
+    config?: Partial<IntegrationValidationConfig>
   ): Promise<ValidationResult> {
     const startTime = Date.now();
     const errors: ValidationError[] = [];
@@ -729,7 +729,7 @@ export class UELValidationFramework {
       // Validate factory coverage
       const factoryTypes = registry.listFactoryTypes();
       const missingFactories = Object.values(EventManagerTypes).filter(
-        (type) => !factoryTypes.includes(type),
+        (type) => !factoryTypes.includes(type)
       );
 
       if (missingFactories.length > 0) {
@@ -768,7 +768,7 @@ export class UELValidationFramework {
       return {
         valid:
           errors.filter(
-            (e) => e.severity === 'critical' || e.severity === 'high',
+            (e) => e.severity === 'critical' || e.severity === 'high'
           ).length === 0,
         score,
         errors,
@@ -830,7 +830,7 @@ export class UELValidationFramework {
   async validateComplete(
     eventManager: EventManager,
     registry: EventRegistry,
-    sampleEvents?: SystemEvent[],
+    sampleEvents?: SystemEvent[]
   ): Promise<{
     overall: ValidationResult;
     health: ValidationResult;
@@ -872,20 +872,20 @@ export class UELValidationFramework {
     const allResults = [health, integration, ...events];
     const totalErrors = allResults.reduce(
       (sum, result) => sum + result?.errors.length,
-      0,
+      0
     );
     const totalWarnings = allResults.reduce(
       (sum, result) => sum + result?.warnings.length,
-      0,
+      0
     );
     const totalRecommendations = allResults.reduce(
       (sum, result) => sum + result?.recommendations.length,
-      0,
+      0
     );
     const criticalIssues = allResults.reduce(
       (sum, result) =>
         sum + result?.errors.filter((e) => e.severity === 'critical').length,
-      0,
+      0
     );
 
     const overallScore =
@@ -944,7 +944,7 @@ export class UELValidationFramework {
   registerEventTypeSchema(eventType: string, schema: EventTypeSchema): void {
     this.eventTypeSchemas.set(eventType, schema);
     this.logger.debug(
-      `📋 Registered validation schema for event type: ${eventType}`,
+      `📋 Registered validation schema for event type: ${eventType}`
     );
   }
 
@@ -992,7 +992,7 @@ export class UELValidationFramework {
       totalWarnings: results.reduce((sum, r) => sum + r.warnings.length, 0),
       totalRecommendations: results.reduce(
         (sum, r) => sum + r.recommendations.length,
-        0,
+        0
       ),
     };
 
@@ -1031,7 +1031,7 @@ export class UELValidationFramework {
    * Private helper methods.
    */
 
-  private validatePropertyType(value: any, expectedType: string): boolean {
+  private validatePropertyType(value: unknown, expectedType: string): boolean {
     switch (expectedType) {
       case 'string':
         return typeof value === 'string';
@@ -1054,7 +1054,7 @@ export class UELValidationFramework {
     event: SystemEvent,
     errors: ValidationError[],
     warnings: ValidationWarning[],
-    recommendations: ValidationRecommendation[],
+    recommendations: ValidationRecommendation[]
   ): void {
     // Validate required base properties
     if (!event.id) {
@@ -1127,7 +1127,7 @@ export class UELValidationFramework {
 
   private calculateValidationScore(
     errors: ValidationError[],
-    warnings: ValidationWarning[],
+    warnings: ValidationWarning[]
   ): number {
     let score = 100;
 

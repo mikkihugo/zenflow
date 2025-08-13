@@ -122,10 +122,10 @@ export { SQLiteBackend } from './storage-backends/sqlite-backend.ts';
  * @example
  */
 export async function createKnowledgeSharingSystem(
-  config?: any,
-  logger?: any,
-  eventBus?: any,
-): Promise<any> {
+  config?: unknown,
+  logger?: unknown,
+  eventBus?: unknown
+): Promise<unknown> {
   const { CrossAgentKnowledgeIntegration, getDefaultConfig } = await import(
     './cross-agent-knowledge-integration.ts'
   );
@@ -143,7 +143,7 @@ export async function createKnowledgeSharingSystem(
   const system = new CrossAgentKnowledgeIntegration(
     finalConfig,
     finalLogger,
-    finalEventBus,
+    finalEventBus
   );
   await system.initialize();
 
@@ -157,7 +157,7 @@ export async function createKnowledgeSharingSystem(
  * @param vectorDb
  * @example
  */
-export async function createKnowledgeSwarm(config?: any): Promise<any> {
+export async function createKnowledgeSwarm(config?: unknown): Promise<unknown> {
   const { initializeFACTSwarm } = await import('./knowledge-swarm.ts');
   return initializeFACTSwarm(config);
 }
@@ -172,7 +172,7 @@ export async function createKnowledgeSwarm(config?: any): Promise<any> {
  * @param config
  * @example
  */
-export function validateKnowledgeConfig(config: any): {
+export function validateKnowledgeConfig(config: unknown): {
   isValid: boolean;
   errors: string[];
   warnings: string[];
@@ -192,7 +192,7 @@ export function validateKnowledgeConfig(config: any): {
       !config?.integration?.factIntegration?.knowledgeSwarmIntegration
     ) {
       warnings.push(
-        'FACT integration enabled but knowledge swarm integration disabled',
+        'FACT integration enabled but knowledge swarm integration disabled'
       );
     }
 
@@ -201,7 +201,7 @@ export function validateKnowledgeConfig(config: any): {
       !config?.integration?.ragIntegration?.vectorStoreIntegration
     ) {
       warnings.push(
-        'RAG integration enabled but vector store integration disabled',
+        'RAG integration enabled but vector store integration disabled'
       );
     }
   } else {
@@ -229,7 +229,7 @@ export function validateKnowledgeConfig(config: any): {
  * @param config
  * @example
  */
-export function getSystemCapabilities(config: any): {
+export function getSystemCapabilities(config: unknown): {
   collectiveIntelligence: boolean;
   distributedLearning: boolean;
   collaborativeReasoning: boolean;
@@ -256,7 +256,7 @@ export function getSystemCapabilities(config: any): {
  *
  * @example
  */
-export function createTestConfig(): any {
+export function createTestConfig(): unknown {
   const defaultConfig = {} as any;
 
   return {
@@ -286,7 +286,7 @@ export function createTestConfig(): any {
  * @example
  */
 export async function ensureStorageDirectory(
-  basePath: string = process.cwd(),
+  basePath: string = process.cwd()
 ): Promise<{
   swarmDir: string;
   hiveMindDir: string;

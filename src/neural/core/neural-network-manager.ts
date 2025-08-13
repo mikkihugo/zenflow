@@ -56,7 +56,7 @@ interface NeuralNetworkInstance {
   /** Training method */
   train?: (
     trainingData: TrainingDataItem[],
-    options: Record<string, unknown>,
+    options: Record<string, unknown>
   ) => Promise<PerformanceMetrics>;
   /** Get metrics method */
   getMetrics?: () => PerformanceMetrics;
@@ -255,7 +255,7 @@ interface EnhancedNeuralNetworkInstance extends NeuralNetworkInstance {
  * ```
  */
 interface WasmLoader {
-  loadModule?: (moduleName: string) => Promise<any>;
+  loadModule?: (moduleName: string) => Promise<unknown>;
 }
 
 class NeuralNetworkManager {
@@ -573,7 +573,7 @@ class NeuralNetworkManager {
 
   async createAgentNeuralNetwork(
     agentId: string,
-    config: Partial<NeuralModelConfig> = {},
+    config: Partial<NeuralModelConfig> = {}
   ) {
     // Initialize cognitive evolution for this agent
     if (
@@ -594,7 +594,7 @@ class NeuralNetworkManager {
 
     // Check if this is a new neural model type
     const template = config?.template || 'deep_analyzer';
-    const templateConfig = (this.templates as Record<string, any>)[template];
+    const templateConfig = (this.templates as Record<string, unknown>)[template];
 
     if (templateConfig?.modelType) {
       // Create new neural model with enhanced capabilities
@@ -622,7 +622,7 @@ class NeuralNetworkManager {
     // Use template or custom layers
     const networkConfig = layers
       ? { layers, activation }
-      : (this.templates as Record<string, any>)[template];
+      : (this.templates as Record<string, unknown>)[template];
 
     try {
       // Create network using WASM module
@@ -633,14 +633,14 @@ class NeuralNetworkManager {
           activation: networkConfig?.activation,
           learning_rate: learningRate,
           optimizer,
-        }),
+        })
       );
 
       const network = new NeuralNetwork(
         networkId,
         agentId,
         networkConfig,
-        neuralModule,
+        neuralModule
       );
       this.neuralNetworks.set(agentId, network as NeuralNetworkInstance);
 
@@ -654,7 +654,7 @@ class NeuralNetworkManager {
   createSimulatedNetwork(agentId: string, config: Partial<NeuralModelConfig>) {
     const network = new SimulatedNeuralNetwork(
       agentId,
-      config as NeuralNetworkConfig,
+      config as NeuralNetworkConfig
     );
     this.neuralNetworks.set(agentId, network as NeuralNetworkInstance);
     return network;
@@ -663,9 +663,9 @@ class NeuralNetworkManager {
   async createAdvancedNeuralModel(
     agentId: string,
     template: string,
-    customConfig: Record<string, unknown> = {},
+    customConfig: Record<string, unknown> = {}
   ) {
-    const templateConfig = (this.templates as Record<string, any>)[template];
+    const templateConfig = (this.templates as Record<string, unknown>)[template];
 
     if (!(templateConfig && templateConfig?.modelType)) {
       throw new Error(`Invalid template: ${template}`);
@@ -686,7 +686,7 @@ class NeuralNetworkManager {
     };
 
     // Check if cognitivePatternSelector has the required method
-    let cognitivePatterns: any = null;
+    let cognitivePatterns: unknown = null;
     if (
       this.cognitivePatternSelector &&
       typeof this.cognitivePatternSelector.selectPatternsForPreset ===
@@ -695,7 +695,7 @@ class NeuralNetworkManager {
       cognitivePatterns = this.cognitivePatternSelector.selectPatternsForPreset(
         config?.modelType,
         template,
-        taskContext,
+        taskContext
       );
     }
 
@@ -717,7 +717,7 @@ class NeuralNetworkManager {
       const wrappedModel = new (AdvancedNeuralNetwork as any)(
         agentId,
         model,
-        config,
+        config
       );
 
       // Enhanced registration with cognitive capabilities
@@ -740,7 +740,7 @@ class NeuralNetworkManager {
         await this.neuralAdaptationEngine.initializeAdaptation(
           agentId,
           config?.modelType,
-          template,
+          template
         );
       }
 
@@ -768,7 +768,7 @@ class NeuralNetworkManager {
   async fineTuneNetwork(
     agentId: string,
     trainingData: TrainingDataItem[],
-    options: Record<string, unknown> = {},
+    options: Record<string, unknown> = {}
   ) {
     const network = this.neuralNetworks.get(agentId);
     if (!network) {
@@ -793,7 +793,7 @@ class NeuralNetworkManager {
     if (enableMetaLearning) {
       const optimizedOptions = await this.metaLearning.optimizeTraining(
         agentId,
-        options,
+        options
       );
       Object.assign(options, optimizedOptions);
     }
@@ -826,7 +826,7 @@ class NeuralNetworkManager {
       // Record adaptation in neural adaptation engine
       await this.neuralAdaptationEngine.recordAdaptation(
         agentId,
-        adaptationResult,
+        adaptationResult
       );
     }
 
@@ -835,7 +835,7 @@ class NeuralNetworkManager {
 
   async enableCollaborativeLearning(
     agentIds: string[],
-    options: Record<string, unknown> = {},
+    options: Record<string, unknown> = {}
   ) {
     const {
       strategy = 'federated',
@@ -851,7 +851,7 @@ class NeuralNetworkManager {
 
     if (networks.length < 2) {
       throw new Error(
-        'At least 2 neural networks required for collaborative learning',
+        'At least 2 neural networks required for collaborative learning'
       );
     }
 
@@ -883,7 +883,7 @@ class NeuralNetworkManager {
     if (enableCrossAgentEvolution) {
       await this.cognitiveEvolution.enableCrossAgentEvolution(
         agentIds,
-        session as any,
+        session as any
       );
     }
 
@@ -911,7 +911,7 @@ class NeuralNetworkManager {
       // Apply privacy-preserving aggregation
       const aggregatedGradients = this.aggregateGradients(
         gradients,
-        session.privacyLevel,
+        session.privacyLevel
       );
 
       // Update all networks with aggregated gradients
@@ -964,7 +964,7 @@ class NeuralNetworkManager {
           const sensitivity = this.calculateSensitivity(key, gradients);
           const laplacianNoise = this.generateLaplacianNoise(
             sensitivity,
-            noise,
+            noise
           );
           aggregatedValue += laplacianNoise;
         } else {
@@ -1043,7 +1043,7 @@ class NeuralNetworkManager {
     agentId,
     category,
     presetName,
-    customConfig = {},
+    customConfig = {}
   ) {
     // First check complete neural presets
     const completePreset = COMPLETE_NEURAL_PRESETS[category]?.[presetName];
@@ -1052,7 +1052,7 @@ class NeuralNetworkManager {
         agentId,
         category,
         presetName,
-        customConfig,
+        customConfig
       );
     }
     try {
@@ -1096,7 +1096,7 @@ class NeuralNetworkManager {
     agentId: string,
     modelType: string,
     presetName: string,
-    customConfig: any = {},
+    customConfig: unknown = {}
   ) {
     const preset = COMPLETE_NEURAL_PRESETS[modelType]?.[presetName];
     if (!preset) {
@@ -1116,7 +1116,7 @@ class NeuralNetworkManager {
       this.cognitivePatternSelector.selectPatternsForPreset(
         preset.model,
         presetName,
-        taskContext,
+        taskContext
       );
 
     // Merge preset config with custom overrides
@@ -1197,7 +1197,7 @@ class NeuralNetworkManager {
         agentId,
         bestMatch?.type, // Use type instead of category
         bestMatch?.id, // Use id instead of presetName
-        customConfig,
+        customConfig
       );
     }
 
@@ -1205,7 +1205,7 @@ class NeuralNetworkManager {
       agentId,
       recommendedPreset.type, // Use type instead of category
       recommendedPreset.id, // Use id instead of presetName
-      customConfig,
+      customConfig
     );
   }
 
@@ -1280,7 +1280,7 @@ class NeuralNetworkManager {
     agentId: string,
     category: string,
     presetName: string,
-    customConfig: any = {},
+    customConfig: unknown = {}
   ) {
     const existingNetwork = this.neuralNetworks.get(agentId);
     if (existingNetwork) {
@@ -1300,7 +1300,7 @@ class NeuralNetworkManager {
       agentId,
       category,
       presetName,
-      customConfig,
+      customConfig
     );
 
     // Restore cognitive evolution and meta-learning state
@@ -1320,10 +1320,10 @@ class NeuralNetworkManager {
       agentId: string;
       category: string;
       presetName: string;
-      customConfig?: any;
-    }>,
+      customConfig?: unknown;
+    }>
   ) {
-    const results: Array<{ agentId: string; success: boolean; agent: any }> =
+    const results: Array<{ agentId: string; success: boolean; agent: unknown }> =
       [];
     const errors: Array<{ agentId: string; error: string }> = [];
 
@@ -1333,7 +1333,7 @@ class NeuralNetworkManager {
           config?.agentId,
           config?.category,
           config?.presetName,
-          config?.customConfig || {},
+          config?.customConfig || {}
         );
         results.push({ agentId: config?.agentId, success: true, agent });
       } catch (error) {
@@ -1359,7 +1359,7 @@ class NeuralNetworkManager {
    */
   async enableKnowledgeSharing(
     agentIds: string[],
-    session: CollaborativeSession,
+    session: CollaborativeSession
   ) {
     const knowledgeGraph = session.knowledgeGraph!;
 
@@ -1420,12 +1420,12 @@ class NeuralNetworkManager {
     Object.entries(weights).forEach(([layer, weight]) => {
       if (weight && Array.isArray(weight) && weight.length > 0) {
         // Calculate importance scores (magnitude-based)
-        const importance = weight.map((w: any) => Math.abs(w));
+        const importance = weight.map((w: unknown) => Math.abs(w));
         const threshold = this.calculateImportanceThreshold(importance);
 
         importantWeights[layer] = weight.filter(
-          (_w: any, idx: number) =>
-            importance[idx] !== undefined && importance[idx] > threshold,
+          (_w: unknown, idx: number) =>
+            importance[idx] !== undefined && importance[idx] > threshold
         );
       }
     });
@@ -1485,7 +1485,7 @@ class NeuralNetworkManager {
    *
    * @param {Object} adaptation - Adaptation record.
    */
-  inferDomainFromTraining(adaptation: any) {
+  inferDomainFromTraining(adaptation: unknown) {
     // Simple heuristic - in practice, would use more sophisticated analysis
     const accuracy = adaptation.trainingResult.accuracy;
     const loss = adaptation.trainingResult.loss;
@@ -1525,7 +1525,7 @@ class NeuralNetworkManager {
 
             const similarity = await this.calculateAgentSimilarity(
               agentA,
-              agentB,
+              agentB
             );
             matrix[agentA][agentB] = similarity;
           }
@@ -1553,15 +1553,15 @@ class NeuralNetworkManager {
     // Calculate multiple similarity metrics
     const structuralSimilarity = this.calculateStructuralSimilarity(
       knowledgeA,
-      knowledgeB,
+      knowledgeB
     );
     const performanceSimilarity = this.calculatePerformanceSimilarity(
       knowledgeA,
-      knowledgeB,
+      knowledgeB
     );
     const specializationSimilarity = this.calculateSpecializationSimilarity(
       knowledgeA,
-      knowledgeB,
+      knowledgeB
     );
 
     // Weighted combination
@@ -1578,7 +1578,7 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A.
    * @param {Object} knowledgeB - Knowledge from agent B.
    */
-  calculateStructuralSimilarity(knowledgeA: any, knowledgeB: any) {
+  calculateStructuralSimilarity(knowledgeA: unknown, knowledgeB: unknown) {
     if (knowledgeA.modelType !== knowledgeB.modelType) {
       return 0.1;
     }
@@ -1614,7 +1614,7 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A.
    * @param {Object} knowledgeB - Knowledge from agent B.
    */
-  calculatePerformanceSimilarity(knowledgeA: any, knowledgeB: any) {
+  calculatePerformanceSimilarity(knowledgeA: unknown, knowledgeB: unknown) {
     const perfA = knowledgeA.performance;
     const perfB = knowledgeB.performance;
 
@@ -1634,16 +1634,16 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A.
    * @param {Object} knowledgeB - Knowledge from agent B.
    */
-  calculateSpecializationSimilarity(knowledgeA: any, knowledgeB: any): number {
+  calculateSpecializationSimilarity(knowledgeA: unknown, knowledgeB: unknown): number {
     const specsA = new Set(
-      knowledgeA.specializations.map((s: { domain: string }) => s.domain),
+      knowledgeA.specializations.map((s: { domain: string }) => s.domain)
     );
     const specsB = new Set(
-      knowledgeB.specializations.map((s: { domain: string }) => s.domain),
+      knowledgeB.specializations.map((s: { domain: string }) => s.domain)
     );
 
     const intersection = new Set(
-      Array.from(specsA).filter((x) => specsB.has(x)),
+      Array.from(specsA).filter((x) => specsB.has(x))
     );
     const union = new Set([...Array.from(specsA), ...Array.from(specsB)]);
 
@@ -1672,7 +1672,7 @@ class NeuralNetworkManager {
         // Identify teacher and student agents
         const teachers = await this.identifyTeacherAgents(session.agentIds);
         const students = session.agentIds.filter(
-          (id: string) => !teachers.includes(id),
+          (id: string) => !teachers.includes(id)
         );
 
         // Perform knowledge distillation
@@ -1735,7 +1735,7 @@ class NeuralNetworkManager {
   async performKnowledgeDistillation(
     teacherAgentId: string,
     studentAgentId: string,
-    session: { agentIds: string[]; coordinationMatrix: number[][] },
+    session: { agentIds: string[]; coordinationMatrix: number[][] }
   ): Promise<void> {
     const teacher = this.neuralNetworks.get(teacherAgentId);
     const student = this.neuralNetworks.get(studentAgentId);
@@ -1762,7 +1762,7 @@ class NeuralNetworkManager {
         {
           temperature: distillationTemperature,
           alpha,
-        },
+        }
       );
 
       // Update collaboration matrix
@@ -1780,7 +1780,7 @@ class NeuralNetworkManager {
     } catch (error) {
       logger.error(
         `Knowledge distillation failed between ${teacherAgentId} and ${studentAgentId}:`,
-        error,
+        error
       );
     }
   }
@@ -1795,10 +1795,10 @@ class NeuralNetworkManager {
    * @param options.alpha
    */
   async applyKnowledgeDistillation(
-    student: any,
-    teacherKnowledge: any,
-    options: { temperature: number; alpha: number },
-  ): Promise<{ improvement: number; beforeMetrics: any; afterMetrics: any }> {
+    student: unknown,
+    teacherKnowledge: unknown,
+    options: { temperature: number; alpha: number }
+  ): Promise<{ improvement: number; beforeMetrics: unknown; afterMetrics: unknown }> {
     const { temperature, alpha } = options;
 
     // Simulate knowledge transfer (in practice, would involve actual training)
@@ -1813,7 +1813,7 @@ class NeuralNetworkManager {
     const afterMetrics = student.getMetrics();
     const improvement = Math.max(
       0,
-      afterMetrics.accuracy - beforeMetrics.accuracy,
+      afterMetrics.accuracy - beforeMetrics.accuracy
     );
 
     return { improvement, beforeMetrics, afterMetrics };
@@ -1883,7 +1883,7 @@ class NeuralNetworkManager {
           // Calculate interaction strength
           const interactionStrength = await this.calculateInteractionStrength(
             agentA,
-            agentB,
+            agentB
           );
           if (
             session.coordinationMatrix &&
@@ -1905,7 +1905,7 @@ class NeuralNetworkManager {
    */
   async calculateInteractionStrength(
     agentA: string,
-    agentB: string,
+    agentB: string
   ): Promise<number> {
     const interactions =
       this.agentInteractions.get(`${agentA}-${agentB}`) || [];
@@ -1938,7 +1938,7 @@ class NeuralNetworkManager {
    */
   async applyCoordinationResults(session: { id: string }): Promise<void> {
     const coordinationResults = await this.coordinationProtocol.getResults(
-      session.id,
+      session.id
     );
     if (!coordinationResults) {
       return;
@@ -1954,7 +1954,7 @@ class NeuralNetworkManager {
       if (coordination.weightAdjustments) {
         await this.applyWeightAdjustments(
           agent,
-          coordination.weightAdjustments,
+          coordination.weightAdjustments
         );
       }
 
@@ -1962,7 +1962,7 @@ class NeuralNetworkManager {
       if (coordination.patternUpdates) {
         await this.cognitiveEvolution.applyPatternUpdates(
           agentId,
-          coordination.patternUpdates,
+          coordination.patternUpdates
         );
       }
 
@@ -1983,7 +1983,7 @@ class NeuralNetworkManager {
    */
   async applyWeightAdjustments(
     agent: EnhancedNeuralNetworkInstance,
-    adjustments: Record<string, number[]>,
+    adjustments: Record<string, number[]>
   ): Promise<void> {
     try {
       const currentWeights = agent.getWeights?.() || {};
@@ -2018,7 +2018,7 @@ class NeuralNetworkManager {
     agentA: string,
     agentB: string,
     strength: number,
-    type: string = 'general',
+    type: string = 'general'
   ): void {
     const interactionKey = `${agentA}-${agentB}`;
 
@@ -2058,11 +2058,11 @@ class NeuralNetworkManager {
    */
   getPresetRecommendations(
     useCase: string,
-    requirements: Record<string, any> = {},
-  ): any {
+    requirements: Record<string, unknown> = {}
+  ): unknown {
     return this.cognitivePatternSelector.getPresetRecommendations(
       useCase,
-      requirements,
+      requirements
     );
   }
 
@@ -2071,7 +2071,7 @@ class NeuralNetworkManager {
    *
    * @param {string} agentId - Agent identifier.
    */
-  async getAdaptationRecommendations(agentId: string): Promise<any> {
+  async getAdaptationRecommendations(agentId: string): Promise<unknown> {
     return this.neuralAdaptationEngine.getAdaptationRecommendations(agentId);
   }
 
@@ -2117,7 +2117,7 @@ class NeuralNetworkManager {
 
     // Count model types
     for (const [agentId, network] of Array.from(
-      this.neuralNetworks.entries(),
+      this.neuralNetworks.entries()
     )) {
       const modelType = network.modelType || 'unknown';
       (stats.modelTypes as any)[modelType] =
@@ -2146,7 +2146,7 @@ class NeuralNetworkManager {
     }
 
     // Calculate averages
-    Object.values(stats.performance).forEach((perf: any) => {
+    Object.values(stats.performance).forEach((perf: unknown) => {
       if (perf && perf.count > 0) {
         perf.avgAccuracy /= perf.count;
         perf.avgCollaborationScore /= perf.count;
@@ -2163,7 +2163,7 @@ class NeuralNetworkManager {
 // Neural Network wrapper class
 interface NeuralNetworkConfig {
   layers: number[];
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface TrainingHistoryEntry {
@@ -2173,17 +2173,17 @@ interface TrainingHistoryEntry {
 
 interface WasmModule {
   exports: {
-    forward_pass: (networkId: string, input: any) => Float32Array;
+    forward_pass: (networkId: string, input: unknown) => Float32Array;
     train_batch: (
       networkId: string,
       batch: string,
       learningRate: number,
-      freezeLayers: string,
+      freezeLayers: string
     ) => number;
     get_gradients: (networkId: string) => string;
     apply_gradients: (networkId: string, gradients: string) => void;
     serialize_network: (networkId: string) => any;
-    deserialize_network: (networkId: string, state: any) => void;
+    deserialize_network: (networkId: string, state: unknown) => void;
   };
 }
 
@@ -2203,7 +2203,7 @@ class NeuralNetwork {
     networkId: string,
     agentId: string,
     config: NeuralNetworkConfig,
-    wasmModule: WasmModule,
+    wasmModule: WasmModule
   ) {
     this.networkId = networkId;
     this.agentId = agentId;
@@ -2223,7 +2223,7 @@ class NeuralNetwork {
       const inputArray = Array.isArray(input) ? input : Array.from(input);
       const result = this.wasmModule.exports.forward_pass(
         this.networkId,
-        inputArray,
+        inputArray
       );
       return result;
     } catch (error) {
@@ -2241,7 +2241,7 @@ class NeuralNetwork {
       batchSize: number;
       learningRate: number;
       freezeLayers?: string[];
-    },
+    }
   ): Promise<typeof this.metrics> {
     const { epochs, batchSize, learningRate, freezeLayers } = options;
 
@@ -2258,7 +2258,7 @@ class NeuralNetwork {
             this.networkId,
             JSON.stringify(batch),
             learningRate,
-            JSON.stringify(freezeLayers),
+            JSON.stringify(freezeLayers)
           );
 
           epochLoss += loss;
@@ -2277,7 +2277,7 @@ class NeuralNetwork {
     return this.metrics;
   }
 
-  getWeights(): Record<string, any> {
+  getWeights(): Record<string, unknown> {
     try {
       // In a real implementation, would get weights from WASM module
       return {}; // Placeholder
@@ -2287,7 +2287,7 @@ class NeuralNetwork {
     }
   }
 
-  setWeights(weights: Record<string, any>): void {
+  setWeights(weights: Record<string, unknown>): void {
     try {
       // In a real implementation, would set weights in WASM module
     } catch (error) {
@@ -2306,12 +2306,12 @@ class NeuralNetwork {
     }
   }
 
-  applyGradients(gradients: any): void {
+  applyGradients(gradients: unknown): void {
     // Apply gradients to network
     try {
       this.wasmModule.exports.apply_gradients(
         this.networkId,
-        JSON.stringify(gradients),
+        JSON.stringify(gradients)
       );
     } catch (error) {
       logger.error('Failed to apply gradients:', error);
@@ -2331,7 +2331,7 @@ class NeuralNetwork {
             }
             return acc;
           },
-          0,
+          0
         ),
       },
     };
@@ -2412,14 +2412,14 @@ class SimulatedNeuralNetwork {
 
   async train(
     _trainingData: TrainingDataItem[],
-    options: { epochs: number; batchSize?: number; learningRate?: number },
+    options: { epochs: number; batchSize?: number; learningRate?: number }
   ): Promise<typeof this.metrics> {
     const { epochs } = options;
 
     for (let epoch = 0; epoch < epochs; epoch++) {
       const loss = Math.max(
         0.01,
-        this.metrics.loss * (0.9 + Math.random() * 0.1),
+        this.metrics.loss * (0.9 + Math.random() * 0.1)
       );
       this.metrics.loss = loss;
       this.metrics.epochs_trained++;
@@ -2430,14 +2430,14 @@ class SimulatedNeuralNetwork {
     return this.metrics;
   }
 
-  getWeights(): Record<string, any> {
+  getWeights(): Record<string, unknown> {
     return {
       ['layer_0']: this.weights,
       ['layer_1']: this.weights.slice(0, -1),
     };
   }
 
-  setWeights(weights: Record<string, any>): void {
+  setWeights(weights: Record<string, unknown>): void {
     if (weights['layer_0']) {
       this.weights = weights['layer_0'];
     }
@@ -2451,7 +2451,7 @@ class SimulatedNeuralNetwork {
     };
   }
 
-  applyGradients(_gradients: any): void {}
+  applyGradients(_gradients: unknown): void {}
 
   getMetrics() {
     return {
@@ -2504,12 +2504,12 @@ const NeuralNetworkTemplates = {
 // Advanced Neural Network wrapper for new model types
 class AdvancedNeuralNetwork {
   public agentId: string;
-  public model: any;
-  public config: any;
+  public model: unknown;
+  public config: unknown;
   public modelType: string;
   public isAdvanced: boolean;
 
-  constructor(agentId: string, model: any, config: any) {
+  constructor(agentId: string, model: unknown, config: unknown) {
     this.agentId = agentId;
     this.model = model;
     this.config = config;
@@ -2517,18 +2517,18 @@ class AdvancedNeuralNetwork {
     this.isAdvanced = true;
   }
 
-  getWeights(): Record<string, any> {
+  getWeights(): Record<string, unknown> {
     return this.model?.getWeights ? this.model.getWeights() : {};
   }
 
-  setWeights(weights: Record<string, any>): void {
+  setWeights(weights: Record<string, unknown>): void {
     if (this.model?.setWeights) {
       this.model.setWeights(weights);
     }
   }
 
   async forward(
-    input: number[] | Float32Array | Record<string, unknown>,
+    input: number[] | Float32Array | Record<string, unknown>
   ): Promise<Float32Array> {
     try {
       // Handle different input formats
@@ -2571,7 +2571,7 @@ class AdvancedNeuralNetwork {
 
   async train(
     trainingData: TrainingDataItem[],
-    options: Record<string, unknown>,
+    options: Record<string, unknown>
   ) {
     return this.model.train(trainingData, options);
   }
@@ -2581,7 +2581,7 @@ class AdvancedNeuralNetwork {
     return {};
   }
 
-  applyGradients(_gradients: any): void {}
+  applyGradients(_gradients: unknown): void {}
 
   getMetrics() {
     return this.model.getMetrics();

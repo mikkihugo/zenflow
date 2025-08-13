@@ -45,7 +45,7 @@ class ZenAIFixerComplete {
     } else if (aiProvider === 'gh-models') {
       console.log('🚀 Using GitHub Models for fixing');
       console.log(
-        '   ✅ Multiple AI providers: GPT-4o, GPT-5, DeepSeek-V3, Llama',
+        '   ✅ Multiple AI providers: GPT-4o, GPT-5, DeepSeek-V3, Llama'
       );
       console.log('   ✅ Free tier available through GitHub');
       console.log('   ✅ Best-in-class model selection');
@@ -189,7 +189,7 @@ class ZenAIFixerComplete {
         return provider;
       }
       console.warn(
-        `⚠️  Unknown AI provider: ${provider}. Using Claude as default.`,
+        `⚠️  Unknown AI provider: ${provider}. Using Claude as default.`
       );
     }
     return 'claude'; // Default to Claude for reliability and quality
@@ -210,7 +210,7 @@ class ZenAIFixerComplete {
     }
 
     console.log(
-      `🚨 Found ${initialErrors.length} TypeScript compilation errors`,
+      `🚨 Found ${initialErrors.length} TypeScript compilation errors`
     );
     console.log('🔄 Enhanced Fix:Zen will iterate until ZERO errors remain!');
 
@@ -220,10 +220,10 @@ class ZenAIFixerComplete {
       aiAvailable = await GeminiAIIntegration.testGeminiAvailability();
       if (!aiAvailable) {
         console.log(
-          '❌ Gemini CLI not available. Cannot fix TypeScript errors.',
+          '❌ Gemini CLI not available. Cannot fix TypeScript errors.'
         );
         console.log(
-          '💡 Install Gemini CLI: npm install -g @google/generative-ai-cli',
+          '💡 Install Gemini CLI: npm install -g @google/generative-ai-cli'
         );
         process.exit(1);
       }
@@ -235,7 +235,7 @@ class ZenAIFixerComplete {
         console.log('✅ DSPy Framework system ready');
       } catch (error) {
         console.log(
-          '❌ DSPy Framework not available. Cannot fix TypeScript errors.',
+          '❌ DSPy Framework not available. Cannot fix TypeScript errors.'
         );
         console.log('💡 Error:', error.message);
         process.exit(1);
@@ -244,10 +244,10 @@ class ZenAIFixerComplete {
       aiAvailable = await GHModelsAIIntegration.testGHModelsAvailability();
       if (!aiAvailable) {
         console.log(
-          '❌ GitHub Models CLI not available. Cannot fix TypeScript errors.',
+          '❌ GitHub Models CLI not available. Cannot fix TypeScript errors.'
         );
         console.log(
-          '💡 Install GitHub CLI: gh extension install github/gh-models',
+          '💡 Install GitHub CLI: gh extension install github/gh-models'
         );
         process.exit(1);
       }
@@ -255,17 +255,17 @@ class ZenAIFixerComplete {
       aiAvailable = await ClaudeAIIntegration.testClaudeAvailability();
       if (!aiAvailable) {
         console.log(
-          '❌ Claude CLI not available. Cannot fix TypeScript errors.',
+          '❌ Claude CLI not available. Cannot fix TypeScript errors.'
         );
         console.log(
-          '💡 Install Claude CLI: npm install -g @anthropic/claude-cli',
+          '💡 Install Claude CLI: npm install -g @anthropic/claude-cli'
         );
         process.exit(1);
       }
     }
 
     console.log(
-      `🤖 Using ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI to fix TypeScript compilation errors...`,
+      `🤖 Using ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI to fix TypeScript compilation errors...`
     );
 
     // ITERATIVE PROCESSING LOOP - Continue until zero errors
@@ -277,7 +277,7 @@ class ZenAIFixerComplete {
     do {
       console.log(`\n🔄 === ITERATION ${iteration} ===`);
       console.log(
-        `📊 Processing ${currentErrors.length} errors across multiple files`,
+        `📊 Processing ${currentErrors.length} errors across multiple files`
       );
 
       // ROOT CAUSE STRATEGY: Identify and prioritize files causing cascading errors
@@ -288,7 +288,7 @@ class ZenAIFixerComplete {
       // Identify root cause files that create cascading errors
       const rootCauseFiles = this.identifyRootCauseFiles(errorsByFile);
       const regularFiles = Array.from(errorsByFile.entries()).filter(
-        ([filePath]) => !rootCauseFiles.has(filePath),
+        ([filePath]) => !rootCauseFiles.has(filePath)
       );
 
       // 🚀 ITERATIVE ROOT CAUSE STRATEGY (DEFAULT): Fix one root cause file, then recompile immediately
@@ -299,35 +299,35 @@ class ZenAIFixerComplete {
       if (rootCauseCount > 0) {
         // 🚀 ITERATIVE MODE: Fix ONE root cause file with highest impact, then recompile
         const topRootCauseFile = Array.from(rootCauseFiles.entries()).sort(
-          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
         )[0];
         filesToProcess = [topRootCauseFile];
 
         console.log(
-          `\n🚀 ITERATIVE ROOT CAUSE STRATEGY - Iteration ${iteration}:`,
+          `\n🚀 ITERATIVE ROOT CAUSE STRATEGY - Iteration ${iteration}:`
         );
         console.log(`   🎯 Mode: ITERATIVE (fix one → recompile → repeat)`);
         console.log(`   🎯 ${rootCauseCount} ROOT CAUSE files identified`);
         console.log(`   📊 ${totalFiles} total files with errors`);
         console.log(
-          `   🚀 Strategy: Fix highest-impact root cause file, then immediate recompile`,
+          `   🚀 Strategy: Fix highest-impact root cause file, then immediate recompile`
         );
 
         const [filePath, errors] = topRootCauseFile;
         const rootCauseTypes = this.analyzeRootCauseTypes(errors);
         console.log(`\n🚨 TOP IMPACT ROOT CAUSE FILE:`);
         console.log(
-          `   📁 ${path.basename(filePath)} (${errors.length} errors)`,
+          `   📁 ${path.basename(filePath)} (${errors.length} errors)`
         );
         console.log(`   🎯 Root causes: [${rootCauseTypes.join(', ')}]`);
         console.log(
-          `   💥 Expected impact: Will eliminate cascading errors across multiple files`,
+          `   💥 Expected impact: Will eliminate cascading errors across multiple files`
         );
       } else {
         // No root cause files, process regular files
         filesToProcess = regularFiles.slice(0, 5);
         console.log(
-          `\n📋 No root cause files remaining - processing regular high-priority files:`,
+          `\n📋 No root cause files remaining - processing regular high-priority files:`
         );
         console.log(`   📊 ${totalFiles} total files with errors`);
       }
@@ -337,9 +337,9 @@ class ZenAIFixerComplete {
         ([filePath, fileErrors], index) => {
           const rootCauseTypes = this.analyzeRootCauseTypes(fileErrors);
           console.log(
-            `   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)} [${rootCauseTypes.join(', ')}]`,
+            `   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)} [${rootCauseTypes.join(', ')}]`
           );
-        },
+        }
       );
 
       if (filesToProcess.length > rootCauseCount) {
@@ -348,7 +348,7 @@ class ZenAIFixerComplete {
           .slice(rootCauseCount, rootCauseCount + 5)
           .forEach(([filePath, fileErrors], index) => {
             console.log(
-              `   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)}`,
+              `   ${index + 1}. ${fileErrors.length} errors - ${path.basename(filePath)}`
             );
           });
       }
@@ -362,7 +362,7 @@ class ZenAIFixerComplete {
         tier1_rootCause,
         tier2_simpleBatch,
         tier3_complex,
-        iteration,
+        iteration
       );
 
       // Execute based on smart strategy decision
@@ -370,14 +370,14 @@ class ZenAIFixerComplete {
         case 'ROOT_CAUSE_FIRST':
           iterationFixedFiles += await this.processRootCauseFile(
             tier1_rootCause,
-            iterationFilesWithComments,
+            iterationFilesWithComments
           );
           break;
 
         case 'SIMPLE_BATCH_FIRST':
           iterationFixedFiles += await this.processBatchedSimpleFiles(
             tier2_simpleBatch,
-            iteration,
+            iteration
           );
           break;
 
@@ -386,17 +386,17 @@ class ZenAIFixerComplete {
           if (iteration % 2 === 1 && tier1_rootCause.size > 0) {
             iterationFixedFiles += await this.processRootCauseFile(
               tier1_rootCause,
-              iterationFilesWithComments,
+              iterationFilesWithComments
             );
           } else if (tier2_simpleBatch.size > 0) {
             iterationFixedFiles += await this.processBatchedSimpleFiles(
               tier2_simpleBatch,
-              iteration,
+              iteration
             );
           } else if (tier1_rootCause.size > 0) {
             iterationFixedFiles += await this.processRootCauseFile(
               tier1_rootCause,
-              iterationFilesWithComments,
+              iterationFilesWithComments
             );
           }
           break;
@@ -404,7 +404,7 @@ class ZenAIFixerComplete {
         case 'COMPLEX_FIRST':
           iterationFixedFiles += await this.processComplexFile(
             tier3_complex,
-            iterationFilesWithComments,
+            iterationFilesWithComments
           );
           break;
       }
@@ -412,16 +412,16 @@ class ZenAIFixerComplete {
       totalFixedFiles += iterationFixedFiles;
 
       console.log(
-        `\n🎯 Iteration ${iteration} Complete - SMART STRATEGY RESULTS:`,
+        `\n🎯 Iteration ${iteration} Complete - SMART STRATEGY RESULTS:`
       );
       console.log(`   🧠 Strategy Used: ${strategy}`);
       console.log(`   🚨 Root Cause: ${tier1_rootCause.size} files available`);
       console.log(
-        `   ⚡ Simple Batch: ${tier2_simpleBatch.size} files available`,
+        `   ⚡ Simple Batch: ${tier2_simpleBatch.size} files available`
       );
       console.log(`   📋 Complex: ${tier3_complex.size} files available`);
       console.log(
-        `   ✅ Total Fixed: ${iterationFixedFiles} files this iteration`,
+        `   ✅ Total Fixed: ${iterationFixedFiles} files this iteration`
       );
       allFilesWithComments.push(...iterationFilesWithComments);
 
@@ -432,13 +432,13 @@ class ZenAIFixerComplete {
       if (remainingErrors.length === 0) {
         console.log('\n🎆 🎉 MISSION ACCOMPLISHED! 🎉 🎆');
         console.log(
-          '✅ ALL TypeScript compilation errors resolved using ROOT CAUSE strategy!',
+          '✅ ALL TypeScript compilation errors resolved using ROOT CAUSE strategy!'
         );
         console.log(
-          `📊 Total Summary: ${totalFixedFiles} files fixed across ${iteration} iteration(s)`,
+          `📊 Total Summary: ${totalFixedFiles} files fixed across ${iteration} iteration(s)`
         );
         console.log(
-          `🎊 Root Cause Strategy: Eliminated cascading errors by fixing foundational issues first`,
+          `🎊 Root Cause Strategy: Eliminated cascading errors by fixing foundational issues first`
         );
         break;
       }
@@ -451,29 +451,29 @@ class ZenAIFixerComplete {
       console.log(`   Before: ${currentErrors.length} errors`);
       console.log(`   After:  ${remainingErrors.length} errors`);
       console.log(
-        `   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%) - Root cause fixes create cascading improvements!`,
+        `   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%) - Root cause fixes create cascading improvements!`
       );
 
       if (errorReduction === 0) {
         console.warn(
-          '⚠️  No error reduction detected - may need manual intervention',
+          '⚠️  No error reduction detected - may need manual intervention'
         );
         console.log('🔍 Continuing with remaining errors for ESLint phase...');
         break;
       }
       if (errorReduction > 100) {
         console.log(
-          '🎊 🚀 MASSIVE CASCADE! Root cause fixes eliminated many dependent errors!',
+          '🎊 🚀 MASSIVE CASCADE! Root cause fixes eliminated many dependent errors!'
         );
       }
 
       currentErrors = remainingErrors;
       iteration++;
       console.log(
-        `\n🔄 Starting Iteration ${iteration} with ${remainingErrors.length} remaining errors...`,
+        `\n🔄 Starting Iteration ${iteration} with ${remainingErrors.length} remaining errors...`
       );
       console.log(
-        '🎯 Searching for next root cause files to maximize impact...',
+        '🎯 Searching for next root cause files to maximize impact...'
       );
     } while (currentErrors.length > 0); // Continue until ALL TypeScript errors are ZERO - no artificial limit!
 
@@ -489,7 +489,7 @@ class ZenAIFixerComplete {
       console.log('\n🏆 🎯 ROOT CAUSE STRATEGY VICTORIOUS! 🎯 🏆');
       console.log('✅ Zero TypeScript compilation errors remaining!');
       console.log(
-        '🎊 Strategy proved superior: Fix the foundation, and the house stops shaking!',
+        '🎊 Strategy proved superior: Fix the foundation, and the house stops shaking!'
       );
     } else {
       const totalErrorsFixed = initialErrors.length - finalErrors.length;
@@ -520,7 +520,7 @@ class ZenAIFixerComplete {
     }
 
     console.log(
-      `📊 ESLint Analysis Complete: ${violations.length} violations found`,
+      `📊 ESLint Analysis Complete: ${violations.length} violations found`
     );
 
     // Skip AI fixing if analyze-only mode
@@ -558,7 +558,7 @@ class ZenAIFixerComplete {
 
     for (const [filePath, warnings] of warningsByFile.entries()) {
       console.log(
-        `🔧 Fixing ${warnings.length} warnings in ${path.basename(filePath)}`,
+        `🔧 Fixing ${warnings.length} warnings in ${path.basename(filePath)}`
       );
 
       const result = await this.fixTypeScriptWarningsInFile(filePath, warnings);
@@ -566,7 +566,7 @@ class ZenAIFixerComplete {
       if (result.success) {
         if (result.commented) {
           console.log(
-            `  💬 Added ${warnings.length} TODO comments (AI unsure - human review needed)`,
+            `  💬 Added ${warnings.length} TODO comments (AI unsure - human review needed)`
           );
         } else {
           fixedFiles++;
@@ -578,7 +578,7 @@ class ZenAIFixerComplete {
     }
 
     console.log(
-      `🎯 Phase 3 Complete: ${fixedFiles}/${warningsByFile.size} files fixed`,
+      `🎯 Phase 3 Complete: ${fixedFiles}/${warningsByFile.size} files fixed`
     );
   }
 
@@ -625,7 +625,7 @@ class ZenAIFixerComplete {
             ...process.env,
             NODE_OPTIONS: '--max-old-space-size=2048',
           },
-        },
+        }
       );
 
       let stdout = '';
@@ -662,7 +662,7 @@ class ZenAIFixerComplete {
             ...process.env,
             NODE_OPTIONS: '--max-old-space-size=2048',
           },
-        },
+        }
       );
 
       let stderr = '';
@@ -687,7 +687,7 @@ class ZenAIFixerComplete {
     for (const line of lines) {
       // Parse format: src/file.ts(line,col): error TSxxxx: message
       const match = line.match(
-        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/,
+        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/
       );
       if (match) {
         errors.push({
@@ -702,7 +702,7 @@ class ZenAIFixerComplete {
     }
 
     console.log(
-      `🔍 Parsed ${errors.length} TypeScript errors from ${lines.length} lines of output`,
+      `🔍 Parsed ${errors.length} TypeScript errors from ${lines.length} lines of output`
     );
 
     return errors;
@@ -728,13 +728,13 @@ class ZenAIFixerComplete {
 
     // Sort files by error count (most errors first) 🎯
     const sortedEntries = Array.from(errorsByFile.entries()).sort(
-      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
     );
 
     console.log(`📊 Files sorted by error count (most errors first):`);
     sortedEntries.slice(0, 10).forEach(([filePath, fileErrors]) => {
       console.log(
-        `   ${fileErrors.length} errors - ${path.basename(filePath)}`,
+        `   ${fileErrors.length} errors - ${path.basename(filePath)}`
       );
     });
     if (sortedEntries.length > 10) {
@@ -853,7 +853,7 @@ class ZenAIFixerComplete {
     tier1_rootCause,
     tier2_simpleBatch,
     tier3_complex,
-    iteration,
+    iteration
   ) {
     const rootCauseCount = tier1_rootCause.size;
     const simpleBatchCount = tier2_simpleBatch.size;
@@ -867,7 +867,7 @@ class ZenAIFixerComplete {
 
     console.log(`\n🧠 SMART STRATEGY ANALYSIS - Iteration ${iteration}:`);
     console.log(
-      `   📊 Root Cause: ${rootCauseCount} files (max ${maxRootCauseErrors} errors)`,
+      `   📊 Root Cause: ${rootCauseCount} files (max ${maxRootCauseErrors} errors)`
     );
     console.log(`   📊 Simple Batch: ${simpleBatchCount} files`);
     console.log(`   📊 Complex: ${complexCount} files`);
@@ -937,7 +937,7 @@ class ZenAIFixerComplete {
       } else if (fileErrors.length <= 3) {
         // Check if all errors are simple types
         const allSimple = fileErrors.every((error) =>
-          SIMPLE_ERROR_CODES.has(error.code),
+          SIMPLE_ERROR_CODES.has(error.code)
         );
 
         if (allSimple) {
@@ -963,7 +963,7 @@ class ZenAIFixerComplete {
     if (simpleBatchFiles.size === 0) return 0;
 
     console.log(
-      `\n⚡ 3-TIER OPTIMIZATION: Processing ${simpleBatchFiles.size} simple files in batches`,
+      `\n⚡ 3-TIER OPTIMIZATION: Processing ${simpleBatchFiles.size} simple files in batches`
     );
 
     // Create batches of 8-12 files each
@@ -980,10 +980,10 @@ class ZenAIFixerComplete {
     for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
       const batch = batches[batchIndex];
       console.log(
-        `\n🚀 BATCH ${batchIndex + 1}/${batches.length}: Processing ${batch.length} simple files`,
+        `\n🚀 BATCH ${batchIndex + 1}/${batches.length}: Processing ${batch.length} simple files`
       );
       console.log(
-        `   Files: ${batch.map(([filePath]) => path.basename(filePath)).join(', ')}`,
+        `   Files: ${batch.map(([filePath]) => path.basename(filePath)).join(', ')}`
       );
 
       // Create batch prompt with all files
@@ -993,14 +993,14 @@ class ZenAIFixerComplete {
         // Process entire batch in one Claude call
         const result = await this.claude.callClaudeCLI(
           'batch-simple-files',
-          batchPrompt,
+          batchPrompt
         );
 
         if (result.success) {
           const estimatedFixed = Math.floor(batch.length * 0.85); // 85% success rate estimate
           totalFixedFiles += estimatedFixed;
           console.log(
-            `  ✅ Batch completed: ~${estimatedFixed}/${batch.length} files fixed`,
+            `  ✅ Batch completed: ~${estimatedFixed}/${batch.length} files fixed`
           );
         }
 
@@ -1012,10 +1012,10 @@ class ZenAIFixerComplete {
     }
 
     console.log(
-      `🎊 BATCH OPTIMIZATION: ${totalFixedFiles}/${simpleBatchFiles.size} simple files processed`,
+      `🎊 BATCH OPTIMIZATION: ${totalFixedFiles}/${simpleBatchFiles.size} simple files processed`
     );
     console.log(
-      `⚡ Speed boost: ${simpleBatchFiles.size}→${batches.length} batches = ${Math.round(simpleBatchFiles.size / batches.length)}x faster`,
+      `⚡ Speed boost: ${simpleBatchFiles.size}→${batches.length} batches = ${Math.round(simpleBatchFiles.size / batches.length)}x faster`
     );
 
     return totalFixedFiles;
@@ -1028,17 +1028,17 @@ class ZenAIFixerComplete {
     if (tier1_rootCause.size === 0) return 0;
 
     const topRootCauseFile = Array.from(tier1_rootCause.entries()).sort(
-      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
     )[0];
 
     const [filePath, errors] = topRootCauseFile;
     const rootCauseTypes = this.analyzeRootCauseTypes(errors);
     console.log(
-      `\n🚨 ROOT CAUSE: ${path.basename(filePath)} (${errors.length} errors)`,
+      `\n🚨 ROOT CAUSE: ${path.basename(filePath)} (${errors.length} errors)`
     );
     console.log(`   🎯 Root causes: [${rootCauseTypes.join(', ')}]`);
     console.log(
-      `   💥 Expected impact: Will eliminate cascading errors across multiple files`,
+      `   💥 Expected impact: Will eliminate cascading errors across multiple files`
     );
 
     const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
@@ -1046,7 +1046,7 @@ class ZenAIFixerComplete {
     if (result.success) {
       if (result.commented) {
         console.log(
-          `  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`,
+          `  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`
         );
         iterationFilesWithComments.push({
           filePath,
@@ -1055,7 +1055,7 @@ class ZenAIFixerComplete {
         return 0;
       }
       console.log(
-        `  🎊 ROOT CAUSE ELIMINATED! Fixed ${errors.length} errors - expect cascading reductions`,
+        `  🎊 ROOT CAUSE ELIMINATED! Fixed ${errors.length} errors - expect cascading reductions`
       );
       return 1;
     }
@@ -1070,15 +1070,15 @@ class ZenAIFixerComplete {
     if (tier3_complex.size === 0) return 0;
 
     const topComplexFile = Array.from(tier3_complex.entries()).sort(
-      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
     )[0];
 
     const [filePath, errors] = topComplexFile;
     console.log(
-      `\n📋 COMPLEX: ${path.basename(filePath)} (${errors.length} errors)`,
+      `\n📋 COMPLEX: ${path.basename(filePath)} (${errors.length} errors)`
     );
     console.log(
-      `   🎯 Strategy: Individual processing for complex error patterns`,
+      `   🎯 Strategy: Individual processing for complex error patterns`
     );
 
     const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
@@ -1086,7 +1086,7 @@ class ZenAIFixerComplete {
     if (result.success) {
       if (result.commented) {
         console.log(
-          `  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`,
+          `  💬 Added ${errors.length} TODO comments (AI unsure - human review needed)`
         );
         iterationFilesWithComments.push({
           filePath,
@@ -1108,7 +1108,7 @@ class ZenAIFixerComplete {
     const fileList = batch
       .map(
         ([filePath, errors]) =>
-          `${filePath}:\n${errors.map((e) => `  Line ${e.line}: ${e.code} - ${e.message}`).join('\n')}`,
+          `${filePath}:\n${errors.map((e) => `  Line ${e.line}: ${e.code} - ${e.message}`).join('\n')}`
       )
       .join('\n\n');
 
@@ -1161,27 +1161,26 @@ Execute the most efficient batch processing approach for these simple TypeScript
       (e) =>
         e.code === 'TS2307' ||
         e.code === 'TS2614' ||
-        e.message.includes('Cannot find module'),
+        e.message.includes('Cannot find module')
     );
     const typeAssignmentErrors = errors.filter(
       (e) =>
         e.code === 'TS2322' ||
         e.code === 'TS2345' ||
         e.code === 'TS2339' ||
-        e.message.includes('not assignable'),
+        e.message.includes('not assignable')
     );
     const missingPropertiesErrors = errors.filter(
       (e) =>
         e.code === 'TS2339' ||
         e.code === 'TS2741' ||
-        (e.message.includes('Property') &&
-          e.message.includes('does not exist')),
+        (e.message.includes('Property') && e.message.includes('does not exist'))
     );
     const exportMemberErrors = errors.filter(
       (e) =>
         e.code === 'TS2724' ||
         e.code === 'TS2305' ||
-        e.message.includes('has no exported member'),
+        e.message.includes('has no exported member')
     );
     const otherErrors = errors.filter(
       (e) =>
@@ -1190,7 +1189,7 @@ Execute the most efficient batch processing approach for these simple TypeScript
           ...typeAssignmentErrors,
           ...missingPropertiesErrors,
           ...exportMemberErrors,
-        ].includes(e),
+        ].includes(e)
     );
 
     const prompt = `SPEED OPTIMIZATION CHALLENGE: Fix ${errors.length} TypeScript errors in ${path.basename(filePath)} using the FASTEST possible method.
@@ -1244,7 +1243,7 @@ CRITICAL: Choose the approach that will be ACTUALLY fastest for THIS specific si
         // Handle DSPy fallback to Claude if needed
         if (!result.success && result.fallback === 'claude') {
           console.log(
-            '   🔄 LOCAL DSPy delegating to Claude for complex fixes...',
+            '   🔄 LOCAL DSPy delegating to Claude for complex fixes...'
           );
           const claudeIntegration = new ClaudeAIIntegration();
           result = await claudeIntegration.callClaudeCLI(filePath, prompt);
@@ -1257,12 +1256,12 @@ CRITICAL: Choose the approach that will be ACTUALLY fastest for THIS specific si
       // Check if Claude added TODO comments instead of fixing
       const addedTodoComments = this.detectTodoComments(
         originalContent,
-        updatedContent,
+        updatedContent
       );
 
       if (addedTodoComments.count > 0) {
         console.log(
-          `   💬 Claude added ${addedTodoComments.count} TODO comments for human review`,
+          `   💬 Claude added ${addedTodoComments.count} TODO comments for human review`
         );
         return {
           success: true,
@@ -1274,7 +1273,7 @@ CRITICAL: Choose the approach that will be ACTUALLY fastest for THIS specific si
 
       // Auto-ESLint fix after successful TypeScript fix (only if actually fixed, not commented)
       console.log(
-        `   🔧 Auto-ESLint: Running ESLint --fix on ${path.basename(filePath)}`,
+        `   🔧 Auto-ESLint: Running ESLint --fix on ${path.basename(filePath)}`
       );
       await this.runESLintAutofix(filePath);
 
@@ -1341,7 +1340,7 @@ CRITICAL: Choose the approach that will be ACTUALLY fastest for THIS specific si
       eslint.on('close', (code) => {
         if (code === 0) {
           console.log(
-            `   🔧 Auto-ESLint: Fixed auto-fixable violations in ${path.basename(filePath)}`,
+            `   🔧 Auto-ESLint: Fixed auto-fixable violations in ${path.basename(filePath)}`
           );
         } else if (stderr.trim()) {
           console.log(`   ⚠️  Auto-ESLint: ${stderr.trim()}`);
@@ -1402,7 +1401,7 @@ Use your tools directly - do not return code in your response.`;
         // Handle DSPy fallback to Claude if needed
         if (!result.success && result.fallback === 'claude') {
           console.log(
-            '   🔄 LOCAL DSPy delegating to Claude for complex fixes...',
+            '   🔄 LOCAL DSPy delegating to Claude for complex fixes...'
           );
           const claudeIntegration = new ClaudeAIIntegration();
           result = await claudeIntegration.callClaudeCLI(filePath, prompt);
@@ -1415,12 +1414,12 @@ Use your tools directly - do not return code in your response.`;
       // Check if Claude added TODO comments instead of fixing
       const addedTodoComments = this.detectTodoComments(
         originalContent,
-        updatedContent,
+        updatedContent
       );
 
       if (addedTodoComments.count > 0) {
         console.log(
-          `   💬 Claude added ${addedTodoComments.count} TODO comments for human review`,
+          `   💬 Claude added ${addedTodoComments.count} TODO comments for human review`
         );
         return {
           success: true,
@@ -1446,7 +1445,7 @@ Use your tools directly - do not return code in your response.`;
   async runQuickAnalysis() {
     const includeTests = process.argv.includes('--include-tests');
     console.log(
-      `🔍 Running quick ESLint analysis (top 5 priority files only)${includeTests ? ' + test files' : ''}...`,
+      `🔍 Running quick ESLint analysis (top 5 priority files only)${includeTests ? ' + test files' : ''}...`
     );
 
     // Build dependency graph with optional test files
@@ -1465,7 +1464,7 @@ Use your tools directly - do not return code in your response.`;
       .prioritizeFilesByImpact()
       .slice(0, quickFileCount);
     console.log(
-      `🎯 Analyzing only top ${prioritizedFiles.length} priority files${includeTests ? ' (including tests)' : ''}`,
+      `🎯 Analyzing only top ${prioritizedFiles.length} priority files${includeTests ? ' (including tests)' : ''}`
     );
 
     // Single batch mode: 1 batch with all priority files
@@ -1510,7 +1509,7 @@ Use your tools directly - do not return code in your response.`;
     for (const [index, batch] of batches.entries()) {
       const progress = (((index + 1) / batches.length) * 100).toFixed(1);
       console.log(
-        `📦 Batch ${index + 1}/${batches.length} (${batch.length} files, ${progress}%)`,
+        `📦 Batch ${index + 1}/${batches.length} (${batch.length} files, ${progress}%)`
       );
 
       try {
@@ -1519,7 +1518,7 @@ Use your tools directly - do not return code in your response.`;
         processedFiles += batch.length;
 
         console.log(
-          `✅ Batch ${index + 1}: ${violations.length} violations (${processedFiles} files processed)`,
+          `✅ Batch ${index + 1}: ${violations.length} violations (${processedFiles} files processed)`
         );
 
         // Brief pause to prevent system overload
@@ -1574,7 +1573,7 @@ Use your tools directly - do not return code in your response.`;
               message: msg.message,
               severity: msg.severity,
               fixable: msg.fix !== undefined,
-            })),
+            }))
           );
           resolve(violations);
         } catch (parseError) {
@@ -1630,7 +1629,7 @@ Use your tools directly - do not return code in your response.`;
     // Count fixable violations
     const fixable = violations.filter((v) => v.fixable).length;
     console.log(
-      `\n⚙️  Auto-fixable violations: ${fixable}/${violations.length} (${((fixable / violations.length) * 100).toFixed(1)}%)`,
+      `\n⚙️  Auto-fixable violations: ${fixable}/${violations.length} (${((fixable / violations.length) * 100).toFixed(1)}%)`
     );
   }
 
@@ -1639,12 +1638,12 @@ Use your tools directly - do not return code in your response.`;
    */
   async performAIAssistedFixes(violations) {
     console.log(
-      `\n🤖 Starting REAL ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI-assisted ESLint fixing...`,
+      `\n🤖 Starting REAL ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI-assisted ESLint fixing...`
     );
 
     // Test AI CLI availability first
     console.log(
-      `🔍 Testing ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI availability...`,
+      `🔍 Testing ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI availability...`
     );
 
     let aiAvailable;
@@ -1653,7 +1652,7 @@ Use your tools directly - do not return code in your response.`;
       if (!aiAvailable) {
         console.log('❌ Gemini CLI not available. Cannot perform AI fixes.');
         console.log(
-          '💡 Install Gemini CLI: npm install -g @google/generative-ai-cli',
+          '💡 Install Gemini CLI: npm install -g @google/generative-ai-cli'
         );
         return this.generateAnalysisReport(violations);
       }
@@ -1662,7 +1661,7 @@ Use your tools directly - do not return code in your response.`;
       aiAvailable = this.claude.isInitialized;
       if (!aiAvailable) {
         console.log(
-          '❌ DSPy Framework not available. Cannot perform AI fixes.',
+          '❌ DSPy Framework not available. Cannot perform AI fixes.'
         );
         console.log('💡 Falling back to analysis-only mode.');
         return this.generateAnalysisReport(violations);
@@ -1671,10 +1670,10 @@ Use your tools directly - do not return code in your response.`;
       aiAvailable = await GHModelsAIIntegration.testGHModelsAvailability();
       if (!aiAvailable) {
         console.log(
-          '❌ GitHub Models CLI not available. Cannot perform AI fixes.',
+          '❌ GitHub Models CLI not available. Cannot perform AI fixes.'
         );
         console.log(
-          '💡 Install GitHub CLI: gh extension install github/gh-models',
+          '💡 Install GitHub CLI: gh extension install github/gh-models'
         );
         return this.generateAnalysisReport(violations);
       }
@@ -1683,14 +1682,14 @@ Use your tools directly - do not return code in your response.`;
       if (!aiAvailable) {
         console.log('❌ Claude CLI not available. Cannot perform AI fixes.');
         console.log(
-          '💡 Install Claude CLI: npm install -g @anthropic/claude-cli',
+          '💡 Install Claude CLI: npm install -g @anthropic/claude-cli'
         );
         return this.generateAnalysisReport(violations);
       }
     }
 
     console.log(
-      `✅ ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI ready for AI-assisted fixing`,
+      `✅ ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} CLI ready for AI-assisted fixing`
     );
 
     // Group violations by priority for fixing
@@ -1699,7 +1698,7 @@ Use your tools directly - do not return code in your response.`;
     console.log(`\n📊 ESLint violation categories:`);
     console.log(`  • High Priority: ${priorityGroups.high.length} violations`);
     console.log(
-      `  • Medium Priority: ${priorityGroups.medium.length} violations`,
+      `  • Medium Priority: ${priorityGroups.medium.length} violations`
     );
     console.log(`  • Low Priority: ${priorityGroups.low.length} violations`);
 
@@ -1715,7 +1714,7 @@ Use your tools directly - do not return code in your response.`;
     });
 
     console.log(
-      `\n🎊 Real ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI ESLint fixing complete!`,
+      `\n🎊 Real ${this.aiProvider.charAt(0).toUpperCase() + this.aiProvider.slice(1)} AI ESLint fixing complete!`
     );
     return result;
   }

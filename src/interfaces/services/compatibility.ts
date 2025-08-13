@@ -47,7 +47,7 @@ export interface CompatibilityConfig {
   >;
 
   /** Configuration transformations */
-  configTransformations: Record<string, (oldConfig: any) => AnyServiceConfig>;
+  configTransformations: Record<string, (oldConfig: unknown) => AnyServiceConfig>;
 }
 
 /**
@@ -59,7 +59,7 @@ export class USLCompatibilityLayer {
   private serviceManager: ServiceManager;
   private logger: Logger;
   private config: CompatibilityConfig;
-  private uslInstance?: any; // USL instance for fallback operations
+  private uslInstance?: unknown; // USL instance for fallback operations
   private migrationLog: Array<{
     timestamp: Date;
     type: 'warning' | 'info' | 'migration';
@@ -97,7 +97,7 @@ export class USLCompatibilityLayer {
    *
    * @param uslInstance
    */
-  setUSLInstance(uslInstance: any): void {
+  setUSLInstance(uslInstance: unknown): void {
     this.uslInstance = uslInstance;
   }
 
@@ -110,10 +110,10 @@ export class USLCompatibilityLayer {
    * @param options
    * @deprecated Use serviceManager.createWebDataService() instead.
    */
-  async createWebDataService(name: string, options?: any): Promise<IService> {
+  async createWebDataService(name: string, options?: unknown): Promise<IService> {
     this.logLegacyUsage(
       'createWebDataService',
-      'serviceManager.createWebDataService()',
+      'serviceManager.createWebDataService()'
     );
 
     if (this.config.autoMigrate) {
@@ -123,7 +123,7 @@ export class USLCompatibilityLayer {
     // Legacy fallback
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.',
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
       );
     }
     return await this.uslInstance.createWebDataService(name, options);
@@ -138,31 +138,31 @@ export class USLCompatibilityLayer {
   async createDocumentService(
     name: string,
     dbType?: string,
-    options?: any,
+    options?: unknown
   ): Promise<IService> {
     this.logLegacyUsage(
       'createDocumentService',
-      'serviceManager.createDocumentService()',
+      'serviceManager.createDocumentService()'
     );
 
     if (this.config.autoMigrate) {
       return await this.serviceManager.createDocumentService(
         name,
         (dbType as 'postgresql' | 'sqlite' | 'mysql') || 'postgresql',
-        options,
+        options
       );
     }
 
     // Legacy fallback
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.',
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
       );
     }
     return await this.uslInstance.createDocumentService(
       name,
       dbType as any,
-      options,
+      options
     );
   }
 
@@ -171,10 +171,10 @@ export class USLCompatibilityLayer {
    * @param options
    * @deprecated Use serviceManager.createDaaService() instead.
    */
-  async createDAAService(name: string, options?: any): Promise<IService> {
+  async createDAAService(name: string, options?: unknown): Promise<IService> {
     this.logLegacyUsage(
       'createDAAService',
-      'serviceManager.createDaaService()',
+      'serviceManager.createDaaService()'
     );
 
     if (this.config.autoMigrate) {
@@ -184,7 +184,7 @@ export class USLCompatibilityLayer {
     // Legacy fallback - map to coordination service
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.',
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
       );
     }
     return await this.uslInstance.createCoordinationService(name, {
@@ -200,24 +200,24 @@ export class USLCompatibilityLayer {
    */
   async createSessionRecoveryService(
     name: string,
-    options?: any,
+    options?: unknown
   ): Promise<IService> {
     this.logLegacyUsage(
       'createSessionRecoveryService',
-      'serviceManager.createSessionRecoveryService()',
+      'serviceManager.createSessionRecoveryService()'
     );
 
     if (this.config.autoMigrate) {
       return await this.serviceManager.createSessionRecoveryService(
         name,
-        options,
+        options
       );
     }
 
     // Legacy fallback
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.',
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
       );
     }
     return await this.uslInstance.createCoordinationService(name, {
@@ -235,31 +235,31 @@ export class USLCompatibilityLayer {
   async createArchitectureStorageService(
     name: string,
     dbType?: string,
-    options?: any,
+    options?: unknown
   ): Promise<IService> {
     this.logLegacyUsage(
       'createArchitectureStorageService',
-      'serviceManager.createArchitectureStorageService()',
+      'serviceManager.createArchitectureStorageService()'
     );
 
     if (this.config.autoMigrate) {
       return await this.serviceManager.createArchitectureStorageService(
         name,
         (dbType as 'postgresql' | 'sqlite' | 'mysql') || 'postgresql',
-        options,
+        options
       );
     }
 
     // Legacy fallback
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.',
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
       );
     }
     return await this.uslInstance.createArchitectureStorageService(
       name,
       dbType as any,
-      options,
+      options
     );
   }
 
@@ -272,25 +272,25 @@ export class USLCompatibilityLayer {
   async createSafeAPIService(
     name: string,
     baseURL: string,
-    options?: any,
+    options?: unknown
   ): Promise<IService> {
     this.logLegacyUsage(
       'createSafeAPIService',
-      'serviceManager.createSafeAPIService()',
+      'serviceManager.createSafeAPIService()'
     );
 
     if (this.config.autoMigrate) {
       return await this.serviceManager.createSafeAPIService(
         name,
         baseURL,
-        options,
+        options
       );
     }
 
     // Legacy fallback
     if (!this.uslInstance) {
       throw new Error(
-        'USL instance not set. Call setUSLInstance() before using compatibility layer.',
+        'USL instance not set. Call setUSLInstance() before using compatibility layer.'
       );
     }
     return await this.uslInstance.createSafeAPIService(name, baseURL, options);
@@ -336,7 +336,7 @@ export class USLCompatibilityLayer {
   /**
    * @deprecated Use serviceManager.getSystemHealth() instead.
    */
-  async getSystemStatus(): Promise<any> {
+  async getSystemStatus(): Promise<unknown> {
     this.logLegacyUsage('getSystemStatus', 'serviceManager.getSystemHealth()');
 
     const health = await this.serviceManager.getSystemHealth();
@@ -364,13 +364,13 @@ export class USLCompatibilityLayer {
    *
    * @param services
    */
-  async migrateExistingServices(services: Record<string, any>): Promise<{
+  async migrateExistingServices(services: Record<string, unknown>): Promise<{
     migrated: IService[];
     failed: Array<{ name: string; error: string }>;
     warnings: string[];
   }> {
     this.logger.info(
-      `Migrating ${Object.keys(services).length} existing services to USL`,
+      `Migrating ${Object.keys(services).length} existing services to USL`
     );
 
     const migrated: IService[] = [];
@@ -385,7 +385,7 @@ export class USLCompatibilityLayer {
 
         if (!detectedType) {
           warnings.push(
-            `Could not detect service type for ${serviceName}, skipping migration`,
+            `Could not detect service type for ${serviceName}, skipping migration`
           );
           continue;
         }
@@ -402,7 +402,7 @@ export class USLCompatibilityLayer {
         this.logMigration(
           serviceName,
           detectedType,
-          'Successfully migrated service to USL',
+          'Successfully migrated service to USL'
         );
       } catch (error) {
         const errorMessage =
@@ -413,7 +413,7 @@ export class USLCompatibilityLayer {
     }
 
     this.logger.info(
-      `Migration complete: ${migrated.length} migrated, ${failed.length} failed, ${warnings.length} warnings`,
+      `Migration complete: ${migrated.length} migrated, ${failed.length} failed, ${warnings.length} warnings`
     );
 
     return { migrated, failed, warnings };
@@ -452,7 +452,7 @@ export class USLCompatibilityLayer {
     // Analyze code patterns against known legacy patterns
     codePatterns.forEach((pattern) => {
       const legacyPattern = this.config.legacyPatterns.find((lp) =>
-        pattern.includes(lp.pattern),
+        pattern.includes(lp.pattern)
       );
 
       if (legacyPattern) {
@@ -478,7 +478,7 @@ export class USLCompatibilityLayer {
       'Review service configurations for new options',
       'Update error handling for new error types',
       'Test service interactions and dependencies',
-      'Update monitoring and logging integration',
+      'Update monitoring and logging integration'
     );
 
     return {
@@ -503,7 +503,7 @@ export class USLCompatibilityLayer {
   } {
     const totalPatterns = this.config.legacyPatterns.length;
     const migratedPatterns = this.migrationLog.filter(
-      (log) => log.type === 'migration',
+      (log) => log.type === 'migration'
     ).length;
     const completionPercentage =
       totalPatterns > 0 ? (migratedPatterns / totalPatterns) * 100 : 100;
@@ -514,20 +514,20 @@ export class USLCompatibilityLayer {
       recommendations.push('Continue migrating legacy service patterns to USL');
       recommendations.push('Review and update service creation calls');
       recommendations.push(
-        'Update configuration patterns to use new USL types',
+        'Update configuration patterns to use new USL types'
       );
     }
 
     if (this.migrationLog.filter((log) => log.type === 'warning').length > 0) {
       recommendations.push('Address legacy usage warnings');
       recommendations.push(
-        'Consider enabling auto-migration for supported patterns',
+        'Consider enabling auto-migration for supported patterns'
       );
     }
 
     return {
       legacyUsageCount: this.migrationLog.filter(
-        (log) => log.type === 'warning',
+        (log) => log.type === 'warning'
       ).length,
       migrationLog: this.migrationLog,
       recommendations,
@@ -553,7 +553,7 @@ export class USLCompatibilityLayer {
 
     try {
       this.logger.info(
-        'Migrating ClaudeZenFacade to USL infrastructure services',
+        'Migrating ClaudeZenFacade to USL infrastructure services'
       );
 
       // Create enhanced facade service using USL
@@ -576,13 +576,13 @@ export class USLCompatibilityLayer {
             enableProtocolSystem: true,
             enableAgentSystem: true,
           },
-        },
+        }
       );
 
       this.logMigration(
         'ClaudeZenFacade',
         ServiceType.INFRASTRUCTURE,
-        'Migrated facade to USL infrastructure service',
+        'Migrated facade to USL infrastructure service'
       );
 
       return {
@@ -642,13 +642,13 @@ export class USLCompatibilityLayer {
               serviceStartupTimeout: 30000,
               shutdownGracePeriod: 10000,
             },
-          },
+          }
         );
 
       this.logMigration(
         'PatternIntegration',
         ServiceType.INFRASTRUCTURE,
-        'Migrated pattern integration to USL infrastructure service',
+        'Migrated pattern integration to USL infrastructure service'
       );
 
       return {
@@ -685,7 +685,7 @@ export class USLCompatibilityLayer {
       name: string;
       currentPattern: string;
       location: string;
-    }>,
+    }>
   ): Promise<{
     success: boolean;
     migrationPlan: Array<{
@@ -714,7 +714,7 @@ export class USLCompatibilityLayer {
         : `serviceManager.getService('${serviceRef.name}')`;
 
       const autoMigration = this.canAutoMigratePattern(
-        serviceRef.currentPattern,
+        serviceRef.currentPattern
       );
 
       migrationPlan.push({
@@ -727,19 +727,19 @@ export class USLCompatibilityLayer {
 
       if (mapping) {
         warnings.push(
-          `Service '${serviceRef.name}' should be renamed to '${mapping.newName}' (${mapping.migrationNotes})`,
+          `Service '${serviceRef.name}' should be renamed to '${mapping.newName}' (${mapping.migrationNotes})`
         );
       }
 
       if (!autoMigration) {
         warnings.push(
-          `Manual migration required for ${serviceRef.name} at ${serviceRef.location}`,
+          `Manual migration required for ${serviceRef.name} at ${serviceRef.location}`
         );
       }
     }
 
     this.logger.info(
-      `Generated migration plan for ${migrationPlan.length} service references`,
+      `Generated migration plan for ${migrationPlan.length} service references`
     );
 
     return {
@@ -772,10 +772,10 @@ export class USLCompatibilityLayer {
     });
 
     const totalLegacyUsages = this.migrationLog.filter(
-      (log) => log.type === 'warning',
+      (log) => log.type === 'warning'
     ).length;
     const migratedPatterns = this.migrationLog.filter(
-      (log) => log.type === 'migration',
+      (log) => log.type === 'migration'
     ).length;
     const remainingMigrations =
       this.config.legacyPatterns.length - migratedPatterns;
@@ -793,24 +793,24 @@ export class USLCompatibilityLayer {
 
     if (migrationPercentage < 50) {
       recommendedActions.push(
-        'Priority: Begin systematic migration to USL patterns',
+        'Priority: Begin systematic migration to USL patterns'
       );
       recommendedActions.push(
-        'Focus on most frequently used legacy patterns first',
+        'Focus on most frequently used legacy patterns first'
       );
     } else if (migrationPercentage < 90) {
       recommendedActions.push(
-        "Continue migration efforts - you're making good progress",
+        "Continue migration efforts - you're making good progress"
       );
       recommendedActions.push(
-        'Address remaining edge cases and specialized patterns',
+        'Address remaining edge cases and specialized patterns'
       );
     } else {
       recommendedActions.push(
-        'Migration nearly complete - focus on testing and validation',
+        'Migration nearly complete - focus on testing and validation'
       );
       recommendedActions.push(
-        'Consider disabling legacy compatibility warnings',
+        'Consider disabling legacy compatibility warnings'
       );
     }
 
@@ -847,7 +847,7 @@ export class USLCompatibilityLayer {
   private logMigration(
     serviceName: string,
     serviceType: ServiceType,
-    details: string,
+    details: string
   ): void {
     this.migrationLog.push({
       timestamp: new Date(),
@@ -859,7 +859,7 @@ export class USLCompatibilityLayer {
     this.logger.info(`Migration: ${serviceName} -> ${details}`);
   }
 
-  private detectServiceType(serviceInstance: any): ServiceType | null {
+  private detectServiceType(serviceInstance: unknown): ServiceType | null {
     // Simple heuristic-based service type detection
     if (!serviceInstance || typeof serviceInstance !== 'object') {
       return null;
@@ -899,7 +899,7 @@ export class USLCompatibilityLayer {
   }
 
   private transformServiceConfig(
-    serviceInstance: any,
+    serviceInstance: unknown
   ): Partial<AnyServiceConfig> {
     // Basic configuration transformation
     const baseConfig: Partial<AnyServiceConfig> = {
@@ -917,7 +917,7 @@ export class USLCompatibilityLayer {
 
   private canAutoMigratePattern(pattern: string): boolean {
     return this.config.legacyPatterns.some(
-      (lp) => pattern.includes(lp.pattern) && lp.autoMigration,
+      (lp) => pattern.includes(lp.pattern) && lp.autoMigration
     );
   }
 
@@ -1034,10 +1034,10 @@ export class USLCompatibilityLayer {
 
   private getDefaultConfigTransformations(): Record<
     string,
-    (oldConfig: any) => AnyServiceConfig
+    (oldConfig: unknown) => AnyServiceConfig
   > {
     return {
-      dataService: (oldConfig: any) => ({
+      dataService: (oldConfig: unknown) => ({
         name: oldConfig?.name || 'migrated-data-service',
         type: ServiceType.DATA,
         enabled: true,
@@ -1047,7 +1047,7 @@ export class USLCompatibilityLayer {
         validation: { enabled: true, strict: false },
       }),
 
-      coordinationService: (oldConfig: any) => ({
+      coordinationService: (oldConfig: unknown) => ({
         name: oldConfig?.name || 'migrated-coordination-service',
         type: ServiceType.COORDINATION,
         enabled: true,
@@ -1060,7 +1060,7 @@ export class USLCompatibilityLayer {
         persistence: { enabled: true, storage: 'memory' },
       }),
 
-      integrationService: (oldConfig: any) => ({
+      integrationService: (oldConfig: unknown) => ({
         name: oldConfig?.name || 'migrated-integration-service',
         type: ServiceType.API,
         enabled: true,
@@ -1094,7 +1094,7 @@ export const compat = new USLCompatibilityLayer();
  */
 export const initializeCompatibility = async (
   config?: Partial<CompatibilityConfig>,
-  uslInstance?: any,
+  uslInstance?: unknown
 ): Promise<void> => {
   const compatLayer = new USLCompatibilityLayer(config);
   if (uslInstance) {
@@ -1113,7 +1113,7 @@ export const MigrationUtils = {
    * @param codebase
    */
   createMigrationPlan: (
-    codebase: string[],
+    codebase: string[]
   ): ReturnType<USLCompatibilityLayer['generateMigrationGuide']> => {
     return compat.generateMigrationGuide(codebase);
   },
@@ -1124,7 +1124,7 @@ export const MigrationUtils = {
    * @param services
    */
   validateMigrationReadiness: (
-    services: Record<string, any>,
+    services: Record<string, unknown>
   ): {
     ready: boolean;
     blockers: string[];
@@ -1141,7 +1141,7 @@ export const MigrationUtils = {
 
       if (service.isDeprecated) {
         recommendations.push(
-          `Service ${name} is deprecated and should be updated before migration`,
+          `Service ${name} is deprecated and should be updated before migration`
         );
       }
     });
@@ -1183,7 +1183,7 @@ export const MigrationUtils = {
       score,
       details: {
         supportedPatterns: migrationStatus.migrationLog.filter(
-          (log) => log.type === 'migration',
+          (log) => log.type === 'migration'
         ).length,
         unsupportedPatterns: migrationStatus.legacyUsageCount,
         warnings: migrationStatus.migrationLog

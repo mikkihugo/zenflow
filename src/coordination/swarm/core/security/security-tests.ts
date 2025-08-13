@@ -62,7 +62,7 @@ class SecurityTester {
       this.logTest(
         'Issue Number Injection',
         true,
-        'Correctly rejected malicious input',
+        'Correctly rejected malicious input'
       );
     }
 
@@ -74,7 +74,7 @@ class SecurityTester {
       this.logTest(
         'Repository Injection',
         true,
-        'Correctly rejected malicious input',
+        'Correctly rejected malicious input'
       );
     }
 
@@ -84,13 +84,13 @@ class SecurityTester {
       this.logTest(
         'Swarm ID Path Traversal',
         false,
-        'Should have thrown error',
+        'Should have thrown error'
       );
     } catch (_error) {
       this.logTest(
         'Swarm ID Path Traversal',
         true,
-        'Correctly rejected path traversal',
+        'Correctly rejected path traversal'
       );
     }
 
@@ -102,7 +102,7 @@ class SecurityTester {
       this.logTest(
         'Label Injection',
         true,
-        'Correctly sanitized malicious label',
+        'Correctly sanitized malicious label'
       );
     }
 
@@ -116,13 +116,13 @@ class SecurityTester {
       this.logTest(
         'Message Command Injection',
         !containsInjection,
-        'Should remove command substitution',
+        'Should remove command substitution'
       );
     } catch (_error) {
       this.logTest(
         'Message Command Injection',
         true,
-        'Correctly rejected malicious message',
+        'Correctly rejected malicious message'
       );
     }
   }
@@ -139,13 +139,13 @@ class SecurityTester {
       this.logTest(
         'Valid Input Acceptance',
         true,
-        'Valid inputs correctly accepted',
+        'Valid inputs correctly accepted'
       );
     } catch (error) {
       this.logTest(
         'Valid Input Acceptance',
         false,
-        `Valid inputs rejected: ${error.message}`,
+        `Valid inputs rejected: ${error.message}`
       );
     }
 
@@ -157,7 +157,7 @@ class SecurityTester {
       this.logTest(
         'Empty Input Rejection',
         true,
-        'Correctly rejected empty input',
+        'Correctly rejected empty input'
       );
     }
 
@@ -168,13 +168,13 @@ class SecurityTester {
       this.logTest(
         'Oversized Input Rejection',
         false,
-        'Should reject oversized input',
+        'Should reject oversized input'
       );
     } catch (_error) {
       this.logTest(
         'Oversized Input Rejection',
         true,
-        'Correctly rejected oversized input',
+        'Correctly rejected oversized input'
       );
     }
 
@@ -184,13 +184,13 @@ class SecurityTester {
       this.logTest(
         'File Path Traversal',
         false,
-        'Should reject path traversal',
+        'Should reject path traversal'
       );
     } catch (_error) {
       this.logTest(
         'File Path Traversal',
         true,
-        'Correctly rejected path traversal',
+        'Correctly rejected path traversal'
       );
     }
   }
@@ -226,13 +226,13 @@ class SecurityTester {
           !containsInjection,
           containsInjection
             ? 'Contains injection patterns'
-            : 'Successfully sanitized',
+            : 'Successfully sanitized'
         );
       } catch (_error) {
         this.logTest(
           `Prompt Injection: "${prompt.slice(0, 30)}..."`,
           true,
-          'Rejected malicious prompt',
+          'Rejected malicious prompt'
         );
       }
     }
@@ -251,18 +251,19 @@ class SecurityTester {
       });
 
       const hasInjection = args.some(
-        (arg: any) => arg.includes(';') || arg.includes('|') || arg.includes('&'),
+        (arg: unknown) =>
+          arg.includes(';') || arg.includes('|') || arg.includes('&')
       );
       this.logTest(
         'GitHub Args Construction',
         !hasInjection,
-        'Arguments should not contain injection chars',
+        'Arguments should not contain injection chars'
       );
     } catch (error) {
       this.logTest(
         'GitHub Args Construction',
         false,
-        `Failed to construct args: ${error.message}`,
+        `Failed to construct args: ${error.message}`
       );
     }
 
@@ -273,18 +274,18 @@ class SecurityTester {
       });
 
       const hasInjection = args.some(
-        (arg: any) => arg.includes(';') || arg.includes('$('),
+        (arg: unknown) => arg.includes(';') || arg.includes('$(')
       );
       this.logTest(
         'Git Args Construction',
         !hasInjection,
-        'Git arguments should be safe',
+        'Git arguments should be safe'
       );
     } catch (error) {
       this.logTest(
         'Git Args Construction',
         false,
-        `Failed to construct git args: ${error.message}`,
+        `Failed to construct git args: ${error.message}`
       );
     }
 
@@ -297,13 +298,13 @@ class SecurityTester {
       this.logTest(
         'Malicious Argument Rejection',
         false,
-        'Should reject malicious arguments',
+        'Should reject malicious arguments'
       );
     } catch (_error) {
       this.logTest(
         'Malicious Argument Rejection',
         true,
-        'Correctly rejected malicious arguments',
+        'Correctly rejected malicious arguments'
       );
     }
   }
@@ -317,21 +318,21 @@ class SecurityTester {
 
     try {
       // Test 1: Missing environment variables
-      delete process.env['GITHUB_OWNER'];
-      delete process.env['GITHUB_REPO'];
+      process.env['GITHUB_OWNER'] = undefined;
+      process.env['GITHUB_REPO'] = undefined;
 
       try {
         CommandSanitizer.validateEnvironment();
         this.logTest(
           'Missing Env Vars',
           false,
-          'Should reject missing environment variables',
+          'Should reject missing environment variables'
         );
       } catch (_error) {
         this.logTest(
           'Missing Env Vars',
           true,
-          'Correctly detected missing environment variables',
+          'Correctly detected missing environment variables'
         );
       }
 
@@ -344,13 +345,13 @@ class SecurityTester {
         this.logTest(
           'Invalid Env Values',
           false,
-          'Should reject invalid environment values',
+          'Should reject invalid environment values'
         );
       } catch (_error) {
         this.logTest(
           'Invalid Env Values',
           true,
-          'Correctly rejected invalid environment values',
+          'Correctly rejected invalid environment values'
         );
       }
 
@@ -363,13 +364,13 @@ class SecurityTester {
         this.logTest(
           'Valid Environment',
           true,
-          'Valid environment should be accepted',
+          'Valid environment should be accepted'
         );
       } catch (error) {
         this.logTest(
           'Valid Environment',
           false,
-          `Valid environment rejected: ${error.message}`,
+          `Valid environment rejected: ${error.message}`
         );
       }
     } finally {
@@ -396,14 +397,14 @@ class SecurityTester {
       this.logTest(
         'Secure Coordinator Init',
         true,
-        'Coordinator initialized successfully',
+        'Coordinator initialized successfully'
       );
       coordinator.close();
     } catch (error) {
       this.logTest(
         'Secure Coordinator Init',
         false,
-        `Failed to initialize: ${error.message}`,
+        `Failed to initialize: ${error.message}`
       );
     }
 
@@ -425,20 +426,20 @@ class SecurityTester {
         this.logTest(
           'Hooks Task Sanitization',
           !containsInjection,
-          'Task description should be sanitized',
+          'Task description should be sanitized'
         );
       } catch (_error) {
         this.logTest(
           'Hooks Task Sanitization',
           true,
-          'Malicious task description rejected',
+          'Malicious task description rejected'
         );
       }
     } catch (error) {
       this.logTest(
         'Hooks Security',
         false,
-        `Hooks security test failed: ${error.message}`,
+        `Hooks security test failed: ${error.message}`
       );
     }
   }

@@ -76,7 +76,7 @@ async function runProtectionTests() {
 
       // Check backup naming pattern
       assert(
-        path.basename(backupPath).match(/^CLAUDE\.md\.backup\.\d{8}T\d{6}$/),
+        path.basename(backupPath).match(/^CLAUDE\.md\.backup\.\d{8}T\d{6}$/)
       );
     });
 
@@ -121,7 +121,7 @@ Remember: **ruv-swarm coordinates, Claude Code creates!**`;
       assert(mergedContent.includes('Setup Instructions'));
       assert(mergedContent.includes('Claude Code Configuration for ruv-swarm'));
       assert(
-        mergedContent.includes('ruv-swarm coordinates, Claude Code creates'),
+        mergedContent.includes('ruv-swarm coordinates, Claude Code creates')
       );
     });
 

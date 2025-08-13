@@ -166,7 +166,7 @@ class UELValidationCLI {
         this.logger.success('🎉 All UEL validations passed!');
       } else {
         this.logger.warn(
-          `⚠️  UEL validation completed with issues (exit code: ${exitCode})`,
+          `⚠️  UEL validation completed with issues (exit code: ${exitCode})`
         );
       }
 
@@ -186,7 +186,7 @@ class UELValidationCLI {
       await fs.access(uelPath);
     } catch {
       throw new Error(
-        'UEL module not found. Ensure src/interfaces/events/index.ts exists.',
+        'UEL module not found. Ensure src/interfaces/events/index.ts exists.'
       );
     }
 
@@ -394,7 +394,7 @@ class UELValidationCLI {
       // Check adapter implementations
       const adapterPath = path.join(
         __dirname,
-        '../src/interfaces/events/adapters',
+        '../src/interfaces/events/adapters'
       );
       try {
         const adapters = await fs.readdir(adapterPath);
@@ -439,7 +439,7 @@ class UELValidationCLI {
         try {
           const content = await fs.readFile(
             path.join(__dirname, '..', check.file),
-            'utf8',
+            'utf8'
           );
 
           // Check if it uses EventEmitter
@@ -495,7 +495,7 @@ class UELValidationCLI {
       // Import event types
       const eventTypesPath = path.join(
         __dirname,
-        '../src/interfaces/events/types.ts',
+        '../src/interfaces/events/types.ts'
       );
       const content = await fs.readFile(eventTypesPath, 'utf8');
 
@@ -676,7 +676,7 @@ class UELValidationCLI {
     try {
       const factoriesPath = path.join(
         __dirname,
-        '../src/interfaces/events/factories.ts',
+        '../src/interfaces/events/factories.ts'
       );
       const content = await fs.readFile(factoriesPath, 'utf8');
 
@@ -895,11 +895,11 @@ class UELValidationCLI {
     const allErrors = this.validationResults.flatMap((r) => r.errors || []);
     const allWarnings = this.validationResults.flatMap((r) => r.warnings || []);
     const allRecommendations = this.validationResults.flatMap(
-      (r) => r.recommendations || [],
+      (r) => r.recommendations || []
     );
 
     const criticalErrors = allErrors.filter(
-      (e) => e.severity === 'critical',
+      (e) => e.severity === 'critical'
     ).length;
     const highErrors = allErrors.filter((e) => e.severity === 'high').length;
 
@@ -1045,7 +1045,7 @@ class UELValidationCLI {
       this.logger.success(`Applied ${fixCount} automated fixes`);
     } else {
       this.logger.info(
-        'No automated fixes available - manual intervention required',
+        'No automated fixes available - manual intervention required'
       );
     }
   }
@@ -1054,7 +1054,7 @@ class UELValidationCLI {
     const { errors } = report.details;
 
     const criticalErrors = errors.filter(
-      (e) => e.severity === 'critical',
+      (e) => e.severity === 'critical'
     ).length;
     const highErrors = errors.filter((e) => e.severity === 'high').length;
 

@@ -131,7 +131,7 @@ describe('Facade Pattern Implementation', () => {
         eventManager,
         commandQueue,
         mockLogger,
-        mockMetrics,
+        mockMetrics
       );
     });
 
@@ -223,7 +223,7 @@ describe('Facade Pattern Implementation', () => {
             interfaces: expect.objectContaining({
               http: expect.objectContaining({ port: 3000 }),
             }),
-          }),
+          })
         );
 
         // Verify service integration
@@ -265,7 +265,7 @@ describe('Facade Pattern Implementation', () => {
 
         // Interface service fails
         mockServices.interfaceService.startHTTPMCP.mockRejectedValue(
-          new Error('Port 3000 already in use'),
+          new Error('Port 3000 already in use')
         );
 
         // Memory and database services succeed
@@ -281,7 +281,7 @@ describe('Facade Pattern Implementation', () => {
           expect.objectContaining({
             service: 'interface',
             message: expect.stringContaining('Port 3000 already in use'),
-          }),
+          })
         );
 
         // Successfully initialized services should be available
@@ -313,24 +313,24 @@ describe('Facade Pattern Implementation', () => {
           expect.objectContaining({
             field: 'name',
             message: 'Project name is required',
-          }),
+          })
         );
         expect(result?.errors).toContainEqual(
           expect.objectContaining({
             field: 'swarm.topology',
             message: expect.stringContaining('Invalid topology'),
-          }),
+          })
         );
         expect(result?.errors).toContainEqual(
           expect.objectContaining({
             field: 'swarm.agentCount',
             message: 'Agent count must be positive',
-          }),
+          })
         );
 
         // No services should be called with invalid config
         expect(
-          mockServices.swarmService.initializeSwarm,
+          mockServices.swarmService.initializeSwarm
         ).not.toHaveBeenCalled();
         expect(mockServices.neuralService.trainModel).not.toHaveBeenCalled();
       });
@@ -383,22 +383,22 @@ describe('Facade Pattern Implementation', () => {
         });
 
         const result = await facade.initializeProject(
-          resourceConstrainedConfig,
+          resourceConstrainedConfig
         );
 
         expect(result?.success).toBe(true);
         expect(result?.resourceOptimization).toBeDefined();
         expect(result?.resourceOptimization?.appliedOptimizations).toContain(
-          'agent-count-reduction',
+          'agent-count-reduction'
         );
         expect(result?.resourceOptimization?.appliedOptimizations).toContain(
-          'model-size-optimization',
+          'model-size-optimization'
         );
         expect(
-          result?.resourceOptimization?.resourceUsage?.cpu,
+          result?.resourceOptimization?.resourceUsage?.cpu
         ).toBeLessThanOrEqual(2.0);
         expect(
-          result?.resourceOptimization?.resourceUsage?.memory,
+          result?.resourceOptimization?.resourceUsage?.memory
         ).toBeLessThanOrEqual(4096);
       });
     });
@@ -521,23 +521,23 @@ describe('Facade Pattern Implementation', () => {
 
         expect(systemStatus.services.swarm.healthy).toBe(false);
         expect(systemStatus.services.swarm.issues).toContain(
-          'Multiple swarms failing',
+          'Multiple swarms failing'
         );
 
         expect(systemStatus.services.memory.healthy).toBe(false);
         expect(systemStatus.services.memory.issues).toContain(
-          'Low hit rate (45%)',
+          'Low hit rate (45%)'
         );
         expect(systemStatus.services.memory.issues).toContain(
-          'High response time (150ms)',
+          'High response time (150ms)'
         );
 
         expect(systemStatus.services.database.healthy).toBe(false);
         expect(systemStatus.services.database.issues).toContain(
-          'High query latency (500ms)',
+          'High query latency (500ms)'
         );
         expect(systemStatus.services.database.issues).toContain(
-          'High disk usage (95%)',
+          'High disk usage (95%)'
         );
 
         expect(systemStatus.alerts).toBeDefined();
@@ -547,7 +547,7 @@ describe('Facade Pattern Implementation', () => {
             severity: 'critical',
             service: 'swarm',
             message: expect.stringContaining('swarm-2'),
-          }),
+          })
         );
       });
 
@@ -579,14 +579,14 @@ describe('Facade Pattern Implementation', () => {
               total: expect.any(Number),
               byService: expect.any(Object),
             }),
-          }),
+          })
         );
 
         expect(performanceMetrics.latency.p99).toBeGreaterThan(
-          performanceMetrics.latency.p95,
+          performanceMetrics.latency.p95
         );
         expect(performanceMetrics.latency.p95).toBeGreaterThan(
-          performanceMetrics.latency.p50,
+          performanceMetrics.latency.p50
         );
         expect(performanceMetrics.resourceUsage.cpu).toBeGreaterThanOrEqual(0);
         expect(performanceMetrics.resourceUsage.cpu).toBeLessThanOrEqual(1);
@@ -690,7 +690,7 @@ describe('Facade Pattern Implementation', () => {
             swarmId: 'workflow-swarm-001',
             trainedModels: ['processor-model-001', 'classifier-model-001'],
             deployedServices: expect.arrayContaining(['workflow-api-001']),
-          }),
+          })
         );
 
         // Verify dependency resolution
@@ -737,14 +737,14 @@ describe('Facade Pattern Implementation', () => {
 
         // Second step fails
         mockServices.neuralService.trainModel.mockRejectedValue(
-          new Error('Training data corrupted'),
+          new Error('Training data corrupted')
         );
 
         // Mock rollback operations
         mockServices.swarmService.destroySwarm.mockResolvedValue();
 
         const workflowResult = await facade.executeWorkflow(
-          failingWorkflowConfig,
+          failingWorkflowConfig
         );
 
         expect(workflowResult?.success).toBe(false);
@@ -754,12 +754,12 @@ describe('Facade Pattern Implementation', () => {
         expect(workflowResult?.rollbackResults).toEqual(
           expect.objectContaining({
             'swarm.initialize': { success: true, action: 'destroyed' },
-          }),
+          })
         );
 
         // Verify rollback was executed
         expect(mockServices.swarmService.destroySwarm).toHaveBeenCalledWith(
-          'failing-workflow-swarm',
+          'failing-workflow-swarm'
         );
       });
 
@@ -788,7 +788,7 @@ describe('Facade Pattern Implementation', () => {
 
         // Start workflow execution
         const _workflowPromise = facade.executeWorkflow(
-          longRunningWorkflowConfig,
+          longRunningWorkflowConfig
         );
 
         // Allow first step to complete
@@ -812,9 +812,9 @@ describe('Facade Pattern Implementation', () => {
                     trainingTime: 36000,
                     status: 'ready',
                   }),
-                5000,
-              ),
-            ),
+                5000
+              )
+            )
         );
 
         // Wait briefly then pause
@@ -825,13 +825,13 @@ describe('Facade Pattern Implementation', () => {
 
         // Resume workflow
         const resumeResult = await facade.resumeWorkflow(
-          'long-running-workflow',
+          'long-running-workflow'
         );
         expect(resumeResult?.success).toBe(true);
 
         // Cancel workflow
         const cancelResult = await facade.cancelWorkflow(
-          'long-running-workflow',
+          'long-running-workflow'
         );
         expect(cancelResult?.success).toBe(true);
         expect(cancelResult?.cancelled).toBe(true);
@@ -842,7 +842,7 @@ describe('Facade Pattern Implementation', () => {
       it('should implement circuit breaker pattern for failing services', async () => {
         // Simulate repeated failures to trigger circuit breaker
         mockServices.neuralService.trainModel.mockRejectedValue(
-          new Error('Neural service unavailable'),
+          new Error('Neural service unavailable')
         );
 
         const failurePromises = [];
@@ -852,7 +852,7 @@ describe('Facade Pattern Implementation', () => {
               modelType: 'test',
               trainingData: '/data/test',
               targetAccuracy: 0.9,
-            }),
+            })
           );
         }
 
@@ -860,9 +860,11 @@ describe('Facade Pattern Implementation', () => {
 
         // After threshold failures, circuit should be open
         const laterResults = results?.slice(-3);
-        expect(laterResults?.every((r: any) => !r.success)).toBe(true);
+        expect(laterResults?.every((r: unknown) => !r.success)).toBe(true);
         expect(
-          laterResults?.some((r: any) => r.error?.type === 'CIRCUIT_BREAKER_OPEN'),
+          laterResults?.some(
+            (r: unknown) => r.error?.type === 'CIRCUIT_BREAKER_OPEN'
+          )
         ).toBe(true);
 
         // Verify circuit breaker status
@@ -882,7 +884,7 @@ describe('Facade Pattern Implementation', () => {
 
         const queryResult = await facade.queryDatabase(
           'SELECT * FROM test',
-          [],
+          []
         );
 
         expect(queryResult?.success).toBe(true);
@@ -894,10 +896,10 @@ describe('Facade Pattern Implementation', () => {
       it('should gracefully degrade functionality when services are unavailable', async () => {
         // Mock neural service as completely unavailable
         mockServices.neuralService.trainModel.mockRejectedValue(
-          new Error('Neural service offline'),
+          new Error('Neural service offline')
         );
         mockServices.neuralService.predictWithModel.mockRejectedValue(
-          new Error('Neural service offline'),
+          new Error('Neural service offline')
         );
 
         // Request should still succeed but with degraded functionality
@@ -933,7 +935,7 @@ describe('Facade Pattern Implementation', () => {
           expect.objectContaining({
             service: 'neural',
             message: expect.stringContaining('offline'),
-          }),
+          })
         );
       });
     });
@@ -946,7 +948,7 @@ describe('Facade Pattern Implementation', () => {
           query: 'SELECT status FROM swarms WHERE active = true',
         }));
 
-        mockServices.databaseService.query.mockImplementation((_query: any) => {
+        mockServices.databaseService.query.mockImplementation((_query: unknown) => {
           return Promise.resolve([
             { swarmId: 'batch-swarm-0', status: 'active' },
             { swarmId: 'batch-swarm-1', status: 'active' },
@@ -954,17 +956,17 @@ describe('Facade Pattern Implementation', () => {
         });
 
         const results = await Promise.all(
-          requests.map((req) => facade.queryDatabase(req.query, [])),
+          requests.map((req) => facade.queryDatabase(req.query, []))
         );
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
 
         // Due to batching and caching, database should be called fewer times
         expect(mockServices.databaseService.query).toHaveBeenCalledTimes(1);
 
         // Results should indicate cache hits
         const cachedResults = results?.slice(1);
-        expect(cachedResults?.every((r: any) => r.cached)).toBe(true);
+        expect(cachedResults?.every((r: unknown) => r.cached)).toBe(true);
       });
 
       it('should load balance requests across service instances', async () => {
@@ -993,12 +995,12 @@ describe('Facade Pattern Implementation', () => {
             topology: 'mesh',
             agentCount: 2,
             capabilities: ['load-balance-test'],
-          }),
+          })
         );
 
         const results = await Promise.all(requestPromises);
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
 
         // Verify load balancing - each instance should handle 3 requests
         swarmInstances.forEach((instance) => {
@@ -1022,7 +1024,7 @@ describe('Facade Pattern Implementation', () => {
         const maxConcurrentOperations = 2;
 
         mockServices.neuralService.trainModel.mockImplementation(
-          async (_config: any) => {
+          async (_config: unknown) => {
             if (activeOperations >= maxConcurrentOperations) {
               throw new Error('Resource pool exhausted');
             }
@@ -1039,7 +1041,7 @@ describe('Facade Pattern Implementation', () => {
               status: 'ready',
               pooledExecution: true,
             };
-          },
+          }
         );
 
         const results = await facade.batchTrainModels(intensiveOperations);
@@ -1165,7 +1167,7 @@ describe('Facade Pattern Implementation', () => {
         mockEventManager,
         mockCommandQueue,
         mockLogger,
-        mockMetrics,
+        mockMetrics
       );
     });
 
@@ -1184,16 +1186,16 @@ describe('Facade Pattern Implementation', () => {
       };
 
       mockServices.swarmService.initializeSwarm.mockResolvedValue(
-        expectedResult,
+        expectedResult
       );
 
       const result = await facade.initializeSwarm(swarmConfig);
 
       expect(mockServices.swarmService.initializeSwarm).toHaveBeenCalledTimes(
-        1,
+        1
       );
       expect(mockServices.swarmService.initializeSwarm).toHaveBeenCalledWith(
-        swarmConfig,
+        swarmConfig
       );
       expect(result).toEqual(expectedResult);
     });
@@ -1220,7 +1222,7 @@ describe('Facade Pattern Implementation', () => {
 
       expect(mockServices.neuralService.trainModel).toHaveBeenCalledTimes(1);
       expect(mockServices.neuralService.trainModel).toHaveBeenCalledWith(
-        trainingConfig,
+        trainingConfig
       );
       expect(result?.data).toEqual(expectedResult);
     });
@@ -1250,14 +1252,14 @@ describe('Facade Pattern Implementation', () => {
         expect.objectContaining({
           type: 'project',
           subtype: 'initialization_started',
-        }),
+        })
       );
 
       expect(mockEventManager.notify).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'project',
           subtype: 'swarm_initialized',
-        }),
+        })
       );
     });
 
@@ -1282,7 +1284,7 @@ describe('Facade Pattern Implementation', () => {
       expect(mockCommandQueue.execute).toHaveBeenCalledWith(
         expect.objectContaining({
           getType: expect.any(Function),
-        }),
+        })
       );
     });
 
@@ -1370,13 +1372,13 @@ describe('Facade Pattern Implementation', () => {
 
       expect(mockMetrics.increment).toHaveBeenCalledWith(
         'facade.operation.started',
-        expect.objectContaining({ operation: 'initializeSwarm' }),
+        expect.objectContaining({ operation: 'initializeSwarm' })
       );
 
       expect(mockMetrics.histogram).toHaveBeenCalledWith(
         'facade.operation.duration',
         expect.any(Number),
-        expect.objectContaining({ operation: 'initializeSwarm' }),
+        expect.objectContaining({ operation: 'initializeSwarm' })
       );
     });
 
@@ -1398,18 +1400,18 @@ describe('Facade Pattern Implementation', () => {
 
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Initializing swarm through facade',
-        expect.objectContaining({ config }),
+        expect.objectContaining({ config })
       );
 
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Swarm initialization completed',
-        expect.objectContaining({ swarmId: 'logging-swarm-001' }),
+        expect.objectContaining({ swarmId: 'logging-swarm-001' })
       );
     });
 
     it('should handle service unavailability gracefully', async () => {
       mockServices.neuralService.trainModel.mockRejectedValue(
-        new Error('Neural service unavailable'),
+        new Error('Neural service unavailable')
       );
 
       const result = await facade.trainNeuralModel({
@@ -1423,12 +1425,12 @@ describe('Facade Pattern Implementation', () => {
 
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Neural model training failed:',
-        expect.any(Error),
+        expect.any(Error)
       );
 
       expect(mockMetrics.increment).toHaveBeenCalledWith(
         'facade.operation.failed',
-        expect.objectContaining({ operation: 'trainNeuralModel' }),
+        expect.objectContaining({ operation: 'trainNeuralModel' })
       );
     });
   });
@@ -1541,7 +1543,7 @@ describe('Facade Pattern Implementation', () => {
         mockEventManager,
         mockCommandQueue,
         mockLogger,
-        mockMetrics,
+        mockMetrics
       );
     });
 
@@ -1554,10 +1556,10 @@ describe('Facade Pattern Implementation', () => {
 
     it('should handle shutdown errors gracefully', async () => {
       mockCommandQueue.shutdown.mockRejectedValue(
-        new Error('Command queue shutdown failed'),
+        new Error('Command queue shutdown failed')
       );
       mockEventManager.shutdown.mockRejectedValue(
-        new Error('Event manager shutdown failed'),
+        new Error('Event manager shutdown failed')
       );
 
       await expect(facade.shutdown()).resolves.not.toThrow();

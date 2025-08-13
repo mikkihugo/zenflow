@@ -28,7 +28,7 @@ export interface IntegrationOperationResult<T = any> {
   error?: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
   };
   metadata?: {
     duration: number;
@@ -129,7 +129,7 @@ export interface ProtocolOperationConfig {
  * @example
  */
 export class IntegrationServiceHelper {
-  private logger: any;
+  private logger: unknown;
 
   constructor(private adapter: IntegrationServiceAdapter) {
     this.logger = getLogger(`IntegrationServiceHelper:${adapter.name}`);
@@ -147,7 +147,7 @@ export class IntegrationServiceHelper {
    */
   async saveArchitectureEnhanced(
     architecture: ArchitectureDesign,
-    config: ArchitectureOperationConfig = {},
+    config: ArchitectureOperationConfig = {}
   ): Promise<IntegrationOperationResult<string>> {
     try {
       // Apply custom validation if specified
@@ -202,7 +202,7 @@ export class IntegrationServiceHelper {
       architecture: ArchitectureDesign;
       config?: ArchitectureOperationConfig;
     }[],
-    batchConfig: BatchIntegrationConfig = {},
+    batchConfig: BatchIntegrationConfig = {}
   ): Promise<IntegrationOperationResult<string[]>> {
     const {
       maxConcurrency = 5,
@@ -211,7 +211,7 @@ export class IntegrationServiceHelper {
     } = batchConfig;
 
     const results: (string | null)[] = [];
-    const errors: any[] = [];
+    const errors: unknown[] = [];
 
     try {
       // Process architectures in batches
@@ -226,8 +226,8 @@ export class IntegrationServiceHelper {
                 new Promise<never>((_, reject) =>
                   setTimeout(
                     () => reject(new Error('Operation timeout')),
-                    operationTimeout,
-                  ),
+                    operationTimeout
+                  )
                 ),
               ]);
 
@@ -237,7 +237,7 @@ export class IntegrationServiceHelper {
               errors.push(result?.error);
               if (failFast)
                 throw new Error(
-                  result?.error?.message || 'Batch operation failed',
+                  result?.error?.message || 'Batch operation failed'
                 );
               return null;
             } catch (error) {
@@ -245,7 +245,7 @@ export class IntegrationServiceHelper {
               if (failFast) throw error;
               return null;
             }
-          },
+          }
         );
 
         const batchResults = await Promise.all(batchPromises);
@@ -308,7 +308,7 @@ export class IntegrationServiceHelper {
         'architecture-search',
         {
           criteria,
-        },
+        }
       );
 
       // Additional client-side filtering if needed
@@ -348,8 +348,8 @@ export class IntegrationServiceHelper {
   async apiRequestEnhanced<T>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     endpoint: string,
-    data?: any,
-    config: APIOperationConfig = {},
+    data?: unknown,
+    config: APIOperationConfig = {}
   ): Promise<IntegrationOperationResult<T>> {
     try {
       const operation = `api-${method.toLowerCase()}`;
@@ -365,7 +365,7 @@ export class IntegrationServiceHelper {
 
       const result = await this.adapter.execute<APIResult<T>>(
         operation,
-        params,
+        params
       );
 
       if (result?.success && result?.data) {
@@ -412,10 +412,10 @@ export class IntegrationServiceHelper {
     requests: Array<{
       method: 'GET' | 'POST' | 'PUT' | 'DELETE';
       endpoint: string;
-      data?: any;
+      data?: unknown;
       config?: APIOperationConfig;
     }>,
-    batchConfig: BatchIntegrationConfig = {},
+    batchConfig: BatchIntegrationConfig = {}
   ): Promise<IntegrationOperationResult<T[]>> {
     const {
       maxConcurrency = 10,
@@ -424,7 +424,7 @@ export class IntegrationServiceHelper {
     } = batchConfig;
 
     const results: (T | null)[] = [];
-    const errors: any[] = [];
+    const errors: unknown[] = [];
 
     try {
       // Process requests in batches
@@ -438,13 +438,13 @@ export class IntegrationServiceHelper {
                 request.method,
                 request.endpoint,
                 request.data,
-                request.config,
+                request.config
               ),
               new Promise<never>((_, reject) =>
                 setTimeout(
                   () => reject(new Error('Request timeout')),
-                  operationTimeout,
-                ),
+                  operationTimeout
+                )
               ),
             ]);
 
@@ -512,14 +512,14 @@ export class IntegrationServiceHelper {
     endpoint: string,
     data?: {
       id?: string | number;
-      resourceData?: any;
-      queryParams?: Record<string, any>;
+      resourceData?: unknown;
+      queryParams?: Record<string, unknown>;
     },
-    _config: APIOperationConfig = {},
+    _config: APIOperationConfig = {}
   ): Promise<IntegrationOperationResult<T>> {
     try {
       let operationName: string;
-      let params: any;
+      let params: unknown;
 
       switch (operation) {
         case 'create':
@@ -574,14 +574,14 @@ export class IntegrationServiceHelper {
   async protocolCommunicate<T>(
     operation: 'connect' | 'disconnect' | 'send' | 'receive' | 'broadcast',
     config: ProtocolOperationConfig & {
-      message?: any;
+      message?: unknown;
       protocols?: string[];
       timeout?: number;
-    } = {},
+    } = {}
   ): Promise<IntegrationOperationResult<T>> {
     try {
       let operationName: string;
-      let params: any;
+      let params: unknown;
 
       switch (operation) {
         case 'connect':
@@ -660,7 +660,7 @@ export class IntegrationServiceHelper {
         targetProtocols = protocolListResult.data;
       }
 
-      const healthResults: Record<string, any> = {};
+      const healthResults: Record<string, unknown> = {};
 
       for (const protocol of targetProtocols) {
         try {
@@ -669,7 +669,7 @@ export class IntegrationServiceHelper {
             'protocol-health-check',
             {
               protocol,
-            },
+            }
           );
           const latency = Date.now() - startTime;
 
@@ -728,8 +728,8 @@ export class IntegrationServiceHelper {
         hitRate: number;
         memoryUsage: number;
       };
-      protocols: Record<string, any>;
-      endpoints: Record<string, any>;
+      protocols: Record<string, unknown>;
+      endpoints: Record<string, unknown>;
     }>
   > {
     try {
@@ -910,7 +910,7 @@ export class IntegrationServiceHelper {
       }
 
       const successfulOptimizations = optimizations.filter(
-        (o) => o.applied,
+        (o) => o.applied
       ).length;
       const overallImprovement =
         optimizations.length > 0
@@ -953,7 +953,7 @@ export class IntegrationServiceUtils {
    * @param adapter
    */
   static createHelper(
-    adapter: IntegrationServiceAdapter,
+    adapter: IntegrationServiceAdapter
   ): IntegrationServiceHelper {
     return new IntegrationServiceHelper(adapter);
   }
@@ -989,7 +989,7 @@ export class IntegrationServiceUtils {
   static calculateRetryDelay(
     attempt: number,
     baseDelay: number = 1000,
-    maxDelay: number = 30000,
+    maxDelay: number = 30000
   ): number {
     const delay = baseDelay * 2 ** (attempt - 1);
     return Math.min(delay + Math.random() * 1000, maxDelay); // Add jitter
@@ -1001,15 +1001,15 @@ export class IntegrationServiceUtils {
    * @param architecture
    */
   static sanitizeArchitectureData(
-    architecture: ArchitectureDesign,
+    architecture: ArchitectureDesign
   ): ArchitectureDesign {
     // Create a deep copy to avoid mutations
     const sanitized = JSON.parse(JSON.stringify(architecture));
 
     // Remove potentially sensitive data
     if (sanitized.metadata) {
-      delete sanitized.metadata.internalNotes;
-      delete sanitized.metadata.privateKeys;
+      sanitized.metadata.internalNotes = undefined;
+      sanitized.metadata.privateKeys = undefined;
     }
 
     // Ensure required fields are present
@@ -1043,7 +1043,7 @@ export class IntegrationServiceUtils {
    *
    * @param error
    */
-  static formatError(error: any): string {
+  static formatError(error: unknown): string {
     if (error instanceof Error) {
       return `${error.name}: ${error.message}${error.stack ? `\n${error.stack}` : ''}`;
     }
@@ -1069,7 +1069,7 @@ export class IntegrationServiceUtils {
    */
   static mergeConfigurations(
     base: Partial<IntegrationServiceAdapterConfig>,
-    override: Partial<IntegrationServiceAdapterConfig>,
+    override: Partial<IntegrationServiceAdapterConfig>
   ): Partial<IntegrationServiceAdapterConfig> {
     return {
       ...base,

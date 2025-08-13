@@ -57,7 +57,10 @@ module.exports = function transformer(file, api) {
     let current = path;
     while (current.parent) {
       const parentType = current.parent.value.type;
-      if (parentType === 'ExportNamedDeclaration' || parentType === 'ExportDefaultDeclaration') {
+      if (
+        parentType === 'ExportNamedDeclaration' ||
+        parentType === 'ExportDefaultDeclaration'
+      ) {
         return true;
       }
       current = current.parent;
@@ -73,11 +76,22 @@ module.exports = function transformer(file, api) {
     if (shouldIgnoreIdentifier(name)) return;
 
     // Skip if this is a declaration
-    if (parent.type === 'VariableDeclarator' && parent.id === path.value) return;
-    if (parent.type === 'FunctionDeclaration' && parent.id === path.value) return;
+    if (parent.type === 'VariableDeclarator' && parent.id === path.value)
+      return;
+    if (parent.type === 'FunctionDeclaration' && parent.id === path.value)
+      return;
     if (parent.type === 'ClassDeclaration' && parent.id === path.value) return;
-    if (parent.type === 'Property' && parent.key === path.value && !parent.computed) return;
-    if (parent.type === 'MemberExpression' && parent.property === path.value && !parent.computed)
+    if (
+      parent.type === 'Property' &&
+      parent.key === path.value &&
+      !parent.computed
+    )
+      return;
+    if (
+      parent.type === 'MemberExpression' &&
+      parent.property === path.value &&
+      !parent.computed
+    )
       return;
     if (parent.type === 'ImportSpecifier') return;
     if (parent.type === 'ImportDefaultSpecifier') return;
@@ -116,20 +130,24 @@ module.exports = function transformer(file, api) {
   function isIdentifierInParam(identifier, param) {
     if (param.type === 'Identifier') {
       return param === identifier;
-    } else if (param.type === 'ObjectPattern') {
+    }
+    if (param.type === 'ObjectPattern') {
       return param.properties.some((prop) => {
         if (prop.type === 'Property' && prop.value.type === 'Identifier') {
           return prop.value === identifier;
         }
         return false;
       });
-    } else if (param.type === 'ArrayPattern') {
+    }
+    if (param.type === 'ArrayPattern') {
       return param.elements.some(
         (elem) => elem && elem.type === 'Identifier' && elem === identifier
       );
-    } else if (param.type === 'RestElement') {
+    }
+    if (param.type === 'RestElement') {
       return param.argument === identifier;
-    } else if (param.type === 'AssignmentPattern') {
+    }
+    if (param.type === 'AssignmentPattern') {
       return isIdentifierInParam(identifier, param.left);
     }
     return false;
@@ -149,7 +167,11 @@ module.exports = function transformer(file, api) {
         if (prop.type === 'Property' && prop.value.type === 'Identifier') {
           const name = prop.value.name;
           if (!shouldIgnoreIdentifier(name)) {
-            declaredIdentifiers.set(name, { path, type: 'destructure', node: prop.value });
+            declaredIdentifiers.set(name, {
+              path,
+              type: 'destructure',
+              node: prop.value,
+            });
           }
         }
       });
@@ -158,7 +180,11 @@ module.exports = function transformer(file, api) {
         if (elem && elem.type === 'Identifier') {
           const name = elem.name;
           if (!shouldIgnoreIdentifier(name)) {
-            declaredIdentifiers.set(name, { path, type: 'destructure', node: elem });
+            declaredIdentifiers.set(name, {
+              path,
+              type: 'destructure',
+              node: elem,
+            });
           }
         }
       });
@@ -178,14 +204,22 @@ module.exports = function transformer(file, api) {
     if (param.type === 'Identifier') {
       const name = param.name;
       if (!shouldIgnoreIdentifier(name)) {
-        declaredIdentifiers.set(name, { path: funcPath, type: 'parameter', node: param });
+        declaredIdentifiers.set(name, {
+          path: funcPath,
+          type: 'parameter',
+          node: param,
+        });
       }
     } else if (param.type === 'ObjectPattern') {
       param.properties.forEach((prop) => {
         if (prop.type === 'Property' && prop.value.type === 'Identifier') {
           const name = prop.value.name;
           if (!shouldIgnoreIdentifier(name)) {
-            declaredIdentifiers.set(name, { path: funcPath, type: 'parameter', node: prop.value });
+            declaredIdentifiers.set(name, {
+              path: funcPath,
+              type: 'parameter',
+              node: prop.value,
+            });
           }
         }
       });
@@ -194,19 +228,37 @@ module.exports = function transformer(file, api) {
         if (elem && elem.type === 'Identifier') {
           const name = elem.name;
           if (!shouldIgnoreIdentifier(name)) {
-            declaredIdentifiers.set(name, { path: funcPath, type: 'parameter', node: elem });
+            declaredIdentifiers.set(name, {
+              path: funcPath,
+              type: 'parameter',
+              node: elem,
+            });
           }
         }
       });
-    } else if (param.type === 'RestElement' && param.argument.type === 'Identifier') {
+    } else if (
+      param.type === 'RestElement' &&
+      param.argument.type === 'Identifier'
+    ) {
       const name = param.argument.name;
       if (!shouldIgnoreIdentifier(name)) {
-        declaredIdentifiers.set(name, { path: funcPath, type: 'parameter', node: param.argument });
+        declaredIdentifiers.set(name, {
+          path: funcPath,
+          type: 'parameter',
+          node: param.argument,
+        });
       }
-    } else if (param.type === 'AssignmentPattern' && param.left.type === 'Identifier') {
+    } else if (
+      param.type === 'AssignmentPattern' &&
+      param.left.type === 'Identifier'
+    ) {
       const name = param.left.name;
       if (!shouldIgnoreIdentifier(name)) {
-        declaredIdentifiers.set(name, { path: funcPath, type: 'parameter', node: param.left });
+        declaredIdentifiers.set(name, {
+          path: funcPath,
+          type: 'parameter',
+          node: param.left,
+        });
       }
     }
   }
@@ -258,7 +310,10 @@ module.exports = function transformer(file, api) {
           }
         }
       } catch (error) {
-        console.warn(`Failed to transform variable ${name} in ${file.path}:`, error.message);
+        console.warn(
+          `Failed to transform variable ${name} in ${file.path}:`,
+          error.message
+        );
       }
     }
   });

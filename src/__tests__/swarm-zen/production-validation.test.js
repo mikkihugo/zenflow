@@ -49,7 +49,7 @@ class ProductionValidationTest {
 
       if (instance1 !== instance2) {
         throw new Error(
-          'Multiple instances created - singleton pattern broken',
+          'Multiple instances created - singleton pattern broken'
         );
       }
 
@@ -57,7 +57,7 @@ class ProductionValidationTest {
       instance1.testProperty = 'test-value';
       if (instance2.testProperty !== 'test-value') {
         throw new Error(
-          'Memory isolation broken - instances not sharing state',
+          'Memory isolation broken - instances not sharing state'
         );
       }
     });
@@ -76,7 +76,7 @@ class ProductionValidationTest {
       for (let i = 1; i < instances.length; i++) {
         if (instances[i] !== firstInstance) {
           throw new Error(
-            `Instance ${i} is not the same reference as first instance`,
+            `Instance ${i} is not the same reference as first instance`
           );
         }
       }
@@ -109,7 +109,7 @@ class ProductionValidationTest {
       // Memory increase should be reasonable (less than 50MB)
       if (memoryIncrease > 50 * 1024 * 1024) {
         throw new Error(
-          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`,
+          `Excessive memory usage: ${Math.round(memoryIncrease / 1024 / 1024)}MB increase`
         );
       }
     });
@@ -203,7 +203,7 @@ class ProductionValidationTest {
       } catch (error) {
         if (!error.message.includes('must be one of')) {
           throw new Error(
-            `Wrong error message for invalid topology: ${error.message}`,
+            `Wrong error message for invalid topology: ${error.message}`
           );
         }
       }
@@ -215,7 +215,7 @@ class ProductionValidationTest {
       } catch (error) {
         if (!error.message.includes('must be one of')) {
           throw new Error(
-            `Wrong error message for invalid agent type: ${error.message}`,
+            `Wrong error message for invalid agent type: ${error.message}`
           );
         }
       }

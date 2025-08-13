@@ -88,9 +88,9 @@ interface MessageQueueContract {
 describe('Claude-Zen WebSocket Client - London School TDD', () => {
   // Mock WebSocket Client class (based on actual implementation structure)
   class MockWebSocketClient {
-    private ws: any;
+    private ws: unknown;
     private url: string = '';
-    private options: any = {};
+    private options: unknown = {};
 
     constructor() {
       this.ws = null;
@@ -100,7 +100,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       this.heartbeatManager = mockHeartbeatManager;
     }
 
-    async connect(url: string, options: any = {}) {
+    async connect(url: string, options: unknown = {}) {
       this.url = url;
       this.options = options;
 
@@ -200,23 +200,23 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
         // Assert - Verify connection establishment conversation
         expect(mockWebSocket.connect).toHaveBeenCalledWith(
-          'ws://localhost:4000',
+          'ws://localhost:4000'
         );
         expect(mockWebSocket.on).toHaveBeenCalledWith(
           'open',
-          expect.any(Function),
+          expect.any(Function)
         );
         expect(mockWebSocket.on).toHaveBeenCalledWith(
           'message',
-          expect.any(Function),
+          expect.any(Function)
         );
         expect(mockWebSocket.on).toHaveBeenCalledWith(
           'close',
-          expect.any(Function),
+          expect.any(Function)
         );
         expect(mockWebSocket.on).toHaveBeenCalledWith(
           'error',
-          expect.any(Function),
+          expect.any(Function)
         );
         expect(mockHeartbeatManager.start).toHaveBeenCalled();
       });
@@ -252,10 +252,10 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
         // Assert - Verify message handling conversation
         expect(mockWebSocket.send).toHaveBeenCalledWith(
-          JSON.stringify(connectedMessage),
+          JSON.stringify(connectedMessage)
         );
         expect(mockMessageQueue.enqueue).toHaveBeenCalledWith(
-          disconnectedMessage,
+          disconnectedMessage
         );
       });
     });
@@ -290,7 +290,7 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
         });
         expect(mockReconnectionManager.isMaxAttemptsReached).toHaveBeenCalled();
         expect(mockReconnectionManager.getReconnectDelay).toHaveBeenCalledWith(
-          1,
+          1
         );
         expect(mockReconnectionManager.incrementAttempts).toHaveBeenCalled();
       });
@@ -369,13 +369,13 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
       const eventDrivenClient = {
         setupEventHandlers: () => {
-          mockEventBus.subscribe('connection-status', (status: any) => {
+          mockEventBus.subscribe('connection-status', (status: unknown) => {
             if (status === 'connected') {
               mockEventBus.publish('ready-for-messages', true);
             }
           });
 
-          mockEventBus.subscribe('message-received', (message: any) => {
+          mockEventBus.subscribe('message-received', (message: unknown) => {
             mockEventBus.publish('message-processed', message.id);
           });
         },
@@ -394,19 +394,19 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
       // Assert - Verify event interaction conversation
       expect(mockEventBus.subscribe).toHaveBeenCalledWith(
         'connection-status',
-        expect.any(Function),
+        expect.any(Function)
       );
       expect(mockEventBus.subscribe).toHaveBeenCalledWith(
         'message-received',
-        expect.any(Function),
+        expect.any(Function)
       );
       expect(mockEventBus.publish).toHaveBeenCalledWith(
         'ready-for-messages',
-        true,
+        true
       );
       expect(mockEventBus.publish).toHaveBeenCalledWith(
         'message-processed',
-        'msg-123',
+        'msg-123'
       );
     });
 
@@ -444,10 +444,10 @@ describe('Claude-Zen WebSocket Client - London School TDD', () => {
 
       // Assert - Verify resilience interface exists and behaves correctly
       expect(
-        mockResilienceStrategy.evaluateConnectionHealth,
+        mockResilienceStrategy.evaluateConnectionHealth
       ).toHaveBeenCalledWith(connectionIssue);
       expect(
-        mockResilienceStrategy.determineReconnectionStrategy,
+        mockResilienceStrategy.determineReconnectionStrategy
       ).toHaveBeenCalledWith({
         severity: 'moderate',
       });

@@ -102,7 +102,7 @@ export class ADRProposalSystem {
    */
   async recordDiscussion(
     adrNumber: number,
-    discussion: ADRDiscussion,
+    discussion: ADRDiscussion
   ): Promise<ADRDocumentEntity> {
     const adr = await adrManager.getADRByNumber(adrNumber);
     if (!adr) {
@@ -113,7 +113,7 @@ export class ADRProposalSystem {
     const updated = await adrManager.updateADRStatus(
       adrNumber,
       'discussion',
-      `Discussion recorded with ${discussion.participants.length} participants`,
+      `Discussion recorded with ${discussion.participants.length} participants`
     );
 
     // Store discussion details in metadata
@@ -165,7 +165,7 @@ export class ADRProposalSystem {
       decision_maker: string;
       stakeholder_signoffs: string[];
       conditions?: string[];
-    },
+    }
   ): Promise<ADRDocumentEntity> {
     const adr = await adrManager.getADRByNumber(adrNumber);
     if (!adr) {
@@ -179,7 +179,7 @@ export class ADRProposalSystem {
     const updated = await adrManager.updateADRStatus(
       adrNumber,
       newStatus,
-      `Decision made by ${decision.decision_maker}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`,
+      `Decision made by ${decision.decision_maker}: ${decision.approved ? 'APPROVED' : 'REJECTED'}`
     );
 
     // Update content with final decision
@@ -222,7 +222,7 @@ export class ADRProposalSystem {
     return adrs.filter(
       (adr) =>
         adr.metadata?.['requires_human_discussion'] &&
-        adr.metadata?.['discussion_status'] === 'awaiting_discussion',
+        adr.metadata?.['discussion_status'] === 'awaiting_discussion'
     );
   }
 
@@ -250,7 +250,7 @@ export class ADRProposalSystem {
     return adrs.filter(
       (adr) =>
         adr.metadata?.['discussion_status'] === 'ready_for_decision' &&
-        adr.metadata?.['current_consensus'] !== 'none',
+        adr.metadata?.['current_consensus'] !== 'none'
     );
   }
 
@@ -442,7 +442,7 @@ export class ADRProposalSystem {
    */
   private async logProposalForHumanReview(
     adr: ADRDocumentEntity,
-    proposal: ADRProposal,
+    proposal: ADRProposal
   ): Promise<void> {
     const _adrId =
       adr.metadata?.['adr_id'] || `ADR-${adr.metadata?.['adr_number']}`;
@@ -455,11 +455,11 @@ export class ADRProposalSystem {
    * @param content
    * @param decision
    */
-  private updateContentWithDecision(content: string, decision: any): string {
+  private updateContentWithDecision(content: string, decision: unknown): string {
     // Replace PROPOSED status with final decision
     let updatedContent = content.replace(
       /## Status\n\*\*PROPOSED\*\*/,
-      `## Status\n**${decision.approved ? 'DECIDED' : 'REJECTED'}**`,
+      `## Status\n**${decision.approved ? 'DECIDED' : 'REJECTED'}**`
     );
 
     // Add decision details section

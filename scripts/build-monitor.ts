@@ -177,7 +177,7 @@ class BuildMonitor {
   async checkSwarmMemory(): Promise<boolean> {
     try {
       const { stdout } = await execAsync(
-        'npx claude-zen hooks pre-search --query "agent-progress" --cache-results true',
+        'npx claude-zen hooks pre-search --query "agent-progress" --cache-results true'
       );
       return stdout.includes('progress') || stdout.includes('fixed');
     } catch (_error) {
@@ -237,7 +237,7 @@ class BuildMonitor {
     try {
       const message = `BUILD PROGRESS: ${buildResult.errorCount} errors remaining (${this.errorCount - buildResult.errorCount} fixed)`;
       await execAsync(
-        `npx claude-zen hooks notification --message "${message}" --telemetry true`,
+        `npx claude-zen hooks notification --message "${message}" --telemetry true`
       );
     } catch (error) {
       const errorMessage =
@@ -256,7 +256,7 @@ class BuildMonitor {
     const message = `🔧 BUILD UPDATE: ${buildResult.errorCount} errors remaining. Progress: ${this.errorCount - buildResult.errorCount} errors fixed.`;
     try {
       await execAsync(
-        `npx claude-zen hooks notification --message "${message}" --telemetry true`,
+        `npx claude-zen hooks notification --message "${message}" --telemetry true`
       );
     } catch (error) {
       const errorMessage =
@@ -275,7 +275,7 @@ class BuildMonitor {
     const message = `🚨 REGRESSION ALERT: ${buildResult.errorCount - this.errorCount} new errors introduced. Review recent changes.`;
     try {
       await execAsync(
-        `npx claude-zen hooks notification --message "${message}" --telemetry true`,
+        `npx claude-zen hooks notification --message "${message}" --telemetry true`
       );
     } catch (error) {
       const errorMessage =
@@ -296,10 +296,10 @@ class BuildMonitor {
 
     try {
       await execAsync(
-        `npx claude-zen hooks notification --message "🏆 ALPHA CERTIFICATION COMPLETE" --telemetry true`,
+        `npx claude-zen hooks notification --message "🏆 ALPHA CERTIFICATION COMPLETE" --telemetry true`
       );
       await execAsync(
-        `npx claude-zen hooks post-task --task-id "alpha-build-verification" --analyze-performance true`,
+        `npx claude-zen hooks post-task --task-id "alpha-build-verification" --analyze-performance true`
       );
     } catch (error) {
       const errorMessage =
@@ -326,7 +326,7 @@ class BuildMonitor {
     // Write report to file
     const reportPath = path.join(
       process.cwd(),
-      'build-verification-status.json',
+      'build-verification-status.json'
     );
     fs.writeFile(reportPath, JSON.stringify(report, null, 2)).catch((error) => {
       console.error('Failed to write report:', error);

@@ -43,9 +43,9 @@ export interface BenchmarkSuite {
 export interface BenchmarkTest {
   name: string;
   description: string;
-  target: any;
+  target: unknown;
   expectedImprovement: number;
-  run: (optimizer: any) => Promise<BenchmarkResult>;
+  run: (optimizer: unknown) => Promise<BenchmarkResult>;
 }
 
 export interface SystemBenchmarkResults {
@@ -78,7 +78,7 @@ export class PerformanceBenchmarkSuite {
       swarm?: SwarmOptimizer;
       data?: DataOptimizer;
       wasm?: WasmOptimizer;
-    } = {},
+    } = {}
   ) {
     this.neuralOptimizer =
       optimizers.neural === undefined ? undefined : optimizers.neural;
@@ -160,14 +160,14 @@ export class PerformanceBenchmarkSuite {
           const mockNetwork = this.createMockNeuralNetwork();
           const before = await this.measureNeuralPerformance(
             mockNetwork,
-            'training',
+            'training'
           );
 
           await optimizer.optimizeTrainingSpeed(mockNetwork);
 
           const after = await this.measureNeuralPerformance(
             mockNetwork,
-            'training',
+            'training'
           );
           const improvement = this.calculateImprovement(before, after);
 
@@ -248,7 +248,7 @@ export class PerformanceBenchmarkSuite {
           const mockNetwork = this.createMockNeuralNetwork();
           const before = await this.measureNeuralPerformance(
             mockNetwork,
-            'inference',
+            'inference'
           );
 
           // Simulate inference optimization
@@ -256,7 +256,7 @@ export class PerformanceBenchmarkSuite {
 
           const after = await this.measureNeuralPerformance(
             mockNetwork,
-            'inference',
+            'inference'
           );
           const improvement = (before.latency - after.latency) / before.latency;
 
@@ -558,7 +558,7 @@ export class PerformanceBenchmarkSuite {
   private async runBenchmarkSuite(
     domain: string,
     benchmarks: BenchmarkTest[],
-    optimizer: any,
+    optimizer: unknown
   ): Promise<BenchmarkResult[]> {
     const results: BenchmarkResult[] = [];
 
@@ -617,23 +617,23 @@ export class PerformanceBenchmarkSuite {
    */
   private calculateImprovement(
     before: PerformanceMetrics,
-    after: PerformanceMetrics,
+    after: PerformanceMetrics
   ): number {
     const latencyImprovement = Math.max(
       0,
-      (before.latency - after.latency) / before.latency,
+      (before.latency - after.latency) / before.latency
     );
     const throughputImprovement = Math.max(
       0,
-      (after.throughput - before.throughput) / before.throughput,
+      (after.throughput - before.throughput) / before.throughput
     );
     const memoryImprovement = Math.max(
       0,
-      (before.memoryUsage - after.memoryUsage) / before.memoryUsage,
+      (before.memoryUsage - after.memoryUsage) / before.memoryUsage
     );
     const cpuImprovement = Math.max(
       0,
-      (before.cpuUsage - after.cpuUsage) / before.cpuUsage,
+      (before.cpuUsage - after.cpuUsage) / before.cpuUsage
     );
 
     return (
@@ -648,7 +648,7 @@ export class PerformanceBenchmarkSuite {
   /**
    * Mock data creation methods.
    */
-  private createMockNeuralNetwork(): any {
+  private createMockNeuralNetwork(): unknown {
     return {
       id: 'test-network',
       layers: [784, 128, 64, 10],
@@ -657,13 +657,13 @@ export class PerformanceBenchmarkSuite {
         .map(() =>
           Array(100)
             .fill(0)
-            .map(() => Math.random()),
+            .map(() => Math.random())
         ),
       activationFunction: 'relu',
     };
   }
 
-  private createMockNetworkTrainer(): any {
+  private createMockNetworkTrainer(): unknown {
     return {
       network: this.createMockNeuralNetwork(),
       learningRate: 0.001,
@@ -672,7 +672,7 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private createMockSwarmTopology(): any {
+  private createMockSwarmTopology(): unknown {
     return {
       type: 'mesh',
       nodes: 1000,
@@ -680,7 +680,7 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private createMockCoordinationLayer(): any {
+  private createMockCoordinationLayer(): unknown {
     return {
       protocol: 'websocket',
       messageFormat: 'json',
@@ -688,7 +688,7 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private createMockDatabaseQueries(): any[] {
+  private createMockDatabaseQueries(): unknown[] {
     return Array(10)
       .fill(0)
       .map((_, i) => ({
@@ -698,7 +698,7 @@ export class PerformanceBenchmarkSuite {
       }));
   }
 
-  private createMockConnections(): any[] {
+  private createMockConnections(): unknown[] {
     return Array(20)
       .fill(0)
       .map((_, i) => ({
@@ -709,7 +709,7 @@ export class PerformanceBenchmarkSuite {
       }));
   }
 
-  private createMockCacheLayer(): any {
+  private createMockCacheLayer(): unknown {
     return {
       type: 'memory',
       size: 1024 * 1024 * 100, // 100MB
@@ -717,7 +717,7 @@ export class PerformanceBenchmarkSuite {
     };
   }
 
-  private createMockWasmModules(): any[] {
+  private createMockWasmModules(): unknown[] {
     return Array(5)
       .fill(0)
       .map((_, i) => ({
@@ -728,7 +728,7 @@ export class PerformanceBenchmarkSuite {
       }));
   }
 
-  private createMockWasmFiles(): any[] {
+  private createMockWasmFiles(): unknown[] {
     return Array(3)
       .fill(0)
       .map((_, i) => ({
@@ -738,7 +738,7 @@ export class PerformanceBenchmarkSuite {
       }));
   }
 
-  private createMockComputeKernels(): any[] {
+  private createMockComputeKernels(): unknown[] {
     return Array(3)
       .fill(0)
       .map((_, i) => ({
@@ -766,8 +766,8 @@ export class PerformanceBenchmarkSuite {
    * @param mode
    */
   private async measureNeuralPerformance(
-    _network: any,
-    mode: string,
+    _network: unknown,
+    mode: string
   ): Promise<PerformanceMetrics> {
     const baseLatency = mode === 'training' ? 100 : 10;
     const baseThroughput = mode === 'training' ? 100 : 1000;
@@ -783,13 +783,13 @@ export class PerformanceBenchmarkSuite {
   }
 
   private async measureBatchPerformance(
-    trainer: any,
+    trainer: unknown
   ): Promise<PerformanceMetrics> {
     return this.measureNeuralPerformance(trainer.network, 'training');
   }
 
   private async measureMemoryUsage(
-    _networks: any[],
+    _networks: unknown[]
   ): Promise<PerformanceMetrics> {
     return {
       latency: 50,
@@ -802,7 +802,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   private async measureSwarmPerformance(
-    _topology: any,
+    _topology: unknown
   ): Promise<PerformanceMetrics> {
     return {
       latency: 5 + Math.random() * 10,
@@ -826,7 +826,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   private async measureScalingPerformance(
-    agents: number,
+    agents: number
   ): Promise<PerformanceMetrics> {
     return {
       latency: Math.log10(agents) * 2,
@@ -839,7 +839,7 @@ export class PerformanceBenchmarkSuite {
   }
 
   private async measureQueryPerformance(
-    _queries: any[],
+    _queries: unknown[]
   ): Promise<PerformanceMetrics> {
     return {
       latency: 50 + Math.random() * 50,

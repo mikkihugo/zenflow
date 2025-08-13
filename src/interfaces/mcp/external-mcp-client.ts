@@ -99,7 +99,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async connectToServer(
     name: string,
-    config: MCPServerConfig,
+    config: MCPServerConfig
   ): Promise<ConnectionResult> {
     try {
       const connection = await this.createConnection(name, config);
@@ -141,7 +141,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async createConnection(
     name: string,
-    config: MCPServerConfig,
+    config: MCPServerConfig
   ): Promise<MCPConnection> {
     if (config.type === 'http') {
       return this.createHTTPConnection(name, config);
@@ -160,7 +160,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async createHTTPConnection(
     _name: string,
-    config: MCPServerConfig,
+    config: MCPServerConfig
   ): Promise<MCPConnection> {
     // Simulate HTTP connection for external servers
     // In practice, this would use the actual MCP protocol over HTTP
@@ -169,7 +169,7 @@ export class ExternalMCPClient extends EventEmitter {
       url: config?.url,
       connected: true,
       lastPing: new Date(),
-      send: async (_message: any) => {
+      send: async (_message: unknown) => {
         return { success: true, data: {} };
       },
       close: async () => {},
@@ -184,7 +184,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async createSSEConnection(
     _name: string,
-    config: MCPServerConfig,
+    config: MCPServerConfig
   ): Promise<MCPConnection> {
     // Simulate SSE connection for external servers
     // In practice, this would use Server-Sent Events for real-time communication
@@ -193,7 +193,7 @@ export class ExternalMCPClient extends EventEmitter {
       url: config?.url,
       connected: true,
       lastPing: new Date(),
-      send: async (_message: any) => {
+      send: async (_message: unknown) => {
         return { success: true, data: {} };
       },
       close: async () => {},
@@ -208,7 +208,7 @@ export class ExternalMCPClient extends EventEmitter {
    */
   private async discoverTools(
     name: string,
-    _connection: MCPConnection,
+    _connection: MCPConnection
   ): Promise<MCPTool[]> {
     try {
       // Simulate tool discovery
@@ -299,7 +299,7 @@ export class ExternalMCPClient extends EventEmitter {
   async executeTool(
     serverName: string,
     toolName: string,
-    parameters: any,
+    parameters: unknown
   ): Promise<ToolExecutionResult> {
     const connection = this.connections.get(serverName);
     if (!connection) {
@@ -317,7 +317,7 @@ export class ExternalMCPClient extends EventEmitter {
       const result = await this.simulateToolExecution(
         serverName,
         toolName,
-        parameters,
+        parameters
       );
 
       this.emit('toolExecuted', {
@@ -361,11 +361,11 @@ export class ExternalMCPClient extends EventEmitter {
   private async simulateToolExecution(
     serverName: string,
     toolName: string,
-    _parameters: any,
-  ): Promise<any> {
+    _parameters: unknown
+  ): Promise<unknown> {
     // Simulate network delay.
     await new Promise((resolve) =>
-      setTimeout(resolve, Math.random() * 1000 + 500),
+      setTimeout(resolve, Math.random() * 1000 + 500)
     );
 
     // Simulate different responses based on server and tool
@@ -503,15 +503,15 @@ export interface MCPConnection {
   url: string;
   connected: boolean;
   lastPing: Date;
-  send: (message: any) => Promise<any>;
+  send: (message: unknown) => Promise<unknown>;
   close: () => Promise<void>;
 }
 
 export interface MCPTool {
   name: string;
   description: string;
-  parameters?: any;
-  schema?: any;
+  parameters?: unknown;
+  schema?: unknown;
 }
 
 export interface ConnectionResult {
@@ -527,7 +527,7 @@ export interface ToolExecutionResult {
   success: boolean;
   server: string;
   tool: string;
-  result?: any;
+  result?: unknown;
   error?: string;
   executionTime?: number;
 }

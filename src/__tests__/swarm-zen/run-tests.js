@@ -76,7 +76,7 @@ async function runJest(suite, coverage = false) {
         '--coverageReporters',
         'text',
         'lcov',
-        'html',
+        'html'
       );
     }
 
@@ -109,7 +109,7 @@ async function runTestSuite(_suiteName, suite, options = {}) {
 
     log(
       `✓ ${suite.name} completed in ${(duration / 1000).toFixed(2)}s`,
-      'green',
+      'green'
     );
     return { success: true, duration };
   } catch (error) {
@@ -172,7 +172,7 @@ async function main() {
       testSuites.integration,
       {
         coverage: runCoverage,
-      },
+      }
     );
   }
 
@@ -185,7 +185,7 @@ async function main() {
   if (runPerformance) {
     results.performance = await runTestSuite(
       'performance',
-      testSuites.performance,
+      testSuites.performance
     );
   }
 
@@ -198,11 +198,11 @@ async function main() {
   log(`Passed: ${report.summary.passed}`, 'green');
   log(
     `Failed: ${report.summary.failed}`,
-    report.summary.failed > 0 ? 'red' : 'green',
+    report.summary.failed > 0 ? 'red' : 'green'
   );
   log(
     `Total Duration: ${(report.summary.totalDuration / 1000).toFixed(2)}s`,
-    'cyan',
+    'cyan'
   );
 
   if (runCoverage) {
@@ -211,7 +211,7 @@ async function main() {
 
   log(
     `\nDetailed report saved to: ${path.basename(Object.keys(results)[0])}`,
-    'magenta',
+    'magenta'
   );
 
   // Exit with appropriate code

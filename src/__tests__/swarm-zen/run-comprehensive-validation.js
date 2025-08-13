@@ -40,7 +40,7 @@ async function main() {
             target: '2.8-4.4x improvement',
             actual: results.metrics.performance?.speedOptimization || 'N/A',
             met: checkSpeedTarget(
-              results.metrics.performance?.speedOptimization,
+              results.metrics.performance?.speedOptimization
             ),
           },
           loadTesting: {
@@ -75,12 +75,12 @@ async function main() {
           claudeFlowIntegration: {
             target: 'Full integration',
             actual: results.testSuites.find(
-              (s) => s.name === 'Claude Code Flow Integration',
+              (s) => s.name === 'Claude Code Flow Integration'
             )?.passed
               ? 'Verified'
               : 'Failed',
             met: results.testSuites.find(
-              (s) => s.name === 'Claude Code Flow Integration',
+              (s) => s.name === 'Claude Code Flow Integration'
             )?.passed,
           },
         },
@@ -109,10 +109,10 @@ async function main() {
     // Generate summary report
     await generateSummaryReport(finalReport);
     Object.entries(finalReport.validation.performanceTargets).forEach(
-      ([_key, _target]) => {},
+      ([_key, _target]) => {}
     );
     Object.entries(finalReport.validation.integrationTargets).forEach(
-      ([_key, _target]) => {},
+      ([_key, _target]) => {}
     );
 
     if (finalReport.recommendations.length > 0) {
@@ -121,7 +121,7 @@ async function main() {
 
     // Exit with appropriate code
     process.exit(
-      finalReport.status === 'PASSED' && validationScore >= 90 ? 0 : 1,
+      finalReport.status === 'PASSED' && validationScore >= 90 ? 0 : 1
     );
   } catch (error) {
     console.error('💥 Comprehensive validation failed:', error);
@@ -213,7 +213,7 @@ async function generateSummaryReport(finalReport) {
 ${finalReport.testSuites
   .map(
     (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
   )
   .join('\n')}
 

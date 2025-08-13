@@ -84,7 +84,7 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         {
           businessImpact: 'medium',
           priority: 'high',
-        },
+        }
       );
 
       expect(approvalGate.id).toBeDefined();
@@ -112,21 +112,21 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
         {
           autoApprovalThreshold: 0.9,
           businessImpact: 'low',
-        },
+        }
       );
 
       expect(checkpointGate.id).toBeDefined();
       expect(checkpointGate.gateType).toBe('checkpoint');
       expect(checkpointGate.workflowContext.workflowId).toBe(
-        'test-workflow-002',
+        'test-workflow-002'
       );
       expect(checkpointGate.workflowContext.stepName).toBe(
-        'pre-deployment-check',
+        'pre-deployment-check'
       );
       expect(checkpointGate.workflowContext.businessImpact).toBe('low');
       expect(checkpointGate.context).toEqual(checkpointData);
       expect(
-        checkpointGate.conditionalLogic?.autoApprovalConditions,
+        checkpointGate.conditionalLogic?.autoApprovalConditions
       ).toBeDefined();
     });
   });
@@ -160,10 +160,10 @@ describe('WorkflowAGUIAdapter - Simple Tests', () => {
       expect(validGate.workflowContext.stepName).toBe('valid-step');
       expect(validGate.workflowContext.stakeholders).toEqual(['user']);
       expect(['low', 'medium', 'high', 'critical']).toContain(
-        validGate.workflowContext.businessImpact,
+        validGate.workflowContext.businessImpact
       );
       expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(
-        validGate.workflowContext.decisionScope,
+        validGate.workflowContext.decisionScope
       );
     });
   });

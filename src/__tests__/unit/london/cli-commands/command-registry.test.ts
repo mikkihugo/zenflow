@@ -131,7 +131,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Act & Assert - verify error behavior
       expect(() => registry.register(metadata2)).toThrow(
-        "Command 'duplicate' is already registered",
+        "Command 'duplicate' is already registered"
       );
     });
 
@@ -154,7 +154,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Act & Assert - verify alias conflict behavior
       expect(() => registry.register(metadata2)).toThrow(
-        "Alias 'c' is already registered",
+        "Alias 'c' is already registered"
       );
     });
   });
@@ -202,8 +202,8 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify filtering behavior
       expect(coreCommands).toHaveLength(2);
-      expect(coreCommands.map((cmd: any) => cmd.config.name)).toEqual(
-        expect.arrayContaining(['status', 'init']),
+      expect(coreCommands.map((cmd: unknown) => cmd.config.name)).toEqual(
+        expect.arrayContaining(['status', 'init'])
       );
       expect(utilityCommands).toHaveLength(1);
       expect(utilityCommands[0]?.config?.name).toBe('deploy');
@@ -232,7 +232,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify listing behavior
       expect(allCommands).toHaveLength(4);
-      const names = allCommands.map((cmd: any) => cmd.config.name);
+      const names = allCommands.map((cmd: unknown) => cmd.config.name);
       expect(names).toEqual([
         'deploy',
         'experimental-feature',
@@ -465,7 +465,7 @@ describe('CommandRegistry - TDD London', () => {
 
       // Assert - verify usage tracking behavior
       const stats = registry.getUsageStats();
-      const cmdStats = stats.find((s: any) => s.name === 'tracked-cmd');
+      const cmdStats = stats.find((s: unknown) => s.name === 'tracked-cmd');
 
       expect(cmdStats).toBeDefined();
       expect(cmdStats?.usageCount).toBe(2);

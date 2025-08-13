@@ -45,7 +45,7 @@ function findTypescriptFiles(dir, pattern) {
   try {
     const files = execSync(
       `find ${dir} -name "*.ts" -not -path "./node_modules/*" -not -path "./.git/*" -not -path "./build/*" -not -path "./zen-neural-stack/*"`,
-      { encoding: 'utf-8' },
+      { encoding: 'utf-8' }
     )
       .split('\n')
       .filter((f) => f.length > 0);
@@ -129,7 +129,7 @@ function main() {
 
   console.log(`\n✨ Batch fix complete!`);
   console.log(
-    `📈 Fixed ${totalFixed} 'any' types across ${filesModified} files`,
+    `📈 Fixed ${totalFixed} 'any' types across ${filesModified} files`
   );
 
   // Run linter to see improvement

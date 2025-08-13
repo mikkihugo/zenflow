@@ -113,7 +113,7 @@ export class MemoryService extends BaseService implements IService {
         if (currentUsage > config?.storage?.maxMemory * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Memory usage (${currentUsage}) exceeds limit (${config?.storage?.maxMemory})`,
+            `Memory usage (${currentUsage}) exceeds limit (${config?.storage?.maxMemory})`
           );
           return false;
         }
@@ -124,7 +124,7 @@ export class MemoryService extends BaseService implements IService {
         if (this.store.size > config?.eviction?.maxSize * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Store size (${this.store.size}) exceeds limit (${config?.eviction?.maxSize})`,
+            `Store size (${this.store.size}) exceeds limit (${config?.eviction?.maxSize})`
           );
           return false;
         }
@@ -134,7 +134,7 @@ export class MemoryService extends BaseService implements IService {
     } catch (error) {
       this.logger.error(
         `Health check failed for memory service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -142,8 +142,8 @@ export class MemoryService extends BaseService implements IService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing memory operation: ${operation}`);
 
@@ -190,7 +190,7 @@ export class MemoryService extends BaseService implements IService {
   // Memory Service Specific Methods
   // ============================================
 
-  private get(key: string): any {
+  private get(key: string): unknown {
     if (!key) {
       throw new Error('Key is required');
     }
@@ -214,7 +214,7 @@ export class MemoryService extends BaseService implements IService {
     return this.deserialize(value, meta.serialization);
   }
 
-  private async set(key: string, value: any, ttl?: number): Promise<boolean> {
+  private async set(key: string, value: unknown, ttl?: number): Promise<boolean> {
     if (!key) {
       throw new Error('Key is required');
     }
@@ -341,10 +341,10 @@ export class MemoryService extends BaseService implements IService {
     return true;
   }
 
-  private getStats(): any {
+  private getStats(): unknown {
     const totalSize = Array.from(this.metadata.values()).reduce(
       (sum, meta) => sum + (meta.size || 0),
-      0,
+      0
     );
 
     return {
@@ -362,7 +362,7 @@ export class MemoryService extends BaseService implements IService {
   // Helper Methods
   // ============================================
 
-  private serialize(value: any): any {
+  private serialize(value: unknown): unknown {
     const config = this.config as MemoryServiceConfig;
     const serializationType = config?.serialization?.type || 'json';
 
@@ -380,7 +380,7 @@ export class MemoryService extends BaseService implements IService {
     }
   }
 
-  private deserialize(value: any, serializationType: string): any {
+  private deserialize(value: unknown, serializationType: string): unknown {
     switch (serializationType) {
       case 'json':
         try {
@@ -403,7 +403,7 @@ export class MemoryService extends BaseService implements IService {
     }
   }
 
-  private estimateValueSize(value: any): number {
+  private estimateValueSize(value: unknown): number {
     if (typeof value === 'string') {
       return value.length * 2; // Assume UTF-16
     }
@@ -419,7 +419,7 @@ export class MemoryService extends BaseService implements IService {
   private estimateMemoryUsage(): number {
     return Array.from(this.metadata.values()).reduce(
       (sum, meta) => sum + (meta.size || 0),
-      0,
+      0
     );
   }
 
@@ -460,7 +460,7 @@ export class MemoryService extends BaseService implements IService {
 
     const policy = config?.eviction?.policy;
     const targetSize = Math.floor(
-      (config?.eviction?.maxSize || this.store.size) * 0.8,
+      (config?.eviction?.maxSize || this.store.size) * 0.8
     );
     const toEvict = this.store.size - targetSize;
 
@@ -488,7 +488,7 @@ export class MemoryService extends BaseService implements IService {
 
     if (keysToEvict.length > 0) {
       this.logger.debug(
-        `Evicted ${keysToEvict.length} keys using ${policy} policy`,
+        `Evicted ${keysToEvict.length} keys using ${policy} policy`
       );
     }
   }
@@ -512,7 +512,7 @@ export class MemoryService extends BaseService implements IService {
 
   private getLRUKeys(count: number): string[] {
     const sortedEntries = Array.from(this.metadata.entries()).sort(
-      ([, a], [, b]) => a.lastAccessed - b.lastAccessed,
+      ([, a], [, b]) => a.lastAccessed - b.lastAccessed
     );
 
     return sortedEntries.slice(0, count).map(([key]) => key);
@@ -521,7 +521,7 @@ export class MemoryService extends BaseService implements IService {
   private getLFUKeys(count: number): string[] {
     // For simplicity, use creation time as proxy for frequency
     const sortedEntries = Array.from(this.metadata.entries()).sort(
-      ([, a], [, b]) => a.createdAt - b.createdAt,
+      ([, a], [, b]) => a.createdAt - b.createdAt
     );
 
     return sortedEntries.slice(0, count).map(([key]) => key);
@@ -529,7 +529,7 @@ export class MemoryService extends BaseService implements IService {
 
   private getFIFOKeys(count: number): string[] {
     const sortedEntries = Array.from(this.metadata.entries()).sort(
-      ([, a], [, b]) => a.createdAt - b.createdAt,
+      ([, a], [, b]) => a.createdAt - b.createdAt
     );
 
     return sortedEntries.slice(0, count).map(([key]) => key);
@@ -546,7 +546,7 @@ export class MemoryService extends BaseService implements IService {
   private countExpiredKeys(): number {
     const now = Date.now();
     return Array.from(this.metadata.values()).filter(
-      (meta) => meta.ttl && now > meta.ttl,
+      (meta) => meta.ttl && now > meta.ttl
     ).length;
   }
 

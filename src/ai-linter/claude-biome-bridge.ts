@@ -37,7 +37,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   constructor(
     logger: ILogger,
     eventBus: IEventBus,
-    initialConfig: BiomeConfiguration,
+    initialConfig: BiomeConfiguration
   ) {
     super();
     this.logger = logger;
@@ -53,7 +53,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   async analyzeCodeWithAI(
     filePath: string,
     content: string,
-    context: LinterContext,
+    context: LinterContext
   ): Promise<AIAnalysisResult> {
     // Check cache first
     const cacheKey = this.generateCacheKey(filePath, content);
@@ -66,7 +66,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
     // Step 1: Extract AST patterns using Biome's parser
     const astPatterns = await this.extractASTPatterns(
       content,
-      context.language,
+      context.language
     );
 
     // Step 2: Use Claude to analyze patterns and suggest improvements
@@ -79,7 +79,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
     const swarmEnhancements = await this.coordinateSwarmAnalysis(
       filePath,
       claudeAnalysis,
-      context,
+      context
     );
 
     const result: AIAnalysisResult = {
@@ -105,7 +105,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
    */
   private async extractASTPatterns(
     content: string,
-    language: string,
+    language: string
   ): Promise<CodePattern[]> {
     // This would integrate with Biome's AST parser
     // For now, return placeholder patterns
@@ -125,13 +125,13 @@ export class ClaudeBiomeBridge extends EventEmitter {
    */
   private async analyzeWithClaude(
     patterns: CodePattern[],
-    context: LinterContext,
+    context: LinterContext
   ): Promise<unknown> {
     // This would use Claude Code's native capabilities
     // For now, return structured analysis
     return {
       complexity_issues: patterns.filter(
-        (p) => p.type === 'function_complexity',
+        (p) => p.type === 'function_complexity'
       ),
       type_safety_concerns: [],
       architectural_suggestions: [
@@ -147,7 +147,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
    * Generate Biome-compatible linting rules from Claude's analysis
    */
   private async generateBiomeRules(
-    claudeAnalysis: unknown,
+    claudeAnalysis: unknown
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -190,7 +190,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   private async coordinateSwarmAnalysis(
     filePath: string,
     claudeAnalysis: unknown,
-    context: LinterContext,
+    context: LinterContext
   ): Promise<unknown> {
     // This would integrate with the swarm coordinator
     return {
@@ -206,7 +206,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
    */
   private calculateConfidence(
     claudeAnalysis: unknown,
-    swarmEnhancements: unknown,
+    swarmEnhancements: unknown
   ): number {
     // Simple confidence calculation - would be more sophisticated
     let confidence = 0.7; // Base confidence
@@ -223,7 +223,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
    */
   private generateSuggestions(
     claudeAnalysis: unknown,
-    swarmEnhancements: unknown,
+    swarmEnhancements: unknown
   ): string[] {
     const suggestions: string[] = [];
 
@@ -235,7 +235,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
     // Add swarm insights
     if (swarmEnhancements.performance_insights) {
       suggestions.push(
-        `🚀 Performance: ${swarmEnhancements.performance_insights}`,
+        `🚀 Performance: ${swarmEnhancements.performance_insights}`
       );
     }
 
@@ -283,7 +283,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   async autoFixCode(
     filePath: string,
     content: string,
-    analysisResult: AIAnalysisResult,
+    analysisResult: AIAnalysisResult
   ): Promise<string> {
     const fixedContent = content;
 
@@ -324,7 +324,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Get current AI linting statistics
    */
-  getStatistics(): any {
+  getStatistics(): unknown {
     return {
       analysisCount: this.analysisCache.size,
       activeRules: this.activeRules.size,
@@ -337,7 +337,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
     if (this.analysisCache.size === 0) return 0;
 
     const confidences = Array.from(this.analysisCache.values()).map(
-      (result) => result.confidence,
+      (result) => result.confidence
     );
 
     return (
@@ -368,7 +368,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
 export function createClaudeBiomeBridge(
   logger: ILogger,
   eventBus: IEventBus,
-  config: BiomeConfiguration,
+  config: BiomeConfiguration
 ): ClaudeBiomeBridge {
   return new ClaudeBiomeBridge(logger, eventBus, config);
 }

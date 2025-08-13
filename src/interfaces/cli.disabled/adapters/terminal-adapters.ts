@@ -21,7 +21,7 @@ import type {
  * @example
  */
 export class CommandExecutionRendererAdapter implements CommandRenderer {
-  private renderer: any = null;
+  private renderer: unknown = null;
 
   async initialize(): Promise<void> {
     // Dynamic import to avoid circular dependency
@@ -60,9 +60,9 @@ export class CommandExecutionRendererAdapter implements CommandRenderer {
 export class InteractiveTerminalApplicationAdapter
   implements TerminalApplication
 {
-  private terminal: any = null;
+  private terminal: unknown = null;
 
-  async initialize(config?: any): Promise<void> {
+  async initialize(config?: unknown): Promise<void> {
     // Dynamic import to avoid circular dependency
     const { InteractiveTerminalApplication } = await import(
       '../../terminal/interactive-terminal-application.js'
@@ -74,7 +74,7 @@ export class InteractiveTerminalApplicationAdapter
   async execute(
     command: string,
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult> {
     if (!this.terminal) {
       return {
@@ -108,7 +108,7 @@ export class InteractiveTerminalApplicationAdapter
 export class ModeDetectorAdapter {
   static async detectMode(
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<TerminalMode> {
     try {
       // Dynamic import to avoid circular dependency

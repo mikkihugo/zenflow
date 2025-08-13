@@ -319,7 +319,10 @@ class JSDocValidator {
       // Calculate file coverage
       fileResults.coverage.percentage =
         fileResults.coverage.total > 0
-          ? ((fileResults.coverage.documented / fileResults.coverage.total) * 100).toFixed(2)
+          ? (
+              (fileResults.coverage.documented / fileResults.coverage.total) *
+              100
+            ).toFixed(2)
           : 0;
 
       // Add to layer results
@@ -386,7 +389,8 @@ class JSDocValidator {
     }
 
     // Find functions with their JSDoc
-    const functionRegex = /\/\*\*[\s\S]*?\*\/\s*export\s+(?:async\s+)?function\s+(\w+)/g;
+    const functionRegex =
+      /\/\*\*[\s\S]*?\*\/\s*export\s+(?:async\s+)?function\s+(\w+)/g;
     while ((match = functionRegex.exec(content)) !== null) {
       const jsDoc = this.extractJSDocFromMatch(content, match.index);
       analysis.functions.push({
@@ -447,7 +451,12 @@ class JSDocValidator {
         results.errors.push(`Class ${cls.name} missing JSDoc`);
       } else {
         results.coverage.documented += 1;
-        this.validateJSDocContent(cls.jsDoc, rules, `Class ${cls.name}`, results);
+        this.validateJSDocContent(
+          cls.jsDoc,
+          rules,
+          `Class ${cls.name}`,
+          results
+        );
       }
     }
 
@@ -459,7 +468,12 @@ class JSDocValidator {
         results.errors.push(`Interface ${intf.name} missing JSDoc`);
       } else {
         results.coverage.documented += 1;
-        this.validateJSDocContent(intf.jsDoc, rules, `Interface ${intf.name}`, results);
+        this.validateJSDocContent(
+          intf.jsDoc,
+          rules,
+          `Interface ${intf.name}`,
+          results
+        );
       }
     }
   }
@@ -479,7 +493,12 @@ class JSDocValidator {
         results.errors.push(`Function ${func.name} missing JSDoc`);
       } else {
         results.coverage.documented += 1;
-        this.validateJSDocContent(func.jsDoc, rules, `Function ${func.name}`, results);
+        this.validateJSDocContent(
+          func.jsDoc,
+          rules,
+          `Function ${func.name}`,
+          results
+        );
       }
     }
   }
@@ -541,17 +560,24 @@ class JSDocValidator {
     );
     this.results.coverage.percentage =
       this.results.coverage.total > 0
-        ? ((this.results.coverage.documented / this.results.coverage.total) * 100).toFixed(2)
+        ? (
+            (this.results.coverage.documented / this.results.coverage.total) *
+            100
+          ).toFixed(2)
         : 0;
 
     // Calculate quality metrics
     const totalFiles = this.results.files.length;
-    const filesWithErrors = this.results.files.filter((f) => f.errors.length > 0).length;
+    const filesWithErrors = this.results.files.filter(
+      (f) => f.errors.length > 0
+    ).length;
 
     this.results.quality.passed = totalFiles - filesWithErrors;
     this.results.quality.failed = filesWithErrors;
     this.results.quality.score =
-      totalFiles > 0 ? ((this.results.quality.passed / totalFiles) * 100).toFixed(2) : 0;
+      totalFiles > 0
+        ? ((this.results.quality.passed / totalFiles) * 100).toFixed(2)
+        : 0;
 
     // Calculate layer-specific metrics
     for (const layer of this.layers) {
@@ -566,16 +592,23 @@ class JSDocValidator {
       );
       layerData.coverage.percentage =
         layerData.coverage.total > 0
-          ? ((layerData.coverage.documented / layerData.coverage.total) * 100).toFixed(2)
+          ? (
+              (layerData.coverage.documented / layerData.coverage.total) *
+              100
+            ).toFixed(2)
           : 0;
 
       const layerFiles = layerData.files.length;
-      const layerFilesWithErrors = layerData.files.filter((f) => f.errors.length > 0).length;
+      const layerFilesWithErrors = layerData.files.filter(
+        (f) => f.errors.length > 0
+      ).length;
 
       layerData.quality.passed = layerFiles - layerFilesWithErrors;
       layerData.quality.failed = layerFilesWithErrors;
       layerData.quality.score =
-        layerFiles > 0 ? ((layerData.quality.passed / layerFiles) * 100).toFixed(2) : 0;
+        layerFiles > 0
+          ? ((layerData.quality.passed / layerFiles) * 100).toFixed(2)
+          : 0;
     }
   }
 
@@ -592,7 +625,10 @@ class JSDocValidator {
    */
   async generateReport() {
     const report = this.buildMarkdownReport();
-    const reportPath = path.join('./docs/generated', 'jsdoc-validation-report.md');
+    const reportPath = path.join(
+      './docs/generated',
+      'jsdoc-validation-report.md'
+    );
 
     // Ensure directory exists
     await fs.mkdir(path.dirname(reportPath), { recursive: true });
@@ -600,7 +636,10 @@ class JSDocValidator {
     await fs.writeFile(reportPath, report);
 
     // Also generate JSON report for CI/CD
-    const jsonReportPath = path.join('./docs/generated', 'jsdoc-validation-report.json');
+    const jsonReportPath = path.join(
+      './docs/generated',
+      'jsdoc-validation-report.json'
+    );
     await fs.writeFile(jsonReportPath, JSON.stringify(this.results, null, 2));
   }
 

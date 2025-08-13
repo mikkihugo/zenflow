@@ -426,7 +426,7 @@ describe('ArgumentParser - TDD London', () => {
       // Assert - verify warning behavior
       expect(result?.valid).toBe(true);
       expect(result?.warnings).toContain(
-        'Flag --old-flag is deprecated, use --new-flag instead',
+        'Flag --old-flag is deprecated, use --new-flag instead'
       );
     });
   });
@@ -540,7 +540,7 @@ describe('ArgumentParser - TDD London', () => {
 
       // Assert - verify special character handling
       expect(result?.flags?.message).toBe(
-        'Deploy v1.0.0 with "quotes" and spaces',
+        'Deploy v1.0.0 with "quotes" and spaces'
       );
     });
 

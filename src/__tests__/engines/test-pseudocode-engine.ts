@@ -55,7 +55,7 @@ async function testPseudocodeEngine() {
   try {
     const algorithms = await engine.generateAlgorithmPseudocode(specification);
     const dataStructures = await engine.designDataStructures(
-      specification.functionalRequirements,
+      specification.functionalRequirements
     );
     const controlFlows = await engine.mapControlFlows(algorithms);
     const validation = await engine.validatePseudocodeLogic(algorithms);

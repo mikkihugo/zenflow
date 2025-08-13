@@ -63,7 +63,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         enableDomainValidation: false, // Disable for testing
         defaultTimeout: 5000,
         enableAutoApproval: true,
-      },
+      }
     );
 
     workflowEngine = new WorkflowEngine(
@@ -74,7 +74,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
       },
       undefined, // documentManager
       undefined, // memoryFactory
-      gatesManager,
+      gatesManager
     );
 
     await gatesManager.initialize();
@@ -228,7 +228,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         const resumeResult = await workflowEngine.resumeWorkflowAfterGate(
           result.workflowId!,
           status.pausedForGate!.gateId,
-          false,
+          false
         );
         expect(resumeResult.success).toBe(true);
 
@@ -236,7 +236,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         const finalStatus = workflowEngine.getWorkflowStatus(
-          result.workflowId!,
+          result.workflowId!
         );
         expect(finalStatus?.status).toBe('failed');
         expect(finalStatus?.error).toContain('Gate rejected');
@@ -273,7 +273,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       const gateStatus = workflowEngine.getWorkflowGateStatus(
-        result.workflowId!,
+        result.workflowId!
       );
       expect(gateStatus.hasPendingGates).toBe(false); // Should be processed
 
@@ -282,12 +282,12 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         await workflowEngine.resumeWorkflowAfterGate(
           result.workflowId!,
           gateStatus.pausedForGate.gateId,
-          true,
+          true
         );
 
         // Check gate results are persisted
         const finalGateStatus = workflowEngine.getWorkflowGateStatus(
-          result.workflowId!,
+          result.workflowId!
         );
         expect(finalGateStatus.gateResults.length).toBeGreaterThan(0);
 
@@ -373,14 +373,14 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         'vision-analysis',
         async (context, params) => {
           return { analyzed: true, requirements: ['req1', 'req2'] };
-        },
+        }
       );
 
       workflowEngine.registerStepHandler(
         'prd-creation',
         async (context, params) => {
           return { prd_created: true, documents: ['prd1.md'] };
-        },
+        }
       );
 
       const result = await workflowEngine.startWorkflow(definition, {
@@ -394,7 +394,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
       await new Promise((resolve) => setTimeout(resolve, 200));
 
       const gateStatus = workflowEngine.getWorkflowGateStatus(
-        result.workflowId!,
+        result.workflowId!
       );
 
       // Should have processed at least one gate
@@ -447,7 +447,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
             initialTimeout: 1000, // 1 second for testing
             onTimeout: 'escalate',
           },
-        },
+        }
       );
 
       expect(testGate.id).toBeDefined();
@@ -505,7 +505,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         },
         {
           priority: WorkflowGatePriority.CRITICAL,
-        },
+        }
       );
 
       const lowPriorityGate = await gatesManager.createGate(
@@ -544,7 +544,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         },
         {
           priority: WorkflowGatePriority.LOW,
-        },
+        }
       );
 
       // Wait for queue processing
@@ -664,7 +664,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
             payload: { memoryTest: true, index: i },
             attachments: [],
             externalReferences: [],
-          },
+          }
         );
 
         createdGates.push(gate.id);
@@ -706,7 +706,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
           enableMetrics: false,
           enableDomainValidation: false,
           defaultTimeout: 1000,
-        },
+        }
       );
 
       // Test error handling in gate processing
@@ -720,7 +720,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
           businessImpact: 'medium',
           decisionScope: 'task',
           stakeholders: ['tester'],
-        },
+        }
       );
 
       const result = await errorGateProcessor.processWorkflowGate(gateRequest);
@@ -848,13 +848,13 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
         if (finalStatus?.status === 'paused') {
           // Approve any pending gates
           const gateStatus = workflowEngine.getWorkflowGateStatus(
-            result.workflowId!,
+            result.workflowId!
           );
           if (gateStatus.pausedForGate) {
             await workflowEngine.resumeWorkflowAfterGate(
               result.workflowId!,
               gateStatus.pausedForGate.gateId,
-              true,
+              true
             );
           }
         } else if (
@@ -869,11 +869,11 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
 
       // Workflow should eventually complete
       expect(finalStatus?.status).toEqual(
-        expect.stringMatching(/completed|failed|paused/),
+        expect.stringMatching(/completed|failed|paused/)
       );
 
       const gateStatus = workflowEngine.getWorkflowGateStatus(
-        result.workflowId!,
+        result.workflowId!
       );
 
       logger.info('Complex gate workflow completed', {
@@ -918,7 +918,7 @@ describe('Comprehensive Gate Tests - Phase 1 Final Validation', () => {
       expect(gateMetrics.totalGates).toBeGreaterThanOrEqual(0);
 
       const gateStatus = workflowEngine.getWorkflowGateStatus(
-        result.workflowId!,
+        result.workflowId!
       );
       expect(gateStatus).toBeDefined();
 

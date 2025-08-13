@@ -52,7 +52,7 @@ class TypeScriptGraphESLintAnalyzer {
     console.log(`📊 Dependency graph complete:`);
     console.log(`  • ${this.fileNodes.size} files mapped`);
     console.log(
-      `  • ${[...this.dependencyEdges.values()].reduce((sum, deps) => sum + deps.size, 0)} dependencies`,
+      `  • ${[...this.dependencyEdges.values()].reduce((sum, deps) => sum + deps.size, 0)} dependencies`
     );
     console.log(`  • ${this.circularDeps.size} circular dependencies detected`);
 
@@ -69,7 +69,7 @@ class TypeScriptGraphESLintAnalyzer {
     for (let i = 0; i < files.length; i += batchSize) {
       const batch = files.slice(i, i + batchSize);
       console.log(
-        `📖 Processing files ${i + 1}-${Math.min(i + batchSize, files.length)}/${files.length}`,
+        `📖 Processing files ${i + 1}-${Math.min(i + batchSize, files.length)}/${files.length}`
       );
 
       const batchPromises = batch.map(async (filePath) => {
@@ -145,8 +145,8 @@ class TypeScriptGraphESLintAnalyzer {
               (p) =>
                 path.basename(p) === path.basename(resolvedPath) ||
                 p.includes(
-                  path.basename(resolvedPath, path.extname(resolvedPath)),
-                ),
+                  path.basename(resolvedPath, path.extname(resolvedPath))
+                )
             );
 
             failedResolutions.push({
@@ -165,7 +165,7 @@ class TypeScriptGraphESLintAnalyzer {
     }
 
     console.log(
-      `🔗 Dependency resolution: ${resolvedImports}/${totalImports} imports resolved to existing files`,
+      `🔗 Dependency resolution: ${resolvedImports}/${totalImports} imports resolved to existing files`
     );
 
     // Show failed resolutions for key files
@@ -175,11 +175,11 @@ class TypeScriptGraphESLintAnalyzer {
         console.log(`  📁 ${failure.from} → "${failure.import}"`);
         console.log(`    Resolved: ${failure.resolved}`);
         console.log(
-          `    Exists: ${failure.exists}, In fileNodes: ${failure.inFileNodes}`,
+          `    Exists: ${failure.exists}, In fileNodes: ${failure.inFileNodes}`
         );
         if (failure.similarPaths?.length > 0) {
           console.log(
-            `    Similar files found: ${failure.similarPaths.join(', ')}`,
+            `    Similar files found: ${failure.similarPaths.join(', ')}`
           );
         }
       });
@@ -189,7 +189,7 @@ class TypeScriptGraphESLintAnalyzer {
     const sampleAdapterPaths = [...this.fileNodes.keys()].filter(
       (p) =>
         p.includes('integration-service-adapter') ||
-        p.includes('mcp-tool-registry'),
+        p.includes('mcp-tool-registry')
     );
     if (sampleAdapterPaths.length > 0) {
       console.log(`🔍 Sample adapter file paths in fileNodes:`);
@@ -200,7 +200,7 @@ class TypeScriptGraphESLintAnalyzer {
     sampleAdapterPaths.forEach((filePath) => {
       const dependents = this.dependentEdges.get(filePath);
       console.log(
-        `🎯 ${path.basename(filePath)}: ${dependents?.size || 0} dependents`,
+        `🎯 ${path.basename(filePath)}: ${dependents?.size || 0} dependents`
       );
       if (dependents && dependents.size > 0) {
         [...dependents]
@@ -290,7 +290,7 @@ class TypeScriptGraphESLintAnalyzer {
       // Circular dependency penalty
       const fileName = path.basename(filePath);
       const isInCycle = [...this.circularDeps].some((cycle) =>
-        cycle.includes(fileName),
+        cycle.includes(fileName)
       );
       if (isInCycle) {
         score += 100; // Very high priority for circular deps
@@ -323,7 +323,7 @@ class TypeScriptGraphESLintAnalyzer {
       const node = this.fileNodes.get(file.path);
       const dependents = this.dependentEdges.get(file.path)?.size || 0;
       console.log(
-        `  ${i + 1}. ${path.basename(file.path)} (score: ${file.score.toFixed(1)}, ${dependents} dependents)`,
+        `  ${i + 1}. ${path.basename(file.path)} (score: ${file.score.toFixed(1)}, ${dependents} dependents)`
       );
     });
 
@@ -351,13 +351,13 @@ class TypeScriptGraphESLintAnalyzer {
     }
 
     console.log(
-      `📊 Created ${batches.length} efficient batches (avg size: ${(totalFiles / batches.length).toFixed(1)})`,
+      `📊 Created ${batches.length} efficient batches (avg size: ${(totalFiles / batches.length).toFixed(1)})`
     );
     console.log(
       `🎯 Batch sizes: ${batches
         .slice(0, 5)
         .map((b) => b.length)
-        .join(', ')}${batches.length > 5 ? ', ...' : ''}`,
+        .join(', ')}${batches.length > 5 ? ', ...' : ''}`
     );
 
     return batches;
@@ -386,7 +386,7 @@ class TypeScriptGraphESLintAnalyzer {
 
     if (isQuickMode) {
       console.log(
-        `⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`,
+        `⚡ Quick mode: Processing only first ${batchesToProcess} batches (${batchesToProcess * 10} files) for TypeScript API testing`
       );
     }
 
@@ -398,7 +398,7 @@ class TypeScriptGraphESLintAnalyzer {
 
       const progress = (((index + 1) / batchesToProcess) * 100).toFixed(1);
       console.log(
-        `📊 Batch ${index + 1}/${batchesToProcess} (${batch.length} files, ${progress}% complete)`,
+        `📊 Batch ${index + 1}/${batchesToProcess} (${batch.length} files, ${progress}% complete)`
       );
 
       try {
@@ -420,7 +420,7 @@ class TypeScriptGraphESLintAnalyzer {
           ? batchesToProcess * 10
           : prioritizedFiles.length;
         console.log(
-          `✅ Batch ${index + 1}: ${batchViolationCount} violations found (${processedFiles}/${totalFiles} files processed)`,
+          `✅ Batch ${index + 1}: ${batchViolationCount} violations found (${processedFiles}/${totalFiles} files processed)`
         );
 
         // Brief pause to prevent overwhelming the system
@@ -491,7 +491,7 @@ class TypeScriptGraphESLintAnalyzer {
               rule: msg.ruleId,
               message: msg.message,
               severity: msg.severity,
-            })),
+            }))
           );
           resolve(violations);
         } catch (parseError) {
@@ -522,9 +522,7 @@ class TypeScriptGraphESLintAnalyzer {
         content,
         ts.ScriptTarget.Latest,
         true, // setParentNodes
-        path.extname(filePath) === '.tsx'
-          ? ts.ScriptKind.TSX
-          : ts.ScriptKind.TS,
+        path.extname(filePath) === '.tsx' ? ts.ScriptKind.TSX : ts.ScriptKind.TS
       );
 
       // Traverse AST and extract import/export declarations
@@ -552,7 +550,7 @@ class TypeScriptGraphESLintAnalyzer {
     } catch (error) {
       // Fallback to regex on TypeScript parsing error
       console.warn(
-        `⚠️  TypeScript parsing failed for ${path.basename(filePath)}: ${error.message}`,
+        `⚠️  TypeScript parsing failed for ${path.basename(filePath)}: ${error.message}`
       );
       return this.extractDependenciesRegexFallback(content, filePath);
     }
@@ -714,7 +712,7 @@ class TypeScriptGraphESLintAnalyzer {
         {
           stdio: 'pipe',
           cwd: repoRoot,
-        },
+        }
       );
 
       let stdout = '';
@@ -724,7 +722,7 @@ class TypeScriptGraphESLintAnalyzer {
           .trim()
           .split('\n')
           .filter(
-            (f) => f && !f.includes('node_modules') && !f.includes('.d.ts'),
+            (f) => f && !f.includes('node_modules') && !f.includes('.d.ts')
           )
           .map((f) => {
             // Ensure consistent absolute path normalization
@@ -749,10 +747,10 @@ class TypeScriptGraphESLintAnalyzer {
  */
 async function main() {
   console.log(
-    '🧘 Claude Code Zen AI ESLint Fixer - TypeScript Compiler API Edition',
+    '🧘 Claude Code Zen AI ESLint Fixer - TypeScript Compiler API Edition'
   );
   console.log(
-    '====================================================================',
+    '===================================================================='
   );
 
   const analyzer = new TypeScriptGraphESLintAnalyzer();
@@ -806,7 +804,7 @@ async function main() {
       filesByViolations.forEach((node, i) => {
         const dependents = result.dependentEdges.get(node.path)?.size || 0;
         console.log(
-          `  ${i + 1}. ${node.name}: ${node.violations} violations (${dependents} dependents)`,
+          `  ${i + 1}. ${node.name}: ${node.violations} violations (${dependents} dependents)`
         );
       });
     }
@@ -824,7 +822,7 @@ async function main() {
     highImpactFiles.forEach((node, i) => {
       const dependents = result.dependentEdges.get(node.path)?.size || 0;
       console.log(
-        `  ${i + 1}. ${node.name}: ${dependents} dependents, ${node.violations} violations`,
+        `  ${i + 1}. ${node.name}: ${dependents} dependents, ${node.violations} violations`
       );
     });
 

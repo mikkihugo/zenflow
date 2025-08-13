@@ -192,7 +192,7 @@ export class AgentRegistry extends EventEmitter {
       status?: AgentStatus;
       metrics?: Partial<AgentMetrics>;
       capabilities?: AgentCapabilities;
-    },
+    }
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
@@ -232,7 +232,7 @@ export class AgentRegistry extends EventEmitter {
    * @param query
    */
   async queryAgents(
-    query: AgentRegistryQuery = {},
+    query: AgentRegistryQuery = {}
   ): Promise<RegisteredAgent[]> {
     const agents = Array.from(this.agents.values());
 
@@ -262,7 +262,7 @@ export class AgentRegistry extends EventEmitter {
             agent.capabilities.languages?.includes(cap) ||
             agent.capabilities.frameworks?.includes(cap) ||
             agent.capabilities.domains?.includes(cap) ||
-            agent.capabilities.tools?.includes(cap),
+            agent.capabilities.tools?.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
@@ -295,7 +295,7 @@ export class AgentRegistry extends EventEmitter {
    * @param criteria
    */
   async selectAgents(
-    criteria: AgentSelectionCriteria,
+    criteria: AgentSelectionCriteria
   ): Promise<RegisteredAgent[]> {
     let candidates = await this.queryAgents({
       ...(criteria.type && { type: criteria.type }),
@@ -308,7 +308,7 @@ export class AgentRegistry extends EventEmitter {
     // Exclude specific agents
     if (criteria.excludeAgents) {
       candidates = candidates.filter(
-        (agent) => !criteria.excludeAgents?.includes(agent.id),
+        (agent) => !criteria.excludeAgents?.includes(agent.id)
       );
     }
 
@@ -367,7 +367,7 @@ export class AgentRegistry extends EventEmitter {
    */
   getAgentsByType(type: AgentType): RegisteredAgent[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.type === type,
+      (agent) => agent.type === type
     );
   }
 
@@ -381,7 +381,7 @@ export class AgentRegistry extends EventEmitter {
         acc[agent.type] = (acc[agent.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     const byStatus = agents.reduce(
@@ -389,7 +389,7 @@ export class AgentRegistry extends EventEmitter {
         acc[agent.status] = (acc[agent.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     return {
@@ -429,7 +429,7 @@ export class AgentRegistry extends EventEmitter {
       this.memory.store(`${this.namespace}/agents/${id}`, agent, {
         ttl: 3600000, // 1 hour
         replicas: 2,
-      }),
+      })
     );
 
     await Promise.allSettled(promises);
@@ -502,7 +502,7 @@ export class AgentRegistry extends EventEmitter {
 
   private calculateHealth(
     metrics?: AgentMetrics,
-    status?: AgentStatus,
+    status?: AgentStatus
   ): number {
     if (!metrics) return 1.0;
 
@@ -521,7 +521,7 @@ export class AgentRegistry extends EventEmitter {
       ((metrics.resourceUsage?.memory || 0) +
         (metrics.resourceUsage?.cpu || 0)) /
         2 -
-        0.8,
+        0.8
     );
     health -= resourcePenalty * 0.3;
 
@@ -530,7 +530,7 @@ export class AgentRegistry extends EventEmitter {
 
   private calculateSelectionScore(
     agent: RegisteredAgent,
-    criteria?: AgentSelectionCriteria,
+    criteria?: AgentSelectionCriteria
   ): number {
     // Balanced scoring for agent selection
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
@@ -547,7 +547,7 @@ export class AgentRegistry extends EventEmitter {
 
   private filterByContext(
     candidates: RegisteredAgent[],
-    criteria: AgentSelectionCriteria,
+    criteria: AgentSelectionCriteria
   ): RegisteredAgent[] {
     const fileTypeToAgents = this.getFileTypeMapping();
     const taskTypeToAgents = this.getTaskTypeMapping();
@@ -575,7 +575,7 @@ export class AgentRegistry extends EventEmitter {
 
   private calculateContextScore(
     agent: RegisteredAgent,
-    criteria: AgentSelectionCriteria,
+    criteria: AgentSelectionCriteria
   ): number {
     const fileTypeToAgents = this.getFileTypeMapping();
     const taskTypeToAgents = this.getTaskTypeMapping();

@@ -80,8 +80,8 @@ class CompleteArchitectureConverter {
     console.log(chalk.blue('🚀 MCP → API Architecture Conversion'));
     console.log(
       chalk.gray(
-        'Converting MCP tools to API-first architecture with dual-port setup',
-      ),
+        'Converting MCP tools to API-first architecture with dual-port setup'
+      )
     );
     console.log('');
 
@@ -125,7 +125,7 @@ class CompleteArchitectureConverter {
       console.log('');
       console.error(
         chalk.red('❌ Conversion failed:'),
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -146,7 +146,7 @@ class CompleteArchitectureConverter {
 
     if (tools.length === 0) {
       console.log(
-        chalk.yellow('   ⚠️  No MCP tools found - nothing to convert'),
+        chalk.yellow('   ⚠️  No MCP tools found - nothing to convert')
       );
       return;
     }
@@ -183,7 +183,7 @@ class CompleteArchitectureConverter {
 
     const stats = converter.getStats();
     console.log(
-      `   ✅ Converted ${chalk.cyan(stats.mcpToolsFound)} MCP tools to APIs`,
+      `   ✅ Converted ${chalk.cyan(stats.mcpToolsFound)} MCP tools to APIs`
     );
     console.log(`   📁 Generated files in: ${stats.outputDir}`);
     console.log('');
@@ -218,8 +218,8 @@ class CompleteArchitectureConverter {
     } else {
       console.log(
         chalk.yellow(
-          '   ⚠️  OpenAPI spec not found - skipping client generation',
-        ),
+          '   ⚠️  OpenAPI spec not found - skipping client generation'
+        )
       );
     }
     console.log('');
@@ -276,7 +276,7 @@ class CompleteArchitectureConverter {
 
     if (failures.length > 0) {
       console.log(
-        chalk.yellow(`   ⚠️  ${failures.length} validation issues found`),
+        chalk.yellow(`   ⚠️  ${failures.length} validation issues found`)
       );
       failures.forEach((failure, index) => {
         console.log(`   ${index + 1}. ${failure.reason}`);
@@ -394,7 +394,7 @@ export default DUAL_PORT_CONFIG;
     await fs.writeFile(
       join(this.config.apiOutputDir, '../dual-port-config.ts'),
       config,
-      'utf-8',
+      'utf-8'
     );
   }
 
@@ -553,7 +553,7 @@ main
     const fs = await import('fs/promises');
     const scriptPath = join(
       this.config.apiOutputDir,
-      '../start-dual-servers.sh',
+      '../start-dual-servers.sh'
     );
     await fs.writeFile(scriptPath, script, 'utf-8');
 
@@ -785,7 +785,7 @@ This architecture provides a robust, scalable, and maintainable foundation for b
     await fs.writeFile(
       join(this.config.apiOutputDir, '../ARCHITECTURE.md'),
       docs,
-      'utf-8',
+      'utf-8'
     );
   }
 
@@ -985,7 +985,7 @@ npm run restart:mcp
     await fs.writeFile(
       join(this.config.apiOutputDir, '../MIGRATION.md'),
       guide,
-      'utf-8',
+      'utf-8'
     );
   }
 
@@ -998,7 +998,7 @@ npm run restart:mcp
     await fs.writeFile(
       join(this.config.apiOutputDir, 'API.md'),
       apiDocs,
-      'utf-8',
+      'utf-8'
     );
   }
 

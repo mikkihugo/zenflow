@@ -749,7 +749,7 @@ export class AdvancedFlowManager extends EventEmitter {
     portfolioOrchestrator: PortfolioOrchestrator,
     programOrchestrator: ProgramOrchestrator,
     swarmOrchestrator: SwarmExecutionOrchestrator,
-    config: Partial<AdvancedFlowManagerConfig> = {},
+    config: Partial<AdvancedFlowManagerConfig> = {}
   ) {
     super();
 
@@ -884,25 +884,25 @@ export class AdvancedFlowManager extends EventEmitter {
     if (this.config.enableMachineLearning) {
       optimalLimits = await this.calculateMLOptimizedWIPLimits(
         currentMetrics,
-        historicalData,
+        historicalData
       );
     } else {
       optimalLimits = await this.calculateHeuristicWIPLimits(
         currentMetrics,
-        historicalData,
+        historicalData
       );
     }
 
     // Generate optimization triggers
     const triggers = await this.generateOptimizationTriggers(
       currentMetrics,
-      optimalLimits,
+      optimalLimits
     );
 
     // Calculate confidence based on data quality and model accuracy
     const confidence = await this.calculateWIPConfidence(
       currentMetrics,
-      historicalData,
+      historicalData
     );
 
     const intelligentLimits: IntelligentWIPLimits = {
@@ -912,12 +912,12 @@ export class AdvancedFlowManager extends EventEmitter {
       adaptationRate: this.config.adaptationRate,
       optimizationTriggers: triggers,
       performanceThresholds: Array.from(
-        this.state.performanceThresholds.values(),
+        this.state.performanceThresholds.values()
       ),
       confidence,
       lastCalculation: new Date(),
       nextCalculation: new Date(
-        Date.now() + this.config.wipCalculationInterval,
+        Date.now() + this.config.wipCalculationInterval
       ),
     };
 
@@ -954,43 +954,43 @@ export class AdvancedFlowManager extends EventEmitter {
       backlog: this.calculateGradualAdjustment(
         currentLimits.backlog,
         optimalLimits.backlog,
-        adaptationRate,
+        adaptationRate
       ),
       analysis: this.calculateGradualAdjustment(
         currentLimits.analysis,
         optimalLimits.analysis,
-        adaptationRate,
+        adaptationRate
       ),
       development: this.calculateGradualAdjustment(
         currentLimits.development,
         optimalLimits.development,
-        adaptationRate,
+        adaptationRate
       ),
       testing: this.calculateGradualAdjustment(
         currentLimits.testing,
         optimalLimits.testing,
-        adaptationRate,
+        adaptationRate
       ),
       review: this.calculateGradualAdjustment(
         currentLimits.review,
         optimalLimits.review,
-        adaptationRate,
+        adaptationRate
       ),
       deployment: this.calculateGradualAdjustment(
         currentLimits.deployment,
         optimalLimits.deployment,
-        adaptationRate,
+        adaptationRate
       ),
       done: currentLimits.done, // Usually unlimited
       blocked: this.calculateGradualAdjustment(
         currentLimits.blocked,
         optimalLimits.blocked,
-        adaptationRate,
+        adaptationRate
       ),
       expedite: this.calculateGradualAdjustment(
         currentLimits.expedite,
         optimalLimits.expedite,
-        adaptationRate,
+        adaptationRate
       ),
       total: 0, // Will be recalculated
     };
@@ -1017,7 +1017,7 @@ export class AdvancedFlowManager extends EventEmitter {
       trigger: 'intelligent-calculation',
       expectedImpact: await this.calculateExpectedWIPImpact(
         currentLimits,
-        adjustedLimits,
+        adjustedLimits
       ),
       success: true, // Will be validated later
       rollbackRequired: false,
@@ -1060,7 +1060,7 @@ export class AdvancedFlowManager extends EventEmitter {
           recommendedActions: await this.generateViolationRecommendations(
             stage as FlowStage,
             current,
-            limit,
+            limit
           ),
           autoResolution: current - limit <= 2, // Auto-resolve minor violations
         };
@@ -1128,7 +1128,7 @@ export class AdvancedFlowManager extends EventEmitter {
     // Keep only recent history (last 24 hours)
     const cutoffTime = new Date(timestamp.getTime() - 24 * 60 * 60 * 1000);
     this.state.flowHistory = this.state.flowHistory.filter(
-      (state) => state.timestamp > cutoffTime,
+      (state) => state.timestamp > cutoffTime
     );
 
     this.logger.debug('Flow state updated', {
@@ -1256,7 +1256,7 @@ export class AdvancedFlowManager extends EventEmitter {
       timeframe: 7,
       impact: this.calculateForecastImpact(
         throughputForecast.predicted,
-        currentMetrics.throughput.itemsPerDay,
+        currentMetrics.throughput.itemsPerDay
       ),
       recommendation: this.generateThroughputRecommendation(throughputForecast),
       dataPoints: throughputForecast.dataPoints,
@@ -1327,7 +1327,7 @@ export class AdvancedFlowManager extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'advanced-flow-manager:state',
+        'advanced-flow-manager:state'
       );
       if (persistedState) {
         this.state = {
@@ -1335,11 +1335,11 @@ export class AdvancedFlowManager extends EventEmitter {
           ...persistedState,
           flowTriggers: new Map(persistedState.flowTriggers || []),
           performanceThresholds: new Map(
-            persistedState.performanceThresholds || [],
+            persistedState.performanceThresholds || []
           ),
           mlModels: new Map(persistedState.mlModels || []),
           activeRecommendations: new Map(
-            persistedState.activeRecommendations || [],
+            persistedState.activeRecommendations || []
           ),
         };
         this.logger.info('Advanced Flow Manager state loaded');
@@ -1355,11 +1355,11 @@ export class AdvancedFlowManager extends EventEmitter {
         ...this.state,
         flowTriggers: Array.from(this.state.flowTriggers.entries()),
         performanceThresholds: Array.from(
-          this.state.performanceThresholds.entries(),
+          this.state.performanceThresholds.entries()
         ),
         mlModels: Array.from(this.state.mlModels.entries()),
         activeRecommendations: Array.from(
-          this.state.activeRecommendations.entries(),
+          this.state.activeRecommendations.entries()
         ),
       };
 
@@ -1488,25 +1488,25 @@ export class AdvancedFlowManager extends EventEmitter {
   // Additional placeholder methods would continue...
   private async calculateMLOptimizedWIPLimits(
     metrics: FlowMetrics,
-    historical: unknown,
+    historical: unknown
   ): Promise<WIPLimits> {
     return this.config.defaultWIPLimits;
   }
   private async calculateHeuristicWIPLimits(
     metrics: FlowMetrics,
-    historical: unknown,
+    historical: unknown
   ): Promise<WIPLimits> {
     return this.config.defaultWIPLimits;
   }
   private async generateOptimizationTriggers(
     metrics: FlowMetrics,
-    limits: WIPLimits,
+    limits: WIPLimits
   ): Promise<FlowTrigger[]> {
     return [];
   }
   private async calculateWIPConfidence(
     metrics: FlowMetrics,
-    historical: unknown,
+    historical: unknown
   ): Promise<number> {
     return 0.8;
   }
@@ -1516,22 +1516,22 @@ export class AdvancedFlowManager extends EventEmitter {
   private calculateGradualAdjustment(
     current: number,
     optimal: number,
-    rate: number,
+    rate: number
   ): number {
     return Math.round(current + (optimal - current) * rate);
   }
   private async updateOrchestratorsWIPLimits(
-    limits: WIPLimits,
+    limits: WIPLimits
   ): Promise<void> {}
   private async calculateExpectedWIPImpact(
     current: WIPLimits,
-    new_: WIPLimits,
+    new_: WIPLimits
   ): Promise<ExpectedBenefit> {
     return {} as ExpectedBenefit;
   }
   private calculateWIPDifferences(
     current: WIPLimits,
-    new_: WIPLimits,
+    new_: WIPLimits
   ): Record<string, number> {
     return {};
   }
@@ -1540,7 +1540,7 @@ export class AdvancedFlowManager extends EventEmitter {
   }
   private calculateViolationSeverity(
     current: number,
-    limit: number,
+    limit: number
   ): 'minor' | 'major' | 'critical' {
     const excess = (current - limit) / limit;
     if (excess > 0.5) return 'critical';
@@ -1553,12 +1553,12 @@ export class AdvancedFlowManager extends EventEmitter {
   private async generateViolationRecommendations(
     stage: FlowStage,
     current: number,
-    limit: number,
+    limit: number
   ): Promise<string[]> {
     return [];
   }
   private async handleWIPViolations(
-    violations: WIPViolation[],
+    violations: WIPViolation[]
   ): Promise<void> {}
   private async collectCurrentWorkItems(): Promise<FlowWorkItem[]> {
     return [];
@@ -1573,23 +1573,23 @@ export class AdvancedFlowManager extends EventEmitter {
     return [];
   }
   private calculatePredictabilityTrend(
-    metrics: FlowMetrics,
+    metrics: FlowMetrics
   ): 'improving' | 'stable' | 'degrading' {
     return 'stable';
   }
   private calculateValueTrend(
-    metrics: FlowMetrics,
+    metrics: FlowMetrics
   ): 'improving' | 'stable' | 'degrading' {
     return 'stable';
   }
   private async generateThroughputForecast(
-    historical: FlowState[],
+    historical: FlowState[]
   ): Promise<unknown> {
     return { predicted: 10, confidence: 0.8, dataPoints: [] };
   }
   private calculateForecastImpact(
     predicted: number,
-    current: number,
+    current: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     const change = Math.abs(predicted - current) / current;
     if (change > 0.3) return 'high';
@@ -1608,7 +1608,7 @@ export class AdvancedFlowManager extends EventEmitter {
     };
   }
   private async detectQualityAnomalies(
-    historical: FlowState[],
+    historical: FlowState[]
   ): Promise<unknown> {
     return { detected: false, confidence: 0, description: '', dataPoints: [] };
   }

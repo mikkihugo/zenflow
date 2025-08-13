@@ -32,7 +32,7 @@ class BiomeBatchFixer {
       // Run Biome on individual files to get specific error locations
       const tsFiles = execSync(
         'find src -name "*.ts" -not -path "*/node_modules/*" -not -path "*/build/*"',
-        { encoding: 'utf-8' },
+        { encoding: 'utf-8' }
       )
         .split('\n')
         .filter((f) => f.length > 0);
@@ -43,14 +43,14 @@ class BiomeBatchFixer {
       for (let i = 0; i < tsFiles.length; i += 10) {
         const batch = tsFiles.slice(i, i + 10);
         console.log(
-          `  📂 Processing batch ${Math.floor(i / 10) + 1}/${Math.ceil(tsFiles.length / 10)}: ${batch.length} files`,
+          `  📂 Processing batch ${Math.floor(i / 10) + 1}/${Math.ceil(tsFiles.length / 10)}: ${batch.length} files`
         );
 
         for (const filePath of batch) {
           try {
             const result = execSync(
               `npx biome check "${filePath}" --reporter=github-actions`,
-              { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] },
+              { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }
             );
             // File is clean if no output
           } catch (error) {
@@ -79,7 +79,7 @@ class BiomeBatchFixer {
     lines.forEach((line) => {
       // Parse format: ::error file=src/file.ts,line=123,col=45::Rule violation message
       const match = line.match(
-        /::error file=([^,]+),line=(\d+),col=(\d+)::(.*)/,
+        /::error file=([^,]+),line=(\d+),col=(\d+)::(.*)/
       );
       if (match) {
         const [, filePath, line, col, message] = match;
@@ -141,7 +141,7 @@ class BiomeBatchFixer {
         this.totalFilesProcessed++;
       } else if (this.dryRun && content !== originalContent) {
         console.log(
-          `  🔍 [DRY RUN] Would apply ${totalFixes} fixes to ${filePath}`,
+          `  🔍 [DRY RUN] Would apply ${totalFixes} fixes to ${filePath}`
         );
       }
 
@@ -210,13 +210,13 @@ class BiomeBatchFixer {
       /if\s*\([^)]+\)\s*\{[^}]*(?:return|throw|continue|break)[^}]*\}\s*else\s*\{([^}]*)\}/g,
       (match, elseContent) => {
         return match.split('else')[0] + elseContent.trim();
-      },
+      }
     );
 
     // Fix delete usage
     fixedContent = fixedContent.replace(
       /delete\s+([^;]+);/g,
-      '$1 = undefined;',
+      '$1 = undefined;'
     );
 
     // Fix complex logic expressions
@@ -236,7 +236,7 @@ class BiomeBatchFixer {
 
   fixUselessElse(content) {
     const elseMatches = content.match(
-      /if\s*\([^)]+\)\s*\{[^}]*(?:return|throw|continue|break)[^}]*\}\s*else\s*\{/g,
+      /if\s*\([^)]+\)\s*\{[^}]*(?:return|throw|continue|break)[^}]*\}\s*else\s*\{/g
     );
     return elseMatches ? elseMatches.length : 0;
   }
@@ -255,7 +255,7 @@ class BiomeBatchFixer {
     try {
       const result = execSync(
         `npx biome check "${filePath}" --reporter=summary`,
-        { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] },
+        { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] }
       );
       console.log(`  ✅ ${filePath} - Clean!`);
     } catch (error) {
@@ -264,7 +264,7 @@ class BiomeBatchFixer {
         const warningCount = (error.stdout.match(/warning\(s\)/g) || []).length;
         if (errorCount > 0 || warningCount > 0) {
           console.log(
-            `  📊 ${filePath} - ${errorCount} errors, ${warningCount} warnings remaining`,
+            `  📊 ${filePath} - ${errorCount} errors, ${warningCount} warnings remaining`
           );
         } else {
           console.log(`  ✅ ${filePath} - Clean!`);
@@ -306,7 +306,7 @@ class BiomeBatchFixer {
 
       if (iterationFixes === 0) {
         console.log(
-          '\n⚠️  No fixes applied - manual intervention may be needed',
+          '\n⚠️  No fixes applied - manual intervention may be needed'
         );
         break;
       }

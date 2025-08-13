@@ -110,7 +110,7 @@ export class WebInterfaceServer {
       {
         prefix: this.config.apiPrefix,
         enableCors: this.config.cors,
-      },
+      }
     );
 
     this.daemonManager = new DaemonProcessManager({
@@ -133,11 +133,11 @@ export class WebInterfaceServer {
         res.header('Access-Control-Allow-Origin', '*');
         res.header(
           'Access-Control-Allow-Methods',
-          'GET, POST, PUT, DELETE, OPTIONS',
+          'GET, POST, PUT, DELETE, OPTIONS'
         );
         res.header(
           'Access-Control-Allow-Headers',
-          'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Session-Id',
+          'Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Session-Id'
         );
 
         if (req.method === 'OPTIONS') {
@@ -243,7 +243,7 @@ export class WebInterfaceServer {
         this.logger.info(`📊 Dashboard: ${address}`);
         this.logger.info(`🔗 API: ${address}${this.config.apiPrefix}`);
         this.logger.info(
-          `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`,
+          `⚡ WebSocket: Real-time updates ${this.config.realTime ? 'enabled' : 'disabled'}`
         );
 
         resolve();
@@ -265,7 +265,7 @@ export class WebInterfaceServer {
       [
         process.argv[1]!,
         ...process.argv.slice(2).filter((arg) => arg !== '--daemon'),
-      ],
+      ]
     );
   }
 
@@ -294,7 +294,7 @@ export class WebInterfaceServer {
     port: number;
     uptime?: number;
     connections?: number;
-    daemon?: any;
+    daemon?: unknown;
   }> {
     const baseStatus = {
       running: this.server.listening,

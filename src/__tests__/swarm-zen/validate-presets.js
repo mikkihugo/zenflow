@@ -18,7 +18,7 @@ async function validateAllPresets() {
     try {
       // Test with the preset
       const { stdout: testOutput } = await execAsync(
-        `npm test -- --preset=${preset}`,
+        `npm test -- --preset=${preset}`
       );
 
       // Extract test results
@@ -27,12 +27,12 @@ async function validateAllPresets() {
 
       // Run coverage for this preset
       const { stdout: coverageOutput } = await execAsync(
-        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`,
+        `npx nyc --reporter=json-summary npm test -- --preset=${preset}`
       );
 
       // Read coverage data
       const coverageData = JSON.parse(
-        await fs.readFile('coverage/coverage-summary.json', 'utf8'),
+        await fs.readFile('coverage/coverage-summary.json', 'utf8')
       );
 
       results.presets[preset] = {
@@ -60,7 +60,7 @@ async function validateAllPresets() {
   // Save results
   await fs.writeFile(
     'preset-validation-results.json',
-    JSON.stringify(results, null, 2),
+    JSON.stringify(results, null, 2)
   );
 
   // Generate report
@@ -72,14 +72,14 @@ async function validateAllPresets() {
 async function testPresetPerformance(preset) {
   try {
     const { stdout } = await execAsync(
-      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`,
+      `node test/benchmarks/benchmark-neural-models.js --preset=${preset} --iterations=3`
     );
 
     // Extract performance metrics
     const metrics = {
       initialized: stdout.includes('initialized'),
       avgTime: Number.parseFloat(
-        stdout.match(/Average time: ([\d.]+)ms/)?.[1] || 0,
+        stdout.match(/Average time: ([\d.]+)ms/)?.[1] || 0
       ),
       memory: stdout.match(/Memory: ([\d.]+)MB/)?.[1] || 'N/A',
     };

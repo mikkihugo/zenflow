@@ -7,7 +7,7 @@
 import { createCoordinationTestSuite } from '../../../helpers/index.js';
 
 describe('Simple Agent Manager - London TDD', () => {
-  let mockAgentManager: any;
+  let mockAgentManager: unknown;
   let mockEventEmitter: jest.Mock;
 
   beforeEach(() => {
@@ -63,7 +63,7 @@ describe('Simple Agent Manager - London TDD', () => {
         expect.objectContaining({
           type: 'agent_registered',
           agentId: agent.id,
-        }),
+        })
       );
     });
 
@@ -74,7 +74,7 @@ describe('Simple Agent Manager - London TDD', () => {
       ];
 
       const results = agents.map((agent) =>
-        mockAgentManager.registerAgent(agent),
+        mockAgentManager.registerAgent(agent)
       );
 
       // Verify interaction pattern
@@ -95,7 +95,7 @@ describe('Simple Agent Manager - London TDD', () => {
       // Verify assignment interaction
       expect(mockAgentManager.assignTask).toHaveBeenCalledWith(
         'worker-1',
-        task,
+        task
       );
       expect(result?.success).toBe(true);
       expect(result?.taskId).toBe(task.id);
@@ -107,7 +107,7 @@ describe('Simple Agent Manager - London TDD', () => {
           type: 'task_assigned',
           agentId: 'worker-1',
           taskId: task.id,
-        }),
+        })
       );
     });
   });
@@ -128,7 +128,7 @@ describe('Simple Agent Manager - London TDD', () => {
         expect.objectContaining({
           type: 'message_broadcast',
           message,
-        }),
+        })
       );
     });
   });

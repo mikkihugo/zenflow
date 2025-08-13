@@ -109,7 +109,7 @@ export class IntegrationServiceFactory
 
     if (!this.canHandle(config?.type)) {
       throw new Error(
-        `IntegrationServiceFactory cannot handle service type: ${config?.type}`,
+        `IntegrationServiceFactory cannot handle service type: ${config?.type}`
       );
     }
 
@@ -121,7 +121,7 @@ export class IntegrationServiceFactory
 
     this.createdServices.set(config?.name, adapter);
     this.logger.info(
-      `Integration service created successfully: ${config?.name}`,
+      `Integration service created successfully: ${config?.name}`
     );
 
     return adapter;
@@ -207,7 +207,7 @@ export class IntegrationServiceFactory
         } catch (error) {
           this.logger.error(`Error starting service ${service.name}:`, error);
         }
-      },
+      }
     );
     await Promise.all(startPromises);
   }
@@ -223,7 +223,7 @@ export class IntegrationServiceFactory
         } catch (error) {
           this.logger.error(`Error stopping service ${service.name}:`, error);
         }
-      },
+      }
     );
     await Promise.all(stopPromises);
   }
@@ -272,7 +272,7 @@ export class IntegrationServiceFactory
    */
   getServicesByType(type: string): IService[] {
     return Array.from(this.createdServices.values()).filter(
-      (service) => service.type === type,
+      (service) => service.type === type
     );
   }
 
@@ -294,7 +294,7 @@ export class IntegrationServiceFactory
    *
    * @param type
    */
-  getConfigSchema(type: string): Record<string, any> | undefined {
+  getConfigSchema(type: string): Record<string, unknown> | undefined {
     if (this.canHandle(type)) {
       return {
         type: 'object',
@@ -327,7 +327,7 @@ export class IntegrationServiceFactory
   async createArchitectureStorageAdapter(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    options: Partial<IntegrationServiceAdapterConfig> = {},
+    options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Architecture Storage adapter: ${name}`);
 
@@ -398,7 +398,7 @@ export class IntegrationServiceFactory
   async createSafeAPIAdapter(
     name: string,
     baseURL?: string,
-    options: Partial<IntegrationServiceAdapterConfig> = {},
+    options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Safe API adapter: ${name}`);
 
@@ -478,7 +478,7 @@ export class IntegrationServiceFactory
   async createProtocolManagementAdapter(
     name: string,
     supportedProtocols?: string[],
-    options: Partial<IntegrationServiceAdapterConfig> = {},
+    options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Protocol Management adapter: ${name}`);
 
@@ -566,7 +566,7 @@ export class IntegrationServiceFactory
       baseURL?: string;
       databaseType?: 'postgresql' | 'sqlite' | 'mysql';
       supportedProtocols?: string[];
-    } & Partial<IntegrationServiceAdapterConfig> = {},
+    } & Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Unified Integration adapter: ${name}`);
 
@@ -683,7 +683,7 @@ export class IntegrationServiceFactory
   async createWebDataIntegrationAdapter(
     name: string,
     baseURL: string,
-    options: Partial<IntegrationServiceAdapterConfig> = {},
+    options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Web Data Integration adapter: ${name}`);
 
@@ -765,7 +765,7 @@ export class IntegrationServiceFactory
   async createDocumentIntegrationAdapter(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    options: Partial<IntegrationServiceAdapterConfig> = {},
+    options: Partial<IntegrationServiceAdapterConfig> = {}
   ): Promise<IntegrationServiceAdapter> {
     this.logger.info(`Creating Document Integration adapter: ${name}`);
 
@@ -913,10 +913,10 @@ export class IntegrationServiceFactory
         } catch (error) {
           this.logger.error(
             `Error shutting down service ${service.name}:`,
-            error,
+            error
           );
         }
-      },
+      }
     );
 
     await Promise.all(shutdownPromises);
@@ -930,11 +930,11 @@ export class IntegrationServiceFactory
    * @param config
    */
   private convertToAdapterConfig(
-    config: ServiceConfig,
+    config: ServiceConfig
   ): IntegrationServiceAdapterConfig {
     // Start with default configuration
     const adapterConfig = createDefaultIntegrationServiceAdapterConfig(
-      config?.name,
+      config?.name
     );
 
     // Apply common ServiceConfig properties
@@ -1010,11 +1010,11 @@ export const IntegrationServiceHelpers = {
    */
   async createArchitectureStorage(
     name: string,
-    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createArchitectureStorageAdapter(
       name,
-      databaseType,
+      databaseType
     );
   },
 
@@ -1026,7 +1026,7 @@ export const IntegrationServiceHelpers = {
    */
   async createSafeAPI(
     name: string,
-    baseURL: string,
+    baseURL: string
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createSafeAPIAdapter(name, baseURL);
   },
@@ -1039,11 +1039,11 @@ export const IntegrationServiceHelpers = {
    */
   async createProtocolManagement(
     name: string,
-    protocols: string[] = ['http', 'websocket'],
+    protocols: string[] = ['http', 'websocket']
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createProtocolManagementAdapter(
       name,
-      protocols,
+      protocols
     );
   },
 
@@ -1062,11 +1062,11 @@ export const IntegrationServiceHelpers = {
       baseURL?: string;
       databaseType?: 'postgresql' | 'sqlite' | 'mysql';
       supportedProtocols?: string[];
-    } = {},
+    } = {}
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createUnifiedIntegrationAdapter(
       name,
-      options,
+      options
     );
   },
 
@@ -1078,11 +1078,11 @@ export const IntegrationServiceHelpers = {
    */
   async createWebDataIntegration(
     name: string,
-    baseURL: string,
+    baseURL: string
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createWebDataIntegrationAdapter(
       name,
-      baseURL,
+      baseURL
     );
   },
 
@@ -1094,11 +1094,11 @@ export const IntegrationServiceHelpers = {
    */
   async createDocumentIntegration(
     name: string,
-    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
   ): Promise<IntegrationServiceAdapter> {
     return await integrationServiceFactory.createDocumentIntegrationAdapter(
       name,
-      databaseType,
+      databaseType
     );
   },
 };

@@ -67,10 +67,10 @@ export class UEL {
 
     // Register dependencies
     const logger = config?.logger || {
-      debug: (message: string, meta?: any) => console.debug(message, meta),
-      info: (message: string, meta?: any) => console.info(message, meta),
-      warn: (message: string, meta?: any) => console.warn(message, meta),
-      error: (message: string, meta?: any) => console.error(message, meta),
+      debug: (message: string, meta?: unknown) => console.debug(message, meta),
+      info: (message: string, meta?: unknown) => console.info(message, meta),
+      warn: (message: string, meta?: unknown) => console.warn(message, meta),
+      error: (message: string, meta?: unknown) => console.error(message, meta),
     };
 
     container.register(CORE_TOKENS.Logger, new SingletonProvider(() => logger));
@@ -82,14 +82,14 @@ export class UEL {
           get: <T>(key: string, defaultValue?: T): T => {
             return (configData as any)[key] ?? defaultValue;
           },
-          set: (key: string, value: any): void => {
+          set: (key: string, value: unknown): void => {
             (configData as any)[key] = value;
           },
           has: (key: string): boolean => {
             return key in configData;
           },
         };
-      }),
+      })
     );
 
     // Initialize components with proper DI
@@ -98,7 +98,7 @@ export class UEL {
     // EventManager uses DI, create manually
     this.eventManager = new (EventManager as any)(
       logger,
-      config?.config as any,
+      config?.config as any
     );
     this.eventRegistry = new EventRegistry(logger as any);
 
@@ -118,7 +118,7 @@ export class UEL {
         ) {
           await (this.compatibilityFactory as any).initialize(
             this.eventManager,
-            logger,
+            logger
           );
         }
       } catch (error) {
@@ -136,7 +136,7 @@ export class UEL {
         this.eventRegistry?.initialize({
           autoRegisterDefaults: config?.autoRegisterFactories !== false,
         }),
-      ].filter(Boolean),
+      ].filter(Boolean)
     );
 
     this.initialized = true;
@@ -156,15 +156,15 @@ export class UEL {
 
   async createSystemEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>,
-  ): Promise<any> {
+    config?: Partial<EventManagerConfig>
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
     return this.factory!.createSystemEventManager(name, config);
   }
 
-  async getSystemStatus(): Promise<any> {
+  async getSystemStatus(): Promise<unknown> {
     return {
       initialized: this.initialized,
       components: {
@@ -195,8 +195,8 @@ export class UEL {
 
   async createCoordinationEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>,
-  ): Promise<any> {
+    config?: Partial<EventManagerConfig>
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -205,8 +205,8 @@ export class UEL {
 
   async createCommunicationEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>,
-  ): Promise<any> {
+    config?: Partial<EventManagerConfig>
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -215,8 +215,8 @@ export class UEL {
 
   async createMonitoringEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>,
-  ): Promise<any> {
+    config?: Partial<EventManagerConfig>
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -225,8 +225,8 @@ export class UEL {
 
   async createInterfaceEventManager(
     name: string,
-    config?: Partial<EventManagerConfig>,
-  ): Promise<any> {
+    config?: Partial<EventManagerConfig>
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -262,7 +262,7 @@ export class UEL {
           uptime: 0,
           lastCheck: new Date(),
           metadata: data.details || {},
-        }),
+        })
       );
       return healthStatus;
     } catch (error) {
@@ -289,8 +289,8 @@ export class UEL {
       listeners?: Function;
     },
     _name: string,
-    _type: string,
-  ): Promise<any> {
+    _type: string
+  ): Promise<unknown> {
     if (!this.compatibilityFactory) {
       return null;
     }
@@ -308,7 +308,7 @@ export class UEL {
       if (typeof emitter[eventName as keyof typeof emitter] === 'function') {
         compatibleEmitter.on(
           eventName,
-          emitter[eventName as keyof typeof emitter] as any,
+          emitter[eventName as keyof typeof emitter] as any
         );
       }
     });
@@ -319,15 +319,15 @@ export class UEL {
   async createEnhancedEventBus(config?: {
     enableUEL?: boolean;
     managerName?: string;
-  }): Promise<any> {
+  }): Promise<unknown> {
     const { UELEnhancedEventBus } = await import('../system-integrations.ts');
     return new UELEnhancedEventBus(config);
   }
 
   async createEnhancedApplicationCoordinator(config?: {
     enableUEL?: boolean;
-    uelConfig?: any;
-  }): Promise<any> {
+    uelConfig?: unknown;
+  }): Promise<unknown> {
     const { UELEnhancedApplicationCoordinator } = await import(
       '../system-integrations.ts'
     );
@@ -336,7 +336,7 @@ export class UEL {
 
   async createEnhancedObserverSystem(config?: {
     enableUEL?: boolean;
-  }): Promise<any> {
+  }): Promise<unknown> {
     const { UELEnhancedObserverSystem } = await import(
       '../system-integrations.ts'
     );
@@ -344,7 +344,7 @@ export class UEL {
   }
 
   async analyzeSystemEventEmitters(systems: {
-    [key: string]: any;
+    [key: string]: unknown;
   }): Promise<{ migrationRecommendations: string[] }> {
     if (!this.compatibilityFactory) {
       return { migrationRecommendations: [] };
@@ -353,7 +353,7 @@ export class UEL {
     const recommendations: string[] = [];
     Object.keys(systems).forEach((name) => {
       recommendations.push(
-        `Consider migrating ${name} to UEL for better event management`,
+        `Consider migrating ${name} to UEL for better event management`
       );
     });
     return { migrationRecommendations: recommendations };

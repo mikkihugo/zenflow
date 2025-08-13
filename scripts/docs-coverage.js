@@ -140,7 +140,7 @@ class DocsCoverageReporter {
 
       // Analyze coverage for each layer
       for (const [layerKey, layerConfig] of Object.entries(
-        this.layerMappings,
+        this.layerMappings
       )) {
         await this.analyzeLayer(layerKey, layerConfig);
       }
@@ -230,7 +230,7 @@ class DocsCoverageReporter {
       layerCoverage.quality = this.calculateQualityScore(layerCoverage.files);
       layerCoverage.status = this.determineLayerStatus(
         layerCoverage.percentage,
-        layerKey,
+        layerKey
       );
 
       // Identify issues
@@ -345,7 +345,7 @@ class DocsCoverageReporter {
 
     // Count functions
     const functionMatches = content.match(
-      /export\s+(?:async\s+)?function\s+\w+/g,
+      /export\s+(?:async\s+)?function\s+\w+/g
     );
     analysis.constructs.functions = functionMatches
       ? functionMatches.length
@@ -354,7 +354,7 @@ class DocsCoverageReporter {
 
     // Count methods (simplified - methods inside classes)
     const methodMatches = content.match(
-      /(?:public|private|protected)?\s*(?:async\s+)?\w+\s*\([^)]*\)\s*[:{]/g,
+      /(?:public|private|protected)?\s*(?:async\s+)?\w+\s*\([^)]*\)\s*[:{]/g
     );
     analysis.constructs.methods = methodMatches
       ? Math.max(0, methodMatches.length - analysis.constructs.classes)
@@ -408,11 +408,11 @@ class DocsCoverageReporter {
     const documentedClasses = this.countDocumentedConstructs(content, 'class');
     const documentedInterfaces = this.countDocumentedConstructs(
       content,
-      'interface',
+      'interface'
     );
     const documentedFunctions = this.countDocumentedConstructs(
       content,
-      'function',
+      'function'
     );
 
     analysis.documentation.classes = documentedClasses;
@@ -434,7 +434,7 @@ class DocsCoverageReporter {
     // Look for JSDoc comment followed by construct declaration
     const regex = new RegExp(
       `/\\*\\*[\\s\\S]*?\\*/\\s*export\\s+${type}\\s+\\w+`,
-      'g',
+      'g'
     );
     const matches = content.match(regex);
     return matches ? matches.length : 0;
@@ -481,13 +481,13 @@ class DocsCoverageReporter {
 
     if (requirements.requireReturns && !analysis.quality.hasReturnDocs) {
       analysis.issues.push(
-        'Missing @returns documentation for layer requirements',
+        'Missing @returns documentation for layer requirements'
       );
     }
 
     if (requirements.requireThrows && !analysis.quality.hasErrorDocs) {
       analysis.issues.push(
-        'Missing @throws documentation for layer requirements',
+        'Missing @throws documentation for layer requirements'
       );
     }
   }
@@ -616,7 +616,7 @@ class DocsCoverageReporter {
     }
 
     const filesWithIssues = layerCoverage.files.filter(
-      (f) => f.issues.length > 0,
+      (f) => f.issues.length > 0
     );
     if (filesWithIssues.length > 0) {
       issues.push(`${filesWithIssues.length} files have documentation issues`);
@@ -820,7 +820,7 @@ class DocsCoverageReporter {
               quality: data.quality,
               status: data.status,
             },
-          ]),
+          ])
         ),
       });
 
@@ -931,7 +931,7 @@ class DocsCoverageReporter {
             <p><strong>Files:</strong> ${layer.files.length}</p>
             ${layer.issues.length > 0 ? `<p><strong>Issues:</strong> ${layer.issues.length}</p>` : ''}
         </div>
-        `,
+        `
           )
           .join('')}
     </div>
@@ -980,7 +980,7 @@ class DocsCoverageReporter {
                 <td>${file.quality.hasExamples ? '📝' : ''} ${file.quality.hasDetailedParams ? '📋' : ''} ${file.quality.hasReturnDocs ? '↩️' : ''} ${file.quality.hasErrorDocs ? '⚠️' : ''}</td>
                 <td>${file.issues.length}</td>
             </tr>
-            `,
+            `
               )
               .join('')}
         </tbody>
@@ -1034,7 +1034,7 @@ ${
 ${layer.issues.map((issue) => `- ❌ ${issue}`).join('\n')}`
     : '✅ No issues found'
 }
-`,
+`
   )
   .join('')}
 
@@ -1056,7 +1056,7 @@ ${
 ${this.coverage.files
   .map(
     (file) =>
-      `| ${file.path} | ${file.layer.toUpperCase()} | ${file.percentage.toFixed(1)}% | ${file.documented} | ${file.total} | ${file.issues.length} |`,
+      `| ${file.path} | ${file.layer.toUpperCase()} | ${file.percentage.toFixed(1)}% | ${file.documented} | ${file.total} | ${file.issues.length} |`
   )
   .join('\n')}
 
@@ -1080,13 +1080,13 @@ ${this.generateRecommendations()}
     // Overall recommendations
     if (this.coverage.overall.percentage < 80) {
       recommendations.push(
-        '📈 **Increase Overall Coverage**: Current coverage is below 80%. Focus on adding documentation to undocumented constructs.',
+        '📈 **Increase Overall Coverage**: Current coverage is below 80%. Focus on adding documentation to undocumented constructs.'
       );
     }
 
     if (this.coverage.overall.quality < 70) {
       recommendations.push(
-        '🎯 **Improve Documentation Quality**: Add more examples, detailed parameter descriptions, and return value documentation.',
+        '🎯 **Improve Documentation Quality**: Add more examples, detailed parameter descriptions, and return value documentation.'
       );
     }
 
@@ -1096,19 +1096,19 @@ ${this.generateRecommendations()}
 
       if (layerData.percentage < threshold.minimum) {
         recommendations.push(
-          `🔧 **${layerData.name}**: Coverage (${layerData.percentage.toFixed(1)}%) is below minimum threshold (${threshold.minimum}%). Priority focus area.`,
+          `🔧 **${layerData.name}**: Coverage (${layerData.percentage.toFixed(1)}%) is below minimum threshold (${threshold.minimum}%). Priority focus area.`
         );
       }
 
       if (layerData.quality < 60) {
         recommendations.push(
-          `📝 **${layerData.name}**: Quality score is low. Add more comprehensive JSDoc comments with examples and detailed descriptions.`,
+          `📝 **${layerData.name}**: Quality score is low. Add more comprehensive JSDoc comments with examples and detailed descriptions.`
         );
       }
 
       if (layerData.issues.length > 0) {
         recommendations.push(
-          `⚠️ **${layerData.name}**: ${layerData.issues.length} issues need attention. Review layer-specific documentation requirements.`,
+          `⚠️ **${layerData.name}**: ${layerData.issues.length} issues need attention. Review layer-specific documentation requirements.`
         );
       }
     }
@@ -1116,13 +1116,13 @@ ${this.generateRecommendations()}
     // Trending recommendations
     if (this.coverage.trends?.direction === 'down') {
       recommendations.push(
-        '📉 **Declining Trend**: Coverage has decreased recently. Review recent changes and ensure new code is properly documented.',
+        '📉 **Declining Trend**: Coverage has decreased recently. Review recent changes and ensure new code is properly documented.'
       );
     }
 
     if (recommendations.length === 0) {
       recommendations.push(
-        '✅ **Excellent Documentation**: All metrics are within acceptable ranges. Maintain current documentation standards.',
+        '✅ **Excellent Documentation**: All metrics are within acceptable ranges. Maintain current documentation standards.'
       );
     }
 

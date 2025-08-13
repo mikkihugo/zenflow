@@ -69,7 +69,7 @@ class WasmMemoryPool {
         offset: freeBlock.offset,
         ptr: pool.memory.buffer.slice(
           freeBlock.offset,
-          freeBlock.offset + alignedSize,
+          freeBlock.offset + alignedSize
         ),
       };
     }
@@ -81,7 +81,7 @@ class WasmMemoryPool {
     if (newOffset + alignedSize > currentSize) {
       // Need to grow memory
       const requiredPages = Math.ceil(
-        (newOffset + alignedSize - currentSize) / (64 * 1024),
+        (newOffset + alignedSize - currentSize) / (64 * 1024)
       );
       try {
         pool.memory.grow(requiredPages);
@@ -274,7 +274,7 @@ class WasmMemoryPool {
 
     // Sort allocations by offset
     const allocations = Array.from(pool.allocations.values()).sort(
-      (a, b) => a.offset - b.offset,
+      (a, b) => a.offset - b.offset
     );
 
     let newOffset = 0;
@@ -389,7 +389,7 @@ class ProgressiveWasmLoader {
    */
   async processLoadingQueue() {
     for (const priority of Object.keys(this.priorityLevels).sort(
-      (a, b) => this.priorityLevels[a] - this.priorityLevels[b],
+      (a, b) => this.priorityLevels[a] - this.priorityLevels[b]
     )) {
       const queue = this.loadingQueues.get(priority);
       if (!queue || queue.length === 0) {
@@ -441,7 +441,7 @@ class ProgressiveWasmLoader {
       // Allocate memory for module
       const memoryAllocation = this.memoryPool.allocate(
         moduleId,
-        module.size || wasmBytes.byteLength * 2,
+        module.size || wasmBytes.byteLength * 2
       );
 
       module.memoryAllocations.add(memoryAllocation.id);
@@ -538,7 +538,7 @@ class ProgressiveWasmLoader {
       .filter((m) => m.priority === 'critical' || m.preload)
       .sort(
         (a, b) =>
-          this.priorityLevels[a.priority] - this.priorityLevels[b.priority],
+          this.priorityLevels[a.priority] - this.priorityLevels[b.priority]
       );
 
     for (const module of criticalModules) {
@@ -550,7 +550,7 @@ class ProgressiveWasmLoader {
       .filter((m) => !(m.loaded || m.loading))
       .sort(
         (a, b) =>
-          this.priorityLevels[a.priority] - this.priorityLevels[b.priority],
+          this.priorityLevels[a.priority] - this.priorityLevels[b.priority]
       );
 
     // Load with delay to prevent blocking
@@ -567,7 +567,7 @@ class ProgressiveWasmLoader {
   async loadAllModules() {
     const modules = Array.from(this.loadedModules.values()).sort(
       (a, b) =>
-        this.priorityLevels[a.priority] - this.priorityLevels[b.priority],
+        this.priorityLevels[a.priority] - this.priorityLevels[b.priority]
     );
 
     await Promise.all(modules.map((m) => this.loadModule(m.id)));

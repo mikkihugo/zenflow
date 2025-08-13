@@ -26,7 +26,7 @@ export interface EnvironmentTool {
   version?: string;
   path?: string;
   capabilities?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ProjectContext {
@@ -74,7 +74,7 @@ export class EnvironmentDetector extends EventEmitter {
   constructor(
     private projectRoot: string = process.cwd(),
     private autoRefresh = true,
-    private refreshInterval = 30000, // 30 seconds
+    private refreshInterval = 30000 // 30 seconds
   ) {
     super();
 
@@ -254,7 +254,7 @@ export class EnvironmentDetector extends EventEmitter {
           // Get path
           try {
             const { stdout: pathOutput } = await execAsync(
-              `which ${tool.name}`,
+              `which ${tool.name}`
             );
             path = pathOutput.trim();
           } catch {
@@ -266,7 +266,7 @@ export class EnvironmentDetector extends EventEmitter {
             try {
               const { stdout: versionOutput } = await execAsync(
                 `${tool.name} ${tool.versionFlag}`,
-                { timeout: 5000 },
+                { timeout: 5000 }
               );
               version = this.extractVersion(versionOutput);
             } catch {
@@ -279,7 +279,7 @@ export class EnvironmentDetector extends EventEmitter {
             try {
               const { stdout: erlVersion } = await execAsync(
                 'erl -eval "erlang:display(erlang:system_info(otp_release)), halt()." -noshell',
-                { timeout: 3000 },
+                { timeout: 3000 }
               );
               version = erlVersion.replace(/"/g, '').trim();
             } catch {
@@ -312,7 +312,7 @@ export class EnvironmentDetector extends EventEmitter {
     return results
       .filter((result) => result.status === 'fulfilled')
       .map(
-        (result) => (result as PromiseFulfilledResult<EnvironmentTool>).value,
+        (result) => (result as PromiseFulfilledResult<EnvironmentTool>).value
       );
   }
 
@@ -574,7 +574,7 @@ export class EnvironmentDetector extends EventEmitter {
    */
   private generateSuggestions(
     tools: EnvironmentTool[],
-    context: ProjectContext,
+    context: ProjectContext
   ): string[] {
     const suggestions: string[] = [];
 
@@ -582,7 +582,7 @@ export class EnvironmentDetector extends EventEmitter {
     const nixTool = tools.find((t) => t.name === 'nix');
     if (!nixTool?.available) {
       suggestions.push(
-        '🚀 Install Nix for reproducible development environments',
+        '🚀 Install Nix for reproducible development environments'
       );
     } else if (!nixTool.capabilities?.includes('flakes')) {
       suggestions.push('⚡ Enable Nix flakes for better project management');

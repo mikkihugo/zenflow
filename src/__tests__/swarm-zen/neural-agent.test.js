@@ -87,16 +87,16 @@ describe('Neural Agent Tests', () => {
     const baseAgent = new MockAgent({ id: 'test-1', type: 'researcher' });
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       baseAgent,
-      'researcher',
+      'researcher'
     );
 
     expect(neuralAgent).toBeInstanceOf(NeuralAgent);
     expect(neuralAgent.agentType).toBe('researcher');
     expect(neuralAgent.cognitiveProfile.primary).toBe(
-      COGNITIVE_PATTERNS.DIVERGENT,
+      COGNITIVE_PATTERNS.DIVERGENT
     );
     expect(neuralAgent.cognitiveProfile.secondary).toBe(
-      COGNITIVE_PATTERNS.SYSTEMS,
+      COGNITIVE_PATTERNS.SYSTEMS
     );
   });
 
@@ -104,7 +104,7 @@ describe('Neural Agent Tests', () => {
     const baseAgent = new MockAgent({ id: 'test-2', type: 'coder' });
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       baseAgent,
-      'coder',
+      'coder'
     );
 
     const task = {
@@ -128,7 +128,7 @@ describe('Neural Agent Tests', () => {
     const baseAgent = new MockAgent({ id: 'test-3', type: 'analyst' });
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       baseAgent,
-      'analyst',
+      'analyst'
     );
 
     const initialPerformance = { ...neuralAgent.performanceMetrics };
@@ -148,7 +148,7 @@ describe('Neural Agent Tests', () => {
 
     // Performance metrics should have been updated
     expect(neuralAgent.performanceMetrics.accuracy).not.toBe(
-      initialPerformance.accuracy,
+      initialPerformance.accuracy
     );
   });
 
@@ -168,7 +168,7 @@ describe('Neural Agent Tests', () => {
       });
       const neuralAgent = NeuralAgentFactory.createNeuralAgent(
         baseAgent,
-        agentType,
+        agentType
       );
 
       const profile = AGENT_COGNITIVE_PROFILES[agentType];
@@ -199,7 +199,7 @@ describe('Neural Agent Tests', () => {
     });
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       baseAgent,
-      'coordinator',
+      'coordinator'
     );
 
     // Modify state
@@ -221,7 +221,7 @@ describe('Neural Agent Tests', () => {
     });
     const newNeuralAgent = NeuralAgentFactory.createNeuralAgent(
       newBaseAgent,
-      'coordinator',
+      'coordinator'
     );
 
     newNeuralAgent.loadNeuralState(savedState);
@@ -234,7 +234,7 @@ describe('Neural Agent Tests', () => {
     const baseAgent = new MockAgent({ id: 'test-rest', type: 'researcher' });
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       baseAgent,
-      'researcher',
+      'researcher'
     );
 
     // Set high fatigue
@@ -251,7 +251,7 @@ describe('Neural Agent Tests', () => {
     const baseAgent = new MockAgent({ id: 'test-history', type: 'coder' });
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       baseAgent,
-      'coder',
+      'coder'
     );
 
     // Execute multiple tasks

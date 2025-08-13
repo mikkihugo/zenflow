@@ -36,7 +36,7 @@ export interface BaseDocumentEntity {
   // Metadata
   version: string;
   checksum: string;
-  metadata: Record<string, any>; // Generic metadata for extensibility
+  metadata: Record<string, unknown>; // Generic metadata for extensibility
   name?: string; // Optional name property for compatibility
   created_at: Date;
   updated_at: Date;
@@ -196,8 +196,8 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
       method: string;
       path: string;
       description: string;
-      parameters?: any;
-      responses?: any;
+      parameters?: unknown;
+      responses?: unknown;
     }>;
   };
 
@@ -384,7 +384,7 @@ export interface DocumentRelationshipEntity {
     | 'supersedes';
   strength?: number; // Add missing strength property for semantic relationships
   created_at: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -413,7 +413,7 @@ export interface DocumentWorkflowStateEntity {
   approved_at?: Date;
 
   // Results
-  workflow_results?: Record<string, any>;
+  workflow_results?: Record<string, unknown>;
   generated_artifacts: string[]; // Document IDs or file paths
 }
 
@@ -771,37 +771,37 @@ export const DATABASE_SCHEMAS = {
  * @example
  */
 export function isVisionDocument(
-  doc: BaseDocumentEntity,
+  doc: BaseDocumentEntity
 ): doc is VisionDocumentEntity {
   return doc.type === 'vision';
 }
 
 export function isADRDocument(
-  doc: BaseDocumentEntity,
+  doc: BaseDocumentEntity
 ): doc is ADRDocumentEntity {
   return doc.type === 'adr';
 }
 
 export function isPRDDocument(
-  doc: BaseDocumentEntity,
+  doc: BaseDocumentEntity
 ): doc is PRDDocumentEntity {
   return doc.type === 'prd';
 }
 
 export function isEpicDocument(
-  doc: BaseDocumentEntity,
+  doc: BaseDocumentEntity
 ): doc is EpicDocumentEntity {
   return doc.type === 'epic';
 }
 
 export function isFeatureDocument(
-  doc: BaseDocumentEntity,
+  doc: BaseDocumentEntity
 ): doc is FeatureDocumentEntity {
   return doc.type === 'feature';
 }
 
 export function isTaskDocument(
-  doc: BaseDocumentEntity,
+  doc: BaseDocumentEntity
 ): doc is TaskDocumentEntity {
   return doc.type === 'task';
 }

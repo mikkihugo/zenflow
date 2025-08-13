@@ -76,7 +76,7 @@ class EnhancedEventBus implements IEventBus {
 
   constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
-  publish(event: string, data: any): void {
+  publish(event: string, data: unknown): void {
     this._logger.info(`Publishing event: ${event}`);
     const eventHandlers = this.handlers.get(event);
     if (eventHandlers) {
@@ -90,7 +90,7 @@ class EnhancedEventBus implements IEventBus {
     }
   }
 
-  subscribe(event: string, handler: (data: any) => void): void {
+  subscribe(event: string, handler: (data: unknown) => void): void {
     if (!this.handlers.has(event)) {
       this.handlers.set(event, new Set());
     }
@@ -98,7 +98,7 @@ class EnhancedEventBus implements IEventBus {
     this._logger.info(`Subscribed to event: ${event}`);
   }
 
-  unsubscribe(event: string, handler: (data: any) => void): void {
+  unsubscribe(event: string, handler: (data: unknown) => void): void {
     const eventHandlers = this.handlers.get(event);
     if (eventHandlers) {
       eventHandlers.delete(handler);
@@ -106,15 +106,15 @@ class EnhancedEventBus implements IEventBus {
   }
 
   // IEventBus interface methods (aliases for compatibility)
-  emit(event: string, data: any): void {
+  emit(event: string, data: unknown): void {
     this.publish(event, data);
   }
 
-  on(event: string, handler: (data: any) => void): void {
+  on(event: string, handler: (data: unknown) => void): void {
     this.subscribe(event, handler);
   }
 
-  off(event: string, handler: (data: any) => void): void {
+  off(event: string, handler: (data: unknown) => void): void {
     this.unsubscribe(event, handler);
   }
 }
@@ -133,7 +133,7 @@ class SwarmDatabase implements IDatabase {
     this._logger.info('Swarm database initialized successfully');
   }
 
-  async query(sql: string, _params?: any[]): Promise<any[]> {
+  async query(sql: string, _params?: unknown[]): Promise<any[]> {
     if (!this.isInitialized) {
       throw new Error('Database not initialized');
     }
@@ -149,7 +149,7 @@ class SwarmDatabase implements IDatabase {
 
   // TODO: TypeScript error TS2740 - Missing IDatabase methods (AI unsure of safe fix - human review needed)
   // Methods like execute, transaction, createTask, updateTask, etc. need proper implementation
-  async execute(sql: string, params?: any[]): Promise<any> {
+  async execute(sql: string, params?: unknown[]): Promise<unknown> {
     return this.query(sql, params);
   }
 
@@ -158,7 +158,7 @@ class SwarmDatabase implements IDatabase {
     return fn(this);
   }
 
-  async createTask(task: any): Promise<void> {
+  async createTask(task: unknown): Promise<void> {
     // Basic task creation simulation
     const taskId = `task_${Date.now()}`;
     this._logger.info(`Created task: ${taskId}`);
@@ -169,7 +169,7 @@ class SwarmDatabase implements IDatabase {
     return [];
   }
 
-  async updateAgent(agentId: string, updates: any): Promise<void> {
+  async updateAgent(agentId: string, updates: unknown): Promise<void> {
     this._logger.info(`Updated agent: ${agentId}`);
   }
 
@@ -178,7 +178,7 @@ class SwarmDatabase implements IDatabase {
     return [];
   }
 
-  async updateTask(taskId: string, updates: any): Promise<void> {
+  async updateTask(taskId: string, updates: unknown): Promise<void> {
     this._logger.info(`Updated task: ${taskId}`);
   }
 }
@@ -192,7 +192,7 @@ class AgentRegistry implements IAgentRegistry {
     @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus,
   ) {}
 
-  async registerAgent(agent: any): Promise<void> {
+  async registerAgent(agent: unknown): Promise<void> {
     const id = `agent_${Date.now()}`;
     this.agents.set(id, agent);
     this._logger.info(`Agent registered: ${id}`);
@@ -208,11 +208,11 @@ class AgentRegistry implements IAgentRegistry {
     }
   }
 
-  async getAgent(agentId: string): Promise<any> {
+  async getAgent(agentId: string): Promise<unknown> {
     return this.agents.get(agentId);
   }
 
-  getAllAgents(): any[] {
+  getAllAgents(): unknown[] {
     return Array.from(this.agents.values());
   }
 
@@ -220,7 +220,7 @@ class AgentRegistry implements IAgentRegistry {
     return this.getAllAgents().filter((agent) => agent.status === 'active');
   }
 
-  async findAvailableAgents(criteria: any): Promise<any[]> {
+  async findAvailableAgents(criteria: unknown): Promise<any[]> {
     return this.getAllAgents().filter((agent) => agent.status === 'available');
   }
 }
@@ -236,7 +236,7 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
     @inject(SWARM_TOKENS.AgentRegistry) private _agentRegistry: IAgentRegistry,
   ) {}
 
-  async initializeSwarm(_options: any): Promise<void> {
+  async initializeSwarm(_options: unknown): Promise<void> {
     this._logger.info('Initializing swarm coordination...');
 
     const maxAgents = this._config.get<number>('swarm.maxAgents') || 10;
@@ -253,7 +253,7 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
     this._eventBus.emit('swarm.initialized', { maxAgents, topology });
   }
 
-  async addAgent(agent: any): Promise<string> {
+  async addAgent(agent: unknown): Promise<string> {
     const agentId = `agent_${Date.now()}`;
     await this._agentRegistry.registerAgent(agent);
     this._logger.info(`Added agent to swarm: ${agentId}`);
@@ -265,7 +265,7 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
     this._logger.info(`Removed agent from swarm: ${agentId}`);
   }
 
-  getSwarmStatus(): any {
+  getSwarmStatus(): unknown {
     return {
       isRunning: this.isRunning,
       agentCount: this.getAllAgentCount(),
@@ -278,18 +278,18 @@ class SwarmCoordinatorImplementation implements ISwarmCoordinator {
     return this.getAllAgents().length;
   }
 
-  private getAllAgents(): any[] {
+  private getAllAgents(): unknown[] {
     // Helper method to get all agents synchronously for compatibility
     return Array.from((this._agentRegistry as any).agents?.values() || []);
   }
 
-  async assignTask(task: any): Promise<string> {
+  async assignTask(task: unknown): Promise<string> {
     const taskId = `task_${Date.now()}`;
     this._logger.info(`Assigning task ${taskId}`);
     return taskId;
   }
 
-  getMetrics(): any {
+  getMetrics(): unknown {
     return {
       agentCount: this.getAllAgentCount(),
       isRunning: this.isRunning,
@@ -310,7 +310,7 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
     @inject(CORE_TOKENS.Config) private _config: IConfig,
   ) {}
 
-  async trainModel(_data: any[], options: any): Promise<any> {
+  async trainModel(_data: unknown[], options: unknown): Promise<unknown> {
     const learningRate = this._config.get<number>('neural.learningRate') || 0.001;
     this._logger.info(`Training neural network with learning rate: ${learningRate}`);
 
@@ -328,7 +328,7 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
     return model;
   }
 
-  async evaluateModel(model: any, _testData: any[]): Promise<any> {
+  async evaluateModel(model: unknown, _testData: unknown[]): Promise<unknown> {
     this._logger.info(`Evaluating model: ${model.id}`);
 
     // Simulate evaluation
@@ -345,17 +345,17 @@ class NeuralNetworkTrainer implements INeuralNetworkTrainer {
     return results;
   }
 
-  async createNetwork(config: any): Promise<string> {
+  async createNetwork(config: unknown): Promise<string> {
     this._logger.info(`Creating neural network with config: ${JSON.stringify(config)}`);
     return `network_${Date.now()}`;
   }
 
-  async trainNetwork(networkId: string, data: any): Promise<any> {
+  async trainNetwork(networkId: string, data: unknown): Promise<unknown> {
     this._logger.info(`Training network: ${networkId}`);
     return this.trainModel(data, {});
   }
 
-  async evaluateNetwork(networkId: string, testData: any[]): Promise<any> {
+  async evaluateNetwork(networkId: string, testData: unknown[]): Promise<unknown> {
     const model = { id: networkId };
     return this.evaluateModel(model, testData);
   }

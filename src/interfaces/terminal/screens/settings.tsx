@@ -7,7 +7,7 @@
 
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import React from 'react';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import {
   Header,
@@ -249,10 +249,7 @@ export const Settings: React.FC<SettingsProps> = ({
         : settings.filter((s) => s.category === selectedCategory);
 
     return (
-      <Box
-        flexDirection="column"
-        marginBottom={2}
-      >
+      <Box flexDirection="column" marginBottom={2}>
         <Text bold>
           {getSettingIcon(selectedCategory)}{' '}
           {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}{' '}
@@ -266,22 +263,13 @@ export const Settings: React.FC<SettingsProps> = ({
             justifyContent="space-between"
             marginBottom={1}
           >
-            <Box
-              flexDirection="column"
-              width="70%"
-            >
-              <Text
-                bold
-                color="cyan"
-              >
+            <Box flexDirection="column" width="70%">
+              <Text bold color="cyan">
                 {setting.name}
               </Text>
               <Text dimColor>{setting.description}</Text>
             </Box>
-            <Box
-              alignItems="center"
-              width="30%"
-            >
+            <Box alignItems="center" width="30%">
               <Text color="green">{formatValue(setting)}</Text>
             </Box>
           </Box>
@@ -291,25 +279,15 @@ export const Settings: React.FC<SettingsProps> = ({
   };
 
   const renderStats = () => (
-    <Box
-      flexDirection="column"
-      marginBottom={2}
-    >
+    <Box flexDirection="column" marginBottom={2}>
       <Text bold>📊 Configuration Overview:</Text>
       <Box marginBottom={1} />
 
-      <Box
-        flexDirection="row"
-        justifyContent="space-between"
-      >
+      <Box flexDirection="row" justifyContent="space-between">
         {categories.map((cat) => {
           const count = settings.filter((s) => s.category === cat.key).length;
           return (
-            <Box
-              key={cat.key}
-              flexDirection="column"
-              width="20%"
-            >
+            <Box key={cat.key} flexDirection="column" width="20%">
               <Text color="cyan">
                 {cat.icon} {cat.name}:
               </Text>
@@ -323,20 +301,9 @@ export const Settings: React.FC<SettingsProps> = ({
 
   if (isLoading) {
     return (
-      <Box
-        flexDirection="column"
-        height="100%"
-      >
-        <Header
-          title="Settings"
-          swarmStatus={swarmStatus}
-          showBorder={true}
-        />
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          alignItems="center"
-        >
+      <Box flexDirection="column" height="100%">
+        <Header title="Settings" swarmStatus={swarmStatus} showBorder={true} />
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
           <LoadingSpinner text="Loading system settings..." />
         </Box>
       </Box>
@@ -344,24 +311,15 @@ export const Settings: React.FC<SettingsProps> = ({
   }
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       <Header
         title="System Configuration & Settings"
         swarmStatus={swarmStatus}
         showBorder={true}
       />
 
-      <Box
-        flexGrow={1}
-        paddingX={2}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2}>
+        <Box flexDirection="column" width="100%">
           {renderStats()}
           {selectedCategory !== 'general' && renderSettingsTable()}
 

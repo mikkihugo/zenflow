@@ -27,7 +27,9 @@ const loggerFixes = [
 
 function getAllTSFiles() {
   try {
-    const result = execSync('find src -name "*.ts" -o -name "*.tsx"', { encoding: 'utf8' });
+    const result = execSync('find src -name "*.ts" -o -name "*.tsx"', {
+      encoding: 'utf8',
+    });
     return result
       .trim()
       .split('\n')
@@ -55,7 +57,9 @@ function fixLoggerImports(filePath) {
 
     if (fixed) {
       fs.writeFileSync(filePath, content);
-      console.log(`✅ ${path.relative('.', filePath)}: ${fixCount} logger import fixes`);
+      console.log(
+        `✅ ${path.relative('.', filePath)}: ${fixCount} logger import fixes`
+      );
       return fixCount;
     }
 
@@ -71,7 +75,9 @@ async function main() {
   console.log('⚡ Fixing ALL core logger import paths...\n');
 
   const allFiles = getAllTSFiles();
-  console.log(`📊 Scanning ${allFiles.length} TypeScript files for logger imports\n`);
+  console.log(
+    `📊 Scanning ${allFiles.length} TypeScript files for logger imports\n`
+  );
 
   let totalFiles = 0;
   let totalFixes = 0;

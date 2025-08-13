@@ -55,8 +55,8 @@ export interface DatabaseErrorContext {
   operation?: string;
   sessionId?: string;
   timestamp: number;
-  parameters?: Record<string, any>;
-  metadata?: Record<string, any>;
+  parameters?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export class DatabaseError extends Error {
@@ -75,7 +75,7 @@ export class DatabaseError extends Error {
       severity?: 'low' | 'medium' | 'high' | 'critical';
       retryable?: boolean;
       cause?: Error;
-    } = {},
+    } = {}
   ) {
     super(message);
     this.name = 'DatabaseError';
@@ -141,7 +141,7 @@ export class DatabaseError extends Error {
    * @param code
    */
   static getSeverity(
-    code: DatabaseErrorCode,
+    code: DatabaseErrorCode
   ): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
       [DatabaseErrorCode?.COORDINATION_FAILED]: 'high',
@@ -241,7 +241,7 @@ export class DatabaseCoordinationError extends DatabaseError {
   constructor(
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(DatabaseErrorCode?.COORDINATION_FAILED, message, context, options);
     this.name = 'DatabaseCoordinationError';
@@ -253,7 +253,7 @@ export class DatabaseEngineError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseEngineError';
@@ -265,7 +265,7 @@ export class DatabaseQueryError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseQueryError';
@@ -277,7 +277,7 @@ export class DatabaseTransactionError extends DatabaseError {
     code: DatabaseErrorCode,
     message: string,
     context: DatabaseErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
     this.name = 'DatabaseTransactionError';
@@ -327,7 +327,7 @@ export class DatabaseErrorClassifier {
       actionRequired: priority === 'high' || priority === 'critical',
       suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(
         category,
-        error.message,
+        error.message
       ),
       retryStrategy: DatabaseErrorClassifier?.inferRetryStrategy(error),
     };
@@ -384,14 +384,14 @@ export class DatabaseErrorClassifier {
         error.severity === 'high' || error.severity === 'critical',
       suggestedActions: DatabaseErrorClassifier?.getSuggestedActions(
         category,
-        error.message,
+        error.message
       ),
       retryStrategy: DatabaseErrorClassifier?.getRetryStrategy(error),
     };
   }
 
   private static inferCategory(
-    error: Error,
+    error: Error
   ):
     | 'coordination'
     | 'engine'
@@ -448,7 +448,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static inferPriority(
-    error: Error,
+    error: Error
   ): 'low' | 'medium' | 'high' | 'critical' {
     const message = error.message.toLowerCase();
 
@@ -478,7 +478,7 @@ export class DatabaseErrorClassifier {
 
   private static getSuggestedActions(
     category: string,
-    message: string,
+    message: string
   ): string[] {
     const actions: string[] = [];
 
@@ -545,7 +545,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static inferRetryStrategy(
-    error: Error,
+    error: Error
   ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     const message = error.message.toLowerCase();
 
@@ -565,7 +565,7 @@ export class DatabaseErrorClassifier {
   }
 
   private static getRetryStrategy(
-    error: DatabaseError,
+    error: DatabaseError
   ): 'immediate' | 'exponential_backoff' | 'circuit_breaker' | 'none' {
     if (!error.retryable) {
       return 'none';

@@ -736,7 +736,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     gatesManager: WorkflowGatesManager,
     piManager: ProgramIncrementManager,
     valueStreamMapper: ValueStreamMapper,
-    config: Partial<ArchitectureRunwayConfig> = {},
+    config: Partial<ArchitectureRunwayConfig> = {}
   ) {
     super();
 
@@ -834,7 +834,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   async createArchitectureBacklog(
     name: string,
     description: string,
-    owner: string,
+    owner: string
   ): Promise<ArchitectureBacklog> {
     this.logger.info('Creating architecture backlog', { name, owner });
 
@@ -895,7 +895,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
    */
   async addArchitectureRunwayItem(
     backlogId: string,
-    runwayItemData: Partial<ArchitectureRunwayItem>,
+    runwayItemData: Partial<ArchitectureRunwayItem>
   ): Promise<ArchitectureRunwayItem> {
     const backlog = this.state.architectureBacklogs.get(backlogId);
     if (!backlog) {
@@ -988,7 +988,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   async planArchitectureRunwayForPI(
     piId: string,
     artId: string,
-    availableCapacity: CapacityAllocation[],
+    availableCapacity: CapacityAllocation[]
   ): Promise<RunwayPlan> {
     this.logger.info('Planning architecture runway for PI', { piId, artId });
 
@@ -998,19 +998,19 @@ export class ArchitectureRunwayManager extends EventEmitter {
     // Prioritize items based on backlog criteria
     const prioritizedItems = await this.prioritizeRunwayItems(
       eligibleItems,
-      availableCapacity,
+      availableCapacity
     );
 
     // Select items that fit within capacity
     const selectedItems = await this.selectRunwayItemsForCapacity(
       prioritizedItems,
-      availableCapacity,
+      availableCapacity
     );
 
     // Get technical debt items that can be addressed
     const debtItems = await this.selectTechnicalDebtForPI(
       piId,
-      availableCapacity,
+      availableCapacity
     );
 
     // Identify dependencies and risks
@@ -1018,7 +1018,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     const risks = await this.assessRunwayPlanRisks(
       selectedItems,
       debtItems,
-      availableCapacity,
+      availableCapacity
     );
 
     const runwayPlan: RunwayPlan = {
@@ -1069,7 +1069,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
    * Track architectural epic implementation
    */
   async trackArchitecturalEpicProgress(
-    epicId: string,
+    epicId: string
   ): Promise<EpicProgressReport> {
     this.logger.info('Tracking architectural epic progress', { epicId });
 
@@ -1081,29 +1081,29 @@ export class ArchitectureRunwayManager extends EventEmitter {
 
     // Collect runway items associated with this epic
     const associatedRunwayItems = Array.from(
-      this.state.runwayItems.values(),
+      this.state.runwayItems.values()
     ).filter((item) =>
       item.architecture.impactedComponents.some((comp) =>
-        epic.components?.includes(comp),
-      ),
+        epic.components?.includes(comp)
+      )
     );
 
     // Calculate progress metrics
     const progressMetrics = await this.calculateEpicProgress(
       epic,
-      associatedRunwayItems,
+      associatedRunwayItems
     );
 
     // Assess architectural compliance
     const complianceAssessment = await this.assessArchitecturalCompliance(
       epic,
-      associatedRunwayItems,
+      associatedRunwayItems
     );
 
     // Check quality attributes
     const qualityAssessment = await this.assessQualityAttributes(
       epic,
-      associatedRunwayItems,
+      associatedRunwayItems
     );
 
     const progressReport: EpicProgressReport = {
@@ -1134,7 +1134,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
    * Track capability development
    */
   async trackCapabilityDevelopment(
-    capabilityId: string,
+    capabilityId: string
   ): Promise<CapabilityProgressReport> {
     this.logger.info('Tracking capability development', { capabilityId });
 
@@ -1150,7 +1150,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
 
     // Track architectural runway items for this capability
     const capabilityRunwayItems = Array.from(
-      this.state.runwayItems.values(),
+      this.state.runwayItems.values()
     ).filter((item) => item.architecture.domain === capability.domain);
 
     // Calculate capability progress
@@ -1158,7 +1158,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
       capability,
       associatedEpics,
       associatedFeatures,
-      capabilityRunwayItems,
+      capabilityRunwayItems
     );
 
     const progressReport: CapabilityProgressReport = {
@@ -1197,7 +1197,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     context: string,
     problem: string,
     alternatives: Alternative[],
-    stakeholders: string[],
+    stakeholders: string[]
   ): Promise<ArchitecturalDecision> {
     this.logger.info('Creating architectural decision', { title });
 
@@ -1322,7 +1322,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
    * Add technical debt item
    */
   async addTechnicalDebtItem(
-    debtData: Partial<TechnicalDebtItem>,
+    debtData: Partial<TechnicalDebtItem>
   ): Promise<TechnicalDebtItem> {
     this.logger.info('Adding technical debt item', {
       title: debtData.title,
@@ -1387,7 +1387,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     const debtBySeverity = this.groupDebtBySeverity(allDebtItems);
     const totalCost = allDebtItems.reduce(
       (sum, item) => sum + item.currentCost,
-      0,
+      0
     );
     const averageAge = this.calculateAverageDebtAge(allDebtItems);
 
@@ -1399,14 +1399,14 @@ export class ArchitectureRunwayManager extends EventEmitter {
       .filter(
         (item) =>
           item.severity === TechnicalDebtSeverity.HIGH ||
-          item.severity === TechnicalDebtSeverity.CRITICAL,
+          item.severity === TechnicalDebtSeverity.CRITICAL
       )
       .sort((a, b) => b.currentCost - a.currentCost);
 
     // Generate recommendations
     const recommendations = await this.generateDebtRecommendations(
       allDebtItems,
-      trends,
+      trends
     );
 
     const assessment: TechnicalDebtAssessment = {
@@ -1452,19 +1452,19 @@ export class ArchitectureRunwayManager extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'architecture-runway:state',
+        'architecture-runway:state'
       );
       if (persistedState) {
         this.state = {
           ...this.state,
           ...persistedState,
           architectureBacklogs: new Map(
-            persistedState.architectureBacklogs || [],
+            persistedState.architectureBacklogs || []
           ),
           runwayItems: new Map(persistedState.runwayItems || []),
           technicalDebtItems: new Map(persistedState.technicalDebtItems || []),
           architecturalDecisions: new Map(
-            persistedState.architecturalDecisions || [],
+            persistedState.architecturalDecisions || []
           ),
           runwayPlanning: new Map(persistedState.runwayPlanning || []),
           governanceReviews: new Map(persistedState.governanceReviews || []),
@@ -1481,12 +1481,12 @@ export class ArchitectureRunwayManager extends EventEmitter {
       const stateToSerialize = {
         ...this.state,
         architectureBacklogs: Array.from(
-          this.state.architectureBacklogs.entries(),
+          this.state.architectureBacklogs.entries()
         ),
         runwayItems: Array.from(this.state.runwayItems.entries()),
         technicalDebtItems: Array.from(this.state.technicalDebtItems.entries()),
         architecturalDecisions: Array.from(
-          this.state.architecturalDecisions.entries(),
+          this.state.architecturalDecisions.entries()
         ),
         runwayPlanning: Array.from(this.state.runwayPlanning.entries()),
         governanceReviews: Array.from(this.state.governanceReviews.entries()),
@@ -1504,7 +1504,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
       await this.createArchitectureBacklog(
         'Enterprise Architecture Backlog',
         'Main backlog for enterprise architecture runway items and technical debt',
-        'system',
+        'system'
       );
     }
   }
@@ -1533,7 +1533,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
     this.eventBus.registerHandler('pi-planning-started', async (event) => {
       await this.handlePIPlanningStarted(
         event.payload.piId,
-        event.payload.artId,
+        event.payload.artId
       );
     });
 
@@ -1545,73 +1545,73 @@ export class ArchitectureRunwayManager extends EventEmitter {
       'technical-debt-threshold-exceeded',
       async (event) => {
         await this.handleDebtThresholdExceeded(event.payload);
-      },
+      }
     );
   }
 
   // Many placeholder implementations would follow...
 
   private async createRunwayApprovalGate(
-    runwayItem: ArchitectureRunwayItem,
+    runwayItem: ArchitectureRunwayItem
   ): Promise<void> {}
   private async getEligibleRunwayItems(
     piId: string,
-    artId: string,
+    artId: string
   ): Promise<ArchitectureRunwayItem[]> {
     return [];
   }
   private async prioritizeRunwayItems(
     items: ArchitectureRunwayItem[],
-    capacity: CapacityAllocation[],
+    capacity: CapacityAllocation[]
   ): Promise<ArchitectureRunwayItem[]> {
     return items;
   }
   private async selectRunwayItemsForCapacity(
     items: ArchitectureRunwayItem[],
-    capacity: CapacityAllocation[],
+    capacity: CapacityAllocation[]
   ): Promise<ArchitectureRunwayItem[]> {
     return items;
   }
   private async selectTechnicalDebtForPI(
     piId: string,
-    capacity: CapacityAllocation[],
+    capacity: CapacityAllocation[]
   ): Promise<TechnicalDebtItem[]> {
     return [];
   }
   private async identifyRunwayDependencies(
-    items: ArchitectureRunwayItem[],
+    items: ArchitectureRunwayItem[]
   ): Promise<string[]> {
     return [];
   }
   private async assessRunwayPlanRisks(
     items: ArchitectureRunwayItem[],
     debtItems: TechnicalDebtItem[],
-    capacity: CapacityAllocation[],
+    capacity: CapacityAllocation[]
   ): Promise<string[]> {
     return [];
   }
   private async createRunwayPlanApprovalGate(
     plan: RunwayPlan,
-    risks: string[],
+    risks: string[]
   ): Promise<void> {}
   private async getEpicDetails(epicId: string): Promise<unknown> {
     return null;
   }
   private async calculateEpicProgress(
     epic: unknown,
-    runwayItems: ArchitectureRunwayItem[],
+    runwayItems: ArchitectureRunwayItem[]
   ): Promise<unknown> {
     return {};
   }
   private async assessArchitecturalCompliance(
     epic: unknown,
-    runwayItems: ArchitectureRunwayItem[],
+    runwayItems: ArchitectureRunwayItem[]
   ): Promise<unknown> {
     return {};
   }
   private async assessQualityAttributes(
     epic: unknown,
-    runwayItems: ArchitectureRunwayItem[],
+    runwayItems: ArchitectureRunwayItem[]
   ): Promise<unknown> {
     return {};
   }
@@ -1628,34 +1628,34 @@ export class ArchitectureRunwayManager extends EventEmitter {
     capability: unknown,
     epics: unknown[],
     features: unknown[],
-    runwayItems: ArchitectureRunwayItem[],
+    runwayItems: ArchitectureRunwayItem[]
   ): Promise<unknown> {
     return {};
   }
   private async createArchitectureDecisionGate(
     decision: ArchitecturalDecision,
-    alternatives: Alternative[],
+    alternatives: Alternative[]
   ): Promise<void> {}
   private async createDecisionReviewGate(
-    decision: ArchitecturalDecision,
+    decision: ArchitecturalDecision
   ): Promise<unknown> {
     return {};
   }
   private async processDecisionGateResult(
     decisionId: string,
-    gateResult: unknown,
+    gateResult: unknown
   ): Promise<void> {}
   private async setupAutomatedDebtDetection(): Promise<void> {}
   private async setupDebtThresholdMonitoring(): Promise<void> {}
   private async createCriticalDebtAlert(
-    debtItem: TechnicalDebtItem,
+    debtItem: TechnicalDebtItem
   ): Promise<void> {}
   private async checkDebtThreshold(): Promise<void> {}
   private groupDebtByType(items: TechnicalDebtItem[]): Record<string, number> {
     return {};
   }
   private groupDebtBySeverity(
-    items: TechnicalDebtItem[],
+    items: TechnicalDebtItem[]
   ): Record<string, number> {
     return {};
   }
@@ -1663,19 +1663,19 @@ export class ArchitectureRunwayManager extends EventEmitter {
     return 0;
   }
   private async calculateDebtTrends(
-    items: TechnicalDebtItem[],
+    items: TechnicalDebtItem[]
   ): Promise<unknown> {
     return {};
   }
   private async generateDebtRecommendations(
     items: TechnicalDebtItem[],
-    trends: unknown,
+    trends: unknown
   ): Promise<string[]> {
     return [];
   }
   private calculateDebtRiskLevel(
     totalCost: number,
-    highImpactCount: number,
+    highImpactCount: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     return 'medium';
   }
@@ -1683,7 +1683,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   private async performGovernanceReview(): Promise<void> {}
   private async handlePIPlanningStarted(
     piId: string,
-    artId: string,
+    artId: string
   ): Promise<void> {}
   private async handleFeatureCompletion(featureId: string): Promise<void> {}
   private async handleDebtThresholdExceeded(payload: unknown): Promise<void> {}

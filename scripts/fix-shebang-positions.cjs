@@ -12,10 +12,14 @@ const { execSync } = require('child_process');
 console.log('🔧 Fixing shebang position issues...\n');
 
 // Get files with shebang position errors
-const buildOutput = execSync('npm run build 2>&1 || true', { encoding: 'utf8' });
+const buildOutput = execSync('npm run build 2>&1 || true', {
+  encoding: 'utf8',
+});
 const shebangErrors = buildOutput
   .split('\n')
-  .filter((line) => line.includes("TS18026: '#!' can only be used at the start of a file"))
+  .filter((line) =>
+    line.includes("TS18026: '#!' can only be used at the start of a file")
+  )
   .map((line) => {
     const match = line.match(/^([^(]+)\(/);
     return match ? match[1] : null;
@@ -88,7 +92,9 @@ console.log(`\n🎉 Fixed shebang positions in ${fixedCount} files`);
 
 // Verify improvements
 try {
-  const newBuildOutput = execSync('npm run build 2>&1 || true', { encoding: 'utf8' });
+  const newBuildOutput = execSync('npm run build 2>&1 || true', {
+    encoding: 'utf8',
+  });
   const remainingShebangErrors = newBuildOutput
     .split('\n')
     .filter((line) =>

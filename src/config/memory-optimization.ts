@@ -69,7 +69,7 @@ export function detectAvailableMemory(): number {
  * Calculate optimal parallel stream configuration with adaptive scaling
  */
 export function calculateOptimalStreams(
-  availableMemoryGB?: number,
+  availableMemoryGB?: number
 ): ParallelStreamConfig {
   // Auto-detect if not provided
   if (!availableMemoryGB) {
@@ -88,27 +88,27 @@ export function calculateOptimalStreams(
         memory8GBConfig.portfolioStreamMB +
           (memory32GBConfig.portfolioStreamMB -
             memory8GBConfig.portfolioStreamMB) *
-            scaleFactor,
+            scaleFactor
       ),
       programStreamMB: Math.round(
         memory8GBConfig.programStreamMB +
           (memory32GBConfig.programStreamMB - memory8GBConfig.programStreamMB) *
-            scaleFactor,
+            scaleFactor
       ),
       swarmStreamMB: Math.round(
         memory8GBConfig.swarmStreamMB +
           (memory32GBConfig.swarmStreamMB - memory8GBConfig.swarmStreamMB) *
-            scaleFactor,
+            scaleFactor
       ),
       systemReserveMB: Math.round(
         memory8GBConfig.systemReserveMB +
           (memory32GBConfig.systemReserveMB - memory8GBConfig.systemReserveMB) *
-            scaleFactor,
+            scaleFactor
       ),
       cacheBufferMB: Math.round(
         memory8GBConfig.cacheBufferMB +
           (memory32GBConfig.cacheBufferMB - memory8GBConfig.cacheBufferMB) *
-            scaleFactor,
+            scaleFactor
       ),
       totalCapacityGB: availableMemoryGB,
     };
@@ -126,22 +126,22 @@ export function calculateOptimalStreams(
     1,
     Math.min(
       24,
-      Math.floor((availableMemoryMB * 0.25) / baseConfig.portfolioStreamMB),
-    ),
+      Math.floor((availableMemoryMB * 0.25) / baseConfig.portfolioStreamMB)
+    )
   );
   const programStreams = Math.max(
     2,
     Math.min(
       200,
-      Math.floor((availableMemoryMB * 0.4) / baseConfig.programStreamMB),
-    ),
+      Math.floor((availableMemoryMB * 0.4) / baseConfig.programStreamMB)
+    )
   );
   const swarmStreams = Math.max(
     4,
     Math.min(
       1000,
-      Math.floor((availableMemoryMB * 0.35) / baseConfig.swarmStreamMB),
-    ),
+      Math.floor((availableMemoryMB * 0.35) / baseConfig.swarmStreamMB)
+    )
   );
 
   return {
@@ -200,29 +200,29 @@ export class AdaptiveMemoryOptimizer {
             memory8GBConfig.portfolioStreamMB +
               (memory32GBConfig.portfolioStreamMB -
                 memory8GBConfig.portfolioStreamMB) *
-                scaleFactor,
+                scaleFactor
           ),
           programStreamMB: Math.round(
             memory8GBConfig.programStreamMB +
               (memory32GBConfig.programStreamMB -
                 memory8GBConfig.programStreamMB) *
-                scaleFactor,
+                scaleFactor
           ),
           swarmStreamMB: Math.round(
             memory8GBConfig.swarmStreamMB +
               (memory32GBConfig.swarmStreamMB - memory8GBConfig.swarmStreamMB) *
-                scaleFactor,
+                scaleFactor
           ),
           systemReserveMB: Math.round(
             memory8GBConfig.systemReserveMB +
               (memory32GBConfig.systemReserveMB -
                 memory8GBConfig.systemReserveMB) *
-                scaleFactor,
+                scaleFactor
           ),
           cacheBufferMB: Math.round(
             memory8GBConfig.cacheBufferMB +
               (memory32GBConfig.cacheBufferMB - memory8GBConfig.cacheBufferMB) *
-                scaleFactor,
+                scaleFactor
           ),
           totalCapacityGB: detectedMemoryGB,
         };
@@ -231,7 +231,7 @@ export class AdaptiveMemoryOptimizer {
       }
 
       console.log(
-        `⚡ Adaptive configuration: Portfolio=${optimalConfig.portfolio}, Program=${optimalConfig.program}, Swarm=${optimalConfig.swarm}`,
+        `⚡ Adaptive configuration: Portfolio=${optimalConfig.portfolio}, Program=${optimalConfig.program}, Swarm=${optimalConfig.swarm}`
       );
     }
   }
@@ -254,7 +254,7 @@ export class AdaptiveMemoryOptimizer {
    */
   allocateStream(
     type: 'portfolio' | 'program' | 'swarm',
-    streamId: string,
+    streamId: string
   ): boolean {
     if (!this.canAllocateStream(type)) {
       return false;
@@ -271,7 +271,7 @@ export class AdaptiveMemoryOptimizer {
    */
   deallocateStream(
     type: 'portfolio' | 'program' | 'swarm',
-    streamId: string,
+    streamId: string
   ): void {
     const currentStreams = this.activeStreams.get(type) || 0;
     if (currentStreams > 0) {
@@ -321,7 +321,7 @@ export class AdaptiveMemoryOptimizer {
   }
 
   private getMaxStreamsForType(
-    type: 'portfolio' | 'program' | 'swarm',
+    type: 'portfolio' | 'program' | 'swarm'
   ): number {
     const streamConfig = calculateOptimalStreams(this.config.totalCapacityGB);
     return streamConfig[type];
@@ -380,7 +380,7 @@ export class AdaptiveMemoryOptimizer {
 
     // Check for memory spikes - CRITICAL for OOM prevention
     const maxRecentMemory = Math.max(
-      ...recentMetrics.map((m) => m.memoryUtilization),
+      ...recentMetrics.map((m) => m.memoryUtilization)
     );
     const memoryVolatility =
       Math.max(...recentMetrics.map((m) => m.memoryUtilization)) -
@@ -420,13 +420,13 @@ export class AdaptiveMemoryOptimizer {
 
     if (adjustmentFactor !== 1.0) {
       console.log(
-        `🔄 ULTRA-SAFE optimization: ${action} (factor: ${adjustmentFactor})`,
+        `🔄 ULTRA-SAFE optimization: ${action} (factor: ${adjustmentFactor})`
       );
       console.log(
-        `   Memory: ${(avgMemoryUtil * 100).toFixed(1)}% (max: ${(maxRecentMemory * 100).toFixed(1)}%), CPU: ${(avgCpuUtil * 100).toFixed(1)}%, Errors: ${(avgErrorRate * 100).toFixed(4)}%`,
+        `   Memory: ${(avgMemoryUtil * 100).toFixed(1)}% (max: ${(maxRecentMemory * 100).toFixed(1)}%), CPU: ${(avgCpuUtil * 100).toFixed(1)}%, Errors: ${(avgErrorRate * 100).toFixed(4)}%`
       );
       console.log(
-        `   Memory volatility: ${(memoryVolatility * 100).toFixed(1)}% (MUST be <3% for scale-up)`,
+        `   Memory volatility: ${(memoryVolatility * 100).toFixed(1)}% (MUST be <3% for scale-up)`
       );
 
       // Apply ultra-safe adjustment
@@ -446,15 +446,15 @@ export class AdaptiveMemoryOptimizer {
 
     const newPortfolio = Math.max(
       1,
-      Math.min(24, Math.round(currentConfig.portfolio * factor)),
+      Math.min(24, Math.round(currentConfig.portfolio * factor))
     );
     const newProgram = Math.max(
       2,
-      Math.min(200, Math.round(currentConfig.program * factor)),
+      Math.min(200, Math.round(currentConfig.program * factor))
     );
     const newSwarm = Math.max(
       4,
-      Math.min(1000, Math.round(currentConfig.swarm * factor)),
+      Math.min(1000, Math.round(currentConfig.swarm * factor))
     );
 
     console.log(`📊 Capacity adjustment (${action}):`);
@@ -545,7 +545,7 @@ export class AdaptiveMemoryOptimizer {
     recommendations: string[];
     canOptimize: boolean;
     potentialGains: number;
-    currentPerformance: any;
+    currentPerformance: unknown;
   } {
     const stats = this.getMemoryStats();
     const trends = this.getPerformanceTrends();
@@ -554,21 +554,21 @@ export class AdaptiveMemoryOptimizer {
     // Performance-aware recommendations
     if (trends.memoryTrend === 'increasing' && stats.utilization > 0.8) {
       recommendations.push(
-        '🚨 MEMORY PRESSURE: Scale down non-critical streams immediately',
+        '🚨 MEMORY PRESSURE: Scale down non-critical streams immediately'
       );
     } else if (trends.memoryTrend === 'decreasing' && stats.utilization < 0.6) {
       recommendations.push(
-        '⚡ SCALE UP: Memory available for more parallel streams',
+        '⚡ SCALE UP: Memory available for more parallel streams'
       );
     }
 
     if (trends.throughputTrend === 'decreasing') {
       recommendations.push(
-        '🔍 PERFORMANCE: Investigate bottlenecks causing throughput decline',
+        '🔍 PERFORMANCE: Investigate bottlenecks causing throughput decline'
       );
     } else if (trends.throughputTrend === 'increasing') {
       recommendations.push(
-        '🚀 OPTIMIZE: Good throughput trend, consider adding more capacity',
+        '🚀 OPTIMIZE: Good throughput trend, consider adding more capacity'
       );
     }
 
@@ -583,7 +583,7 @@ export class AdaptiveMemoryOptimizer {
 
     if (stats.allocated.swarm < stats.available.swarm * 0.8) {
       recommendations.push(
-        '🐝 SWARM: Significant autonomous processing capacity available',
+        '🐝 SWARM: Significant autonomous processing capacity available'
       );
     }
 
@@ -639,7 +639,7 @@ export function createAdaptiveOptimizer(): AdaptiveMemoryOptimizer {
  * Create memory optimizer instance for specific configuration
  */
 export function createMemoryOptimizer(
-  config?: MemoryAllocationStrategy,
+  config?: MemoryAllocationStrategy
 ): AdaptiveMemoryOptimizer {
   return new AdaptiveMemoryOptimizer(config);
 }
@@ -667,7 +667,7 @@ export function validateMemoryConfig(config: ParallelStreamConfig): {
 
   if (totalSystemMemoryMB > 32 * 1024) {
     warnings.push(
-      `Configuration requires ${Math.round(totalSystemMemoryMB / 1024)}GB but only 32GB available`,
+      `Configuration requires ${Math.round(totalSystemMemoryMB / 1024)}GB but only 32GB available`
     );
   }
 
@@ -681,7 +681,7 @@ export function validateMemoryConfig(config: ParallelStreamConfig): {
 
   if (config.swarm > 1000) {
     warnings.push(
-      'Swarm streams > 1000 may exceed optimal coordination limits',
+      'Swarm streams > 1000 may exceed optimal coordination limits'
     );
   }
 

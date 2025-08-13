@@ -131,7 +131,7 @@ jest.mock('../../../utils/logger', () => ({
 
 describe('CoordinationServiceAdapter', () => {
   let adapter: CoordinationServiceAdapter;
-  let config: any;
+  let config: unknown;
 
   beforeEach(() => {
     config = createDefaultCoordinationServiceAdapterConfig(
@@ -141,7 +141,7 @@ describe('CoordinationServiceAdapter', () => {
         daaService: { enabled: true },
         sessionService: { enabled: true },
         swarmCoordinator: { enabled: true },
-      },
+      }
     );
 
     adapter = new CoordinationServiceAdapter(config);
@@ -331,7 +331,7 @@ describe('CoordinationServiceAdapter', () => {
       const result = await adapter.execute(
         'agent-create',
         { config: {} },
-        { timeout: shortTimeout },
+        { timeout: shortTimeout }
       );
 
       // Assert - Should timeout quickly
@@ -354,7 +354,7 @@ describe('CoordinationServiceAdapter', () => {
         expect.objectContaining({
           type: 'initialized',
           serviceName: 'test-coordination',
-        }),
+        })
       );
     });
 
@@ -375,7 +375,7 @@ describe('CoordinationServiceAdapter', () => {
           operation: expect.any(String),
           success: true,
           duration: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -627,7 +627,7 @@ describe('CoordinationServiceAdapter', () => {
         .map((_, i) =>
           adapter.execute('agent-create', {
             config: { type: 'researcher', id: `agent-${i}` },
-          }),
+          })
         );
 
       await Promise.all(operations);
@@ -690,7 +690,7 @@ describe('CoordinationServiceAdapter', () => {
       // Act
       const config = createDefaultCoordinationServiceAdapterConfig(
         'override-test',
-        overrides,
+        overrides
       );
 
       // Assert

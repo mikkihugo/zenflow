@@ -94,7 +94,9 @@ module.exports = function transformer(fileInfo, api) {
   });
 
   // Determine which types need to be imported
-  const typesToImport = [...usedTypes].filter((type) => !existingImports.has(type));
+  const typesToImport = [...usedTypes].filter(
+    (type) => !existingImports.has(type)
+  );
 
   if (typesToImport.length === 0) {
     return null; // No changes needed
@@ -135,7 +137,10 @@ module.exports = function transformer(fileInfo, api) {
     }
 
     if (specifiers.length > 0) {
-      const importStatement = j.importDeclaration(specifiers, j.literal(source));
+      const importStatement = j.importDeclaration(
+        specifiers,
+        j.literal(source)
+      );
 
       // Add at the top of the file, after existing imports
       const existingImports = root.find(j.ImportDeclaration);
@@ -150,7 +155,9 @@ module.exports = function transformer(fileInfo, api) {
   });
 
   if (transformCount > 0) {
-    console.log(`✅ Restored ${transformCount} missing imports in ${fileInfo.path}`);
+    console.log(
+      `✅ Restored ${transformCount} missing imports in ${fileInfo.path}`
+    );
     console.log(`   Types: ${typesToImport.join(', ')}`);
   }
 

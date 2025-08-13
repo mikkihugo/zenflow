@@ -112,22 +112,22 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
 
     this.setupEventHandlers();
     this.logger.info(
-      `DEV-CUBE Matron ${this.designation} initialized. Code optimization protocols active.`,
+      `DEV-CUBE Matron ${this.designation} initialized. Code optimization protocols active.`
     );
   }
 
   private setupEventHandlers(): void {
     this.eventBus.on(
       'collective:code:request',
-      this.handleCodeRequest.bind(this),
+      this.handleCodeRequest.bind(this)
     );
     this.eventBus.on(
       'collective:architecture:review',
-      this.handleArchitectureReview.bind(this),
+      this.handleArchitectureReview.bind(this)
     );
     this.eventBus.on(
       'collective:testing:required',
-      this.handleTestingRequest.bind(this),
+      this.handleTestingRequest.bind(this)
     );
     this.eventBus.on('cube:dev:status:request', this.reportStatus.bind(this));
   }
@@ -135,9 +135,9 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle code generation requests with Borg precision
    */
-  private async handleCodeRequest(request: any): Promise<void> {
+  private async handleCodeRequest(request: unknown): Promise<void> {
     this.logger.info(
-      `Processing code request: ${request.type} - ${request.id}`,
+      `Processing code request: ${request.type} - ${request.id}`
     );
 
     const codePlan = {
@@ -157,7 +157,7 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle architecture reviews
    */
-  private async handleArchitectureReview(review: any): Promise<void> {
+  private async handleArchitectureReview(review: unknown): Promise<void> {
     this.logger.info(`Architecture review requested: ${review.component}`);
 
     const analysis = {
@@ -180,9 +180,9 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle testing requirements
    */
-  private async handleTestingRequest(request: any): Promise<void> {
+  private async handleTestingRequest(request: unknown): Promise<void> {
     this.logger.info(
-      `Testing request: ${request.scope} - Coverage target: ${request.coverage || '95%'}`,
+      `Testing request: ${request.scope} - Coverage target: ${request.coverage || '95%'}`
     );
 
     const testingPlan = {
@@ -214,7 +214,7 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
 
     this.eventBus.emit('collective:dev-cube:status', status);
     this.logger.info(
-      `Status reported to THE COLLECTIVE. Code quality: ${this.metrics.codeQuality}`,
+      `Status reported to THE COLLECTIVE. Code quality: ${this.metrics.codeQuality}`
     );
   }
 
@@ -240,7 +240,7 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
       this.cube.capacity.currentQueens++;
 
       this.logger.info(
-        `Queen ${queenId} assigned to DEV-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`,
+        `Queen ${queenId} assigned to DEV-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`
       );
       this.eventBus.emit('dev-cube:queen:assigned', {
         queenId,
@@ -260,7 +260,7 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
       this.cube.capacity.currentQueens--;
 
       this.logger.info(
-        `Queen ${queenId} removed from DEV-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`,
+        `Queen ${queenId} removed from DEV-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`
       );
       this.eventBus.emit('dev-cube:queen:removed', {
         queenId,
@@ -298,7 +298,7 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
     }
 
     this.logger.info(
-      `Metrics updated. Borg efficiency: ${this.metrics.borgEfficiency.toFixed(3)} - Rating: ${this.cube.performance.borgRating}`,
+      `Metrics updated. Borg efficiency: ${this.metrics.borgEfficiency.toFixed(3)} - Rating: ${this.cube.performance.borgRating}`
     );
   }
 
@@ -308,7 +308,7 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
   public async shutdown(): Promise<void> {
     this.status = 'maintenance';
     this.logger.info(
-      `DEV-CUBE Matron ${this.designation} entering maintenance mode. Development operations suspended.`,
+      `DEV-CUBE Matron ${this.designation} entering maintenance mode. Development operations suspended.`
     );
     this.eventBus.emit('dev-cube:matron:shutdown', {
       matron: this.designation,

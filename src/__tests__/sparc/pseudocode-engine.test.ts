@@ -182,7 +182,9 @@ describe('SPARC Pseudocode Engine Integration Tests', () => {
         },
       ];
 
-      const controlFlows = await pseudocodeEngine.mapControlFlows(algorithms) as any as any as any as any;
+      const controlFlows = (await pseudocodeEngine.mapControlFlows(
+        algorithms
+      )) as any as any as any as any;
 
       expect(controlFlows).toBeDefined();
       expect(controlFlows.length).toBe(1);

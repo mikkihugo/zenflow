@@ -22,11 +22,11 @@ class BatchingTester {
 
     // Analyze single-error files
     const singleErrorFiles = Array.from(errorsByFile.entries()).filter(
-      ([filePath, fileErrors]) => fileErrors.length === 1,
+      ([filePath, fileErrors]) => fileErrors.length === 1
     );
 
     const multiErrorFiles = Array.from(errorsByFile.entries()).filter(
-      ([filePath, fileErrors]) => fileErrors.length > 1,
+      ([filePath, fileErrors]) => fileErrors.length > 1
     );
 
     // console.log(`📦 BATCHING ANALYSIS:`);
@@ -144,7 +144,7 @@ class BatchingTester {
           stdio: 'pipe',
           cwd: path.resolve(__dirname, '..'),
           env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=2048' },
-        },
+        }
       );
 
       let stdout = '';
@@ -170,7 +170,7 @@ class BatchingTester {
 
     for (const line of lines) {
       const match = line.match(
-        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/,
+        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/
       );
       if (match) {
         errors.push({

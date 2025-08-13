@@ -25,7 +25,7 @@ function cleanup() {
         if (fs.existsSync(file)) {
           fs.unlinkSync(file);
         }
-      },
+      }
     );
   } catch (error) {
     console.error('Cleanup error:', error);
@@ -99,7 +99,7 @@ async function testZenSwarmCoreIntegration() {
     // Test that it's the pooled version
     if (ruvSwarm.persistence.constructor.name !== 'SwarmPersistencePooled') {
       throw new Error(
-        `Expected SwarmPersistencePooled, got ${ruvSwarm.persistence.constructor.name}`,
+        `Expected SwarmPersistencePooled, got ${ruvSwarm.persistence.constructor.name}`
       );
     }
 
@@ -136,7 +136,7 @@ async function testConcurrentOperations() {
           topology: 'mesh',
           maxAgents: 3,
           strategy: 'balanced',
-        }),
+        })
       );
     }
 
@@ -150,7 +150,7 @@ async function testConcurrentOperations() {
           type: 'researcher',
           name: `Concurrent Agent ${i}`,
           capabilities: ['analysis'],
-        }),
+        })
       );
     }
 
@@ -206,7 +206,7 @@ async function testPerformanceComparison() {
     if (avgTime > 100) {
       // Should be much faster with pooling
       console.warn(
-        `⚠️  Average time higher than expected: ${avgTime.toFixed(2)}ms`,
+        `⚠️  Average time higher than expected: ${avgTime.toFixed(2)}ms`
       );
     } else {
     }
@@ -238,9 +238,9 @@ async function testEnvironmentConfiguration() {
     const _stats = await mcpTools.pool_stats();
 
     // Clean up environment variables
-    delete process.env['POOL_MAX_READERS'];
-    delete process.env['POOL_MAX_WORKERS'];
-    delete process.env['POOL_CACHE_SIZE'];
+    process.env['POOL_MAX_READERS'] = undefined;
+    process.env['POOL_MAX_WORKERS'] = undefined;
+    process.env['POOL_CACHE_SIZE'] = undefined;
   } catch (error) {
     console.error('❌ Test 5 failed:', error.message);
     throw error;

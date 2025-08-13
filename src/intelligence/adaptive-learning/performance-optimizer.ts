@@ -65,7 +65,7 @@ export class PerformanceOptimizer
     // Generate optimization actions based on patterns
     const optimizations = this.generateBehaviorOptimizations(
       agentId,
-      relevantPatterns,
+      relevantPatterns
     );
 
     // Calculate expected improvement and implementation cost
@@ -74,7 +74,7 @@ export class PerformanceOptimizer
     const implementationCost = this.calculateImplementationCost(optimizations);
     const confidence = this.calculateOptimizationConfidence(
       relevantPatterns,
-      optimizations,
+      optimizations
     );
 
     // Define validation metrics
@@ -121,17 +121,17 @@ export class PerformanceOptimizer
       tasks,
       agents,
       agentAnalysis,
-      taskAnalysis,
+      taskAnalysis
     );
 
     // Calculate strategy metrics
     const expectedEfficiency = this.calculateAllocationEfficiency(
       allocations,
-      agents,
+      agents
     );
     const resourceUtilization = this.calculateResourceUtilization(
       allocations,
-      agents,
+      agents
     );
     const balanceScore = this.calculateLoadBalance(allocations, agents);
 
@@ -177,7 +177,7 @@ export class PerformanceOptimizer
     // Generate optimal resource allocations
     const allocations = this.generateResourceAllocations(
       resources,
-      usagePatterns,
+      usagePatterns
     );
 
     // Calculate strategy metrics
@@ -188,7 +188,7 @@ export class PerformanceOptimizer
     // Define adaptive thresholds for resource management
     const adaptiveThresholds = this.generateResourceThresholds(
       resources,
-      usagePatterns,
+      usagePatterns
     );
 
     const strategy: ResourceStrategy = {
@@ -230,7 +230,7 @@ export class PerformanceOptimizer
     // Generate targeted optimizations
     const optimizations = this.generateEfficiencyOptimizations(
       bottlenecks,
-      metrics,
+      metrics
     );
 
     // Calculate improvement potential
@@ -274,13 +274,13 @@ export class PerformanceOptimizer
 
     // Generate latency optimizations for each bottleneck
     const optimizations = this.generateLatencyOptimizations(
-      prioritizedBottlenecks,
+      prioritizedBottlenecks
     );
 
     // Calculate expected latency reduction
     const expectedReduction = this.calculateLatencyReduction(
       optimizations,
-      bottlenecks,
+      bottlenecks
     );
 
     // Create implementation plan
@@ -289,7 +289,7 @@ export class PerformanceOptimizer
     // Define monitoring strategy
     const monitoringPlan = this.createLatencyMonitoringPlan(
       bottlenecks,
-      optimizations,
+      optimizations
     );
 
     const latencyReduction: LatencyReduction = {
@@ -343,19 +343,19 @@ export class PerformanceOptimizer
 
   private filterPatternsForAgent(
     agentId: string,
-    patterns: Pattern[],
+    patterns: Pattern[]
   ): Pattern[] {
     return patterns.filter(
       (pattern) =>
         pattern.context['agentId'] === agentId ||
         pattern.confidence > 0.8 ||
-        pattern.metadata.relevance > 0.7,
+        pattern.metadata.relevance > 0.7
     );
   }
 
   private generateBehaviorOptimizations(
     agentId: string,
-    patterns: Pattern[],
+    patterns: Pattern[]
   ): OptimizationAction[] {
     const optimizations: OptimizationAction[] = [];
 
@@ -401,20 +401,20 @@ export class PerformanceOptimizer
   }
 
   private calculateExpectedImprovement(
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): number {
     return optimizations.reduce((total, opt) => total + opt.expectedImpact, 0);
   }
 
   private calculateImplementationCost(
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): number {
     return optimizations.reduce((total, opt) => total + opt.effort, 0);
   }
 
   private calculateOptimizationConfidence(
     patterns: Pattern[],
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): number {
     if (patterns.length === 0) return 0;
 
@@ -426,7 +426,7 @@ export class PerformanceOptimizer
   }
 
   private defineValidationMetrics(
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): string[] {
     const metrics = new Set<string>();
 
@@ -489,13 +489,13 @@ export class PerformanceOptimizer
     tasks: Task[],
     agents: Agent[],
     agentAnalysis: Map<string, any>,
-    taskAnalysis: Map<string, any>,
+    taskAnalysis: Map<string, any>
   ): TaskAllocation[] {
     const allocations: TaskAllocation[] = [];
 
     // Sort tasks by priority and complexity
     const sortedTasks = tasks.sort(
-      (a, b) => b.priority - a.priority || b.complexity - a.complexity,
+      (a, b) => b.priority - a.priority || b.complexity - a.complexity
     );
 
     for (const task of sortedTasks) {
@@ -510,7 +510,7 @@ export class PerformanceOptimizer
           agent,
           task,
           agentInfo,
-          taskInfo,
+          taskInfo
         );
 
         if (score > bestScore && agentInfo.availableCapacity > 0.1) {
@@ -544,8 +544,8 @@ export class PerformanceOptimizer
   private calculateAgentTaskScore(
     agent: Agent,
     task: Task,
-    _agentInfo: any,
-    _taskInfo: any,
+    _agentInfo: unknown,
+    _taskInfo: unknown
   ): number {
     let score = 0;
 
@@ -554,7 +554,7 @@ export class PerformanceOptimizer
       task.requirements.filter(
         (req) =>
           agent.capabilities.includes(req) ||
-          agent.specializations.includes(req),
+          agent.specializations.includes(req)
       ).length / task.requirements.length;
     score += capabilityMatch * 0.4;
 
@@ -576,20 +576,20 @@ export class PerformanceOptimizer
 
   private calculateAllocationEfficiency(
     allocations: TaskAllocation[],
-    _agents: Agent[],
+    _agents: Agent[]
   ): number {
     if (allocations.length === 0) return 0;
 
     const totalConfidence = allocations.reduce(
       (sum, alloc) => sum + alloc.confidence,
-      0,
+      0
     );
     return totalConfidence / allocations.length;
   }
 
   private calculateResourceUtilization(
     _allocations: TaskAllocation[],
-    agents: Agent[],
+    agents: Agent[]
   ): number {
     if (agents.length === 0) return 0;
 
@@ -599,7 +599,7 @@ export class PerformanceOptimizer
 
   private calculateLoadBalance(
     _allocations: TaskAllocation[],
-    agents: Agent[],
+    agents: Agent[]
   ): number {
     if (agents.length === 0) return 1;
 
@@ -612,8 +612,8 @@ export class PerformanceOptimizer
     return 1 / (1 + variance); // Higher score for lower variance
   }
 
-  private identifyAllocationConstraints(tasks: Task[], agents: Agent[]): any[] {
-    const constraints: any[] = [];
+  private identifyAllocationConstraints(tasks: Task[], agents: Agent[]): unknown[] {
+    const constraints: unknown[] = [];
 
     // Resource constraints
     if (agents.length < tasks.length) {
@@ -627,13 +627,13 @@ export class PerformanceOptimizer
 
     // Skill constraints
     const totalRequirements = new Set(
-      tasks.flatMap((task) => task.requirements),
+      tasks.flatMap((task) => task.requirements)
     );
     const totalCapabilities = new Set(
-      agents.flatMap((agent) => agent.capabilities),
+      agents.flatMap((agent) => agent.capabilities)
     );
     const missingCapabilities = [...totalRequirements].filter(
-      (req) => !totalCapabilities.has(req),
+      (req) => !totalCapabilities.has(req)
     );
 
     if (missingCapabilities.length > 0) {
@@ -668,7 +668,7 @@ export class PerformanceOptimizer
 
   private generateResourceAllocations(
     resources: Resource[],
-    patterns: Map<string, any>,
+    patterns: Map<string, any>
   ): ResourceAllocation[] {
     const allocations: ResourceAllocation[] = [];
 
@@ -680,7 +680,7 @@ export class PerformanceOptimizer
           resourceId: resource.id,
           allocation: Math.min(
             resource.capacity * 0.8,
-            pattern.recommendedCapacity,
+            pattern.recommendedCapacity
           ),
           duration: 3600, // 1 hour
           priority: pattern.utilizationRate > 0.7 ? 0.8 : 0.5,
@@ -693,7 +693,7 @@ export class PerformanceOptimizer
   }
 
   private calculateResourcePerformance(
-    allocations: ResourceAllocation[],
+    allocations: ResourceAllocation[]
   ): number {
     if (allocations.length === 0) return 0;
 
@@ -710,13 +710,13 @@ export class PerformanceOptimizer
 
   private calculateCostEfficiency(
     allocations: ResourceAllocation[],
-    resources: Resource[],
+    resources: Resource[]
   ): number {
     if (allocations.length === 0 || resources.length === 0) return 0;
 
     const totalAllocation = allocations.reduce(
       (sum, alloc) => sum + alloc.allocation,
-      0,
+      0
     );
     const totalCapacity = resources.reduce((sum, res) => sum + res.capacity, 0);
     const totalCost = resources.reduce((sum, res) => sum + res.cost, 0);
@@ -726,7 +726,7 @@ export class PerformanceOptimizer
 
   private generateResourceThresholds(
     resources: Resource[],
-    patterns: Map<string, any>,
+    patterns: Map<string, any>
   ): AdaptiveThreshold[] {
     const thresholds: AdaptiveThreshold[] = [];
 
@@ -762,7 +762,7 @@ export class PerformanceOptimizer
 
   private generateEfficiencyOptimizations(
     bottlenecks: string[],
-    _metrics: PerformanceMetrics,
+    _metrics: PerformanceMetrics
   ): OptimizationAction[] {
     const optimizations: OptimizationAction[] = [];
 
@@ -811,13 +811,13 @@ export class PerformanceOptimizer
 
   private calculateEfficiencyGain(
     optimizations: OptimizationAction[],
-    _metrics: PerformanceMetrics,
+    _metrics: PerformanceMetrics
   ): number {
     return optimizations.reduce((total, opt) => total + opt.expectedImpact, 0);
   }
 
   private createImplementationPlan(
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): ImplementationPlan {
     const steps = optimizations.map((opt, index) => ({
       id: `step_${index + 1}`,
@@ -851,11 +851,11 @@ export class PerformanceOptimizer
 
   private calculateTargetMetrics(
     current: PerformanceMetrics,
-    optimizations: OptimizationAction[],
+    optimizations: OptimizationAction[]
   ): PerformanceMetrics {
     const totalImprovement = optimizations.reduce(
       (sum, opt) => sum + opt.expectedImpact,
-      0,
+      0
     );
 
     return {
@@ -865,11 +865,11 @@ export class PerformanceOptimizer
       resourceUtilization: {
         cpu: Math.max(
           0.1,
-          current?.resourceUtilization?.cpu * (1 - totalImprovement * 0.2),
+          current?.resourceUtilization?.cpu * (1 - totalImprovement * 0.2)
         ),
         memory: Math.max(
           0.1,
-          current?.resourceUtilization?.memory * (1 - totalImprovement * 0.2),
+          current?.resourceUtilization?.memory * (1 - totalImprovement * 0.2)
         ),
         network: current?.resourceUtilization?.network,
         diskIO: current?.resourceUtilization?.diskIO,
@@ -883,7 +883,7 @@ export class PerformanceOptimizer
   }
 
   private determinePrimaryCategory(
-    bottlenecks: string[],
+    bottlenecks: string[]
   ): 'cpu' | 'memory' | 'network' | 'coordination' {
     if (bottlenecks.includes('cpu_bottleneck')) return 'cpu';
     if (bottlenecks.includes('memory_bottleneck')) return 'memory';
@@ -895,11 +895,11 @@ export class PerformanceOptimizer
     return bottlenecks.sort(
       (a, b) =>
         b.severity * b.impact * b.frequency -
-        a.severity * a.impact * a.frequency,
+        a.severity * a.impact * a.frequency
     );
   }
 
-  private generateLatencyOptimizations(bottlenecks: Bottleneck[]): any[] {
+  private generateLatencyOptimizations(bottlenecks: Bottleneck[]): unknown[] {
     return bottlenecks.map((bottleneck) => ({
       target: bottleneck.location,
       optimization: `Optimize ${bottleneck.type} in ${bottleneck.location}`,
@@ -926,17 +926,17 @@ export class PerformanceOptimizer
   }
 
   private calculateLatencyReduction(
-    optimizations: any[],
-    _bottlenecks: Bottleneck[],
+    optimizations: unknown[],
+    _bottlenecks: Bottleneck[]
   ): number {
     return optimizations.reduce(
       (total, opt) => total + opt.expectedReduction,
-      0,
+      0
     );
   }
 
   private createLatencyImplementationPlan(
-    optimizations: any[],
+    optimizations: unknown[]
   ): ImplementationPlan {
     const allSteps = optimizations.flatMap((opt) => opt.implementation);
 
@@ -965,7 +965,7 @@ export class PerformanceOptimizer
 
   private createLatencyMonitoringPlan(
     _bottlenecks: Bottleneck[],
-    optimizations: any[],
+    optimizations: unknown[]
   ): MonitoringStrategy {
     const allMetrics = optimizations.flatMap((opt) => opt.monitoring);
 
@@ -1020,7 +1020,7 @@ export class PerformanceOptimizer
       () => {
         this.performPeriodicOptimization();
       },
-      10 * 60 * 1000,
+      10 * 60 * 1000
     ); // Every 10 minutes
   }
 

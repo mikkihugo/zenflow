@@ -128,7 +128,7 @@ export interface FACTStorageBackend {
    * Optimize storage performance.
    */
   optimize(
-    strategy?: 'aggressive' | 'balanced' | 'conservative',
+    strategy?: 'aggressive' | 'balanced' | 'conservative'
   ): Promise<{ optimized: boolean; details: string }>;
 
   /**
@@ -144,7 +144,7 @@ export interface FACTStorageBackend {
  */
 export interface FACTStorageConfig {
   backend: 'sqlite' | 'jsonb' | 'file' | 'memory';
-  backendConfig?: any; // Backend-specific configuration
+  backendConfig?: unknown; // Backend-specific configuration
   maxMemoryCacheSize: number;
   defaultTTL: number; // milliseconds
   cleanupInterval: number; // milliseconds

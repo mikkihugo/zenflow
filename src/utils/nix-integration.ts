@@ -56,7 +56,7 @@ export class NixIntegration {
       const suggestedSetup = this.generateSetupSuggestions(
         nixAvailable,
         flakesEnabled,
-        packages,
+        packages
       );
 
       const environment: NixEnvironment = {
@@ -262,7 +262,7 @@ export class NixIntegration {
     try {
       const { stdout } = await execAsync(
         `nix-env -qaP ${packageName} | head -1`,
-        { timeout: 5000 },
+        { timeout: 5000 }
       );
       return stdout.trim().length > 0;
     } catch {
@@ -297,20 +297,20 @@ export class NixIntegration {
   private generateSetupSuggestions(
     nixAvailable: boolean,
     flakesEnabled: boolean,
-    packages: NixPackage[],
+    packages: NixPackage[]
   ): string[] {
     const suggestions: string[] = [];
 
     if (!nixAvailable) {
       suggestions.push(
-        'Install Nix: curl -L https://nixos.org/nix/install | sh',
+        'Install Nix: curl -L https://nixos.org/nix/install | sh'
       );
       return suggestions;
     }
 
     if (!flakesEnabled) {
       suggestions.push(
-        'Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf',
+        'Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf'
       );
     }
 
@@ -320,7 +320,7 @@ export class NixIntegration {
       suggestions.push('Enter development shell: nix develop');
     } else {
       suggestions.push(
-        'Create flake.nix for reproducible development environment',
+        'Create flake.nix for reproducible development environment'
       );
     }
 
@@ -329,7 +329,7 @@ export class NixIntegration {
     const missingBeam = beamPackages.filter((p) => p.available && !p.installed);
     if (missingBeam.length > 0) {
       suggestions.push(
-        `Install BEAM tools: nix-shell -p ${missingBeam.map((p) => p.name).join(' ')}`,
+        `Install BEAM tools: nix-shell -p ${missingBeam.map((p) => p.name).join(' ')}`
       );
     }
 
@@ -338,7 +338,7 @@ export class NixIntegration {
     const missingDev = devTools.filter((p) => p.available && !p.installed);
     if (missingDev.length > 0) {
       suggestions.push(
-        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`,
+        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`
       );
     }
 

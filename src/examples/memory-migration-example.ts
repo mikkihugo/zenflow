@@ -27,7 +27,7 @@ class UnsafeMemoryService {
   constructor(private store: SessionMemoryStore) {}
 
   // ❌ Unsafe: Direct property access on potentially undefined results
-  async getUserProfile(userId: string): Promise<any> {
+  async getUserProfile(userId: string): Promise<unknown> {
     const result = await this.store.retrieve('user-profiles', userId);
 
     // This could fail at runtime if result is null/undefined
@@ -35,13 +35,13 @@ class UnsafeMemoryService {
   }
 
   // ❌ Unsafe: No error handling for failed operations
-  async cacheUserSession(userId: string, sessionData: any): Promise<void> {
+  async cacheUserSession(userId: string, sessionData: unknown): Promise<void> {
     await this.store.store('user-sessions', userId, sessionData);
     // ❌ No error handling - failures are silently ignored
   }
 
   // ❌ Unsafe: Assumes success without checking
-  async getUserPreferences(userId: string): Promise<any> {
+  async getUserPreferences(userId: string): Promise<unknown> {
     const result = await this.store.retrieve('user-preferences', userId);
 
     // ❌ Direct property access without null/type checking
@@ -74,7 +74,7 @@ class SafeMemoryService {
       // Assume we have an enhanced store that returns MemoryResult
       const result = await this.retrieveWithResult<UserProfile>(
         'user-profiles',
-        userId,
+        userId
       );
 
       // ✅ Type-safe access using type guards
@@ -111,13 +111,13 @@ class SafeMemoryService {
    */
   async cacheUserSession(
     userId: string,
-    sessionData: UserSession,
+    sessionData: UserSession
   ): Promise<MemoryResult<void>> {
     try {
       const result = await this.storeWithResult(
         'user-sessions',
         userId,
-        sessionData,
+        sessionData
       );
 
       if (isMemorySuccess(result)) {
@@ -126,7 +126,7 @@ class SafeMemoryService {
       if (isMemoryError(result)) {
         console.error(
           `❌ Failed to cache session for ${userId}:`,
-          result?.error?.message,
+          result?.error?.message
         );
         return result;
       }
@@ -135,7 +135,7 @@ class SafeMemoryService {
     } catch (error) {
       console.error(
         `❌ Unexpected error caching session for ${userId}:`,
-        error,
+        error
       );
 
       return {
@@ -224,7 +224,7 @@ class SafeMemoryService {
     // Get session with error handling
     const sessionResult = await this.retrieveWithResult<UserSession>(
       'user-sessions',
-      userId,
+      userId
     );
     if (isMemorySuccess(sessionResult)) {
       session = sessionResult?.data;
@@ -309,7 +309,7 @@ class SafeMemoryService {
    */
   private async retrieveWithResult<T>(
     namespace: string,
-    key: string,
+    key: string
   ): Promise<MemoryResult<T>> {
     try {
       const data = await this.store.retrieve(namespace, key);
@@ -352,7 +352,7 @@ class SafeMemoryService {
   private async storeWithResult<T>(
     namespace: string,
     key: string,
-    data: T,
+    data: T
   ): Promise<MemoryResult<void>> {
     try {
       await this.store.store(namespace, key, data);
@@ -395,7 +395,7 @@ interface UserSession {
   userId: string;
   token: string;
   expires_at: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 interface UserPreferences {

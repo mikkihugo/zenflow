@@ -40,11 +40,11 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   let engine: ProductWorkflowEngine;
   let eventBus: TypeSafeEventBus;
   let aguiAdapter: WorkflowAGUIAdapter;
-  let mockProcessWorkflowGate: any;
+  let mockProcessWorkflowGate: unknown;
 
   // Helper function to create complete ProductWorkflowState
   function createMockWorkflowState(
-    overrides: Partial<ProductWorkflowState> = {},
+    overrides: Partial<ProductWorkflowState> = {}
   ): ProductWorkflowState {
     return {
       id: 'test-workflow',
@@ -136,7 +136,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
         sparcQualityGates: true, // Enable gates
         autoTriggerSPARC: false,
         maxConcurrentWorkflows: 1,
-      },
+      }
     );
 
     await engine.initialize();
@@ -165,7 +165,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       expect(visionGate).toBeDefined();
       expect(visionGate!.title).toBe('Vision Analysis Gate');
       expect(visionGate!.description).toContain(
-        'Strategic gate to validate vision document analysis',
+        'Strategic gate to validate vision document analysis'
       );
       expect(visionGate!.subtype).toBe('vision-analysis');
       expect(visionGate!.priority).toBeDefined();
@@ -184,7 +184,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
         {
           workspaceId: 'test-workspace',
           variables: { testMode: true },
-        },
+        }
       );
 
       expect(workflowResult.success).toBe(true);
@@ -209,11 +209,11 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       // Mock AGUI adapter to simulate pending gate (not resolving immediately)
       mockProcessWorkflowGate.mockImplementation(
         () =>
-          new Promise((resolve) => setTimeout(() => resolve('approved'), 1000)),
+          new Promise((resolve) => setTimeout(() => resolve('approved'), 1000))
       );
 
       const workflowResult = await engine.startProductWorkflow(
-        'complete-product-flow',
+        'complete-product-flow'
       );
       expect(workflowResult.success).toBe(true);
 
@@ -235,7 +235,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       mockProcessWorkflowGate.mockResolvedValue('rejected');
 
       const workflowResult = await engine.startProductWorkflow(
-        'complete-product-flow',
+        'complete-product-flow'
       );
       expect(workflowResult.success).toBe(true);
 
@@ -280,7 +280,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       // Mock a pending gate scenario
       mockProcessWorkflowGate.mockImplementation(
         () =>
-          new Promise((resolve) => setTimeout(() => resolve('approved'), 2000)),
+          new Promise((resolve) => setTimeout(() => resolve('approved'), 2000))
       );
 
       await engine.startProductWorkflow('complete-product-flow');
@@ -311,7 +311,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
           businessImpact: 'medium',
           stakeholders: ['test-user'],
           gateType: 'approval',
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -330,7 +330,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
           businessImpact: 'medium',
           stakeholders: ['test-user'],
           gateType: 'approval',
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -368,7 +368,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
             businessImpact: testCase.businessImpact,
             stakeholders: ['test-user'],
             gateType: 'approval',
-          },
+          }
         );
 
         // The gate request should have been created with the appropriate approval level
@@ -385,13 +385,13 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   describe('Workflow Pause/Resume with Gates', () => {
     it('should pause workflow manually', async () => {
       const workflowResult = await engine.startProductWorkflow(
-        'complete-product-flow',
+        'complete-product-flow'
       );
       const workflowId = workflowResult.workflowId!;
 
       const pauseResult = await engine.pauseProductWorkflow(
         workflowId,
-        'Manual pause for testing',
+        'Manual pause for testing'
       );
       expect(pauseResult.success).toBe(true);
 
@@ -401,7 +401,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should resume paused workflow', async () => {
       const workflowResult = await engine.startProductWorkflow(
-        'complete-product-flow',
+        'complete-product-flow'
       );
       const workflowId = workflowResult.workflowId!;
 
@@ -411,7 +411,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       // Resume workflow
       const resumeResult = await engine.resumeProductWorkflow(
         workflowId,
-        'Test resume',
+        'Test resume'
       );
       expect(resumeResult.success).toBe(true);
 
@@ -423,7 +423,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   describe('Error Handling', () => {
     it('should handle AGUI adapter errors gracefully', async () => {
       mockProcessWorkflowGate.mockRejectedValue(
-        new Error('AGUI adapter error'),
+        new Error('AGUI adapter error')
       );
 
       const result = await engine.executeWorkflowGate(
@@ -434,7 +434,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
           businessImpact: 'medium',
           stakeholders: ['test-user'],
           gateType: 'approval',
-        },
+        }
       );
 
       expect(result.success).toBe(false);
@@ -445,7 +445,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     it('should handle gate cancellation errors', async () => {
       const result = await engine.cancelGate(
         'non-existent-gate',
-        'Test cancellation',
+        'Test cancellation'
       );
 
       expect(result.success).toBe(false);
@@ -480,7 +480,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
           enableSPARCIntegration: true,
           sparcQualityGates: false, // Disable gates
           autoTriggerSPARC: false,
-        },
+        }
       );
 
       await engineWithoutGates.initialize();
@@ -501,7 +501,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   describe('Decision Logging and Audit Trail', () => {
     it('should log workflow decisions', async () => {
       mockProcessWorkflowGate.mockResolvedValue(
-        'approved with rationale: looks good',
+        'approved with rationale: looks good'
       );
 
       await engine.executeWorkflowGate(
@@ -512,7 +512,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
           businessImpact: 'high',
           stakeholders: ['test-approver'],
           gateType: 'approval',
-        },
+        }
       );
 
       // Check decision history

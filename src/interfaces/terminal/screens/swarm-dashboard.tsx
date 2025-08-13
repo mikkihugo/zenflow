@@ -9,7 +9,7 @@
  */
 
 import { Box, Text, useInput } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import {
   AgentProgress,
@@ -159,30 +159,16 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   };
 
   const renderOverview = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
       {/* Swarm Status */}
       <Box marginBottom={2}>
-        <Text
-          bold
-          color="cyan"
-          wrap="wrap"
-        >
+        <Text bold color="cyan" wrap="wrap">
           🐝 Swarm Status Overview
         </Text>
       </Box>
 
-      <Box
-        flexDirection="row"
-        marginBottom={3}
-      >
-        <Box
-          flexDirection="column"
-          width="50%"
-        >
+      <Box flexDirection="row" marginBottom={3}>
+        <Box flexDirection="column" width="50%">
           <Box marginBottom={1}>
             <StatusBadge
               status={swarmStatus.status}
@@ -214,10 +200,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
           </Text>
         </Box>
 
-        <Box
-          flexDirection="column"
-          width="50%"
-        >
+        <Box flexDirection="column" width="50%">
           <AgentProgress
             active={metrics.activeAgents}
             total={metrics.totalAgents}
@@ -239,15 +222,9 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
         <Text bold>👥 Agent Status Summary:</Text>
       </Box>
 
-      <Box
-        flexDirection="column"
-        marginLeft={2}
-      >
+      <Box flexDirection="column" marginLeft={2}>
         {agents.slice(0, 5).map((agent) => (
-          <Box
-            key={agent.id}
-            marginBottom={0}
-          >
+          <Box key={agent.id} marginBottom={0}>
             <Text>
               {getStatusIcon(agent.status)}
               <Text color="cyan">{agent.id}</Text>
@@ -266,15 +243,9 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       {tasks.length > 0 && (
         <Box marginTop={1}>
           <Text bold>📋 Recent Tasks:</Text>
-          <Box
-            flexDirection="column"
-            marginLeft={2}
-          >
+          <Box flexDirection="column" marginLeft={2}>
             {tasks.slice(0, 3).map((task) => (
-              <Box
-                key={task.id}
-                marginBottom={0}
-              >
+              <Box key={task.id} marginBottom={0}>
                 <Text>
                   {task.status === 'completed'
                     ? '✅'
@@ -293,10 +264,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
   );
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header - starts at very top */}
       {showHeader && (
         <Header
@@ -308,11 +276,7 @@ export const SwarmDashboard: React.FC<SwarmDashboardProps> = ({
       )}
 
       {/* Main content with more spacing */}
-      <Box
-        flexGrow={1}
-        paddingX={2}
-        paddingY={1}
-      >
+      <Box flexGrow={1} paddingX={2} paddingY={1}>
         {swarmStatus.status === 'initializing' ? (
           <Box
             flexDirection="column"

@@ -46,7 +46,7 @@ class MCPServerTester {
         __dirname,
         '..',
         'bin',
-        'ruv-swarm-mcp-enhanced.js',
+        'ruv-swarm-mcp-enhanced.js'
       );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -88,8 +88,8 @@ class MCPServerTester {
           if (hasAnsiEscape) {
             reject(
               new Error(
-                'ANSI escape codes found in stdout - this breaks JSON-RPC',
-              ),
+                'ANSI escape codes found in stdout - this breaks JSON-RPC'
+              )
             );
           } else {
             if (stdoutData.trim()) {
@@ -118,7 +118,7 @@ class MCPServerTester {
         __dirname,
         '..',
         'bin',
-        'ruv-swarm-mcp-enhanced.js',
+        'ruv-swarm-mcp-enhanced.js'
       );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -185,14 +185,14 @@ class MCPServerTester {
 
             if (initResponse.error) {
               reject(
-                new Error(`Initialize failed: ${initResponse.error.message}`),
+                new Error(`Initialize failed: ${initResponse.error.message}`)
               );
               return;
             }
 
             if (!notificationResponse) {
               reject(
-                new Error('No response to notifications/initialized request'),
+                new Error('No response to notifications/initialized request')
               );
               return;
             }
@@ -204,8 +204,8 @@ class MCPServerTester {
             ) {
               reject(
                 new Error(
-                  'notifications/initialized still returns "Method not found" error',
-                ),
+                  'notifications/initialized still returns "Method not found" error'
+                )
               );
               return;
             }
@@ -233,7 +233,7 @@ class MCPServerTester {
         __dirname,
         '..',
         'bin',
-        'ruv-swarm-mcp-enhanced.js',
+        'ruv-swarm-mcp-enhanced.js'
       );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -257,8 +257,8 @@ class MCPServerTester {
             } catch (parseError) {
               reject(
                 new Error(
-                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`,
-                ),
+                  `JSON parse error: ${parseError.message}. Line: ${line.substring(0, 100)}`
+                )
               );
               return;
             }
@@ -329,7 +329,7 @@ class MCPServerTester {
         __dirname,
         '..',
         'bin',
-        'ruv-swarm-mcp-enhanced.js',
+        'ruv-swarm-mcp-enhanced.js'
       );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -383,8 +383,8 @@ class MCPServerTester {
                 if (responseCount < 5) {
                   reject(
                     new Error(
-                      `Expected 5 responses, got ${responseCount} - server may have timed out`,
-                    ),
+                      `Expected 5 responses, got ${responseCount} - server may have timed out`
+                    )
                   );
                 } else {
                   resolve();
@@ -415,7 +415,7 @@ class MCPServerTester {
         __dirname,
         '..',
         'bin',
-        'ruv-swarm-mcp-enhanced.js',
+        'ruv-swarm-mcp-enhanced.js'
       );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -468,8 +468,8 @@ class MCPServerTester {
             if (errorResponse.error.code !== -32601) {
               reject(
                 new Error(
-                  `Expected error code -32601, got ${errorResponse.error.code}`,
-                ),
+                  `Expected error code -32601, got ${errorResponse.error.code}`
+                )
               );
               return;
             }
@@ -483,8 +483,8 @@ class MCPServerTester {
             ) {
               reject(
                 new Error(
-                  'Error response should include helpful information about supported methods',
-                ),
+                  'Error response should include helpful information about supported methods'
+                )
               );
               return;
             }
@@ -512,7 +512,7 @@ class MCPServerTester {
         __dirname,
         '..',
         'bin',
-        'ruv-swarm-mcp-enhanced.js',
+        'ruv-swarm-mcp-enhanced.js'
       );
       const server = spawn('node', [serverPath], {
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -593,22 +593,22 @@ class MCPServerTester {
 
   async runAllTests() {
     await this.runTest('Server Startup Without ANSI Codes', () =>
-      this.testServerStartup(),
+      this.testServerStartup()
     );
     await this.runTest('notifications/initialized Handling', () =>
-      this.testNotificationsInitialized(),
+      this.testNotificationsInitialized()
     );
     await this.runTest('JSON Parsing with stderr Output', () =>
-      this.testJsonParsingWithStderr(),
+      this.testJsonParsingWithStderr()
     );
     await this.runTest('Connection Stability', () =>
-      this.testConnectionStability(),
+      this.testConnectionStability()
     );
     await this.runTest('Enhanced Error Handling', () =>
-      this.testErrorHandling(),
+      this.testErrorHandling()
     );
     await this.runTest('Resource Management', () =>
-      this.testResourceManagement(),
+      this.testResourceManagement()
     );
 
     if (this.results.failed > 0) {

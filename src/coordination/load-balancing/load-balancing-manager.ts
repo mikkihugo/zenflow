@@ -127,23 +127,23 @@ export class LoadBalancingManager extends EventEmitter {
     // Initialize algorithms
     this.algorithms.set(
       LoadBalancingAlgorithm.WEIGHTED_ROUND_ROBIN,
-      new WeightedRoundRobinAlgorithm(),
+      new WeightedRoundRobinAlgorithm()
     );
     this.algorithms.set(
       LoadBalancingAlgorithm.LEAST_CONNECTIONS,
-      new LeastConnectionsAlgorithm(),
+      new LeastConnectionsAlgorithm()
     );
     this.algorithms.set(
       LoadBalancingAlgorithm.RESOURCE_AWARE,
-      new ResourceAwareAlgorithm(),
+      new ResourceAwareAlgorithm()
     );
     this.algorithms.set(
       LoadBalancingAlgorithm.ML_PREDICTIVE,
-      new MLPredictiveAlgorithm(),
+      new MLPredictiveAlgorithm()
     );
     this.algorithms.set(
       LoadBalancingAlgorithm.ADAPTIVE_LEARNING,
-      new AdaptiveLearningAlgorithm(),
+      new AdaptiveLearningAlgorithm()
     );
 
     // Set current algorithm
@@ -184,7 +184,7 @@ export class LoadBalancingManager extends EventEmitter {
       'emergency:activated',
       (type: string, severity: string) => {
         this.emit('emergency', { type, severity, timestamp: new Date() });
-      },
+      }
     );
   }
 
@@ -198,7 +198,7 @@ export class LoadBalancingManager extends EventEmitter {
 
     // Start health checking
     await this.healthChecker.startHealthChecks(
-      Array.from(this.agents.values()),
+      Array.from(this.agents.values())
     );
 
     // Start monitoring
@@ -206,7 +206,7 @@ export class LoadBalancingManager extends EventEmitter {
 
     // Initialize routing engine
     await this.routingEngine.updateRoutingTable(
-      Array.from(this.agents.values()),
+      Array.from(this.agents.values())
     );
 
     this.emit('started');
@@ -240,12 +240,12 @@ export class LoadBalancingManager extends EventEmitter {
     // Initialize capacity tracking
     await this.capacityManager.updateCapacity(
       agent.id,
-      this.createInitialMetrics(),
+      this.createInitialMetrics()
     );
 
     // Update routing table
     await this.routingEngine.updateRoutingTable(
-      Array.from(this.agents.values()),
+      Array.from(this.agents.values())
     );
 
     // Start health checking for new agent
@@ -276,13 +276,13 @@ export class LoadBalancingManager extends EventEmitter {
     await this.healthChecker.stopHealthChecks();
     if (this.isRunning && this.agents.size > 0) {
       await this.healthChecker.startHealthChecks(
-        Array.from(this.agents.values()),
+        Array.from(this.agents.values())
       );
     }
 
     // Update routing table
     await this.routingEngine.updateRoutingTable(
-      Array.from(this.agents.values()),
+      Array.from(this.agents.values())
     );
 
     // Clean up metrics history
@@ -303,7 +303,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   public async routeTask(task: Task): Promise<RoutingResult> {
     const availableAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY,
+      (agent) => agent.status === AgentStatus.HEALTHY
     );
 
     if (availableAgents.length === 0) {
@@ -323,13 +323,13 @@ export class LoadBalancingManager extends EventEmitter {
     const result = await this.currentAlgorithm.selectAgent(
       task,
       availableAgents,
-      metricsMap,
+      metricsMap
     );
 
     // Update capacity tracking
     await this.capacityManager.updateCapacity(
       result?.selectedAgent?.id,
-      this.createTaskMetrics(task),
+      this.createTaskMetrics(task)
     );
 
     // Notify observers
@@ -353,7 +353,7 @@ export class LoadBalancingManager extends EventEmitter {
     taskId: string,
     agentId: string,
     duration: number,
-    success: boolean,
+    success: boolean
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
@@ -372,7 +372,7 @@ export class LoadBalancingManager extends EventEmitter {
         agentId,
         task,
         duration,
-        success,
+        success
       );
     }
 
@@ -391,7 +391,7 @@ export class LoadBalancingManager extends EventEmitter {
    * @param algorithm
    */
   public async switchAlgorithm(
-    algorithm: LoadBalancingAlgorithm,
+    algorithm: LoadBalancingAlgorithm
   ): Promise<void> {
     const newAlgorithm = this.algorithms.get(algorithm);
     if (!newAlgorithm) {
@@ -412,7 +412,7 @@ export class LoadBalancingManager extends EventEmitter {
       }
       await this.currentAlgorithm.updateWeights(
         Array.from(this.agents.values()),
-        metricsMap,
+        metricsMap
       );
     }
 
@@ -425,7 +425,7 @@ export class LoadBalancingManager extends EventEmitter {
   public getStatistics(): Record<string, unknown> {
     const totalAgents = this.agents.size;
     const healthyAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY,
+      (agent) => agent.status === AgentStatus.HEALTHY
     ).length;
 
     const avgLoad = this.calculateAverageLoad();
@@ -451,7 +451,7 @@ export class LoadBalancingManager extends EventEmitter {
    * @param newConfig
    */
   public async updateConfiguration(
-    newConfig: Partial<LoadBalancingConfig>,
+    newConfig: Partial<LoadBalancingConfig>
   ): Promise<void> {
     this.config = { ...this.config, ...newConfig };
 
@@ -501,7 +501,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   private async handleAgentFailure(
     agentId: string,
-    error: Error,
+    error: Error
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) return;
@@ -541,7 +541,7 @@ export class LoadBalancingManager extends EventEmitter {
 
     // Update routing table
     await this.routingEngine.updateRoutingTable(
-      Array.from(this.agents.values()),
+      Array.from(this.agents.values())
     );
 
     this.emit('agent:recovered', agentId);
@@ -621,7 +621,7 @@ export class LoadBalancingManager extends EventEmitter {
       if (this.currentAlgorithm.updateWeights) {
         await this.currentAlgorithm.updateWeights(
           Array.from(this.agents.values()),
-          metricsMap,
+          metricsMap
         );
       }
 
@@ -637,7 +637,7 @@ export class LoadBalancingManager extends EventEmitter {
    */
   private async checkEmergencyConditions(): Promise<void> {
     const healthyAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === AgentStatus.HEALTHY,
+      (agent) => agent.status === AgentStatus.HEALTHY
     ).length;
 
     const totalAgents = this.agents.size;
@@ -646,7 +646,7 @@ export class LoadBalancingManager extends EventEmitter {
     if (healthyPercentage < 0.3) {
       await this.emergencyHandler.handleEmergency(
         'low_availability',
-        'critical',
+        'critical'
       );
     } else if (healthyPercentage < 0.5) {
       await this.emergencyHandler.handleEmergency('low_availability', 'high');
@@ -655,7 +655,7 @@ export class LoadBalancingManager extends EventEmitter {
 
   // Helper methods
   private mergeConfig(
-    config: Partial<LoadBalancingConfig>,
+    config: Partial<LoadBalancingConfig>
   ): LoadBalancingConfig {
     return {
       algorithm:
@@ -725,7 +725,7 @@ export class LoadBalancingManager extends EventEmitter {
 
   private createCompletionMetrics(
     duration: number,
-    success: boolean,
+    success: boolean
   ): LoadMetrics {
     return {
       timestamp: new Date(),

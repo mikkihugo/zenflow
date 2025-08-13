@@ -15,16 +15,18 @@ function calculateCorrectLoggerPath(filePath) {
 
   if (depth === 0) {
     return './core/logger'; // Same level as core
-  } else if (depth === 1) {
-    return '../core/logger'; // One level deep
-  } else {
-    return '../'.repeat(depth) + 'core/logger'; // Multiple levels deep
   }
+  if (depth === 1) {
+    return '../core/logger'; // One level deep
+  }
+  return '../'.repeat(depth) + 'core/logger'; // Multiple levels deep
 }
 
 function getAllTSFiles() {
   try {
-    const result = execSync('find src -name "*.ts" -o -name "*.tsx"', { encoding: 'utf8' });
+    const result = execSync('find src -name "*.ts" -o -name "*.tsx"', {
+      encoding: 'utf8',
+    });
     return result
       .trim()
       .split('\n')
@@ -75,7 +77,9 @@ function fixLoggerImport(filePath) {
 
     if (fixed) {
       fs.writeFileSync(filePath, content);
-      console.log(`✅ ${path.relative('.', filePath)}: ${fixCount} fixes → ${correctPath}`);
+      console.log(
+        `✅ ${path.relative('.', filePath)}: ${fixCount} fixes → ${correctPath}`
+      );
       return fixCount;
     }
 

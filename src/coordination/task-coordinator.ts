@@ -69,7 +69,7 @@ export class TaskCoordinator {
    */
   async initializeSPARCIntegration(
     sparcBridge: DatabaseSPARCBridge,
-    sparcSwarm: SPARCSwarmCoordinator,
+    sparcSwarm: SPARCSwarmCoordinator
   ): Promise<void> {
     this.sparcBridge = sparcBridge;
     this.sparcSwarm = sparcSwarm;
@@ -118,7 +118,7 @@ export class TaskCoordinator {
   private async executeWithSPARC(
     config: TaskConfig,
     _startTime: number,
-    taskId: string,
+    taskId: string
   ): Promise<TaskResult> {
     if (!(this.sparcBridge && this.sparcSwarm)) {
       throw new Error('SPARC integration not initialized');
@@ -131,11 +131,11 @@ export class TaskCoordinator {
       // Use existing document
       if (config?.source_document?.type === 'feature') {
         assignmentId = await this.sparcBridge.assignFeatureToSparcs(
-          config?.source_document,
+          config?.source_document
         );
       } else {
         assignmentId = await this.sparcBridge.assignTaskToSparcs(
-          config?.source_document,
+          config?.source_document
         );
       }
     } else {
@@ -155,7 +155,7 @@ export class TaskCoordinator {
       tools_used: ['sparc-methodology'],
       sparc_task_id: result?.sparcTaskId,
       implementation_artifacts: Object.values(
-        result?.artifacts,
+        result?.artifacts
       ).flat() as string[],
       methodology_applied: 'sparc',
     };
@@ -174,7 +174,7 @@ export class TaskCoordinator {
   private async executeDirectly(
     config: TaskConfig,
     startTime: number,
-    taskId: string,
+    taskId: string
   ): Promise<TaskResult> {
     // Determine optimal agent strategy
     const agentStrategy = this.selectAgentStrategy(config);
@@ -182,7 +182,7 @@ export class TaskCoordinator {
     // Prepare task execution context
     const executionContext = this.prepareExecutionContext(
       config,
-      agentStrategy,
+      agentStrategy
     );
 
     // Execute with appropriate agent
@@ -226,7 +226,7 @@ export class TaskCoordinator {
    * @param document
    */
   private isComplexDocument(
-    document: FeatureDocumentEntity | TaskDocumentEntity,
+    document: FeatureDocumentEntity | TaskDocumentEntity
   ): boolean {
     return (
       ('acceptance_criteria' in document &&
@@ -290,7 +290,7 @@ export class TaskCoordinator {
    *
    * @param assignmentId
    */
-  private async waitForSPARCCompletion(assignmentId: string): Promise<any> {
+  private async waitForSPARCCompletion(assignmentId: string): Promise<unknown> {
     // In a real implementation, this would use events/promises
     // For now, return a mock result
     return new Promise((resolve) => {
@@ -377,7 +377,7 @@ export class TaskCoordinator {
    */
   private prepareExecutionContext(
     config: TaskConfig,
-    strategy: AgentStrategy,
+    strategy: AgentStrategy
   ): ExecutionContext {
     let enhancedPrompt = config?.prompt;
 
@@ -415,7 +415,7 @@ export class TaskCoordinator {
    * @param context
    */
   private async executeWithAgent(
-    context: ExecutionContext,
+    context: ExecutionContext
   ): Promise<{ output: string }> {
     // Track active sub-agent
     this.activeSubAgents.add(context.agent_strategy.agent_name);
@@ -559,7 +559,7 @@ export async function executeTask(config: TaskConfig): Promise<TaskResult> {
  * @example
  */
 export async function executeBatchTasks(
-  configs: TaskConfig[],
+  configs: TaskConfig[]
 ): Promise<TaskResult[]> {
   const taskCoordinator = TaskCoordinator.getInstance();
 

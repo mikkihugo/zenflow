@@ -69,12 +69,12 @@ interface BackendInterface {
   store(
     key: string,
     value: JSONValue,
-    namespace?: string,
+    namespace?: string
   ): Promise<StorageResult>;
   retrieve(key: string, namespace?: string): Promise<JSONValue | null>;
   search(
     pattern: string,
-    namespace?: string,
+    namespace?: string
   ): Promise<Record<string, JSONValue>>;
   delete(key: string, namespace?: string): Promise<boolean>;
   listNamespaces(): Promise<string[]>;
@@ -106,7 +106,7 @@ class LanceDBBackend implements BackendInterface {
           vectorSize: this.config.lancedb?.vectorDimension || 384,
           metricType: 'cosine',
         },
-      },
+      }
     );
 
     this.vectorDAO = await createDao(
@@ -115,7 +115,7 @@ class LanceDBBackend implements BackendInterface {
       {
         database: `${this.config.path}/lancedb`,
         options: this.config.lancedb,
-      },
+      }
     );
 
     logger.info('LanceDB backend initialized with DAL');
@@ -124,7 +124,7 @@ class LanceDBBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -165,7 +165,7 @@ class LanceDBBackend implements BackendInterface {
 
   async retrieve(
     key: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<JSONValue | null> {
     try {
       // Use findById instead of bulk vector operations for retrieval
@@ -185,7 +185,7 @@ class LanceDBBackend implements BackendInterface {
 
   async search(
     pattern: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<Record<string, JSONValue>> {
     const results: Record<string, JSONValue> = {};
 
@@ -259,7 +259,7 @@ class LanceDBBackend implements BackendInterface {
  * @example
  */
 class SQLiteBackend implements BackendInterface {
-  private db?: any;
+  private db?: unknown;
   private dbPath: string;
   private config: MemoryConfig;
 
@@ -314,7 +314,7 @@ class SQLiteBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -335,7 +335,7 @@ class SQLiteBackend implements BackendInterface {
         serializedValue,
         valueType,
         timestamp,
-        size,
+        size
       );
 
       return {
@@ -355,7 +355,7 @@ class SQLiteBackend implements BackendInterface {
 
   async retrieve(
     key: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<JSONValue | null> {
     try {
       const stmt = this.db.prepare(`
@@ -376,7 +376,7 @@ class SQLiteBackend implements BackendInterface {
 
   async search(
     pattern: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<Record<string, JSONValue>> {
     const results: Record<string, JSONValue> = {};
     const searchPattern = pattern.replace('*', '%');
@@ -427,7 +427,7 @@ class SQLiteBackend implements BackendInterface {
       `);
 
       const rows = stmt.all();
-      return rows.map((row: any) => row.namespace);
+      return rows.map((row: unknown) => row.namespace);
     } catch (error) {
       logger.error('SQLite listNamespaces error:', error);
       return [];
@@ -437,10 +437,10 @@ class SQLiteBackend implements BackendInterface {
   async getStats(): Promise<BackendStats> {
     try {
       const countStmt = this.db.prepare(
-        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM unified_memory',
+        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM unified_memory'
       );
       const nsStmt = this.db.prepare(
-        'SELECT COUNT(DISTINCT namespace) as namespaces FROM unified_memory',
+        'SELECT COUNT(DISTINCT namespace) as namespaces FROM unified_memory'
       );
 
       const countResult = countStmt.get();
@@ -506,7 +506,7 @@ class JSONBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -537,7 +537,7 @@ class JSONBackend implements BackendInterface {
 
   async retrieve(
     key: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<JSONValue | null> {
     const fullKey = `${namespace}:${key}`;
     const entry = this.data.get(fullKey);
@@ -546,7 +546,7 @@ class JSONBackend implements BackendInterface {
 
   async search(
     pattern: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<Record<string, JSONValue>> {
     const results: Record<string, JSONValue> = {};
     const prefix = `${namespace}:`;
@@ -606,13 +606,13 @@ class JSONBackend implements BackendInterface {
       const stats = await this.getStats();
       if (stats.size > this.config.maxSize) {
         throw new Error(
-          `Storage size ${stats.size} exceeds limit ${this.config.maxSize}`,
+          `Storage size ${stats.size} exceeds limit ${this.config.maxSize}`
         );
       }
     }
 
     // Convert Map to object for JSON serialization
-    const obj: Record<string, any> = {};
+    const obj: Record<string, unknown> = {};
     for (const [key, value] of this.data.entries()) {
       obj[key] = value;
     }
@@ -658,7 +658,7 @@ export class MemorySystem extends EventEmitter {
     if (this.initialized) return;
 
     logger.info(
-      `Initializing unified memory system with ${this.config.backend} backend`,
+      `Initializing unified memory system with ${this.config.backend} backend`
     );
 
     try {
@@ -676,7 +676,7 @@ export class MemorySystem extends EventEmitter {
   async store(
     key: string,
     value: JSONValue,
-    namespace?: string,
+    namespace?: string
   ): Promise<StorageResult> {
     await this.ensureInitialized();
 
@@ -708,7 +708,7 @@ export class MemorySystem extends EventEmitter {
 
   async search(
     pattern: string,
-    namespace?: string,
+    namespace?: string
   ): Promise<Record<string, JSONValue>> {
     await this.ensureInitialized();
 
@@ -762,8 +762,8 @@ export class MemorySystem extends EventEmitter {
   async storeDocument(
     type: string,
     id: string,
-    document: any,
-    namespace: string = 'documents',
+    document: unknown,
+    namespace: string = 'documents'
   ): Promise<StorageResult> {
     const key = `${type}:${id}`;
     return this.store(
@@ -774,49 +774,49 @@ export class MemorySystem extends EventEmitter {
         id,
         updatedAt: new Date().toISOString(),
       },
-      namespace,
+      namespace
     );
   }
 
   async retrieveDocument(
     type: string,
     id: string,
-    namespace: string = 'documents',
-  ): Promise<any> {
+    namespace: string = 'documents'
+  ): Promise<unknown> {
     const key = `${type}:${id}`;
     return this.retrieve(key, namespace);
   }
 
   async searchDocuments(
     type: string,
-    namespace: string = 'documents',
-  ): Promise<Record<string, any>> {
+    namespace: string = 'documents'
+  ): Promise<Record<string, unknown>> {
     const pattern = `${type}:*`;
     return this.search(pattern, namespace);
   }
 
   // Workflow-specific helpers
-  async storeVision(id: string, vision: any): Promise<StorageResult> {
+  async storeVision(id: string, vision: unknown): Promise<StorageResult> {
     return this.storeDocument('vision', id, vision);
   }
 
-  async storeADR(id: string, adr: any): Promise<StorageResult> {
+  async storeADR(id: string, adr: unknown): Promise<StorageResult> {
     return this.storeDocument('adr', id, adr);
   }
 
-  async storePRD(id: string, prd: any): Promise<StorageResult> {
+  async storePRD(id: string, prd: unknown): Promise<StorageResult> {
     return this.storeDocument('prd', id, prd);
   }
 
-  async storeEpic(id: string, epic: any): Promise<StorageResult> {
+  async storeEpic(id: string, epic: unknown): Promise<StorageResult> {
     return this.storeDocument('epic', id, epic);
   }
 
-  async storeFeature(id: string, feature: any): Promise<StorageResult> {
+  async storeFeature(id: string, feature: unknown): Promise<StorageResult> {
     return this.storeDocument('feature', id, feature);
   }
 
-  async storeTask(id: string, task: any): Promise<StorageResult> {
+  async storeTask(id: string, task: unknown): Promise<StorageResult> {
     return this.storeDocument('task', id, task);
   }
 }

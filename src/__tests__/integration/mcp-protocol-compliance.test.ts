@@ -47,7 +47,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
     it('should respond to health check with correct format', async () => {
       const response = await networkHelper.httpGet(
-        `http://localhost:${TEST_PORT}/health`,
+        `http://localhost:${TEST_PORT}/health`
       );
 
       expect(response?.status).toBe(200);
@@ -61,7 +61,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
     it('should return capabilities in MCP format', async () => {
       const response = await networkHelper.httpGet(
-        `http://localhost:${TEST_PORT}/capabilities`,
+        `http://localhost:${TEST_PORT}/capabilities`
       );
 
       expect(response?.status).toBe(200);
@@ -89,7 +89,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
       const response = await networkHelper.httpPost(
         `http://localhost:${TEST_PORT}/mcp`,
-        mcpRequest,
+        mcpRequest
       );
 
       expect(response?.status).toBe(200);
@@ -114,7 +114,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
       const response = await networkHelper.httpPost(
         `http://localhost:${TEST_PORT}/mcp`,
-        invalidRequest,
+        invalidRequest
       );
 
       expect(response?.status).toBe(200); // JSON-RPC errors return 200 with error in body
@@ -144,7 +144,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
       const response = await networkHelper.httpPost(
         `http://localhost:${TEST_PORT}/mcp`,
-        toolCallRequest,
+        toolCallRequest
       );
 
       expect(response?.status).toBe(200);
@@ -182,7 +182,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
       const responseStream = await networkHelper.httpPostStream(
         `http://localhost:${TEST_PORT}/mcp`,
-        streamingRequest,
+        streamingRequest
       );
 
       const chunks: unknown[] = [];
@@ -231,8 +231,8 @@ describe('MCP Protocol Compliance Integration Tests', () => {
 
       const responses = await Promise.all(
         concurrentRequests?.map((req) =>
-          networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, req),
-        ),
+          networkHelper.httpPost(`http://localhost:${TEST_PORT}/mcp`, req)
+        )
       );
 
       const totalTime = Date.now() - startTime;
@@ -255,16 +255,16 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           Origin: 'http://localhost:3000',
           'Access-Control-Request-Method': 'POST',
           'Access-Control-Request-Headers': 'Content-Type',
-        },
+        }
       );
 
       expect(corsResponse?.status).toBe(200);
       expect(corsResponse?.headers?.['access-control-allow-origin']).toBe('*');
       expect(corsResponse?.headers?.['access-control-allow-methods']).toContain(
-        'POST',
+        'POST'
       );
       expect(corsResponse?.headers?.['access-control-allow-headers']).toContain(
-        'Content-Type',
+        'Content-Type'
       );
     });
   });
@@ -293,7 +293,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const response = await stdioMcpServer.processMessage(
-        JSON.stringify(request),
+        JSON.stringify(request)
       );
       const parsedResponse = JSON.parse(response);
 
@@ -328,7 +328,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const response = await stdioMcpServer.processMessage(
-        JSON.stringify(swarmInitRequest),
+        JSON.stringify(swarmInitRequest)
       );
       const parsedResponse = JSON.parse(response);
 
@@ -379,13 +379,13 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const spawnResponse = await stdioMcpServer.processMessage(
-        JSON.stringify(spawnRequest),
+        JSON.stringify(spawnRequest)
       );
       const parsedSpawnResponse = JSON.parse(spawnResponse);
 
       expect(parsedSpawnResponse?.result?.isError).toBe(false);
       expect(parsedSpawnResponse?.result?.content?.[0]?.text).toContain(
-        'Agent spawned successfully',
+        'Agent spawned successfully'
       );
 
       // Check swarm status to verify session persistence
@@ -400,12 +400,12 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const statusResponse = await stdioMcpServer.processMessage(
-        JSON.stringify(statusRequest),
+        JSON.stringify(statusRequest)
       );
       const parsedStatusResponse = JSON.parse(statusResponse);
 
       expect(parsedStatusResponse?.result?.content?.[0]?.text).toContain(
-        'test-coordinator',
+        'test-coordinator'
       );
     });
 
@@ -429,7 +429,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const storeResponse = await stdioMcpServer.processMessage(
-        JSON.stringify(memoryStoreRequest),
+        JSON.stringify(memoryStoreRequest)
       );
       const parsedStoreResponse = JSON.parse(storeResponse);
 
@@ -450,14 +450,14 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const retrieveResponse = await stdioMcpServer.processMessage(
-        JSON.stringify(memoryRetrieveRequest),
+        JSON.stringify(memoryRetrieveRequest)
       );
       const parsedRetrieveResponse = JSON.parse(retrieveResponse);
 
       expect(parsedRetrieveResponse?.result?.isError).toBe(false);
 
       const retrievedData = JSON.parse(
-        parsedRetrieveResponse?.result?.content?.[0]?.text,
+        parsedRetrieveResponse?.result?.content?.[0]?.text
       );
       expect(retrievedData).toMatchObject({
         sessionId: 'test-session-123',
@@ -476,7 +476,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
             name: 'mcp__zen-swarm__swarm_init',
             arguments: { topology: 'hierarchical', maxAgents: 4 },
           },
-        }),
+        })
       );
 
       // Spawn multiple agents
@@ -490,7 +490,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
               name: 'mcp__zen-swarm__agent_spawn',
               arguments: { type: 'coordinator', name: 'main-coord' },
             },
-          }),
+          })
         ),
         stdioMcpServer.processMessage(
           JSON.stringify({
@@ -501,7 +501,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
               name: 'mcp__zen-swarm__agent_spawn',
               arguments: { type: 'worker', name: 'worker-1' },
             },
-          }),
+          })
         ),
       ]);
 
@@ -521,13 +521,13 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const orchestrateResponse = await stdioMcpServer.processMessage(
-        JSON.stringify(orchestrateRequest),
+        JSON.stringify(orchestrateRequest)
       );
       const parsedOrchResponse = JSON.parse(orchestrateResponse);
 
       expect(parsedOrchResponse?.result?.isError).toBe(false);
       expect(parsedOrchResponse?.result?.content?.[0]?.text).toContain(
-        'Task orchestration initiated',
+        'Task orchestration initiated'
       );
     });
 
@@ -546,7 +546,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
       };
 
       const response = await stdioMcpServer.processMessage(
-        JSON.stringify(invalidRequest),
+        JSON.stringify(invalidRequest)
       );
       const parsedResponse = JSON.parse(response);
 
@@ -584,7 +584,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
               name: 'system_info',
               arguments: { detailed: true },
             },
-          },
+          }
         );
 
         expect(httpSwarmInit.status).toBe(200);
@@ -603,7 +603,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
                 contextFromHttp: true,
               },
             },
-          }),
+          })
         );
 
         const parsedStdioResponse = JSON.parse(stdioResponse);
@@ -620,12 +620,12 @@ describe('MCP Protocol Compliance Integration Tests', () => {
               name: 'project_status',
               arguments: {},
             },
-          },
+          }
         );
 
         expect(statusCheck.status).toBe(200);
         expect(statusCheck.data.result.content[0]?.text).toContain(
-          'Swarm coordination active',
+          'Swarm coordination active'
         );
       } finally {
         await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
@@ -657,7 +657,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
               value: { crossProtocolTest: true, timestamp: Date.now() },
             },
           },
-        }),
+        })
       );
 
       // Start HTTP MCP with same session context
@@ -683,12 +683,12 @@ describe('MCP Protocol Compliance Integration Tests', () => {
                 sessionKey: `session:${sessionId}:data`,
               },
             },
-          },
+          }
         );
 
         expect(httpResponse?.status).toBe(200);
         expect(httpResponse?.data?.result?.content?.[0]?.text).toContain(
-          'crossProtocolTest',
+          'crossProtocolTest'
         );
       } finally {
         await Promise.all([httpMcpServer.stop(), stdioMcpServer.shutdown()]);
@@ -720,7 +720,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
                 name: 'system_info',
                 arguments: { detailed: false },
               },
-            }),
+            })
           );
 
           const batchResponses = await Promise.all(batchRequests);
@@ -729,7 +729,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
           results?.push(batchTime);
 
           // All requests in batch should succeed
-          batchResponses?.forEach((response: any) => {
+          batchResponses?.forEach((response: unknown) => {
             expect(response?.status).toBe(200);
             expect(response?.data?.result).toBeDefined();
           });
@@ -774,7 +774,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
                   value: { iteration: i, data: new Array(1000).fill('test') },
                 },
               },
-            }),
+            })
           );
 
           // Periodic cleanup simulation
@@ -788,7 +788,7 @@ describe('MCP Protocol Compliance Integration Tests', () => {
                   name: 'mcp__zen-swarm__swarm_status',
                   arguments: { cleanup: true },
                 },
-              }),
+              })
             );
           }
         }

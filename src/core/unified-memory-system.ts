@@ -24,11 +24,11 @@ export class MemorySystem {
     // Initialize memory system
   }
 
-  async store(key: string, value: any): Promise<void> {
+  async store(key: string, value: unknown): Promise<void> {
     this.storage.set(key, value);
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve(key: string): Promise<unknown> {
     return this.storage.get(key);
   }
 

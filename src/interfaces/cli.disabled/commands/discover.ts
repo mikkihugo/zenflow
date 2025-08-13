@@ -59,7 +59,7 @@ export class DiscoverCommand extends BaseCommand {
     console.log(`Progress: ${stage} - ${progress.toFixed(2)}%`);
   }
 
-  private async askUser(question: any): Promise<any> {
+  private async askUser(question: unknown): Promise<unknown> {
     console.log(`\n--- Human Validation Required ---`);
     console.log(`Question: ${question.question}`);
     if (question.options) {

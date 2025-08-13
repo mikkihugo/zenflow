@@ -250,7 +250,7 @@ export class MCPToAPIConverter {
    * Extract MCP tool definitions from a file
    */
   private async extractMCPToolsFromFile(
-    filePath: string,
+    filePath: string
   ): Promise<MCPToolDefinition[]> {
     const content = await readFile(filePath, 'utf-8');
     const tools: MCPToolDefinition[] = [];
@@ -300,7 +300,7 @@ export class MCPToAPIConverter {
       if (existingTool) {
         existingTool.handler = this.extractFunctionCode(
           content,
-          handlerMatch.index,
+          handlerMatch.index
         );
       }
     }
@@ -314,7 +314,7 @@ export class MCPToAPIConverter {
   private parseToolDefinition(
     match: RegExpExecArray,
     content: string,
-    filePath: string,
+    filePath: string
   ): MCPToolDefinition | null {
     try {
       // This is a simplified implementation
@@ -352,7 +352,7 @@ export class MCPToAPIConverter {
   private findHandlerForTool(content: string, toolName: string): string {
     const handlerPattern = new RegExp(
       `(export\\s+(?:async\\s+)?function\\s+(?:handle_${toolName}|execute_${toolName}|${toolName}_handler)\\s*\\([^)]*\\)[\\s\\S]*?^})`,
-      'm',
+      'm'
     );
 
     const match = handlerPattern.exec(content);
@@ -403,7 +403,7 @@ export class MCPToAPIConverter {
    * Generate API endpoint from MCP tool
    */
   private async generateAPIFromTool(
-    tool: MCPToolDefinition,
+    tool: MCPToolDefinition
   ): Promise<GeneratedAPI> {
     const endpoint = this.createAPIEndpointDefinition(tool);
     const handler = this.generateAPIHandler(tool, endpoint);
@@ -424,7 +424,7 @@ export class MCPToAPIConverter {
    * Create API endpoint definition from MCP tool
    */
   private createAPIEndpointDefinition(
-    tool: MCPToolDefinition,
+    tool: MCPToolDefinition
   ): APIEndpointDefinition {
     const toolPath = tool.name.replace(/_/g, '-').toLowerCase();
 
@@ -446,7 +446,7 @@ export class MCPToAPIConverter {
    * Determine appropriate HTTP method for the tool
    */
   private determineHTTPMethod(
-    tool: MCPToolDefinition,
+    tool: MCPToolDefinition
   ): 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE' {
     const name = tool.name.toLowerCase();
 
@@ -478,7 +478,7 @@ export class MCPToAPIConverter {
   /**
    * Create request body schema
    */
-  private createRequestBodySchema(tool: MCPToolDefinition): any {
+  private createRequestBodySchema(tool: MCPToolDefinition): unknown {
     if (
       !tool.inputSchema.properties ||
       Object.keys(tool.inputSchema.properties).length === 0
@@ -512,14 +512,14 @@ export class MCPToAPIConverter {
         required: tool.inputSchema.required?.includes(name),
         schema,
         description: (schema as any).description || `Parameter ${name}`,
-      }),
+      })
     );
   }
 
   /**
    * Create response schema
    */
-  private createResponseSchema(tool: MCPToolDefinition): any {
+  private createResponseSchema(tool: MCPToolDefinition): unknown {
     return {
       '200': {
         description: 'Successful operation',
@@ -596,7 +596,7 @@ export class MCPToAPIConverter {
    */
   private generateAPIHandler(
     tool: MCPToolDefinition,
-    endpoint: APIEndpointDefinition,
+    endpoint: APIEndpointDefinition
   ): string {
     const handlerName = `handle${this.toPascalCase(tool.name)}`;
     const importPath = this.getImportPathForTool(tool);
@@ -717,7 +717,7 @@ class ValidationError extends Error {
    */
   private generateAPITypes(
     tool: MCPToolDefinition,
-    endpoint: APIEndpointDefinition,
+    endpoint: APIEndpointDefinition
   ): string {
     return `
 /**
@@ -760,7 +760,7 @@ export interface ${this.toPascalCase(tool.name)}ErrorResponse {
    */
   private generateAPITest(
     tool: MCPToolDefinition,
-    endpoint: APIEndpointDefinition,
+    endpoint: APIEndpointDefinition
   ): string {
     return `
 /**
@@ -824,7 +824,7 @@ describe('${tool.name} API', () => {
    */
   private generateMCPClient(
     tool: MCPToolDefinition,
-    endpoint: APIEndpointDefinition,
+    endpoint: APIEndpointDefinition
   ): string {
     return `
 /**
@@ -858,7 +858,7 @@ export async function handle_${tool.name}(args: unknown): Promise<unknown> {
       endpoint: API_ENDPOINT,
     });
 
-    const requestOptions: any = {
+    const requestOptions: unknown = {
       method: '${endpoint.method}',
       headers: {
         'Content-Type': 'application/json',
@@ -952,7 +952,7 @@ export const MCP_TOOL_HANDLER = handle_${tool.name};
 
   private generateRequestInterface(
     tool: MCPToolDefinition,
-    endpoint: APIEndpointDefinition,
+    endpoint: APIEndpointDefinition
   ): string {
     return this.generateInterfaceFromSchema(tool.inputSchema, '  ');
   }
@@ -1007,7 +1007,7 @@ export const MCP_TOOL_HANDLER = handle_${tool.name};
               (field) => `
     if (args.${field} === undefined) {
       throw new ValidationError('Required field "${field}" is missing');
-    }`,
+    }`
             )
             .join('')
         : '// No required fields'
@@ -1016,7 +1016,7 @@ export const MCP_TOOL_HANDLER = handle_${tool.name};
   }
 
   private generateTestData(tool: MCPToolDefinition): string {
-    const testData: any = {};
+    const testData: unknown = {};
 
     if (tool.inputSchema.properties) {
       for (const [key, schema] of Object.entries(tool.inputSchema.properties)) {
@@ -1027,7 +1027,7 @@ export const MCP_TOOL_HANDLER = handle_${tool.name};
     return JSON.stringify(testData, null, 4);
   }
 
-  private generateTestValue(schema: unknown): any {
+  private generateTestValue(schema: unknown): unknown {
     switch (schema.type) {
       case 'string':
         return 'test-string';
@@ -1081,7 +1081,7 @@ const router = express.Router();
 ${apis
   .map((api) => {
     const tool = this.mcpTools.find((t) =>
-      api.endpoint.operationId.includes(t.name),
+      api.endpoint.operationId.includes(t.name)
     )!;
     return `
 // ${api.endpoint.summary}
@@ -1095,7 +1095,7 @@ export default router;
     await writeFile(
       join(this.config.apiOutputDir, 'router.ts'),
       routerContent,
-      'utf-8',
+      'utf-8'
     );
   }
 
@@ -1145,35 +1145,38 @@ export default router;
     await writeFile(
       join(this.config.apiOutputDir, 'openapi.json'),
       JSON.stringify(spec, null, 2),
-      'utf-8',
+      'utf-8'
     );
   }
 
   private async generateAPITests(apis: GeneratedAPI[]): Promise<void> {
     for (const api of apis) {
       const tool = this.mcpTools.find((t) =>
-        api.endpoint.operationId.includes(t.name),
+        api.endpoint.operationId.includes(t.name)
       )!;
       await writeFile(
         join(this.config.apiOutputDir, `${tool.name}.test.ts`),
         api.tests,
-        'utf-8',
+        'utf-8'
       );
     }
   }
 
   private async generateMCPClients(apis: GeneratedAPI[]): Promise<void> {
-    const clientDir = join(this.config.apiOutputDir, '../mcp-clients') as any as any as any as any;
+    const clientDir = join(
+      this.config.apiOutputDir,
+      '../mcp-clients'
+    ) as any as any as any as any;
     await mkdir(clientDir, { recursive: true });
 
     for (const api of apis) {
       const tool = this.mcpTools.find((t) =>
-        api.endpoint.operationId.includes(t.name),
+        api.endpoint.operationId.includes(t.name)
       )!;
       await writeFile(
         join(clientDir, `${tool.name}-client.ts`),
         api.client,
-        'utf-8',
+        'utf-8'
       );
     }
 
@@ -1186,7 +1189,7 @@ export default router;
 ${apis
   .map((api) => {
     const tool = this.mcpTools.find((t) =>
-      api.endpoint.operationId.includes(t.name),
+      api.endpoint.operationId.includes(t.name)
     )!;
     return `export { MCP_TOOL_DEFINITION as ${tool.name.toUpperCase()}_TOOL, MCP_TOOL_HANDLER as ${tool.name}_handler } from './${tool.name}-client';`;
   })
@@ -1197,7 +1200,7 @@ export const ALL_CONVERTED_TOOLS = [
 ${apis
   .map((api) => {
     const tool = this.mcpTools.find((t) =>
-      api.endpoint.operationId.includes(t.name),
+      api.endpoint.operationId.includes(t.name)
     )!;
     return `  ${tool.name.toUpperCase()}_TOOL`;
   })
@@ -1209,7 +1212,7 @@ export const ALL_CONVERTED_HANDLERS = {
 ${apis
   .map((api) => {
     const tool = this.mcpTools.find((t) =>
-      api.endpoint.operationId.includes(t.name),
+      api.endpoint.operationId.includes(t.name)
     )!;
     return `  '${tool.name}': ${tool.name}_handler`;
   })
@@ -1255,7 +1258,7 @@ This conversion creates an **API-first architecture** where:
 ${apis
   .map((api) => {
     const tool = this.mcpTools.find((t) =>
-      api.endpoint.operationId.includes(t.name),
+      api.endpoint.operationId.includes(t.name)
     )!;
     return `
 ### \`${api.endpoint.method} ${api.endpoint.path}\`
@@ -1330,7 +1333,7 @@ const result = await ${this.mcpTools[0]?.name}_handler({
     await writeFile(
       join(this.config.apiOutputDir, 'README.md'),
       documentation,
-      'utf-8',
+      'utf-8'
     );
   }
 

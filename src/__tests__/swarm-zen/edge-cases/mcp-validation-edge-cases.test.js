@@ -55,7 +55,7 @@ describe('MCP Validation Edge Cases', () => {
       for (const { value, shouldFail } of boundaryValues) {
         if (shouldFail) {
           await expect(
-            mcpTools.benchmark_run({ iterations: value }),
+            mcpTools.benchmark_run({ iterations: value })
           ).rejects.toThrow(/Iterations must be/);
         } else {
           // Should not throw
@@ -80,7 +80,7 @@ describe('MCP Validation Edge Cases', () => {
       for (const value of floatCases) {
         if (value > 1000) {
           await expect(
-            mcpTools.benchmark_run({ iterations: value }),
+            mcpTools.benchmark_run({ iterations: value })
           ).rejects.toThrow();
         } else {
           await mcpTools.benchmark_run({ iterations: value });
@@ -118,7 +118,7 @@ describe('MCP Validation Edge Cases', () => {
             mcpTools.neural_train({
               swarmId: 'test-swarm',
               learningRate: value,
-            }),
+            })
           ).rejects.toThrow(/Learning rate must be/);
         } else {
           await mcpTools.neural_train({
@@ -163,7 +163,7 @@ describe('MCP Validation Edge Cases', () => {
               swarmId: 'test-swarm',
               type: 'neural',
               modelType: value,
-            }),
+            })
           ).rejects.toThrow();
         } else {
           await mcpTools.agent_spawn({
@@ -226,7 +226,7 @@ describe('MCP Validation Edge Cases', () => {
         callCount++;
         // Simulate varying processing times
         await new Promise((resolve) =>
-          setTimeout(resolve, Math.random() * 100),
+          setTimeout(resolve, Math.random() * 100)
         );
         return {
           id: `swarm-${callCount}`,
@@ -242,7 +242,7 @@ describe('MCP Validation Edge Cases', () => {
           mcpTools.swarm_init({
             swarmId: `concurrent-${i}`,
             topology: 'mesh',
-          }),
+          })
         );
       }
 
@@ -276,7 +276,7 @@ describe('MCP Validation Edge Cases', () => {
           mcpTools.agent_spawn({
             swarmId: mockSwarm.id,
             type: 'researcher',
-          }),
+          })
         );
       }
 
@@ -306,7 +306,7 @@ describe('MCP Validation Edge Cases', () => {
 
       // Test various agent counts
       await expect(
-        mcpTools.swarm_init({ topology: 'mesh', maxAgents: 1000 }),
+        mcpTools.swarm_init({ topology: 'mesh', maxAgents: 1000 })
       ).rejects.toThrow(/Memory limit/);
 
       // Should succeed with reasonable limits
@@ -398,14 +398,14 @@ describe('MCP Validation Edge Cases', () => {
 
       // Set a shorter timeout for the test
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Operation timeout')), 100),
+        setTimeout(() => reject(new Error('Operation timeout')), 100)
       );
 
       await expect(
         Promise.race([
           mcpTools.swarm_monitor({ swarmId: 'test-swarm' }),
           timeoutPromise,
-        ]),
+        ])
       ).rejects.toThrow(/timeout/i);
     });
   });
@@ -435,7 +435,7 @@ describe('MCP Validation Edge Cases', () => {
               swarmId: 'test-swarm',
               topology,
             })
-            .catch(() => null), // Ignore errors
+            .catch(() => null) // Ignore errors
         );
       }
 

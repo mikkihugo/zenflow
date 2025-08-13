@@ -24,7 +24,7 @@ export interface SystemStatus {
   components: {
     mcp: { status: string; port: number };
     swarm: { status: string; agents: number };
-    memory: { status: string; usage: any };
+    memory: { status: string; usage: unknown };
     terminal: { status: string; mode: string; active: boolean };
   };
   environment: {
@@ -46,7 +46,7 @@ export class ApiRouteHandler {
   constructor(
     private app: Express,
     private webSocket: WebSocketCoordinator,
-    private config: ApiConfig,
+    private config: ApiConfig
   ) {
     this.setupRoutes();
   }
@@ -107,7 +107,7 @@ export class ApiRouteHandler {
    */
   private async handleSystemStatus(
     _req: Request,
-    res: Response,
+    res: Response
   ): Promise<void> {
     try {
       const status = await this.getSystemStatus();
@@ -192,7 +192,7 @@ export class ApiRouteHandler {
    */
   private async handleGetDocuments(
     _req: Request,
-    res: Response,
+    res: Response
   ): Promise<void> {
     try {
       const documents = await this.getDocuments();
@@ -211,7 +211,7 @@ export class ApiRouteHandler {
    */
   private async handleExecuteCommand(
     req: Request,
-    res: Response,
+    res: Response
   ): Promise<void> {
     try {
       const { command, args = [] } = req.body;
@@ -255,7 +255,7 @@ export class ApiRouteHandler {
     const sessionId = req.headers['x-session-id'] as string;
     const success = this.webSocket.updateSessionPreferences(
       sessionId,
-      req.body,
+      req.body
     );
 
     if (success) {
@@ -319,7 +319,7 @@ export class ApiRouteHandler {
    *
    * @param config
    */
-  private async createSwarm(config: any): Promise<any> {
+  private async createSwarm(config: unknown): Promise<unknown> {
     const swarm = {
       id: `swarm-${Date.now()}`,
       name: config?.name || 'New Swarm',
@@ -367,7 +367,7 @@ export class ApiRouteHandler {
    *
    * @param config
    */
-  private async createTask(config: any): Promise<any> {
+  private async createTask(config: unknown): Promise<unknown> {
     const task = {
       id: `task-${Date.now()}`,
       description: config?.description || 'New Task',
@@ -412,7 +412,7 @@ export class ApiRouteHandler {
    * @param command
    * @param args
    */
-  private async executeCommand(command: string, args: string[]): Promise<any> {
+  private async executeCommand(command: string, args: string[]): Promise<unknown> {
     this.logger.info(`Executing command: ${command}`, { args });
 
     // Mock command execution for demo purposes

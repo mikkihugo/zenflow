@@ -39,7 +39,7 @@ export class LogBasedDeceptionDetector {
    * @param aiResponseText
    */
   async analyzeRecentActivity(
-    aiResponseText: string,
+    aiResponseText: string
   ): Promise<LogAnalysisResult> {
     const result: LogAnalysisResult = {
       toolCallsFound: [],
@@ -56,10 +56,10 @@ export class LogBasedDeceptionDetector {
 
     // Extract actual tool usage from logs
     result.toolCallsFound = this.extractToolCalls(
-      activityLog + aiFixingLog + httpLog,
+      activityLog + aiFixingLog + httpLog
     );
     result.fileOperations = this.extractFileOperations(
-      activityLog + aiFixingLog,
+      activityLog + aiFixingLog
     );
     result.bashCommands = this.extractBashCommands(activityLog + aiFixingLog);
 
@@ -232,7 +232,7 @@ export class LogBasedDeceptionDetector {
       // SANDBAGGING: Claims capabilities without implementation
       if (/I (?:can|will) (?:leverage|use|implement)/i.test(claim)) {
         const hasImplementationTools = result.toolCallsFound.some((tool) =>
-          /(?:Write|Edit|MultiEdit|Bash)/i.test(tool),
+          /(?:Write|Edit|MultiEdit|Bash)/i.test(tool)
         );
 
         if (!hasImplementationTools) {
@@ -313,7 +313,7 @@ export class LogBasedDeceptionDetector {
  * @example
  */
 export async function analyzeAIResponseWithLogs(
-  aiResponse: string,
+  aiResponse: string
 ): Promise<LogAnalysisResult> {
   const detector = new LogBasedDeceptionDetector();
   return await detector.analyzeRecentActivity(aiResponse);

@@ -104,7 +104,7 @@ export const config = {
    * @param section
    */
   getSection<K extends keyof SystemConfiguration>(
-    section: K,
+    section: K
   ): SystemConfiguration[K] {
     return configManager?.getSection(section);
   },
@@ -115,7 +115,7 @@ export const config = {
    * @param path
    * @param value
    */
-  set(path: string, value: any) {
+  set(path: string, value: unknown) {
     return configManager?.update(path, value);
   },
 
@@ -154,7 +154,7 @@ export const config = {
    *
    * @param callback
    */
-  onChange(callback: (event: any) => void) {
+  onChange(callback: (event: unknown) => void) {
     configManager?.on('config:changed', callback);
   },
 
@@ -163,7 +163,7 @@ export const config = {
    *
    * @param callback
    */
-  removeListener(callback: (event: any) => void) {
+  removeListener(callback: (event: unknown) => void) {
     configManager?.off('config:changed', callback);
   },
 
@@ -197,7 +197,7 @@ export const config = {
    *
    * @param options
    */
-  async validateStartup(options?: any) {
+  async validateStartup(options?: unknown) {
     const { runStartupValidation } = await import('./startup-validator.ts');
     return runStartupValidation(options);
   },

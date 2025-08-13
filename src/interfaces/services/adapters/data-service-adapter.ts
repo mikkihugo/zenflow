@@ -284,7 +284,7 @@ export class DataServiceAdapter implements IService {
 
       // Validate configuration
       const isValidConfig = await this.validateConfig(
-        this.config as ServiceConfig,
+        this.config as ServiceConfig
       );
       if (!isValidConfig) {
         throw new Error('Invalid data service adapter configuration');
@@ -307,7 +307,7 @@ export class DataServiceAdapter implements IService {
       if (this.config.documentData?.enabled) {
         this.logger.debug('Initializing DocumentService integration');
         this.documentService = new DocumentService(
-          this.config.documentData.databaseType || 'postgresql',
+          this.config.documentData.databaseType || 'postgresql'
         );
 
         if (this.config.documentData.autoInitialize) {
@@ -338,14 +338,14 @@ export class DataServiceAdapter implements IService {
       this.lifecycleStatus = 'initialized';
       this.emit('initialized');
       this.logger.info(
-        `Data service adapter initialized successfully: ${this.name}`,
+        `Data service adapter initialized successfully: ${this.name}`
       );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
       this.logger.error(
         `Failed to initialize data service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -369,7 +369,7 @@ export class DataServiceAdapter implements IService {
       const dependenciesOk = await this.checkDependencies();
       if (!dependenciesOk) {
         throw new Error(
-          `ServiceDependencyError: ${this.name} - One or more dependencies failed`,
+          `ServiceDependencyError: ${this.name} - One or more dependencies failed`
         );
       }
 
@@ -377,14 +377,14 @@ export class DataServiceAdapter implements IService {
       this.lifecycleStatus = 'running';
       this.emit('started');
       this.logger.info(
-        `Data service adapter started successfully: ${this.name}`,
+        `Data service adapter started successfully: ${this.name}`
       );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
       this.logger.error(
         `Failed to start data service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -410,14 +410,14 @@ export class DataServiceAdapter implements IService {
       this.lifecycleStatus = 'stopped';
       this.emit('stopped');
       this.logger.info(
-        `Data service adapter stopped successfully: ${this.name}`,
+        `Data service adapter stopped successfully: ${this.name}`
       );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
       this.logger.error(
         `Failed to stop data service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -450,12 +450,12 @@ export class DataServiceAdapter implements IService {
 
       this.lifecycleStatus = 'destroyed';
       this.logger.info(
-        `Data service adapter destroyed successfully: ${this.name}`,
+        `Data service adapter destroyed successfully: ${this.name}`
       );
     } catch (error) {
       this.logger.error(
         `Failed to destroy data service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -531,7 +531,7 @@ export class DataServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     const avgLatency =
@@ -618,7 +618,7 @@ export class DataServiceAdapter implements IService {
         if (this.cache.size > maxSize * 1.2) {
           // 20% overage threshold
           this.logger.warn(
-            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`,
+            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`
           );
           this.healthStats.consecutiveFailures++;
           this.healthStats.healthCheckFailures++;
@@ -644,7 +644,7 @@ export class DataServiceAdapter implements IService {
    */
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
     this.logger.info(
-      `Updating configuration for data service adapter: ${this.name}`,
+      `Updating configuration for data service adapter: ${this.name}`
     );
 
     try {
@@ -662,7 +662,7 @@ export class DataServiceAdapter implements IService {
     } catch (error) {
       this.logger.error(
         `Failed to update configuration for ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -678,7 +678,7 @@ export class DataServiceAdapter implements IService {
       // Basic validation
       if (!(config?.name && config?.type)) {
         this.logger.error(
-          'Configuration missing required fields: name or type',
+          'Configuration missing required fields: name or type'
         );
         return false;
       }
@@ -704,7 +704,7 @@ export class DataServiceAdapter implements IService {
           !validDbTypes.includes(dataConfig?.documentData?.databaseType)
         ) {
           this.logger.error(
-            `Invalid database type: ${dataConfig?.documentData?.databaseType}`,
+            `Invalid database type: ${dataConfig?.documentData?.databaseType}`
           );
           return false;
         }
@@ -765,7 +765,7 @@ export class DataServiceAdapter implements IService {
         'swarm-management',
         'task-management',
         'document-listing',
-        'command-execution',
+        'command-execution'
       );
     }
 
@@ -775,7 +775,7 @@ export class DataServiceAdapter implements IService {
         'document-search',
         'document-querying',
         'project-management',
-        'workflow-management',
+        'workflow-management'
       );
     }
 
@@ -799,8 +799,8 @@ export class DataServiceAdapter implements IService {
    */
   async execute<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
@@ -814,7 +814,7 @@ export class DataServiceAdapter implements IService {
       // Check if service is ready
       if (!this.isReady()) {
         throw new Error(
-          `ServiceOperationError: ${this.name} - Operation ${operation} failed: Service not ready`,
+          `ServiceOperationError: ${this.name} - Operation ${operation} failed: Service not ready`
         );
       }
 
@@ -826,10 +826,10 @@ export class DataServiceAdapter implements IService {
           () =>
             reject(
               new Error(
-                `ServiceTimeoutError: ${this.name} - Operation ${operation} timed out after ${timeout}ms`,
-              ),
+                `ServiceTimeoutError: ${this.name} - Operation ${operation} timed out after ${timeout}ms`
+              )
             ),
-          timeout,
+          timeout
         );
       });
 
@@ -837,7 +837,7 @@ export class DataServiceAdapter implements IService {
       const operationPromise = this.executeOperationInternal<T>(
         operation,
         params,
-        options,
+        options
       );
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
@@ -931,7 +931,7 @@ export class DataServiceAdapter implements IService {
     }
   }
 
-  emit(event: ServiceEventType, data?: any, error?: Error): void {
+  emit(event: ServiceEventType, data?: unknown, error?: Error): void {
     const serviceEvent: ServiceEvent = {
       type: event,
       serviceName: this.name,
@@ -948,7 +948,7 @@ export class DataServiceAdapter implements IService {
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
     this.logger.debug(
-      `Adding dependency ${dependency.serviceName} for ${this.name}`,
+      `Adding dependency ${dependency.serviceName} for ${this.name}`
     );
     this.dependencies.set(dependency.serviceName, dependency);
   }
@@ -978,7 +978,7 @@ export class DataServiceAdapter implements IService {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
             return !config?.required; // Return false only if dependency is required
           }
-        },
+        }
       );
 
       const results = await Promise.all(dependencyChecks);
@@ -1002,8 +1002,8 @@ export class DataServiceAdapter implements IService {
    */
   private async executeOperationInternal<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<T> {
     // Generate cache key
     const cacheKey = this.generateCacheKey(operation, params);
@@ -1038,7 +1038,7 @@ export class DataServiceAdapter implements IService {
     const executionPromise = this.executeWithRetry<T>(
       operation,
       params,
-      options,
+      options
     );
 
     // Store pending request for deduplication
@@ -1077,9 +1077,9 @@ export class DataServiceAdapter implements IService {
    */
   private async executeWithRetry<T = any>(
     operation: string,
-    params?: any,
+    params?: unknown,
     options?: ServiceOperationOptions,
-    attempt = 1,
+    attempt = 1
   ): Promise<T> {
     try {
       return await this.performOperation<T>(operation, params, options);
@@ -1091,7 +1091,7 @@ export class DataServiceAdapter implements IService {
           (this.config.retry?.backoffMultiplier || 2) ** (attempt - 1) * 1000;
         this.logger.warn(
           `Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`,
-          error,
+          error
         );
 
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1108,7 +1108,7 @@ export class DataServiceAdapter implements IService {
           operation,
           params,
           options,
-          attempt + 1,
+          attempt + 1
         );
       }
 
@@ -1126,8 +1126,8 @@ export class DataServiceAdapter implements IService {
    */
   private async performOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     switch (operation) {
       // WebDataService operations
@@ -1156,7 +1156,7 @@ export class DataServiceAdapter implements IService {
       case 'document-create':
         return (await this.createDocument(
           params?.document,
-          params?.options,
+          params?.options
         )) as T;
 
       case 'document-get':
@@ -1166,7 +1166,7 @@ export class DataServiceAdapter implements IService {
         return (await this.updateDocument(
           params?.id,
           params?.updates,
-          params?.options,
+          params?.options
         )) as T;
 
       case 'document-delete':
@@ -1175,7 +1175,7 @@ export class DataServiceAdapter implements IService {
       case 'document-query':
         return (await this.queryDocuments(
           params?.filters,
-          params?.options,
+          params?.options
         )) as T;
 
       case 'document-search':
@@ -1199,7 +1199,7 @@ export class DataServiceAdapter implements IService {
 
       default:
         throw new Error(
-          `ServiceOperationError: ${this.name} - Operation ${operation} failed: Unknown operation`,
+          `ServiceOperationError: ${this.name} - Operation ${operation} failed: Unknown operation`
         );
     }
   }
@@ -1222,7 +1222,7 @@ export class DataServiceAdapter implements IService {
     return await this.webDataService.getSwarms();
   }
 
-  private async createSwarm(config: any): Promise<SwarmData> {
+  private async createSwarm(config: unknown): Promise<SwarmData> {
     if (!this.webDataService) {
       throw new Error('WebDataService not available');
     }
@@ -1236,7 +1236,7 @@ export class DataServiceAdapter implements IService {
     return await this.webDataService.getTasks();
   }
 
-  private async createTask(config: any): Promise<TaskData> {
+  private async createTask(config: unknown): Promise<TaskData> {
     if (!this.webDataService) {
       throw new Error('WebDataService not available');
     }
@@ -1252,7 +1252,7 @@ export class DataServiceAdapter implements IService {
 
   private async executeCommand(
     command: string,
-    args: any[],
+    args: unknown[]
   ): Promise<CommandResult> {
     if (!this.webDataService) {
       throw new Error('WebDataService not available');
@@ -1266,7 +1266,7 @@ export class DataServiceAdapter implements IService {
 
   private async createDocument<T extends BaseDocumentEntity>(
     document: Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>,
-    options?: DocumentCreateOptions,
+    options?: DocumentCreateOptions
   ): Promise<T> {
     if (!this.documentService) {
       throw new Error('DocumentService not available');
@@ -1276,7 +1276,7 @@ export class DataServiceAdapter implements IService {
 
   private async getDocument<T extends BaseDocumentEntity>(
     id: string,
-    options?: DocumentQueryOptions,
+    options?: DocumentQueryOptions
   ): Promise<T | null> {
     if (!this.documentService) {
       throw new Error('DocumentService not available');
@@ -1287,7 +1287,7 @@ export class DataServiceAdapter implements IService {
   private async updateDocument<T extends BaseDocumentEntity>(
     id: string,
     updates: Partial<Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>>,
-    options?: DocumentCreateOptions,
+    options?: DocumentCreateOptions
   ): Promise<T> {
     if (!this.documentService) {
       throw new Error('DocumentService not available');
@@ -1313,7 +1313,7 @@ export class DataServiceAdapter implements IService {
       parentDocumentId?: string;
       workflowStage?: string;
     },
-    options?: DocumentQueryOptions,
+    options?: DocumentQueryOptions
   ): Promise<{
     documents: T[];
     total: number;
@@ -1326,7 +1326,7 @@ export class DataServiceAdapter implements IService {
   }
 
   private async searchDocuments<T extends BaseDocumentEntity>(
-    searchOptions: DocumentSearchOptions,
+    searchOptions: DocumentSearchOptions
   ): Promise<{
     documents: T[];
     total: number;
@@ -1344,14 +1344,14 @@ export class DataServiceAdapter implements IService {
     return await this.documentService.searchDocuments<T>(searchOptions);
   }
 
-  private async createProject(project: any): Promise<any> {
+  private async createProject(project: unknown): Promise<unknown> {
     if (!this.documentService) {
       throw new Error('DocumentService not available');
     }
     return await this.documentService.createProject(project);
   }
 
-  private async getProjectWithDocuments(projectId: string): Promise<any> {
+  private async getProjectWithDocuments(projectId: string): Promise<unknown> {
     if (!this.documentService) {
       throw new Error('DocumentService not available');
     }
@@ -1413,7 +1413,7 @@ export class DataServiceAdapter implements IService {
   // Helper Methods
   // ============================================
 
-  private generateCacheKey(operation: string, params?: any): string {
+  private generateCacheKey(operation: string, params?: unknown): string {
     const prefix = this.config.cache?.keyPrefix || 'data-adapter:';
     const paramsHash = params ? JSON.stringify(params) : '';
     return `${prefix}${operation}:${Buffer.from(paramsHash).toString('base64')}`;
@@ -1496,8 +1496,8 @@ export class DataServiceAdapter implements IService {
 
   private shouldRetryOperation(
     operation: string,
-    error: any,
-    attempt: number,
+    error: unknown,
+    attempt: number
   ): boolean {
     if (!this.config.retry?.enabled) {
       return false;
@@ -1541,7 +1541,7 @@ export class DataServiceAdapter implements IService {
 
   private calculateCacheHitRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
@@ -1554,7 +1554,7 @@ export class DataServiceAdapter implements IService {
 
   private calculateDeduplicationRate(): number {
     const deduplicatedRequests = Array.from(
-      this.pendingRequests.values(),
+      this.pendingRequests.values()
     ).reduce((sum, req) => sum + (req.requestCount - 1), 0);
 
     const totalRequests = this.operationCount + deduplicatedRequests;
@@ -1578,7 +1578,7 @@ export class DataServiceAdapter implements IService {
     return size;
   }
 
-  private estimateDataSize(data: any): number {
+  private estimateDataSize(data: unknown): number {
     if (!data) return 0;
 
     try {
@@ -1589,7 +1589,7 @@ export class DataServiceAdapter implements IService {
   }
 
   private determineHealthStatus(
-    errorRate: number,
+    errorRate: number
   ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.healthStats.consecutiveFailures > 5) {
       return 'unhealthy';
@@ -1632,7 +1632,7 @@ export class DataServiceAdapter implements IService {
  * @example
  */
 export function createDataServiceAdapter(
-  config: DataServiceAdapterConfig,
+  config: DataServiceAdapterConfig
 ): DataServiceAdapter {
   return new DataServiceAdapter(config);
 }
@@ -1646,7 +1646,7 @@ export function createDataServiceAdapter(
  */
 export function createDefaultDataServiceAdapterConfig(
   name: string,
-  overrides?: Partial<DataServiceAdapterConfig>,
+  overrides?: Partial<DataServiceAdapterConfig>
 ): DataServiceAdapterConfig {
   return {
     name,

@@ -72,7 +72,7 @@ const networkConfig = () =>
         activation: fc.constantFrom('sigmoid', 'relu', 'tanh', 'leaky_relu'),
         steepness: fc.option(fc.float({ min: 0.1, max: 2.0 })),
       }),
-      { minLength: 1, maxLength: 5 },
+      { minLength: 1, maxLength: 5 }
     ),
     outputSize: positiveInt(20),
     outputActivation: fc.constantFrom('sigmoid', 'tanh', 'linear', 'softmax'),
@@ -83,7 +83,7 @@ const networkConfig = () =>
 const _trainingData = (
   inputSize: number,
   outputSize: number,
-  batchSize: number = 10,
+  batchSize: number = 10
 ) =>
   fc.record({
     inputs: fc.array(
@@ -91,14 +91,14 @@ const _trainingData = (
       {
         minLength: batchSize,
         maxLength: batchSize,
-      },
+      }
     ),
     outputs: fc.array(
       fc.array(finiteFloat(), { minLength: outputSize, maxLength: outputSize }),
       {
         minLength: batchSize,
         maxLength: batchSize,
-      },
+      }
     ),
   });
 
@@ -157,7 +157,7 @@ function normalizeData(data: number[]): number[] {
 function denormalizeData(
   normalizedData: number[],
   originalMean: number,
-  originalStdDev: number,
+  originalStdDev: number
 ): number[] {
   return normalizedData?.map((x) => x * originalStdDev + originalMean);
 }
@@ -165,7 +165,7 @@ function denormalizeData(
 function createTimeSeriesWindows(
   data: number[],
   windowSize: number,
-  step: number = 1,
+  step: number = 1
 ): number[][] {
   const windows: number[][] = [];
   for (let i = 0; i <= data.length - windowSize; i += step) {
@@ -176,7 +176,7 @@ function createTimeSeriesWindows(
 
 function handleMissingValues(
   data: number[],
-  strategy: 'mean' | 'zero' | 'forward_fill',
+  strategy: 'mean' | 'zero' | 'forward_fill'
 ): number[] {
   const result = [...data];
   const mean =
@@ -193,7 +193,7 @@ function handleMissingValues(
           result[i] = 0;
           break;
         case 'forward_fill':
-          result[i] = i > 0 ? result?.[i - 1] : 0 as any;
+          result[i] = i > 0 ? result?.[i - 1] : (0 as any);
           break;
       }
     }
@@ -205,19 +205,23 @@ describe('Neural Network Model Invariants', () => {
   test('output dimensions match configuration', () => {
     fc.assert(
       fc.property(networkConfig(), (config) => {
-        const network = new MockNeuralNetwork(config) as any as any as any as any;
+        const network = new MockNeuralNetwork(
+          config
+        ) as any as any as any as any;
         const input = new Array(config?.inputSize).fill(0.5);
         const output = network.predict(input);
 
         expect(output).toHaveLength(config?.outputSize);
-      }),
+      })
     );
   });
 
   test('network info consistency', () => {
     fc.assert(
       fc.property(networkConfig(), (config) => {
-        const network = new MockNeuralNetwork(config) as any as any as any as any;
+        const network = new MockNeuralNetwork(
+          config
+        ) as any as any as any as any;
         const info = network.getInfo();
 
         // Input/output sizes should match config
@@ -233,7 +237,7 @@ describe('Neural Network Model Invariants', () => {
         // Memory usage should be reasonable
         expect(info.metrics.memoryUsage).toBeGreaterThan(0);
         expect(info.metrics.memoryUsage).toBeLessThan(1e9); // Less than 1GB
-      }),
+      })
     );
   });
 
@@ -250,8 +254,8 @@ describe('Neural Network Model Invariants', () => {
           // Weights should be in reasonable range for training stability
           const allReasonable = weights.every((w) => Math.abs(w) < 100);
           expect(allReasonable).toBe(true);
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -265,17 +269,19 @@ describe('Neural Network Model Invariants', () => {
           .map(() =>
             Array(config?.inputSize)
               .fill(0)
-              .map(() => Math.random() * 2 - 1),
+              .map(() => Math.random() * 2 - 1)
           );
         const outputs = Array(batchSize)
           .fill(0)
           .map(() =>
             Array(config?.outputSize)
               .fill(0)
-              .map(() => Math.random() * 2 - 1),
+              .map(() => Math.random() * 2 - 1)
           );
 
-        const network = new MockNeuralNetwork(config) as any as any as any as any;
+        const network = new MockNeuralNetwork(
+          config
+        ) as any as any as any as any;
         const result = network.train({ inputs, outputs });
 
         // Training should converge
@@ -283,7 +289,7 @@ describe('Neural Network Model Invariants', () => {
         expect(result?.finalError).toBeGreaterThanOrEqual(0);
         expect(result?.epochs).toBeGreaterThan(0);
         expect(Number.isFinite(result?.finalError)).toBe(true);
-      }),
+      })
     );
   });
 });
@@ -310,8 +316,8 @@ describe('Data Processing Invariants', () => {
           for (let i = 0; i < data.length; i++) {
             expect(denormalized[i]).toBeCloseTo(data?.[i], 5);
           }
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -339,8 +345,8 @@ describe('Data Processing Invariants', () => {
 
           // All values should be finite
           expect(normalized.every((x) => Number.isFinite(x))).toBe(true);
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -372,8 +378,8 @@ describe('Data Processing Invariants', () => {
               expect(windows[i]?.[j]).toBe(data?.[startIndex + j]);
             }
           }
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -403,8 +409,8 @@ describe('Data Processing Invariants', () => {
               expect(result?.[i]).toBe(dataWithNaN?.[i]);
             }
           }
-        },
-      ),
+        }
+      )
     );
   });
 });
@@ -429,7 +435,7 @@ describe('Numerical Stability Properties', () => {
         const relu = Math.max(0, x);
         expect(relu).toBeGreaterThanOrEqual(0);
         expect(Number.isFinite(relu)).toBe(true);
-      }),
+      })
     );
   });
 
@@ -452,8 +458,8 @@ describe('Numerical Stability Properties', () => {
           // Operation properties
           expect(sum).toHaveLength(a.length);
           expect(product).toHaveLength(a.length);
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -471,17 +477,17 @@ describe('Numerical Stability Properties', () => {
 
           // Gradient magnitude should be reasonable
           const magnitude = Math.sqrt(
-            gradients.reduce((sum, g) => sum + g * g, 0),
+            gradients.reduce((sum, g) => sum + g * g, 0)
           );
           expect(magnitude).toBeLessThan(1000);
 
           // Weight updates should be stable
           const updatedWeights = weights.map(
-            (w, i) => w - learningRate * gradients[i],
+            (w, i) => w - learningRate * gradients[i]
           );
           expect(updatedWeights.every((w) => Number.isFinite(w))).toBe(true);
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -497,7 +503,7 @@ describe('Numerical Stability Properties', () => {
           const mse =
             predictions.reduce(
               (sum, p, i) => sum + (p - targets?.[i]) ** 2,
-              0,
+              0
             ) / predictions.length;
 
           expect(mse).toBeGreaterThanOrEqual(0);
@@ -508,8 +514,8 @@ describe('Numerical Stability Properties', () => {
             predictions.reduce((sum, p) => sum + (p - p) ** 2, 0) /
             predictions.length;
           expect(identicalMse).toBeCloseTo(0, 10);
-        },
-      ),
+        }
+      )
     );
   });
 });
@@ -528,7 +534,7 @@ describe('Edge Case Handling', () => {
           {
             minLength: 1,
             maxLength: 10,
-          },
+          }
         ),
         (extremeInputs) => {
           // Network should handle extreme values gracefully
@@ -545,8 +551,8 @@ describe('Edge Case Handling', () => {
           // Output should be finite and within bounds for sigmoid
           expect(output.every((x) => Number.isFinite(x))).toBe(true);
           expect(output.every((x) => x >= 0 && x <= 1)).toBe(true);
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -573,14 +579,14 @@ describe('Edge Case Handling', () => {
             finiteFloat(),
             fc.constant(Number.NaN),
             fc.constant(Number.POSITIVE_INFINITY),
-            fc.constant(Number.NEGATIVE_INFINITY),
+            fc.constant(Number.NEGATIVE_INFINITY)
           ),
-          { minLength: 5, maxLength: 20 },
+          { minLength: 5, maxLength: 20 }
         ),
         (malformedData) => {
           // Data cleaning should handle malformed inputs
           const cleanedData = malformedData?.map((x) =>
-            Number.isFinite(x) ? x : 0,
+            Number.isFinite(x) ? x : 0
           );
 
           expect(cleanedData?.every((x) => Number.isFinite(x))).toBe(true);
@@ -588,14 +594,14 @@ describe('Edge Case Handling', () => {
 
           // Missing value handling should work
           const withNaN = malformedData?.map((x) =>
-            Number.isFinite(x) ? x : Number.NaN,
+            Number.isFinite(x) ? x : Number.NaN
           );
           const handled = handleMissingValues(withNaN, 'zero');
 
           expect(handled.every((x) => Number.isFinite(x))).toBe(true);
           expect(handled.every((x) => !Number.isNaN(x))).toBe(true);
-        },
-      ),
+        }
+      )
     );
   });
 });
@@ -622,8 +628,8 @@ describe('Statistical Properties', () => {
               expect(originalOrder).toBe(normalizedOrder);
             }
           }
-        },
-      ),
+        }
+      )
     );
   });
 
@@ -636,7 +642,7 @@ describe('Statistical Properties', () => {
         (baseData, correlation, offset) => {
           // Create correlated data
           const correlatedData = baseData?.map(
-            (x) => correlation * x + offset + (Math.random() - 0.5) * 0.1,
+            (x) => correlation * x + offset + (Math.random() - 0.5) * 0.1
           );
 
           // Normalize both datasets
@@ -647,7 +653,7 @@ describe('Statistical Properties', () => {
           const originalCorr = calculateCorrelation(baseData, correlatedData);
           const normalizedCorr = calculateCorrelation(
             normalizedBase,
-            normalizedCorrelated,
+            normalizedCorrelated
           );
 
           // Normalization should preserve correlation (within tolerance)
@@ -655,8 +661,8 @@ describe('Statistical Properties', () => {
             // Only test when correlation is significant
             expect(Math.abs(originalCorr - normalizedCorr)).toBeLessThan(0.1);
           }
-        },
-      ),
+        }
+      )
     );
   });
 });

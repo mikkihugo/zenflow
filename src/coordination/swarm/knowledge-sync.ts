@@ -33,7 +33,7 @@ export interface SwarmKnowledgeConfig {
 export interface LocalKnowledgeEntry {
   id: string;
   query: string;
-  data: any;
+  data: unknown;
   metadata: {
     source: string;
     timestamp: number;
@@ -107,7 +107,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
     try {
       logger.info(
-        `Initializing knowledge sync for swarm ${this.config.swarmId}`,
+        `Initializing knowledge sync for swarm ${this.config.swarmId}`
       );
 
       // Load cached knowledge from persistent storage
@@ -128,12 +128,12 @@ export class SwarmKnowledgeSync extends EventEmitter {
       this.emit('sync:initialized', { swarmId: this.config.swarmId });
 
       logger.info(
-        `Knowledge sync initialized for swarm ${this.config.swarmId}`,
+        `Knowledge sync initialized for swarm ${this.config.swarmId}`
       );
     } catch (error) {
       logger.error(
         `Failed to initialize knowledge sync for swarm ${this.config.swarmId}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -157,9 +157,9 @@ export class SwarmKnowledgeSync extends EventEmitter {
     options: {
       useCache?: boolean;
       priority?: 'low' | 'medium' | 'high' | 'critical';
-      filters?: Record<string, any>;
-    } = {},
-  ): Promise<any> {
+      filters?: Record<string, unknown>;
+    } = {}
+  ): Promise<unknown> {
     const cacheKey = `${query}:${domain || 'general'}`;
 
     // Check local cache first
@@ -176,7 +176,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       const payload: {
         query: string;
         domain?: string;
-        filters?: Record<string, any>;
+        filters?: Record<string, unknown>;
       } = { query };
       if (domain !== undefined) {
         payload.domain = domain;
@@ -214,7 +214,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     } catch (error) {
       logger.error(
         `Knowledge query failed for swarm ${this.config.swarmId}:`,
-        error,
+        error
       );
 
       // Try to return fallback knowledge from cache or learning history
@@ -236,12 +236,12 @@ export class SwarmKnowledgeSync extends EventEmitter {
    */
   async contributeKnowledge(
     learning: Omit<SwarmLearning, 'id' | 'timestamp'>,
-    agentId: string,
+    agentId: string
   ): Promise<boolean> {
     // Check if contribution meets threshold
     if (learning.confidence < this.config.contributionThreshold!) {
       logger.debug(
-        `Skipping contribution below threshold (${learning.confidence} < ${this.config.contributionThreshold})`,
+        `Skipping contribution below threshold (${learning.confidence} < ${this.config.contributionThreshold})`
       );
       return false;
     }
@@ -299,7 +299,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         });
 
         logger.info(
-          `Successfully contributed knowledge to Hive: ${learning.type} in ${learning.domain}`,
+          `Successfully contributed knowledge to Hive: ${learning.type} in ${learning.domain}`
         );
         return true;
       }
@@ -343,7 +343,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         return true;
       }
       logger.error(
-        `Failed to subscribe to domain ${domain}: ${response?.error}`,
+        `Failed to subscribe to domain ${domain}: ${response?.error}`
       );
       return false;
     } catch (error) {
@@ -358,10 +358,10 @@ export class SwarmKnowledgeSync extends EventEmitter {
    * @param update
    */
   async handleKnowledgeUpdate(
-    update: KnowledgeDistributionUpdate,
+    update: KnowledgeDistributionUpdate
   ): Promise<void> {
     logger.info(
-      `Received knowledge update: ${update.type} for domain ${update.domain}`,
+      `Received knowledge update: ${update.type} for domain ${update.domain}`
     );
 
     try {
@@ -391,7 +391,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
         await this.memoryStore.store(
           `swarm-knowledge/${this.config.swarmId}/updates/${update.updateId}`,
           'knowledge-update',
-          update,
+          update
         );
       }
 
@@ -399,7 +399,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     } catch (error) {
       logger.error(
         `Error handling knowledge update ${update.updateId}:`,
-        error,
+        error
       );
     }
   }
@@ -440,7 +440,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     logger.info(
-      `Shutting down knowledge sync for swarm ${this.config.swarmId}`,
+      `Shutting down knowledge sync for swarm ${this.config.swarmId}`
     );
 
     // Persist current state
@@ -477,7 +477,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
     return entry;
   }
 
-  private cacheKnowledge(key: string, data: any, metadata: any): void {
+  private cacheKnowledge(key: string, data: unknown, metadata: unknown): void {
     // Check cache size limit
     if (this.localCache.size >= this.config.cacheSize!) {
       this.evictOldestCacheEntry();
@@ -517,7 +517,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
   }
 
   private async sendKnowledgeRequest(
-    request: KnowledgeRequest,
+    request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
     // In a real implementation, this would communicate with the Hive Knowledge Bridge
     // For now, we'll emit an event and expect a response
@@ -542,19 +542,19 @@ export class SwarmKnowledgeSync extends EventEmitter {
   private trackQuerySuccess(
     _query: string,
     _domain?: string,
-    _confidence?: number,
+    _confidence?: number
   ): void {
     // Track successful queries for analytics
     // Would be implemented with proper metrics collection
   }
 
-  private getFallbackKnowledge(_query: string, domain?: string): any | null {
+  private getFallbackKnowledge(_query: string, domain?: string): unknown | null {
     // Try to find similar knowledge in learning history
     const relevantLearning = this.learningHistory.find(
       (learning) =>
         learning.domain === domain &&
         learning.outcome.success &&
-        learning.confidence > 0.8,
+        learning.confidence > 0.8
     );
 
     if (relevantLearning) {
@@ -570,13 +570,13 @@ export class SwarmKnowledgeSync extends EventEmitter {
   }
 
   private generateContributionDescription(
-    learning: Omit<SwarmLearning, 'id' | 'timestamp'>,
+    learning: Omit<SwarmLearning, 'id' | 'timestamp'>
   ): string {
     return `${learning.type} learned in ${learning.domain}: ${learning.insights.whatWorked.join(', ')}`;
   }
 
   private extractImplementationDetails(
-    learning: Omit<SwarmLearning, 'id' | 'timestamp'>,
+    learning: Omit<SwarmLearning, 'id' | 'timestamp'>
   ): string {
     return JSON.stringify({
       bestPractices: learning.insights.bestPractices,
@@ -585,7 +585,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
   }
 
   private extractMetrics(
-    learning: Omit<SwarmLearning, 'id' | 'timestamp'>,
+    learning: Omit<SwarmLearning, 'id' | 'timestamp'>
   ): Record<string, number> {
     return {
       duration: learning.outcome.duration,
@@ -600,13 +600,13 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
     try {
       const cached = await this.memoryStore.retrieve(
-        `swarm-knowledge/${this.config.swarmId}/cache`,
+        `swarm-knowledge/${this.config.swarmId}/cache`
       );
 
       if (cached) {
         // Restore cache from persistent storage
         for (const [key, entry] of Object.entries(
-          cached as Record<string, LocalKnowledgeEntry>,
+          cached as Record<string, LocalKnowledgeEntry>
         )) {
           if (Date.now() <= entry.metadata.timestamp + entry.ttl) {
             this.localCache.set(key, entry);
@@ -623,7 +623,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
     try {
       const history = await this.memoryStore.retrieve(
-        `swarm-knowledge/${this.config.swarmId}/learning-history`,
+        `swarm-knowledge/${this.config.swarmId}/learning-history`
       );
 
       if (history && Array.isArray(history)) {
@@ -643,7 +643,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       await this.memoryStore.store(
         `swarm-knowledge/${this.config.swarmId}/cache`,
         'knowledge-cache',
-        cacheData,
+        cacheData
       );
 
       // Persist learning history
@@ -663,7 +663,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       await this.memoryStore.store(
         `swarm-knowledge/${this.config.swarmId}/learning-history`,
         'learning-history',
-        this.learningHistory,
+        this.learningHistory
       );
     } catch (error) {
       logger.error('Failed to persist learning history:', error);
@@ -677,7 +677,7 @@ export class SwarmKnowledgeSync extends EventEmitter {
       await this.memoryStore.store(
         `swarm-knowledge/${this.config.swarmId}/subscriptions`,
         'subscriptions',
-        Array.from(this.subscriptions),
+        Array.from(this.subscriptions)
       );
     } catch (error) {
       logger.error('Failed to persist subscriptions:', error);
@@ -734,31 +734,31 @@ export class SwarmKnowledgeSync extends EventEmitter {
 
     if (keysToInvalidate.length > 0) {
       logger.debug(
-        `Invalidated ${keysToInvalidate.length} cache entries for domain ${domain}`,
+        `Invalidated ${keysToInvalidate.length} cache entries for domain ${domain}`
       );
     }
   }
 
   private async handleFactUpdate(
-    update: KnowledgeDistributionUpdate,
+    update: KnowledgeDistributionUpdate
   ): Promise<void> {
     this.emit('fact:updated', { update });
   }
 
   private async handleNewPattern(
-    update: KnowledgeDistributionUpdate,
+    update: KnowledgeDistributionUpdate
   ): Promise<void> {
     this.emit('pattern:discovered', { update });
   }
 
   private async handleSecurityAlert(
-    update: KnowledgeDistributionUpdate,
+    update: KnowledgeDistributionUpdate
   ): Promise<void> {
     this.emit('security:alert', { update, priority: 'critical' });
   }
 
   private async handleBestPractice(
-    update: KnowledgeDistributionUpdate,
+    update: KnowledgeDistributionUpdate
   ): Promise<void> {
     this.emit('practice:updated', { update });
   }

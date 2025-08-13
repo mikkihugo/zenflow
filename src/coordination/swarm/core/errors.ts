@@ -14,7 +14,7 @@
 
 class ZenSwarmError extends Error {
   public code: string;
-  public details: any;
+  public details: unknown;
   public timestamp: string;
 
   constructor(message: string, code = 'GENERAL_ERROR', details = {}) {
@@ -56,14 +56,14 @@ class ZenSwarmError extends Error {
  */
 class ValidationError extends ZenSwarmError {
   public field: string | null;
-  public value: any;
+  public value: unknown;
   public expectedType: string | null;
 
   constructor(
     message: string,
     field: string | null = null,
-    value: any = null,
-    expectedType: string | null = null,
+    value: unknown = null,
+    expectedType: string | null = null
   ) {
     const details = {
       field,
@@ -114,7 +114,7 @@ class SwarmError extends ZenSwarmError {
   constructor(
     message: string,
     swarmId: string | null = null,
-    operation: string | null = null,
+    operation: string | null = null
   ) {
     const details = { swarmId, operation };
     super(message, 'SWARM_ERROR', details);
@@ -161,7 +161,7 @@ class AgentError extends ZenSwarmError {
     message: string,
     agentId: string | null = null,
     agentType: string | null = null,
-    operation: string | null = null,
+    operation: string | null = null
   ) {
     const details = { agentId, agentType, operation };
     super(message, 'AGENT_ERROR', details);
@@ -213,7 +213,7 @@ class TaskError extends ZenSwarmError {
     message: string,
     taskId: string | null = null,
     taskType: string | null = null,
-    operation: string | null = null,
+    operation: string | null = null
   ) {
     const details = { taskId, taskType, operation };
     super(message, 'TASK_ERROR', details);
@@ -262,7 +262,7 @@ class NeuralError extends ZenSwarmError {
     message: string,
     networkId: string | null = null,
     operation: string | null = null,
-    modelType: string | null = null,
+    modelType: string | null = null
   ) {
     const details = { networkId, operation, modelType };
     super(message, 'NEURAL_ERROR', details);
@@ -312,7 +312,7 @@ class WasmError extends ZenSwarmError {
   constructor(
     message: string,
     module: string | null = null,
-    operation: string | null = null,
+    operation: string | null = null
   ) {
     const details = { module, operation };
     super(message, 'WASM_ERROR', details);
@@ -356,12 +356,12 @@ class WasmError extends ZenSwarmError {
  */
 class ConfigurationError extends ZenSwarmError {
   public configKey: string | null;
-  public configValue: any;
+  public configValue: unknown;
 
   constructor(
     message: string,
     configKey: string | null = null,
-    configValue: any = null,
+    configValue: unknown = null
   ) {
     const details = { configKey, configValue };
     super(message, 'CONFIGURATION_ERROR', details);
@@ -392,7 +392,7 @@ class NetworkError extends ZenSwarmError {
   constructor(
     message: string,
     endpoint: string | null = null,
-    statusCode: number | null = null,
+    statusCode: number | null = null
   ) {
     const details = { endpoint, statusCode };
     super(message, 'NETWORK_ERROR', details);
@@ -435,7 +435,7 @@ class PersistenceError extends ZenSwarmError {
   constructor(
     message: string,
     operation: string | null = null,
-    table: string | null = null,
+    table: string | null = null
   ) {
     const details = { operation, table };
     super(message, 'PERSISTENCE_ERROR', details);
@@ -489,7 +489,7 @@ class ResourceError extends ZenSwarmError {
     message: string,
     resourceType: string | null = null,
     currentUsage: number | null = null,
-    limit: number | null = null,
+    limit: number | null = null
   ) {
     const details = { resourceType, currentUsage, limit };
     super(message, 'RESOURCE_ERROR', details);
@@ -534,7 +534,7 @@ class ConcurrencyError extends ZenSwarmError {
   constructor(
     message: string,
     operation: string | null = null,
-    conflictType: string | null = null,
+    conflictType: string | null = null
   ) {
     const details = { operation, conflictType };
     super(message, 'CONCURRENCY_ERROR', details);
@@ -567,14 +567,14 @@ class ErrorFactory {
    * @param message
    * @param details
    */
-  static createError(type: string, message: string, details: any = {}) {
+  static createError(type: string, message: string, details: unknown = {}) {
     switch (type) {
       case 'validation':
         return new ValidationError(
           message,
           details.field,
           details.value,
-          details.expectedType,
+          details.expectedType
         );
       case 'swarm':
         return new SwarmError(message, details.swarmId, details.operation);
@@ -583,21 +583,21 @@ class ErrorFactory {
           message,
           details.agentId,
           details.agentType,
-          details.operation,
+          details.operation
         );
       case 'task':
         return new TaskError(
           message,
           details.taskId,
           details.taskType,
-          details.operation,
+          details.operation
         );
       case 'neural':
         return new NeuralError(
           message,
           details.networkId,
           details.operation,
-          details.modelType,
+          details.modelType
         );
       case 'wasm':
         return new WasmError(message, details.module, details.operation);
@@ -605,7 +605,7 @@ class ErrorFactory {
         return new ConfigurationError(
           message,
           details.configKey,
-          details.configValue,
+          details.configValue
         );
       case 'network':
         return new NetworkError(message, details.endpoint, details.statusCode);
@@ -616,13 +616,13 @@ class ErrorFactory {
           message,
           details.resourceType,
           details.currentUsage,
-          details.limit,
+          details.limit
         );
       case 'concurrency':
         return new ConcurrencyError(
           message,
           details.operation,
-          details.conflictType,
+          details.conflictType
         );
       default:
         return new ZenSwarmError(message, 'GENERAL_ERROR', details);
@@ -639,7 +639,7 @@ class ErrorFactory {
   static wrapError(
     originalError: Error,
     type: string,
-    additionalContext: any = {},
+    additionalContext: unknown = {}
   ) {
     const message = `${type.toUpperCase()}: ${originalError.message}`;
     const details = {
@@ -667,7 +667,7 @@ class ErrorContext {
     this.context = new Map();
   }
 
-  set(key: string, value: any) {
+  set(key: string, value: unknown) {
     this.context.set(key, value);
   }
 
@@ -688,7 +688,7 @@ class ErrorContext {
    *
    * @param error
    */
-  enrichError(error: any) {
+  enrichError(error: unknown) {
     if (error instanceof ZenSwarmError) {
       error.details = {
         ...error.details,

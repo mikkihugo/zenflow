@@ -71,7 +71,7 @@ export class TestLogger {
    * @param args
    * @param result
    */
-  logInteraction(component: string, method: string, args?: unknown[], result?: any): void {
+  logInteraction(component: string, method: string, args?: unknown[], result?: unknown): void {
     this.log('debug', `Interaction: ${component}.${method}`, {
       component,
       method,
@@ -89,7 +89,7 @@ export class TestLogger {
    * @param after
    * @param operation
    */
-  logStateChange(component: string, before: any, after: any, operation?: string): void {
+  logStateChange(component: string, before: unknown, after: unknown, operation?: string): void {
     this.log('debug', `State change in ${component}`, {
       component,
       before,
@@ -123,7 +123,7 @@ export class TestLogger {
    * @param expected
    * @param actual
    */
-  logAssertion(description: string, passed: boolean, expected?: any, actual?: any): void {
+  logAssertion(description: string, passed: boolean, expected?: unknown, actual?: unknown): void {
     const level = passed ? 'info' : 'error';
     this.log(level, `Assertion: ${description} - ${passed ? 'PASSED' : 'FAILED'}`, {
       description,

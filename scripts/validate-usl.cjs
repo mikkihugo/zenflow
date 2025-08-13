@@ -108,10 +108,16 @@ class USLValidator {
       if (fs.existsSync(filePath)) {
         this.logSuccess(`Found required file: ${filePath}`);
         score += 8;
-        section.details.push({ type: 'success', message: `Required file present: ${filePath}` });
+        section.details.push({
+          type: 'success',
+          message: `Required file present: ${filePath}`,
+        });
       } else {
         this.logError(`Missing required file: ${filePath}`);
-        section.details.push({ type: 'error', message: `Missing required file: ${filePath}` });
+        section.details.push({
+          type: 'error',
+          message: `Missing required file: ${filePath}`,
+        });
       }
     });
 
@@ -126,7 +132,10 @@ class USLValidator {
         });
       } else {
         this.logError(`Missing required directory: ${dirPath}`);
-        section.details.push({ type: 'error', message: `Missing required directory: ${dirPath}` });
+        section.details.push({
+          type: 'error',
+          message: `Missing required directory: ${dirPath}`,
+        });
       }
     });
 
@@ -142,15 +151,22 @@ class USLValidator {
       if (fs.existsSync(filePath)) {
         this.logSuccess(`Found adapter file: ${path.basename(filePath)}`);
         score += 2;
-        section.details.push({ type: 'success', message: `Adapter file present: ${filePath}` });
+        section.details.push({
+          type: 'success',
+          message: `Adapter file present: ${filePath}`,
+        });
       } else {
         this.logWarning(`Missing adapter file: ${filePath}`);
-        section.details.push({ type: 'warning', message: `Missing adapter file: ${filePath}` });
+        section.details.push({
+          type: 'warning',
+          message: `Missing adapter file: ${filePath}`,
+        });
       }
     });
 
     section.score = Math.min(score, maxScore);
-    section.status = section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
+    section.status =
+      section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
 
     this.logInfo(`Structure validation score: ${section.score}/${maxScore}`);
   }
@@ -168,7 +184,11 @@ class USLValidator {
         const typesContent = fs.readFileSync(typesPath, 'utf8');
 
         // Check for required enums
-        const requiredEnums = ['ServiceType', 'ServicePriority', 'ServiceEnvironment'];
+        const requiredEnums = [
+          'ServiceType',
+          'ServicePriority',
+          'ServiceEnvironment',
+        ];
         requiredEnums.forEach((enumName) => {
           if (typesContent.includes(`export enum ${enumName}`)) {
             this.logSuccess(`Found required enum: ${enumName}`);
@@ -179,7 +199,10 @@ class USLValidator {
             });
           } else {
             this.logError(`Missing required enum: ${enumName}`);
-            section.details.push({ type: 'error', message: `Missing required enum: ${enumName}` });
+            section.details.push({
+              type: 'error',
+              message: `Missing required enum: ${enumName}`,
+            });
           }
         });
 
@@ -213,10 +236,16 @@ class USLValidator {
         if (typesContent.includes('export class ServiceConfigFactory')) {
           this.logSuccess('Found ServiceConfigFactory');
           score += 10;
-          section.details.push({ type: 'success', message: 'ServiceConfigFactory present' });
+          section.details.push({
+            type: 'success',
+            message: 'ServiceConfigFactory present',
+          });
         } else {
           this.logError('Missing ServiceConfigFactory');
-          section.details.push({ type: 'error', message: 'Missing ServiceConfigFactory' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing ServiceConfigFactory',
+          });
         }
 
         // Check for type guards
@@ -229,15 +258,24 @@ class USLValidator {
           if (typesContent.includes(`export function ${guardName}`)) {
             this.logSuccess(`Found type guard: ${guardName}`);
             score += 3;
-            section.details.push({ type: 'success', message: `Type guard present: ${guardName}` });
+            section.details.push({
+              type: 'success',
+              message: `Type guard present: ${guardName}`,
+            });
           } else {
             this.logWarning(`Missing type guard: ${guardName}`);
-            section.details.push({ type: 'warning', message: `Missing type guard: ${guardName}` });
+            section.details.push({
+              type: 'warning',
+              message: `Missing type guard: ${guardName}`,
+            });
           }
         });
       } else {
         this.logError('types.ts file not found');
-        section.details.push({ type: 'error', message: 'types.ts file not found' });
+        section.details.push({
+          type: 'error',
+          message: 'types.ts file not found',
+        });
       }
 
       // Check core interfaces
@@ -245,7 +283,12 @@ class USLValidator {
       if (fs.existsSync(interfacesPath)) {
         const interfacesContent = fs.readFileSync(interfacesPath, 'utf8');
 
-        const coreInterfaces = ['IService', 'IServiceFactory', 'IServiceRegistry', 'ServiceConfig'];
+        const coreInterfaces = [
+          'IService',
+          'IServiceFactory',
+          'IServiceRegistry',
+          'ServiceConfig',
+        ];
         coreInterfaces.forEach((interfaceName) => {
           if (
             interfacesContent.includes(`interface ${interfaceName}`) ||
@@ -268,13 +311,19 @@ class USLValidator {
       }
     } catch (error) {
       this.logError(`Type validation error: ${error.message}`);
-      section.details.push({ type: 'error', message: `Type validation error: ${error.message}` });
+      section.details.push({
+        type: 'error',
+        message: `Type validation error: ${error.message}`,
+      });
     }
 
     section.score = Math.min(score, maxScore);
-    section.status = section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
+    section.status =
+      section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
 
-    this.logInfo(`Type definitions validation score: ${section.score}/${maxScore}`);
+    this.logInfo(
+      `Type definitions validation score: ${section.score}/${maxScore}`
+    );
   }
 
   validateImplementation() {
@@ -292,10 +341,16 @@ class USLValidator {
         if (factoriesContent.includes('export class USLFactory')) {
           this.logSuccess('Found USLFactory implementation');
           score += 20;
-          section.details.push({ type: 'success', message: 'USLFactory implementation present' });
+          section.details.push({
+            type: 'success',
+            message: 'USLFactory implementation present',
+          });
         } else {
           this.logError('Missing USLFactory implementation');
-          section.details.push({ type: 'error', message: 'Missing USLFactory implementation' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing USLFactory implementation',
+          });
         }
 
         if (factoriesContent.includes('export class ServiceRegistry')) {
@@ -316,10 +371,16 @@ class USLValidator {
         if (factoriesContent.includes('globalUSLFactory')) {
           this.logSuccess('Found global USL factory instance');
           score += 10;
-          section.details.push({ type: 'success', message: 'Global USL factory instance present' });
+          section.details.push({
+            type: 'success',
+            message: 'Global USL factory instance present',
+          });
         } else {
           this.logWarning('Missing global USL factory instance');
-          section.details.push({ type: 'warning', message: 'Missing global USL factory instance' });
+          section.details.push({
+            type: 'warning',
+            message: 'Missing global USL factory instance',
+          });
         }
       }
 
@@ -337,7 +398,10 @@ class USLValidator {
           });
         } else {
           this.logError('Missing ServiceManager implementation');
-          section.details.push({ type: 'error', message: 'Missing ServiceManager implementation' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing ServiceManager implementation',
+          });
         }
       }
 
@@ -367,7 +431,9 @@ class USLValidator {
       if (fs.existsSync(compatibilityPath)) {
         const compatibilityContent = fs.readFileSync(compatibilityPath, 'utf8');
 
-        if (compatibilityContent.includes('export class USLCompatibilityLayer')) {
+        if (
+          compatibilityContent.includes('export class USLCompatibilityLayer')
+        ) {
           this.logSuccess('Found USLCompatibilityLayer implementation');
           score += 10;
           section.details.push({
@@ -412,9 +478,12 @@ class USLValidator {
     }
 
     section.score = Math.min(score, maxScore);
-    section.status = section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
+    section.status =
+      section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
 
-    this.logInfo(`Implementation validation score: ${section.score}/${maxScore}`);
+    this.logInfo(
+      `Implementation validation score: ${section.score}/${maxScore}`
+    );
   }
 
   validateIntegrationLayer() {
@@ -450,7 +519,10 @@ class USLValidator {
             });
           } else {
             this.logError(`Missing core export: ${exportName}`);
-            section.details.push({ type: 'error', message: `Missing core export: ${exportName}` });
+            section.details.push({
+              type: 'error',
+              message: `Missing core export: ${exportName}`,
+            });
           }
         });
 
@@ -458,17 +530,26 @@ class USLValidator {
         if (indexContent.includes('export class USL')) {
           this.logSuccess('Found main USL class');
           score += 10;
-          section.details.push({ type: 'success', message: 'Main USL class present' });
+          section.details.push({
+            type: 'success',
+            message: 'Main USL class present',
+          });
         } else {
           this.logError('Missing main USL class');
-          section.details.push({ type: 'error', message: 'Missing main USL class' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing main USL class',
+          });
         }
 
         // Check USLHelpers
         if (indexContent.includes('export const USLHelpers')) {
           this.logSuccess('Found USLHelpers utilities');
           score += 10;
-          section.details.push({ type: 'success', message: 'USLHelpers utilities present' });
+          section.details.push({
+            type: 'success',
+            message: 'USLHelpers utilities present',
+          });
 
           // Check for enhanced helper methods
           const helperMethods = [
@@ -495,7 +576,10 @@ class USLValidator {
           });
         } else {
           this.logError('Missing USLHelpers utilities');
-          section.details.push({ type: 'error', message: 'Missing USLHelpers utilities' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing USLHelpers utilities',
+          });
         }
 
         // Check convenience functions
@@ -525,7 +609,10 @@ class USLValidator {
         });
       } else {
         this.logError('Main index.ts file not found');
-        section.details.push({ type: 'error', message: 'Main index.ts file not found' });
+        section.details.push({
+          type: 'error',
+          message: 'Main index.ts file not found',
+        });
       }
     } catch (error) {
       this.logError(`Integration validation error: ${error.message}`);
@@ -536,9 +623,12 @@ class USLValidator {
     }
 
     section.score = Math.min(score, maxScore);
-    section.status = section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
+    section.status =
+      section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
 
-    this.logInfo(`Integration layer validation score: ${section.score}/${maxScore}`);
+    this.logInfo(
+      `Integration layer validation score: ${section.score}/${maxScore}`
+    );
   }
 
   validateCompatibility() {
@@ -571,7 +661,10 @@ class USLValidator {
             });
           } else {
             this.logWarning(`Missing legacy compatibility method: ${method}`);
-            section.details.push({ type: 'warning', message: `Missing legacy method: ${method}` });
+            section.details.push({
+              type: 'warning',
+              message: `Missing legacy method: ${method}`,
+            });
           }
         });
 
@@ -579,33 +672,53 @@ class USLValidator {
         if (compatibilityContent.includes('migrateExistingServices')) {
           this.logSuccess('Found service migration utility');
           score += 15;
-          section.details.push({ type: 'success', message: 'Service migration utility present' });
+          section.details.push({
+            type: 'success',
+            message: 'Service migration utility present',
+          });
         } else {
           this.logError('Missing service migration utility');
-          section.details.push({ type: 'error', message: 'Missing service migration utility' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing service migration utility',
+          });
         }
 
         if (compatibilityContent.includes('generateMigrationGuide')) {
           this.logSuccess('Found migration guide generator');
           score += 10;
-          section.details.push({ type: 'success', message: 'Migration guide generator present' });
+          section.details.push({
+            type: 'success',
+            message: 'Migration guide generator present',
+          });
         } else {
           this.logWarning('Missing migration guide generator');
-          section.details.push({ type: 'warning', message: 'Missing migration guide generator' });
+          section.details.push({
+            type: 'warning',
+            message: 'Missing migration guide generator',
+          });
         }
 
         // Check MigrationUtils
         if (compatibilityContent.includes('export const MigrationUtils')) {
           this.logSuccess('Found MigrationUtils');
           score += 15;
-          section.details.push({ type: 'success', message: 'MigrationUtils present' });
+          section.details.push({
+            type: 'success',
+            message: 'MigrationUtils present',
+          });
         } else {
           this.logError('Missing MigrationUtils');
-          section.details.push({ type: 'error', message: 'Missing MigrationUtils' });
+          section.details.push({
+            type: 'error',
+            message: 'Missing MigrationUtils',
+          });
         }
 
         // Check deprecation warnings
-        const deprecationCount = (compatibilityContent.match(/@deprecated/g) || []).length;
+        const deprecationCount = (
+          compatibilityContent.match(/@deprecated/g) || []
+        ).length;
         if (deprecationCount > 0) {
           this.logSuccess(`Found ${deprecationCount} deprecation warnings`);
           score += Math.min(deprecationCount * 2, 20);
@@ -615,11 +728,17 @@ class USLValidator {
           });
         } else {
           this.logWarning('No deprecation warnings found');
-          section.details.push({ type: 'warning', message: 'No deprecation warnings found' });
+          section.details.push({
+            type: 'warning',
+            message: 'No deprecation warnings found',
+          });
         }
       } else {
         this.logError('Compatibility layer not found');
-        section.details.push({ type: 'error', message: 'Compatibility layer not found' });
+        section.details.push({
+          type: 'error',
+          message: 'Compatibility layer not found',
+        });
       }
     } catch (error) {
       this.logError(`Compatibility validation error: ${error.message}`);
@@ -630,9 +749,12 @@ class USLValidator {
     }
 
     section.score = Math.min(score, maxScore);
-    section.status = section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
+    section.status =
+      section.score >= 80 ? 'pass' : section.score >= 60 ? 'warning' : 'fail';
 
-    this.logInfo(`Compatibility validation score: ${section.score}/${maxScore}`);
+    this.logInfo(
+      `Compatibility validation score: ${section.score}/${maxScore}`
+    );
   }
 
   validateDocumentation() {
@@ -675,7 +797,8 @@ class USLValidator {
         });
 
         // Check for code examples
-        const codeBlockCount = (readmeContent.match(/```typescript/g) || []).length;
+        const codeBlockCount = (readmeContent.match(/```typescript/g) || [])
+          .length;
         if (codeBlockCount >= 10) {
           this.logSuccess(`Found ${codeBlockCount} TypeScript code examples`);
           score += Math.min(codeBlockCount, 20);
@@ -684,7 +807,9 @@ class USLValidator {
             message: `${codeBlockCount} code examples present`,
           });
         } else {
-          this.logWarning(`Only ${codeBlockCount} code examples found (recommended: 10+)`);
+          this.logWarning(
+            `Only ${codeBlockCount} code examples found (recommended: 10+)`
+          );
           section.details?.push({
             type: 'warning',
             message: `Only ${codeBlockCount} code examples found`,
@@ -716,7 +841,10 @@ class USLValidator {
         }
       } else {
         this.logError('README.md not found');
-        section.details?.push({ type: 'error', message: 'README.md not found' });
+        section.details?.push({
+          type: 'error',
+          message: 'README.md not found',
+        });
       }
 
       // Check for TypeScript documentation (JSDoc comments)
@@ -760,7 +888,10 @@ class USLValidator {
       });
     }
 
-    this.validationResults.sections.documentation.score = Math.min(score, maxScore);
+    this.validationResults.sections.documentation.score = Math.min(
+      score,
+      maxScore
+    );
     this.validationResults.sections.documentation.status =
       this.validationResults.sections.documentation.score >= 80
         ? 'pass'
@@ -784,10 +915,13 @@ class USLValidator {
       this.logInfo('Running TypeScript compilation check...');
 
       // Check if we can compile the USL services without errors
-      const _result = execSync('npx tsc --noEmit --skipLibCheck src/interfaces/services/index.ts', {
-        encoding: 'utf8',
-        stdio: 'pipe',
-      });
+      const _result = execSync(
+        'npx tsc --noEmit --skipLibCheck src/interfaces/services/index.ts',
+        {
+          encoding: 'utf8',
+          stdio: 'pipe',
+        }
+      );
 
       this.logSuccess('TypeScript compilation successful');
       return true;
@@ -828,14 +962,20 @@ class USLValidator {
 
   calculateOverallResults(compilationSuccess) {
     const sections = Object.values(this.validationResults.sections);
-    const totalScore = sections.reduce((sum, section) => sum + section.score, 0);
+    const totalScore = sections.reduce(
+      (sum, section) => sum + section.score,
+      0
+    );
     const sectionCount = sections.length;
 
     this.validationResults.score = Math.round(totalScore / sectionCount);
 
     // Adjust score based on compilation success
     if (!compilationSuccess) {
-      this.validationResults.score = Math.max(0, this.validationResults.score - 20);
+      this.validationResults.score = Math.max(
+        0,
+        this.validationResults.score - 20
+      );
     }
 
     // Determine overall status
@@ -861,20 +1001,29 @@ class USLValidator {
           ? 'yellow'
           : 'red';
 
-    this.log(`Overall Status: ${this.validationResults.overall.toUpperCase()}`, statusColor);
+    this.log(
+      `Overall Status: ${this.validationResults.overall.toUpperCase()}`,
+      statusColor
+    );
     this.log(`Overall Score: ${this.validationResults.score}/100`, statusColor);
     this.log(`Duration: ${duration}ms`, 'cyan');
 
     // Section breakdown
     this.log('\n📊 Section Breakdown:', 'cyan');
-    Object.entries(this.validationResults.sections).forEach(([name, section]) => {
-      const sectionColor =
-        section.status === 'pass' ? 'green' : section.status === 'warning' ? 'yellow' : 'red';
-      this.log(
-        `  ${name.charAt(0).toUpperCase() + name.slice(1)}: ${section.status.toUpperCase()} (${section.score}/100)`,
-        sectionColor
-      );
-    });
+    Object.entries(this.validationResults.sections).forEach(
+      ([name, section]) => {
+        const sectionColor =
+          section.status === 'pass'
+            ? 'green'
+            : section.status === 'warning'
+              ? 'yellow'
+              : 'red';
+        this.log(
+          `  ${name.charAt(0).toUpperCase() + name.slice(1)}: ${section.status.toUpperCase()} (${section.score}/100)`,
+          sectionColor
+        );
+      }
+    );
 
     // Summary statistics
     this.log('\n📈 Summary:', 'cyan');
@@ -887,10 +1036,16 @@ class USLValidator {
 
     // Exit code based on results
     if (this.validationResults.overall === 'fail') {
-      this.log('\n💥 Validation FAILED - Critical issues must be resolved', 'red');
+      this.log(
+        '\n💥 Validation FAILED - Critical issues must be resolved',
+        'red'
+      );
       process.exit(1);
     } else if (this.validationResults.overall === 'warning') {
-      this.log('\n⚠️  Validation PASSED with warnings - Consider addressing issues', 'yellow');
+      this.log(
+        '\n⚠️  Validation PASSED with warnings - Consider addressing issues',
+        'yellow'
+      );
       process.exit(0);
     } else {
       this.log('\n🎉 Validation PASSED - USL integration is ready!', 'green');
@@ -903,28 +1058,45 @@ class USLValidator {
 
     if (this.errors.length > 0) {
       this.log('  🔴 High Priority:', 'red');
-      this.log('    - Fix all critical errors before production deployment', 'red');
-      this.log('    - Ensure all required files and implementations are present', 'red');
+      this.log(
+        '    - Fix all critical errors before production deployment',
+        'red'
+      );
+      this.log(
+        '    - Ensure all required files and implementations are present',
+        'red'
+      );
     }
 
     if (this.warnings.length > 0) {
       this.log('  🟡 Medium Priority:', 'yellow');
       this.log('    - Address warnings to improve system quality', 'yellow');
-      this.log('    - Complete missing optional features for full functionality', 'yellow');
+      this.log(
+        '    - Complete missing optional features for full functionality',
+        'yellow'
+      );
     }
 
     if (this.validationResults.score < 90) {
       this.log('  🟢 Low Priority:', 'green');
       this.log('    - Enhance documentation and code examples', 'green');
-      this.log('    - Add more comprehensive TypeScript documentation', 'green');
+      this.log(
+        '    - Add more comprehensive TypeScript documentation',
+        'green'
+      );
     }
 
     // Specific recommendations based on section scores
-    Object.entries(this.validationResults.sections).forEach(([name, section]) => {
-      if (section.score < 70) {
-        this.log(`    - Focus on improving ${name} section (${section.score}/100)`, 'yellow');
+    Object.entries(this.validationResults.sections).forEach(
+      ([name, section]) => {
+        if (section.score < 70) {
+          this.log(
+            `    - Focus on improving ${name} section (${section.score}/100)`,
+            'yellow'
+          );
+        }
       }
-    });
+    );
   }
 }
 

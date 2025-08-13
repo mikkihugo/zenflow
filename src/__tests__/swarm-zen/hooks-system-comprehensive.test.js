@@ -168,7 +168,7 @@ describe('Hooks System - Complete Coverage', () => {
             this.sessionData.performance.averageHookTime =
               this.sessionData.performance.hookExecutionTimes.reduce(
                 (a, b) => a + b,
-                0,
+                0
               ) / this.sessionData.performance.hookExecutionTimes.length;
 
             return result;
@@ -221,7 +221,7 @@ describe('Hooks System - Complete Coverage', () => {
           // Validate command safety
           const dangerousCommands = ['rm -rf', 'dd if=', 'mkfs', 'fdisk'];
           const isDangerous = dangerousCommands.some((cmd) =>
-            command.includes(cmd),
+            command.includes(cmd)
           );
 
           if (isDangerous) {
@@ -373,7 +373,7 @@ describe('Hooks System - Complete Coverage', () => {
           const performance = this.analyzeCommandPerformance(
             command,
             output,
-            exitCode,
+            exitCode
           );
 
           // Learn from command execution
@@ -508,7 +508,7 @@ describe('Hooks System - Complete Coverage', () => {
           const orchestrationPlan = this.createOrchestrationPlan(
             task,
             strategy,
-            maxAgents,
+            maxAgents
           );
 
           return {
@@ -700,7 +700,7 @@ describe('Hooks System - Complete Coverage', () => {
           const words = description.toLowerCase().split(' ');
 
           for (const [level, indicators] of Object.entries(
-            complexityIndicators,
+            complexityIndicators
           )) {
             if (indicators.some((indicator) => words.includes(indicator))) {
               return {
@@ -1397,7 +1397,7 @@ describe('Hooks System - Complete Coverage', () => {
       });
 
       expect(simpleResources.memoryAllocated).toBeLessThan(
-        complexResources.memoryAllocated,
+        complexResources.memoryAllocated
       );
       expect(simpleResources.cpuCores).toBeLessThan(complexResources.cpuCores);
     });

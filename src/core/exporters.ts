@@ -96,7 +96,7 @@ export class ExportSystem {
       if (config?.['outputPath'] && config?.['fileName']) {
         const filePath = path.join(
           config?.['outputPath'],
-          config?.['fileName'] + exporter.extension,
+          config?.['fileName'] + exporter.extension
         );
 
         // Ensure directory exists
@@ -183,7 +183,7 @@ export class ExportSystem {
         return obj
           .map(
             (item) =>
-              `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`,
+              `${spaces}- ${yamlify(item, indent + 1).replace(/^\s+/, '')}`
           )
           .join('\n');
       }
@@ -192,7 +192,7 @@ export class ExportSystem {
         return Object.entries(obj)
           .map(
             ([key, value]) =>
-              `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`,
+              `${spaces}${key}: ${yamlify(value, indent + 1).replace(/^\s+/, '')}`
           )
           .join('\n');
       }
@@ -261,7 +261,7 @@ export class ExportSystem {
           const separatorRow = `| ${headers.map(() => '---').join(' | ')} |`;
           const dataRows = obj.map(
             (item) =>
-              `| ${headers.map((header) => item?.[header]?.toString() || '').join(' | ')} |`,
+              `| ${headers.map((header) => item?.[header]?.toString() || '').join(' | ')} |`
           );
           return [headerRow, separatorRow, ...dataRows].join('\n');
         }

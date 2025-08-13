@@ -87,7 +87,7 @@ async function runTest(
   command,
   args,
   expectedOutput,
-  timeout = 30000,
+  timeout = 30000
 ) {
   return new Promise((resolve) => {
     const child = spawn('npx', ['ruv-swarm', command, ...args], {
@@ -171,7 +171,7 @@ async function runCoverageValidation() {
       test.name,
       test.command,
       test.args,
-      test.expectedOutput,
+      test.expectedOutput
     );
 
     if (result.success) {
@@ -196,7 +196,7 @@ async function runCoverageValidation() {
       test.name,
       test.command,
       test.args,
-      test.expectedOutput,
+      test.expectedOutput
     );
 
     if (result.success) {
@@ -248,7 +248,7 @@ function generateFinalReport() {
     __dirname,
     '..',
     'test-reports',
-    `mcp-coverage-validation-${Date.now()}.json`,
+    `mcp-coverage-validation-${Date.now()}.json`
   );
   writeFileSync(
     reportPath,
@@ -270,8 +270,8 @@ function generateFinalReport() {
         ],
       },
       null,
-      2,
-    ),
+      2
+    )
   );
 
   if (missionSuccess) {

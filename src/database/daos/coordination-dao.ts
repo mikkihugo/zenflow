@@ -30,7 +30,7 @@ interface CoordinationLock {
 
 interface TransactionOperation {
   type: string;
-  data?: any;
+  data?: unknown;
   entityType?: string;
 }
 
@@ -40,12 +40,12 @@ interface CoordinationStats {
 }
 
 interface CoordinationRepository {
-  publish(channel: string, event: any): Promise<void>;
+  publish(channel: string, event: unknown): Promise<void>;
   tryAcquireLock(
     key: string,
     maxRetries: number,
     retryDelay: number,
-    timeout: number,
+    timeout: number
   ): Promise<CoordinationLock | null>;
   acquireLock(key: string, timeout: number): Promise<CoordinationLock>;
   releaseLock(lockId: string): Promise<void>;
@@ -57,7 +57,7 @@ interface CoordinationRepository {
 export class CoordinationService {
   constructor(
     private logger: Logger,
-    private coordinationRepository: CoordinationRepository,
+    private coordinationRepository: CoordinationRepository
   ) {}
 
   /**
@@ -73,13 +73,13 @@ export class CoordinationService {
    */
   async coordinateEvent(
     eventType: string,
-    data: any,
+    data: unknown,
     options?: {
       channel?: string;
       waitForAcknowledgment?: boolean;
       timeout?: number;
       targetNodes?: string[];
-    },
+    }
   ): Promise<{
     published: boolean;
     acknowledgments: number;
@@ -118,7 +118,7 @@ export class CoordinationService {
         const ackResult = await this.waitForAcknowledgments(
           event,
           eventOptions?.targetNodes.length,
-          eventOptions?.timeout,
+          eventOptions?.timeout
         );
         acknowledgments = ackResult?.count;
         errors.push(...ackResult?.errors);
@@ -156,7 +156,7 @@ export class CoordinationService {
       timeout?: number;
       termDuration?: number;
       voteWeight?: number;
-    },
+    }
   ): Promise<{
     isLeader: boolean;
     leaderId?: string;
@@ -180,14 +180,14 @@ export class CoordinationService {
         `election:${electionId}`,
         3, // max retries
         1000, // retry delay
-        electionOptions?.timeout,
+        electionOptions?.timeout
       );
 
       if (!electionLock) {
         // Someone else is conducting the election
         const result = await this.waitForElectionResult(
           electionId,
-          electionOptions?.timeout,
+          electionOptions?.timeout
         );
         return {
           isLeader: result?.leaderId === candidateId,
@@ -202,7 +202,7 @@ export class CoordinationService {
         const electionResult = await this.conductElection(
           electionId,
           candidateId,
-          electionOptions,
+          electionOptions
         );
 
         return electionResult;
@@ -212,7 +212,7 @@ export class CoordinationService {
     } catch (error) {
       this.logger.error(`Leader election failed: ${error}`);
       throw new Error(
-        `Leader election failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Leader election failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -239,11 +239,11 @@ export class CoordinationService {
       parallelExecution?: boolean;
       failureHandling?: 'abort' | 'continue' | 'retry';
       maxRetries?: number;
-    },
+    }
   ): Promise<{
     workflowId: string;
     completed: boolean;
-    results: Record<string, any>;
+    results: Record<string, unknown>;
     errors: Record<string, string>;
     executionTime: number;
   }> {
@@ -251,7 +251,7 @@ export class CoordinationService {
       `Coordinating workflow: ${workflowId} with ${steps.length} steps`,
       {
         options,
-      },
+      }
     );
 
     const startTime = Date.now();
@@ -261,14 +261,14 @@ export class CoordinationService {
       maxRetries: options?.maxRetries || 3,
     };
 
-    const results: Record<string, any> = {};
+    const results: Record<string, unknown> = {};
     const errors: Record<string, string> = {};
 
     try {
       // Acquire workflow lock
       const workflowLock = await this.coordinationRepository.acquireLock(
         `workflow:${workflowId}`,
-        300000, // 5 minutes
+        300000 // 5 minutes
       );
 
       try {
@@ -277,14 +277,14 @@ export class CoordinationService {
             steps,
             results,
             errors,
-            workflowOptions,
+            workflowOptions
           );
         } else {
           await this.executeWorkflowSequential(
             steps,
             results,
             errors,
-            workflowOptions,
+            workflowOptions
           );
         }
 
@@ -366,7 +366,7 @@ export class CoordinationService {
     } catch (error) {
       this.logger.error(`Coordination health check failed: ${error}`);
       throw new Error(
-        `Coordination health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Coordination health check failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -397,7 +397,7 @@ export class CoordinationService {
     ];
   }
 
-  protected getConfiguration(): Record<string, any> {
+  protected getConfiguration(): Record<string, unknown> {
     return {
       type: 'coordination',
       supportsDistributedLocks: true,
@@ -410,7 +410,7 @@ export class CoordinationService {
   /**
    * Enhanced performance metrics for coordination databases.
    */
-  protected getCustomMetrics(): Record<string, any> | undefined {
+  protected getCustomMetrics(): Record<string, unknown> | undefined {
     return {
       coordinationFeatures: {
         lockEfficiency: 92.3,
@@ -443,8 +443,8 @@ export class CoordinationService {
 
   private async verifyConsensus(
     _operations: TransactionOperation[],
-    _results: any,
-    nodeCount: number,
+    _results: unknown,
+    nodeCount: number
   ): Promise<void> {
     // Mock consensus verification
     const consensusThreshold = Math.floor(nodeCount / 2) + 1;
@@ -455,14 +455,14 @@ export class CoordinationService {
     // 3. Ensure consensus threshold is met
 
     this.logger.debug(
-      `Consensus verified with ${consensusThreshold}/${nodeCount} nodes`,
+      `Consensus verified with ${consensusThreshold}/${nodeCount} nodes`
     );
   }
 
   private async waitForAcknowledgments(
     _event: CoordinationEvent<any>,
     expectedCount: number,
-    timeout: number,
+    timeout: number
   ): Promise<{
     count: number;
     errors: string[];
@@ -474,19 +474,19 @@ export class CoordinationService {
           resolve({
             count: Math.min(
               expectedCount,
-              Math.floor(Math.random() * expectedCount) + 1,
+              Math.floor(Math.random() * expectedCount) + 1
             ),
             errors: [],
           });
         },
-        Math.min(timeout, 1000),
+        Math.min(timeout, 1000)
       );
     });
   }
 
   private async waitForElectionResult(
     _electionId: string,
-    timeout: number,
+    timeout: number
   ): Promise<{
     leaderId: string;
     term: number;
@@ -500,7 +500,7 @@ export class CoordinationService {
             term: 1,
           });
         },
-        Math.min(timeout, 2000),
+        Math.min(timeout, 2000)
       );
     });
   }
@@ -508,7 +508,7 @@ export class CoordinationService {
   private async conductElection(
     _electionId: string,
     candidateId: string,
-    _options: any,
+    _options: unknown
   ): Promise<{
     isLeader: boolean;
     leaderId: string;
@@ -529,10 +529,10 @@ export class CoordinationService {
   }
 
   private async executeWorkflowParallel(
-    steps: any[],
-    results: Record<string, any>,
+    steps: unknown[],
+    results: Record<string, unknown>,
     errors: Record<string, string>,
-    options: any,
+    options: unknown
   ): Promise<void> {
     const promises = steps.map(async (step) => {
       try {
@@ -551,10 +551,10 @@ export class CoordinationService {
   }
 
   private async executeWorkflowSequential(
-    steps: any[],
-    results: Record<string, any>,
+    steps: unknown[],
+    results: Record<string, unknown>,
     errors: Record<string, string>,
-    options: any,
+    options: unknown
   ): Promise<void> {
     for (const step of steps) {
       try {
@@ -587,8 +587,8 @@ export class CoordinationService {
   }
 
   private async executeTransaction(
-    operations: TransactionOperation[],
-  ): Promise<any> {
+    operations: TransactionOperation[]
+  ): Promise<unknown> {
     // Mock transaction execution
     return { success: true, operationCount: operations.length };
   }

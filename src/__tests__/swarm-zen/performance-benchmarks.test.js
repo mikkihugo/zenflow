@@ -311,21 +311,21 @@ class ScalabilityTester {
 
     if (avgEfficiency < 0.7) {
       recommendations.push(
-        'Performance degrades significantly with scale - consider optimization',
+        'Performance degrades significantly with scale - consider optimization'
       );
     } else if (avgEfficiency > 1.2) {
       recommendations.push(
-        'Excellent scaling performance - system handles load well',
+        'Excellent scaling performance - system handles load well'
       );
     }
 
     if (avgMemoryEfficiency < 0.5) {
       recommendations.push(
-        'Memory usage grows faster than scale - investigate memory leaks',
+        'Memory usage grows faster than scale - investigate memory leaks'
       );
     } else if (avgMemoryEfficiency > 0.9) {
       recommendations.push(
-        'Good memory efficiency - memory usage scales linearly',
+        'Good memory efficiency - memory usage scales linearly'
       );
     }
 
@@ -355,7 +355,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
         read: async (query, _params = []) => {
           // Simulate database latency
           await new Promise((resolve) =>
-            setTimeout(resolve, 1 + Math.random() * 2),
+            setTimeout(resolve, 1 + Math.random() * 2)
           );
           if (query.includes('SELECT 1')) return [{ test: 1 }];
           return [];
@@ -363,7 +363,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
         write: async (_query, _params = []) => {
           // Simulate write latency
           await new Promise((resolve) =>
-            setTimeout(resolve, 2 + Math.random() * 3),
+            setTimeout(resolve, 2 + Math.random() * 3)
           );
           return { changes: 1 };
         },
@@ -406,7 +406,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
             topology: 'mesh',
             connections: [],
             metrics: { totalTasks: 0, completedTasks: 0, failedTasks: 0 },
-          },
+          }
         );
 
         sessionIds.push(sessionId);
@@ -421,10 +421,10 @@ describe('Performance Benchmarks - Session Persistence', () => {
       benchmark.addMemorySnapshot('after-session-creation');
 
       const _batchStats = benchmark.calculateStatistics(
-        'session-creation-batch',
+        'session-creation-batch'
       );
       const singleStats = benchmark.calculateStatistics(
-        'single-session-creation',
+        'single-session-creation'
       );
 
       expect(sessionIds).toHaveLength(sessionCount);
@@ -440,7 +440,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
         {
           topology: 'ring',
           maxAgents: 20,
-        },
+        }
       );
 
       const updateCount = 2000;
@@ -485,7 +485,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 status: 'active',
                 metadata: { performance: 'benchmark', index: i },
               },
-            ]),
+            ])
           ),
           tasks: new Map(
             Array.from({ length: 100 }, (_, i) => [
@@ -496,12 +496,12 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 status: 'running',
                 data: Array.from({ length: 100 }, () => Math.random()),
               },
-            ]),
+            ])
           ),
           topology: 'hierarchical',
           connections: Array.from(
             { length: 49 },
-            (_, i) => `agent-${i}:agent-${i + 1}`,
+            (_, i) => `agent-${i}:agent-${i + 1}`
           ),
           metrics: {
             totalTasks: 100,
@@ -512,11 +512,11 @@ describe('Performance Benchmarks - Session Persistence', () => {
               Array.from({ length: 50 }, (_, i) => [
                 `agent-${i}`,
                 Math.random(),
-              ]),
+              ])
             ),
             throughput: 85.5,
           },
-        },
+        }
       );
 
       const checkpointCount = 100;
@@ -529,7 +529,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
         const checkpointId = await sessionManager.createCheckpoint(
           sessionId,
           `Benchmark checkpoint ${i}`,
-          { benchmarkIndex: i, timestamp: Date.now() },
+          { benchmarkIndex: i, timestamp: Date.now() }
         );
 
         checkpointIds.push(checkpointId);
@@ -559,7 +559,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
               config: {
                 capabilities: Array.from(
                   { length: 20 },
-                  (_, j) => `capability-${j}`,
+                  (_, j) => `capability-${j}`
                 ),
                 history: Array.from({ length: 100 }, (_, k) => ({
                   timestamp: Date.now() - k * 1000,
@@ -568,7 +568,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 })),
               },
             },
-          ]),
+          ])
         ),
         tasks: new Map(
           Array.from({ length: 1000 }, (_, i) => [
@@ -584,12 +584,12 @@ describe('Performance Benchmarks - Session Persistence', () => {
                 tags: Array.from({ length: 5 }, (_, j) => `tag-${j}`),
               },
             },
-          ]),
+          ])
         ),
         topology: 'mesh',
         connections: Array.from(
           { length: 999 },
-          (_, i) => `agent-${i}:agent-${i + 1}`,
+          (_, i) => `agent-${i}:agent-${i + 1}`
         ),
         metrics: {
           totalTasks: 1000,
@@ -597,10 +597,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
           failedTasks: Math.floor(Math.random() * 50),
           averageCompletionTime: 2500,
           agentUtilization: new Map(
-            Array.from({ length: 500 }, (_, i) => [
-              `agent-${i}`,
-              Math.random(),
-            ]),
+            Array.from({ length: 500 }, (_, i) => [`agent-${i}`, Math.random()])
           ),
           throughput: 125.7,
           detailedMetrics: Array.from({ length: 100 }, (_, i) => ({
@@ -613,7 +610,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const sessionId = await sessionManager.createSession(
         'large-state-benchmark',
         { topology: 'mesh', maxAgents: 500 },
-        largeState,
+        largeState
       );
 
       // Benchmark loading
@@ -645,7 +642,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const concurrentTest = async (workerId, iteration) => {
         const sessionId = await sessionManager.createSession(
           `concurrent-${workerId}-${iteration}`,
-          { topology: 'ring', maxAgents: 8 },
+          { topology: 'ring', maxAgents: 8 }
         );
 
         // Perform mixed operations
@@ -655,7 +652,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
         const checkpointId = await sessionManager.createCheckpoint(
           sessionId,
-          `Concurrent checkpoint ${workerId}-${iteration}`,
+          `Concurrent checkpoint ${workerId}-${iteration}`
         );
 
         const loadedSession = await sessionManager.loadSession(sessionId);
@@ -670,7 +667,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const results = await loadTester.runConcurrentLoad(
         concurrentTest,
         concurrency,
-        operationsPerWorker,
+        operationsPerWorker
       );
       benchmark.endMeasurement('concurrent-operations');
 
@@ -700,14 +697,14 @@ describe('Performance Benchmarks - Session Persistence', () => {
               complexity,
               timestamp: Date.now(),
               data: Array.from({ length: complexity * 10 }, () =>
-                Math.random(),
+                Math.random()
               ),
             };
           },
           {
             priority: i % 4 === 0 ? 'high' : 'normal',
             category: `category-${i % 5}`,
-          },
+          }
         );
       }
 
@@ -719,7 +716,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       expect(summary.healthy).toBeGreaterThan(checkCount * 0.8); // Most should be healthy
 
       const _parallelStats = benchmark.calculateStatistics(
-        'health-checks-parallel',
+        'health-checks-parallel'
       );
 
       // Compare with sequential execution
@@ -731,7 +728,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       benchmark.endMeasurement('health-checks-sequential');
 
       const _sequentialStats = benchmark.calculateStatistics(
-        'health-checks-sequential',
+        'health-checks-sequential'
       );
     });
 
@@ -748,7 +745,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
           {
             interval: 100, // Very frequent
             priority: 'low',
-          },
+          }
         );
       }
 
@@ -770,7 +767,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       expect(monitoringStats.isRunning).toBe(false);
 
       const _overheadStats = benchmark.calculateStatistics(
-        'monitoring-overhead',
+        'monitoring-overhead'
       );
     });
 
@@ -828,7 +825,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
               action: async () => {
                 // Simulate work
                 await new Promise((resolve) =>
-                  setTimeout(resolve, Math.random() * 10),
+                  setTimeout(resolve, Math.random() * 10)
                 );
                 return { step: 1, workflowId: i };
               },
@@ -864,12 +861,12 @@ describe('Performance Benchmarks - Session Persistence', () => {
       benchmark.endMeasurement('workflow-execution');
 
       const successfulExecutions = executions.filter(
-        (e) => e.status === 'completed',
+        (e) => e.status === 'completed'
       );
       expect(successfulExecutions.length).toBeGreaterThan(workflowCount * 0.9); // > 90% success
 
       const _workflowStats = benchmark.calculateStatistics(
-        'single-workflow-execution',
+        'single-workflow-execution'
       );
     });
 
@@ -889,7 +886,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                   // Simulate proportional work
                   const workAmount = scale * 5;
                   await new Promise((resolve) =>
-                    setTimeout(resolve, workAmount),
+                    setTimeout(resolve, workAmount)
                   );
                   return { scale, workAmount, workflowIndex: i };
                 },
@@ -902,8 +899,8 @@ describe('Performance Benchmarks - Session Persistence', () => {
         // Execute all workflows
         const executions = await Promise.all(
           Array.from({ length: workflowCount }, (_, i) =>
-            recoveryWorkflows.triggerRecovery(`scale-${scale}-trigger-${i}`),
-          ),
+            recoveryWorkflows.triggerRecovery(`scale-${scale}-trigger-${i}`)
+          )
         );
 
         return {
@@ -918,7 +915,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
       const scalabilityResults = await scalabilityTester.testScalability(
         scalabilityTest,
         scales,
-        25, // base workflow count
+        25 // base workflow count
       );
 
       expect(scalabilityResults.overallEfficiency).toBeGreaterThan(0.5); // Reasonable scaling
@@ -969,7 +966,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
               {
                 topology: 'mesh',
                 maxAgents: 10,
-              },
+              }
             );
 
             for (let j = 0; j < 20; j++) {
@@ -980,7 +977,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
             }
 
             return sessionId;
-          })(),
+          })()
         );
       }
 
@@ -996,13 +993,13 @@ describe('Performance Benchmarks - Session Persistence', () => {
       benchmark.endMeasurement('recovery-under-load');
 
       const successfulLoads = loadResults.filter(
-        (r) => r.status === 'fulfilled',
+        (r) => r.status === 'fulfilled'
       ).length;
       expect(successfulLoads).toBeGreaterThan(40); // Most should succeed
       expect(recoveryResult.status).toBe('completed');
 
       const _recoveryStats = benchmark.calculateStatistics(
-        'recovery-under-load',
+        'recovery-under-load'
       );
     });
   });
@@ -1028,18 +1025,18 @@ describe('Performance Benchmarks - Session Persistence', () => {
                   id: `agent-${j}`,
                   data: Array.from({ length: 1000 }, () => Math.random()),
                 },
-              ]),
+              ])
             ),
             tasks: new Map(),
             topology: 'ring',
             connections: [],
             metrics: {},
-          },
+          }
         );
 
         await sessionManager.createCheckpoint(
           sessionId,
-          `Memory test checkpoint ${i}`,
+          `Memory test checkpoint ${i}`
         );
         await sessionManager.terminateSession(sessionId, true);
 
@@ -1071,7 +1068,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
 
       // Check if memory growth is linear (potential leak) vs stable
       const lastHalf = heapGrowthPattern.slice(
-        Math.floor(heapGrowthPattern.length / 2),
+        Math.floor(heapGrowthPattern.length / 2)
       );
       const _avgGrowthRate =
         lastHalf.reduce((sum, point) => sum + point.growth, 0) /
@@ -1094,7 +1091,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
               {
                 topology: 'mesh',
                 maxAgents: 15,
-              },
+              }
             );
             return sessionId;
           },
@@ -1106,7 +1103,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
               `profile-check-${Date.now()}`,
               async () => ({
                 ok: true,
-              }),
+              })
             );
             return await healthMonitor.runAllHealthChecks();
           },
@@ -1119,7 +1116,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
               {
                 topology: 'hierarchical',
                 maxAgents: 100,
-              },
+              }
             );
 
             const largeState = {
@@ -1130,7 +1127,7 @@ describe('Performance Benchmarks - Session Persistence', () => {
                     id: `agent-${i}`,
                     data: Array.from({ length: 500 }, () => Math.random()),
                   },
-                ]),
+                ])
               ),
               tasks: new Map(),
               topology: 'hierarchical',

@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import React from 'react';
+import type React from 'react';
 
 export type StatusType =
   | 'success'
@@ -103,10 +103,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
       default:
         return (
           <Box>
-            <Text
-              color={config?.color}
-              bold
-            >
+            <Text color={config?.color} bold>
               {config?.icon} {displayText}
             </Text>
           </Box>
@@ -116,11 +113,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
   if (showBorder) {
     return (
-      <Box
-        borderStyle="single"
-        borderColor={config?.color}
-        paddingX={1}
-      >
+      <Box borderStyle="single" borderColor={config?.color} paddingX={1}>
         {renderContent()}
       </Box>
     );
@@ -131,70 +124,40 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
 
 // Convenience components for common status types
 export const SuccessBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="success"
-    text={text}
-  />
+  <StatusBadge status="success" text={text} />
 );
 
 export const ErrorBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="error"
-    text={text}
-  />
+  <StatusBadge status="error" text={text} />
 );
 
 export const WarningBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="warning"
-    text={text}
-  />
+  <StatusBadge status="warning" text={text} />
 );
 
 export const InfoBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="info"
-    text={text}
-  />
+  <StatusBadge status="info" text={text} />
 );
 
 export const PendingBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="pending"
-    text={text}
-  />
+  <StatusBadge status="pending" text={text} />
 );
 
 // Swarm-specific convenience components
 export const ActiveBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="active"
-    text={text}
-    variant="minimal"
-  />
+  <StatusBadge status="active" text={text} variant="minimal" />
 );
 
 export const IdleBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="idle"
-    text={text}
-    variant="minimal"
-  />
+  <StatusBadge status="idle" text={text} variant="minimal" />
 );
 
 export const BusyBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="busy"
-    text={text}
-    variant="minimal"
-  />
+  <StatusBadge status="busy" text={text} variant="minimal" />
 );
 
 export const InProgressBadge: React.FC<{ text?: string }> = ({ text }) => (
-  <StatusBadge
-    status="in_progress"
-    text={text}
-  />
+  <StatusBadge status="in_progress" text={text} />
 );
 
 export default StatusBadge;

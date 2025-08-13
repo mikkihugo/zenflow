@@ -52,7 +52,7 @@ export class TerminalManager extends EventEmitter {
   constructor(
     config: TerminalConfig = {},
     private logger?: ILogger,
-    private eventBus?: IEventBus,
+    private eventBus?: IEventBus
   ) {
     super();
 
@@ -64,8 +64,8 @@ export class TerminalManager extends EventEmitter {
       env: {
         ...(Object.fromEntries(
           Object.entries(process.env).filter(
-            ([_, value]) => value !== undefined,
-          ),
+            ([_, value]) => value !== undefined
+          )
         ) as Record<string, string>),
         ...config?.env,
       },
@@ -94,7 +94,7 @@ export class TerminalManager extends EventEmitter {
       env?: Record<string, string>;
       timeout?: number;
       shell?: boolean;
-    } = {},
+    } = {}
   ): Promise<ProcessResult> {
     const startTime = Date.now();
     const processId = `proc_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
@@ -260,7 +260,7 @@ export class TerminalManager extends EventEmitter {
    */
   async executeInSession(
     sessionId: string,
-    command: string,
+    command: string
   ): Promise<ProcessResult> {
     const session = this.sessions.get(sessionId);
     if (!session) {
@@ -340,7 +340,7 @@ export class TerminalManager extends EventEmitter {
 
     // Kill all active processes
     for (const [processId, process] of Array.from(
-      this.activeProcesses.entries(),
+      this.activeProcesses.entries()
     )) {
       if (!process.killed) {
         process.kill('SIGTERM');
@@ -355,7 +355,7 @@ export class TerminalManager extends EventEmitter {
     if (this.eventBus) {
       this.eventBus.on('system:shutdown', () => {
         this.cleanup().catch((error) =>
-          this.logger?.error('Error during TerminalManager cleanup', { error }),
+          this.logger?.error('Error during TerminalManager cleanup', { error })
         );
       });
     }

@@ -19,7 +19,7 @@ describe('MonitoringEventAdapter', () => {
 
   beforeEach(() => {
     config = createDefaultMonitoringEventAdapterConfig(
-      'test-monitoring-adapter',
+      'test-monitoring-adapter'
     );
     adapter = createMonitoringEventAdapter(config);
   });
@@ -83,7 +83,7 @@ describe('MonitoringEventAdapter', () => {
 
       const correlationSpy = vi.spyOn(
         adapter as any,
-        'startMonitoringEventCorrelation',
+        'startMonitoringEventCorrelation'
       );
 
       await adapter.start();
@@ -235,7 +235,7 @@ describe('MonitoringEventAdapter', () => {
       // Mock some component activity
       const healthCheckSpy = vi.spyOn(
         adapter as any,
-        'performMonitoringHealthCheck',
+        'performMonitoringHealthCheck'
       );
 
       // Trigger health check
@@ -253,7 +253,7 @@ describe('MonitoringEventAdapter', () => {
       const componentName = 'performance-monitor-test';
       const updateSpy = vi.spyOn(
         adapter as any,
-        'updateComponentHealthMetrics',
+        'updateComponentHealthMetrics'
       );
 
       // Trigger health metric updates
@@ -291,7 +291,7 @@ describe('MonitoringEventAdapter', () => {
       // Verify subscriptions are active
       const activeSubscriptions = adapter.getSubscriptions();
       expect(activeSubscriptions).toHaveLength(4);
-      expect(activeSubscriptions.every((sub: any) => sub.active)).toBe(true);
+      expect(activeSubscriptions.every((sub: unknown) => sub.active)).toBe(true);
     });
 
     it('should apply filters correctly to monitoring events', async () => {
@@ -341,7 +341,7 @@ describe('MonitoringEventAdapter', () => {
 
       // Add transform to enrich events
       const transformId = adapter.addTransform({
-        enricher: async (event: any) => ({
+        enricher: async (event: unknown) => ({
           ...event,
           metadata: {
             ...event['metadata'],
@@ -412,7 +412,7 @@ describe('MonitoringEventAdapter', () => {
 
       // Calculate efficiency (should be high due to mostly successful events)
       const efficiency = (adapter as any).calculateMonitoringEfficiency(
-        correlation,
+        correlation
       );
 
       expect(efficiency).toBeGreaterThan(0.6); // 3/4 successful events with good timing
@@ -503,7 +503,7 @@ describe('MonitoringEventAdapter', () => {
       // Events should be in chronological order
       for (let i = 1; i < history.length; i++) {
         expect(history[i]?.timestamp?.getTime()).toBeGreaterThanOrEqual(
-          history[i - 1]?.timestamp?.getTime(),
+          history[i - 1]?.timestamp?.getTime()
         );
       }
     });
@@ -600,7 +600,7 @@ describe('MonitoringEventAdapter', () => {
       expect(healthData).toBeDefined();
       expect(healthData?.eventCount).toBe(healthScores.length);
       expect(healthData?.latestScore).toBe(
-        healthScores[healthScores.length - 1],
+        healthScores[healthScores.length - 1]
       );
     });
 
@@ -677,9 +677,9 @@ describe('MonitoringEventAdapter', () => {
       // Subscribe to all monitoring events
       adapter.subscribe(
         ['monitoring:metrics', 'monitoring:health', 'monitoring:alert'],
-        (event: any) => {
+        (event: unknown) => {
           workflowEvents.push(event);
-        },
+        }
       );
 
       const correlationId = 'workflow-test';
@@ -736,7 +736,7 @@ describe('MonitoringEventAdapter', () => {
         'high-throughput-test',
         {
           processing: { strategy: 'batched', batchSize: 50, queueSize: 1000 },
-        },
+        }
       );
 
       const htAdapter = createMonitoringEventAdapter(highThroughputConfig);
@@ -747,7 +747,7 @@ describe('MonitoringEventAdapter', () => {
         const eventCount = 200;
         const receivedEvents: unknown[] = [];
 
-        htAdapter.subscribe(['monitoring:metrics'], (event: any) => {
+        htAdapter.subscribe(['monitoring:metrics'], (event: unknown) => {
           receivedEvents.push(event);
         });
 
@@ -764,7 +764,7 @@ describe('MonitoringEventAdapter', () => {
                 metricName: `metric_${i}`,
                 metricValue: Math.random() * 100,
               },
-            }),
+            })
           );
         }
 
@@ -798,7 +798,7 @@ describe('MonitoringEventAdapter', () => {
         'cpu_usage',
         85.5,
         'web-server',
-        { threshold: 80 },
+        { threshold: 80 }
       );
 
       expect(event['source']).toBe('performance-monitor');
@@ -818,7 +818,7 @@ describe('MonitoringEventAdapter', () => {
         'unhealthy',
         {
           lastCheck: new Date(),
-        },
+        }
       );
 
       expect(event['source']).toBe('health-monitor');
@@ -835,7 +835,7 @@ describe('MonitoringEventAdapter', () => {
         'alert-123',
         'critical',
         'payment-service',
-        { threshold: 1000, currentValue: 2500 },
+        { threshold: 1000, currentValue: 2500 }
       );
 
       expect(event['source']).toBe('alert-manager');
@@ -856,7 +856,7 @@ describe('MonitoringEventAdapter', () => {
 
       const event = MonitoringEventHelpers.createAnalyticsInsightEvent(
         'trend-analyzer',
-        insights,
+        insights
       );
 
       expect(event['source']).toBe('analytics-engine');
@@ -873,7 +873,7 @@ describe('MonitoringEventAdapter', () => {
       const event = MonitoringEventHelpers.createMonitoringErrorEvent(
         'metrics-collector',
         error,
-        'collect',
+        'collect'
       );
 
       expect(event['source']).toBe('metrics-collector');

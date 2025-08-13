@@ -429,7 +429,7 @@ export class ValueStreamMapper extends EventEmitter {
     portfolioOrchestrator: PortfolioOrchestrator,
     programOrchestrator: ProgramOrchestrator,
     swarmOrchestrator: SwarmExecutionOrchestrator,
-    config: Partial<ValueStreamMapperConfig> = {},
+    config: Partial<ValueStreamMapperConfig> = {}
   ) {
     super();
 
@@ -575,7 +575,7 @@ export class ValueStreamMapper extends EventEmitter {
               acc[b.severity] = (acc[b.severity] || 0) + 1;
               return acc;
             },
-            {} as Record<string, number>,
+            {} as Record<string, number>
           ),
         });
       }
@@ -600,7 +600,7 @@ export class ValueStreamMapper extends EventEmitter {
    * Add value stream performance metrics
    */
   async calculateValueStreamMetrics(
-    valueStreamId: string,
+    valueStreamId: string
   ): Promise<ValueStreamMetrics> {
     const valueStream = this.state.valueStreams.get(valueStreamId);
     if (!valueStream) {
@@ -634,7 +634,7 @@ export class ValueStreamMapper extends EventEmitter {
    * Generate flow optimization recommendations
    */
   async generateFlowOptimizationRecommendations(
-    valueStreamId: string,
+    valueStreamId: string
   ): Promise<FlowOptimizationRecommendation[]> {
     this.logger.info('Generating flow optimization recommendations', {
       valueStreamId,
@@ -643,7 +643,7 @@ export class ValueStreamMapper extends EventEmitter {
     const analysis = this.state.flowAnalyses.get(valueStreamId);
     if (!analysis) {
       throw new Error(
-        `No flow analysis found for value stream: ${valueStreamId}`,
+        `No flow analysis found for value stream: ${valueStreamId}`
       );
     }
 
@@ -668,7 +668,7 @@ export class ValueStreamMapper extends EventEmitter {
     // Update state
     this.state.optimizationRecommendations.set(
       valueStreamId,
-      prioritizedRecommendations,
+      prioritizedRecommendations
     );
 
     this.logger.info('Flow optimization recommendations generated', {
@@ -688,7 +688,7 @@ export class ValueStreamMapper extends EventEmitter {
    * Implement continuous improvement feedback loops
    */
   async implementContinuousImprovementLoop(
-    valueStreamId: string,
+    valueStreamId: string
   ): Promise<void> {
     this.logger.info('Implementing continuous improvement loop', {
       valueStreamId,
@@ -700,14 +700,14 @@ export class ValueStreamMapper extends EventEmitter {
     // Compare with historical data
     const historicalAnalyses = await this.getHistoricalFlowAnalyses(
       valueStreamId,
-      30,
+      30
     ); // Last 30 days
     const trends = this.analyzeTrends(analysis, historicalAnalyses);
 
     // Identify improvement opportunities
     const opportunities = await this.identifyImprovementOpportunities(
       trends,
-      analysis,
+      analysis
     );
 
     // Generate kaizen suggestions
@@ -752,7 +752,7 @@ export class ValueStreamMapper extends EventEmitter {
    * Track value delivery time across the stream
    */
   async trackValueDeliveryTime(
-    valueStreamId: string,
+    valueStreamId: string
   ): Promise<ValueDeliveryTracking> {
     this.logger.info('Tracking value delivery time', { valueStreamId });
 
@@ -763,24 +763,24 @@ export class ValueStreamMapper extends EventEmitter {
 
     const deliveryMetrics = await this.calculateValueDeliveryMetrics(
       valueStreamId,
-      trackingPeriod,
+      trackingPeriod
     );
     const customerOutcomes = await this.assessCustomerOutcomes(
       valueStreamId,
-      trackingPeriod,
+      trackingPeriod
     );
     const businessOutcomes = await this.assessBusinessOutcomes(
       valueStreamId,
-      trackingPeriod,
+      trackingPeriod
     );
     const trends = await this.analyzeValueDeliveryTrends(
       valueStreamId,
-      trackingPeriod,
+      trackingPeriod
     );
     const alerts = await this.generateValueDeliveryAlerts(
       valueStreamId,
       deliveryMetrics,
-      trends,
+      trends
     );
 
     const tracking: ValueDeliveryTracking = {
@@ -826,7 +826,7 @@ export class ValueStreamMapper extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'value-stream-mapper:state',
+        'value-stream-mapper:state'
       );
       if (persistedState) {
         this.state = {
@@ -836,10 +836,10 @@ export class ValueStreamMapper extends EventEmitter {
           flowAnalyses: new Map(persistedState.flowAnalyses || []),
           bottlenecks: new Map(persistedState.bottlenecks || []),
           optimizationRecommendations: new Map(
-            persistedState.optimizationRecommendations || [],
+            persistedState.optimizationRecommendations || []
           ),
           valueDeliveryTracking: new Map(
-            persistedState.valueDeliveryTracking || [],
+            persistedState.valueDeliveryTracking || []
           ),
         };
         this.logger.info('Value Stream Mapper state loaded');
@@ -857,10 +857,10 @@ export class ValueStreamMapper extends EventEmitter {
         flowAnalyses: Array.from(this.state.flowAnalyses.entries()),
         bottlenecks: Array.from(this.state.bottlenecks.entries()),
         optimizationRecommendations: Array.from(
-          this.state.optimizationRecommendations.entries(),
+          this.state.optimizationRecommendations.entries()
         ),
         valueDeliveryTracking: Array.from(
-          this.state.valueDeliveryTracking.entries(),
+          this.state.valueDeliveryTracking.entries()
         ),
       };
 
@@ -946,14 +946,14 @@ export class ValueStreamMapper extends EventEmitter {
   }
 
   private async analyzeValueStreamFlow(
-    streamId: string,
+    streamId: string
   ): Promise<ValueStreamFlowAnalysis> {
     // Placeholder implementation
     return {} as ValueStreamFlowAnalysis;
   }
 
   private detectBottlenecksInFlow(
-    analysis: ValueStreamFlowAnalysis,
+    analysis: ValueStreamFlowAnalysis
   ): FlowBottleneck[] {
     // Placeholder implementation
     return [];
@@ -961,7 +961,7 @@ export class ValueStreamMapper extends EventEmitter {
 
   // Additional placeholder methods would continue...
   private async createBottleneckAlerts(
-    bottlenecks: Map<string, FlowBottleneck[]>,
+    bottlenecks: Map<string, FlowBottleneck[]>
   ): Promise<void> {}
   private calculateThroughput(analysis: ValueStreamFlowAnalysis): number {
     return 0;
@@ -970,80 +970,80 @@ export class ValueStreamMapper extends EventEmitter {
     return 0;
   }
   private async calculateCustomerSatisfaction(
-    streamId: string,
+    streamId: string
   ): Promise<number> {
     return 0;
   }
   private async generateBottleneckRecommendations(
     bottleneck: FlowBottleneck,
-    analysis: ValueStreamFlowAnalysis,
+    analysis: ValueStreamFlowAnalysis
   ): Promise<FlowOptimizationRecommendation[]> {
     return [];
   }
   private async generateGeneralFlowRecommendations(
-    analysis: ValueStreamFlowAnalysis,
+    analysis: ValueStreamFlowAnalysis
   ): Promise<FlowOptimizationRecommendation[]> {
     return [];
   }
   private prioritizeRecommendations(
-    recommendations: FlowOptimizationRecommendation[],
+    recommendations: FlowOptimizationRecommendation[]
   ): FlowOptimizationRecommendation[] {
     return recommendations;
   }
   private async getHistoricalFlowAnalyses(
     streamId: string,
-    days: number,
+    days: number
   ): Promise<ValueStreamFlowAnalysis[]> {
     return [];
   }
   private analyzeTrends(
     current: ValueStreamFlowAnalysis,
-    historical: ValueStreamFlowAnalysis[],
-  ): any {
+    historical: ValueStreamFlowAnalysis[]
+  ): unknown {
     return {};
   }
   private async identifyImprovementOpportunities(
     trends: unknown,
-    analysis: ValueStreamFlowAnalysis,
+    analysis: ValueStreamFlowAnalysis
   ): Promise<any[]> {
     return [];
   }
   private async generateKaizenSuggestions(
-    opportunities: unknown[],
+    opportunities: unknown[]
   ): Promise<any[]> {
     return [];
   }
   private async trackImprovementImplementations(
-    streamId: string,
+    streamId: string
   ): Promise<void> {}
   private async calculateValueDeliveryMetrics(
     streamId: string,
-    period: DateRange,
+    period: DateRange
   ): Promise<ValueDeliveryMetrics> {
     return {} as ValueDeliveryMetrics;
   }
   private async assessCustomerOutcomes(
     streamId: string,
-    period: DateRange,
+    period: DateRange
   ): Promise<CustomerOutcome[]> {
     return [];
   }
   private async assessBusinessOutcomes(
     streamId: string,
-    period: DateRange,
+    period: DateRange
   ): Promise<BusinessOutcome[]> {
     return [];
   }
   private async analyzeValueDeliveryTrends(
     streamId: string,
-    period: DateRange,
+    period: DateRange
   ): Promise<ValueDeliveryTrend[]> {
     return [];
   }
   private async generateValueDeliveryAlerts(
     streamId: string,
     metrics: ValueDeliveryMetrics,
-    trends: ValueDeliveryTrend[],
+    trends: ValueDeliveryTrend[]
   ): Promise<ValueDeliveryAlert[]> {
     return [];
   }
@@ -1052,7 +1052,7 @@ export class ValueStreamMapper extends EventEmitter {
   private async trackValueDeliveryForAllStreams(): Promise<void> {}
   private async handleWorkflowCompletion(payload: unknown): Promise<void> {}
   private async handleBottleneckResolution(
-    bottleneckId: string,
+    bottleneckId: string
   ): Promise<void> {}
 }
 

@@ -34,7 +34,7 @@ export class MockCoordinationService {
     (
       agentIds: string[],
       topology: string,
-      task?: string,
+      task?: string
     ) => Promise<CoordinationResult>
   > = vi.fn();
 
@@ -88,12 +88,12 @@ export class MockCoordinationService {
   expectCoordinationCalled(
     agentIds: string[],
     topology: string,
-    task?: string,
+    task?: string
   ) {
     expect(this.coordinateAgents).toHaveBeenCalledWith(
       agentIds,
       topology,
-      task,
+      task
     );
     return this;
   }
@@ -119,17 +119,17 @@ export class MockCoordinationService {
    */
   expectMetricsUpdated(
     coordinationId: string,
-    metrics?: Partial<CoordinationMetrics>,
+    metrics?: Partial<CoordinationMetrics>
   ) {
     if (metrics) {
       expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(
         coordinationId,
-        expect.objectContaining(metrics),
+        expect.objectContaining(metrics)
       );
     } else {
       expect(this.updateCoordinationMetrics).toHaveBeenCalledWith(
         coordinationId,
-        expect.any(Object),
+        expect.any(Object)
       );
     }
     return this;
@@ -216,7 +216,7 @@ export class MockMemoryPool {
   allocate: vi.MockedFunction<
     (
       type: string,
-      size: number,
+      size: number
     ) => { success: boolean; ptr: ArrayBuffer; id: string }
   > = vi.fn();
 

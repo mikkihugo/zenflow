@@ -47,7 +47,7 @@ export interface CLIModuleConfig {
  * @example
  */
 export async function initializeAdvancedCLI(
-  config: Partial<CLIModuleConfig> = {},
+  config: Partial<CLIModuleConfig> = {}
 ): Promise<AdvancedCLIEngine> {
   const finalConfig: CLIModuleConfig = {
     engine: 'advanced',
@@ -83,7 +83,7 @@ export async function initializeAdvancedCLI(
  * @example
  */
 export function createAdvancedCLI(
-  options: Partial<CLIModuleConfig> = {},
+  options: Partial<CLIModuleConfig> = {}
 ): AdvancedCLIEngine {
   return new AdvancedCLIEngine();
 }

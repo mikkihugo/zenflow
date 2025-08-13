@@ -92,14 +92,14 @@ export class SafeMemoryStore extends EventEmitter {
   async storeData<T>(
     key: string,
     data: T,
-    ttl?: number,
+    ttl?: number
   ): Promise<MemoryResult<void>> {
     try {
       if (!this.initialized) {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized',
+          'Memory store not initialized'
         );
       }
 
@@ -107,7 +107,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_FULL',
-          'Memory store has reached maximum capacity',
+          'Memory store has reached maximum capacity'
         );
       }
 
@@ -165,7 +165,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized',
+          'Memory store not initialized'
         );
       }
 
@@ -186,7 +186,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'METADATA_MISSING',
-          'Metadata not found for key',
+          'Metadata not found for key'
         );
       }
 
@@ -232,7 +232,7 @@ export class SafeMemoryStore extends EventEmitter {
         return this.createMemoryError(
           key,
           'STORE_NOT_INITIALIZED',
-          'Memory store not initialized',
+          'Memory store not initialized'
         );
       }
 
@@ -394,7 +394,7 @@ export class SafeMemoryStore extends EventEmitter {
   private createMemoryError(
     key: string,
     code: string,
-    message: string,
+    message: string
   ): MemoryError {
     return {
       found: false,
@@ -484,7 +484,7 @@ export async function safeMemoryUsageExample(): Promise<void> {
 
   // Retrieve data with safe access
   const retrieveResult = await store.retrieve<{ name: string; age: number }>(
-    'user:123',
+    'user:123'
   );
 
   if (isMemorySuccess(retrieveResult)) {

@@ -384,7 +384,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     memory: MemorySystem,
     swarmOrchestrator: SwarmExecutionOrchestrator,
     valueStreamMapper: ValueStreamMapper,
-    config: Partial<CDPipelineConfig> = {},
+    config: Partial<CDPipelineConfig> = {}
   ) {
     super();
 
@@ -515,7 +515,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     sparcProjectId: string,
     featureId: string,
     valueStreamId: string,
-    pipelineType: string = 'standard',
+    pipelineType: string = 'standard'
   ): Promise<string> {
     this.logger.info('Starting CD pipeline for SPARC project', {
       sparcProjectId,
@@ -633,7 +633,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   async executeQualityGate(
     gateId: string,
     pipelineId: string,
-    stageId: string,
+    stageId: string
   ): Promise<QualityGateResult> {
     const gate = this.state.qualityGateTemplates.get(gateId);
     if (!gate) {
@@ -663,7 +663,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
     let status: 'pass' | 'fail' | 'warning' = 'pass';
     const criticalFailures = criterionResults.filter(
       (r) =>
-        !r.passed && gate.criteria.find((c) => c.metric === r.metric)?.critical,
+        !r.passed && gate.criteria.find((c) => c.metric === r.metric)?.critical
     );
 
     if (criticalFailures.length > 0) {
@@ -681,7 +681,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
       message: this.generateGateResultMessage(
         status,
         finalScore,
-        criticalFailures.length,
+        criticalFailures.length
       ),
       recommendations: await this.generateGateRecommendations(criterionResults),
       timestamp: new Date(),
@@ -708,7 +708,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   async executeDeploymentAutomation(
     pipelineId: string,
     environment: string,
-    artifacts: PipelineArtifact[],
+    artifacts: PipelineArtifact[]
   ): Promise<void> {
     this.logger.info('Executing deployment automation', {
       pipelineId,
@@ -736,7 +736,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
         await this.updateValueStreamDeploymentMetrics(
           execution.context.valueStreamId,
           execution,
-          environment,
+          environment
         );
       }
 
@@ -822,10 +822,10 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
           pipelineTemplates: new Map(persistedState.pipelineTemplates || []),
           activePipelines: new Map(persistedState.activePipelines || []),
           qualityGateTemplates: new Map(
-            persistedState.qualityGateTemplates || [],
+            persistedState.qualityGateTemplates || []
           ),
           automationTemplates: new Map(
-            persistedState.automationTemplates || [],
+            persistedState.automationTemplates || []
           ),
           performanceMetrics: new Map(persistedState.performanceMetrics || []),
         };
@@ -843,10 +843,10 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
         pipelineTemplates: Array.from(this.state.pipelineTemplates.entries()),
         activePipelines: Array.from(this.state.activePipelines.entries()),
         qualityGateTemplates: Array.from(
-          this.state.qualityGateTemplates.entries(),
+          this.state.qualityGateTemplates.entries()
         ),
         automationTemplates: Array.from(
-          this.state.automationTemplates.entries(),
+          this.state.automationTemplates.entries()
         ),
         performanceMetrics: Array.from(this.state.performanceMetrics.entries()),
       };
@@ -894,7 +894,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
       'feature-ready-for-deployment',
       async (event) => {
         await this.handleFeatureDeploymentRequest(event.payload);
-      },
+      }
     );
   }
 
@@ -935,7 +935,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   // Additional placeholder methods would continue...
   private async executePipelineAsync(
     execution: PipelineExecution,
-    stages: CDPipelineStage[],
+    stages: CDPipelineStage[]
   ): Promise<void> {}
   private async createCodeQualityGate(): Promise<QualityGate> {
     return {} as QualityGate;
@@ -954,52 +954,52 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   }
   private async executeCriterion(
     criterion: QualityGateCriterion,
-    pipelineId: string,
+    pipelineId: string
   ): Promise<CriterionResult> {
     return {} as CriterionResult;
   }
   private generateGateResultMessage(
     status: string,
     score: number,
-    criticalFailures: number,
+    criticalFailures: number
   ): string {
     return '';
   }
   private async generateGateRecommendations(
-    results: CriterionResult[],
+    results: CriterionResult[]
   ): Promise<string[]> {
     return [];
   }
   private async validateDeploymentReadiness(
     artifacts: PipelineArtifact[],
-    environment: string,
+    environment: string
   ): Promise<void> {}
   private async executeDeploymentSteps(
     execution: PipelineExecution,
     environment: string,
-    artifacts: PipelineArtifact[],
+    artifacts: PipelineArtifact[]
   ): Promise<void> {}
   private async verifyDeploymentSuccess(
     execution: PipelineExecution,
-    environment: string,
+    environment: string
   ): Promise<void> {}
   private async updateValueStreamDeploymentMetrics(
     streamId: string,
     execution: PipelineExecution,
-    environment: string,
+    environment: string
   ): Promise<void> {}
   private async executeRollback(
     execution: PipelineExecution,
-    environment: string,
+    environment: string
   ): Promise<void> {}
   private async calculatePipelineMetrics(
-    execution: PipelineExecution,
+    execution: PipelineExecution
   ): Promise<PipelineMetrics> {
     return {} as PipelineMetrics;
   }
   private async checkPerformanceAlerts(
     execution: PipelineExecution,
-    metrics: PipelineMetrics,
+    metrics: PipelineMetrics
   ): Promise<void> {}
   private async analyzePipelineTrends(): Promise<void> {}
   private async updateValueStreamPipelineMetrics(): Promise<void> {}
@@ -1007,7 +1007,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   private async cleanupCompletedPipelines(): Promise<void> {}
   private async handleSPARCProjectCompletion(payload: unknown): Promise<void> {}
   private async handleFeatureDeploymentRequest(
-    payload: unknown,
+    payload: unknown
   ): Promise<void> {}
 }
 

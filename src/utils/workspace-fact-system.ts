@@ -34,8 +34,8 @@ export interface WorkspaceFact {
   subject: string;
   content: {
     summary: string;
-    details: any;
-    metadata?: Record<string, any>;
+    details: unknown;
+    metadata?: Record<string, unknown>;
     // Link to global FACT documentation if available
     globalFactReference?: string;
   };
@@ -75,7 +75,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   private envDetector: EnvironmentDetector;
   private refreshTimer: NodeJS.Timer | null = null;
   private isInitialized = false;
-  private globalFactDatabase?: any; // Reference to global FACT system if available
+  private globalFactDatabase?: unknown; // Reference to global FACT system if available
 
   constructor(
     private workspaceId: string,
@@ -84,14 +84,14 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       autoRefresh?: boolean;
       refreshInterval?: number;
       enableDeepAnalysis?: boolean;
-    } = {},
+    } = {}
   ) {
     super();
 
     this.envDetector = new EnvironmentDetector(
       workspacePath,
       config.autoRefresh ?? true,
-      config.refreshInterval ?? 30000,
+      config.refreshInterval ?? 30000
     );
 
     // Listen for environment updates
@@ -106,46 +106,66 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   async initialize(): Promise<void> {
     if (this.isInitialized) return;
 
-    // Connect to high-performance Rust FACT system for documentation
     try {
-      const { getRustFactBridge } = await import(
-        '../fact-integration/rust-fact-bridge.js'
-      );
-      this.globalFactDatabase = getRustFactBridge({
-        cacheSize: 50 * 1024 * 1024, // 50MB cache for workspace
-        timeout: 10000, // 10 second timeout
-        monitoring: true,
-      });
+      // Connect to high-performance Rust FACT system for documentation
+      try {
+        const { getRustFactBridge } = await import(
+          '../fact-integration/rust-fact-bridge.js'
+        );
+        this.globalFactDatabase = getRustFactBridge({
+          cacheSize: 50 * 1024 * 1024, // 50MB cache for workspace
+          timeout: 10000, // 10 second timeout
+          monitoring: true,
+        });
 
-      // Initialize the Rust FACT bridge
-      await this.globalFactDatabase.initialize();
-      console.log(
-        '✅ Rust FACT system initialized for workspace:',
-        this.workspaceId,
-      );
+        // Initialize the Rust FACT bridge
+        await this.globalFactDatabase.initialize();
+        console.log(
+          '✅ Rust FACT system initialized for workspace:',
+          this.workspaceId
+        );
+      } catch (error) {
+        // Silently continue without FACT system - this is expected if Rust binary isn't built
+        this.globalFactDatabase = null;
+      }
+
+      // Start environment detection with error handling
+      try {
+        await this.envDetector.detectEnvironment();
+      } catch (error) {
+        console.warn(
+          'Environment detection failed, using minimal setup:',
+          error
+        );
+      }
+
+      // Gather all workspace-specific facts with error handling
+      try {
+        await this.gatherWorkspaceFacts();
+      } catch (error) {
+        console.warn(
+          'Failed to gather workspace facts, using minimal setup:',
+          error
+        );
+      }
+
+      // Set up auto-refresh if enabled
+      if (this.config.autoRefresh) {
+        this.refreshTimer = setInterval(() => {
+          this.refreshFacts().catch(() => {
+            // Silently handle refresh failures
+          });
+        }, this.config.refreshInterval ?? 60000);
+      }
+
+      this.isInitialized = true;
+      this.emit('initialized');
     } catch (error) {
-      console.warn(
-        '⚠️ Rust FACT system not available, continuing with local facts only:',
-        error,
-      );
-      this.globalFactDatabase = null;
+      // Even if initialization fails, mark as initialized to prevent loops
+      this.isInitialized = true;
+      console.warn('Workspace fact system initialization failed:', error);
+      this.emit('initialized');
     }
-
-    // Start environment detection
-    await this.envDetector.detectEnvironment();
-
-    // Gather all workspace-specific facts
-    await this.gatherWorkspaceFacts();
-
-    // Set up auto-refresh if enabled
-    if (this.config.autoRefresh) {
-      this.refreshTimer = setInterval(() => {
-        this.refreshFacts();
-      }, this.config.refreshInterval ?? 60000);
-    }
-
-    this.isInitialized = true;
-    this.emit('initialized');
   }
 
   /**
@@ -219,8 +239,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   async addCustomFact(
     category: string,
     subject: string,
-    content: any,
-    metadata?: Record<string, any>,
+    content: unknown,
+    metadata?: Record<string, unknown>
   ): Promise<WorkspaceFact> {
     const fact: WorkspaceFact = {
       id: `custom:${category}:${subject}:${Date.now()}`,
@@ -279,7 +299,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
           try {
             const knowledge = await this.getToolKnowledge(
               tool.name,
-              tool.version,
+              tool.version
             );
             if (
               knowledge?.documentation ||
@@ -304,7 +324,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       documentTypes = (await this.getRAGDocumentStats()) || {};
       vectorDocuments = Object.values(documentTypes).reduce(
         (sum, count) => sum + count,
-        0,
+        0
       );
     } catch {
       // RAG system not available
@@ -315,7 +335,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       factsByType,
       environmentFacts: factsByType.environment || 0,
       lastUpdated: Math.max(
-        ...Array.from(this.facts.values()).map((f) => f.timestamp),
+        ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
       // FACT system integration
@@ -364,7 +384,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       factsByType,
       environmentFacts: factsByType.environment || 0,
       lastUpdated: Math.max(
-        ...Array.from(this.facts.values()).map((f) => f.timestamp),
+        ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
       ragEnabled: !!this.workspaceVectorDB,
@@ -381,8 +401,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   async getToolKnowledge(
     toolName: string,
     version: string,
-    queryType: string = 'docs',
-  ): Promise<any> {
+    queryType: string = 'docs'
+  ): Promise<unknown> {
     if (!this.globalFactDatabase) {
       return null;
     }
@@ -392,14 +412,14 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       const knowledge = await this.globalFactDatabase.processToolKnowledge(
         toolName,
         version,
-        queryType as 'docs' | 'snippets' | 'examples' | 'best-practices',
+        queryType as 'docs' | 'snippets' | 'examples' | 'best-practices'
       );
 
       return knowledge;
     } catch (error) {
       console.warn(
         `Failed to get knowledge for ${toolName}@${version}:`,
-        error,
+        error
       );
       return null;
     }
@@ -435,7 +455,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    * Check which tools have version-specific documentation in global FACT database
    */
   private async getToolsWithDocumentation(
-    tools: any[],
+    tools: unknown[]
   ): Promise<{ name: string; version?: string; hasDocumentation: boolean }[]> {
     const toolsWithDocs: {
       name: string;
@@ -452,7 +472,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
           const knowledge = await this.getToolKnowledge(
             tool.name,
             tool.version,
-            'docs',
+            'docs'
           );
           hasDocumentation =
             !!knowledge?.documentation ||
@@ -513,7 +533,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
     // Check which tools have version-specific FACT documentation
     const toolsWithDocs = await this.getToolsWithDocumentation(
-      envSnapshot?.tools || [],
+      envSnapshot?.tools || []
     );
 
     const summary = {
@@ -559,12 +579,12 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       {
         tool: string;
         version: string;
-        knowledge: any;
+        knowledge: unknown;
         hasDocumentation: boolean;
       }
     >
   > {
-    const allKnowledge: Record<string, any> = {};
+    const allKnowledge: Record<string, unknown> = {};
     const envSnapshot = this.envDetector.getSnapshot();
 
     if (!(this.globalFactDatabase && envSnapshot?.tools)) {
@@ -578,7 +598,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         try {
           const knowledge = await this.getToolKnowledge(
             tool.name,
-            tool.version,
+            tool.version
           );
           const hasDocumentation =
             !!knowledge?.documentation ||
@@ -612,7 +632,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       category: string;
     }[]
   > {
-    const suggestions: any[] = [];
+    const suggestions: unknown[] = [];
 
     if (!this.globalFactDatabase) {
       return suggestions;
@@ -636,7 +656,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       for (const tool of toolCategories) {
         try {
           const searchResults = await this.searchGlobalFacts(
-            `${tool} documentation`,
+            `${tool} documentation`
           );
 
           if (searchResults.length > 0) {
@@ -684,12 +704,23 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    * Gather all workspace-specific facts
    */
   private async gatherWorkspaceFacts(): Promise<void> {
-    await Promise.all([
-      this.gatherDependencyFacts(),
-      this.gatherProjectStructureFacts(),
-      this.gatherToolConfigFacts(),
-      this.gatherBuildSystemFacts(),
-    ]);
+    // Run fact gathering operations with individual error handling
+    const operations = [
+      this.gatherDependencyFacts().catch(() => {
+        // Silently handle dependency fact gathering failures
+      }),
+      this.gatherProjectStructureFacts().catch(() => {
+        // Silently handle project structure fact gathering failures
+      }),
+      this.gatherToolConfigFacts().catch(() => {
+        // Silently handle tool config fact gathering failures
+      }),
+      this.gatherBuildSystemFacts().catch(() => {
+        // Silently handle build system fact gathering failures
+      }),
+    ];
+
+    await Promise.allSettled(operations);
   }
 
   /**
@@ -933,7 +964,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private async parseDependencyFile(
     filename: string,
-    content: string,
+    content: string
   ): Promise<string[]> {
     try {
       switch (filename) {
@@ -1119,7 +1150,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   /**
    * Analyze project structure
    */
-  private async analyzeProjectStructure(): Promise<any> {
+  private async analyzeProjectStructure(): Promise<unknown> {
     const structure = {
       directories: 0,
       files: 0,
@@ -1169,8 +1200,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private async analyzeConfigFile(
     filename: string,
-    content: string,
-  ): Promise<any> {
+    content: string
+  ): Promise<unknown> {
     const analysis = {
       file: filename,
       size: content.length,
@@ -1248,7 +1279,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private matchesQuery(
     fact: WorkspaceFact,
-    query: WorkspaceFactQuery,
+    query: WorkspaceFactQuery
   ): boolean {
     if (query.type && fact.type !== query.type) return false;
     if (query.category && fact.category !== query.category) return false;
@@ -1276,7 +1307,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    */
   private async refreshFacts(): Promise<void> {
     const staleFacts = Array.from(this.facts.values()).filter(
-      (fact) => !this.isFactFresh(fact),
+      (fact) => !this.isFactFresh(fact)
     );
 
     if (staleFacts.length > 0) {

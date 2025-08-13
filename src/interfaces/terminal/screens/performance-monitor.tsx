@@ -5,12 +5,12 @@
  * and process monitoring. Essential for detecting bottlenecks and system health.
  */
 
-import { Box, Text, useInput } from 'ink';
-import React from 'react';
-import { useCallback, useEffect, useState } from 'react';
 import { exec } from 'node:child_process';
-import { promisify } from 'node:util';
 import { readFile } from 'node:fs/promises';
+import { promisify } from 'node:util';
+import { Box, Text, useInput } from 'ink';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Header,
   InteractiveFooter,
@@ -128,7 +128,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     try {
       const netDev = await readFile('/proc/net/dev', 'utf8');
       const lines = netDev.split('\n');
-      
+
       let totalBytesIn = 0;
       let totalBytesOut = 0;
       let totalPacketsIn = 0;
@@ -138,25 +138,25 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       for (let i = 2; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
-        
+
         const parts = line.split(/\s+/);
         if (parts.length < 10) continue;
-        
+
         const interface_ = parts[0].replace(':', '');
         // Skip loopback interface
         if (interface_ === 'lo') continue;
-        
+
         const bytesIn = parseInt(parts[1], 10) || 0;
         const packetsIn = parseInt(parts[2], 10) || 0;
         const bytesOut = parseInt(parts[9], 10) || 0;
         const packetsOut = parseInt(parts[10], 10) || 0;
-        
+
         totalBytesIn += bytesIn;
         totalBytesOut += bytesOut;
         totalPacketsIn += packetsIn;
         totalPacketsOut += packetsOut;
       }
-      
+
       return {
         bytesIn: totalBytesIn,
         bytesOut: totalBytesOut,
@@ -170,7 +170,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
         const lines = stdout.split('\n');
         let totalBytesIn = 0;
         let totalBytesOut = 0;
-        
+
         for (const line of lines) {
           const parts = line.trim().split(/\s+/);
           if (parts.length >= 7 && parts[0] !== 'lo') {
@@ -178,7 +178,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
             totalBytesOut += parseInt(parts[7], 10) || 0;
           }
         }
-        
+
         return {
           bytesIn: totalBytesIn,
           bytesOut: totalBytesOut,
@@ -194,17 +194,17 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   // Get real swarm metrics from MCP tools or system state
   const getSwarmMetrics = async () => {
     if (!swarmStatus) return undefined;
-    
+
     try {
       // Try to get real swarm metrics from ruv-swarm
       const { stdout: statusOutput } = await execAsync(
         'npx ruv-swarm memory list --pattern "swarm/*" 2>/dev/null || echo "{}"'
       );
-      
+
       let tasksInQueue = 0;
       let completedTasks = 0;
       let averageResponseTime = 200;
-      
+
       try {
         const memoryData = JSON.parse(statusOutput.trim() || '{}');
         // Parse memory data to extract real metrics
@@ -218,7 +218,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       } catch (parseError) {
         // Use reasonable defaults if parsing fails
       }
-      
+
       return {
         activeAgents: swarmStatus.activeAgents || 0,
         totalAgents: swarmStatus.totalAgents || 0,
@@ -248,7 +248,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
     const totalMem = os.totalmem();
     const freeMem = os.freemem();
     const usedMem = totalMem - freeMem;
-    
+
     const [cpuUsage, networkStats, swarmMetrics] = await Promise.all([
       getCpuUsage(),
       getNetworkStats(),
@@ -283,20 +283,32 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   useEffect(() => {
     const updateMetrics = async () => {
       const newMetrics = await collectMetrics();
-      
+
       // Calculate network deltas for more realistic I/O display
       if (networkBaseline) {
         const deltaMetrics = {
           ...newMetrics,
           network: {
-            bytesIn: Math.max(0, newMetrics.network.bytesIn - networkBaseline.bytesIn),
-            bytesOut: Math.max(0, newMetrics.network.bytesOut - networkBaseline.bytesOut),
-            packetsIn: Math.max(0, newMetrics.network.packetsIn - networkBaseline.packetsIn),
-            packetsOut: Math.max(0, newMetrics.network.packetsOut - networkBaseline.packetsOut),
+            bytesIn: Math.max(
+              0,
+              newMetrics.network.bytesIn - networkBaseline.bytesIn
+            ),
+            bytesOut: Math.max(
+              0,
+              newMetrics.network.bytesOut - networkBaseline.bytesOut
+            ),
+            packetsIn: Math.max(
+              0,
+              newMetrics.network.packetsIn - networkBaseline.packetsIn
+            ),
+            packetsOut: Math.max(
+              0,
+              newMetrics.network.packetsOut - networkBaseline.packetsOut
+            ),
           },
         };
         setMetrics(deltaMetrics);
-        
+
         // Store history (keep last 60 entries)
         setMetricsHistory((prev) => [...prev.slice(-59), deltaMetrics]);
       } else {
@@ -346,7 +358,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       case 'f':
       case 'F':
         setRefreshRate((prev) =>
-          prev === 1000 ? 5000 : prev === 5000 ? 10000 : 1000,
+          prev === 1000 ? 5000 : prev === 5000 ? 10000 : 1000
         );
         break;
     }
@@ -369,7 +381,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
 
   const createProgressBar = (
     percentage: number,
-    width: number = 20,
+    width: number = 20
   ): string => {
     const filled = Math.floor((percentage / 100) * width);
     const empty = width - filled;
@@ -383,11 +395,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   };
 
   const renderOverview = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
       {/* Alerts */}
       {alerts.length > 0 && (
         <Box
@@ -398,17 +406,11 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
           paddingY={1}
         >
           <Box flexDirection="column">
-            <Text
-              color="red"
-              bold
-            >
+            <Text color="red" bold>
               ⚠️ System Alerts:
             </Text>
             {alerts.map((alert, index) => (
-              <Text
-                key={index}
-                color="red"
-              >
+              <Text key={index} color="red">
                 • {alert}
               </Text>
             ))}
@@ -417,18 +419,9 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       )}
 
       {/* System Overview */}
-      <Box
-        flexDirection="row"
-        marginBottom={2}
-      >
-        <Box
-          flexDirection="column"
-          width="50%"
-        >
-          <Text
-            bold
-            color="cyan"
-          >
+      <Box flexDirection="row" marginBottom={2}>
+        <Box flexDirection="column" width="50%">
+          <Text bold color="cyan">
             💻 System Resources
           </Text>
 
@@ -469,14 +462,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
           </Box>
         </Box>
 
-        <Box
-          flexDirection="column"
-          width="50%"
-        >
-          <Text
-            bold
-            color="cyan"
-          >
+        <Box flexDirection="column" width="50%">
+          <Text bold color="cyan">
             🚀 Process Info
           </Text>
 
@@ -510,23 +497,16 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
 
       {/* Network Stats */}
       <Box marginBottom={2}>
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
-          <Text
-            bold
-            color="cyan"
-          >
+        <Box flexDirection="column" width="100%">
+          <Text bold color="cyan">
             🌐 Network I/O
           </Text>
-          <Box
-            flexDirection="row"
-            marginTop={1}
-          >
+          <Box flexDirection="row" marginTop={1}>
             <Box width="50%">
               <Text>Bytes In: </Text>
-              <Text color="green">{formatBytes(metrics.network.bytesIn)}/s</Text>
+              <Text color="green">
+                {formatBytes(metrics.network.bytesIn)}/s
+              </Text>
             </Box>
             <Box width="50%">
               <Text>Bytes Out: </Text>
@@ -535,13 +515,12 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
               </Text>
             </Box>
           </Box>
-          <Box
-            flexDirection="row"
-            marginTop={1}
-          >
+          <Box flexDirection="row" marginTop={1}>
             <Box width="50%">
               <Text>Packets In: </Text>
-              <Text color="blue">{metrics.network.packetsIn.toLocaleString()}/s</Text>
+              <Text color="blue">
+                {metrics.network.packetsIn.toLocaleString()}/s
+              </Text>
             </Box>
             <Box width="50%">
               <Text>Packets Out: </Text>
@@ -556,20 +535,11 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       {/* Swarm Metrics */}
       {metrics.swarm && (
         <Box>
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              bold
-              color="cyan"
-            >
+          <Box flexDirection="column" width="100%">
+            <Text bold color="cyan">
               🐝 Swarm Performance
             </Text>
-            <Box
-              flexDirection="row"
-              marginTop={1}
-            >
+            <Box flexDirection="row" marginTop={1}>
               <Box width="33%">
                 <Text>Active Agents: </Text>
                 <Text color="green">
@@ -598,26 +568,13 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   );
 
   const renderDetailed = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
-      <Text
-        bold
-        color="cyan"
-        marginBottom={1}
-      >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
+      <Text bold color="cyan" marginBottom={1}>
         📊 Detailed Metrics
       </Text>
 
       {/* Detailed CPU */}
-      <Box
-        marginBottom={2}
-        borderStyle="single"
-        borderColor="gray"
-        padding={1}
-      >
+      <Box marginBottom={2} borderStyle="single" borderColor="gray" padding={1}>
         <Text bold>CPU Information</Text>
         <Text>Usage: {metrics.cpu.usage.toFixed(2)}%</Text>
         <Text>Cores: {metrics.cpu.cores}</Text>
@@ -628,12 +585,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       </Box>
 
       {/* Detailed Memory */}
-      <Box
-        marginBottom={2}
-        borderStyle="single"
-        borderColor="gray"
-        padding={1}
-      >
+      <Box marginBottom={2} borderStyle="single" borderColor="gray" padding={1}>
         <Text bold>Memory Information</Text>
         <Text>Total: {formatBytes(metrics.memory.total)}</Text>
         <Text>
@@ -645,11 +597,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       </Box>
 
       {/* Process Details */}
-      <Box
-        borderStyle="single"
-        borderColor="gray"
-        padding={1}
-      >
+      <Box borderStyle="single" borderColor="gray" padding={1}>
         <Text bold>Process Memory Details</Text>
         <Text>
           Heap Total: {formatBytes(metrics.process.memoryUsage.heapTotal)}
@@ -669,16 +617,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   );
 
   const renderHistory = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
-      <Text
-        bold
-        color="cyan"
-        marginBottom={1}
-      >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
+      <Text bold color="cyan" marginBottom={1}>
         📈 Performance History
       </Text>
 
@@ -694,7 +634,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
                 {metricsHistory
                   .slice(-20)
                   .map((m) =>
-                    m.cpu.usage > 80 ? '█' : m.cpu.usage > 50 ? '▅' : '▂',
+                    m.cpu.usage > 80 ? '█' : m.cpu.usage > 50 ? '▅' : '▂'
                   )
                   .join('')}
               </Text>
@@ -711,7 +651,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
                       ? '█'
                       : m.memory.percentage > 50
                         ? '▅'
-                        : '▂',
+                        : '▂'
                   )
                   .join('')}
               </Text>
@@ -734,10 +674,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header */}
       <Header
         title="Performance Monitor"
@@ -748,16 +685,8 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       />
 
       {/* Status Bar */}
-      <Box
-        paddingX={2}
-        paddingY={1}
-        borderStyle="single"
-        borderColor="gray"
-      >
-        <Box
-          flexDirection="row"
-          justifyContent="space-between"
-        >
+      <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="gray">
+        <Box flexDirection="row" justifyContent="space-between">
           <Box flexDirection="row">
             <StatusBadge
               status={alerts.length > 0 ? 'error' : 'active'}
@@ -783,10 +712,7 @@ export const PerformanceMonitor: React.FC<PerformanceMonitorProps> = ({
       <Box flexGrow={1}>{renderCurrentView()}</Box>
 
       {/* Footer */}
-      <Box
-        paddingY={1}
-        paddingX={2}
-      >
+      <Box paddingY={1} paddingX={2}>
         <InteractiveFooter
           currentScreen="Performance Monitor"
           availableScreens={[

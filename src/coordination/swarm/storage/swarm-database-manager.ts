@@ -163,7 +163,7 @@ export class SwarmDatabaseManager extends EventEmitter {
       name: string;
       type: string;
       capabilities: string[];
-      metadata?: any;
+      metadata?: unknown;
     }
   ): Promise<void> {
     const cluster = await this.getSwarmCluster(swarmId);
@@ -211,7 +211,7 @@ export class SwarmDatabaseManager extends EventEmitter {
       description: string;
       assignedAgentId?: string;
       dependencies?: string[];
-      metadata?: any;
+      metadata?: unknown;
     }
   ): Promise<void> {
     const cluster = await this.getSwarmCluster(swarmId);
@@ -262,7 +262,7 @@ export class SwarmDatabaseManager extends EventEmitter {
     embedding: {
       id: string;
       vector: number[];
-      metadata?: any;
+      metadata?: unknown;
     }
   ): Promise<void> {
     const cluster = await this.getSwarmCluster(swarmId);
@@ -334,7 +334,7 @@ export class SwarmDatabaseManager extends EventEmitter {
    * @param startNodeId
    * @param maxDepth
    */
-  async getSwarmGraph(swarmId: string, startNodeId: string, maxDepth: number = 3): Promise<any> {
+  async getSwarmGraph(swarmId: string, startNodeId: string, maxDepth: number = 3): Promise<unknown> {
     const cluster = await this.getSwarmCluster(swarmId);
 
     return await cluster.repositories.graph.traverse(startNodeId, '', maxDepth);
@@ -403,7 +403,7 @@ export class SwarmDatabaseManager extends EventEmitter {
     completedTasks: number;
     activeTasks: number;
     agentCount: number;
-    performance: any;
+    performance: unknown;
   }> {
     const _cluster = await this.getSwarmCluster(swarmId);
 

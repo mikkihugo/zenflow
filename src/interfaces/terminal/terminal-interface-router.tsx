@@ -12,7 +12,7 @@
  */
 
 import { render } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { CommandExecutionRenderer } from './command-execution-renderer.js';
 import { InteractiveTerminalApplication } from './interactive-terminal-application.js';
 import { createSimpleLogger } from './utils/logger.js';
@@ -22,7 +22,7 @@ const logger = createSimpleLogger('TerminalInterface');
 
 export interface TerminalAppProps {
   commands: string[];
-  flags: Record<string, any>;
+  flags: Record<string, unknown>;
   onExit: (code: number) => void;
 }
 
@@ -55,12 +55,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
       );
 
     case 'interactive':
-      return (
-        <InteractiveTerminalApplication
-          flags={flags}
-          onExit={onExit}
-        />
-      );
+      return <InteractiveTerminalApplication flags={flags} onExit={onExit} />;
 
     default:
       // Fallback to command execution mode
@@ -81,7 +76,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
  */
 function parseArgs() {
   const args = process.argv.slice(2);
-  const flags: Record<string, any> = {};
+  const flags: Record<string, unknown> = {};
   const commands: string[] = [];
 
   for (let i = 0; i < args.length; i++) {
@@ -173,7 +168,7 @@ async function main() {
         commands={commands}
         flags={flags}
         onExit={(code) => process.exit(code)}
-      />,
+      />
     );
 
     // Handle graceful shutdown
@@ -189,7 +184,7 @@ async function main() {
     logger.error('Terminal interface error:', error);
     console.error(
       '❌ Terminal interface error:',
-      error instanceof Error ? error.message : error,
+      error instanceof Error ? error.message : error
     );
     process.exit(1);
   }

@@ -33,7 +33,7 @@ export class WebProcessManager {
     this.pidFile = join(
       process.cwd(),
       '.collective-mind',
-      'claude-zen-web.pid',
+      'claude-zen-web.pid'
     );
   }
 
@@ -126,7 +126,7 @@ export class WebProcessManager {
 
     this.isShuttingDown = true;
     this.logger.info(
-      `Starting graceful shutdown${signal ? ` (${signal})` : ''}`,
+      `Starting graceful shutdown${signal ? ` (${signal})` : ''}`
     );
 
     try {
@@ -193,7 +193,7 @@ export class WebProcessManager {
       // This doesn't actually send a signal but checks if the process exists
       process.kill(pid, 0);
       return true;
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (error.code === 'ESRCH') {
         // Process doesn't exist
         return false;

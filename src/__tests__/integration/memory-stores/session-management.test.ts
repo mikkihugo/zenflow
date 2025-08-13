@@ -26,7 +26,7 @@ interface SessionData {
 
 interface SessionStorage {
   initialize(): Promise<void>;
-  createSession(sessionId: string, data?: any): Promise<SessionData>;
+  createSession(sessionId: string, data?: unknown): Promise<SessionData>;
   getSession(sessionId: string): Promise<SessionData | null>;
   updateSession(sessionId: string, data: unknown): Promise<SessionData>;
   deleteSession(sessionId: string): Promise<boolean>;
@@ -65,8 +65,8 @@ class SessionManager extends EventEmitter {
 
   async createSession(
     sessionId?: string,
-    initialData?: any,
-    userId?: string,
+    initialData?: unknown,
+    userId?: string
   ): Promise<SessionData> {
     sessionId = sessionId || this.generateSessionId();
 
@@ -109,7 +109,7 @@ class SessionManager extends EventEmitter {
 
     // Try storage if not in memory
     if (!session && this.storage) {
-      session = await this.storage.getSession(sessionId) as any;
+      session = (await this.storage.getSession(sessionId)) as any;
       if (session) {
         this.sessions.set(sessionId, session);
       }
@@ -136,7 +136,7 @@ class SessionManager extends EventEmitter {
   async updateSession(
     sessionId: string,
     data: unknown,
-    merge = true,
+    merge = true
   ): Promise<SessionData> {
     const session = await this.getSession(sessionId);
     if (!session) {
@@ -245,7 +245,7 @@ class SessionManager extends EventEmitter {
           this.emit('error', error);
         }
       },
-      5 * 60 * 1000,
+      5 * 60 * 1000
     ); // Every 5 minutes
   }
 
@@ -286,7 +286,7 @@ class MockSessionStorage implements SessionStorage {
     this.operations.push('initialize');
   }
 
-  async createSession(sessionId: string, data?: any): Promise<SessionData> {
+  async createSession(sessionId: string, data?: unknown): Promise<SessionData> {
     this.operations.push(`create:${sessionId}`);
     const session = data as SessionData;
     this.mockData.set(sessionId, session);
@@ -384,7 +384,7 @@ describe('Session Management Integration Tests', () => {
       await failingManager.initialize();
 
       await expect(
-        failingManager.createSession('failing-session', {}),
+        failingManager.createSession('failing-session', {})
       ).rejects.toThrow('Storage error');
     });
   });
@@ -400,7 +400,7 @@ describe('Session Management Integration Tests', () => {
       const session = await sessionManager.createSession(
         'user-session',
         sessionData,
-        'john',
+        'john'
       );
 
       expect(session.sessionId).toBe('user-session');
@@ -437,7 +437,7 @@ describe('Session Management Integration Tests', () => {
       const session2 = await sessionManager.getSession('access-test');
       expect(session2?.metadata.accessCount).toBe(3);
       expect(session2?.metadata.lastAccessed).toBeGreaterThanOrEqual(
-        session1?.metadata.lastAccessed,
+        session1?.metadata.lastAccessed
       );
     });
 
@@ -458,12 +458,12 @@ describe('Session Management Integration Tests', () => {
       const updated2 = await sessionManager.updateSession(
         'update-test',
         { x: 10 },
-        false,
+        false
       );
       expect(updated2.data).toEqual({ x: 10 });
 
       expect(updated2.metadata.lastModified).toBeGreaterThanOrEqual(
-        updated1.metadata.lastModified,
+        updated1.metadata.lastModified
       );
     });
 
@@ -573,7 +573,7 @@ describe('Session Management Integration Tests', () => {
       // Create expired session
       const expiredSession = await sessionManager.createSession(
         'stats-expired',
-        {},
+        {}
       );
       expiredSession.ttl = Date.now() - 1000;
       (sessionManager as any).sessions.set('stats-expired', expiredSession);
@@ -623,7 +623,7 @@ describe('Session Management Integration Tests', () => {
     });
 
     it('should emit cleanup events', async () => {
-      let cleanupEvent: any = null;
+      let cleanupEvent: unknown = null;
 
       sessionManager.on('sessionsCleanedUp', (data) => {
         cleanupEvent = data;
@@ -643,7 +643,7 @@ describe('Session Management Integration Tests', () => {
 
     it('should handle concurrent session creation', async () => {
       const createPromises = Array.from({ length: 10 }, (_, i) =>
-        sessionManager.createSession(`concurrent-${i}`, { index: i }),
+        sessionManager.createSession(`concurrent-${i}`, { index: i })
       );
 
       const sessions = await Promise.all(createPromises);
@@ -659,7 +659,7 @@ describe('Session Management Integration Tests', () => {
       await sessionManager.createSession('concurrent-access', { counter: 0 });
 
       const accessPromises = Array.from({ length: 5 }, () =>
-        sessionManager.getSession('concurrent-access'),
+        sessionManager.getSession('concurrent-access')
       );
 
       const results = await Promise.all(accessPromises);

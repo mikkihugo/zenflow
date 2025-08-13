@@ -161,7 +161,7 @@ export interface BackendConfig {
   /** Whether to enable data compression (optional). */
   compression?: boolean;
   /** Backend-specific configuration options (optional). */
-  backendConfig?: Record<string, any>;
+  backendConfig?: Record<string, unknown>;
 }
 /**
  * Core base interfaces and fundamental contracts.

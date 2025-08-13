@@ -53,7 +53,7 @@ describe('JS-WASM Communication Integration Tests', () => {
       });
       const metadata = await agent.getMetadata();
       expect(metadata.description).toBe(
-        'Test agent with special chars: 日本語 🚀',
+        'Test agent with special chars: 日本語 🚀'
       );
 
       // Test boolean marshalling
@@ -207,7 +207,7 @@ describe('JS-WASM Communication Integration Tests', () => {
 
       for (let i = 0; i < numWorkers; i++) {
         promises.push(
-          wasmLoader.atomicIncrement(buffer, 0, incrementsPerWorker),
+          wasmLoader.atomicIncrement(buffer, 0, incrementsPerWorker)
         );
       }
 
@@ -238,7 +238,7 @@ describe('JS-WASM Communication Integration Tests', () => {
 
       const afterCleanupMemory = await wasmLoader.getMemoryStats();
       expect(afterCleanupMemory.used).toBeLessThanOrEqual(
-        afterAllocMemory.used,
+        afterAllocMemory.used
       );
     });
   });
@@ -296,7 +296,7 @@ describe('JS-WASM Communication Integration Tests', () => {
         writePromises.push(stream.write(new Float32Array(1000)));
         // Use dynamic processing delay that adapts to backpressure
         await new Promise((resolve) =>
-          setTimeout(resolve, Math.min(processingDelay, 10)),
+          setTimeout(resolve, Math.min(processingDelay, 10))
         );
       }
 

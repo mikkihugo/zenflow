@@ -97,7 +97,7 @@ describe('LanceDB Integration Validation', () => {
 
     const adapter = new module['LanceDBAdapter'](
       { type: 'lancedb', database: './test.lance' },
-      mockLogger,
+      mockLogger
     );
 
     // Test that it implements VectorDatabaseAdapter interface

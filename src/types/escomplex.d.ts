@@ -88,11 +88,11 @@ declare module 'escomplex' {
 
   export function analyze(
     code: string,
-    options?: AnalyzeOptions,
+    options?: AnalyzeOptions
   ): ComplexityReport;
 
   export function analyzeModule(
     ast: unknown,
-    options?: AnalyzeOptions,
+    options?: AnalyzeOptions
   ): ComplexityReport;
 }

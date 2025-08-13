@@ -91,7 +91,7 @@ class ImportPathFixer {
     for (const [oldImport, newImport] of Object.entries(IMPORT_MAPPINGS)) {
       const oldPattern = new RegExp(
         `from ['"]${this.escapeRegex(oldImport)}['"]`,
-        'g',
+        'g'
       );
       const newReplacement = `from '${newImport}'`;
 
@@ -103,14 +103,14 @@ class ImportPathFixer {
       // Also fix require() statements
       const oldRequirePattern = new RegExp(
         `require\\(['"]${this.escapeRegex(oldImport)}['"]\\)`,
-        'g',
+        'g'
       );
       const newRequireReplacement = `require('${newImport}')`;
 
       if (oldRequirePattern.test(updatedContent)) {
         updatedContent = updatedContent.replace(
           oldRequirePattern,
-          newRequireReplacement,
+          newRequireReplacement
         );
         changeCount++;
       }
@@ -197,7 +197,7 @@ class ImportPathFixer {
       // Create re-export file
       const relativePath = path.relative(
         path.dirname(fullMissingPath),
-        fullExistingPath.replace('.ts', ''),
+        fullExistingPath.replace('.ts', '')
       );
 
       const content = `/**

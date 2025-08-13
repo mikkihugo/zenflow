@@ -148,7 +148,7 @@ export class AutoSwarmFactory extends EventEmitter {
     private hiveSync: HiveSwarmCoordinator,
     private memoryStore: SessionMemoryStore,
     private agui?: AGUIInterface,
-    config?: Partial<AutoSwarmFactoryConfig>,
+    config?: Partial<AutoSwarmFactoryConfig>
   ) {
     super();
 
@@ -174,10 +174,10 @@ export class AutoSwarmFactory extends EventEmitter {
    * @param confidentDomains
    */
   async createSwarmsForDomains(
-    confidentDomains: Map<string, ConfidentDomain>,
+    confidentDomains: Map<string, ConfidentDomain>
   ): Promise<SwarmConfig[]> {
     logger.info(
-      `🏭 Auto-Swarm Factory starting for ${confidentDomains.size} domains`,
+      `🏭 Auto-Swarm Factory starting for ${confidentDomains.size} domains`
     );
 
     const configs: SwarmConfig[] = [];
@@ -218,7 +218,7 @@ export class AutoSwarmFactory extends EventEmitter {
       await this.initializeSwarms(successfulConfigs);
 
       logger.info(
-        `🎉 Auto-Swarm Factory completed: ${successfulConfigs.length}/${confidentDomains.size} swarms created`,
+        `🎉 Auto-Swarm Factory completed: ${successfulConfigs.length}/${confidentDomains.size} swarms created`
       );
 
       this.emit('factory:complete', {
@@ -263,7 +263,7 @@ export class AutoSwarmFactory extends EventEmitter {
     const performance = this.calculatePerformanceExpectations(
       characteristics,
       topology,
-      agents,
+      agents
     );
 
     // 7. Generate unique ID
@@ -306,7 +306,7 @@ export class AutoSwarmFactory extends EventEmitter {
    * @param domain
    */
   private async analyzeDomainCharacteristics(
-    domain: ConfidentDomain,
+    domain: ConfidentDomain
   ): Promise<DomainCharacteristics> {
     const fileCount = domain.files.length;
 
@@ -319,7 +319,7 @@ export class AutoSwarmFactory extends EventEmitter {
     // Estimate interconnectedness from related domains
     const interconnectedness = Math.min(
       domain.relatedDomains.length * 0.2,
-      1.0,
+      1.0
     );
 
     // Determine domain size
@@ -334,11 +334,11 @@ export class AutoSwarmFactory extends EventEmitter {
 
     const isPipeline = concepts.some(
       (c) =>
-        c.includes('pipeline') || c.includes('workflow') || c.includes('queue'),
+        c.includes('pipeline') || c.includes('workflow') || c.includes('queue')
     );
 
     const isCentralized = concepts.some(
-      (c) => c.includes('server') || c.includes('api') || c.includes('service'),
+      (c) => c.includes('server') || c.includes('api') || c.includes('service')
     );
 
     const hasNestedStructure =
@@ -346,7 +346,7 @@ export class AutoSwarmFactory extends EventEmitter {
         (c) =>
           c.includes('nested') ||
           c.includes('hierarchical') ||
-          c.includes('tree'),
+          c.includes('tree')
       ) || fileCount > 50;
 
     const characteristics: DomainCharacteristics = {
@@ -460,7 +460,7 @@ export class AutoSwarmFactory extends EventEmitter {
     }
 
     logger.debug(
-      `Selected topology for ${chars.name}: ${topology.type} - ${topology.reason}`,
+      `Selected topology for ${chars.name}: ${topology.type} - ${topology.reason}`
     );
     return topology;
   }
@@ -473,7 +473,7 @@ export class AutoSwarmFactory extends EventEmitter {
    */
   private configureAgents(
     chars: DomainCharacteristics,
-    _topology: SwarmTopology,
+    _topology: SwarmTopology
   ): AgentConfiguration[] {
     const agents: AgentConfiguration[] = [];
 
@@ -522,7 +522,7 @@ export class AutoSwarmFactory extends EventEmitter {
 
     if (
       chars.concepts.some(
-        (c) => c.includes('database') || c.includes('storage'),
+        (c) => c.includes('database') || c.includes('storage')
       )
     ) {
       agents.push({
@@ -572,7 +572,7 @@ export class AutoSwarmFactory extends EventEmitter {
     // Add general workers based on domain size
     const workerCount = Math.max(
       1,
-      Math.min(Math.ceil(chars.fileCount / 50), 6),
+      Math.min(Math.ceil(chars.fileCount / 50), 6)
     );
     agents.push({
       type: 'general-worker',
@@ -589,7 +589,7 @@ export class AutoSwarmFactory extends EventEmitter {
 
     logger.debug(
       `Configured ${agents.length} agent types for ${chars.name}:`,
-      agents.map((a) => `${a.type}(${a.count})`).join(', '),
+      agents.map((a) => `${a.type}(${a.count})`).join(', ')
     );
 
     return agents;
@@ -601,7 +601,7 @@ export class AutoSwarmFactory extends EventEmitter {
    * @param chars
    */
   private configurePersistence(
-    chars: DomainCharacteristics,
+    chars: DomainCharacteristics
   ): SwarmConfig['persistence'] {
     let backend: 'sqlite' | 'lancedb' | 'json' =
       this.config.defaultPersistenceBackend;
@@ -609,7 +609,7 @@ export class AutoSwarmFactory extends EventEmitter {
     // Use LanceDB for domains with AI/neural concepts (vector storage)
     if (
       chars.concepts.some(
-        (c) => c.includes('ai') || c.includes('neural') || c.includes('vector'),
+        (c) => c.includes('ai') || c.includes('neural') || c.includes('vector')
       )
     ) {
       backend = 'lancedb';
@@ -638,7 +638,7 @@ export class AutoSwarmFactory extends EventEmitter {
    */
   private configureCoordination(
     chars: DomainCharacteristics,
-    topology: SwarmTopology,
+    topology: SwarmTopology
   ): SwarmConfig['coordination'] {
     let strategy: 'parallel' | 'sequential' | 'adaptive' = 'adaptive';
 
@@ -671,7 +671,7 @@ export class AutoSwarmFactory extends EventEmitter {
   private calculatePerformanceExpectations(
     chars: DomainCharacteristics,
     topology: SwarmTopology,
-    agents: AgentConfiguration[],
+    agents: AgentConfiguration[]
   ): SwarmConfig['performance'] {
     const totalAgents = agents.reduce((sum, agent) => sum + agent.count, 0);
 
@@ -685,7 +685,7 @@ export class AutoSwarmFactory extends EventEmitter {
     const specialistCount = agents.filter((a) => a.priority === 'high').length;
     const expectedThroughput = Math.max(
       1,
-      totalAgents * 2 + specialistCount * 3,
+      totalAgents * 2 + specialistCount * 3
     );
 
     return {
@@ -720,25 +720,25 @@ export class AutoSwarmFactory extends EventEmitter {
    * @param configs
    */
   private async validateResourceConstraints(
-    configs: SwarmConfig[],
+    configs: SwarmConfig[]
   ): Promise<void> {
     const totalAgents = configs.reduce(
       (sum, config) =>
         sum +
         config?.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
-      0,
+      0
     );
 
     if (totalAgents > this.config.resourceConstraints.maxTotalAgents) {
       const error = new Error(
-        `Total agents (${totalAgents}) exceeds limit (${this.config.resourceConstraints.maxTotalAgents})`,
+        `Total agents (${totalAgents}) exceeds limit (${this.config.resourceConstraints.maxTotalAgents})`
       );
       logger.warn('Resource constraint violation:', error.message);
       throw error;
     }
 
     logger.info(
-      `✅ Resource validation passed: ${totalAgents}/${this.config.resourceConstraints.maxTotalAgents} agents`,
+      `✅ Resource validation passed: ${totalAgents}/${this.config.resourceConstraints.maxTotalAgents} agents`
     );
   }
 
@@ -767,10 +767,10 @@ export class AutoSwarmFactory extends EventEmitter {
         `Auto-Swarm Factory will create ${configs.length} swarms with the following configurations:\n\n${summary
           .map(
             (s) =>
-              `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`,
+              `• ${s.domain}: ${s.topology} topology, ${s.totalAgentCount} agents (${s.confidence} confidence)`
           )
           .join(
-            '\n',
+            '\n'
           )}\n\nTotal agents across all swarms: ${summary.reduce((sum, s) => sum + s.totalAgentCount, 0)}\n\n` +
         `Approve swarm creation and proceed with initialization?`,
       context: { configs, summary },
@@ -790,7 +790,7 @@ export class AutoSwarmFactory extends EventEmitter {
     if (response === '2' || response?.toLowerCase().includes('review')) {
       // Individual review (simplified for now)
       logger.info(
-        'Individual review requested - proceeding with approval for demo',
+        'Individual review requested - proceeding with approval for demo'
       );
     }
 
@@ -821,7 +821,7 @@ export class AutoSwarmFactory extends EventEmitter {
             config,
             created: Date.now(),
             status: 'active',
-          },
+          }
         );
 
         this.emit('swarm:initialized', { config });
@@ -856,14 +856,14 @@ export class AutoSwarmFactory extends EventEmitter {
         acc[swarm.topology.type] = (acc[swarm.topology.type] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     const totalAgents = swarms.reduce(
       (sum, swarm) =>
         sum +
         swarm.agents.reduce((agentSum, agent) => agentSum + agent.count, 0),
-      0,
+      0
     );
 
     const averageConfidence =

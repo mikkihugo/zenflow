@@ -318,7 +318,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
    * @param name
    * @param args
    */
-  async handleToolCall(name: string, args: any): Promise<any> {
+  async handleToolCall(name: string, args: unknown): Promise<unknown> {
     switch (name) {
       case 'conversation_create':
         return this.createConversation(args);
@@ -349,7 +349,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     }
   }
 
-  private async createConversation(args: any): Promise<any> {
+  private async createConversation(args: unknown): Promise<unknown> {
     const config: ConversationConfig = {
       title: args.title,
       description: args.description,
@@ -377,7 +377,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async joinConversation(args: any): Promise<any> {
+  private async joinConversation(args: unknown): Promise<unknown> {
     await this.orchestrator.joinConversation(args.conversationId, args.agent);
 
     return {
@@ -386,7 +386,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async sendMessage(args: any): Promise<any> {
+  private async sendMessage(args: unknown): Promise<unknown> {
     const message: ConversationMessage = {
       id: '', // Will be generated
       conversationId: args.conversationId,
@@ -423,22 +423,22 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async getHistory(args: any): Promise<any> {
+  private async getHistory(args: unknown): Promise<unknown> {
     const messages = await this.orchestrator.getConversationHistory(
-      args.conversationId,
+      args.conversationId
     );
 
     let filteredMessages = messages;
 
     if (args.messageType) {
       filteredMessages = filteredMessages.filter(
-        (m) => m.messageType === args.messageType,
+        (m) => m.messageType === args.messageType
       );
     }
 
     if (args.fromAgent) {
       filteredMessages = filteredMessages.filter(
-        (m) => m.fromAgent.id === args.fromAgent,
+        (m) => m.fromAgent.id === args.fromAgent
       );
     }
 
@@ -463,10 +463,10 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async terminateConversation(args: any): Promise<any> {
+  private async terminateConversation(args: unknown): Promise<unknown> {
     const outcomes = await this.orchestrator.terminateConversation(
       args.conversationId,
-      args.reason,
+      args.reason
     );
 
     return {
@@ -484,7 +484,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async searchConversations(args: any): Promise<any> {
+  private async searchConversations(args: unknown): Promise<unknown> {
     const query: ConversationQuery = {
       agentId: args.agentId,
       pattern: args.pattern,
@@ -523,7 +523,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async getPatterns(): Promise<any> {
+  private async getPatterns(): Promise<unknown> {
     return {
       patterns: [
         {
@@ -558,7 +558,7 @@ export class ConversationMCPTools implements ConversationMCPToolsInterface {
     };
   }
 
-  private async moderateConversation(args: any): Promise<any> {
+  private async moderateConversation(args: unknown): Promise<unknown> {
     const action = {
       type: args.action,
       target: args.targetAgent,

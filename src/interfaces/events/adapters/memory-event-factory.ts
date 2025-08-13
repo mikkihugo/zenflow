@@ -160,7 +160,7 @@ class MemoryEventManager
       await this.routeMemoryEvent(enrichedEvent);
 
       this.logger.debug(
-        `Memory event emitted: ${event.operation} for ${event.key || 'system'}`,
+        `Memory event emitted: ${event.operation} for ${event.key || 'system'}`
       );
     } catch (error) {
       this.logger.error('Failed to emit memory event:', error);
@@ -209,7 +209,7 @@ class MemoryEventManager
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}`,
+      `Performance event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -222,7 +222,7 @@ class MemoryEventManager
     this.subscriptions.lifecycle.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Lifecycle event subscription created: ${subscriptionId}`,
+      `Lifecycle event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -365,7 +365,7 @@ class MemoryEventManager
         'memory:performance',
         'memory:lifecycle',
       ],
-      this.handleMemoryEvent.bind(this),
+      this.handleMemoryEvent.bind(this)
     );
   }
 
@@ -428,12 +428,12 @@ class MemoryEventManager
           this.memoryMetrics.gcTime += event.data.duration;
         }
         this.logger.debug(
-          `Garbage collection completed in ${event.data?.duration}ms`,
+          `Garbage collection completed in ${event.data?.duration}ms`
         );
         break;
       case 'serialize':
         this.logger.debug(
-          `Data serialized: ${event.key} (${event.data?.size} bytes)`,
+          `Data serialized: ${event.key} (${event.data?.size} bytes)`
         );
         break;
       case 'compress':
@@ -441,7 +441,7 @@ class MemoryEventManager
           this.memoryMetrics.compressionRatio = event.data.compressionRatio;
         }
         this.logger.debug(
-          `Data compressed: ${event.key} (ratio: ${event.data?.compressionRatio})`,
+          `Data compressed: ${event.key} (ratio: ${event.data?.compressionRatio})`
         );
         break;
       case 'expire':
@@ -506,7 +506,7 @@ class MemoryEventManager
 
   private async notifySubscribers(
     subscribers: Map<string, (event: MemoryEvent) => void>,
-    event: MemoryEvent,
+    event: MemoryEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
       async (listener) => {
@@ -515,7 +515,7 @@ class MemoryEventManager
         } catch (error) {
           this.logger.error('Memory event listener failed:', error);
         }
-      },
+      }
     );
 
     await Promise.allSettled(notifications);
@@ -560,7 +560,7 @@ export class MemoryEventManagerFactory
 {
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {
     this.logger.debug('MemoryEventManagerFactory initialized');
   }
@@ -577,7 +577,7 @@ export class MemoryEventManagerFactory
     await this.configureMemoryManager(manager, optimizedConfig);
 
     this.logger.info(
-      `Memory event manager created successfully: ${config.name}`,
+      `Memory event manager created successfully: ${config.name}`
     );
     return manager;
   }
@@ -593,7 +593,7 @@ export class MemoryEventManagerFactory
 
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Memory managers should support at least 100 listeners for high-frequency operations',
+        'Memory managers should support at least 100 listeners for high-frequency operations'
       );
     }
   }
@@ -624,12 +624,12 @@ export class MemoryEventManagerFactory
 
   private async configureMemoryManager(
     manager: MemoryEventManager,
-    config: EventManagerConfig,
+    config: EventManagerConfig
   ): Promise<void> {
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Memory event manager monitoring started: ${config.name}`,
+        `Memory event manager monitoring started: ${config.name}`
       );
     }
 
@@ -640,13 +640,13 @@ export class MemoryEventManagerFactory
           if (status.status !== 'healthy') {
             this.logger.warn(
               `Memory manager health degraded: ${config.name}`,
-              status.metadata,
+              status.metadata
             );
           }
         } catch (error) {
           this.logger.error(
             `Memory manager health check failed: ${config.name}`,
-            error,
+            error
           );
         }
       }, config.monitoring.healthCheckInterval);

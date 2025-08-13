@@ -181,7 +181,7 @@ function generateGenericConfig(agentType: AgentType): SubAgentConfig {
  * @example
  */
 export async function generateAllSubAgentTemplates(
-  outputDir: string,
+  outputDir: string
 ): Promise<void> {
   const agentTypes: AgentType[] = [
     // Core Foundation Agents

@@ -39,18 +39,18 @@ export interface DiscoveredDomain {
 export interface SwarmConfig {
   topology: 'mesh' | 'hierarchical' | 'star' | 'ring';
   maxAgents: number;
-  autoScaling: boolean;
-  persistence: boolean;
   resourceLimits: {
     memory: string;
     cpu: number;
   };
+  enableAutoScaling: boolean;
+  persistence: 'json' | 'sqlite' | 'lancedb';
 }
 
 export interface DeploymentStatus {
-  status: 'pending' | 'deploying' | 'success' | 'failed';
+  status: 'pending' | 'deploying' | 'deployed' | 'failed';
   message: string;
-  progress?: number;
+  progress: number;
   agents: {
     created: number;
     total: number;

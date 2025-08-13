@@ -76,7 +76,7 @@ interface ToolDiscoveryContract {
   generateToolsResponse(tools: MCPTool[]): MCPResponse;
   filterToolsByCapabilities(
     tools: MCPTool[],
-    capabilities: string[],
+    capabilities: string[]
   ): MCPTool[];
 }
 
@@ -90,7 +90,7 @@ class MockMCPToolManager
     private validator = mockSchemaValidator,
     private logger = mockLogger,
     private metrics = mockMetricsCollector,
-    private eventBus = mockEventBus,
+    private eventBus = mockEventBus
   ) {}
 
   async registerTool(tool: MCPTool): Promise<RegistrationResult> {
@@ -172,7 +172,7 @@ class MockMCPToolManager
   async validateToolDefinition(tool: MCPTool): Promise<ValidationResult> {
     const schemaValidation = this.validator.validateToolDefinition(tool);
     const inputSchemaValidation = this.validator.validateInputSchema(
-      tool.inputSchema,
+      tool.inputSchema
     );
 
     return {
@@ -208,14 +208,14 @@ class MockMCPToolManager
 
   filterToolsByCapabilities(
     tools: MCPTool[],
-    capabilities: string[],
+    capabilities: string[]
   ): MCPTool[] {
     return tools.filter((tool) =>
       capabilities.some(
         (cap) =>
           tool.name.includes(cap) ||
-          tool.description.toLowerCase().includes(cap.toLowerCase()),
-      ),
+          tool.description.toLowerCase().includes(cap.toLowerCase())
+      )
     );
   }
 }
@@ -266,10 +266,10 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           name: 'code_analyzer',
         });
         expect(mockSchemaValidator.validateToolDefinition).toHaveBeenCalledWith(
-          validTool,
+          validTool
         );
         expect(mockSchemaValidator.validateInputSchema).toHaveBeenCalledWith(
-          validTool.inputSchema,
+          validTool.inputSchema
         );
         expect(mockToolRegistry.exists).toHaveBeenCalledWith('code_analyzer');
         expect(mockToolRegistry.register).toHaveBeenCalledWith(validTool);
@@ -278,7 +278,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           tool: validTool,
         });
         expect(
-          mockMetricsCollector.recordToolRegistration,
+          mockMetricsCollector.recordToolRegistration
         ).toHaveBeenCalledWith('code_analyzer', 'success');
 
         expect(result?.success).toBe(true);
@@ -312,10 +312,10 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
         // Assert - Verify validation error handling
         expect(mockSchemaValidator.validateToolDefinition).toHaveBeenCalledWith(
-          invalidTool,
+          invalidTool
         );
         expect(
-          mockMetricsCollector.recordToolRegistration,
+          mockMetricsCollector.recordToolRegistration
         ).toHaveBeenCalledWith('', 'failed');
         expect(result?.success).toBe(false);
         expect(result?.errors).toContain('Tool name cannot be empty');
@@ -360,7 +360,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           'Tool already registered, updating',
           {
             name: 'existing_tool',
-          },
+          }
         );
         expect(mockEventBus.emit).toHaveBeenCalledWith('tool:updated', {
           name: 'existing_tool',
@@ -368,7 +368,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         });
         expect(result?.success).toBe(true);
         expect(result?.warnings).toContain(
-          'Tool updated with new capabilities',
+          'Tool updated with new capabilities'
         );
       });
     });
@@ -407,13 +407,13 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
         // Assert - Verify non-existent tool handling
         expect(mockToolRegistry.exists).toHaveBeenCalledWith(
-          'nonexistent_tool',
+          'nonexistent_tool'
         );
         expect(mockLogger.warn).toHaveBeenCalledWith(
           'Tool not found for unregistration',
           {
             name: 'nonexistent_tool',
-          },
+          }
         );
         expect(mockToolRegistry.unregister).not.toHaveBeenCalled();
         expect(result).toBe(false);
@@ -455,7 +455,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
 
         // Assert - Verify discovery conversation
         expect(mockLogger.debug).toHaveBeenCalledWith(
-          'Discovering available tools',
+          'Discovering available tools'
         );
         expect(mockMetricsCollector.recordToolDiscovery).toHaveBeenCalled();
         expect(mockToolRegistry.list).toHaveBeenCalled();
@@ -499,7 +499,7 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
           'Handling tools/list request',
           {
             id: 'tools-list-1',
-          },
+          }
         );
         expect(response?.jsonrpc).toBe('2.0');
         expect(response?.result).toBeDefined();
@@ -547,11 +547,11 @@ describe('MCP Tool Registration and Discovery - London TDD', () => {
         // Act - Filter tools by capabilities
         const codeRelatedTools = toolManager.filterToolsByCapabilities(
           allTools,
-          ['code', 'analyzer'],
+          ['code', 'analyzer']
         );
         const testRelatedTools = toolManager.filterToolsByCapabilities(
           allTools,
-          ['test', 'testing'],
+          ['test', 'testing']
         );
 
         // Assert - Verify filtering logic

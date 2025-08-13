@@ -143,26 +143,26 @@ export class BaseAgent implements Agent {
   private setupMessageHandlers(): void {
     this.messageHandlers.set(
       'task_assignment',
-      this.handleTaskAssignment.bind(this),
+      this.handleTaskAssignment.bind(this)
     );
     this.messageHandlers.set(
       'coordination',
-      this.handleCoordination.bind(this),
+      this.handleCoordination.bind(this)
     );
     this.messageHandlers.set(
       'knowledge_share',
-      this.handleKnowledgeShare.bind(this),
+      this.handleKnowledgeShare.bind(this)
     );
     this.messageHandlers.set(
       'status_update',
-      this.handleStatusUpdate.bind(this),
+      this.handleStatusUpdate.bind(this)
     );
   }
 
   protected async executeTaskByType(task: Task): Promise<unknown> {
     // Simulate work
     await new Promise((resolve) =>
-      setTimeout(resolve, 100 + Math.random() * 400),
+      setTimeout(resolve, 100 + Math.random() * 400)
     );
 
     return {
@@ -188,7 +188,7 @@ export class BaseAgent implements Agent {
 
   private updatePerformanceMetrics(
     success: boolean,
-    executionTime: number,
+    executionTime: number
   ): void {
     // Initialize performance if it doesn't exist
     if (!this.state.performance) {
@@ -254,7 +254,7 @@ export class BaseAgent implements Agent {
     if (this.config.memory) {
       this.config.memory.shortTerm.set(
         `knowledge_${message.id}`,
-        message.payload,
+        message.payload
       );
     }
   }

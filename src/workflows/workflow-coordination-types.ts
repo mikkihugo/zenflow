@@ -1,6 +1,6 @@
 /**
  * Workflow Coordination Types - Break Circular Dependencies
- * 
+ *
  * Shared types between workflows and coordination domains to eliminate
  * the circular import chain.
  */
@@ -9,8 +9,8 @@
  * Workflow Gates Manager Interface.
  */
 export interface WorkflowGatesManager {
-  validateGate(gateId: string, context: any): Promise<boolean>;
-  executeGate(gateId: string, context: any): Promise<any>;
+  validateGate(gateId: string, context: unknown): Promise<boolean>;
+  executeGate(gateId: string, context: unknown): Promise<unknown>;
   getGateStatus(gateId: string): Promise<string>;
   listGates(): Promise<string[]>;
 }
@@ -22,10 +22,10 @@ export interface WorkflowGateRequest {
   gateId: string;
   workflowId: string;
   stepId: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -36,7 +36,7 @@ export interface WorkflowGateResponse {
   workflowId: string;
   stepId: string;
   status: 'approved' | 'rejected' | 'pending' | 'error';
-  result?: any;
+  result?: unknown;
   message?: string;
   timestamp: number;
 }
@@ -68,8 +68,8 @@ export interface WorkflowCoordinationContext {
   workflowId: string;
   currentStep: string;
   previousSteps: string[];
-  variables: Record<string, any>;
-  metadata: Record<string, any>;
+  variables: Record<string, unknown>;
+  metadata: Record<string, unknown>;
   timestamp: number;
 }
 
@@ -80,7 +80,7 @@ export function createWorkflowGateRequest(
   gateId: string,
   workflowId: string,
   stepId: string,
-  context: Record<string, any>,
+  context: Record<string, unknown>,
   options?: Partial<Pick<WorkflowGateRequest, 'priority' | 'metadata'>>
 ): WorkflowGateRequest {
   return {

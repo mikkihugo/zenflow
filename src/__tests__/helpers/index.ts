@@ -32,15 +32,15 @@ export {
 } from './test-data-factory.ts';
 
 // Factory functions
-export function createLondonMocks(config?: any) {
+export function createLondonMocks(config?: unknown) {
   return new MockBuilder().withLondonStyle().build(config);
 }
 
-export function createClassicalMocks(config?: any) {
+export function createClassicalMocks(config?: unknown) {
   return new MockBuilder().withClassicalStyle().build(config);
 }
 
-export function createTestLogger(config?: any) {
+export function createTestLogger(config?: unknown) {
   return new TestLogger(config);
 }
 

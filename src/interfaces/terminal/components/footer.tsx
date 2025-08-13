@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import React from 'react';
+import type React from 'react';
 
 export interface FooterProps {
   mode?: 'command' | 'interactive' | 'menu';
@@ -73,10 +73,7 @@ export const Footer: React.FC<FooterProps> = ({
       {/* Navigation shortcuts */}
       <Box>
         {displayShortcuts.map((shortcut, index) => (
-          <Text
-            key={index}
-            color="gray"
-          >
+          <Text key={index} color="gray">
             [{shortcut.key}] {shortcut.action}
             {index < displayShortcuts.length - 1 ? ' ' : ''}
           </Text>
@@ -96,12 +93,7 @@ export const Footer: React.FC<FooterProps> = ({
 // Specialized footer variants.
 export const CommandExecutionFooter: React.FC<{ status?: string }> = ({
   status,
-}) => (
-  <Footer
-    mode="command"
-    status={status}
-  />
-);
+}) => <Footer mode="command" status={status} />;
 
 export const InteractiveTerminalFooter: React.FC<{ status?: string }> = ({
   status,
@@ -122,10 +114,7 @@ export const InteractiveTerminalFooter: React.FC<{ status?: string }> = ({
 );
 
 export const MenuFooter: React.FC<{ status?: string }> = ({ status }) => (
-  <Footer
-    mode="menu"
-    status={status}
-  />
+  <Footer mode="menu" status={status} />
 );
 
 // Interactive footer with dynamic shortcuts
@@ -148,11 +137,7 @@ export const InteractiveFooter: React.FC<{
     : status;
 
   return (
-    <Footer
-      mode="interactive"
-      shortcuts={shortcuts}
-      status={displayStatus}
-    />
+    <Footer mode="interactive" shortcuts={shortcuts} status={displayStatus} />
   );
 };
 

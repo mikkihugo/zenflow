@@ -56,7 +56,7 @@ export interface UseConfigReturn {
   updateConfig: (updates: Partial<TerminalConfig>) => Promise<void>;
   updateUIConfig: (updates: Partial<TerminalConfig['ui']>) => Promise<void>;
   updateSwarmConfig: (
-    updates: Partial<TerminalConfig['swarmConfig']>,
+    updates: Partial<TerminalConfig['swarmConfig']>
   ) => Promise<void>;
   resetConfig: () => Promise<void>;
 }
@@ -181,7 +181,7 @@ export const useConfig = (): UseConfigReturn => {
   };
 
   const updateSwarmConfig = async (
-    updates: Partial<TerminalConfig['swarmConfig']>,
+    updates: Partial<TerminalConfig['swarmConfig']>
   ) => {
     await updateConfig({
       swarmConfig: { ...config?.swarmConfig, ...updates },

@@ -310,7 +310,7 @@ export class ProgramIncrementManager extends EventEmitter {
     gatesManager: WorkflowGatesManager,
     programOrchestrator: ProgramOrchestrator,
     swarmOrchestrator: SwarmExecutionOrchestrator,
-    config: Partial<PIManagerConfig> = {},
+    config: Partial<PIManagerConfig> = {}
   ) {
     super();
 
@@ -399,7 +399,7 @@ export class ProgramIncrementManager extends EventEmitter {
     artId: string,
     businessContext: BusinessContext,
     architecturalVision: ArchitecturalVision,
-    teamCapacities: TeamCapacity[],
+    teamCapacities: TeamCapacity[]
   ): Promise<ProgramIncrement> {
     this.logger.info('Starting PI Planning', { artId });
 
@@ -408,7 +408,7 @@ export class ProgramIncrementManager extends EventEmitter {
       artId,
       businessContext,
       architecturalVision,
-      teamCapacities,
+      teamCapacities
     );
 
     // Execute PI planning workflow with AGUI integration
@@ -418,14 +418,14 @@ export class ProgramIncrementManager extends EventEmitter {
     const programIncrement = await this.createProgramIncrement(
       artId,
       piPlan,
-      teamCapacities,
+      teamCapacities
     );
 
     // Generate PI objectives from business context
     const piObjectives = await this.generatePIObjectives(
       programIncrement.id,
       businessContext,
-      teamCapacities,
+      teamCapacities
     );
 
     // Plan feature allocation across teams
@@ -433,20 +433,20 @@ export class ProgramIncrementManager extends EventEmitter {
       programIncrement.id,
       piObjectives,
       architecturalVision,
-      teamCapacities,
+      teamCapacities
     );
 
     // Identify and plan dependencies
     const dependencies = await this.identifyPIDependencies(
       features,
-      piObjectives,
+      piObjectives
     );
 
     // Assess and plan risk mitigation
     const risks = await this.assessPIRisks(
       programIncrement,
       features,
-      dependencies,
+      dependencies
     );
 
     // Update PI with complete planning
@@ -477,7 +477,7 @@ export class ProgramIncrementManager extends EventEmitter {
    * Execute PI planning event with AGUI orchestration
    */
   async executePIPlanningWorkflow(
-    planningEvent: PIPlanningEventConfig,
+    planningEvent: PIPlanningEventConfig
   ): Promise<PIPlanningResult> {
     this.logger.info('Executing PI Planning workflow', {
       eventId: planningEvent.eventId,
@@ -503,7 +503,7 @@ export class ProgramIncrementManager extends EventEmitter {
           const gateOutcome = await this.createPlanningGate(
             agendaItem,
             outcome,
-            planningEvent,
+            planningEvent
           );
           planningResult.decisions.push(gateOutcome);
         }
@@ -543,7 +543,7 @@ export class ProgramIncrementManager extends EventEmitter {
   async implementCapacityPlanning(
     teamCapacities: TeamCapacity[],
     piObjectives: PIObjective[],
-    features: Feature[],
+    features: Feature[]
   ): Promise<CapacityPlanningResult> {
     this.logger.info('Starting capacity planning', {
       teamCount: teamCapacities.length,
@@ -562,7 +562,7 @@ export class ProgramIncrementManager extends EventEmitter {
     // Calculate total available capacity
     planningResult.totalCapacity = teamCapacities.reduce(
       (total, team) => total + team.availableCapacity,
-      0,
+      0
     );
 
     // Calculate buffer capacity
@@ -575,7 +575,7 @@ export class ProgramIncrementManager extends EventEmitter {
       const allocation = await this.allocateFeatureToTeam(
         feature,
         teamCapacities,
-        planningResult.teamAllocations,
+        planningResult.teamAllocations
       );
 
       if (allocation) {
@@ -597,7 +597,7 @@ export class ProgramIncrementManager extends EventEmitter {
     // Generate capacity recommendations
     planningResult.recommendations = await this.generateCapacityRecommendations(
       planningResult,
-      teamCapacities,
+      teamCapacities
     );
 
     // Check for overallocation
@@ -728,7 +728,7 @@ export class ProgramIncrementManager extends EventEmitter {
     // Generate completion report
     const completionReport = await this.generatePICompletionReport(
       pi,
-      finalMetrics,
+      finalMetrics
     );
 
     // Update PI status
@@ -834,7 +834,7 @@ export class ProgramIncrementManager extends EventEmitter {
     artId: string,
     businessContext: BusinessContext,
     architecturalVision: ArchitecturalVision,
-    teamCapacities: TeamCapacity[],
+    teamCapacities: TeamCapacity[]
   ): Promise<PIPlanningEventConfig> {
     // Placeholder implementation
     return {} as PIPlanningEventConfig;
@@ -843,7 +843,7 @@ export class ProgramIncrementManager extends EventEmitter {
   private async createProgramIncrement(
     artId: string,
     piPlan: unknown,
-    teamCapacities: TeamCapacity[],
+    teamCapacities: TeamCapacity[]
   ): Promise<ProgramIncrement> {
     // Placeholder implementation
     return {} as ProgramIncrement;
@@ -852,7 +852,7 @@ export class ProgramIncrementManager extends EventEmitter {
   private async generatePIObjectives(
     piId: string,
     businessContext: BusinessContext,
-    teamCapacities: TeamCapacity[],
+    teamCapacities: TeamCapacity[]
   ): Promise<PIObjective[]> {
     // Placeholder implementation
     return [];
@@ -862,7 +862,7 @@ export class ProgramIncrementManager extends EventEmitter {
     piId: string,
     piObjectives: PIObjective[],
     architecturalVision: ArchitecturalVision,
-    teamCapacities: TeamCapacity[],
+    teamCapacities: TeamCapacity[]
   ): Promise<Feature[]> {
     // Placeholder implementation
     return [];
@@ -871,46 +871,46 @@ export class ProgramIncrementManager extends EventEmitter {
   // Additional placeholder methods would continue...
   private async identifyPIDependencies(
     features: Feature[],
-    objectives: PIObjective[],
+    objectives: PIObjective[]
   ): Promise<Dependency[]> {
     return [];
   }
   private async assessPIRisks(
     pi: ProgramIncrement,
     features: Feature[],
-    deps: Dependency[],
+    deps: Dependency[]
   ): Promise<Risk[]> {
     return [];
   }
   private async executeAgendaItem(
     item: PlanningAgendaItem,
-    event: PIPlanningEventConfig,
+    event: PIPlanningEventConfig
   ): Promise<unknown> {
     return {};
   }
   private async createPlanningGate(
     item: PlanningAgendaItem,
     outcome: unknown,
-    event: PIPlanningEventConfig,
+    event: PIPlanningEventConfig
   ): Promise<unknown> {
     return {};
   }
   private async allocateFeatureToTeam(
     feature: Feature,
     capacities: TeamCapacity[],
-    allocations: unknown[],
+    allocations: unknown[]
   ): Promise<unknown> {
     return null;
   }
   private async generateCapacityRecommendations(
     result: unknown,
-    capacities: TeamCapacity[],
+    capacities: TeamCapacity[]
   ): Promise<string[]> {
     return [];
   }
   private async createCapacityApprovalGate(
     result: unknown,
-    capacities: TeamCapacity[],
+    capacities: TeamCapacity[]
   ): Promise<void> {}
   private initializePIMetrics(pi: ProgramIncrement): PIExecutionMetrics {
     return {} as PIExecutionMetrics;
@@ -918,57 +918,57 @@ export class ProgramIncrementManager extends EventEmitter {
   private async coordinateEpicStreams(pi: ProgramIncrement): Promise<void> {}
   private async schedulePIEvents(pi: ProgramIncrement): Promise<void> {}
   private async calculatePIProgress(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<{ overallProgress: number }> {
     return { overallProgress: 0 };
   }
   private async calculateVelocityTrend(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<VelocityTrend> {
     return {} as VelocityTrend;
   }
   private async calculatePredictabilityMetrics(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<PredictabilityMetrics> {
     return {} as PredictabilityMetrics;
   }
   private async calculateQualityMetrics(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<QualityMetrics> {
     return {} as QualityMetrics;
   }
   private async calculateRiskBurndown(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<RiskBurndown> {
     return {} as RiskBurndown;
   }
   private async calculateDependencyHealth(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<DependencyHealth> {
     return {} as DependencyHealth;
   }
   private async calculateTeamMetrics(
-    pi: ProgramIncrement,
+    pi: ProgramIncrement
   ): Promise<TeamMetrics[]> {
     return [];
   }
   private async checkPIHealthAlerts(
     pi: ProgramIncrement,
-    metrics: PIExecutionMetrics,
+    metrics: PIExecutionMetrics
   ): Promise<void> {}
   private async generatePICompletionReport(
     pi: ProgramIncrement,
-    metrics: PIExecutionMetrics,
+    metrics: PIExecutionMetrics
   ): Promise<PICompletionReport> {
     return {} as PICompletionReport;
   }
   private async scheduleInspectAndAdapt(
     pi: ProgramIncrement,
-    report: PICompletionReport,
+    report: PICompletionReport
   ): Promise<void> {}
   private async archivePIData(
     pi: ProgramIncrement,
-    metrics: PIExecutionMetrics,
+    metrics: PIExecutionMetrics
   ): Promise<void> {}
   private async updateAllPIMetrics(): Promise<void> {}
   private async handleFeatureCompletion(featureId: string): Promise<void> {}

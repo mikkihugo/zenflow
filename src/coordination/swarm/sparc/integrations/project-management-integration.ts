@@ -5,7 +5,7 @@
 import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger(
-  'coordination-swarm-sparc-integrations-project-management-integration',
+  'coordination-swarm-sparc-integrations-project-management-integration'
 );
 
 /**
@@ -164,8 +164,8 @@ export class ProjectManagementIntegration {
   private readonly epicsFile: string;
   private readonly roadmapFile: string;
   private readonly taskTool: TaskCoordinator;
-  private readonly taskDistributor: any;
-  private readonly logger?: any;
+  private readonly taskDistributor: unknown;
+  private readonly logger?: unknown;
 
   // Enhanced infrastructure integration
   private documentDrivenSystem: DocumentDrivenSystem;
@@ -176,7 +176,7 @@ export class ProjectManagementIntegration {
     projectRoot: string = process.cwd(),
     workflowEngine?: WorkflowEngine,
     memorySystem?: MemorySystem,
-    logger?: any,
+    logger?: unknown
   ) {
     this.logger = logger;
     this.projectRoot = projectRoot;
@@ -222,7 +222,7 @@ export class ProjectManagementIntegration {
    */
   async createAllProjectManagementArtifacts(
     project: SPARCProject,
-    artifactTypes: string[] = ['all'],
+    artifactTypes: string[] = ['all']
   ): Promise<{
     tasks: Task[];
     adrs: ADR[];
@@ -237,25 +237,25 @@ export class ProjectManagementIntegration {
 
     // Load workspace using DocumentDrivenSystem
     const workspaceId = await this.documentDrivenSystem.loadWorkspace(
-      this.projectRoot,
+      this.projectRoot
     );
 
     // Create vision document from SPARC project for document workflow
     const visionDocument = await this.createVisionDocumentFromSPARC(
       project,
-      workspaceId,
+      workspaceId
     );
 
     // Process through DocumentDrivenSystem
     await this.documentDrivenSystem.processVisionaryDocument(
       workspaceId,
-      visionDocument.path,
+      visionDocument.path
     );
 
     // Execute document workflows using UnifiedWorkflowEngine
     const workflowResults = await this.executeDocumentWorkflows(
       workspaceId,
-      visionDocument,
+      visionDocument
     );
 
     const results = {
@@ -305,7 +305,7 @@ export class ProjectManagementIntegration {
    */
   private async createVisionDocumentFromSPARC(
     project: SPARCProject,
-    _workspaceId: string,
+    _workspaceId: string
   ): Promise<{
     path: string;
     content: string;
@@ -358,7 +358,7 @@ Related: SPARC-${project.id}
    */
   private async executeDocumentWorkflows(
     workspaceId: string,
-    visionDocument: { path: string; content: string },
+    visionDocument: { path: string; content: string }
   ): Promise<unknown> {
     const workflows = [
       // Note: ADRs are NOT auto-generated from vision. They are independent architectural governance.
@@ -466,7 +466,7 @@ Related: SPARC-${project.id}
               ? 'completed'
               : 'todo',
         priority: this.convertPriorityToNumber(
-          enhancedTaskConfig?.priority || 'medium',
+          enhancedTaskConfig?.priority || 'medium'
         ),
         estimated_hours: this.getPhaseEstimatedHours(phase),
         actual_hours: null,
@@ -522,7 +522,7 @@ Related: SPARC-${project.id}
       // Write back to file
       await fs.writeFile(
         this.tasksFile,
-        JSON.stringify(existingTasks, null, 2),
+        JSON.stringify(existingTasks, null, 2)
       );
     } catch (error) {
       logger.warn('Could not update tasks file:', error);
@@ -543,15 +543,15 @@ Related: SPARC-${project.id}
           description: task.description,
           prompt: this.generatePhasePrompt(
             task.component.replace('sparc-', ''),
-            project,
+            project
           ),
           subagent_type: this.getOptimalAgentForPhase(
-            task.component.replace('sparc-', ''),
+            task.component.replace('sparc-', '')
           ),
           use_claude_subagent: true,
           domain_context: `SPARC ${project.domain} project`,
           expected_output: this.getPhaseExpectedOutput(
-            task.component.replace('sparc-', ''),
+            task.component.replace('sparc-', '')
           ),
           priority: this.convertNumberToPriority(task.priority),
           dependencies: task.dependencies,
@@ -635,7 +635,7 @@ Related: SPARC-${project.id}
               };
               adrs.push(componentADR);
             }
-          },
+          }
         );
       }
     }
@@ -657,23 +657,23 @@ Related: SPARC-${project.id}
         project.specification.successMetrics?.[0]?.description ||
         `Product requirements for ${project.name} in the ${project.domain} domain.`,
       objectives: project.specification.functionalRequirements.map(
-        (req) => req.description,
+        (req) => req.description
       ),
       success_metrics: project.specification.acceptanceCriteria.map(
-        (criteria) => criteria.criteria.join(', '),
+        (criteria) => criteria.criteria.join(', ')
       ),
       user_stories: this.generateUserStoriesFromRequirements(
-        project.specification,
+        project.specification
       ),
       functional_requirements: project.specification.functionalRequirements.map(
-        (req) => req.description,
+        (req) => req.description
       ),
       non_functional_requirements:
         project.specification.nonFunctionalRequirements.map(
-          (req) => req.description,
+          (req) => req.description
         ),
       constraints: project.specification.constraints.map(
-        (constraint) => constraint.description,
+        (constraint) => constraint.description
       ),
       dependencies: project.specification.dependencies.map((dep) => dep.name),
       timeline: `Estimated ${this.calculateProjectTimeline(project)} weeks`,
@@ -696,7 +696,7 @@ Related: SPARC-${project.id}
     return prompts[phase] || `Execute ${phase} phase for ${project.name}`;
   }
 
-  private getOptimalAgentForPhase(phase: string): any {
+  private getOptimalAgentForPhase(phase: string): unknown {
     const agentMapping = {
       specification: 'system-analyst',
       pseudocode: 'algorithm-designer',
@@ -750,7 +750,7 @@ Related: SPARC-${project.id}
   }
 
   private getPhasePriority(
-    phase: string,
+    phase: string
   ): 'low' | 'medium' | 'high' | 'critical' {
     const priorities = {
       specification: 'high',
@@ -774,14 +774,14 @@ Related: SPARC-${project.id}
   }
 
   private convertPriorityToNumber(
-    priority: 'low' | 'medium' | 'high' | 'critical',
+    priority: 'low' | 'medium' | 'high' | 'critical'
   ): number {
     const mapping = { low: 1, medium: 3, high: 4, critical: 5 };
     return mapping[priority] || 3;
   }
 
   private convertNumberToPriority(
-    num: number,
+    num: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     if (num <= 1) return 'low';
     if (num <= 3) return 'medium';
@@ -904,7 +904,7 @@ Related: SPARC-${project.id}
 
   private getFeatureStatusFromProject(
     project: SPARCProject,
-    phase: string,
+    phase: string
   ): 'backlog' | 'planned' | 'in_progress' | 'completed' {
     if (project.progress?.completedPhases?.includes(phase as any)) {
       return 'completed';
@@ -991,7 +991,7 @@ Related: SPARC-${project.id}
 
       // Check if epic already exists
       const existingEpicIndex = epics.findIndex(
-        (e) => e.sparc_project_id === project.id,
+        (e) => e.sparc_project_id === project.id
       );
       if (existingEpicIndex >= 0) {
         epics[existingEpicIndex] = projectEpic;
@@ -1088,7 +1088,7 @@ Related: SPARC-${project.id}
 
   private getPhaseAcceptanceCriteria(
     phase: string,
-    _project: SPARCProject,
+    _project: SPARCProject
   ): string[] {
     const baseCriteria = {
       specification: [
@@ -1150,7 +1150,7 @@ ${project.architecture?.systemArchitecture?.technologyStack?.map((t) => t.techno
 
     if (project.architecture?.systemArchitecture?.architecturalPatterns) {
       consequences.push(
-        `Leverages proven architectural patterns: ${project.architecture.systemArchitecture.architecturalPatterns.map((p) => p.name).join(', ')}`,
+        `Leverages proven architectural patterns: ${project.architecture.systemArchitecture.architecturalPatterns.map((p) => p.name).join(', ')}`
       );
     }
 
@@ -1158,7 +1158,7 @@ ${project.architecture?.systemArchitecture?.technologyStack?.map((t) => t.techno
   }
 
   private generateUserStoriesFromRequirements(
-    spec: DetailedSpecification,
+    spec: DetailedSpecification
   ): UserStory[] {
     return spec.functionalRequirements.map((req, index) => ({
       id: `US-${index + 1}`,
@@ -1254,7 +1254,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
    */
   async createADRFilesWithWorkspace(
     adrs: ADR[],
-    workspaceId: string,
+    workspaceId: string
   ): Promise<string[]> {
     const createdFiles: string[] = [];
 
@@ -1264,7 +1264,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
     // Check for existing ADR template (following existing patterns)
     const templatePath = path.join(
       this.projectRoot,
-      'docs/adrs/adr-template.md',
+      'docs/adrs/adr-template.md'
     );
     let template = '';
 
@@ -1310,7 +1310,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
           /{CONSEQUENCES}/g,
           Array.isArray(adr.consequences)
             ? adr.consequences.map((c) => `- ${c}`).join('\n')
-            : adr.consequences,
+            : adr.consequences
         )
         .replace(/{DATE}/g, adr.date)
         .replace(/{SPARC_PROJECT_ID}/g, adr.sparc_project_id || 'N/A')
@@ -1338,7 +1338,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
       if (this.documentDrivenSystem && workspaceId) {
         await this.documentDrivenSystem.processVisionaryDocument(
           workspaceId,
-          filePath,
+          filePath
         );
       }
     }
@@ -1354,7 +1354,7 @@ ${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
    */
   async saveEpicsToWorkspace(
     epics: Epic[],
-    workspaceId: string,
+    workspaceId: string
   ): Promise<void> {
     const epicsDir = path.join(this.projectRoot, 'docs/04-epics');
     await fs.mkdir(epicsDir, { recursive: true });
@@ -1395,7 +1395,7 @@ Type: Epic
       if (this.documentDrivenSystem && workspaceId) {
         await this.documentDrivenSystem.processVisionaryDocument(
           workspaceId,
-          filePath,
+          filePath
         );
       }
     }
@@ -1416,7 +1416,7 @@ Type: Epic
    */
   async saveFeaturesFromWorkspace(
     features: Feature[],
-    workspaceId: string,
+    workspaceId: string
   ): Promise<void> {
     const featuresDir = path.join(this.projectRoot, 'docs/05-features');
     await fs.mkdir(featuresDir, { recursive: true });
@@ -1453,7 +1453,7 @@ Type: Feature
       if (this.documentDrivenSystem && workspaceId) {
         await this.documentDrivenSystem.processVisionaryDocument(
           workspaceId,
-          filePath,
+          filePath
         );
       }
     }

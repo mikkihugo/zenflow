@@ -45,7 +45,7 @@ export interface EventFilter {
   /** Array of event priorities to include in filtering */
   priorities?: EventPriority[];
   /** Key-value pairs for metadata-based filtering */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   /** Custom filtering function for advanced criteria */
   customFilter?: (event: SystemEvent) => boolean;
 }
@@ -102,7 +102,7 @@ export interface EventRetryConfig {
   /** Maximum delay between retries in milliseconds */
   maxDelay?: number;
   /** Function to determine if an error/event combination should be retried */
-  retryCondition?: (error: any, event: SystemEvent) => boolean;
+  retryCondition?: (error: unknown, event: SystemEvent) => boolean;
 }
 
 /**
@@ -152,7 +152,7 @@ export interface EventManagerConfig {
   monitoring?: EventMonitoringConfig;
   filters?: EventFilter[];
   transforms?: EventTransform[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -186,7 +186,7 @@ export interface SystemEvent {
   /** Processing priority of the event */
   priority?: EventPriority;
   /** Additional metadata associated with the event */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   /** Correlation ID for tracking related events */
   correlationId?: string;
   /** ID of parent event if this is a child event */
@@ -216,7 +216,7 @@ export interface SystemEvent {
  * ```
  */
 export type EventListener<T extends SystemEvent = SystemEvent> = (
-  event: T,
+  event: T
 ) => void | Promise<void>;
 
 /**
@@ -257,7 +257,7 @@ export interface EventSubscription<T extends SystemEvent = SystemEvent> {
   /** Whether this subscription is currently active */
   active: boolean;
   /** Additional metadata for the subscription */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -274,7 +274,7 @@ export interface EventManagerStatus {
   queueSize: number;
   errorRate: number;
   uptime: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -308,7 +308,7 @@ export interface EventBatch<T extends SystemEvent = SystemEvent> {
   events: T[];
   size: number;
   created: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -322,7 +322,7 @@ export interface EventEmissionOptions {
   retries?: number;
   correlationId?: string;
   parentEventId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -413,7 +413,7 @@ export interface IEventManager {
    */
   emit<T extends SystemEvent>(
     event: T,
-    options?: EventEmissionOptions,
+    options?: EventEmissionOptions
   ): Promise<void>;
 
   /**
@@ -426,7 +426,7 @@ export interface IEventManager {
    */
   emitBatch<T extends SystemEvent>(
     batch: EventBatch<T>,
-    options?: EventEmissionOptions,
+    options?: EventEmissionOptions
   ): Promise<void>;
 
   /**
@@ -452,7 +452,7 @@ export interface IEventManager {
   subscribe<T extends SystemEvent>(
     eventTypes: string | string[],
     listener: EventListener<T>,
-    options?: Partial<EventSubscription<T>>,
+    options?: Partial<EventSubscription<T>>
   ): string;
 
   /**
@@ -566,7 +566,7 @@ export interface IEventManager {
    */
   on(
     event: 'start' | 'stop' | 'error' | 'subscription' | 'emission',
-    handler: (...args: any[]) => void,
+    handler: (...args: unknown[]) => void
   ): void;
 
   /**
@@ -575,7 +575,7 @@ export interface IEventManager {
    * @param event - Event name to remove listeners from.
    * @param handler - Optional specific handler to remove.
    */
-  off(event: string, handler?: (...args: any[]) => void): void;
+  off(event: string, handler?: (...args: unknown[]) => void): void;
 
   /**
    * Add one-time listener for manager events.
@@ -583,7 +583,7 @@ export interface IEventManager {
    * @param event - Event name to listen for once.
    * @param handler - Function to handle the event.
    */
-  once(event: string, handler: (...args: any[]) => void): void;
+  once(event: string, handler: (...args: unknown[]) => void): void;
 
   // Cleanup
   /**
@@ -758,7 +758,7 @@ export interface IEventManagerRegistry {
    */
   registerFactory<T extends EventManagerConfig>(
     type: EventManagerType,
-    factory: IEventManagerFactory<T>,
+    factory: IEventManagerFactory<T>
   ): void;
 
   /**
@@ -769,7 +769,7 @@ export interface IEventManagerRegistry {
    * @returns Factory instance or undefined if not registered.
    */
   getFactory<T extends EventManagerConfig>(
-    type: EventManagerType,
+    type: EventManagerType
   ): IEventManagerFactory<T> | undefined;
 
   /**
@@ -851,7 +851,7 @@ export interface IEventManagerRegistry {
    */
   broadcastToType<T extends SystemEvent>(
     type: EventManagerType,
-    event: T,
+    event: T
   ): Promise<void>;
 }
 
@@ -917,7 +917,7 @@ export class EventError extends Error {
     public readonly code: string,
     public readonly manager: string,
     public readonly eventId?: string,
-    public readonly cause?: Error,
+    public readonly cause?: Error
   ) {
     super(message);
     this.name = 'EventError';
@@ -948,7 +948,7 @@ export class EventSubscriptionError extends EventError {
       'SUBSCRIPTION_ERROR',
       manager,
       subscriptionId,
-      cause,
+      cause
     );
     this.name = 'EventSubscriptionError';
   }
@@ -961,7 +961,7 @@ export class EventEmissionError extends EventError {
       'EMISSION_ERROR',
       manager,
       eventId,
-      cause,
+      cause
     );
     this.name = 'EventEmissionError';
   }
@@ -974,7 +974,7 @@ export class EventFilterError extends EventError {
       'FILTER_ERROR',
       manager,
       filterId,
-      cause,
+      cause
     );
     this.name = 'EventFilterError';
   }
@@ -985,14 +985,14 @@ export class EventTimeoutError extends EventError {
     manager: string,
     timeout: number,
     eventId?: string,
-    cause?: Error,
+    cause?: Error
   ) {
     super(
       `Event timeout (${timeout}ms) for manager: ${manager}`,
       'TIMEOUT_ERROR',
       manager,
       eventId,
-      cause,
+      cause
     );
     this.name = 'EventTimeoutError';
   }
@@ -1003,14 +1003,14 @@ export class EventRetryExhaustedError extends EventError {
     manager: string,
     attempts: number,
     eventId?: string,
-    cause?: Error,
+    cause?: Error
   ) {
     super(
       `Event retry exhausted (${attempts} attempts) for manager: ${manager}`,
       'RETRY_EXHAUSTED',
       manager,
       eventId,
-      cause,
+      cause
     );
     this.name = 'EventRetryExhaustedError';
   }
@@ -1118,7 +1118,7 @@ export const EventTypeGuards = {
    * @param value - Value to check.
    * @returns True if value is a valid EventManagerType.
    */
-  isEventManagerType: (value: any): value is EventManagerType => {
+  isEventManagerType: (value: unknown): value is EventManagerType => {
     return Object.values(EventManagerTypes).includes(value);
   },
 
@@ -1128,7 +1128,7 @@ export const EventTypeGuards = {
    * @param value - Value to check.
    * @returns True if value is a valid EventPriority.
    */
-  isEventPriority: (value: any): value is EventPriority => {
+  isEventPriority: (value: unknown): value is EventPriority => {
     return ['critical', 'high', 'medium', 'low'].includes(value);
   },
 
@@ -1138,7 +1138,7 @@ export const EventTypeGuards = {
    * @param value - Value to check.
    * @returns True if value is a valid EventProcessingStrategy.
    */
-  isEventProcessingStrategy: (value: any): value is EventProcessingStrategy => {
+  isEventProcessingStrategy: (value: unknown): value is EventProcessingStrategy => {
     return ['immediate', 'queued', 'batched', 'throttled'].includes(value);
   },
 
@@ -1148,7 +1148,7 @@ export const EventTypeGuards = {
    * @param value - Value to check.
    * @returns True if value has all required SystemEvent properties.
    */
-  isSystemEvent: (value: any): value is SystemEvent => {
+  isSystemEvent: (value: unknown): value is SystemEvent => {
     return (
       value &&
       typeof value.id === 'string' &&
@@ -1164,7 +1164,7 @@ export const EventTypeGuards = {
    * @param value - Value to check.
    * @returns True if value has all required EventManagerConfig properties.
    */
-  isEventManagerConfig: (value: any): value is EventManagerConfig => {
+  isEventManagerConfig: (value: unknown): value is EventManagerConfig => {
     return (
       value &&
       typeof value.name === 'string' &&

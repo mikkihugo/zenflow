@@ -33,7 +33,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
   async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
       tmpdir(),
-      `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`,
+      `claude-test-${prefix}-${Date.now()}-${Math.random().toString(36).substring(2)}`
     );
 
     await fs.mkdir(tempPath, { recursive: true });
@@ -134,7 +134,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
   }
 
   watchFile(path: string, callback: (event: string) => void): () => void {
-    let watcher: any = null;
+    let watcher: unknown = null;
 
     const startWatching = async () => {
       try {
@@ -144,7 +144,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
       } catch {
         // Fallback to basic fs.watch if chokidar not available
         try {
-          watcher = fs.watch(path, (event: any) => callback(event));
+          watcher = fs.watch(path, (event: unknown) => callback(event));
         } catch {
           // File watching not available
         }
@@ -187,13 +187,13 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
 
     // Clean up created files
     await Promise.allSettled(
-      this.createdFiles.map((file) => this.deleteFile(file)),
+      this.createdFiles.map((file) => this.deleteFile(file))
     );
     this.createdFiles = [];
 
     // Clean up temp directories
     await Promise.allSettled(
-      this.tempDirs.map((dir) => this.deleteDirectory(dir)),
+      this.tempDirs.map((dir) => this.deleteDirectory(dir))
     );
     this.tempDirs = [];
   }
@@ -420,7 +420,7 @@ export function createMockFileSystemHelper(): FileSystemTestHelper {
 export async function createTestProject(
   helper: FileSystemTestHelper,
   projectName: string,
-  files: Record<string, string>,
+  files: Record<string, string>
 ): Promise<string> {
   const projectDir = await helper.createTempDir(projectName);
 
@@ -434,7 +434,7 @@ export async function createTestProject(
 
 export async function createTestWorkspace(
   helper: FileSystemTestHelper,
-  workspaceName: string,
+  workspaceName: string
 ): Promise<{
   workspaceDir: string;
   srcDir: string;

@@ -63,7 +63,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -107,7 +107,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   /**
@@ -140,7 +140,7 @@ export const createNeuralRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -162,7 +162,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(204).send();
-    }),
+    })
   );
 
   // ===== TRAINING OPERATIONS =====
@@ -220,7 +220,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(202).json(trainingResponse);
-    }),
+    })
   );
 
   /**
@@ -262,14 +262,14 @@ export const createNeuralRoutes = (): Router => {
           },
         ],
         estimatedCompletion: new Date(
-          Date.now() + 30 * 60 * 1000,
+          Date.now() + 30 * 60 * 1000
         ).toISOString(), // 30 minutes
         created: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // Started 15 minutes ago
         startedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -293,7 +293,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(204).send();
-    }),
+    })
   );
 
   // ===== PREDICTION OPERATIONS =====
@@ -345,7 +345,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -398,7 +398,7 @@ export const createNeuralRoutes = (): Router => {
       };
 
       res.json(response);
-    }),
+    })
   );
 
   // ===== MODEL MANAGEMENT =====
@@ -440,7 +440,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    }),
+    })
   );
 
   /**
@@ -472,7 +472,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   // ===== EVALUATION AND ANALYSIS =====
@@ -523,7 +523,7 @@ export const createNeuralRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   return router;

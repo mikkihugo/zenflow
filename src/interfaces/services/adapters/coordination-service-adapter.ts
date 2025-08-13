@@ -246,7 +246,7 @@ export class CoordinationServiceAdapter implements IService {
   // Integrated services
   private daaService?: DaaService;
   private sessionEnabledSwarm?: SessionEnabledSwarm;
-  private sessionRecoveryService?: any; // TODO: Define proper type when available
+  private sessionRecoveryService?: unknown; // TODO: Define proper type when available
   private swarmCoordinator?: SwarmCoordinator;
 
   // Performance optimization.
@@ -410,7 +410,7 @@ export class CoordinationServiceAdapter implements IService {
 
         this.sessionEnabledSwarm = new SessionEnabledSwarm(
           swarmOptions,
-          sessionConfig,
+          sessionConfig
         );
         // TODO: Initialize SessionEnabledSwarm when init method is available
         // await this.sessionEnabledSwarm.init();
@@ -420,7 +420,7 @@ export class CoordinationServiceAdapter implements IService {
           // TODO: Implement proper SessionRecoveryService initialization
           // This would be properly initialized when the service is available
           this.logger.debug(
-            'Session recovery service would be initialized here',
+            'Session recovery service would be initialized here'
           );
         }
 
@@ -479,14 +479,14 @@ export class CoordinationServiceAdapter implements IService {
       this.lifecycleStatus = 'initialized';
       this.emit('initialized');
       this.logger.info(
-        `Coordination service adapter initialized successfully: ${this.name}`,
+        `Coordination service adapter initialized successfully: ${this.name}`
       );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
       this.logger.error(
         `Failed to initialize coordination service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -511,7 +511,7 @@ export class CoordinationServiceAdapter implements IService {
       if (!dependenciesOk) {
         throw new ServiceDependencyError(
           this.name,
-          'One or more dependencies failed',
+          'One or more dependencies failed'
         );
       }
 
@@ -519,14 +519,14 @@ export class CoordinationServiceAdapter implements IService {
       this.lifecycleStatus = 'running';
       this.emit('started');
       this.logger.info(
-        `Coordination service adapter started successfully: ${this.name}`,
+        `Coordination service adapter started successfully: ${this.name}`
       );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
       this.logger.error(
         `Failed to start coordination service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -562,14 +562,14 @@ export class CoordinationServiceAdapter implements IService {
       this.lifecycleStatus = 'stopped';
       this.emit('stopped');
       this.logger.info(
-        `Coordination service adapter stopped successfully: ${this.name}`,
+        `Coordination service adapter stopped successfully: ${this.name}`
       );
     } catch (error) {
       this.lifecycleStatus = 'error';
       this.emit('error', error);
       this.logger.error(
         `Failed to stop coordination service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -606,12 +606,12 @@ export class CoordinationServiceAdapter implements IService {
 
       this.lifecycleStatus = 'destroyed';
       this.logger.info(
-        `Coordination service adapter destroyed successfully: ${this.name}`,
+        `Coordination service adapter destroyed successfully: ${this.name}`
       );
     } catch (error) {
       this.logger.error(
         `Failed to destroy coordination service adapter ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -692,7 +692,7 @@ export class CoordinationServiceAdapter implements IService {
   async getMetrics(): Promise<ServiceMetrics> {
     const now = new Date();
     const recentMetrics = this.metrics.filter(
-      (m) => now.getTime() - m.timestamp.getTime() < 300000, // Last 5 minutes
+      (m) => now.getTime() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     const avgLatency =
@@ -709,13 +709,13 @@ export class CoordinationServiceAdapter implements IService {
 
     // Calculate coordination-specific metrics
     const coordinationMetrics = recentMetrics.filter(
-      (m) => m.coordinationLatency !== undefined,
+      (m) => m.coordinationLatency !== undefined
     );
     const avgCoordinationLatency =
       coordinationMetrics.length > 0
         ? coordinationMetrics.reduce(
             (sum, m) => sum + (m.coordinationLatency || 0),
-            0,
+            0
           ) / coordinationMetrics.length
         : 0;
 
@@ -800,7 +800,7 @@ export class CoordinationServiceAdapter implements IService {
         if (this.cache.size > maxSize * 1.2) {
           // 20% overage threshold
           this.logger.warn(
-            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`,
+            `Cache size (${this.cache.size}) significantly exceeds limit (${maxSize})`
           );
           this.healthStats.consecutiveFailures++;
           this.healthStats.healthCheckFailures++;
@@ -826,7 +826,7 @@ export class CoordinationServiceAdapter implements IService {
    */
   async updateConfig(config: Partial<ServiceConfig>): Promise<void> {
     this.logger.info(
-      `Updating configuration for coordination service adapter: ${this.name}`,
+      `Updating configuration for coordination service adapter: ${this.name}`
     );
 
     try {
@@ -844,7 +844,7 @@ export class CoordinationServiceAdapter implements IService {
     } catch (error) {
       this.logger.error(
         `Failed to update configuration for ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -860,7 +860,7 @@ export class CoordinationServiceAdapter implements IService {
       // Basic validation
       if (!(config?.name && config?.type)) {
         this.logger.error(
-          'Configuration missing required fields: name or type',
+          'Configuration missing required fields: name or type'
         );
         return false;
       }
@@ -896,7 +896,7 @@ export class CoordinationServiceAdapter implements IService {
         'knowledge-sharing',
         'learning-operations',
         'cognitive-analysis',
-        'performance-metrics',
+        'performance-metrics'
       );
     }
 
@@ -906,7 +906,7 @@ export class CoordinationServiceAdapter implements IService {
         'state-persistence',
         'checkpoint-creation',
         'session-recovery',
-        'cross-session-continuity',
+        'cross-session-continuity'
       );
     }
 
@@ -916,7 +916,7 @@ export class CoordinationServiceAdapter implements IService {
         'task-assignment',
         'agent-orchestration',
         'topology-management',
-        'load-balancing',
+        'load-balancing'
       );
     }
 
@@ -932,7 +932,7 @@ export class CoordinationServiceAdapter implements IService {
       capabilities.push(
         'continuous-learning',
         'adaptation',
-        'pattern-analysis',
+        'pattern-analysis'
       );
     }
 
@@ -948,8 +948,8 @@ export class CoordinationServiceAdapter implements IService {
    */
   async execute<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const startTime = Date.now();
@@ -965,7 +965,7 @@ export class CoordinationServiceAdapter implements IService {
         throw new ServiceOperationError(
           this.name,
           operation,
-          new Error('Service not ready'),
+          new Error('Service not ready')
         );
       }
 
@@ -977,7 +977,7 @@ export class CoordinationServiceAdapter implements IService {
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(
           () => reject(new ServiceTimeoutError(this.name, operation, timeout)),
-          timeout,
+          timeout
         );
       });
 
@@ -985,7 +985,7 @@ export class CoordinationServiceAdapter implements IService {
       const operationPromise = this.executeOperationInternal<T>(
         operation,
         params,
-        options,
+        options
       );
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
@@ -1084,7 +1084,7 @@ export class CoordinationServiceAdapter implements IService {
     }
   }
 
-  emit(event: ServiceEventType, data?: any, error?: Error): void {
+  emit(event: ServiceEventType, data?: unknown, error?: Error): void {
     const serviceEvent: ServiceEvent = {
       type: event,
       serviceName: this.name,
@@ -1101,7 +1101,7 @@ export class CoordinationServiceAdapter implements IService {
 
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
     this.logger.debug(
-      `Adding dependency ${dependency.serviceName} for ${this.name}`,
+      `Adding dependency ${dependency.serviceName} for ${this.name}`
     );
     this.dependencies.set(dependency.serviceName, dependency);
   }
@@ -1131,7 +1131,7 @@ export class CoordinationServiceAdapter implements IService {
             this.logger.warn(`Dependency ${name} health check failed:`, error);
             return !config?.required; // Return false only if dependency is required
           }
-        },
+        }
       );
 
       const results = await Promise.all(dependencyChecks);
@@ -1155,8 +1155,8 @@ export class CoordinationServiceAdapter implements IService {
    */
   private async executeOperationInternal<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<T> {
     // Generate cache key
     const cacheKey = this.generateCacheKey(operation, params);
@@ -1194,7 +1194,7 @@ export class CoordinationServiceAdapter implements IService {
     const executionPromise = this.executeWithRetry<T>(
       operation,
       params,
-      options,
+      options
     );
 
     // Store pending request for deduplication
@@ -1236,9 +1236,9 @@ export class CoordinationServiceAdapter implements IService {
    */
   private async executeWithRetry<T = any>(
     operation: string,
-    params?: any,
+    params?: unknown,
     options?: ServiceOperationOptions,
-    attempt = 1,
+    attempt = 1
   ): Promise<T> {
     try {
       return await this.performOperation<T>(operation, params, options);
@@ -1257,7 +1257,7 @@ export class CoordinationServiceAdapter implements IService {
           1000;
         this.logger.warn(
           `Operation ${operation} failed (attempt ${attempt}), retrying in ${delay}ms:`,
-          error,
+          error
         );
 
         await new Promise((resolve) => setTimeout(resolve, delay));
@@ -1274,7 +1274,7 @@ export class CoordinationServiceAdapter implements IService {
           operation,
           params,
           options,
-          attempt + 1,
+          attempt + 1
         );
       }
 
@@ -1292,8 +1292,8 @@ export class CoordinationServiceAdapter implements IService {
    */
   private async performOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     switch (operation) {
       // DaaService operations
@@ -1303,7 +1303,7 @@ export class CoordinationServiceAdapter implements IService {
       case 'agent-adapt':
         return (await this.adaptAgent(
           params?.agentId,
-          params?.adaptation,
+          params?.adaptation
         )) as T;
 
       case 'agent-learning-status':
@@ -1315,7 +1315,7 @@ export class CoordinationServiceAdapter implements IService {
       case 'workflow-execute':
         return (await this.executeWorkflow(
           params?.workflowId,
-          params?.params,
+          params?.params
         )) as T;
 
       case 'knowledge-share':
@@ -1327,7 +1327,7 @@ export class CoordinationServiceAdapter implements IService {
       case 'cognitive-set':
         return (await this.setCognitivePattern(
           params?.agentId,
-          params?.pattern,
+          params?.pattern
         )) as T;
 
       case 'meta-learning':
@@ -1349,13 +1349,13 @@ export class CoordinationServiceAdapter implements IService {
       case 'session-checkpoint':
         return (await this.createCheckpoint(
           params?.sessionId,
-          params?.description,
+          params?.description
         )) as T;
 
       case 'session-restore':
         return (await this.restoreFromCheckpoint(
           params?.sessionId,
-          params?.checkpointId,
+          params?.checkpointId
         )) as T;
 
       case 'session-list':
@@ -1368,7 +1368,7 @@ export class CoordinationServiceAdapter implements IService {
       case 'swarm-coordinate':
         return (await this.coordinateSwarm(
           params?.agents,
-          params?.topology,
+          params?.topology
         )) as T;
 
       case 'swarm-add-agent':
@@ -1409,7 +1409,7 @@ export class CoordinationServiceAdapter implements IService {
         throw new ServiceOperationError(
           this.name,
           operation,
-          new Error(`Unknown operation: ${operation}`),
+          new Error(`Unknown operation: ${operation}`)
         );
     }
   }
@@ -1418,7 +1418,7 @@ export class CoordinationServiceAdapter implements IService {
   // DaaService Integration Methods
   // ============================================
 
-  private async createAgent(config: any): Promise<any> {
+  private async createAgent(config: unknown): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
@@ -1441,7 +1441,7 @@ export class CoordinationServiceAdapter implements IService {
     return result;
   }
 
-  private async adaptAgent(agentId: string, adaptation: any): Promise<any> {
+  private async adaptAgent(agentId: string, adaptation: unknown): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
@@ -1458,35 +1458,35 @@ export class CoordinationServiceAdapter implements IService {
     return result;
   }
 
-  private async getAgentLearningStatus(agentId: string): Promise<any> {
+  private async getAgentLearningStatus(agentId: string): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
     return await this.daaService.getAgentLearningStatus(agentId);
   }
 
-  private async createWorkflow(workflow: any): Promise<any> {
+  private async createWorkflow(workflow: unknown): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
     return await this.daaService.createWorkflow(workflow);
   }
 
-  private async executeWorkflow(workflowId: string, params: any): Promise<any> {
+  private async executeWorkflow(workflowId: string, params: unknown): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
     return await this.daaService.executeWorkflow(workflowId, params);
   }
 
-  private async shareKnowledge(knowledge: any): Promise<any> {
+  private async shareKnowledge(knowledge: unknown): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
     return await this.daaService.shareKnowledge(knowledge);
   }
 
-  private async analyzeCognitivePatterns(agentId?: string): Promise<any> {
+  private async analyzeCognitivePatterns(agentId?: string): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
@@ -1495,22 +1495,22 @@ export class CoordinationServiceAdapter implements IService {
 
   private async setCognitivePattern(
     agentId: string,
-    pattern: any,
-  ): Promise<any> {
+    pattern: unknown
+  ): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
     return await this.daaService.setCognitivePattern(agentId, pattern);
   }
 
-  private async performMetaLearning(params: any): Promise<any> {
+  private async performMetaLearning(params: unknown): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
     return await this.daaService.performMetaLearning(params);
   }
 
-  private async getPerformanceMetrics(agentId?: string): Promise<any> {
+  private async getPerformanceMetrics(agentId?: string): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
@@ -1574,7 +1574,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private async createCheckpoint(
     sessionId: string,
-    description?: string,
+    description?: string
   ): Promise<string> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
@@ -1595,7 +1595,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private async restoreFromCheckpoint(
     sessionId: string,
-    checkpointId: string,
+    checkpointId: string
   ): Promise<void> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
@@ -1611,7 +1611,7 @@ export class CoordinationServiceAdapter implements IService {
     }
   }
 
-  private async listSessions(filter?: any): Promise<SessionState[]> {
+  private async listSessions(filter?: unknown): Promise<SessionState[]> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
     }
@@ -1619,8 +1619,8 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private async getSessionStats(
-    sessionId?: string,
-  ): Promise<Record<string, any>> {
+    sessionId?: string
+  ): Promise<Record<string, unknown>> {
     if (!this.sessionEnabledSwarm) {
       throw new Error('SessionEnabledSwarm not available');
     }
@@ -1633,8 +1633,8 @@ export class CoordinationServiceAdapter implements IService {
 
   private async coordinateSwarm(
     agents: SwarmAgent[],
-    topology?: SwarmTopology,
-  ): Promise<any> {
+    topology?: SwarmTopology
+  ): Promise<unknown> {
     if (!this.swarmCoordinator) {
       throw new Error('SwarmCoordinator not available');
     }
@@ -1642,7 +1642,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private async addAgentToSwarm(
-    agent: Omit<SwarmAgent, 'performance' | 'connections'>,
+    agent: Omit<SwarmAgent, 'performance' | 'connections'>
   ): Promise<void> {
     if (!this.swarmCoordinator) {
       throw new Error('SwarmCoordinator not available');
@@ -1661,14 +1661,14 @@ export class CoordinationServiceAdapter implements IService {
     this.agentMetrics.delete(agentId);
   }
 
-  private async assignTask(task: any): Promise<string | null> {
+  private async assignTask(task: unknown): Promise<string | null> {
     if (!this.swarmCoordinator) {
       throw new Error('SwarmCoordinator not available');
     }
     return await this.swarmCoordinator.assignTask(task);
   }
 
-  private async completeTask(taskId: string, result: any): Promise<void> {
+  private async completeTask(taskId: string, result: unknown): Promise<void> {
     if (!this.swarmCoordinator) {
       throw new Error('SwarmCoordinator not available');
     }
@@ -1723,7 +1723,7 @@ export class CoordinationServiceAdapter implements IService {
     pendingRequests: number;
     activeAgents: number;
     activeSessions: number;
-    healthStats: any;
+    healthStats: unknown;
   }> {
     return {
       operationCount: this.operationCount,
@@ -1751,7 +1751,7 @@ export class CoordinationServiceAdapter implements IService {
   // Helper Methods
   // ============================================
 
-  private generateCacheKey(operation: string, params?: any): string {
+  private generateCacheKey(operation: string, params?: unknown): string {
     const prefix = this.adapterConfig.cache?.keyPrefix || 'coord-adapter:';
     const paramsHash = params ? JSON.stringify(params) : '';
     return `${prefix}${operation}:${Buffer.from(paramsHash).toString('base64')}`;
@@ -1833,8 +1833,8 @@ export class CoordinationServiceAdapter implements IService {
 
   private shouldRetryOperation(
     operation: string,
-    error: any,
-    attempt: number,
+    error: unknown,
+    attempt: number
   ): boolean {
     if (!this.adapterConfig.retry?.enabled) {
       return false;
@@ -1874,7 +1874,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private calculateCacheHitRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
@@ -1887,7 +1887,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private calculateDeduplicationRate(): number {
     const deduplicatedRequests = Array.from(
-      this.pendingRequests.values(),
+      this.pendingRequests.values()
     ).reduce((sum, req) => sum + (req.requestCount - 1), 0);
 
     const totalRequests = this.operationCount + deduplicatedRequests;
@@ -1896,7 +1896,7 @@ export class CoordinationServiceAdapter implements IService {
 
   private calculateLearningOperationsRate(): number {
     const recentMetrics = this.metrics.filter(
-      (m) => Date.now() - m.timestamp.getTime() < 300000, // Last 5 minutes
+      (m) => Date.now() - m.timestamp.getTime() < 300000 // Last 5 minutes
     );
 
     if (recentMetrics.length === 0) {
@@ -1907,7 +1907,7 @@ export class CoordinationServiceAdapter implements IService {
       (m) =>
         m.operationName.includes('learning') ||
         m.operationName.includes('cognitive') ||
-        m.operationName.includes('adapt'),
+        m.operationName.includes('adapt')
     ).length;
 
     return (learningOps / recentMetrics.length) * 100;
@@ -1936,7 +1936,7 @@ export class CoordinationServiceAdapter implements IService {
     return size;
   }
 
-  private estimateDataSize(data: any): number {
+  private estimateDataSize(data: unknown): number {
     if (!data) return 0;
 
     try {
@@ -1946,7 +1946,7 @@ export class CoordinationServiceAdapter implements IService {
     }
   }
 
-  private estimateAgentCount(params: any): number | undefined {
+  private estimateAgentCount(params: unknown): number | undefined {
     if (!params) return undefined;
 
     if (params?.agents && Array.isArray(params?.agents)) {
@@ -1960,11 +1960,11 @@ export class CoordinationServiceAdapter implements IService {
     return undefined;
   }
 
-  private extractSessionId(params: any): string | undefined {
+  private extractSessionId(params: unknown): string | undefined {
     return params?.sessionId;
   }
 
-  private calculateCoordinationLatency(result: any): number | undefined {
+  private calculateCoordinationLatency(result: unknown): number | undefined {
     if (result && typeof result === 'object' && result?.averageLatency) {
       return result?.averageLatency;
     }
@@ -1972,7 +1972,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   private determineHealthStatus(
-    errorRate: number,
+    errorRate: number
   ): 'healthy' | 'degraded' | 'unhealthy' | 'unknown' {
     if (this.healthStats.consecutiveFailures > 5) {
       return 'unhealthy';
@@ -2049,7 +2049,7 @@ export class CoordinationServiceAdapter implements IService {
  * @example
  */
 export function createCoordinationServiceAdapter(
-  config: CoordinationServiceAdapterConfig,
+  config: CoordinationServiceAdapterConfig
 ): CoordinationServiceAdapter {
   return new CoordinationServiceAdapter(config);
 }
@@ -2063,7 +2063,7 @@ export function createCoordinationServiceAdapter(
  */
 export function createDefaultCoordinationServiceAdapterConfig(
   name: string,
-  overrides?: Partial<CoordinationServiceAdapterConfig>,
+  overrides?: Partial<CoordinationServiceAdapterConfig>
 ): CoordinationServiceAdapterConfig {
   return {
     service: {

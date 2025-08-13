@@ -115,7 +115,7 @@ export async function createOptimalWebSocketClient(
       enabled: boolean;
       size?: number;
     };
-  },
+  }
 ): Promise<import('../core/interfaces.ts').IClient> {
   const factory = new WebSocketClientFactory();
 
@@ -129,7 +129,7 @@ export async function createOptimalWebSocketClient(
 
     return factory.createLoadBalanced(
       configs,
-      options?.loadBalancing?.strategy,
+      options?.loadBalancing?.strategy
     );
   }
 
@@ -151,7 +151,7 @@ export async function createOptimalWebSocketClient(
   if (options?.pooling?.enabled) {
     const pooledClients = await factory.createPooled(
       config,
-      options?.pooling.size,
+      options?.pooling.size
     );
     return new LoadBalancedWebSocketClient(pooledClients, 'round-robin');
   }
@@ -183,7 +183,7 @@ export async function createSimpleWebSocketClient(
     reconnect?: boolean;
     heartbeat?: boolean;
     useEnhanced?: boolean;
-  },
+  }
 ): Promise<import('../core/interfaces.ts').IClient> {
   const config: WebSocketClientConfig = {
     name: `simple-ws-${Date.now()}`,
@@ -373,7 +373,7 @@ export class WebSocketHealthMonitor {
   addClient(
     name: string,
     client: import('../core/interfaces.ts').IClient,
-    checkInterval: number = 60000,
+    checkInterval: number = 60000
   ): void {
     this.clients.set(name, client);
 
@@ -384,7 +384,7 @@ export class WebSocketHealthMonitor {
         if (status.status === 'unhealthy') {
           logger.warn(
             `WebSocket client ${name} is unhealthy:`,
-            status.metadata,
+            status.metadata
           );
         }
       } catch (error) {

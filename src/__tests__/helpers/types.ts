@@ -26,7 +26,7 @@ export interface TestDataOptions {
   validation?: {
     required?: string[];
     optional?: string[];
-    constraints?: Record<string, any>;
+    constraints?: Record<string, unknown>;
   };
 }
 
@@ -86,7 +86,7 @@ export interface MockObject {
 }
 
 export interface MockBuilder {
-  create<T>(type: new (...args: any[]) => T, config?: MockConfiguration): T;
+  create<T>(type: new (...args: unknown[]) => T, config?: MockConfiguration): T;
   createPartial<T>(overrides: Partial<T>): T;
   createSpy<T extends object>(obj: T, methods?: (keyof T)[]): T;
 }
@@ -96,15 +96,15 @@ export interface UserTestData {
   id: string;
   name: string;
   email: string;
-  preferences?: Record<string, any>;
-  metadata?: Record<string, any>;
+  preferences?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ProjectTestData {
   name: string;
   path: string;
   type: 'typescript' | 'javascript' | 'python' | 'rust';
-  structure: Record<string, any>;
+  structure: Record<string, unknown>;
   dependencies?: string[];
 }
 
@@ -112,7 +112,7 @@ export interface SwarmTestData {
   id: string;
   topology: 'mesh' | 'hierarchical' | 'ring' | 'star';
   agents: AgentTestData[];
-  configuration: Record<string, any>;
+  configuration: Record<string, unknown>;
 }
 
 export interface AgentTestData {
@@ -146,9 +146,9 @@ export interface PerformanceMetrics {
 export interface DatabaseTestHelper {
   setup(): Promise<void>;
   cleanup(): Promise<void>;
-  seed(data: any[]): Promise<void>;
+  seed(data: unknown[]): Promise<void>;
   reset(): Promise<void>;
-  getConnection(): any;
+  getConnection(): unknown;
 }
 
 export interface FileSystemTestHelper {
@@ -162,7 +162,7 @@ export interface FileSystemTestHelper {
 export interface NetworkTestHelper {
   startMockServer(port?: number): Promise<void>;
   stopMockServer(): Promise<void>;
-  mockRequest(path: string, response: any): void;
-  captureRequests(): any[];
+  mockRequest(path: string, response: unknown): void;
+  captureRequests(): unknown[];
   clearRequests(): void;
 }

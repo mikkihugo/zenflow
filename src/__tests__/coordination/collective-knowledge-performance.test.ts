@@ -81,8 +81,8 @@ class PerformanceMetrics {
     };
   }
 
-  getAllStats(): Record<string, any> {
-    const stats: Record<string, any> = {};
+  getAllStats(): Record<string, unknown> {
+    const stats: Record<string, unknown> = {};
     for (const [name] of this.measurements) {
       stats[name] = this.getStats(name);
     }
@@ -152,7 +152,7 @@ class HighPerformanceMockHiveFACT extends EventEmitter {
     }
   }
 
-  async searchFacts(query: any): Promise<any[]> {
+  async searchFacts(query: unknown): Promise<any[]> {
     this.requestCount++;
 
     // Simulate search with some processing time
@@ -160,21 +160,21 @@ class HighPerformanceMockHiveFACT extends EventEmitter {
 
     const results = Array.from(this.facts.values())
       .filter((fact) =>
-        fact.subject.toLowerCase().includes(query.query.toLowerCase()),
+        fact.subject.toLowerCase().includes(query.query.toLowerCase())
       )
       .slice(0, query.limit || 10);
 
     return results;
   }
 
-  async getFact(type: string, subject: string, swarmId?: string): Promise<any> {
+  async getFact(type: string, subject: string, swarmId?: string): Promise<unknown> {
     this.requestCount++;
 
     // Simulate lookup time
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 20));
 
     const fact = Array.from(this.facts.values()).find(
-      (f) => f.type === type && f.subject.includes(subject),
+      (f) => f.type === type && f.subject.includes(subject)
     );
 
     if (fact && swarmId) {
@@ -204,14 +204,14 @@ class FastMockMemoryStore {
   private storage = new Map<string, any>();
   private operationCount = 0;
 
-  async store(key: string, type: string, data: any): Promise<void> {
+  async store(key: string, type: string, data: unknown): Promise<void> {
     this.operationCount++;
     // Simulate minimal storage time
     await new Promise((resolve) => setTimeout(resolve, 1));
     this.storage.set(key, { type, data, timestamp: Date.now() });
   }
 
-  async retrieve(key: string): Promise<any> {
+  async retrieve(key: string): Promise<unknown> {
     this.operationCount++;
     // Simulate minimal retrieval time
     await new Promise((resolve) => setTimeout(resolve, 1));
@@ -254,7 +254,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
     knowledgeBridge = new CollectiveKnowledgeBridge(
       hiveCoordinator as any,
-      memoryStore as any,
+      memoryStore as any
     );
     (knowledgeBridge as any).hiveFact = hiveFact;
 
@@ -276,7 +276,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
       async () => {
         const swarm = new SwarmKnowledgeSync(
           { swarmId: 'perf-test-swarm', cacheSize: 1000 },
-          memoryStore as any,
+          memoryStore as any
         );
         await swarm.initialize();
 
@@ -286,7 +286,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         metrics.mark('query-start');
         const result = await swarm.queryKnowledge(
           'authentication patterns',
-          'security',
+          'security'
         );
         metrics.mark('query-end');
         metrics.measure('single-query', 'query-start', 'query-end');
@@ -296,12 +296,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
         const stats = metrics.getStats('single-query');
         expect(stats).not.toBeNull();
         expect(stats?.avg).toBeLessThan(
-          PERFORMANCE_CONFIG?.EXPECTED_RESPONSE_TIME,
+          PERFORMANCE_CONFIG?.EXPECTED_RESPONSE_TIME
         );
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
 
     test(
@@ -309,7 +309,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
       async () => {
         const swarm = new SwarmKnowledgeSync(
           { swarmId: 'cache-test-swarm', cacheSize: 1000 },
-          memoryStore as any,
+          memoryStore as any
         );
         await swarm.initialize();
         setupPerformanceRequestHandler(knowledgeBridge, swarm);
@@ -321,7 +321,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         metrics.measure(
           'cache-miss-query',
           'first-query-start',
-          'first-query-end',
+          'first-query-end'
         );
 
         // Second query (cache hit)
@@ -331,7 +331,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         metrics.measure(
           'cache-hit-query',
           'second-query-start',
-          'second-query-end',
+          'second-query-end'
         );
 
         const missStats = metrics.getStats('cache-miss-query');
@@ -343,7 +343,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
   });
 
@@ -356,13 +356,13 @@ describe('Hive Knowledge System - Performance Tests', () => {
           (_, i) =>
             new SwarmKnowledgeSync(
               { swarmId: `concurrent-swarm-${i}`, cacheSize: 100 },
-              memoryStore as any,
-            ),
+              memoryStore as any
+            )
         );
 
         await Promise.all(swarms.map((s) => s.initialize()));
         swarms.forEach((s) =>
-          setupPerformanceRequestHandler(knowledgeBridge, s),
+          setupPerformanceRequestHandler(knowledgeBridge, s)
         );
 
         const queries = Array.from({ length: requestCount }, (_, i) => ({
@@ -382,7 +382,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
               metrics.measure(
                 `individual-request-${index}`,
                 `request-${index}-start`,
-                `request-${index}-end`,
+                `request-${index}-end`
               );
               return result;
             } catch (error) {
@@ -390,11 +390,11 @@ describe('Hive Knowledge System - Performance Tests', () => {
               metrics.measure(
                 `individual-request-${index}`,
                 `request-${index}-start`,
-                `request-${index}-end`,
+                `request-${index}-end`
               );
               throw error;
             }
-          },
+          }
         );
 
         const results = await Promise.allSettled(promises);
@@ -403,12 +403,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
         metrics.measure(
           `concurrent-${requestCount}`,
           `concurrent-${requestCount}-start`,
-          `concurrent-${requestCount}-end`,
+          `concurrent-${requestCount}-end`
         );
 
         // Analyze results
         const successful = results?.filter(
-          (r) => r.status === 'fulfilled',
+          (r) => r.status === 'fulfilled'
         ).length;
         const _failed = results?.filter((r) => r.status === 'rejected').length;
 
@@ -420,12 +420,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         // Overall time should be reasonable
         expect(concurrentStats?.avg).toBeLessThan(
-          PERFORMANCE_CONFIG?.EXPECTED_RESPONSE_TIME * 2,
+          PERFORMANCE_CONFIG?.EXPECTED_RESPONSE_TIME * 2
         );
 
         await Promise.all(swarms.map((s) => s.shutdown()));
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
   });
 
@@ -435,7 +435,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
       async () => {
         const swarm = new SwarmKnowledgeSync(
           { swarmId: 'memory-test-swarm', cacheSize: 500 },
-          memoryStore as any,
+          memoryStore as any
         );
         await swarm.initialize();
         setupPerformanceRequestHandler(knowledgeBridge, swarm);
@@ -444,7 +444,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         // Perform many operations
         const operations = Array.from({ length: 1000 }, (_, i) =>
-          swarm.queryKnowledge(`memory test ${i}`, 'performance'),
+          swarm.queryKnowledge(`memory test ${i}`, 'performance')
         );
 
         await Promise.allSettled(operations);
@@ -459,7 +459,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         // Memory increase should be reasonable
         expect(memoryIncrease).toBeLessThan(
-          PERFORMANCE_CONFIG?.MEMORY_THRESHOLD,
+          PERFORMANCE_CONFIG?.MEMORY_THRESHOLD
         );
 
         // Cache should respect size limits
@@ -468,7 +468,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
 
     test(
@@ -479,18 +479,18 @@ describe('Hive Knowledge System - Performance Tests', () => {
           (_, i) =>
             new SwarmKnowledgeSync(
               { swarmId: `cleanup-swarm-${i}`, cacheSize: 100 },
-              memoryStore as any,
-            ),
+              memoryStore as any
+            )
         );
 
         await Promise.all(swarms.map((s) => s.initialize()));
         swarms.forEach((s) =>
-          setupPerformanceRequestHandler(knowledgeBridge, s),
+          setupPerformanceRequestHandler(knowledgeBridge, s)
         );
 
         // Perform operations
         const operations = swarms.map((swarm) =>
-          swarm.queryKnowledge('cleanup test', 'performance'),
+          swarm.queryKnowledge('cleanup test', 'performance')
         );
         await Promise.allSettled(operations);
 
@@ -506,7 +506,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         expect(operationCount).toBeGreaterThan(0); // Some operations occurred
         expect(operationCount).toBeLessThan(10000); // But not excessive
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
   });
 
@@ -519,13 +519,13 @@ describe('Hive Knowledge System - Performance Tests', () => {
           (_, i) =>
             new SwarmKnowledgeSync(
               { swarmId: `throughput-swarm-${i}`, cacheSize: 200 },
-              memoryStore as any,
-            ),
+              memoryStore as any
+            )
         );
 
         await Promise.all(swarms.map((s) => s.initialize()));
         swarms.forEach((s) =>
-          setupPerformanceRequestHandler(knowledgeBridge, s),
+          setupPerformanceRequestHandler(knowledgeBridge, s)
         );
 
         let requestCount = 0;
@@ -534,7 +534,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         const loadTest = async () => {
           const endTime = startTime + duration;
-          const promises: Promise<any>[] = [];
+          const promises: Promise<unknown>[] = [];
 
           while (Date.now() < endTime) {
             const swarm = swarms[requestCount % swarms.length];
@@ -564,7 +564,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await Promise.all(swarms.map((s) => s.shutdown()));
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
   });
 
@@ -574,7 +574,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
       async () => {
         const swarm = new SwarmKnowledgeSync(
           { swarmId: 'stress-test-swarm', cacheSize: 1000 },
-          memoryStore as any,
+          memoryStore as any
         );
         await swarm.initialize();
         setupPerformanceRequestHandler(knowledgeBridge, swarm);
@@ -583,7 +583,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         const stressOperations = [
           // Queries
           ...Array.from({ length: 200 }, (_, i) =>
-            swarm.queryKnowledge(`stress query ${i}`, 'performance'),
+            swarm.queryKnowledge(`stress query ${i}`, 'performance')
           ),
           // Contributions
           ...Array.from({ length: 50 }, (_, i) =>
@@ -611,12 +611,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
                 },
                 confidence: 0.8 + Math.random() * 0.2,
               },
-              `stress-agent-${i}`,
-            ),
+              `stress-agent-${i}`
+            )
           ),
           // Subscriptions
           ...Array.from({ length: 20 }, (_, i) =>
-            swarm.subscribeToDomain(`stress-domain-${i}`),
+            swarm.subscribeToDomain(`stress-domain-${i}`)
           ),
         ];
 
@@ -624,7 +624,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         // Analyze system health
         const successful = results?.filter(
-          (r) => r.status === 'fulfilled',
+          (r) => r.status === 'fulfilled'
         ).length;
         const _failed = results?.filter((r) => r.status === 'rejected').length;
         const successRate = successful / results.length;
@@ -642,7 +642,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT * 2,
+      PERFORMANCE_CONFIG?.TIMEOUT * 2
     );
   });
 
@@ -652,7 +652,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
       async () => {
         const swarm = new SwarmKnowledgeSync(
           { swarmId: 'regression-test-swarm', cacheSize: 100 },
-          memoryStore as any,
+          memoryStore as any
         );
         await swarm.initialize();
         setupPerformanceRequestHandler(knowledgeBridge, swarm);
@@ -665,33 +665,33 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         metrics.mark('baseline-start');
         const baselinePromises = baselineQueries.map(({ query, domain }) =>
-          swarm.queryKnowledge(query, domain),
+          swarm.queryKnowledge(query, domain)
         );
         await Promise.allSettled(baselinePromises);
         metrics.mark('baseline-end');
         metrics.measure(
           'baseline-performance',
           'baseline-start',
-          'baseline-end',
+          'baseline-end'
         );
 
         // Simulate some system changes (cache filling)
         const cacheFillingQueries = Array.from({ length: 100 }, (_, i) =>
-          swarm.queryKnowledge(`cache filler ${i}`, 'various'),
+          swarm.queryKnowledge(`cache filler ${i}`, 'various')
         );
         await Promise.allSettled(cacheFillingQueries);
 
         // Performance measurement after changes
         metrics.mark('after-changes-start');
         const afterChangesPromises = baselineQueries.map(({ query, domain }) =>
-          swarm.queryKnowledge(query, domain),
+          swarm.queryKnowledge(query, domain)
         );
         await Promise.allSettled(afterChangesPromises);
         metrics.mark('after-changes-end');
         metrics.measure(
           'after-changes-performance',
           'after-changes-start',
-          'after-changes-end',
+          'after-changes-end'
         );
 
         const baselineStats = metrics.getStats('baseline-performance');
@@ -709,7 +709,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT,
+      PERFORMANCE_CONFIG?.TIMEOUT
     );
   });
 });
@@ -717,9 +717,9 @@ describe('Hive Knowledge System - Performance Tests', () => {
 // Helper function to setup performant request handling
 function setupPerformanceRequestHandler(
   bridge: CollectiveKnowledgeBridge,
-  swarm: SwarmKnowledgeSync,
+  swarm: SwarmKnowledgeSync
 ): void {
-  swarm.on('knowledge:request', async (request: any) => {
+  swarm.on('knowledge:request', async (request: unknown) => {
     try {
       const response = await bridge.processKnowledgeRequest(request);
       swarm.emit('knowledge:response', response);

@@ -62,7 +62,7 @@ describe('Auto-Swarm Integration', () => {
           memoryLimit: '2GB',
           cpuLimit: 4,
         },
-      },
+      }
     );
 
     expect(factory).toBeDefined();

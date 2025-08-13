@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import React from 'react';
+import type React from 'react';
 
 export interface ProgressBarProps {
   progress: number; // 0-100
@@ -116,10 +116,7 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
         <Text> </Text>
 
         {showPercentage && (
-          <Text
-            color={color}
-            bold
-          >
+          <Text color={color} bold>
             {percentage}%
           </Text>
         )}
@@ -137,32 +134,15 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
 // Convenience components for specific use cases.
 export const StandardProgressBar: React.FC<
   Omit<ProgressBarProps, 'variant'>
-> = (props) => (
-  <ProgressBar
-    {...props}
-    variant="standard"
-  />
-);
+> = (props) => <ProgressBar {...props} variant="standard" />;
 
 export const SwarmProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (
-  props,
-) => (
-  <ProgressBar
-    {...props}
-    variant="swarm"
-    color="cyan"
-  />
-);
+  props
+) => <ProgressBar {...props} variant="swarm" color="cyan" />;
 
 export const NeuralProgressBar: React.FC<Omit<ProgressBarProps, 'variant'>> = (
-  props,
-) => (
-  <ProgressBar
-    {...props}
-    variant="neural"
-    color="magenta"
-  />
-);
+  props
+) => <ProgressBar {...props} variant="neural" color="magenta" />;
 
 // Task progress component with predefined styling
 export const TaskProgress: React.FC<{

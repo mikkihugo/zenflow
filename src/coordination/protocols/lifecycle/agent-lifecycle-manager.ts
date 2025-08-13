@@ -304,7 +304,7 @@ export class AgentLifecycleManager extends EventEmitter {
   constructor(
     private config: AgentLifecycleConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
@@ -321,15 +321,15 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   private setupEventHandlers(): void {
-    this.eventBus.on('agent:heartbeat', (data: any) => {
+    this.eventBus.on('agent:heartbeat', (data: unknown) => {
       this.handleAgentHeartbeat(data);
     });
 
-    this.eventBus.on('agent:task-completed', (data: any) => {
+    this.eventBus.on('agent:task-completed', (data: unknown) => {
       this.handleTaskCompletion(data);
     });
 
-    this.eventBus.on('agent:task-failed', (data: any) => {
+    this.eventBus.on('agent:task-failed', (data: unknown) => {
       this.handleTaskFailure(data);
     });
 
@@ -337,12 +337,12 @@ export class AgentLifecycleManager extends EventEmitter {
 
     this.eventBus.on(
       'system:resource-pressure',
-      this.handleResourcePressure.bind(this),
+      this.handleResourcePressure.bind(this)
     );
 
     this.eventBus.on(
       'workload:demand-change',
-      this.handleDemandChange.bind(this),
+      this.handleDemandChange.bind(this)
     );
   }
 
@@ -380,7 +380,7 @@ export class AgentLifecycleManager extends EventEmitter {
     // Check limits
     if (this.agents.size + request.count > this.config.maxAgents) {
       throw new Error(
-        `Would exceed maximum agent limit (${this.config.maxAgents})`,
+        `Would exceed maximum agent limit (${this.config.maxAgents})`
       );
     }
 
@@ -433,7 +433,7 @@ export class AgentLifecycleManager extends EventEmitter {
    * @param request
    */
   async terminateAgents(
-    request: TerminationRequest,
+    request: TerminationRequest
   ): Promise<TerminationResult> {
     const startTime = Date.now();
     const result: TerminationResult = {
@@ -497,7 +497,7 @@ export class AgentLifecycleManager extends EventEmitter {
    */
   getAgentsByStatus(status: AgentStatus): AgentInstance[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.status === status,
+      (agent) => agent.status === status
     );
   }
 
@@ -508,7 +508,7 @@ export class AgentLifecycleManager extends EventEmitter {
    */
   getAgentsByType(type: string): AgentInstance[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.type === type,
+      (agent) => agent.type === type
     );
   }
 
@@ -527,7 +527,7 @@ export class AgentLifecycleManager extends EventEmitter {
     return await this.scalingEngine.analyze(
       this.agents,
       this.templates,
-      this.metrics,
+      this.metrics
     );
   }
 
@@ -587,7 +587,7 @@ export class AgentLifecycleManager extends EventEmitter {
    * @param type
    */
   getPerformanceRanking(
-    type?: string,
+    type?: string
   ): Array<{ agentId: string; score: number; rank: number }> {
     let agents = Array.from(this.agents.values());
 
@@ -610,7 +610,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async spawnSingleAgent(
     template: AgentTemplate,
-    request: SpawnRequest,
+    request: SpawnRequest
   ): Promise<string> {
     const agentId = this.generateAgentId(template.type);
 
@@ -643,7 +643,7 @@ export class AgentLifecycleManager extends EventEmitter {
       // Wait for initialization
       await this.waitForAgentReady(
         agent,
-        request.timeout ?? this.config.spawnTimeout,
+        request.timeout ?? this.config.spawnTimeout
       );
 
       agent.status = 'ready';
@@ -677,7 +677,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async terminateSingleAgent(
     agentId: string,
-    request: TerminationRequest,
+    request: TerminationRequest
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) {
@@ -695,7 +695,7 @@ export class AgentLifecycleManager extends EventEmitter {
       if (request.graceful && agent.process) {
         await this.gracefulShutdown(
           agent,
-          request.timeout || this.config.shutdownTimeout,
+          request.timeout || this.config.shutdownTimeout
         );
       } else if (agent.process) {
         // Force termination
@@ -732,7 +732,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async createAgentProcess(
     agent: AgentInstance,
-    template: AgentTemplate,
+    template: AgentTemplate
   ): Promise<ChildProcess> {
     const env = {
       ...process.env,
@@ -772,7 +772,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async waitForAgentReady(
     agent: AgentInstance,
-    timeout: number,
+    timeout: number
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -794,7 +794,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async gracefulShutdown(
     agent: AgentInstance,
-    timeout: number,
+    timeout: number
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!agent.process) {
@@ -869,7 +869,7 @@ export class AgentLifecycleManager extends EventEmitter {
     const healthPromises = Array.from(this.agents.values())
       .filter(
         (agent) =>
-          agent.status !== 'terminated' && agent.status !== 'terminating',
+          agent.status !== 'terminated' && agent.status !== 'terminating'
       )
       .map((agent) => this.healthMonitor.checkHealth(agent));
 
@@ -895,7 +895,7 @@ export class AgentLifecycleManager extends EventEmitter {
       try {
         await this.recoveryEngine.recoverAgent(
           agent,
-          this.templates.get(agent.templateId)!,
+          this.templates.get(agent.templateId)!
         );
         this.emit('agent:recovered', { agentId: agent.id });
       } catch (error) {
@@ -913,7 +913,7 @@ export class AgentLifecycleManager extends EventEmitter {
       const decision = await this.scalingEngine.analyze(
         this.agents,
         this.templates,
-        this.metrics,
+        this.metrics
       );
 
       if (decision.action !== 'no_action' && decision.confidence > 0.7) {
@@ -931,7 +931,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private async executeScalingDecision(
     templateId: string,
-    decision: ScalingDecision,
+    decision: ScalingDecision
   ): Promise<void> {
     try {
       if (decision.action === 'scale_up') {
@@ -947,7 +947,7 @@ export class AgentLifecycleManager extends EventEmitter {
         const terminateCount = decision.currentCount - decision.targetCount;
         const agentsToTerminate = this.selectAgentsForTermination(
           templateId,
-          terminateCount,
+          terminateCount
         );
 
         await this.terminateAgents({
@@ -971,7 +971,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private selectAgentsForTermination(
     templateId: string,
-    count: number,
+    count: number
   ): string[] {
     const template = this.templates.get(templateId);
     if (!template) return [];
@@ -980,11 +980,11 @@ export class AgentLifecycleManager extends EventEmitter {
     const agents = this.getAgentsByType(template.type)
       .filter(
         (agent) =>
-          agent.status !== 'terminated' && agent.status !== 'terminating',
+          agent.status !== 'terminated' && agent.status !== 'terminating'
       )
       .sort(
         (a, b) =>
-          this.calculatePerformanceScore(a) - this.calculatePerformanceScore(b),
+          this.calculatePerformanceScore(a) - this.calculatePerformanceScore(b)
       )
       .slice(0, count);
 
@@ -1064,7 +1064,7 @@ export class AgentLifecycleManager extends EventEmitter {
     // Calculate spawns per hour over last hour
     const oneHourAgo = Date.now() - 3600000;
     const recentSpawns = Array.from(this.agents.values()).filter(
-      (agent) => agent.startTime.getTime() > oneHourAgo,
+      (agent) => agent.startTime.getTime() > oneHourAgo
     );
 
     return recentSpawns.length;
@@ -1088,7 +1088,7 @@ export class AgentLifecycleManager extends EventEmitter {
 
   private calculateResourceUtilization(): ResourceUsage {
     const agents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status !== 'terminated',
+      (agent) => agent.status !== 'terminated'
     );
 
     if (agents.length === 0) {
@@ -1104,7 +1104,7 @@ export class AgentLifecycleManager extends EventEmitter {
         handles: sum.handles + agent.resources.handles,
         threads: sum.threads + agent.resources.threads,
       }),
-      { cpu: 0, memory: 0, network: 0, disk: 0, handles: 0, threads: 0 },
+      { cpu: 0, memory: 0, network: 0, disk: 0, handles: 0, threads: 0 }
     );
 
     return {
@@ -1127,7 +1127,7 @@ export class AgentLifecycleManager extends EventEmitter {
   }
 
   // Event handlers
-  private handleAgentHeartbeat(data: any): void {
+  private handleAgentHeartbeat(data: unknown): void {
     const agent = this.agents.get(data?.agentId);
     if (agent) {
       agent.lastSeen = new Date();
@@ -1137,14 +1137,14 @@ export class AgentLifecycleManager extends EventEmitter {
     }
   }
 
-  private handleTaskCompletion(data: any): void {
+  private handleTaskCompletion(data: unknown): void {
     const agent = this.agents.get(data?.agentId);
     if (agent) {
       agent.performance.tasksCompleted++;
       agent.performance.lastActivity = new Date();
 
       const assignment = agent.assignments.find(
-        (a) => a.taskId === data?.taskId,
+        (a) => a.taskId === data?.taskId
       );
       if (assignment) {
         assignment.status = 'completed';
@@ -1156,14 +1156,14 @@ export class AgentLifecycleManager extends EventEmitter {
     }
   }
 
-  private handleTaskFailure(data: any): void {
+  private handleTaskFailure(data: unknown): void {
     const agent = this.agents.get(data?.agentId);
     if (agent) {
       agent.performance.tasksFailed++;
       agent.performance.lastActivity = new Date();
 
       const assignment = agent.assignments.find(
-        (a) => a.taskId === data?.taskId,
+        (a) => a.taskId === data?.taskId
       );
       if (assignment) {
         assignment.status = 'failed';
@@ -1180,7 +1180,7 @@ export class AgentLifecycleManager extends EventEmitter {
     }
   }
 
-  private handleAgentError(data: any): void {
+  private handleAgentError(data: unknown): void {
     const agent = this.agents.get(data?.agentId);
     if (agent) {
       this.addAgentError(agent, data?.error);
@@ -1191,7 +1191,7 @@ export class AgentLifecycleManager extends EventEmitter {
     }
   }
 
-  private handleResourcePressure(data: any): void {
+  private handleResourcePressure(data: unknown): void {
     this.logger.warn('System resource pressure detected', data);
 
     // Could trigger scaling down or resource optimization
@@ -1200,7 +1200,7 @@ export class AgentLifecycleManager extends EventEmitter {
     }
   }
 
-  private handleDemandChange(data: any): void {
+  private handleDemandChange(data: unknown): void {
     this.logger.info('Workload demand change detected', data);
 
     // Trigger scaling analysis
@@ -1214,7 +1214,7 @@ export class AgentLifecycleManager extends EventEmitter {
   private handleProcessExit(
     agent: AgentInstance,
     code: number | null,
-    signal: string | null,
+    signal: string | null
   ): void {
     this.logger.info('Agent process exited', {
       agentId: agent.id,
@@ -1259,7 +1259,7 @@ export class AgentLifecycleManager extends EventEmitter {
   private handleProcessOutput(
     agent: AgentInstance,
     data: string,
-    stream: 'stdout' | 'stderr',
+    stream: 'stdout' | 'stderr'
   ): void {
     // Log agent output
     this.logger.debug(`Agent ${stream}`, {
@@ -1381,7 +1381,7 @@ export class AgentLifecycleManager extends EventEmitter {
     const activeAgents = Array.from(this.agents.values())
       .filter(
         (agent) =>
-          agent.status !== 'terminated' && agent.status !== 'terminating',
+          agent.status !== 'terminated' && agent.status !== 'terminating'
       )
       .map((agent) => agent.id);
 
@@ -1403,7 +1403,7 @@ export class AgentLifecycleManager extends EventEmitter {
 class HealthMonitor {
   constructor(
     private readonly _config: AgentLifecycleConfig, // For future health check configuration
-    private readonly _logger: ILogger, // For health monitoring logs
+    private readonly _logger: ILogger // For health monitoring logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future health monitoring configuration and logging
   }
@@ -1463,12 +1463,12 @@ class HealthMonitor {
 class PerformanceTracker {
   constructor(
     private readonly _config: AgentLifecycleConfig, // For future performance thresholds
-    private readonly _logger: ILogger, // For performance tracking logs
+    private readonly _logger: ILogger // For performance tracking logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future performance threshold configuration and logging
   }
 
-  updateMetrics(agent: AgentInstance, data: any): void {
+  updateMetrics(agent: AgentInstance, data: unknown): void {
     // Update performance metrics based on task completion data
     const metrics = agent.performance;
 
@@ -1482,14 +1482,14 @@ class PerformanceTracker {
       metrics.averageResponseTime = this.updateMovingAverage(
         metrics.averageResponseTime,
         data?.responseTime,
-        totalTasks,
+        totalTasks
       );
     }
 
     // Update efficiency and reliability
     metrics.efficiency = Math.min(
       1.0,
-      metrics.successRate * (1000 / Math.max(1, metrics.averageResponseTime)),
+      metrics.successRate * (1000 / Math.max(1, metrics.averageResponseTime))
     );
     metrics.reliability = metrics.successRate ** 2; // Penalize failures more
   }
@@ -1497,7 +1497,7 @@ class PerformanceTracker {
   private updateMovingAverage(
     current: number,
     newValue: number,
-    count: number,
+    count: number
   ): number {
     if (count === 0) return newValue;
     return (current * (count - 1) + newValue) / count;
@@ -1524,7 +1524,7 @@ class CapabilityDiscovery {
   processOutput(
     _agent: AgentInstance,
     _data: string,
-    _stream: 'stdout' | 'stderr',
+    _stream: 'stdout' | 'stderr'
   ): void {
     // Process agent output for capability discovery
     // This could parse structured output indicating capabilities
@@ -1534,13 +1534,13 @@ class CapabilityDiscovery {
 class ScalingEngine {
   constructor(
     private readonly config: AgentLifecycleConfig,
-    private readonly logger: ILogger,
+    private readonly logger: ILogger
   ) {}
 
   async analyze(
     agents: Map<string, AgentInstance>,
     _templates: Map<string, AgentTemplate>,
-    metrics: LifecycleMetrics,
+    metrics: LifecycleMetrics
   ): Promise<ScalingDecision> {
     // Simplified scaling analysis
     const totalAgents = metrics.totalAgents;
@@ -1579,11 +1579,11 @@ class ScalingEngine {
 
   private calculateUtilization(agents: Map<string, AgentInstance>): number {
     const activeAgents = Array.from(agents.values()).filter(
-      (agent) => agent.status === 'busy' || agent.status === 'active',
+      (agent) => agent.status === 'busy' || agent.status === 'active'
     );
 
     const totalAgents = Array.from(agents.values()).filter(
-      (agent) => agent.status !== 'terminated' && agent.status !== 'failed',
+      (agent) => agent.status !== 'terminated' && agent.status !== 'failed'
     );
 
     return totalAgents.length > 0
@@ -1595,12 +1595,12 @@ class ScalingEngine {
 class RecoveryEngine {
   constructor(
     private readonly config: AgentLifecycleConfig,
-    private readonly logger: ILogger,
+    private readonly logger: ILogger
   ) {}
 
   async recoverAgent(
     agent: AgentInstance,
-    _template: AgentTemplate,
+    _template: AgentTemplate
   ): Promise<void> {
     // Implement agent recovery strategies
     this.logger.info('Attempting agent recovery', { agentId: agent.id });

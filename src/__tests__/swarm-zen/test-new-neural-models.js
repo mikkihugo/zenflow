@@ -13,7 +13,7 @@ async function testGNNModel() {
     // Create GNN with social network preset
     const gnn = await createNeuralModel(
       'gnn',
-      MODEL_PRESETS.gnn.social_network,
+      MODEL_PRESETS.gnn.social_network
     );
 
     // Create sample graph data

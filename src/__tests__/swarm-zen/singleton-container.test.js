@@ -97,7 +97,7 @@ async function runTests() {
       (testService) => new DependentService(testService),
       {
         dependencies: ['testService'],
-      },
+      }
     );
 
     const dependent = container.get('dependent');
@@ -138,7 +138,7 @@ async function runTests() {
 
     if (!instance.isDestroyed) {
       throw new Error(
-        'Instance should be destroyed after container destruction',
+        'Instance should be destroyed after container destruction'
       );
     }
   });
@@ -168,7 +168,7 @@ async function runTests() {
     const stats = container.getStats();
     if (stats.registeredServices !== 100 || stats.activeInstances !== 100) {
       throw new Error(
-        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`,
+        `Expected 100 services and instances, got ${stats.registeredServices}/${stats.activeInstances}`
       );
     }
 
@@ -177,7 +177,7 @@ async function runTests() {
     const statsAfter = container.getStats();
     if (statsAfter.activeInstances !== 0) {
       throw new Error(
-        `Memory leak detected: ${statsAfter.activeInstances} instances remaining`,
+        `Memory leak detected: ${statsAfter.activeInstances} instances remaining`
       );
     }
   });
@@ -189,7 +189,7 @@ async function runTests() {
 
     // Simulate concurrent access
     const promises = Array.from({ length: 10 }, () =>
-      Promise.resolve(container.get('concurrent')),
+      Promise.resolve(container.get('concurrent'))
     );
 
     const instances = await Promise.all(promises);

@@ -15,14 +15,14 @@ import {
 } from '../../../../neural/core/neural-network.ts';
 
 describe('Prediction Accuracy - Classical TDD', () => {
-  let wasmModule: any;
+  let wasmModule: unknown;
 
   beforeEach(async () => {
     try {
       wasmModule = await initializeNeuralWasm();
     } catch (error) {
       console.warn(
-        'WASM module not available, skipping prediction accuracy tests',
+        'WASM module not available, skipping prediction accuracy tests'
       );
     }
   });
@@ -188,7 +188,7 @@ describe('Prediction Accuracy - Classical TDD', () => {
         network,
         xorData,
         0.01,
-        1000,
+        1000
       );
 
       // XOR is more complex, but should still achieve good accuracy

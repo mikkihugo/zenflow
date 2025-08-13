@@ -92,7 +92,7 @@ export interface Adaptation {
     | 'skill_acquisition'
     | 'optimization';
   description: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   impact: AdaptationImpact;
   success: boolean;
   originalPerformance?: BehaviorPerformance;
@@ -116,8 +116,8 @@ export interface OptimizationStrategy {
     | 'bayesian'
     | 'reinforcement';
   objective: string;
-  constraints: Record<string, any>;
-  parameters: Record<string, any>;
+  constraints: Record<string, unknown>;
+  parameters: Record<string, unknown>;
 }
 
 export interface OptimizationResult {
@@ -172,7 +172,7 @@ export class BehavioralOptimization extends EventEmitter {
    */
   registerAgentBehavior(
     agentId: string,
-    initialBehavior?: Partial<BehaviorParameters>,
+    initialBehavior?: Partial<BehaviorParameters>
   ): string {
     const behavior: AgentBehavior = {
       agentId,
@@ -200,7 +200,7 @@ export class BehavioralOptimization extends EventEmitter {
   async optimizeAgentBehavior(
     agentId: string,
     patterns: ExecutionPattern[],
-    strategy: string = 'genetic',
+    strategy: string = 'genetic'
   ): Promise<OptimizationResult> {
     const currentBehavior = this.agentBehaviors.get(agentId);
     if (!currentBehavior) {
@@ -221,42 +221,42 @@ export class BehavioralOptimization extends EventEmitter {
       case 'genetic':
         optimizedBehavior = await this.geneticOptimization(
           currentBehavior,
-          patterns,
+          patterns
         );
         break;
       case 'gradient_descent':
         optimizedBehavior = await this.gradientDescentOptimization(
           currentBehavior,
-          patterns,
+          patterns
         );
         break;
       case 'simulated_annealing':
         optimizedBehavior = await this.simulatedAnnealingOptimization(
           currentBehavior,
-          patterns,
+          patterns
         );
         break;
       case 'bayesian':
         optimizedBehavior = await this.bayesianOptimization(
           currentBehavior,
-          patterns,
+          patterns
         );
         break;
       case 'reinforcement':
         optimizedBehavior = await this.reinforcementOptimization(
           currentBehavior,
-          patterns,
+          patterns
         );
         break;
       default:
         throw new Error(
-          `Unsupported optimization type: ${optimizationStrategy.type}`,
+          `Unsupported optimization type: ${optimizationStrategy.type}`
         );
     }
 
     const improvement = this.calculateImprovement(
       currentBehavior,
-      optimizedBehavior,
+      optimizedBehavior
     );
     const convergenceTime = Date.now() - startTime;
 
@@ -301,11 +301,11 @@ export class BehavioralOptimization extends EventEmitter {
    */
   async refineTaskAllocation(
     swarmId: string,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<TaskAllocationStrategy> {
     const taskPatterns = patterns.filter((p) => p.type === 'task_completion');
     const successfulPatterns = taskPatterns.filter(
-      (p) => (p.metadata as any)?.success === true,
+      (p) => (p.metadata as any)?.success === true
     );
 
     const allocationStrategy: TaskAllocationStrategy = {
@@ -321,12 +321,12 @@ export class BehavioralOptimization extends EventEmitter {
     const taskTypes = new Set(
       successfulPatterns
         .map((p) => (p.metadata as any)?.taskType)
-        .filter(Boolean),
+        .filter(Boolean)
     );
 
     taskTypes.forEach((taskType) => {
       const typePatterns = successfulPatterns.filter(
-        (p) => (p.metadata as any)?.taskType === taskType,
+        (p) => (p.metadata as any)?.taskType === taskType
       );
       const avgPerformance =
         typePatterns.reduce((sum, p) => sum + p.confidence, 0) /
@@ -345,7 +345,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Analyze resource requirements
     const resourcePatterns = patterns.filter(
-      (p) => p.type === 'resource_utilization',
+      (p) => p.type === 'resource_utilization'
     );
     allocationStrategy.constraints =
       this.extractResourceConstraints(resourcePatterns);
@@ -362,7 +362,7 @@ export class BehavioralOptimization extends EventEmitter {
    */
   async optimizeCommunicationProtocols(
     swarmId: string,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<CommunicationOptimization> {
     const commPatterns = patterns.filter((p) => p.type === 'communication');
 
@@ -378,12 +378,12 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Analyze communication effectiveness
     const effectiveComms = commPatterns.filter(
-      (p) => (p.metadata as any)?.effective === true,
+      (p) => (p.metadata as any)?.effective === true
     );
     const avgLatency =
       effectiveComms.reduce(
         (sum, p) => sum + ((p.metadata as any)?.latency || 0),
-        0,
+        0
       ) / effectiveComms.length;
 
     // Optimize based on successful communication patterns
@@ -404,10 +404,10 @@ export class BehavioralOptimization extends EventEmitter {
    * @param patterns
    */
   async optimizeResourceAllocation(
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<ResourceAllocationStrategy> {
     const resourcePatterns = patterns.filter(
-      (p) => p.type === 'resource_utilization',
+      (p) => p.type === 'resource_utilization'
     );
 
     const strategy: ResourceAllocationStrategy = {
@@ -423,20 +423,20 @@ export class BehavioralOptimization extends EventEmitter {
     const resourceTypes = new Set(
       resourcePatterns
         .map((p) => (p.metadata as any)?.resourceType)
-        .filter(Boolean),
+        .filter(Boolean)
     );
 
     resourceTypes.forEach((resourceType) => {
       const typePatterns = resourcePatterns.filter(
-        (p) => (p.metadata as any)?.resourceType === resourceType,
+        (p) => (p.metadata as any)?.resourceType === resourceType
       );
       const avgUtilization =
         typePatterns.reduce(
           (sum, p) => sum + ((p.metadata as any)?.utilization || 0),
-          0,
+          0
         ) / typePatterns.length;
       const peakUtilization = Math.max(
-        ...typePatterns.map((p) => (p.metadata as any)?.utilization || 0),
+        ...typePatterns.map((p) => (p.metadata as any)?.utilization || 0)
       );
 
       strategy.allocations[resourceType] = avgUtilization * 1.2; // 20% buffer
@@ -466,7 +466,7 @@ export class BehavioralOptimization extends EventEmitter {
    */
   async adaptCoordinationStrategies(
     swarmId: string,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<CoordinationStrategy> {
     const coordPatterns = patterns.filter((p) => p.type === 'coordination');
 
@@ -482,7 +482,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Analyze coordination effectiveness
     const effectiveCoordination = coordPatterns.filter(
-      (p) => (p.metadata as any)?.effective === true,
+      (p) => (p.metadata as any)?.effective === true
     );
 
     if (effectiveCoordination.length > 0) {
@@ -614,7 +614,7 @@ export class BehavioralOptimization extends EventEmitter {
   async applyBehaviorAdaptation(
     agentId: string,
     adaptationType: string,
-    parameters: Record<string, any>,
+    parameters: Record<string, unknown>
   ): Promise<void> {
     const behavior = this.agentBehaviors.get(agentId);
     if (!behavior) {
@@ -682,12 +682,12 @@ export class BehavioralOptimization extends EventEmitter {
 
   private async geneticOptimization(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<AgentBehavior> {
     // Create initial population
     const population = this.createPopulation(
       behavior,
-      this.config.populationSize || 50,
+      this.config.populationSize || 50
     );
 
     for (
@@ -697,7 +697,7 @@ export class BehavioralOptimization extends EventEmitter {
     ) {
       // Evaluate fitness
       const fitness = population.map((individual) =>
-        this.evaluateFitness(individual, patterns),
+        this.evaluateFitness(individual, patterns)
       );
 
       // Selection
@@ -713,7 +713,7 @@ export class BehavioralOptimization extends EventEmitter {
       population.splice(
         0,
         population.length,
-        ...this.selectSurvivors(population, offspring, fitness),
+        ...this.selectSurvivors(population, offspring, fitness)
       );
 
       // Check convergence
@@ -729,7 +729,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Return best individual
     const finalFitness = population.map((individual) =>
-      this.evaluateFitness(individual, patterns),
+      this.evaluateFitness(individual, patterns)
     );
     const bestIndex = finalFitness.indexOf(Math.max(...finalFitness));
 
@@ -738,7 +738,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private async gradientDescentOptimization(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<AgentBehavior> {
     let currentBehavior = { ...behavior };
     const learningRate = 0.01;
@@ -757,7 +757,7 @@ export class BehavioralOptimization extends EventEmitter {
       currentBehavior = this.applyGradients(
         currentBehavior,
         gradients,
-        learningRate,
+        learningRate
       );
 
       const newFitness = this.evaluateFitness(currentBehavior, patterns);
@@ -776,7 +776,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private async simulatedAnnealingOptimization(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<AgentBehavior> {
     let currentBehavior = { ...behavior };
     let bestBehavior = { ...behavior };
@@ -822,7 +822,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private async bayesianOptimization(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<AgentBehavior> {
     // Simplified Bayesian optimization
     const candidates: AgentBehavior[] = [];
@@ -845,7 +845,7 @@ export class BehavioralOptimization extends EventEmitter {
       const nextCandidate = this.selectNextCandidate(
         candidates,
         evaluations,
-        behavior,
+        behavior
       );
       const nextEvaluation = this.evaluateFitness(nextCandidate, patterns);
 
@@ -860,7 +860,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private async reinforcementOptimization(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Promise<AgentBehavior> {
     // Use Q-learning to optimize behavior parameters
     const stateActionValues = new Map<string, number>();
@@ -893,7 +893,7 @@ export class BehavioralOptimization extends EventEmitter {
             0.9 *
               this.getMaxQValue(
                 this.behaviorToState(newBehavior),
-                stateActionValues,
+                stateActionValues
               ) -
             currentQ);
       stateActionValues.set(stateActionKey, newQ);
@@ -908,7 +908,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private createPopulation(
     baseBehavior: AgentBehavior,
-    size: number,
+    size: number
   ): AgentBehavior[] {
     const population: AgentBehavior[] = [];
 
@@ -937,19 +937,19 @@ export class BehavioralOptimization extends EventEmitter {
     // Clamp values to valid ranges
     mutatedBehavior.parameters.taskSelection.preferredComplexity = Math.max(
       0,
-      Math.min(1, mutatedBehavior.parameters.taskSelection.preferredComplexity),
+      Math.min(1, mutatedBehavior.parameters.taskSelection.preferredComplexity)
     );
     mutatedBehavior.parameters.taskSelection.riskTolerance = Math.max(
       0,
-      Math.min(1, mutatedBehavior.parameters.taskSelection.riskTolerance),
+      Math.min(1, mutatedBehavior.parameters.taskSelection.riskTolerance)
     );
     mutatedBehavior.parameters.communication.frequency = Math.max(
       0,
-      Math.min(1, mutatedBehavior.parameters.communication.frequency),
+      Math.min(1, mutatedBehavior.parameters.communication.frequency)
     );
     mutatedBehavior.parameters.learning.adaptationRate = Math.max(
       0.001,
-      Math.min(0.5, mutatedBehavior.parameters.learning.adaptationRate),
+      Math.min(0.5, mutatedBehavior.parameters.learning.adaptationRate)
     );
 
     return mutatedBehavior;
@@ -957,7 +957,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private evaluateFitness(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): number {
     let fitness = 0;
 
@@ -970,7 +970,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     // Bonus from pattern matching
     const relevantPatterns = patterns.filter(
-      (p) => (p as any).agentId === behavior.agentId,
+      (p) => (p as any).agentId === behavior.agentId
     );
     if (relevantPatterns.length > 0) {
       const avgConfidence =
@@ -1000,7 +1000,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private selectParents(
     population: AgentBehavior[],
-    fitness: number[],
+    fitness: number[]
   ): AgentBehavior[] {
     const parents: AgentBehavior[] = [];
     const tournamentSize = 3;
@@ -1053,7 +1053,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private createChild(
     parent1: AgentBehavior,
-    parent2: AgentBehavior,
+    parent2: AgentBehavior
   ): AgentBehavior {
     const child = JSON.parse(JSON.stringify(parent1));
 
@@ -1105,19 +1105,19 @@ export class BehavioralOptimization extends EventEmitter {
         // Clamp values
         individual.parameters.taskSelection.preferredComplexity = Math.max(
           0,
-          Math.min(1, individual.parameters.taskSelection.preferredComplexity),
+          Math.min(1, individual.parameters.taskSelection.preferredComplexity)
         );
         individual.parameters.taskSelection.riskTolerance = Math.max(
           0,
-          Math.min(1, individual.parameters.taskSelection.riskTolerance),
+          Math.min(1, individual.parameters.taskSelection.riskTolerance)
         );
         individual.parameters.communication.frequency = Math.max(
           0,
-          Math.min(1, individual.parameters.communication.frequency),
+          Math.min(1, individual.parameters.communication.frequency)
         );
         individual.parameters.learning.adaptationRate = Math.max(
           0.001,
-          Math.min(0.5, individual.parameters.learning.adaptationRate),
+          Math.min(0.5, individual.parameters.learning.adaptationRate)
         );
       }
     });
@@ -1126,7 +1126,7 @@ export class BehavioralOptimization extends EventEmitter {
   private selectSurvivors(
     parents: AgentBehavior[],
     offspring: AgentBehavior[],
-    parentFitness: number[],
+    parentFitness: number[]
   ): AgentBehavior[] {
     const combined = [...parents, ...offspring];
     const combinedFitness = [
@@ -1147,7 +1147,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private calculateGradients(
     behavior: AgentBehavior,
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Record<string, number> {
     const gradients: Record<string, number> = {};
     const epsilon = 0.001;
@@ -1166,7 +1166,7 @@ export class BehavioralOptimization extends EventEmitter {
       this.setNestedProperty(
         modifiedBehavior.parameters,
         param,
-        this.getNestedProperty(modifiedBehavior.parameters, param) + epsilon,
+        this.getNestedProperty(modifiedBehavior.parameters, param) + epsilon
       );
 
       const modifiedFitness = this.evaluateFitness(modifiedBehavior, patterns);
@@ -1179,14 +1179,14 @@ export class BehavioralOptimization extends EventEmitter {
   private applyGradients(
     behavior: AgentBehavior,
     gradients: Record<string, number>,
-    learningRate: number,
+    learningRate: number
   ): AgentBehavior {
     const updatedBehavior = JSON.parse(JSON.stringify(behavior));
 
     Object.entries(gradients).forEach(([param, gradient]) => {
       const currentValue = this.getNestedProperty(
         updatedBehavior.parameters,
-        param,
+        param
       );
       const newValue = currentValue + learningRate * gradient;
       this.setNestedProperty(updatedBehavior.parameters, param, newValue);
@@ -1219,7 +1219,7 @@ export class BehavioralOptimization extends EventEmitter {
   private selectNextCandidate(
     candidates: AgentBehavior[],
     evaluations: number[],
-    baseBehavior: AgentBehavior,
+    baseBehavior: AgentBehavior
   ): AgentBehavior {
     // Simplified acquisition function (exploration vs exploitation)
     const explorationCandidates: Array<{
@@ -1232,7 +1232,7 @@ export class BehavioralOptimization extends EventEmitter {
       const uncertainty = this.calculateUncertainty(candidate, candidates);
       const expectedImprovement = this.calculateExpectedImprovement(
         candidate,
-        evaluations,
+        evaluations
       );
       const acquisitionValue = expectedImprovement + 0.1 * uncertainty;
 
@@ -1240,27 +1240,27 @@ export class BehavioralOptimization extends EventEmitter {
     }
 
     explorationCandidates.sort(
-      (a, b) => (b.acquisitionValue || 0) - (a.acquisitionValue || 0),
+      (a, b) => (b.acquisitionValue || 0) - (a.acquisitionValue || 0)
     );
     return explorationCandidates[0]?.candidate || baseBehavior;
   }
 
   private calculateUncertainty(
     candidate: AgentBehavior,
-    existingCandidates: AgentBehavior[],
+    existingCandidates: AgentBehavior[]
   ): number {
     // Simple uncertainty based on distance to existing candidates
     if (existingCandidates.length === 0) return 1;
 
     const distances = existingCandidates.map((existing) =>
-      this.calculateBehaviorDistance(candidate, existing),
+      this.calculateBehaviorDistance(candidate, existing)
     );
     return Math.min(...distances);
   }
 
   private calculateExpectedImprovement(
     _candidate: AgentBehavior,
-    evaluations: number[],
+    evaluations: number[]
   ): number {
     if (evaluations.length === 0) return 0.5;
 
@@ -1303,7 +1303,7 @@ export class BehavioralOptimization extends EventEmitter {
   private selectAction(
     state: string,
     actions: BehaviorAction[],
-    stateActionValues: Map<string, number>,
+    stateActionValues: Map<string, number>
   ): BehaviorAction {
     const epsilon = 0.1;
 
@@ -1329,19 +1329,19 @@ export class BehavioralOptimization extends EventEmitter {
 
   private applyAction(
     behavior: AgentBehavior,
-    action: BehaviorAction,
+    action: BehaviorAction
   ): AgentBehavior {
     const newBehavior = JSON.parse(JSON.stringify(behavior));
 
     if (action.type === 'adjust_parameter') {
       const currentValue = this.getNestedProperty(
         newBehavior.parameters,
-        action.parameter,
+        action.parameter
       );
       this.setNestedProperty(
         newBehavior.parameters,
         action.parameter,
-        currentValue + action.value,
+        currentValue + action.value
       );
     }
 
@@ -1351,10 +1351,10 @@ export class BehavioralOptimization extends EventEmitter {
 
   private getMaxQValue(
     state: string,
-    stateActionValues: Map<string, number>,
+    stateActionValues: Map<string, number>
   ): number {
     const stateKeys = Array.from(stateActionValues.keys()).filter((key) =>
-      key.startsWith(state),
+      key.startsWith(state)
     );
     if (stateKeys.length === 0) return 0;
 
@@ -1365,7 +1365,7 @@ export class BehavioralOptimization extends EventEmitter {
   // Utility methods
 
   private createDefaultBehaviorParameters(
-    initial?: Partial<BehaviorParameters>,
+    initial?: Partial<BehaviorParameters>
   ): BehaviorParameters {
     return {
       taskSelection: {
@@ -1426,7 +1426,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private recordAdaptation(
     agentId: string,
-    adaptationData: Omit<Adaptation, 'id' | 'timestamp'>,
+    adaptationData: Omit<Adaptation, 'id' | 'timestamp'>
   ): void {
     const behavior = this.agentBehaviors.get(agentId);
     if (!behavior) return;
@@ -1449,7 +1449,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private calculateImprovement(
     original: AgentBehavior,
-    optimized: AgentBehavior,
+    optimized: AgentBehavior
   ): number {
     const originalScore = this.calculateOverallPerformance(original);
     const optimizedScore = this.calculateOverallPerformance(optimized);
@@ -1470,9 +1470,9 @@ export class BehavioralOptimization extends EventEmitter {
   }
 
   private extractAgentCriteria(
-    patterns: ExecutionPattern[],
-  ): Record<string, any> {
-    const criteria: Record<string, any> = {};
+    patterns: ExecutionPattern[]
+  ): Record<string, unknown> {
+    const criteria: Record<string, unknown> = {};
 
     // Analyze what makes agents successful for specific tasks
     const successfulAgents = patterns
@@ -1483,7 +1483,7 @@ export class BehavioralOptimization extends EventEmitter {
     if (uniqueAgents.length > 0) {
       criteria['preferredAgents'] = uniqueAgents;
       criteria['minExperience'] = Math.min(
-        ...patterns.map((p) => (p.metadata as any)?.experience || 0),
+        ...patterns.map((p) => (p.metadata as any)?.experience || 0)
       );
       criteria['requiredSkills'] = this.extractRequiredSkills(patterns);
     }
@@ -1505,9 +1505,9 @@ export class BehavioralOptimization extends EventEmitter {
   }
 
   private extractResourceConstraints(
-    patterns: ExecutionPattern[],
-  ): Record<string, any> {
-    const constraints: Record<string, any> = {};
+    patterns: ExecutionPattern[]
+  ): Record<string, unknown> {
+    const constraints: Record<string, unknown> = {};
 
     if (patterns.length > 0) {
       const memoryUsages = patterns
@@ -1530,23 +1530,23 @@ export class BehavioralOptimization extends EventEmitter {
   }
 
   private calculateOptimalFrequencies(
-    patterns: ExecutionPattern[],
+    patterns: ExecutionPattern[]
   ): Record<string, number> {
     const frequencies: Record<string, number> = {};
 
     // Group by message type and calculate optimal frequencies
     const messageTypes = new Set(
-      patterns.map((p) => (p.metadata as any)?.messageType).filter(Boolean),
+      patterns.map((p) => (p.metadata as any)?.messageType).filter(Boolean)
     );
 
     messageTypes.forEach((messageType) => {
       const typePatterns = patterns.filter(
-        (p) => (p.metadata as any)?.messageType === messageType,
+        (p) => (p.metadata as any)?.messageType === messageType
       );
       const avgInterval =
         typePatterns.reduce(
           (sum, p) => sum + ((p.metadata as any)?.interval || 1000),
-          0,
+          0
         ) / typePatterns.length;
       frequencies[messageType] = 1000 / avgInterval; // Convert to frequency
     });
@@ -1555,9 +1555,9 @@ export class BehavioralOptimization extends EventEmitter {
   }
 
   private classifyMessageTypes(
-    patterns: ExecutionPattern[],
-  ): Record<string, any> {
-    const messageTypes: Record<string, any> = {};
+    patterns: ExecutionPattern[]
+  ): Record<string, unknown> {
+    const messageTypes: Record<string, unknown> = {};
 
     patterns.forEach((pattern) => {
       const msgType = (pattern.metadata as any)?.messageType;
@@ -1580,7 +1580,7 @@ export class BehavioralOptimization extends EventEmitter {
     });
 
     // Finalize averages
-    Object.values(messageTypes).forEach((type: any) => {
+    Object.values(messageTypes).forEach((type: unknown) => {
       type.avgSize /= type.count;
       type.avgLatency /= type.count;
     });
@@ -1616,7 +1616,7 @@ export class BehavioralOptimization extends EventEmitter {
         score > topologyScores[best as keyof typeof topologyScores]
           ? topology
           : best,
-      'mesh',
+      'mesh'
     );
   }
 
@@ -1658,7 +1658,7 @@ export class BehavioralOptimization extends EventEmitter {
   private createBehaviorCluster(
     seed: AgentBehavior,
     behaviors: AgentBehavior[],
-    visited: Set<string>,
+    visited: Set<string>
   ): BehaviorCluster {
     const clusterBehaviors = [seed];
     visited.add(seed.agentId);
@@ -1678,7 +1678,7 @@ export class BehavioralOptimization extends EventEmitter {
     const avgPerformance =
       clusterBehaviors.reduce(
         (sum, b) => sum + this.calculateOverallPerformance(b),
-        0,
+        0
       ) / clusterBehaviors.length;
     const stability = this.calculateClusterStability(clusterBehaviors);
 
@@ -1694,7 +1694,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private calculateBehaviorSimilarity(
     b1: AgentBehavior,
-    b2: AgentBehavior,
+    b2: AgentBehavior
   ): number {
     let similarity = 0;
     let factors = 0;
@@ -1704,13 +1704,13 @@ export class BehavioralOptimization extends EventEmitter {
       1 -
       Math.abs(
         b1.parameters.taskSelection.preferredComplexity -
-          b2.parameters.taskSelection.preferredComplexity,
+          b2.parameters.taskSelection.preferredComplexity
       );
     similarity +=
       1 -
       Math.abs(
         b1.parameters.taskSelection.riskTolerance -
-          b2.parameters.taskSelection.riskTolerance,
+          b2.parameters.taskSelection.riskTolerance
       );
     factors += 2;
 
@@ -1719,7 +1719,7 @@ export class BehavioralOptimization extends EventEmitter {
       1 -
       Math.abs(
         b1.parameters.communication.frequency -
-          b2.parameters.communication.frequency,
+          b2.parameters.communication.frequency
       );
     factors += 1;
 
@@ -1728,7 +1728,7 @@ export class BehavioralOptimization extends EventEmitter {
       1 -
       Math.abs(
         b1.parameters.learning.adaptationRate -
-          b2.parameters.learning.adaptationRate,
+          b2.parameters.learning.adaptationRate
       );
     factors += 1;
 
@@ -1737,7 +1737,7 @@ export class BehavioralOptimization extends EventEmitter {
 
   private calculateBehaviorDistance(
     b1: AgentBehavior,
-    b2: AgentBehavior,
+    b2: AgentBehavior
   ): number {
     return 1 - this.calculateBehaviorSimilarity(b1, b2);
   }
@@ -1749,25 +1749,25 @@ export class BehavioralOptimization extends EventEmitter {
     centroid.parameters.taskSelection.preferredComplexity =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.taskSelection.preferredComplexity,
-        0,
+        0
       ) / behaviors.length;
 
     centroid.parameters.taskSelection.riskTolerance =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.taskSelection.riskTolerance,
-        0,
+        0
       ) / behaviors.length;
 
     centroid.parameters.communication.frequency =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.communication.frequency,
-        0,
+        0
       ) / behaviors.length;
 
     centroid.parameters.learning.adaptationRate =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.learning.adaptationRate,
-        0,
+        0
       ) / behaviors.length;
 
     // Average performance metrics
@@ -1789,7 +1789,7 @@ export class BehavioralOptimization extends EventEmitter {
 
     const centroid = this.calculateBehaviorCentroid(behaviors);
     const distances = behaviors.map((b) =>
-      this.calculateBehaviorDistance(b, centroid),
+      this.calculateBehaviorDistance(b, centroid)
     );
     const avgDistance =
       distances.reduce((sum, d) => sum + d, 0) / distances.length;
@@ -1804,17 +1804,17 @@ export class BehavioralOptimization extends EventEmitter {
     const avgComplexity =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.taskSelection.preferredComplexity,
-        0,
+        0
       ) / behaviors.length;
     const avgRisk =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.taskSelection.riskTolerance,
-        0,
+        0
       ) / behaviors.length;
     const avgCommunication =
       behaviors.reduce(
         (sum, b) => sum + b.parameters.communication.frequency,
-        0,
+        0
       ) / behaviors.length;
 
     if (avgComplexity > 0.7) characteristics.push('high_complexity_preference');
@@ -1827,18 +1827,18 @@ export class BehavioralOptimization extends EventEmitter {
     return characteristics;
   }
 
-  private getNestedProperty(obj: any, path: string): any {
+  private getNestedProperty(obj: unknown, path: string): unknown {
     return path
       .split('.')
       .reduce((current, key) => current?.[key as keyof typeof obj], obj);
   }
 
-  private setNestedProperty(obj: any, path: string, value: any): void {
+  private setNestedProperty(obj: unknown, path: string, value: unknown): void {
     const keys = path.split('.');
     const lastKey = keys.pop()!;
     const target = keys.reduce(
       (current, key) => current?.[key as keyof typeof obj],
-      obj,
+      obj
     );
     target[lastKey] = value;
   }
@@ -1846,19 +1846,19 @@ export class BehavioralOptimization extends EventEmitter {
   private clampBehaviorParameters(behavior: AgentBehavior): void {
     behavior.parameters.taskSelection.preferredComplexity = Math.max(
       0,
-      Math.min(1, behavior.parameters.taskSelection.preferredComplexity),
+      Math.min(1, behavior.parameters.taskSelection.preferredComplexity)
     );
     behavior.parameters.taskSelection.riskTolerance = Math.max(
       0,
-      Math.min(1, behavior.parameters.taskSelection.riskTolerance),
+      Math.min(1, behavior.parameters.taskSelection.riskTolerance)
     );
     behavior.parameters.communication.frequency = Math.max(
       0,
-      Math.min(1, behavior.parameters.communication.frequency),
+      Math.min(1, behavior.parameters.communication.frequency)
     );
     behavior.parameters.learning.adaptationRate = Math.max(
       0.001,
-      Math.min(0.5, behavior.parameters.learning.adaptationRate),
+      Math.min(0.5, behavior.parameters.learning.adaptationRate)
     );
   }
 
@@ -1936,7 +1936,7 @@ export class BehavioralOptimization extends EventEmitter {
         await this.optimizeAgentBehavior(
           rec.agentId,
           [],
-          rec.suggestedStrategy,
+          rec.suggestedStrategy
         );
       } catch (error) {
         this.emit('optimization_error', { agentId: rec.agentId, error });
@@ -1985,7 +1985,7 @@ interface TaskAllocationStrategy {
   swarmId: string;
   rules: AllocationRule[];
   weightings: Record<string, number>;
-  constraints: Record<string, any>;
+  constraints: Record<string, unknown>;
   performance: number;
 }
 
@@ -1993,14 +1993,14 @@ interface AllocationRule {
   condition: string;
   action: string;
   priority: number;
-  agentCriteria: Record<string, any>;
+  agentCriteria: Record<string, unknown>;
 }
 
 interface CommunicationOptimization {
   swarmId: string;
   protocols: string[];
   frequencies: Record<string, number>;
-  messageTypes: Record<string, any>;
+  messageTypes: Record<string, unknown>;
   networkTopology: string;
   latencyTargets: Record<string, number>;
   throughputTargets: Record<string, number>;
@@ -2009,10 +2009,10 @@ interface CommunicationOptimization {
 interface ResourceAllocationStrategy {
   id: string;
   allocations: Record<string, number>;
-  thresholds: Record<string, any>;
+  thresholds: Record<string, unknown>;
   scalingRules: ScalingRule[];
   priorities: Record<string, number>;
-  constraints: Record<string, any>;
+  constraints: Record<string, unknown>;
 }
 
 interface ScalingRule {
@@ -2027,9 +2027,9 @@ interface CoordinationStrategy {
   leadershipModel: string;
   decisionMaking: string;
   conflictResolution: string;
-  synchronization: Record<string, any>;
-  coordination: Record<string, any>;
-  adaptation: Record<string, any>;
+  synchronization: Record<string, unknown>;
+  coordination: Record<string, unknown>;
+  adaptation: Record<string, unknown>;
 }
 
 interface OptimizationRecommendation {

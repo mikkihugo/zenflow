@@ -6,7 +6,7 @@ import { expect, vi } from 'vitest';
 
 // Map common jest methods to vi equivalents
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const jest: any = {
+export const jest: unknown = {
   fn: vi.fn.bind(vi),
   spyOn: vi.spyOn.bind(vi),
   mock: vi.fn.bind(vi),

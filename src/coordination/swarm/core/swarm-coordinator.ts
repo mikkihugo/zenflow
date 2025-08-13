@@ -315,7 +315,7 @@ export interface SwarmCoordinationEvent {
    * Event-specific payload containing detailed information.
    * Structure varies by event type - see individual event handlers for details.
    */
-  data: any;
+  data: unknown;
 
   /**
    * Timestamp when the event occurred, used for ordering and performance analysis.
@@ -504,7 +504,7 @@ export class SwarmCoordinator extends EventEmitter {
    *
    * @since 1.0.0-alpha.43
    */
-  async initialize(config?: any): Promise<void> {
+  async initialize(config?: unknown): Promise<void> {
     this.state = 'active';
     this.emit('swarm:initialized', { swarmId: this.swarmId, config });
   }
@@ -733,7 +733,7 @@ export class SwarmCoordinator extends EventEmitter {
    * @since 1.0.0-alpha.43
    */
   async addAgent(
-    agent: Omit<SwarmAgent, 'performance' | 'connections'>,
+    agent: Omit<SwarmAgent, 'performance' | 'connections'>
   ): Promise<void> {
     const fullAgent: SwarmAgent = {
       ...agent,
@@ -1043,7 +1043,7 @@ export class SwarmCoordinator extends EventEmitter {
    *
    * @since 1.0.0-alpha.43
    */
-  async completeTask(taskId: string, result: any): Promise<void> {
+  async completeTask(taskId: string, result: unknown): Promise<void> {
     const task = this.tasks.get(taskId);
     if (!task) return;
 
@@ -1202,7 +1202,7 @@ export class SwarmCoordinator extends EventEmitter {
    * ```typescript\n * // Coordinate different agent types for complex workflow\n * const workflowAgents = [\n *   ...coordinator.getAgents().filter(a => a.type === 'data-ml-model'),\n *   ...coordinator.getAgents().filter(a => a.type === 'analyst'),\n *   ...coordinator.getAgents().filter(a => a.type === 'coder')\n * ];\n * \n * // Set up performance monitoring\n * coordinator.on('coordination:performance', (metrics) => {\n *   if (metrics.averageLatency > 100) {\n *     console.warn('High coordination latency detected:', metrics.averageLatency);\n *     await optimizeTopology();\n *   }\n * });\n * \n * coordinator.on('coordination:error', (error) => {\n *   logger.error('Coordination error:', error);\n *   await handleCoordinationFailure(error.agentId, error.error);\n * });\n * \n * // Execute coordination with adaptive topology\n * const orchestrationResult = await coordinator.coordinateSwarm(\n *   workflowAgents, \n *   'adaptive' // Automatically selects optimal topology\n * );\n * \n * // Process results\n * if (orchestrationResult.success) {\n *   const efficiency = orchestrationResult.agentsCoordinated / orchestrationResult.averageLatency;\n *   console.log(`Orchestration efficiency: ${efficiency.toFixed(2)} agents/ms`);\n *   \n *   // Scale based on performance\n *   if (efficiency < 0.1) {\n *     await scaleUpResources();\n *   }\n * }\n * ```\n * \n * @example Real-Time Performance Optimization\n * ```typescript\n * async function optimizeCoordinationPerformance() {\n *   const agents = coordinator.getActiveAgents().map(id => coordinator.getAgent(id)!);\n *   const topologies = ['mesh', 'hierarchical', 'ring', 'star'] as const;\n *   \n *   let bestResult = null;\n *   let bestTopology = null;\n *   \n *   for (const topology of topologies) {\n *     const result = await coordinator.coordinateSwarm(agents.slice(0, 10), topology);\n *     \n *     if (!bestResult || result.averageLatency < bestResult.averageLatency) {\n *       bestResult = result;\n *       bestTopology = topology;\n *     }\n *   }\n *   \n *   console.log(`Optimal topology: ${bestTopology}`);\n *   console.log(`Best performance: ${bestResult!.averageLatency}ms average latency`);\n *   \n *   return bestTopology;\n * }\n * ```\n * \n * @see {@link SwarmAgent} for agent interface definition\n * @see {@link SwarmTopology} for available topology types\n * @see {@link ../topology-manager.ts} for topology optimization\n * @see {@link ./performance.ts} for performance analysis\n * \n * @since 1.0.0-alpha.43\n   */
   async coordinateSwarm(
     agents: SwarmAgent[],
-    topology?: SwarmTopology,
+    topology?: SwarmTopology
   ): Promise<{
     success: boolean;
     averageLatency: number;
@@ -1256,7 +1256,7 @@ export class SwarmCoordinator extends EventEmitter {
 
   private async coordinateAgent(
     agent: SwarmAgent,
-    _topology?: SwarmTopology,
+    _topology?: SwarmTopology
   ): Promise<void> {
     // Mock coordination logic - in real implementation would handle actual coordination
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 10 + 1)); // 1-11ms delay
@@ -1301,21 +1301,21 @@ export class SwarmCoordinator extends EventEmitter {
     const agents = Array.from(this.agents.values());
     this.metrics.agentCount = agents.length;
     this.metrics.activeAgents = agents.filter(
-      (a) => a.status !== 'offline',
+      (a) => a.status !== 'offline'
     ).length;
 
     if (agents.length > 0) {
       const totalTasks = agents.reduce(
         (sum, a) => sum + a.performance.tasksCompleted,
-        0,
+        0
       );
       const totalResponseTime = agents.reduce(
         (sum, a) => sum + a.performance.averageResponseTime,
-        0,
+        0
       );
       const totalErrors = agents.reduce(
         (sum, a) => sum + a.performance.errorRate,
-        0,
+        0
       );
 
       this.metrics.completedTasks = totalTasks;

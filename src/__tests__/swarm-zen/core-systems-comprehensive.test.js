@@ -60,7 +60,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(
           global._ruvSwarmInitialized,
           2,
-          'Should track initialization calls',
+          'Should track initialization calls'
         );
 
         testInstances.push(instance1);
@@ -86,7 +86,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         try {
           await assert.rejects(
             () => ZenSwarm.initialize({ enableNeuralNetworks: true }),
-            /Failed to initialize ruv-swarm/,
+            /Failed to initialize ruv-swarm/
           );
         } finally {
           WasmModuleLoader.prototype.initialize = originalInit;
@@ -99,7 +99,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         // Should continue without persistence on error
         assert(
           instance.persistence !== undefined,
-          'Should handle persistence gracefully',
+          'Should handle persistence gracefully'
         );
 
         testInstances.push(instance);
@@ -114,11 +114,11 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         // Should gracefully degrade features
         assert(
           typeof instance.features.neural_networks === 'boolean',
-          'Should set neural networks feature',
+          'Should set neural networks feature'
         );
         assert(
           typeof instance.features.forecasting === 'boolean',
-          'Should set forecasting feature',
+          'Should set forecasting feature'
         );
 
         testInstances.push(instance);
@@ -130,7 +130,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         const simdSupported = ZenSwarm.detectSIMDSupport();
         assert(
           typeof simdSupported === 'boolean',
-          'Should return boolean for SIMD support',
+          'Should return boolean for SIMD support'
         );
       });
 
@@ -174,7 +174,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(
           instance.activeSwarms.size,
           1,
-          'Should track active swarms',
+          'Should track active swarms'
         );
 
         testInstances.push(instance);
@@ -274,7 +274,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         assert(
           agent.neuralNetworkId,
-          'Should have neural network ID when enabled',
+          'Should have neural network ID when enabled'
         );
 
         testInstances.push(instance);
@@ -290,7 +290,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
               description: 'Test task',
               requiredCapabilities: ['testing'],
             }),
-          /No agents available/,
+          /No agents available/
         );
 
         testInstances.push(instance);
@@ -313,7 +313,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(
           task.assignedAgents.length,
           1,
-          'Should assign correct number of agents',
+          'Should assign correct number of agents'
         );
 
         testInstances.push(instance);
@@ -333,7 +333,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         assert(
           ['busy', 'idle'].includes(agent.status),
-          'Agent should have valid status',
+          'Agent should have valid status'
         );
 
         testInstances.push(instance);
@@ -364,7 +364,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => instance.getSwarmStatus('non-existent'),
-          /Swarm not found/,
+          /Swarm not found/
         );
 
         testInstances.push(instance);
@@ -581,7 +581,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.adaptAgent('non-existent', {}),
-          /Agent non-existent not found/,
+          /Agent non-existent not found/
         );
 
         testInstances.push(service);
@@ -635,7 +635,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
             { id: 'step1', task: async () => 'result1' },
             { id: 'step2', task: async () => 'result2' },
           ],
-          {},
+          {}
         );
 
         assert.strictEqual(workflow.id, 'test-workflow');
@@ -659,7 +659,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.executeWorkflow('non-existent'),
-          /Workflow non-existent not found/,
+          /Workflow non-existent not found/
         );
 
         testInstances.push(service);
@@ -681,7 +681,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
           {
             content: 'shared knowledge',
             domain: 'research',
-          },
+          }
         );
 
         assert(Array.isArray(result.updatedAgents));
@@ -697,7 +697,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.shareKnowledge('non-existent', ['target'], {}),
-          /Source agent non-existent not found/,
+          /Source agent non-existent not found/
         );
 
         testInstances.push(service);
@@ -767,7 +767,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         const result = await service.setCognitivePattern(
           'pattern-agent',
-          'divergent',
+          'divergent'
         );
 
         assert(result.previousPattern);
@@ -802,7 +802,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => service.makeDecision('non-existent', {}),
-          /Agent non-existent not found/,
+          /Agent non-existent not found/
         );
 
         testInstances.push(service);
@@ -872,7 +872,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(results.length, 3);
         assert(
           results.every((r) => r.success),
-          'All agents should be created successfully',
+          'All agents should be created successfully'
         );
 
         testInstances.push(service);
@@ -894,7 +894,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         assert.strictEqual(results.length, 2);
         assert(
           results.every((r) => r.success),
-          'All decisions should succeed',
+          'All decisions should succeed'
         );
 
         testInstances.push(service);
@@ -971,7 +971,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => loader.initialize('unknown'),
-          /Unknown loading strategy/,
+          /Unknown loading strategy/
         );
 
         testInstances.push(loader);
@@ -1027,7 +1027,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
 
         await assert.rejects(
           () => loader.loadModule('unknown'),
-          /Unknown module: unknown/,
+          /Unknown module: unknown/
         );
 
         testInstances.push(loader);
@@ -1120,7 +1120,7 @@ describe('Core Systems Comprehensive Coverage Tests', () => {
         } catch (error) {
           assert(
             error.message.includes('placeholder') ||
-              error.message.includes('instantiate'),
+              error.message.includes('instantiate')
           );
         } finally {
           fs.readFile = originalReadFile;

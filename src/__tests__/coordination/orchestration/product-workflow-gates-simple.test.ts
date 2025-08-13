@@ -165,14 +165,14 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
     // Validate structure
     expect(visionAnalysisGate.question).toBeTruthy();
     expect(['low', 'medium', 'high', 'critical']).toContain(
-      visionAnalysisGate.businessImpact,
+      visionAnalysisGate.businessImpact
     );
     expect(Array.isArray(visionAnalysisGate.stakeholders)).toBe(true);
     expect(visionAnalysisGate.stakeholders.length).toBeGreaterThan(0);
 
     expect(prdCreationGate.question).toBeTruthy();
     expect(['low', 'medium', 'high', 'critical']).toContain(
-      prdCreationGate.businessImpact,
+      prdCreationGate.businessImpact
     );
     expect(Array.isArray(prdCreationGate.stakeholders)).toBe(true);
     expect(prdCreationGate.stakeholders.length).toBeGreaterThan(0);
@@ -196,7 +196,7 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
     expect(Array.isArray(defaultTimeoutConfig.escalationTimeouts)).toBe(true);
     expect(defaultTimeoutConfig.escalationTimeouts.length).toBeGreaterThan(0);
     expect(defaultTimeoutConfig.maxTotalTimeout).toBeGreaterThan(
-      defaultTimeoutConfig.initialTimeout,
+      defaultTimeoutConfig.initialTimeout
     );
 
     // Validate escalation timeouts are reasonable
@@ -254,10 +254,10 @@ describe('Product Workflow Engine Gates Integration - Simple Tests', () => {
     expect(mockContext.workflowId).toBeTruthy();
     expect(mockContext.stepName).toBeTruthy();
     expect(['low', 'medium', 'high', 'critical']).toContain(
-      mockContext.businessImpact,
+      mockContext.businessImpact
     );
     expect(['task', 'feature', 'epic', 'prd', 'portfolio']).toContain(
-      mockContext.decisionScope,
+      mockContext.decisionScope
     );
     expect(Array.isArray(mockContext.stakeholders)).toBe(true);
     expect(mockContext.stakeholders.length).toBeGreaterThan(0);

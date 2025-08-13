@@ -51,7 +51,7 @@ export class ReinforcementLearningEngine
       explorationRate?: number;
       minExplorationRate?: number;
       explorationDecay?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.learningRate = config?.learningRate || 0.1;
@@ -115,7 +115,7 @@ export class ReinforcementLearningEngine
     state: string,
     action: string,
     reward: number,
-    nextState: string,
+    nextState: string
   ): void {
     const currentQ = this.getQValue(state, action);
     const maxNextQ = this.getMaxQValue(nextState);
@@ -130,7 +130,7 @@ export class ReinforcementLearningEngine
     // Decay exploration rate
     this.explorationRate = Math.max(
       this.minExplorationRate,
-      this.explorationRate * this.explorationDecay,
+      this.explorationRate * this.explorationDecay
     );
 
     this.emit('qValueUpdated', {
@@ -192,14 +192,14 @@ export class ReinforcementLearningEngine
       reward: number;
       nextState: string;
       done: boolean;
-    }>,
+    }>
   ): void {
     for (const experience of experiences) {
       this.updateQValue(
         experience.state,
         experience.action,
         experience.reward,
-        experience.nextState,
+        experience.nextState
       );
     }
 
@@ -302,7 +302,7 @@ export class NeuralNetworkPredictor
   extends EventEmitter
   implements INeuralNetworkPredictor
 {
-  private model: any = null; // Placeholder for actual neural network
+  private model: unknown = null; // Placeholder for actual neural network
   private isTraining: boolean = false;
   private trainingHistory: TrainingResult[] = [];
   private inputSize: number;
@@ -357,7 +357,7 @@ export class NeuralNetworkPredictor
    * @param data
    * @param labels
    */
-  async train(data: ExecutionData[], labels: any[]): Promise<TrainingResult> {
+  async train(data: ExecutionData[], labels: unknown[]): Promise<TrainingResult> {
     if (this.isTraining) {
       throw new Error('Model is already training');
     }
@@ -473,7 +473,7 @@ export class NeuralNetworkPredictor
     ]);
   }
 
-  private processLabels(labels: any[]): number[][] {
+  private processLabels(labels: unknown[]): number[][] {
     // Convert labels to one-hot encoding or regression targets
     return labels.map((label) => {
       if (typeof label === 'number') {
@@ -488,7 +488,7 @@ export class NeuralNetworkPredictor
   }
 
   private async simulateModelPrediction(
-    features: number[][],
+    features: number[][]
   ): Promise<number[][]> {
     // Simulate neural network forward pass
     return new Promise((resolve) => {
@@ -496,7 +496,7 @@ export class NeuralNetworkPredictor
         const predictions = features.map(() =>
           Array(this.outputSize)
             .fill(0)
-            .map(() => Math.random()),
+            .map(() => Math.random())
         );
         resolve(predictions);
       }, 100); // Simulate computation time
@@ -505,7 +505,7 @@ export class NeuralNetworkPredictor
 
   private convertPredictionsToPatterns(
     predictions: number[][],
-    data: ExecutionData[],
+    data: ExecutionData[]
   ): Pattern[] {
     return predictions.map((prediction, index) => ({
       id: `neural_pattern_${Date.now()}_${index}`,
@@ -545,7 +545,7 @@ export class NeuralNetworkPredictor
 
   private async simulateTraining(
     _features: number[][],
-    _labels: number[][],
+    _labels: number[][]
   ): Promise<TrainingResult> {
     const startTime = Date.now();
     const epochs = 50 + Math.floor(Math.random() * 50);
@@ -569,7 +569,7 @@ export class NeuralNetworkPredictor
 
   private async simulateEvaluation(
     _features: number[][],
-    _testData: ExecutionData[],
+    _testData: ExecutionData[]
   ): Promise<EvaluationMetrics> {
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -603,7 +603,7 @@ export class NeuralNetworkPredictor
 // ============================================
 
 export class EnsembleModels extends EventEmitter implements IEnsembleModels {
-  private models = new Map<string, { model: any; weight: number }>();
+  private models = new Map<string, { model: unknown; weight: number }>();
   private totalWeight: number = 0;
 
   /**
@@ -612,7 +612,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
    * @param model
    * @param weight
    */
-  addModel(model: any, weight: number): void {
+  addModel(model: unknown, weight: number): void {
     const modelId = `model_${Date.now()}_${Math.random()}`;
     this.models.set(modelId, { model, weight });
     this.totalWeight += weight;
@@ -653,11 +653,11 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
     // Combine predictions using weighted average
     const combinedPrediction = this.combineN(
       modelPredictions,
-      modelContributions,
+      modelContributions
     );
     const confidence = this.calculateEnsembleConfidence(
       modelPredictions,
-      modelContributions,
+      modelContributions
     );
     const uncertainty = this.calculateUncertainty(modelPredictions);
 
@@ -696,7 +696,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
    *
    * @param performance
    */
-  updateWeights(performance: any[]): void {
+  updateWeights(performance: unknown[]): void {
     if (performance.length !== this.models.size) {
       throw new Error('Performance array size must match number of models');
     }
@@ -751,9 +751,9 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
   // Private helper methods
 
   private async getModelPrediction(
-    model: any,
-    data: ExecutionData[],
-  ): Promise<any> {
+    model: unknown,
+    data: ExecutionData[]
+  ): Promise<unknown> {
     // Simulate model prediction
     if (model.predict && typeof model.predict === 'function') {
       return await model.predict(data);
@@ -764,8 +764,8 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   private combineN(
     predictions: Map<string, any>,
-    contributions: Map<string, number>,
-  ): any {
+    contributions: Map<string, number>
+  ): unknown {
     // Simplified combination - assumes numeric predictions
     let total = 0;
     let weightSum = 0;
@@ -782,7 +782,7 @@ export class EnsembleModels extends EventEmitter implements IEnsembleModels {
 
   private calculateEnsembleConfidence(
     predictions: Map<string, any>,
-    _contributions: Map<string, number>,
+    _contributions: Map<string, number>
   ): number {
     if (predictions.size === 0) return 0;
 
@@ -826,7 +826,7 @@ export class OnlineLearningSystem
   extends EventEmitter
   implements IOnlineLearningSystem
 {
-  private model: any = null;
+  private model: unknown = null;
   private accuracy: number = 0.5;
   private streamCount: number = 0;
   private adaptationThreshold: number = 0.1;
@@ -837,7 +837,7 @@ export class OnlineLearningSystem
     config: {
       adaptationThreshold?: number;
       windowSize?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.adaptationThreshold = config?.adaptationThreshold || 0.1;
@@ -878,7 +878,7 @@ export class OnlineLearningSystem
   /**
    * Get current model.
    */
-  getCurrentModel(): any {
+  getCurrentModel(): unknown {
     return { ...this.model };
   }
 
@@ -1071,7 +1071,7 @@ export class OnlineLearningSystem
 
   private evaluateModelAccuracy(
     features: number[][],
-    targets: number[],
+    targets: number[]
   ): number {
     if (features.length === 0) return 0.5;
 

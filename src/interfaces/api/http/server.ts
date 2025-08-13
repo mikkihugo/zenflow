@@ -25,16 +25,16 @@ import helmet from 'helmet';
 import { DEFAULT_CONFIG, getCORSOrigins } from '../../../config/defaults.ts';
 
 // Optional dependencies - handle missing gracefully
-let compression: any = null;
-let OpenApiValidator: any = null;
-let swaggerJsdoc: any = null;
-let swaggerUi: any = null;
+let compression: unknown = null;
+let OpenApiValidator: unknown = null;
+let swaggerJsdoc: unknown = null;
+let swaggerUi: unknown = null;
 
 try {
   compression = require('compression');
 } catch (_e) {
   logger.warn(
-    'compression package not available - performance middleware disabled',
+    'compression package not available - performance middleware disabled'
   );
 }
 
@@ -42,7 +42,7 @@ try {
   ({ OpenApiValidator } = require('express-openapi-validator'));
 } catch (_e) {
   logger.warn(
-    'express-openapi-validator package not available - request validation disabled',
+    'express-openapi-validator package not available - request validation disabled'
   );
 }
 
@@ -192,7 +192,7 @@ const swaggerOptions = (() => {
 export class APIServer {
   private app: Application;
   private config: APIServerConfig;
-  private server?: any;
+  private server?: unknown;
 
   constructor(config: Partial<APIServerConfig> = {}) {
     // Merge config and populate CORS origins dynamically from centralized configuration
@@ -229,7 +229,7 @@ export class APIServer {
             imgSrc: ["'self'", 'data:', 'https:'],
           },
         },
-      }),
+      })
     );
 
     // CORS configuration
@@ -239,7 +239,7 @@ export class APIServer {
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key'],
-      }),
+      })
     );
 
     // Performance middleware
@@ -317,14 +317,14 @@ export class APIServer {
           customCss: '.swagger-ui .topbar { display: none }',
           customSiteTitle: 'Claude Code Flow API Documentation',
           swaggerOptions: {
-            requestInterceptor: (req: any) => {
+            requestInterceptor: (req: unknown) => {
               req.headers['X-Content-Security-Policy-Nonce'] = document
                 .querySelector('meta[name="csp-nonce"]')
                 ?.getAttribute('content');
               return req;
             },
           },
-        }),
+        })
       );
 
       // Raw OpenAPI spec endpoint
@@ -454,7 +454,7 @@ export class APIServer {
           this.config.host,
           () => {
             resolve();
-          },
+          }
         );
 
         this.server.on('error', (error: Error) => {
@@ -510,7 +510,7 @@ export class APIServer {
  * @param config
  */
 export const createAPIServer = async (
-  config?: Partial<APIServerConfig>,
+  config?: Partial<APIServerConfig>
 ): Promise<APIServer> => {
   const server = new APIServer(config);
   await server.start();

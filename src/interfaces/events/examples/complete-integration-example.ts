@@ -56,7 +56,7 @@ export class UELIntegrationExample {
       'example-coordination',
       {
         maxListeners: 30,
-      },
+      }
     );
 
     this.logger.info('Event managers created');
@@ -92,22 +92,22 @@ export class UELIntegrationExample {
     // Subscribe to events
     const systemSubscription = systemManager.subscribe(
       ['system:*'],
-      (event: any) => {
+      (event: unknown) => {
         this.logger.info(
           `System event received: ${event.type}`,
-          event['details'],
+          event['details']
         );
-      },
+      }
     );
 
     const coordSubscription = coordManager.subscribe(
       ['coordination:*'],
-      (event: any) => {
+      (event: unknown) => {
         this.logger.info(
           `Coordination event received: ${event.type}`,
-          event['details'],
+          event['details']
         );
-      },
+      }
     );
 
     // Emit events
@@ -227,7 +227,7 @@ export class UELIntegrationExample {
     } else {
       this.logger.error(
         'Migration failed:',
-        migrationResult?.migrationReport?.errors,
+        migrationResult?.migrationReport?.errors
       );
     }
 
@@ -282,7 +282,7 @@ export class UELIntegrationExample {
       // Map legacy events to UEL types
       systems.eventBus.mapEventToUEL(
         'complete-setup-test',
-        'system:integration-test',
+        'system:integration-test'
       );
     }
 
@@ -365,7 +365,7 @@ export class UELIntegrationExample {
     this.logger.info(
       'Health check results:',
       Object.keys(healthCheck).length,
-      'managers checked',
+      'managers checked'
     );
 
     // Get detailed metrics
@@ -471,11 +471,11 @@ export class UELIntegrationExample {
     // Create observers with UEL integration
     const systemObserver = enhancedObserver.createObserver(
       'system-metrics',
-      'monitoring',
+      'monitoring'
     );
     const performanceObserver = enhancedObserver.createObserver(
       'performance-tracking',
-      'analytics',
+      'analytics'
     );
 
     systemObserver.on('metric-update', (metric) => {
@@ -530,7 +530,7 @@ export class UELIntegrationExample {
       {
         pattern: 'advanced-integration',
         timestamp: Date.now(),
-      },
+      }
     );
 
     const builtCoordEvent = eventBuilder.coordination(
@@ -539,7 +539,7 @@ export class UELIntegrationExample {
       {
         pattern: 'builder-pattern',
         phase: 'demonstration',
-      },
+      }
     );
 
     this.logger.info('Built events:', {

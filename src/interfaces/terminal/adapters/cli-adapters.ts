@@ -76,7 +76,7 @@ export class CLICommandRegistry {
 
   async executeCommand(
     name: string,
-    context: ExecutionContext,
+    context: ExecutionContext
   ): Promise<CommandResult> {
     const command = await this.getCommand(name);
     if (!command) {

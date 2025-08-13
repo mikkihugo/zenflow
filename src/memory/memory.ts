@@ -94,7 +94,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
           | 'file'
           | 'sqlite'
           | 'jsonb',
-        this.options.backendConfig,
+        this.options.backendConfig
       );
 
       await this.backend.initialize();
@@ -111,18 +111,18 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     sessionId: string,
     key: string,
     data: unknown,
-    options?: StoreOptions,
+    options?: StoreOptions
   ): Promise<void>;
   async store(
     key: string,
     data: unknown,
-    options?: StoreOptions,
+    options?: StoreOptions
   ): Promise<void>;
   async store(
     sessionIdOrKey: string,
     keyOrData?: string | unknown,
     dataOrOptions?: unknown | StoreOptions,
-    options?: StoreOptions,
+    options?: StoreOptions
   ): Promise<void> {
     // Handle both overloads: (sessionId, key, data, options) and (key, data, options)
     let sessionId: string;
@@ -176,7 +176,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     await this.backend?.store(
       sessionId,
       session as unknown as JSONValue,
-      'session',
+      'session'
     );
 
     if (this.options.enableCache) {
@@ -186,12 +186,12 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
 
   async retrieve<T = unknown>(
     sessionId: string,
-    key: string,
+    key: string
   ): Promise<T | null>;
   async retrieve<T = unknown>(key: string): Promise<T | null>;
   async retrieve<T = unknown>(
     sessionIdOrKey: string,
-    key?: string,
+    key?: string
   ): Promise<T | null> {
     // Handle both overloads
     const actualSessionId = key ? sessionIdOrKey : 'default';
@@ -249,7 +249,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
     await this.backend?.store(
       actualSessionId,
       session as unknown as JSONValue,
-      'session',
+      'session'
     );
 
     // Remove from cache
@@ -308,7 +308,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
       await this.backend?.store(
         sessionId,
         session as unknown as JSONValue,
-        'session',
+        'session'
       );
     }
   }
@@ -341,7 +341,7 @@ export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
   private ensureInitialized(): void {
     if (!(this.initialized && this.backend)) {
       throw new Error(
-        'Session memory store not initialized. Call initialize() first.',
+        'Session memory store not initialized. Call initialize() first.'
       );
     }
   }

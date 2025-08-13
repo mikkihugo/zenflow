@@ -41,14 +41,14 @@ export class CoordinationServiceFactory
    * @param config
    */
   async create(
-    config: CoordinationServiceAdapterConfig,
+    config: CoordinationServiceAdapterConfig
   ): Promise<CoordinationServiceAdapter> {
     this.logger.info(`Creating coordination service adapter: ${config?.name}`);
 
     // Check if instance already exists
     if (this.instances.has(config?.name)) {
       this.logger.warn(
-        `Coordination service adapter ${config?.name} already exists, returning existing instance`,
+        `Coordination service adapter ${config?.name} already exists, returning existing instance`
       );
       return this.instances.get(config?.name)!;
     }
@@ -58,13 +58,13 @@ export class CoordinationServiceFactory
       this.instances.set(config?.name, adapter);
 
       this.logger.info(
-        `Coordination service adapter created successfully: ${config?.name}`,
+        `Coordination service adapter created successfully: ${config?.name}`
       );
       return adapter;
     } catch (error) {
       this.logger.error(
         `Failed to create coordination service adapter ${config?.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -76,10 +76,10 @@ export class CoordinationServiceFactory
    * @param configs
    */
   async createMultiple(
-    configs: CoordinationServiceAdapterConfig[],
+    configs: CoordinationServiceAdapterConfig[]
   ): Promise<CoordinationServiceAdapter[]> {
     this.logger.info(
-      `Creating ${configs.length} coordination service adapters`,
+      `Creating ${configs.length} coordination service adapters`
     );
 
     const results: CoordinationServiceAdapter[] = [];
@@ -91,7 +91,7 @@ export class CoordinationServiceFactory
       } catch (error) {
         this.logger.error(
           `Failed to create coordination service adapter ${config?.name}:`,
-          error,
+          error
         );
         throw error;
       }
@@ -144,7 +144,7 @@ export class CoordinationServiceFactory
     } catch (error) {
       this.logger.error(
         `Failed to remove coordination service adapter ${name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -180,12 +180,12 @@ export class CoordinationServiceFactory
       try {
         await adapter.start();
         this.logger.debug(
-          `Started coordination service adapter: ${adapter.name}`,
+          `Started coordination service adapter: ${adapter.name}`
         );
       } catch (error) {
         this.logger.error(
           `Failed to start coordination service adapter ${adapter.name}:`,
-          error,
+          error
         );
         throw error;
       }
@@ -204,12 +204,12 @@ export class CoordinationServiceFactory
       try {
         await adapter.stop();
         this.logger.debug(
-          `Stopped coordination service adapter: ${adapter.name}`,
+          `Stopped coordination service adapter: ${adapter.name}`
         );
       } catch (error) {
         this.logger.error(
           `Failed to stop coordination service adapter ${adapter.name}:`,
-          error,
+          error
         );
       }
     });
@@ -222,7 +222,7 @@ export class CoordinationServiceFactory
    */
   async healthCheckAll(): Promise<Map<string, any>> {
     this.logger.debug(
-      'Performing health check on all coordination service adapters',
+      'Performing health check on all coordination service adapters'
     );
 
     const results = new Map<string, any>();
@@ -235,7 +235,7 @@ export class CoordinationServiceFactory
       } catch (error) {
         this.logger.error(
           `Health check failed for coordination service adapter ${adapter.name}:`,
-          error,
+          error
         );
         results?.set(adapter.name, {
           name: adapter.name,
@@ -259,7 +259,7 @@ export class CoordinationServiceFactory
    */
   async getMetricsAll(): Promise<Map<string, any>> {
     this.logger.debug(
-      'Collecting metrics from all coordination service adapters',
+      'Collecting metrics from all coordination service adapters'
     );
 
     const results = new Map<string, any>();
@@ -272,7 +272,7 @@ export class CoordinationServiceFactory
       } catch (error) {
         this.logger.error(
           `Failed to get metrics for coordination service adapter ${adapter.name}:`,
-          error,
+          error
         );
       }
     });
@@ -296,7 +296,7 @@ export class CoordinationServiceFactory
         } catch (error) {
           this.logger.error(
             `Failed to destroy coordination service adapter ${adapter.name}:`,
-            error,
+            error
           );
         }
       });
@@ -308,7 +308,7 @@ export class CoordinationServiceFactory
     } catch (error) {
       this.logger.error(
         'Error during coordination service factory shutdown:',
-        error,
+        error
       );
       throw error;
     }
@@ -340,7 +340,7 @@ export function createAgentCoordinationConfig(
     topology?: 'mesh' | 'hierarchical' | 'ring' | 'star';
     enableLearning?: boolean;
     autoSpawn?: boolean;
-  },
+  }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.COORDINATION,
@@ -390,7 +390,7 @@ export function createSessionCoordinationConfig(
     maxSessions?: number;
     checkpointInterval?: number;
     autoRecovery?: boolean;
-  },
+  }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.SESSION_RECOVERY,
@@ -435,7 +435,7 @@ export function createDAACoordinationConfig(
     enableMetaLearning?: boolean;
     enableCognitive?: boolean;
     analysisInterval?: number;
-  },
+  }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.DAA,
@@ -478,7 +478,7 @@ export function createHighPerformanceCoordinationConfig(
     maxConcurrency?: number;
     requestTimeout?: number;
     cacheSize?: number;
-  },
+  }
 ): CoordinationServiceAdapterConfig {
   return createDefaultCoordinationServiceAdapterConfig(name, {
     type: ServiceType.COORDINATION,

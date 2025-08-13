@@ -16,7 +16,7 @@ const logger = createLogger('kanban-cli');
 /**
  * Monitor Advanced Kanban Flow components
  */
-export async function monitorKanbanFlow(input: string[], flags: any) {
+export async function monitorKanbanFlow(input: string[], flags: unknown) {
   logger.info('🎯 Advanced Kanban Flow Monitor');
 
   const memoryOptimizer = createAdaptiveOptimizer();
@@ -67,7 +67,7 @@ export async function monitorKanbanFlow(input: string[], flags: any) {
     logger.info('\n📋 Detailed Component Metrics:');
     logger.info('   Flow Manager: 1,512 lines - WIP optimization algorithms');
     logger.info(
-      '   Bottleneck Detector: 1,944 lines - Real-time detection engine',
+      '   Bottleneck Detector: 1,944 lines - Real-time detection engine'
     );
     logger.info('   Metrics Tracker: 3,987 lines - Comprehensive analytics');
     logger.info('   Resource Manager: 3,632 lines - Cross-level optimization');
@@ -81,7 +81,7 @@ export async function monitorKanbanFlow(input: string[], flags: any) {
 /**
  * Test Advanced Kanban Flow performance
  */
-export async function testKanbanFlow(input: string[], flags: any) {
+export async function testKanbanFlow(input: string[], flags: unknown) {
   logger.info('🧪 Advanced Kanban Flow Performance Testing');
 
   const memoryOptimizer = createAdaptiveOptimizer();
@@ -110,7 +110,7 @@ export async function testKanbanFlow(input: string[], flags: any) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     logger.info('   ✅ Comprehensive Metrics: All KPIs tracked');
     logger.info(
-      '   ✅ Performance Engine: Optimization recommendations active',
+      '   ✅ Performance Engine: Optimization recommendations active'
     );
     logger.info('   ✅ Forecasting: 4-week delivery prediction validated');
   }
@@ -153,7 +153,7 @@ export async function testKanbanFlow(input: string[], flags: any) {
 /**
  * Debug Advanced Kanban Flow issues
  */
-export async function debugKanbanFlow(input: string[], flags: any) {
+export async function debugKanbanFlow(input: string[], flags: unknown) {
   logger.info('🔧 Advanced Kanban Flow Debug Console');
 
   const component = input[0];
@@ -294,7 +294,7 @@ export function createKanbanCLI() {
           default: false,
         },
       },
-    },
+    }
   );
 
   return cli;

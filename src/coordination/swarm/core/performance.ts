@@ -48,7 +48,7 @@ class PerformanceCLI {
     const outputFile = this.getArg(args, '--output');
 
     try {
-      const analysis: any = {
+      const analysis: unknown = {
         metadata: {
           timestamp: new Date().toISOString(),
           taskId,
@@ -66,7 +66,7 @@ class PerformanceCLI {
           used: memUsage.heapUsed,
           total: memUsage.heapTotal,
           utilization: ((memUsage.heapUsed / memUsage.heapTotal) * 100).toFixed(
-            1,
+            1
           ),
         },
         cpu: {
@@ -185,11 +185,14 @@ class PerformanceCLI {
       // 7. Performance Score
       let score = 100;
       score -=
-        analysis.bottlenecks.filter((b: any) => b.severity === 'high').length * 20;
+        analysis.bottlenecks.filter((b: unknown) => b.severity === 'high').length *
+        20;
       score -=
-        analysis.bottlenecks.filter((b: any) => b.severity === 'medium').length * 10;
+        analysis.bottlenecks.filter((b: unknown) => b.severity === 'medium')
+          .length * 10;
       score -=
-        analysis.bottlenecks.filter((b: any) => b.severity === 'low').length * 5;
+        analysis.bottlenecks.filter((b: unknown) => b.severity === 'low').length *
+        5;
       score = Math.max(0, score);
 
       analysis.overallScore = score;
@@ -215,7 +218,7 @@ class PerformanceCLI {
     // Verify swarm is properly initialized for optimization
     if (!(rs && rs.isInitialized)) {
       logger.warn(
-        '⚠️ Warning: Swarm not fully initialized, optimization may be limited',
+        '⚠️ Warning: Swarm not fully initialized, optimization may be limited'
       );
     }
 
@@ -369,7 +372,7 @@ class PerformanceCLI {
 
       priorityOrder.forEach((priority) => {
         groupedSuggestions[priority] = suggestions.filter(
-          (s) => s.priority === priority,
+          (s) => s.priority === priority
         );
       });
       let totalShown = 0;

@@ -81,19 +81,19 @@ export class ConfigurationManager extends EventEmitter {
         if (result?.validation?.warnings.length > 0) {
           logger.warn('⚠️ Configuration warnings:');
           result?.validation?.warnings?.forEach((warning) =>
-            logger.warn(`  - ${warning}`),
+            logger.warn(`  - ${warning}`)
           );
         }
       } else {
         logger.error('❌ Configuration validation failed:');
         result?.validation?.errors?.forEach((error) =>
-          logger.error(`  - ${error}`),
+          logger.error(`  - ${error}`)
         );
 
         if (result?.validation?.warnings.length > 0) {
           logger.warn('⚠️ Configuration warnings:');
           result?.validation?.warnings?.forEach((warning) =>
-            logger.warn(`  - ${warning}`),
+            logger.warn(`  - ${warning}`)
           );
         }
         this.config = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
@@ -132,7 +132,7 @@ export class ConfigurationManager extends EventEmitter {
    * @param section
    */
   getSection<K extends keyof SystemConfiguration>(
-    section: K,
+    section: K
   ): SystemConfiguration[K] {
     return JSON.parse(JSON.stringify(this.config[section]));
   }
@@ -145,7 +145,7 @@ export class ConfigurationManager extends EventEmitter {
   get<T = any>(path: string): T | undefined {
     return path
       .split('.')
-      .reduce((current: any, key) => current?.[key], this.config);
+      .reduce((current: unknown, key) => current?.[key], this.config);
   }
 
   /**
@@ -155,7 +155,7 @@ export class ConfigurationManager extends EventEmitter {
    * @param value.
    * @param value
    */
-  update(path: string, value: any): ConfigValidationResult {
+  update(path: string, value: unknown): ConfigValidationResult {
     const oldValue = this.get(path);
 
     // Create a copy for testing
@@ -347,7 +347,7 @@ export class ConfigurationManager extends EventEmitter {
    * @param path
    * @param value
    */
-  private setNestedValue(obj: any, path: string, value: any): void {
+  private setNestedValue(obj: unknown, path: string, value: unknown): void {
     const parts = path.split('.');
     let current = obj;
 
@@ -374,7 +374,7 @@ export class ConfigurationManager extends EventEmitter {
    * @param indent.
    * @param indent
    */
-  private toSimpleYaml(obj: any, indent = 0): string {
+  private toSimpleYaml(obj: unknown, indent = 0): string {
     const spaces = '  '.repeat(indent);
     let yaml = '';
 

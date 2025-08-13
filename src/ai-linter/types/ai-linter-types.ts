@@ -181,7 +181,7 @@ export interface AIAnalysisResult {
   claudeInsights: ClaudeInsights;
 
   /** Generated Biome-compatible rules */
-  generatedRules: any[]; // BiomeRule[] when imported
+  generatedRules: unknown[]; // BiomeRule[] when imported
 
   /** Enhancements from swarm coordination */
   swarmEnhancements: SwarmAnalysisResult;

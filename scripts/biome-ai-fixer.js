@@ -57,62 +57,58 @@ class BiomeAIFixer {
     };
     fs.writeFileSync(learningFile, JSON.stringify(data, null, 2));
     console.log(
-      `💾 Saved learning data with ${this.fixPatterns.size} patterns`,
+      `💾 Saved learning data with ${this.fixPatterns.size} patterns`
     );
   }
 
-  async runBiomeLinting() {
+  async runBiomeLinting(directory) {
     console.log('🔍 Running Biome linting analysis...');
+    const tempFile = '/tmp/biome_output.json';
     try {
-      // Use summary reporter instead of JSON to avoid parsing huge output
-      const result = execSync('npx biome check . --reporter=summary', {
+      execSync(`npx biome check ${directory} --reporter=json > ${tempFile}`, {
         encoding: 'utf-8',
         maxBuffer: 50 * 1024 * 1024, // 50MB buffer for large output
       });
-      return this.parseSummaryOutput(result);
     } catch (error) {
-      // Biome returns exit code 1 when there are errors
-      if (error.stdout) {
-        return this.parseSummaryOutput(error.stdout);
-      }
-      console.error('Biome check failed:', error.message);
+      // Biome returns exit code 1 when there are errors, but the output is still written to the file
+    }
+
+    try {
+      const result = fs.readFileSync(tempFile, 'utf-8');
+      fs.unlinkSync(tempFile); // Clean up the temp file
+      return this.parseJsonOutput(result);
+    } catch (error) {
+      console.error('Failed to read or parse Biome output file:', error.message);
       return null;
     }
   }
 
-  parseSummaryOutput(output) {
-    const lines = output.split('\n');
+  parseJsonOutput(output) {
+    const data = JSON.parse(output);
+    const diagnostics = data.diagnostics;
     const errorCounts = {};
     let totalErrors = 0;
     let totalWarnings = 0;
 
-    // Parse the summary output to extract error counts by rule
-    lines.forEach((line) => {
-      // Match pattern like "  lint/suspicious/noExplicitAny               8454 (4957 error(s), 3497 warning(s), 0 info(s))"
-      const match = line.match(
-        /^\s+([\w/]+)\s+(\d+)\s+\((\d+)\s+error\(s\),\s+(\d+)\s+warning\(s\)/,
-      );
-      if (match) {
-        const [, ruleName, total, errors, warnings] = match;
-        const ruleShortName = ruleName.split('/').pop(); // Get just the rule name
-        errorCounts[ruleShortName] = {
-          total: Number.parseInt(total),
-          errors: Number.parseInt(errors),
-          warnings: Number.parseInt(warnings),
-        };
-        totalErrors += Number.parseInt(errors);
-        totalWarnings += Number.parseInt(warnings);
+    diagnostics.forEach(diagnostic => {
+      if (diagnostic.category) {
+        const ruleName = diagnostic.category.split('/').pop();
+        if (!errorCounts[ruleName]) {
+          errorCounts[ruleName] = { total: 0, errors: 0, warnings: 0 };
+        }
+        errorCounts[ruleName].total++;
+        if (diagnostic.severity === 'error') {
+          errorCounts[ruleName].errors++;
+          totalErrors++;
+        } else if (diagnostic.severity === 'warning') {
+          errorCounts[ruleName].warnings++;
+          totalWarnings++;
+        }
       }
     });
 
-    // Look for overall totals
-    const totalMatch = output.match(/Found (\d+) errors/);
-    if (totalMatch) {
-      totalErrors = Number.parseInt(totalMatch[1]);
-    }
-
     return {
-      diagnostics: { length: totalErrors + totalWarnings },
+      diagnostics: diagnostics,
       errorCounts,
       totalErrors,
       totalWarnings,
@@ -121,17 +117,18 @@ class BiomeAIFixer {
   }
 
   categorizeErrors(biomeOutput) {
-    if (!(biomeOutput && biomeOutput.errorCounts)) return {};
+    if (!(biomeOutput && biomeOutput.diagnostics)) return {};
 
     const categories = {};
 
-    // Convert error counts to mock error objects for processing
-    Object.entries(biomeOutput.errorCounts).forEach(([ruleName, counts]) => {
-      categories[ruleName] = Array(counts.errors).fill({
-        rule: ruleName,
-        type: 'error',
-        count: counts.errors,
-      });
+    biomeOutput.diagnostics.forEach(diagnostic => {
+      if (diagnostic.category) {
+        const ruleName = diagnostic.category.split('/').pop();
+        if (!categories[ruleName]) {
+          categories[ruleName] = [];
+        }
+        categories[ruleName].push(diagnostic);
+      }
     });
 
     return categories;
@@ -139,7 +136,7 @@ class BiomeAIFixer {
 
   async applyAIFixPattern(errorCategory, errors) {
     console.log(
-      `🤖 Applying AI fixes for ${errorCategory} (${errors.length} errors)`,
+      `🤖 Applying AI fixes for ${errorCategory} (${errors.length} errors)`
     );
 
     // Check if we have learned patterns for this error type
@@ -179,7 +176,7 @@ class BiomeAIFixer {
             const before = content;
             content = content.replace(
               new RegExp(replacement.from, 'g'),
-              replacement.to,
+              replacement.to
             );
             if (content !== before) {
               fileModified = true;
@@ -319,7 +316,7 @@ class BiomeAIFixer {
   async fixUndeclaredVariables(errors, learnedPattern) {
     // This usually requires manual intervention or imports
     console.log(
-      `⚠️  Undeclared variables require manual fixes (${errors.length} errors)`,
+      `⚠️  Undeclared variables require manual fixes (${errors.length} errors)`
     );
     return 0;
   }
@@ -356,11 +353,13 @@ class BiomeAIFixer {
     const fileGroups = new Map();
 
     errors.forEach((error) => {
-      const filePath = error.location?.path || error.file;
-      if (!fileGroups.has(filePath)) {
-        fileGroups.set(filePath, []);
+      const filePath = error.location?.path?.file || error.file;
+      if (filePath && typeof filePath === 'string') {
+        if (!fileGroups.has(filePath)) {
+          fileGroups.set(filePath, []);
+        }
+        fileGroups.get(filePath).push(error);
       }
-      fileGroups.get(filePath).push(error);
     });
 
     return fileGroups;
@@ -368,64 +367,106 @@ class BiomeAIFixer {
 
   async runFixCycle() {
     console.log('🚀 Starting Biome AI Fix Cycle...\n');
-
-    // Get initial error count
-    const initialAnalysis = await this.runBiomeLinting();
-    if (!initialAnalysis) {
-      console.error('❌ Failed to run initial Biome analysis');
-      return;
-    }
-
-    const initialErrors = initialAnalysis.diagnostics?.length || 0;
-    console.log(`📊 Initial analysis: ${initialErrors} total issues\n`);
-
-    // Categorize errors
-    const errorCategories = this.categorizeErrors(initialAnalysis);
-
-    console.log('📋 Error breakdown:');
-    Object.entries(errorCategories).forEach(([category, errors]) => {
-      if (errors.length > 0) {
-        console.log(`  ${category}: ${errors.length} issues`);
-      }
-    });
-    console.log('');
-
-    // Apply fixes by priority
-    const priorities = [
-      'noExplicitAny',
-      'noUselessElse',
-      'noDelete',
-      'useSimplifiedLogicExpression',
-      'noUnusedVariables',
+    const directories = [
+      'src/__tests__',
+      'src/ai-linter',
+      'src/bindings',
+      'src/cli',
+      'src/config',
+      'src/coordination',
+      'src/core',
+      'src/database',
+      'src/di',
+      'src/examples',
+      'src/fact-core',
+      'src/fact-integration',
+      'src/integration',
+      'src/integrations',
+      'src/intelligence',
+      'src/interfaces',
+      'src/knowledge',
+      'src/memory',
+      'src/monitoring',
+      'src/neural',
+      'src/optimization',
+      'src/parsers',
+      'src/services',
+      'src/tests',
+      'src/tools',
+      'src/types',
+      'src/utils',
+      'src/workflows',
+      'scripts',
+      'tests'
     ];
-    let totalFixed = 0;
+    let totalInitialErrors = 0;
+    let totalFinalErrors = 0;
+    let totalFixedAcrossRuns = 0;
 
-    for (const category of priorities) {
-      if (errorCategories[category]?.length > 0) {
-        const fixed = await this.applyAIFixPattern(
-          category,
-          errorCategories[category],
-        );
-        totalFixed += fixed;
-        console.log(`  ✨ Fixed ${fixed} ${category} issues\n`);
+    for (const directory of directories) {
+      console.log(`\n--- Processing directory: ${directory} ---\n`);
+
+      // Get initial error count
+      const initialAnalysis = await this.runBiomeLinting(directory);
+      if (!initialAnalysis) {
+        console.error(`❌ Failed to run initial Biome analysis for ${directory}`);
+        continue;
       }
+
+      const initialErrors = initialAnalysis.diagnostics?.length || 0;
+      totalInitialErrors += initialErrors;
+      console.log(`📊 Initial analysis for ${directory}: ${initialErrors} total issues\n`);
+
+      // Categorize errors
+      const errorCategories = this.categorizeErrors(initialAnalysis);
+
+      console.log(`📋 Error breakdown for ${directory}:`);
+      Object.entries(errorCategories).forEach(([category, errors]) => {
+        if (errors.length > 0) {
+          console.log(`  ${category}: ${errors.length} issues`);
+        }
+      });
+      console.log('');
+
+      // Apply fixes by priority
+      const priorities = [
+        'noExplicitAny',
+        'noUselessElse',
+        'noDelete',
+        'useSimplifiedLogicExpression',
+        'noUnusedVariables',
+      ];
+      let totalFixed = 0;
+
+      for (const category of priorities) {
+        if (errorCategories[category]?.length > 0) {
+          const fixed = await this.applyAIFixPattern(
+            category,
+            errorCategories[category]
+          );
+          totalFixed += fixed;
+          console.log(`  ✨ Fixed ${fixed} ${category} issues\n`);
+        }
+      }
+      totalFixedAcrossRuns += totalFixed;
+
+      // Run final analysis for the directory
+      console.log(`🔄 Running final analysis for ${directory}...`);
+      const finalAnalysis = await this.runBiomeLinting(directory);
+      const finalErrors = finalAnalysis?.diagnostics?.length || initialErrors;
+      totalFinalErrors += finalErrors;
     }
 
-    // Run final analysis
-    console.log('🔄 Running final analysis...');
-    const finalAnalysis = await this.runBiomeLinting();
-    const finalErrors = finalAnalysis?.diagnostics?.length || initialErrors;
+    const improvement = totalInitialErrors - totalFinalErrors;
+    const improvementPercent = totalInitialErrors > 0 ? Math.round((improvement / totalInitialErrors) * 100) : 0;
 
-    const improvement = initialErrors - finalErrors;
-    const improvementPercent = Math.round((improvement / initialErrors) * 100);
-
-    console.log('\n📈 Fix Results:');
-    console.log(`  Initial errors: ${initialErrors}`);
-    console.log(`  Final errors: ${finalErrors}`);
+    console.log('\n📈 Final Fix Results:');
+    console.log(`  Initial errors: ${totalInitialErrors}`);
+    console.log(`  Final errors: ${totalFinalErrors}`);
     console.log(
-      `  Improvement: ${improvement} errors fixed (${improvementPercent}%)`,
+      `  Improvement: ${improvement} errors fixed (${improvementPercent}%)`
     );
-    console.log(`  Total AI fixes applied: ${totalFixed}`);
+    console.log(`  Total AI fixes applied: ${totalFixedAcrossRuns}`);
 
     // Save learning data
     if (this.learningMode && improvement > 0) {
@@ -433,10 +474,10 @@ class BiomeAIFixer {
     }
 
     return {
-      initialErrors,
-      finalErrors,
+      initialErrors: totalInitialErrors,
+      finalErrors: totalFinalErrors,
       improvement,
-      totalFixed,
+      totalFixed: totalFixedAcrossRuns,
     };
   }
 }
@@ -452,13 +493,13 @@ async function main() {
     learningMode: !args.includes('--no-learning'),
     maxFiles:
       Number.parseInt(
-        args.find((arg) => arg.startsWith('--max-files='))?.split('=')[1],
+        args.find((arg) => arg.startsWith('--max-files='))?.split('=')[1]
       ) || 50,
   };
 
   console.log('🧠 Biome AI Fixer - Learning & Pattern Recognition');
   console.log(
-    `📋 Mode: ${options.phase} | Learning: ${options.learningMode} | Dry Run: ${options.dryRun}\n`,
+    `📋 Mode: ${options.phase} | Learning: ${options.learningMode} | Dry Run: ${options.dryRun}\n`
   );
 
   const fixer = new BiomeAIFixer(options);

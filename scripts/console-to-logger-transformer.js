@@ -71,7 +71,7 @@ module.exports = function transformer(file, api) {
       // Create the new logger call
       const newCall = j.callExpression(
         j.memberExpression(j.identifier('logger'), j.identifier(loggerMethod)),
-        args,
+        args
       );
 
       // Replace the console call
@@ -87,19 +87,19 @@ module.exports = function transformer(file, api) {
           j.property(
             'init',
             j.identifier('getLogger'),
-            j.identifier('getLogger'),
+            j.identifier('getLogger')
           ),
         ]),
         j.callExpression(j.identifier('require'), [
           j.literal('../config/logging-config'),
-        ]),
+        ])
       ),
     ]);
 
     const loggerDeclaration = j.variableDeclaration('const', [
       j.variableDeclarator(
         j.identifier('logger'),
-        j.callExpression(j.identifier('getLogger'), [j.literal(componentName)]),
+        j.callExpression(j.identifier('getLogger'), [j.literal(componentName)])
       ),
     ]);
 

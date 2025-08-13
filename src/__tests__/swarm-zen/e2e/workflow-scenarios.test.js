@@ -344,7 +344,7 @@ describe('E2E Workflow Scenarios', () => {
             text: 'Section 1: Introduction\n',
           },
           documentId: document.id,
-        }),
+        })
       );
 
       // Editor 2 adds content concurrently
@@ -357,7 +357,7 @@ describe('E2E Workflow Scenarios', () => {
             text: 'Section 2: Methods\n',
           },
           documentId: document.id,
-        }),
+        })
       );
 
       // Reviewer adds comments
@@ -369,7 +369,7 @@ describe('E2E Workflow Scenarios', () => {
             text: 'Needs more detail in introduction',
           },
           documentId: document.id,
-        }),
+        })
       );
 
       const results = await Promise.all(editPromises);
@@ -459,7 +459,7 @@ describe('E2E Workflow Scenarios', () => {
       for (const [agentId, data] of performanceTracker.agents) {
         // Test on a different task type
         const newTaskType = performanceTracker.taskTypes.find(
-          (t) => t !== data.taskType,
+          (t) => t !== data.taskType
         );
         const result = await data.agent.execute({
           task: newTaskType,
@@ -510,7 +510,7 @@ describe('E2E Workflow Scenarios', () => {
       const agents = await Promise.all(
         Array(4)
           .fill(null)
-          .map(() => resilientSwarm.spawn({ type: 'analyst' })),
+          .map(() => resilientSwarm.spawn({ type: 'analyst' }))
       );
 
       let _completedSteps = 0;

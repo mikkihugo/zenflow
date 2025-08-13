@@ -7,8 +7,8 @@
 import { vi } from 'vitest';
 
 describe('Complete Auto-Swarm Pipeline Integration', () => {
-  let mockMemoryStore: any;
-  let mockAgui: any;
+  let mockMemoryStore: unknown;
+  let mockAgui: unknown;
 
   beforeEach(() => {
     mockMemoryStore = {
@@ -108,25 +108,25 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
         enableHumanValidation: false,
         maxSwarmsPerDomain: 1,
         resourceConstraints: calculateResourceConstraints(),
-      },
+      }
     );
 
     // 3. Test Swarm Creation Pipeline (WORKING)
-    const events: any[] = [];
+    const events: unknown[] = [];
     factory.on('factory:start', (event) =>
-      events.push({ type: 'start', ...event }),
+      events.push({ type: 'start', ...event })
     );
     factory.on('swarm:created', (event) =>
-      events.push({ type: 'created', ...event }),
+      events.push({ type: 'created', ...event })
     );
     factory.on('swarm:initialized', (event) =>
-      events.push({ type: 'initialized', ...event }),
+      events.push({ type: 'initialized', ...event })
     );
     factory.on('swarm:init-error', (event) =>
-      events.push({ type: 'init-error', ...event }),
+      events.push({ type: 'init-error', ...event })
     );
     factory.on('factory:complete', (event) =>
-      events.push({ type: 'complete', ...event }),
+      events.push({ type: 'complete', ...event })
     );
 
     const swarmConfigs = await factory.createSwarmsForDomains(testDomains);
@@ -146,10 +146,10 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
       (sum, config) =>
         sum +
         config?.agents?.reduce((agentSum, agent) => agentSum + agent.count, 0),
-      0,
+      0
     );
     expect(totalAgents).toBeLessThanOrEqual(
-      calculateResourceConstraints().maxTotalAgents,
+      calculateResourceConstraints().maxTotalAgents
     );
 
     // ✓ Event system provides proper creation feedback
@@ -160,28 +160,26 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
     // Verify appropriate agent configurations
     expect(
-      databaseSwarm?.agents.some((a) => a.type === 'data-specialist'),
+      databaseSwarm?.agents.some((a) => a.type === 'data-specialist')
     ).toBe(true);
     expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(
-      true,
+      true
     );
     expect(
-      swarmConfigs?.every((c) =>
-        c.agents.some((a) => a.type === 'coordinator'),
-      ),
+      swarmConfigs?.every((c) => c.agents.some((a) => a.type === 'coordinator'))
     ).toBe(true);
 
     // 5. Test Expected Swarm Configuration Examples
     // Database domain: Hierarchical topology with specialized data agents
     expect(databaseSwarm?.topology.type).toBe('hierarchical');
     expect(
-      databaseSwarm?.agents.some((a) => a.type === 'data-specialist'),
+      databaseSwarm?.agents.some((a) => a.type === 'data-specialist')
     ).toBe(true);
 
     // API domain: Star topology with API gateway agent
     expect(apiSwarm?.topology.type).toBe('star');
     expect(apiSwarm?.agents.some((a) => a.type === 'api-specialist')).toBe(
-      true,
+      true
     );
   });
 
@@ -223,7 +221,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
           memoryLimit: '4GB',
           cpuLimit: 8,
         },
-      },
+      }
     );
 
     const testDomains = new Map([
@@ -259,7 +257,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
       ],
     ]);
 
-    const errorEvents: any[] = [];
+    const errorEvents: unknown[] = [];
     factory.on('swarm:init-error', (event) => errorEvents.push(event));
 
     // ✓ Failed swarm creation handled gracefully
@@ -301,7 +299,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
           memoryLimit: '1GB',
           cpuLimit: 1,
         },
-      },
+      }
     );
 
     const largeDomains = new Map([
@@ -339,7 +337,7 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
 
     // Should throw error due to resource constraints
     await expect(factory.createSwarmsForDomains(largeDomains)).rejects.toThrow(
-      'exceeds limit',
+      'exceeds limit'
     );
   });
 });

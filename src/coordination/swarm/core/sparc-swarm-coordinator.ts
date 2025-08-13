@@ -113,7 +113,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    * @param feature
    */
   async processFeatureWithSPARC(
-    feature: FeatureDocumentEntity,
+    feature: FeatureDocumentEntity
   ): Promise<SPARCTask> {
     logger.info(`🎯 Starting SPARC processing for feature: ${feature.title}`);
 
@@ -205,7 +205,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
       } catch (error) {
         logger.error(
           `❌ SPARC phase ${phase} failed for ${sparcTask.id}:`,
-          error,
+          error
         );
         sparcTask.phaseProgress[phase].status = 'failed';
         sparcTask.status = 'failed';
@@ -230,7 +230,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executeSPARCPhase(
     sparcTask: SPARCTask,
-    phase: SPARCPhase,
+    phase: SPARCPhase
   ): Promise<void> {
     const phaseResult = sparcTask.phaseProgress[phase];
     phaseResult.status = 'in_progress';
@@ -279,7 +279,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executeSpecificationPhase(
     sparcTask: SPARCTask,
-    agents: SwarmAgent[],
+    agents: SwarmAgent[]
   ): Promise<void> {
     logger.info(`📝 Executing Specification phase for ${sparcTask.id}`);
 
@@ -311,7 +311,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executePseudocodePhase(
     sparcTask: SPARCTask,
-    agents: SwarmAgent[],
+    agents: SwarmAgent[]
   ): Promise<void> {
     logger.info(`📐 Executing Pseudocode phase for ${sparcTask.id}`);
 
@@ -345,7 +345,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executeArchitecturePhase(
     sparcTask: SPARCTask,
-    agents: SwarmAgent[],
+    agents: SwarmAgent[]
   ): Promise<void> {
     logger.info(`🏗️ Executing Architecture phase for ${sparcTask.id}`);
 
@@ -376,7 +376,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executeRefinementPhase(
     sparcTask: SPARCTask,
-    agents: SwarmAgent[],
+    agents: SwarmAgent[]
   ): Promise<void> {
     logger.info(`🔍 Executing Refinement phase for ${sparcTask.id}`);
 
@@ -407,7 +407,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async executeCompletionPhase(
     sparcTask: SPARCTask,
-    agents: SwarmAgent[],
+    agents: SwarmAgent[]
   ): Promise<void> {
     logger.info(`🎯 Executing Completion phase for ${sparcTask.id}`);
 
@@ -439,7 +439,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private selectPhaseAgents(
     phase: SPARCPhase,
-    _sparcTask: SPARCTask,
+    _sparcTask: SPARCTask
   ): SwarmAgent[] {
     const allAgents = this.getAgents();
     const phaseSpecialists = this.getPhaseSpecialists(phase);
@@ -448,13 +448,13 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
     const suitableAgents = allAgents.filter(
       (agent) =>
         phaseSpecialists.includes(agent.type) &&
-        (agent.status === 'idle' || agent.status === 'busy'),
+        (agent.status === 'idle' || agent.status === 'busy')
     );
 
     // Sort by performance and select best agents
     const selectedAgents = suitableAgents
       .sort(
-        (a, b) => b.performance.tasksCompleted - a.performance.tasksCompleted,
+        (a, b) => b.performance.tasksCompleted - a.performance.tasksCompleted
       )
       .slice(0, Math.min(3, suitableAgents.length)); // Max 3 agents per phase
 
@@ -492,7 +492,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async validatePhaseCompletion(
     sparcTask: SPARCTask,
-    phase: SPARCPhase,
+    phase: SPARCPhase
   ): Promise<{ passed: boolean; score: number; feedback: string[] }> {
     const phaseResult = sparcTask.phaseProgress[phase];
 
@@ -528,7 +528,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   private async retryPhase(
     sparcTask: SPARCTask,
-    phase: SPARCPhase,
+    phase: SPARCPhase
   ): Promise<void> {
     logger.info(`🔄 Retrying SPARC phase: ${phase} for ${sparcTask.id}`);
 
@@ -554,7 +554,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    */
   getActiveSPARCTasks(): SPARCTask[] {
     return Array.from(this.sparcTasks.values()).filter(
-      (task) => task.status === 'in_progress',
+      (task) => task.status === 'in_progress'
     );
   }
 
@@ -669,7 +669,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   private mapPriority(
-    priority: string,
+    priority: string
   ): 'low' | 'medium' | 'high' | 'critical' {
     const mapping: Record<string, 'low' | 'medium' | 'high' | 'critical'> = {
       low: 'low',
@@ -681,7 +681,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
   }
 
   private getPriorityValue(
-    priority: 'low' | 'medium' | 'high' | 'critical',
+    priority: 'low' | 'medium' | 'high' | 'critical'
   ): number {
     const values = { low: 1, medium: 2, high: 3, critical: 4 };
     return values[priority];
@@ -738,7 +738,7 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    * @param agentId
    * @param task
    */
-  private async assignTaskToAgent(agentId: string, task: any): Promise<void> {
+  private async assignTaskToAgent(agentId: string, task: unknown): Promise<void> {
     // This is a placeholder implementation
     // In a real implementation, this would use the agent communication system
     logger.debug(`Assigning task ${task.id} to agent ${agentId}`);

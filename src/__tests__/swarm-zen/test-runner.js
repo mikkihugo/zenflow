@@ -71,13 +71,13 @@ global.assert = new Proxy(assert, {
           if (expectedError instanceof RegExp) {
             if (!expectedError.test(error.message)) {
               throw new Error(
-                `Error message "${error.message}" does not match ${expectedError}`,
+                `Error message "${error.message}" does not match ${expectedError}`
               );
             }
           } else if (typeof expectedError === 'string') {
             if (!error.message.includes(expectedError)) {
               throw new Error(
-                `Error message "${error.message}" does not include "${expectedError}"`,
+                `Error message "${error.message}" does not include "${expectedError}"`
               );
             }
           }

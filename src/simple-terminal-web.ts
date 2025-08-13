@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Simple Terminal Web Interface
- * 
+ *
  * Launches web server and displays web content in terminal using blessed
  */
 
@@ -10,20 +10,20 @@ import * as blessed from 'blessed';
 
 async function main() {
   console.log('🧠 Starting hybrid web+terminal interface...');
-  
+
   // Start web server in background
   console.log('📡 Starting web server...');
   const webServer = spawn('npx', ['tsx', 'minimal-server.ts'], {
     cwd: process.cwd(),
-    stdio: ['ignore', 'pipe', 'pipe']
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
 
   // Wait a moment for server to start
-  await new Promise(resolve => setTimeout(resolve, 3000));
-  
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+
   // Create terminal UI
   console.log('🖥️  Launching terminal interface...');
-  
+
   const screen = blessed.screen({
     smartCSR: true,
     title: 'Claude Code Zen - Terminal Interface',
@@ -44,10 +44,10 @@ async function main() {
       fg: 'white',
     },
     label: ' Claude Code Zen - Web Interface in Terminal ',
-    content: 'URL: http://localhost:3000'
+    content: 'URL: http://localhost:3000',
   });
 
-  // Main content area  
+  // Main content area
   const content = blessed.box({
     parent: screen,
     top: 3,
@@ -88,7 +88,7 @@ async function main() {
 • Use arrow keys to scroll
 
 {center}{green-fg}The same rich interface, now in your terminal!{/center}
-    `
+    `,
   });
 
   // Footer
@@ -104,7 +104,8 @@ async function main() {
       bg: 'black',
       fg: 'yellow',
     },
-    content: 'Press q to quit | w for web browser | r to refresh | ↑↓ to scroll'
+    content:
+      'Press q to quit | w for web browser | r to refresh | ↑↓ to scroll',
   });
 
   // Key handlers
@@ -123,7 +124,7 @@ async function main() {
       const fetch = (await import('node-fetch')).default;
       const response = await fetch('http://localhost:3000/api/status');
       const status = await response.json();
-      
+
       content.setContent(`
 {center}{bold}{cyan-fg}🚀 Claude Code Zen Dashboard (Refreshed){/}{/center}
 
@@ -153,13 +154,15 @@ async function main() {
       `);
       screen.render();
     } catch (error) {
-      content.setContent(`{center}{red-fg}Error refreshing: ${error.message}{/center}`);
+      content.setContent(
+        `{center}{red-fg}Error refreshing: ${error.message}{/center}`
+      );
       screen.render();
     }
   });
 
   screen.render();
-  
+
   // Cleanup on exit
   process.on('exit', () => {
     if (!webServer.killed) {

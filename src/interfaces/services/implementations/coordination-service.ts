@@ -67,7 +67,7 @@ export class CoordinationService extends BaseService implements IService {
     }
 
     this.logger.info(
-      `Coordination service ${this.name} initialized with ${coordination.topology} topology`,
+      `Coordination service ${this.name} initialized with ${coordination.topology} topology`
     );
   }
 
@@ -120,7 +120,7 @@ export class CoordinationService extends BaseService implements IService {
     this.activeWorkflows.clear();
 
     this.logger.info(
-      `Coordination service ${this.name} destroyed successfully`,
+      `Coordination service ${this.name} destroyed successfully`
     );
   }
 
@@ -137,7 +137,7 @@ export class CoordinationService extends BaseService implements IService {
 
       if (this.agents.size > maxAgents) {
         this.logger.warn(
-          `Agent count (${this.agents.size}) exceeds maximum (${maxAgents})`,
+          `Agent count (${this.agents.size}) exceeds maximum (${maxAgents})`
         );
         return false;
       }
@@ -148,7 +148,7 @@ export class CoordinationService extends BaseService implements IService {
           const runTime = Date.now() - workflow.startTime;
           const timeout = config?.coordination?.timeout || 30000;
           return runTime > timeout * 3; // 3x timeout threshold
-        },
+        }
       );
 
       if (stuckWorkflows.length > 0) {
@@ -160,7 +160,7 @@ export class CoordinationService extends BaseService implements IService {
     } catch (error) {
       this.logger.error(
         `Health check failed for coordination service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -168,8 +168,8 @@ export class CoordinationService extends BaseService implements IService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing coordination operation: ${operation}`);
 
@@ -219,7 +219,7 @@ export class CoordinationService extends BaseService implements IService {
   // Coordination Service Specific Methods
   // ============================================
 
-  private async createSwarm(config: any): Promise<any> {
+  private async createSwarm(config: unknown): Promise<unknown> {
     const swarmId = `swarm-${Date.now()}`;
     const swarm = {
       id: swarmId,
@@ -255,11 +255,11 @@ export class CoordinationService extends BaseService implements IService {
     return true;
   }
 
-  private getSwarms(): any[] {
+  private getSwarms(): unknown[] {
     return Array.from(this.swarms.values());
   }
 
-  private async spawnAgent(config: any): Promise<any> {
+  private async spawnAgent(config: unknown): Promise<unknown> {
     const agentId = `agent-${Date.now()}`;
     const agent = {
       id: agentId,
@@ -280,11 +280,11 @@ export class CoordinationService extends BaseService implements IService {
       if (swarm) {
         swarm.agents.push(agentId);
         this.logger.info(
-          `Spawned agent ${agentId} in swarm ${config?.swarmId}`,
+          `Spawned agent ${agentId} in swarm ${config?.swarmId}`
         );
       } else {
         this.logger.warn(
-          `Swarm ${config?.swarmId} not found for agent ${agentId}`,
+          `Swarm ${config?.swarmId} not found for agent ${agentId}`
         );
       }
     } else {
@@ -322,11 +322,11 @@ export class CoordinationService extends BaseService implements IService {
     }
   }
 
-  private getAgents(): any[] {
+  private getAgents(): unknown[] {
     return Array.from(this.agents.values());
   }
 
-  private async startWorkflow(config: any): Promise<any> {
+  private async startWorkflow(config: unknown): Promise<unknown> {
     const workflowId = `workflow-${Date.now()}`;
     const workflow = {
       id: workflowId,
@@ -363,11 +363,11 @@ export class CoordinationService extends BaseService implements IService {
     return true;
   }
 
-  private getWorkflows(): any[] {
+  private getWorkflows(): unknown[] {
     return Array.from(this.activeWorkflows.values());
   }
 
-  private async coordinate(task: any, agentIds: string[]): Promise<any> {
+  private async coordinate(task: unknown, agentIds: string[]): Promise<unknown> {
     if (!(task && agentIds) || agentIds.length === 0) {
       throw new Error('Task and agent IDs are required for coordination');
     }
@@ -395,13 +395,13 @@ export class CoordinationService extends BaseService implements IService {
         }));
         this.logger.info(`Coordination completed: ${coordinationId}`);
       },
-      Math.random() * 2000 + 1000,
+      Math.random() * 2000 + 1000
     );
 
     return coordination;
   }
 
-  private getCoordinationState(): any {
+  private getCoordinationState(): unknown {
     return {
       activeCoordinations: Array.from(this.coordinationState.values()),
       totalAgents: this.agents.size,
@@ -410,7 +410,7 @@ export class CoordinationService extends BaseService implements IService {
     };
   }
 
-  private getCoordinationStats(): any {
+  private getCoordinationStats(): unknown {
     return {
       agentCount: this.agents.size,
       swarmCount: this.swarms.size,
@@ -462,7 +462,7 @@ export class CoordinationService extends BaseService implements IService {
   private monitorCoordination(): void {
     // Monitor coordination health and performance
     const inactiveAgents = Array.from(this.agents.values()).filter(
-      (agent) => agent.status === 'disconnected',
+      (agent) => agent.status === 'disconnected'
     );
 
     if (inactiveAgents.length > 0) {
@@ -480,7 +480,7 @@ export class CoordinationService extends BaseService implements IService {
     Array.from(this.activeWorkflows.values()).forEach((workflow) => {
       if (now - workflow.startTime > timeout * 2) {
         this.logger.warn(
-          `Workflow ${workflow.id} may be stuck, considering recovery`,
+          `Workflow ${workflow.id} may be stuck, considering recovery`
         );
         // In real implementation, would attempt recovery
       }

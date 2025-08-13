@@ -129,7 +129,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     this.state.lastAssimilation = new Date();
 
     this.logger.info(
-      'THE COLLECTIVE is now active. All systems operational. Resistance is futile.',
+      'THE COLLECTIVE is now active. All systems operational. Resistance is futile.'
     );
     this.eventBus.emit('collective:initialized', {
       status: this.state.status,
@@ -156,7 +156,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     await this.registerMatron(devMatron);
 
     this.logger.info(
-      `Cubes assimilated: OPS-CUBE, DEV-CUBE. Matrons operational.`,
+      `Cubes assimilated: OPS-CUBE, DEV-CUBE. Matrons operational.`
     );
   }
 
@@ -200,7 +200,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     };
 
     this.logger.info(
-      'Neural coordination systems online. Collective intelligence active.',
+      'Neural coordination systems online. Collective intelligence active.'
     );
   }
 
@@ -219,7 +219,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     this.healthMetrics.activeCubes++;
 
     this.logger.info(
-      `Matron ${matron.designation} registered. Cube: ${cubeInfo.type}`,
+      `Matron ${matron.designation} registered. Cube: ${cubeInfo.type}`
     );
     this.eventBus.emit('collective:matron:registered', {
       matron: matron.designation,
@@ -259,7 +259,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     this.taskQueue.push(assignment);
 
     this.logger.info(
-      `Task ${task.id} assigned to ${targetCube.type} (${targetCube.matron})`,
+      `Task ${task.id} assigned to ${targetCube.type} (${targetCube.matron})`
     );
     this.eventBus.emit('collective:task:assigned', assignment);
 
@@ -283,7 +283,7 @@ export class CollectiveNeuralHub extends EventEmitter {
       // Capability matching
       const taskCapabilities = task.requiredCapabilities || [];
       const matchingCapabilities = taskCapabilities.filter((cap: string) =>
-        matron.capabilities.includes(cap),
+        matron.capabilities.includes(cap)
       ).length;
       score += matchingCapabilities * 0.4;
 
@@ -382,7 +382,7 @@ export class CollectiveNeuralHub extends EventEmitter {
       // Update cube information
       Object.assign(cube, status.cube);
       this.logger.debug(
-        `Updated status for ${cube.type}: Efficiency ${cube.performance.efficiency}`,
+        `Updated status for ${cube.type}: Efficiency ${cube.performance.efficiency}`
       );
     }
   }
@@ -394,7 +394,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     this.updateHealthMetrics();
 
     this.logger.debug(
-      `Health check: ${this.healthMetrics.overallStatus} - Efficiency: ${this.healthMetrics.borgEfficiency.toFixed(3)}`,
+      `Health check: ${this.healthMetrics.overallStatus} - Efficiency: ${this.healthMetrics.borgEfficiency.toFixed(3)}`
     );
 
     this.eventBus.emit('collective:health:updated', this.healthMetrics);
@@ -407,7 +407,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     const status = this.getSystemStatus();
     this.eventBus.emit('collective:status:report', status);
     this.logger.info(
-      `Status reported: ${status.status} - Cubes: ${status.activeCubes.size} - Efficiency: ${status.borgEfficiency.toFixed(3)}`,
+      `Status reported: ${status.status} - Cubes: ${status.activeCubes.size} - Efficiency: ${status.borgEfficiency.toFixed(3)}`
     );
   }
 
@@ -424,7 +424,7 @@ export class CollectiveNeuralHub extends EventEmitter {
     }
 
     this.logger.warn(
-      'THE COLLECTIVE is offline. All assimilation operations suspended.',
+      'THE COLLECTIVE is offline. All assimilation operations suspended.'
     );
     this.eventBus.emit('collective:shutdown', { timestamp: new Date() });
   }

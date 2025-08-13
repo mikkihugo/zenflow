@@ -46,7 +46,7 @@ export type McpToolRegistryMap = Record<McpToolId, McpToolSpec<any, any>>;
 export function createOutcome<T>(
   spec: McpToolSpec,
   start: number,
-  result: T,
+  result: T
 ): McpToolResult<T> {
   return {
     ok: true,
@@ -59,7 +59,7 @@ export function createOutcome<T>(
 export function createErrorOutcome(
   spec: McpToolSpec | { name: string; id?: string },
   start: number,
-  error: unknown,
+  error: unknown
 ): McpToolError {
   const err = error as any;
   return {

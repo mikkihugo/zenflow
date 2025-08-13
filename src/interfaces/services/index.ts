@@ -296,7 +296,7 @@ export class USL {
    * });
    * ```
    */
-  async initialize(_config?: any): Promise<void> {
+  async initialize(_config?: unknown): Promise<void> {
     if (this.initialized) {
       return;
     }
@@ -350,7 +350,7 @@ export class USL {
    */
   async createDataService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -392,15 +392,15 @@ export class USL {
    */
   async createWebDataService(
     name: string,
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
 
     const adapter = await globalDataServiceFactory.createWebDataAdapter(
       name,
-      options,
+      options
     );
     return adapter;
   }
@@ -438,8 +438,8 @@ export class USL {
   async createDocumentService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -447,7 +447,7 @@ export class USL {
     const adapter = await globalDataServiceFactory.createDocumentAdapter(
       name,
       databaseType,
-      options,
+      options
     );
     return adapter;
   }
@@ -486,8 +486,8 @@ export class USL {
   async createUnifiedDataService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -495,7 +495,7 @@ export class USL {
     const adapter = await globalDataServiceFactory.createUnifiedDataAdapter(
       name,
       databaseType,
-      options,
+      options
     );
     return adapter;
   }
@@ -536,7 +536,7 @@ export class USL {
   async createWebService(
     name: string,
     port: number = 3000,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -590,7 +590,7 @@ export class USL {
    */
   async createCoordinationService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -649,7 +649,7 @@ export class USL {
    */
   async createNeuralService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -671,7 +671,7 @@ export class USL {
    */
   async createMemoryService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -693,7 +693,7 @@ export class USL {
    */
   async createDatabaseService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -715,7 +715,7 @@ export class USL {
    */
   async createIntegrationService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -738,8 +738,8 @@ export class USL {
    */
   async createIntegrationServiceAdapter(
     name: string,
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -765,8 +765,8 @@ export class USL {
   async createArchitectureStorageService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -798,8 +798,8 @@ export class USL {
   async createSafeAPIService(
     name: string,
     baseURL: string,
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -834,8 +834,8 @@ export class USL {
   async createProtocolManagementService(
     name: string,
     supportedProtocols: string[] = ['http', 'websocket', 'mcp-http'],
-    options: Partial<any> = {},
-  ): Promise<any> {
+    options: Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -877,8 +877,8 @@ export class USL {
       baseURL?: string;
       databaseType?: 'postgresql' | 'sqlite' | 'mysql';
       supportedProtocols?: string[];
-    } & Partial<any> = {},
-  ): Promise<any> {
+    } & Partial<any> = {}
+  ): Promise<unknown> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -939,7 +939,7 @@ export class USL {
    */
   async createMonitoringService(
     name: string,
-    options: Partial<any> = {},
+    options: Partial<any> = {}
   ): Promise<IService> {
     if (!this.initialized) {
       await this.initialize();
@@ -1037,13 +1037,13 @@ export class USL {
     const statusValues = Array.from(serviceStatuses.values());
 
     const healthy = statusValues.filter(
-      (s: any) => s.health === 'healthy',
+      (s: unknown) => s.health === 'healthy'
     ).length;
     const degraded = statusValues.filter(
-      (s: any) => s.health === 'degraded',
+      (s: unknown) => s.health === 'degraded'
     ).length;
     const unhealthy = statusValues.filter(
-      (s: any) => s.health === 'unhealthy',
+      (s: unknown) => s.health === 'unhealthy'
     ).length;
     const total = statusValues.length;
 
@@ -1132,7 +1132,7 @@ export class USL {
         totalThroughput: 0,
         totalErrors: 0,
         totalOperations: 0,
-      },
+      }
     );
 
     return {
@@ -1200,7 +1200,7 @@ export class USL {
    */
   findServicesByCapability(capabilityName: string): string[] {
     return globalServiceCapabilityRegistry.findServicesByCapability(
-      capabilityName,
+      capabilityName
     );
   }
 
@@ -1285,7 +1285,7 @@ export const usl = getUSLInstance();
  * });
  * ```
  */
-export const initializeUSL = async (config?: any): Promise<void> => {
+export const initializeUSL = async (config?: unknown): Promise<void> => {
   await usl.initialize(config);
 };
 
@@ -1379,27 +1379,27 @@ export const USLHelpers = {
       // Create core services
       services.memory = await usl.createMemoryService(
         'default-memory',
-        config?.memoryConfig,
+        config?.memoryConfig
       );
       services.data = await usl.createDataService('default-data');
 
       if (config?.webPort) {
         services.web = await usl.createWebService(
           'default-web',
-          config?.webPort,
+          config?.webPort
         );
       }
 
       if (config?.databaseConfig) {
         services.database = await usl.createDatabaseService(
           'default-database',
-          config?.databaseConfig,
+          config?.databaseConfig
         );
       }
 
       if (config?.enableCoordination) {
         services.coordination = await usl.createCoordinationService(
-          'default-coordination',
+          'default-coordination'
         );
       }
 
@@ -1475,7 +1475,7 @@ export const USLHelpers = {
         responseTime: number;
         errorRate: number;
         uptime: number;
-        details?: any;
+        details?: unknown;
       }
     >;
     summary: {
@@ -1487,7 +1487,7 @@ export const USLHelpers = {
     };
   }> {
     const health = await usl.getSystemHealth();
-    const services: Record<string, any> = {};
+    const services: Record<string, unknown> = {};
 
     let totalResponseTime = 0;
     let responseTimeCount = 0;
@@ -1555,7 +1555,7 @@ export const USLHelpers = {
     };
   }> {
     const metrics = await usl.getSystemMetrics();
-    const services: Record<string, any> = {};
+    const services: Record<string, unknown> = {};
 
     let totalOperations = 0;
     let totalErrors = 0;
@@ -1613,7 +1613,7 @@ export const USLHelpers = {
    */
   async createServiceWithDependencies<T extends AnyServiceConfig>(
     config: T,
-    dependencies: string[] = [],
+    dependencies: string[] = []
   ): Promise<IService> {
     // Ensure dependencies exist
     for (const depName of dependencies) {
@@ -1644,7 +1644,7 @@ export const USLHelpers = {
    * @param configs
    */
   async createServiceBatch(
-    configs: Array<{ config: AnyServiceConfig; dependencies?: string[] }>,
+    configs: Array<{ config: AnyServiceConfig; dependencies?: string[] }>
   ): Promise<IService[]> {
     // Sort by dependency order
     const sortedConfigs = [...configs].sort((a, b) => {
@@ -1659,7 +1659,7 @@ export const USLHelpers = {
       try {
         const service = await USLHelpers.createServiceWithDependencies(
           config,
-          dependencies,
+          dependencies
         );
         createdServices.push(service);
       } catch (error) {
@@ -1731,7 +1731,7 @@ export const USLHelpers = {
       if (config?.enableCompatibilityLayer ?? true) {
         const { USLCompatibilityLayer } = await import('./compatibility.ts');
         const compatibility = new USLCompatibilityLayer(
-          config?.compatibilityConfig,
+          config?.compatibilityConfig
         );
         await compatibility.initialize();
         result.compatibility = compatibility;
@@ -1744,7 +1744,7 @@ export const USLHelpers = {
           const validation = new USLValidationFramework(
             result?.serviceManager,
             result?.registry,
-            config?.validationConfig,
+            config?.validationConfig
           );
           result.validation = validation;
         }
@@ -1762,12 +1762,12 @@ export const USLHelpers = {
    *
    * @param existingServices
    */
-  async migrateToUSL(existingServices: Record<string, any>): Promise<{
+  async migrateToUSL(existingServices: Record<string, unknown>): Promise<{
     success: boolean;
     migrated: IService[];
     failed: Array<{ name: string; error: string }>;
     warnings: string[];
-    compatibilityReport: any;
+    compatibilityReport: unknown;
   }> {
     try {
       // Initialize compatibility layer
@@ -1838,18 +1838,18 @@ export const USLHelpers = {
 
       if (validationResult?.overall === 'fail') {
         recommendations.push(
-          'Address critical validation failures before production deployment',
+          'Address critical validation failures before production deployment'
         );
       }
 
       if (healthValidation.overallHealth !== 'healthy') {
         recommendations.push(
-          'Resolve system health issues to ensure optimal performance',
+          'Resolve system health issues to ensure optimal performance'
         );
       }
 
       recommendations.push(
-        ...validationResult?.recommendations.map((rec) => rec.action),
+        ...validationResult?.recommendations.map((rec) => rec.action)
       );
 
       return {

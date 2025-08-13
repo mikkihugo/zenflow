@@ -267,11 +267,11 @@ export const getFlowMetricsTool: Tool = {
  * Handle workflow initialization tool call
  */
 export async function handleInitializeWorkflow(
-  args: any,
+  args: unknown
 ): Promise<CallToolResult> {
   try {
     logger.info(
-      '🚀 MCP: Initializing Advanced Multi-Level Workflow Architecture',
+      '🚀 MCP: Initializing Advanced Multi-Level Workflow Architecture'
     );
 
     // Create repository configuration
@@ -347,7 +347,7 @@ export async function handleInitializeWorkflow(
  * Handle workflow monitoring tool call
  */
 export async function handleMonitorWorkflow(
-  args: any,
+  args: unknown
 ): Promise<CallToolResult> {
   try {
     logger.info('📊 MCP: Monitoring Advanced Workflow Performance');
@@ -465,7 +465,7 @@ export async function handleMonitorWorkflow(
 /**
  * Handle system info tool call
  */
-export async function handleGetSystemInfo(args: any): Promise<CallToolResult> {
+export async function handleGetSystemInfo(args: unknown): Promise<CallToolResult> {
   try {
     logger.info('🖥️ MCP: Getting System Information');
 
@@ -546,7 +546,7 @@ export async function handleGetSystemInfo(args: any): Promise<CallToolResult> {
 /**
  * Handle workflow scaling tool call
  */
-export async function handleScaleWorkflow(args: any): Promise<CallToolResult> {
+export async function handleScaleWorkflow(args: unknown): Promise<CallToolResult> {
   try {
     logger.info(`📈 MCP: Scaling Workflow ${args.direction.toUpperCase()}`);
 
@@ -595,24 +595,24 @@ export async function handleScaleWorkflow(args: any): Promise<CallToolResult> {
         portfolio:
           args.direction === 'up'
             ? Math.ceil(
-                currentStats.allocated.portfolio * (1 + args.amount / 100),
+                currentStats.allocated.portfolio * (1 + args.amount / 100)
               )
             : Math.floor(
-                currentStats.allocated.portfolio * (1 - args.amount / 100),
+                currentStats.allocated.portfolio * (1 - args.amount / 100)
               ),
         program:
           args.direction === 'up'
             ? Math.ceil(
-                currentStats.allocated.program * (1 + args.amount / 100),
+                currentStats.allocated.program * (1 + args.amount / 100)
               )
             : Math.floor(
-                currentStats.allocated.program * (1 - args.amount / 100),
+                currentStats.allocated.program * (1 - args.amount / 100)
               ),
         swarm:
           args.direction === 'up'
             ? Math.ceil(currentStats.allocated.swarm * (1 + args.amount / 100))
             : Math.floor(
-                currentStats.allocated.swarm * (1 - args.amount / 100),
+                currentStats.allocated.swarm * (1 - args.amount / 100)
               ),
       },
       warnings:
@@ -653,7 +653,7 @@ export async function handleScaleWorkflow(args: any): Promise<CallToolResult> {
 /**
  * Handle workflow testing tool call
  */
-export async function handleTestWorkflow(args: any): Promise<CallToolResult> {
+export async function handleTestWorkflow(args: unknown): Promise<CallToolResult> {
   try {
     logger.info(`🧪 MCP: Running Workflow ${args.testType.toUpperCase()} Test`);
 
@@ -663,7 +663,7 @@ export async function handleTestWorkflow(args: any): Promise<CallToolResult> {
 
     // Simulate test execution
     await new Promise((resolve) =>
-      setTimeout(resolve, Math.min(args.duration * 100, 2000)),
+      setTimeout(resolve, Math.min(args.duration * 100, 2000))
     ); // Simulate test
 
     // Record performance metrics based on test type
@@ -800,7 +800,7 @@ export function listWorkflowTools(): ListToolsResult {
  */
 export async function handleWorkflowToolCall(
   name: string,
-  args: any,
+  args: unknown
 ): Promise<CallToolResult> {
   switch (name) {
     case 'workflow_initialize':

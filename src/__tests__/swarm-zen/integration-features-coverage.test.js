@@ -131,7 +131,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(result.modules.remote.success).toBe(true);
         expect(result.modules.core.manualSetup).toBe(true);
         expect(result.modules.core.instructions).toContain(
-          'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start',
+          'Run: claude mcp add ruv-swarm npx ruv-swarm mcp start'
         );
       });
 
@@ -195,7 +195,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
         expect(result).toEqual(mockResult);
         expect(orchestrator.core.invokeClaudeWithPrompt).toHaveBeenCalledWith(
-          'test prompt',
+          'test prompt'
         );
       });
 
@@ -234,7 +234,7 @@ describe('Integration & Advanced Features Coverage', () => {
         fs.rm.mockRejectedValue(new Error('Permission denied'));
 
         await expect(orchestrator.cleanup()).rejects.toThrow(
-          'Permission denied',
+          'Permission denied'
         );
       });
     });
@@ -279,7 +279,7 @@ describe('Integration & Advanced Features Coverage', () => {
         });
 
         expect(mockOrchestrator.invokeClaudeWithPrompt).toHaveBeenCalledWith(
-          'test prompt',
+          'test prompt'
         );
         expect(result).toEqual(mockResult);
       });
@@ -766,7 +766,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(hooks.coordinator.updateTaskProgress).toHaveBeenCalledWith(
           hooks.swarmId,
           123,
-          expect.stringContaining('file.js'),
+          expect.stringContaining('file.js')
         );
       });
 
@@ -802,7 +802,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
         expect(hooks.coordinator.releaseTask).toHaveBeenCalledWith(
           hooks.swarmId,
-          123,
+          123
         );
         expect(hooks.activeTask).toBeNull();
       });
@@ -883,7 +883,7 @@ describe('Integration & Advanced Features Coverage', () => {
               labels: [],
               assignees: [{ login: 'user' }],
             },
-          ]),
+          ])
         );
 
         const tasks = await coordinator.getAvailableTasks();
@@ -900,7 +900,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(success).toBe(true);
         expect(execSync).toHaveBeenCalledWith(
           expect.stringContaining('gh issue edit 456'),
-          expect.any(Object),
+          expect.any(Object)
         );
       });
 
@@ -924,7 +924,7 @@ describe('Integration & Advanced Features Coverage', () => {
         expect(success).toBe(true);
         expect(execSync).toHaveBeenCalledWith(
           expect.stringContaining('gh issue edit 456'),
-          expect.any(Object),
+          expect.any(Object)
         );
       });
 
@@ -934,13 +934,13 @@ describe('Integration & Advanced Features Coverage', () => {
         const success = await coordinator.updateTaskProgress(
           'swarm-123',
           456,
-          'Progress update',
+          'Progress update'
         );
 
         expect(success).toBe(true);
         expect(execSync).toHaveBeenCalledWith(
           expect.stringContaining('gh issue comment 456'),
-          expect.any(Object),
+          expect.any(Object)
         );
       });
 
@@ -952,7 +952,7 @@ describe('Integration & Advanced Features Coverage', () => {
             { number: 1, title: 'Task 1', labels: [{ name: 'swarm-123' }] },
             { number: 2, title: 'Task 2', labels: [{ name: 'swarm-456' }] },
             { number: 3, title: 'Task 3', labels: [] },
-          ]),
+          ])
         );
 
         const status = await coordinator.getCoordinationStatus();
@@ -1055,7 +1055,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const result = await evolution.evolvePattern(
         'agent-1',
         { taskType: 'analysis', complexity: 0.7 },
-        { success: true, performance: 0.9 },
+        { success: true, performance: 0.9 }
       );
 
       expect(result.success).toBe(true);
@@ -1071,7 +1071,7 @@ describe('Integration & Advanced Features Coverage', () => {
         {
           domain: 'problem-solving',
           experience: 'shared-task',
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -1139,7 +1139,7 @@ describe('Integration & Advanced Features Coverage', () => {
             _agentId,
             _sourceDomain,
             _targetDomain,
-            _strategy,
+            _strategy
           ) {
             return {
               success: true,
@@ -1187,7 +1187,7 @@ describe('Integration & Advanced Features Coverage', () => {
         'agent-1',
         'source-domain',
         'target-domain',
-        'maml',
+        'maml'
       );
 
       expect(result.success).toBe(true);
@@ -1205,7 +1205,7 @@ describe('Integration & Advanced Features Coverage', () => {
 
       const result = await framework.metaLearnFromExperiences(
         experiences,
-        'maml',
+        'maml'
       );
 
       expect(result.success).toBe(true);
@@ -1342,7 +1342,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const result = await protocol.coordinateAgents(
         ['agent-1', 'agent-2', 'agent-3'],
         'hierarchical',
-        'collaborative-task',
+        'collaborative-task'
       );
 
       expect(result.success).toBe(true);
@@ -1362,7 +1362,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const result = await protocol.establishConsensus(
         'session-123',
         proposals,
-        'voting',
+        'voting'
       );
 
       expect(result.success).toBe(true);
@@ -1433,7 +1433,7 @@ describe('Integration & Advanced Features Coverage', () => {
             if (!this.pools.has(moduleId)) {
               const memory = new WebAssembly.Memory({
                 initial: Math.ceil(
-                  (requiredSize || this.initialSize) / (64 * 1024),
+                  (requiredSize || this.initialSize) / (64 * 1024)
                 ),
                 maximum: Math.ceil(this.maxMemory / (64 * 1024)),
               });
@@ -1455,7 +1455,7 @@ describe('Integration & Advanced Features Coverage', () => {
             // Ensure pool has sufficient capacity
             if (pool.used + size > pool.capacity) {
               throw new Error(
-                `Pool ${moduleId} insufficient capacity: ${pool.used + size} > ${pool.capacity}`,
+                `Pool ${moduleId} insufficient capacity: ${pool.used + size} > ${pool.capacity}`
               );
             }
 
@@ -1636,7 +1636,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const updateResult = await mockCoordinator.updateTaskProgress(
         swarmId,
         123,
-        'Integration test progress',
+        'Integration test progress'
       );
       expect(updateResult).toBe(true);
     });
@@ -1663,20 +1663,20 @@ describe('Integration & Advanced Features Coverage', () => {
       const evolutionResult = await mockEvolution.evolvePattern(
         'agent-1',
         { domain: 'source' },
-        { performance: 0.9 },
+        { performance: 0.9 }
       );
 
       const adaptationResult = await mockMetaLearning.adaptToDomain(
         'agent-1',
         'source-domain',
         'target-domain',
-        evolutionResult.newPattern,
+        evolutionResult.newPattern
       );
 
       expect(evolutionResult.success).toBe(true);
       expect(adaptationResult.success).toBe(true);
       expect(adaptationResult.transferredKnowledge).toContain(
-        'pattern-knowledge',
+        'pattern-knowledge'
       );
     });
 
@@ -1704,7 +1704,7 @@ describe('Integration & Advanced Features Coverage', () => {
       const coordinationResult = await mockCoordination.coordinateAgents(
         ['agent-1', 'agent-2'],
         'peer_to_peer',
-        'memory-intensive-task',
+        'memory-intensive-task'
       );
 
       expect(allocation.id).toBeDefined();
@@ -1741,7 +1741,7 @@ describe('Integration & Advanced Features Coverage', () => {
       };
 
       await expect(mockCoordinator.getAvailableTasks()).rejects.toThrow(
-        'GitHub API rate limit exceeded',
+        'GitHub API rate limit exceeded'
       );
     });
 
@@ -1769,7 +1769,7 @@ describe('Integration & Advanced Features Coverage', () => {
       };
 
       await expect(
-        mockEvolution.evolvePattern('agent-1', null, null),
+        mockEvolution.evolvePattern('agent-1', null, null)
       ).rejects.toThrow('Invalid context or feedback');
     });
 
@@ -1787,11 +1787,11 @@ describe('Integration & Advanced Features Coverage', () => {
       };
 
       await expect(
-        mockProtocol.coordinateAgents([], 'hierarchical'),
+        mockProtocol.coordinateAgents([], 'hierarchical')
       ).rejects.toThrow('No agents provided for coordination');
 
       await expect(
-        mockProtocol.coordinateAgents(['agent-1'], null),
+        mockProtocol.coordinateAgents(['agent-1'], null)
       ).rejects.toThrow('No coordination strategy specified');
     });
   });

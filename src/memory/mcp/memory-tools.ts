@@ -25,7 +25,7 @@ export interface MCPTool {
   description: string;
   inputSchema: {
     type: string;
-    properties: Record<string, any>;
+    properties: Record<string, unknown>;
     required?: string[];
   };
   handler: (params: Record<string, unknown>) => Promise<unknown>;
@@ -195,7 +195,7 @@ export const memoryInitTool: MCPTool = {
         try {
           const backend = await MemoryBackendFactory.createBackend(
             backendConfig?.type as 'sqlite' | 'json' | 'lancedb' | 'memory',
-            backendConfig?.config,
+            backendConfig?.config
           );
           await backend.initialize();
 
@@ -276,7 +276,7 @@ export const memoryOptimizeTool: MCPTool = {
     try {
       if (!performanceOptimizer) {
         throw new Error(
-          'Performance optimizer not initialized. Run memory_init first.',
+          'Performance optimizer not initialized. Run memory_init first.'
         );
       }
 
@@ -399,7 +399,7 @@ export const memoryMonitorTool: MCPTool = {
           type: string;
           severity: string;
           value: number;
-          threshold: any;
+          threshold: unknown;
           message: string;
         }>,
         systems: {},
@@ -556,7 +556,7 @@ export const memoryDistributeTool: MCPTool = {
     try {
       if (!memoryCoordinator) {
         throw new Error(
-          'Memory coordinator not initialized. Run memory_init first.',
+          'Memory coordinator not initialized. Run memory_init first.'
         );
       }
 
@@ -668,7 +668,7 @@ export const memoryHealthCheckTool: MCPTool = {
           if (coordinatorHealth.status !== 'healthy') {
             healthReport.overall = 'degraded';
             healthReport.issues.push(
-              `Coordinator is ${coordinatorHealth.status}`,
+              `Coordinator is ${coordinatorHealth.status}`
             );
           }
         } else {
@@ -730,7 +730,7 @@ export const memoryHealthCheckTool: MCPTool = {
               error: (error as Error).message,
             };
             healthReport.issues.push(
-              `Backend ${id} is unhealthy: ${(error as Error).message}`,
+              `Backend ${id} is unhealthy: ${(error as Error).message}`
             );
           }
         }
@@ -750,7 +750,7 @@ export const memoryHealthCheckTool: MCPTool = {
       if (healthReport.issues.length > 0) {
         healthReport.overall = healthReport.issues.some(
           (issue) =>
-            issue.includes('not_initialized') || issue.includes('unhealthy'),
+            issue.includes('not_initialized') || issue.includes('unhealthy')
         )
           ? 'critical'
           : 'degraded';

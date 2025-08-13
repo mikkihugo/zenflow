@@ -24,7 +24,7 @@ export interface OptimizationAction {
     | 'resource_allocation';
   target: string;
   action: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   priority: 'low' | 'medium' | 'high' | 'critical';
   estimatedImpact: number;
   executionTime: number;
@@ -146,7 +146,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   public async optimizeFromInsights(
     insights: PerformanceInsights,
-    metrics: CompositeMetrics,
+    metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     if (!this.isOptimizing) {
       return [];
@@ -164,7 +164,7 @@ export class OptimizationEngine extends EventEmitter {
     for (const bottleneck of insights.bottlenecks) {
       const bottleneckActions = await this.handleBottleneck(
         bottleneck,
-        metrics,
+        metrics
       );
       actions.push(...bottleneckActions);
     }
@@ -173,7 +173,7 @@ export class OptimizationEngine extends EventEmitter {
     if (insights.predictions.resourceExhaustion.length > 0) {
       const proactiveActions = await this.handleResourceExhaustion(
         insights.predictions,
-        metrics,
+        metrics
       );
       actions.push(...proactiveActions);
     }
@@ -182,7 +182,7 @@ export class OptimizationEngine extends EventEmitter {
     if (insights.healthScore < 70) {
       const healthActions = await this.handleLowHealth(
         insights.healthScore,
-        metrics,
+        metrics
       );
       actions.push(...healthActions);
     }
@@ -205,7 +205,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleAnomaly(
     anomaly: AnomalyDetection,
-    _metrics: CompositeMetrics,
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -297,7 +297,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleBottleneck(
     bottleneck: BottleneckAnalysis,
-    metrics: CompositeMetrics,
+    metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -404,7 +404,7 @@ export class OptimizationEngine extends EventEmitter {
       timeToCapacity: number;
       resourceExhaustion: string[];
     },
-    _metrics: CompositeMetrics,
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -455,7 +455,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async handleLowHealth(
     healthScore: number,
-    _metrics: CompositeMetrics,
+    _metrics: CompositeMetrics
   ): Promise<OptimizationAction[]> {
     const actions: OptimizationAction[] = [];
 
@@ -518,7 +518,7 @@ export class OptimizationEngine extends EventEmitter {
       const recentActions = this.actionHistory.filter(
         (result) =>
           result?.actionId.includes(action.type) &&
-          now - result?.executionTime < 60000,
+          now - result?.executionTime < 60000
       );
 
       if (recentActions.length >= strategy.maxActionsPerMinute) {
@@ -581,10 +581,10 @@ export class OptimizationEngine extends EventEmitter {
    */
   private async executePendingActions(): Promise<void> {
     const criticalActions = this.pendingActions.filter(
-      (a) => a.priority === 'critical',
+      (a) => a.priority === 'critical'
     );
     const highActions = this.pendingActions.filter(
-      (a) => a.priority === 'high',
+      (a) => a.priority === 'high'
     );
 
     // Execute critical actions immediately
@@ -605,7 +605,7 @@ export class OptimizationEngine extends EventEmitter {
 
     // Remove executed actions from pending
     this.pendingActions = this.pendingActions.filter(
-      (a) => a.priority !== 'critical' && a.priority !== 'high',
+      (a) => a.priority !== 'critical' && a.priority !== 'high'
     );
   }
 
@@ -615,7 +615,7 @@ export class OptimizationEngine extends EventEmitter {
    * @param action
    */
   private async executeAction(
-    action: OptimizationAction,
+    action: OptimizationAction
   ): Promise<OptimizationResult> {
     this.executingActions.add(action.id);
     const startTime = Date.now();
@@ -666,11 +666,11 @@ export class OptimizationEngine extends EventEmitter {
    * @param action
    */
   private async simulateActionExecution(
-    action: OptimizationAction,
+    action: OptimizationAction
   ): Promise<Partial<OptimizationResult>> {
     // Simulate execution time.
     await new Promise((resolve) =>
-      setTimeout(resolve, Math.min(action.executionTime, 1000)),
+      setTimeout(resolve, Math.min(action.executionTime, 1000))
     );
 
     // Simulate success/failure
@@ -755,7 +755,7 @@ export class OptimizationEngine extends EventEmitter {
    */
   public updateStrategy(
     strategyName: string,
-    updates: Partial<OptimizationStrategy>,
+    updates: Partial<OptimizationStrategy>
   ): void {
     const strategy = this.strategies.get(strategyName);
     if (strategy) {

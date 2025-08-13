@@ -87,7 +87,7 @@ class FinalCoverageReport {
     const testFiles = fs
       .readdirSync(testDir)
       .filter(
-        (file) => file.endsWith('.test.js') && file.includes('comprehensive'),
+        (file) => file.endsWith('.test.js') && file.includes('comprehensive')
       );
 
     this.achievements.testSuitesCreated = testFiles.length;
@@ -112,7 +112,7 @@ class FinalCoverageReport {
     const passRate =
       this.metrics.actualTests > 0
         ? ((this.metrics.passedTests / this.metrics.actualTests) * 100).toFixed(
-            1,
+            1
           )
         : '0.0';
 

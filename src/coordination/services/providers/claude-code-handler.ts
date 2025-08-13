@@ -72,7 +72,7 @@ export const claudeCodeDefaultModelId: ClaudeCodeModelId = 'sonnet'; // Use Sonn
 export interface ApiHandler {
   createMessage(
     systemPrompt: string,
-    messages: Anthropic.Messages.MessageParam[],
+    messages: Anthropic.Messages.MessageParam[]
   ): ApiStream;
   getModel(): { id: string; info: ModelInfo };
   getApiStreamUsage?(): Promise<ApiStreamUsageChunk | undefined>;
@@ -98,7 +98,7 @@ export function withRetry(config: {
   return (
     target: unknown,
     propertyKey: string,
-    descriptor: PropertyDescriptor,
+    descriptor: PropertyDescriptor
   ) => {
     const originalMethod = descriptor.value;
 
@@ -118,7 +118,7 @@ export function withRetry(config: {
 
           const delay = Math.min(
             config.baseDelay * 2 ** attempt,
-            config.maxDelay,
+            config.maxDelay
           );
 
           await new Promise((resolve) => setTimeout(resolve, delay));
@@ -136,13 +136,13 @@ export function withRetry(config: {
  * Filter messages for Claude Code compatibility
  */
 export function filterMessagesForClaudeCode(
-  messages: Anthropic.Messages.MessageParam[],
+  messages: Anthropic.Messages.MessageParam[]
 ): Anthropic.Messages.MessageParam[] {
   return messages.map((message) => {
     if (Array.isArray(message.content)) {
       // Filter out image blocks since Claude Code doesn't support them
       const textContent = message.content.filter(
-        (content: any) => content.type === 'text',
+        (content: unknown) => content.type === 'text'
       );
       return {
         ...message,
@@ -173,7 +173,7 @@ export class ClaudeCodeHandler implements ApiHandler {
   })
   async *createMessage(
     systemPrompt: string,
-    messages: Anthropic.Messages.MessageParam[],
+    messages: Anthropic.Messages.MessageParam[]
   ): ApiStream {
     // Filter out image blocks since Claude Code doesn't support them
     const filteredMessages = filterMessagesForClaudeCode(messages);
@@ -238,7 +238,7 @@ export class ClaudeCodeHandler implements ApiHandler {
             if (error.error.message.includes('Invalid model name')) {
               throw new Error(
                 content.text +
-                  `\n\nAPI keys and subscription plans allow different models. Make sure the selected model is included in your plan.`,
+                  `\n\nAPI keys and subscription plans allow different models. Make sure the selected model is included in your plan.`
               );
             }
 
@@ -268,7 +268,7 @@ export class ClaudeCodeHandler implements ApiHandler {
               break;
             case 'tool_use':
               console.error(
-                `tool_use is not supported yet. Received: ${JSON.stringify(content)}`,
+                `tool_use is not supported yet. Received: ${JSON.stringify(content)}`
               );
               break;
           }

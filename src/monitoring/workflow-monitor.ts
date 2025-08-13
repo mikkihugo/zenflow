@@ -84,7 +84,7 @@ export interface Alert {
   message: string;
   timestamp: Date;
   resolved: boolean;
-  metadata?: any;
+  metadata?: unknown;
 }
 
 export interface MonitoringConfig {
@@ -109,7 +109,7 @@ export interface MonitoringConfig {
 
 export class WorkflowMonitor extends EventEmitter {
   private config: MonitoringConfig;
-  private memoryOptimizer: any;
+  private memoryOptimizer: unknown;
   private metricsHistory: WorkflowMetrics[] = [];
   private activeAlerts: Map<string, Alert> = new Map();
   private monitoringInterval?: NodeJS.Timeout;
@@ -225,7 +225,7 @@ export class WorkflowMonitor extends EventEmitter {
       const alerts = await this.checkAlerts(
         systemMetrics,
         workflowMetrics,
-        kanbanMetrics,
+        kanbanMetrics
       );
 
       const metrics: WorkflowMetrics = {
@@ -262,7 +262,7 @@ export class WorkflowMonitor extends EventEmitter {
    * Collect system-level metrics
    */
   private async collectSystemMetrics(
-    systemInfo: any,
+    systemInfo: unknown
   ): Promise<WorkflowMetrics['system']> {
     const memoryStats = this.memoryOptimizer.getMemoryStats();
 
@@ -303,7 +303,7 @@ export class WorkflowMonitor extends EventEmitter {
    * Collect workflow-level metrics
    */
   private async collectWorkflowMetrics(
-    memoryStats: any,
+    memoryStats: unknown
   ): Promise<WorkflowMetrics['workflow']> {
     const systemInfo = getSystemInfo();
 
@@ -413,7 +413,7 @@ export class WorkflowMonitor extends EventEmitter {
   private async checkAlerts(
     systemMetrics: WorkflowMetrics['system'],
     workflowMetrics: WorkflowMetrics['workflow'],
-    kanbanMetrics: WorkflowMetrics['kanban'],
+    kanbanMetrics: WorkflowMetrics['kanban']
   ): Promise<Alert[]> {
     const alerts: Alert[] = [];
     const now = new Date();
@@ -598,7 +598,7 @@ export class WorkflowMonitor extends EventEmitter {
 
     const initialCount = this.metricsHistory.length;
     this.metricsHistory = this.metricsHistory.filter(
-      (metrics) => metrics.timestamp > cutoffTime,
+      (metrics) => metrics.timestamp > cutoffTime
     );
 
     const cleanedCount = initialCount - this.metricsHistory.length;
@@ -654,10 +654,10 @@ export class WorkflowMonitor extends EventEmitter {
   /**
    * Generate performance report
    */
-  public generatePerformanceReport(hours: number = 24): any {
+  public generatePerformanceReport(hours: number = 24): unknown {
     const cutoffTime = new Date(Date.now() - hours * 60 * 60 * 1000);
     const relevantMetrics = this.metricsHistory.filter(
-      (m) => m.timestamp > cutoffTime,
+      (m) => m.timestamp > cutoffTime
     );
 
     if (relevantMetrics.length === 0) {
@@ -665,16 +665,16 @@ export class WorkflowMonitor extends EventEmitter {
     }
 
     const memoryUtilizations = relevantMetrics.map(
-      (m) => m.system.memory.utilizationPercent,
+      (m) => m.system.memory.utilizationPercent
     );
     const cpuUtilizations = relevantMetrics.map(
-      (m) => m.system.cpu.utilizationPercent,
+      (m) => m.system.cpu.utilizationPercent
     );
     const throughputs = relevantMetrics.map(
-      (m) => m.system.performance.throughput,
+      (m) => m.system.performance.throughput
     );
     const errorRates = relevantMetrics.map(
-      (m) => m.system.performance.errorRate,
+      (m) => m.system.performance.errorRate
     );
 
     return {
@@ -730,7 +730,7 @@ export class WorkflowMonitor extends EventEmitter {
   /**
    * Group alerts by severity for reporting
    */
-  private groupAlertsBySeverity(metrics: WorkflowMetrics[]): any {
+  private groupAlertsBySeverity(metrics: WorkflowMetrics[]): unknown {
     const groupedAlerts = { info: 0, warning: 0, error: 0, critical: 0 };
 
     metrics.forEach((m) => {
@@ -745,7 +745,7 @@ export class WorkflowMonitor extends EventEmitter {
   /**
    * Get most frequent alerts for reporting
    */
-  private getMostFrequentAlerts(metrics: WorkflowMetrics[]): any[] {
+  private getMostFrequentAlerts(metrics: WorkflowMetrics[]): unknown[] {
     const alertCounts = new Map<string, number>();
 
     metrics.forEach((m) => {
@@ -766,7 +766,7 @@ export class WorkflowMonitor extends EventEmitter {
  * Create and configure workflow monitor
  */
 export function createWorkflowMonitor(
-  config?: Partial<MonitoringConfig>,
+  config?: Partial<MonitoringConfig>
 ): WorkflowMonitor {
   return new WorkflowMonitor(config);
 }

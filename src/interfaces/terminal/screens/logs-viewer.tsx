@@ -6,7 +6,7 @@
  */
 
 import { Box, Text, useInput } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Header,
@@ -21,7 +21,7 @@ export interface LogEntry {
   level: 'debug' | 'info' | 'warn' | 'error' | 'trace';
   component: string;
   message: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface LogsViewerProps {
@@ -42,7 +42,7 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
 }) => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [filterLevel, setFilterLevel] = useState<LogEntry['level'] | 'all'>(
-    'all',
+    'all'
   );
   const [filterComponent, setFilterComponent] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -100,39 +100,54 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
     try {
       // Try to load actual system logs from various sources
       const logs: LogEntry[] = [];
-      
+
       // 1. Read from system journal/logs
       try {
         const { exec } = await import('node:child_process');
         const { promisify } = await import('node:util');
         const execAsync = promisify(exec);
-        
+
         // Get recent system logs - last 50 lines
-        const { stdout } = await execAsync('journalctl --user -n 50 --output=json --no-pager 2>/dev/null || echo "[]"');
-        const systemLogs = stdout.split('\n').filter(line => line.trim()).map(line => {
-          try {
-            const entry = JSON.parse(line);
-            return {
-              id: `system-${entry.__CURSOR || Date.now()}`,
-              timestamp: new Date(entry.__REALTIME_TIMESTAMP ? entry.__REALTIME_TIMESTAMP / 1000 : Date.now()),
-              level: (entry.PRIORITY <= 3 ? 'error' : entry.PRIORITY <= 4 ? 'warn' : 'info') as LogEntry['level'],
-              component: entry._SYSTEMD_UNIT || entry.SYSLOG_IDENTIFIER || 'System',
-              message: entry.MESSAGE || 'System log entry',
-              metadata: {
-                pid: entry._PID,
-                unit: entry._SYSTEMD_UNIT,
-              }
-            };
-          } catch {
-            return null;
-          }
-        }).filter(Boolean);
-        
+        const { stdout } = await execAsync(
+          'journalctl --user -n 50 --output=json --no-pager 2>/dev/null || echo "[]"'
+        );
+        const systemLogs = stdout
+          .split('\n')
+          .filter((line) => line.trim())
+          .map((line) => {
+            try {
+              const entry = JSON.parse(line);
+              return {
+                id: `system-${entry.__CURSOR || Date.now()}`,
+                timestamp: new Date(
+                  entry.__REALTIME_TIMESTAMP
+                    ? entry.__REALTIME_TIMESTAMP / 1000
+                    : Date.now()
+                ),
+                level: (entry.PRIORITY <= 3
+                  ? 'error'
+                  : entry.PRIORITY <= 4
+                    ? 'warn'
+                    : 'info') as LogEntry['level'],
+                component:
+                  entry._SYSTEMD_UNIT || entry.SYSLOG_IDENTIFIER || 'System',
+                message: entry.MESSAGE || 'System log entry',
+                metadata: {
+                  pid: entry._PID,
+                  unit: entry._SYSTEMD_UNIT,
+                },
+              };
+            } catch {
+              return null;
+            }
+          })
+          .filter(Boolean);
+
         logs.push(...systemLogs);
       } catch {
         // System logs not available
       }
-      
+
       // 2. Add Claude-zen specific logs
       const claudeLogs = [
         {
@@ -141,23 +156,26 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
           level: 'info' as LogEntry['level'],
           component: 'ClaudeZen',
           message: 'TUI interface started',
-          metadata: { pid: process.pid }
+          metadata: { pid: process.pid },
         },
         {
           id: `claude-${Date.now()}-2`,
           timestamp: new Date(Date.now() - 5000),
           level: 'info' as LogEntry['level'],
-          component: 'WebInterface', 
+          component: 'WebInterface',
           message: 'Web server running on port 3000',
-          metadata: { port: 3000 }
-        }
+          metadata: { port: 3000 },
+        },
       ];
       logs.push(...claudeLogs);
-      
+
       // 3. Add process logs if available
       try {
         const { stdout } = await execAsync('ps aux | head -20');
-        const processLines = stdout.split('\n').slice(1).filter(line => line.trim());
+        const processLines = stdout
+          .split('\n')
+          .slice(1)
+          .filter((line) => line.trim());
         processLines.forEach((line, index) => {
           const parts = line.trim().split(/\s+/);
           if (parts.length > 10) {
@@ -167,17 +185,18 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
               level: 'debug' as LogEntry['level'],
               component: 'ProcessMonitor',
               message: `${parts[10]} (PID: ${parts[1]}, CPU: ${parts[2]}%)`,
-              metadata: { pid: parts[1], cpu: parts[2], mem: parts[3] }
+              metadata: { pid: parts[1], cpu: parts[2], mem: parts[3] },
             });
           }
         });
       } catch {
-        // Process logs not available  
+        // Process logs not available
       }
-      
+
       // Sort by timestamp and return latest first
-      return logs.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()).slice(0, 100);
-      
+      return logs
+        .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+        .slice(0, 100);
     } catch (error) {
       // Minimal fallback logs on error
       return [
@@ -187,8 +206,8 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
           level: 'error' as LogEntry['level'],
           component: 'LogsViewer',
           message: `Failed to load system logs: ${error instanceof Error ? error.message : 'Unknown error'}`,
-          metadata: { error: true }
-        }
+          metadata: { error: true },
+        },
       ];
     }
   }, []);
@@ -258,7 +277,7 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
       setSelectedLogIndex((prev) => Math.max(0, prev - 1));
     } else if (key.downArrow) {
       setSelectedLogIndex((prev) =>
-        Math.min(filteredLogs.length - 1, prev + 1),
+        Math.min(filteredLogs.length - 1, prev + 1)
       );
     } else if (key.return) {
       // Show details for selected log
@@ -313,14 +332,11 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
   });
 
   const uniqueComponents = Array.from(
-    new Set(logs.map((log) => log.component)),
+    new Set(logs.map((log) => log.component))
   ).sort();
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header */}
       <Header
         title="Live Logs Viewer"
@@ -330,20 +346,9 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
       />
 
       {/* Filters and Controls */}
-      <Box
-        paddingX={2}
-        paddingY={1}
-        borderStyle="single"
-        borderColor="gray"
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
-          <Box
-            flexDirection="row"
-            justifyContent="space-between"
-          >
+      <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="gray">
+        <Box flexDirection="column" width="100%">
+          <Box flexDirection="row" justifyContent="space-between">
             <Box flexDirection="row">
               <Text color="cyan">📊 Level: </Text>
               <Text color={filterLevel === 'all' ? 'green' : 'white'}>
@@ -379,21 +384,10 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
       </Box>
 
       {/* Logs Display */}
-      <Box
-        flexGrow={1}
-        paddingX={2}
-        paddingY={1}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2} paddingY={1}>
+        <Box flexDirection="column" width="100%">
           {filteredLogs.length === 0 ? (
-            <Box
-              justifyContent="center"
-              alignItems="center"
-              height={10}
-            >
+            <Box justifyContent="center" alignItems="center" height={10}>
               <Text color="gray">No logs match current filters</Text>
             </Box>
           ) : (
@@ -408,10 +402,7 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
                   backgroundColor={isSelected ? 'blue' : undefined}
                   paddingX={isSelected ? 1 : 0}
                 >
-                  <Text
-                    color="gray"
-                    dimColor
-                  >
+                  <Text color="gray" dimColor>
                     {log.timestamp.toISOString().substr(11, 12)}
                   </Text>
                   <Text> </Text>
@@ -420,19 +411,13 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
                     {log.level.toUpperCase().padEnd(5)}
                   </Text>
                   <Text> </Text>
-                  <Text
-                    color="cyan"
-                    dimColor
-                  >
+                  <Text color="cyan" dimColor>
                     [{log.component.padEnd(15)}]
                   </Text>
                   <Text> </Text>
                   <Text wrap="wrap">{log.message}</Text>
                   {log.metadata && isSelected && (
-                    <Text
-                      color="gray"
-                      dimColor
-                    >
+                    <Text color="gray" dimColor>
                       {' '}
                       {JSON.stringify(log.metadata)}
                     </Text>
@@ -445,10 +430,7 @@ export const LogsViewer: React.FC<LogsViewerProps> = ({
       </Box>
 
       {/* Footer */}
-      <Box
-        paddingY={1}
-        paddingX={2}
-      >
+      <Box paddingY={1} paddingX={2}>
         <InteractiveFooter
           currentScreen="Logs Viewer"
           availableScreens={[

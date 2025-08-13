@@ -329,7 +329,7 @@ describe('NeuralAgent Tests', () => {
       const performance = neuralAgent._calculatePerformance(
         task,
         result,
-        executionTime,
+        executionTime
       );
       assert(performance);
       assert(performance.speed > 0 && performance.speed <= 1);
@@ -345,7 +345,7 @@ describe('NeuralAgent Tests', () => {
       const performance = neuralAgent._calculatePerformance(
         task,
         result,
-        executionTime,
+        executionTime
       );
       assert.strictEqual(performance.accuracy, 0.2);
     });
@@ -495,11 +495,11 @@ describe('NeuralAgent Tests', () => {
       neuralAgent.loadNeuralState(savedState);
       assert.deepStrictEqual(
         neuralAgent.cognitiveState,
-        savedState.cognitiveState,
+        savedState.cognitiveState
       );
       assert.deepStrictEqual(
         neuralAgent.performanceMetrics,
-        savedState.performanceMetrics,
+        savedState.performanceMetrics
       );
       assert.strictEqual(neuralAgent.learningHistory.length, 1);
     });
@@ -553,7 +553,7 @@ describe('NeuralAgentFactory Tests', () => {
     const mockAgent = new MockAgent();
     const neuralAgent = NeuralAgentFactory.createNeuralAgent(
       mockAgent,
-      'researcher',
+      'researcher'
     );
     assert(neuralAgent instanceof NeuralAgent);
     assert.strictEqual(neuralAgent.agentType, 'researcher');
@@ -592,7 +592,7 @@ describe('Cognitive Profiles Tests', () => {
         assert(typeof profile.momentum === 'number');
         assert(Array.isArray(profile.networkLayers));
         assert(profile.activationFunction);
-      },
+      }
     );
   });
 

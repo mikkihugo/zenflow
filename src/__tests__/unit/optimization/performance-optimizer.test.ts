@@ -33,7 +33,7 @@ describe('Performance Optimization System', () => {
         swarm: swarmOptimizer,
         data: dataOptimizer,
         wasm: wasmOptimizer,
-      },
+      }
     );
   });
 
@@ -128,7 +128,7 @@ describe('Performance Optimization System', () => {
       expect(result?.parallelism).toBeGreaterThan(0);
       expect(result?.memoryLimit).toBeGreaterThan(0);
       expect(['sequential', 'parallel', 'adaptive']).toContain(
-        result?.processingMode,
+        result?.processingMode
       );
     });
 
@@ -197,14 +197,14 @@ describe('Performance Optimization System', () => {
       };
 
       const result = await swarmOptimizer.implementCaching(
-        mockCoordinationLayer,
+        mockCoordinationLayer
       );
 
       expect(result).toBeDefined();
       expect(result?.hitRatio).toBeGreaterThanOrEqual(0);
       expect(result?.hitRatio).toBeLessThanOrEqual(1);
       expect(['LRU', 'LFU', 'TTL', 'adaptive']).toContain(
-        result?.evictionPolicy,
+        result?.evictionPolicy
       );
       expect(result?.cacheSize).toBeGreaterThanOrEqual(0);
       expect(result?.layers).toBeGreaterThan(0);
@@ -301,7 +301,9 @@ describe('Performance Optimization System', () => {
         ttl: 3600,
       };
 
-      const result = await dataOptimizer?.addIntelligentCaching(mockCacheLayer) as any as any as any as any;
+      const result = (await dataOptimizer?.addIntelligentCaching(
+        mockCacheLayer
+      )) as any as any as any as any;
 
       expect(result).toBeDefined();
       expect(result?.hitRatio).toBeGreaterThanOrEqual(0);
@@ -318,7 +320,9 @@ describe('Performance Optimization System', () => {
         compression: false,
       };
 
-      const result = await dataOptimizer?.compressDataStorage(mockStorage) as any as any as any as any;
+      const result = (await dataOptimizer?.compressDataStorage(
+        mockStorage
+      )) as any as any as any as any;
 
       expect(result).toBeDefined();
       expect(result?.compressionRatio).toBeGreaterThanOrEqual(0);
@@ -354,7 +358,7 @@ describe('Performance Optimization System', () => {
       expect(typeof result?.cacheUtilization).toBe('boolean');
       expect(typeof result?.streamingEnabled).toBe('boolean');
       expect(['eager', 'lazy', 'predictive']).toContain(
-        result?.preloadStrategy,
+        result?.preloadStrategy
       );
     });
 
@@ -440,7 +444,7 @@ describe('Performance Optimization System', () => {
 
       const testOptimizer = new PerformanceOptimizer(
         { enabled: true },
-        { neural: failingOptimizer as any },
+        { neural: failingOptimizer as any }
       );
 
       const results = await testOptimizer.optimizeNow();

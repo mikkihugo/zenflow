@@ -43,7 +43,7 @@ const examplePath = path.join(__dirname, '..', 'examples', 'mcp-workflows.js');
 check(
   '  mcp-workflows.js',
   fs.existsSync(examplePath),
-  `File not found: ${examplePath}`,
+  `File not found: ${examplePath}`
 );
 try {
   const packageJson = require('../package.json');
@@ -53,7 +53,7 @@ try {
     check(
       `  ${dep}`,
       packageJson.dependencies[dep] || packageJson.devDependencies[dep],
-      'Missing dependency in package.json',
+      'Missing dependency in package.json'
     );
   });
 } catch (error) {
@@ -62,12 +62,12 @@ try {
 const nodeVersion = process.version;
 const majorVersion = Number.parseInt(
   nodeVersion.split('.')[0].substring(1),
-  10,
+  10
 );
 check(
   `  Node.js version (${nodeVersion})`,
   majorVersion >= 14,
-  'Node.js 14+ required',
+  'Node.js 14+ required'
 );
 const modules = ['ws', 'uuid', 'sqlite3'];
 modules.forEach((mod) => {
@@ -84,12 +84,12 @@ const mcpServerPath = path.join(
   '..',
   'crates',
   'ruv-swarm-mcp',
-  'Cargo.toml',
+  'Cargo.toml'
 );
 check(
   '  MCP server crate',
   fs.existsSync(mcpServerPath),
-  'MCP server crate not found',
+  'MCP server crate not found'
 );
 
 if (failed > 0) {

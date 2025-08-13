@@ -24,24 +24,24 @@ import type {
 
 // Create a simple logger interface to avoid import issues
 interface ILogger {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
+  debug(message: string, meta?: unknown): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
 }
 
 // Create a simple database adapter interface
 interface DatabaseAdapter {
   query(
     sql: string,
-    params?: any[],
-  ): Promise<{ rows: any[]; rowCount: number }>;
+    params?: unknown[]
+  ): Promise<{ rows: unknown[]; rowCount: number }>;
   execute(
     sql: string,
-    params?: any[],
-  ): Promise<{ affectedRows: number; insertId?: any }>;
-  transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
-  getSchema?(): Promise<any>;
+    params?: unknown[]
+  ): Promise<{ affectedRows: number; insertId?: unknown }>;
+  transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T>;
+  getSchema?(): Promise<unknown>;
 }
 
 /**
@@ -55,14 +55,14 @@ export abstract class BaseDao<T> implements IRepository<T> {
     protected adapter: DatabaseAdapter,
     protected logger: ILogger,
     protected tableName: string,
-    protected entitySchema?: Record<string, any>,
+    protected entitySchema?: Record<string, unknown>
   ) {}
 
   /**
    * Abstract methods that must be implemented by subclasses.
    */
-  protected abstract mapRowToEntity(row: any): T;
-  protected abstract mapEntityToRow(entity: Partial<T>): Record<string, any>;
+  protected abstract mapRowToEntity(row: unknown): T;
+  protected abstract mapEntityToRow(entity: Partial<T>): Record<string, unknown>;
 
   /**
    * Find entity by ID.
@@ -71,7 +71,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
    */
   async findById(id: string | number): Promise<T | null> {
     this.logger.debug(
-      `Finding entity by ID: ${id} in table: ${this.tableName}`,
+      `Finding entity by ID: ${id} in table: ${this.tableName}`
     );
 
     try {
@@ -86,7 +86,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to find entity by ID: ${error}`);
       throw new Error(
-        `Find by ID failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Find by ID failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -103,7 +103,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
       {
         criteria,
         options,
-      },
+      }
     );
 
     try {
@@ -114,7 +114,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to find entities by criteria: ${error}`);
       throw new Error(
-        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Find by criteria failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -137,7 +137,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to find all entities: ${error}`);
       throw new Error(
-        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Find all failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -174,7 +174,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to create entity: ${error}`);
       throw new Error(
-        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Create failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -204,7 +204,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to update entity: ${error}`);
       throw new Error(
-        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Update failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -225,7 +225,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to delete entity: ${error}`);
       throw new Error(
-        `Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Delete failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -248,7 +248,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Failed to count entities: ${error}`);
       throw new Error(
-        `Count failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Count failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -260,7 +260,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
    */
   async exists(id: string | number): Promise<boolean> {
     this.logger.debug(
-      `Checking if entity ${id} exists in table: ${this.tableName}`,
+      `Checking if entity ${id} exists in table: ${this.tableName}`
     );
 
     try {
@@ -282,7 +282,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
     try {
       let sql: string;
-      let params: any[] = [];
+      let params: unknown[] = [];
 
       if (typeof query.query === 'string') {
         sql = query.query;
@@ -298,7 +298,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     } catch (error) {
       this.logger.error(`Custom query failed: ${error}`);
       throw new Error(
-        `Custom query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Custom query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -310,7 +310,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
    */
   protected buildFindByIdQuery(id: string | number): {
     sql: string;
-    params: any[];
+    params: unknown[];
   } {
     return {
       sql: `SELECT * FROM ${this.tableName} WHERE id = ?`,
@@ -320,14 +320,14 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildFindByQuery(
     criteria: Partial<T>,
-    options?: QueryOptions,
-  ): { sql: string; params: any[] } {
+    options?: QueryOptions
+  ): { sql: string; params: unknown[] } {
     const mappedCriteria = this.mapEntityToRow(criteria);
     const whereClause = this.buildWhereClause(mappedCriteria);
     const orderClause = this.buildOrderClause(options?.['sort']);
     const limitClause = this.buildLimitClause(
       options?.['limit'],
-      options?.['offset'],
+      options?.['offset']
     );
 
     const sql =
@@ -339,12 +339,12 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildFindAllQuery(options?: QueryOptions): {
     sql: string;
-    params: any[];
+    params: unknown[];
   } {
     const orderClause = this.buildOrderClause(options?.['sort']);
     const limitClause = this.buildLimitClause(
       options?.['limit'],
-      options?.['offset'],
+      options?.['offset']
     );
 
     const sql =
@@ -355,7 +355,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildCreateQuery(entity: Omit<T, 'id'>): {
     sql: string;
-    params: any[];
+    params: unknown[];
   } {
     const mappedEntity = this.mapEntityToRow(entity as Partial<T>);
     const columns = Object.keys(mappedEntity).join(', ');
@@ -371,8 +371,8 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildUpdateQuery(
     id: string | number,
-    updates: Partial<T>,
-  ): { sql: string; params: any[] } {
+    updates: Partial<T>
+  ): { sql: string; params: unknown[] } {
     const mappedUpdates = this.mapEntityToRow(updates);
     const setClause = Object.keys(mappedUpdates)
       .map((column) => `${column} = ?`)
@@ -386,7 +386,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildDeleteQuery(id: string | number): {
     sql: string;
-    params: any[];
+    params: unknown[];
   } {
     return {
       sql: `DELETE FROM ${this.tableName} WHERE id = ?`,
@@ -396,7 +396,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
 
   protected buildCountQuery(criteria?: Partial<T>): {
     sql: string;
-    params: any[];
+    params: unknown[];
   } {
     if (!criteria || Object.keys(criteria).length === 0) {
       return {
@@ -414,7 +414,7 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params };
   }
 
-  protected buildWhereClause(criteria: Record<string, any>): string {
+  protected buildWhereClause(criteria: Record<string, unknown>): string {
     if (Object.keys(criteria).length === 0) {
       return '';
     }
@@ -458,7 +458,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
   protected constructor(
     protected repository: IRepository<T>,
     protected adapter: DatabaseAdapter,
-    protected logger: ILogger,
+    protected logger: ILogger
   ) {}
 
   /**
@@ -475,15 +475,15 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
    */
   async executeTransaction<R>(operations: TransactionOperation[]): Promise<R> {
     this.logger.debug(
-      `Executing transaction with ${operations.length} operations`,
+      `Executing transaction with ${operations.length} operations`
     );
 
     try {
       return await this.adapter.transaction(async (_tx) => {
-        const results: any[] = [];
+        const results: unknown[] = [];
 
         for (const operation of operations) {
-          let result: any;
+          let result: unknown;
 
           switch (operation.type) {
             case 'create':
@@ -508,7 +508,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
             case 'custom':
               if (operation.customQuery) {
                 result = await this.repository.executeCustomQuery(
-                  operation.customQuery,
+                  operation.customQuery
                 );
               }
               break;
@@ -525,7 +525,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Transaction failed: ${error}`);
       throw new Error(
-        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Transaction failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -551,7 +551,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Failed to get database metadata: ${error}`);
       throw new Error(
-        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Get metadata failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -619,7 +619,7 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
     } catch (error) {
       this.logger.error(`Failed to get performance metrics: ${error}`);
       throw new Error(
-        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Get metrics failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -629,5 +629,5 @@ export abstract class BaseManager<T> implements IDataAccessObject<T> {
    */
   protected abstract getDatabaseType(): DatabaseMetadata['type'];
   protected abstract getSupportedFeatures(): string[];
-  protected abstract getConfiguration(): Record<string, any>;
+  protected abstract getConfiguration(): Record<string, unknown>;
 }

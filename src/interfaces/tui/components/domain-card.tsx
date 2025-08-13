@@ -3,6 +3,8 @@
  */
 
 import { Box, Text } from 'ink';
+import type React from 'react';
+import type { DiscoveredDomain } from '../types.js';
 
 export interface DomainCardProps {
   domain: DiscoveredDomain;
@@ -47,19 +49,13 @@ export const DomainCard: React.FC<DomainCardProps> = ({
       paddingX={1}
       marginBottom={0}
     >
-      <Box
-        flexDirection="column"
-        width="100%"
-      >
+      <Box flexDirection="column" width="100%">
         {/* Header row */}
         <Box>
           <Text color={selected ? 'green' : 'white'}>
             {selected ? '✅' : '⭕'}
           </Text>
-          <Text
-            bold
-            color={highlighted ? 'cyan' : 'white'}
-          >
+          <Text bold color={highlighted ? 'cyan' : 'white'}>
             {' '}
             {domain.name}
           </Text>

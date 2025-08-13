@@ -60,7 +60,7 @@ describe('Strategy Pattern Implementation', () => {
           ([agentId, connections]) => {
             expect(connections).toHaveLength(mockAgents.length - 1);
             expect(connections).not.toContain(agentId); // Agent doesn't connect to itself
-          },
+          }
         );
       });
 
@@ -71,7 +71,7 @@ describe('Strategy Pattern Implementation', () => {
         expect(result?.performance?.executionTime).toBeGreaterThan(0);
         expect(result?.performance?.coordinationEfficiency).toBeGreaterThan(0);
         expect(result?.performance?.coordinationEfficiency).toBeLessThanOrEqual(
-          1,
+          1
         );
       });
 
@@ -123,7 +123,7 @@ describe('Strategy Pattern Implementation', () => {
         const topAgent = mockAgents.reduce((best, current) =>
           current?.capabilities.length > best.capabilities.length
             ? current
-            : best,
+            : best
         );
 
         expect(result?.leadership?.leaders).toContain(topAgent.id);
@@ -195,7 +195,7 @@ describe('Strategy Pattern Implementation', () => {
         const expectedHub = mockAgents.reduce((best, current) =>
           current?.capabilities.length > best.capabilities.length
             ? current
-            : best,
+            : best
         );
 
         expect(result?.leadership?.leaders[0]).toBe(expectedHub.id);
@@ -274,7 +274,7 @@ describe('Strategy Pattern Implementation', () => {
           timestamp: expect.any(Date),
           resources: expect.any(Object),
           constraints: expect.any(Object),
-        }),
+        })
       );
       expect(result).toEqual(mockResult);
     });
@@ -330,7 +330,7 @@ describe('Strategy Pattern Implementation', () => {
       mockStrategy.coordinate.mockRejectedValue(error);
 
       await expect(
-        swarmCoordinator.executeCoordination(mockAgents),
+        swarmCoordinator.executeCoordination(mockAgents)
       ).rejects.toThrow('Coordination failed');
 
       const history = swarmCoordinator.getHistory();
@@ -394,7 +394,7 @@ describe('Strategy Pattern Implementation', () => {
       expect(strategies).toHaveLength(4);
       expect(strategies.some((s) => s instanceof MeshStrategy)).toBe(true);
       expect(strategies.some((s) => s instanceof HierarchicalStrategy)).toBe(
-        true,
+        true
       );
       expect(strategies.some((s) => s instanceof RingStrategy)).toBe(true);
       expect(strategies.some((s) => s instanceof StarStrategy)).toBe(true);
@@ -444,15 +444,15 @@ describe('Strategy Pattern Implementation', () => {
       // Test auto-selection logic
       const smallSwarmStrategy = await swarmCoordinator.autoSelectStrategy(
         smallSwarmAgents,
-        highNetworkContext,
+        highNetworkContext
       );
       const largeSwarmStrategy = await swarmCoordinator.autoSelectStrategy(
         largeSwarmAgents,
-        highNetworkContext,
+        highNetworkContext
       );
       const lowNetworkStrategy = await swarmCoordinator.autoSelectStrategy(
         smallSwarmAgents,
-        lowNetworkContext,
+        lowNetworkContext
       );
 
       // Verify appropriate strategy selection
@@ -483,7 +483,7 @@ describe('Strategy Pattern Implementation', () => {
       };
 
       await expect(
-        strategy.coordinate(mockAgents, invalidContext),
+        strategy.coordinate(mockAgents, invalidContext)
       ).rejects.toThrow('Invalid coordination context for mesh strategy');
     });
   });
@@ -521,7 +521,7 @@ describe('Strategy Pattern Implementation', () => {
         expect(result?.success).toBe(true);
         expect(actualExecutionTime).toBeLessThan(1000); // Should complete within 1 second
         expect(result?.performance?.coordinationEfficiency).toBeGreaterThan(
-          0.5,
+          0.5
         );
         expect(result?.latency).toBeLessThan(500); // Reasonable latency
       }

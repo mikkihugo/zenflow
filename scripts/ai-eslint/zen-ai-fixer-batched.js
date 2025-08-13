@@ -26,20 +26,20 @@ class ZenAIFixerBatched {
       Number.parseInt(
         process.argv
           .find((arg) => arg.startsWith('--batch-size='))
-          ?.split('=')[1],
+          ?.split('=')[1]
       ) || 15;
     console.log(
-      `🎯 Batching enabled: ${this.batchSize} files per batch for single-error files`,
+      `🎯 Batching enabled: ${this.batchSize} files per batch for single-error files`
     );
   }
 
   async run() {
     console.log(
-      '🧘 Zen AI Batched Code Fixer - ROOT CAUSE + BATCHING Strategy',
+      '🧘 Zen AI Batched Code Fixer - ROOT CAUSE + BATCHING Strategy'
     );
     console.log('===========================================================');
     console.log(
-      '🚀 ROOT CAUSE files: Individual processing (cascading impact)',
+      '🚀 ROOT CAUSE files: Individual processing (cascading impact)'
     );
     console.log('⚡ SINGLE ERROR files: Batch processing (15x speedup)');
     console.log('===========================================================');
@@ -76,7 +76,7 @@ class ZenAIFixerBatched {
     }
 
     console.log(
-      `🚨 Found ${initialErrors.length} TypeScript compilation errors`,
+      `🚨 Found ${initialErrors.length} TypeScript compilation errors`
     );
 
     let iteration = 1;
@@ -86,7 +86,7 @@ class ZenAIFixerBatched {
     do {
       console.log(`\n🔄 === ITERATION ${iteration} ===`);
       console.log(
-        `📊 Processing ${currentErrors.length} errors across multiple files`,
+        `📊 Processing ${currentErrors.length} errors across multiple files`
       );
 
       const errorsByFile = this.groupErrorsByFile(currentErrors);
@@ -108,13 +108,13 @@ class ZenAIFixerBatched {
 
       console.log(`\n📊 BATCHING ANALYSIS:`);
       console.log(
-        `   🚨 ROOT CAUSE files: ${rootCauseFiles.size} (individual processing)`,
+        `   🚨 ROOT CAUSE files: ${rootCauseFiles.size} (individual processing)`
       );
       console.log(
-        `   📦 BATCHABLE files (1-3 errors): ${batchableFiles.size} (batch processing)`,
+        `   📦 BATCHABLE files (1-3 errors): ${batchableFiles.size} (batch processing)`
       );
       console.log(
-        `   📋 COMPLEX files (4+ errors): ${complexFiles.size} (individual processing)`,
+        `   📋 COMPLEX files (4+ errors): ${complexFiles.size} (individual processing)`
       );
 
       let iterationFixedFiles = 0;
@@ -122,19 +122,19 @@ class ZenAIFixerBatched {
       // PHASE 1: Process ROOT CAUSE files individually (highest priority)
       if (rootCauseFiles.size > 0) {
         const topRootCauseFile = Array.from(rootCauseFiles.entries()).sort(
-          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
         )[0];
 
         const [filePath, errors] = topRootCauseFile;
         console.log(
-          `\n🚨 ROOT CAUSE: ${path.basename(filePath)} (${errors.length} errors)`,
+          `\n🚨 ROOT CAUSE: ${path.basename(filePath)} (${errors.length} errors)`
         );
 
         const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
         if (result.success && !result.commented) {
           iterationFixedFiles++;
           console.log(
-            `  🎊 ROOT CAUSE ELIMINATED! Fixed ${errors.length} errors - expect cascading reductions`,
+            `  🎊 ROOT CAUSE ELIMINATED! Fixed ${errors.length} errors - expect cascading reductions`
           );
         }
       }
@@ -142,7 +142,7 @@ class ZenAIFixerBatched {
       // PHASE 2: BATCH PROCESSING for low-error files (OPTIMIZATION!)
       if (batchableFiles.size > 0 && iterationFixedFiles === 0) {
         console.log(
-          `\n⚡ BATCH PROCESSING ${batchableFiles.size} low-error files (1-3 errors)...`,
+          `\n⚡ BATCH PROCESSING ${batchableFiles.size} low-error files (1-3 errors)...`
         );
 
         const batchedResults =
@@ -150,22 +150,22 @@ class ZenAIFixerBatched {
         iterationFixedFiles += batchedResults.fixedFiles;
 
         console.log(
-          `🎊 BATCH COMPLETE: ${batchedResults.fixedFiles}/${batchableFiles.size} files fixed`,
+          `🎊 BATCH COMPLETE: ${batchedResults.fixedFiles}/${batchableFiles.size} files fixed`
         );
         console.log(
-          `⚡ Speedup: ${batchableFiles.size}→${batchedResults.batchCount} batches = ${Math.round(batchableFiles.size / batchedResults.batchCount)}x faster`,
+          `⚡ Speedup: ${batchableFiles.size}→${batchedResults.batchCount} batches = ${Math.round(batchableFiles.size / batchedResults.batchCount)}x faster`
         );
       }
 
       // PHASE 3: Process complex files if nothing else worked
       if (iterationFixedFiles === 0 && complexFiles.size > 0) {
         const topComplexFile = Array.from(complexFiles.entries()).sort(
-          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+          ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
         )[0];
 
         const [filePath, errors] = topComplexFile;
         console.log(
-          `\n📋 COMPLEX: ${path.basename(filePath)} (${errors.length} errors)`,
+          `\n📋 COMPLEX: ${path.basename(filePath)} (${errors.length} errors)`
         );
 
         const result = await this.fixTypeScriptErrorsInFile(filePath, errors);
@@ -183,10 +183,10 @@ class ZenAIFixerBatched {
       if (remainingErrors.length === 0) {
         console.log('\n🎆 🎉 BATCHING VICTORY! 🎉 🎆');
         console.log(
-          '✅ ALL TypeScript compilation errors resolved using ROOT CAUSE + BATCHING!',
+          '✅ ALL TypeScript compilation errors resolved using ROOT CAUSE + BATCHING!'
         );
         console.log(
-          `📊 Total: ${totalFixedFiles} files fixed across ${iteration} iteration(s)`,
+          `📊 Total: ${totalFixedFiles} files fixed across ${iteration} iteration(s)`
         );
         break;
       }
@@ -201,20 +201,20 @@ class ZenAIFixerBatched {
       console.log(`   Before: ${currentErrors.length} errors`);
       console.log(`   After:  ${remainingErrors.length} errors`);
       console.log(
-        `   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%)`,
+        `   🎊 Reduced: ${errorReduction} errors (${reductionPercent}%)`
       );
 
       if (errorReduction === 0) {
         console.warn(
-          '⚠️  No error reduction detected - trying different approach...',
+          '⚠️  No error reduction detected - trying different approach...'
         );
         // Try a different strategy before giving up
         if (iteration > 3) {
           console.log(
-            '💡 Switching to different fixing strategies after 3+ iterations with no progress',
+            '💡 Switching to different fixing strategies after 3+ iterations with no progress'
           );
           console.log(
-            '💡 Suggestion: Run npm run fix:zen:eslint or npm run fix:zen:warnings for different approach',
+            '💡 Suggestion: Run npm run fix:zen:eslint or npm run fix:zen:warnings for different approach'
           );
           break;
         }
@@ -229,7 +229,7 @@ class ZenAIFixerBatched {
       console.log('\n🏆 🚀 BATCHING STRATEGY VICTORIOUS! 🚀 🏆');
       console.log('✅ Zero TypeScript compilation errors remaining!');
       console.log(
-        '🎊 Strategy: ROOT CAUSE fixes + BATCH processing = Maximum efficiency!',
+        '🎊 Strategy: ROOT CAUSE fixes + BATCH processing = Maximum efficiency!'
       );
     }
   }
@@ -256,21 +256,21 @@ class ZenAIFixerBatched {
       for (const [batchIndex, batch] of batches.entries()) {
         batchCount++;
         console.log(
-          `\n📦 BATCH ${batchCount}: ${errorType} (${batch.length} files)`,
+          `\n📦 BATCH ${batchCount}: ${errorType} (${batch.length} files)`
         );
         console.log(
-          `   Files: ${batch.map((f) => path.basename(f.filePath)).join(', ')}`,
+          `   Files: ${batch.map((f) => path.basename(f.filePath)).join(', ')}`
         );
 
         const batchResult = await this.processSingleErrorBatch(
           batch,
-          errorType,
+          errorType
         );
 
         if (batchResult.success) {
           totalFixedFiles += batchResult.fixedFiles;
           console.log(
-            `  ✅ Batch fixed: ${batchResult.fixedFiles}/${batch.length} files`,
+            `  ✅ Batch fixed: ${batchResult.fixedFiles}/${batch.length} files`
           );
         } else {
           console.warn(`  ⚠️  Batch failed: ${batchResult.error}`);
@@ -374,7 +374,7 @@ Execute the optimal batch processing strategy now.`;
     try {
       const result = await this.claude.callClaudeCLI(
         'batch-processing',
-        prompt,
+        prompt
       );
 
       // Count successful fixes by checking if files were modified
@@ -426,7 +426,7 @@ Execute the optimal batch processing strategy now.`;
           stdio: 'pipe',
           cwd: path.resolve(__dirname, '../..'),
           env: { ...process.env, NODE_OPTIONS: '--max-old-space-size=2048' },
-        },
+        }
       );
 
       let stdout = '';
@@ -452,7 +452,7 @@ Execute the optimal batch processing strategy now.`;
 
     for (const line of lines) {
       const match = line.match(
-        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/,
+        /^(.+\.tsx?)\((\d+),(\d+)\): error (TS\d+): (.+)$/
       );
       if (match) {
         errors.push({
@@ -482,7 +482,7 @@ Execute the optimal batch processing strategy now.`;
     }
 
     const sortedEntries = Array.from(errorsByFile.entries()).sort(
-      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length,
+      ([, errorsA], [, errorsB]) => errorsB.length - errorsA.length
     );
 
     return new Map(sortedEntries);

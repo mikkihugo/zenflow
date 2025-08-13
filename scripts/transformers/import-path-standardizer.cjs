@@ -52,7 +52,9 @@ module.exports = function transformer(file, api) {
       if (arg && arg.type === 'Literal' && typeof arg.value === 'string') {
         const importPath = arg.value;
 
-        for (const [relativePath, absolutePath] of Object.entries(pathMappings)) {
+        for (const [relativePath, absolutePath] of Object.entries(
+          pathMappings
+        )) {
           if (importPath.includes(relativePath)) {
             arg.value = importPath.replace(relativePath, absolutePath);
             hasChanges = true;

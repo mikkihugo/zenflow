@@ -20,9 +20,9 @@ export interface LoadBalancingAlgorithm {
   selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult>;
-  updateConfiguration(config: Record<string, any>): Promise<void>;
+  updateConfiguration(config: Record<string, unknown>): Promise<void>;
   getPerformanceMetrics(): Promise<Record<string, number>>;
 }
 
@@ -32,7 +32,7 @@ export interface CapacityManager {
   updateCapacity(agentId: string, metrics: LoadMetrics): Promise<void>;
   isCapacityAvailable(
     agentId: string,
-    requiredResources: Record<string, number>,
+    requiredResources: Record<string, number>
   ): Promise<boolean>;
 }
 
@@ -42,11 +42,11 @@ export interface ResourceMonitor {
   getCurrentMetrics(agentId: string): Promise<LoadMetrics | null>;
   getHistoricalMetrics(
     agentId: string,
-    timeRange: { start: Date; end: Date },
+    timeRange: { start: Date; end: Date }
   ): Promise<LoadMetrics[]>;
   setThresholds(
     agentId: string,
-    thresholds: Record<string, number>,
+    thresholds: Record<string, number>
   ): Promise<void>;
 }
 
@@ -59,7 +59,7 @@ export interface RoutingEngine {
 
 export interface PredictionEngine {
   predict(features: Record<string, number>): Promise<number>;
-  train(data: any[]): Promise<void>;
+  train(data: unknown[]): Promise<void>;
   getModel(): Promise<PredictionModel>;
   updateModel(model: PredictionModel): Promise<void>;
   getAccuracy(): Promise<number>;
@@ -70,7 +70,7 @@ export interface HealthChecker {
   startHealthChecks(agents: Agent[]): Promise<void>;
   stopHealthChecks(): Promise<void>;
   getHealthStatus(
-    agentId: string,
+    agentId: string
   ): Promise<{ healthy: boolean; lastCheck: Date; details?: string }>;
 }
 
@@ -83,24 +83,24 @@ export interface CircuitBreaker {
 }
 
 export interface ConnectionPool {
-  getConnection(agentId: string): Promise<any>;
-  releaseConnection(agentId: string, connection: any): Promise<void>;
+  getConnection(agentId: string): Promise<unknown>;
+  releaseConnection(agentId: string, connection: unknown): Promise<void>;
   closePool(agentId: string): Promise<void>;
   getPoolStats(
-    agentId: string,
+    agentId: string
   ): Promise<{ active: number; idle: number; total: number }>;
 }
 
 export interface BatchProcessor {
-  addRequest(request: any): Promise<void>;
+  addRequest(request: unknown): Promise<void>;
   processBatch(): Promise<any[]>;
   setBatchSize(size: number): void;
   setBatchTimeout(timeout: number): void;
 }
 
 export interface CacheManager {
-  get(key: string): Promise<any>;
-  set(key: string, value: any, ttl?: number): Promise<void>;
+  get(key: string): Promise<unknown>;
+  set(key: string, value: unknown, ttl?: number): Promise<void>;
   invalidate(pattern: string): Promise<void>;
   getHitRate(): Promise<number>;
   preload(keys: string[]): Promise<void>;
@@ -109,7 +109,7 @@ export interface CacheManager {
 export interface NetworkOptimizer {
   optimizeLatency(
     source: string,
-    destinations: string[],
+    destinations: string[]
   ): Promise<Map<string, number>>;
   selectOptimalPath(source: string, destination: string): Promise<string[]>;
   monitorBandwidth(): Promise<Map<string, number>>;
@@ -129,7 +129,7 @@ export interface AutoScaler {
 export interface EmergencyHandler {
   handleEmergency(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void>;
   shedLoad(percentage: number): Promise<void>;
   activateFailover(): Promise<void>;
@@ -141,10 +141,10 @@ export interface MetricsAggregator {
   aggregate(metrics: LoadMetrics[]): Promise<LoadMetrics>;
   calculateTrends(
     metrics: LoadMetrics[],
-    timeWindow: number,
+    timeWindow: number
   ): Promise<Record<string, 'up' | 'down' | 'stable'>>;
   detectAnomalies(
-    metrics: LoadMetrics[],
+    metrics: LoadMetrics[]
   ): Promise<
     Array<{ timestamp: Date; metric: string; value: number; expected: number }>
   >;
@@ -159,13 +159,13 @@ export interface LoadBalancingObserver {
     task: Task,
     agent: Agent,
     duration: number,
-    success: boolean,
+    success: boolean
   ): Promise<void>;
   onAgentFailure(agentId: string, error: Error): Promise<void>;
   onCapacityChanged(
     agentId: string,
     oldCapacity: number,
-    newCapacity: number,
+    newCapacity: number
   ): Promise<void>;
 }
 
@@ -173,6 +173,6 @@ export interface QoSManager {
   setRequirements(requirements: QoSRequirement): Promise<void>;
   checkCompliance(agentId: string): Promise<boolean>;
   enforceQoS(agentId: string): Promise<void>;
-  getQoSReport(): Promise<Record<string, any>>;
+  getQoSReport(): Promise<Record<string, unknown>>;
   adjustPriorities(tasks: Task[]): Promise<Task[]>;
 }

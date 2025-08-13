@@ -93,7 +93,7 @@ async function testCoreEngine() {
     // Test all core methods
     const algorithms = await engine.generateAlgorithmPseudocode(testSpec);
     const dataStructures = await engine.designDataStructures(
-      testSpec.functionalRequirements,
+      testSpec.functionalRequirements
     );
     const controlFlows = await engine.mapControlFlows(algorithms);
     const validation = await engine.validatePseudocodeLogic(algorithms);
@@ -155,7 +155,7 @@ async function testCLIIntegration() {
 
     await writeFile(
       '/tmp/cli-test-spec.json',
-      JSON.stringify(testSpec, null, 2),
+      JSON.stringify(testSpec, null, 2)
     );
 
     // Import CLI command functions (simulate CLI usage)
@@ -197,13 +197,13 @@ async function testMCPIntegration() {
     const tools = createSPARCTools({} as any);
 
     const pseudocodeGenerationTool = tools.find(
-      (tool) => tool.name === 'sparc_generate_pseudocode',
+      (tool) => tool.name === 'sparc_generate_pseudocode'
     );
     const validationTool = tools.find(
-      (tool) => tool.name === 'sparc_validate_pseudocode',
+      (tool) => tool.name === 'sparc_validate_pseudocode'
     );
     const algorithmsOnlyTool = tools.find(
-      (tool) => tool.name === 'sparc_generate_algorithms_only',
+      (tool) => tool.name === 'sparc_generate_algorithms_only'
     );
 
     if (!(pseudocodeGenerationTool && validationTool && algorithmsOnlyTool)) {

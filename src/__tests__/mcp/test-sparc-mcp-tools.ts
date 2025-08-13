@@ -25,18 +25,18 @@ async function testSPARCMCPTools() {
 
     // Find our pseudocode-specific tools
     const pseudocodeTools = tools.filter(
-      (tool: any) =>
+      (tool: unknown) =>
         tool.name.startsWith('sparc_generate_pseudocode') ||
         tool.name.startsWith('sparc_validate_pseudocode') ||
-        tool.name.startsWith('sparc_generate_algorithms_only'),
+        tool.name.startsWith('sparc_generate_algorithms_only')
     );
-    pseudocodeTools.forEach((tool: any) => {
+    pseudocodeTools.forEach((tool: unknown) => {
       console.log(`Available pseudocode tool: ${tool.name}`);
     });
 
     // Test pseudocode generation tool
     const generateTool = tools.find(
-      (tool: any) => tool.name === 'sparc_generate_pseudocode',
+      (tool: unknown) => tool.name === 'sparc_generate_pseudocode'
     );
     if (generateTool) {
       const testSpec = {
@@ -76,7 +76,7 @@ async function testSPARCMCPTools() {
       if (result?.success) {
         // Test validation tool with the generated result
         const validateTool = tools.find(
-          (tool: any) => tool.name === 'sparc_validate_pseudocode',
+          (tool: unknown) => tool.name === 'sparc_validate_pseudocode'
         );
         if (validateTool) {
           const validationResult = await validateTool.handler({
@@ -100,7 +100,7 @@ async function testSPARCMCPTools() {
 
     // Test lightweight algorithms tool
     const algorithmsOnlyTool = tools.find(
-      (tool: any) => tool.name === 'sparc_generate_algorithms_only',
+      (tool: unknown) => tool.name === 'sparc_generate_algorithms_only'
     );
     if (algorithmsOnlyTool) {
       const testSpec = {

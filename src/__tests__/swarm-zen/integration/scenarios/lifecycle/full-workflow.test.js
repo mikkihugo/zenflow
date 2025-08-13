@@ -147,10 +147,10 @@ describe('Complete Agent Workflow Integration', () => {
       expect(messages.length).to.be.greaterThan(0);
 
       const coordinatorMessages = messages.filter(
-        (m) => m.from === coordinator.id,
+        (m) => m.from === coordinator.id
       );
       const workerMessages = messages.filter((m) =>
-        workers.some((w) => w.id === m.from),
+        workers.some((w) => w.id === m.from)
       );
 
       expect(coordinatorMessages.length).to.be.greaterThan(0);
@@ -278,7 +278,7 @@ describe('Complete Agent Workflow Integration', () => {
 
       // Get initial performance
       const initialMetrics = await neuralManager.getAgentMetrics(
-        neuralAgent.id,
+        neuralAgent.id
       );
       const initialAccuracy = initialMetrics.accuracy || 0.5;
 
@@ -290,7 +290,7 @@ describe('Complete Agent Workflow Integration', () => {
             task: `Training task ${i}: Pattern recognition`,
             agentId: neuralAgent.id,
             training: true,
-          }),
+          })
         );
       }
 

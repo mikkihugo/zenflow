@@ -247,7 +247,7 @@ function isCriticalFile(filepath, content) {
   const contentLower = content.toLowerCase();
 
   return CONFIG.CRITICAL_PATTERNS.some(
-    (pattern) => pathLower.includes(pattern) || contentLower.includes(pattern),
+    (pattern) => pathLower.includes(pattern) || contentLower.includes(pattern)
   );
 }
 
@@ -327,11 +327,11 @@ function analyzeFileDocumentation(filepath) {
           const jsdocQuality = analyzeJSDocQuality(
             currentJSDoc,
             'function',
-            standard,
+            standard
           );
           if (jsdocQuality.issues.length > 0) {
             jsdocQuality.issues.forEach((issue) =>
-              analysis.issues.push({ ...issue, line: i + 1 }),
+              analysis.issues.push({ ...issue, line: i + 1 })
             );
           }
         } else if (isPublicFunction(line) || standard.isCritical) {
@@ -492,13 +492,13 @@ function generateSuggestions(analysis, standard) {
 
   if (quality.coverage < standard.threshold) {
     analysis.suggestions.push(
-      `📈 Increase documentation coverage from ${quality.coverage}% to ${standard.threshold}%`,
+      `📈 Increase documentation coverage from ${quality.coverage}% to ${standard.threshold}%`
     );
   }
 
   if (!quality.hasFileHeader && standard.isCritical) {
     analysis.suggestions.push(
-      '📝 Add comprehensive @fileoverview header with system context',
+      '📝 Add comprehensive @fileoverview header with system context'
     );
   }
 
@@ -507,19 +507,19 @@ function generateSuggestions(analysis, standard) {
 
   if (errorCount > 0) {
     analysis.suggestions.push(
-      `🚨 Fix ${errorCount} critical documentation errors`,
+      `🚨 Fix ${errorCount} critical documentation errors`
     );
   }
 
   if (warningCount > 5) {
     analysis.suggestions.push(
-      `⚠️ Address ${warningCount} documentation warnings for production readiness`,
+      `⚠️ Address ${warningCount} documentation warnings for production readiness`
     );
   }
 
   if (standard.category === 'neural' || standard.category === 'coordination') {
     analysis.suggestions.push(
-      '🧠 Add AI/ML-specific documentation: @complexity, @performance, @algorithm',
+      '🧠 Add AI/ML-specific documentation: @complexity, @performance, @algorithm'
     );
   }
 }
@@ -530,10 +530,10 @@ function generateSuggestions(analysis, standard) {
 function generateReport(analyses) {
   const totalFiles = analyses.length;
   const errorFiles = analyses.filter((a) =>
-    a.issues?.some((i) => i.severity === 'error'),
+    a.issues?.some((i) => i.severity === 'error')
   ).length;
   const warningFiles = analyses.filter((a) =>
-    a.issues?.some((i) => i.severity === 'warning'),
+    a.issues?.some((i) => i.severity === 'warning')
   ).length;
 
   const totalCoverage =
@@ -586,18 +586,18 @@ function generateReport(analyses) {
   // Generate recommendations
   if (totalCoverage < 80) {
     report.recommendations.push(
-      '🎯 Focus on increasing overall documentation coverage above 80%',
+      '🎯 Focus on increasing overall documentation coverage above 80%'
     );
   }
 
   if (errorFiles > totalFiles * 0.1) {
     report.recommendations.push(
-      '🚨 Address critical documentation errors in core system files',
+      '🚨 Address critical documentation errors in core system files'
     );
   }
 
   const neuralFiles = analyses.filter(
-    (a) => a.category === 'neural' || a.isCritical,
+    (a) => a.category === 'neural' || a.isCritical
   );
   if (neuralFiles.length > 0) {
     const neuralCoverage =
@@ -605,7 +605,7 @@ function generateReport(analyses) {
       neuralFiles.length;
     if (neuralCoverage < 85) {
       report.recommendations.push(
-        '🧠 Prioritize AI/neural system documentation for production readiness',
+        '🧠 Prioritize AI/neural system documentation for production readiness'
       );
     }
   }
@@ -665,7 +665,7 @@ async function main() {
     const status =
       stats.coverage >= 80 ? '✅' : stats.coverage >= 60 ? '🟡' : '🔴';
     console.log(
-      `   ${status} ${category.toUpperCase()}: ${stats.files} files, ${stats.coverage}% coverage, ${stats.issues} issues`,
+      `   ${status} ${category.toUpperCase()}: ${stats.files} files, ${stats.coverage}% coverage, ${stats.issues} issues`
     );
   });
 
@@ -676,7 +676,7 @@ async function main() {
 
   // Show detailed issues for critical files
   const criticalIssues = analyses.filter(
-    (a) => a.isCritical && a.issues?.length > 0,
+    (a) => a.isCritical && a.issues?.length > 0
   );
   if (criticalIssues.length > 0) {
     console.log(`\n🚨 CRITICAL SYSTEM ISSUES`);
@@ -705,13 +705,13 @@ async function main() {
 
   console.log(`\n🎯 Analysis complete! Focus areas:`);
   console.log(
-    `   • Core systems: ${report.categories.core?.coverage || 0}% documented`,
+    `   • Core systems: ${report.categories.core?.coverage || 0}% documented`
   );
   console.log(
-    `   • Coordination: ${report.categories.coordination?.coverage || 0}% documented`,
+    `   • Coordination: ${report.categories.coordination?.coverage || 0}% documented`
   );
   console.log(
-    `   • Neural systems: ${report.categories.neural?.coverage || 0}% documented`,
+    `   • Neural systems: ${report.categories.neural?.coverage || 0}% documented`
   );
 
   // Exit with appropriate code

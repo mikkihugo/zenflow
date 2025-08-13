@@ -158,7 +158,7 @@ async function retryConfiguration() {
       maxDelay: 10000,
       retryStatusCodes: [408, 429, 500, 502, 503, 504],
       retryMethods: ['GET', 'POST', 'PUT'],
-      retryCondition: (error: any) => {
+      retryCondition: (error: unknown) => {
         // Custom retry logic
         return error.response?.status >= 500 || !error.response;
       },
@@ -166,7 +166,7 @@ async function retryConfiguration() {
   });
 
   // Listen for retry events
-  client.on('retry', (info: any) => {});
+  client.on('retry', (info: unknown) => {});
 
   try {
     const data = await client.get('/unreliable-endpoint');
@@ -207,7 +207,7 @@ async function monitoringExample() {
 
   client.on('disconnect', () => {});
 
-  client.on('error', (error: any) => {
+  client.on('error', (error: unknown) => {
     console.error('Client error:', error);
   });
 
@@ -298,7 +298,7 @@ async function presetUsage() {
   const devClient = await createHTTPClientWithPreset(
     'dev-client',
     'https://dev-api.example.com',
-    'development',
+    'development'
   );
 
   // Production preset with optimized settings
@@ -311,14 +311,14 @@ async function presetUsage() {
         type: 'bearer',
         token: 'production-token',
       },
-    },
+    }
   );
 
   // High-availability preset with aggressive health checks
   const haClient = await createHTTPClientWithPreset(
     'ha-client',
     'https://ha-api.example.com',
-    'highAvailability',
+    'highAvailability'
   );
 
   try {
@@ -351,7 +351,7 @@ async function loadBalancingExample() {
       'https://api2.example.com',
       'https://api3.example.com',
     ],
-    'production',
+    'production'
   );
 
   try {
@@ -365,7 +365,7 @@ async function loadBalancingExample() {
       }
     }
   } finally {
-    await Promise.all(clients.map((client: any) => client.destroy()));
+    await Promise.all(clients.map((client: unknown) => client.destroy()));
   }
 }
 

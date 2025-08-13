@@ -40,7 +40,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         maxConcurrentWorkflows: 50,
         enableIntelligentRouting: true,
         faultTolerance: true,
-      },
+      }
     );
   });
 
@@ -168,7 +168,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
               [assignments[7]], // result-2 after result-1
             ],
           };
-        },
+        }
       );
 
       mockLoadBalancingManager.optimizeDistribution.mockResolvedValue({
@@ -200,7 +200,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.objectContaining({
           id: 'complex-workflow-001',
           phases: expect.any(Array),
-        }),
+        })
       );
 
       // Verify task distribution considered dependencies
@@ -216,7 +216,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.objectContaining({
           respectDependencies: true,
           enableParallelization: true,
-        }),
+        })
       );
 
       // Verify load balancing optimization was applied
@@ -312,7 +312,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             return { shouldExecute: true, reason: 'dataSize > 10000' };
           }
           return { shouldExecute: true, reason: 'unconditional' };
-        },
+        }
       );
 
       mockTaskDistributionEngine.distributeTasks.mockResolvedValue({
@@ -348,13 +348,13 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // Verify condition evaluation was performed for conditional tasks
       expect(
-        mockTaskDistributionEngine.evaluateConditions,
+        mockTaskDistributionEngine.evaluateConditions
       ).toHaveBeenCalledTimes(4);
       expect(
-        mockTaskDistributionEngine.evaluateConditions,
+        mockTaskDistributionEngine.evaluateConditions
       ).toHaveBeenCalledWith(
         expect.objectContaining({ id: 'simple-processing' }),
-        expect.any(Object),
+        expect.any(Object)
       );
 
       // Verify correct branching decisions
@@ -370,11 +370,11 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             executed: true,
           }),
           expect.objectContaining({ taskId: 'ml-processing', executed: true }),
-        ]),
+        ])
       );
 
       expect(result?.executionPlan?.skippedTasks).toContain(
-        'simple-processing',
+        'simple-processing'
       );
     });
 
@@ -451,7 +451,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       const allocationResult =
         await swarmOrchestrator.allocateResourcesForConcurrentWorkflows(
-          concurrentWorkflows,
+          concurrentWorkflows
         );
 
       // Verify resource analysis was performed
@@ -464,7 +464,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
           availableResources: expect.any(Object),
           priorityWeighting: true,
           optimizeForThroughput: true,
-        }),
+        })
       );
 
       expect(allocationResult).toMatchObject({
@@ -486,7 +486,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // High priority workflows should be allocated first
       const highPriorityAllocations = allocationResult?.allocations?.filter(
-        (allocation: any) => allocation.priority <= 2,
+        (allocation: unknown) => allocation.priority <= 2
       );
       expect(highPriorityAllocations.length).toBe(2);
     });
@@ -575,7 +575,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       const result =
         await swarmOrchestrator.executeWorkflowWithFaultTolerance(
-          resilientWorkflow,
+          resilientWorkflow
         );
 
       // Verify failure detection was performed
@@ -583,7 +583,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // Verify failover redistribution
       expect(
-        mockTaskDistributionEngine.redistributeFailedTasks,
+        mockTaskDistributionEngine.redistributeFailedTasks
       ).toHaveBeenCalledWith(
         expect.arrayContaining([
           expect.objectContaining({
@@ -596,7 +596,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         expect.objectContaining({
           enableCheckpointRestore: true,
           prioritizeCriticalPath: true,
-        }),
+        })
       );
 
       // Verify load rebalancing after failure
@@ -679,7 +679,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             circuitBreakerTripped: false,
             result: { processed: true },
           };
-        },
+        }
       );
 
       // Mock fallback task execution
@@ -692,12 +692,12 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       const result =
         await swarmOrchestrator.executeWorkflowWithCircuitBreaker(
-          unstableWorkflow,
+          unstableWorkflow
         );
 
       // Verify circuit breaker state was checked
       expect(
-        mockTaskDistributionEngine.getCircuitBreakerState,
+        mockTaskDistributionEngine.getCircuitBreakerState
       ).toHaveBeenCalledWith([
         'reliable-service',
         'unstable-service',
@@ -706,23 +706,23 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // Verify circuit breaker execution was attempted
       expect(
-        mockTaskDistributionEngine.executeWithCircuitBreaker,
+        mockTaskDistributionEngine.executeWithCircuitBreaker
       ).toHaveBeenCalledWith(
         expect.objectContaining({ id: 'unstable-task' }),
         expect.any(Object),
         expect.objectContaining({
           failureThreshold: 3,
           timeout: 5000,
-        }),
+        })
       );
 
       // Verify fallback was executed
       expect(
-        mockTaskDistributionEngine.executeFallbackTask,
+        mockTaskDistributionEngine.executeFallbackTask
       ).toHaveBeenCalledWith(
         expect.objectContaining({ id: 'backup-task' }),
         expect.any(Object),
-        expect.objectContaining({ fallbackReason: 'circuit_breaker_open' }),
+        expect.objectContaining({ fallbackReason: 'circuit_breaker_open' })
       );
 
       expect(result).toMatchObject({
@@ -842,28 +842,28 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       const result =
         await swarmOrchestrator.executeWorkflowWithCascadePrevention(
-          cascadeProneWorkflow,
+          cascadeProneWorkflow
         );
 
       // Verify cascade detection was performed
       expect(
-        mockTaskDistributionEngine.detectPotentialCascade,
+        mockTaskDistributionEngine.detectPotentialCascade
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           failedTasks: ['upstream-1'],
           workflowStructure: expect.any(Object),
-        }),
+        })
       );
 
       // Verify isolation was executed
       expect(
-        mockTaskDistributionEngine.executeWithIsolation,
+        mockTaskDistributionEngine.executeWithIsolation
       ).toHaveBeenCalledWith(
         expect.arrayContaining(['processor-1']),
         expect.objectContaining({
           strategy: 'dependency_aware',
           enablePartialExecution: true,
-        }),
+        })
       );
 
       expect(result).toMatchObject({
@@ -975,7 +975,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
         agentsWithProfiles.map((agent) => ({
           agentId: agent.id,
           profile: agent.performanceProfile,
-        })),
+        }))
       );
 
       mockTaskDistributionEngine.optimizeTaskAssignment.mockResolvedValue({
@@ -1018,7 +1018,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       const result =
         await swarmOrchestrator.executePerformanceOptimizedWorkflow(
-          performanceWorkflow,
+          performanceWorkflow
         );
 
       // Verify performance profiles were retrieved
@@ -1026,7 +1026,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       // Verify task assignment optimization
       expect(
-        mockTaskDistributionEngine.optimizeTaskAssignment,
+        mockTaskDistributionEngine.optimizeTaskAssignment
       ).toHaveBeenCalledWith(
         performanceWorkflow.tasks,
         agentsWithProfiles,
@@ -1037,7 +1037,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             'speed',
             'resource_utilization',
           ]),
-        }),
+        })
       );
 
       expect(result).toMatchObject({
@@ -1157,18 +1157,18 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
 
       const result =
         await swarmOrchestrator.executeWorkflowWithPredictiveScaling(
-          predictiveWorkflow,
+          predictiveWorkflow
         );
 
       // Verify predictive analysis was performed
       expect(
-        mockLoadBalancingManager.predictResourceRequirements,
+        mockLoadBalancingManager.predictResourceRequirements
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           workflowPattern: 'recurring_batch_processing',
           historicalData: expect.any(Object),
           predictionHorizon: 900000,
-        }),
+        })
       );
 
       // Verify proactive scaling was scheduled
@@ -1182,7 +1182,7 @@ describe('Advanced Swarm Orchestration (London TDD)', () => {
             action: 'scale_down',
             targetAgents: 12,
           }),
-        ]),
+        ])
       );
 
       expect(result).toMatchObject({

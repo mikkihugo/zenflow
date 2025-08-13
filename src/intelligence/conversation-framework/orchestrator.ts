@@ -41,7 +41,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param config
    */
   async createConversation(
-    config: ConversationConfig,
+    config: ConversationConfig
   ): Promise<ConversationSession> {
     const pattern = this.patterns.get(config?.pattern);
     if (!pattern) {
@@ -96,7 +96,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async joinConversation(
     conversationId: string,
-    agent: AgentId,
+    agent: AgentId
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -118,7 +118,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Send join notification
     await this.sendSystemMessage(
       session,
-      `Agent ${agent.id} joined the conversation`,
+      `Agent ${agent.id} joined the conversation`
     );
   }
 
@@ -130,7 +130,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async leaveConversation(
     conversationId: string,
-    agent: AgentId,
+    agent: AgentId
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -138,7 +138,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     }
 
     session.participants = session.participants.filter(
-      (p) => p.id !== agent.id,
+      (p) => p.id !== agent.id
     );
     await this.memory.updateConversation(conversationId, {
       participants: session.participants,
@@ -147,7 +147,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Send leave notification
     await this.sendSystemMessage(
       session,
-      `Agent ${agent.id} left the conversation`,
+      `Agent ${agent.id} left the conversation`
     );
   }
 
@@ -164,14 +164,14 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
 
     if (session.status !== 'active') {
       throw new Error(
-        `Cannot send message to conversation in status: ${session.status}`,
+        `Cannot send message to conversation in status: ${session.status}`
       );
     }
 
     // Validate sender is participant
     if (!session.participants.find((p) => p.id === message.fromAgent.id)) {
       throw new Error(
-        `Agent ${message.fromAgent.id} is not a participant in this conversation`,
+        `Agent ${message.fromAgent.id} is not a participant in this conversation`
       );
     }
 
@@ -210,7 +210,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async moderateConversation(
     conversationId: string,
-    action: ModerationAction,
+    action: ModerationAction
   ): Promise<void> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -238,7 +238,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     });
     await this.sendSystemMessage(
       session,
-      `Moderation action: ${action.type} - ${action.reason}`,
+      `Moderation action: ${action.type} - ${action.reason}`
     );
   }
 
@@ -248,7 +248,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param conversationId
    */
   async getConversationHistory(
-    conversationId: string,
+    conversationId: string
   ): Promise<ConversationMessage[]> {
     const session =
       this.activeSessions.get(conversationId) ||
@@ -269,7 +269,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   async terminateConversation(
     conversationId: string,
-    reason?: string,
+    reason?: string
   ): Promise<ConversationOutcome[]> {
     const session = this.activeSessions.get(conversationId);
     if (!session) {
@@ -300,7 +300,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     if (reason) {
       await this.sendSystemMessage(
         session,
-        `Conversation terminated: ${reason}`,
+        `Conversation terminated: ${reason}`
       );
     }
 
@@ -506,7 +506,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async startPatternWorkflow(
     session: ConversationSession,
-    pattern: ConversationPattern,
+    pattern: ConversationPattern
   ): Promise<void> {
     session.status = 'active';
     await this.memory.updateConversation(session.id, {
@@ -516,7 +516,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Send welcome message
     await this.sendSystemMessage(
       session,
-      `Starting ${pattern.name} conversation: ${session.title}`,
+      `Starting ${pattern.name} conversation: ${session.title}`
     );
 
     // Trigger first workflow step
@@ -534,7 +534,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async processMessageForWorkflow(
     session: ConversationSession,
-    message: ConversationMessage,
+    message: ConversationMessage
   ): Promise<void> {
     const pattern = this.patterns.get(session.context.domain);
     if (!pattern) return;
@@ -555,9 +555,9 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private shouldTriggerStep(
-    step: any,
+    step: unknown,
     message: ConversationMessage,
-    session: ConversationSession,
+    session: ConversationSession
   ): boolean {
     if (step.trigger.type === 'message') {
       return step.trigger.condition.messageType === message.messageType;
@@ -578,13 +578,13 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private async executeWorkflowStep(
     session: ConversationSession,
     _pattern: ConversationPattern,
-    step: any,
+    step: unknown
   ): Promise<void> {
     // Implementation would depend on step actions
     // For now, just send a system message
     await this.sendSystemMessage(
       session,
-      `Executing workflow step: ${step.name}`,
+      `Executing workflow step: ${step.name}`
     );
   }
 
@@ -596,11 +596,11 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private checkConsensus(
     session: ConversationSession,
-    threshold: number,
+    threshold: number
   ): boolean {
     // Simple consensus check based on agreement messages
     const agreementMessages = session.messages.filter(
-      (m) => m.messageType === 'agreement',
+      (m) => m.messageType === 'agreement'
     );
     const participantCount = session.participants.length;
 
@@ -615,7 +615,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private async sendSystemMessage(
     session: ConversationSession,
-    text: string,
+    text: string
   ): Promise<void> {
     const systemMessage: ConversationMessage = {
       id: nanoid(),
@@ -649,16 +649,16 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private async generateConversationOutcomes(
-    session: ConversationSession,
+    session: ConversationSession
   ): Promise<ConversationOutcome[]> {
     const outcomes: ConversationOutcome[] = [];
 
     // Analyze messages for decisions and solutions
     const decisionMessages = session.messages.filter(
-      (m) => m.messageType === 'decision',
+      (m) => m.messageType === 'decision'
     );
     const solutionMessages = session.messages.filter(
-      (m) => m.messageType === 'answer',
+      (m) => m.messageType === 'answer'
     );
 
     decisionMessages.forEach((msg) => {
@@ -690,7 +690,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param session
    */
   private async updateFinalMetrics(
-    session: ConversationSession,
+    session: ConversationSession
   ): Promise<void> {
     const duration = session.endTime
       ? session.endTime.getTime() - session.startTime.getTime()
@@ -715,10 +715,10 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private calculateConsensusScore(session: ConversationSession): number {
     const agreements = session.messages.filter(
-      (m) => m.messageType === 'agreement',
+      (m) => m.messageType === 'agreement'
     ).length;
     const disagreements = session.messages.filter(
-      (m) => m.messageType === 'disagreement',
+      (m) => m.messageType === 'disagreement'
     ).length;
     const total = agreements + disagreements;
 
@@ -745,7 +745,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private calculateParticipationBalance(session: ConversationSession): number {
     const participationCounts = Object.values(
-      session.metrics.participationByAgent,
+      session.metrics.participationByAgent
     );
     const avgParticipation =
       participationCounts.reduce((a, b) => a + b, 0) /
@@ -753,7 +753,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     const variance =
       participationCounts.reduce(
         (acc, val) => acc + (val - avgParticipation) ** 2,
-        0,
+        0
       ) / participationCounts.length;
 
     return Math.max(0, 1 - variance / (avgParticipation + 1));
@@ -766,7 +766,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    */
   private calculateAverageResponseTime(session: ConversationSession): number {
     const messages = session.messages.filter(
-      (m) => m.messageType !== 'system_notification',
+      (m) => m.messageType !== 'system_notification'
     );
     if (messages.length < 2) return 0;
 
@@ -789,7 +789,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
    * @param event
    * @param data
    */
-  private async emit(event: string, data: any): Promise<void> {
+  private async emit(event: string, data: unknown): Promise<void> {
     const handlers = this.eventHandlers.get(event) || [];
     await Promise.all(handlers.map((handler) => handler(data)));
   }

@@ -73,7 +73,7 @@ async function startMCPServer() {
         addTestResult(
           'MCP Server Start',
           'passed',
-          'Server started successfully',
+          'Server started successfully'
         );
         resolve();
       }
@@ -84,7 +84,7 @@ async function startMCPServer() {
         'MCP Server Start',
         'failed',
         'Failed to start server',
-        error.message,
+        error.message
       );
       reject(error);
     });
@@ -108,7 +108,7 @@ async function testWebSocketConnection() {
       addTestResult(
         'WebSocket Connection',
         'passed',
-        'Connected to MCP server',
+        'Connected to MCP server'
       );
       resolve();
     });
@@ -118,7 +118,7 @@ async function testWebSocketConnection() {
         'WebSocket Connection',
         'failed',
         'Connection failed',
-        error.message,
+        error.message
       );
       reject(error);
     });
@@ -189,13 +189,13 @@ async function testMethod(method, params) {
           addTestResult(
             `MCP Method: ${method}`,
             'failed',
-            response.error.message,
+            response.error.message
           );
         } else {
           addTestResult(
             `MCP Method: ${method}`,
             'passed',
-            'Method executed successfully',
+            'Method executed successfully'
           );
         }
       } catch (error) {
@@ -203,7 +203,7 @@ async function testMethod(method, params) {
           `MCP Method: ${method}`,
           'failed',
           'Invalid response',
-          error.message,
+          error.message
         );
       }
       resolve();
@@ -300,7 +300,7 @@ async function generateReport() {
     __dirname,
     '..',
     'test-results',
-    'mcp-validation.json',
+    'mcp-validation.json'
   );
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));
@@ -323,7 +323,7 @@ async function runTests() {
       'Test Suite',
       'failed',
       'Suite execution failed',
-      error.message,
+      error.message
     );
   } finally {
     await cleanup();

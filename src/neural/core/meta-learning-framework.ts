@@ -9,19 +9,19 @@
 interface MetaLearningOptions {
   maxStrategies?: number;
   evaluationWindow?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface LearningStrategy {
   performance: number;
   usage: number;
   created: Date;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export class MetaLearningFramework {
   public learningStrategies: Map<string, LearningStrategy>;
-  public performanceHistory: any[];
+  public performanceHistory: unknown[];
   public taskHistory: Map<string, any[]>;
   public options: MetaLearningOptions;
 
@@ -42,7 +42,7 @@ export class MetaLearningFramework {
    * @param id
    * @param strategy
    */
-  registerStrategy(id: string, strategy: any): void {
+  registerStrategy(id: string, strategy: unknown): void {
     this.learningStrategies.set(id, {
       ...strategy,
       performance: 0,
@@ -60,7 +60,7 @@ export class MetaLearningFramework {
   selectStrategy(taskType, _context = {}) {
     const strategies = Array.from(this.learningStrategies.values())
       .filter(
-        (s) => s.applicableTasks?.includes(taskType) || !s.applicableTasks,
+        (s) => s.applicableTasks?.includes(taskType) || !s.applicableTasks
       )
       .sort((a, b) => b.performance - a.performance);
 
@@ -90,7 +90,7 @@ export class MetaLearningFramework {
       // Keep history within window
       if (this.performanceHistory.length > this.options.evaluationWindow) {
         this.performanceHistory = this.performanceHistory.slice(
-          -this.options.evaluationWindow,
+          -this.options.evaluationWindow
         );
       }
     }
@@ -121,7 +121,7 @@ export class MetaLearningFramework {
     return strategies.reduce(
       (best, current) =>
         current?.performance > best.performance ? current : best,
-      { performance: -1 },
+      { performance: -1 }
     );
   }
 
@@ -131,7 +131,7 @@ export class MetaLearningFramework {
    * @param agentId
    * @param config
    */
-  async adaptConfiguration(agentId: string, config: any) {
+  async adaptConfiguration(agentId: string, config: unknown) {
     const agentHistory = this.taskHistory.get(agentId) || [];
 
     if (agentHistory.length === 0) {
@@ -140,7 +140,7 @@ export class MetaLearningFramework {
 
     // Find best performing configuration from history
     const bestTask = agentHistory.reduce((best, task) =>
-      task.performance > best.performance ? task : best,
+      task.performance > best.performance ? task : best
     );
 
     // Adapt configuration based on best performance
@@ -159,7 +159,7 @@ export class MetaLearningFramework {
    * @param agentId
    * @param options
    */
-  async optimizeTraining(agentId: string, options: any) {
+  async optimizeTraining(agentId: string, options: unknown) {
     const agentHistory = this.taskHistory.get(agentId) || [];
 
     if (agentHistory.length === 0) {
@@ -204,7 +204,7 @@ export class MetaLearningFramework {
    * @param agentId
    * @param state
    */
-  async restoreState(agentId: string, state: any) {
+  async restoreState(agentId: string, state: unknown) {
     if (state?.taskHistory) {
       this.taskHistory.set(agentId, state.taskHistory);
     }
@@ -232,7 +232,7 @@ export class MetaLearningFramework {
   getStatistics() {
     const totalTasks = Array.from(this.taskHistory.values()).reduce(
       (sum, history) => sum + history.length,
-      0,
+      0
     );
 
     return {

@@ -63,7 +63,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           'file',
           'mkdir',
           { path: 'app/src' },
-          { dependencies: ['mkdir'] },
+          { dependencies: ['mkdir'] }
         ),
         createBatchOperation(
           'write-file',
@@ -73,7 +73,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
             path: 'app/src/index.ts',
             content: 'export {};',
           },
-          { dependencies: ['src-mkdir'] },
+          { dependencies: ['src-mkdir'] }
         ),
       ];
 
@@ -89,7 +89,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       // Verify dependency order
       const mkdirResult = results?.find((r) => r.operationId === 'mkdir');
       const srcMkdirResult = results?.find(
-        (r) => r.operationId === 'src-mkdir',
+        (r) => r.operationId === 'src-mkdir'
       );
       const writeResult = results?.find((r) => r.operationId === 'write-file');
 
@@ -104,7 +104,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       });
 
       const operations = Array.from({ length: 10 }, (_, i) =>
-        createBatchOperation(`op${i}`, 'tool', 'test', { index: i }),
+        createBatchOperation(`op${i}`, 'tool', 'test', { index: i })
       );
 
       const summary = await limitedEngine.executeBatch(operations);
@@ -126,7 +126,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           createBatchOperation(`swarm${i}`, 'swarm', 'init', {
             topology: 'hierarchical',
             maxAgents: 8,
-          }),
+          })
         );
       }
 
@@ -135,7 +135,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         operations.push(
           createBatchOperation(`agent${i}`, 'swarm', 'spawn', {
             type: ['researcher', 'coder', 'analyst', 'tester'][i % 4],
-          }),
+          })
         );
       }
 
@@ -145,7 +145,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           createBatchOperation(`file${i}`, 'file', 'write', {
             path: `output/file${i}.txt`,
             content: `Content for file ${i}`,
-          }),
+          })
         );
       }
 
@@ -188,7 +188,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
         createBatchOperation(`perf-test-${i}`, 'tool', 'performance_test', {
           duration: 100, // Simulate 100ms operations
           complexity: 'medium',
-        }),
+        })
       );
 
       // Measure batch execution
@@ -200,7 +200,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       const results = batchEngine.getResults();
       const estimatedSequentialTime = results?.reduce(
         (sum, r) => sum + r.executionTime,
-        0,
+        0
       );
 
       // Verify performance improvement
@@ -210,7 +210,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
       // Verify summary calculations are accurate
       expect(batchSummary.speedImprovement).toBeCloseTo(
         actualSpeedImprovement,
-        1,
+        1
       );
     });
   });
@@ -242,19 +242,19 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           'tool',
           'test',
           {},
-          { dependencies: ['op2'] },
+          { dependencies: ['op2'] }
         ),
         createBatchOperation(
           'op2',
           'tool',
           'test',
           {},
-          { dependencies: ['op1'] },
+          { dependencies: ['op1'] }
         ),
       ];
 
       await expect(batchEngine.executeBatch(operations)).rejects.toThrow(
-        'Circular dependency',
+        'Circular dependency'
       );
     });
 
@@ -283,7 +283,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
   describe('📊 Performance Monitoring Integration', () => {
     it('should provide detailed execution metrics', async () => {
       const operations = Array.from({ length: 8 }, (_, i) =>
-        createBatchOperation(`metric-test-${i}`, 'tool', 'test', { index: i }),
+        createBatchOperation(`metric-test-${i}`, 'tool', 'test', { index: i })
       );
 
       const summary = await batchEngine.executeBatch(operations);
@@ -373,7 +373,7 @@ describe('BatchEngine - Claude-zen Concurrent Execution', () => {
           content: JSON.stringify(
             { name: 'test-app', version: '1.0.0' },
             null,
-            2,
+            2
           ),
         }),
         createBatchOperation('readme', 'file', 'write', {

@@ -476,7 +476,7 @@ export class System extends EventEmitter {
       {
         autoWatch: this.config.documents?.autoWatch !== false,
         enableWorkflows: this.config.documents?.enableWorkflows !== false,
-      },
+      }
     );
 
     // Export manager - standalone
@@ -510,7 +510,7 @@ export class System extends EventEmitter {
       if (this.config.documents?.enableWorkflows !== false) {
         await this.workflowEngine.processDocumentEvent(
           'document:created',
-          event['document'],
+          event['document']
         );
       }
 
@@ -519,18 +519,18 @@ export class System extends EventEmitter {
     });
 
     // Workflow engine events
-    this.workflowEngine.on('workflow:completed', async (event: any) => {
+    this.workflowEngine.on('workflow:completed', async (event: unknown) => {
       logger.info(`Workflow completed: ${event['workflowId']}`);
 
       // Auto-export if configured
       if (this.config.export?.defaultFormat) {
         const workflowData = await this.memorySystem.retrieve(
-          `workflow:${event['workflowId']}`,
+          `workflow:${event['workflowId']}`
         );
         if (workflowData) {
           await this.exportManager.exportData(
             workflowData,
-            this.config.export.defaultFormat,
+            this.config.export.defaultFormat
           );
         }
       }
@@ -675,7 +675,7 @@ export class System extends EventEmitter {
    */
   async exportSystemData(
     format: string,
-    options: ExportOptions = {},
+    options: ExportOptions = {}
   ): Promise<{ success: boolean; filename?: string; error?: string }> {
     await this.ensureInitialized();
 
@@ -689,7 +689,7 @@ export class System extends EventEmitter {
       const result = await this.exportManager.exportData(
         exportData,
         format,
-        options,
+        options
       );
       return { success: true, filename: result?.filename };
     } catch (error) {

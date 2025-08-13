@@ -190,7 +190,7 @@ async function main(): Promise<void> {
           process.env['CLAUDE_MCP_PORT'] ||
             process.env['MCP_PORT'] ||
             String(centralConfig?.interfaces?.mcp?.http?.port),
-          10,
+          10
         ),
       host:
         config?.host ||
@@ -208,7 +208,7 @@ async function main(): Promise<void> {
           process.env['CLAUDE_MCP_TIMEOUT'] ||
             process.env['MCP_TIMEOUT'] ||
             String(centralConfig?.interfaces?.mcp?.http?.timeout),
-          10,
+          10
         ),
     });
 
@@ -240,11 +240,11 @@ async function main(): Promise<void> {
     if (error instanceof Error) {
       if (error.message.includes('EADDRINUSE')) {
         logger.error(
-          'Port is already in use. Try a different port with --port option.',
+          'Port is already in use. Try a different port with --port option.'
         );
       } else if (error.message.includes('EACCES')) {
         logger.error(
-          'Permission denied. Try running with sudo or use a port > 1024.',
+          'Permission denied. Try running with sudo or use a port > 1024.'
         );
       }
     }

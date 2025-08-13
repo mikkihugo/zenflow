@@ -19,28 +19,14 @@ import { ProgressBar } from './components/progress-bar.js';
 import { SwarmConfigPanel } from './components/swarm-config-panel.js';
 
 // Import shared types
-import type { DiscoveredDomain, DiscoveryState } from './types.js';
+import type {
+  DeploymentStatus,
+  DiscoveredDomain,
+  DiscoveryState,
+  SwarmConfig,
+} from './types.js';
 
-export interface SwarmConfig {
-  topology: 'mesh' | 'hierarchical' | 'star' | 'ring';
-  maxAgents: number;
-  resourceLimits: {
-    memory: string;
-    cpu: number;
-  };
-  enableAutoScaling: boolean;
-  persistence: 'json' | 'sqlite' | 'lancedb';
-}
-
-export interface DeploymentStatus {
-  status: 'pending' | 'deploying' | 'deployed' | 'failed';
-  progress: number;
-  message: string;
-  agents: {
-    created: number;
-    total: number;
-  };
-}
+// SwarmConfig and DeploymentStatus are now imported from types.js
 
 export interface InteractiveDiscoveryProps {
   projectPath: string;
@@ -49,7 +35,7 @@ export interface InteractiveDiscoveryProps {
     maxIterations?: number;
     skipValidation?: boolean;
   };
-  onComplete?: (results: any) => void;
+  onComplete?: (results: unknown) => void;
   onCancel?: () => void;
 }
 
@@ -186,7 +172,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
 
   const simulateAnalysisPhase = async (
     message: string,
-    step: number,
+    step: number
   ): Promise<void> => {
     setState((prev) => ({
       ...prev,
@@ -234,7 +220,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
         };
       });
     },
-    [],
+    []
   );
 
   const handleConfigChange = useCallback(
@@ -251,7 +237,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
         };
       });
     },
-    [],
+    []
   );
 
   const handleDeploy = useCallback(async () => {
@@ -331,7 +317,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           progress: 0,
           message: 'Initializing swarm infrastructure...',
           agents: { created: 0, total: config?.maxAgents },
-        }),
+        })
       ),
     }));
 
@@ -355,11 +341,11 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
             message: phases[i],
             agents: {
               created: Math.floor(
-                ((i + 1) / phases.length) * config?.maxAgents,
+                ((i + 1) / phases.length) * config?.maxAgents
               ),
               total: config?.maxAgents,
             },
-          }),
+          })
         ),
       }));
 
@@ -375,7 +361,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
           progress: 100,
           message: 'Swarm operational',
           agents: { created: config?.maxAgents, total: config?.maxAgents },
-        }),
+        })
       ),
     }));
   };
@@ -416,10 +402,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      padding={1}
-    >
+    <Box flexDirection="column" padding={1}>
       <Header />
       {renderContent()}
     </Box>
@@ -429,14 +412,8 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
 // Header component
 const Header: React.FC = () => (
   <Box marginBottom={1}>
-    <Box
-      borderStyle="double"
-      padding={1}
-    >
-      <Text
-        bold
-        color="cyan"
-      >
+    <Box borderStyle="double" padding={1}>
+      <Text bold color="cyan">
         🧠 CLAUDE-ZEN INTERACTIVE DISCOVERY
       </Text>
       <Spacer />
@@ -502,10 +479,7 @@ const ReviewPhase: React.FC<{
         </Text>
       </Box>
 
-      <Box
-        flexDirection="column"
-        marginBottom={1}
-      >
+      <Box flexDirection="column" marginBottom={1}>
         {state.domains.map((domain, index) => (
           <DomainCard
             key={domain.name}
@@ -599,11 +573,7 @@ const DeploymentPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
 
     <Box flexDirection="column">
       {Array.from(state.deploymentStatus.entries()).map(([domain, status]) => (
-        <DeploymentProgress
-          key={domain}
-          domain={domain}
-          status={status}
-        />
+        <DeploymentProgress key={domain} domain={domain} status={status} />
       ))}
     </Box>
   </Box>
@@ -611,15 +581,9 @@ const DeploymentPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
 
 // Completion Phase Component
 const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
-  <Box
-    flexDirection="column"
-    alignItems="center"
-  >
+  <Box flexDirection="column" alignItems="center">
     <Box marginBottom={1}>
-      <Text
-        bold
-        color="green"
-      >
+      <Text bold color="green">
         🎉 Deployment Complete!
       </Text>
     </Box>
@@ -629,7 +593,7 @@ const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
         Successfully deployed {state.selectedDomains.size} swarms with{' '}
         {Array.from(state.deploymentStatus.values()).reduce(
           (sum, status) => sum + status.agents.created,
-          0,
+          0
         )}{' '}
         total agents.
       </Text>
@@ -645,10 +609,7 @@ const CompletionPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
 const ErrorPhase: React.FC<{ error: string }> = ({ error }) => (
   <Box flexDirection="column">
     <Box marginBottom={1}>
-      <Text
-        bold
-        color="red"
-      >
+      <Text bold color="red">
         ❌ Error
       </Text>
     </Box>

@@ -64,7 +64,7 @@ export type TaskStatus =
 export interface MemoryConfig {
   action: 'store' | 'retrieve' | 'list' | 'delete';
   key?: string;
-  value?: any;
+  value?: unknown;
   pattern?: string;
   namespace?: string;
 }
@@ -80,7 +80,7 @@ export interface NeuralConfig {
     | 'adaptive'
     | 'all';
   iterations?: number;
-  training_data?: any[];
+  training_data?: unknown[];
 }
 
 export interface BenchmarkConfig {
@@ -126,28 +126,28 @@ export interface PaginatedResponse<T> extends SwarmResponse<T[]> {
 // Service interfaces
 
 export interface SwarmServiceInterface {
-  initializeSwarm(config: SwarmConfig): Promise<any>;
-  spawnAgent(swarmId: string, config: AgentConfig): Promise<any>;
-  orchestrateTask(config: TaskOrchestrationConfig): Promise<any>;
-  getSwarmStatus(swarmId?: string): Promise<any>;
-  getTaskStatus(taskId?: string): Promise<any>;
-  getStats(): any;
+  initializeSwarm(config: SwarmConfig): Promise<unknown>;
+  spawnAgent(swarmId: string, config: AgentConfig): Promise<unknown>;
+  orchestrateTask(config: TaskOrchestrationConfig): Promise<unknown>;
+  getSwarmStatus(swarmId?: string): Promise<unknown>;
+  getTaskStatus(taskId?: string): Promise<unknown>;
+  getStats(): unknown;
   shutdown(): Promise<void>;
 }
 
 export interface MemoryServiceInterface {
-  store(key: string, value: any, namespace?: string): Promise<any>;
-  retrieve(key: string, namespace?: string): Promise<any>;
-  list(pattern?: string, namespace?: string): Promise<any>;
-  delete(key: string, namespace?: string): Promise<any>;
-  clear(namespace?: string): Promise<any>;
+  store(key: string, value: unknown, namespace?: string): Promise<unknown>;
+  retrieve(key: string, namespace?: string): Promise<unknown>;
+  list(pattern?: string, namespace?: string): Promise<unknown>;
+  delete(key: string, namespace?: string): Promise<unknown>;
+  clear(namespace?: string): Promise<unknown>;
 }
 
 export interface NeuralServiceInterface {
-  getStatus(agentId?: string): Promise<any>;
-  train(config: NeuralConfig): Promise<any>;
-  getPatterns(pattern?: string): Promise<any>;
-  analyze(agentId: string): Promise<any>;
+  getStatus(agentId?: string): Promise<unknown>;
+  train(config: NeuralConfig): Promise<unknown>;
+  getPatterns(pattern?: string): Promise<unknown>;
+  analyze(agentId: string): Promise<unknown>;
 }
 
 // Validation schemas (for API endpoints)

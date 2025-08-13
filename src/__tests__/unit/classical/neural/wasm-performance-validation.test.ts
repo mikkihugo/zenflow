@@ -60,7 +60,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
           const result = jsMatrixMultiply(matrixA, matrixB);
           expect(result).toHaveLength(500);
           expect(result?.[0]).toHaveLength(400);
-        },
+        }
       );
 
       // Benchmark WASM implementation
@@ -75,13 +75,13 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
           const result = mockWasmModule.matrixMultiply(matrixA, matrixB);
           expect(result).toHaveLength(500);
           expect(result?.[0]).toHaveLength(400);
-        },
+        }
       );
 
       const results = await benchmarkSuite.runAll();
       const comparison = benchmarkSuite.compare(
         'js-matrix-multiply',
-        'wasm-matrix-multiply',
+        'wasm-matrix-multiply'
       );
 
       // Verify performance targets
@@ -105,8 +105,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
 
       // JavaScript neural forward pass
       const jsForwardPass = () => {
-        return inputBatch.map((input: any) =>
-          jsNeuralForwardPass(input, networkSize),
+        return inputBatch.map((input: unknown) =>
+          jsNeuralForwardPass(input, networkSize)
         );
       };
 
@@ -115,24 +115,24 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
         mockWasmModule.neuralForwardPass.mockImplementation(
           (input, topology) => {
             return jsNeuralForwardPass(input, topology);
-          },
+          }
         );
-        return inputBatch.map((input: any) =>
-          mockWasmModule.neuralForwardPass(input, networkSize),
+        return inputBatch.map((input: unknown) =>
+          mockWasmModule.neuralForwardPass(input, networkSize)
         );
       };
 
       const _jsPerformance = await neuralSuite.performance.benchmarkPrediction(
         () => jsForwardPass(),
         10, // 10 iterations
-        100, // 100ms max per iteration
+        100 // 100ms max per iteration
       );
 
       const _wasmPerformance =
         await neuralSuite.performance.benchmarkPrediction(
           () => wasmForwardPass(),
           10,
-          50, // 50ms max per iteration (should be faster)
+          50 // 50ms max per iteration (should be faster)
         );
 
       // Verify both implementations produce valid results
@@ -145,7 +145,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       jsResults?.forEach((result, i) => {
         expect(result).toHaveLength(networkSize[networkSize.length - 1]);
         expect(wasmResults?.[i]).toHaveLength(
-          networkSize[networkSize.length - 1],
+          networkSize[networkSize.length - 1]
         );
       });
     });
@@ -154,7 +154,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // Classical TDD: Test memory efficiency during training
       const largeDataset = NeuralTestDataGenerator?.generateLinearData(
         5000,
-        0.1,
+        0.1
       );
       const network = createLargeNetwork([100, 200, 100, 1]);
 
@@ -167,7 +167,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
             learningRate: 0.01,
           });
         },
-        150, // 150MB max memory increase
+        150 // 150MB max memory increase
       );
 
       expect(memoryTest.withinLimit).toBe(true);
@@ -175,7 +175,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // Verify training actually occurred
       expect(network.trainingMetrics.epochsCompleted).toBe(10);
       expect(network.trainingMetrics.finalError).toBeLessThan(
-        Number.POSITIVE_INFINITY,
+        Number.POSITIVE_INFINITY
       );
     });
   });
@@ -237,8 +237,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const simdOperation = () => {
         mockWasmModule.simdVectorMultiply.mockImplementation(
           (vec, _scalarVec) => {
-            return vec.map((x: any) => x * scalar);
-          },
+            return vec.map((x: unknown) => x * scalar);
+          }
         );
         const scalarVector = new Array(largeVector.length).fill(scalar);
         return mockWasmModule.simdVectorMultiply(largeVector, scalarVector);
@@ -247,13 +247,13 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       const _standardPerf = await neuralSuite.performance.benchmarkPrediction(
         standardOperation,
         1000,
-        10, // 10ms max
+        10 // 10ms max
       );
 
       const _simdPerf = await neuralSuite.performance.benchmarkPrediction(
         simdOperation,
         1000,
-        5, // 5ms max (should be faster)
+        5 // 5ms max (should be faster)
       );
 
       // Both should produce same results
@@ -303,7 +303,7 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
         const unalignedB = generateRandomVector(1001);
         const result = mockWasmModule.simdVectorAdd(
           unalignedVector,
-          unalignedB,
+          unalignedB
         );
         expect(result).toHaveLength(1001);
       }).not.toThrow();
@@ -335,8 +335,8 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
         const computeStart = performance.now();
         mockWasmModule.simdVectorMultiply.mockImplementation(
           (vec, _multiplier) => {
-            return vec.map((x: any) => x * 2.0);
-          },
+            return vec.map((x: unknown) => x * 2.0);
+          }
         );
         const result = mockWasmModule.simdVectorMultiply(wasmData, [2.0]);
         const computeEnd = performance.now();
@@ -389,18 +389,18 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
       // Perform tensor operation in WASM
       mockWasmModule.neuralForwardPass.mockImplementation((data, _dims) => {
         // Simulate tensor convolution or similar operation
-        return data?.map((x: any) => Math.tanh(x * 0.5));
+        return data?.map((x: unknown) => Math.tanh(x * 0.5));
       });
 
       const processedTensor = mockWasmModule.neuralForwardPass(
         wasmTensor,
-        tensorDimensions,
+        tensorDimensions
       );
 
       // Transfer back and reshape
       const resultTensor = reshapeTensor(
         mockTransferFromWASM(processedTensor),
-        tensorDimensions,
+        tensorDimensions
       );
 
       const metrics = profiler.stop();
@@ -484,17 +484,17 @@ describe('WASM Neural Performance Validation - Classical TDD', () => {
               mockWasmModule.simdVectorMultiply.mockImplementation(
                 (vec, multiplier) => {
                   return vec.map(
-                    (x, i) => x * multiplier[i % multiplier.length],
+                    (x, i) => x * multiplier[i % multiplier.length]
                   );
-                },
+                }
               );
               return mockWasmModule.simdVectorMultiply(
                 testData,
-                [2.0, 3.0, 4.0],
+                [2.0, 3.0, 4.0]
               );
             },
             100, // 100 iterations
-            size * 0.01, // Performance should scale roughly linearly
+            size * 0.01 // Performance should scale roughly linearly
           );
 
         performanceBaseline.set(size, performanceResult?.avgTime);
@@ -650,10 +650,10 @@ function generateRandomVector(size: number): number[] {
 
 function generateRandomBatch(
   batchSize: number,
-  featureSize: number,
+  featureSize: number
 ): number[][] {
   return Array.from({ length: batchSize }, () =>
-    generateRandomVector(featureSize),
+    generateRandomVector(featureSize)
   );
 }
 
@@ -679,7 +679,7 @@ function jsNeuralForwardPass(input: number[], topology: number[]): number[] {
   return activations;
 }
 
-function createLargeNetwork(topology: number[]): any {
+function createLargeNetwork(topology: number[]): unknown {
   return {
     topology,
     weights: initializeNetworkWeights(topology),
@@ -710,9 +710,9 @@ function initializeNetworkWeights(topology: number[]): number[][][] {
 }
 
 function trainNetworkWithWASM(
-  network: any,
+  network: unknown,
   data: unknown[],
-  config: Record<string, unknown>,
+  config: Record<string, unknown>
 ): void {
   // Simulate WASM-accelerated training
   for (let epoch = 0; epoch < config?.epochs; epoch++) {
@@ -727,7 +727,7 @@ function trainNetworkWithWASM(
         const error =
           output.reduce(
             (sum, pred, idx) => sum + (pred - sample.output[idx]) ** 2,
-            0,
+            0
           ) / output.length;
         epochError += error;
 
@@ -802,7 +802,7 @@ function flattenTensor(tensor: number[][][]): number[] {
 
 function reshapeTensor(
   flatArray: number[],
-  dimensions: number[],
+  dimensions: number[]
 ): number[][][] {
   const tensor: number[][][] = [];
   let index = 0;

@@ -153,7 +153,7 @@ interface FailureInjectorCallbacks {
 
 type FailureInjector = FailureInjectorCallbacks;
 type SafetyCheck = (
-  experiment: ChaosExperiment,
+  experiment: ChaosExperiment
 ) =>
   | Promise<{ safe: boolean; reason?: string }>
   | { safe: boolean; reason?: string };
@@ -227,7 +227,7 @@ export class ChaosEngineering extends EventEmitter {
   async initialize() {
     if (!this.options.enableChaos) {
       this.logger.warn(
-        'Chaos Engineering is DISABLED - Enable with enableChaos: true',
+        'Chaos Engineering is DISABLED - Enable with enableChaos: true'
       );
       return;
     }
@@ -256,7 +256,7 @@ export class ChaosEngineering extends EventEmitter {
         {
           component: 'chaos-engineering',
           metadata: { originalError: errorMessage },
-        },
+        }
       );
       this.logger.error('Chaos Engineering initialization failed', chaosError);
       throw chaosError;
@@ -271,7 +271,7 @@ export class ChaosEngineering extends EventEmitter {
    */
   registerExperiment(
     name: string,
-    experimentDefinition: Partial<ChaosExperiment>,
+    experimentDefinition: Partial<ChaosExperiment>
   ) {
     const experiment: ChaosExperiment = {
       id: generateId('experiment'),
@@ -297,7 +297,7 @@ export class ChaosEngineering extends EventEmitter {
         `Experiment blast radius (${experiment.blastRadius}) exceeds limit (${this.options?.blastRadiusLimit || 0.5})`,
         'blastRadius',
         this.options.blastRadiusLimit,
-        String(experiment.blastRadius),
+        String(experiment.blastRadius)
       );
     }
 
@@ -321,13 +321,13 @@ export class ChaosEngineering extends EventEmitter {
    */
   async runExperiment(
     experimentName: string,
-    overrideParams: Record<string, unknown> = {},
+    overrideParams: Record<string, unknown> = {}
   ) {
     if (!this.options.enableChaos) {
       throw new ConfigurationError(
         'Chaos Engineering is disabled',
         'enableChaos',
-        false,
+        false
       );
     }
 
@@ -335,7 +335,7 @@ export class ChaosEngineering extends EventEmitter {
       throw new SystemError(
         'Emergency stop is active - chaos experiments blocked',
         'EMERGENCY_STOP',
-        'critical',
+        'critical'
       );
     }
 
@@ -345,7 +345,7 @@ export class ChaosEngineering extends EventEmitter {
         `Experiment '${experimentName}' not found`,
         'experimentName',
         'valid experiment name',
-        experimentName,
+        experimentName
       );
     }
 
@@ -354,7 +354,7 @@ export class ChaosEngineering extends EventEmitter {
         `Experiment '${experimentName}' is disabled`,
         'enabled',
         'expected enabled to be true',
-        String(false),
+        String(false)
       );
     }
 
@@ -363,7 +363,7 @@ export class ChaosEngineering extends EventEmitter {
       throw new SystemError(
         `Maximum concurrent experiments reached (${this.options.maxConcurrentExperiments})`,
         'MAX_CONCURRENT_EXPERIMENTS',
-        'high',
+        'high'
       );
     }
 
@@ -413,7 +413,7 @@ export class ChaosEngineering extends EventEmitter {
         async () => {
           await this.injectFailure(experiment, execution);
           execution.failureInjected = true;
-        },
+        }
       );
 
       // Phase 3: Monitor failure impact
@@ -422,7 +422,7 @@ export class ChaosEngineering extends EventEmitter {
         'impact_monitoring',
         async () => {
           await this.monitorFailureImpact(execution, experiment.duration);
-        },
+        }
       );
 
       // Phase 4: Trigger recovery (if not automatic)
@@ -433,7 +433,7 @@ export class ChaosEngineering extends EventEmitter {
           async () => {
             await this.triggerRecovery(execution);
             execution.recoveryTriggered = true;
-          },
+          }
         );
       }
 
@@ -444,7 +444,7 @@ export class ChaosEngineering extends EventEmitter {
         async () => {
           await this.monitorRecovery(execution);
           execution.recoveryCompleted = true;
-        },
+        }
       );
 
       // Phase 6: Cleanup and validation
@@ -528,7 +528,7 @@ export class ChaosEngineering extends EventEmitter {
   async runExperimentPhase(
     execution: ExperimentExecution,
     phaseName: string,
-    phaseFunction: () => Promise<void>,
+    phaseFunction: () => Promise<void>
   ) {
     const phaseStartTime = Date.now();
     execution.currentPhase = phaseName;
@@ -612,7 +612,7 @@ export class ChaosEngineering extends EventEmitter {
         const result = await safetyCheck(experiment);
         if (!result?.safe) {
           throw new Error(
-            `Safety check failed: ${checkName} - ${result?.reason}`,
+            `Safety check failed: ${checkName} - ${result?.reason}`
           );
         }
       }
@@ -631,12 +631,12 @@ export class ChaosEngineering extends EventEmitter {
    */
   async injectFailure(
     experiment: ChaosExperiment,
-    execution: ExperimentExecution,
+    execution: ExperimentExecution
   ) {
     const injector = this.failureInjectors.get(experiment.failureType || '');
     if (!injector) {
       throw new Error(
-        `Failure injector not found: ${experiment.failureType || 'unknown'}`,
+        `Failure injector not found: ${experiment.failureType || 'unknown'}`
       );
     }
 
@@ -772,7 +772,7 @@ export class ChaosEngineering extends EventEmitter {
         chaosExperiment: execution.id,
         failureType: experiment.failureType,
         injectionResult: execution.injectionResult,
-      },
+      }
     );
 
     execution.recoveryExecution = recoveryExecution as RecoveryExecution;
@@ -874,10 +874,10 @@ export class ChaosEngineering extends EventEmitter {
         `Waiting for cooldown period: ${experiment.cooldown}ms`,
         {
           executionId: execution.id,
-        },
+        }
       );
       await new Promise<void>((resolve) =>
-        setTimeout(resolve, experiment.cooldown),
+        setTimeout(resolve, experiment.cooldown)
       );
     }
   }
@@ -909,7 +909,7 @@ export class ChaosEngineering extends EventEmitter {
       const connectionStatus = this.connectionManager.getConnectionStatus();
       if (!(connectionStatus && connectionStatus.connections)) return false;
       const failedConnections = Object.values(
-        connectionStatus.connections,
+        connectionStatus.connections
       ).filter((conn: unknown) => conn && conn.status === 'failed').length;
 
       if (failedConnections > 0) {
@@ -1014,7 +1014,7 @@ export class ChaosEngineering extends EventEmitter {
             };
 
           for (const [id, _connection] of Object.entries(
-            connections.connections,
+            connections.connections
           )) {
             if (
               targetConnections === 'all' ||
@@ -1023,7 +1023,7 @@ export class ChaosEngineering extends EventEmitter {
               if (failureType === 'disconnect') {
                 await this.connectionManager.disconnectConnection(
                   id,
-                  'Chaos experiment',
+                  'Chaos experiment'
                 );
                 affectedConnections.push({ id, action: 'disconnected' });
               }
@@ -1308,7 +1308,7 @@ export class ChaosEngineering extends EventEmitter {
 
     // Cancel all active experiments
     const cancelPromises = Array.from(this.activeExperiments.keys()).map(
-      (executionId) => this.cancelExperiment(executionId, 'Emergency stop'),
+      (executionId) => this.cancelExperiment(executionId, 'Emergency stop')
     );
 
     await Promise.allSettled(cancelPromises);
@@ -1332,7 +1332,7 @@ export class ChaosEngineering extends EventEmitter {
         `Experiment execution ${executionId} not found`,
         'executionId',
         'valid execution ID',
-        executionId,
+        executionId
       );
     }
 
@@ -1345,7 +1345,7 @@ export class ChaosEngineering extends EventEmitter {
       {
         executionId,
         reason,
-      },
+      }
     );
 
     // Cleanup
@@ -1402,7 +1402,7 @@ export class ChaosEngineering extends EventEmitter {
       activeExperiments: this.activeExperiments.size,
       registeredExperiments: this.experiments.size,
       enabledExperiments: Array.from(this.experiments.values()).filter(
-        (e) => e.enabled,
+        (e) => e.enabled
       ).length,
       failureInjectors: this.failureInjectors.size,
       emergencyStop: this.emergencyStop,
@@ -1448,7 +1448,7 @@ export class ChaosEngineering extends EventEmitter {
           ...experiment,
           experimentName, // Place after spread to properly override 'name' property
           history: this.experimentHistory.get(experimentName) || [],
-        }),
+        })
       ),
       activeExperiments: Array.from(this.activeExperiments.values()),
       failureInjectors: Array.from(this.failureInjectors.keys()),
@@ -1468,8 +1468,8 @@ export class ChaosEngineering extends EventEmitter {
         this.cancelExperiment(executionId, 'System shutdown').catch((error) =>
           this.logger.warn(`Error cancelling experiment ${executionId}`, {
             error: error.message,
-          }),
-        ),
+          })
+        )
     );
 
     await Promise.allSettled(cancelPromises);

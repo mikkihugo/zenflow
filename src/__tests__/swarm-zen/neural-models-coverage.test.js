@@ -30,13 +30,13 @@ describe('Neural Models 100% Coverage', () => {
       // Test with invalid dimensions
       assert.throws(
         () => base.initializeParameters({ dimensions: -1 }),
-        /Invalid dimensions/,
+        /Invalid dimensions/
       );
 
       // Test with null config
       assert.throws(
         () => base.initializeParameters(null),
-        /Configuration required/,
+        /Configuration required/
       );
     });
 
@@ -71,7 +71,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         autoencoder.encode([[1, 2]]), // Wrong dimension
-        /Dimension mismatch/,
+        /Dimension mismatch/
       );
     });
 
@@ -80,7 +80,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         autoencoder.decode([[1, 2]]), // Wrong latent dimension
-        /Latent dimension mismatch/,
+        /Latent dimension mismatch/
       );
     });
 
@@ -92,7 +92,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         autoencoder.train(corruptedData),
-        /Invalid training data/,
+        /Invalid training data/
       );
     });
 
@@ -124,7 +124,7 @@ describe('Neural Models 100% Coverage', () => {
         cnn.forward({
           image: new Array(3).fill(new Array(32).fill(0)), // Missing dimension
         }),
-        /Invalid image dimensions/,
+        /Invalid image dimensions/
       );
     });
 
@@ -135,7 +135,7 @@ describe('Neural Models 100% Coverage', () => {
         cnn.forward({
           image: new Array(3).fill(new Array(32).fill(new Array(32).fill(0))),
         }),
-        /Invalid pooling size/,
+        /Invalid pooling size/
       );
     });
 
@@ -166,7 +166,7 @@ describe('Neural Models 100% Coverage', () => {
       assert.deepEqual(
         result1,
         result2,
-        'Dropout should be disabled in eval mode',
+        'Dropout should be disabled in eval mode'
       );
     });
   });
@@ -185,7 +185,7 @@ describe('Neural Models 100% Coverage', () => {
     it('should handle invalid graph structures', async () => {
       await assert.rejects(
         gnn.forward({ nodes: null, edges: [[0, 1]] }),
-        /Invalid nodes/,
+        /Invalid nodes/
       );
 
       await assert.rejects(
@@ -193,7 +193,7 @@ describe('Neural Models 100% Coverage', () => {
           nodes: [[1, 2, 3]],
           edges: null,
         }),
-        /Invalid edges/,
+        /Invalid edges/
       );
     });
 
@@ -237,7 +237,7 @@ describe('Neural Models 100% Coverage', () => {
           ],
           edges: [[0, 1]],
         }),
-        /Message passing disabled/,
+        /Message passing disabled/
       );
     });
   });
@@ -259,7 +259,7 @@ describe('Neural Models 100% Coverage', () => {
           sequence: [[1, 2, 3]], // Wrong input size
           lengths: [10], // Mismatched length
         }),
-        /Sequence length mismatch/,
+        /Sequence length mismatch/
       );
     });
 
@@ -279,7 +279,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         gru.backward({ gradOutput: [[1, 2, 3]] }),
-        /Invalid gradient clipping/,
+        /Invalid gradient clipping/
       );
     });
 
@@ -346,7 +346,7 @@ describe('Neural Models 100% Coverage', () => {
         resnet.forward({
           image: new Array(2).fill(new Array(224).fill(new Array(224).fill(0))), // Wrong channels
         }),
-        /Channel dimension mismatch/,
+        /Channel dimension mismatch/
       );
     });
   });
@@ -378,7 +378,7 @@ describe('Neural Models 100% Coverage', () => {
           input: [[1, 2, 0, 0]], // Padded sequence
           paddingMask: [[1, 1, 1, 1]], // Wrong mask (no padding indicated)
         }),
-        /Padding mask mismatch/,
+        /Padding mask mismatch/
       );
     });
 
@@ -390,7 +390,7 @@ describe('Neural Models 100% Coverage', () => {
         transformer.forward({
           input: [longSequence],
         }),
-        /Sequence too long/,
+        /Sequence too long/
       );
     });
 
@@ -401,7 +401,7 @@ describe('Neural Models 100% Coverage', () => {
         transformer.forward({
           input: [[1, 2, 3, 4]],
         }),
-        /Attention head failure/,
+        /Attention head failure/
       );
     });
 
@@ -429,7 +429,7 @@ describe('Neural Models 100% Coverage', () => {
 
       await assert.rejects(
         ensemblePredict(ensemble, { data: [1, 2, 3] }),
-        /Incompatible model types/,
+        /Incompatible model types/
       );
     });
   });
@@ -438,7 +438,7 @@ describe('Neural Models 100% Coverage', () => {
 // Helper function for ensemble prediction
 async function ensemblePredict(ensemble, input) {
   const predictions = await Promise.all(
-    ensemble.models.map((model) => model.forward(input)),
+    ensemble.models.map((model) => model.forward(input))
   );
 
   if (!predictions.every((p) => p.length === predictions[0].length)) {

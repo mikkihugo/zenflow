@@ -70,7 +70,7 @@ class BazelIntegrationTester {
       path.join(this.testWorkspaceRoot, 'src/main/java/com/example'),
       {
         recursive: true,
-      },
+      }
     );
     await mkdir(path.join(this.testWorkspaceRoot, 'src/main/python/lib'), {
       recursive: true,
@@ -79,7 +79,7 @@ class BazelIntegrationTester {
       path.join(this.testWorkspaceRoot, 'src/test/java/com/example'),
       {
         recursive: true,
-      },
+      }
     );
     await mkdir(path.join(this.testWorkspaceRoot, 'tools/build'), {
       recursive: true,
@@ -125,7 +125,7 @@ git_repository(
 
     await writeFile(
       path.join(this.testWorkspaceRoot, 'WORKSPACE'),
-      workspaceContent,
+      workspaceContent
     );
 
     // Create main Java BUILD file
@@ -151,7 +151,7 @@ java_binary(
 
     await writeFile(
       path.join(this.testWorkspaceRoot, 'src/main/java/com/example/BUILD'),
-      javaBuildContent,
+      javaBuildContent
     );
 
     // Create Python BUILD file
@@ -173,7 +173,7 @@ py_test(
 
     await writeFile(
       path.join(this.testWorkspaceRoot, 'src/main/python/lib/BUILD'),
-      pythonBuildContent,
+      pythonBuildContent
     );
 
     // Create test BUILD file
@@ -192,7 +192,7 @@ java_test(
 
     await writeFile(
       path.join(this.testWorkspaceRoot, 'src/test/java/com/example/BUILD'),
-      testBuildContent,
+      testBuildContent
     );
 
     // Create tools BUILD file
@@ -214,7 +214,7 @@ genrule(
 
     await writeFile(
       path.join(this.testWorkspaceRoot, 'tools/build/BUILD'),
-      toolsBuildContent,
+      toolsBuildContent
     );
 
     logger.info('✅ Test workspace setup complete');
@@ -268,7 +268,7 @@ genrule(
 
       await analyzer.shutdown();
       logger.info(
-        `${success ? '✅' : '❌'} Bazel detection test ${success ? 'passed' : 'failed'}`,
+        `${success ? '✅' : '❌'} Bazel detection test ${success ? 'passed' : 'failed'}`
       );
     } catch (error) {
       this.testResults.push({
@@ -337,7 +337,7 @@ genrule(
 
       await analyzer.shutdown();
       logger.info(
-        `${success ? '✅' : '❌'} Bazel parsing test ${success ? 'passed' : 'failed'}`,
+        `${success ? '✅' : '❌'} Bazel parsing test ${success ? 'passed' : 'failed'}`
       );
     } catch (error) {
       this.testResults.push({
@@ -389,7 +389,7 @@ genrule(
       const hasInterdependencies =
         hasDependencies &&
         Object.values(bazelMetadata.targetDependencies).some(
-          (deps: unknown) => Object.keys(deps).length > 0,
+          (deps: unknown) => Object.keys(deps).length > 0
         );
 
       const success = hasDependencies && hasInterdependencies;
@@ -399,16 +399,16 @@ genrule(
         success,
         details: {
           packageDependencies: Object.keys(
-            bazelMetadata?.targetDependencies || {},
+            bazelMetadata?.targetDependencies || {}
           ).length,
           totalDependencyLinks: Object.values(
-            bazelMetadata?.targetDependencies || {},
+            bazelMetadata?.targetDependencies || {}
           ).reduce(
             (total, deps: unknown) => total + Object.keys(deps).length,
-            0,
+            0
           ),
           sampleDependencies: Object.fromEntries(
-            Object.entries(bazelMetadata?.targetDependencies || {}).slice(0, 3),
+            Object.entries(bazelMetadata?.targetDependencies || {}).slice(0, 3)
           ),
         },
         duration: Date.now() - startTime,
@@ -416,7 +416,7 @@ genrule(
 
       await analyzer.shutdown();
       logger.info(
-        `${success ? '✅' : '❌'} Dependency analysis test ${success ? 'passed' : 'failed'}`,
+        `${success ? '✅' : '❌'} Dependency analysis test ${success ? 'passed' : 'failed'}`
       );
     } catch (error) {
       this.testResults.push({
@@ -528,7 +528,7 @@ genrule(
       const relationshipMap = await neuralMapper.mapDomainRelationships(
         domains,
         dependencies,
-        bazelMetadata,
+        bazelMetadata
       );
 
       const success =
@@ -546,7 +546,7 @@ genrule(
           bazelEnhancementsPresent: !!(relationshipMap as any)
             .bazelEnhancements,
           relationshipsWithBazelInsights: relationshipMap.relationships.filter(
-            (rel: unknown) => rel.bazelInsights,
+            (rel: unknown) => rel.bazelInsights
           ).length,
           sampleRelationship: relationshipMap.relationships[0],
           bazelEnhancements: (relationshipMap as any).bazelEnhancements,
@@ -555,7 +555,7 @@ genrule(
       });
 
       logger.info(
-        `${success ? '✅' : '❌'} Neural integration test ${success ? 'passed' : 'failed'}`,
+        `${success ? '✅' : '❌'} Neural integration test ${success ? 'passed' : 'failed'}`
       );
     } catch (error) {
       this.testResults.push({
@@ -576,12 +576,12 @@ genrule(
     const passedTests = this.testResults.filter((r) => r.success).length;
     const totalDuration = this.testResults.reduce(
       (sum, r) => sum + r.duration,
-      0,
+      0
     );
 
     logger.info('\n📊 === BAZEL INTEGRATION TEST RESULTS ===');
     logger.info(
-      `🎯 Tests: ${passedTests}/${totalTests} passed (${((passedTests / totalTests) * 100).toFixed(1)}%)`,
+      `🎯 Tests: ${passedTests}/${totalTests} passed (${((passedTests / totalTests) * 100).toFixed(1)}%)`
     );
     logger.info(`⏱️  Total Duration: ${totalDuration}ms`);
     logger.info('');
@@ -592,7 +592,7 @@ genrule(
 
       if (result.success) {
         logger.info(
-          `   Details: ${JSON.stringify(result.details, null, 2).substring(0, 200)}...`,
+          `   Details: ${JSON.stringify(result.details, null, 2).substring(0, 200)}...`
         );
       } else {
         logger.info(`   Error: ${result.details.error || 'Unknown error'}`);
@@ -603,15 +603,15 @@ genrule(
     // Summary assessment
     if (passedTests === totalTests) {
       logger.info(
-        '🎉 ALL TESTS PASSED! Bazel integration is fully functional.',
+        '🎉 ALL TESTS PASSED! Bazel integration is fully functional.'
       );
     } else if (passedTests >= totalTests * 0.75) {
       logger.info(
-        '⚠️  Most tests passed. Bazel integration is mostly functional with minor issues.',
+        '⚠️  Most tests passed. Bazel integration is mostly functional with minor issues.'
       );
     } else {
       logger.info(
-        '❌ Significant issues detected. Bazel integration needs attention.',
+        '❌ Significant issues detected. Bazel integration needs attention.'
       );
     }
 

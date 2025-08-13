@@ -82,7 +82,7 @@ function checkJSDoc(filepath) {
 
           if (isExported || isPublic) {
             issues.push(
-              `Line ${i + 1}: Missing JSDoc for public function/class`,
+              `Line ${i + 1}: Missing JSDoc for public function/class`
             );
           }
         }
@@ -95,13 +95,13 @@ function checkJSDoc(filepath) {
 
     if (issues.length === 0) {
       console.log(
-        `  ✅ JSDoc coverage: ${documentedFunctions}/${publicFunctions} functions documented`,
+        `  ✅ JSDoc coverage: ${documentedFunctions}/${publicFunctions} functions documented`
       );
     } else {
       console.log(`  🟡 JSDoc issues found:`);
       issues.forEach((issue) => console.log(`    ${issue}`));
       console.log(
-        `  📊 Documentation coverage: ${documentedFunctions}/${publicFunctions} functions`,
+        `  📊 Documentation coverage: ${documentedFunctions}/${publicFunctions} functions`
       );
     }
 

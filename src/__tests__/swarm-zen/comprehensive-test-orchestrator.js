@@ -163,7 +163,7 @@ class ComprehensiveTestOrchestrator {
         } catch (error) {
           return { passed: false, details: `MCP error: ${error.message}` };
         }
-      },
+      }
     );
 
     // Test 2: Neural Network Integration
@@ -200,7 +200,7 @@ class ComprehensiveTestOrchestrator {
             details: `Neural integration error: ${error.message}`,
           };
         }
-      },
+      }
     );
 
     // Test 3: Persistence Integration
@@ -234,7 +234,7 @@ class ComprehensiveTestOrchestrator {
             details: `Persistence error: ${error.message}`,
           };
         }
-      },
+      }
     );
 
     // Test 4: WASM Module Integration
@@ -267,7 +267,7 @@ class ComprehensiveTestOrchestrator {
         } catch (error) {
           return { passed: false, details: `WASM error: ${error.message}` };
         }
-      },
+      }
     );
 
     // Test 5: Hook System Integration
@@ -296,7 +296,7 @@ class ComprehensiveTestOrchestrator {
             details: `Hook system error: ${error.message}`,
           };
         }
-      },
+      }
     );
 
     return claudeFlowTests;
@@ -359,7 +359,7 @@ class ComprehensiveTestOrchestrator {
       const nodeVersion = process.version;
       const majorVersion = Number.parseInt(
         nodeVersion.slice(1).split('.')[0],
-        10,
+        10
       );
       nodeTest.passed = majorVersion >= 14;
       nodeTest.details = `Node.js ${nodeVersion} ${nodeTest.passed ? 'supported' : 'unsupported (minimum: 14.x)'}`;
@@ -443,7 +443,7 @@ class ComprehensiveTestOrchestrator {
 
     // Overall platform compatibility
     platformTests.passed = Object.values(platformTests.compatibility).every(
-      (supported) => supported,
+      (supported) => supported
     );
 
     platformTests.tests.forEach((_test) => {});
@@ -550,7 +550,7 @@ class ComprehensiveTestOrchestrator {
     const criticalPassed = criticalSuites.every(
       (suiteName) =>
         this.orchestrationResults.testSuites.find((s) => s.name === suiteName)
-          ?.passed,
+          ?.passed
     );
     this.orchestrationResults.cicdReadiness =
       criticalPassed &&
@@ -564,7 +564,7 @@ class ComprehensiveTestOrchestrator {
       '/workspaces/ruv-FANN/ruv-swarm/npm/test/comprehensive-test-report.json';
     await fs.writeFile(
       reportPath,
-      JSON.stringify(this.orchestrationResults, null, 2),
+      JSON.stringify(this.orchestrationResults, null, 2)
     );
 
     // Generate executive summary
@@ -593,16 +593,16 @@ class ComprehensiveTestOrchestrator {
     if (
       this.orchestrationResults.metrics.performance.simdPerformance &&
       !this.orchestrationResults.metrics.performance.simdPerformance.includes(
-        '6',
+        '6'
       ) &&
       !this.orchestrationResults.metrics.performance.simdPerformance.includes(
-        '7',
+        '7'
       ) &&
       !this.orchestrationResults.metrics.performance.simdPerformance.includes(
-        '8',
+        '8'
       ) &&
       !this.orchestrationResults.metrics.performance.simdPerformance.includes(
-        '9',
+        '9'
       )
     ) {
       recommendations.push('Optimize SIMD performance to reach 6-10x target');
@@ -611,7 +611,7 @@ class ComprehensiveTestOrchestrator {
     // Security recommendations
     if (this.orchestrationResults.metrics.security.securityScore < 90) {
       recommendations.push(
-        'Address security vulnerabilities to improve security score',
+        'Address security vulnerabilities to improve security score'
       );
     }
 
@@ -629,7 +629,7 @@ class ComprehensiveTestOrchestrator {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'All tests passed successfully - system ready for production deployment',
+        'All tests passed successfully - system ready for production deployment'
       );
     }
 
@@ -655,7 +655,7 @@ class ComprehensiveTestOrchestrator {
 ${this.orchestrationResults.testSuites
   .map(
     (suite) =>
-      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`,
+      `- ${suite.passed ? '✅' : '❌'} **${suite.name}**: ${suite.passed ? 'PASSED' : 'FAILED'} (${Math.round(suite.duration / 1000)}s)`
   )
   .join('\n')}
 
@@ -672,7 +672,7 @@ ${
 
     await fs.writeFile(
       '/workspaces/ruv-FANN/ruv-swarm/npm/test/executive-summary.md',
-      summary,
+      summary
     );
   }
 }

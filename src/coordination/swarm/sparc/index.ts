@@ -72,7 +72,7 @@ export class SPARC {
       | 'moderate'
       | 'high'
       | 'complex'
-      | 'enterprise' = 'moderate',
+      | 'enterprise' = 'moderate'
   ) {
     const engine = SPARC.getEngine();
     return engine.initializeProject({
@@ -107,7 +107,7 @@ export class SPARC {
       } catch (error) {
         logger.error(
           `Failed to execute phase ${phase} for project ${projectId}:`,
-          error,
+          error
         );
       }
     }

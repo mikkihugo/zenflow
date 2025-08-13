@@ -9,9 +9,9 @@ export interface DomainAnalysis {
   domainPath: string;
   complexity: number;
   complexityScore: number;
-  files: any[];
+  files: unknown[];
   metrics: Record<string, unknown>;
-  subdomains?: any[];
+  subdomains?: unknown[];
   categories: Record<string, any[]>;
   coupling: {
     internal: number;
@@ -93,14 +93,14 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     return [
       {
         name: 'core',
-        files: analysis.files.map((f: any) => f.path || ''),
+        files: analysis.files.map((f: unknown) => f.path || ''),
         dependencies: [],
       },
     ];
   }
 
   async calculateSplittingBenefits(
-    plans: SubDomainPlan[],
+    plans: SubDomainPlan[]
   ): Promise<SplittingMetrics> {
     // Minimal stub implementation
     return {

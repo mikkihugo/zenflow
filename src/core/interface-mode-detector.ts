@@ -127,7 +127,7 @@ export class InterfaceModeDetector {
   /**
    * Get environment information for debugging.
    */
-  static getEnvironmentInfo(): Record<string, any> {
+  static getEnvironmentInfo(): Record<string, unknown> {
     return {
       platform: process.platform,
       nodeVersion: process.version,

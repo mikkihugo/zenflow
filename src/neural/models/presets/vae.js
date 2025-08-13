@@ -121,12 +121,12 @@ class VAEModel extends NeuralModel {
     const mu = this.linearTransform(
       h,
       this.encoder.muLayer.weight,
-      this.encoder.muLayer.bias,
+      this.encoder.muLayer.bias
     );
     const logVar = this.linearTransform(
       h,
       this.encoder.logVarLayer.weight,
-      this.encoder.logVarLayer.bias,
+      this.encoder.logVarLayer.bias
     );
 
     // Reparameterization trick
@@ -276,7 +276,7 @@ class VAEModel extends NeuralModel {
       for (let i = 0; i < reconstruction.length; i++) {
         const pred = Math.max(
           epsilon,
-          Math.min(1 - epsilon, reconstruction[i]),
+          Math.min(1 - epsilon, reconstruction[i])
         );
         reconLoss -=
           target[i] * Math.log(pred) + (1 - target[i]) * Math.log(1 - pred);
@@ -339,7 +339,7 @@ class VAEModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Forward pass

@@ -58,12 +58,12 @@ export class ClaudeAIIntegration {
       await this.loadPatternCache();
 
       this.logger.info(
-        'Claude AI Integration initialized with structured logging and pattern learning',
+        'Claude AI Integration initialized with structured logging and pattern learning'
       );
 
       if (this.patternCache.size > 0) {
         console.log(
-          `🧠 Pattern Learning: ${this.patternCache.size} cached patterns loaded`,
+          `🧠 Pattern Learning: ${this.patternCache.size} cached patterns loaded`
         );
       }
     } catch (error) {
@@ -86,10 +86,10 @@ export class ClaudeAIIntegration {
     await this.initializeLogging();
 
     this.logger.info(
-      `🤖 Starting REAL Claude AI fixing for ${violations.length} violations...`,
+      `🤖 Starting REAL Claude AI fixing for ${violations.length} violations...`
     );
     console.log(
-      `🤖 Starting REAL Claude AI fixing for ${violations.length} violations...`,
+      `🤖 Starting REAL Claude AI fixing for ${violations.length} violations...`
     );
 
     // Log operation start with structured data
@@ -100,21 +100,21 @@ export class ClaudeAIIntegration {
       });
     }
     console.log(
-      `   🔧 Starting violation fixing - ${violations.length} total violations`,
+      `   🔧 Starting violation fixing - ${violations.length} total violations`
     );
     console.log(`   ⚙️  Options:`, options);
 
     const { maxFixes = 50, dryRun = false } = options;
     const prioritizedViolations = this.prioritizeViolations(violations).slice(
       0,
-      maxFixes,
+      maxFixes
     );
 
     // Group violations by file for efficient batching
     const violationsByFile = this.groupViolationsByFile(prioritizedViolations);
 
     console.log(
-      `🎯 Processing ${prioritizedViolations.length} violations across ${violationsByFile.size} files...`,
+      `🎯 Processing ${prioritizedViolations.length} violations across ${violationsByFile.size} files...`
     );
 
     let fileIndex = 0;
@@ -122,10 +122,10 @@ export class ClaudeAIIntegration {
       fileIndex++;
       const progress = ((fileIndex / violationsByFile.size) * 100).toFixed(1);
       console.log(
-        `\n📝 Fixing file ${fileIndex}/${violationsByFile.size} (${progress}%)`,
+        `\n📝 Fixing file ${fileIndex}/${violationsByFile.size} (${progress}%)`
       );
       console.log(
-        `   📁 File: ${path.basename(filePath)} (${fileViolations.length} violations)`,
+        `   📁 File: ${path.basename(filePath)} (${fileViolations.length} violations)`
       );
 
       try {
@@ -135,22 +135,22 @@ export class ClaudeAIIntegration {
             this.logger,
             filePath,
             fileViolations,
-            this.categorizeViolations(fileViolations),
+            this.categorizeViolations(fileViolations)
           );
         }
         console.log(
-          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`,
+          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`
         );
 
         const fixed = await this.fixFileViolations(
           filePath,
           fileViolations,
-          dryRun,
+          dryRun
         );
         if (fixed) {
           this.fixedCount += fileViolations.length;
           console.log(
-            `   ✅ Fixed ${fileViolations.length} violations successfully`,
+            `   ✅ Fixed ${fileViolations.length} violations successfully`
           );
           this.logger.info(
             `Fixed ${fileViolations.length} violations in ${path.basename(filePath)}`,
@@ -158,7 +158,7 @@ export class ClaudeAIIntegration {
               filePath,
               violationCount: fileViolations.length,
               violationTypes: fileViolations.map((v) => v.rule),
-            },
+            }
           );
         } else {
           this.skippedCount += fileViolations.length;
@@ -180,7 +180,7 @@ export class ClaudeAIIntegration {
         const todoMarked = this.markAsTodo(
           filePath,
           fileViolations,
-          error.message,
+          error.message
         );
         if (todoMarked) {
           this.todoCount += fileViolations.length;
@@ -238,7 +238,7 @@ export class ClaudeAIIntegration {
     const relativePath = path.relative(REPO_ROOT, filePath);
 
     console.log(
-      `   📝 Fixing ${violations.length} violations: ${violations.map((v) => v.rule).join(', ')}`,
+      `   📝 Fixing ${violations.length} violations: ${violations.map((v) => v.rule).join(', ')}`
     );
     console.log(`   📁 File: ${relativePath}`);
 
@@ -249,7 +249,7 @@ export class ClaudeAIIntegration {
     try {
       if (dryRun) {
         console.log(
-          `   🔍 DRY RUN: Would call Claude CLI to fix ${violations.length} violations`,
+          `   🔍 DRY RUN: Would call Claude CLI to fix ${violations.length} violations`
         );
         return false;
       }
@@ -265,7 +265,7 @@ export class ClaudeAIIntegration {
         const updatedContent = fs.readFileSync(filePath, 'utf8');
         if (updatedContent !== originalContent) {
           console.log(
-            `   🔄 Claude fixed the file (${updatedContent.length} chars)`,
+            `   🔄 Claude fixed the file (${updatedContent.length} chars)`
           );
           console.log(`   💾 File updated by Claude's tools`);
           return true;
@@ -312,7 +312,7 @@ export class ClaudeAIIntegration {
         const updatedContent = fs.readFileSync(violation.file, 'utf8');
         if (updatedContent !== originalContent) {
           console.log(
-            `   🔄 Claude fixed the file (${updatedContent.length} chars)`,
+            `   🔄 Claude fixed the file (${updatedContent.length} chars)`
           );
           console.log(`   💾 File updated by Claude's tools`);
           return true;
@@ -357,7 +357,7 @@ export class ClaudeAIIntegration {
     for (const [type, keywords] of Object.entries(patterns)) {
       if (
         keywords.some((keyword) =>
-          errorLine.toLowerCase().includes(keyword.toLowerCase()),
+          errorLine.toLowerCase().includes(keyword.toLowerCase())
         )
       ) {
         return type;
@@ -428,7 +428,7 @@ export class ClaudeAIIntegration {
 
     const startTime = Date.now();
     console.log(
-      `   ⚡ PATTERN CACHE HIT: Using learned strategy (used ${pattern.usageCount}x)`,
+      `   ⚡ PATTERN CACHE HIT: Using learned strategy (used ${pattern.usageCount}x)`
     );
     console.log(`   📚 Pattern: ${patternKey.split('-')[0]} errors`);
 
@@ -442,7 +442,7 @@ Confidence: ${(pattern.confidence * 100).toFixed(1)}%`;
 
     const result = await this.callClaudeCLIWithoutCache(
       filePath,
-      optimizedPrompt,
+      optimizedPrompt
     );
 
     const duration = Date.now() - startTime;
@@ -451,10 +451,10 @@ Confidence: ${(pattern.confidence * 100).toFixed(1)}%`;
     pattern.avgDuration = (pattern.avgDuration + duration) / 2;
 
     console.log(
-      `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (avg: ${(pattern.avgDuration / 1000).toFixed(1)}s)`,
+      `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (avg: ${(pattern.avgDuration / 1000).toFixed(1)}s)`
     );
     console.log(
-      `   📊 Pattern cache efficiency: ${((this.patternHits / (this.patternHits + this.patternMisses)) * 100).toFixed(1)}% hit rate`,
+      `   📊 Pattern cache efficiency: ${((this.patternHits / (this.patternHits + this.patternMisses)) * 100).toFixed(1)}% hit rate`
     );
 
     return result;
@@ -525,18 +525,18 @@ Confidence: ${(pattern.confidence * 100).toFixed(1)}%`;
     console.log(`   📚 Patterns Learned: ${stats.patternsLearned}`);
     console.log(`   ⚡ Cache Hit Rate: ${stats.hitRate}`);
     console.log(
-      `   🎯 Cache Hits: ${stats.cacheHits}, Misses: ${stats.cacheMisses}`,
+      `   🎯 Cache Hits: ${stats.cacheHits}, Misses: ${stats.cacheMisses}`
     );
     console.log(`   💰 Total Cost: $${stats.totalCost.toFixed(2)}`);
     console.log(
-      `   ⏱️  Avg Execution: ${Math.round(stats.avgExecutionTime / 1000)}s`,
+      `   ⏱️  Avg Execution: ${Math.round(stats.avgExecutionTime / 1000)}s`
     );
 
     if (stats.topPatterns.length > 0) {
       console.log(`   🏆 Top Patterns:`);
       stats.topPatterns.forEach((p, i) => {
         console.log(
-          `     ${i + 1}. ${p.file} (used ${p.usageCount}x, avg: ${p.avgDuration})`,
+          `     ${i + 1}. ${p.file} (used ${p.usageCount}x, avg: ${p.avgDuration})`
         );
       });
     }
@@ -562,7 +562,7 @@ Confidence: ${(pattern.confidence * 100).toFixed(1)}%`;
       `   🧠 Pattern Analysis: ${errors.length} errors, types: ${errors
         .map((e) => e.type)
         .slice(0, 3)
-        .join(', ')}`,
+        .join(', ')}`
     );
 
     // Check for cached pattern
@@ -591,7 +591,7 @@ Confidence: ${(pattern.confidence * 100).toFixed(1)}%`;
 
       console.log(`   🧠 Pattern learned and cached for future use`);
       console.log(
-        `   📊 Learning stats: ${this.patternCache.size} patterns, ${((this.patternHits / (this.patternHits + this.patternMisses)) * 100).toFixed(1)}% efficiency`,
+        `   📊 Learning stats: ${this.patternCache.size} patterns, ${((this.patternHits / (this.patternHits + this.patternMisses)) * 100).toFixed(1)}% efficiency`
       );
     }
 
@@ -630,7 +630,7 @@ Use your tools directly - do not return code in your response. Just fix the file
       });
     }
     console.log(
-      `   🔧 Starting Claude CLI with prompt length: ${prompt.length} chars`,
+      `   🔧 Starting Claude CLI with prompt length: ${prompt.length} chars`
     );
 
     return new Promise((resolve, reject) => {
@@ -652,7 +652,7 @@ Use your tools directly - do not return code in your response. Just fix the file
           stdio: ['pipe', 'pipe', 'pipe'],
           cwd: REPO_ROOT, // Ensure repo root for file access
           // No shell: true to avoid command interpretation
-        },
+        }
       );
 
       // Ensure logs directory exists for any remaining file operations
@@ -673,12 +673,12 @@ Use your tools directly - do not return code in your response. Just fix the file
           timeoutMinutes: Math.round(
             (300000 +
               Math.min(Math.floor(prompt.length / 1000) * 60000, 1500000)) /
-              60000,
+              60000
           ),
         });
       }
       console.log(
-        `   📊 Claude CLI session started: ${sessionId} for ${fileName}`,
+        `   📊 Claude CLI session started: ${sessionId} for ${fileName}`
       );
 
       let stdout = '';
@@ -694,20 +694,20 @@ Use your tools directly - do not return code in your response. Just fix the file
         const baseTimeout = 300000; // 5 minutes
         const complexityTimeout = Math.min(
           Math.floor(prompt.length / 1000) * 60000, // +1 min per 1K chars
-          1500000, // Max 25 additional minutes (30 total)
+          1500000 // Max 25 additional minutes (30 total)
         );
         const totalTimeout = baseTimeout + complexityTimeout;
         const timeoutMinutes = Math.round(totalTimeout / 60000);
 
         timeoutHandle = setTimeout(() => {
           console.log(
-            `   ⏰ Claude CLI inactivity timeout (${timeoutMinutes} minutes for complex file)`,
+            `   ⏰ Claude CLI inactivity timeout (${timeoutMinutes} minutes for complex file)`
           );
           claude.kill('SIGTERM');
           reject(
             new Error(
-              `Claude CLI inactivity timeout after ${timeoutMinutes} minutes`,
-            ),
+              `Claude CLI inactivity timeout after ${timeoutMinutes} minutes`
+            )
           );
         }, totalTimeout);
       };
@@ -746,7 +746,7 @@ Use your tools directly - do not return code in your response. Just fix the file
                         thinking: parsed.thinking || 'No thinking captured',
                         content: parsed.content || 'No content',
                         turnType: parsed.type || 'unknown',
-                      },
+                      }
                     );
                   }
                 }
@@ -761,7 +761,7 @@ Use your tools directly - do not return code in your response. Just fix the file
                         sessionId,
                         fileName,
                         thinkingContent: line.trim(),
-                      },
+                      }
                     );
                   }
                 }
@@ -782,12 +782,12 @@ Use your tools directly - do not return code in your response. Just fix the file
           });
         }
         console.log(
-          `   📥 Claude stdout: ${chunk.length} chars received (session: ${sessionId})`,
+          `   📥 Claude stdout: ${chunk.length} chars received (session: ${sessionId})`
         );
 
         if (chunk.length > 50) {
           console.log(
-            `   🧠 Claude: Working... (${chunk.length} chars received)`,
+            `   🧠 Claude: Working... (${chunk.length} chars received)`
           );
         }
       });
@@ -852,21 +852,21 @@ Use your tools directly - do not return code in your response. Just fix the file
                       response.thinking || 'No thinking captured',
                     turnsCompleted: response.num_turns,
                     costUSD: response.total_cost_usd,
-                  },
+                  }
                 );
               }
               console.log(
-                `   📊 Claude metrics - Duration: ${metrics.duration_ms}ms, Turns: ${metrics.num_turns}, Cost: $${metrics.cost_usd?.toFixed(4) || 'N/A'}`,
+                `   📊 Claude metrics - Duration: ${metrics.duration_ms}ms, Turns: ${metrics.num_turns}, Cost: $${metrics.cost_usd?.toFixed(4) || 'N/A'}`
               );
 
               console.log(`   ✅ Claude completed successfully:`);
               console.log(
-                `   ⏱️  Duration: ${response.duration_ms}ms (${response.num_turns} turns)`,
+                `   ⏱️  Duration: ${response.duration_ms}ms (${response.num_turns} turns)`
               );
               console.log(`   📝 Action: ${response.result}`);
               if (response.total_cost_usd) {
                 console.log(
-                  `   💰 Cost: $${response.total_cost_usd.toFixed(4)}`,
+                  `   💰 Cost: $${response.total_cost_usd.toFixed(4)}`
                 );
               }
             } else {
@@ -881,11 +881,11 @@ Use your tools directly - do not return code in your response. Just fix the file
                 });
               }
               console.log(
-                `   ❌ Claude CLI error response - Session: ${sessionId}, Exit code: ${code}`,
+                `   ❌ Claude CLI error response - Session: ${sessionId}, Exit code: ${code}`
               );
 
               console.log(
-                `   📤 Claude response: ${response.result || response.message || 'Unknown result'}`,
+                `   📤 Claude response: ${response.result || response.message || 'Unknown result'}`
               );
             }
           } catch (parseError) {
@@ -899,13 +899,13 @@ Use your tools directly - do not return code in your response. Just fix the file
               });
             }
             console.log(
-              `   ⚠️  Failed to parse Claude response - Session: ${sessionId}, Error: ${parseError.message}`,
+              `   ⚠️  Failed to parse Claude response - Session: ${sessionId}, Error: ${parseError.message}`
             );
 
             // Fallback to showing raw output if JSON parsing fails
             console.log(`   📤 Claude stdout (${stdout.length} chars):`);
             console.log(
-              `   💬 "${stdout.slice(0, 300)}${stdout.length > 300 ? '...' : ''}"`,
+              `   💬 "${stdout.slice(0, 300)}${stdout.length > 300 ? '...' : ''}"`
             );
           }
         }
@@ -922,7 +922,7 @@ Use your tools directly - do not return code in your response. Just fix the file
             });
           }
           console.log(
-            `   📢 Claude stderr final - Session: ${sessionId}, Length: ${stderr.length}`,
+            `   📢 Claude stderr final - Session: ${sessionId}, Length: ${stderr.length}`
           );
         }
 
@@ -937,7 +937,7 @@ Use your tools directly - do not return code in your response. Just fix the file
           });
         }
         console.log(
-          `   🏁 Claude CLI session completed - Session: ${sessionId}, Exit code: ${code}`,
+          `   🏁 Claude CLI session completed - Session: ${sessionId}, Exit code: ${code}`
         );
 
         if (code === 0) {
@@ -1186,7 +1186,7 @@ Use your Read and Write tools to fix this directly.`;
         {
           stdio: 'pipe',
           // No shell needed with full path
-        },
+        }
       );
 
       claude.on('close', (code) => {

@@ -197,7 +197,7 @@ export class AdvancedCLIEngine
    * @param config
    */
   async createIntelligentProject(
-    config: ProjectConfig,
+    config: ProjectConfig
   ): Promise<ProjectCreationResult> {
     this.emit('projectCreationStarted', config);
 
@@ -223,7 +223,7 @@ export class AdvancedCLIEngine
    *
    * @param project
    */
-  async manageProjectLifecycle(project: any): Promise<any> {
+  async manageProjectLifecycle(project: unknown): Promise<unknown> {
     this.emit('lifecycleManagementStarted', project);
 
     // Implementation for lifecycle management
@@ -261,7 +261,7 @@ export class AdvancedCLIEngine
    *
    * @param project
    */
-  async optimizeProjectStructure(project: any): Promise<any> {
+  async optimizeProjectStructure(project: unknown): Promise<unknown> {
     return await this.projectScaffolder.optimizeExistingProject(project.path);
   }
 
@@ -280,11 +280,11 @@ export class AdvancedCLIEngine
    * @param commands
    */
   async controlSwarmOperations(
-    commands: SwarmCommand[],
+    commands: SwarmCommand[]
   ): Promise<ControlResult> {
     return await this.swarmController.controlSwarmOperations(
       'default',
-      commands,
+      commands
     );
   }
 
@@ -293,7 +293,7 @@ export class AdvancedCLIEngine
    *
    * @param topology
    */
-  async visualizeSwarmTopology(topology: any): Promise<any> {
+  async visualizeSwarmTopology(topology: unknown): Promise<unknown> {
     return await this.swarmController.generateTopologyVisualization(topology);
   }
 
@@ -303,10 +303,10 @@ export class AdvancedCLIEngine
    * @param pipeline
    */
   async orchestrateDevelopmentPipeline(
-    pipeline: DevPipeline,
+    pipeline: DevPipeline
   ): Promise<PipelineResult> {
     return await this.workflowOrchestrator.orchestrateFullDevelopmentCycle(
-      pipeline,
+      pipeline
     );
   }
 
@@ -315,7 +315,7 @@ export class AdvancedCLIEngine
    *
    * @param specs
    */
-  async automateCodeGeneration(specs: any[]): Promise<any> {
+  async automateCodeGeneration(specs: unknown[]): Promise<unknown> {
     return await this.workflowOrchestrator.generateOptimalCode(specs);
   }
 
@@ -324,9 +324,9 @@ export class AdvancedCLIEngine
    *
    * @param strategy
    */
-  async performIntelligentTesting(strategy: any): Promise<any> {
+  async performIntelligentTesting(strategy: unknown): Promise<unknown> {
     return await this.workflowOrchestrator.orchestrateComprehensiveTesting(
-      strategy,
+      strategy
     );
   }
 
@@ -337,9 +337,9 @@ export class AdvancedCLIEngine
    * @param stage
    */
   private async executeLifecycleStage(
-    project: any,
-    stage: string,
-  ): Promise<any> {
+    project: unknown,
+    stage: string
+  ): Promise<unknown> {
     // Stage-specific implementation
     switch (stage) {
       case 'initialization':
@@ -359,31 +359,31 @@ export class AdvancedCLIEngine
     }
   }
 
-  private async initializeProjectStage(_project: any): Promise<any> {
+  private async initializeProjectStage(_project: unknown): Promise<unknown> {
     return { stage: 'initialization', success: true, duration: 1000 };
   }
 
-  private async developmentStage(_project: any): Promise<any> {
+  private async developmentStage(_project: unknown): Promise<unknown> {
     return { stage: 'development', success: true, duration: 5000 };
   }
 
-  private async testingStage(_project: any): Promise<any> {
+  private async testingStage(_project: unknown): Promise<unknown> {
     return { stage: 'testing', success: true, duration: 3000 };
   }
 
-  private async optimizationStage(_project: any): Promise<any> {
+  private async optimizationStage(_project: unknown): Promise<unknown> {
     return { stage: 'optimization', success: true, duration: 2000 };
   }
 
-  private async deploymentStage(_project: any): Promise<any> {
+  private async deploymentStage(_project: unknown): Promise<unknown> {
     return { stage: 'deployment', success: true, duration: 1500 };
   }
 
-  private async maintenanceStage(_project: any): Promise<any> {
+  private async maintenanceStage(_project: unknown): Promise<unknown> {
     return { stage: 'maintenance', success: true, duration: 500 };
   }
 
-  private generateLifecycleRecommendations(_results: any[]): string[] {
+  private generateLifecycleRecommendations(_results: unknown[]): string[] {
     return [
       'Consider implementing automated testing in CI/CD pipeline',
       'Add performance monitoring for production environment',
@@ -407,9 +407,9 @@ export class AdvancedCLIEngine
    */
   async executeCommand(
     commandName: string,
-    args: any[],
-    options: any = {},
-  ): Promise<any> {
+    args: unknown[],
+    options: unknown = {}
+  ): Promise<unknown> {
     const command = this.commandRegistry.getCommand(commandName);
     if (!command) {
       throw new Error(`Unknown command: ${commandName}`);
@@ -435,7 +435,7 @@ export class AdvancedCLIEngine
           result = await this.executeGenerateCommand(
             commandName,
             args,
-            options,
+            options
           );
           break;
         default:
@@ -452,9 +452,9 @@ export class AdvancedCLIEngine
 
   private async executeProjectCommand(
     commandName: string,
-    args: any[],
-    options: any,
-  ): Promise<any> {
+    args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     switch (commandName) {
       case 'create':
         return await this.handleProjectCreate(args, options);
@@ -469,9 +469,9 @@ export class AdvancedCLIEngine
 
   private async executeSwarmCommand(
     commandName: string,
-    args: any[],
-    options: any,
-  ): Promise<any> {
+    args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     switch (commandName) {
       case 'monitor':
         return await this.handleSwarmMonitor(args, options);
@@ -486,9 +486,9 @@ export class AdvancedCLIEngine
 
   private async executeGenerateCommand(
     commandName: string,
-    args: any[],
-    options: any,
-  ): Promise<any> {
+    args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     switch (commandName) {
       case 'from-spec':
         return await this.handleGenerateFromSpec(args, options);
@@ -500,7 +500,7 @@ export class AdvancedCLIEngine
   }
 
   // Command handlers
-  private async handleProjectCreate(args: any[], options: any): Promise<any> {
+  private async handleProjectCreate(args: unknown[], options: unknown): Promise<unknown> {
     const projectConfig: ProjectConfig = {
       name: args[0] || 'new-project',
       type: options?.type || 'full-stack',
@@ -515,14 +515,14 @@ export class AdvancedCLIEngine
   }
 
   private async handleProjectOptimize(
-    args: any[],
-    _options: any,
-  ): Promise<any> {
+    args: unknown[],
+    _options: unknown
+  ): Promise<unknown> {
     const projectPath = args[0] || process.cwd();
     return await this.optimizeProjectStructure({ path: projectPath });
   }
 
-  private async handleProjectStatus(args: any[], _options: any): Promise<any> {
+  private async handleProjectStatus(args: unknown[], _options: unknown): Promise<unknown> {
     const projectPath = args[0] || process.cwd();
     return {
       path: projectPath,
@@ -540,12 +540,12 @@ export class AdvancedCLIEngine
     };
   }
 
-  private async handleSwarmMonitor(args: any[], _options: any): Promise<any> {
+  private async handleSwarmMonitor(args: unknown[], _options: unknown): Promise<unknown> {
     const swarmId = args[0] || 'default';
     return await this.monitorSwarmExecution(swarmId);
   }
 
-  private async handleSwarmSpawn(_args: any[], options: any): Promise<any> {
+  private async handleSwarmSpawn(_args: unknown[], options: unknown): Promise<unknown> {
     const topology = options?.topology || 'mesh';
     const agentCount = options?.agents || 5;
 
@@ -558,7 +558,7 @@ export class AdvancedCLIEngine
     };
   }
 
-  private async handleSwarmCoordinate(args: any[], options: any): Promise<any> {
+  private async handleSwarmCoordinate(args: unknown[], options: unknown): Promise<unknown> {
     const task = args[0] || options?.task;
     const strategy = options?.strategy || 'parallel';
 
@@ -572,9 +572,9 @@ export class AdvancedCLIEngine
   }
 
   private async handleGenerateFromSpec(
-    args: any[],
-    _options: any,
-  ): Promise<any> {
+    args: unknown[],
+    _options: unknown
+  ): Promise<unknown> {
     const specFile = args[0];
     if (!specFile) {
       throw new Error('Specification file required');
@@ -592,9 +592,9 @@ export class AdvancedCLIEngine
   }
 
   private async handleGenerateNeuralNetwork(
-    _args: any[],
-    options: any,
-  ): Promise<any> {
+    _args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     const architecture = options?.architecture || 'transformer';
     const optimization = options?.optimization || 'balanced';
 
@@ -620,7 +620,7 @@ export class AdvancedCommandRegistry {
   private categories: Map<string, any> = new Map();
   private commands: Map<string, any> = new Map();
 
-  registerCategory(name: string, category: any): void {
+  registerCategory(name: string, category: unknown): void {
     this.categories.set(name, category);
 
     // Register individual commands
@@ -629,19 +629,19 @@ export class AdvancedCommandRegistry {
     }
   }
 
-  getCommand(name: string): any {
+  getCommand(name: string): unknown {
     return this.commands.get(name);
   }
 
-  getCategories(): any[] {
+  getCategories(): unknown[] {
     return Array.from(this.categories.values());
   }
 
-  getAllCommands(): any[] {
+  getAllCommands(): unknown[] {
     return Array.from(this.commands.values());
   }
 
-  findCommandsByCategory(category: CommandCategory): any[] {
+  findCommandsByCategory(category: CommandCategory): unknown[] {
     return this.getAllCommands().filter((cmd) => cmd.category === category);
   }
 }
@@ -649,7 +649,7 @@ export class AdvancedCommandRegistry {
 // Placeholder implementations for core components
 class IntelligentProjectScaffolder {
   async createOptimalProject(
-    _config: ProjectConfig,
+    _config: ProjectConfig
   ): Promise<ProjectCreationResult> {
     // Implementation for intelligent project creation
     return {
@@ -664,7 +664,7 @@ class IntelligentProjectScaffolder {
     };
   }
 
-  async optimizeExistingProject(_projectPath: string): Promise<any> {
+  async optimizeExistingProject(_projectPath: string): Promise<unknown> {
     // Implementation for project optimization
     return {
       optimizations: [],
@@ -676,7 +676,7 @@ class IntelligentProjectScaffolder {
 
 class RealTimeSwarmController {
   async createMonitoringDashboard(
-    swarmId: string,
+    swarmId: string
   ): Promise<MonitoringDashboard> {
     // Implementation for monitoring dashboard
     return {
@@ -690,7 +690,7 @@ class RealTimeSwarmController {
 
   async controlSwarmOperations(
     _swarmId: string,
-    commands: SwarmCommand[],
+    commands: SwarmCommand[]
   ): Promise<ControlResult> {
     // Implementation for swarm control
     return {
@@ -702,7 +702,7 @@ class RealTimeSwarmController {
     } as ControlResult;
   }
 
-  async generateTopologyVisualization(topology: any): Promise<any> {
+  async generateTopologyVisualization(topology: unknown): Promise<unknown> {
     // Implementation for topology visualization
     return {
       topology,
@@ -714,7 +714,7 @@ class RealTimeSwarmController {
 
 class DevelopmentPipelineOrchestrator {
   async orchestrateFullDevelopmentCycle(
-    pipeline: DevPipeline,
+    pipeline: DevPipeline
   ): Promise<PipelineResult> {
     // Implementation for pipeline orchestration
     return {
@@ -726,7 +726,7 @@ class DevelopmentPipelineOrchestrator {
     } as PipelineResult;
   }
 
-  async generateOptimalCode(specs: any[]): Promise<any> {
+  async generateOptimalCode(specs: unknown[]): Promise<unknown> {
     // Implementation for code generation
     return {
       specs,
@@ -736,7 +736,7 @@ class DevelopmentPipelineOrchestrator {
     };
   }
 
-  async orchestrateComprehensiveTesting(strategy: any): Promise<any> {
+  async orchestrateComprehensiveTesting(strategy: unknown): Promise<unknown> {
     // Implementation for testing orchestration
     return {
       strategy,

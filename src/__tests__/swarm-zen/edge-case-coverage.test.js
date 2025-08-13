@@ -126,7 +126,7 @@ class EdgeCaseCoverageTestSuite {
           const error = new errorModule.ZenSwarmError(null, 'NULL001');
           assert(
             error instanceof Error,
-            'Should create error with null message',
+            'Should create error with null message'
           );
         } catch (_e) {
           // Expected behavior
@@ -139,7 +139,7 @@ class EdgeCaseCoverageTestSuite {
           const error = new errorModule.ZenSwarmError('Test error', undefined);
           assert(
             error instanceof Error,
-            'Should create error with undefined code',
+            'Should create error with undefined code'
           );
         } catch (_e) {
           // Expected behavior
@@ -151,7 +151,7 @@ class EdgeCaseCoverageTestSuite {
         const error = new errorModule.ZenSwarmError('', 'EMPTY001');
         assert(
           error instanceof Error,
-          'Should create error with empty message',
+          'Should create error with empty message'
         );
         this.results.coverage.edgeCases++;
       });
@@ -161,7 +161,7 @@ class EdgeCaseCoverageTestSuite {
         const error = new errorModule.ZenSwarmError(longMessage, 'LONG001');
         assert(
           error instanceof Error,
-          'Should handle very long error messages',
+          'Should handle very long error messages'
         );
         this.results.coverage.edgeCases++;
       });
@@ -170,7 +170,7 @@ class EdgeCaseCoverageTestSuite {
         const specialMessage = '🚀\n\t\r\0🎉\'"<>';
         const error = new errorModule.ZenSwarmError(
           specialMessage,
-          'SPECIAL001',
+          'SPECIAL001'
         );
         assert(error instanceof Error, 'Should handle special characters');
         this.results.coverage.edgeCases++;
@@ -227,11 +227,11 @@ class EdgeCaseCoverageTestSuite {
         } catch (error) {
           assert(
             error.message.includes('circular'),
-            'Should detect circular reference',
+            'Should detect circular reference'
           );
         }
         this.results.coverage.edgeCases++;
-      },
+      }
     );
 
     await this.runTest('Type Validation - Array with holes', async () => {
@@ -298,7 +298,7 @@ class EdgeCaseCoverageTestSuite {
         const result = 42 / 0;
         assert(
           result === Number.POSITIVE_INFINITY,
-          'Should handle division by zero',
+          'Should handle division by zero'
         );
       } catch (_error) {
         // Some contexts might throw
@@ -331,7 +331,7 @@ class EdgeCaseCoverageTestSuite {
       } catch (error) {
         assert(
           error instanceof SyntaxError,
-          'Should throw SyntaxError for invalid JSON',
+          'Should throw SyntaxError for invalid JSON'
         );
       }
       this.results.coverage.errorPaths++;
@@ -345,7 +345,7 @@ class EdgeCaseCoverageTestSuite {
       } catch (error) {
         assert(
           error instanceof RangeError,
-          'Should throw RangeError for stack overflow',
+          'Should throw RangeError for stack overflow'
         );
       }
       this.results.coverage.errorPaths++;
@@ -368,7 +368,7 @@ class EdgeCaseCoverageTestSuite {
       assert(processValue(null) === 'null', 'Should handle null values');
       assert(
         processValue(undefined) === 'undefined',
-        'Should handle undefined values',
+        'Should handle undefined values'
       );
       assert(processValue(42) === '42', 'Should handle normal values');
 
@@ -383,19 +383,19 @@ class EdgeCaseCoverageTestSuite {
 
       assert(
         value1 === 'default',
-        'Should handle null with nullish coalescing',
+        'Should handle null with nullish coalescing'
       );
       assert(
         value2 === 'default',
-        'Should handle undefined with nullish coalescing',
+        'Should handle undefined with nullish coalescing'
       );
       assert(
         value3 === 0,
-        'Should not replace falsy values with nullish coalescing',
+        'Should not replace falsy values with nullish coalescing'
       );
       assert(
         value4 === '',
-        'Should not replace empty string with nullish coalescing',
+        'Should not replace empty string with nullish coalescing'
       );
 
       this.results.coverage.nullChecks++;
@@ -415,15 +415,15 @@ class EdgeCaseCoverageTestSuite {
 
         assert(
           result1 === 'success',
-          'Should call method with optional chaining',
+          'Should call method with optional chaining'
         );
         assert(
           result2 === undefined,
-          'Should handle missing method with optional chaining',
+          'Should handle missing method with optional chaining'
         );
 
         this.results.coverage.nullChecks++;
-      },
+      }
     );
 
     await this.runTest(
@@ -433,12 +433,12 @@ class EdgeCaseCoverageTestSuite {
 
         assert(
           a === 'default_a',
-          'Should use default for undefined in destructuring',
+          'Should use default for undefined in destructuring'
         );
         assert(b === null, 'Should not use default for null in destructuring');
 
         this.results.coverage.nullChecks++;
-      },
+      }
     );
   }
 
@@ -449,7 +449,7 @@ class EdgeCaseCoverageTestSuite {
     ).toFixed(1);
     const totalCoverage = Object.values(this.results.coverage).reduce(
       (a, b) => a + b,
-      0,
+      0
     );
 
     const report = {
@@ -479,7 +479,7 @@ class EdgeCaseCoverageTestSuite {
 
     if (coverage.edgeCases < 10) {
       recommendations.push(
-        'Add more edge case tests for comprehensive coverage',
+        'Add more edge case tests for comprehensive coverage'
       );
     }
 
@@ -489,7 +489,7 @@ class EdgeCaseCoverageTestSuite {
 
     if (coverage.errorPaths < 5) {
       recommendations.push(
-        'Add more error path tests for better error handling',
+        'Add more error path tests for better error handling'
       );
     }
 
@@ -503,7 +503,7 @@ class EdgeCaseCoverageTestSuite {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent edge case coverage! Consider adding performance edge cases.',
+        'Excellent edge case coverage! Consider adding performance edge cases.'
       );
     }
 
@@ -529,7 +529,7 @@ class EdgeCaseCoverageTestSuite {
     // Save report to file
     const reportPath = path.join(
       __dirname,
-      '../test-reports/edge-case-test-report.json',
+      '../test-reports/edge-case-test-report.json'
     );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));

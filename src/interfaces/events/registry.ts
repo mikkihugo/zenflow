@@ -93,7 +93,7 @@ export interface EventRegistryEntry {
   };
 
   /** Additional metadata and tags for categorization */
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -113,13 +113,13 @@ export interface EventTypeRegistry {
     priority: number;
 
     /** Schema for validation */
-    schema?: any;
+    schema?: unknown;
 
     /** Associated manager types */
     managerTypes: EventManagerType[];
 
     /** Configuration options */
-    config: Record<string, any>;
+    config: Record<string, unknown>;
 
     /** Registration timestamp */
     registered: Date;
@@ -528,9 +528,9 @@ export class EventRegistry implements IEventManagerRegistry {
     config: {
       category: string;
       priority?: number;
-      schema?: any;
+      schema?: unknown;
       managerTypes: EventManagerType[];
-      options?: Record<string, any>;
+      options?: Record<string, unknown>;
     }
   ): void {
     this.eventTypes[eventType] = {

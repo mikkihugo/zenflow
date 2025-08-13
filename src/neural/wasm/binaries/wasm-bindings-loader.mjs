@@ -157,7 +157,7 @@ class WasmBindingsLoader {
     const getStringFromWasm0 = (ptr, len) => {
       ptr = ptr >>> 0;
       return cachedTextDecoder.decode(
-        getUint8Memory0().subarray(ptr, ptr + len),
+        getUint8Memory0().subarray(ptr, ptr + len)
       );
     };
 
@@ -183,7 +183,7 @@ class WasmBindingsLoader {
     imports.wbg.__wbg_call_672a4d21634d4a24 = () =>
       handleError(
         (arg0, arg1) => addHeapObject(getObject(arg0).call(getObject(arg1))),
-        arguments,
+        arguments
       );
 
     imports.wbg.__wbg_error_524f506f44df1645 = (arg0) => {
@@ -205,7 +205,7 @@ class WasmBindingsLoader {
       handleError(
         (arg0, arg1) =>
           addHeapObject(Reflect.get(getObject(arg0), getObject(arg1))),
-        arguments,
+        arguments
       );
 
     imports.wbg.__wbg_get_b9b93047fe3cf45b = (arg0, arg1) =>
@@ -264,7 +264,7 @@ class WasmBindingsLoader {
     imports.wbg.__wbg_newwithbyteoffsetandlength_e6b7e69acd4c7354 = (
       arg0,
       arg1,
-      arg2,
+      arg2
     ) => addHeapObject(new Uint8Array(getObject(arg0), arg1 >>> 0, arg2 >>> 0));
 
     imports.wbg.__wbg_now_807e54c39636c349 = () => Date.now();

@@ -66,7 +66,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
 
   constructor(
     private eventBus: IEventBus,
-    private logger?: ILogger,
+    private logger?: ILogger
   ) {
     super();
 
@@ -105,7 +105,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
           knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep'],
           autoRefreshInterval: 3600000, // 1 hour
         },
-        this,
+        this
       );
 
       this.logger?.info('HiveFACT system initialized for universal knowledge');
@@ -222,16 +222,16 @@ export class CollectiveCubeCoordinator extends EventEmitter {
       totalCPU: agents.reduce((sum, _agent) => sum + 100, 0), // Assume 100% per agent
       usedCPU: agents.reduce(
         (sum, agent) => sum + (agent.metrics?.cpuUsage ?? 0),
-        0,
+        0
       ),
       totalMemory: agents.reduce((sum, _agent) => sum + 1000, 0), // Assume 1GB per agent
       usedMemory: agents.reduce(
         (sum, agent) => sum + (agent.metrics?.memoryUsage ?? 0),
-        0,
+        0
       ),
       totalAgents: agents.length,
       availableAgents: agents.filter(
-        (a) => a.availability.status === 'available',
+        (a) => a.availability.status === 'available'
       ).length,
       busyAgents: agents.filter((a) => a.availability.status === 'busy').length,
       networkBandwidth: 1000, // Placeholder
@@ -243,16 +243,19 @@ export class CollectiveCubeCoordinator extends EventEmitter {
    */
   private async optimizeTaskDistribution(): Promise<void> {
     const pendingTasks = this.hiveRegistry.globalTaskQueue.filter(
-      (t: any) => t.assignedAgents.length === 0,
+      (t: unknown) => t.assignedAgents.length === 0
     );
     const availableAgents = Array.from(
-      this.hiveRegistry.availableAgents.values(),
+      this.hiveRegistry.availableAgents.values()
     )
       .filter((agent) => agent.availability.status === 'available')
       .sort((a, b) => a.currentWorkload - b.currentWorkload); // Least loaded first
 
     for (const task of pendingTasks) {
-      const suitableAgent = this.findBestAgentForTask(task, availableAgents) as any as any as any as any;
+      const suitableAgent = this.findBestAgentForTask(
+        task,
+        availableAgents
+      ) as any as any as any as any;
 
       if (suitableAgent) {
         // Assign task to agent
@@ -285,7 +288,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
    */
   private findBestAgentForTask(
     task: CollectiveTask,
-    availableAgents: GlobalAgentInfo[],
+    availableAgents: GlobalAgentInfo[]
   ): GlobalAgentInfo | null {
     let bestAgent: GlobalAgentInfo | null = null;
     let bestScore = -1;
@@ -310,7 +313,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
    */
   private calculateAgentTaskScore(
     agent: GlobalAgentInfo,
-    task: CollectiveTask,
+    task: CollectiveTask
   ): number {
     let score = 0;
 
@@ -364,7 +367,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
   private async updateSwarmMetrics(): Promise<void> {
     for (const [swarmId, swarmInfo] of this.hiveRegistry.activeSwarms) {
       const swarmAgents = Array.from(
-        this.hiveRegistry.availableAgents.values(),
+        this.hiveRegistry.availableAgents.values()
       ).filter((agent) => agent.swarmId === swarmId);
 
       if (swarmAgents.length > 0) {
@@ -372,29 +375,29 @@ export class CollectiveCubeCoordinator extends EventEmitter {
           averageResponseTime:
             swarmAgents.reduce(
               (sum, a) => sum + (a.metrics?.responseTime ?? 0),
-              0,
+              0
             ) / swarmAgents.length,
           tasksCompletedPerMinute: swarmAgents.reduce(
             (sum, a) => sum + (a.metrics?.tasksCompleted ?? 0),
-            0,
+            0
           ),
           successRate:
             swarmAgents.reduce(
               (sum, a) => sum + (a.metrics?.successRate ?? 0),
-              0,
+              0
             ) / swarmAgents.length,
           resourceEfficiency:
             1 -
             swarmAgents.reduce(
               (sum, a) => sum + (a.metrics?.cpuUsage ?? 0),
-              0,
+              0
             ) /
               swarmAgents.length /
               100,
           qualityScore:
             swarmAgents.reduce(
               (sum, a) => sum + (a.metrics?.codeQuality ?? 0),
-              0,
+              0
             ) / swarmAgents.length,
         };
       }
@@ -474,7 +477,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
     const avgSwarmHealth =
       Array.from(this.connectionHealth.values()).reduce(
         (sum, health) => sum + health,
-        0,
+        0
       ) / this.connectionHealth.size;
 
     // Calculate consensus (how well swarms agree on global state)
@@ -489,7 +492,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
     // Calculate fault tolerance
     const faultTolerance = Math.min(
       100,
-      (agents.length / Math.max(swarms.length, 1)) * 10,
+      (agents.length / Math.max(swarms.length, 1)) * 10
     ); // More agents per swarm = better
 
     // Calculate load balance
@@ -497,11 +500,11 @@ export class CollectiveCubeCoordinator extends EventEmitter {
     const avgLoad =
       swarmLoads.reduce((sum, load) => sum + load, 0) / swarmLoads.length;
     const maxDeviation = Math.max(
-      ...swarmLoads.map((load) => Math.abs(load - avgLoad)),
+      ...swarmLoads.map((load) => Math.abs(load - avgLoad))
     );
     const loadBalance = Math.max(
       0,
-      100 - (maxDeviation / Math.max(avgLoad, 1)) * 100,
+      100 - (maxDeviation / Math.max(avgLoad, 1)) * 100
     );
 
     this.hiveRegistry.hiveHealth = {
@@ -559,7 +562,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
         const result = await this.requestUniversalFact(
           data?.swarmId,
           data?.factType,
-          data?.subject,
+          data?.subject
         );
 
         (this.eventBus as any).emit('swarm:fact:response', {
@@ -582,12 +585,12 @@ export class CollectiveCubeCoordinator extends EventEmitter {
 
     // Handle FACT updates from HiveFACT
     if (this.hiveFact) {
-      this.hiveFact.on('fact-updated', (data: any) => {
+      this.hiveFact.on('fact-updated', (data: unknown) => {
         // Notify all swarms about updated facts
         (this.eventBus as any).emit('hive:fact:updated', data);
       });
 
-      this.hiveFact.on('fact-refreshed', (data: any) => {
+      this.hiveFact.on('fact-refreshed', (data: unknown) => {
         // Notify interested swarms about refreshed facts
         (this.eventBus as any).emit('hive:fact:refreshed', data);
       });
@@ -726,10 +729,10 @@ export class CollectiveCubeCoordinator extends EventEmitter {
       totalSwarms: this.hiveRegistry.activeSwarms.size,
       totalAgents: this.hiveRegistry.availableAgents.size,
       availableAgents: Array.from(
-        this.hiveRegistry.availableAgents.values(),
+        this.hiveRegistry.availableAgents.values()
       ).filter((a) => a.availability.status === 'available').length,
       busyAgents: Array.from(this.hiveRegistry.availableAgents.values()).filter(
-        (a) => a.availability.status === 'busy',
+        (a) => a.availability.status === 'busy'
       ).length,
       pendingTasks: this.hiveRegistry.globalTaskQueue.length,
       globalResources: this.hiveRegistry.globalResources,
@@ -761,7 +764,7 @@ export class CollectiveCubeCoordinator extends EventEmitter {
       | 'api-docs'
       | 'security-advisory'
       | 'general',
-    subject: string,
+    subject: string
   ): Promise<unknown> {
     if (!this.hiveFact) {
       throw new Error('HiveFACT not initialized');

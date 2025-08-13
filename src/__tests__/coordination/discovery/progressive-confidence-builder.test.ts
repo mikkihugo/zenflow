@@ -24,7 +24,7 @@ import { getCollectiveFACT } from '../../../coordination/collective-fact-integra
 
 // Helper function to create valid DiscoveredDomain test objects
 const createTestDomain = (
-  overrides: Partial<DiscoveredDomain> = {},
+  overrides: Partial<DiscoveredDomain> = {}
 ): DiscoveredDomain => ({
   id: `domain-${Date.now()}`,
   name: 'test-domain',
@@ -45,7 +45,7 @@ describe('ProgressiveConfidenceBuilder', () => {
   let mockDiscoveryBridge: Mocked<DomainDiscoveryBridge>;
   let mockMemoryStore: Mocked<SessionMemoryStore>;
   let mockAgui: Mocked<AGUIInterface>;
-  let mockHiveFact: any;
+  let mockHiveFact: unknown;
 
   beforeEach(() => {
     // Create mocks
@@ -85,7 +85,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         targetConfidence: 0.8,
         maxIterations: 3,
         researchThreshold: 0.6,
-      },
+      }
     );
   });
 
@@ -132,7 +132,9 @@ describe('ProgressiveConfidenceBuilder', () => {
         },
       ]);
 
-      const result = await builder.buildConfidence(context) as any as any as any;
+      const result = (await builder.buildConfidence(
+        context
+      )) as any as any as any;
 
       expect(result?.domains.size).toBe(1);
       expect(result?.domains?.has('auth')).toBe(true);
@@ -141,7 +143,7 @@ describe('ProgressiveConfidenceBuilder', () => {
     });
 
     it('should emit progress events during iterations', async () => {
-      const progressEvents: any[] = [];
+      const progressEvents: unknown[] = [];
       builder.on('progress', (event) => progressEvents.push(event));
 
       const context = {
@@ -182,7 +184,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(mockHiveFact.searchFacts).toHaveBeenCalledWith(
         expect.objectContaining({
           query: expect.stringContaining('payment'),
-        }),
+        })
       );
     });
 
@@ -204,7 +206,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           iteration: expect.any(Number),
           confidence: expect.any(Number),
           metrics: expect.any(Object),
-        }),
+        })
       );
     });
 
@@ -243,7 +245,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
 
       // Capture the questions asked
-      const askedQuestions: any[] = [];
+      const askedQuestions: unknown[] = [];
       mockAgui.askBatchQuestions.mockImplementation(async (questions) => {
         askedQuestions.push(...questions);
         return questions.map(() => 'Yes');
@@ -278,7 +280,9 @@ describe('ProgressiveConfidenceBuilder', () => {
         .mockResolvedValueOnce(['No - needs adjustment'])
         .mockResolvedValueOnce(['Yes']);
 
-      const result = await builder.buildConfidence(context) as any as any as any;
+      const result = (await builder.buildConfidence(
+        context
+      )) as any as any as any;
 
       // Check that validations were recorded
       const domain = result?.domains?.get('test-domain');
@@ -309,7 +313,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         async ({ query }: { query: string }) => {
           searchQueries.push(query);
           return [];
-        },
+        }
       );
 
       await builder.buildConfidence(context);
@@ -317,7 +321,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(searchQueries.length).toBeGreaterThan(0);
       expect(searchQueries.some((q) => q.includes('graphql'))).toBe(true);
       expect(searchQueries.some((q) => q.includes('best practices'))).toBe(
-        true,
+        true
       );
     });
 
@@ -355,7 +359,9 @@ describe('ProgressiveConfidenceBuilder', () => {
         },
       ]);
 
-      const result = await builder.buildConfidence(context) as any as any as any;
+      const result = (await builder.buildConfidence(
+        context
+      )) as any as any as any;
 
       const securityDomain = result?.domains?.get('security');
       expect(securityDomain?.research.length).toBeGreaterThan(0);
@@ -381,7 +387,9 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
       mockAgui.askBatchQuestions.mockResolvedValue(['Yes', 'Yes']);
 
-      const result = await builder.buildConfidence(context) as any as any as any;
+      const result = (await builder.buildConfidence(
+        context
+      )) as any as any as any;
 
       expect(result?.confidence).toHaveProperty('overall');
       expect(result?.confidence).toHaveProperty('documentCoverage');
@@ -411,7 +419,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         ],
       };
 
-      const progressEvents: any[] = [];
+      const progressEvents: unknown[] = [];
       builder.on('progress', (event) => progressEvents.push(event));
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -434,7 +442,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Check that confidence improved over iterations
       if (progressEvents.length >= 2) {
         expect(
-          progressEvents[progressEvents.length - 1]?.confidence,
+          progressEvents[progressEvents.length - 1]?.confidence
         ).toBeGreaterThan(progressEvents[0]?.confidence);
       }
     });
@@ -465,7 +473,9 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
       mockAgui.askBatchQuestions.mockResolvedValue([]);
 
-      const result = await builder.buildConfidence(context) as any as any as any;
+      const result = (await builder.buildConfidence(
+        context
+      )) as any as any as any;
 
       expect(result?.relationships.length).toBeGreaterThan(0);
       expect(result?.relationships?.[0]).toHaveProperty('sourceDomain');
@@ -477,7 +487,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
   describe('validation checkpoints', () => {
     it('should trigger checkpoint validations at configured thresholds', async () => {
-      const checkpointQuestions: any[] = [];
+      const checkpointQuestions: unknown[] = [];
 
       const builder = new ProgressiveConfidenceBuilder(
         mockDiscoveryBridge,
@@ -488,7 +498,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           maxIterations: 5,
           validationCheckpoints: [0.3, 0.5, 0.7],
           requireHumanApprovalAt: [0.5],
-        },
+        }
       );
 
       const context = {
@@ -512,7 +522,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Should have triggered checkpoint questions
       expect(checkpointQuestions.length).toBeGreaterThan(0);
       expect(checkpointQuestions.some((q) => q.priority === 'critical')).toBe(
-        true,
+        true
       );
     });
 
@@ -548,7 +558,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Should have shown domain review
       expect(mockAgui.showMessage).toHaveBeenCalledWith(
         expect.stringContaining('Domain Review'),
-        'info',
+        'info'
       );
     });
   });
@@ -573,7 +583,9 @@ describe('ProgressiveConfidenceBuilder', () => {
       mockAgui.askQuestion.mockResolvedValue('skip');
       mockAgui.askBatchQuestions.mockResolvedValue(['Yes', 'Correct']);
 
-      const result = await builder.buildConfidence(context) as any as any as any;
+      const result = (await builder.buildConfidence(
+        context
+      )) as any as any as any;
 
       // Check that validations include new metadata
       const domain = result?.domains?.get('audit-test');
@@ -593,7 +605,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         {
           targetConfidence: 0.8,
           enableDetailedAuditTrail: true,
-        },
+        }
       );
 
       const context = {
@@ -613,14 +625,14 @@ describe('ProgressiveConfidenceBuilder', () => {
         expect.objectContaining({
           sessionId: expect.any(String),
           auditTrail: expect.any(Array),
-        }),
+        })
       );
     });
   });
 
   describe('minimum validation requirements', () => {
     it('should ensure minimum validations per domain', async () => {
-      const additionalQuestions: any[] = [];
+      const additionalQuestions: unknown[] = [];
 
       const builder = new ProgressiveConfidenceBuilder(
         mockDiscoveryBridge,
@@ -630,7 +642,7 @@ describe('ProgressiveConfidenceBuilder', () => {
           targetConfidence: 0.8,
           minimumValidationsPerDomain: 3,
           maxIterations: 2,
-        },
+        }
       );
 
       const context = {
@@ -682,7 +694,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         ],
       };
 
-      const progressEvents: any[] = [];
+      const progressEvents: unknown[] = [];
       builder.on('progress', (event) => progressEvents.push(event));
 
       mockAgui.askQuestion.mockResolvedValue('skip');
@@ -699,8 +711,8 @@ describe('ProgressiveConfidenceBuilder', () => {
       const confidenceChanges = progressEvents.map((e) => e.confidence);
       expect(
         confidenceChanges.some(
-          (c, i) => i > 0 && c !== confidenceChanges[i - 1],
-        ),
+          (c, i) => i > 0 && c !== confidenceChanges[i - 1]
+        )
       ).toBe(true);
     });
   });
@@ -723,7 +735,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Set initial confidence high to trigger final validation
       (builder as any).confidence = 0.85;
 
-      const finalQuestions: any[] = [];
+      const finalQuestions: unknown[] = [];
       mockAgui.askQuestion.mockImplementation(async (question) => {
         if (question.id === 'final_validation') {
           finalQuestions.push(question);

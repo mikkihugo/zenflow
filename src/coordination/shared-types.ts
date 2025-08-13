@@ -37,7 +37,7 @@ export interface CollectiveFACTSystemInterface extends EventEmitter {
   getFact(
     type: string,
     subject: string,
-    swarmId?: string,
+    swarmId?: string
   ): Promise<UniversalFact | null>;
   getStats(): Promise<FACTStorageStats>;
 

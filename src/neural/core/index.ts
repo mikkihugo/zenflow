@@ -1525,7 +1525,7 @@ export const NeuralCoreUtils = {
    * }
    * ```
    */
-  validateNetworkConfig: (config: any): boolean => {
+  validateNetworkConfig: (config: unknown): boolean => {
     return Boolean(config?.layers && Array.isArray(config?.layers));
   },
 
@@ -1650,7 +1650,7 @@ export const NeuralCoreUtils = {
   estimateTrainingTime: (
     complexity: number,
     dataSize: number,
-    epochs: number,
+    epochs: number
   ): number => {
     // Simple heuristic: complexity * dataSize * epochs / processing_factor
     const processingFactor = 1000; // Adjust based on hardware

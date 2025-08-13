@@ -5,7 +5,7 @@
 import { getLogger } from '../../../config/logging-config.ts';
 
 const logger = getLogger(
-  'interfaces-events-adapters-coordination-usage-example',
+  'interfaces-events-adapters-coordination-usage-example'
 );
 
 /**
@@ -97,19 +97,19 @@ export async function advancedCoordinationExample(): Promise<void> {
       // Check if this is part of a correlation
       if (event['correlationId']) {
         const correlation = coordinator.getCoordinationCorrelatedEvents(
-          event['correlationId'],
+          event['correlationId']
         );
         if (correlation) {
         }
       }
-    },
+    }
   );
 
   // Monitor health status changes
   setInterval(async () => {
     const healthStatus = await coordinator.getCoordinationHealthStatus();
     const unhealthyComponents = Object.entries(healthStatus).filter(
-      ([_, health]) => (health as any).status !== 'healthy',
+      ([_, health]) => (health as any).status !== 'healthy'
     );
 
     if (unhealthyComponents.length > 0) {
@@ -166,7 +166,7 @@ export async function highPerformanceCoordinationExample(): Promise<void> {
       // Only log critical events to minimize overhead
       if (event['priority'] === 'high' || event['operation'] === 'fail') {
       }
-    },
+    }
   );
   const promises: Promise<void>[] = [];
 
@@ -293,14 +293,14 @@ export async function customCoordinationExample(): Promise<void> {
  * @example
  */
 async function simulateSwarmLifecycle(
-  coordinator: CoordinationEventAdapter,
+  coordinator: CoordinationEventAdapter
 ): Promise<void> {
   // Initialize swarm
   await coordinator.emitSwarmCoordinationEvent(
     CoordinationEventHelpers.createSwarmInitEvent('demo-swarm', 'mesh', {
       agentCount: 3,
       purpose: 'demonstration',
-    }),
+    })
   );
 
   // Spawn agents
@@ -317,8 +317,8 @@ async function simulateSwarmLifecycle(
               : i === 2
                 ? 'pattern-recognition'
                 : 'synthesis',
-        },
-      ),
+        }
+      )
     );
   }
 
@@ -330,8 +330,8 @@ async function simulateSwarmLifecycle(
       {
         taskType: 'analysis',
         priority: 'medium',
-      },
-    ),
+      }
+    )
   );
 
   // Simulate a topology change
@@ -342,8 +342,8 @@ async function simulateSwarmLifecycle(
       {
         reason: 'optimization',
         nodeCount: 3,
-      },
-    ),
+      }
+    )
   );
 }
 
@@ -354,7 +354,7 @@ async function simulateSwarmLifecycle(
  * @example
  */
 async function simulateComplexCoordinationWorkflow(
-  coordinator: CoordinationEventAdapter,
+  coordinator: CoordinationEventAdapter
 ): Promise<void> {
   const correlationId = `workflow-${Date.now()}`;
 
@@ -409,7 +409,7 @@ async function simulateComplexCoordinationWorkflow(
  * @example
  */
 async function simulateResearchCoordination(
-  coordinator: CoordinationEventAdapter,
+  coordinator: CoordinationEventAdapter
 ): Promise<void> {
   const researchSession = `research-${Date.now()}`;
 

@@ -596,7 +596,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     return groups;
   }
 
-  private findCommonPatterns(successes: SuccessPattern[]): any[] {
+  private findCommonPatterns(successes: SuccessPattern[]): unknown[] {
     // Simplified pattern extraction
     const actionCounts = new Map<string, number>();
 
@@ -613,7 +613,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
 
   private extractBestPractice(
     category: string,
-    pattern: any,
+    pattern: unknown,
     successes: SuccessPattern[]
   ): BestPractice {
     const relevantSuccesses = successes.filter((s) => s.actions.includes(pattern.action));
@@ -698,7 +698,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     return Math.min(0.95, (avgFrequency / 10) * consistencyScore);
   }
 
-  private selectPatternType(agent: Agent): any {
+  private selectPatternType(agent: Agent): unknown {
     const types = ['task_completion', 'communication', 'resource_utilization', 'optimization'];
     if (agent.specializations.length > 0) {
       return agent.specializations[0];
@@ -706,7 +706,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
     return types[Math.floor(Math.random() * types.length)];
   }
 
-  private generatePatternData(agent: Agent, strategy: LearningType): any {
+  private generatePatternData(agent: Agent, strategy: LearningType): unknown {
     return {
       agentCapabilities: agent.capabilities,
       strategy,
@@ -728,7 +728,7 @@ export class LearningCoordinator extends EventEmitter implements ILearningCoordi
       .map(([condition]) => condition);
   }
 
-  private calculateAverageOutcomes(successes: SuccessPattern[]): any {
+  private calculateAverageOutcomes(successes: SuccessPattern[]): unknown {
     const totals = {
       efficiency: 0,
       quality: 0,

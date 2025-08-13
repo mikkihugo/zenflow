@@ -43,7 +43,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this._logger.info('SwarmCoordinator created with DI');
   }
 
-  async initializeSwarm(options: any): Promise<void> {
+  async initializeSwarm(options: unknown): Promise<void> {
     this._logger.info('Initializing swarm', { options });
 
     const maxAgents = this._config.get('swarm.maxAgents', 10);
@@ -55,7 +55,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this._logger.info('Swarm initialized successfully');
   }
 
-  async addAgent(config: any): Promise<string> {
+  async addAgent(config: unknown): Promise<string> {
     if (!this.isInitialized) {
       throw new Error('Swarm must be initialized before adding agents');
     }
@@ -104,7 +104,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     this._logger.info('Agent removed successfully', { agentId });
   }
 
-  async assignTask(task: any): Promise<string> {
+  async assignTask(task: unknown): Promise<string> {
     const taskId = `task-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     this._logger.info('Assigning task', { taskId, task });
@@ -143,7 +143,7 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
     return taskId;
   }
 
-  getMetrics(): any {
+  getMetrics(): unknown {
     const totalAgents = this.agents.size;
     const totalTasks = this.tasks.size;
     const completedTasks = Array.from(this.tasks.values()).filter(
@@ -187,15 +187,15 @@ export class EnhancedSwarmCoordinator implements ISwarmCoordinator {
  * @example
  */
 export class MockLogger implements ILogger {
-  debug(_message: string, _meta?: any): void {}
+  debug(_message: string, _meta?: unknown): void {}
 
-  info(_message: string, _meta?: any): void {}
+  info(_message: string, _meta?: unknown): void {}
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     console.warn(`[WARN] ${message}`, meta || '');
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     console.error(`[ERROR] ${message}`, meta || '');
   }
 }
@@ -203,7 +203,7 @@ export class MockLogger implements ILogger {
 export class MockConfig implements IConfig {
   private data = new Map<string, any>();
 
-  constructor(initialConfig: Record<string, any> = {}) {
+  constructor(initialConfig: Record<string, unknown> = {}) {
     Object.entries(initialConfig).forEach(([key, value]) => {
       this.data.set(key, value);
     });
@@ -213,7 +213,7 @@ export class MockConfig implements IConfig {
     return this.data.has(key) ? this.data.get(key) : defaultValue!;
   }
 
-  set(key: string, value: any): void {
+  set(key: string, value: unknown): void {
     this.data.set(key, value);
   }
 
@@ -225,7 +225,7 @@ export class MockConfig implements IConfig {
 export class MockAgentRegistry implements IAgentRegistry {
   private agents = new Map<string, any>();
 
-  async registerAgent(agent: any): Promise<void> {
+  async registerAgent(agent: unknown): Promise<void> {
     this.agents.set(agent.id, agent);
   }
 
@@ -233,7 +233,7 @@ export class MockAgentRegistry implements IAgentRegistry {
     this.agents.delete(agentId);
   }
 
-  async getAgent(agentId: string): Promise<any> {
+  async getAgent(agentId: string): Promise<unknown> {
     return this.agents.get(agentId);
   }
 
@@ -241,7 +241,7 @@ export class MockAgentRegistry implements IAgentRegistry {
     return Array.from(this.agents.values()).filter((agent) => agent.status !== 'offline');
   }
 
-  async findAvailableAgents(criteria: any): Promise<any[]> {
+  async findAvailableAgents(criteria: unknown): Promise<any[]> {
     return Array.from(this.agents.values()).filter((agent) => {
       if (criteria.status && agent.status !== criteria.status) return false;
       if (
@@ -255,9 +255,9 @@ export class MockAgentRegistry implements IAgentRegistry {
 }
 
 export class MockMessageBroker implements IMessageBroker {
-  private subscribers = new Map<string, Set<(message: any) => void>>();
+  private subscribers = new Map<string, Set<(message: unknown) => void>>();
 
-  async publish(topic: string, message: any): Promise<void> {
+  async publish(topic: string, message: unknown): Promise<void> {
     const handlers = this.subscribers.get(topic);
     if (handlers) {
       handlers.forEach((handler) => {
@@ -270,21 +270,21 @@ export class MockMessageBroker implements IMessageBroker {
     }
   }
 
-  async subscribe(topic: string, handler: (message: any) => void): Promise<void> {
+  async subscribe(topic: string, handler: (message: unknown) => void): Promise<void> {
     if (!this.subscribers.has(topic)) {
       this.subscribers.set(topic, new Set());
     }
     this.subscribers.get(topic)?.add(handler);
   }
 
-  async unsubscribe(topic: string, handler: (message: any) => void): Promise<void> {
+  async unsubscribe(topic: string, handler: (message: unknown) => void): Promise<void> {
     const handlers = this.subscribers.get(topic);
     if (handlers) {
       handlers.delete(handler);
     }
   }
 
-  async broadcast(message: any): Promise<void> {
+  async broadcast(message: unknown): Promise<void> {
     // Broadcast to all subscribers
     for (const handlers of this.subscribers.values()) {
       handlers.forEach((handler) => {
@@ -304,7 +304,7 @@ export class MockMessageBroker implements IMessageBroker {
  * @param config
  * @example
  */
-export function createSwarmContainer(config: Record<string, any> = {}): DIContainer {
+export function createSwarmContainer(config: Record<string, unknown> = {}): DIContainer {
   const container = new DIContainer();
 
   // Register core services

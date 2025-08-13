@@ -58,10 +58,10 @@ export class TestDataFactory {
    */
   createUsers(
     count: number,
-    baseData: Partial<UserTestData> = {},
+    baseData: Partial<UserTestData> = {}
   ): UserTestData[] {
     return Array.from({ length: count }, (_, index) =>
-      this.createUser({ ...baseData, id: `user-${index + 1}` }),
+      this.createUser({ ...baseData, id: `user-${index + 1}` })
     );
   }
 
@@ -153,10 +153,10 @@ export class TestDataFactory {
    */
   createAgents(
     count: number,
-    baseData: Partial<AgentTestData> = {},
+    baseData: Partial<AgentTestData> = {}
   ): AgentTestData[] {
     return Array.from({ length: count }, (_, index) =>
-      this.createAgent({ ...baseData, id: `agent-${index + 1}` }),
+      this.createAgent({ ...baseData, id: `agent-${index + 1}` })
     );
   }
 
@@ -166,7 +166,7 @@ export class TestDataFactory {
    * @param method
    * @param params
    */
-  createMCPMessage(method: string = 'tools/call', params: any = {}) {
+  createMCPMessage(method: string = 'tools/call', params: unknown = {}) {
     return {
       jsonrpc: '2.0',
       id: this.randomInt(1, 1000),
@@ -242,7 +242,7 @@ export class TestDataFactory {
           },
         },
         null,
-        2,
+        2
       ),
     };
   }
@@ -403,7 +403,7 @@ export class TestDataFactory {
   }
 
   private generateCode(
-    language: 'typescript' | 'javascript' | 'python' | 'rust',
+    language: 'typescript' | 'javascript' | 'python' | 'rust'
   ): string {
     const templates = {
       typescript: `

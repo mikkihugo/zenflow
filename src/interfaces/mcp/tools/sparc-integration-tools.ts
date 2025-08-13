@@ -12,7 +12,7 @@ import type { DocumentService } from '../services/document-service';
 import type { MCPTool } from '../types.ts';
 
 export function createSPARCIntegrationTools(
-  _documentService: DocumentService,
+  _documentService: DocumentService
 ): MCPTool[] {
   return [
     {
@@ -54,7 +54,7 @@ export function createSPARCIntegrationTools(
         },
         required: ['name', 'domain', 'description'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         const {
           name,
           domain,
@@ -122,7 +122,7 @@ export function createSPARCIntegrationTools(
         },
         required: ['projectId', 'phase'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         const { projectId, phase, input = {} } = params;
 
         return {
@@ -168,7 +168,7 @@ export function createSPARCIntegrationTools(
         },
         required: ['projectId'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         const { projectId, includeDetails = false } = params;
 
         return {
@@ -187,7 +187,7 @@ export function createSPARCIntegrationTools(
             },
             progressPercentage: 50,
             estimatedCompletion: new Date(
-              Date.now() + 86400000 * 3,
+              Date.now() + 86400000 * 3
             ).toISOString(),
             details: includeDetails
               ? {
@@ -305,7 +305,7 @@ export function createSPARCIntegrationTools(
         },
         required: ['specification'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         try {
           const { specification, options = {} } = params;
 
@@ -326,7 +326,7 @@ export function createSPARCIntegrationTools(
               pseudocodeId: pseudocodeStructure.id,
               specificationId: specification.id,
               domain: specification.domain,
-              algorithms: pseudocodeStructure.algorithms.map((alg: any) => ({
+              algorithms: pseudocodeStructure.algorithms.map((alg: unknown) => ({
                 name: alg.name,
                 purpose: alg.purpose,
                 inputs: alg.inputs,
@@ -415,7 +415,7 @@ export function createSPARCIntegrationTools(
         },
         required: ['pseudocodeStructure'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         try {
           const { pseudocodeStructure } = params;
 
@@ -531,7 +531,7 @@ export function createSPARCIntegrationTools(
         },
         required: ['specification'],
       },
-      handler: async (params: any) => {
+      handler: async (params: unknown) => {
         try {
           const { specification } = params;
 
@@ -551,15 +551,15 @@ export function createSPARCIntegrationTools(
             data: {
               specificationId: specification.id,
               domain: specification.domain,
-              algorithms: algorithms.map((alg: any) => ({
+              algorithms: algorithms.map((alg: unknown) => ({
                 name: alg.name,
                 purpose: alg.purpose,
-                inputs: alg.inputs.map((i: any) => ({
+                inputs: alg.inputs.map((i: unknown) => ({
                   name: i.name,
                   type: i.type,
                   description: i.description,
                 })),
-                outputs: alg.outputs.map((o: any) => ({
+                outputs: alg.outputs.map((o: unknown) => ({
                   name: o.name,
                   type: o.type,
                   description: o.description,
@@ -576,8 +576,8 @@ export function createSPARCIntegrationTools(
                 algorithmsGenerated: algorithms.length,
                 domains: [specification.domain],
                 totalOptimizations: algorithms.reduce(
-                  (sum: number, alg: any) => sum + alg.optimizations.length,
-                  0,
+                  (sum: number, alg: unknown) => sum + alg.optimizations.length,
+                  0
                 ),
               },
               generatedAt: new Date().toISOString(),

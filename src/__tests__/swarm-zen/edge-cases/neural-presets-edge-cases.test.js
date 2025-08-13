@@ -57,7 +57,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should throw error for invalid category in getPreset', () => {
       expect(() => getPreset('invalid-category', 'some-preset')).toThrow(
-        'Unknown preset category: invalid-category',
+        'Unknown preset category: invalid-category'
       );
     });
 
@@ -71,7 +71,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should throw error for invalid category in getCategoryPresets', () => {
       expect(() => getCategoryPresets('non-existent')).toThrow(
-        'Unknown preset category: non-existent',
+        'Unknown preset category: non-existent'
       );
     });
 
@@ -106,7 +106,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
         expect(
           useCase.includes('classification') ||
             name.includes('classification') ||
-            description.includes('classification'),
+            description.includes('classification')
         ).toBe(true);
       });
     });
@@ -129,7 +129,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       // Results should be sorted by accuracy (descending)
       for (let i = 1; i < highAccuracyResults.length; i++) {
         expect(highAccuracyResults[i - 1].accuracy).toBeGreaterThanOrEqual(
-          highAccuracyResults[i].accuracy,
+          highAccuracyResults[i].accuracy
         );
       }
     });
@@ -152,7 +152,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       // Results should be sorted by inference time (ascending)
       for (let i = 1; i < fastResults.length; i++) {
         expect(fastResults[i - 1].inferenceTime).toBeLessThanOrEqual(
-          fastResults[i].inferenceTime,
+          fastResults[i].inferenceTime
         );
       }
     });
@@ -307,10 +307,10 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       };
 
       expect(() => validatePresetConfig(incompletePreset)).toThrow(
-        'Preset validation failed',
+        'Preset validation failed'
       );
       expect(() => validatePresetConfig(incompletePreset)).toThrow(
-        'Missing fields: model, config, training, performance, useCase',
+        'Missing fields: model, config, training, performance, useCase'
       );
     });
 
@@ -329,10 +329,10 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
       };
 
       expect(() => validatePresetConfig(presetMissingPerf)).toThrow(
-        'Preset performance validation failed',
+        'Preset performance validation failed'
       );
       expect(() => validatePresetConfig(presetMissingPerf)).toThrow(
-        'Missing fields: inferenceTime, memoryUsage, trainingTime',
+        'Missing fields: inferenceTime, memoryUsage, trainingTime'
       );
     });
 
@@ -437,13 +437,13 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
     it('should ensure all model types are represented in presets', () => {
       const allPresets = Object.values(NEURAL_PRESETS).flatMap((category) =>
-        Object.values(category),
+        Object.values(category)
       );
       const usedModelTypes = new Set(allPresets.map((preset) => preset.model));
 
       // At least some of the model types should be used
       const intersection = PRESET_MODEL_TYPES.filter((type) =>
-        usedModelTypes.has(type),
+        usedModelTypes.has(type)
       );
       expect(intersection.length).toBeGreaterThan(0);
     });
@@ -624,7 +624,7 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
 
       // Verify the workflow found reasonable results
       expect(highAccuracyPresets.length + fastPresets.length).toBeGreaterThan(
-        0,
+        0
       );
     });
 
@@ -641,15 +641,15 @@ describe('Neural Presets Edge Cases and E2E Tests', () => {
           highAccuracyPresets.some(
             (accurate) =>
               fast.category === accurate.category &&
-              fast.presetName === accurate.presetName,
-          ),
+              fast.presetName === accurate.presetName
+          )
         ).length,
       };
 
       // Should have options for different optimization strategies
       expect(
         performanceAnalysis.speedOptimized +
-          performanceAnalysis.accuracyOptimized,
+          performanceAnalysis.accuracyOptimized
       ).toBeGreaterThan(0);
     });
 

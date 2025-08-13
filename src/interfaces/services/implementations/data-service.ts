@@ -40,9 +40,9 @@ export class DataService extends BaseService implements IService {
   private webDataService?: WebDataService;
   private cache = new Map<
     string,
-    { data: any; timestamp: number; ttl: number }
+    { data: unknown; timestamp: number; ttl: number }
   >();
-  private validators = new Map<string, (data: any) => boolean>();
+  private validators = new Map<string, (data: unknown) => boolean>();
   private persistenceTimer?: NodeJS.Timeout;
 
   constructor(config: DataServiceConfig) {
@@ -74,7 +74,7 @@ export class DataService extends BaseService implements IService {
     // Initialize caching if enabled
     if (config?.caching?.enabled) {
       this.logger.debug(
-        `Caching enabled with TTL: ${config?.caching?.ttl || 3600}s`,
+        `Caching enabled with TTL: ${config?.caching?.ttl || 3600}s`
       );
     }
 
@@ -105,7 +105,7 @@ export class DataService extends BaseService implements IService {
     ) {
       this.persistenceTimer = setInterval(
         () => this.persistData(),
-        config?.options?.persistenceInterval,
+        config?.options?.persistenceInterval
       );
       this.logger.debug('Persistence timer started');
     }
@@ -162,7 +162,7 @@ export class DataService extends BaseService implements IService {
         if (this.cache.size > maxSize * 1.1) {
           // Allow 10% overage
           this.logger.warn(
-            `Cache size (${this.cache.size}) exceeds limit (${maxSize})`,
+            `Cache size (${this.cache.size}) exceeds limit (${maxSize})`
           );
           return false;
         }
@@ -175,7 +175,7 @@ export class DataService extends BaseService implements IService {
           if (stats.averageResponseTime > 5000) {
             // 5 second threshold
             this.logger.warn(
-              `Web data service response time too high: ${stats.averageResponseTime}ms`,
+              `Web data service response time too high: ${stats.averageResponseTime}ms`
             );
             return false;
           }
@@ -189,7 +189,7 @@ export class DataService extends BaseService implements IService {
     } catch (error) {
       this.logger.error(
         `Health check failed for data service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -197,8 +197,8 @@ export class DataService extends BaseService implements IService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing data operation: ${operation}`);
 
@@ -210,7 +210,7 @@ export class DataService extends BaseService implements IService {
         return (await this.setData(
           params?.key,
           params?.value,
-          params?.ttl,
+          params?.ttl
         )) as T;
 
       case 'delete':
@@ -222,7 +222,7 @@ export class DataService extends BaseService implements IService {
       case 'process':
         return (await this.processData(
           params?.data,
-          params?.processingType,
+          params?.processingType
         )) as T;
 
       case 'cache-stats':
@@ -268,7 +268,7 @@ export class DataService extends BaseService implements IService {
    * @param key
    * @param useCache
    */
-  private async getData(key: string, useCache: boolean = true): Promise<any> {
+  private async getData(key: string, useCache: boolean = true): Promise<unknown> {
     if (!key) {
       throw new Error('Data key is required');
     }
@@ -311,8 +311,8 @@ export class DataService extends BaseService implements IService {
    */
   private async setData(
     key: string,
-    value: any,
-    ttl?: number,
+    value: unknown,
+    ttl?: number
   ): Promise<boolean> {
     if (!key) {
       throw new Error('Data key is required');
@@ -373,7 +373,7 @@ export class DataService extends BaseService implements IService {
    * @param type
    * @param data
    */
-  private async validateData(type: string, data: any): Promise<boolean> {
+  private async validateData(type: string, data: unknown): Promise<boolean> {
     const validator = this.validators.get(type);
     if (!validator) {
       this.logger.warn(`No validator found for type: ${type}`);
@@ -395,9 +395,9 @@ export class DataService extends BaseService implements IService {
    * @param processingType
    */
   private async processData(
-    data: any,
-    processingType: 'transform' | 'aggregate' | 'filter' = 'transform',
-  ): Promise<any> {
+    data: unknown,
+    processingType: 'transform' | 'aggregate' | 'filter' = 'transform'
+  ): Promise<unknown> {
     this.logger.debug(`Processing data with type: ${processingType}`);
 
     switch (processingType) {
@@ -449,49 +449,49 @@ export class DataService extends BaseService implements IService {
   // Web Data Service Integration
   // ============================================
 
-  private async getSystemStatus(): Promise<any> {
+  private async getSystemStatus(): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
     return await this.webDataService.getSystemStatus();
   }
 
-  private async getSwarms(): Promise<any> {
+  private async getSwarms(): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
     return await this.webDataService.getSwarms();
   }
 
-  private async createSwarm(config: any): Promise<any> {
+  private async createSwarm(config: unknown): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
     return await this.webDataService.createSwarm(config);
   }
 
-  private async getTasks(): Promise<any> {
+  private async getTasks(): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
     return await this.webDataService.getTasks();
   }
 
-  private async createTask(config: any): Promise<any> {
+  private async createTask(config: unknown): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
     return await this.webDataService.createTask(config);
   }
 
-  private async getDocuments(): Promise<any> {
+  private async getDocuments(): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
     return await this.webDataService.getDocuments();
   }
 
-  private async executeCommand(command: string, args: any[]): Promise<any> {
+  private async executeCommand(command: string, args: unknown[]): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }
@@ -506,18 +506,18 @@ export class DataService extends BaseService implements IService {
     // Register default validators
     this.validators.set(
       'generic',
-      (data: any) => data !== null && data !== undefined,
+      (data: unknown) => data !== null && data !== undefined
     );
-    this.validators.set('string', (data: any) => typeof data === 'string');
+    this.validators.set('string', (data: unknown) => typeof data === 'string');
     this.validators.set(
       'number',
-      (data: any) => typeof data === 'number' && !Number.isNaN(data),
+      (data: unknown) => typeof data === 'number' && !Number.isNaN(data)
     );
     this.validators.set(
       'object',
-      (data: any) => typeof data === 'object' && data !== null,
+      (data: unknown) => typeof data === 'object' && data !== null
     );
-    this.validators.set('array', (data: any) => Array.isArray(data));
+    this.validators.set('array', (data: unknown) => Array.isArray(data));
   }
 
   private initializePersistence(): void {
@@ -556,7 +556,7 @@ export class DataService extends BaseService implements IService {
   }
 
   private isCacheValid(cached: {
-    data: any;
+    data: unknown;
     timestamp: number;
     ttl: number;
   }): boolean {
@@ -568,7 +568,7 @@ export class DataService extends BaseService implements IService {
     return this.cache.size * 1024; // Assume 1KB per cached item
   }
 
-  private async retrieveDataFromSource(key: string): Promise<any> {
+  private async retrieveDataFromSource(key: string): Promise<unknown> {
     // Simulate data retrieval from database/API
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 100));
 
@@ -584,7 +584,7 @@ export class DataService extends BaseService implements IService {
     };
   }
 
-  private async storeDataToSource(key: string, _value: any): Promise<void> {
+  private async storeDataToSource(key: string, _value: unknown): Promise<void> {
     // Simulate data storage to database
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 50));
     this.logger.debug(`Stored data for key ${key} to data source`);
@@ -596,7 +596,7 @@ export class DataService extends BaseService implements IService {
     this.logger.debug(`Deleted data for key ${key} from data source`);
   }
 
-  private transformData(data: any): any {
+  private transformData(data: unknown): unknown {
     // Simple data transformation
     if (Array.isArray(data)) {
       return data?.map((item) => ({
@@ -615,7 +615,7 @@ export class DataService extends BaseService implements IService {
     return data;
   }
 
-  private aggregateData(data: any): any {
+  private aggregateData(data: unknown): unknown {
     if (Array.isArray(data)) {
       return {
         count: data.length,
@@ -630,7 +630,7 @@ export class DataService extends BaseService implements IService {
     };
   }
 
-  private filterData(data: any): any {
+  private filterData(data: unknown): unknown {
     if (Array.isArray(data)) {
       return data?.filter((item) => item !== null && item !== undefined);
     }

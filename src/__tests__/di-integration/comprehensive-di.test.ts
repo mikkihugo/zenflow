@@ -109,7 +109,7 @@ describe('DI System Comprehensive Integration', () => {
       container.register(LOGGER_TOKEN, new SingletonProvider(() => mockLogger));
       container.register(
         createToken<TestService>('TestService'),
-        new SingletonProvider((c: any) => new TestService(c.resolve(LOGGER_TOKEN)))
+        new SingletonProvider((c: unknown) => new TestService(c.resolve(LOGGER_TOKEN)))
       );
 
       // Act
@@ -237,8 +237,8 @@ describe('DI System Comprehensive Integration', () => {
       const TOKEN_A = createToken<unknown>('ServiceA');
       const TOKEN_B = createToken<unknown>('ServiceB');
 
-      container.register(TOKEN_A, new SingletonProvider((c: any) => ({ dep: c.resolve(TOKEN_B) })));
-      container.register(TOKEN_B, new SingletonProvider((c: any) => ({ dep: c.resolve(TOKEN_A) })));
+      container.register(TOKEN_A, new SingletonProvider((c: unknown) => ({ dep: c.resolve(TOKEN_B) })));
+      container.register(TOKEN_B, new SingletonProvider((c: unknown) => ({ dep: c.resolve(TOKEN_A) })));
 
       // Act & Assert
       expect(() => container.resolve(TOKEN_A)).toThrow(/circular/i);
@@ -304,7 +304,7 @@ describe('DI System Comprehensive Integration', () => {
 
       // Assert - All should be the same instance (singleton)
       const firstResult = results?.[0];
-      expect(results?.every((result: any) => result === firstResult)).toBe(true);
+      expect(results?.every((result: unknown) => result === firstResult)).toBe(true);
       expect(creationCount).toBe(1); // Only created once
     });
   });

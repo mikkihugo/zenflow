@@ -16,17 +16,17 @@ export interface MCPRequest {
   jsonrpc: '2.0';
   id: string | number;
   method: string;
-  params?: any;
+  params?: unknown;
 }
 
 export interface MCPResponse {
   jsonrpc: '2.0';
   id: string | number;
-  result?: any;
+  result?: unknown;
   error?: {
     code: number;
     message: string;
-    data?: any;
+    data?: unknown;
   };
 }
 
@@ -162,7 +162,7 @@ export class MCPRequestHandler {
    *
    * @param params
    */
-  private async handleInitialize(params: any): Promise<any> {
+  private async handleInitialize(params: unknown): Promise<unknown> {
     logger.info('MCP server initialization requested', {
       clientInfo: params?.clientInfo,
       protocolVersion: params?.protocolVersion,
@@ -182,7 +182,7 @@ export class MCPRequestHandler {
    *
    * @param params
    */
-  private async handleInitialized(params: any): Promise<any> {
+  private async handleInitialized(params: unknown): Promise<unknown> {
     logger.info('MCP client initialization completed', { params });
 
     return {
@@ -194,7 +194,7 @@ export class MCPRequestHandler {
   /**
    * Handle tools list request.
    */
-  private async handleToolsList(): Promise<any> {
+  private async handleToolsList(): Promise<unknown> {
     const tools = await this.toolRegistry.listTools();
 
     logger.debug(`Listing ${tools.length} available tools`);
@@ -207,7 +207,7 @@ export class MCPRequestHandler {
    *
    * @param params
    */
-  private async handleToolCall(params: any): Promise<any> {
+  private async handleToolCall(params: unknown): Promise<unknown> {
     if (!(params && params?.name)) {
       throw new Error('Tool name is required');
     }
@@ -257,7 +257,7 @@ export class MCPRequestHandler {
   /**
    * Handle resources list request.
    */
-  private async handleResourcesList(): Promise<any> {
+  private async handleResourcesList(): Promise<unknown> {
     return {
       resources: [
         {
@@ -287,7 +287,7 @@ export class MCPRequestHandler {
    *
    * @param params
    */
-  private async handleResourceRead(params: any): Promise<any> {
+  private async handleResourceRead(params: unknown): Promise<unknown> {
     if (!(params && params?.uri)) {
       throw new Error('Resource URI is required');
     }
@@ -338,7 +338,7 @@ export class MCPRequestHandler {
   /**
    * Handle ping request.
    */
-  private async handlePing(): Promise<any> {
+  private async handlePing(): Promise<unknown> {
     return {
       message: 'pong',
       timestamp: new Date().toISOString(),
@@ -351,7 +351,7 @@ export class MCPRequestHandler {
   /**
    * Get system status information.
    */
-  private async getSystemStatus(): Promise<any> {
+  private async getSystemStatus(): Promise<unknown> {
     const memUsage = process.memoryUsage();
 
     return {
@@ -374,13 +374,13 @@ export class MCPRequestHandler {
   /**
    * Get tools information.
    */
-  private async getToolsInfo(): Promise<any> {
+  private async getToolsInfo(): Promise<unknown> {
     const tools = await this.toolRegistry.listTools();
     const stats = this.toolRegistry.getToolStats();
 
     return {
       totalTools: tools.length,
-      tools: tools.map((tool: any) => ({
+      tools: tools.map((tool: unknown) => ({
         ...tool,
         stats: stats[tool.name] || {
           calls: 0,
@@ -396,7 +396,7 @@ export class MCPRequestHandler {
   /**
    * Get performance metrics.
    */
-  private async getMetrics(): Promise<any> {
+  private async getMetrics(): Promise<unknown> {
     return {
       registry: this.toolRegistry.getRegistryStats(),
       tools: this.toolRegistry.getToolStats(),

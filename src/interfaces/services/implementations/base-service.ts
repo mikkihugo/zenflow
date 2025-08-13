@@ -51,7 +51,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   constructor(
     public readonly name: string,
     public readonly type: string,
-    public config: ServiceConfig,
+    public config: ServiceConfig
   ) {
     super();
     this.logger = getLogger(`Service:${name}`);
@@ -123,7 +123,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       if (!isValid) {
         throw new ServiceConfigurationError(
           this.name,
-          'Configuration validation failed',
+          'Configuration validation failed'
         );
       }
 
@@ -133,7 +133,7 @@ export abstract class BaseService extends EventEmitter implements IService {
         if (!dependenciesOk) {
           throw new ServiceDependencyError(
             this.name,
-            'Dependencies not available',
+            'Dependencies not available'
           );
         }
       }
@@ -165,7 +165,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       throw new ServiceError(
         'Cannot start service that is not initialized',
         'INVALID_STATE',
-        this.name,
+        this.name
       );
     }
 
@@ -180,7 +180,7 @@ export abstract class BaseService extends EventEmitter implements IService {
         if (!dependenciesOk) {
           throw new ServiceDependencyError(
             this.name,
-            'Dependencies not available for startup',
+            'Dependencies not available for startup'
           );
         }
       }
@@ -206,7 +206,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       this.lifecycleStatus === 'uninitialized'
     ) {
       this.logger.warn(
-        `Service ${this.name} is already stopped or not initialized`,
+        `Service ${this.name} is already stopped or not initialized`
       );
       return;
     }
@@ -360,7 +360,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       const isHealthy = await this.doHealthCheck();
       this.emit(
         'health-check',
-        this.createEvent('health-check', { healthy: isHealthy }),
+        this.createEvent('health-check', { healthy: isHealthy })
       );
 
       return isHealthy;
@@ -368,7 +368,7 @@ export abstract class BaseService extends EventEmitter implements IService {
       this.logger.error(`Health check failed for service ${this.name}:`, error);
       this.emit(
         'health-check',
-        this.createEvent('health-check', { healthy: false }, error as Error),
+        this.createEvent('health-check', { healthy: false }, error as Error)
       );
       return false;
     }
@@ -384,7 +384,7 @@ export abstract class BaseService extends EventEmitter implements IService {
     if (!isValid) {
       throw new ServiceConfigurationError(
         this.name,
-        'Invalid configuration update',
+        'Invalid configuration update'
       );
     }
 
@@ -426,7 +426,7 @@ export abstract class BaseService extends EventEmitter implements IService {
     } catch (error) {
       this.logger.error(
         `Configuration validation failed for service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -442,14 +442,14 @@ export abstract class BaseService extends EventEmitter implements IService {
 
   async execute<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>> {
     const operationId = `${this.name}-${operation}-${Date.now()}`;
     const startTime = Date.now();
 
     this.logger.debug(
-      `Executing operation: ${operation} on service ${this.name}`,
+      `Executing operation: ${operation} on service ${this.name}`
     );
     this.operationCount++;
 
@@ -459,7 +459,7 @@ export abstract class BaseService extends EventEmitter implements IService {
         throw new ServiceError(
           'Service is not ready',
           'SERVICE_NOT_READY',
-          this.name,
+          this.name
         );
       }
 
@@ -468,15 +468,15 @@ export abstract class BaseService extends EventEmitter implements IService {
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(
           () => reject(new ServiceTimeoutError(this.name, operation, timeout)),
-          timeout,
-        ),
+          timeout
+        )
       );
 
       // Execute the operation (to be implemented by concrete services)
       const operationPromise = this.executeOperation(
         operation,
         params,
-        options,
+        options
       );
       const result = await Promise.race([operationPromise, timeoutPromise]);
 
@@ -502,7 +502,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           success: true,
           duration,
           operationId,
-        }),
+        })
       );
 
       if (options?.trackMetrics !== false) {
@@ -539,12 +539,12 @@ export abstract class BaseService extends EventEmitter implements IService {
           duration,
           operationId,
           error: error instanceof Error ? error.message : 'Unknown error',
-        }),
+        })
       );
 
       this.logger.error(
         `Operation ${operation} failed on service ${this.name}:`,
-        error,
+        error
       );
       return response;
     }
@@ -553,14 +553,14 @@ export abstract class BaseService extends EventEmitter implements IService {
   async addDependency(dependency: ServiceDependencyConfig): Promise<void> {
     this.dependencies.set(dependency.serviceName, dependency);
     this.logger.info(
-      `Added dependency ${dependency.serviceName} to service ${this.name}`,
+      `Added dependency ${dependency.serviceName} to service ${this.name}`
     );
   }
 
   async removeDependency(serviceName: string): Promise<void> {
     this.dependencies.delete(serviceName);
     this.logger.info(
-      `Removed dependency ${serviceName} from service ${this.name}`,
+      `Removed dependency ${serviceName} from service ${this.name}`
     );
   }
 
@@ -579,7 +579,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           // Simulate dependency check with timeout
           const _timeout = depConfig?.timeout || 5000;
           await new Promise((resolve) =>
-            setTimeout(resolve, Math.random() * 100),
+            setTimeout(resolve, Math.random() * 100)
           );
 
           return { name: depName, available: true };
@@ -587,7 +587,7 @@ export abstract class BaseService extends EventEmitter implements IService {
           this.logger.warn(`Dependency check failed for ${depName}:`, error);
           return { name: depName, available: false };
         }
-      },
+      }
     );
 
     const results = await Promise.allSettled(dependencyChecks);
@@ -609,12 +609,12 @@ export abstract class BaseService extends EventEmitter implements IService {
 
       if (requiredFailures.length > 0) {
         this.logger.error(
-          `Required dependencies not available: ${requiredFailures.join(', ')}`,
+          `Required dependencies not available: ${requiredFailures.join(', ')}`
         );
         return false;
       }
       this.logger.warn(
-        `Optional dependencies not available: ${failedDependencies.join(', ')}`,
+        `Optional dependencies not available: ${failedDependencies.join(', ')}`
       );
     }
 
@@ -636,7 +636,7 @@ export abstract class BaseService extends EventEmitter implements IService {
     return super.removeAllListeners(event);
   }
 
-  emit(event: ServiceEventType, data?: any, error?: Error): boolean {
+  emit(event: ServiceEventType, data?: unknown, error?: Error): boolean {
     const serviceEvent = this.createEvent(event, data, error);
     return super.emit(event, serviceEvent);
   }
@@ -651,8 +651,8 @@ export abstract class BaseService extends EventEmitter implements IService {
    */
   protected abstract executeOperation<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<T>;
 
   /**
@@ -664,8 +664,8 @@ export abstract class BaseService extends EventEmitter implements IService {
    */
   protected createEvent(
     type: ServiceEventType,
-    data?: any,
-    error?: Error,
+    data?: unknown,
+    error?: Error
   ): ServiceEvent {
     return {
       type,
@@ -699,7 +699,7 @@ export abstract class BaseService extends EventEmitter implements IService {
     if (!this.capabilities.includes(capability)) {
       this.capabilities.push(capability);
       this.logger.debug(
-        `Added capability ${capability} to service ${this.name}`,
+        `Added capability ${capability} to service ${this.name}`
       );
     }
   }
@@ -714,7 +714,7 @@ export abstract class BaseService extends EventEmitter implements IService {
     if (index >= 0) {
       this.capabilities.splice(index, 1);
       this.logger.debug(
-        `Removed capability ${capability} from service ${this.name}`,
+        `Removed capability ${capability} from service ${this.name}`
       );
     }
   }
@@ -729,7 +729,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   protected async executeWithRetries<T>(
     operation: () => Promise<T>,
     maxRetries: number = 3,
-    delay: number = 1000,
+    delay: number = 1000
   ): Promise<T> {
     let lastError: Error | null = null;
 

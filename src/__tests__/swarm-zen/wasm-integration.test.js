@@ -18,7 +18,7 @@ const __dirname = dirname(__filename);
 function _assertApprox(actual, expected, tolerance = 0.01) {
   assert(
     Math.abs(actual - expected) < tolerance,
-    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`,
+    `Expected ${actual} to be approximately ${expected} (tolerance: ${tolerance})`
   );
 }
 
@@ -106,14 +106,14 @@ class WasmIntegrationTests {
     assert(coreModule, 'Core module should load');
     assert(
       coreModule.exports || coreModule.isPlaceholder,
-      'Core module should have exports or be placeholder',
+      'Core module should have exports or be placeholder'
     );
 
     // Test 4: Module status
     const status = loader.getModuleStatus();
     assert(
       status.core.loaded || status.core.loading,
-      'Core module should be loaded or loading',
+      'Core module should be loaded or loading'
     );
   }
 
@@ -125,7 +125,7 @@ class WasmIntegrationTests {
     const status1 = loader.getModuleStatus();
     assert(
       status1.core.loaded || status1.core.loading,
-      'Core should be loaded',
+      'Core should be loaded'
     );
     assert(!status1.neural.loaded, 'Neural should not be loaded yet');
 
@@ -149,7 +149,7 @@ class WasmIntegrationTests {
     assert.equal(
       this.ruvSwarm.activeSwarms.size,
       1,
-      'Should have 1 active swarm',
+      'Should have 1 active swarm'
     );
 
     // Test 2: Create swarm with different topologies
@@ -202,7 +202,7 @@ class WasmIntegrationTests {
       const metrics = await agent.getMetrics();
       assert(
         typeof metrics.memoryUsage === 'number',
-        'Memory usage should be a number',
+        'Memory usage should be a number'
       );
     }
 
@@ -210,7 +210,7 @@ class WasmIntegrationTests {
     assert.equal(
       swarm.agents.size,
       agentTypes.length,
-      'Swarm should have all spawned agents',
+      'Swarm should have all spawned agents'
     );
   }
 
@@ -269,7 +269,7 @@ class WasmIntegrationTests {
     const output = await network.forward(input);
     assert(
       output instanceof Float32Array || Array.isArray(output),
-      'Output should be array-like',
+      'Output should be array-like'
     );
 
     // Test 3: Training
@@ -297,7 +297,7 @@ class WasmIntegrationTests {
       ['test-agent-1', 'test-agent-2'],
       {
         strategy: 'federated',
-      },
+      }
     );
     assert(session.id, 'Collaborative session should have ID');
   }
@@ -354,11 +354,11 @@ class WasmIntegrationTests {
     });
     assert(
       typeof initialMemory.total_mb === 'number',
-      'Total memory should be a number',
+      'Total memory should be a number'
     );
     assert(
       typeof initialMemory.wasm_mb === 'number',
-      'WASM memory should be a number',
+      'WASM memory should be a number'
     );
 
     // Test 2: Memory growth with swarm creation
@@ -375,7 +375,7 @@ class WasmIntegrationTests {
     const afterSwarms = await this.mcpTools.memory_usage({ detail: 'summary' });
     assert(
       afterSwarms.total_mb >= beforeSwarms,
-      'Memory should increase or stay same',
+      'Memory should increase or stay same'
     );
 
     // Test 3: Detailed memory report
@@ -406,7 +406,7 @@ class WasmIntegrationTests {
         this.ruvSwarm.createSwarm({
           name: `perf-swarm-${i}`,
           maxAgents: 10,
-        }),
+        })
       );
       swarmTimes.push(time);
     }
@@ -420,7 +420,7 @@ class WasmIntegrationTests {
 
     for (let i = 0; i < 10; i++) {
       const { time } = await measureTime(() =>
-        swarm.spawn({ type: 'researcher' }),
+        swarm.spawn({ type: 'researcher' })
       );
       agentTimes.push(time);
     }
@@ -431,7 +431,7 @@ class WasmIntegrationTests {
     // Test 3: WASM module loading performance
     const loader = new WasmModuleLoader();
     const { time: loadTime } = await measureTime(() =>
-      loader.initialize('progressive'),
+      loader.initialize('progressive')
     );
     assert(loadTime < 2000, 'Progressive loading should complete under 2s');
   }

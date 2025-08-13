@@ -29,8 +29,8 @@ export interface SwarmOptions {
   connectionDensity?: number;
   syncInterval?: number;
   wasmPath?: string;
-  persistence?: any;
-  pooling?: any;
+  persistence?: unknown;
+  pooling?: unknown;
 }
 
 // Define SwarmConfig locally to match ruv-swarm interface
@@ -80,7 +80,7 @@ export interface AgentMemory {
 export interface EpisodicMemory {
   timestamp: number;
   context: string;
-  data: any;
+  data: unknown;
   importance: number;
 }
 
@@ -98,8 +98,8 @@ export interface Task {
   maxAgents: number;
   requiredCapabilities: string[];
   createdAt: Date;
-  metadata: Record<string, any>;
-  result?: any;
+  metadata: Record<string, unknown>;
+  result?: unknown;
   error?: Error;
 }
 
@@ -165,7 +165,7 @@ export interface Message {
   from: string;
   to: string | string[];
   type: MessageType;
-  payload: any;
+  payload: unknown;
   timestamp: number;
 }
 
@@ -178,9 +178,9 @@ export type MessageType =
   | 'error';
 
 export interface SwarmEventEmitter {
-  on(event: SwarmEvent, handler: (data: any) => void): void;
-  off(event: SwarmEvent, handler: (data: any) => void): void;
-  emit(event: SwarmEvent, data: any): void;
+  on(event: SwarmEvent, handler: (data: unknown) => void): void;
+  off(event: SwarmEvent, handler: (data: unknown) => void): void;
+  emit(event: SwarmEvent, data: unknown): void;
 }
 
 export type SwarmEvent =

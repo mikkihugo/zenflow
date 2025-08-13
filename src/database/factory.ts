@@ -48,31 +48,31 @@
 
 // Simple interfaces to avoid import issues
 interface ILogger {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
+  debug(message: string, meta?: unknown): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
 }
 
 interface IConfig {
-  get(key: string): any;
-  set(key: string, value: any): void;
+  get(key: string): unknown;
+  set(key: string, value: unknown): void;
 }
 
 interface DatabaseAdapter {
-  query(sql: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
-  transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
+  query(sql: string, params?: unknown[]): Promise<{ rows: unknown[]; rowCount: number }>;
+  transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T>;
   close(): Promise<void>;
-  getSchema?(): Promise<any>;
+  getSchema?(): Promise<unknown>;
 }
 
 // Simple dependency injection decorators
-function injectable<T extends new (...args: any[]) => any>(constructor: T) {
+function injectable<T extends new (...args: unknown[]) => any>(constructor: T) {
   return constructor;
 }
 
 function inject(token: string) {
-  return (target: any, propertyKey: string | symbol | undefined, parameterIndex: number) => {
+  return (target: unknown, propertyKey: string | symbol | undefined, parameterIndex: number) => {
     // Simple injection implementation
   };
 }
@@ -95,7 +95,7 @@ interface DatabaseConfig {
     min: number;
     max: number;
   };
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 interface DatabaseProviderFactory {
@@ -167,10 +167,10 @@ export interface RepositoryConfig {
   tableName?: string;
 
   /** Entity schema definition */
-  schema?: Record<string, any>;
+  schema?: Record<string, unknown>;
 
   /** Repository-specific options */
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 
   /** Database configuration (if creating new adapter) */
   databaseConfig?: DatabaseConfig;
@@ -262,7 +262,7 @@ export type RepositoryType<T> =
  */
 export interface EntityTypeRegistry {
   [entityType: string]: {
-    schema: Record<string, any>;
+    schema: Record<string, unknown>;
     primaryKey: string;
     tableName?: string;
     databaseType?: string;
@@ -536,7 +536,7 @@ export class DALFactory {
    *
    * @param {string} entityType - The unique name for this entity type.
    * @param {Object} config - Entity configuration object.
-   * @param {Record<string, any>} config.schema - Entity field definitions with types and constraints.
+   * @param {Record<string, unknown>} config.schema - Entity field definitions with types and constraints.
    * @param {string} config.primaryKey - Name of the primary key field.
    * @param {string} [config.tableName] - Custom table name (defaults to entityType).
    * @param {string} [config.databaseType] - Preferred database type for this entity.
@@ -607,7 +607,7 @@ export class DALFactory {
   registerEntityType(
     entityType: string,
     config: {
-      schema: Record<string, any>;
+      schema: Record<string, unknown>;
       primaryKey: string;
       tableName?: string;
       databaseType?: string;
@@ -719,7 +719,7 @@ export class DALFactory {
    * interface Concept {
    *   id: string;
    *   type: 'concept' | 'entity' | 'relationship';
-   *   properties: Record<string, any>;
+   *   properties: Record<string, unknown>;
    * }
    *
    * const knowledgeRepo = await factory.createKuzuGraphRepository<Concept>(
@@ -906,7 +906,7 @@ export class DALFactory {
    *   status: 'pending' | 'processing' | 'completed' | 'failed';
    *   assignedTo?: string;
    *   priority: number;
-   *   payload: Record<string, any>;
+   *   payload: Record<string, unknown>;
    *   createdAt: Date;
    *   scheduledFor?: Date;
    * }
@@ -1000,7 +1000,7 @@ export class DALFactory {
    * interface CacheEntry {
    *   id: string;
    *   key: string;
-   *   value: any;
+   *   value: unknown;
    *   tags: string[];
    *   createdAt: Date;
    *   accessCount: number;
@@ -1449,7 +1449,7 @@ export class MultiDatabaseDAO<T> implements IDataAccessObject<T> {
     return this.primaryDAO.getRepository();
   }
 
-  async executeTransaction<R>(operations: any[]): Promise<R> {
+  async executeTransaction<R>(operations: unknown[]): Promise<R> {
     // Execute on primary first
     const primaryResult = await this.primaryDAO.executeTransaction<R>(operations);
 
@@ -1461,7 +1461,7 @@ export class MultiDatabaseDAO<T> implements IDataAccessObject<T> {
     return primaryResult;
   }
 
-  async getMetadata(): Promise<any> {
+  async getMetadata(): Promise<unknown> {
     const primary = await this.primaryDAO.getMetadata();
     const secondaries = await Promise.allSettled(
       this.secondaryDAOs.map((dao) => dao.getMetadata())
@@ -1475,7 +1475,7 @@ export class MultiDatabaseDAO<T> implements IDataAccessObject<T> {
     };
   }
 
-  async healthCheck(): Promise<any> {
+  async healthCheck(): Promise<unknown> {
     const primary = await this.primaryDAO.healthCheck();
     const secondaries = await Promise.allSettled(
       this.secondaryDAOs.map((dao) => dao.healthCheck())
@@ -1490,7 +1490,7 @@ export class MultiDatabaseDAO<T> implements IDataAccessObject<T> {
     };
   }
 
-  async getMetrics(): Promise<any> {
+  async getMetrics(): Promise<unknown> {
     const primary = await this.primaryDAO.getMetrics();
     const secondaries = await Promise.allSettled(this.secondaryDAOs.map((dao) => dao.getMetrics()));
 
@@ -1502,7 +1502,7 @@ export class MultiDatabaseDAO<T> implements IDataAccessObject<T> {
     };
   }
 
-  private async replicateToSecondaries(operations: any[]): Promise<void> {
+  private async replicateToSecondaries(operations: unknown[]): Promise<void> {
     if (this.secondaryDAOs.length === 0) return;
 
     await Promise.allSettled(this.secondaryDAOs.map((dao) => dao.executeTransaction(operations)));

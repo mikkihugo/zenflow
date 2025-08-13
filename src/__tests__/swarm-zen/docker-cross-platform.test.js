@@ -68,13 +68,13 @@ async function testFileSystemOps() {
       addTestResult(
         'File System Operations',
         'passed',
-        'File I/O working correctly',
+        'File I/O working correctly'
       );
     } else {
       addTestResult(
         'File System Operations',
         'failed',
-        'File content mismatch',
+        'File content mismatch'
       );
     }
 
@@ -93,14 +93,14 @@ async function testWASMCompatibility() {
       __dirname,
       '..',
       'wasm',
-      'ruv_swarm_wasm_bg.wasm',
+      'ruv_swarm_wasm_bg.wasm'
     );
     const stats = await fs.stat(wasmPath);
 
     addTestResult(
       'WASM File Access',
       'passed',
-      `WASM file accessible: ${stats.size} bytes`,
+      `WASM file accessible: ${stats.size} bytes`
     );
 
     // Try to load WASM module
@@ -108,7 +108,7 @@ async function testWASMCompatibility() {
     addTestResult(
       'WASM Module Loading',
       'passed',
-      `WASM loaded successfully on ${process.platform}`,
+      `WASM loaded successfully on ${process.platform}`
     );
 
     // Test basic WASM operation
@@ -129,7 +129,7 @@ async function testProcessSpawning() {
     addTestResult(
       'Process Execution',
       'passed',
-      `Can execute processes: ${nodeVersion}`,
+      `Can execute processes: ${nodeVersion}`
     );
 
     // Test npx availability
@@ -138,7 +138,7 @@ async function testProcessSpawning() {
       addTestResult(
         'NPX Availability',
         'passed',
-        `NPX available: v${npxVersion}`,
+        `NPX available: v${npxVersion}`
       );
     } catch (_error) {
       addTestResult('NPX Availability', 'warning', 'NPX not available in PATH');
@@ -162,13 +162,13 @@ async function testMemoryAllocation() {
       addTestResult(
         'Large Memory Allocation',
         'passed',
-        'Can handle large data structures',
+        'Can handle large data structures'
       );
     } else {
       addTestResult(
         'Large Memory Allocation',
         'failed',
-        'Data retrieval mismatch',
+        'Data retrieval mismatch'
       );
     }
 
@@ -180,7 +180,7 @@ async function testMemoryAllocation() {
       `Heap: ${(memUsage.heapUsed / 1024 / 1024).toFixed(2)}MB`,
       {
         memoryUsage: memUsage,
-      },
+      }
     );
   } catch (error) {
     addTestResult('Memory Allocation', 'failed', error.message);
@@ -203,7 +203,7 @@ async function testNativeModules() {
       'Some native modules may not be available',
       {
         error: error.message,
-      },
+      }
     );
   }
 }
@@ -219,7 +219,7 @@ async function testPlatformFeatures() {
     addTestResult(
       'Endianness Handling',
       'passed',
-      `${os.endianness()} endian system`,
+      `${os.endianness()} endian system`
     );
   } else {
     addTestResult('Endianness Handling', 'failed', 'Endianness mismatch');
@@ -233,7 +233,7 @@ async function testPlatformFeatures() {
     addTestResult(
       'Path Separator',
       'passed',
-      `Using correct separator: ${expectedSep}`,
+      `Using correct separator: ${expectedSep}`
     );
   } else {
     addTestResult('Path Separator', 'failed', 'Path separator mismatch');
@@ -257,26 +257,26 @@ async function testConcurrency() {
       addTestResult(
         'Concurrent Agent Creation',
         'passed',
-        'Created 10 agents concurrently',
+        'Created 10 agents concurrently'
       );
     } else {
       addTestResult(
         'Concurrent Agent Creation',
         'failed',
-        `Expected 10 agents, got ${swarm.agents.length}`,
+        `Expected 10 agents, got ${swarm.agents.length}`
       );
     }
 
     // Test concurrent task execution
     const taskPromises = swarm.agents.map((agent) =>
-      agent.assignTask({ type: 'test', data: 'concurrent' }),
+      agent.assignTask({ type: 'test', data: 'concurrent' })
     );
 
     await Promise.all(taskPromises);
     addTestResult(
       'Concurrent Task Execution',
       'passed',
-      'All agents executed tasks concurrently',
+      'All agents executed tasks concurrently'
     );
   } catch (error) {
     addTestResult('Concurrency Test', 'failed', error.message);
@@ -306,7 +306,7 @@ async function generateReport() {
     __dirname,
     '..',
     'test-results',
-    'cross-platform-validation.json',
+    'cross-platform-validation.json'
   );
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));

@@ -50,13 +50,13 @@ program
   .option(
     '-b, --base-url <url>',
     'Base URL for API requests',
-    'http://localhost:3456',
+    'http://localhost:3456'
   )
   .option('--sync', 'Enable continuous sync monitoring')
   .option(
     '-a, --auth <type>',
     'Authentication type (bearer|apikey|custom)',
-    'none',
+    'none'
   )
   .option('--auth-header <name>', 'Custom auth header name (for apikey)')
   .option('--no-tests', 'Skip test generation')
@@ -71,7 +71,7 @@ program
     } catch (error) {
       console.error(
         chalk.red('❌ Generation failed:'),
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -86,12 +86,12 @@ program
   .option(
     '-b, --base-url <url>',
     'Base URL for API requests',
-    'http://localhost:3456',
+    'http://localhost:3456'
   )
   .option(
     '-a, --auth <type>',
     'Authentication type (bearer|apikey|custom)',
-    'none',
+    'none'
   )
   .option('--auth-header <name>', 'Custom auth header name (for apikey)')
   .option('--no-tests', 'Skip test generation')
@@ -105,7 +105,7 @@ program
     } catch (error) {
       console.error(
         chalk.red('❌ Watch failed:'),
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -122,7 +122,7 @@ program
     } catch (error) {
       console.error(
         chalk.red('❌ Validation failed:'),
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -140,7 +140,7 @@ program
     } catch (error) {
       console.error(
         chalk.red('❌ List failed:'),
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -149,7 +149,7 @@ program
 /**
  * Handle generate command
  */
-async function handleGenerate(options: any): Promise<void> {
+async function handleGenerate(options: unknown): Promise<void> {
   console.log(chalk.blue('🚀 OpenAPI → MCP Tools Generator'));
   console.log('');
 
@@ -183,7 +183,7 @@ async function handleGenerate(options: any): Promise<void> {
   console.log(`  Base URL: ${config.baseUrl}`);
   console.log(`  Auth: ${config.auth?.type || 'none'}`);
   console.log(
-    `  Tests: ${config.options?.generateTests ? 'enabled' : 'disabled'}`,
+    `  Tests: ${config.options?.generateTests ? 'enabled' : 'disabled'}`
   );
   console.log(`  Sync: ${config.enableSync ? 'enabled' : 'disabled'}`);
   console.log('');
@@ -202,7 +202,7 @@ async function handleGenerate(options: any): Promise<void> {
   if (config.enableSync) {
     console.log('');
     console.log(
-      chalk.yellow('👁️  Sync monitoring enabled - watching for changes...'),
+      chalk.yellow('👁️  Sync monitoring enabled - watching for changes...')
     );
     console.log(chalk.gray('Press Ctrl+C to stop'));
 
@@ -222,7 +222,7 @@ async function handleGenerate(options: any): Promise<void> {
 /**
  * Handle watch command
  */
-async function handleWatch(options: any): Promise<void> {
+async function handleWatch(options: unknown): Promise<void> {
   console.log(chalk.blue('👁️  OpenAPI → MCP Tools Watcher'));
   console.log('');
 
@@ -273,7 +273,7 @@ async function handleWatch(options: any): Promise<void> {
 /**
  * Handle validate command
  */
-async function handleValidate(options: any): Promise<void> {
+async function handleValidate(options: unknown): Promise<void> {
   console.log(chalk.blue('✅ OpenAPI Specification Validator'));
   console.log('');
 
@@ -312,7 +312,7 @@ async function handleValidate(options: any): Promise<void> {
 /**
  * Handle list command
  */
-async function handleList(options: any): Promise<void> {
+async function handleList(options: unknown): Promise<void> {
   console.log(chalk.blue('📋 OpenAPI Endpoints Lister'));
   console.log('');
 
@@ -399,7 +399,7 @@ async function handleList(options: any): Promise<void> {
 /**
  * Validate command options
  */
-function validateOptions(options: any): void {
+function validateOptions(options: unknown): void {
   // Validate output directory for generation commands
   if (options.output) {
     const outputDir = resolve(options.output);
@@ -417,7 +417,7 @@ function validateOptions(options: any): void {
     !/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(options.namespace)
   ) {
     throw new Error(
-      'Namespace must be a valid identifier (letters, numbers, underscore)',
+      'Namespace must be a valid identifier (letters, numbers, underscore)'
     );
   }
 
@@ -441,7 +441,7 @@ function validateOptions(options: any): void {
 /**
  * Build generator config from CLI options
  */
-function buildGeneratorConfig(options: any): OpenAPIMCPGeneratorConfig {
+function buildGeneratorConfig(options: unknown): OpenAPIMCPGeneratorConfig {
   const config: OpenAPIMCPGeneratorConfig = {
     specUrl: options.spec,
     outputDir: resolve(options.output || './generated'),

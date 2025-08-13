@@ -222,17 +222,17 @@ export class AIRuleGenerator {
    */
   async generateRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     this.logger.info(
-      `Generating AI rules from ${analysisResults.length} analysis results`,
+      `Generating AI rules from ${analysisResults.length} analysis results`
     );
 
     const generatedRules: BiomeRule[] = [];
 
     // Apply different generation strategies in parallel
     const strategyPromises = this.config.strategies.map((strategy) =>
-      this.applyGenerationStrategy(strategy, analysisResults, context),
+      this.applyGenerationStrategy(strategy, analysisResults, context)
     );
 
     const strategyResults = await Promise.all(strategyPromises);
@@ -278,7 +278,7 @@ export class AIRuleGenerator {
   private async applyGenerationStrategy(
     strategy: RuleGenerationStrategy,
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     this.logger.debug(`Applying ${strategy} generation strategy`);
 
@@ -312,7 +312,7 @@ export class AIRuleGenerator {
    */
   private async generatePatternBasedRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -329,7 +329,7 @@ export class AIRuleGenerator {
       const rule = await this.generateRuleFromPatterns(
         patternType,
         patterns,
-        context,
+        context
       );
 
       if (
@@ -349,7 +349,7 @@ export class AIRuleGenerator {
    */
   private async generateStatisticalRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -359,19 +359,19 @@ export class AIRuleGenerator {
     // Generate rules for outliers and anomalies
     if (stats.averageComplexity > 15) {
       rules.push(
-        await this.createComplexityRule(stats.averageComplexity * 0.8),
+        await this.createComplexityRule(stats.averageComplexity * 0.8)
       );
     }
 
     if (stats.typeAnnotationCoverage < 0.7) {
       rules.push(
-        await this.createTypeAnnotationRule(stats.typeAnnotationCoverage),
+        await this.createTypeAnnotationRule(stats.typeAnnotationCoverage)
       );
     }
 
     if (stats.duplicatedCodePercentage > 0.1) {
       rules.push(
-        await this.createDuplicationRule(stats.duplicatedCodePercentage),
+        await this.createDuplicationRule(stats.duplicatedCodePercentage)
       );
     }
 
@@ -383,7 +383,7 @@ export class AIRuleGenerator {
    */
   private async generateContextAwareRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
     const { projectMetadata, teamPreferences } = context;
@@ -408,7 +408,7 @@ export class AIRuleGenerator {
       const categoryRules = await this.generateCategorySpecificRules(
         category,
         analysisResults,
-        context,
+        context
       );
       rules.push(...categoryRules);
     }
@@ -421,7 +421,7 @@ export class AIRuleGenerator {
    */
   private async generateCollaborativeRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
     const { teamPreferences } = context;
@@ -433,7 +433,7 @@ export class AIRuleGenerator {
         const improvedRule = await this.improveRule(
           ruleName,
           feedback,
-          context,
+          context
         );
         if (improvedRule) {
           rules.push(improvedRule);
@@ -446,7 +446,7 @@ export class AIRuleGenerator {
       for (const improvement of feedback.improvements) {
         const rule = await this.generateRuleFromSuggestion(
           improvement,
-          context,
+          context
         );
         if (rule) {
           rules.push(rule);
@@ -462,7 +462,7 @@ export class AIRuleGenerator {
    */
   private async generateEvolutionaryRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
@@ -475,7 +475,7 @@ export class AIRuleGenerator {
         const improvedRule = await this.evolveRule(
           ruleName,
           effectiveness,
-          context,
+          context
         );
         if (improvedRule) {
           rules.push(improvedRule);
@@ -485,7 +485,7 @@ export class AIRuleGenerator {
         const variants = await this.generateRuleVariants(
           ruleName,
           effectiveness,
-          context,
+          context
         );
         rules.push(...variants);
       }
@@ -499,14 +499,14 @@ export class AIRuleGenerator {
    */
   private async generateCreativeRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
     // Use Claude's creativity to suggest novel rules
     const creativeSuggestions = await this.requestCreativeRules(
       analysisResults,
-      context,
+      context
     );
 
     for (const suggestion of creativeSuggestions) {
@@ -526,7 +526,7 @@ export class AIRuleGenerator {
   // Helper methods for rule generation
 
   private groupPatternsByType(
-    patterns: CodePattern[],
+    patterns: CodePattern[]
   ): Map<string, CodePattern[]> {
     const groups = new Map<string, CodePattern[]>();
 
@@ -541,8 +541,8 @@ export class AIRuleGenerator {
   }
 
   private calculateCodebaseStatistics(
-    analysisResults: AIAnalysisResult[],
-  ): any {
+    analysisResults: AIAnalysisResult[]
+  ): unknown {
     // Placeholder implementation - would calculate real statistics
     return {
       averageComplexity: 12.5,
@@ -555,7 +555,7 @@ export class AIRuleGenerator {
   private async generateRuleFromPatterns(
     patternType: string,
     patterns: CodePattern[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     // This would use Claude to analyze patterns and generate a custom rule
     // Placeholder implementation
@@ -659,7 +659,7 @@ export class AIRuleGenerator {
     // Set up periodic rule evolution
     this.evolutionTimer = setInterval(
       () => this.performRuleEvolution(),
-      this.config.evolution.evolutionInterval,
+      this.config.evolution.evolutionInterval
     );
   }
 
@@ -670,63 +670,63 @@ export class AIRuleGenerator {
 
   // Placeholder methods for advanced functionality
   private async generateLibrarySpecificRules(
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   private async generateWebAppRules(
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   private async generateAPIRules(
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   private async generateCategorySpecificRules(
     category: LintingCategory,
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   private async improveRule(
     ruleName: string,
     feedback: RuleFeedback,
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
   private async generateRuleFromSuggestion(
     suggestion: string,
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
   private async evolveRule(
     ruleName: string,
     effectiveness: RuleEffectiveness,
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
   private async generateRuleVariants(
     ruleName: string,
     effectiveness: RuleEffectiveness,
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
   private async requestCreativeRules(
     analysisResults: AIAnalysisResult[],
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<string[]> {
     return [];
   }
   private async implementCreativeRule(
     suggestion: string,
-    context: RuleGenerationContext,
+    context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
@@ -734,7 +734,7 @@ export class AIRuleGenerator {
   /**
    * Get current rule generation statistics
    */
-  getStatistics(): any {
+  getStatistics(): unknown {
     return {
       totalGeneratedRules: this.generatedRules.size,
       effectivenessTracking: this.ruleEffectiveness.size,

@@ -46,7 +46,7 @@ export interface InterfaceManagerConfig {
   /** Enable real-time updates */
   enableRealTime?: boolean;
   /** Reference to core system */
-  coreSystem?: any;
+  coreSystem?: unknown;
 }
 
 /**
@@ -187,7 +187,7 @@ export class InterfaceManager extends EventEmitter {
 
   private async launchWeb(): Promise<void> {
     logger.info(
-      `Web interface would be launched on port ${this.config.webPort}`,
+      `Web interface would be launched on port ${this.config.webPort}`
     );
     // In a real implementation, this would start the web server
   }

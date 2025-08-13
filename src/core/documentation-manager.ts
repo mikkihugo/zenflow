@@ -94,7 +94,7 @@ export class DocumentationManager extends EventEmitter {
     logger.info('Documentation manager ready');
   }
 
-  async indexDocument(document: any): Promise<void> {
+  async indexDocument(document: unknown): Promise<void> {
     await this.ensureInitialized();
 
     // Index the document
@@ -108,7 +108,7 @@ export class DocumentationManager extends EventEmitter {
         type: document.type,
         indexedAt: new Date().toISOString(),
       },
-      'documentation',
+      'documentation'
     );
 
     this.stats.indexedDocuments++;

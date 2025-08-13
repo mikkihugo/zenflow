@@ -32,7 +32,7 @@ export class WasmModuleLoaderCompat {
     return NeuralWasmGateway.isInitialized();
   }
 
-  getModule(): any {
+  getModule(): unknown {
     return { gateway: true };
   }
 
@@ -45,7 +45,7 @@ export class WasmModuleLoaderCompat {
     return 0;
   }
 
-  getModuleStatus(): any {
+  getModuleStatus(): unknown {
     const m = NeuralWasmGateway.getMetrics();
     return {
       loaded: m.initialized,

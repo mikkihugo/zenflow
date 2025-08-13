@@ -82,8 +82,8 @@ export interface HTTPClientConfig extends ClientConfig {
   keepAliveTimeout?: number;
 
   // Request/Response interceptors
-  requestInterceptors?: Array<(config: any) => any>;
-  responseInterceptors?: Array<(response: any) => any>;
+  requestInterceptors?: Array<(config: unknown) => any>;
+  responseInterceptors?: Array<(response: unknown) => any>;
 
   // Proxy settings
   proxy?: {
@@ -120,9 +120,9 @@ export interface HTTPRequestOptions {
   validateStatus?: (status: number) => boolean;
   responseType?: 'json' | 'text' | 'blob' | 'stream';
   signal?: AbortSignal;
-  onUploadProgress?: (progressEvent: any) => void;
-  onDownloadProgress?: (progressEvent: any) => void;
-  metadata?: Record<string, any>;
+  onUploadProgress?: (progressEvent: unknown) => void;
+  onDownloadProgress?: (progressEvent: unknown) => void;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -136,8 +136,8 @@ export interface HTTPResponse<T = any> {
   statusText: string;
   headers: Record<string, string>;
   config: HTTPRequestOptions;
-  request?: any;
-  metadata?: Record<string, any>;
+  request?: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -149,7 +149,7 @@ export interface HTTPErrorDetails {
   status?: number;
   statusText?: string;
   headers?: Record<string, string>;
-  data?: any;
+  data?: unknown;
   config?: HTTPRequestOptions;
 }
 

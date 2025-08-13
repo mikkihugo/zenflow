@@ -35,7 +35,7 @@ export interface FACTStorageConfig {
   defaultTTL: number;
   cleanupInterval: number;
   maxEntryAge: number;
-  backendConfig?: any;
+  backendConfig?: unknown;
 }
 
 export interface FACTStorageBackend {
@@ -65,7 +65,7 @@ export interface FACTKnowledgeEntry {
   metadata: {
     type: string;
     domains: string[];
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -153,7 +153,7 @@ export class FACTStorageSystem extends EventEmitter {
     entry: Omit<
       FACTKnowledgeEntry,
       'id' | 'timestamp' | 'accessCount' | 'lastAccessed'
-    >,
+    >
   ): Promise<string> {
     const id = this.generateEntryId(entry.query, entry.metadata['type']);
     const timestamp = Date.now();
@@ -312,7 +312,7 @@ export class FACTStorageSystem extends EventEmitter {
 
     // Clean backend storage
     const backendDeletions = await this.backend.cleanup(
-      this.config.maxEntryAge,
+      this.config.maxEntryAge
     );
 
     this.stats.evictions += memoryEvictions;
@@ -405,7 +405,7 @@ export class FACTStorageSystem extends EventEmitter {
 
   private isEntryValid(
     entry: FACTKnowledgeEntry,
-    now: number = Date.now(),
+    now: number = Date.now()
   ): boolean {
     return now - entry.timestamp < entry.ttl;
   }

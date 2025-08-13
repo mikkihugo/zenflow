@@ -417,7 +417,7 @@ export class OptimizationError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly target?: OptimizationTarget,
+    public readonly target?: OptimizationTarget
   ) {
     super(message);
     this.name = 'OptimizationError';
@@ -427,7 +427,7 @@ export class OptimizationError extends Error {
 export class OptimizationConfigError extends OptimizationError {
   constructor(
     message: string,
-    public readonly config?: Partial<OptimizationConfig>,
+    public readonly config?: Partial<OptimizationConfig>
   ) {
     super(message, 'OPTIMIZATION_CONFIG_ERROR');
     this.name = 'OptimizationConfigError';
@@ -437,7 +437,7 @@ export class OptimizationConfigError extends OptimizationError {
 export class OptimizationTimeoutError extends OptimizationError {
   constructor(
     message: string,
-    public readonly timeout?: number,
+    public readonly timeout?: number
   ) {
     super(message, 'OPTIMIZATION_TIMEOUT_ERROR');
     this.name = 'OptimizationTimeoutError';

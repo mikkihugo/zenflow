@@ -21,10 +21,10 @@
  */
 
 import { getLogger } from '../../config/logging-config.ts';
+import { WorkflowEngine } from '../../workflows/workflow-engine.ts';
 import { DocumentProcessor } from '../core/document-processor';
 import { EventBus } from '../core/event-bus.ts';
 import { MemorySystem } from '../core/memory-system';
-import { WorkflowEngine } from '../../workflows/workflow-engine.ts';
 import { IntelligenceCoordinationSystem } from '../knowledge/intelligence-coordination-system';
 import ProjectContextAnalyzer from '../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../tools/domain-splitting/analyzers/domain-analyzer';
@@ -60,7 +60,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
         workspaceRoot: projectPath,
         autoWatch: false,
         enableWorkflows: false,
-      },
+      }
     );
     await documentProcessor.initialize();
 
@@ -102,7 +102,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
         collectiveMemory: { enabled: true },
       },
       logger,
-      eventBus,
+      eventBus
     );
     const bridge = new DomainDiscoveryBridge(
       documentProcessor,
@@ -115,7 +115,7 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
         maxDomainsPerDocument: 3,
         useNeuralAnalysis: true,
         enableCache: true,
-      },
+      }
     );
 
     // Listen for events

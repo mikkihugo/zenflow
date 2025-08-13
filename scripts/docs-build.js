@@ -127,7 +127,7 @@ class DocsBuilder {
     try {
       // Step 1: Initialize build environment
       await this.executeStep('initialize', () =>
-        this.initializeBuildEnvironment(),
+        this.initializeBuildEnvironment()
       );
 
       // Step 2: Validate JSDoc if enabled
@@ -291,7 +291,7 @@ class DocsBuilder {
       validationResults.quality.failed > 0
     ) {
       throw new Error(
-        `JSDoc validation failed: ${validationResults.quality.failed} files have errors`,
+        `JSDoc validation failed: ${validationResults.quality.failed} files have errors`
       );
     }
     return validationResults;
@@ -509,20 +509,20 @@ class DocsBuilder {
     const htmlReport = this.buildHTMLReport();
     await fs.writeFile(
       path.join(this.outputDir, 'build-report.html'),
-      htmlReport,
+      htmlReport
     );
 
     // Markdown Report
     const markdownReport = this.buildMarkdownReport();
     await fs.writeFile(
       path.join(this.outputDir, 'build-report.md'),
-      markdownReport,
+      markdownReport
     );
 
     // JSON Results
     await fs.writeFile(
       path.join(this.outputDir, 'build-results.json'),
-      JSON.stringify(this.results, null, 2),
+      JSON.stringify(this.results, null, 2)
     );
   }
 
@@ -771,7 +771,7 @@ window.SITE_STRUCTURE = ${JSON.stringify(structure, null, 2)};`;
 
     await fs.writeFile(
       path.join(siteDir, 'assets', 'navigation.js'),
-      navigationJS,
+      navigationJS
     );
   }
 
@@ -790,7 +790,7 @@ window.SITE_STRUCTURE = ${JSON.stringify(structure, null, 2)};`;
     // This would be enhanced with full-text search indexing
     await fs.writeFile(
       path.join(siteDir, 'assets', 'search-index.json'),
-      JSON.stringify(searchIndex, null, 2),
+      JSON.stringify(searchIndex, null, 2)
     );
   }
 
@@ -1016,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     await fs.writeFile(
       path.join(deployDir, 'deploy.json'),
-      JSON.stringify(config, null, 2),
+      JSON.stringify(config, null, 2)
     );
 
     return config;
@@ -1074,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <td>${result.duration}ms</td>
                     <td>${result.error || 'Completed successfully'}</td>
                 </tr>
-                `,
+                `
                   )
                   .join('')}
             </tbody>
@@ -1129,7 +1129,7 @@ document.addEventListener('DOMContentLoaded', function() {
 ${Object.entries(this.results.steps)
   .map(
     ([step, result]) =>
-      `- **${step}**: ${result.success ? '✅' : '❌'} (${result.duration}ms)${result.error ? ` - ${result.error}` : ''}`,
+      `- **${step}**: ${result.success ? '✅' : '❌'} (${result.duration}ms)${result.error ? ` - ${result.error}` : ''}`
   )
   .join('\n')}
 
@@ -1160,7 +1160,7 @@ ${
 ${this.results.artifacts
   .map(
     (artifact) =>
-      `- **${artifact.type}**: ${artifact.path} (${artifact.size} bytes)`,
+      `- **${artifact.type}**: ${artifact.path} (${artifact.size} bytes)`
   )
   .join('\n')}
 
@@ -1176,7 +1176,7 @@ ${this.results.artifacts
   getTotalDuration() {
     return Object.values(this.results.steps).reduce(
       (total, step) => total + step.duration,
-      0,
+      0
     );
   }
 }

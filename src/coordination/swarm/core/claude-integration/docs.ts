@@ -98,7 +98,7 @@ class ClaudeDocsGenerator {
       } else {
         // Non-interactive mode - fail safely
         throw new Error(
-          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.',
+          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.'
         );
       }
     } else if (fileExists && force) {
@@ -1311,7 +1311,7 @@ ${config?.details}
       // Intelligent merging
       const mergedContent = this.intelligentMerge(
         existingContent,
-        claudeZenContent,
+        claudeZenContent
       );
 
       // Write merged content
@@ -1514,7 +1514,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     if (claudeZenSectionIndex !== -1) {
       const sectionEnd = this.findSectionEnd(
         existingLines,
-        claudeZenSectionIndex,
+        claudeZenSectionIndex
       );
 
       // Replace the section
@@ -1649,7 +1649,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     } catch (error) {
       logger.error(
         '❌ Failed to generate documentation:',
-        (error as Error).message,
+        (error as Error).message
       );
       throw error;
     }

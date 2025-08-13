@@ -189,7 +189,7 @@ export class SwarmTools {
    *
    * @throws {Error} When status retrieval fails
    */
-  async swarmStatus(_params: any = {}): Promise<any> {
+  async swarmStatus(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting swarm status');
 
@@ -278,7 +278,7 @@ export class SwarmTools {
    *
    * @throws {Error} When swarm initialization fails
    */
-  async swarmInit(params: any = {}): Promise<any> {
+  async swarmInit(params: unknown = {}): Promise<unknown> {
     try {
       const { name = 'New Swarm', topology = 'auto', maxAgents = 4 } = params;
       logger.info(`Initializing swarm: ${name}`, { topology, maxAgents });
@@ -345,7 +345,7 @@ export class SwarmTools {
    *
    * @throws {Error} When monitoring data retrieval fails
    */
-  async swarmMonitor(_params: any = {}): Promise<any> {
+  async swarmMonitor(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting swarm monitoring data');
 
@@ -425,7 +425,7 @@ export class SwarmTools {
    *
    * @throws {Error} When agent spawning fails
    */
-  async agentSpawn(params: any = {}): Promise<any> {
+  async agentSpawn(params: unknown = {}): Promise<unknown> {
     try {
       const { type = 'general', name } = params;
       const agentId = `agent-${type}-${Date.now()}`;
@@ -477,7 +477,7 @@ export class SwarmTools {
    *
    * @throws {Error} When agent listing fails
    */
-  async agentList(_params: any = {}): Promise<any> {
+  async agentList(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Listing active agents');
 
@@ -523,7 +523,7 @@ export class SwarmTools {
    *
    * @throws {Error} When metrics collection fails
    */
-  async agentMetrics(_params: any = {}): Promise<any> {
+  async agentMetrics(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting agent metrics');
 
@@ -549,7 +549,7 @@ export class SwarmTools {
    *
    * @param params
    */
-  async taskOrchestrate(params: any = {}): Promise<any> {
+  async taskOrchestrate(params: unknown = {}): Promise<unknown> {
     try {
       const { task = 'Generic Task', strategy = 'auto' } = params;
       const taskId = `task-${Date.now()}`;
@@ -578,7 +578,7 @@ export class SwarmTools {
    *
    * @param params
    */
-  async taskStatus(params: any = {}): Promise<any> {
+  async taskStatus(params: unknown = {}): Promise<unknown> {
     try {
       const { taskId = 'unknown' } = params;
       logger.info(`Getting task status: ${taskId}`);
@@ -604,7 +604,7 @@ export class SwarmTools {
    *
    * @param params
    */
-  async taskResults(params: any = {}): Promise<any> {
+  async taskResults(params: unknown = {}): Promise<unknown> {
     try {
       const { taskId = 'unknown' } = params;
       logger.info(`Getting task results: ${taskId}`);
@@ -631,7 +631,7 @@ export class SwarmTools {
    *
    * @param _params
    */
-  async memoryUsage(_params: any = {}): Promise<any> {
+  async memoryUsage(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting memory usage');
 
@@ -657,7 +657,7 @@ export class SwarmTools {
    *
    * @param _params
    */
-  async benchmarkRun(_params: any = {}): Promise<any> {
+  async benchmarkRun(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Running benchmark');
 
@@ -691,7 +691,7 @@ export class SwarmTools {
    *
    * @param _params
    */
-  async featuresDetect(_params: any = {}): Promise<any> {
+  async featuresDetect(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Detecting features');
 

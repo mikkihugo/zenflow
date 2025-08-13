@@ -89,7 +89,7 @@ describe('Memory and Resource Edge Cases', () => {
 
         const memoryAfterGC = process.memoryUsage();
         expect(memoryAfterGC.heapUsed).toBeLessThan(
-          initialMemory.heapUsed + 200 * 1024 * 1024, // 200MB limit
+          initialMemory.heapUsed + 200 * 1024 * 1024 // 200MB limit
         );
       } finally {
         // Cleanup
@@ -127,7 +127,7 @@ describe('Memory and Resource Edge Cases', () => {
 
       // Modern JS engines should handle circular references
       expect(memoryAfterCleanup.heapUsed).toBeLessThan(
-        initialMemory.heapUsed + 100 * 1024 * 1024,
+        initialMemory.heapUsed + 100 * 1024 * 1024
       );
     });
   });
@@ -195,7 +195,7 @@ describe('Memory and Resource Edge Cases', () => {
                 obj.destroy();
                 resolve();
               }, Math.random() * 100);
-            }),
+            })
           );
         }
       }
@@ -438,7 +438,7 @@ describe('Memory and Resource Edge Cases', () => {
       // Try to use resource concurrently
       for (let i = 0; i < 10; i++) {
         promises.push(
-          resource.use().catch((error) => ({ error: error.message })),
+          resource.use().catch((error) => ({ error: error.message }))
         );
       }
 

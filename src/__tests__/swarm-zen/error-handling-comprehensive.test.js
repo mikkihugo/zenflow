@@ -82,11 +82,11 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Valid input schema', async () => {
       const result = this.errorHandler.validateInput(
         { name: 'test', value: 42 },
-        { name: 'string', value: 'number' },
+        { name: 'string', value: 'number' }
       );
       assert(
         result.valid === true || result.valid === undefined,
-        'Should validate correct input',
+        'Should validate correct input'
       );
       this.results.coverage.validation++;
     });
@@ -94,7 +94,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Invalid input type', async () => {
       const _result = this.errorHandler.validateInput(
         { name: 123, value: 'invalid' },
-        { name: 'string', value: 'number' },
+        { name: 'string', value: 'number' }
       );
       // Should either validate or return validation errors
       this.results.coverage.validation++;
@@ -103,7 +103,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Missing required fields', async () => {
       const _result = this.errorHandler.validateInput(
         { name: 'test' },
-        { name: 'string', value: 'number', required: ['name', 'value'] },
+        { name: 'string', value: 'number', required: ['name', 'value'] }
       );
       this.results.coverage.validation++;
     });
@@ -111,7 +111,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Extra fields handling', async () => {
       const _result = this.errorHandler.validateInput(
         { name: 'test', value: 42, extra: 'field' },
-        { name: 'string', value: 'number' },
+        { name: 'string', value: 'number' }
       );
       this.results.coverage.validation++;
     });
@@ -119,7 +119,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Validation - Nested object validation', async () => {
       const _result = this.errorHandler.validateInput(
         { config: { timeout: 5000, retries: 3 } },
-        { config: { timeout: 'number', retries: 'number' } },
+        { config: { timeout: 'number', retries: 'number' } }
       );
       this.results.coverage.validation++;
     });
@@ -155,10 +155,10 @@ class ErrorHandlingTestSuite {
         const sanitized = this.errorHandler.sanitizeInput(maliciousInput);
         assert(
           typeof sanitized === 'string',
-          'Should prevent command injection',
+          'Should prevent command injection'
         );
         this.results.coverage.sanitization++;
-      },
+      }
     );
 
     await this.runTest('Sanitization - Unicode normalization', async () => {
@@ -174,7 +174,7 @@ class ErrorHandlingTestSuite {
     await this.runTest('Error Types - ZenSwarmError creation', async () => {
       const error = new this.errorHandler.ZenSwarmError(
         'Test error',
-        'TEST001',
+        'TEST001'
       );
       assert(error instanceof Error, 'Should create ZenSwarmError');
       assert(error.name === 'ZenSwarmError', 'Should have correct name');
@@ -221,7 +221,7 @@ class ErrorHandlingTestSuite {
       const result = this.errorHandler.handleError(testError);
       assert(
         result.handled === true || result !== undefined,
-        'Should handle basic errors',
+        'Should handle basic errors'
       );
       this.results.coverage.errorHandling++;
     });
@@ -253,7 +253,7 @@ class ErrorHandlingTestSuite {
           assert(error.stack !== undefined, 'Should maintain stack trace');
         }
         this.results.coverage.errorHandling++;
-      },
+      }
     );
   }
 
@@ -306,7 +306,7 @@ class ErrorHandlingTestSuite {
         const fallbackResult = serviceWithDegradation.fallbackFeature();
         assert(
           fallbackResult.success === true,
-          'Should provide fallback functionality',
+          'Should provide fallback functionality'
         );
       }
       this.results.coverage.recovery++;
@@ -371,7 +371,7 @@ class ErrorHandlingTestSuite {
 
       assert(
         logEntry.message === 'Logging test error',
-        'Should create proper log entry',
+        'Should create proper log entry'
       );
       this.results.coverage.logging++;
     });
@@ -392,11 +392,11 @@ class ErrorHandlingTestSuite {
 
       assert(
         structuredError.service === 'ruv-swarm',
-        'Should include service information',
+        'Should include service information'
       );
       assert(
         structuredError.metadata.requestId !== undefined,
-        'Should include request context',
+        'Should include request context'
       );
       this.results.coverage.logging++;
     });
@@ -414,11 +414,11 @@ class ErrorHandlingTestSuite {
 
       assert(
         shouldLog('ERROR') === true,
-        'Should log ERROR when level is WARN',
+        'Should log ERROR when level is WARN'
       );
       assert(
         shouldLog('DEBUG') === false,
-        'Should not log DEBUG when level is WARN',
+        'Should not log DEBUG when level is WARN'
       );
       this.results.coverage.logging++;
     });
@@ -474,7 +474,7 @@ class ErrorHandlingTestSuite {
       } catch (error) {
         assert(
           error.message === 'Promise rejection',
-          'Should catch promise rejections',
+          'Should catch promise rejections'
         );
       }
 
@@ -495,7 +495,7 @@ class ErrorHandlingTestSuite {
       } catch (error) {
         assert(
           error.message === 'Async operation failed',
-          'Should catch async errors',
+          'Should catch async errors'
         );
       }
 
@@ -573,7 +573,7 @@ class ErrorHandlingTestSuite {
     ).toFixed(1);
     const totalCoverage = Object.values(this.results.coverage).reduce(
       (a, b) => a + b,
-      0,
+      0
     );
 
     const report = {
@@ -608,25 +608,25 @@ class ErrorHandlingTestSuite {
 
     if (this.results.failed > 0) {
       recommendations.push(
-        'Fix failing error handling tests to improve system reliability',
+        'Fix failing error handling tests to improve system reliability'
       );
     }
 
     if (coverage.validation < 5) {
       recommendations.push(
-        'Add more input validation tests for better security',
+        'Add more input validation tests for better security'
       );
     }
 
     if (coverage.sanitization < 5) {
       recommendations.push(
-        'Enhance input sanitization tests to prevent security vulnerabilities',
+        'Enhance input sanitization tests to prevent security vulnerabilities'
       );
     }
 
     if (coverage.errorTypes < 5) {
       recommendations.push(
-        'Test more error types for comprehensive error handling',
+        'Test more error types for comprehensive error handling'
       );
     }
 
@@ -652,7 +652,7 @@ class ErrorHandlingTestSuite {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent error handling coverage! Consider adding chaos engineering tests.',
+        'Excellent error handling coverage! Consider adding chaos engineering tests.'
       );
     }
 
@@ -680,7 +680,7 @@ class ErrorHandlingTestSuite {
     // Save report to file
     const reportPath = path.join(
       __dirname,
-      '../test-reports/error-handling-test-report.json',
+      '../test-reports/error-handling-test-report.json'
     );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));

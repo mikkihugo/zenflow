@@ -165,7 +165,7 @@ export class TerminalInterface {
         commands,
         flags: { ...flags, ...this.config },
         onExit: (code: number) => process.exit(code),
-      }),
+      })
     );
 
     // Setup graceful shutdown
@@ -183,8 +183,8 @@ export class TerminalInterface {
    *
    * @param args
    */
-  private parseFlags(args: string[]): Record<string, any> {
-    const flags: Record<string, any> = {};
+  private parseFlags(args: string[]): Record<string, unknown> {
+    const flags: Record<string, unknown> = {};
 
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
@@ -231,7 +231,7 @@ export const createTerminalInterface = (config?: TerminalInterfaceConfig) => {
 };
 
 export const launchTerminalInterface = async (
-  config?: TerminalInterfaceConfig,
+  config?: TerminalInterfaceConfig
 ) => {
   const terminal = new TerminalInterface(config);
   await terminal.initialize();

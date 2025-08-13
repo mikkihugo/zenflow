@@ -16,12 +16,12 @@ import * as path from 'node:path';
 
 // Import placeholder for missing module
 interface ZenSwarm {
-  initialize(options: any): Promise<any>;
+  initialize(options: unknown): Promise<unknown>;
 }
 
 // Placeholder implementation since ./index-complete doesn't exist
 const ZenSwarm: ZenSwarm = {
-  async initialize(_options: any) {
+  async initialize(_options: unknown) {
     return {
       wasmLoader: {
         modules: new Map([
@@ -33,7 +33,7 @@ const ZenSwarm: ZenSwarm = {
               neural_train: (
                 _modelType: string,
                 _iteration: number,
-                _totalIterations: number,
+                _totalIterations: number
               ) => {},
             },
           ],
@@ -61,7 +61,7 @@ const PATTERN_MEMORY_CONFIG = {
 };
 
 class NeuralCLI {
-  private ruvSwarm: any;
+  private ruvSwarm: unknown;
   // private activePatterns: Set<string>; // xxx NEEDS_HUMAN: Unused property - confirm if can be removed
 
   constructor() {
@@ -143,7 +143,7 @@ class NeuralCLI {
     } catch (error) {
       logger.error(
         '❌ Error getting neural status:',
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -168,7 +168,7 @@ class NeuralCLI {
         const accuracy = Math.min(95, 60 + progress * 30 + Math.random() * 5);
 
         process.stdout.write(
-          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`,
+          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`
         );
 
         // Simulate training delay
@@ -197,13 +197,13 @@ class NeuralCLI {
       await fs.mkdir(outputDir, { recursive: true });
       const outputFile = path.join(
         outputDir,
-        `training-${modelType}-${Date.now()}.json`,
+        `training-${modelType}-${Date.now()}.json`
       );
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
     } catch (error) {
       logger.error(
         '\n❌ Training failed:',
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       process.exit(1);
     }
@@ -232,7 +232,7 @@ class NeuralCLI {
 
     try {
       // Generate pattern analysis (in real implementation, this would come from WASM)
-      const patterns: Record<string, any> = {
+      const patterns: Record<string, unknown> = {
         attention: {
           'Focus Patterns': [
             'Sequential attention',
@@ -449,7 +449,7 @@ class NeuralCLI {
           : [modelType];
 
       for (const model of modelTypes) {
-        (weights.models as Record<string, any>)[model] = {
+        (weights.models as Record<string, unknown>)[model] = {
           layers: Math.floor(Math.random() * 8) + 4,
           parameters: Math.floor(Math.random() * 1000000) + 100000,
           weights: Array.from({ length: 100 }, () => Math.random() - 0.5),
@@ -471,7 +471,7 @@ class NeuralCLI {
 
   // Helper method to calculate convergence rate
   calculateConvergenceRate(
-    trainingResults: Array<{ loss: number; accuracy: number }>,
+    trainingResults: Array<{ loss: number; accuracy: number }>
   ) {
     if (trainingResults.length < 3) {
       return 'insufficient_data';
@@ -479,10 +479,10 @@ class NeuralCLI {
 
     const recentResults = trainingResults?.slice(-5); // Last 5 iterations
     const lossVariance = this.calculateVariance(
-      recentResults?.map((r: { loss: number }) => r.loss),
+      recentResults?.map((r: { loss: number }) => r.loss)
     );
     const accuracyTrend = this.calculateTrend(
-      recentResults?.map((r: { accuracy: number }) => r.accuracy),
+      recentResults?.map((r: { accuracy: number }) => r.accuracy)
     );
 
     if (lossVariance < 0.001 && accuracyTrend > 0) {
@@ -555,26 +555,26 @@ class NeuralCLI {
               const modelType = modelMatch?.[1] as string;
 
               // Update model details
-              if (!(modelDetails as Record<string, any>)[modelType]) {
-                (modelDetails as Record<string, any>)[modelType] = {};
+              if (!(modelDetails as Record<string, unknown>)[modelType]) {
+                (modelDetails as Record<string, unknown>)[modelType] = {};
               }
 
               if (
-                !(modelDetails as Record<string, any>)[modelType]
+                !(modelDetails as Record<string, unknown>)[modelType]
                   ?.lastTrained ||
                 new Date(data?.timestamp) >
                   new Date(
-                    (modelDetails as Record<string, any>)[modelType]
-                      ?.lastTrained,
+                    (modelDetails as Record<string, unknown>)[modelType]
+                      ?.lastTrained
                   )
               ) {
-                (modelDetails as Record<string, any>)[modelType].lastTrained =
+                (modelDetails as Record<string, unknown>)[modelType].lastTrained =
                   data?.timestamp;
-                (modelDetails as Record<string, any>)[modelType].lastAccuracy =
+                (modelDetails as Record<string, unknown>)[modelType].lastAccuracy =
                   data?.finalAccuracy;
-                (modelDetails as Record<string, any>)[modelType].iterations =
+                (modelDetails as Record<string, unknown>)[modelType].iterations =
                   data?.iterations;
-                (modelDetails as Record<string, any>)[modelType].learningRate =
+                (modelDetails as Record<string, unknown>)[modelType].learningRate =
                   data?.learningRate;
               }
 
@@ -603,10 +603,10 @@ class NeuralCLI {
           const modelMatch = file.match(/^([^-]+)-weights-/);
           if (modelMatch) {
             const modelType = modelMatch?.[1] as string;
-            if (!(modelDetails as Record<string, any>)[modelType]) {
-              (modelDetails as Record<string, any>)[modelType] = {};
+            if (!(modelDetails as Record<string, unknown>)[modelType]) {
+              (modelDetails as Record<string, unknown>)[modelType] = {};
             }
-            (modelDetails as Record<string, any>)[modelType].hasSavedWeights =
+            (modelDetails as Record<string, unknown>)[modelType].hasSavedWeights =
               true;
           }
         }
@@ -635,8 +635,7 @@ class NeuralCLI {
         totalSessions > 0
           ? {
               loadedModels: Object.keys(modelDetails).filter(
-                (m) =>
-                  (modelDetails as Record<string, any>)[m]?.hasSavedWeights,
+                (m) => (modelDetails as Record<string, unknown>)[m]?.hasSavedWeights
               ).length,
               sessionStart: new Date().toLocaleString(),
               memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
@@ -668,7 +667,7 @@ class NeuralCLI {
 
   async getPatternMemoryUsage(patternType: string) {
     const config =
-      (PATTERN_MEMORY_CONFIG as Record<string, any>)[patternType] ||
+      (PATTERN_MEMORY_CONFIG as Record<string, unknown>)[patternType] ||
       PATTERN_MEMORY_CONFIG?.convergent;
 
     // Calculate memory usage based on pattern type

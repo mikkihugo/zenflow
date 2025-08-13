@@ -92,7 +92,7 @@ export class DSPyAIIntegration {
         return await this.applyLearnedPattern(
           filePath,
           patternKey,
-          fileContent,
+          fileContent
         );
       }
 
@@ -100,21 +100,21 @@ export class DSPyAIIntegration {
       const diagnosis = await this.dspyManager.coreOperations.diagnoseError(
         errors.map((e) => e.message || e).join('\n'),
         fileContent,
-        filePath,
+        filePath
       );
 
       console.log(
-        `   🎯 Confidence: ${(diagnosis.confidence * 100).toFixed(1)}%`,
+        `   🎯 Confidence: ${(diagnosis.confidence * 100).toFixed(1)}%`
       );
       console.log(
-        `   📝 Diagnosis: ${diagnosis.diagnosis.substring(0, 100)}...`,
+        `   📝 Diagnosis: ${diagnosis.diagnosis.substring(0, 100)}...`
       );
 
       // Generate fixes using DSPy
       const fixes = await this.dspyManager.coreOperations.generateCode(
         diagnosis.fixSuggestions.join('; '),
         fileContent,
-        'typescript-strict',
+        'typescript-strict'
       );
 
       // Apply fixes to file
@@ -131,7 +131,7 @@ export class DSPyAIIntegration {
       }
 
       console.log(
-        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$0.05)`,
+        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$0.05)`
       );
 
       return {
@@ -225,7 +225,7 @@ export class DSPyAIIntegration {
       };
     } catch (error) {
       console.log(
-        `   ⚠️ Pattern failed: ${error.message}, falling back to DSPy`,
+        `   ⚠️ Pattern failed: ${error.message}, falling back to DSPy`
       );
       this.patternCache.delete(patternKey); // Remove broken pattern
       throw error;
@@ -240,14 +240,14 @@ export class DSPyAIIntegration {
       case 'replace':
         return content.replace(
           new RegExp(transform.pattern, 'g'),
-          transform.replacement,
+          transform.replacement
         );
       case 'add-import':
         return `${transform.import}\n${content}`;
       case 'comment-out':
         return content.replace(
           new RegExp(transform.pattern, 'g'),
-          `// ${transform.pattern}`,
+          `// ${transform.pattern}`
         );
       default:
         return content;
@@ -295,7 +295,7 @@ export class DSPyAIIntegration {
     try {
       await this.dspyManager.coreOperations.trainFromSuccessfulOperations(
         'error_diagnosis',
-        [trainingExample],
+        [trainingExample]
       );
 
       this.successHistory.push(trainingExample);

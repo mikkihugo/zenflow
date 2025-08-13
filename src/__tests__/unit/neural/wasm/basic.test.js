@@ -33,7 +33,7 @@ describe('@cuda-wasm/core Basic Tests', () => {
 
   test('CUDA code validation works', () => {
     const validResult = cudaWasm.validateCudaCode(
-      global.testUtils.sampleCudaCode.vectorAdd,
+      global.testUtils.sampleCudaCode.vectorAdd
     );
     expect(validResult).toHaveProperty('isValid');
     expect(validResult).toHaveProperty('errors');
@@ -44,7 +44,7 @@ describe('@cuda-wasm/core Basic Tests', () => {
 
   test('kernel parsing works', () => {
     const kernels = cudaWasm.parseCudaKernels(
-      global.testUtils.sampleCudaCode.vectorAdd,
+      global.testUtils.sampleCudaCode.vectorAdd
     );
     expect(Array.isArray(kernels)).toBe(true);
     if (kernels.length > 0) {

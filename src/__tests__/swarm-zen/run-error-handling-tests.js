@@ -78,11 +78,11 @@ class TestResults {
     const totalTime = Date.now() - this.startTime;
     const totalPassed = Object.values(this.results).reduce(
       (sum, cat) => sum + cat.passed,
-      0,
+      0
     );
     const totalFailed = Object.values(this.results).reduce(
       (sum, cat) => sum + cat.failed,
-      0,
+      0
     );
     const totalTests = totalPassed + totalFailed;
 
@@ -143,7 +143,7 @@ async function testErrorClasses(results) {
         'Test error',
         'testField',
         'badValue',
-        'string',
+        'string'
       );
 
       if (error.name !== 'ValidationError') {
@@ -166,7 +166,7 @@ async function testErrorClasses(results) {
       if (!suggestions.some((s) => s.includes('testField'))) {
         throw new Error('Missing field-specific suggestion');
       }
-    },
+    }
   );
 
   // Test SwarmError
@@ -174,7 +174,7 @@ async function testErrorClasses(results) {
     const error = new SwarmError(
       'Swarm failed',
       'test-swarm-id',
-      'initialization',
+      'initialization'
     );
 
     if (error.name !== 'SwarmError') {
@@ -206,7 +206,7 @@ async function testErrorClasses(results) {
           field: 'test',
           value: 'bad',
           expectedType: 'number',
-        },
+        }
       );
 
       if (!(validationError instanceof ValidationError)) {
@@ -221,7 +221,7 @@ async function testErrorClasses(results) {
       if (!(swarmError instanceof SwarmError)) {
         throw new Error('Factory did not create SwarmError');
       }
-    },
+    }
   );
 
   // Test ErrorContext
@@ -272,7 +272,7 @@ async function testValidationSystem(results) {
       if (result.strategy !== 'balanced') {
         throw new Error('Strategy validation failed');
       }
-    },
+    }
   );
 
   // Test validation with defaults
@@ -293,7 +293,7 @@ async function testValidationSystem(results) {
       if (result.strategy !== 'balanced') {
         throw new Error('Default strategy not applied');
       }
-    },
+    }
   );
 
   // Test validation errors
@@ -320,7 +320,7 @@ async function testValidationSystem(results) {
       if (!errorCaught) {
         throw new Error('Expected validation to fail');
       }
-    },
+    }
   );
 
   // Test input sanitization
@@ -359,7 +359,7 @@ async function testValidationSystem(results) {
       if (!allowedValues.includes('mesh')) {
         throw new Error('Expected allowed values missing');
       }
-    },
+    }
   );
 }
 
@@ -405,7 +405,7 @@ async function testMCPIntegration(results) {
       if (!Array.isArray(tools.errorLog)) {
         throw new Error('Error log not array');
       }
-    },
+    }
   );
 
   // Test error handling in swarm_init
@@ -423,7 +423,7 @@ async function testMCPIntegration(results) {
           'Invalid topology',
           'topology',
           'invalid',
-          'string',
+          'string'
         );
       });
 
@@ -445,7 +445,7 @@ async function testMCPIntegration(results) {
       if (tools.errorLog.length === 0) {
         throw new Error('Error not logged');
       }
-    },
+    }
   );
 
   // Test error statistics
@@ -477,7 +477,7 @@ async function testMCPIntegration(results) {
       if (stats.byTool.swarm_init !== 1) {
         throw new Error('Wrong tool count');
       }
-    },
+    }
   );
 }
 
@@ -509,7 +509,7 @@ async function testPerformanceAndEdgeCases(results) {
       if (result.capabilities.length !== 1000) {
         throw new Error('Large array validation failed');
       }
-    },
+    }
   );
 
   // Test edge case: empty parameters
@@ -559,7 +559,7 @@ async function testPerformanceAndEdgeCases(results) {
       if (!lastError.error.message.includes('Error 14')) {
         throw new Error('Most recent error not preserved');
       }
-    },
+    }
   );
 
   // Test error wrapping

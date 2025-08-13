@@ -21,7 +21,7 @@ export interface CommandResult {
 
 export interface ExecutionContext {
   args: string[];
-  flags: Record<string, any>;
+  flags: Record<string, unknown>;
   workingDir?: string;
   environment?: Record<string, string>;
 }
@@ -75,7 +75,7 @@ export interface TerminalApplication {
   execute(
     command: string,
     args: string[],
-    flags: Record<string, any>,
+    flags: Record<string, unknown>
   ): Promise<CommandResult>;
   shutdown(): Promise<void>;
 }

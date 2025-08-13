@@ -127,7 +127,7 @@ function main() {
       'grep -r "import.*@jest/globals" src/ tests/ 2>/dev/null || true',
       {
         encoding: 'utf8',
-      },
+      }
     );
     const remainingFiles = grepResult
       .split('\n')

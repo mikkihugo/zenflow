@@ -52,7 +52,7 @@ export class GHModelsAIIntegration {
         .then(({ getLogger }) => {
           this.logger = getLogger(['gh-models-integration']);
           this.logger.info(
-            'GitHub Models AI Integration initialized with structured logging',
+            'GitHub Models AI Integration initialized with structured logging'
           );
         })
         .catch((err) => {
@@ -134,8 +134,8 @@ export class GHModelsAIIntegration {
     // Model selection logic based on task complexity
     const hasComplexErrors = errorTypes.some((type) =>
       ['type_inference', 'generic_constraints', 'conditional_types'].includes(
-        type,
-      ),
+        type
+      )
     );
 
     if (hasComplexErrors || fileSize === 'large') {
@@ -144,7 +144,7 @@ export class GHModelsAIIntegration {
 
     if (
       errorTypes.some((type) =>
-        ['syntax_error', 'import_resolution'].includes(type),
+        ['syntax_error', 'import_resolution'].includes(type)
       )
     ) {
       return 'deepseek/deepseek-v3'; // Excellent for code understanding
@@ -184,7 +184,7 @@ export class GHModelsAIIntegration {
       const enhancedPrompt = this.buildEnhancedPrompt(
         prompt,
         filePath,
-        fileContent,
+        fileContent
       );
 
       // Log full prompt for debugging
@@ -199,7 +199,7 @@ export class GHModelsAIIntegration {
       const result = await this.executeGHModelsCommand(
         selectedModel,
         enhancedPrompt,
-        sessionId,
+        sessionId
       );
 
       if (!result.success) {
@@ -211,7 +211,7 @@ export class GHModelsAIIntegration {
         result.output,
         filePath,
         fileContent,
-        sessionId,
+        sessionId
       );
 
       // Calculate metrics
@@ -219,7 +219,7 @@ export class GHModelsAIIntegration {
       const cost = this.estimateCost(
         selectedModel,
         enhancedPrompt.length,
-        result.output?.length || 0,
+        result.output?.length || 0
       );
 
       this.logger.info('GitHub Models session completed', {
@@ -391,7 +391,7 @@ Provide the complete corrected file content. Do not include explanations or mark
     response,
     filePath,
     originalContent,
-    sessionId,
+    sessionId
   ) {
     try {
       // GitHub Models should return the complete corrected file
@@ -408,7 +408,7 @@ Provide the complete corrected file content. Do not include explanations or mark
       // Count changes made
       const changesApplied = this.countChanges(
         originalContent,
-        correctedContent,
+        correctedContent
       );
 
       this.logger.info('Applied GitHub Models fixes', {
@@ -463,7 +463,7 @@ Provide the complete corrected file content. Do not include explanations or mark
     ];
 
     const hasCodePattern = codePatterns.some((pattern) =>
-      pattern.test(response),
+      pattern.test(response)
     );
     if (!hasCodePattern) return false;
 

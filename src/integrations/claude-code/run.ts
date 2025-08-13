@@ -25,7 +25,7 @@ export interface RunClaudeCodeOptions {
 }
 
 export async function* runClaudeCode(
-  options: RunClaudeCodeOptions,
+  options: RunClaudeCodeOptions
 ): AsyncGenerator<ClaudeCodeMessage | string> {
   const {
     systemPrompt,
@@ -94,8 +94,8 @@ export async function* runClaudeCode(
     for (const message of messages) {
       const content = Array.isArray(message.content)
         ? message.content
-            .filter((c: any) => c.type === 'text')
-            .map((c: any) => (c as any).text)
+            .filter((c: unknown) => c.type === 'text')
+            .map((c: unknown) => (c as any).text)
             .join('')
         : message.content;
 
@@ -154,7 +154,7 @@ export async function* runClaudeCode(
     if (error instanceof Error) {
       if (error.message.includes('ENOENT')) {
         throw new Error(
-          "Claude Code CLI not found. Please install Claude Code CLI and ensure it's in your PATH.",
+          "Claude Code CLI not found. Please install Claude Code CLI and ensure it's in your PATH."
         );
       }
 
@@ -164,13 +164,13 @@ export async function* runClaudeCode(
 
       if (error.message.includes('maxBuffer')) {
         throw new Error(
-          'Claude Code output exceeded maximum buffer size (20MB)',
+          'Claude Code output exceeded maximum buffer size (20MB)'
         );
       }
     }
 
     throw new Error(
-      `Claude Code execution failed: ${error instanceof Error ? error.message : String(error)}`,
+      `Claude Code execution failed: ${error instanceof Error ? error.message : String(error)}`
     );
   } finally {
     // Clean up temporary files

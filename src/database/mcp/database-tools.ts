@@ -50,12 +50,12 @@ interface ExtendedDatabaseQuery {
 interface ExtendedDataAccessObject<T> extends IDataAccessObject<T> {
   bulkVectorOperations?(
     vectors: number[][],
-    operation: string,
+    operation: string
   ): Promise<unknown>;
   traverseGraph?(
     startNode: string,
     relationshipType: string,
-    maxDepth?: number,
+    maxDepth?: number
   ): Promise<unknown>;
 }
 
@@ -208,12 +208,12 @@ export const databaseInitTool: MCPTool = {
               coordination.defaultTimeout ||
               centralConfig?.network?.defaultTimeout,
             retryAttempts: 3,
-          },
+          }
         );
       } catch (error: unknown) {
         logger.warn(
           '⚠️ Could not initialize UACL MCP client for database coordination:',
-          error,
+          error
         );
         // Continue without UACL MCP client - database tools will still work
       }
@@ -240,7 +240,7 @@ export const databaseInitTool: MCPTool = {
       queryOptimizer = {
         optimizeQuery: async (
           query: ExtendedDatabaseQuery,
-          engines: Map<string, DatabaseEngine>,
+          engines: Map<string, DatabaseEngine>
         ) => query,
         recordExecution: (execution: unknown) => {
           /* implementation */
@@ -426,7 +426,7 @@ export const databaseQueryTool: MCPTool = {
     try {
       if (!databaseCoordinator) {
         throw new Error(
-          'Database coordinator not initialized. Run database_init first.',
+          'Database coordinator not initialized. Run database_init first.'
         );
       }
 
@@ -476,7 +476,7 @@ export const databaseQueryTool: MCPTool = {
       if (optimization.enabled !== false && queryOptimizer) {
         optimizedQuery = await queryOptimizer.optimizeQuery(
           query,
-          registeredEngines,
+          registeredEngines
         );
 
         // Handle cache hit
@@ -581,7 +581,7 @@ export const databaseOptimizeTool: MCPTool = {
     try {
       if (registeredEngines.size === 0 || !queryOptimizer) {
         throw new Error(
-          'Database system not initialized. Run database_init first.',
+          'Database system not initialized. Run database_init first.'
         );
       }
 
@@ -663,7 +663,7 @@ export const databaseOptimizeTool: MCPTool = {
         const engines = Array.from(registeredEngines.values());
         const utilizationIssues = engines.filter(
           (e) =>
-            e.performance.utilization > 0.8 || e.performance.errorRate > 0.05,
+            e.performance.utilization > 0.8 || e.performance.errorRate > 0.05
         );
 
         for (const engine of utilizationIssues) {
@@ -777,7 +777,7 @@ export const databaseMonitorTool: MCPTool = {
     try {
       if (registeredEngines.size === 0 || !queryOptimizer) {
         throw new Error(
-          'Database system not initialized. Run database_init first.',
+          'Database system not initialized. Run database_init first.'
         );
       }
 
@@ -906,7 +906,7 @@ export const databaseMonitorTool: MCPTool = {
         cacheEfficiency: cacheStats.hitRate,
         averageLatency: Math.max(
           0,
-          1 - coordinatorStats.queries.averageLatency / 1000,
+          1 - coordinatorStats.queries.averageLatency / 1000
         ),
       };
 
@@ -1022,7 +1022,7 @@ export const databaseHealthCheckTool: MCPTool = {
           if (engineHealth < 0.8) {
             healthReport.overall = 'degraded';
             healthReport.issues.push(
-              `${stats.engines.total - stats.engines.active} engines are unhealthy`,
+              `${stats.engines.total - stats.engines.active} engines are unhealthy`
             );
           }
         } else {
@@ -1050,7 +1050,7 @@ export const databaseHealthCheckTool: MCPTool = {
 
           if (optimizationRate < 0.3 && stats.totalQueries > 50) {
             healthReport.recommendations.push(
-              'Consider enabling more optimization rules',
+              'Consider enabling more optimization rules'
             );
           }
         } else {
@@ -1117,7 +1117,7 @@ export const databaseHealthCheckTool: MCPTool = {
 
           if (cacheStats.hitRate < 0.6) {
             healthReport.recommendations.push(
-              'Consider optimizing cache configuration',
+              'Consider optimizing cache configuration'
             );
           }
 
@@ -1141,7 +1141,7 @@ export const databaseHealthCheckTool: MCPTool = {
             // Get MCP clients specifically for database coordination
             const mcpClients = uacl.getClientsByType(ClientType.MCP);
             const databaseMCPClient = mcpClients.find(
-              (c) => c.id === 'database-mcp-client',
+              (c) => c.id === 'database-mcp-client'
             );
 
             healthReport.components.clients = {
@@ -1176,7 +1176,7 @@ export const databaseHealthCheckTool: MCPTool = {
               healthReport.overall =
                 healthyPercentage < 50 ? 'critical' : 'degraded';
               healthReport.issues.push(
-                `Only ${healthyPercentage.toFixed(1)}% of clients are healthy`,
+                `Only ${healthyPercentage.toFixed(1)}% of clients are healthy`
               );
             }
 
@@ -1189,19 +1189,19 @@ export const databaseHealthCheckTool: MCPTool = {
 
             if (clientMetrics.totalErrors > 10) {
               healthReport.issues.push(
-                `High error count: ${clientMetrics.totalErrors} client errors`,
+                `High error count: ${clientMetrics.totalErrors} client errors`
               );
             }
 
             if (clientMetrics.avgLatency > 5000) {
               healthReport.recommendations.push(
-                'Consider optimizing client response times',
+                'Consider optimizing client response times'
               );
             }
           } else {
             healthReport.components.clients = { status: 'not_initialized' };
             healthReport.recommendations.push(
-              'Consider initializing UACL for enhanced client management',
+              'Consider initializing UACL for enhanced client management'
             );
           }
         } catch (error: unknown) {
@@ -1242,7 +1242,7 @@ export const databaseHealthCheckTool: MCPTool = {
       } else if (
         healthReport.issues.some(
           (issue) =>
-            issue.includes('not_initialized') || issue.includes('critical'),
+            issue.includes('not_initialized') || issue.includes('critical')
         )
       ) {
         healthReport.overall = 'critical';
@@ -1318,7 +1318,7 @@ async function _executeQueryWithDAL(
   query: ExtendedDatabaseQuery,
   engines: Map<string, DatabaseEngine>,
   repositories: Map<string, IRepository<unknown>>,
-  daos: Map<string, ExtendedDataAccessObject<unknown>>,
+  daos: Map<string, ExtendedDataAccessObject<unknown>>
 ): Promise<{
   queryId: string;
   engineId: string;
@@ -1335,8 +1335,8 @@ async function _executeQueryWithDAL(
       e.status === 'active' &&
       (query.requirements.capabilities.length === 0 ||
         query.requirements.capabilities.some((cap) =>
-          e.capabilities.includes(cap),
-        )),
+          e.capabilities.includes(cap)
+        ))
   );
 
   if (availableEngines.length === 0) {
@@ -1371,25 +1371,31 @@ async function _executeQueryWithDAL(
     switch (query.type) {
       case 'select':
         if (query.parameters['id']) {
-          result = await repository.findById(query.parameters['id']) as any as any as any as any;
+          result = (await repository.findById(
+            query.parameters['id']
+          )) as any as any as any as any;
         } else {
           result = await repository.findAll(query.parameters);
         }
         break;
 
       case 'insert':
-        result = await repository.create(query.parameters['data']) as any as any as any as any;
+        result = (await repository.create(
+          query.parameters['data']
+        )) as any as any as any as any;
         break;
 
       case 'update':
         result = await repository.update(
           query.parameters['id'],
-          query.parameters['data'],
+          query.parameters['data']
         );
         break;
 
       case 'delete':
-        result = await repository.delete(query.parameters['id']) as any as any as any as any;
+        result = (await repository.delete(
+          query.parameters['id']
+        )) as any as any as any as any;
         break;
 
       default:
@@ -1397,13 +1403,13 @@ async function _executeQueryWithDAL(
         if (selectedEngine?.type === 'vector' && dao.bulkVectorOperations) {
           result = await dao.bulkVectorOperations(
             query.parameters['vectors'] || [],
-            query.operation,
+            query.operation
           );
         } else if (selectedEngine?.type === 'graph' && dao.traverseGraph) {
           result = await dao.traverseGraph(
             query.parameters['startNode'],
             query.parameters['relationshipType'],
-            query.parameters['maxDepth'],
+            query.parameters['maxDepth']
           );
         } else {
           result = await repository.findAll(query.parameters);
@@ -1430,7 +1436,7 @@ async function _executeQueryWithDAL(
     if (selectedEngine) {
       selectedEngine.performance.errorRate = Math.min(
         1,
-        selectedEngine.performance.errorRate + 0.01,
+        selectedEngine.performance.errorRate + 0.01
       );
     }
 

@@ -30,7 +30,7 @@ app.use(
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
       }
     },
-  }),
+  })
 );
 
 // Redirect /docs to /docs/

@@ -112,10 +112,10 @@ describe('Agent System Gap Analysis', () => {
       // We should have advantages in these categories
       expect(comparison['GitHub Integration']?.advantage).toBeGreaterThan(0);
       expect(comparison['Consensus & Distributed']?.advantage).toBeGreaterThan(
-        0,
+        0
       );
       expect(
-        comparison['Performance & Optimization']?.advantage,
+        comparison['Performance & Optimization']?.advantage
       ).toBeGreaterThan(0);
     });
 
@@ -242,7 +242,7 @@ describe('Agent System Gap Analysis', () => {
 
       // Should have advantages in most categories
       const advantageCount = Object.values(analysis.categoryComparison).filter(
-        (cat) => cat.advantage > 0,
+        (cat) => cat.advantage > 0
       ).length;
 
       expect(advantageCount).toBeGreaterThan(coverageCategories.length / 2);

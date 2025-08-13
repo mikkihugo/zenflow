@@ -55,7 +55,7 @@ export class StrategicVisionService {
    * Analyze strategic vision from database documents (primary method)
    */
   async analyzeProjectVision(
-    projectId: string,
+    projectId: string
   ): Promise<StrategicVisionAnalysis> {
     try {
       logger.info(`Analyzing strategic vision for project: ${projectId}`);
@@ -72,7 +72,7 @@ export class StrategicVisionService {
 
       if (!(visionQuery.success && visionQuery.data?.documents?.length)) {
         logger.warn(
-          `No vision documents found for project ${projectId}, returning default analysis`,
+          `No vision documents found for project ${projectId}, returning default analysis`
         );
         return this.createDefaultVisionAnalysis(projectId);
       }
@@ -83,14 +83,14 @@ export class StrategicVisionService {
       // Analyze structured vision documents
       const analysis = await this.analyzeStructuredDocuments(
         projectId,
-        documents,
+        documents
       );
 
       // Enhance with cross-document relationships
       await this.enhanceWithRelationships(analysis, documents);
 
       logger.info(
-        `Strategic vision analysis completed for ${projectId} with confidence ${analysis.confidenceScore}`,
+        `Strategic vision analysis completed for ${projectId} with confidence ${analysis.confidenceScore}`
       );
       return analysis;
     } catch (error) {
@@ -110,7 +110,7 @@ export class StrategicVisionService {
   }> {
     try {
       logger.info(
-        `Importing strategic documents for project: ${options.projectId}`,
+        `Importing strategic documents for project: ${options.projectId}`
       );
 
       const results = { imported: 0, skipped: 0, errors: [] };
@@ -122,13 +122,13 @@ export class StrategicVisionService {
           includeContent: false,
           sortBy: 'created_at',
           sortOrder: 'desc',
-        },
+        }
       );
 
       const existingTypes = new Set(
         existingDocs.success && existingDocs.data?.documents
-          ? existingDocs.data.documents.map((doc: any) => doc.type)
-          : [],
+          ? existingDocs.data.documents.map((doc: unknown) => doc.type)
+          : []
       );
 
       // Import from files if requested and documents don't exist
@@ -137,7 +137,7 @@ export class StrategicVisionService {
           options.projectId,
           options.projectPath,
           existingTypes,
-          options.skipExistingDocuments,
+          options.skipExistingDocuments
         );
 
         results.imported += fileImportResults.imported;
@@ -149,7 +149,7 @@ export class StrategicVisionService {
       const codeImportResults = await this.importFromCodeAnnotations(
         options.projectId,
         options.projectPath || `/home/mhugo/code/${options.projectId}`,
-        existingTypes,
+        existingTypes
       );
 
       results.imported += codeImportResults.imported;
@@ -157,7 +157,7 @@ export class StrategicVisionService {
       results.errors.push(...codeImportResults.errors);
 
       logger.info(
-        `Import completed: ${results.imported} imported, ${results.skipped} skipped, ${results.errors.length} errors`,
+        `Import completed: ${results.imported} imported, ${results.skipped} skipped, ${results.errors.length} errors`
       );
       return results;
     } catch (error) {
@@ -183,7 +183,7 @@ export class StrategicVisionService {
       risks?: string[];
       timeline?: string;
     },
-    saveToRepo = false,
+    saveToRepo = false
   ): Promise<{
     success: boolean;
     documentId?: string;
@@ -240,7 +240,7 @@ export class StrategicVisionService {
       }
 
       logger.info(
-        `${type} document created successfully with ID ${documentId}${repoPath ? ` and saved to ${repoPath}` : ''}`,
+        `${type} document created successfully with ID ${documentId}${repoPath ? ` and saved to ${repoPath}` : ''}`
       );
 
       return {
@@ -258,7 +258,7 @@ export class StrategicVisionService {
    * Get vision analysis for workspace display
    */
   async getVisionForWorkspace(
-    projectId: string,
+    projectId: string
   ): Promise<StrategicVisionAnalysis> {
     // Check if we have cached analysis
     const cached = await this.getCachedAnalysis(projectId);
@@ -279,7 +279,7 @@ export class StrategicVisionService {
 
   private async analyzeStructuredDocuments(
     projectId: string,
-    documents: BaseDocumentEntity[],
+    documents: BaseDocumentEntity[]
   ): Promise<StrategicVisionAnalysis> {
     const visionDoc = documents.find((doc) => doc.type === 'vision') as
       | VisionDocumentEntity
@@ -288,7 +288,7 @@ export class StrategicVisionService {
       | PRDDocumentEntity
       | undefined;
     const epicDocs = documents.filter(
-      (doc) => doc.type === 'epic',
+      (doc) => doc.type === 'epic'
     ) as EpicDocumentEntity[];
 
     // Extract strategic information from structured documents
@@ -352,14 +352,14 @@ export class StrategicVisionService {
 
   private async enhanceWithRelationships(
     analysis: StrategicVisionAnalysis,
-    documents: BaseDocumentEntity[],
+    documents: BaseDocumentEntity[]
   ): Promise<void> {
     // Enhance analysis with document relationships
     for (const doc of documents) {
       if (doc.related_documents?.length > 0) {
         // Could fetch related documents and extract additional insights
         logger.debug(
-          `Document ${doc.id} has ${doc.related_documents.length} related documents`,
+          `Document ${doc.id} has ${doc.related_documents.length} related documents`
         );
       }
     }
@@ -369,7 +369,7 @@ export class StrategicVisionService {
     projectId: string,
     projectPath: string,
     existingTypes: Set<string>,
-    skipExisting = true,
+    skipExisting = true
   ): Promise<{ imported: number; skipped: number; errors: string[] }> {
     const results = { imported: 0, skipped: 0, errors: [] };
 
@@ -409,7 +409,7 @@ export class StrategicVisionService {
       }
 
       logger.info(
-        `Found ${potentialDocFiles.length} potential document files for LLM classification`,
+        `Found ${potentialDocFiles.length} potential document files for LLM classification`
       );
 
       // Classify each file using LLM content analysis
@@ -427,13 +427,13 @@ export class StrategicVisionService {
           // Use LLM to classify document content and suggest actions
           const classification = await this.classifyDocumentWithLLM(
             file,
-            content,
+            content
           );
 
           if (skipExisting && existingTypes.has(classification.documentType)) {
             results.skipped++;
             logger.info(
-              `Skipping ${file} - type ${classification.documentType} already exists`,
+              `Skipping ${file} - type ${classification.documentType} already exists`
             );
             continue;
           }
@@ -474,18 +474,18 @@ export class StrategicVisionService {
           if (createResult.success) {
             results.imported++;
             logger.info(
-              `Successfully imported and classified: ${file} as ${classification.documentType} (confidence: ${classification.confidence})`,
+              `Successfully imported and classified: ${file} as ${classification.documentType} (confidence: ${classification.confidence})`
             );
 
             // Log human-actionable suggestions
             if (classification.suggestedActions.length > 0) {
               logger.info(
-                `LLM suggestions for ${file}: ${classification.suggestedActions.join(', ')}`,
+                `LLM suggestions for ${file}: ${classification.suggestedActions.join(', ')}`
               );
             }
           } else {
             results.errors.push(
-              `Failed to import ${file}: ${createResult.error?.message}`,
+              `Failed to import ${file}: ${createResult.error?.message}`
             );
           }
         } catch (fileError) {
@@ -505,7 +505,7 @@ export class StrategicVisionService {
    */
   private async classifyDocumentWithLLM(
     filename: string,
-    content: string,
+    content: string
   ): Promise<{
     documentType: string;
     suggestedTitle: string;
@@ -607,14 +607,14 @@ export class StrategicVisionService {
       // Calculate strategic relevance
       const strategicRelevance = this.calculateStrategicRelevance(
         contentLower,
-        themes,
+        themes
       );
 
       // Generate suggested title
       const suggestedTitle = this.generateSuggestedTitle(
         filename,
         firstFewLines,
-        documentType,
+        documentType
       );
 
       // Generate summary
@@ -633,7 +633,7 @@ export class StrategicVisionService {
         actions.push('Complete missing sections and add more detail');
       } else if (documentMaturity === 'outdated') {
         actions.push(
-          'Update content to reflect current state and requirements',
+          'Update content to reflect current state and requirements'
         );
       }
 
@@ -785,7 +785,7 @@ export class StrategicVisionService {
             'there',
             'could',
             'other',
-          ].includes(word),
+          ].includes(word)
       );
 
     // Count frequency and return top keywords
@@ -801,7 +801,7 @@ export class StrategicVisionService {
   }
 
   private assessDocumentMaturity(
-    content: string,
+    content: string
   ): 'draft' | 'partial' | 'complete' | 'outdated' {
     const lines = content.split('\n').filter((line) => line.trim().length > 0);
     const totalLength = content.length;
@@ -837,7 +837,7 @@ export class StrategicVisionService {
 
   private calculateStrategicRelevance(
     content: string,
-    themes: string[],
+    themes: string[]
   ): number {
     let relevance = 0;
 
@@ -849,7 +849,7 @@ export class StrategicVisionService {
       'architecture',
     ];
     const strategicThemeCount = themes.filter((theme) =>
-      strategicThemes.includes(theme),
+      strategicThemes.includes(theme)
     ).length;
     relevance += strategicThemeCount * 0.3;
 
@@ -865,7 +865,7 @@ export class StrategicVisionService {
       'outcome',
     ];
     const strategicWordCount = strategicWords.filter((word) =>
-      content.includes(word),
+      content.includes(word)
     ).length;
     relevance += Math.min(strategicWordCount * 0.1, 0.4);
 
@@ -875,7 +875,7 @@ export class StrategicVisionService {
   private generateSuggestedTitle(
     filename: string,
     content: string,
-    documentType: string,
+    documentType: string
   ): string {
     // Try to extract title from first heading
     const headingMatch = content.match(/^#\s+(.+)$/m);
@@ -905,7 +905,7 @@ export class StrategicVisionService {
 
   // .gitignore support helpers
   private async loadGitignorePatterns(
-    projectPath: string,
+    projectPath: string
   ): Promise<Set<string>> {
     try {
       const { readFile } = await import('node:fs/promises');
@@ -938,12 +938,12 @@ export class StrategicVisionService {
           });
 
         logger.info(
-          `Loaded ${gitignorePatterns.size} .gitignore patterns for ${projectPath}`,
+          `Loaded ${gitignorePatterns.size} .gitignore patterns for ${projectPath}`
         );
       } catch {
         // .gitignore doesn't exist, use defaults
         logger.info(
-          `No .gitignore found, using default patterns for ${projectPath}`,
+          `No .gitignore found, using default patterns for ${projectPath}`
         );
       }
 
@@ -964,7 +964,7 @@ export class StrategicVisionService {
   private shouldIgnoreFile(
     filePath: string,
     patterns: Set<string>,
-    projectPath: string,
+    projectPath: string
   ): boolean {
     try {
       const { relative } = require('node:path');
@@ -1003,7 +1003,7 @@ export class StrategicVisionService {
   private async importFromCodeAnnotations(
     projectId: string,
     projectPath: string,
-    existingTypes: Set<string>,
+    existingTypes: Set<string>
   ): Promise<{ imported: number; skipped: number; errors: string[] }> {
     const results = { imported: 0, skipped: 0, errors: [] };
 
@@ -1032,25 +1032,25 @@ export class StrategicVisionService {
             // Extract different types of strategic annotations
             const todoMatches =
               content.match(
-                /\/\/\s*TODO[:\s]*(.*)|\/\*\s*TODO[:\s]*(.*?)\*\//gi,
+                /\/\/\s*TODO[:\s]*(.*)|\/\*\s*TODO[:\s]*(.*?)\*\//gi
               ) || [];
             const strategyMatches =
               content.match(
-                /\/\/\s*STRATEGY[:\s]*(.*)|\/\*\s*STRATEGY[:\s]*(.*?)\*\//gi,
+                /\/\/\s*STRATEGY[:\s]*(.*)|\/\*\s*STRATEGY[:\s]*(.*?)\*\//gi
               ) || [];
             const visionMatches =
               content.match(
-                /\/\/\s*VISION[:\s]*(.*)|\/\*\s*VISION[:\s]*(.*?)\*\//gi,
+                /\/\/\s*VISION[:\s]*(.*)|\/\*\s*VISION[:\s]*(.*?)\*\//gi
               ) || [];
 
             todoAnnotations.push(
-              ...todoMatches.map((match) => `${file}: ${match.trim()}`),
+              ...todoMatches.map((match) => `${file}: ${match.trim()}`)
             );
             strategyAnnotations.push(
-              ...strategyMatches.map((match) => `${file}: ${match.trim()}`),
+              ...strategyMatches.map((match) => `${file}: ${match.trim()}`)
             );
             visionAnnotations.push(
-              ...visionMatches.map((match) => `${file}: ${match.trim()}`),
+              ...visionMatches.map((match) => `${file}: ${match.trim()}`)
             );
           } catch {
             // Skip files we can't read
@@ -1109,7 +1109,7 @@ export class StrategicVisionService {
             results.imported++;
           } else {
             results.errors.push(
-              `Failed to import ${annotationDoc.type} annotations: ${createResult.error?.message}`,
+              `Failed to import ${annotationDoc.type} annotations: ${createResult.error?.message}`
             );
           }
         }
@@ -1118,7 +1118,7 @@ export class StrategicVisionService {
       if (error.code !== 'ENOENT') {
         // Don't error if src directory doesn't exist
         results.errors.push(
-          `Error importing code annotations: ${error.message}`,
+          `Error importing code annotations: ${error.message}`
         );
       }
     }
@@ -1129,7 +1129,7 @@ export class StrategicVisionService {
   private async saveToRepository(
     projectId: string,
     type: string,
-    content: unknown,
+    content: unknown
   ): Promise<string | undefined> {
     // Only save specific document types back to repo
     if (!['vision', 'strategy'].includes(type)) {
@@ -1168,7 +1168,7 @@ export class StrategicVisionService {
 
     // Bonus for complete metadata
     const hasMetadata = documents.some(
-      (doc) => doc.metadata && Object.keys(doc.metadata).length > 3,
+      (doc) => doc.metadata && Object.keys(doc.metadata).length > 3
     );
     if (hasMetadata) score += 0.1;
 
@@ -1176,7 +1176,7 @@ export class StrategicVisionService {
   }
 
   private createDefaultVisionAnalysis(
-    projectId: string,
+    projectId: string
   ): StrategicVisionAnalysis {
     return {
       projectId,
@@ -1199,7 +1199,7 @@ export class StrategicVisionService {
 
   private createErrorVisionAnalysis(
     projectId: string,
-    error: unknown,
+    error: unknown
   ): StrategicVisionAnalysis {
     return {
       projectId,
@@ -1220,14 +1220,14 @@ export class StrategicVisionService {
   }
 
   private async getCachedAnalysis(
-    projectId: string,
+    projectId: string
   ): Promise<StrategicVisionAnalysis | null> {
     // TODO: Implement caching mechanism (could use memory backend)
     return null;
   }
 
   private async cacheAnalysis(
-    analysis: StrategicVisionAnalysis,
+    analysis: StrategicVisionAnalysis
   ): Promise<void> {
     // TODO: Implement caching mechanism
   }

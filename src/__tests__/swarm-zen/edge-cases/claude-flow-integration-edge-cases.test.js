@@ -117,7 +117,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       }
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('BATCHING VIOLATION'),
+        expect.stringContaining('BATCHING VIOLATION')
       );
 
       const violations = batchEnforcer.violationWarnings;
@@ -135,13 +135,13 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
       const report = batchEnforcer.getBatchingReport();
       expect(report.recommendations).toContain(
-        '🔧 CRITICAL: Use BatchTool for all parallel operations',
+        '🔧 CRITICAL: Use BatchTool for all parallel operations'
       );
       expect(report.recommendations).toContain(
-        '📁 File Operations: Use MultiEdit for multiple edits to same file',
+        '📁 File Operations: Use MultiEdit for multiple edits to same file'
       );
       expect(report.recommendations).toContain(
-        '🤖 MCP Tools: Combine swarm operations in parallel',
+        '🤖 MCP Tools: Combine swarm operations in parallel'
       );
     });
 
@@ -179,7 +179,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
       const recentOps = batchEnforcer.getRecentOperations(
         'recent_operation',
-        5000,
+        5000
       );
       expect(recentOps).toHaveLength(2);
 
@@ -219,12 +219,12 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
     it('should handle initialization failures gracefully', async () => {
       mockZenSwarm.initialize.mockRejectedValueOnce(
-        new Error('WASM load failed'),
+        new Error('WASM load failed')
       );
 
       await expect(claudeFlow.initialize()).rejects.toThrow(ClaudeFlowError);
       await expect(claudeFlow.initialize()).rejects.toThrow(
-        'Initialization failed: WASM load failed',
+        'Initialization failed: WASM load failed'
       );
     });
 
@@ -234,7 +234,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       await claudeFlow.initialize({ enforceBatching: true });
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('BatchTool enforcement enabled'),
+        expect.stringContaining('BatchTool enforcement enabled')
       );
 
       consoleSpy.mockRestore();
@@ -242,7 +242,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
     it('should handle MCP tools initialization failure', async () => {
       mockMcpTools.initialize.mockRejectedValueOnce(
-        new Error('MCP init failed'),
+        new Error('MCP init failed')
       );
 
       await expect(claudeFlow.initialize()).rejects.toThrow(ClaudeFlowError);
@@ -308,7 +308,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       await claudeFlow.createOptimizedWorkflow(workflowConfig);
 
       expect(consoleSpy).toHaveBeenCalledWith(
-        expect.stringContaining('low parallelization potential'),
+        expect.stringContaining('low parallelization potential')
       );
 
       consoleSpy.mockRestore();
@@ -412,10 +412,10 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
     it('should handle non-existent workflow', async () => {
       await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(
-        ClaudeFlowError,
+        ClaudeFlowError
       );
       await expect(claudeFlow.executeWorkflow('non-existent')).rejects.toThrow(
-        'Workflow not found',
+        'Workflow not found'
       );
     });
 
@@ -444,17 +444,17 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       ];
 
       expect(() =>
-        claudeFlow.createExecutionBatches(stepsWithCircularDeps),
+        claudeFlow.createExecutionBatches(stepsWithCircularDeps)
       ).toThrow(ClaudeFlowError);
       expect(() =>
-        claudeFlow.createExecutionBatches(stepsWithCircularDeps),
+        claudeFlow.createExecutionBatches(stepsWithCircularDeps)
       ).toThrow('Circular dependency detected');
     });
 
     it('should handle step execution failures gracefully', async () => {
       // Mock a failing MCP tool call
       mockMcpTools.task_orchestrate.mockRejectedValueOnce(
-        new Error('Task failed'),
+        new Error('Task failed')
       );
 
       const _failWorkflow = await claudeFlow.createOptimizedWorkflow({
@@ -470,7 +470,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       });
 
       await expect(claudeFlow.executeWorkflow('fail-test')).rejects.toThrow(
-        ClaudeFlowError,
+        ClaudeFlowError
       );
     });
 
@@ -510,10 +510,10 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
       expect(result.results).toHaveLength(2);
       const successCount = result.results.filter(
-        (r) => r.status === 'completed',
+        (r) => r.status === 'completed'
       ).length;
       const failureCount = result.results.filter(
-        (r) => r.status === 'failed',
+        (r) => r.status === 'failed'
       ).length;
 
       expect(successCount).toBeGreaterThan(0);
@@ -549,10 +549,10 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       };
 
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
-        ClaudeFlowError,
+        ClaudeFlowError
       );
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
-        'Unknown MCP tool',
+        'Unknown MCP tool'
       );
     });
 
@@ -595,10 +595,10 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       };
 
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
-        ClaudeFlowError,
+        ClaudeFlowError
       );
       await expect(claudeFlow.executeStep(step, {}, null)).rejects.toThrow(
-        'Neural networks not available',
+        'Neural networks not available'
       );
     });
 
@@ -666,7 +666,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
 
       const metrics = claudeFlow.calculateExecutionMetrics(
         workflow,
-        coordination,
+        coordination
       );
 
       expect(metrics.totalSteps).toBe(3);
@@ -890,7 +890,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       });
 
       await expect(claudeFlow.executeWorkflow('missing-deps')).rejects.toThrow(
-        ClaudeFlowError,
+        ClaudeFlowError
       );
     });
   });
@@ -1084,7 +1084,7 @@ describe('Claude Zen Enhanced Edge Cases and E2E Tests', () => {
       expect(execution.results).toHaveLength(4);
 
       const successful = execution.results.filter(
-        (r) => r.status === 'completed',
+        (r) => r.status === 'completed'
       );
       const failed = execution.results.filter((r) => r.status === 'failed');
 

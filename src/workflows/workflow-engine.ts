@@ -80,7 +80,7 @@ export class WorkflowEngine extends EventEmitter {
     config: WorkflowEngineConfig = {},
     documentManager?: DocumentManager,
     memoryFactory?: MemorySystemFactory,
-    gatesManager?: WorkflowGatesManager,
+    gatesManager?: WorkflowGatesManager
   ) {
     super();
 
@@ -118,8 +118,8 @@ export class WorkflowEngine extends EventEmitter {
     // Cancel all active workflows
     const cancelPromises = Array.from(this.activeWorkflows.keys()).map((id) =>
       this.cancelWorkflow(id).catch((err) =>
-        logger.error(`Error cancelling workflow ${id}:`, err),
-      ),
+        logger.error(`Error cancelling workflow ${id}:`, err)
+      )
     );
 
     await Promise.all(cancelPromises);
@@ -140,7 +140,7 @@ export class WorkflowEngine extends EventEmitter {
 
   async startWorkflow(
     definitionOrName: string | WorkflowDefinition,
-    context: WorkflowContext = {},
+    context: WorkflowContext = {}
   ): Promise<{ success: boolean; workflowId?: string; error?: string }> {
     await this.ensureInitialized();
 
@@ -198,7 +198,7 @@ export class WorkflowEngine extends EventEmitter {
 
   registerWorkflowDefinition(
     name: string,
-    definition: WorkflowDefinition,
+    definition: WorkflowDefinition
   ): void {
     this.workflowDefinitions.set(name, definition);
     logger.debug(`Registered workflow definition: ${name}`);
@@ -238,7 +238,7 @@ export class WorkflowEngine extends EventEmitter {
     ];
 
     const registrationPromises = documentWorkflows.map((workflow) =>
-      this.registerWorkflowDefinition(workflow.name, workflow),
+      this.registerWorkflowDefinition(workflow.name, workflow)
     );
 
     await Promise.all(registrationPromises);
@@ -247,7 +247,7 @@ export class WorkflowEngine extends EventEmitter {
 
   async processDocumentEvent(
     eventType: string,
-    documentData: unknown,
+    documentData: unknown
   ): Promise<void> {
     const docData = documentData as { type?: string };
     const triggerWorkflows = this.getWorkflowsForDocumentType(docData.type);
@@ -258,7 +258,7 @@ export class WorkflowEngine extends EventEmitter {
     }
 
     const triggerPromises = triggerWorkflows.map((workflowName) =>
-      this.startWorkflow(workflowName, { documentData, eventType }),
+      this.startWorkflow(workflowName, { documentData, eventType })
     );
 
     const results = await Promise.all(triggerPromises);
@@ -266,7 +266,7 @@ export class WorkflowEngine extends EventEmitter {
     results.forEach((result, index) => {
       const workflowName = triggerWorkflows[index];
       logger.info(
-        `Workflow ${workflowName}: ${result.success ? 'SUCCESS' : 'FAILED'}`,
+        `Workflow ${workflowName}: ${result.success ? 'SUCCESS' : 'FAILED'}`
       );
     });
   }
@@ -380,7 +380,7 @@ export class WorkflowEngine extends EventEmitter {
 
   private async executeStep(
     step: WorkflowStep,
-    workflow: WorkflowState,
+    workflow: WorkflowState
   ): Promise<StepExecutionResult> {
     const startTime = Date.now();
 
@@ -470,7 +470,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   private resolveDefinition(
-    definitionOrName: string | WorkflowDefinition,
+    definitionOrName: string | WorkflowDefinition
   ): WorkflowDefinition | null {
     if (typeof definitionOrName === 'string') {
       return this.workflowDefinitions.get(definitionOrName) || null;
@@ -501,8 +501,8 @@ export class WorkflowEngine extends EventEmitter {
     return new Promise((_, reject) =>
       setTimeout(
         () => reject(new Error(`Step timeout after ${timeout}ms`)),
-        timeout,
-      ),
+        timeout
+      )
     );
   }
 
@@ -511,7 +511,7 @@ export class WorkflowEngine extends EventEmitter {
       .split('.')
       .reduce(
         (current, key) => (current as Record<string, unknown>)?.[key],
-        obj,
+        obj
       );
   }
 
@@ -531,7 +531,7 @@ export class WorkflowEngine extends EventEmitter {
    */
   private async executeGateForStep(
     step: WorkflowStep,
-    workflow: WorkflowState,
+    workflow: WorkflowState
   ): Promise<WorkflowGateResult> {
     if (!(this.gatesManager && step.gateConfig)) {
       return {
@@ -638,7 +638,7 @@ export class WorkflowEngine extends EventEmitter {
    */
   private simulateGateDecision(
     step: WorkflowStep,
-    workflow: WorkflowState,
+    workflow: WorkflowState
   ): boolean {
     const businessImpact = step.gateConfig?.businessImpact || 'medium';
     const stakeholders = step.gateConfig?.stakeholders || [];
@@ -702,7 +702,7 @@ export class WorkflowEngine extends EventEmitter {
   async resumeWorkflowAfterGate(
     workflowId: string,
     gateId: string,
-    approved: boolean,
+    approved: boolean
   ): Promise<{ success: boolean; error?: string }> {
     const workflow = this.activeWorkflows.get(workflowId);
     if (!workflow) {
@@ -750,7 +750,7 @@ export class WorkflowEngine extends EventEmitter {
 
     // Gate approved, resume workflow
     workflow.status = 'running';
-    delete workflow.pausedForGate;
+    workflow.pausedForGate = undefined;
 
     // Resume execution from the paused step
     this.executeWorkflowAsync(workflow).catch((error) => {
@@ -782,7 +782,7 @@ export class WorkflowEngine extends EventEmitter {
 
     return {
       hasPendingGates: Boolean(
-        workflow.pendingGates && workflow.pendingGates.size > 0,
+        workflow.pendingGates && workflow.pendingGates.size > 0
       ),
       pendingGates: workflow.pendingGates
         ? Array.from(workflow.pendingGates.values())
@@ -801,5 +801,5 @@ export class WorkflowEngine extends EventEmitter {
 
 type StepHandler = (
   context: WorkflowContext,
-  params: Record<string, unknown>,
+  params: Record<string, unknown>
 ) => Promise<unknown>;

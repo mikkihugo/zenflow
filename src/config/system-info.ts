@@ -31,7 +31,7 @@ export function detectSystemMemory(): number {
     // Validate reasonable range (1GB to 2TB)
     if (totalGB < 1 || totalGB > 2048) {
       console.warn(
-        `⚠️ Unusual system memory detected: ${totalGB}GB, using 8GB default`,
+        `⚠️ Unusual system memory detected: ${totalGB}GB, using 8GB default`
       );
       return 8;
     }
@@ -69,15 +69,15 @@ export function getSystemInfo(): SystemInfo {
     conservative: totalMemoryGB <= 16, // Be extra conservative on <=16GB systems
     maxPortfolioStreams: Math.max(
       1,
-      Math.min(16, Math.floor(totalMemoryGB * 0.25)),
+      Math.min(16, Math.floor(totalMemoryGB * 0.25))
     ),
     maxProgramStreams: Math.max(
       2,
-      Math.min(64, Math.floor(totalMemoryGB * 0.5)),
+      Math.min(64, Math.floor(totalMemoryGB * 0.5))
     ),
     maxSwarmStreams: Math.max(
       4,
-      Math.min(256, Math.floor(totalMemoryGB * 1.0)),
+      Math.min(256, Math.floor(totalMemoryGB * 1.0))
     ),
   };
 
@@ -99,26 +99,26 @@ export function logSystemInfo(): void {
 
   console.log('🖥️  System Information:');
   console.log(
-    `   Total Memory: ${info.totalMemoryGB}GB (${info.totalMemoryMB}MB)`,
+    `   Total Memory: ${info.totalMemoryGB}GB (${info.totalMemoryMB}MB)`
   );
   console.log(
-    `   Available Memory: ${info.availableMemoryGB}GB (conservative estimate)`,
+    `   Available Memory: ${info.availableMemoryGB}GB (conservative estimate)`
   );
   console.log(`   Platform: ${info.platform}`);
   console.log(`   CPU Cores: ${info.cpuCores}`);
   console.log('');
   console.log('🎯 Recommended Stream Limits (Ultra-Conservative):');
   console.log(
-    `   Portfolio: ${info.recommendedConfig.maxPortfolioStreams} streams max`,
+    `   Portfolio: ${info.recommendedConfig.maxPortfolioStreams} streams max`
   );
   console.log(
-    `   Program: ${info.recommendedConfig.maxProgramStreams} streams max`,
+    `   Program: ${info.recommendedConfig.maxProgramStreams} streams max`
   );
   console.log(
-    `   Swarm: ${info.recommendedConfig.maxSwarmStreams} streams max`,
+    `   Swarm: ${info.recommendedConfig.maxSwarmStreams} streams max`
   );
   console.log(
-    `   Conservative Mode: ${info.recommendedConfig.conservative ? 'YES' : 'NO'}`,
+    `   Conservative Mode: ${info.recommendedConfig.conservative ? 'YES' : 'NO'}`
   );
 }
 
@@ -140,19 +140,19 @@ export function validateConfigForSystem(config: {
   // Check against ultra-conservative limits
   if (config.portfolio > systemInfo.recommendedConfig.maxPortfolioStreams) {
     warnings.push(
-      `Portfolio streams (${config.portfolio}) exceeds safe limit (${systemInfo.recommendedConfig.maxPortfolioStreams}) for ${systemInfo.totalMemoryGB}GB system`,
+      `Portfolio streams (${config.portfolio}) exceeds safe limit (${systemInfo.recommendedConfig.maxPortfolioStreams}) for ${systemInfo.totalMemoryGB}GB system`
     );
   }
 
   if (config.program > systemInfo.recommendedConfig.maxProgramStreams) {
     warnings.push(
-      `Program streams (${config.program}) exceeds safe limit (${systemInfo.recommendedConfig.maxProgramStreams}) for ${systemInfo.totalMemoryGB}GB system`,
+      `Program streams (${config.program}) exceeds safe limit (${systemInfo.recommendedConfig.maxProgramStreams}) for ${systemInfo.totalMemoryGB}GB system`
     );
   }
 
   if (config.swarm > systemInfo.recommendedConfig.maxSwarmStreams) {
     warnings.push(
-      `Swarm streams (${config.swarm}) exceeds safe limit (${systemInfo.recommendedConfig.maxSwarmStreams}) for ${systemInfo.totalMemoryGB}GB system`,
+      `Swarm streams (${config.swarm}) exceeds safe limit (${systemInfo.recommendedConfig.maxSwarmStreams}) for ${systemInfo.totalMemoryGB}GB system`
     );
   }
 
@@ -163,7 +163,7 @@ export function validateConfigForSystem(config: {
 
   if (estimatedMemoryMB > maxSafeMemoryMB) {
     warnings.push(
-      `Configuration would use ${estimatedMemoryMB}MB but safe limit is ${maxSafeMemoryMB}MB`,
+      `Configuration would use ${estimatedMemoryMB}MB but safe limit is ${maxSafeMemoryMB}MB`
     );
   }
 
@@ -189,15 +189,15 @@ export function getStartupConfig(): {
   const startupConfig = {
     portfolio: Math.max(
       1,
-      Math.min(4, Math.floor(systemInfo.totalMemoryGB * 0.125)),
+      Math.min(4, Math.floor(systemInfo.totalMemoryGB * 0.125))
     ),
     program: Math.max(
       2,
-      Math.min(8, Math.floor(systemInfo.totalMemoryGB * 0.25)),
+      Math.min(8, Math.floor(systemInfo.totalMemoryGB * 0.25))
     ),
     swarm: Math.max(
       4,
-      Math.min(16, Math.floor(systemInfo.totalMemoryGB * 0.5)),
+      Math.min(16, Math.floor(systemInfo.totalMemoryGB * 0.5))
     ),
   };
 

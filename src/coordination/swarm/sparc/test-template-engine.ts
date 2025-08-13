@@ -41,7 +41,7 @@ async function testTemplateEngine() {
     try {
       const result = await templateEngine.applyTemplate(
         bestMatch?.template,
-        testProject,
+        testProject
       );
 
       if (result?.customizations.length > 0) {

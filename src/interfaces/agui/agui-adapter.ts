@@ -26,7 +26,7 @@ export interface ValidationQuestion {
     | 'checkpoint'
     | 'review';
   question: string;
-  context: any;
+  context: unknown;
   options?: string[];
   allowCustom?: boolean;
   confidence: number;
@@ -38,10 +38,10 @@ export interface ValidationQuestion {
 export interface AGUIInterface {
   askQuestion(question: ValidationQuestion): Promise<string>;
   askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-  showProgress(progress: any): Promise<void>;
+  showProgress(progress: unknown): Promise<void>;
   showMessage(
     message: string,
-    type?: 'info' | 'warning' | 'error' | 'success',
+    type?: 'info' | 'warning' | 'error' | 'success'
   ): Promise<void>;
 }
 
@@ -123,7 +123,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
     return answers;
   }
 
-  async showProgress(progress: any): Promise<void> {
+  async showProgress(progress: unknown): Promise<void> {
     if (typeof progress === 'object') {
       Object.entries(progress).forEach(([_key, _value]) => {});
     } else {
@@ -132,7 +132,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 
   async showMessage(
     _message: string,
-    _type: 'info' | 'warning' | 'error' | 'success' = 'info',
+    _type: 'info' | 'warning' | 'error' | 'success' = 'info'
   ): Promise<void> {
     const _icons = {
       info: 'ℹ️ ',
@@ -176,17 +176,17 @@ export class MockAGUI implements AGUIInterface {
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {
     logger.debug(`Mock AGUI Batch: ${questions.length} questions`);
     return questions.map(
-      (q) => this.responses.get(q.id) || this.defaultResponse,
+      (q) => this.responses.get(q.id) || this.defaultResponse
     );
   }
 
-  async showProgress(progress: any): Promise<void> {
+  async showProgress(progress: unknown): Promise<void> {
     logger.debug('Mock AGUI Progress:', progress);
   }
 
   async showMessage(
     message: string,
-    type?: 'info' | 'warning' | 'error' | 'success',
+    type?: 'info' | 'warning' | 'error' | 'success'
   ): Promise<void> {
     logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
   }
@@ -199,7 +199,7 @@ export class MockAGUI implements AGUIInterface {
  * @example
  */
 export function createAGUI(
-  type: 'terminal' | 'mock' = 'terminal',
+  type: 'terminal' | 'mock' = 'terminal'
 ): AGUIInterface {
   switch (type) {
     case 'mock':

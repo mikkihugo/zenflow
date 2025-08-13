@@ -25,15 +25,16 @@ import type {
 
 // Re-export event manager types for backward compatibility
 export type {
-  IWorkflowEventManager,
-  INeuralEventManager, 
-  IMemoryEventManager,
-  IInterfaceEventManager,
-  IDatabaseEventManager,
-  ISystemEventManager,
   ICommunicationEventManager,
-  ICoordinationEventManager
+  ICoordinationEventManager, 
+  IDatabaseEventManager,
+  IInterfaceEventManager,
+  IMemoryEventManager,
+  INeuralEventManager, 
+  ISystemEventManager,
+  IWorkflowEventManager
 } from './event-manager-types.ts';
+
 import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces.ts';
 import type {
   CommunicationEvent,

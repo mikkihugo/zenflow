@@ -13,7 +13,7 @@ export interface LifecycleHandlers {
   onShutdown?: () => Promise<void>;
   onError?: (error: Error) => Promise<void>;
   onUncaughtException?: (error: Error) => void;
-  onUnhandledRejection?: (reason: any) => void;
+  onUnhandledRejection?: (reason: unknown) => void;
 }
 
 export interface ProcessOptions {
@@ -100,7 +100,7 @@ export class ProcessLifecycleManager {
       if (this.handlers.onError) {
         try {
           await this.handlers.onError(
-            error instanceof Error ? error : new Error(String(error)),
+            error instanceof Error ? error : new Error(String(error))
           );
         } catch (handlerError) {
           logger.error('❌ Error in shutdown error handler:', handlerError);
@@ -134,7 +134,7 @@ export class ProcessLifecycleManager {
   /**
    * Handle unhandled promise rejections
    */
-  private handleUnhandledRejection(reason: any): void {
+  private handleUnhandledRejection(reason: unknown): void {
     logger.error('🚫 Unhandled promise rejection:', reason);
 
     if (this.handlers.onUnhandledRejection) {
@@ -181,7 +181,7 @@ export class ProcessLifecycleManager {
  * Simplified interface for common use cases
  */
 export function setupProcessLifecycle(
-  shutdownHandler: () => Promise<void>,
+  shutdownHandler: () => Promise<void>
 ): ProcessLifecycleManager {
   return new ProcessLifecycleManager({
     onShutdown: shutdownHandler,

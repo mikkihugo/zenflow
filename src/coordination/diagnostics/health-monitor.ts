@@ -182,7 +182,7 @@ export class HealthMonitor extends EventEmitter {
   registerHealthCheck(
     name: string,
     checkFunction: HealthCheckFunction,
-    options: Partial<HealthCheck> = {},
+    options: Partial<HealthCheck> = {}
   ): HealthCheck {
     const healthCheck = {
       name,
@@ -239,7 +239,7 @@ export class HealthMonitor extends EventEmitter {
 
     // Run all registered health checks
     const checkPromises = Array.from(this.healthChecks.entries()).map(
-      ([name, check]) => this.runSingleHealthCheck(name, check),
+      ([name, check]) => this.runSingleHealthCheck(name, check)
     );
 
     const checkResults = await Promise.allSettled(checkPromises);
@@ -334,7 +334,7 @@ export class HealthMonitor extends EventEmitter {
 
     this.emit('healthCheck', healthReport);
     logger.error(
-      `✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`,
+      `✅ Health check completed: ${overallScore}% (${duration.toFixed(1)}ms)`
     );
 
     return healthReport;
@@ -348,7 +348,7 @@ export class HealthMonitor extends EventEmitter {
    */
   async runSingleHealthCheck(
     name: string,
-    check: HealthCheck,
+    check: HealthCheck
   ): Promise<HealthCheckResult> {
     if (!check.enabled) {
       return {
@@ -367,7 +367,7 @@ export class HealthMonitor extends EventEmitter {
       const timeoutPromise = new Promise((_, reject) => {
         setTimeout(
           () => reject(new Error(`Health check timeout: ${name}`)),
-          check.timeout,
+          check.timeout
         );
       });
 
@@ -409,7 +409,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Get current system health status.
    */
-  getCurrentHealth(): any {
+  getCurrentHealth(): unknown {
     return {
       ...this.currentHealth,
       isRunning: this.isRunning,
@@ -432,7 +432,7 @@ export class HealthMonitor extends EventEmitter {
   /**
    * Get health trends and analysis.
    */
-  getHealthTrends(): any {
+  getHealthTrends(): unknown {
     if (this.healthHistory.length < 2) {
       return {
         trend: 'insufficient_data',
@@ -505,7 +505,7 @@ export class HealthMonitor extends EventEmitter {
         weight: 2,
         critical: true,
         description: 'System memory usage monitoring',
-      },
+      }
     );
 
     // Event loop lag check
@@ -539,7 +539,7 @@ export class HealthMonitor extends EventEmitter {
           });
         });
       },
-      { weight: 1, description: 'Event loop performance monitoring' },
+      { weight: 1, description: 'Event loop performance monitoring' }
     );
 
     // CPU usage check (simplified)
@@ -572,7 +572,7 @@ export class HealthMonitor extends EventEmitter {
           },
         };
       },
-      { weight: 1, description: 'CPU usage monitoring' },
+      { weight: 1, description: 'CPU usage monitoring' }
     );
 
     // Persistence connectivity check
@@ -626,13 +626,13 @@ export class HealthMonitor extends EventEmitter {
         weight: 3,
         critical: true,
         description: 'Database connectivity monitoring',
-      },
+      }
     );
   }
 
   private determineHealthStatus(
     score: number,
-    criticalFailures: number,
+    criticalFailures: number
   ): 'healthy' | 'warning' | 'critical' {
     if (
       criticalFailures > 0 ||

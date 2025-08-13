@@ -223,7 +223,7 @@ describe('WASM Functions Unit Tests', () => {
 
       const result = wasmModule.exports.setNetworkWeights(
         newNetworkId,
-        weights,
+        weights
       );
       expect(result).toBe(true);
     });
@@ -251,7 +251,7 @@ describe('WASM Functions Unit Tests', () => {
       wasmModule.exports.copyFloat32ArrayToWasm(data, ptr);
       const result = wasmModule.exports.copyFloat32ArrayFromWasm(
         ptr,
-        data.length,
+        data.length
       );
 
       expect(result).toEqual(data);
@@ -353,7 +353,7 @@ describe('WASM Functions Unit Tests', () => {
         outputSize: 0,
       };
       expect(() =>
-        wasmModule.exports.createNeuralNetwork(invalidConfig),
+        wasmModule.exports.createNeuralNetwork(invalidConfig)
       ).toThrow();
     });
   });
@@ -410,7 +410,7 @@ describe('WASM Functions Unit Tests', () => {
         wasmModule.exports.copyFloat32ArrayToWasm(data, ptr);
         const _result = wasmModule.exports.copyFloat32ArrayFromWasm(
           ptr,
-          data.length,
+          data.length
         );
         wasmModule.exports.deallocateFloat32Array(ptr);
       }

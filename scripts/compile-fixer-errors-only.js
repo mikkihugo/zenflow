@@ -23,7 +23,7 @@ class CompileFixerErrorsOnly {
   async getCompilationErrors() {
     const testExclusion = this.excludeTests ? ' (EXCLUDING TESTS)' : '';
     console.log(
-      `🔍 Checking TypeScript compilation ERRORS ONLY${testExclusion}...`,
+      `🔍 Checking TypeScript compilation ERRORS ONLY${testExclusion}...`
     );
 
     try {
@@ -37,7 +37,7 @@ class CompileFixerErrorsOnly {
       if (error.stdout) {
         const parsed = this.parseTypeScriptErrors(error.stdout);
         console.log(
-          `📊 Found compilation ERRORS in ${parsed.size} files (warnings excluded${testExclusion.toLowerCase()})`,
+          `📊 Found compilation ERRORS in ${parsed.size} files (warnings excluded${testExclusion.toLowerCase()})`
         );
         return parsed;
       }
@@ -52,7 +52,7 @@ class CompileFixerErrorsOnly {
     lines.forEach((line) => {
       // Parse: src/file.ts(123,45): error TS2345: Message
       const match = line.match(
-        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/,
+        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/
       );
       if (match) {
         const [, filePath, line, col, errorCode, message] = match;
@@ -131,7 +131,7 @@ class CompileFixerErrorsOnly {
           await this.formatWithBiome(filePath);
         } else {
           console.log(
-            `  📊 Some compilation errors remain (may need manual fixes)`,
+            `  📊 Some compilation errors remain (may need manual fixes)`
           );
         }
 
@@ -158,19 +158,19 @@ class CompileFixerErrorsOnly {
     // Categorize errors by type for better targeting
     const errorTypes = {
       anyTypes: errors.filter(
-        (e) => e.message.includes('any') || e.errorCode === 'TS7006',
+        (e) => e.message.includes('any') || e.errorCode === 'TS7006'
       ),
       missingImports: errors.filter((e) =>
-        e.message.includes('Cannot find name'),
+        e.message.includes('Cannot find name')
       ),
       unusedVars: errors.filter((e) => e.message.includes('is never read')),
       missingProps: errors.filter((e) =>
-        e.message.includes('missing the following properties'),
+        e.message.includes('missing the following properties')
       ),
     };
 
     console.log(
-      `    📋 Error breakdown: ${errorTypes.anyTypes.length} any-types, ${errorTypes.missingImports.length} missing-imports, ${errorTypes.unusedVars.length} unused-vars, ${errorTypes.missingProps.length} missing-props`,
+      `    📋 Error breakdown: ${errorTypes.anyTypes.length} any-types, ${errorTypes.missingImports.length} missing-imports, ${errorTypes.unusedVars.length} unused-vars, ${errorTypes.missingProps.length} missing-props`
     );
 
     // 1. HIGHEST PRIORITY: Fix 'any' types (most compilation blockers)
@@ -184,7 +184,7 @@ class CompileFixerErrorsOnly {
     if (errorTypes.missingImports.length > 0) {
       const importResult = this.fixMissingImports(
         fixedContent,
-        errorTypes.missingImports,
+        errorTypes.missingImports
       );
       fixedContent = importResult.content;
       fixCount += importResult.count;
@@ -194,7 +194,7 @@ class CompileFixerErrorsOnly {
     if (errorTypes.unusedVars.length > 0) {
       const unusedResult = this.fixUnusedVariables(
         fixedContent,
-        errorTypes.unusedVars,
+        errorTypes.unusedVars
       );
       fixedContent = unusedResult.content;
       fixCount += unusedResult.count;
@@ -204,7 +204,7 @@ class CompileFixerErrorsOnly {
     if (errorTypes.missingProps.length > 0) {
       const propResult = this.fixMissingProperties(
         fixedContent,
-        errorTypes.missingProps,
+        errorTypes.missingProps
       );
       fixedContent = propResult.content;
       fixCount += propResult.count;
@@ -375,7 +375,7 @@ class CompileFixerErrorsOnly {
 
       if (fileErrors.size === 0) {
         console.log(
-          `\n🎉 SUCCESS! ${scope} TypeScript compilation has no ERRORS!`,
+          `\n🎉 SUCCESS! ${scope} TypeScript compilation has no ERRORS!`
         );
 
         // Final style pass with Biome
@@ -393,7 +393,7 @@ class CompileFixerErrorsOnly {
       }
 
       console.log(
-        `📊 Fixing ${fileErrors.size} files with compilation ERRORS...`,
+        `📊 Fixing ${fileErrors.size} files with compilation ERRORS...`
       );
 
       let iterationFixes = 0;

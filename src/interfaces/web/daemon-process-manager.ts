@@ -58,7 +58,7 @@ export class DaemonProcessManager {
    */
   async startDaemon(
     command: string,
-    args: string[] = [],
+    args: string[] = []
   ): Promise<ProcessInfo> {
     // Check if already running
     const existing = await this.getRunningProcess();
@@ -101,7 +101,7 @@ export class DaemonProcessManager {
 
     child?.on('exit', (code, signal) => {
       this.logger.info(
-        `Daemon process exited with code ${code}, signal ${signal}`,
+        `Daemon process exited with code ${code}, signal ${signal}`
       );
       this.cleanupPidFile();
     });
@@ -164,7 +164,7 @@ export class DaemonProcessManager {
    */
   async restartDaemon(
     command: string,
-    args: string[] = [],
+    args: string[] = []
   ): Promise<ProcessInfo> {
     this.logger.info('Restarting daemon process...');
 
@@ -303,7 +303,7 @@ export class DaemonProcessManager {
    */
   private async waitForProcessStop(
     pid: number,
-    timeout: number,
+    timeout: number
   ): Promise<void> {
     const startTime = Date.now();
 
@@ -366,7 +366,7 @@ export class DaemonProcessManager {
         `${JSON.stringify(errorLog, null, 2)}\n`,
         {
           flag: 'a',
-        },
+        }
       );
     } catch (writeError) {
       this.logger.error('Failed to write error log:', writeError);

@@ -8,12 +8,12 @@ import { EventEmitter } from 'node:events';
 // BackendInterface type for compatibility - matches core memory-system.ts
 export interface BackendInterface {
   initialize(): Promise<void>;
-  store(key: string, value: any, namespace?: string): Promise<any>;
+  store(key: string, value: unknown, namespace?: string): Promise<unknown>;
   retrieve(key: string, namespace?: string): Promise<any | null>;
-  search(pattern: string, namespace?: string): Promise<Record<string, any>>;
+  search(pattern: string, namespace?: string): Promise<Record<string, unknown>>;
   delete(key: string, namespace?: string): Promise<boolean>;
   listNamespaces(): Promise<string[]>;
-  getStats(): Promise<any>;
+  getStats(): Promise<unknown>;
   close?(): Promise<void>;
 }
 
@@ -53,7 +53,7 @@ export interface CoordinationDecision {
   participants: string[];
   status: 'pending' | 'executing' | 'completed' | 'failed';
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -108,7 +108,7 @@ export class MemoryCoordinator extends EventEmitter {
    * @param operation
    */
   async coordinate(
-    operation: Partial<CoordinationDecision>,
+    operation: Partial<CoordinationDecision>
   ): Promise<CoordinationDecision> {
     const decision: CoordinationDecision = {
       id: `coord_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -156,7 +156,7 @@ export class MemoryCoordinator extends EventEmitter {
       // For writes, use replication factor
       const replicationCount = Math.min(
         this.config.distributed.replication,
-        activeNodes.length,
+        activeNodes.length
       );
       return activeNodes?.slice(0, replicationCount).map(([id]) => id);
     }
@@ -171,7 +171,7 @@ export class MemoryCoordinator extends EventEmitter {
    * @param decision
    */
   private async executeCoordination(
-    decision: CoordinationDecision,
+    decision: CoordinationDecision
   ): Promise<void> {
     decision.status = 'executing';
 
@@ -201,7 +201,7 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param decision
    */
-  private async executeRead(decision: CoordinationDecision): Promise<any> {
+  private async executeRead(decision: CoordinationDecision): Promise<unknown> {
     const node = this.nodes.get(decision.participants[0]);
     if (!node) {
       throw new Error(`Node not found: ${decision.participants[0]}`);
@@ -224,7 +224,7 @@ export class MemoryCoordinator extends EventEmitter {
 
       return await node?.backend?.store(
         decision.target,
-        decision.metadata?.data,
+        decision.metadata?.data
       );
     });
 
@@ -234,15 +234,15 @@ export class MemoryCoordinator extends EventEmitter {
     } else {
       // Wait for quorum
       const quorum = Math.ceil(
-        decision.participants.length * this.config.consensus.quorum,
+        decision.participants.length * this.config.consensus.quorum
       );
       await Promise.race([
         Promise.all(writePromises.slice(0, quorum)),
         new Promise((_, reject) =>
           setTimeout(
             () => reject(new Error('Quorum timeout')),
-            this.config.consensus.timeout,
-          ),
+            this.config.consensus.timeout
+          )
         ),
       ]);
     }
@@ -308,7 +308,7 @@ export class MemoryCoordinator extends EventEmitter {
         } catch {
           return null;
         }
-      }),
+      })
     );
 
     // Find the most common value (simple consensus)
@@ -322,7 +322,7 @@ export class MemoryCoordinator extends EventEmitter {
     });
 
     const [winningValue] = Array.from(valueCount.entries()).sort(
-      ([, a], [, b]) => b - a,
+      ([, a], [, b]) => b - a
     )[0];
 
     const correctValue = JSON.parse(winningValue);
@@ -346,25 +346,25 @@ export class MemoryCoordinator extends EventEmitter {
       nodes: {
         total: this.nodes.size,
         active: Array.from(this.nodes.values()).filter(
-          (n) => n.status === 'active',
+          (n) => n.status === 'active'
         ).length,
         degraded: Array.from(this.nodes.values()).filter(
-          (n) => n.status === 'degraded',
+          (n) => n.status === 'degraded'
         ).length,
       },
       decisions: {
         total: this.decisions.size,
         pending: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'pending',
+          (d) => d.status === 'pending'
         ).length,
         executing: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'executing',
+          (d) => d.status === 'executing'
         ).length,
         completed: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'completed',
+          (d) => d.status === 'completed'
         ).length,
         failed: Array.from(this.decisions.values()).filter(
-          (d) => d.status === 'failed',
+          (d) => d.status === 'failed'
         ).length,
       },
       config: this.config,
@@ -382,8 +382,8 @@ export class MemoryCoordinator extends EventEmitter {
    */
   async store(
     key: string,
-    data: any,
-    options?: { ttl?: number; replicas?: number },
+    data: unknown,
+    options?: { ttl?: number; replicas?: number }
   ): Promise<void> {
     const decision = await this.coordinate({
       type: 'write',
@@ -401,7 +401,7 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param key
    */
-  async get(key: string): Promise<any> {
+  async get(key: string): Promise<unknown> {
     const decision = await this.coordinate({
       type: 'read',
       target: key,
@@ -435,12 +435,12 @@ export class MemoryCoordinator extends EventEmitter {
    *
    * @param pattern
    */
-  async list(pattern: string): Promise<Array<{ key: string; value: any }>> {
-    const results: Array<{ key: string; value: any }> = [];
+  async list(pattern: string): Promise<Array<{ key: string; value: unknown }>> {
+    const results: Array<{ key: string; value: unknown }> = [];
 
     // Get all active nodes
     const activeNodes = Array.from(this.nodes.values()).filter(
-      (n) => n.status === 'active',
+      (n) => n.status === 'active'
     );
 
     for (const node of activeNodes) {
@@ -452,7 +452,7 @@ export class MemoryCoordinator extends EventEmitter {
         ) {
           const keys = await node?.backend?.keys();
           const matchingKeys = keys.filter((key) =>
-            this.matchesPattern(key, pattern),
+            this.matchesPattern(key, pattern)
           );
 
           for (const key of matchingKeys) {
@@ -498,10 +498,10 @@ export class MemoryCoordinator extends EventEmitter {
   /**
    * Health check for coordinator.
    */
-  async healthCheck(): Promise<{ status: string; details: any }> {
+  async healthCheck(): Promise<{ status: string; details: unknown }> {
     const stats = this.getStats();
     const unhealthyNodes = Array.from(this.nodes.values()).filter(
-      (n) => n.status !== 'active',
+      (n) => n.status !== 'active'
     );
 
     return {

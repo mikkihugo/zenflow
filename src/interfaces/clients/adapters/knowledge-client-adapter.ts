@@ -313,7 +313,7 @@ export class KnowledgeClientAdapter
    */
   async query<R = KnowledgeResponse>(
     query: string,
-    options?: KnowledgeQueryOptions,
+    options?: KnowledgeQueryOptions
   ): Promise<R> {
     const request: KnowledgeRequest = {
       query,
@@ -334,7 +334,7 @@ export class KnowledgeClientAdapter
    */
   async search<R = KnowledgeResponse>(
     searchTerm: string,
-    options?: KnowledgeSearchOptions,
+    options?: KnowledgeSearchOptions
   ): Promise<R[]> {
     const request: KnowledgeRequest = {
       query: searchTerm,
@@ -394,7 +394,7 @@ export class KnowledgeClientAdapter
    */
   async updateEntry(
     id: string,
-    data: Partial<KnowledgeRequest>,
+    data: Partial<KnowledgeRequest>
   ): Promise<boolean> {
     try {
       const request: KnowledgeRequest = {
@@ -445,7 +445,7 @@ export class KnowledgeClientAdapter
       categories: {
         'fact-queries': factMetrics.totalQueries,
         'cached-results': Math.floor(
-          factMetrics.totalQueries * factMetrics.cacheHitRate,
+          factMetrics.totalQueries * factMetrics.cacheHitRate
         ),
       },
       averageResponseTime: factMetrics.averageLatency,
@@ -461,7 +461,7 @@ export class KnowledgeClientAdapter
    */
   async semanticSearch<R = KnowledgeResponse>(
     query: string,
-    options?: SemanticSearchOptions,
+    options?: SemanticSearchOptions
   ): Promise<R[]> {
     const request: KnowledgeRequest = {
       query,
@@ -589,7 +589,7 @@ export class KnowledgeClientAdapter
    * @param result
    */
   private extractSources(
-    result: FACTResult,
+    result: FACTResult
   ): Array<{ title: string; url: string; relevance: number }> {
     // FACT doesn't provide structured sources, so we'll create a placeholder
     return result?.toolsUsed.map((tool, index) => ({
@@ -613,7 +613,7 @@ export class KnowledgeClientFactory implements IClientFactory {
       info: Function;
       warn: Function;
       error: Function;
-    },
+    }
   ) {}
 
   /**
@@ -628,7 +628,7 @@ export class KnowledgeClientFactory implements IClientFactory {
     // Validate configuration
     if (!this.validateConfig(protocol, config)) {
       throw new Error(
-        `Invalid configuration for Knowledge client with protocol: ${protocol}`,
+        `Invalid configuration for Knowledge client with protocol: ${protocol}`
       );
     }
 
@@ -718,7 +718,7 @@ export class KnowledgeClientFactory implements IClientFactory {
 export async function createFACTClient(
   factRepoPath: string,
   anthropicApiKey?: string,
-  options?: Partial<KnowledgeClientConfig>,
+  options?: Partial<KnowledgeClientConfig>
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
     protocol: ProtocolTypes.CUSTOM,
@@ -760,7 +760,7 @@ export async function createFACTClient(
  */
 export async function createCustomKnowledgeClient(
   url: string,
-  options?: Partial<KnowledgeClientConfig>,
+  options?: Partial<KnowledgeClientConfig>
 ): Promise<KnowledgeClientAdapter> {
   const config: KnowledgeClientConfig = {
     protocol: url.startsWith('https')
@@ -795,14 +795,14 @@ export const KnowledgeHelpers = {
   async getDocumentation(
     client: KnowledgeClientAdapter,
     framework: string,
-    version?: string,
+    version?: string
   ): Promise<KnowledgeResponse> {
     return await client.query(
       `Get comprehensive documentation for ${framework} ${version ? `version ${version}` : '(latest version)'}`,
       {
         includeMetadata: true,
         filters: { type: 'documentation', framework, version },
-      },
+      }
     );
   },
 
@@ -816,7 +816,7 @@ export const KnowledgeHelpers = {
   async getAPIReference(
     client: KnowledgeClientAdapter,
     api: string,
-    endpoint?: string,
+    endpoint?: string
   ): Promise<KnowledgeResponse> {
     const query = endpoint
       ? `Get detailed API reference for ${api} endpoint: ${endpoint}`
@@ -838,7 +838,7 @@ export const KnowledgeHelpers = {
   async searchCommunity(
     client: KnowledgeClientAdapter,
     topic: string,
-    tags?: string[],
+    tags?: string[]
   ): Promise<KnowledgeResponse[]> {
     const query = `Search developer communities for: ${topic}${tags ? ` tags: ${tags.join(', ')}` : ''}`;
 

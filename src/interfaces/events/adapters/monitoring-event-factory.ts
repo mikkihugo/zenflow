@@ -36,7 +36,7 @@ export class MonitoringEventFactory {
    */
   static create(
     name: string,
-    config?: Partial<MonitoringEventAdapterConfig>,
+    config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     if (MonitoringEventFactory.instances.has(name)) {
       throw new Error(`Monitoring event adapter '${name}' already exists`);
@@ -71,7 +71,7 @@ export class MonitoringEventFactory {
    */
   static getOrCreate(
     name: string,
-    config?: Partial<MonitoringEventAdapterConfig>,
+    config?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     const existing = MonitoringEventFactory.get(name);
     if (existing) {
@@ -128,7 +128,7 @@ export class MonitoringEventFactory {
    */
   static registerDefaultConfig(
     name: string,
-    config: Partial<MonitoringEventAdapterConfig>,
+    config: Partial<MonitoringEventAdapterConfig>
   ): void {
     MonitoringEventFactory.defaultConfigs.set(name, config);
   }
@@ -365,7 +365,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createPerformanceMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.PERFORMANCE_FOCUSED,
@@ -381,7 +381,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createHealthMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.HEALTH_FOCUSED,
@@ -397,7 +397,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createAnalyticsMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.ANALYTICS_FOCUSED,
@@ -413,7 +413,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createAlertMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.ALERT_FOCUSED,
@@ -429,7 +429,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createDashboardMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.DASHBOARD_FOCUSED,
@@ -445,7 +445,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createHighThroughputMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.HIGH_THROUGHPUT,
@@ -461,7 +461,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createLowLatencyMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       ...MonitoringEventConfigs?.LOW_LATENCY,
@@ -477,7 +477,7 @@ export const MonitoringEventAdapterFactory = {
    */
   createComprehensiveMonitor(
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ): MonitoringEventAdapter {
     return MonitoringEventFactory.create(name, {
       performanceMonitoring: {
@@ -541,7 +541,7 @@ export class MonitoringEventRegistry {
       onStop?: (adapter: MonitoringEventAdapter) => Promise<void>;
       onError?: (
         adapter: MonitoringEventAdapter,
-        error: Error,
+        error: Error
       ) => Promise<void>;
     }
   >();
@@ -564,13 +564,13 @@ export class MonitoringEventRegistry {
       onStop?: (adapter: MonitoringEventAdapter) => Promise<void>;
       onError?: (
         adapter: MonitoringEventAdapter,
-        error: Error,
+        error: Error
       ) => Promise<void>;
-    },
+    }
   ): Promise<void> {
     if (MonitoringEventRegistry.adapters.has(name)) {
       throw new Error(
-        `Monitoring event adapter '${name}' is already registered`,
+        `Monitoring event adapter '${name}' is already registered`
       );
     }
 
@@ -634,9 +634,9 @@ export class MonitoringEventRegistry {
    */
   static async startAll(): Promise<void> {
     const startPromises = Array.from(
-      MonitoringEventRegistry.adapters.values(),
+      MonitoringEventRegistry.adapters.values()
     ).map((adapter) =>
-      adapter.isRunning() ? Promise.resolve() : adapter.start(),
+      adapter.isRunning() ? Promise.resolve() : adapter.start()
     );
     await Promise.all(startPromises);
   }
@@ -646,9 +646,9 @@ export class MonitoringEventRegistry {
    */
   static async stopAll(): Promise<void> {
     const stopPromises = Array.from(
-      MonitoringEventRegistry.adapters.values(),
+      MonitoringEventRegistry.adapters.values()
     ).map((adapter) =>
-      adapter.isRunning() ? adapter.stop() : Promise.resolve(),
+      adapter.isRunning() ? adapter.stop() : Promise.resolve()
     );
     await Promise.all(stopPromises);
   }
@@ -656,9 +656,9 @@ export class MonitoringEventRegistry {
   /**
    * Get health status of all registered adapters.
    */
-  static async getHealthStatus(): Promise<Record<string, any>> {
+  static async getHealthStatus(): Promise<Record<string, unknown>> {
     const healthPromises = Array.from(
-      MonitoringEventRegistry.adapters.entries(),
+      MonitoringEventRegistry.adapters.entries()
     ).map(async ([name, adapter]) => {
       const health = await adapter.healthCheck();
       return [name, health];
@@ -671,9 +671,9 @@ export class MonitoringEventRegistry {
   /**
    * Get performance metrics of all registered adapters.
    */
-  static async getMetrics(): Promise<Record<string, any>> {
+  static async getMetrics(): Promise<Record<string, unknown>> {
     const metricsPromises = Array.from(
-      MonitoringEventRegistry.adapters.entries(),
+      MonitoringEventRegistry.adapters.entries()
     ).map(async ([name, adapter]) => {
       const metrics = await adapter.getMetrics();
       return [name, metrics];
@@ -722,7 +722,7 @@ export class MonitoringEventManager {
    * @param config
    */
   static async initialize(
-    config: MonitoringEventAdapterConfig,
+    config: MonitoringEventAdapterConfig
   ): Promise<MonitoringEventAdapter> {
     if (MonitoringEventManager.instance) {
       throw new Error('Monitoring event manager is already initialized');
@@ -741,7 +741,7 @@ export class MonitoringEventManager {
   static getInstance(): MonitoringEventAdapter {
     if (!MonitoringEventManager.instance) {
       throw new Error(
-        'Monitoring event manager is not initialized. Call initialize() first.',
+        'Monitoring event manager is not initialized. Call initialize() first.'
       );
     }
     return MonitoringEventManager.instance;

@@ -125,7 +125,7 @@ async function testAllMcpTools() {
       type,
       name: `agent-${type}-${index + 1}`,
       capabilities: [`capability-${index + 1}`, `capability-${index + 2}`],
-    }),
+    })
   );
 
   try {

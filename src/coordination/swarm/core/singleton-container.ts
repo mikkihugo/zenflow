@@ -43,7 +43,7 @@ class SingletonContainer {
   register(
     key: string,
     factory: (...args: unknown[]) => any,
-    options: RegistrationOptions = {},
+    options: RegistrationOptions = {}
   ) {
     if (typeof factory !== 'function') {
       throw new Error(`Factory for '${key}' must be a function`);
@@ -66,7 +66,7 @@ class SingletonContainer {
   get<T = any>(key: string): T {
     if (this.isDestroying) {
       throw new Error(
-        `Cannot get instance '${key}' during container destruction`,
+        `Cannot get instance '${key}' during container destruction`
       );
     }
 
@@ -82,7 +82,7 @@ class SingletonContainer {
     }
 
     // Resolve dependencies
-    const dependencies = config?.dependencies?.map((dep: any) => this.get(dep));
+    const dependencies = config?.dependencies?.map((dep: unknown) => this.get(dep));
 
     try {
       // Create instance using factory
@@ -161,7 +161,7 @@ class SingletonContainer {
    *
    * @returns {Object} Container stats.
    */
-  getStats(): any {
+  getStats(): unknown {
     return {
       registeredServices: this.factories.size,
       activeInstances: this.instances.size,

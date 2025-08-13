@@ -67,7 +67,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   constructor(
     urlOrConfig: string | WebSocketClientConfig,
-    legacyOptions?: WebSocketClientOptions,
+    legacyOptions?: WebSocketClientOptions
   ) {
     super();
 
@@ -272,7 +272,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async get<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('GET', endpoint, undefined, options);
   }
@@ -286,8 +286,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async post<T = any>(
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('POST', endpoint, data, options);
   }
@@ -301,8 +301,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async put<T = any>(
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('PUT', endpoint, data, options);
   }
@@ -316,7 +316,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async delete<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('DELETE', endpoint, undefined, options);
   }
@@ -345,7 +345,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   override on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
-    handler: (...args: unknown[]) => void,
+    handler: (...args: unknown[]) => void
   ): this {
     return super.on(event, handler);
   }
@@ -437,7 +437,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
-    _options?: WebSocketRequestOptions,
+    _options?: WebSocketRequestOptions
   ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
@@ -581,8 +581,8 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   private async sendRequest<T = any>(
     method: string,
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const requestId = this.generateMessageId();
     const startTime = Date.now();
@@ -605,7 +605,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
           this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000,
+        options?.timeout || this.config.timeout || 30000
       );
 
       const responseHandler = (responseData: unknown) => {
@@ -801,7 +801,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
 
   private convertLegacyToUACL(
     url: string,
-    options: WebSocketClientOptions,
+    options: WebSocketClientOptions
   ): WebSocketClientConfig {
     return {
       name: `ws-client-${Date.now()}`,
@@ -828,7 +828,7 @@ export class EnhancedWebSocketClient extends EventEmitter implements IClient {
   }
 
   private convertUACLToLegacy(
-    config: WebSocketClientConfig,
+    config: WebSocketClientConfig
   ): WebSocketClientOptions {
     return {
       reconnect: true,

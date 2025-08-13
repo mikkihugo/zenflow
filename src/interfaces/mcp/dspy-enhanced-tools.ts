@@ -18,7 +18,7 @@ const logger = getLogger('DSPyMCPTools');
 
 export interface MCPToolRequest {
   toolName: string;
-  parameters: any;
+  parameters: unknown;
   context?: {
     projectPath?: string;
     userIntent?: string;
@@ -28,7 +28,7 @@ export interface MCPToolRequest {
 
 export interface MCPToolResponse {
   success: boolean;
-  result: any;
+  result: unknown;
   reasoning?: string;
   suggestions?: string[];
   confidence?: number;
@@ -40,8 +40,8 @@ export class DSPyEnhancedMCPTools {
   private programs: Map<string, DSPyProgram> = new Map();
   private toolUsageHistory: Array<{
     tool: string;
-    input: any;
-    output: any;
+    input: unknown;
+    output: unknown;
     success: boolean;
     timestamp: Date;
   }> = [];
@@ -60,31 +60,31 @@ export class DSPyEnhancedMCPTools {
     // Project Analysis Intelligence
     const projectAnalysisProgram = await this.dspy.createProgram(
       'project_structure: object, user_request: string, context: object -> analysis: string, recommendations: string[], priority_actions: string[], complexity_score: number',
-      'Analyze project structure and provide intelligent recommendations based on user intent and context',
+      'Analyze project structure and provide intelligent recommendations based on user intent and context'
     );
 
     // Code Generation Intelligence
     const codeGenerationProgram = await this.dspy.createProgram(
       'requirements: string, existing_code: string, project_context: object -> generated_code: string, explanation: string, integration_steps: string[], testing_suggestions: string[]',
-      'Generate high-quality code that integrates seamlessly with existing project structure',
+      'Generate high-quality code that integrates seamlessly with existing project structure'
     );
 
     // Error Resolution Intelligence
     const errorResolutionProgram = await this.dspy.createProgram(
       'error_details: object, code_context: string, project_info: object -> solution: string, fix_code: string, prevention_tips: string[], confidence: number',
-      'Intelligently resolve errors with contextual understanding of the project',
+      'Intelligently resolve errors with contextual understanding of the project'
     );
 
     // Workflow Optimization Intelligence
     const workflowOptimizationProgram = await this.dspy.createProgram(
       'current_workflow: object, user_goals: string, project_constraints: object -> optimized_workflow: object, improvement_suggestions: string[], automation_opportunities: string[]',
-      'Optimize development workflows for maximum efficiency and user satisfaction',
+      'Optimize development workflows for maximum efficiency and user satisfaction'
     );
 
     // Task Orchestration Intelligence
     const taskOrchestrationProgram = await this.dspy.createProgram(
       'task_request: string, available_tools: string[], project_state: object -> task_plan: object, tool_sequence: string[], risk_assessment: object, success_prediction: number',
-      'Intelligently orchestrate complex tasks using available MCP tools with risk assessment',
+      'Intelligently orchestrate complex tasks using available MCP tools with risk assessment'
     );
 
     this.programs.set('project_analysis', projectAnalysisProgram);
@@ -120,7 +120,7 @@ export class DSPyEnhancedMCPTools {
         'project_analysis',
         request.parameters,
         result,
-        true,
+        true
       );
 
       return {
@@ -216,7 +216,7 @@ export class DSPyEnhancedMCPTools {
         'error_resolution',
         request.parameters,
         result,
-        true,
+        true
       );
 
       return {
@@ -247,7 +247,7 @@ export class DSPyEnhancedMCPTools {
     const program = this.programs.get('workflow_optimization');
     if (!program) {
       return this.createErrorResponse(
-        'Workflow optimization program not available',
+        'Workflow optimization program not available'
       );
     }
 
@@ -264,7 +264,7 @@ export class DSPyEnhancedMCPTools {
         'workflow_optimization',
         request.parameters,
         result,
-        true,
+        true
       );
 
       return {
@@ -274,7 +274,7 @@ export class DSPyEnhancedMCPTools {
           improvementSuggestions: result?.improvement_suggestions || [],
           automationOpportunities: result?.automation_opportunities || [],
           estimatedTimeSaving: this.calculateTimeSaving(
-            result?.optimized_workflow,
+            result?.optimized_workflow
           ),
         },
         reasoning: 'DSPy workflow optimization analysis',
@@ -287,7 +287,7 @@ export class DSPyEnhancedMCPTools {
         'workflow_optimization',
         request.parameters,
         null,
-        false,
+        false
       );
       return this.createErrorResponse('Workflow optimization failed', error);
     }
@@ -302,7 +302,7 @@ export class DSPyEnhancedMCPTools {
     const program = this.programs.get('task_orchestration');
     if (!program) {
       return this.createErrorResponse(
-        'Task orchestration program not available',
+        'Task orchestration program not available'
       );
     }
 
@@ -319,7 +319,7 @@ export class DSPyEnhancedMCPTools {
         'task_orchestration',
         request.parameters,
         result,
-        true,
+        true
       );
 
       return {
@@ -330,7 +330,7 @@ export class DSPyEnhancedMCPTools {
           riskAssessment: result?.risk_assessment || {},
           successPrediction: result?.success_prediction || 0.7,
           estimatedDuration: this.estimateTaskDuration(
-            result?.tool_sequence.length || 1,
+            result?.tool_sequence.length || 1
           ),
         },
         reasoning: 'DSPy task orchestration planning',
@@ -343,7 +343,7 @@ export class DSPyEnhancedMCPTools {
         'task_orchestration',
         request.parameters,
         null,
-        false,
+        false
       );
       return this.createErrorResponse('Task orchestration failed', error);
     }
@@ -354,7 +354,7 @@ export class DSPyEnhancedMCPTools {
    */
   getToolStats() {
     const recentUsage = this.toolUsageHistory.filter(
-      (usage) => Date.now() - usage.timestamp.getTime() < 3600000, // Last hour
+      (usage) => Date.now() - usage.timestamp.getTime() < 3600000 // Last hour
     );
 
     const successRate =
@@ -368,7 +368,7 @@ export class DSPyEnhancedMCPTools {
         acc[usage.tool] = (acc[usage.tool] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     return {
@@ -394,15 +394,15 @@ export class DSPyEnhancedMCPTools {
    */
   updateToolOutcome(
     toolName: string,
-    parameters: any,
+    parameters: unknown,
     success: boolean,
-    actualResult?: any,
+    actualResult?: unknown
   ) {
     const usage = this.toolUsageHistory.find(
       (u) =>
         u.tool === toolName &&
         JSON.stringify(u.input) === JSON.stringify(parameters) &&
-        Date.now() - u.timestamp.getTime() < 300000, // Within last 5 minutes
+        Date.now() - u.timestamp.getTime() < 300000 // Within last 5 minutes
     );
 
     if (usage) {
@@ -412,7 +412,7 @@ export class DSPyEnhancedMCPTools {
       }
 
       logger.debug(
-        `Updated tool outcome: ${toolName} -> ${success ? 'success' : 'failure'}`,
+        `Updated tool outcome: ${toolName} -> ${success ? 'success' : 'failure'}`
       );
 
       // Trigger learning update for the specific program
@@ -422,9 +422,9 @@ export class DSPyEnhancedMCPTools {
 
   private recordToolUsage(
     tool: string,
-    input: any,
-    output: any,
-    success: boolean,
+    input: unknown,
+    output: unknown,
+    success: boolean
   ) {
     this.toolUsageHistory.push({
       tool,
@@ -440,7 +440,7 @@ export class DSPyEnhancedMCPTools {
     }
   }
 
-  private async trainProgramFromOutcome(programType: string, usage: any) {
+  private async trainProgramFromOutcome(programType: string, usage: unknown) {
     const program = this.programs.get(programType);
     if (program && usage.success) {
       try {
@@ -457,7 +457,7 @@ export class DSPyEnhancedMCPTools {
         });
 
         logger.debug(
-          `Training applied to ${programType} from successful outcome`,
+          `Training applied to ${programType} from successful outcome`
         );
       } catch (error) {
         logger.warn(`Training failed for ${programType}:`, error);
@@ -465,7 +465,7 @@ export class DSPyEnhancedMCPTools {
     }
   }
 
-  private createErrorResponse(message: string, error?: any): MCPToolResponse {
+  private createErrorResponse(message: string, error?: unknown): MCPToolResponse {
     return {
       success: false,
       result: { error: message, details: error?.message },
@@ -491,7 +491,7 @@ export class DSPyEnhancedMCPTools {
   }
 
   private assessErrorSeverity(
-    errorMessage: string,
+    errorMessage: string
   ): 'low' | 'medium' | 'high' | 'critical' {
     if (
       errorMessage.includes('Cannot find module') ||
@@ -527,7 +527,7 @@ export class DSPyEnhancedMCPTools {
     return followups;
   }
 
-  private calculateTimeSaving(optimizedWorkflow: any): string {
+  private calculateTimeSaving(optimizedWorkflow: unknown): string {
     if (!optimizedWorkflow || typeof optimizedWorkflow !== 'object') {
       return 'Unknown';
     }

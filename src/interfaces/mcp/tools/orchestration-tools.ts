@@ -29,7 +29,7 @@ const orchestrationTools: MCPTool[] = [
       },
       required: ['name', 'steps'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { name, type = 'ci-cd', steps, schedule } = params;
 
       const workflowId = `workflow_${Date.now()}`;
@@ -77,7 +77,7 @@ const orchestrationTools: MCPTool[] = [
         includeHistory: { type: 'boolean', default: false },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { deploymentId, environment, includeHistory = false } = params;
 
       const deployments = [
@@ -109,7 +109,7 @@ const orchestrationTools: MCPTool[] = [
 
       if (environment) {
         filteredDeployments = filteredDeployments.filter(
-          (d) => d.environment === environment,
+          (d) => d.environment === environment
         );
       }
 
@@ -157,7 +157,7 @@ const orchestrationTools: MCPTool[] = [
       },
       required: ['services', 'action'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { services, action, parallel = false, rollback = true } = params;
 
       const orchestrationId = `orchestration_${Date.now()}`;

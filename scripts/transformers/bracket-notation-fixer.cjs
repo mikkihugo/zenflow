@@ -123,7 +123,9 @@ module.exports = function transformer(file, api, options) {
       return false;
     }
 
-    return BRACKET_NOTATION_PATTERNS.some((pattern) => pattern.test(objectName));
+    return BRACKET_NOTATION_PATTERNS.some((pattern) =>
+      pattern.test(objectName)
+    );
   }
 
   // Check if property name matches patterns that require bracket notation
@@ -224,13 +226,17 @@ module.exports = function transformer(file, api, options) {
       // Check if property matches patterns that require bracket notation
       if (shouldTransformProperty(propertyName)) {
         shouldTransform = true;
-        reason = reason ? `${reason} and property pattern` : `property pattern (${propertyName})`;
+        reason = reason
+          ? `${reason} and property pattern`
+          : `property pattern (${propertyName})`;
       }
 
       // Special case: if property contains characters that require bracket notation
       if (propertyName.includes('-') || /^[A-Z_]+$/.test(propertyName)) {
         shouldTransform = true;
-        reason = reason ? `${reason} and special characters` : 'special characters';
+        reason = reason
+          ? `${reason} and special characters`
+          : 'special characters';
       }
 
       if (shouldTransform) {
@@ -295,7 +301,10 @@ module.exports = function transformer(file, api, options) {
   if (options.verbose && transformedProperties.size > 0) {
     console.log(`\nFile: ${file.path}`);
     console.log(`Total transformations: ${transformedProperties.size}`);
-    console.log('Transformed properties:', Array.from(transformedProperties).join(', '));
+    console.log(
+      'Transformed properties:',
+      Array.from(transformedProperties).join(', ')
+    );
   }
 
   return hasChanges ? source.toSource() : null;

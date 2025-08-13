@@ -43,7 +43,7 @@ describe('Gate Performance Validation', () => {
       },
       undefined,
       undefined,
-      gatesManager,
+      gatesManager
     );
 
     await gatesManager.initialize();
@@ -121,7 +121,7 @@ describe('Gate Performance Validation', () => {
                 WorkflowGatePriority.MEDIUM,
                 WorkflowGatePriority.HIGH,
               ][index % 3],
-            },
+            }
           );
 
           batchPromises.push(gatePromise);
@@ -155,8 +155,8 @@ describe('Gate Performance Validation', () => {
 
       await Promise.all(
         gatesToResolve.map((gateId) =>
-          gatesManager.resolveGate(gateId, 'approved', 'performance-tester'),
-        ),
+          gatesManager.resolveGate(gateId, 'approved', 'performance-tester')
+        )
       );
 
       const resolveTime = Date.now() - resolveStartTime;
@@ -222,8 +222,8 @@ describe('Gate Performance Validation', () => {
               WorkflowGatePriority.MEDIUM,
               WorkflowGatePriority.LOW,
             ][i % 3],
-          },
-        ),
+          }
+        )
       );
 
       const createdGates = await Promise.all(gatePromises);
@@ -373,7 +373,7 @@ describe('Gate Performance Validation', () => {
             concurrentApproval: true,
             index: i,
           });
-        },
+        }
       );
 
       const workflowResults = await Promise.all(workflowPromises);
@@ -387,13 +387,13 @@ describe('Gate Performance Validation', () => {
       // Approve all gates concurrently
       const approvalPromises = workflowResults.map(async (result) => {
         const gateStatus = workflowEngine.getWorkflowGateStatus(
-          result.workflowId!,
+          result.workflowId!
         );
         if (gateStatus.pausedForGate) {
           return workflowEngine.resumeWorkflowAfterGate(
             result.workflowId!,
             gateStatus.pausedForGate.gateId,
-            true,
+            true
           );
         }
       });
@@ -408,7 +408,7 @@ describe('Gate Performance Validation', () => {
 
       // Count successful approvals
       const successfulApprovals = approvalResults.filter(
-        (result) => result?.success,
+        (result) => result?.success
       ).length;
 
       logger.info('Concurrent gate approval performance', {
@@ -419,7 +419,7 @@ describe('Gate Performance Validation', () => {
         successfulApprovals,
         avgApprovalTime: approvalTime / successfulApprovals,
         approvalThroughput: Math.round(
-          successfulApprovals / (approvalTime / 1000),
+          successfulApprovals / (approvalTime / 1000)
         ),
       });
 
@@ -477,7 +477,7 @@ describe('Gate Performance Validation', () => {
             payload: { memoryTest: true, size: 'small' },
             attachments: [],
             externalReferences: [],
-          },
+          }
         );
 
         gates.push(gate.id);
@@ -518,8 +518,8 @@ describe('Gate Performance Validation', () => {
         gates
           .slice(0, 50)
           .map((gateId) =>
-            gatesManager.resolveGate(gateId, 'approved', 'memory-tester'),
-          ),
+            gatesManager.resolveGate(gateId, 'approved', 'memory-tester')
+          )
       );
 
       const cleanupTime = Date.now() - cleanupStartTime;
@@ -585,7 +585,7 @@ describe('Gate Performance Validation', () => {
                   payload: { contentionTest: true },
                   attachments: [],
                   externalReferences: [],
-                },
+                }
               );
 
             case 1: // Workflow creation
@@ -611,17 +611,17 @@ describe('Gate Performance Validation', () => {
             default:
               return Promise.resolve({ success: true });
           }
-        },
+        }
       );
 
       const results = await Promise.allSettled(operations);
       const operationTime = Date.now() - startTime;
 
       const successCount = results.filter(
-        (result) => result.status === 'fulfilled',
+        (result) => result.status === 'fulfilled'
       ).length;
       const failureCount = results.filter(
-        (result) => result.status === 'rejected',
+        (result) => result.status === 'rejected'
       ).length;
 
       logger.info('Resource contention test results', {

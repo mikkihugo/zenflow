@@ -94,7 +94,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
           // Log cleanup error but don't throw
           logger.error(
             `Failed to cleanup client ${client.name}:`,
-            cleanupError,
+            cleanupError
           );
         }
       }
@@ -105,7 +105,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
         .join('; ');
 
       throw new Error(
-        `Failed to create ${errors.length} clients: ${errorMessages}`,
+        `Failed to create ${errors.length} clients: ${errorMessages}`
       );
     }
 
@@ -167,7 +167,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
             },
           });
         }
-      },
+      }
     );
 
     await Promise.allSettled(promises);
@@ -196,7 +196,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
             timestamp: new Date(),
           });
         }
-      },
+      }
     );
 
     await Promise.allSettled(promises);
@@ -215,7 +215,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
         } catch (error) {
           logger.error(`Failed to shutdown client ${client.name}:`, error);
         }
-      },
+      }
     );
 
     await Promise.allSettled(shutdownPromises);
@@ -240,7 +240,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     name: string,
     baseURL: string,
     authType: 'bearer' | 'apikey' | 'basic',
-    credentials: string | { username: string; password: string },
+    credentials: string | { username: string; password: string }
   ): Promise<IClient> {
     let authentication: HTTPClientConfig['authentication'];
 
@@ -309,7 +309,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       attempts: number;
       delay: number;
       backoff?: 'linear' | 'exponential' | 'fixed';
-    },
+    }
   ): Promise<IClient> {
     const config: HTTPClientConfig = {
       name,
@@ -341,7 +341,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
       metricsInterval?: number;
       healthCheckInterval?: number;
       healthEndpoint?: string;
-    },
+    }
   ): Promise<IClient> {
     const config: HTTPClientConfig = {
       name,
@@ -382,7 +382,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
     options?: {
       strategy?: 'round-robin' | 'random' | 'least-connections';
       healthCheck?: boolean;
-    },
+    }
   ): Promise<IClient[]> {
     const configs: HTTPClientConfig[] = baseURLs.map((baseURL, index) => ({
       name: `${baseName}-${index}`,
@@ -417,7 +417,7 @@ export class HTTPClientFactory implements IClientFactory<HTTPClientConfig> {
    * @param status
    */
   async getClientsByStatus(
-    status: 'healthy' | 'degraded' | 'unhealthy',
+    status: 'healthy' | 'degraded' | 'unhealthy'
   ): Promise<IClient[]> {
     const healthResults = await this.healthCheckAll();
     const matchingClients: IClient[] = [];
@@ -497,7 +497,7 @@ export const httpClientFactory = new HTTPClientFactory();
  * @param config
  */
 export const createHTTPClient = async (
-  config: HTTPClientConfig,
+  config: HTTPClientConfig
 ): Promise<IClient> => {
   return httpClientFactory.create(config);
 };
@@ -508,7 +508,7 @@ export const createHTTPClient = async (
  * @param configs
  */
 export const createHTTPClients = async (
-  configs: HTTPClientConfig[],
+  configs: HTTPClientConfig[]
 ): Promise<IClient[]> => {
   return httpClientFactory.createMultiple(configs);
 };

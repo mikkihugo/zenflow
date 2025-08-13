@@ -68,7 +68,7 @@ export class ArchitectureStorageService {
   private validationsTableName = 'sparc_architecture_validations';
 
   constructor(
-    private db: any, // DatabaseAdapter - keeping flexible for multi-backend support
+    private db: unknown // DatabaseAdapter - keeping flexible for multi-backend support
   ) {}
 
   /**
@@ -157,7 +157,7 @@ export class ArchitectureStorageService {
    */
   async saveArchitecture(
     architecture: ArchitectureDesign,
-    projectId?: string,
+    projectId?: string
   ): Promise<string> {
     const architectureId = architecture.id || nanoid();
     const timestamp = new Date();
@@ -211,7 +211,7 @@ export class ArchitectureStorageService {
         record.updated_at,
         record.tags,
         record.metadata,
-      ],
+      ]
     );
 
     // Save individual components for detailed tracking
@@ -226,14 +226,14 @@ export class ArchitectureStorageService {
    * @param architectureId
    */
   async getArchitectureById(
-    architectureId: string,
+    architectureId: string
   ): Promise<ArchitectureDesign | null> {
     const result = await this.db.query(
       `
       SELECT * FROM ${this.tableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId],
+      [architectureId]
     );
 
     if (!result?.rows || result?.rows.length === 0) {
@@ -250,7 +250,7 @@ export class ArchitectureStorageService {
    * @param projectId
    */
   async getArchitecturesByProject(
-    projectId: string,
+    projectId: string
   ): Promise<ArchitectureDesign[]> {
     const result = await this.db.query(
       `
@@ -258,7 +258,7 @@ export class ArchitectureStorageService {
       WHERE project_id = ?
       ORDER BY updated_at DESC
     `,
-      [projectId],
+      [projectId]
     );
 
     if (!result?.rows || result?.rows.length === 0) {
@@ -266,7 +266,7 @@ export class ArchitectureStorageService {
     }
 
     return result?.rows?.map((record: ArchitectureRecord) =>
-      this.recordToArchitecture(record),
+      this.recordToArchitecture(record)
     );
   }
 
@@ -276,7 +276,7 @@ export class ArchitectureStorageService {
    * @param domain
    */
   async getArchitecturesByDomain(
-    domain: string,
+    domain: string
   ): Promise<ArchitectureDesign[]> {
     const result = await this.db.query(
       `
@@ -284,7 +284,7 @@ export class ArchitectureStorageService {
       WHERE domain = ?
       ORDER BY updated_at DESC
     `,
-      [domain],
+      [domain]
     );
 
     if (!result?.rows || result?.rows.length === 0) {
@@ -292,7 +292,7 @@ export class ArchitectureStorageService {
     }
 
     return result?.rows?.map((record: ArchitectureRecord) =>
-      this.recordToArchitecture(record),
+      this.recordToArchitecture(record)
     );
   }
 
@@ -304,7 +304,7 @@ export class ArchitectureStorageService {
    */
   async updateArchitecture(
     architectureId: string,
-    architecture: ArchitectureDesign,
+    architecture: ArchitectureDesign
   ): Promise<void> {
     const timestamp = new Date();
 
@@ -330,7 +330,7 @@ export class ArchitectureStorageService {
         JSON.stringify(this.extractTags(architecture)),
         JSON.stringify(this.extractMetadata(architecture)),
         architectureId,
-      ],
+      ]
     );
 
     // Update components
@@ -349,7 +349,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.validationsTableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId],
+      [architectureId]
     );
 
     await this.db.execute(
@@ -357,7 +357,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.componentsTableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId],
+      [architectureId]
     );
 
     await this.db.execute(
@@ -365,7 +365,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.tableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId],
+      [architectureId]
     );
   }
 
@@ -379,7 +379,7 @@ export class ArchitectureStorageService {
   async saveValidation(
     architectureId: string,
     validation: ArchitecturalValidation,
-    validationType: string = 'general',
+    validationType: string = 'general'
   ): Promise<void> {
     const record = {
       id: nanoid(),
@@ -408,7 +408,7 @@ export class ArchitectureStorageService {
         record.results_data,
         record.recommendations,
         record.created_at,
-      ],
+      ]
     );
   }
 
@@ -418,7 +418,7 @@ export class ArchitectureStorageService {
    * @param architectureId
    */
   async getValidationHistory(
-    architectureId: string,
+    architectureId: string
   ): Promise<ArchitecturalValidation[]> {
     const result = await this.db.query(
       `
@@ -426,7 +426,7 @@ export class ArchitectureStorageService {
       WHERE architecture_id = ?
       ORDER BY created_at DESC
     `,
-      [architectureId],
+      [architectureId]
     );
 
     if (!result?.rows || result?.rows.length === 0) {
@@ -486,12 +486,12 @@ export class ArchitectureStorageService {
     }
 
     let architectures = result?.rows?.map((record: ArchitectureRecord) =>
-      this.recordToArchitecture(record),
+      this.recordToArchitecture(record)
     );
 
     // Filter by validation score if specified
     if (criteria.minScore !== undefined) {
-      architectures = architectures.filter((arch: any) => {
+      architectures = architectures.filter((arch: unknown) => {
         const validation = arch.validationResults;
         return validation && validation.overallScore >= criteria.minScore!;
       });
@@ -567,7 +567,7 @@ export class ArchitectureStorageService {
 
   private async saveComponents(
     architectureId: string,
-    components: Component[],
+    components: Component[]
   ): Promise<void> {
     // Clear existing components
     await this.db.execute(
@@ -575,7 +575,7 @@ export class ArchitectureStorageService {
       DELETE FROM ${this.componentsTableName} 
       WHERE architecture_id = ?
     `,
-      [architectureId],
+      [architectureId]
     );
 
     // Insert new components
@@ -614,14 +614,14 @@ export class ArchitectureStorageService {
           record.performance_data,
           record.created_at,
           record.updated_at,
-        ],
+        ]
       );
     }
   }
 
   private async updateComponents(
     architectureId: string,
-    components: Component[],
+    components: Component[]
   ): Promise<void> {
     // Simply replace all components for now
     await this.saveComponents(architectureId, components);
@@ -677,14 +677,14 @@ export class ArchitectureStorageService {
         if (pattern.name && !tags.includes(pattern.name)) {
           tags.push(pattern.name);
         }
-      },
+      }
     );
 
     return tags;
   }
 
   private extractMetadata(
-    architecture: ArchitectureDesign,
+    architecture: ArchitectureDesign
   ): Record<string, unknown> {
     return {
       componentCount: architecture.components?.length || 0,

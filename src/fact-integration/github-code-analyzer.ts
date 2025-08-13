@@ -108,7 +108,7 @@ export class GitHubCodeAnalyzer {
       // Filter interesting files
       const interestingFiles = tree.tree.filter(
         (item) =>
-          item.type === 'blob' && this.isInterestingFile(item.path || ''),
+          item.type === 'blob' && this.isInterestingFile(item.path || '')
       );
 
       const snippets: CodeSnippet[] = [];
@@ -119,7 +119,7 @@ export class GitHubCodeAnalyzer {
       for (let i = 0; i < interestingFiles.length; i += batchSize) {
         const batch = interestingFiles.slice(i, i + batchSize);
         const batchResults = await Promise.allSettled(
-          batch.map((file) => this.analyzeFile(repoInfo, file, repoMetadata)),
+          batch.map((file) => this.analyzeFile(repoInfo, file, repoMetadata))
         );
 
         for (const result of batchResults) {
@@ -139,7 +139,7 @@ export class GitHubCodeAnalyzer {
       const detectedPatterns = await this.detectProjectPatterns(
         repoInfo,
         tree.tree,
-        repoMetadata,
+        repoMetadata
       );
       patterns.push(...detectedPatterns);
 
@@ -151,7 +151,7 @@ export class GitHubCodeAnalyzer {
     } catch (error) {
       console.error(
         `Failed to analyze repository ${repoInfo.owner}/${repoInfo.repo}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -162,7 +162,7 @@ export class GitHubCodeAnalyzer {
    */
   async analyzeHexPackageRepos(
     packageName: string,
-    version: string,
+    version: string
   ): Promise<{
     officialRepo?: CodeSnippet[];
     exampleRepos: CodeSnippet[];
@@ -227,7 +227,7 @@ export class GitHubCodeAnalyzer {
       exampleRepos: this.filterSnippetsByCategory(allSnippets, 'example'),
       tutorialRepos: this.filterSnippetsByCategory(
         allSnippets,
-        'documentation',
+        'documentation'
       ),
       patterns: this.deduplicatePatterns(allPatterns),
     };
@@ -238,7 +238,7 @@ export class GitHubCodeAnalyzer {
    */
   extractGitHubDependencies(
     content: string,
-    fileType: 'mix.exs' | 'package.json' | 'Cargo.toml',
+    fileType: 'mix.exs' | 'package.json' | 'Cargo.toml'
   ): Array<{
     name: string;
     repo: string;
@@ -313,7 +313,7 @@ export class GitHubCodeAnalyzer {
   generateFACTEntries(
     toolName: string,
     version: string,
-    analysis: Awaited<ReturnType<typeof this.analyzeHexPackageRepos>>,
+    analysis: Awaited<ReturnType<typeof this.analyzeHexPackageRepos>>
   ): {
     documentation: string;
     snippets: Array<{ title: string; code: string; description: string }>;
@@ -402,8 +402,8 @@ export class GitHubCodeAnalyzer {
 
   private async analyzeFile(
     repoInfo: GitHubRepoInfo,
-    file: any,
-    repoMetadata: any,
+    file: unknown,
+    repoMetadata: unknown
   ): Promise<{
     snippets: CodeSnippet[];
     pattern?: ProjectPattern;
@@ -417,7 +417,7 @@ export class GitHubCodeAnalyzer {
 
       if ('content' in fileData) {
         const content = Buffer.from(fileData.content, 'base64').toString(
-          'utf-8',
+          'utf-8'
         );
         const language = this.detectLanguage(file.path);
 
@@ -430,7 +430,7 @@ export class GitHubCodeAnalyzer {
           content,
           file.path,
           language,
-          repoMetadata,
+          repoMetadata
         );
 
         return { snippets };
@@ -447,7 +447,7 @@ export class GitHubCodeAnalyzer {
     content: string,
     filePath: string,
     language: string,
-    repoMetadata: any,
+    repoMetadata: unknown
   ): CodeSnippet[] {
     const snippets: CodeSnippet[] = [];
     const fileName = basename(filePath);
@@ -543,7 +543,7 @@ export class GitHubCodeAnalyzer {
   }
 
   private estimateComplexity(
-    code: string,
+    code: string
   ): 'basic' | 'intermediate' | 'advanced' {
     const lines = code.split('\n').length;
     const complexPatterns = [
@@ -561,7 +561,7 @@ export class GitHubCodeAnalyzer {
     ];
 
     const complexityScore = complexPatterns.filter((pattern) =>
-      pattern.test(code),
+      pattern.test(code)
     ).length;
 
     if (lines < 20 && complexityScore === 0) return 'basic';
@@ -571,8 +571,8 @@ export class GitHubCodeAnalyzer {
 
   private async detectProjectPatterns(
     repoInfo: GitHubRepoInfo,
-    tree: any[],
-    repoMetadata: any,
+    tree: unknown[],
+    repoMetadata: unknown
   ): Promise<ProjectPattern[]> {
     const patterns: ProjectPattern[] = [];
 
@@ -625,7 +625,7 @@ export class GitHubCodeAnalyzer {
         const waitTime = this.rateLimitResetTime - Date.now();
         if (waitTime > 0) {
           console.log(
-            `Rate limit low (${this.rateLimitRemaining}), waiting ${waitTime}ms`,
+            `Rate limit low (${this.rateLimitRemaining}), waiting ${waitTime}ms`
           );
           await new Promise((resolve) => setTimeout(resolve, waitTime));
         }
@@ -657,7 +657,7 @@ export class GitHubCodeAnalyzer {
 
   private filterSnippetsByCategory(
     snippets: CodeSnippet[],
-    category: CodeSnippet['category'],
+    category: CodeSnippet['category']
   ): CodeSnippet[] {
     return snippets.filter((s) => s.category === category);
   }

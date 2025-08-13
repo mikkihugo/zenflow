@@ -30,7 +30,7 @@ export interface EventBusConfig {
   logLevel: string;
 }
 
-export type EventListenerAny = (event: any) => void | Promise<void>;
+export type EventListenerAny = (event: unknown) => void | Promise<void>;
 
 export interface EventMap {
   [key: string]: SystemEvent;
@@ -46,23 +46,23 @@ export interface EventMetrics {
 
 export type EventMiddleware = (
   event: string | symbol,
-  payload: any,
-  next: () => void,
+  payload: unknown,
+  next: () => void
 ) => void;
 
 export interface IEventBus {
   on<T extends keyof EventMap>(
     event: T,
-    listener: EventListener<EventMap[T]>,
+    listener: EventListener<EventMap[T]>
   ): this;
   off<T extends keyof EventMap>(
     event: T,
-    listener: EventListener<EventMap[T]>,
+    listener: EventListener<EventMap[T]>
   ): this;
   emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean;
   once<T extends keyof EventMap>(
     event: T,
-    listener: EventListener<EventMap[T]>,
+    listener: EventListener<EventMap[T]>
   ): this;
 }
 
@@ -124,7 +124,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   override emit<T extends keyof EventMap>(
     event: T,
-    payload: EventMap[T],
+    payload: EventMap[T]
   ): boolean {
     const startTime = Date.now();
 
@@ -165,7 +165,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   override on<T extends keyof EventMap>(
     event: T,
-    listener: EventListener<EventMap[T]>,
+    listener: EventListener<EventMap[T]>
   ): this {
     super.on(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
@@ -180,7 +180,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   override once<T extends keyof EventMap>(
     event: T,
-    listener: EventListener<EventMap[T]>,
+    listener: EventListener<EventMap[T]>
   ): this {
     super.once(event as string, listener as EventListenerAny);
     this.metrics.listenerCount++;
@@ -195,7 +195,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   override off<T extends keyof EventMap>(
     event: T,
-    listener: EventListener<EventMap[T]>,
+    listener: EventListener<EventMap[T]>
   ): this {
     super.off(event as string, listener as EventListenerAny);
     this.metrics.listenerCount = Math.max(0, this.metrics.listenerCount - 1);
@@ -251,7 +251,7 @@ export class EventBus extends EventEmitter implements IEventBus {
    */
   private runMiddleware<T extends keyof EventMap>(
     event: T,
-    payload: EventMap[T],
+    payload: EventMap[T]
   ): void {
     let index = 0;
 
@@ -284,7 +284,7 @@ export class EventBus extends EventEmitter implements IEventBus {
     const eventNames = this.eventNames().map((name) => String(name));
     const listenerCount = eventNames.reduce(
       (sum, name) => sum + this.listenerCount(name),
-      0,
+      0
     );
 
     return {

@@ -50,7 +50,7 @@ class ToolRegistry {
     return this.getAllTools().filter((tool) => tool.category === category);
   }
 
-  getCategorySummary(): any {
+  getCategorySummary(): unknown {
     const categories = new Map<string, number>();
     for (const tool of this.tools.values()) {
       categories.set(tool.category, (categories.get(tool.category) || 0) + 1);
@@ -157,7 +157,7 @@ export class MCPToolsManager {
    * @param name
    * @param params
    */
-  async executeTool(name: string, params: any): Promise<any> {
+  async executeTool(name: string, params: unknown): Promise<unknown> {
     const startTime = Date.now();
     const tool = this.getTool(name);
 
@@ -182,7 +182,7 @@ export class MCPToolsManager {
   /**
    * List all tools with metadata.
    */
-  listAllTools(): any {
+  listAllTools(): unknown {
     const tools = toolRegistry.getAllTools();
     const categoryStats = toolRegistry.getCategorySummary();
 
@@ -213,8 +213,8 @@ export class MCPToolsManager {
   /**
    * Get tool execution statistics.
    */
-  getToolStats(): any {
-    const stats: any = {};
+  getToolStats(): unknown {
+    const stats: unknown = {};
     this.toolStats.forEach((toolStats, toolName) => {
       stats[toolName] = {
         ...toolStats,
@@ -230,15 +230,15 @@ export class MCPToolsManager {
   /**
    * Get registry overview.
    */
-  getRegistryOverview(): any {
+  getRegistryOverview(): unknown {
     const categoryStats = toolRegistry.getCategorySummary();
     const totalCalls = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.calls,
-      0,
+      0
     );
     const totalErrors = Array.from(this.toolStats.values()).reduce(
       (sum, stats) => sum + stats.errors,
-      0,
+      0
     );
 
     return {
@@ -272,8 +272,8 @@ export class MCPToolsManager {
           tool.name.toLowerCase().includes(lowercaseQuery) ||
           tool.description.toLowerCase().includes(lowercaseQuery) ||
           tool.metadata.tags.some((tag) =>
-            tag.toLowerCase().includes(lowercaseQuery),
-          ),
+            tag.toLowerCase().includes(lowercaseQuery)
+          )
       );
   }
 
@@ -306,8 +306,8 @@ export class MCPToolsManager {
         tool.permissions.some(
           (perm) =>
             perm.type === permissionType &&
-            (!resource || perm.resource === resource),
-        ),
+            (!resource || perm.resource === resource)
+        )
       );
   }
 
@@ -318,7 +318,7 @@ export class MCPToolsManager {
   private updateToolStats(
     toolName: string,
     executionTime: number,
-    isError: boolean,
+    isError: boolean
   ): void {
     const stats = this.toolStats.get(toolName);
     if (stats) {
@@ -349,7 +349,7 @@ export const mcpToolsManager = new MCPToolsManager();
  * @example
  */
 export function initializeWithDatabaseServices(
-  documentService: DocumentService,
+  documentService: DocumentService
 ): MCPToolsManager {
   // Create new instance with database services for SPARC tools
   const manager = new MCPToolsManager(documentService);
@@ -367,7 +367,7 @@ export class MCPServerIntegration {
    *
    * @param mcpServer
    */
-  static async integrateWithHTTPServer(mcpServer: any): Promise<void> {
+  static async integrateWithHTTPServer(mcpServer: unknown): Promise<void> {
     const tools = toolRegistry.getAllTools();
 
     for (const tool of tools) {
@@ -376,7 +376,7 @@ export class MCPServerIntegration {
         name: tool.name,
         description: tool.description,
         inputSchema: tool.inputSchema,
-        handler: async (params: any) => {
+        handler: async (params: unknown) => {
           const result = await mcpToolsManager.executeTool(tool.name, params);
           return result;
         },
@@ -394,7 +394,7 @@ export class MCPServerIntegration {
    *
    * @param mcpServer
    */
-  static async integrateWithStdioServer(mcpServer: any): Promise<void> {
+  static async integrateWithStdioServer(mcpServer: unknown): Promise<void> {
     const tools = toolRegistry.getAllTools();
 
     for (const tool of tools) {
@@ -403,7 +403,7 @@ export class MCPServerIntegration {
         name: tool.name,
         description: tool.description,
         inputSchema: tool.inputSchema,
-        handler: async (params: any) => {
+        handler: async (params: unknown) => {
           const result = await mcpToolsManager.executeTool(tool.name, params);
           return result;
         },
@@ -419,7 +419,7 @@ export class MCPServerIntegration {
   /**
    * Create tool discovery endpoint.
    */
-  static createDiscoveryEndpoint(): any {
+  static createDiscoveryEndpoint(): unknown {
     return {
       path: '/tools',
       handler: async () => {
@@ -446,11 +446,11 @@ export class MCPServerIntegration {
   /**
    * Create tool execution endpoint.
    */
-  static createExecutionEndpoint(): any {
+  static createExecutionEndpoint(): unknown {
     return {
       path: '/tools/:toolName',
       method: 'POST',
-      handler: async (req: any) => {
+      handler: async (req: unknown) => {
         const { toolName } = req.params;
         const params = req.body;
 

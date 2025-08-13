@@ -32,7 +32,7 @@ const createMockWebSocket = () => ({
 const createMockHttpResponse = (
   data: unknown,
   ok: boolean = true,
-  status: number = 200,
+  status: number = 200
 ) => ({
   ok,
   status,
@@ -157,7 +157,7 @@ describe('Adapter Pattern Implementation', () => {
 
         testCases.forEach(({ messageType, expectedEndpoint }) => {
           const endpoint = (mcpAdapter as any).mapMessageTypeToEndpoint(
-            messageType,
+            messageType
           );
           expect(endpoint).toBe(expectedEndpoint);
         });
@@ -263,12 +263,12 @@ describe('Adapter Pattern Implementation', () => {
         const calculateDelay = (attempt: number) => {
           return Math.min(
             baseDelay * backoffMultiplier ** (attempt - 1),
-            30000,
+            30000
           );
         };
 
         const delays = Array.from({ length: maxAttempts }, (_, i) =>
-          calculateDelay(i + 1),
+          calculateDelay(i + 1)
         );
 
         expect(delays).toEqual([1000, 2000, 4000, 8000, 16000]);
@@ -347,7 +347,7 @@ describe('Adapter Pattern Implementation', () => {
 
         testCases.forEach(({ messageType, expectedEndpoint }) => {
           const endpoint = (restAdapter as any).mapMessageTypeToEndpoint(
-            messageType,
+            messageType
           );
           expect(endpoint).toBe(expectedEndpoint);
         });
@@ -436,7 +436,7 @@ describe('Adapter Pattern Implementation', () => {
         };
 
         const legacyFormat = (legacyAdapter as any).transformToLegacyFormat(
-          modernMessage,
+          modernMessage
         );
 
         expect(legacyFormat).toEqual({
@@ -464,7 +464,7 @@ describe('Adapter Pattern Implementation', () => {
         };
 
         const modernFormat = (legacyAdapter as any).transformFromLegacyFormat(
-          legacyResponse,
+          legacyResponse
         );
 
         expect(modernFormat).toEqual({
@@ -559,7 +559,9 @@ describe('Adapter Pattern Implementation', () => {
         };
 
         const releaseConnection = (conn: unknown) => {
-          const index = connectionPool.busyConnections.indexOf(conn) as any as any as any as any;
+          const index = connectionPool.busyConnections.indexOf(
+            conn
+          ) as any as any as any as any;
           if (index > -1) {
             connectionPool.busyConnections.splice(index, 1);
             conn.inUse = false;
@@ -600,7 +602,7 @@ describe('Adapter Pattern Implementation', () => {
         };
 
         const exponentialDelays = [1, 2, 3, 4, 5].map(
-          retryStrategies.exponential,
+          retryStrategies.exponential
         );
         const linearDelays = [1, 2, 3, 4, 5].map(retryStrategies.linear);
         const fibonacciDelays = [1, 2, 3, 4, 5].map(retryStrategies.fibonacci);
@@ -779,7 +781,7 @@ describe('Adapter Pattern Implementation', () => {
               getCapabilities: vi.fn().mockReturnValue([]),
               healthCheck: vi.fn(),
             },
-          }),
+          })
         );
 
         // Register and add all adapters
@@ -969,11 +971,11 @@ describe('Adapter Pattern Implementation', () => {
         expect(healthCheckResults).toHaveLength(2);
         expect(
           healthCheckResults?.find((r) => r.name === 'healthy-protocol')
-            ?.healthy,
+            ?.healthy
         ).toBe(true);
         expect(
           healthCheckResults?.find((r) => r.name === 'unhealthy-protocol')
-            ?.healthy,
+            ?.healthy
         ).toBe(false);
       });
 
@@ -1027,7 +1029,7 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           mockFetch.mockResolvedValueOnce(
-            createMockHttpResponse({ capabilities: ['tools'] }),
+            createMockHttpResponse({ capabilities: ['tools'] })
           );
 
           await mcpAdapter.connect(config);
@@ -1045,10 +1047,10 @@ describe('Adapter Pattern Implementation', () => {
 
           mockFetch
             .mockResolvedValueOnce(
-              createMockHttpResponse({ capabilities: ['tools'] }),
+              createMockHttpResponse({ capabilities: ['tools'] })
             ) // connect
             .mockResolvedValueOnce(
-              createMockHttpResponse({ result: 'success' }),
+              createMockHttpResponse({ result: 'success' })
             ); // send
 
           await mcpAdapter.connect(config);
@@ -1070,7 +1072,7 @@ describe('Adapter Pattern Implementation', () => {
 
       describe('MCPAdapter Stdio Mode', () => {
         let mcpAdapter: MCPAdapter;
-        let mockProcess: any;
+        let mockProcess: unknown;
 
         beforeEach(() => {
           mcpAdapter = new MCPAdapter('stdio');
@@ -1101,7 +1103,7 @@ describe('Adapter Pattern Implementation', () => {
               if (event === 'spawn') {
                 setTimeout(callback, 10);
               }
-            },
+            }
           );
 
           await mcpAdapter.connect(config);
@@ -1111,7 +1113,7 @@ describe('Adapter Pattern Implementation', () => {
             ['claude-zen', 'swarm', 'mcp', 'start'],
             {
               stdio: ['pipe', 'pipe', 'pipe'],
-            },
+            }
           );
           expect(mcpAdapter.isConnected()).toBe(true);
         });
@@ -1125,7 +1127,7 @@ describe('Adapter Pattern Implementation', () => {
           mockProcess.on.mockImplementation(
             (event: string, callback: Function) => {
               if (event === 'spawn') setTimeout(callback, 10);
-            },
+            }
           );
 
           await mcpAdapter.connect(config);
@@ -1148,10 +1150,10 @@ describe('Adapter Pattern Implementation', () => {
                       id: 'stdio-test',
                       result: { agentId: 'agent-001' },
                     }),
-                  10,
+                  10
                 );
               }
-            },
+            }
           );
 
           const responsePromise = mcpAdapter.send(message);
@@ -1164,7 +1166,7 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           expect(mockProcess.stdin.write).toHaveBeenCalledWith(
-            `${JSON.stringify(expectedMessage)}\n`,
+            `${JSON.stringify(expectedMessage)}\n`
           );
 
           await responsePromise;
@@ -1173,7 +1175,7 @@ describe('Adapter Pattern Implementation', () => {
 
       describe('WebSocketAdapter', () => {
         let wsAdapter: WebSocketAdapter;
-        let mockWebSocket: any;
+        let mockWebSocket: unknown;
 
         beforeEach(() => {
           wsAdapter = new WebSocketAdapter();
@@ -1199,7 +1201,7 @@ describe('Adapter Pattern Implementation', () => {
           await connectPromise;
 
           expect(mockWebSocketConstructor).toHaveBeenCalledWith(
-            'ws://localhost:3456/ws',
+            'ws://localhost:3456/ws'
           );
           expect(wsAdapter.isConnected()).toBe(true);
         });
@@ -1244,7 +1246,7 @@ describe('Adapter Pattern Implementation', () => {
             JSON.stringify({
               ...message,
               expectResponse: true,
-            }),
+            })
           );
           expect(response?.success).toBe(true);
         });
@@ -1291,7 +1293,7 @@ describe('Adapter Pattern Implementation', () => {
           };
 
           mockFetch.mockResolvedValueOnce(
-            createMockHttpResponse({ status: 'healthy' }),
+            createMockHttpResponse({ status: 'healthy' })
           );
 
           await restAdapter.connect(config);
@@ -1303,7 +1305,7 @@ describe('Adapter Pattern Implementation', () => {
               headers: expect.objectContaining({
                 'Content-Type': 'application/json',
               }),
-            }),
+            })
           );
           expect(restAdapter.isConnected()).toBe(true);
         });
@@ -1317,10 +1319,10 @@ describe('Adapter Pattern Implementation', () => {
 
           mockFetch
             .mockResolvedValueOnce(
-              createMockHttpResponse({ status: 'healthy' }),
+              createMockHttpResponse({ status: 'healthy' })
             ) // connect
             .mockResolvedValueOnce(
-              createMockHttpResponse({ swarmId: 'rest-swarm-001' }),
+              createMockHttpResponse({ swarmId: 'rest-swarm-001' })
             ); // send
 
           await restAdapter.connect(config);
@@ -1343,7 +1345,7 @@ describe('Adapter Pattern Implementation', () => {
                 'Content-Type': 'application/json',
               }),
               body: JSON.stringify({ topology: 'ring', agentCount: 4 }),
-            }),
+            })
           );
           expect(response?.success).toBe(true);
           expect(response?.data?.swarmId).toBe('rest-swarm-001');
@@ -1365,7 +1367,7 @@ describe('Adapter Pattern Implementation', () => {
       };
 
       await expect(restAdapter.connect(config)).rejects.toThrow(
-        'REST API connection failed',
+        'REST API connection failed'
       );
     });
 
@@ -1392,7 +1394,7 @@ describe('Adapter Pattern Implementation', () => {
         {
           protocol: 'circuit-test',
           host: 'localhost',
-        },
+        }
       );
 
       const testMessage: ProtocolMessage = {
@@ -1408,7 +1410,7 @@ describe('Adapter Pattern Implementation', () => {
         try {
           await protocolManager.sendMessage(
             testMessage,
-            'circuit-breaker-test',
+            'circuit-breaker-test'
           );
         } catch (_error) {
           // Expected failures

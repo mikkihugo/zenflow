@@ -29,7 +29,7 @@ import { MonitoringEventRegistry } from './monitoring-event-factory.ts';
 async function basicMonitoringExample(): Promise<void> {
   // Create monitoring event adapter with default configuration
   const config = createDefaultMonitoringEventAdapterConfig(
-    'basic-monitoring-adapter',
+    'basic-monitoring-adapter'
   );
   const adapter = createMonitoringEventAdapter(config);
 
@@ -41,7 +41,7 @@ async function basicMonitoringExample(): Promise<void> {
     const metricsSubscription = adapter.subscribeMetricsEvents((event) => {});
 
     const healthSubscription = adapter.subscribeHealthMonitoringEvents(
-      (event) => {},
+      (event) => {}
     );
 
     const alertSubscription = adapter.subscribeAlertEvents((event) => {});
@@ -120,7 +120,7 @@ async function performanceFocusedExample(): Promise<void> {
         intelligentSampling: true,
         anomalyDetection: true,
       },
-    },
+    }
   );
   const adapter = createMonitoringEventAdapter(config);
 
@@ -259,7 +259,7 @@ async function analyticsFocusedExample(): Promise<void> {
         intelligentSampling: true,
         anomalyDetection: true,
       },
-    },
+    }
   );
   const adapter = createMonitoringEventAdapter(config);
 
@@ -396,7 +396,7 @@ async function alertManagementExample(): Promise<void> {
 async function comprehensiveMonitoringExample(): Promise<void> {
   // Create comprehensive monitoring adapter
   const config = createDefaultMonitoringEventAdapterConfig(
-    'comprehensive-monitor',
+    'comprehensive-monitor'
   );
   const adapter = createMonitoringEventAdapter(config);
 
@@ -418,7 +418,7 @@ async function comprehensiveMonitoringExample(): Promise<void> {
         'monitoring:alert',
         'monitoring:performance',
       ],
-      (event) => {},
+      (event) => {}
     );
 
     // Emit comprehensive monitoring scenario
@@ -512,7 +512,7 @@ async function comprehensiveMonitoringExample(): Promise<void> {
  */
 async function helperFunctionsExample(): Promise<void> {
   const adapter = createMonitoringEventAdapter(
-    createDefaultMonitoringEventAdapterConfig('helper-example'),
+    createDefaultMonitoringEventAdapterConfig('helper-example')
   );
 
   try {
@@ -521,7 +521,7 @@ async function helperFunctionsExample(): Promise<void> {
     // Subscribe to see helper-generated events
     adapter.subscribe(
       ['monitoring:metrics', 'monitoring:health', 'monitoring:alert'],
-      (event) => {},
+      (event) => {}
     );
 
     // Use helper functions to create events
@@ -530,21 +530,21 @@ async function helperFunctionsExample(): Promise<void> {
         'memory_usage',
         89.5,
         'cache-server',
-        { threshold: 85, unit: 'percentage' },
+        { threshold: 85, unit: 'percentage' }
       );
 
     const healthEvent = MonitoringEventHelpers.createHealthStatusEvent(
       'load-balancer',
       0.92,
       'healthy',
-      { uptime: 99.98, lastCheck: new Date() },
+      { uptime: 99.98, lastCheck: new Date() }
     );
 
     const alertEvent = MonitoringEventHelpers.createAlertEvent(
       'lb-health-check',
       'info',
       'load-balancer',
-      { message: 'Health check passed', responseTime: 45 },
+      { message: 'Health check passed', responseTime: 45 }
     );
 
     const insightEvent = MonitoringEventHelpers.createAnalyticsInsightEvent(
@@ -552,13 +552,13 @@ async function helperFunctionsExample(): Promise<void> {
       {
         forecast: { nextHour: { requests: 5200, avgLatency: 95 } },
         confidence: 0.91,
-      },
+      }
     );
 
     const errorEvent = MonitoringEventHelpers.createMonitoringErrorEvent(
       'data-collector',
       new Error('Connection timeout to metrics database'),
-      'collect',
+      'collect'
     );
 
     // Emit all helper-created events
@@ -600,7 +600,7 @@ async function highPerformanceExample(): Promise<void> {
         strategy: 'queued',
         queueSize: 10000,
       },
-    },
+    }
   );
   const throughputAdapter = createMonitoringEventAdapter(throughputConfig);
 
@@ -612,7 +612,7 @@ async function highPerformanceExample(): Promise<void> {
         strategy: 'immediate',
         queueSize: 1000,
       },
-    },
+    }
   );
   const latencyAdapter = createMonitoringEventAdapter(latencyConfig);
 
@@ -644,7 +644,7 @@ async function highPerformanceExample(): Promise<void> {
             metricName: `metric_${i}`,
             metricValue: Math.random() * 100,
           },
-        }),
+        })
       );
     }
 
@@ -668,7 +668,7 @@ async function highPerformanceExample(): Promise<void> {
               errorRate: 0.01,
             },
           },
-        }),
+        })
       );
     }
 

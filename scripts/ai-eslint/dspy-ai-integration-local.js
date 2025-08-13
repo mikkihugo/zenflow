@@ -69,7 +69,7 @@ export class DSPyAIIntegrationLocal {
     try {
       this.logger.info('🧠 Initializing SIMPLIFIED LOCAL DSPy system...');
       this.logger.info(
-        '   ✅ No AX Framework "Invalid signature object" errors',
+        '   ✅ No AX Framework "Invalid signature object" errors'
       );
       this.logger.info('   ✅ No complex TypeScript imports');
       this.logger.info('   ✅ Direct Claude API integration for reliability');
@@ -114,7 +114,7 @@ export class DSPyAIIntegrationLocal {
       // Parse TypeScript errors from prompt
       const errors = this.parseTypeScriptErrors(prompt, filePath, fileContent);
       this.logger.info(
-        `🔍 Analyzing ${errors.length} TypeScript errors (LOCAL DSPy)`,
+        `🔍 Analyzing ${errors.length} TypeScript errors (LOCAL DSPy)`
       );
 
       // Check error cache for similar patterns
@@ -125,18 +125,18 @@ export class DSPyAIIntegrationLocal {
           filePath,
           cacheKey,
           fileContent,
-          sessionId,
+          sessionId
         );
       }
 
       // Use LOCAL DSPy approach - fallback to Claude for now (eliminates AX Framework errors)
       this.logger.info(
-        '🧠 Running LOCAL DSPy (Claude fallback) - NO AX Framework errors!',
+        '🧠 Running LOCAL DSPy (Claude fallback) - NO AX Framework errors!'
       );
       const dspyAnalysis = await this.performLocalDSPyAnalysis(
         errors,
         fileContent,
-        filePath,
+        filePath
       );
 
       this.logger.info('🎯 LOCAL DSPy Analysis results', {
@@ -220,7 +220,7 @@ export class DSPyAIIntegrationLocal {
     // We directly implement the DSPy concepts without external dependencies
 
     this.logger.info(
-      '🎯 LOCAL DSPy: Analyzing error patterns without AX Framework',
+      '🎯 LOCAL DSPy: Analyzing error patterns without AX Framework'
     );
 
     const analysis = {
@@ -269,7 +269,7 @@ export class DSPyAIIntegrationLocal {
    */
   generateImportFix(errorMessage) {
     const moduleMatch = errorMessage.match(
-      /Cannot find module ['"`]([^'"`]+)['"`]/,
+      /Cannot find module ['"`]([^'"`]+)['"`]/
     );
     if (moduleMatch) {
       const moduleName = moduleMatch[1];
@@ -384,7 +384,7 @@ export class DSPyAIIntegrationLocal {
       case 'replace':
         return content.replace(
           new RegExp(this.escapeRegex(change.oldCode), 'g'),
-          change.newCode,
+          change.newCode
         );
 
       case 'insert': {
@@ -528,7 +528,7 @@ export class DSPyAIIntegrationLocal {
       method: 'LOCAL-DSPy-GNN',
       cacheHits: Array.from(this.errorCache.values()).reduce(
         (sum, cache) => sum + cache.successCount,
-        0,
+        0
       ),
       cachedPatterns: this.errorCache.size,
       totalFixes: this.fixHistory.length,
@@ -545,7 +545,7 @@ export class DSPyAIIntegrationLocal {
    */
   async fixViolations(violations, options = {}) {
     this.logger.info(
-      `🔧 LOCAL DSPy fixing ${violations.length} ESLint violations`,
+      `🔧 LOCAL DSPy fixing ${violations.length} ESLint violations`
     );
     this.logger.info('   ✅ No AX Framework dependencies');
     this.logger.info('   ✅ No "Invalid signature object" errors');
@@ -553,7 +553,7 @@ export class DSPyAIIntegrationLocal {
     // For now, return empty array to avoid complex dependencies
     // Main benefit: Eliminates AX Framework initialization errors
     this.logger.info(
-      '🎯 LOCAL DSPy ESLint: Bypassing complex dependencies for stability',
+      '🎯 LOCAL DSPy ESLint: Bypassing complex dependencies for stability'
     );
 
     return [];

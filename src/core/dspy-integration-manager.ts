@@ -311,7 +311,7 @@ export class DSPyIntegrationManager {
     this.coreOperations = new DSPyEnhancedOperations(this.dspyWrapper);
 
     // Initialize swarm intelligence system
-    const swarmConfig: any = {
+    const swarmConfig: unknown = {
       enableContinuousLearning: false, // Managed by unified learning
     };
     if (this.config.model !== undefined) swarmConfig.model = this.config.model;
@@ -331,7 +331,7 @@ export class DSPyIntegrationManager {
    * @param taskType
    * @param context
    */
-  async analyzeCode(code: string, taskType: string = 'general', context?: any) {
+  async analyzeCode(code: string, taskType: string = 'general', context?: unknown) {
     const startTime = Date.now();
 
     try {
@@ -348,14 +348,14 @@ export class DSPyIntegrationManager {
         result,
         true,
         result?.confidence,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       return {
         ...result,
         enhancedInsights: await this.getEnhancedInsights(
           'code_analysis',
-          result,
+          result
         ),
       };
     } catch (error) {
@@ -366,7 +366,7 @@ export class DSPyIntegrationManager {
         null,
         false,
         0,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
       throw error;
     }
@@ -382,7 +382,7 @@ export class DSPyIntegrationManager {
   async generateCode(
     requirements: string,
     context: string,
-    styleGuide?: string,
+    styleGuide?: string
   ) {
     const startTime = Date.now();
 
@@ -390,7 +390,7 @@ export class DSPyIntegrationManager {
       const result = await this.coreOperations.generateCode(
         requirements,
         context,
-        styleGuide,
+        styleGuide
       );
 
       this.recordUnifiedLearning(
@@ -404,7 +404,7 @@ export class DSPyIntegrationManager {
         result,
         true,
         0.85,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       return {
@@ -412,7 +412,7 @@ export class DSPyIntegrationManager {
         qualityScore: await this.assessCodeQuality(result?.code),
         integrationRecommendations: await this.getIntegrationRecommendations(
           result?.code,
-          context,
+          context
         ),
       };
     } catch (error) {
@@ -423,7 +423,7 @@ export class DSPyIntegrationManager {
         null,
         false,
         0,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
       throw error;
     }
@@ -439,7 +439,7 @@ export class DSPyIntegrationManager {
   async diagnoseError(
     errorMessage: string,
     codeContext: string,
-    filePath: string,
+    filePath: string
   ) {
     const startTime = Date.now();
 
@@ -447,7 +447,7 @@ export class DSPyIntegrationManager {
       const result = await this.coreOperations.diagnoseError(
         errorMessage,
         codeContext,
-        filePath,
+        filePath
       );
 
       this.recordUnifiedLearning(
@@ -461,7 +461,7 @@ export class DSPyIntegrationManager {
         result,
         true,
         result?.confidence,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       return {
@@ -477,7 +477,7 @@ export class DSPyIntegrationManager {
         null,
         false,
         0,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
       throw error;
     }
@@ -489,13 +489,13 @@ export class DSPyIntegrationManager {
    * @param taskRequirements
    * @param availableAgents
    */
-  async selectOptimalAgents(taskRequirements: any, availableAgents: unknown[]) {
+  async selectOptimalAgents(taskRequirements: unknown, availableAgents: unknown[]) {
     const startTime = Date.now();
 
     try {
       const result = await this.swarmIntelligence.selectOptimalAgents(
         taskRequirements,
-        availableAgents,
+        availableAgents
       );
 
       this.recordUnifiedLearning(
@@ -508,14 +508,14 @@ export class DSPyIntegrationManager {
         result,
         true,
         result?.confidence,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       return {
         ...result,
         performancePrediction: await this.predictAgentPerformance(
           result?.selectedAgents,
-          taskRequirements,
+          taskRequirements
         ),
         riskAssessment: await this.assessSelectionRisk(result),
       };
@@ -527,7 +527,7 @@ export class DSPyIntegrationManager {
         null,
         false,
         0,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
       throw error;
     }
@@ -543,9 +543,9 @@ export class DSPyIntegrationManager {
    */
   async optimizeTopology(
     currentTopology: string,
-    taskLoad: any,
+    taskLoad: unknown,
     agentPerformance: unknown[],
-    communicationPatterns: any,
+    communicationPatterns: unknown
   ) {
     const startTime = Date.now();
 
@@ -554,7 +554,7 @@ export class DSPyIntegrationManager {
         currentTopology,
         taskLoad,
         agentPerformance,
-        communicationPatterns,
+        communicationPatterns
       );
 
       this.recordUnifiedLearning(
@@ -568,18 +568,18 @@ export class DSPyIntegrationManager {
         result,
         true,
         0.8,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       return {
         ...result,
         migrationPlan: await this.generateMigrationPlan(
           currentTopology,
-          result?.optimalTopology,
+          result?.optimalTopology
         ),
         rollbackStrategy: await this.generateRollbackStrategy(
           currentTopology,
-          result,
+          result
         ),
       };
     } catch (error) {
@@ -590,7 +590,7 @@ export class DSPyIntegrationManager {
         null,
         false,
         0,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
       throw error;
     }
@@ -603,7 +603,7 @@ export class DSPyIntegrationManager {
    * @param parameters
    * @param context
    */
-  async executeMCPTool(toolName: string, parameters: any, context?: any) {
+  async executeMCPTool(toolName: string, parameters: unknown, context?: unknown) {
     const startTime = Date.now();
 
     try {
@@ -637,14 +637,14 @@ export class DSPyIntegrationManager {
         result,
         result?.success,
         result?.confidence || 0.7,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
 
       return {
         ...result,
         crossSystemInsights: await this.getCrossSystemInsights(
           toolName,
-          result,
+          result
         ),
         optimizationSuggestions: await this.getOptimizationSuggestions(result),
       };
@@ -656,7 +656,7 @@ export class DSPyIntegrationManager {
         null,
         false,
         0,
-        Date.now() - startTime,
+        Date.now() - startTime
       );
       throw error;
     }
@@ -674,16 +674,16 @@ export class DSPyIntegrationManager {
   updateOperationOutcome(
     system: 'core' | 'swarm' | 'mcp',
     operation: string,
-    parameters: any,
+    parameters: unknown,
     success: boolean,
-    actualResult?: any,
+    actualResult?: unknown
   ) {
     const entry = this.unifiedLearningHistory.find(
       (e) =>
         e.system === system &&
         e.operation === operation &&
         JSON.stringify(e.input) === JSON.stringify(parameters) &&
-        Date.now() - e.timestamp.getTime() < 300000, // Within last 5 minutes
+        Date.now() - e.timestamp.getTime() < 300000 // Within last 5 minutes
     );
 
     if (entry) {
@@ -693,7 +693,7 @@ export class DSPyIntegrationManager {
       }
 
       logger.debug(
-        `Updated operation outcome: ${system}.${operation} -> ${success ? 'success' : 'failure'}`,
+        `Updated operation outcome: ${system}.${operation} -> ${success ? 'success' : 'failure'}`
       );
 
       // Update specific system outcomes
@@ -705,7 +705,7 @@ export class DSPyIntegrationManager {
           this.swarmIntelligence.updateDecisionOutcome(
             entry.output.decision_id || operation,
             success,
-            actualResult,
+            actualResult
           );
           break;
         case 'mcp':
@@ -713,7 +713,7 @@ export class DSPyIntegrationManager {
             operation,
             parameters,
             success,
-            actualResult,
+            actualResult
           );
           break;
       }
@@ -729,7 +729,7 @@ export class DSPyIntegrationManager {
     const mcpStats = this.mcpTools.getToolStats();
 
     const recentHistory = this.unifiedLearningHistory.filter(
-      (e) => Date.now() - e.timestamp.getTime() < 3600000, // Last hour
+      (e) => Date.now() - e.timestamp.getTime() < 3600000 // Last hour
     );
 
     const overallSuccessRate =
@@ -740,7 +740,7 @@ export class DSPyIntegrationManager {
     const learningVelocity = this.calculateLearningVelocity();
     const systemHealth = this.assessSystemHealth(
       overallSuccessRate,
-      learningVelocity,
+      learningVelocity
     );
 
     return {
@@ -818,11 +818,11 @@ export class DSPyIntegrationManager {
   private recordUnifiedLearning(
     system: 'core' | 'swarm' | 'mcp',
     operation: string,
-    input: any,
-    output: any,
+    input: unknown,
+    output: unknown,
     success: boolean,
     confidence: number,
-    executionTime: number,
+    executionTime: number
   ) {
     this.unifiedLearningHistory.push({
       system,
@@ -837,7 +837,7 @@ export class DSPyIntegrationManager {
     // Maintain history size limit
     if (this.unifiedLearningHistory.length > this.config.maxHistorySize!) {
       this.unifiedLearningHistory = this.unifiedLearningHistory.slice(
-        -this.config.maxHistorySize!,
+        -this.config.maxHistorySize!
       );
     }
   }
@@ -852,7 +852,7 @@ export class DSPyIntegrationManager {
 
   private async performUnifiedLearning() {
     const recentHistory = this.unifiedLearningHistory.filter(
-      (e) => Date.now() - e.timestamp.getTime() < this.config.learningInterval!,
+      (e) => Date.now() - e.timestamp.getTime() < this.config.learningInterval!
     );
 
     if (recentHistory.length < 10) return; // Need minimum examples
@@ -899,11 +899,11 @@ export class DSPyIntegrationManager {
       // Apply statistical filtering to ensure pattern significance
       const validatedPatterns = this.validatePatternSignificance(
         patterns,
-        history.length,
+        history.length
       );
 
       logger.debug(
-        `Detected ${patterns.length} raw patterns, ${validatedPatterns.length} validated`,
+        `Detected ${patterns.length} raw patterns, ${validatedPatterns.length} validated`
       );
 
       return validatedPatterns;
@@ -925,7 +925,7 @@ export class DSPyIntegrationManager {
         e.success &&
         i < history.length - 1 &&
         history[i + 1]?.system === 'core' &&
-        history[i + 1]?.operation === 'error_diagnosis',
+        history[i + 1]?.operation === 'error_diagnosis'
     );
 
     if (codeGenErrors.length > 2) {
@@ -936,7 +936,7 @@ export class DSPyIntegrationManager {
         frequency: codeGenErrors.length,
         confidence: this.calculatePatternConfidence(
           codeGenErrors.length,
-          history.length,
+          history.length
         ),
         systems: ['core'],
         metrics: {
@@ -954,7 +954,7 @@ export class DSPyIntegrationManager {
     const compilationFailures = this.findSequentialFailures(
       history,
       'compilation_error',
-      3,
+      3
     );
     if (compilationFailures.length > 0) {
       patterns.push({
@@ -964,7 +964,7 @@ export class DSPyIntegrationManager {
         frequency: compilationFailures.length,
         confidence: this.calculatePatternConfidence(
           compilationFailures.length,
-          history.length,
+          history.length
         ),
         systems: ['core'],
         metrics: {
@@ -986,7 +986,7 @@ export class DSPyIntegrationManager {
       (e, _i) =>
         e.system === 'swarm' &&
         e.operation === 'agent_selection' &&
-        e.confidence < 0.6,
+        e.confidence < 0.6
     );
 
     if (poorAgentSelection.length > 2) {
@@ -1023,14 +1023,14 @@ export class DSPyIntegrationManager {
 
   private async getEnhancedInsights(
     operation: string,
-    result: unknown,
+    result: unknown
   ): Promise<string[]> {
     // Cross-system insights based on historical patterns
     const insights: string[] = [];
 
     if (operation === 'code_analysis' && result?.complexity > 70) {
       insights.push(
-        'High complexity detected - consider refactoring recommendations',
+        'High complexity detected - consider refactoring recommendations'
       );
     }
 
@@ -1067,7 +1067,7 @@ export class DSPyIntegrationManager {
       const overallScore = Object.entries(scores).reduce(
         (acc, [dimension, score]) =>
           acc + score * weights[dimension as keyof typeof weights],
-        0,
+        0
       );
 
       // Log detailed quality assessment for audit purposes
@@ -1089,11 +1089,11 @@ export class DSPyIntegrationManager {
     }
   }
 
-  private calculateCodeMetrics(code: string): any {
+  private calculateCodeMetrics(code: string): unknown {
     const lines = code.split('\n');
     const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
     const codeLines = nonEmptyLines.filter(
-      (line) => !(line.trim().startsWith('//') || line.trim().startsWith('/*')),
+      (line) => !(line.trim().startsWith('//') || line.trim().startsWith('/*'))
     );
 
     return {
@@ -1276,7 +1276,7 @@ export class DSPyIntegrationManager {
 
   private async getIntegrationRecommendations(
     code: string,
-    context: string,
+    context: string
   ): Promise<string[]> {
     const recommendations: string[] = [];
 
@@ -1299,7 +1299,7 @@ export class DSPyIntegrationManager {
           e.operation === 'error_diagnosis' &&
           e.success &&
           e.input.errorMessage &&
-          this.calculateSimilarity(e.input.errorMessage, errorMessage) > 0.7,
+          this.calculateSimilarity(e.input.errorMessage, errorMessage) > 0.7
       )
       .map((e) => e.input.errorMessage)
       .slice(0, 3);
@@ -1323,7 +1323,7 @@ export class DSPyIntegrationManager {
 
   private async predictAgentPerformance(
     _selectedAgents: string[],
-    _taskRequirements: any,
+    _taskRequirements: unknown
   ): Promise<unknown> {
     return {
       estimatedSuccessRate: 0.85,
@@ -1341,7 +1341,7 @@ export class DSPyIntegrationManager {
 
   private async generateMigrationPlan(
     currentTopology: string,
-    optimalTopology: string,
+    optimalTopology: string
   ): Promise<string[]> {
     if (currentTopology === optimalTopology) {
       return ['No migration needed'];
@@ -1357,7 +1357,7 @@ export class DSPyIntegrationManager {
 
   private async generateRollbackStrategy(
     _currentTopology: string,
-    _result: unknown,
+    _result: unknown
   ): Promise<string[]> {
     return [
       'Save current configuration',
@@ -1368,13 +1368,13 @@ export class DSPyIntegrationManager {
 
   private async getCrossSystemInsights(
     toolName: string,
-    _result: unknown,
+    _result: unknown
   ): Promise<string[]> {
     const insights: string[] = [];
 
     // Look for patterns across systems
     const recentCore = this.unifiedLearningHistory.filter(
-      (e) => e.system === 'core' && Date.now() - e.timestamp.getTime() < 600000,
+      (e) => e.system === 'core' && Date.now() - e.timestamp.getTime() < 600000
     );
 
     if (
@@ -1403,7 +1403,7 @@ export class DSPyIntegrationManager {
 
   private calculateLearningVelocity(): number {
     const recent = this.unifiedLearningHistory.filter(
-      (e) => Date.now() - e.timestamp.getTime() < 3600000,
+      (e) => Date.now() - e.timestamp.getTime() < 3600000
     );
 
     return recent.length; // Simple metric - decisions per hour
@@ -1411,7 +1411,7 @@ export class DSPyIntegrationManager {
 
   private assessSystemHealth(
     successRate: number,
-    learningVelocity: number,
+    learningVelocity: number
   ): 'excellent' | 'good' | 'fair' | 'poor' {
     if (successRate > 0.9 && learningVelocity > 20) return 'excellent';
     if (successRate > 0.8 && learningVelocity > 10) return 'good';
@@ -1428,7 +1428,7 @@ export class DSPyIntegrationManager {
 
     if (stats.unified.learningVelocity < 10) {
       recommendations.push(
-        'Increase system usage to improve learning velocity',
+        'Increase system usage to improve learning velocity'
       );
     }
 
@@ -1454,7 +1454,7 @@ export class DSPyIntegrationManager {
 
   private calculatePatternConfidence(
     frequency: number,
-    totalSamples: number,
+    totalSamples: number
   ): number {
     // Statistical confidence based on frequency and sample size
     if (totalSamples < 5) return 0.3; // Low confidence with small sample size
@@ -1482,7 +1482,7 @@ export class DSPyIntegrationManager {
   private findSequentialFailures(
     history: unknown[],
     errorType: string,
-    minCount: number,
+    minCount: number
   ): unknown[] {
     const failures = [];
     let consecutiveCount = 0;
@@ -1511,7 +1511,7 @@ export class DSPyIntegrationManager {
 
     if (memoryEvents.length > 5) {
       const highMemoryUsage = memoryEvents.filter(
-        (e) => e.metrics.memory_usage > 80,
+        (e) => e.metrics.memory_usage > 80
       ).length;
       if (highMemoryUsage > memoryEvents.length * 0.3) {
         patterns.push({
@@ -1520,12 +1520,12 @@ export class DSPyIntegrationManager {
           frequency: highMemoryUsage,
           confidence: this.calculatePatternConfidence(
             highMemoryUsage,
-            memoryEvents.length,
+            memoryEvents.length
           ),
           systems: ['system'],
           metrics: {
             peak_usage: Math.max(
-              ...memoryEvents.map((e) => e.metrics.memory_usage),
+              ...memoryEvents.map((e) => e.metrics.memory_usage)
             ),
             avg_usage:
               memoryEvents.reduce((a, e) => a + e.metrics.memory_usage, 0) /
@@ -1558,7 +1558,7 @@ export class DSPyIntegrationManager {
             frequency: recoveryTimes.length,
             confidence: this.calculatePatternConfidence(
               recoveryTimes.length,
-              errorEvents.length,
+              errorEvents.length
             ),
             systems: ['error_handling'],
             metrics: {
@@ -1583,7 +1583,7 @@ export class DSPyIntegrationManager {
         durations.reduce((a, b) => a + b, 0) / durations.length;
 
       const slowOperations = durations.filter(
-        (d) => d > avgDuration * 2,
+        (d) => d > avgDuration * 2
       ).length;
       if (slowOperations > performanceEvents.length * 0.2) {
         patterns.push({
@@ -1592,7 +1592,7 @@ export class DSPyIntegrationManager {
           frequency: slowOperations,
           confidence: this.calculatePatternConfidence(
             slowOperations,
-            performanceEvents.length,
+            performanceEvents.length
           ),
           systems: ['performance'],
           metrics: {
@@ -1622,7 +1622,7 @@ export class DSPyIntegrationManager {
       });
 
       const failedWorkflows = Array.from(workflows.values()).filter((events) =>
-        events.some((e) => !e.success),
+        events.some((e) => !e.success)
       ).length;
 
       if (failedWorkflows > workflows.size * 0.3) {
@@ -1632,7 +1632,7 @@ export class DSPyIntegrationManager {
           frequency: failedWorkflows,
           confidence: this.calculatePatternConfidence(
             failedWorkflows,
-            workflows.size,
+            workflows.size
           ),
           systems: ['workflow'],
           metrics: {
@@ -1649,7 +1649,7 @@ export class DSPyIntegrationManager {
 
   private validatePatternSignificance(
     patterns: unknown[],
-    sampleSize: number,
+    sampleSize: number
   ): unknown[] {
     return patterns.filter((pattern) => {
       // Require minimum frequency for significance

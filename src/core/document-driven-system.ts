@@ -124,7 +124,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   async processVisionaryDocument(
     workspaceId: string,
-    docPath: string,
+    docPath: string
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId);
     if (!context) throw new Error(`Workspace ${workspaceId} not found`);
@@ -181,7 +181,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processVisionDocument(
     workspaceId: string,
-    doc: VisionaryDocument,
+    doc: VisionaryDocument
   ): Promise<void> {
     logger.info('🔮 Processing Vision document');
 
@@ -202,7 +202,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processADR(
     workspaceId: string,
-    doc: VisionaryDocument,
+    doc: VisionaryDocument
   ): Promise<void> {
     logger.info('📐 Processing ADR document');
 
@@ -221,7 +221,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processPRD(
     workspaceId: string,
-    doc: VisionaryDocument,
+    doc: VisionaryDocument
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
@@ -245,7 +245,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processEpic(
     workspaceId: string,
-    doc: VisionaryDocument,
+    doc: VisionaryDocument
   ): Promise<void> {
     logger.info('🏔️ Processing Epic document');
 
@@ -264,7 +264,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processFeature(
     workspaceId: string,
-    doc: VisionaryDocument,
+    doc: VisionaryDocument
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
@@ -288,7 +288,7 @@ export class DocumentDrivenSystem extends EventEmitter {
    */
   private async processTask(
     workspaceId: string,
-    doc: VisionaryDocument,
+    doc: VisionaryDocument
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
@@ -368,9 +368,9 @@ export class DocumentDrivenSystem extends EventEmitter {
    *
    * @param content
    */
-  private async extractMetadata(content: string): Promise<any> {
+  private async extractMetadata(content: string): Promise<unknown> {
     // Parse frontmatter or other metadata
-    const metadata: any = {};
+    const metadata: unknown = {};
 
     // Simple extraction - would be more sophisticated
     const lines = content.split('\n');
@@ -412,17 +412,17 @@ export class DocumentDrivenSystem extends EventEmitter {
     this.on('document:deleted', this.handleDocumentDeleted.bind(this));
   }
 
-  private async handleDocumentCreated(event: any): Promise<void> {
+  private async handleDocumentCreated(event: unknown): Promise<void> {
     logger.debug(`Document created: ${event.path}`);
     await this.processVisionaryDocument(event.workspaceId, event.path);
   }
 
-  private async handleDocumentUpdated(event: any): Promise<void> {
+  private async handleDocumentUpdated(event: unknown): Promise<void> {
     logger.debug(`Document updated: ${event.path}`);
     await this.processVisionaryDocument(event.workspaceId, event.path);
   }
 
-  private async handleDocumentDeleted(event: any): Promise<void> {
+  private async handleDocumentDeleted(event: unknown): Promise<void> {
     logger.debug(`Document deleted: ${event.path}`);
     const context = this.workspaces.get(event.workspaceId);
     if (context) {

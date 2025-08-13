@@ -7,7 +7,7 @@
 
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import React from 'react';
+import type React from 'react';
 import { useState } from 'react';
 import {
   Header,
@@ -211,14 +211,8 @@ export const Help: React.FC<HelpProps> = ({ swarmStatus, onBack, onExit }) => {
     if (!topic) return null;
 
     return (
-      <Box
-        flexDirection="column"
-        marginBottom={2}
-      >
-        <Text
-          bold
-          color="cyan"
-        >
+      <Box flexDirection="column" marginBottom={2}>
+        <Text bold color="cyan">
           {topic.title}
         </Text>
         <Box marginBottom={1} />
@@ -231,30 +225,17 @@ export const Help: React.FC<HelpProps> = ({ swarmStatus, onBack, onExit }) => {
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       <Header
         title="Help & Documentation"
         swarmStatus={swarmStatus}
         showBorder={true}
       />
 
-      <Box
-        flexGrow={1}
-        paddingX={2}
-      >
-        <Box
-          flexDirection="row"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2}>
+        <Box flexDirection="row" width="100%">
           {/* Left column - Menu */}
-          <Box
-            flexDirection="column"
-            width="40%"
-            paddingRight={2}
-          >
+          <Box flexDirection="column" width="40%" paddingRight={2}>
             <Text bold>Select a help topic:</Text>
             <Box marginBottom={1} />
 

@@ -124,14 +124,14 @@ describe('Neural Network WASM Integration', () => {
         network,
         trainingData,
         0.01,
-        500,
+        500
       );
       expect(result.converged).toBe(true);
       expect(result.finalError).toBeLessThan(0.01);
 
       // Test predictions
       const predictions = await Promise.all(
-        trainingData.inputs.map((input) => network.run(input)),
+        trainingData.inputs.map((input) => network.run(input))
       );
 
       // Check XOR logic
@@ -294,7 +294,7 @@ describe('Neural Network WASM Integration', () => {
 
       const result = await manager.fineTuneDuringExecution(
         agentId,
-        experienceData,
+        experienceData
       );
       expect(result).toBeDefined();
       expect(result.adapted).toBe(true);
@@ -327,7 +327,7 @@ describe('Neural Network WASM Integration', () => {
       // Test inference on all agents
       const testInput = Array(10).fill(0.5);
       const inferencePromises = agentIds.map((id) =>
-        manager.getAgentInference(id, testInput),
+        manager.getAgentInference(id, testInput)
       );
 
       const results = await Promise.all(inferencePromises);

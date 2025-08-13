@@ -52,21 +52,21 @@ interface WebApiContract {
 
 interface McpServerContract {
   initialize(options: { stdio: boolean }): Promise<void>;
-  handleStdioMessage(message: unknown): Promise<any>;
-  sendResponse(id: string, result: any): Promise<void>;
+  handleStdioMessage(message: unknown): Promise<unknown>;
+  sendResponse(id: string, result: unknown): Promise<void>;
   registerTool(name: string, handler: Function): void;
 }
 
 interface WebSocketContract {
   createServer(port: number): Promise<void>;
-  broadcast(event: string, data: any): void;
+  broadcast(event: string, data: unknown): void;
   onConnection(handler: Function): void;
   onMessage(handler: Function): void;
 }
 
 interface IntegrationContract {
-  bridgeWebToMcp(request: any): Promise<any>;
-  bridgeMcpToWeb(mcpResponse: any): Promise<any>;
+  bridgeWebToMcp(request: unknown): Promise<unknown>;
+  bridgeMcpToWeb(mcpResponse: unknown): Promise<unknown>;
   coordinateComponents(): Promise<void>;
 }
 
@@ -87,9 +87,9 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         mockWebApiServer.registerRoute(
           'POST',
           '/api/task',
-          async (req: any) => {
+          async (req: unknown) => {
             return await mockIntegrationLayer.bridgeWebToMcp(req.body);
-          },
+          }
         );
 
         // Assert - Verify contract interactions
@@ -97,7 +97,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         expect(mockWebApiServer.registerRoute).toHaveBeenCalledWith(
           'POST',
           '/api/task',
-          expect.any(Function),
+          expect.any(Function)
         );
       });
     });
@@ -130,7 +130,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         // Assert - Verify MCP contract compliance
         expect(mockMcpServer.initialize).toHaveBeenCalledWith({ stdio: true });
         expect(mockMcpServer.handleStdioMessage).toHaveBeenCalledWith(
-          mockStdioMessage,
+          mockStdioMessage
         );
         expect(response).toEqual({
           jsonrpc: '2.0',
@@ -148,7 +148,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
 
         mockWebSocketManager.createServer.mockResolvedValue(undefined);
         mockWebSocketManager.onConnection.mockImplementation(
-          mockConnectionHandler,
+          mockConnectionHandler
         );
         mockWebSocketManager.broadcast.mockImplementation(() => {});
 
@@ -160,13 +160,13 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         // Assert - Verify WebSocket interactions
         expect(mockWebSocketManager.createServer).toHaveBeenCalledWith(4000);
         expect(mockWebSocketManager.onConnection).toHaveBeenCalledWith(
-          mockConnectionHandler,
+          mockConnectionHandler
         );
         expect(mockWebSocketManager.broadcast).toHaveBeenCalledWith(
           'task-update',
           {
             status: 'completed',
-          },
+          }
         );
       });
     });
@@ -189,7 +189,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
         // Assert - Verify contract compliance
         expect(mockIntegrationLayer.coordinateComponents).toHaveBeenCalled();
         expect(mockIntegrationLayer.bridgeWebToMcp).toHaveBeenCalledWith(
-          webRequest,
+          webRequest
         );
         expect(result).toEqual(mcpResponse);
       });
@@ -201,7 +201,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
 
         // Act & Assert - Verify error handling contract
         await expect(
-          mockIntegrationLayer.bridgeWebToMcp({ invalid: 'data' }),
+          mockIntegrationLayer.bridgeWebToMcp({ invalid: 'data' })
         ).rejects.toThrow('MCP processing failed');
       });
     });
@@ -243,7 +243,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
 
       // System under test that coordinates with collaborators
       const systemUnderTest = {
-        execute: (data: any) => {
+        execute: (data: unknown) => {
           if (mockCollaborator.validate(data)) {
             return mockCollaborator.process(data);
           }
@@ -273,7 +273,7 @@ describe('TDD London School Swarm - Claude-Zen Web/MCP Development', () => {
 
       // This test drives the design of how components should interact
       const eventDrivenSystem = {
-        handleTask: async (task: any) => {
+        handleTask: async (task: unknown) => {
           mockEventBus.publish('task-started', task);
           const result = await mockTaskProcessor.process(task);
           mockEventBus.publish('task-completed', result);

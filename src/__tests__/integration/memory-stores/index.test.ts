@@ -325,7 +325,7 @@ describe('Memory Stores Integration Test Suite', () => {
       expect(qualityMetrics.testDistribution.londonTests).toBeGreaterThan(0);
       expect(qualityMetrics.testDistribution.classicalTests).toBeGreaterThan(0);
       expect(qualityMetrics.qualityIndicators.mockUsage).toContain(
-        'External dependencies only',
+        'External dependencies only'
       );
     });
   });

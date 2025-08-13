@@ -71,7 +71,7 @@ class PerformanceBenchmarks {
    */
   async runFullBenchmarkSuite() {
     const suiteStartTime = performance.now();
-    const results: any = {
+    const results: unknown = {
       timestamp: new Date().toISOString(),
       environment: this.getEnvironmentInfo(),
       benchmarks: {},
@@ -95,7 +95,7 @@ class PerformanceBenchmarks {
 
       // Calculate overall performance score
       results.performanceScore = this.calculateOverallScore(
-        results?.benchmarks,
+        results?.benchmarks
       );
 
       this.results.set('full_suite', results);
@@ -128,7 +128,7 @@ class PerformanceBenchmarks {
       'relu_activation',
     ];
 
-    const results: any = {
+    const results: unknown = {
       supported: true,
       capabilities: JSON.parse(coreModule.exports.detect_simd_capabilities()),
       operations: {},
@@ -154,7 +154,7 @@ class PerformanceBenchmarks {
 
         try {
           const performanceReport = JSON.parse(
-            coreModule.exports.simd_performance_report(size, iterCount),
+            coreModule.exports.simd_performance_report(size, iterCount)
           );
 
           const speedup =
@@ -178,7 +178,7 @@ class PerformanceBenchmarks {
         } catch (error) {
           logger.warn(
             `Failed to benchmark ${operation} with size ${size}:`,
-            error,
+            error
           );
           if (results.operations[operation]) {
             results.operations[operation].sizes[size] = {
@@ -204,7 +204,7 @@ class PerformanceBenchmarks {
       speedups.reduce((acc, s) => acc + s, 0) / speedups.length;
     results.performanceScore = Math.min(
       100,
-      (results?.averageSpeedup - 1.0) * 25,
+      (results?.averageSpeedup - 1.0) * 25
     ); // Max score at 5x speedup
 
     return results;
@@ -214,7 +214,7 @@ class PerformanceBenchmarks {
    * Benchmark WASM loading performance.
    */
   async benchmarkWASMLoading() {
-    const results: any = {
+    const results: unknown = {
       strategies: {},
       moduleStats: {},
       recommendations: [],
@@ -261,13 +261,13 @@ class PerformanceBenchmarks {
 
     if (progressiveTime < eagerTime * 0.8) {
       results?.recommendations.push(
-        'Progressive loading provides best performance',
+        'Progressive loading provides best performance'
       );
     } else if (eagerTime < progressiveTime * 0.8) {
       results?.recommendations.push('Eager loading provides best performance');
     } else {
       results?.recommendations.push(
-        'Loading strategies have similar performance',
+        'Loading strategies have similar performance'
       );
     }
 
@@ -280,7 +280,7 @@ class PerformanceBenchmarks {
    * Benchmark memory management performance.
    */
   async benchmarkMemoryManagement() {
-    const results: any = {
+    const results: unknown = {
       allocation: {},
       garbageCollection: {},
       fragmentation: {},
@@ -355,7 +355,7 @@ class PerformanceBenchmarks {
       const avgAllocationTime =
         (Object.values(results?.allocation).reduce(
           (acc: unknown, a: unknown) => acc + a.avgTimePerAllocation,
-          0,
+          0
         ) as number) / Object.keys(results?.allocation).length;
 
       results.performanceScore = Math.max(0, 100 - avgAllocationTime); // Good if under 1ms average
@@ -371,7 +371,7 @@ class PerformanceBenchmarks {
    * Benchmark neural network performance.
    */
   async benchmarkNeuralNetworks() {
-    const results: any = {
+    const results: unknown = {
       networkSizes: {},
       activationFunctions: {},
       simdComparison: {},
@@ -402,7 +402,7 @@ class PerformanceBenchmarks {
         // Create test network (simulated) - ensure layers[0] is defined with fallback
         const inputSize = config?.layers?.[0] ?? 32; // Default to 32 if undefined
         const testInput = Array.from({ length: inputSize }, () =>
-          Math.random(),
+          Math.random()
         );
 
         // Run multiple inferences
@@ -410,7 +410,7 @@ class PerformanceBenchmarks {
           // Simulate neural network inference
           const _result = this.simulateNeuralInference(
             testInput,
-            config?.layers,
+            config?.layers
           );
         }
 
@@ -431,7 +431,7 @@ class PerformanceBenchmarks {
       const activations = ['relu', 'sigmoid', 'tanh', 'gelu'];
       const testVector = Array.from(
         { length: 1000 },
-        () => Math.random() * 2 - 1,
+        () => Math.random() * 2 - 1
       );
 
       for (const activation of activations) {
@@ -481,7 +481,7 @@ class PerformanceBenchmarks {
    * Benchmark Claude Code Flow coordination.
    */
   async benchmarkClaudeFlowCoordination() {
-    const results: any = {
+    const results: unknown = {
       workflowExecution: {},
       batchingPerformance: {},
       parallelization: {},
@@ -535,7 +535,7 @@ class PerformanceBenchmarks {
       // Simulate parallel execution
       const batchPromises = testWorkflow.steps.map(async (step, _index) => {
         await new Promise((resolve) =>
-          setTimeout(resolve, 10 + Math.random() * 20),
+          setTimeout(resolve, 10 + Math.random() * 20)
         );
         return { stepId: step.id, completed: true };
       });
@@ -584,7 +584,7 @@ class PerformanceBenchmarks {
    * Benchmark parallel execution patterns.
    */
   async benchmarkParallelExecution() {
-    const results: any = {
+    const results: unknown = {
       batchSizes: {},
       taskTypes: {},
       scalability: {},
@@ -600,7 +600,7 @@ class PerformanceBenchmarks {
 
         // Create batch of parallel tasks
         const tasks = Array.from({ length: batchSize }, (_, i) =>
-          this.simulateAsyncTask(10 + Math.random() * 10, `task_${i}`),
+          this.simulateAsyncTask(10 + Math.random() * 10, `task_${i}`)
         );
 
         // Execute in parallel
@@ -627,7 +627,7 @@ class PerformanceBenchmarks {
         const startTime = performance.now();
 
         const tasks = Array.from({ length: batchSize }, (_, i) =>
-          this.simulateAsyncTask(taskType.duration, `${taskType.name}_${i}`),
+          this.simulateAsyncTask(taskType.duration, `${taskType.name}_${i}`)
         );
 
         await Promise.all(tasks);
@@ -650,7 +650,7 @@ class PerformanceBenchmarks {
         const startTime = performance.now();
 
         const tasks = Array.from({ length: size }, () =>
-          this.simulateAsyncTask(20, 'scalability_test'),
+          this.simulateAsyncTask(20, 'scalability_test')
         );
 
         await Promise.all(tasks);
@@ -671,7 +671,7 @@ class PerformanceBenchmarks {
       const avgEfficiency =
         (Object.values(results?.taskTypes).reduce(
           (acc: unknown, t: unknown) => acc + t.efficiency,
-          0,
+          0
         ) as number) / Object.keys(results?.taskTypes).length;
 
       results.performanceScore = Math.min(100, avgEfficiency * 100);
@@ -687,7 +687,7 @@ class PerformanceBenchmarks {
    * Test cross-browser compatibility.
    */
   async benchmarkBrowserCompatibility() {
-    const results: any = {
+    const results: unknown = {
       features: {},
       performance: {},
       compatibility: {},
@@ -722,16 +722,16 @@ class PerformanceBenchmarks {
         isSafari: userAgent.includes('Safari') && !userAgent.includes('Chrome'),
         isEdge: userAgent.includes('Edge'),
         mobile: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          userAgent,
+          userAgent
         ),
       };
 
       // Calculate compatibility score
       const featureCount = Object.values(results?.features).filter(
-        Boolean,
+        Boolean
       ).length;
       const performanceCount = Object.values(results?.performance).filter(
-        Boolean,
+        Boolean
       ).length;
 
       results.performanceScore =

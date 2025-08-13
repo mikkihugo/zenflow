@@ -63,7 +63,7 @@ class MCPTestClient {
         if (this.ws && this.ws.readyState !== WebSocket.OPEN) {
           this.ws.close();
           reject(
-            new Error('Connection timeout - MCP server may not be running'),
+            new Error('Connection timeout - MCP server may not be running')
           );
         }
       }, 5000);
@@ -164,7 +164,7 @@ async function runMCPIntegrationTests() {
       assert(result, 'Initialize should return a result');
       assert(
         result.protocolVersion || result.capabilities,
-        'Should have protocol version or capabilities',
+        'Should have protocol version or capabilities'
       );
 
       if (result.serverInfo) {
@@ -178,7 +178,7 @@ async function runMCPIntegrationTests() {
       assert(result, 'Tools list should return a result');
       assert(
         result.tools || result.available_tools,
-        'Should have tools or available_tools',
+        'Should have tools or available_tools'
       );
 
       const tools = result.tools || result.available_tools || [];
@@ -442,7 +442,7 @@ async function runMCPIntegrationTests() {
               ][i],
               name: `concurrent-agent-${i}`,
             },
-          }),
+          })
         );
       }
 
@@ -527,7 +527,7 @@ async function runMCPIntegrationTests() {
               agent_type: 'researcher',
               name: `perf-test-agent-${i}`,
             },
-          }),
+          })
         );
       }
 

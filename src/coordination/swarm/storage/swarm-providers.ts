@@ -75,7 +75,7 @@ export function registerSwarmProviders(
     swarm: Partial<SwarmDatabaseConfig>;
     maintenance: Partial<MaintenanceConfig>;
     backup: Partial<BackupConfig>;
-  }>,
+  }>
 ): void {
   // Register swarm configuration
   container.register(SWARM_TOKENS.Config, {
@@ -89,9 +89,9 @@ export function registerSwarmProviders(
   // Register storage path for convenience
   container.register(SWARM_TOKENS.StoragePath, {
     type: 'singleton',
-    create: (container: any) => {
+    create: (container: unknown) => {
       const config = container.resolve(
-        SWARM_TOKENS.Config,
+        SWARM_TOKENS.Config
       ) as SwarmDatabaseConfig;
       return (config as any).basePath;
     },
@@ -100,20 +100,20 @@ export function registerSwarmProviders(
   // Register swarm database manager
   container.register(SWARM_TOKENS.DatabaseManager, {
     type: 'singleton',
-    create: (container: any) =>
+    create: (container: unknown) =>
       new SwarmDatabaseManager(
         container.resolve(SWARM_TOKENS.Config) as SwarmDatabaseConfig,
         container.resolve(DATABASE_TOKENS?.DALFactory),
-        container.resolve(CORE_TOKENS.Logger),
+        container.resolve(CORE_TOKENS.Logger)
       ),
   });
 
   // Register maintenance manager
   container.register(SWARM_TOKENS.MaintenanceManager, {
     type: 'singleton',
-    create: (container: any) => {
+    create: (container: unknown) => {
       const config = container.resolve(
-        SWARM_TOKENS.Config,
+        SWARM_TOKENS.Config
       ) as SwarmDatabaseConfig;
       return new SwarmMaintenanceManager(config?.basePath, {
         ...defaultMaintenanceConfig,
@@ -125,9 +125,9 @@ export function registerSwarmProviders(
   // Register backup manager
   container.register(SWARM_TOKENS.BackupManager, {
     type: 'singleton',
-    create: (container: any) => {
+    create: (container: unknown) => {
       const config = container.resolve(
-        SWARM_TOKENS.Config,
+        SWARM_TOKENS.Config
       ) as SwarmDatabaseConfig;
       return new SwarmBackupManager(config?.basePath, {
         ...defaultBackupConfig,
@@ -150,13 +150,13 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
 }> {
   // Resolve all swarm services
   const databaseManager = container.resolve(
-    SWARM_TOKENS.DatabaseManager,
+    SWARM_TOKENS.DatabaseManager
   ) as SwarmDatabaseManager;
   const maintenanceManager = container.resolve(
-    SWARM_TOKENS.MaintenanceManager,
+    SWARM_TOKENS.MaintenanceManager
   ) as SwarmMaintenanceManager;
   const backupManager = container.resolve(
-    SWARM_TOKENS.BackupManager,
+    SWARM_TOKENS.BackupManager
   ) as SwarmBackupManager;
 
   // Initialize in order
@@ -178,7 +178,7 @@ export async function initializeSwarmStorage(container: DIContainer): Promise<{
  * @example
  */
 export function createSwarmContainer(
-  customConfig?: Parameters<typeof registerSwarmProviders>[1],
+  customConfig?: Parameters<typeof registerSwarmProviders>[1]
 ): DIContainer {
   const container = new DIContainer();
 
@@ -196,7 +196,7 @@ export function createSwarmContainer(
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (_key: string, defaultValue?: any) => defaultValue,
+      get: (_key: string, defaultValue?: unknown) => defaultValue,
       set: (_key: string, _value: unknown) => {},
       has: (_key: string) => false,
     }),
@@ -205,7 +205,7 @@ export function createSwarmContainer(
   // Register DAL Factory (would normally come from database domain)
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
-    create: (container: any) => {
+    create: (container: unknown) => {
       const { DALFactory } = require('../../../database/factory.js');
       const {
         DatabaseProviderFactory,
@@ -216,8 +216,8 @@ export function createSwarmContainer(
         container.resolve(CORE_TOKENS.Config),
         new DatabaseProviderFactory(
           container.resolve(CORE_TOKENS.Logger),
-          container.resolve(CORE_TOKENS.Config),
-        ),
+          container.resolve(CORE_TOKENS.Config)
+        )
       );
     },
   });

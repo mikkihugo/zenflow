@@ -17,7 +17,7 @@ async function testWasmDirectly() {
       __dirname,
       '..',
       'wasm',
-      'ruv_swarm_wasm_bg.wasm',
+      'ruv_swarm_wasm_bg.wasm'
     );
 
     // Check if file exists
@@ -42,18 +42,18 @@ async function testWasmDirectly() {
     try {
       const { instance, module } = await WebAssembly.instantiate(
         wasmBuffer,
-        imports,
+        imports
       );
     } catch (instantiateError) {
       console.error(
         '❌ WebAssembly.instantiate failed:',
-        instantiateError.message,
+        instantiateError.message
       );
 
       // Parse the error to find missing imports
       if (instantiateError.message.includes('Import #')) {
         const importMatch = instantiateError.message.match(
-          /Import #(\d+) module="([^"]+)" function="([^"]+)"/,
+          /Import #(\d+) module="([^"]+)" function="([^"]+)"/
         );
         if (importMatch) {
         }
@@ -73,7 +73,7 @@ async function testWasmDirectly() {
       });
 
       for (const [_moduleName, moduleImports] of Object.entries(
-        importsByModule,
+        importsByModule
       )) {
         moduleImports.slice(0, 10).forEach((_imp) => {});
         if (moduleImports.length > 10) {

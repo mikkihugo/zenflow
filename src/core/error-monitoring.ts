@@ -131,7 +131,7 @@ export class ErrorStorage {
     // Clean old trends if necessary
     if (this.trends.size > this.maxTrends) {
       const oldestTrend = Array.from(this.trends.entries()).sort(
-        ([, a], [, b]) => a.lastSeen - b.lastSeen,
+        ([, a], [, b]) => a.lastSeen - b.lastSeen
       )[0];
       if (oldestTrend) {
         this.trends.delete(oldestTrend[0]);
@@ -158,7 +158,7 @@ export class ErrorStorage {
       (r) =>
         r.timestamp >= recentStart &&
         r.category === trend.category &&
-        r.component === trend.component,
+        r.component === trend.component
     );
 
     const recentRate = recentReports.length / 5; // per minute
@@ -173,7 +173,7 @@ export class ErrorStorage {
     category?: string,
     component?: string,
     severity?: string,
-    limit: number = 100,
+    limit: number = 100
   ): ErrorReport[] {
     let reports = Array.from(this.reports.values());
 
@@ -195,14 +195,14 @@ export class ErrorStorage {
 
   public getErrorTrends(): ErrorTrend[] {
     return Array.from(this.trends.values()).sort(
-      (a, b) => b.errorRate - a.errorRate,
+      (a, b) => b.errorRate - a.errorRate
     );
   }
 
   public getComponentMetrics(component: string): ErrorMetrics {
     const reports = this.getErrorReports(undefined, component);
     const trend = Array.from(this.trends.values()).find(
-      (t) => t.component === component,
+      (t) => t.component === component
     );
 
     return {
@@ -212,7 +212,7 @@ export class ErrorStorage {
       averageRecoveryTime: trend?.averageRecoveryTime || 0,
       successfulRecoveries: reports.filter((r) => r.recoverySuccessful).length,
       failedRecoveries: reports.filter(
-        (r) => r.recoveryAttempted && !r.recoverySuccessful,
+        (r) => r.recoveryAttempted && !r.recoverySuccessful
       ).length,
     };
   }
@@ -227,7 +227,7 @@ export interface HealthCheck {
   component: string;
   check: () => Promise<{
     healthy: boolean;
-    details?: any;
+    details?: unknown;
     responseTime?: number;
   }>;
   intervalMs: number;
@@ -283,11 +283,11 @@ export class HealthMonitor {
     try {
       const checkResult = await Promise.race([
         check.check(),
-        new Promise<{ healthy: boolean; details?: any }>((_, reject) =>
+        new Promise<{ healthy: boolean; details?: unknown }>((_, reject) =>
           setTimeout(
             () => reject(new Error('Health check timeout')),
-            check.timeoutMs,
-          ),
+            check.timeoutMs
+          )
         ),
       ]);
 
@@ -395,7 +395,7 @@ export class AlertSystem {
   private lastAlertTime: Map<string, number> = new Map();
   private alertHandlers: ((
     alert: AlertConfig,
-    message: string,
+    message: string
   ) => Promise<void>)[] = [];
 
   public addAlertConfig(config: AlertConfig): void {
@@ -403,14 +403,14 @@ export class AlertSystem {
   }
 
   public addAlertHandler(
-    handler: (alert: AlertConfig, message: string) => Promise<void>,
+    handler: (alert: AlertConfig, message: string) => Promise<void>
   ): void {
     this.alertHandlers.push(handler);
   }
 
   public async checkAlerts(
     metrics: SystemHealthMetrics,
-    trends: ErrorTrend[],
+    trends: ErrorTrend[]
   ): Promise<void> {
     for (const config of this.configs) {
       // Check cooldown
@@ -445,7 +445,7 @@ export class AlertSystem {
   private generateAlertMessage(
     config: AlertConfig,
     metrics: SystemHealthMetrics,
-    _trends: ErrorTrend[],
+    _trends: ErrorTrend[]
   ): string {
     return config?.template
       ?.replace('{{timestamp}}', new Date(metrics.timestamp).toISOString())
@@ -493,10 +493,10 @@ export class ErrorMonitor {
 
           // Analyze health check results
           const failures = healthChecks.filter(
-            (result) => result.status === 'rejected',
+            (result) => result.status === 'rejected'
           );
           const successes = healthChecks.filter(
-            (result) => result.status === 'fulfilled' && result.value.healthy,
+            (result) => result.status === 'fulfilled' && result.value.healthy
           );
 
           const healthy = failures.length === 0 && successes.length >= 3;
@@ -577,10 +577,10 @@ export class ErrorMonitor {
 
           // Analyze health check results
           const failures = healthChecks.filter(
-            (result) => result.status === 'rejected',
+            (result) => result.status === 'rejected'
           );
           const successes = healthChecks.filter(
-            (result) => result.status === 'fulfilled' && result.value.healthy,
+            (result) => result.status === 'fulfilled' && result.value.healthy
           );
 
           const healthy = failures.length === 0 && successes.length >= 4;
@@ -732,7 +732,7 @@ export class ErrorMonitor {
       name: 'error_trending_up',
       condition: (_metrics, trends) => {
         return trends.some(
-          (trend) => trend.trending === 'up' && trend.errorRate > 5,
+          (trend) => trend.trending === 'up' && trend.errorRate > 5
         );
       },
       severity: 'warning',
@@ -775,7 +775,7 @@ export class ErrorMonitor {
     errorId: string,
     attempted: boolean,
     successful: boolean,
-    resolution?: string,
+    resolution?: string
   ): void {
     // In production, this would update the stored error report
     logger.info(`Error recovery update: ${errorId}`, {
@@ -790,7 +790,7 @@ export class ErrorMonitor {
   }
 
   private assessUserImpact(
-    error: Error,
+    error: Error
   ): 'none' | 'minimal' | 'moderate' | 'severe' {
     const severity = getErrorSeverity(error);
     const errorType = error.constructor.name;
@@ -806,7 +806,7 @@ export class ErrorMonitor {
 
   private generateErrorTags(
     error: Error,
-    context: Partial<ErrorContext>,
+    context: Partial<ErrorContext>
   ): string[] {
     const tags: string[] = [];
 
@@ -833,17 +833,17 @@ export class ErrorMonitor {
         undefined,
         undefined,
         undefined,
-        1000,
+        1000
       );
       const recentWindow = 5 * 60 * 1000; // 5 minutes
       const recentErrors = recentReports.filter(
-        (r) => Date.now() - r.timestamp < recentWindow,
+        (r) => Date.now() - r.timestamp < recentWindow
       );
 
       healthMetrics.errorRate = recentErrors.length / 5; // per minute
       healthMetrics.activeErrors = recentErrors.length;
       healthMetrics.criticalErrors = recentErrors.filter(
-        (r) => r.severity === 'critical',
+        (r) => r.severity === 'critical'
       ).length;
 
       // Calculate MTTR and MTBF
@@ -852,7 +852,7 @@ export class ErrorMonitor {
         recoveredErrors.length > 0
           ? recoveredErrors.reduce(
               (sum, r) => sum + (r.timestamp - r.timestamp),
-              0,
+              0
             ) / recoveredErrors.length
           : 0;
 
@@ -880,7 +880,7 @@ export class ErrorMonitor {
   public getErrorReports(
     category?: string,
     component?: string,
-    limit: number = 50,
+    limit: number = 50
   ): ErrorReport[] {
     return this.storage.getErrorReports(category, component, undefined, limit);
   }
@@ -894,7 +894,7 @@ export class ErrorMonitor {
   }
 
   public addAlertHandler(
-    handler: (alert: AlertConfig, message: string) => Promise<void>,
+    handler: (alert: AlertConfig, message: string) => Promise<void>
   ): void {
     this.alertSystem.addAlertHandler(handler);
   }
@@ -904,7 +904,7 @@ export class ErrorMonitor {
   private async checkFactDatabase(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -912,7 +912,7 @@ export class ErrorMonitor {
       // Simulate database connectivity and basic operation check
       // In real implementation, this would check actual FACT database
       const mockDbQuery = new Promise((resolve) =>
-        setTimeout(() => resolve({ rows: [], count: 0 }), Math.random() * 100),
+        setTimeout(() => resolve({ rows: [], count: 0 }), Math.random() * 100)
       );
 
       await mockDbQuery;
@@ -936,7 +936,7 @@ export class ErrorMonitor {
   private async checkFactQueryProcessor(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -967,7 +967,7 @@ export class ErrorMonitor {
   private async checkFactInferenceEngine(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -995,7 +995,7 @@ export class ErrorMonitor {
   private async checkFactMemoryStore(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -1023,7 +1023,7 @@ export class ErrorMonitor {
   private async checkVectorDatabase(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -1052,7 +1052,7 @@ export class ErrorMonitor {
   private async checkEmbeddingService(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -1082,7 +1082,7 @@ export class ErrorMonitor {
   private async checkDocumentIndex(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -1111,7 +1111,7 @@ export class ErrorMonitor {
   private async checkSimilaritySearch(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();
@@ -1143,7 +1143,7 @@ export class ErrorMonitor {
   private async checkRetrieval(): Promise<{
     healthy: boolean;
     responseTime?: number;
-    metadata?: any;
+    metadata?: unknown;
   }> {
     try {
       const startTime = Date.now();

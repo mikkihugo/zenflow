@@ -76,7 +76,7 @@ class IntegrationTestRunner {
     } catch (error) {
       console.error(
         chalk.red.bold('\n❌ Test execution failed:'),
-        error.message,
+        error.message
       );
       process.exit(1);
     }
@@ -125,7 +125,7 @@ class IntegrationTestRunner {
     // Run parallel suites first
     if (parallelSuites.length > 0) {
       const parallelPromises = parallelSuites.map((suite) =>
-        this.runSuite(suite),
+        this.runSuite(suite)
       );
       await Promise.all(parallelPromises);
     }
@@ -256,7 +256,7 @@ class IntegrationTestRunner {
 
     // Critical failures
     const criticalFailures = this.results.suites.filter(
-      (s) => s.critical && s.status !== 'PASSED',
+      (s) => s.critical && s.status !== 'PASSED'
     );
     if (criticalFailures.length > 0) {
       criticalFailures.forEach((_suite) => {});
@@ -279,21 +279,21 @@ class IntegrationTestRunner {
     }
 
     const criticalFailures = this.results.suites.filter(
-      (s) => s.critical && s.status !== 'PASSED',
+      (s) => s.critical && s.status !== 'PASSED'
     ).length;
 
     if (criticalFailures > 0) {
     }
 
     const performanceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Performance') && s.status !== 'PASSED',
+      (s) => s.name.includes('Performance') && s.status !== 'PASSED'
     ).length;
 
     if (performanceFailures > 0) {
     }
 
     const resilienceFailures = this.results.suites.filter(
-      (s) => s.name.includes('Resilience') && s.status !== 'PASSED',
+      (s) => s.name.includes('Resilience') && s.status !== 'PASSED'
     ).length;
 
     if (resilienceFailures > 0) {
@@ -303,7 +303,7 @@ class IntegrationTestRunner {
   saveResults() {
     const resultsPath = path.join(
       __dirname,
-      '../../test-results/integration-results.json',
+      '../../test-results/integration-results.json'
     );
     const resultsDir = path.dirname(resultsPath);
 
@@ -322,7 +322,7 @@ class IntegrationTestRunner {
       fs.writeFileSync(resultsPath, JSON.stringify(fullResults, null, 2));
     } catch (error) {
       console.warn(
-        chalk.yellow(`Warning: Could not save results - ${error.message}`),
+        chalk.yellow(`Warning: Could not save results - ${error.message}`)
       );
     }
   }

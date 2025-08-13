@@ -50,7 +50,7 @@ export class ConfigHealthChecker extends EventEmitter {
    * @param options.healthCheckFrequency
    */
   async initialize(
-    options: { enableMonitoring?: boolean; healthCheckFrequency?: number } = {},
+    options: { enableMonitoring?: boolean; healthCheckFrequency?: number } = {}
   ): Promise<void> {
     const { enableMonitoring = true, healthCheckFrequency = 30000 } = options;
 
@@ -85,11 +85,11 @@ export class ConfigHealthChecker extends EventEmitter {
    */
   async getHealthReport(): Promise<ConfigHealthReport>;
   async getHealthReport(
-    includeDetails: true,
+    includeDetails: true
   ): Promise<ConfigHealthReport & { validationDetails: ValidationResult }>;
   async getHealthReport(includeDetails: false): Promise<ConfigHealthReport>;
   async getHealthReport(
-    includeDetails = false,
+    includeDetails = false
   ): Promise<
     | ConfigHealthReport
     | (ConfigHealthReport & { validationDetails: ValidationResult })
@@ -158,7 +158,7 @@ export class ConfigHealthChecker extends EventEmitter {
 
     if (result?.failsafeApplied.length > 0) {
       recommendations.push(
-        'Failsafe defaults were applied - review configuration',
+        'Failsafe defaults were applied - review configuration'
       );
     }
 
@@ -166,13 +166,13 @@ export class ConfigHealthChecker extends EventEmitter {
     if (this.environment === 'production') {
       if (!process.env['ANTHROPIC_API_KEY']) {
         blockers.push(
-          'ANTHROPIC_API_KEY environment variable required in production',
+          'ANTHROPIC_API_KEY environment variable required in production'
         );
       }
 
       if (configToValidate?.core?.logger?.level === 'debug') {
         recommendations.push(
-          'Consider using "info" log level in production instead of "debug"',
+          'Consider using "info" log level in production instead of "debug"'
         );
       }
     }
@@ -256,10 +256,10 @@ export class ConfigHealthChecker extends EventEmitter {
     if (conflicts.length > 0) {
       recommendations.push('Configure unique ports for each service');
       recommendations.push(
-        'Use environment variables to override default ports',
+        'Use environment variables to override default ports'
       );
       recommendations.push(
-        'Consider using a reverse proxy for port management',
+        'Consider using a reverse proxy for port management'
       );
     }
 
@@ -327,7 +327,7 @@ export class ConfigHealthChecker extends EventEmitter {
    * @param format - Export format.
    */
   async exportHealthReport(
-    format: 'json' | 'prometheus' = 'json',
+    format: 'json' | 'prometheus' = 'json'
   ): Promise<string> {
     const report = await this.getHealthReport(true);
 
@@ -399,42 +399,42 @@ export class ConfigHealthChecker extends EventEmitter {
 
     // Overall health score
     lines.push(
-      '# HELP claude_zen_config_health_score Configuration health score (0-100)',
+      '# HELP claude_zen_config_health_score Configuration health score (0-100)'
     );
     lines.push('# TYPE claude_zen_config_health_score gauge');
     lines.push(
-      `claude_zen_config_health_score{environment="${this.environment}"} ${report.score}`,
+      `claude_zen_config_health_score{environment="${this.environment}"} ${report.score}`
     );
 
     // Health status as numeric (0=critical, 1=warning, 2=healthy)
     const statusValue =
       report.status === 'healthy' ? 2 : report.status === 'warning' ? 1 : 0;
     lines.push(
-      '# HELP claude_zen_config_health_status Configuration health status',
+      '# HELP claude_zen_config_health_status Configuration health status'
     );
     lines.push('# TYPE claude_zen_config_health_status gauge');
     lines.push(
-      `claude_zen_config_health_status{environment="${this.environment}",status="${report.status}"} ${statusValue}`,
+      `claude_zen_config_health_status{environment="${this.environment}",status="${report.status}"} ${statusValue}`
     );
 
     // Component health details
     for (const [component, healthy] of Object.entries(report.details)) {
       lines.push(
-        `# HELP claude_zen_config_${component}_health ${component} configuration health`,
+        `# HELP claude_zen_config_${component}_health ${component} configuration health`
       );
       lines.push(`# TYPE claude_zen_config_${component}_health gauge`);
       lines.push(
-        `claude_zen_config_${component}_health{environment="${this.environment}"} ${healthy ? 1 : 0}`,
+        `claude_zen_config_${component}_health{environment="${this.environment}"} ${healthy ? 1 : 0}`
       );
     }
 
     // Recommendation count
     lines.push(
-      '# HELP claude_zen_config_recommendations_total Number of configuration recommendations',
+      '# HELP claude_zen_config_recommendations_total Number of configuration recommendations'
     );
     lines.push('# TYPE claude_zen_config_recommendations_total gauge');
     lines.push(
-      `claude_zen_config_recommendations_total{environment="${this.environment}"} ${report.recommendations.length}`,
+      `claude_zen_config_recommendations_total{environment="${this.environment}"} ${report.recommendations.length}`
     );
 
     return `${lines.join('\n')}\n`;

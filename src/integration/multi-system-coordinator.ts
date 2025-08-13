@@ -21,7 +21,7 @@ export class MultiSystemCoordinator extends EventEmitter {
 
   constructor(
     @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    private config: any = {},
+    private config: unknown = {},
   ) {
     super();
     this["_logger"]?.info("MultiSystemCoordinator created");
@@ -49,7 +49,7 @@ export class MultiSystemCoordinator extends EventEmitter {
    * @param operation
    * @param data
    */
-  async coordinateOperation(operation: string, data: any): Promise<any> {
+  async coordinateOperation(operation: string, data: unknown): Promise<unknown> {
     if (!this.isInitialized) {
       throw new Error('MultiSystemCoordinator not initialized');
     }
@@ -81,7 +81,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   /**
    * Get coordination status.
    */
-  getStatus(): any {
+  getStatus(): unknown {
     return {
       initialized: this.isInitialized,
       activeOperations: this.activeOperations.size,

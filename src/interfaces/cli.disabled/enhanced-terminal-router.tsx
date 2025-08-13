@@ -19,7 +19,7 @@ import {
 
 export interface TerminalAppProps {
   commands: string[];
-  flags: Record<string, any>;
+  flags: Record<string, unknown>;
   onExit: (code: number) => void;
 }
 
@@ -29,7 +29,7 @@ interface TerminalState {
   config: CLIConfig;
   isInitializing: boolean;
   error?: Error;
-  commandResult?: any;
+  commandResult?: unknown;
 }
 
 /**
@@ -84,7 +84,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
       // Detect mode asynchronously to avoid circular dependency
       const detectedMode = await ModeDetectorAdapter.detectMode(
         commands,
-        flags,
+        flags
       );
       setState((prev) => ({ ...prev, mode: detectedMode }));
 
@@ -104,7 +104,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
             ...prev,
             isInitializing: false,
             error: undefined,
-          }) as TerminalState,
+          }) as TerminalState
       );
 
       // Auto-execute commands if in command mode
@@ -125,7 +125,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
     initializeEnhancedCLI();
   }, []);
 
-  const executeAdvancedCommand = async (cmdArgs: string[], options: any) => {
+  const executeAdvancedCommand = async (cmdArgs: string[], options: unknown) => {
     if (cmdArgs.length === 0) {
       setState((prev) => ({
         ...prev,
@@ -147,7 +147,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
         const result = await state.cliEngine.executeCommand(
           commandName as string,
           args,
-          options,
+          options
         );
         setState(
           (prev: TerminalState) =>
@@ -155,7 +155,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
               ...prev,
               commandResult: result,
               error: undefined,
-            }) as TerminalState,
+            }) as TerminalState
         );
       } else {
         // Handle traditional commands or show help
@@ -172,7 +172,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
   const handleTraditionalCommand = async (
     commandName: string,
     _args: string[],
-    _options: any,
+    _options: unknown
   ) => {
     switch (commandName) {
       case 'help':
@@ -216,7 +216,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
       categories: categories.map((cat) => ({
         name: cat.name,
         description: cat.description,
-        commands: cat.commands.map((cmd: any) => ({
+        commands: cat.commands.map((cmd: unknown) => ({
           name: cmd.name,
           description: cmd.description,
           aiAssisted: cmd.aiAssisted,
@@ -257,7 +257,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
 
   const suggestCommands = (invalidCommand: string): string[] => {
     const allCommands = state.cliEngine.getCommandRegistry().getAllCommands();
-    const commandNames = allCommands.map((cmd: any) => cmd.name);
+    const commandNames = allCommands.map((cmd: unknown) => cmd.name);
 
     // Simple string distance suggestion (could be enhanced with more sophisticated matching)
     return commandNames
@@ -265,7 +265,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
         (name) =>
           name.includes(invalidCommand) ||
           invalidCommand.includes(name) ||
-          levenshteinDistance(name, invalidCommand) <= 2,
+          levenshteinDistance(name, invalidCommand) <= 2
       )
       .slice(0, 5);
   };
@@ -292,7 +292,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
           matrix[i][j] = Math.min(
             (matrix[i - 1]?.[j - 1] ?? 0) + 1,
             (matrix[i]?.[j - 1] ?? 0) + 1,
-            (matrix[i - 1]?.[j] ?? 0) + 1,
+            (matrix[i - 1]?.[j] ?? 0) + 1
           );
         }
       }
@@ -302,7 +302,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
   };
 
   // Event handlers
-  const handleCommandStart = (_event: any) => {
+  const handleCommandStart = (_event: unknown) => {
     if (
       state.config.verbosity === 'verbose' ||
       state.config.verbosity === 'debug'
@@ -310,7 +310,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
     }
   };
 
-  const handleCommandComplete = (_event: any) => {
+  const handleCommandComplete = (_event: unknown) => {
     if (
       state.config.verbosity === 'verbose' ||
       state.config.verbosity === 'debug'
@@ -318,16 +318,16 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
     }
   };
 
-  const handleCommandError = (event: any) => {
+  const handleCommandError = (event: unknown) => {
     console.error(`❌ Command failed: ${event.command}`, event.error);
   };
 
-  const handleProjectStart = (_event: any) => {
+  const handleProjectStart = (_event: unknown) => {
     if (state.config.realTimeUpdates) {
     }
   };
 
-  const handleProjectComplete = (_event: any) => {
+  const handleProjectComplete = (_event: unknown) => {
     if (state.config.realTimeUpdates) {
     }
   };
@@ -356,29 +356,20 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
 
   if (state.error && state.mode === 'command') {
     return (
-      <Box
-        flexDirection="column"
-        padding={1}
-      >
+      <Box flexDirection="column" padding={1}>
         <Text color="red">❌ {state.error.message}</Text>
 
         {state.commandResult?.suggestions &&
           state.commandResult.suggestions.length > 0 && (
-            <Box
-              flexDirection="column"
-              marginTop={1}
-            >
+            <Box flexDirection="column" marginTop={1}>
               <Text color="yellow">💡 Did you mean:</Text>
               {state.commandResult.suggestions.map(
                 (suggestion: string, index: number) => (
-                  <Text
-                    key={index}
-                    color="cyan"
-                  >
+                  <Text key={index} color="cyan">
                     {' '}
                     {suggestion}
                   </Text>
-                ),
+                )
               )}
             </Box>
           )}
@@ -404,12 +395,7 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
   }
 
   // Interactive mode
-  return (
-    <InteractiveTerminalApplication
-      flags={flags}
-      onExit={onExit}
-    />
-  );
+  return <InteractiveTerminalApplication flags={flags} onExit={onExit} />;
 };
 
 export default TerminalApp;

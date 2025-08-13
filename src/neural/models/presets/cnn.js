@@ -101,7 +101,7 @@ class CNNModel extends NeuralModel {
 
     // Output layer
     this.denseWeights.push(
-      this.createWeight([lastSize, this.config.outputSize]),
+      this.createWeight([lastSize, this.config.outputSize])
     );
     this.denseBiases.push(new Float32Array(this.config.outputSize).fill(0));
   }
@@ -176,7 +176,7 @@ class CNNModel extends NeuralModel {
     x = this.dense(
       x,
       this.denseWeights[outputIndex],
-      this.denseBiases[outputIndex],
+      this.denseBiases[outputIndex]
     );
 
     // Apply softmax for classification
@@ -196,12 +196,12 @@ class CNNModel extends NeuralModel {
     // Calculate output dimensions
     const outputShape = this.getConvOutputShape(
       [height, width, inputChannels],
-      convLayer,
+      convLayer
     );
     const [outputHeight, outputWidth, outputChannels] = outputShape;
 
     const output = new Float32Array(
-      batchSize * outputHeight * outputWidth * outputChannels,
+      batchSize * outputHeight * outputWidth * outputChannels
     );
 
     // Apply convolution
@@ -266,7 +266,7 @@ class CNNModel extends NeuralModel {
     const outputWidth = Math.floor(width / poolSize);
 
     const output = new Float32Array(
-      batchSize * outputHeight * outputWidth * channels,
+      batchSize * outputHeight * outputWidth * channels
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -403,7 +403,7 @@ class CNNModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Forward pass

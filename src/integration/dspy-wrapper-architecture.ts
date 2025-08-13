@@ -30,7 +30,7 @@ const logger = getLogger('DSPyWrapper');
 export interface DSPyProgram {
   signature: string;
   description: string;
-  examples: Array<{ input: any; output: any }>;
+  examples: Array<{ input: unknown; output: unknown }>;
   optimized: boolean;
   performance: {
     successRate: number;
@@ -40,7 +40,7 @@ export interface DSPyProgram {
 }
 
 export interface DSPyExecutionResult {
-  [key: string]: any;
+  [key: string]: unknown;
   confidence?: number;
   reasoning?: string;
   metadata?: {
@@ -128,7 +128,7 @@ class ClaudeLMDriver implements LMDriver {
 
   private simulateClaudeResponse(
     prompt: string,
-    _config: Record<string, unknown>,
+    _config: Record<string, unknown>
   ): string {
     // Simulate Claude-like structured responses
     // In production, this would use actual Anthropic SDK
@@ -184,7 +184,7 @@ export class DSPy {
    */
   async createProgram(
     signature: string,
-    description: string,
+    description: string
   ): Promise<DSPyProgram> {
     const programId = this.generateProgramId(signature, description);
 
@@ -222,7 +222,7 @@ export class DSPy {
    */
   async execute(
     program: DSPyProgram,
-    inputs: Record<string, unknown>,
+    inputs: Record<string, unknown>
   ): Promise<DSPyExecutionResult> {
     const startTime = Date.now();
     const lm = getLM();
@@ -243,7 +243,7 @@ export class DSPy {
     // Parse the response into structured output matching the signature
     const parsedResult = this.parseExecutionResult(
       rawResponse,
-      parsedSignature,
+      parsedSignature
     );
 
     const executionTime = Date.now() - startTime;
@@ -289,7 +289,7 @@ export class DSPy {
    */
   async addExamples(
     program: DSPyProgram,
-    examples: Array<{ input: any; output: any; success?: boolean }>,
+    examples: Array<{ input: unknown; output: unknown; success?: boolean }>
   ): Promise<void> {
     // Filter for successful examples only if success field is provided
     const validExamples = examples.filter((ex) => ex.success !== false);
@@ -312,7 +312,7 @@ export class DSPy {
    */
   async optimize(
     program: DSPyProgram,
-    options: DSPyOptimizationOptions = { strategy: 'auto' },
+    options: DSPyOptimizationOptions = { strategy: 'auto' }
   ): Promise<void> {
     if (!this.config.optimizationEnabled) {
       logger.warn('Optimization disabled in config');
@@ -321,7 +321,7 @@ export class DSPy {
 
     const programId = this.findProgramId(program);
     const executionHistory = this.executionHistory.filter(
-      (e) => e.programId === programId,
+      (e) => e.programId === programId
     );
 
     if (program.examples.length === 0 && executionHistory.length === 0) {
@@ -335,7 +335,7 @@ export class DSPy {
     const optimizationResult = await this.performOptimization(
       program,
       executionHistory,
-      options,
+      options
     );
 
     program.optimized = true as boolean;
@@ -366,10 +366,10 @@ export class DSPy {
       totalExecutions,
       averageExecutionTime: Math.round(averageExecutionTime),
       optimizedPrograms: Array.from(this.programs.values()).filter(
-        (p) => p.optimized,
+        (p) => p.optimized
       ).length,
       recentExecutions: this.executionHistory.filter(
-        (e) => Date.now() - e.timestamp.getTime() < 3600000, // Last hour
+        (e) => Date.now() - e.timestamp.getTime() < 3600000 // Last hour
       ).length,
     };
   }
@@ -412,8 +412,8 @@ export class DSPy {
 
   private buildExecutionPrompt(
     program: DSPyProgram,
-    parsedSignature: any,
-    inputs: Record<string, unknown>,
+    parsedSignature: unknown,
+    inputs: Record<string, unknown>
   ): string {
     let prompt = `Task: ${program.description}\n\n`;
 
@@ -444,7 +444,7 @@ export class DSPy {
 
   private parseExecutionResult(
     rawResponse: string,
-    parsedSignature: any,
+    parsedSignature: unknown
   ): DSPyExecutionResult {
     // Try to extract JSON from the response
     const jsonMatch = rawResponse?.match(/\{[\s\S]*\}/);
@@ -470,7 +470,7 @@ export class DSPy {
       result[output.name] = this.extractFieldFromText(
         rawResponse,
         output.name,
-        output.type,
+        output.type
       );
     });
 
@@ -492,8 +492,8 @@ export class DSPy {
   private extractFieldFromText(
     text: string,
     fieldName: string,
-    fieldType: string,
-  ): any {
+    fieldType: string
+  ): unknown {
     // Production NLP-based field extraction with multiple strategies
     try {
       // Strategy 1: Named Entity Recognition (NER) approach
@@ -506,7 +506,7 @@ export class DSPy {
       const semanticResult = this.extractUsingSemantic(
         text,
         fieldName,
-        fieldType,
+        fieldType
       );
       if (semanticResult !== null) {
         return semanticResult;
@@ -516,7 +516,7 @@ export class DSPy {
       const patternResult = this.extractUsingPatterns(
         text,
         fieldName,
-        fieldType,
+        fieldType
       );
       if (patternResult !== null) {
         return patternResult;
@@ -537,23 +537,23 @@ export class DSPy {
   private extractUsingNER(
     text: string,
     fieldName: string,
-    fieldType: string,
-  ): any {
+    fieldType: string
+  ): unknown {
     // Production: Use spaCy or similar NER model
     const entities = this.performNER(text);
 
     // Match field name to recognized entities
     const relevantEntities = entities.filter(
-      (entity: any) =>
+      (entity: unknown) =>
         this.calculateSimilarity(
           entity.label.toLowerCase(),
-          fieldName.toLowerCase(),
-        ) > 0.7,
+          fieldName.toLowerCase()
+        ) > 0.7
     );
 
     if (relevantEntities.length > 0) {
       const bestMatch = relevantEntities.reduce((best, current) =>
-        current.confidence > best.confidence ? current : best,
+        current.confidence > best.confidence ? current : best
       );
 
       return this.convertToFieldType(bestMatch.text, fieldType);
@@ -568,8 +568,8 @@ export class DSPy {
   private extractUsingSemantic(
     text: string,
     fieldName: string,
-    fieldType: string,
-  ): any {
+    fieldType: string
+  ): unknown {
     // Production: Use sentence transformers for semantic matching
     const sentences = this.splitIntoSentences(text);
     const fieldVector = this.generateEmbedding(fieldName);
@@ -581,7 +581,7 @@ export class DSPy {
       const sentenceVector = this.generateEmbedding(sentence);
       const similarity = this.calculateCosineSimilarity(
         fieldVector,
-        sentenceVector,
+        sentenceVector
       );
 
       if (similarity > maxSimilarity) {
@@ -603,8 +603,8 @@ export class DSPy {
   private extractUsingPatterns(
     text: string,
     fieldName: string,
-    fieldType: string,
-  ): any {
+    fieldType: string
+  ): unknown {
     // Production: Advanced regex patterns based on field type and context
     const patterns = this.generatePatternsForField(fieldName, fieldType);
 
@@ -630,8 +630,8 @@ export class DSPy {
   private extractUsingML(
     text: string,
     fieldName: string,
-    fieldType: string,
-  ): any {
+    fieldType: string
+  ): unknown {
     // Production: Use trained BERT/RoBERTa model for field extraction
     try {
       const modelInput = {
@@ -659,11 +659,11 @@ export class DSPy {
   private extractUsingBasicHeuristics(
     text: string,
     fieldName: string,
-    fieldType: string,
-  ): any {
+    fieldType: string
+  ): unknown {
     const lines = text.split('\n');
     const relevantLine = lines.find((line) =>
-      line.toLowerCase().includes(fieldName.toLowerCase()),
+      line.toLowerCase().includes(fieldName.toLowerCase())
     );
 
     if (relevantLine) {
@@ -693,7 +693,7 @@ export class DSPy {
   private updateProgramMetrics(
     program: DSPyProgram,
     executionTime: number,
-    success: boolean,
+    success: boolean
   ): void {
     program.performance.totalExecutions++;
 
@@ -718,11 +718,11 @@ export class DSPy {
   private async performOptimization(
     _program: DSPyProgram,
     executionHistory: unknown[],
-    _options: DSPyOptimizationOptions,
+    _options: DSPyOptimizationOptions
   ): Promise<{ improvement: number }> {
     // Simulate optimization by analyzing patterns in examples and history
     const successfulExecutions = executionHistory.filter(
-      (e) => e.output.confidence > 0.7,
+      (e) => e.output.confidence > 0.7
     );
     const improvement = Math.min(0.3, successfulExecutions.length * 0.05); // Max 30% improvement
 
@@ -780,7 +780,7 @@ export function getAvailableLMDrivers(): string[] {
  */
 export function createLMDriver(
   driverType: string,
-  config: Record<string, unknown>,
+  config: Record<string, unknown>
 ): LMDriver {
   switch (driverType) {
     case 'claude':

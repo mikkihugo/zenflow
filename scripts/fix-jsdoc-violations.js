@@ -165,8 +165,8 @@ class JSDocFixer {
     if (fileName === 'types' || fileName.includes('types')) {
       const domain = pathParts.find((part) =>
         ['core', 'interfaces', 'database', 'neural', 'coordination'].includes(
-          part,
-        ),
+          part
+        )
       );
       return `TypeScript type definitions${domain ? ` for ${domain}` : ''}`;
     }
@@ -244,7 +244,7 @@ class JSDocFixer {
         // Generate basic description based on parameter name
         const description = this.generateParamDescription(paramName);
         return `${paramTag} ${description}${ending}`;
-      },
+      }
     );
   }
 

@@ -16,7 +16,7 @@ export interface BeamModule {
   types: BeamType[];
   documentation: string[];
   dependencies: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export interface BeamFunction {
@@ -86,7 +86,7 @@ export class BeamLanguageParser {
    */
   private async parseElixirFile(
     filePath: string,
-    content: string,
+    content: string
   ): Promise<BeamModule> {
     const moduleName =
       this.extractElixirModuleName(content) || basename(filePath, '.ex');
@@ -118,7 +118,7 @@ export class BeamLanguageParser {
    */
   private async parseErlangFile(
     filePath: string,
-    content: string,
+    content: string
   ): Promise<BeamModule> {
     const moduleName =
       this.extractErlangModuleName(content) || basename(filePath, '.erl');
@@ -147,7 +147,7 @@ export class BeamLanguageParser {
    */
   private async parseGleamFile(
     filePath: string,
-    content: string,
+    content: string
   ): Promise<BeamModule> {
     const moduleName = basename(filePath, '.gleam');
     const functions = this.extractGleamFunctions(content);

@@ -143,7 +143,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       mockConnection.connect.mockRejectedValue(new Error('Connection timeout'));
 
       await expect(mockConnection.connect()).rejects.toThrow(
-        'Connection timeout',
+        'Connection timeout'
       );
     });
   });
@@ -193,7 +193,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
       // Check magnitude is 1
       const magnitude = Math.sqrt(
-        normalized.reduce((sum, x) => sum + x * x, 0),
+        normalized.reduce((sum, x) => sum + x * x, 0)
       );
       expect(magnitude).toBeCloseTo(1, 5);
     });
@@ -289,7 +289,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         const results = await lancedb.searchSimilar(
           'search_test',
           queryVector,
-          5,
+          5
         );
 
         expect(results).toHaveLength(5);
@@ -299,7 +299,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         // Results should be ordered by similarity (best first)
         for (let i = 1; i < results.length; i++) {
           expect(results?.[i]?.score).toBeGreaterThanOrEqual(
-            results?.[i - 1]?.score,
+            results?.[i - 1]?.score
           );
         }
       } catch {
@@ -338,17 +338,17 @@ describe('LanceDB Vector Operations Integration Tests', () => {
           10,
           {
             category: 'even',
-          },
+          }
         );
 
         expect(filteredResults.length).toBeLessThanOrEqual(10);
-        filteredResults?.forEach((result: any) => {
+        filteredResults?.forEach((result: unknown) => {
           expect(result?.metadata?.category).toBe('even');
         });
       } catch {
         // Classical filtering test
         const evenDocs = testVectors.filter(
-          (doc) => doc.metadata.category === 'even',
+          (doc) => doc.metadata.category === 'even'
         );
         expect(evenDocs).toHaveLength(10);
 
@@ -359,7 +359,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
         }));
 
         expect(similarities.every((s) => s.metadata.category === 'even')).toBe(
-          true,
+          true
         );
       }
     });
@@ -424,7 +424,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
       }));
 
       const queries = Array.from({ length: numQueries }, (_, i) =>
-        VectorMath.generateRandomVector(vectorDim, i + 10000),
+        VectorMath.generateRandomVector(vectorDim, i + 10000)
       );
 
       try {
@@ -534,12 +534,12 @@ describe('LanceDB Vector Operations Integration Tests', () => {
     it('should maintain precision with very small numbers', () => {
       const smallVector = Array.from(
         { length: 100 },
-        () => Math.random() * 1e-10,
+        () => Math.random() * 1e-10
       );
       const normalized = VectorMath.normalizeVector(smallVector);
 
       const magnitude = Math.sqrt(
-        normalized.reduce((sum, x) => sum + x * x, 0),
+        normalized.reduce((sum, x) => sum + x * x, 0)
       );
 
       // Should still normalize correctly even with very small numbers

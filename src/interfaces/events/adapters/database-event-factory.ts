@@ -165,7 +165,7 @@ class DatabaseEventManager
       await this.routeDatabaseEvent(enrichedEvent);
 
       this.logger.debug(
-        `Database event emitted: ${event.operation} on ${event.database}/${event.table}`,
+        `Database event emitted: ${event.operation} on ${event.database}/${event.table}`
       );
     } catch (error) {
       this.databaseMetrics.failedQueries++;
@@ -193,7 +193,7 @@ class DatabaseEventManager
     this.subscriptions.transaction.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Transaction event subscription created: ${subscriptionId}`,
+      `Transaction event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -206,7 +206,7 @@ class DatabaseEventManager
     this.subscriptions.connection.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Connection event subscription created: ${subscriptionId}`,
+      `Connection event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -219,7 +219,7 @@ class DatabaseEventManager
     this.subscriptions.migration.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Migration event subscription created: ${subscriptionId}`,
+      `Migration event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -232,7 +232,7 @@ class DatabaseEventManager
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}`,
+      `Performance event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -368,7 +368,7 @@ class DatabaseEventManager
         'database:migration',
         'database:performance',
       ],
-      this.handleDatabaseEvent.bind(this),
+      this.handleDatabaseEvent.bind(this)
     );
   }
 
@@ -420,7 +420,7 @@ class DatabaseEventManager
           // 1 second threshold
           this.databaseMetrics.slowQueries++;
           this.logger.warn(
-            `Slow query detected: ${event.data.duration}ms - ${event.data?.sql}`,
+            `Slow query detected: ${event.data.duration}ms - ${event.data?.sql}`
           );
         }
         break;
@@ -429,38 +429,38 @@ class DatabaseEventManager
         break;
       case 'COMMIT':
         this.logger.debug(
-          `Transaction committed: ${event.data?.transactionId}`,
+          `Transaction committed: ${event.data?.transactionId}`
         );
         break;
       case 'ROLLBACK':
         this.databaseMetrics.rollbackCount++;
         this.logger.debug(
-          `Transaction rolled back: ${event.data?.transactionId}`,
+          `Transaction rolled back: ${event.data?.transactionId}`
         );
         break;
       case 'CONNECT':
         this.databaseMetrics.activeConnections++;
         this.logger.debug(
-          `Database connection established: ${event.data?.connectionId}`,
+          `Database connection established: ${event.data?.connectionId}`
         );
         break;
       case 'DISCONNECT':
         this.databaseMetrics.activeConnections = Math.max(
           0,
-          this.databaseMetrics.activeConnections - 1,
+          this.databaseMetrics.activeConnections - 1
         );
         this.logger.debug(
-          `Database connection closed: ${event.data?.connectionId}`,
+          `Database connection closed: ${event.data?.connectionId}`
         );
         break;
       case 'MIGRATION':
         this.logger.info(
-          `Database migration: ${event.data?.version} - ${event.data?.description}`,
+          `Database migration: ${event.data?.version} - ${event.data?.description}`
         );
         break;
       case 'ERROR':
         this.logger.error(
-          `Database error: ${event.data?.error} - Query: ${event.data?.sql}`,
+          `Database error: ${event.data?.error} - Query: ${event.data?.sql}`
         );
         break;
     }
@@ -529,7 +529,7 @@ class DatabaseEventManager
 
   private async notifySubscribers(
     subscribers: Map<string, (event: DatabaseEvent) => void>,
-    event: DatabaseEvent,
+    event: DatabaseEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
       async (listener) => {
@@ -538,7 +538,7 @@ class DatabaseEventManager
         } catch (error) {
           this.logger.error('Database event listener failed:', error);
         }
-      },
+      }
     );
 
     await Promise.allSettled(notifications);
@@ -593,7 +593,7 @@ export class DatabaseEventManagerFactory
 {
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {
     this.logger.debug('DatabaseEventManagerFactory initialized');
   }
@@ -620,7 +620,7 @@ export class DatabaseEventManagerFactory
     await this.configureDatabaseManager(manager, optimizedConfig);
 
     this.logger.info(
-      `Database event manager created successfully: ${config.name}`,
+      `Database event manager created successfully: ${config.name}`
     );
     return manager;
   }
@@ -640,13 +640,13 @@ export class DatabaseEventManagerFactory
     // Validate database-specific settings
     if (config.processing?.batchSize && config.processing.batchSize < 10) {
       this.logger.warn(
-        'Database batch size < 10 may be inefficient for database operations',
+        'Database batch size < 10 may be inefficient for database operations'
       );
     }
 
     if (config.maxListeners && config.maxListeners < 100) {
       this.logger.warn(
-        'Database managers should support at least 100 listeners for concurrent operations',
+        'Database managers should support at least 100 listeners for concurrent operations'
       );
     }
   }
@@ -655,7 +655,7 @@ export class DatabaseEventManagerFactory
    * Apply database-optimized default configuration.
    */
   private applyDatabaseDefaults(
-    config: EventManagerConfig,
+    config: EventManagerConfig
   ): EventManagerConfig {
     return {
       ...config,
@@ -686,13 +686,13 @@ export class DatabaseEventManagerFactory
    */
   private async configureDatabaseManager(
     manager: DatabaseEventManager,
-    config: EventManagerConfig,
+    config: EventManagerConfig
   ): Promise<void> {
     // Start monitoring if enabled
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Database event manager monitoring started: ${config.name}`,
+        `Database event manager monitoring started: ${config.name}`
       );
     }
 
@@ -704,13 +704,13 @@ export class DatabaseEventManagerFactory
           if (status.status !== 'healthy') {
             this.logger.warn(
               `Database manager health degraded: ${config.name}`,
-              status.metadata,
+              status.metadata
             );
           }
         } catch (error) {
           this.logger.error(
             `Database manager health check failed: ${config.name}`,
-            error,
+            error
           );
         }
       }, config.monitoring.healthCheckInterval);

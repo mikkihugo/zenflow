@@ -321,7 +321,7 @@ export const nlpPresets = {
 export const getNLPPreset = (presetName) => {
   if (!nlpPresets[presetName]) {
     throw new Error(
-      `NLP preset '${presetName}' not found. Available presets: ${Object.keys(nlpPresets).join(', ')}`,
+      `NLP preset '${presetName}' not found. Available presets: ${Object.keys(nlpPresets).join(', ')}`
     );
   }
   return nlpPresets[presetName];

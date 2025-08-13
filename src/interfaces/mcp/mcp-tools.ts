@@ -20,8 +20,8 @@ let memoryCoordinator: MemoryCoordinator | null = null;
 export interface AdvancedMCPTool {
   readonly name: string;
   readonly description: string;
-  readonly inputSchema: any;
-  readonly handler: any;
+  readonly inputSchema: unknown;
+  readonly handler: unknown;
   readonly category: MCPToolCategory;
   readonly version: string;
   readonly permissions: Permission[];
@@ -42,7 +42,7 @@ export type MCPToolCategory =
 export interface Permission {
   type: 'read' | 'write' | 'execute' | 'admin';
   resource: string;
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
 }
 
 export interface RateLimit {
@@ -68,8 +68,8 @@ export interface ToolMetadata {
 
 export interface ToolExample {
   description: string;
-  params: Record<string, any>;
-  expectedResult?: any;
+  params: Record<string, unknown>;
+  expectedResult?: unknown;
 }
 
 export interface AdvancedMCPToolResult extends MCPToolResult {
@@ -85,9 +85,9 @@ export interface AdvancedMCPToolResult extends MCPToolResult {
 
 // Base class for advanced tool handlers
 export abstract class AdvancedToolHandler {
-  abstract execute(params: any): Promise<AdvancedMCPToolResult>;
+  abstract execute(params: unknown): Promise<AdvancedMCPToolResult>;
 
-  protected validateParams(params: any, schema: any): void {
+  protected validateParams(params: unknown, schema: unknown): void {
     // Basic parameter validation
     if (schema.required) {
       for (const required of schema.required) {
@@ -100,9 +100,9 @@ export abstract class AdvancedToolHandler {
 
   protected createResult(
     success: boolean,
-    content: any,
+    content: unknown,
     error?: string,
-    metadata?: any,
+    metadata?: unknown
   ): AdvancedMCPToolResult {
     return {
       success,
@@ -179,7 +179,7 @@ export class AdvancedToolRegistry {
 export const advancedToolRegistry = new AdvancedToolRegistry();
 
 class StoreDiscoveryPatternHandler extends AdvancedToolHandler {
-  async execute(params: any): Promise<AdvancedMCPToolResult> {
+  async execute(params: unknown): Promise<AdvancedMCPToolResult> {
     this.validateParams(params, memoryStoreDiscoveryPatternTool.inputSchema);
     try {
       // A real implementation would get this from the DI container
@@ -270,12 +270,12 @@ export const memoryStoreDiscoveryPatternTool: AdvancedMCPTool = {
 advancedToolRegistry.registerTool(memoryStoreDiscoveryPatternTool);
 
 class RetrieveDiscoveryPatternHandler extends AdvancedToolHandler {
-  async execute(params: any): Promise<AdvancedMCPToolResult> {
+  async execute(params: unknown): Promise<AdvancedMCPToolResult> {
     this.validateParams(params, memoryRetrieveDiscoveryPatternTool.inputSchema);
     try {
       if (!memoryCoordinator) {
         throw new Error(
-          'Memory coordinator not initialized. Run memory_init first.',
+          'Memory coordinator not initialized. Run memory_init first.'
         );
       }
 
@@ -333,15 +333,15 @@ export const memoryRetrieveDiscoveryPatternTool: AdvancedMCPTool = {
 advancedToolRegistry.registerTool(memoryRetrieveDiscoveryPatternTool);
 
 class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
-  async execute(params: any): Promise<AdvancedMCPToolResult> {
+  async execute(params: unknown): Promise<AdvancedMCPToolResult> {
     this.validateParams(
       params,
-      memoryFindSimilarDiscoveryPatternsTool.inputSchema,
+      memoryFindSimilarDiscoveryPatternsTool.inputSchema
     );
     try {
       if (!memoryCoordinator) {
         throw new Error(
-          'Memory coordinator not initialized. Run memory_init first.',
+          'Memory coordinator not initialized. Run memory_init first.'
         );
       }
 
@@ -358,7 +358,7 @@ class FindSimilarDiscoveryPatternsHandler extends AdvancedToolHandler {
       // Assuming allPatternsRaw.metadata contains the data
       const allPatterns = allPatternsRaw.metadata?.data || [];
 
-      const similarPatterns = allPatterns.filter((p: any) => {
+      const similarPatterns = allPatterns.filter((p: unknown) => {
         const jaccardIndex = this.calculateJaccardIndex(pattern.files, p.files);
         return jaccardIndex >= similarityThreshold;
       });
@@ -437,12 +437,12 @@ export const memoryFindSimilarDiscoveryPatternsTool: AdvancedMCPTool = {
 advancedToolRegistry.registerTool(memoryFindSimilarDiscoveryPatternsTool);
 
 class LogSwarmOperationHandler extends AdvancedToolHandler {
-  async execute(params: any): Promise<AdvancedMCPToolResult> {
+  async execute(params: unknown): Promise<AdvancedMCPToolResult> {
     this.validateParams(params, memoryLogSwarmOperationTool.inputSchema);
     try {
       if (!memoryCoordinator) {
         throw new Error(
-          'Memory coordinator not initialized. Run memory_init first.',
+          'Memory coordinator not initialized. Run memory_init first.'
         );
       }
 
@@ -515,15 +515,15 @@ export const memoryLogSwarmOperationTool: AdvancedMCPTool = {
 advancedToolRegistry.registerTool(memoryLogSwarmOperationTool);
 
 class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandler {
-  async execute(params: any): Promise<AdvancedMCPToolResult> {
+  async execute(params: unknown): Promise<AdvancedMCPToolResult> {
     this.validateParams(
       params,
-      memoryUpdateDiscoveryPatternFromSwarmOperationTool.inputSchema,
+      memoryUpdateDiscoveryPatternFromSwarmOperationTool.inputSchema
     );
     try {
       if (!memoryCoordinator) {
         throw new Error(
-          'Memory coordinator not initialized. Run memory_init first.',
+          'Memory coordinator not initialized. Run memory_init first.'
         );
       }
 
@@ -541,7 +541,7 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
 
       if (!existingPattern) {
         throw new Error(
-          `Discovery pattern for domain '${domainName}' not found.`,
+          `Discovery pattern for domain '${domainName}' not found.`
         );
       }
 
@@ -549,7 +549,7 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
       if (outcome === 'success') {
         existingPattern.confidenceScore = Math.min(
           1,
-          existingPattern.confidenceScore + 0.1,
+          existingPattern.confidenceScore + 0.1
         );
         existingPattern.files = [
           ...new Set([...existingPattern.files, ...filesModified]),
@@ -557,7 +557,7 @@ class UpdateDiscoveryPatternFromSwarmOperationHandler extends AdvancedToolHandle
       } else {
         existingPattern.confidenceScore = Math.max(
           0,
-          existingPattern.confidenceScore - 0.1,
+          existingPattern.confidenceScore - 0.1
         );
       }
 
@@ -628,16 +628,16 @@ export const memoryUpdateDiscoveryPatternFromSwarmOperationTool: AdvancedMCPTool
   };
 
 advancedToolRegistry.registerTool(
-  memoryUpdateDiscoveryPatternFromSwarmOperationTool,
+  memoryUpdateDiscoveryPatternFromSwarmOperationTool
 );
 
 class ExportDiscoveryPatternsHandler extends AdvancedToolHandler {
-  async execute(params: any): Promise<AdvancedMCPToolResult> {
+  async execute(params: unknown): Promise<AdvancedMCPToolResult> {
     this.validateParams(params, memoryExportDiscoveryPatternsTool.inputSchema);
     try {
       if (!memoryCoordinator) {
         throw new Error(
-          'Memory coordinator not initialized. Run memory_init first.',
+          'Memory coordinator not initialized. Run memory_init first.'
         );
       }
 

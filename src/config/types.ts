@@ -371,8 +371,8 @@ export interface ConfigHealthReport {
  */
 export interface ConfigChangeEvent {
   path: string;
-  oldValue: any;
-  newValue: any;
+  oldValue: unknown;
+  newValue: unknown;
   source: string;
   timestamp: number;
 }

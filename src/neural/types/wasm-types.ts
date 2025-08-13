@@ -23,7 +23,7 @@ export interface WASMNeuralInstance {
 
 export interface WASMExports {
   // Index signature to allow dynamic property access (fixes bracket notation TypeScript error)
-  [key: string]: any;
+  [key: string]: unknown;
 
   // Core neural operations
   create_network: (layers: number[], activations: number[]) => number;
@@ -32,7 +32,7 @@ export interface WASMExports {
     networkId: number,
     inputs: number,
     outputs: number,
-    epochs: number,
+    epochs: number
   ) => number;
   predict: (networkId: number, inputs: number, inputCount: number) => number;
 
@@ -57,10 +57,10 @@ export interface WASMExports {
   load_network: (ptr: number, size: number) => number;
 
   // Additional WASM functions that might be dynamically loaded
-  create_model?: (...args: any[]) => any;
-  prepare_training_data?: (...args: any[]) => any;
-  train_model?: (...args: any[]) => any;
-  prepare_input?: (...args: any[]) => any;
+  create_model?: (...args: unknown[]) => any;
+  prepare_training_data?: (...args: unknown[]) => any;
+  train_model?: (...args: unknown[]) => any;
+  prepare_input?: (...args: unknown[]) => any;
 }
 
 export interface WASMNeuralAccelerator {
@@ -69,18 +69,18 @@ export interface WASMNeuralAccelerator {
   trainModel(
     modelId: string,
     trainingData: WASMTrainingData,
-    options?: WASMOptimizationOptions,
+    options?: WASMOptimizationOptions
   ): Promise<WASMPerformanceMetrics>;
   predict(
     modelId: string,
-    input: WASMPredictionInput,
+    input: WASMPredictionInput
   ): Promise<WASMPredictionOutput>;
   optimizeModel(
     modelId: string,
-    options: WASMOptimizationOptions,
+    options: WASMOptimizationOptions
   ): Promise<WASMModelDefinition>;
   benchmark(
-    operations?: Array<'create' | 'train' | 'predict'>,
+    operations?: Array<'create' | 'train' | 'predict'>
   ): Promise<WASMBenchmarkResult>;
   getMetrics(): WASMPerformanceMetrics;
   shutdown(): Promise<void>;

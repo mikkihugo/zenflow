@@ -242,7 +242,7 @@ describe('CLI Command Processing - TDD London', () => {
       // Assert - verify failure handling
       expect(mockRegistry.execute).toHaveBeenCalledWith(
         'failing-command',
-        context,
+        context
       );
       expect(result?.success).toBe(false);
       expect(result?.exitCode).toBe(1);
@@ -353,7 +353,7 @@ describe('CLI Command Processing - TDD London', () => {
       // Assert - verify handler registration
       expect(mockErrorHandler.register).toHaveBeenCalledWith(
         errorType,
-        handler,
+        handler
       );
     });
 
@@ -425,11 +425,11 @@ describe('CLI Command Processing - TDD London', () => {
       expect(mockParser.parse).toHaveBeenCalledWith(input);
       expect(mockRegistry.execute).toHaveBeenCalledWith(
         'status',
-        expect.any(Object),
+        expect.any(Object)
       );
       expect(mockFormatter.format).toHaveBeenCalledWith(
         executionResult?.data,
-        parseResult?.flags,
+        parseResult?.flags
       );
       expect(formatted).toBe(formattedOutput);
     });
@@ -471,11 +471,11 @@ describe('CLI Command Processing - TDD London', () => {
       expect(mockParser.parse).toHaveBeenCalledWith(input);
       expect(mockRegistry.execute).toHaveBeenCalledWith(
         'invalid-command',
-        expect.any(Object),
+        expect.any(Object)
       );
       expect(mockErrorHandler.handle).toHaveBeenCalledWith(
         executionError,
-        expect.any(Object),
+        expect.any(Object)
       );
     });
 

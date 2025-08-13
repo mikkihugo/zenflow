@@ -92,7 +92,7 @@ class LoadTestingSuite extends EventEmitter {
       // Update peak values
       this.testResults.performance.memoryPeak = Math.max(
         this.testResults.performance.memoryPeak,
-        memUsage.heapUsed,
+        memUsage.heapUsed
       );
     }, 1000);
   }
@@ -198,7 +198,7 @@ class LoadTestingSuite extends EventEmitter {
         scenario.agents.length >= 50 && scenario.metrics.errors.length < 5;
       this.testResults.performance.maxConcurrentAgents = Math.max(
         this.testResults.performance.maxConcurrentAgents,
-        scenario.agents.length,
+        scenario.agents.length
       );
     } catch (error) {
       scenario.error = error.message;
@@ -249,7 +249,7 @@ class LoadTestingSuite extends EventEmitter {
               error: error.message,
             });
             return null;
-          }),
+          })
       );
 
       const spawnedAgents = await Promise.all(spawnPromises);
@@ -331,7 +331,7 @@ class LoadTestingSuite extends EventEmitter {
         swarm.spawn({
           type: ['coder', 'researcher', 'analyst'][i % 3],
           name: `sustained-agent-${i}`,
-        }),
+        })
       );
 
       scenario.agents = await Promise.all(spawnPromises);
@@ -440,7 +440,7 @@ class LoadTestingSuite extends EventEmitter {
       ];
       for (const { type, count } of agentTypes) {
         const typePromises = Array.from({ length: count }, (_, i) =>
-          swarm.spawn({ type, name: `${type}-${i}` }),
+          swarm.spawn({ type, name: `${type}-${i}` })
         );
 
         const typeAgents = await Promise.all(typePromises);
@@ -478,9 +478,9 @@ class LoadTestingSuite extends EventEmitter {
                   });
                 }
               }
-            }),
+            })
           );
-        },
+        }
       );
 
       await Promise.all(workloadPromises);
@@ -492,13 +492,13 @@ class LoadTestingSuite extends EventEmitter {
             times.length > 0
               ? Math.round(times.reduce((a, b) => a + b, 0) / times.length)
               : 0;
-        },
+        }
       );
 
       const totalAgents = Object.values(scenario.agents).flat().length;
       const totalTasks = Object.values(scenario.metrics.tasksByType).reduce(
         (a, b) => a + b,
-        0,
+        0
       );
 
       scenario.passed =
@@ -570,7 +570,7 @@ class LoadTestingSuite extends EventEmitter {
                     error: error.message,
                   });
                   return null;
-                }),
+                })
             );
           }
 
@@ -710,7 +710,7 @@ class LoadTestingSuite extends EventEmitter {
   async generateLoadTestReport() {
     // Calculate overall metrics
     const passedScenarios = this.testResults.scenarios.filter(
-      (s) => s.passed,
+      (s) => s.passed
     ).length;
     const totalScenarios = this.testResults.scenarios.length;
 
@@ -718,7 +718,7 @@ class LoadTestingSuite extends EventEmitter {
       this.metrics.responseTimes.length > 0
         ? Math.round(
             this.metrics.responseTimes.reduce((a, b) => a + b, 0) /
-              this.metrics.responseTimes.length,
+              this.metrics.responseTimes.length
           )
         : 0;
 

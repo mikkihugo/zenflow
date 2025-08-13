@@ -78,7 +78,7 @@ export class DocumentManager {
   private workflowRepository!: IRepository<DocumentWorkflowStateEntity>;
 
   constructor(
-    private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
   ) {}
 
   /**
@@ -88,22 +88,22 @@ export class DocumentManager {
     // Initialize all repositories using DAL factory
     this.documentRepository = await createDao<BaseDocumentEntity>(
       EntityTypes.Document,
-      this.databaseType,
+      this.databaseType
     );
 
     this.projectRepository = await createDao<ProjectEntity>(
       'Project',
-      this.databaseType,
+      this.databaseType
     );
 
     this.relationshipRepository = await createDao<DocumentRelationshipEntity>(
       'DocumentRelationship',
-      this.databaseType,
+      this.databaseType
     );
 
     this.workflowRepository = await createDao<DocumentWorkflowStateEntity>(
       'DocumentWorkflowState',
-      this.databaseType,
+      this.databaseType
     );
 
     // DAOs already initialized above as repositories
@@ -119,7 +119,7 @@ export class DocumentManager {
    */
   async createDocument<T extends BaseDocumentEntity>(
     document: Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>,
-    options: DocumentCreateOptions = {},
+    options: DocumentCreateOptions = {}
   ): Promise<T> {
     const id = nanoid();
     const now = new Date();
@@ -162,7 +162,7 @@ export class DocumentManager {
    */
   async getDocument<T extends BaseDocumentEntity>(
     id: string,
-    options: DocumentQueryOptions = {},
+    options: DocumentQueryOptions = {}
   ): Promise<T | null> {
     const document = await this.documentRepository.findById(id);
 
@@ -193,7 +193,7 @@ export class DocumentManager {
   async updateDocument<T extends BaseDocumentEntity>(
     id: string,
     updates: Partial<Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>>,
-    options: DocumentCreateOptions = {},
+    options: DocumentCreateOptions = {}
   ): Promise<T> {
     const now = new Date();
     const updatedData = {
@@ -208,12 +208,12 @@ export class DocumentManager {
     Object.keys(updatedData).forEach(
       (key) =>
         updatedData?.[key as keyof typeof updatedData] === undefined &&
-        delete updatedData?.[key as keyof typeof updatedData],
+        delete updatedData?.[key as keyof typeof updatedData]
     );
 
     const updated = await this.documentRepository.update(
       id,
-      updatedData as any,
+      updatedData as any
     );
 
     // Update search index if content changed
@@ -275,7 +275,7 @@ export class DocumentManager {
       parentDocumentId?: string;
       workflowStage?: string;
     },
-    options: DocumentQueryOptions = {},
+    options: DocumentQueryOptions = {}
   ): Promise<{
     documents: T[];
     total: number;
@@ -335,7 +335,7 @@ export class DocumentManager {
    * @param searchOptions
    */
   async searchDocuments<T extends BaseDocumentEntity>(
-    searchOptions: DocumentSearchOptions,
+    searchOptions: DocumentSearchOptions
   ): Promise<{
     documents: T[];
     total: number;
@@ -375,7 +375,7 @@ export class DocumentManager {
         includeContent: true,
         includeRelationships: true,
         limit: 1000, // Large limit for comprehensive search
-      },
+      }
     );
 
     // Apply date range filter if specified
@@ -393,31 +393,31 @@ export class DocumentManager {
       case 'fulltext':
         ({ documents, relevanceScores } = this.performFulltextSearch(
           filteredCandidates,
-          searchOptions?.query,
+          searchOptions?.query
         ));
         break;
       case 'semantic':
         ({ documents, relevanceScores } = await this.performSemanticSearch(
           filteredCandidates,
-          searchOptions?.query,
+          searchOptions?.query
         ));
         break;
       case 'keyword':
         ({ documents, relevanceScores } = this.performKeywordSearch(
           filteredCandidates,
-          searchOptions?.query,
+          searchOptions?.query
         ));
         break;
       case 'combined':
         ({ documents, relevanceScores } = await this.performCombinedSearch(
           filteredCandidates,
-          searchOptions?.query,
+          searchOptions?.query
         ));
         break;
       default:
         ({ documents, relevanceScores } = this.performFulltextSearch(
           filteredCandidates,
-          searchOptions?.query,
+          searchOptions?.query
         ));
     }
 
@@ -452,7 +452,7 @@ export class DocumentManager {
    */
   private performFulltextSearch<T extends BaseDocumentEntity>(
     documents: T[],
-    query: string,
+    query: string
   ): { documents: T[]; relevanceScores: number[] } {
     const queryTerms = this.tokenizeText(query.toLowerCase());
     const results: Array<{ document: T; score: number }> = [];
@@ -503,7 +503,7 @@ export class DocumentManager {
    */
   private async performSemanticSearch<T extends BaseDocumentEntity>(
     documents: T[],
-    query: string,
+    query: string
   ): Promise<{ documents: T[]; relevanceScores: number[] }> {
     // For now, implement a simplified semantic search
     // In production, this would use vector embeddings and similarity search
@@ -512,7 +512,7 @@ export class DocumentManager {
 
     for (const doc of documents) {
       const docTokens = this.tokenizeText(
-        `${doc.title} ${doc.content}`.toLowerCase(),
+        `${doc.title} ${doc.content}`.toLowerCase()
       );
 
       // Calculate semantic similarity using Jaccard similarity with word expansion
@@ -521,13 +521,13 @@ export class DocumentManager {
 
       const similarity = this.calculateJaccardSimilarity(
         expandedQueryTokens,
-        expandedDocTokens,
+        expandedDocTokens
       );
 
       // Boost for conceptual matches
       const conceptualScore = this.calculateConceptualSimilarity(
         query,
-        doc.content,
+        doc.content
       );
       const finalScore = similarity * 0.7 + conceptualScore * 0.3;
 
@@ -552,7 +552,7 @@ export class DocumentManager {
    */
   private performKeywordSearch<T extends BaseDocumentEntity>(
     documents: T[],
-    query: string,
+    query: string
   ): { documents: T[]; relevanceScores: number[] } {
     const queryKeywords = query
       .toLowerCase()
@@ -572,7 +572,7 @@ export class DocumentManager {
         // Partial keyword match
         else if (
           docKeywords.some(
-            (k) => k.includes(queryKeyword) || queryKeyword.includes(k),
+            (k) => k.includes(queryKeyword) || queryKeyword.includes(k)
           )
         ) {
           score += 0.5;
@@ -604,7 +604,7 @@ export class DocumentManager {
    */
   private async performCombinedSearch<T extends BaseDocumentEntity>(
     documents: T[],
-    query: string,
+    query: string
   ): Promise<{ documents: T[]; relevanceScores: number[] }> {
     // Get results from all search methods
     const fulltextResults = this.performFulltextSearch(documents, query);
@@ -655,7 +655,7 @@ export class DocumentManager {
    * @param project
    */
   async createProject(
-    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>,
+    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>
   ): Promise<ProjectEntity> {
     const id = nanoid();
     const now = new Date();
@@ -695,19 +695,19 @@ export class DocumentManager {
     // Get all project documents
     const { documents } = await this.queryDocuments(
       { projectId },
-      { includeContent: true, includeRelationships: true },
+      { includeContent: true, includeRelationships: true }
     );
 
     // Group documents by type
     const groupedDocuments = {
       visions: documents.filter(
-        (d) => d.type === 'vision',
+        (d) => d.type === 'vision'
       ) as VisionDocumentEntity[],
       adrs: documents.filter((d) => d.type === 'adr') as ADRDocumentEntity[],
       prds: documents.filter((d) => d.type === 'prd') as PRDDocumentEntity[],
       epics: documents.filter((d) => d.type === 'epic') as EpicDocumentEntity[],
       features: documents.filter(
-        (d) => d.type === 'feature',
+        (d) => d.type === 'feature'
       ) as FeatureDocumentEntity[],
       tasks: documents.filter((d) => d.type === 'task') as TaskDocumentEntity[],
     };
@@ -730,7 +730,7 @@ export class DocumentManager {
   async startDocumentWorkflow(
     documentId: string,
     workflowName: string,
-    initialStage = 'draft',
+    initialStage = 'draft'
   ): Promise<DocumentWorkflowStateEntity> {
     const id = nanoid();
     const now = new Date();
@@ -771,7 +771,7 @@ export class DocumentManager {
   async advanceDocumentWorkflow(
     documentId: string,
     nextStage: string,
-    results?: Record<string, unknown>,
+    results?: Record<string, unknown>
   ): Promise<DocumentWorkflowStateEntity> {
     // Find existing workflow state
     const allWorkflows = await this.workflowRepository.findAll();
@@ -783,11 +783,11 @@ export class DocumentManager {
 
     // Validate transition is allowed
     const workflowDefinition = this.getWorkflowDefinition(
-      existing.workflow_name,
+      existing.workflow_name
     );
     if (!workflowDefinition.canTransition(existing.current_stage, nextStage)) {
       throw new Error(
-        `Invalid transition from ${existing.current_stage} to ${nextStage}`,
+        `Invalid transition from ${existing.current_stage} to ${nextStage}`
       );
     }
 
@@ -804,7 +804,7 @@ export class DocumentManager {
 
     const updated = await this.workflowRepository.update(
       existing.id,
-      updatedState,
+      updatedState
     );
 
     // Check for automation triggers after stage transition
@@ -827,12 +827,12 @@ export class DocumentManager {
     const workflowState = (document as any)
       .workflowState as DocumentWorkflowStateEntity;
     const workflowDefinition = this.getWorkflowDefinition(
-      workflowState.workflow_name,
+      workflowState.workflow_name
     );
 
     // Check automation rules for current stage
     const automationRules = workflowDefinition.getAutomationRules(
-      workflowState.current_stage,
+      workflowState.current_stage
     );
 
     for (const rule of automationRules) {
@@ -850,7 +850,7 @@ export class DocumentManager {
    */
   private async evaluateAutomationRule(
     document: BaseDocumentEntity,
-    rule: WorkflowAutomationRule,
+    rule: WorkflowAutomationRule
   ): Promise<boolean> {
     switch (rule.condition.type) {
       case 'status_change':
@@ -899,13 +899,13 @@ export class DocumentManager {
    */
   private async executeAutomationAction(
     document: BaseDocumentEntity,
-    rule: WorkflowAutomationRule,
+    rule: WorkflowAutomationRule
   ): Promise<void> {
     switch (rule.action.type) {
       case 'advance_stage':
         await this.advanceDocumentWorkflow(
           document.id,
-          rule.action.value as string,
+          rule.action.value as string
         );
         break;
 
@@ -930,7 +930,7 @@ export class DocumentManager {
       case 'generate_artifacts':
         await this.generateWorkflowArtifacts(
           document,
-          rule.action.value as string[],
+          rule.action.value as string[]
         );
         break;
 
@@ -970,7 +970,7 @@ export class DocumentManager {
       priority?: string;
       status?: string;
       inheritKeywords?: boolean;
-    },
+    }
   ): Promise<BaseDocumentEntity> {
     const documentTitle =
       actionConfig?.title ||
@@ -1030,7 +1030,7 @@ export class DocumentManager {
    */
   private async generateWorkflowArtifacts(
     document: BaseDocumentEntity,
-    artifactTypes: string[],
+    artifactTypes: string[]
   ): Promise<void> {
     const workflowState = await this.getDocumentWorkflowState(document.id);
     if (!workflowState) return;
@@ -1084,7 +1084,7 @@ export class DocumentManager {
       template: string;
       channel: 'email' | 'slack' | 'teams';
       urgency: 'low' | 'medium' | 'high';
-    },
+    }
   ): Promise<void> {}
 
   /**
@@ -1116,7 +1116,7 @@ export class DocumentManager {
   private evaluateCondition(
     value: unknown,
     operator: string,
-    expected: any,
+    expected: unknown
   ): boolean {
     switch (operator) {
       case 'equals':
@@ -1168,25 +1168,25 @@ export class DocumentManager {
   // ==================== WORKFLOW ARTIFACT GENERATORS ====================
 
   private async generateSummaryReport(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<string> {
     return `Summary report generated for ${document.title} on ${new Date().toISOString()}`;
   }
 
   private async generateChecklist(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<string> {
     return `Checklist generated for ${document.title} on ${new Date().toISOString()}`;
   }
 
   private async generateTimeline(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<string> {
     return `Timeline generated for ${document.title} on ${new Date().toISOString()}`;
   }
 
   private async generateStakeholderMatrix(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<string> {
     return `Stakeholder matrix generated for ${document.title} on ${new Date().toISOString()}`;
   }
@@ -1206,7 +1206,7 @@ export class DocumentManager {
 
       // Log checksum generation for audit purposes
       logger.debug(
-        `Generated checksum for content (${content.length} chars): ${shortHash}`,
+        `Generated checksum for content (${content.length} chars): ${shortHash}`
       );
 
       return shortHash;
@@ -1225,7 +1225,7 @@ export class DocumentManager {
    * @param document
    */
   private async generateDocumentRelationships(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<void> {
     const relationships: Omit<
       DocumentRelationshipEntity,
@@ -1261,7 +1261,7 @@ export class DocumentManager {
    * @param document
    */
   private async findParentDocuments(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<Omit<DocumentRelationshipEntity, 'id' | 'created_at'>[]> {
     const relationships: Omit<
       DocumentRelationshipEntity,
@@ -1323,7 +1323,7 @@ export class DocumentManager {
    * @param document
    */
   private async findSemanticRelationships(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<Omit<DocumentRelationshipEntity, 'id' | 'created_at'>[]> {
     const relationships: Omit<
       DocumentRelationshipEntity,
@@ -1342,7 +1342,7 @@ export class DocumentManager {
       // Calculate keyword overlap
       const keywordOverlap = this.calculateKeywordOverlap(
         document.keywords,
-        other.keywords,
+        other.keywords
       );
       if (keywordOverlap > 0.4) {
         relationships.push({
@@ -1356,7 +1356,7 @@ export class DocumentManager {
             generation_method: 'keyword_analysis',
             keyword_overlap: keywordOverlap,
             shared_keywords: document.keywords.filter((k) =>
-              other.keywords.includes(k),
+              other.keywords.includes(k)
             ),
           },
         });
@@ -1389,7 +1389,7 @@ export class DocumentManager {
    * @param document
    */
   private async findWorkflowRelationships(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<Omit<DocumentRelationshipEntity, 'id' | 'created_at'>[]> {
     const relationships: Omit<
       DocumentRelationshipEntity,
@@ -1436,14 +1436,14 @@ export class DocumentManager {
    */
   private calculateRelationshipStrength(
     doc1: BaseDocumentEntity,
-    doc2: BaseDocumentEntity,
+    doc2: BaseDocumentEntity
   ): number {
     let strength = 0;
 
     // Keyword similarity (40% weight)
     const keywordSimilarity = this.calculateKeywordOverlap(
       doc1.keywords,
-      doc2.keywords,
+      doc2.keywords
     );
     strength += keywordSimilarity * 0.4;
 
@@ -1459,7 +1459,7 @@ export class DocumentManager {
 
     // Recency factor (30% weight) - more recent documents get higher strength
     const timeDiff = Math.abs(
-      doc1.created_at.getTime() - doc2.created_at.getTime(),
+      doc1.created_at.getTime() - doc2.created_at.getTime()
     );
     const maxDiff = 30 * 24 * 60 * 60 * 1000; // 30 days
     const recencyFactor = Math.max(0, 1 - timeDiff / maxDiff);
@@ -1476,7 +1476,7 @@ export class DocumentManager {
    */
   private calculateKeywordOverlap(
     keywords1: string[],
-    keywords2: string[],
+    keywords2: string[]
   ): number {
     if (keywords1.length === 0 || keywords2.length === 0) return 0;
 
@@ -1524,31 +1524,31 @@ export class DocumentManager {
   }
 
   private async getDocumentRelationships(
-    documentId: string,
+    documentId: string
   ): Promise<DocumentRelationshipEntity[]> {
     const allRelationships = await this.relationshipRepository.findAll();
     return allRelationships.filter(
       (r) =>
         r.source_document_id === documentId ||
-        r.target_document_id === documentId,
+        r.target_document_id === documentId
     );
   }
 
   private async getDocumentWorkflowState(
-    documentId: string,
+    documentId: string
   ): Promise<DocumentWorkflowStateEntity | null> {
     const allWorkflows = await this.workflowRepository.findAll();
     return allWorkflows.find((w) => w.document_id === documentId) || null;
   }
 
   private async generateSearchIndex(
-    _document: BaseDocumentEntity,
+    _document: BaseDocumentEntity
   ): Promise<void> {
     // TODO: Implement search index generation using vector DAL
   }
 
   private async updateSearchIndex(
-    _document: BaseDocumentEntity,
+    _document: BaseDocumentEntity
   ): Promise<void> {
     // TODO: Implement search index update using vector DAL
   }
@@ -1559,16 +1559,16 @@ export class DocumentManager {
    * @param document
    */
   private async updateDocumentRelationships(
-    document: BaseDocumentEntity,
+    document: BaseDocumentEntity
   ): Promise<void> {
     // Get existing relationships
     const existingRelationships = await this.getDocumentRelationships(
-      document.id,
+      document.id
     );
 
     // Remove auto-generated relationships that might be outdated
     const autoGeneratedRelationships = existingRelationships.filter(
-      (r) => r.metadata?.['auto_generated'] === true,
+      (r) => r.metadata?.['auto_generated'] === true
     );
 
     for (const relationship of autoGeneratedRelationships) {
@@ -1615,10 +1615,10 @@ export class DocumentManager {
 
   private calculateInverseDocumentFrequency(
     term: string,
-    documents: BaseDocumentEntity[],
+    documents: BaseDocumentEntity[]
   ): number {
     const docsContainingTerm = documents.filter((doc) =>
-      `${doc.title} ${doc.content}`.toLowerCase().includes(term),
+      `${doc.title} ${doc.content}`.toLowerCase().includes(term)
     ).length;
     return docsContainingTerm > 0
       ? Math.log(documents.length / docsContainingTerm)
@@ -1844,7 +1844,7 @@ export class DocumentManager {
           if (frequency > 1) {
             // High-frequency terms get additional semantic expansion
             this.getSemanticExpansion(lowerToken).forEach((term) =>
-              expanded.add(term),
+              expanded.add(term)
             );
           }
         }
@@ -1862,11 +1862,11 @@ export class DocumentManager {
 
       // Filter out very short terms that might be noise
       const filtered = Array.from(expanded).filter(
-        (term) => term.length > 2 && !/^\d+$/.test(term),
+        (term) => term.length > 2 && !/^\d+$/.test(term)
       );
 
       logger.debug(
-        `Expanded ${tokens.length} tokens to ${filtered.length} terms with semantic mapping`,
+        `Expanded ${tokens.length} tokens to ${filtered.length} terms with semantic mapping`
       );
 
       return filtered;
@@ -1910,7 +1910,7 @@ export class DocumentManager {
 
   private calculateJaccardSimilarity(
     tokens1: string[],
-    tokens2: string[],
+    tokens2: string[]
   ): number {
     const set1 = new Set(tokens1);
     const set2 = new Set(tokens2);
@@ -2038,7 +2038,7 @@ class PRDWorkflowDefinition extends WorkflowDefinition {
     return this.rules.filter(
       (rule) =>
         rule.condition.type === 'status_change' &&
-        (stage === 'approved' || stage === 'implementation'),
+        (stage === 'approved' || stage === 'implementation')
     );
   }
 }

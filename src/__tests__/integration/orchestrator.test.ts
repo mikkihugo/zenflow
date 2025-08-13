@@ -75,16 +75,16 @@ describe('Orchestrator Integration Test', () => {
       // Assert
       expect(mockDb.initialize).toHaveBeenCalled();
       expect(mockDb.createTask).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'task-123' }),
+        expect.objectContaining({ id: 'task-123' })
       );
       expect(mockStrategy.getAgents).toHaveBeenCalled();
       expect(mockStrategy.assignTaskToAgent).toHaveBeenCalledWith(
         'agent-456',
-        expect.any(Object),
+        expect.any(Object)
       );
       expect(mockDb.updateTask).toHaveBeenCalledWith(
         'task-123',
-        expect.objectContaining({ status: 'completed' }),
+        expect.objectContaining({ status: 'completed' })
       );
     });
   });

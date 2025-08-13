@@ -180,7 +180,7 @@ class DeadCodeAnalyzer {
           confidence: this.calculateConfidence(
             exportName,
             exportInfo,
-            usageCount,
+            usageCount
           ),
         });
       }
@@ -197,7 +197,7 @@ class DeadCodeAnalyzer {
     try {
       const result = execSync(
         `grep -r "\\b${name}\\b" ${this.srcDir} --include="*.ts" | wc -l`,
-        { encoding: 'utf8' },
+        { encoding: 'utf8' }
       );
       return Number.parseInt(result.trim()) - 1; // Subtract the export declaration
     } catch (error) {
@@ -269,14 +269,14 @@ class DeadCodeAnalyzer {
 
     // Medium confidence dead code
     const mediumConfidence = deadCode.filter(
-      (item) => item.confidence > 0.4 && item.confidence <= 0.7,
+      (item) => item.confidence > 0.4 && item.confidence <= 0.7
     );
     if (mediumConfidence.length > 0) {
       console.log('⚠️  MEDIUM CONFIDENCE DEAD CODE:');
       console.log('-'.repeat(30));
       mediumConfidence.forEach((item) => {
         console.log(
-          `📍 ${item.name} (${item.type}) - ${item.file}:${item.line} - ${(item.confidence * 100).toFixed(1)}%`,
+          `📍 ${item.name} (${item.type}) - ${item.file}:${item.line} - ${(item.confidence * 100).toFixed(1)}%`
         );
       });
       console.log('');

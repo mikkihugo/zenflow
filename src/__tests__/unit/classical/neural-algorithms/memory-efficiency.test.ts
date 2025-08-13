@@ -19,7 +19,7 @@ import {
 } from '../../../../neural/core/neural-network.ts';
 
 describe('Memory Efficiency - Classical TDD', () => {
-  let wasmModule: any;
+  let wasmModule: unknown;
   let _initialMemory: NodeJS.MemoryUsage;
 
   beforeEach(async () => {
@@ -32,7 +32,7 @@ describe('Memory Efficiency - Classical TDD', () => {
       _initialMemory = process.memoryUsage();
     } catch (_error) {
       console.warn(
-        'WASM module not available, skipping memory efficiency tests',
+        'WASM module not available, skipping memory efficiency tests'
       );
     }
   });

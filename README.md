@@ -1,13 +1,13 @@
-# Claude Code Zen
+# Zen Code
 
-[![Version](https://img.shields.io/npm/v/claude-code-zen)](https://www.npmjs.com/package/claude-code-zen)
+[![Version](https://img.shields.io/npm/v/zen-code)](https://www.npmjs.com/package/zen-code)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Next-Generation AI Workflow Architecture** featuring **Advanced Kanban Flow** with intelligent multi-level parallel execution, ML-powered optimization, and comprehensive testing frameworks. Transforms linear AI workflows into adaptive, enterprise-scale systems with human-in-the-loop coordination.
+**Next-Generation Unified AI Development Platform** featuring **Advanced Kanban Flow** with intelligent multi-level parallel execution, ML-powered optimization, and comprehensive testing frameworks. A complete AI development ecosystem that transforms linear workflows into adaptive, enterprise-scale systems.
 
 ## 🎯 Philosophy: Biome-First Development
 
-Claude Code Zen has adopted a **Biome-first approach** to code quality, moving away from ESLint to embrace a simpler, faster, and more consistent toolchain following Google's standards.
+Zen Code has adopted a **Biome-first approach** to code quality, moving away from ESLint to embrace a simpler, faster, and more consistent toolchain following Google's standards.
 
 ### Why Biome Over ESLint?
 

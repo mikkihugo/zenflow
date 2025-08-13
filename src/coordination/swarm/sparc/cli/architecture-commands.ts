@@ -33,14 +33,14 @@ class CLIDatabaseAdapter {
         // Use the existing database infrastructure instead of mocking
         this.coordinationDao = await createDao(
           EntityTypes.CoordinationEvent,
-          DatabaseTypes?.Coordination,
+          DatabaseTypes?.Coordination
         );
       } catch (error) {
         logger.error(
-          '⚠️  Failed to connect to database for CLI. CLI operations will be limited.',
+          '⚠️  Failed to connect to database for CLI. CLI operations will be limited.'
         );
         throw new Error(
-          'Database connection required for SPARC CLI operations. Please ensure database is configured.',
+          'Database connection required for SPARC CLI operations. Please ensure database is configured.'
         );
       }
     }
@@ -124,7 +124,7 @@ export function createArchitectureCLI(): Command {
         // Validate if requested
         if (options?.validate) {
           const validation = await engine.validateArchitecturalConsistency(
-            architecture.systemArchitecture,
+            architecture.systemArchitecture
           );
 
           if (validation.recommendations.length > 0) {
@@ -137,7 +137,7 @@ export function createArchitectureCLI(): Command {
           const fs = await import('node:fs/promises');
           await fs.writeFile(
             options?.output,
-            JSON.stringify(architecture, null, 2),
+            JSON.stringify(architecture, null, 2)
           );
         } else {
           // Display summary
@@ -242,7 +242,7 @@ export function createArchitectureCLI(): Command {
     .option(
       '-f, --format <format>',
       'Export format (json|yaml|mermaid)',
-      'json',
+      'json'
     )
     .option('-o, --output <file>', 'Output file (defaults to stdout)')
     .action(async (architectureId, options) => {
@@ -299,7 +299,7 @@ export function createArchitectureCLI(): Command {
         } else {
           logger.error(
             chalk.red('❌ Failed to get statistics:'),
-            result?.message,
+            result?.message
           );
           process.exit(1);
         }
@@ -540,13 +540,13 @@ function displayArchitectureSummary(architecture: ArchitectureDesign): void {
 
   if (architecture.systemArchitecture?.technologyStack?.length) {
     architecture.systemArchitecture.technologyStack.forEach(
-      (_tech, _index) => {},
+      (_tech, _index) => {}
     );
   }
 
   if (architecture.systemArchitecture?.architecturalPatterns?.length) {
     architecture.systemArchitecture.architecturalPatterns.forEach(
-      (_pattern, _index) => {},
+      (_pattern, _index) => {}
     );
   }
 }

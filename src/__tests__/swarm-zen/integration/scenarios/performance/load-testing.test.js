@@ -52,7 +52,7 @@ describe('Performance Under Load Integration Tests', () => {
             swarm.spawnAgent({
               type: agentType,
               lightweight: true,
-            }),
+            })
           );
         }
 
@@ -82,7 +82,7 @@ describe('Performance Under Load Integration Tests', () => {
             task: `Stress test task ${i}`,
             strategy: 'parallel',
             maxAgents: 5,
-          }),
+          })
         );
       }
 
@@ -124,7 +124,7 @@ describe('Performance Under Load Integration Tests', () => {
       const agents = await Promise.all(
         Array(30)
           .fill()
-          .map(() => swarm.spawnAgent({ type: 'coder' })),
+          .map(() => swarm.spawnAgent({ type: 'coder' }))
       );
 
       // Measure response times under increasing load
@@ -143,7 +143,7 @@ describe('Performance Under Load Integration Tests', () => {
             swarm.executeAgentTask(agents[i % agents.length].id, {
               task: 'Quick computation',
               complexity: 'low',
-            }),
+            })
           );
         }
 
@@ -200,7 +200,7 @@ describe('Performance Under Load Integration Tests', () => {
             swarm.orchestrateTask({
               task: 'Dynamic load task',
               duration: 500, // 500ms tasks
-            }),
+            })
           );
         }
         await Promise.all(tasks);
@@ -224,10 +224,10 @@ describe('Performance Under Load Integration Tests', () => {
       expect(scalingEvents).to.have.length.at.least(2);
 
       const scaleUpEvents = scalingEvents.filter(
-        (e) => e.action === 'scale-up',
+        (e) => e.action === 'scale-up'
       );
       const scaleDownEvents = scalingEvents.filter(
-        (e) => e.action === 'scale-down',
+        (e) => e.action === 'scale-down'
       );
 
       expect(scaleUpEvents).to.have.length.at.least(1);
@@ -269,7 +269,7 @@ describe('Performance Under Load Integration Tests', () => {
       const _agents = await Promise.all(
         Array(20)
           .fill()
-          .map(() => swarm.spawnAgent({ type: 'coder' })),
+          .map(() => swarm.spawnAgent({ type: 'coder' }))
       );
 
       // Sustained workload for 30 seconds
@@ -284,7 +284,7 @@ describe('Performance Under Load Integration Tests', () => {
               task: 'Memory test task',
               data: Buffer.alloc(Math.random() * 1024 * 1024), // 0-1MB random data
               strategy: 'parallel',
-            }),
+            })
           );
         }
 
@@ -363,7 +363,7 @@ describe('Performance Under Load Integration Tests', () => {
               operation: 'transform',
             },
             streaming: true,
-          }),
+          })
         );
       }
 
@@ -454,7 +454,7 @@ describe('Performance Under Load Integration Tests', () => {
             type: selectedWorkload.type,
             estimatedDuration: selectedWorkload.duration,
             affinityType: selectedWorkload.type.replace('ing', 'er'),
-          }),
+          })
         );
       }
 
@@ -492,11 +492,11 @@ describe('Performance Under Load Integration Tests', () => {
         // Average duration should be close to estimated
         const avgDuration = stats.totalTime / stats.count;
         const expectedDuration = workloadTypes.find(
-          (w) => w.type === type,
+          (w) => w.type === type
         ).duration;
         expect(avgDuration).to.be.within(
           expectedDuration * 0.8,
-          expectedDuration * 1.5,
+          expectedDuration * 1.5
         );
       });
 
@@ -610,7 +610,7 @@ describe('Performance Under Load Integration Tests', () => {
       const _agents = await Promise.all(
         Array(50)
           .fill()
-          .map(() => swarm.spawnAgent({ type: 'coder' })),
+          .map(() => swarm.spawnAgent({ type: 'coder' }))
       );
 
       // Execute many tasks
@@ -620,7 +620,7 @@ describe('Performance Under Load Integration Tests', () => {
           swarm.orchestrateTask({
             task: `Cleanup test task ${i}`,
             timeout: 5000,
-          }),
+          })
         );
       }
 

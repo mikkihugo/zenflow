@@ -2,7 +2,23 @@
  * Bindings Module - Barrel Export.
  *
  * Central export point for Rust/WASM bindings and native integrations.
+ * Now includes zen-orchestrator native integration for A2A protocol and neural services.
  */
+
+export type {
+  A2AMessage,
+  DAAgentStatus,
+  NeuralServiceResult,
+  OrchestratorBindingConfig,
+  OrchestratorMetrics,
+  OrchestratorStatus,
+  TypedNeuralServiceResult,
+} from './zen-orchestrator-wrapper.js';
+// zen-orchestrator integration
+export {
+  type ZenOrchestratorConfig,
+  ZenOrchestratorWrapper,
+} from './zen-orchestrator-wrapper.js';
 
 // TypeScript definitions for Rust bindings - types will be inferred from implementations
 

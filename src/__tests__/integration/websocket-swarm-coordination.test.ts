@@ -51,7 +51,7 @@ class MockWebSocket extends EventEmitter {
 interface SwarmMessage {
   type: 'init' | 'spawn' | 'task' | 'sync' | 'heartbeat';
   agentId?: string;
-  payload?: any;
+  payload?: unknown;
   timestamp: number;
 }
 
@@ -67,7 +67,7 @@ class SwarmCoordinator {
 
   constructor(
     private websocket: MockWebSocket | WebSocket,
-    private protocol: { encode: Function; decode: Function },
+    private protocol: { encode: Function; decode: Function }
   ) {
     this.setupWebSocketHandlers();
   }
@@ -75,18 +75,18 @@ class SwarmCoordinator {
   private setupWebSocketHandlers() {
     this.websocket.addEventListener('open', () => {});
 
-    this.websocket.addEventListener('message', (event: any) => {
+    this.websocket.addEventListener('message', (event: unknown) => {
       const message = this.protocol.decode(event['data']);
       this.handleMessage(message);
     });
 
-    this.websocket.addEventListener('error', (error: any) => {
+    this.websocket.addEventListener('error', (error: unknown) => {
       console.error('WebSocket error:', error);
     });
   }
 
   async broadcastMessage(
-    message: Omit<SwarmMessage, 'timestamp'>,
+    message: Omit<SwarmMessage, 'timestamp'>
   ): Promise<void> {
     const fullMessage: SwarmMessage = {
       ...message,
@@ -127,14 +127,14 @@ class SwarmCoordinator {
     this.messageHandlers.set(type, handler);
   }
 
-  async coordinateAgents(agentIds: string[], task: any): Promise<void> {
+  async coordinateAgents(agentIds: string[], task: unknown): Promise<void> {
     // Broadcast task to all agents
     const promises = agentIds.map((agentId) =>
       this.broadcastMessage({
         type: 'task',
         agentId,
         payload: task,
-      }),
+      })
     );
 
     await Promise.all(promises);
@@ -214,7 +214,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
       mockWebSocket.emit('message', { data: JSON.stringify(testMessage) });
 
       expect(mockProtocol.decode).toHaveBeenCalledWith(
-        JSON.stringify(testMessage),
+        JSON.stringify(testMessage)
       );
     });
 
@@ -233,7 +233,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
             type: 'task',
             agentId,
             payload: task,
-          }),
+          })
         );
       });
     });
@@ -281,7 +281,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
             type: 'task',
             agentId: `agent-${i % 10}`,
             payload: { index: i },
-          }),
+          })
         );
       }
 
@@ -333,7 +333,7 @@ describe('WebSocket Swarm Coordination - Hybrid Testing', () => {
 
       // Try to send message
       await expect(
-        coordinator.broadcastMessage({ type: 'test' }),
+        coordinator.broadcastMessage({ type: 'test' })
       ).rejects.toThrow('WebSocket is not open');
 
       // Verify protocol wasn't called for failed send

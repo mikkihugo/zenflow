@@ -4,6 +4,8 @@
 
 import { Box, Text } from 'ink';
 import Spinner from 'ink-spinner';
+import type React from 'react';
+import type { DeploymentStatus } from '../types.js';
 import { ProgressBar } from './progress-bar.js';
 
 export interface DeploymentProgressProps {
@@ -15,8 +17,8 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
   domain,
   status,
 }) => {
-  const getStatusIcon = (status: DeploymentStatus['status']) => {
-    switch (status.status) {
+  const getStatusIcon = (statusValue: DeploymentStatus['status']) => {
+    switch (statusValue) {
       case 'pending':
         return '⏳';
       case 'deploying':
@@ -30,8 +32,8 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
     }
   };
 
-  const getStatusColor = (status: DeploymentStatus['status']) => {
-    switch (status.status) {
+  const getStatusColor = (statusValue: DeploymentStatus['status']) => {
+    switch (statusValue) {
       case 'pending':
         return 'yellow';
       case 'deploying':
@@ -50,17 +52,11 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      marginBottom={1}
-    >
+    <Box flexDirection="column" marginBottom={1}>
       {/* Header with domain name and status */}
       <Box marginBottom={0}>
         <Box width={3}>{getStatusIcon(status)}</Box>
-        <Text
-          bold
-          color={getStatusColor(status.status)}
-        >
+        <Text bold color={getStatusColor(status.status)}>
           {formatDomain(domain)}
         </Text>
         <Text dimColor> ({status.status})</Text>
@@ -73,10 +69,7 @@ export const DeploymentProgress: React.FC<DeploymentProgressProps> = ({
 
       {/* Progress bar (only show during deployment) */}
       {status.status === 'deploying' && (
-        <Box
-          marginLeft={3}
-          marginBottom={0}
-        >
+        <Box marginLeft={3} marginBottom={0}>
           <ProgressBar
             current={status.progress}
             total={100}

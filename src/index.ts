@@ -539,7 +539,7 @@ export const defaultConfig: ClaudeZenConfig = {
  * @example
  */
 export async function initializeClaudeZen(
-  config: Partial<ClaudeZenConfig> = {},
+  config: Partial<ClaudeZenConfig> = {}
 ): Promise<void> {
   const finalConfig = { ...defaultConfig, ...config };
 
@@ -616,7 +616,7 @@ export async function initializeClaudeZen(
 
     console.log(
       '✅ Memory system initialized with',
-      finalConfig?.persistence?.provider || 'sqlite',
+      finalConfig?.persistence?.provider || 'sqlite'
     );
   } catch (error) {
     console.error('⚠️ Memory system initialization failed:', error);
@@ -751,20 +751,20 @@ export async function shutdownClaudeZen(): Promise<void> {
     delete (global as any).memorySystem;
 
     const successCount = shutdownResults.filter(
-      (r) => r.status === 'success',
+      (r) => r.status === 'success'
     ).length;
     const errorCount = shutdownResults.filter(
-      (r) => r.status === 'error',
+      (r) => r.status === 'error'
     ).length;
 
     console.log(
-      `🏁 Claude-Zen shutdown complete: ${successCount} components shutdown successfully, ${errorCount} errors`,
+      `🏁 Claude-Zen shutdown complete: ${successCount} components shutdown successfully, ${errorCount} errors`
     );
 
     if (errorCount > 0) {
       console.warn(
         '⚠️ Some components failed to shutdown gracefully:',
-        shutdownResults.filter((r) => r.status === 'error'),
+        shutdownResults.filter((r) => r.status === 'error')
       );
     }
   } catch (error) {

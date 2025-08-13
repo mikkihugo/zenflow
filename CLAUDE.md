@@ -1,15 +1,15 @@
 /**
- * @fileoverview Claude Code Configuration for ruv-swarm Integration
+ * @fileoverview Claude Code Configuration for zen-swarm Integration
  * 
  * Comprehensive configuration document for Claude Code instances working with
- * ruv-swarm MCP tools. This document defines the separation of responsibilities,
+ * zen-swarm (part of zen-neural-stack). This document defines the separation of responsibilities,
  * coordination protocols, and best practices for efficient parallel execution.
  * 
  * Key Features:
- * - Clear separation between Claude Code operations and MCP coordination
+ * - Clear separation between Claude Code operations and zen-neural coordination
  * - Mandatory parallel execution patterns for maximum performance  
- * - Comprehensive swarm orchestration guidelines
- * - Agent coordination protocols with hooks integration
+ * - Comprehensive zen-swarm orchestration guidelines
+ * - Neural agent coordination protocols with hooks integration
  * - Memory management and persistence strategies
  * - Performance optimization techniques
  * 
@@ -17,16 +17,16 @@
  * @since 1.0.0-alpha.43
  * @version 1.0.0
  * 
- * @see {@link https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm} ruv-swarm Documentation
+ * @see {@link https://github.com/zen-neural-stack} zen-neural-stack Documentation
  * @see {@link https://docs.anthropic.com/en/docs/claude-code} Claude Code Documentation
  * 
- * @requires ruv-swarm - MCP server for coordination
+ * @requires zen-swarm - Neural swarm coordination (part of zen-neural-stack)
  * @requires @anthropic/claude-code - Native Claude Code CLI tools
  * 
  * @example
  * ```bash
- * # Add ruv-swarm MCP server to Claude Code
- * claude mcp add zen-swarm npx zen-swarm mcp start
+ * # zen-swarm is integrated directly via zen-neural-stack bindings
+ * # No separate MCP server needed - uses native NAPI bindings
  * 
  * # Use parallel execution patterns
  * # ✅ CORRECT - Multiple operations in single message
@@ -34,7 +34,7 @@
  * ```
  */
 
-# Claude Code Configuration for ruv-swarm
+# Claude Code Configuration for zen-swarm (zen-neural-stack)
 
 ## 🎯 IMPORTANT: Separation of Responsibilities
 
@@ -45,15 +45,16 @@
 - ✅ **ALL actual implementation** work
 - ✅ **Project navigation** and code analysis
 
-### ruv-swarm MCP Tools Handle:
-- 🧠 **Coordination only** - Orchestrating Claude Code's actions
-- 💾 **Memory management** - Persistent state across sessions
-- 🤖 **Neural features** - Cognitive patterns and learning
-- 📊 **Performance tracking** - Monitoring and metrics
-- 🐝 **Swarm orchestration** - Multi-agent coordination
+### zen-swarm (zen-neural-stack) Handles:
+- 🧠 **Neural coordination** - AI-driven agent orchestration
+- 💾 **Neural memory** - Persistent neural state across sessions
+- 🤖 **Neural intelligence** - Advanced cognitive patterns and learning
+- 📊 **Neural analytics** - AI performance tracking and metrics
+- 🐝 **Neural swarm orchestration** - Multi-neural-agent coordination
+- 🔗 **Neural networking** - Agent-to-Agent (A2A) protocol integration
 
 ### ⚠️ Key Principle:
-**MCP tools DO NOT create content or write code.** They coordinate and enhance Claude Code's native capabilities. Think of them as an orchestration layer that helps Claude Code work more efficiently.
+**zen-neural-stack provides neural intelligence and coordination.** It enhances Claude Code's capabilities with AI-driven swarm intelligence, neural forecasting, and intelligent orchestration. Think of it as a neural brain that helps Claude Code work smarter and more efficiently.
 
 ## 🚀 CRITICAL: Parallel Execution & Batch Operations
 

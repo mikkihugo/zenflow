@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 /**
  * Web Terminal Launcher - Hybrid TUI that uses web interface
- * 
+ *
  * This launches the web server in the background and then opens
  * a terminal browser to display the web interface in the CLI.
- * 
+ *
  * This gives us:
- * - Single interface to maintain (web)  
+ * - Single interface to maintain (web)
  * - Terminal experience (TUI)
  * - Best of both worlds
  */
 
-import { spawn, ChildProcess } from 'node:child_process';
+import { type ChildProcess, spawn } from 'node:child_process';
 import { getLogger } from './config/logging-config.ts';
 import { launchTerminalBrowser } from './interfaces/web/terminal-browser/terminal-browser.ts';
 
@@ -25,16 +25,15 @@ class WebTerminalLauncher {
   async start() {
     try {
       logger.info('🚀 Starting hybrid web+terminal interface...');
-      
+
       // Step 1: Start web server in background
       await this.startWebServer();
-      
+
       // Step 2: Wait for server to be ready
       await this.waitForServer();
-      
+
       // Step 3: Launch terminal browser to display web interface
       await this.launchTerminalBrowser();
-      
     } catch (error) {
       logger.error('Failed to start web-terminal launcher:', error);
       await this.shutdown();
@@ -45,12 +44,12 @@ class WebTerminalLauncher {
   private async startWebServer(): Promise<void> {
     return new Promise((resolve, reject) => {
       logger.info('📡 Starting web server in background...');
-      
+
       // Use the working minimal server
       this.webServer = spawn('npx', ['tsx', 'minimal-server.ts'], {
         cwd: process.cwd(),
         stdio: ['ignore', 'pipe', 'pipe'],
-        detached: false
+        detached: false,
       });
 
       this.webServer.stdout?.on('data', (data) => {
@@ -87,15 +86,15 @@ class WebTerminalLauncher {
 
   private async waitForServer(): Promise<void> {
     logger.info('⏳ Waiting for web server to be ready...');
-    
+
     const maxAttempts = 30; // 15 seconds
     const delay = 500; // 500ms between attempts
-    
+
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         const fetch = (await import('node-fetch')).default;
         const response = await fetch(this.baseUrl + '/health');
-        
+
         if (response.ok) {
           logger.info('✅ Web server is ready');
           return;
@@ -103,37 +102,37 @@ class WebTerminalLauncher {
       } catch (error) {
         // Server not ready yet, continue waiting
       }
-      
+
       if (attempt < maxAttempts) {
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
-    
+
     // If we get here, assume server is ready anyway
     logger.warn('Web server health check failed, but proceeding...');
   }
 
   private async launchTerminalBrowser(): Promise<void> {
     logger.info('🖥️  Launching terminal browser...');
-    
+
     // Launch the terminal browser to display the web interface
     await launchTerminalBrowser(this.baseUrl, {
       baseUrl: this.baseUrl,
       enableNavigation: true,
       enableForms: true,
-      refreshInterval: 5000
+      refreshInterval: 5000,
     });
   }
 
   private async shutdown(): Promise<void> {
     logger.info('🛑 Shutting down...');
-    
+
     if (this.webServer && !this.webServer.killed) {
       this.webServer.kill('SIGTERM');
-      
+
       // Wait a bit for graceful shutdown
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
       // Force kill if still running
       if (!this.webServer.killed) {
         this.webServer.kill('SIGKILL');

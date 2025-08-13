@@ -219,8 +219,8 @@ export interface AgentConfig {
   permissions: string[];
   trustedAgents: string[];
   expertise: Record<string, number>;
-  preferences: Record<string, any>;
-  cognitiveProfile?: any;
+  preferences: Record<string, unknown>;
+  cognitiveProfile?: unknown;
   capabilities?: Partial<AgentCapabilities>;
   memory?: {
     shortTerm: Map<string, any>;
@@ -235,9 +235,9 @@ export interface AgentEnvironment {
   tempDirectory: string;
   logDirectory: string;
   apiEndpoints: Record<string, string>;
-  credentials: Record<string, any>;
+  credentials: Record<string, unknown>;
   availableTools: string[];
-  toolConfigs: Record<string, any>;
+  toolConfigs: Record<string, unknown>;
 }
 
 export interface AgentMetrics {
@@ -269,7 +269,7 @@ export interface AgentError {
   timestamp: Date;
   type: string;
   message: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   severity: 'low' | 'medium' | 'high' | 'critical';
   resolved: boolean;
 }
@@ -287,7 +287,7 @@ export interface AgentState {
   environment: AgentEnvironment;
   endpoints: string[];
   lastHeartbeat: Date;
-  taskHistory: any[];
+  taskHistory: unknown[];
   errorHistory: AgentError[];
   childAgents: string[];
   collaborators: string[];
@@ -312,16 +312,16 @@ export interface Task {
   createdAt: Date;
   deadline?: Date;
   status: 'pending' | 'in-progress' | 'completed' | 'failed';
-  payload?: any;
-  metadata?: Record<string, any>;
+  payload?: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ExecutionResult {
   success: boolean;
-  data: any;
+  data: unknown;
   executionTime: number;
   agentId: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export type MessageType =
@@ -339,8 +339,8 @@ export interface Message {
   toAgentId: string;
   swarmId: string;
   type: MessageType;
-  content?: any;
-  payload?: any;
+  content?: unknown;
+  payload?: unknown;
   timestamp: Date;
   requiresResponse: boolean;
 }

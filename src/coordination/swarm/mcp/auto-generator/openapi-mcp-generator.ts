@@ -283,7 +283,7 @@ export class OpenAPIMCPGenerator {
         // Load from file
         if (!existsSync(this.config.specUrl)) {
           throw new Error(
-            `OpenAPI spec file not found: ${this.config.specUrl}`,
+            `OpenAPI spec file not found: ${this.config.specUrl}`
           );
         }
         specContent = await readFile(this.config.specUrl, 'utf-8');
@@ -321,7 +321,7 @@ export class OpenAPIMCPGenerator {
 
     if (!this.spec.openapi.startsWith('3.')) {
       throw new Error(
-        `Unsupported OpenAPI version: ${this.spec.openapi}. Only OpenAPI 3.x is supported.`,
+        `Unsupported OpenAPI version: ${this.spec.openapi}. Only OpenAPI 3.x is supported.`
       );
     }
 
@@ -370,7 +370,7 @@ export class OpenAPIMCPGenerator {
    */
   private shouldSkipOperation(
     operation: OpenAPIOperation,
-    method: string,
+    method: string
   ): boolean {
     // Skip deprecated operations unless explicitly included
     if (operation.deprecated && !this.config.options?.includeDeprecated) {
@@ -400,7 +400,7 @@ export class OpenAPIMCPGenerator {
   private async generateTool(
     path: string,
     method: string,
-    operation: OpenAPIOperation,
+    operation: OpenAPIOperation
   ): Promise<GeneratedTool | null> {
     const toolName = this.generateToolName(path, method, operation);
     const description = this.generateToolDescription(path, method, operation);
@@ -430,7 +430,7 @@ export class OpenAPIMCPGenerator {
   private generateToolName(
     path: string,
     method: string,
-    operation: OpenAPIOperation,
+    operation: OpenAPIOperation
   ): string {
     const namespace = this.config.namespace;
 
@@ -449,7 +449,7 @@ export class OpenAPIMCPGenerator {
 
     return `${namespace}_${methodPart}_${pathParts.join('_')}`.replace(
       /__+/g,
-      '_',
+      '_'
     );
   }
 
@@ -459,7 +459,7 @@ export class OpenAPIMCPGenerator {
   private generateToolDescription(
     path: string,
     method: string,
-    operation: OpenAPIOperation,
+    operation: OpenAPIOperation
   ): string {
     if (operation.description) {
       return operation.description;
@@ -478,7 +478,7 @@ export class OpenAPIMCPGenerator {
    * Generate MCP input schema from OpenAPI operation parameters and request body.
    */
   private generateInputSchema(
-    operation: OpenAPIOperation,
+    operation: OpenAPIOperation
   ): MCPToolDefinition['inputSchema'] {
     const properties: Record<string, unknown> = {};
     const required: string[] = [];
@@ -488,7 +488,7 @@ export class OpenAPIMCPGenerator {
       operation.parameters?.filter((p) => p.in === 'path') || [];
     pathParams.forEach((param) => {
       properties[param.name] = this.convertOpenAPISchemaToJSONSchema(
-        param.schema,
+        param.schema
       );
       if (param.required) {
         required.push(param.name);
@@ -522,7 +522,7 @@ export class OpenAPIMCPGenerator {
       const jsonContent = operation.requestBody.content['application/json'];
       if (jsonContent) {
         properties.body = this.convertOpenAPISchemaToJSONSchema(
-          jsonContent.schema,
+          jsonContent.schema
         );
         if (operation.requestBody.required) {
           required.push('body');
@@ -541,13 +541,13 @@ export class OpenAPIMCPGenerator {
   /**
    * Convert OpenAPI schema to JSON Schema format.
    */
-  private convertOpenAPISchemaToJSONSchema(schema: OpenAPISchema): any {
+  private convertOpenAPISchemaToJSONSchema(schema: OpenAPISchema): unknown {
     if (schema.$ref) {
       // Handle $ref - would need to resolve from components
       return { $ref: schema.$ref };
     }
 
-    const jsonSchema: any = {
+    const jsonSchema: unknown = {
       type: schema.type,
     };
 
@@ -589,7 +589,7 @@ export class OpenAPIMCPGenerator {
     path: string,
     method: string,
     operation: OpenAPIOperation,
-    definition: MCPToolDefinition,
+    definition: MCPToolDefinition
   ): string {
     const handlerName = `handle_${definition.name}`;
     const baseUrl = this.config.baseUrl || 'http://localhost:3456';
@@ -678,7 +678,7 @@ export async function ${handlerName}(args: ${definition.name}Args): Promise<${de
    * Generate path parameter replacement code.
    */
   private generatePathParameterReplacement(
-    operation: OpenAPIOperation,
+    operation: OpenAPIOperation
   ): string {
     const pathParams =
       operation.parameters?.filter((p) => p.in === 'path') || [];
@@ -689,7 +689,7 @@ export async function ${handlerName}(args: ${definition.name}Args): Promise<${de
     return pathParams
       .map(
         (param) =>
-          `url = url.replace('{${param.name}}', encodeURIComponent(String(args.${param.name})));`,
+          `url = url.replace('{${param.name}}', encodeURIComponent(String(args.${param.name})));`
       )
       .join('\n    ');
   }
@@ -712,7 +712,7 @@ export async function ${handlerName}(args: ${definition.name}Args): Promise<${de
           (param) => `
       if (args.queryParams.${param.name} !== undefined) {
         searchParams.append('${param.name}', String(args.queryParams.${param.name}));
-      }`,
+      }`
         )
         .join('')}
       
@@ -754,7 +754,7 @@ export async function ${handlerName}(args: ${definition.name}Args): Promise<${de
    */
   private generateTypes(
     operation: OpenAPIOperation,
-    definition: MCPToolDefinition,
+    definition: MCPToolDefinition
   ): string {
     const argsType = this.generateArgsType(definition);
     const responseType = this.generateResponseType(operation, definition);
@@ -786,7 +786,7 @@ ${this.generateInterfaceProperties(definition.inputSchema.properties)}
    */
   private generateResponseType(
     operation: OpenAPIOperation,
-    definition: MCPToolDefinition,
+    definition: MCPToolDefinition
   ): string {
     // Generate response type based on successful response schema
     const successResponse =
@@ -815,7 +815,7 @@ ${this.generateInterfaceProperties(definition.inputSchema.properties)}
    */
   private generateInterfaceProperties(
     properties: Record<string, unknown>,
-    indent = '  ',
+    indent = '  '
   ): string {
     return Object.entries(properties)
       .map(([key, schema]) => {
@@ -871,7 +871,7 @@ ${this.generateInterfaceProperties(definition.inputSchema.properties)}
     path: string,
     method: string,
     operation: OpenAPIOperation,
-    definition: MCPToolDefinition,
+    definition: MCPToolDefinition
   ): string {
     const handlerName = `handle_${definition.name}`;
 
@@ -947,7 +947,7 @@ describe('${definition.name}', () => {
    * Generate test arguments from operation schema.
    */
   private generateTestArgs(operation: OpenAPIOperation): string {
-    const args: any = {};
+    const args: unknown = {};
 
     // Add path parameters
     const pathParams =
@@ -980,7 +980,7 @@ describe('${definition.name}', () => {
   /**
    * Get example value from schema.
    */
-  private getExampleValue(schema: OpenAPISchema): any {
+  private getExampleValue(schema: OpenAPISchema): unknown {
     if (schema.example !== undefined) {
       return schema.example;
     }
@@ -1014,14 +1014,14 @@ describe('${definition.name}', () => {
       await writeFile(
         join(toolDir, `${tool.definition.name}.ts`),
         tool.handler,
-        'utf-8',
+        'utf-8'
       );
 
       // Write types file
       await writeFile(
         join(toolDir, `${tool.definition.name}-types.ts`),
         tool.types,
-        'utf-8',
+        'utf-8'
       );
 
       // Write tests file if enabled
@@ -1029,7 +1029,7 @@ describe('${definition.name}', () => {
         await writeFile(
           join(toolDir, `${tool.definition.name}.test.ts`),
           tool.tests,
-          'utf-8',
+          'utf-8'
         );
       }
     }
@@ -1042,7 +1042,7 @@ describe('${definition.name}', () => {
     const imports = tools
       .map(
         (tool) =>
-          `import { handle_${tool.definition.name} } from './${tool.definition.name}/${tool.definition.name}';`,
+          `import { handle_${tool.definition.name} } from './${tool.definition.name}/${tool.definition.name}';`
       )
       .join('\n');
 
@@ -1052,13 +1052,13 @@ describe('${definition.name}', () => {
     name: '${tool.definition.name}',
     description: '${tool.definition.description}',
     inputSchema: ${JSON.stringify(tool.definition.inputSchema, null, 4)},
-  }`,
+  }`
       )
       .join(',\n');
 
     const handlersMap = tools
       .map(
-        (tool) => `  '${tool.definition.name}': handle_${tool.definition.name}`,
+        (tool) => `  '${tool.definition.name}': handle_${tool.definition.name}`
       )
       .join(',\n');
 
@@ -1092,7 +1092,7 @@ ${handlersMap}
 /**
  * Execute a generated MCP tool
  */
-export async function executeGeneratedTool(name: string, args: any): Promise<unknown> {
+export async function executeGeneratedTool(name: string, args: unknown): Promise<unknown> {
   const handler = GENERATED_MCP_HANDLERS[name as keyof typeof GENERATED_MCP_HANDLERS];
   
   if (!handler) {
@@ -1135,7 +1135,7 @@ export class MCPError extends Error {
   constructor(
     public code: string,
     message: string,
-    public details?: any
+    public details?: unknown
   ) {
     super(message);
     this.name = 'MCPError';
@@ -1146,7 +1146,7 @@ export class MCPError extends Error {
     await writeFile(
       join(this.config.outputDir, 'index.ts'),
       integrationContent,
-      'utf-8',
+      'utf-8'
     );
 
     // Write individual tool files
@@ -1228,7 +1228,7 @@ describe('Generated MCP Tools', () => {
     await writeFile(
       join(this.config.outputDir, 'index.test.ts'),
       testSuiteContent,
-      'utf-8',
+      'utf-8'
     );
   }
 
@@ -1268,7 +1268,7 @@ ${tool.definition.description}
 \`\`\`json
 ${JSON.stringify(tool.definition.inputSchema, null, 2)}
 \`\`\`
-`,
+`
   )
   .join('\n')}
 
@@ -1315,7 +1315,7 @@ npm run generate:mcp-tools -- --sync
     await writeFile(
       join(this.config.outputDir, 'README.md'),
       docContent,
-      'utf-8',
+      'utf-8'
     );
   }
 
@@ -1447,7 +1447,7 @@ Custom authentication is configured. Implement the custom auth function as neede
               {
                 file: specFile,
                 event: event.eventType,
-              },
+              }
             );
 
             // Debounce rapid file changes

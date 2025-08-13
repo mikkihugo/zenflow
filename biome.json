@@ -26,7 +26,7 @@
       },
       "style": {
         "useConst": "error",
-        "useTemplate": "error", 
+        "useTemplate": "error",
         "noUselessElse": "error",
         "useImportType": "error",
         "useNodejsImportProtocol": "error"
@@ -41,7 +41,7 @@
       },
       "correctness": {
         "noUnusedVariables": "error",
-        "noUnusedImports": "error", 
+        "noUnusedImports": "error",
         "noUndeclaredVariables": "error",
         "useImportExtensions": {
           "level": "error",
@@ -71,7 +71,7 @@
     "includes": ["src/**/*", "scripts/**/*", "tests/**/*"],
     "experimentalScannerIgnores": [
       "**/node_modules/**",
-      "**/dist/**", 
+      "**/dist/**",
       "**/build/**",
       "**/docs/**",
       "**/*.d.ts"

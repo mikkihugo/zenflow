@@ -41,14 +41,14 @@ describe('Swarm Topology Management (London TDD)', () => {
           receiveMessage: vi.fn(),
           getMetrics: vi.fn(),
           updateStatus: vi.fn(),
-        }) as jest.Mocked<Agent>,
+        }) as jest.Mocked<Agent>
     );
 
     testHelpers = new CoordinationTestHelpers();
 
     topologyManager = new SwarmTopologyManager(
       mockMessageBroker,
-      mockTopologyOptimizer,
+      mockTopologyOptimizer
     );
   });
 
@@ -56,7 +56,7 @@ describe('Swarm Topology Management (London TDD)', () => {
     it('should initialize mesh topology with full connectivity', async () => {
       const topology = 'mesh';
       const expectedConnections = testHelpers.calculateMeshConnections(
-        mockAgents.length,
+        mockAgents.length
       );
 
       mockTopologyOptimizer.calculateOptimalConnections.mockResolvedValue({
@@ -69,7 +69,7 @@ describe('Swarm Topology Management (London TDD)', () => {
 
       // Verify all agents are connected to each other
       expect(
-        mockTopologyOptimizer.calculateOptimalConnections,
+        mockTopologyOptimizer.calculateOptimalConnections
       ).toHaveBeenCalledWith(topology, mockAgents);
 
       // Verify connections are established
@@ -96,7 +96,7 @@ describe('Swarm Topology Management (London TDD)', () => {
       });
 
       await expect(
-        topologyManager.initializeTopology('mesh', mockAgents),
+        topologyManager.initializeTopology('mesh', mockAgents)
       ).rejects.toThrow('Failed to establish mesh topology');
 
       // Verify cleanup was attempted
@@ -126,7 +126,7 @@ describe('Swarm Topology Management (London TDD)', () => {
       mockTopologyOptimizer.calculateOptimalConnections.mockResolvedValue({
         connections: testHelpers.generateHierarchicalConnections(
           coordinatorAgents,
-          workerAgents,
+          workerAgents
         ),
         efficiency: 0.88,
         latency: 30,
@@ -137,14 +137,14 @@ describe('Swarm Topology Management (London TDD)', () => {
       // Verify coordinator-to-coordinator connections
       coordinatorAgents.forEach((coordinator) => {
         expect(coordinator.connect).toHaveBeenCalledWith(
-          expect.objectContaining({ type: 'coordinator' }),
+          expect.objectContaining({ type: 'coordinator' })
         );
       });
 
       // Verify worker-to-coordinator connections
       workerAgents.forEach((worker) => {
         expect(worker.connect).toHaveBeenCalledWith(
-          expect.objectContaining({ type: 'coordinator' }),
+          expect.objectContaining({ type: 'coordinator' })
         );
       });
 
@@ -187,9 +187,9 @@ describe('Swarm Topology Management (London TDD)', () => {
         expect.objectContaining({
           failedAgents: [originalCoordinator.id],
           remainingAgents: expect.arrayContaining(
-            mockAgents.slice(1).map((a) => a.id),
+            mockAgents.slice(1).map((a) => a.id)
           ),
-        }),
+        })
       );
 
       // Verify promotion message
@@ -355,7 +355,7 @@ describe('Swarm Topology Management (London TDD)', () => {
       };
 
       mockTopologyOptimizer.assessPerformanceMetrics.mockResolvedValue(
-        performanceMetrics,
+        performanceMetrics
       );
       mockTopologyOptimizer.recommendOptimizations.mockResolvedValue({
         actions: [
@@ -371,12 +371,12 @@ describe('Swarm Topology Management (London TDD)', () => {
 
       // Verify performance assessment
       expect(
-        mockTopologyOptimizer.assessPerformanceMetrics,
+        mockTopologyOptimizer.assessPerformanceMetrics
       ).toHaveBeenCalledWith(
         expect.objectContaining({
           topology: 'mesh',
           agents: mockAgents,
-        }),
+        })
       );
 
       // Verify optimization recommendations
@@ -384,7 +384,7 @@ describe('Swarm Topology Management (London TDD)', () => {
         expect.objectContaining({
           currentMetrics: performanceMetrics,
           targetMetrics: expect.any(Object),
-        }),
+        })
       );
 
       // Verify optimization broadcast
@@ -418,7 +418,7 @@ describe('Swarm Topology Management (London TDD)', () => {
         expect.objectContaining({
           workload: workloadData,
           currentState: expect.any(Object),
-        }),
+        })
       );
 
       // Verify topology adaptation message
@@ -473,7 +473,7 @@ describe('Swarm Topology Management (London TDD)', () => {
         expect.objectContaining({
           loadDistribution,
           topologyConstraints: expect.any(Object),
-        }),
+        })
       );
 
       // Verify load balancing notification
@@ -512,7 +512,7 @@ describe('Swarm Topology Management (London TDD)', () => {
             coordinatorToWorkerDelegation: true,
             workerToCoordinatorEscalation: false,
           }),
-        }),
+        })
       );
     });
   });
@@ -540,7 +540,7 @@ describe('Swarm Topology Management (London TDD)', () => {
         expect.objectContaining({
           byzantineDetection: true,
           agents: mockAgents,
-        }),
+        })
       );
 
       // Verify isolation procedure
@@ -565,7 +565,7 @@ describe('Swarm Topology Management (London TDD)', () => {
 
       // Mock agent voting responses
       mockAgents.forEach((agent, index) => {
-        agent.receiveMessage.mockImplementation((message: any) => {
+        agent.receiveMessage.mockImplementation((message: unknown) => {
           if (message.type === 'consensus_vote_request') {
             return Promise.resolve({
               vote: index < 3 ? 'approve' : 'reject',
@@ -584,7 +584,7 @@ describe('Swarm Topology Management (London TDD)', () => {
           expect.objectContaining({
             type: 'consensus_vote_request',
             proposal: consensusDecision,
-          }),
+          })
         );
       });
 

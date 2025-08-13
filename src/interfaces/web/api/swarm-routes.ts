@@ -29,8 +29,8 @@ const swarmService = new SwarmService();
 /**
  * Validation middleware for JSON schemas
  */
-function validateSchema(schema: any) {
-  return (req: express.Request, res: express.Response, next: any) => {
+function validateSchema(schema: unknown) {
+  return (req: express.Request, res: express.Response, next: unknown) => {
     try {
       // Basic validation (in production, use ajv or similar)
       const data = req.body;
@@ -75,7 +75,7 @@ function validateSchema(schema: any) {
  * Error handler middleware
  */
 function handleErrors(
-  fn: (req: express.Request, res: express.Response) => Promise<void>,
+  fn: (req: express.Request, res: express.Response) => Promise<void>
 ) {
   return async (req: express.Request, res: express.Response) => {
     try {
@@ -121,7 +121,7 @@ router.post(
         endpoint: '/api/v1/swarm/init',
       },
     });
-  }),
+  })
 );
 
 /**
@@ -151,7 +151,7 @@ router.post(
         endpoint: `/api/v1/swarm/${swarmId}/agents`,
       },
     });
-  }),
+  })
 );
 
 /**
@@ -183,7 +183,7 @@ router.post(
         endpoint: '/api/v1/swarm/tasks',
       },
     });
-  }),
+  })
 );
 
 /**
@@ -206,7 +206,7 @@ router.get(
         endpoint: '/api/v1/swarm/status',
       },
     });
-  }),
+  })
 );
 
 router.get(
@@ -226,7 +226,7 @@ router.get(
         endpoint: `/api/v1/swarm/${swarmId}/status`,
       },
     });
-  }),
+  })
 );
 
 /**
@@ -249,7 +249,7 @@ router.get(
         endpoint: '/api/v1/swarm/tasks',
       },
     });
-  }),
+  })
 );
 
 router.get(
@@ -269,7 +269,7 @@ router.get(
         endpoint: `/api/v1/swarm/tasks/${taskId}`,
       },
     });
-  }),
+  })
 );
 
 /**
@@ -291,7 +291,7 @@ router.get(
         endpoint: '/api/v1/swarm/stats',
       },
     });
-  }),
+  })
 );
 
 /**
@@ -314,7 +314,7 @@ router.post(
         endpoint: '/api/v1/swarm/shutdown',
       },
     });
-  }),
+  })
 );
 
 // Middleware to add OpenAPI documentation metadata

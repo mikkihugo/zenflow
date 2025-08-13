@@ -207,7 +207,7 @@ export interface ServiceManagerConfig {
       enabled: boolean;
       channels: Array<{
         type: 'console' | 'webhook' | 'email';
-        config: Record<string, any>;
+        config: Record<string, unknown>;
       }>;
     };
   };
@@ -279,7 +279,7 @@ export interface ServiceCreationRequest {
   dependencies?: string[];
   priority?: ServicePriority;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface BatchServiceCreationRequest {
@@ -387,11 +387,11 @@ export class ServiceManager extends EventEmitter {
     const healthResults = await this.registry.healthCheckAll();
 
     const _healthyCount = Array.from(healthResults?.values()).filter(
-      (status) => status.health === 'healthy',
+      (status) => status.health === 'healthy'
     ).length;
 
     const errorCount = Array.from(healthResults?.values()).filter(
-      (status) => status.health === 'unhealthy' || status.lifecycle === 'error',
+      (status) => status.health === 'unhealthy' || status.lifecycle === 'error'
     ).length;
 
     const totalServices = systemMetrics.totalServices;
@@ -403,7 +403,7 @@ export class ServiceManager extends EventEmitter {
       systemMetrics.aggregatedMetrics.length > 0
         ? systemMetrics.aggregatedMetrics.reduce(
             (sum, metric) => sum + metric.averageLatency,
-            0,
+            0
           ) / systemMetrics.aggregatedMetrics.length
         : 0;
 
@@ -471,7 +471,7 @@ export class ServiceManager extends EventEmitter {
    * @param request
    */
   async createServices(
-    request: BatchServiceCreationRequest,
+    request: BatchServiceCreationRequest
   ): Promise<IService[]> {
     if (!this.initialized) {
       await this.initialize();
@@ -493,7 +493,7 @@ export class ServiceManager extends EventEmitter {
       } else if (request.parallel) {
         // Create services in parallel
         const createPromises = request.services.map((serviceRequest) =>
-          this.createService(serviceRequest),
+          this.createService(serviceRequest)
         );
 
         const results = await Promise.allSettled(createPromises);
@@ -504,7 +504,7 @@ export class ServiceManager extends EventEmitter {
           } else {
             this.logger.error(
               `Failed to create service ${request.services[index]?.name}:`,
-              result?.reason,
+              result?.reason
             );
           }
         });
@@ -517,7 +517,7 @@ export class ServiceManager extends EventEmitter {
           } catch (error) {
             this.logger.error(
               `Failed to create service ${serviceRequest.name}:`,
-              error,
+              error
             );
             // Continue with other services
           }
@@ -530,7 +530,7 @@ export class ServiceManager extends EventEmitter {
       }
 
       this.logger.info(
-        `Successfully created ${createdServices.length} services`,
+        `Successfully created ${createdServices.length} services`
       );
       return createdServices;
     } catch (error) {
@@ -546,42 +546,42 @@ export class ServiceManager extends EventEmitter {
   // Data Services
   async createWebDataService(
     name: string,
-    config?: Partial<DataServiceAdapterConfig>,
+    config?: Partial<DataServiceAdapterConfig>
   ): Promise<IService> {
     return (await this.dataServiceFactory.createWebDataAdapter(
       name,
-      config,
+      config
     )) as unknown as IService;
   }
 
   async createDocumentService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<DataServiceAdapterConfig>,
+    config?: Partial<DataServiceAdapterConfig>
   ): Promise<IService> {
     return (await this.dataServiceFactory.createDocumentAdapter(
       name,
       databaseType,
-      config,
+      config
     )) as unknown as IService;
   }
 
   async createUnifiedDataService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<DataServiceAdapterConfig>,
+    config?: Partial<DataServiceAdapterConfig>
   ): Promise<IService> {
     return (await this.dataServiceFactory.createUnifiedDataAdapter(
       name,
       databaseType,
-      config,
+      config
     )) as unknown as IService;
   }
 
   // Coordination Services
   async createDaaService(
     name: string,
-    config?: Partial<CoordinationServiceAdapterConfig>,
+    config?: Partial<CoordinationServiceAdapterConfig>
   ): Promise<IService> {
     // TODO: Method createDaaAdapter does not exist on CoordinationServiceFactory
     // Use generic create method instead
@@ -593,13 +593,13 @@ export class ServiceManager extends EventEmitter {
       ...config,
     } as CoordinationServiceAdapterConfig;
     return (await this.coordinationServiceFactory.create(
-      daaConfig,
+      daaConfig
     )) as IService;
   }
 
   async createSessionRecoveryService(
     name: string,
-    config?: Partial<CoordinationServiceAdapterConfig>,
+    config?: Partial<CoordinationServiceAdapterConfig>
   ): Promise<IService> {
     // TODO: Method createSessionRecoveryAdapter does not exist on CoordinationServiceFactory
     // Use generic create method instead
@@ -611,13 +611,13 @@ export class ServiceManager extends EventEmitter {
       ...config,
     } as CoordinationServiceAdapterConfig;
     return (await this.coordinationServiceFactory.create(
-      sessionConfig,
+      sessionConfig
     )) as IService;
   }
 
   async createUnifiedCoordinationService(
     name: string,
-    config?: Partial<CoordinationServiceAdapterConfig>,
+    config?: Partial<CoordinationServiceAdapterConfig>
   ): Promise<IService> {
     // TODO: Method createUnifiedCoordinationAdapter does not exist on CoordinationServiceFactory
     // Use generic create method instead
@@ -628,7 +628,7 @@ export class ServiceManager extends EventEmitter {
       ...config,
     } as CoordinationServiceAdapterConfig;
     return (await this.coordinationServiceFactory.create(
-      unifiedConfig,
+      unifiedConfig
     )) as IService;
   }
 
@@ -636,24 +636,24 @@ export class ServiceManager extends EventEmitter {
   async createArchitectureStorageService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<IntegrationServiceAdapterConfig>,
+    config?: Partial<IntegrationServiceAdapterConfig>
   ): Promise<IService> {
     return (await this.integrationServiceFactory.createArchitectureStorageAdapter(
       name,
       databaseType,
-      config,
+      config
     )) as IService;
   }
 
   async createSafeAPIService(
     name: string,
     baseURL: string,
-    config?: Partial<IntegrationServiceAdapterConfig>,
+    config?: Partial<IntegrationServiceAdapterConfig>
   ): Promise<IService> {
     return (await this.integrationServiceFactory.createSafeAPIAdapter(
       name,
       baseURL,
-      config,
+      config
     )) as IService;
   }
 
@@ -664,21 +664,21 @@ export class ServiceManager extends EventEmitter {
       databaseType?: 'postgresql' | 'sqlite' | 'mysql';
       supportedProtocols?: string[];
     } = {},
-    config?: Partial<IntegrationServiceAdapterConfig>,
+    config?: Partial<IntegrationServiceAdapterConfig>
   ): Promise<IService> {
     return (await this.integrationServiceFactory.createUnifiedIntegrationAdapter(
       name,
       {
         ...options,
         ...config,
-      },
+      }
     )) as IService;
   }
 
   // Infrastructure Services
   async createFacadeService(
     name: string,
-    config?: Partial<InfrastructureServiceAdapterConfig>,
+    config?: Partial<InfrastructureServiceAdapterConfig>
   ): Promise<IService> {
     // TODO: Method createFacadeAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
@@ -691,7 +691,7 @@ export class ServiceManager extends EventEmitter {
   async createPatternIntegrationService(
     name: string,
     configProfile: 'default' | 'production' | 'development' = 'default',
-    config?: Partial<InfrastructureServiceAdapterConfig>,
+    config?: Partial<InfrastructureServiceAdapterConfig>
   ): Promise<IService> {
     // TODO: Method createPatternIntegrationAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
@@ -701,14 +701,14 @@ export class ServiceManager extends EventEmitter {
         config: config || undefined,
         autoStart: true,
         tags: ['pattern-integration', configProfile],
-      } as CreateServiceOptions,
+      } as CreateServiceOptions
     )) as IService;
   }
 
   async createUnifiedInfrastructureService(
     name: string,
     configProfile: 'default' | 'production' | 'development' = 'default',
-    config?: Partial<InfrastructureServiceAdapterConfig>,
+    config?: Partial<InfrastructureServiceAdapterConfig>
   ): Promise<IService> {
     // TODO: Method createUnifiedInfrastructureAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
@@ -718,7 +718,7 @@ export class ServiceManager extends EventEmitter {
         config: config || undefined,
         autoStart: true,
         tags: ['unified-infrastructure', configProfile],
-      } as CreateServiceOptions,
+      } as CreateServiceOptions
     )) as IService;
   }
 
@@ -840,13 +840,13 @@ export class ServiceManager extends EventEmitter {
 
     const total = healthResults.size;
     const healthy = Array.from(healthResults?.values()).filter(
-      (s) => s.health === 'healthy',
+      (s) => s.health === 'healthy'
     ).length;
     const degraded = Array.from(healthResults?.values()).filter(
-      (s) => s.health === 'degraded',
+      (s) => s.health === 'degraded'
     ).length;
     const unhealthy = Array.from(healthResults?.values()).filter(
-      (s) => s.health === 'unhealthy',
+      (s) => s.health === 'unhealthy'
     ).length;
 
     const errorRate = total > 0 ? ((degraded + unhealthy) / total) * 100 : 0;
@@ -854,7 +854,7 @@ export class ServiceManager extends EventEmitter {
       metrics.aggregatedMetrics.length > 0
         ? metrics.aggregatedMetrics.reduce(
             (sum, m) => sum + m.averageLatency,
-            0,
+            0
           ) / metrics.aggregatedMetrics.length
         : 0;
 
@@ -917,7 +917,7 @@ export class ServiceManager extends EventEmitter {
     const metrics = await this.registry.getSystemMetrics();
     const healthResults = await this.registry.healthCheckAll();
 
-    const services: Record<string, any> = {};
+    const services: Record<string, unknown> = {};
 
     let totalOperations = 0;
     let totalSuccess = 0;
@@ -1072,7 +1072,7 @@ export class ServiceManager extends EventEmitter {
   // ============================================
 
   private initializeConfig(
-    config?: Partial<ServiceManagerConfig>,
+    config?: Partial<ServiceManagerConfig>
   ): ServiceManagerConfig {
     return {
       factory: config?.factory || {},
@@ -1196,15 +1196,15 @@ export class ServiceManager extends EventEmitter {
     this.registry.registerFactory('data', this.dataServiceFactory as any);
     this.registry.registerFactory(
       'coordination',
-      this.coordinationServiceFactory as any,
+      this.coordinationServiceFactory as any
     );
     this.registry.registerFactory(
       'integration',
-      this.integrationServiceFactory as any,
+      this.integrationServiceFactory as any
     );
     this.registry.registerFactory(
       'infrastructure',
-      this.infrastructureServiceFactory as any,
+      this.infrastructureServiceFactory as any
     );
 
     // Register specific service types with their appropriate factories
@@ -1250,7 +1250,7 @@ export class ServiceManager extends EventEmitter {
     });
 
     this.logger.info(
-      `Registered ${this.registry.listFactoryTypes().length} service factories`,
+      `Registered ${this.registry.listFactoryTypes().length} service factories`
     );
   }
 
@@ -1258,21 +1258,21 @@ export class ServiceManager extends EventEmitter {
     if (this.config.monitoring.healthCheckInterval > 0) {
       this.healthMonitoringInterval = setInterval(
         () => this.performSystemHealthCheck(),
-        this.config.monitoring.healthCheckInterval,
+        this.config.monitoring.healthCheckInterval
       );
     }
 
     if (this.config.monitoring.metricsCollectionInterval > 0) {
       this.metricsCollectionInterval = setInterval(
         () => this.collectSystemMetrics(),
-        this.config.monitoring.metricsCollectionInterval,
+        this.config.monitoring.metricsCollectionInterval
       );
     }
 
     // System status reporting
     this.systemStatusInterval = setInterval(
       () => this.reportSystemStatus(),
-      60000, // Every minute
+      60000 // Every minute
     );
 
     this.logger.debug('Monitoring systems initialized');
@@ -1308,7 +1308,7 @@ export class ServiceManager extends EventEmitter {
         if (service) {
           this.announceServiceDiscovery(service);
         }
-      },
+      }
     );
 
     this.registry.on('service-unregistered', (serviceName: string) => {
@@ -1324,7 +1324,7 @@ export class ServiceManager extends EventEmitter {
       'health-alert',
       (serviceName: string, service?: IService) => {
         this.emit('health-alert', serviceName);
-      },
+      }
     );
 
     this.registry.on('service-recovered', (serviceName: string) => {
@@ -1340,7 +1340,7 @@ export class ServiceManager extends EventEmitter {
       'service-created',
       (serviceName: string, service: IService) => {
         this.emit('service-created', serviceName, service);
-      },
+      }
     );
 
     this.mainFactory.on('service-removed', (serviceName: string) => {
@@ -1349,7 +1349,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   private getFactoryForServiceType(
-    serviceType: ServiceType | string,
+    serviceType: ServiceType | string
   ): IServiceFactory<ServiceConfig> | null {
     // Map service types to their appropriate specialized factories
     switch (serviceType) {
@@ -1378,7 +1378,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   private async createServiceWithMainFactory(
-    request: ServiceCreationRequest,
+    request: ServiceCreationRequest
   ): Promise<IService> {
     // Create service configuration
     const config: AnyServiceConfig = {
@@ -1403,7 +1403,7 @@ export class ServiceManager extends EventEmitter {
 
   private async createServiceWithSpecializedFactory(
     factory: IServiceFactory<ServiceConfig>,
-    request: ServiceCreationRequest,
+    request: ServiceCreationRequest
   ): Promise<IService> {
     // Create service configuration for specialized factory
     const config: AnyServiceConfig = {
@@ -1427,7 +1427,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   private resolveDependencyOrder(
-    services: ServiceCreationRequest[],
+    services: ServiceCreationRequest[]
   ): ServiceCreationRequest[] {
     // Simple topological sort for dependency resolution
     const serviceMap = new Map(services.map((s) => [s.name, s]));
@@ -1439,7 +1439,7 @@ export class ServiceManager extends EventEmitter {
       if (visiting.has(serviceName)) {
         throw new ServiceDependencyError(
           serviceName,
-          'circular dependency detected',
+          'circular dependency detected'
         );
       }
 
@@ -1468,7 +1468,7 @@ export class ServiceManager extends EventEmitter {
   }
 
   private async startServicesWithDependencyResolution(
-    serviceNames: string[],
+    serviceNames: string[]
   ): Promise<void> {
     // Build dependency graph and start in correct order
     const services = serviceNames
@@ -1530,8 +1530,8 @@ export class ServiceManager extends EventEmitter {
       new Promise<never>((_, reject) =>
         setTimeout(
           () => reject(new Error(`Service startup timeout: ${service.name}`)),
-          timeout,
-        ),
+          timeout
+        )
       ),
     ]);
   }
@@ -1544,8 +1544,8 @@ export class ServiceManager extends EventEmitter {
       new Promise<never>((_, reject) =>
         setTimeout(
           () => reject(new Error(`Service shutdown timeout: ${service.name}`)),
-          timeout,
-        ),
+          timeout
+        )
       ),
     ]);
   }
@@ -1563,7 +1563,7 @@ export class ServiceManager extends EventEmitter {
       } catch (error) {
         this.logger.error(
           `Service recovery failed for ${service.name}:`,
-          error,
+          error
         );
         this.emit('service-recovery-failed', service.name);
       }
@@ -1577,7 +1577,7 @@ export class ServiceManager extends EventEmitter {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         this.logger.info(
-          `Recovery attempt ${attempt}/${maxRetries} for service: ${service.name}`,
+          `Recovery attempt ${attempt}/${maxRetries} for service: ${service.name}`
         );
 
         // Stop and restart the service
@@ -1594,7 +1594,7 @@ export class ServiceManager extends EventEmitter {
       } catch (error) {
         this.logger.warn(
           `Recovery attempt ${attempt} failed for ${service.name}:`,
-          error,
+          error
         );
 
         if (attempt < maxRetries) {
@@ -1607,7 +1607,7 @@ export class ServiceManager extends EventEmitter {
     throw new ServiceOperationError(
       service.name,
       'recovery',
-      new Error(`All ${maxRetries} recovery attempts failed`),
+      new Error(`All ${maxRetries} recovery attempts failed`)
     );
   }
 
@@ -1628,7 +1628,7 @@ export class ServiceManager extends EventEmitter {
 
       if (healthReport.overall !== 'healthy') {
         this.logger.warn(
-          `System health: ${healthReport.overall} (${healthReport.summary.unhealthy} unhealthy services)`,
+          `System health: ${healthReport.overall} (${healthReport.summary.unhealthy} unhealthy services)`
         );
         this.emit('system-health-degraded', healthReport);
       }
@@ -1658,10 +1658,10 @@ export class ServiceManager extends EventEmitter {
       const systemMetrics = {
         totalOperations: metrics.system.totalOperations,
         successfulOperations: Math.round(
-          metrics.system.totalOperations * (metrics.system.successRate / 100),
+          metrics.system.totalOperations * (metrics.system.successRate / 100)
         ),
         totalErrors: Math.round(
-          metrics.system.totalOperations * (metrics.system.errorRate / 100),
+          metrics.system.totalOperations * (metrics.system.errorRate / 100)
         ),
         averageLatency: metrics.system.averageLatency,
         lastUpdate: new Date(),
@@ -1683,7 +1683,7 @@ export class ServiceManager extends EventEmitter {
         `System Status: ${status.systemHealth} | ` +
           `Services: ${status.runningServices}/${status.totalServices} | ` +
           `Response Time: ${Math.round(status.averageResponseTime)}ms | ` +
-          `Error Rate: ${status.systemErrorRate.toFixed(2)}%`,
+          `Error Rate: ${status.systemErrorRate.toFixed(2)}%`
       );
 
       this.emit('status-report', status);
@@ -1694,7 +1694,7 @@ export class ServiceManager extends EventEmitter {
 
   private generateHealthAlerts(
     healthResults: Map<string, ServiceStatus>,
-    metrics: { aggregatedMetrics: ServiceMetrics[] },
+    metrics: { aggregatedMetrics: ServiceMetrics[] }
   ): Array<{
     type: string;
     severity: 'info' | 'warning' | 'error' | 'critical';

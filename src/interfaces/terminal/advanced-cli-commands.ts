@@ -34,7 +34,7 @@ export class AdvancedCLICommands {
   async executeCommand(
     commandName: string,
     args: string[],
-    options: any,
+    options: unknown
   ): Promise<CommandResult> {
     const context: CommandContext = {
       command: commandName,

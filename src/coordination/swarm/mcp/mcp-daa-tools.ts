@@ -144,7 +144,7 @@ const daaService = new DaaService();
  */
 export class DAA_MCPTools {
   /** Enhanced MCP tools integration for coordination */
-  private mcpTools: any;
+  private mcpTools: unknown;
 
   /** DAA service initialization state */
   private daaInitialized: boolean;
@@ -260,7 +260,7 @@ export class DAA_MCPTools {
           'daa_init',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -428,7 +428,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_agent_create',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -438,7 +438,7 @@ export class DAA_MCPTools {
           'daa_agent_create',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -512,7 +512,7 @@ export class DAA_MCPTools {
       const id = agent_id || agentId;
       if (!id) {
         throw new Error(
-          'Agent ID is required. Provide either agent_id or agentId parameter.',
+          'Agent ID is required. Provide either agent_id or agentId parameter.'
         );
       }
 
@@ -537,7 +537,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_agent_adapt',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -547,7 +547,7 @@ export class DAA_MCPTools {
           'daa_agent_adapt',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -662,7 +662,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_workflow_create',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -672,7 +672,7 @@ export class DAA_MCPTools {
           'daa_workflow_create',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -743,7 +743,7 @@ export class DAA_MCPTools {
       const id = workflow_id || workflowId;
       if (!id) {
         throw new Error(
-          'Workflow ID is required. Provide either workflow_id or workflowId parameter.',
+          'Workflow ID is required. Provide either workflow_id or workflowId parameter.'
         );
       }
 
@@ -767,7 +767,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_workflow_execute',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -777,7 +777,7 @@ export class DAA_MCPTools {
           'daa_workflow_execute',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -857,12 +857,12 @@ export class DAA_MCPTools {
 
       if (!sourceId) {
         throw new Error(
-          'Source agent ID is required. Provide either source_agent or sourceAgentId parameter.',
+          'Source agent ID is required. Provide either source_agent or sourceAgentId parameter.'
         );
       }
       if (!targetIds || targetIds.length === 0) {
         throw new Error(
-          'Target agent IDs are required. Provide either target_agents or targetAgentIds parameter with at least one agent ID.',
+          'Target agent IDs are required. Provide either target_agents or targetAgentIds parameter with at least one agent ID.'
         );
       }
 
@@ -888,7 +888,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_knowledge_share',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -898,7 +898,7 @@ export class DAA_MCPTools {
           'daa_knowledge_share',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -994,7 +994,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_learning_status',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -1004,7 +1004,7 @@ export class DAA_MCPTools {
           'daa_learning_status',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -1110,7 +1110,7 @@ export class DAA_MCPTools {
           this.mcpTools.recordToolMetrics(
             'daa_cognitive_pattern',
             startTime,
-            'success',
+            'success'
           );
         }
         return result;
@@ -1122,7 +1122,7 @@ export class DAA_MCPTools {
 
       const changeResult = await daaService.setCognitivePattern(
         agentId,
-        pattern,
+        pattern
       );
 
       const result = {
@@ -1138,7 +1138,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_cognitive_pattern',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -1148,7 +1148,7 @@ export class DAA_MCPTools {
           'daa_cognitive_pattern',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -1249,7 +1249,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_meta_learning',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -1259,7 +1259,7 @@ export class DAA_MCPTools {
           'daa_meta_learning',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;
@@ -1342,7 +1342,7 @@ export class DAA_MCPTools {
       const { category = 'all', timeRange = '1h' } = params;
 
       const metrics = await daaService.getPerformanceMetrics(
-        category === 'all' ? undefined : category,
+        category === 'all' ? undefined : category
       );
 
       const result = {
@@ -1378,7 +1378,7 @@ export class DAA_MCPTools {
         this.mcpTools.recordToolMetrics(
           'daa_performance_metrics',
           startTime,
-          'success',
+          'success'
         );
       }
       return result;
@@ -1388,7 +1388,7 @@ export class DAA_MCPTools {
           'daa_performance_metrics',
           startTime,
           'error',
-          error.message,
+          error.message
         );
       }
       throw error;

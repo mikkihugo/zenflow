@@ -26,8 +26,8 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { getLogger } from '../config/logging-config.ts';
 import type { BaseDocumentEntity } from '../database/entities/product-entities.ts';
-import type { MemorySystem } from './memory-system.ts';
 import type { WorkflowCoordinationContext } from '../workflows/workflow-coordination-types.ts';
+import type { MemorySystem } from './memory-system.ts';
 
 const logger = getLogger('DocumentProcessor');
 
@@ -172,7 +172,7 @@ export interface DocumentStats {
  */
 export class DocumentProcessor extends EventEmitter {
   private memory: MemorySystem;
-  private workflowEngine: any; // Dynamic import to break circular dependency
+  private workflowEngine: unknown; // Dynamic import to break circular dependency
   private config: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
   private documentWatchers: Map<string, any> = new Map();
@@ -193,8 +193,8 @@ export class DocumentProcessor extends EventEmitter {
    */
   constructor(
     memory: MemorySystem,
-    workflowEngine: any,
-    config: DocumentProcessorConfig = {},
+    workflowEngine: unknown,
+    config: DocumentProcessorConfig = {}
   ) {
     super();
     this.memory = memory;
@@ -279,7 +279,7 @@ export class DocumentProcessor extends EventEmitter {
     }
 
     logger.info(
-      `Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)`,
+      `Loaded workspace: ${workspacePath} (${context.activeDocuments.size} documents)`
     );
     this.emit('workspace:loaded', {
       workspaceId,
@@ -298,7 +298,7 @@ export class DocumentProcessor extends EventEmitter {
    */
   async processDocument(
     documentPath: string,
-    workspaceId?: string,
+    workspaceId?: string
   ): Promise<void> {
     await this.ensureInitialized();
 
@@ -350,7 +350,7 @@ export class DocumentProcessor extends EventEmitter {
             document as unknown as BaseDocumentEntity,
             {
               workspaceId,
-            } as any,
+            } as any
           );
         } catch (error) {
           logger.warn('Workflow processing failed:', error);
@@ -382,7 +382,7 @@ export class DocumentProcessor extends EventEmitter {
     type: DocumentType,
     title: string,
     content: string,
-    workspaceId?: string,
+    workspaceId?: string
   ): Promise<Document> {
     await this.ensureInitialized();
 
@@ -490,7 +490,7 @@ export class DocumentProcessor extends EventEmitter {
    */
   private async processDocumentByType(
     workspaceId: string,
-    document: Document,
+    document: Document
   ): Promise<void> {
     const context = this.workspaces.get(workspaceId)!;
 
@@ -597,7 +597,7 @@ export class DocumentProcessor extends EventEmitter {
    */
   private getDocumentDirectory(
     workspace: DocumentWorkspace,
-    type: DocumentType,
+    type: DocumentType
   ): string {
     switch (type) {
       case 'vision':
@@ -696,7 +696,7 @@ export class DocumentProcessor extends EventEmitter {
   private generateDocumentContent(
     title: string,
     content: string,
-    type: DocumentType,
+    type: DocumentType
   ): string {
     const now = new Date().toISOString();
 
@@ -802,7 +802,7 @@ ${content}
     // Note: In a real implementation, this would use fs.watch or chokidar
     // For now, we'll just log that watchers would be set up
     logger.debug(
-      `Document watchers would be set up for workspace: ${workspaceId}`,
+      `Document watchers would be set up for workspace: ${workspaceId}`
     );
   }
 
@@ -817,17 +817,17 @@ ${content}
 
   // ==================== EVENT HANDLERS ====================
 
-  private async handleDocumentCreated(event: any): Promise<void> {
+  private async handleDocumentCreated(event: unknown): Promise<void> {
     logger.debug(`Document created: ${event.document.path}`);
   }
 
-  private async handleDocumentUpdated(event: any): Promise<void> {
+  private async handleDocumentUpdated(event: unknown): Promise<void> {
     logger.debug(`Document updated: ${event.document.path}`);
     // Re-process the document
     await this.processDocument(event.document.path, event.workspaceId);
   }
 
-  private async handleDocumentDeleted(event: any): Promise<void> {
+  private async handleDocumentDeleted(event: unknown): Promise<void> {
     logger.debug(`Document deleted: ${event.path}`);
     const context = this.workspaces.get(event.workspaceId);
     if (context) {

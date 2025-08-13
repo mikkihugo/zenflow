@@ -170,7 +170,7 @@ class TDDLondonTestRunner {
     info('Running London School TDD tests...');
     log(
       'Focus: Mock-driven contracts, behavior verification, outside-in development',
-      'cyan',
+      'cyan'
     );
 
     const suiteResults = [];
@@ -195,7 +195,7 @@ class TDDLondonTestRunner {
       const stats = `${result.passed}P/${result.failed}F/${result.skipped}S`;
       log(
         `   ${status} ${suite.name} (${stats})`,
-        result.success ? 'green' : 'red',
+        result.success ? 'green' : 'red'
       );
     }
 
@@ -204,7 +204,7 @@ class TDDLondonTestRunner {
     log(`   Passed: ${this.results.passed}`, 'green');
     log(
       `   Failed: ${this.results.failed}`,
-      this.results.failed > 0 ? 'red' : 'green',
+      this.results.failed > 0 ? 'red' : 'green'
     );
     log(`   Skipped: ${this.results.skipped}`, 'yellow');
 
@@ -215,7 +215,7 @@ class TDDLondonTestRunner {
 
     log(
       `\n🎯 Success Rate: ${successRate}%`,
-      successRate >= 80 ? 'green' : 'red',
+      successRate >= 80 ? 'green' : 'red'
     );
 
     if (this.results.failed === 0) {
@@ -227,7 +227,7 @@ class TDDLondonTestRunner {
       log('\n🚨 Some tests failed. Review the output above.', 'red');
       log(
         '💡 London School principle: Focus on fixing interaction contracts',
-        'yellow',
+        'yellow'
       );
     }
 

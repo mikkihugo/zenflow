@@ -10,11 +10,12 @@
  */
 
 import { Box, Text, useInput } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   ErrorMessage,
   Header,
+  InteractiveFooter,
   SwarmSpinner,
   type SwarmStatus,
 } from './components/index/index.js';
@@ -41,7 +42,7 @@ import {
 } from './screens/index/index.js';
 
 export interface TUIModeProps {
-  flags: Record<string, any>;
+  flags: Record<string, unknown>;
   onExit: (code: number) => void;
 }
 
@@ -140,14 +141,14 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
           topology: 'mesh',
           totalAgents: realAgents.length,
           activeAgents: realAgents.filter(
-            (a) => a.status === 'active' || a.status === 'busy',
+            (a) => a.status === 'active' || a.status === 'busy'
           ).length,
           uptime: startTime,
         },
         swarmMetrics: {
           totalAgents: realAgents.length,
           activeAgents: realAgents.filter(
-            (a) => a.status === 'active' || a.status === 'busy',
+            (a) => a.status === 'active' || a.status === 'busy'
           ).length,
           tasksInProgress: realTasks.filter((t) => t.status === 'in_progress')
             .length,
@@ -196,7 +197,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
             ...prev.swarmStatus,
             totalAgents: swarmData?.agents?.length || 0,
             activeAgents:
-              swarmData?.agents?.filter((a: any) => a.status === 'active')
+              swarmData?.agents?.filter((a: unknown) => a.status === 'active')
                 ?.length || 0,
             status: swarmData?.agents?.length > 0 ? 'active' : 'idle',
           },
@@ -204,13 +205,13 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
             ...prev.swarmMetrics,
             totalAgents: swarmData?.agents?.length || 0,
             activeAgents:
-              swarmData?.agents?.filter((a: any) => a.status === 'active')
+              swarmData?.agents?.filter((a: unknown) => a.status === 'active')
                 ?.length || 0,
             tasksInProgress:
-              taskData?.filter((t: any) => t.status === 'in_progress')
+              taskData?.filter((t: unknown) => t.status === 'in_progress')
                 ?.length || 0,
             tasksCompleted:
-              taskData?.filter((t: any) => t.status === 'completed')?.length ||
+              taskData?.filter((t: unknown) => t.status === 'completed')?.length ||
               0,
             totalTasks: taskData?.length || 0,
             performance: metricsData?.performance || {
@@ -335,10 +336,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
           justifyContent="center"
           height={20}
         >
-          <SwarmSpinner
-            type="swarm"
-            text="Initializing TUI interface..."
-          />
+          <SwarmSpinner type="swarm" text="Initializing TUI interface..." />
         </Box>
       );
     }
@@ -477,43 +475,24 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
 
       case 'document-ai':
         return (
-          <Box
-            flexDirection="column"
-            height="100%"
-          >
+          <Box flexDirection="column" height="100%">
             <Header
               title="Document AI - Analysis & Rewriting"
               swarmStatus={state.swarmStatus}
               showBorder={true}
             />
-            <Box
-              flexGrow={1}
-              padding={2}
-            >
+            <Box flexGrow={1} padding={2}>
               <Box flexDirection="column">
-                <Text
-                  bold
-                  color="cyan"
-                >
+                <Text bold color="cyan">
                   🤖 AI-Powered Document Intelligence
                 </Text>
                 <Box marginY={1} />
 
-                <Box
-                  borderStyle="single"
-                  borderColor="yellow"
-                  padding={2}
-                >
-                  <Text
-                    bold
-                    color="yellow"
-                  >
+                <Box borderStyle="single" borderColor="yellow" padding={2}>
+                  <Text bold color="yellow">
                     📝 Document Analysis Features:
                   </Text>
-                  <Box
-                    flexDirection="column"
-                    marginTop={1}
-                  >
+                  <Box flexDirection="column" marginTop={1}>
                     <Text>
                       • Read any document type (README, specs, docs, etc.)
                     </Text>
@@ -530,16 +509,10 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
                   borderColor="blue"
                   padding={2}
                 >
-                  <Text
-                    bold
-                    color="blue"
-                  >
+                  <Text bold color="blue">
                     🔄 Workflow:
                   </Text>
-                  <Box
-                    flexDirection="column"
-                    marginTop={1}
-                  >
+                  <Box flexDirection="column" marginTop={1}>
                     <Text>1. Select document or directory to analyze</Text>
                     <Text>2. AI reads and understands content</Text>
                     <Text>3. Provides rewrite suggestions with reasoning</Text>
@@ -615,10 +588,7 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {renderCurrentScreen()}
     </Box>
   );

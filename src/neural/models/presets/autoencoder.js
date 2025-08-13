@@ -69,10 +69,10 @@ class AutoencoderModel extends NeuralModel {
     } else {
       // Standard autoencoder bottleneck
       this.encoderWeights.push(
-        this.createWeight([lastSize, this.config.bottleneckSize]),
+        this.createWeight([lastSize, this.config.bottleneckSize])
       );
       this.encoderBiases.push(
-        new Float32Array(this.config.bottleneckSize).fill(0),
+        new Float32Array(this.config.bottleneckSize).fill(0)
       );
       lastSize = this.config.bottleneckSize;
     }
@@ -86,7 +86,7 @@ class AutoencoderModel extends NeuralModel {
 
     // Output layer (reconstruction)
     this.decoderWeights.push(
-      this.createWeight([lastSize, this.config.inputSize]),
+      this.createWeight([lastSize, this.config.inputSize])
     );
     this.decoderBiases.push(new Float32Array(this.config.inputSize).fill(0));
   }
@@ -159,7 +159,7 @@ class AutoencoderModel extends NeuralModel {
       const logVar = this.dense(
         x,
         this.logVarLayer.weight,
-        this.logVarLayer.bias,
+        this.logVarLayer.bias
       );
 
       // Reparameterization trick
@@ -285,7 +285,7 @@ class AutoencoderModel extends NeuralModel {
         const epsilon = 1e-7;
         const pred = Math.max(
           epsilon,
-          Math.min(1 - epsilon, output.reconstruction[i]),
+          Math.min(1 - epsilon, output.reconstruction[i])
         );
         reconstructionLoss -=
           input[i] * Math.log(pred) + (1 - input[i]) * Math.log(1 - pred);
@@ -357,7 +357,7 @@ class AutoencoderModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Prepare batch input
@@ -375,7 +375,7 @@ class AutoencoderModel extends NeuralModel {
           batchInput.data,
           output,
           output.mu,
-          output.logVar,
+          output.logVar
         );
 
         // Apply beta weighting for VAE
@@ -438,7 +438,7 @@ class AutoencoderModel extends NeuralModel {
         batchInput.data,
         output,
         output.mu,
-        output.logVar,
+        output.logVar
       );
 
       totalLoss += losses.total;
@@ -487,7 +487,7 @@ class AutoencoderModel extends NeuralModel {
   async generate(numSamples = 1) {
     if (!this.config.variational) {
       throw new Error(
-        'Generation is only available for variational autoencoders',
+        'Generation is only available for variational autoencoders'
       );
     }
 

@@ -35,7 +35,7 @@ export const IntegrationUtils = {
     return compatiblePairs.some(
       (pair) =>
         (pair[0] === systemA && pair[1] === systemB) ||
-        (pair[1] === systemA && pair[0] === systemB),
+        (pair[1] === systemA && pair[0] === systemB)
     );
   },
 
@@ -107,7 +107,7 @@ export class IntegrationFactory {
    */
   static async getCoordinator(
     systems: string[],
-    instanceKey = 'default',
+    instanceKey = 'default'
   ): Promise<unknown> {
     const key = `${systems.sort().join('-')}:${instanceKey}`;
 

@@ -179,7 +179,7 @@ const shouldLog = (path: string, _method: string): boolean => {
  *
  * @param data
  */
-const sanitizeData = (data: any): any => {
+const sanitizeData = (data: unknown): unknown => {
   if (!data || typeof data !== 'object') {
     return data;
   }
@@ -223,7 +223,7 @@ const createLogEntry = (
   message: string,
   req: Request,
   res?: Response,
-  metadata?: Record<string, unknown>,
+  metadata?: Record<string, unknown>
 ): LogEntry => {
   const requestMetadata = req.metadata as RequestMetadata;
   const duration = res ? Date.now() - requestMetadata?.startTime : undefined;
@@ -291,7 +291,7 @@ const outputLog = (logEntry: LogEntry): void => {
 export const requestLogger = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   const requestId = generateRequestId();
   const startTime = Date.now();
@@ -323,7 +323,7 @@ export const requestLogger = (
           accept: req.headers.accept,
           'cache-control': req.headers['cache-control'],
         }),
-      },
+      }
     );
 
     outputLog(logEntry);
@@ -331,7 +331,7 @@ export const requestLogger = (
 
   // Hook into response finish event
   const originalEnd = res.end;
-  res.end = function (chunk?: any, encoding?: any): Response {
+  res.end = function (chunk?: unknown, encoding?: unknown): Response {
     // Log response completion
     if (shouldLog(req.path, req.method)) {
       const level = getLogLevelFromStatus(res.statusCode);
@@ -367,7 +367,7 @@ export const requestLogger = (
 export const logError = (
   error: Error,
   req: Request,
-  additionalContext?: Record<string, unknown>,
+  additionalContext?: Record<string, unknown>
 ): void => {
   const logEntry = createLogEntry(
     LogLevel.ERROR,
@@ -381,7 +381,7 @@ export const logError = (
         stack: error.stack,
       },
       context: additionalContext,
-    },
+    }
   );
 
   outputLog(logEntry);
@@ -400,7 +400,7 @@ export const logPerformance = (
   operation: string,
   duration: number,
   req: Request,
-  metadata?: Record<string, unknown>,
+  metadata?: Record<string, unknown>
 ): void => {
   const level = duration > 5000 ? LogLevel.WARNING : LogLevel.INFO;
 
@@ -413,7 +413,7 @@ export const logPerformance = (
       operation,
       duration: `${duration}ms`,
       performanceMetrics: metadata,
-    },
+    }
   );
 
   outputLog(logEntry);
@@ -432,7 +432,7 @@ export const log = (
   level: LogLevel,
   message: string,
   req?: Request,
-  metadata?: Record<string, unknown>,
+  metadata?: Record<string, unknown>
 ): void => {
   if (req) {
     const logEntry = createLogEntry(level, message, req, undefined, metadata);

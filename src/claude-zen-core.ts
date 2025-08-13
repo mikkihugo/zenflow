@@ -69,7 +69,7 @@ class AppConfig implements IConfig {
       return defaultValue;
     }
     throw new Error(
-      `Configuration key '${key}' not found and no default value provided`,
+      `Configuration key '${key}' not found and no default value provided`
     );
   }
 
@@ -156,7 +156,7 @@ class MockDatabase implements IDatabase {
       }
     }
     return metrics.sort(
-      (a: any, b: any) => (b.timestamp ?? 0) - (a.timestamp ?? 0),
+      (a: any, b: any) => (b.timestamp ?? 0) - (a.timestamp ?? 0)
     );
   }
 }
@@ -211,9 +211,9 @@ export class ClaudeZenCore {
               enableHealthCheck: true,
             },
             logger,
-            eventBus,
+            eventBus
           );
-        },
+        }
       )
 
       .singleton(
@@ -271,9 +271,9 @@ export class ClaudeZenCore {
                 },
               ],
             },
-            logger,
+            logger
           );
-        },
+        }
       )
 
       .singleton(
@@ -281,7 +281,7 @@ export class ClaudeZenCore {
         (c) => {
           const logger = c.resolve(CORE_TOKENS.Logger);
           return new MultiSystemCoordinator(logger, {});
-        },
+        }
       )
 
       .build();
@@ -305,16 +305,16 @@ export class ClaudeZenCore {
 
       // Resolve all coordinators through DI
       this.orchestrator = this.container.resolve(
-        SWARM_TOKENS.SwarmCoordinator,
+        SWARM_TOKENS.SwarmCoordinator
       ) as Orchestrator;
       this.coordinationManager = this.container.resolve(
-        createToken<CoordinationManager>('CoordinationManager'),
+        createToken<CoordinationManager>('CoordinationManager')
       );
       this.learningCoordinator = this.container.resolve(
-        createToken<LearningCoordinator>('LearningCoordinator'),
+        createToken<LearningCoordinator>('LearningCoordinator')
       );
       this.multiSystemCoordinator = this.container.resolve(
-        createToken<MultiSystemCoordinator>('MultiSystemCoordinator'),
+        createToken<MultiSystemCoordinator>('MultiSystemCoordinator')
       );
 
       // Initialize all coordinators
@@ -323,7 +323,7 @@ export class ClaudeZenCore {
       // Note: LearningCoordinator and MultiSystemCoordinator start automatically in constructor
 
       logger.info(
-        '✅ All systems initialized successfully with dependency injection!',
+        '✅ All systems initialized successfully with dependency injection!'
       );
 
       // Demonstrate the system is working
@@ -355,7 +355,7 @@ export class ClaudeZenCore {
       logger.info('🤝 Testing CoordinationManager with DI...');
       // The coordination manager uses injected logger and event bus
       logger.info(
-        '  - CoordinationManager successfully using injected dependencies',
+        '  - CoordinationManager successfully using injected dependencies'
       );
     }
 
@@ -364,7 +364,7 @@ export class ClaudeZenCore {
       logger.info('🧠 Testing LearningCoordinator with DI...');
       // The learning coordinator uses injected logger
       logger.info(
-        '  - LearningCoordinator successfully using injected dependencies',
+        '  - LearningCoordinator successfully using injected dependencies'
       );
     }
 
@@ -373,7 +373,7 @@ export class ClaudeZenCore {
       logger.info('🌐 Testing MultiSystemCoordinator with DI...');
       // The multi-system coordinator uses injected logger
       logger.info(
-        '  - MultiSystemCoordinator successfully using injected dependencies',
+        '  - MultiSystemCoordinator successfully using injected dependencies'
       );
     }
 

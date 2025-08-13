@@ -104,7 +104,7 @@ export class UACLFactory {
 
   constructor(
     private _logger: ILogger,
-    private _config: IConfig,
+    private _config: IConfig
   ) {
     this.initializeFactories();
   }
@@ -115,7 +115,7 @@ export class UACLFactory {
    * @param factoryConfig
    */
   async createClient<T = any>(
-    factoryConfig: ClientFactoryConfig,
+    factoryConfig: ClientFactoryConfig
   ): Promise<ClientTypeMap<T>> {
     const {
       clientType,
@@ -136,7 +136,7 @@ export class UACLFactory {
     }
 
     this._logger.info(
-      `Creating new client: ${clientType}/${protocol} (${url})`,
+      `Creating new client: ${clientType}/${protocol} (${url})`
     );
 
     try {
@@ -151,7 +151,7 @@ export class UACLFactory {
         clientType,
         protocol,
         url,
-        config,
+        config
       );
 
       // Create client instance
@@ -166,7 +166,7 @@ export class UACLFactory {
     } catch (error) {
       this._logger.error(`Failed to create client: ${error}`);
       throw new Error(
-        `Client creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Client creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -179,7 +179,7 @@ export class UACLFactory {
    */
   async createHttpClient<T = any>(
     url: string,
-    config?: Partial<ClientConfig>,
+    config?: Partial<ClientConfig>
   ): Promise<IHttpClient<T>> {
     const protocol = url.startsWith('https')
       ? ProtocolTypes.HTTPS
@@ -201,7 +201,7 @@ export class UACLFactory {
    */
   async createWebSocketClient<T = any>(
     url: string,
-    config?: Partial<ClientConfig>,
+    config?: Partial<ClientConfig>
   ): Promise<IWebSocketClient<T>> {
     const protocol = url.startsWith('wss')
       ? ProtocolTypes.WSS
@@ -223,7 +223,7 @@ export class UACLFactory {
    */
   async createKnowledgeClient<T = any>(
     url: string,
-    config?: Partial<ClientConfig>,
+    config?: Partial<ClientConfig>
   ): Promise<IKnowledgeClient<T>> {
     return (await this.createClient<T>({
       clientType: ClientTypes.KNOWLEDGE,
@@ -243,7 +243,7 @@ export class UACLFactory {
    */
   async createMcpClient<T = any>(
     url: string,
-    config?: Partial<ClientConfig>,
+    config?: Partial<ClientConfig>
   ): Promise<IMcpClient<T>> {
     // Determine protocol based on URL format
     let protocol: ProtocolType;
@@ -275,7 +275,7 @@ export class UACLFactory {
   async createGenericClient<T = any>(
     protocol: ProtocolType,
     url: string,
-    config?: Partial<ClientConfig>,
+    config?: Partial<ClientConfig>
   ): Promise<IClient<T>> {
     return await this.createClient<T>({
       clientType: ClientTypes.GENERIC,
@@ -346,7 +346,7 @@ export class UACLFactory {
    * @param operations
    */
   async executeTransaction(
-    operations: ClientOperation[],
+    operations: ClientOperation[]
   ): Promise<ClientTransaction> {
     const transactionId = this.generateTransactionId();
     const transaction: ClientTransaction = {
@@ -368,7 +368,7 @@ export class UACLFactory {
           }
 
           return await client.send(op.data);
-        }),
+        })
       );
 
       // Update operation results
@@ -418,7 +418,7 @@ export class UACLFactory {
         } catch (error) {
           this._logger.warn(`Failed to disconnect client: ${error}`);
         }
-      },
+      }
     );
 
     await Promise.allSettled(disconnectPromises);
@@ -492,7 +492,7 @@ export class UACLFactory {
   }
 
   private async getOrCreateFactory(
-    clientType: ClientType,
+    clientType: ClientType
   ): Promise<IClientFactory> {
     if (this.factoryCache.has(clientType)) {
       return this.factoryCache.get(clientType)!;
@@ -551,7 +551,7 @@ export class UACLFactory {
   private validateClientConfig(
     clientType: ClientType,
     protocol: ProtocolType,
-    _config?: Partial<ClientConfig>,
+    _config?: Partial<ClientConfig>
   ): void {
     if (!TypeGuards.isClientType(clientType)) {
       throw new Error(`Invalid client type: ${clientType}`);
@@ -568,7 +568,7 @@ export class UACLFactory {
     clientType: ClientType,
     protocol: ProtocolType,
     url: string,
-    config?: Partial<ClientConfig>,
+    config?: Partial<ClientConfig>
   ): ClientConfig {
     const defaults =
       ClientConfigs?.[clientType] || ClientConfigs?.[ClientTypes.GENERIC];
@@ -585,7 +585,7 @@ export class UACLFactory {
   private registerClient(
     client: IClient,
     config: ClientConfig,
-    cacheKey: string,
+    cacheKey: string
   ): string {
     const clientId = this.generateClientId(config);
 
@@ -618,7 +618,7 @@ export class UACLFactory {
     clientType: ClientType,
     protocol: ProtocolType,
     url: string,
-    name?: string,
+    name?: string
   ): string {
     const parts = [clientType, protocol, url];
     if (name) parts.push(name);
@@ -646,7 +646,7 @@ export class UACLFactory {
 export class MultiClientCoordinator {
   constructor(
     private factory: UACLFactory,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   /**
@@ -662,10 +662,10 @@ export class MultiClientCoordinator {
       url: string;
       config?: Partial<ClientConfig>;
     }>,
-    operation: (client: IClient) => Promise<T>,
+    operation: (client: IClient) => Promise<T>
   ): Promise<T[]> {
     this.logger.info(
-      `Executing multi-protocol operation on ${clients.length} clients`,
+      `Executing multi-protocol operation on ${clients.length} clients`
     );
 
     // Create all clients
@@ -676,13 +676,13 @@ export class MultiClientCoordinator {
           protocol: clientConfig?.protocol,
           url: clientConfig?.url,
           config: clientConfig?.config || undefined,
-        }),
-      ),
+        })
+      )
     );
 
     // Execute operation on all clients
     const results = await Promise.allSettled(
-      clientInstances.map((client) => operation(client)),
+      clientInstances.map((client) => operation(client))
     );
 
     // Process results
@@ -699,7 +699,7 @@ export class MultiClientCoordinator {
 
     if (errors.length > 0) {
       this.logger.warn(
-        `${errors.length} clients failed during multi-protocol operation`,
+        `${errors.length} clients failed during multi-protocol operation`
       );
     }
 
@@ -720,7 +720,7 @@ export class MultiClientCoordinator {
       weight?: number;
       config?: Partial<ClientConfig>;
     }>,
-    strategy: 'round-robin' | 'weighted' | 'random' = 'round-robin',
+    strategy: 'round-robin' | 'weighted' | 'random' = 'round-robin'
   ): Promise<LoadBalancedClient<T>> {
     const clients = await Promise.all(
       clientConfigs?.map(async (config) => ({
@@ -732,7 +732,7 @@ export class MultiClientCoordinator {
         }),
         weight: config?.weight || 1,
         url: config?.url,
-      })),
+      }))
     );
 
     return new LoadBalancedClient<T>(clients, strategy);
@@ -754,7 +754,7 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
       weight: number;
       url: string;
     }>,
-    private strategy: 'round-robin' | 'weighted' | 'random',
+    private strategy: 'round-robin' | 'weighted' | 'random'
   ) {}
 
   async connect(): Promise<void> {
@@ -773,11 +773,11 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
 
   async health(): Promise<boolean> {
     const healthChecks = await Promise.allSettled(
-      this.clients.map((c) => c.client.health()),
+      this.clients.map((c) => c.client.health())
     );
 
     return healthChecks.some(
-      (check) => check.status === 'fulfilled' && check.value,
+      (check) => check.status === 'fulfilled' && check.value
     );
   }
 
@@ -843,7 +843,7 @@ export async function createClient<T = any>(
   clientType: ClientType,
   protocol: ProtocolType,
   url: string,
-  config?: Partial<ClientConfig>,
+  config?: Partial<ClientConfig>
 ): Promise<IClient<T>> {
   // Create basic logger and config
   const logger: ILogger = {
@@ -874,7 +874,7 @@ export async function createClient<T = any>(
  */
 export async function createHttpClient<T = any>(
   url: string,
-  config?: Partial<ClientConfig>,
+  config?: Partial<ClientConfig>
 ): Promise<IHttpClient<T>> {
   const protocol = url.startsWith('https')
     ? ProtocolTypes.HTTPS
@@ -883,7 +883,7 @@ export async function createHttpClient<T = any>(
     ClientTypes.HTTP,
     protocol,
     url,
-    config,
+    config
   )) as IHttpClient<T>;
 }
 
@@ -896,14 +896,14 @@ export async function createHttpClient<T = any>(
  */
 export async function createWebSocketClient<T = any>(
   url: string,
-  config?: Partial<ClientConfig>,
+  config?: Partial<ClientConfig>
 ): Promise<IWebSocketClient<T>> {
   const protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
   return (await createClient<T>(
     ClientTypes.WEBSOCKET,
     protocol,
     url,
-    config,
+    config
   )) as IWebSocketClient<T>;
 }
 
@@ -916,7 +916,7 @@ export async function createWebSocketClient<T = any>(
  */
 export async function createMcpClient<T = any>(
   url: string,
-  config?: Partial<ClientConfig>,
+  config?: Partial<ClientConfig>
 ): Promise<IMcpClient<T>> {
   let protocol: ProtocolType;
   if (url.startsWith('stdio://')) {
@@ -933,7 +933,7 @@ export async function createMcpClient<T = any>(
     ClientTypes.MCP,
     protocol,
     url,
-    config,
+    config
   )) as IMcpClient<T>;
 }
 

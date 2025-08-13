@@ -390,7 +390,7 @@ export class NeuralError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly networkId?: string,
+    public readonly networkId?: string
   ) {
     super(message);
     this.name = 'NeuralError';
@@ -401,7 +401,7 @@ export class TrainingError extends NeuralError {
   constructor(
     message: string,
     public readonly epoch?: number,
-    public readonly loss?: number,
+    public readonly loss?: number
   ) {
     super(message, 'TRAINING_ERROR');
     this.name = 'TrainingError';
@@ -411,7 +411,7 @@ export class TrainingError extends NeuralError {
 export class ModelError extends NeuralError {
   constructor(
     message: string,
-    public readonly modelConfig?: Partial<NeuralModelConfig>,
+    public readonly modelConfig?: Partial<NeuralModelConfig>
   ) {
     super(message, 'MODEL_ERROR');
     this.name = 'ModelError';
@@ -421,7 +421,7 @@ export class ModelError extends NeuralError {
 export class CognitivePatternError extends NeuralError {
   constructor(
     message: string,
-    public readonly patternType?: CognitivePatternType,
+    public readonly patternType?: CognitivePatternType
   ) {
     super(message, 'COGNITIVE_PATTERN_ERROR');
     this.name = 'CognitivePatternError';
@@ -457,16 +457,16 @@ export interface NeuralUtilities {
   lossFunction(
     type: LossConfig['type'],
     predictions: readonly number[],
-    targets: readonly number[],
+    targets: readonly number[]
   ): number;
   optimizerStep(
     type: OptimizerConfig['type'],
     gradients: readonly number[],
-    config: OptimizerConfig,
+    config: OptimizerConfig
   ): readonly number[];
   normalizeData(data: readonly number[][]): readonly number[][];
   splitTrainValidation(
     data: TrainingData,
-    split: number,
+    split: number
   ): { train: TrainingData; validation: TrainingData };
 }

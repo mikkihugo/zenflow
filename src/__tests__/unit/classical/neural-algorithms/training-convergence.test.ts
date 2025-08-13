@@ -18,7 +18,7 @@ import {
 } from '../../../../neural/core/neural-network.ts';
 
 describe('Training Convergence - Classical TDD', () => {
-  let wasmModule: any;
+  let wasmModule: unknown;
 
   beforeEach(async () => {
     try {
@@ -71,7 +71,7 @@ describe('Training Convergence - Classical TDD', () => {
         network,
         xorData,
         0.01,
-        3000,
+        3000
       );
 
       // Verify convergence
@@ -146,19 +146,19 @@ describe('Training Convergence - Classical TDD', () => {
         network1,
         xorData,
         0.05,
-        2000,
+        2000
       );
       const rpropResult = await rpropTrainer.trainUntilTarget(
         network2,
         xorData,
         0.05,
-        2000,
+        2000
       );
 
       // RProp should generally converge faster or achieve lower error
       if (backpropResult?.converged && rpropResult?.converged) {
         expect(rpropResult?.epochs).toBeLessThanOrEqual(
-          backpropResult?.epochs * 1.5,
+          backpropResult?.epochs * 1.5
         );
       } else if (rpropResult?.converged) {
         expect(rpropResult?.converged).toBe(true);
@@ -227,7 +227,7 @@ describe('Training Convergence - Classical TDD', () => {
         network,
         linearData,
         0.01,
-        500,
+        500
       );
 
       expect(result?.converged).toBe(true);
@@ -235,7 +235,7 @@ describe('Training Convergence - Classical TDD', () => {
 
       // Test predictions on training data
       for (let i = 0; i < linearData?.inputs.length; i++) {
-        const prediction = await network.run(linearData?.inputs?.[i]) as any;
+        const prediction = (await network.run(linearData?.inputs?.[i])) as any;
         expect(prediction[0]).toBeCloseTo(linearData?.outputs?.[i]?.[0], 1);
       }
 
@@ -291,7 +291,7 @@ describe('Training Convergence - Classical TDD', () => {
         network,
         sineData,
         0.05,
-        1000,
+        1000
       );
 
       expect(result?.finalError).toBeLessThan(0.1); // Reasonable approximation
@@ -379,7 +379,7 @@ describe('Training Convergence - Classical TDD', () => {
         network,
         classificationData,
         0.1,
-        800,
+        800
       );
 
       expect(result?.finalError).toBeLessThan(0.2);
@@ -436,7 +436,7 @@ describe('Training Convergence - Classical TDD', () => {
         TRAINING_ALGORITHMS.QUICKPROP,
       ];
 
-      const results: { [key: string]: any } = {};
+      const results: { [key: string]: unknown } = {};
 
       for (const algorithm of algorithms) {
         const trainingConfig: TrainingConfig = {
@@ -455,14 +455,14 @@ describe('Training Convergence - Classical TDD', () => {
           network,
           xorData,
           0.05,
-          1500,
+          1500
         );
         results[algorithm] = result;
       }
 
       // At least one algorithm should converge
       const convergedAlgorithms = Object.keys(results).filter(
-        (algo) => results?.[algo]?.converged,
+        (algo) => results?.[algo]?.converged
       );
       expect(convergedAlgorithms.length).toBeGreaterThan(0);
 
@@ -519,7 +519,7 @@ describe('Training Convergence - Classical TDD', () => {
           network,
           andData,
           0.05,
-          1000,
+          1000
         );
         results?.push(result?.epochs);
       }
@@ -589,7 +589,9 @@ describe('Training Convergence - Classical TDD', () => {
 
         // Calculate error on training data
         for (let i = 0; i < noisyData?.inputs.length; i++) {
-          const prediction = await freshNetwork.run(noisyData?.inputs?.[i]) as any;
+          const prediction = (await freshNetwork.run(
+            noisyData?.inputs?.[i]
+          )) as any;
           totalError += Math.abs(prediction[0] - noisyData?.outputs?.[i]?.[0]);
         }
 

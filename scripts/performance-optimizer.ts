@@ -88,7 +88,7 @@ class PerformanceOptimizer {
       return metrics;
     } catch (error) {
       metrics.errors.push(
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
       console.error('❌ Optimization failed:', error);
       return metrics;
@@ -111,7 +111,7 @@ class PerformanceOptimizer {
               `sudo apt-get update && sudo apt-get install -y binaryen`,
               {
                 stdio: 'inherit',
-              },
+              }
             );
           } else {
             execSync(`npm install -g ${dep}`, { stdio: 'inherit' });
@@ -238,7 +238,7 @@ echo "✅ Production WASM build complete"
 
     writeFileSync(
       join(wasmPath, 'scripts/build-wasm-optimized.sh'),
-      optimizedBuildScript,
+      optimizedBuildScript
     );
     execSync(`chmod +x ${join(wasmPath, 'scripts/build-wasm-optimized.sh')}`);
   }
@@ -317,7 +317,7 @@ echo "✅ Production WASM build complete"
    * @param metrics
    */
   private async generatePerformanceReport(
-    metrics: PerformanceMetrics,
+    metrics: PerformanceMetrics
   ): Promise<void> {
     const report = `# 🚀 Claude-Zen Performance Report
 

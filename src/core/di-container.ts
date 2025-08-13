@@ -32,19 +32,19 @@ export class ConsoleLogger implements ILogger {
     this.logger.info(message);
   }
 
-  debug(message: string, meta?: any): void {
+  debug(message: string, meta?: unknown): void {
     this.logger.debug(message, meta);
   }
 
-  info(message: string, meta?: any): void {
+  info(message: string, meta?: unknown): void {
     this.logger.info(message, meta);
   }
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     this.logger.warn(message, meta);
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     this.logger.error(message, meta);
   }
 }
@@ -88,7 +88,7 @@ export class AppConfig implements IConfig {
       return defaultValue;
     }
     throw new Error(
-      `Configuration key '${key}' not found and no default value provided`,
+      `Configuration key '${key}' not found and no default value provided`
     );
   }
 
@@ -106,12 +106,12 @@ export class AppConfig implements IConfig {
  * Preserved from claude-zen-core.ts
  */
 export class AppEventBus extends EventEmitter implements IEventBus {
-  emit(event: string | symbol, ...args: any[]): boolean {
+  emit(event: string | symbol, ...args: unknown[]): boolean {
     logger.debug(`Event emitted: ${String(event)}`);
     return super.emit(event, ...args);
   }
 
-  on(event: string | symbol, listener: (...args: any[]) => void): this {
+  on(event: string | symbol, listener: (...args: unknown[]) => void): this {
     logger.debug(`Event listener registered: ${String(event)}`);
     return super.on(event, listener);
   }
@@ -179,7 +179,7 @@ export function createClaudeZenDIContainer(): DIContainer {
  * Initialize core services in the DI container
  */
 export async function initializeDIServices(
-  container: DIContainer,
+  container: DIContainer
 ): Promise<void> {
   logger.info('Initializing DI services...');
 
@@ -202,7 +202,7 @@ export async function initializeDIServices(
  * Preserves the cleanup pattern from claude-zen-core.ts
  */
 export async function shutdownDIContainer(
-  container: DIContainer,
+  container: DIContainer
 ): Promise<void> {
   logger.info('Shutting down DI container...');
 

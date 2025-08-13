@@ -267,7 +267,7 @@ export async function coordinationDomainExample(): Promise<void> {
   try {
     const validatedAgent = coordValidator.validateInput(
       agentData,
-      CommonSchemas.Agent,
+      CommonSchemas.Agent
     );
     logger.info('Agent validation successful', { agentId: validatedAgent.id });
   } catch (error) {
@@ -288,14 +288,14 @@ export async function coordinationDomainExample(): Promise<void> {
 
   const validatedTask = coordValidator.validateInput(
     taskData,
-    CommonSchemas.Task,
+    CommonSchemas.Task
   );
 
   // 3. Track cross-domain operation to workflows
   coordValidator.trackCrossings(
     Domain.COORDINATION,
     Domain.WORKFLOWS,
-    'task-assignment',
+    'task-assignment'
   );
 
   // 4. Validate phase assignment
@@ -308,7 +308,7 @@ export async function coordinationDomainExample(): Promise<void> {
 
   const validatedPhaseAssignment = coordValidator.validateInput(
     phaseAssignment,
-    ExtendedSchemas.PhaseAssignment,
+    ExtendedSchemas.PhaseAssignment
   );
 
   logger.info('Coordination domain validation completed successfully', {
@@ -348,7 +348,7 @@ export async function workflowsDomainExample(): Promise<void> {
   try {
     const validatedExecution = workflowsValidator.validateInput(
       workflowExecution,
-      ExtendedSchemas.WorkflowExecution,
+      ExtendedSchemas.WorkflowExecution
     );
     logger.info('Workflow execution validation successful', {
       executionId: validatedExecution.id,
@@ -370,14 +370,14 @@ export async function workflowsDomainExample(): Promise<void> {
 
   const validatedEvent = workflowsValidator.validateInput(
     workflowEvent,
-    ExtendedSchemas.WorkflowEvent,
+    ExtendedSchemas.WorkflowEvent
   );
 
   // 3. Track cross-domain operation back to coordination
   workflowsValidator.trackCrossings(
     Domain.WORKFLOWS,
     Domain.COORDINATION,
-    'status-update',
+    'status-update'
   );
 
   logger.info('Workflows domain validation completed successfully', {
@@ -530,7 +530,7 @@ export async function complexMultiDomainExample(): Promise<void> {
   const coordValidator = getDomainValidator(Domain.COORDINATION);
   const validatedPlan = coordValidator.validateInput(
     executionPlan,
-    ExtendedSchemas.ExecutionPlan,
+    ExtendedSchemas.ExecutionPlan
   );
 
   // 2. Cross-domain validation to workflows
@@ -539,7 +539,7 @@ export async function complexMultiDomainExample(): Promise<void> {
     ExtendedSchemas.ExecutionPlan,
     Domain.COORDINATION,
     Domain.WORKFLOWS,
-    'execution-plan-transfer',
+    'execution-plan-transfer'
   );
 
   // 3. Validate workflow execution creation
@@ -554,10 +554,10 @@ export async function complexMultiDomainExample(): Promise<void> {
     results: {},
     metrics: {
       stepsCompleted: validatedPlan.phaseAssignments.filter(
-        (p: any) => p.status === 'completed',
+        (p: unknown) => p.status === 'completed'
       ).length,
       stepsFailed: validatedPlan.phaseAssignments.filter(
-        (p: any) => p.status === 'failed',
+        (p: unknown) => p.status === 'failed'
       ).length,
       resourcesUsed: {
         agents: validatedPlan.phaseAssignments.length,
@@ -568,7 +568,7 @@ export async function complexMultiDomainExample(): Promise<void> {
 
   const validatedExecution = workflowsValidator.validateInput(
     workflowExecution,
-    ExtendedSchemas.WorkflowExecution,
+    ExtendedSchemas.WorkflowExecution
   );
 
   // 4. Contract enforcement for neural domain integration
@@ -594,7 +594,7 @@ export async function complexMultiDomainExample(): Promise<void> {
 
   const neuralValidator = getDomainValidator(Domain.NEURAL);
   const neuralResult = await neuralValidator.enforceContract(
-    neuralIntegrationOperation,
+    neuralIntegrationOperation
   );
 
   if (neuralResult.success) {
@@ -604,7 +604,7 @@ export async function complexMultiDomainExample(): Promise<void> {
         planId: validatedPlan.taskId,
         executionId: validatedExecution.id,
         neuralIntegration: 'success',
-      },
+      }
     );
   } else {
     logger.warn('Neural integration contract failed', {
@@ -681,7 +681,7 @@ export async function errorHandlingExample(): Promise<void> {
 
   const recoveredAgent = validator.validateInput(
     validData,
-    CommonSchemas.Agent,
+    CommonSchemas.Agent
   );
   logger.info('System recovered successfully', {
     agentId: recoveredAgent.id,

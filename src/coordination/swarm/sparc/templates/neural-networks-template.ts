@@ -1058,7 +1058,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
    * @param projectSpec
    */
   customizeSpecification(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): DetailedSpecification {
     const customized = { ...this.specification };
 
@@ -1228,7 +1228,7 @@ END
     ) {
       warnings.push('Template complexity may be higher than needed');
       recommendations.push(
-        'Consider simplifying the architecture for your use case',
+        'Consider simplifying the architecture for your use case'
       );
     }
 
@@ -1237,11 +1237,11 @@ END
     for (const tech of requiredTech) {
       if (
         !projectSpec.requirements?.some((req) =>
-          req.toLowerCase().includes(tech.toLowerCase()),
+          req.toLowerCase().includes(tech.toLowerCase())
         )
       ) {
         warnings.push(
-          `Template requires ${tech} but not mentioned in requirements`,
+          `Template requires ${tech} but not mentioned in requirements`
         );
         recommendations.push(`Ensure ${tech} is available in your environment`);
       }

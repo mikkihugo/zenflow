@@ -20,31 +20,31 @@ export class DSPyEnhancedOperations {
       // Code Analysis Program
       const codeAnalysisProgram = await this.dspyWrapper.createProgram(
         'code: string, task_type: string -> analysis: string, suggestions: string[], complexity: number',
-        'Analyze code and provide intelligent insights, suggestions, and complexity assessment',
+        'Analyze code and provide intelligent insights, suggestions, and complexity assessment'
       );
 
       // Error Diagnosis Program
       const errorDiagnosisProgram = await this.dspyWrapper.createProgram(
         'error_message: string, code_context: string, file_path: string -> diagnosis: string, fix_suggestions: string[], confidence: number',
-        'Diagnose TypeScript/JavaScript errors and provide targeted fix suggestions',
+        'Diagnose TypeScript/JavaScript errors and provide targeted fix suggestions'
       );
 
       // Code Generation Program
       const codeGenerationProgram = await this.dspyWrapper.createProgram(
         'requirements: string, context: string, style_guide: string -> code: string, explanation: string, tests: string[]',
-        'Generate high-quality code based on requirements with proper documentation and tests',
+        'Generate high-quality code based on requirements with proper documentation and tests'
       );
 
       // Task Orchestration Program
       const taskOrchestrationProgram = await this.dspyWrapper.createProgram(
         'task_description: string, available_agents: string[], project_context: string -> execution_plan: string[], agent_assignments: object, priority_order: string[]',
-        'Intelligently orchestrate complex tasks across multiple agents with optimal resource allocation',
+        'Intelligently orchestrate complex tasks across multiple agents with optimal resource allocation'
       );
 
       // Swarm Optimization Program
       const swarmOptimizationProgram = await this.dspyWrapper.createProgram(
         'current_topology: string, task_requirements: string[], performance_metrics: object -> optimized_topology: string, agent_rebalancing: object, performance_prediction: number',
-        'Optimize swarm topology and agent distribution for maximum efficiency',
+        'Optimize swarm topology and agent distribution for maximum efficiency'
       );
 
       this.programs.set('code_analysis', codeAnalysisProgram);
@@ -77,7 +77,7 @@ export class DSPyEnhancedOperations {
 
     if (!executionResult?.success) {
       throw new Error(
-        `Code analysis failed: ${executionResult?.error?.message}`,
+        `Code analysis failed: ${executionResult?.error?.message}`
       );
     }
 
@@ -104,7 +104,7 @@ export class DSPyEnhancedOperations {
   async diagnoseError(
     errorMessage: string,
     codeContext: string,
-    filePath: string,
+    filePath: string
   ) {
     const program = this.programs.get('error_diagnosis');
     if (!program) throw new Error('Error diagnosis program not initialized');
@@ -117,7 +117,7 @@ export class DSPyEnhancedOperations {
 
     if (!executionResult?.success) {
       throw new Error(
-        `Error diagnosis failed: ${executionResult?.error?.message}`,
+        `Error diagnosis failed: ${executionResult?.error?.message}`
       );
     }
 
@@ -144,7 +144,7 @@ export class DSPyEnhancedOperations {
   async generateCode(
     requirements: string,
     context: string,
-    styleGuide: string = 'typescript-strict',
+    styleGuide: string = 'typescript-strict'
   ) {
     const program = this.programs.get('code_generation');
     if (!program) throw new Error('Code generation program not initialized');
@@ -157,7 +157,7 @@ export class DSPyEnhancedOperations {
 
     if (!executionResult?.success) {
       throw new Error(
-        `Code generation failed: ${executionResult?.error?.message}`,
+        `Code generation failed: ${executionResult?.error?.message}`
       );
     }
 
@@ -183,7 +183,7 @@ export class DSPyEnhancedOperations {
   async orchestrateTask(
     taskDescription: string,
     availableAgents: string[],
-    projectContext: string,
+    projectContext: string
   ) {
     const program = this.programs.get('task_orchestration');
     if (!program) throw new Error('Task orchestration program not initialized');
@@ -196,7 +196,7 @@ export class DSPyEnhancedOperations {
 
     if (!executionResult?.success) {
       throw new Error(
-        `Task orchestration failed: ${executionResult?.error?.message}`,
+        `Task orchestration failed: ${executionResult?.error?.message}`
       );
     }
 
@@ -205,7 +205,7 @@ export class DSPyEnhancedOperations {
       agent_assignments: executionResult?.result?.['agent_assignments'] || {},
       priority_order: executionResult?.result?.['priority_order'] || [],
       estimatedDuration: this.estimateDuration(
-        executionResult?.result?.['execution_plan']?.length || 0,
+        executionResult?.result?.['execution_plan']?.length || 0
       ),
     };
   }
@@ -220,7 +220,7 @@ export class DSPyEnhancedOperations {
   async optimizeSwarm(
     currentTopology: string,
     taskRequirements: string[],
-    performanceMetrics: object,
+    performanceMetrics: object
   ) {
     const program = this.programs.get('swarm_optimization');
     if (!program) throw new Error('Swarm optimization program not initialized');
@@ -233,7 +233,7 @@ export class DSPyEnhancedOperations {
 
     if (!executionResult?.success) {
       throw new Error(
-        `Swarm optimization failed: ${executionResult?.error?.message}`,
+        `Swarm optimization failed: ${executionResult?.error?.message}`
       );
     }
 
@@ -258,7 +258,7 @@ export class DSPyEnhancedOperations {
    */
   async trainFromSuccessfulOperations(
     operationType: string,
-    examples: Array<{ input: any; output: any; success: boolean }>,
+    examples: Array<{ input: unknown; output: unknown; success: boolean }>
   ) {
     const program = this.programs.get(operationType);
     if (!program) {
@@ -284,7 +284,7 @@ export class DSPyEnhancedOperations {
             `Trained ${operationType} program with ${successfulExamples.length} successful examples`,
             {
               improvement: optimizationResult?.metrics?.improvementPercent,
-            },
+            }
           );
         }
       } catch (error) {
@@ -305,7 +305,7 @@ export class DSPyEnhancedOperations {
   }
 
   private assessErrorSeverity(
-    errorMessage: string,
+    errorMessage: string
   ): 'low' | 'medium' | 'high' | 'critical' {
     if (
       errorMessage.includes('Cannot find module') ||

@@ -109,7 +109,7 @@ async function cleanupIntegrationState() {
   global.testFixtures = {};
 
   // Clean environment variables
-  delete process.env.CLAUDE_ZEN_TEST_MODE;
+  process.env.CLAUDE_ZEN_TEST_MODE = undefined;
 }
 
 /**
@@ -324,7 +324,7 @@ global.simulateSwarmWorkflow = async (swarm: MockSwarm, tasks: unknown[]) => {
 
       agent.status = 'idle';
       agent.tasks = agent.tasks.filter(
-        (t) => (t as { id: string }).id !== (task as { id: string }).id,
+        (t) => (t as { id: string }).id !== (task as { id: string }).id
       );
     }
   }
@@ -462,7 +462,7 @@ declare global {
 
   function createTestServer(
     port: number,
-    routes?: TestRoute[],
+    routes?: TestRoute[]
   ): Promise<unknown>;
   function createTestClient(baseURL: string): TestClient;
   function waitForPort(port: number, timeout?: number): Promise<boolean>;
@@ -470,7 +470,7 @@ declare global {
   function createMockSwarm(agentCount?: number): MockSwarm;
   function simulateSwarmWorkflow(
     swarm: MockSwarm,
-    tasks: unknown[],
+    tasks: unknown[]
   ): Promise<unknown[]>;
   function createMockMCPClient(): MockMCPClient;
   function validateMCPProtocol(message: MCPMessage): void;

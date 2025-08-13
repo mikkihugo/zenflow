@@ -11,10 +11,10 @@ const logger = getLogger('coordination-diagnostics-logging-config');
  */
 
 export interface LoggerInterface {
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
-  debug(message: string, meta?: any): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
+  debug(message: string, meta?: unknown): void;
 }
 
 export interface LogConfiguration {
@@ -33,7 +33,7 @@ export interface LogConfiguration {
 class DiagnosticsLogger implements LoggerInterface {
   constructor(
     private name: string,
-    private options: { level: string },
+    private options: { level: string }
   ) {}
 
   private shouldLog(level: string): boolean {
@@ -48,31 +48,31 @@ class DiagnosticsLogger implements LoggerInterface {
     return messageLevel >= currentLevel;
   }
 
-  private formatMessage(level: string, message: string, meta?: any): string {
+  private formatMessage(level: string, message: string, meta?: unknown): string {
     const timestamp = new Date().toISOString();
     const metaStr = meta ? ` ${JSON.stringify(meta)}` : '';
     return `[${timestamp}] [${this.name}] ${level.toUpperCase()}: ${message}${metaStr}`;
   }
 
-  info(message: string, meta?: any): void {
+  info(message: string, meta?: unknown): void {
     if (this.shouldLog('INFO')) {
       logger.info(this.formatMessage('INFO', message, meta));
     }
   }
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     if (this.shouldLog('WARN')) {
       logger.warn(this.formatMessage('WARN', message, meta));
     }
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     if (this.shouldLog('ERROR')) {
       logger.error(this.formatMessage('ERROR', message, meta));
     }
   }
 
-  debug(message: string, meta?: any): void {
+  debug(message: string, meta?: unknown): void {
     if (this.shouldLog('DEBUG')) {
       logger.debug(this.formatMessage('DEBUG', message, meta));
     }

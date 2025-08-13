@@ -195,7 +195,7 @@ export class ExportSystem extends EventEmitter {
   async exportData(
     data: unknown,
     format: string,
-    options: ExportOptions = {},
+    options: ExportOptions = {}
   ): Promise<ExportResult> {
     const exporter = this.exporters.get(format.toLowerCase());
 
@@ -245,7 +245,7 @@ export class ExportSystem extends EventEmitter {
       this.exportHistory.push(result);
       this.emit('export:success', result);
       logger.info(
-        `Successfully exported data as ${format.toUpperCase()}: ${filename}`,
+        `Successfully exported data as ${format.toUpperCase()}: ${filename}`
       );
 
       return result;
@@ -277,7 +277,7 @@ export class ExportSystem extends EventEmitter {
   async batchExport(
     data: unknown,
     formats: string[],
-    options: ExportOptions = {},
+    options: ExportOptions = {}
   ): Promise<ExportResult[]> {
     const results: ExportResult[] = [];
 
@@ -326,7 +326,7 @@ export class ExportSystem extends EventEmitter {
       tasks?: Record<string, unknown>[];
     },
     format: string,
-    options: ExportOptions = {},
+    options: ExportOptions = {}
   ): Promise<ExportResult> {
     const documentData = {
       metadata: {
@@ -334,7 +334,7 @@ export class ExportSystem extends EventEmitter {
         workflow: 'Vision → ADRs → PRDs → Epics → Features → Tasks → Code',
         totalDocuments: Object.values(workflowData).reduce(
           (sum, docs) => sum + (docs?.length || 0),
-          0,
+          0
         ),
       },
       ...workflowData,
@@ -360,7 +360,7 @@ export class ExportSystem extends EventEmitter {
   async exportSystemStatus(
     statusData: Record<string, unknown>,
     format: string,
-    options: ExportOptions = {},
+    options: ExportOptions = {}
   ): Promise<ExportResult> {
     const systemExport = {
       timestamp: new Date().toISOString(),
@@ -434,7 +434,7 @@ export class ExportSystem extends EventEmitter {
       return entries
         .map(
           ([key, value]) =>
-            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`,
+            `${spaces}${key}: ${this.convertToYAML(value, indent + 1)}`
         )
         .join('\n');
     }
@@ -459,7 +459,7 @@ export class ExportSystem extends EventEmitter {
           (item, index) =>
             `${spaces}<item index="${index}">
       ${this.convertToXML(item, indent + 1)}
-      ${spaces}</item>`,
+      ${spaces}</item>`
         )
         .join('\n');
     }
@@ -470,7 +470,7 @@ export class ExportSystem extends EventEmitter {
           ([key, value]) =>
             `${spaces}<${this.sanitizeXMLTag(key)}>
       ${this.convertToXML(value, indent + 1)}
-      ${spaces}</${this.sanitizeXMLTag(key)}>`,
+      ${spaces}</${this.sanitizeXMLTag(key)}>`
         )
         .join('\n');
     }
@@ -497,7 +497,7 @@ export class ExportSystem extends EventEmitter {
       if (dataObj['metadata']) {
         markdown += '## Metadata\n';
         for (const [key, value] of Object.entries(
-          dataObj['metadata'] as Record<string, unknown>,
+          dataObj['metadata'] as Record<string, unknown>
         )) {
           markdown += `- **${key}**: ${value}\n`;
         }
@@ -677,7 +677,7 @@ export class ExportSystem extends EventEmitter {
 
   getExportHistory(limit?: number): ExportResult[] {
     const history = [...this.exportHistory].sort(
-      (a, b) => b.timestamp - a.timestamp,
+      (a, b) => b.timestamp - a.timestamp
     );
     return limit ? history.slice(0, limit) : history;
   }

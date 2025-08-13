@@ -161,7 +161,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       // Verify results are sorted by similarity (descending)
       for (let i = 1; i < results.length; i++) {
         expect(results?.[i]?.similarity).toBeLessThanOrEqual(
-          results?.[i - 1]?.similarity,
+          results?.[i - 1]?.similarity
         );
       }
 
@@ -187,7 +187,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('filtered-search');
 
       // Verify all results match filter criteria
-      results?.forEach((result: any) => {
+      results?.forEach((result: unknown) => {
         expect(result?.metadata?.category).toBe(targetCategory);
         expect(result?.metadata?.value).toBeGreaterThanOrEqual(50);
       });
@@ -211,7 +211,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       performance.end('range-query');
 
       // Verify all results are within specified radius
-      results?.forEach((result: any) => {
+      results?.forEach((result: unknown) => {
         expect(result?.similarity).toBeGreaterThanOrEqual(radius);
       });
 
@@ -250,9 +250,13 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(approxTime).toBeLessThan(exactTime * 0.5);
 
       // Approximate results should be reasonably similar to exact
-      const topExact = exactResults?.slice(0, 5).map((r: any) => r.metadata.id);
-      const topApprox = approxResults?.slice(0, 5).map((r: any) => r.metadata.id);
-      const overlap = topExact.filter((id: any) => topApprox.includes(id)).length;
+      const topExact = exactResults?.slice(0, 5).map((r: unknown) => r.metadata.id);
+      const topApprox = approxResults
+        ?.slice(0, 5)
+        .map((r: unknown) => r.metadata.id);
+      const overlap = topExact.filter((id: unknown) =>
+        topApprox.includes(id)
+      ).length;
 
       expect(overlap).toBeGreaterThanOrEqual(3); // At least 60% overlap in top 5
     });
@@ -326,7 +330,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
               cluster,
               distanceFromCenter: testHelper.calculateDistance(
                 noisyVector,
-                clusterCenter,
+                clusterCenter
               ),
             },
           });
@@ -356,7 +360,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(optimizedIndex.parameters.nlist).toBeCloseTo(clusters, 2);
       expect(optimizedIndex.estimatedSearchTime).toBeLessThanOrEqual(50);
       expect(optimizedIndex.estimatedMemoryUsage).toBeLessThanOrEqual(
-        100 * 1024 * 1024,
+        100 * 1024 * 1024
       );
 
       const optimizationTime = performance.getDuration('index-optimization');
@@ -401,7 +405,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(memoryIncrease).toBeLessThan(500 * 1024 * 1024);
 
       const operationTime = performance.getDuration(
-        'memory-intensive-operations',
+        'memory-intensive-operations'
       );
       expect(operationTime).toBeLessThan(60000); // 60 seconds max
     });
@@ -461,7 +465,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       const concurrentReads = 20;
       const queryVectors = Array.from({ length: concurrentReads }, () =>
-        testHelper.generateRandomVector(VECTOR_DIMENSION),
+        testHelper.generateRandomVector(VECTOR_DIMENSION)
       );
 
       performance.start('concurrent-reads');
@@ -470,7 +474,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
         vectorStore.similaritySearch({
           vector,
           k: 5,
-        }),
+        })
       );
 
       const results = await Promise.all(readPromises);
@@ -479,7 +483,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // All reads should succeed
       expect(results.length).toBe(concurrentReads);
-      results?.forEach((result: any) => {
+      results?.forEach((result: unknown) => {
         expect(result.length).toBeGreaterThan(0);
         expect(result.length).toBeLessThanOrEqual(5);
       });
@@ -503,7 +507,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
             vectorStore.insert({
               vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
               metadata: { id: `mixed-write-${i}`, operation: 'write' },
-            }),
+            })
           );
         } else {
           // Read operation
@@ -511,7 +515,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
             vectorStore.similaritySearch({
               vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
               k: 3,
-            }),
+            })
           );
         }
       }
@@ -565,7 +569,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
           vectorStore.update(testId, {
             vector: testHelper.generateRandomVector(VECTOR_DIMENSION),
             metadata: { id: testId, version: i, updateTime: Date.now() },
-          }),
+          })
         );
       }
 
@@ -575,7 +579,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
 
       // Exactly one update should succeed due to concurrency control
       const successfulUpdates = updateResults?.filter(
-        (result) => result?.success,
+        (result) => result?.success
       );
       expect(successfulUpdates.length).toBe(1);
 
@@ -584,7 +588,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(finalVector).toBeDefined();
       expect(finalVector?.metadata.version).toBeGreaterThan(0);
       expect(finalVector?.metadata.version).toBeLessThanOrEqual(
-        concurrentUpdates,
+        concurrentUpdates
       );
 
       const updateTime = performance.getDuration('concurrent-updates');

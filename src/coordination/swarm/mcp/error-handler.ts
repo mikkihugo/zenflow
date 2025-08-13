@@ -164,7 +164,7 @@ export class MCPErrorHandler {
    * }
    * ```
    */
-  static handleError(error: any, context?: string): never {
+  static handleError(error: unknown, context?: string): never {
     logger.error(`MCP Error${context ? ` in ${context}` : ''}:`, error);
     throw error;
   }
@@ -187,7 +187,7 @@ export class MCPErrorHandler {
    * );
    * ```
    */
-  static validateParameters(params: any, schema: any): void {
+  static validateParameters(params: unknown, schema: unknown): void {
     // Basic parameter validation
     if (!params && schema.required) {
       throw new Error('Missing required parameters');
@@ -222,7 +222,7 @@ export class MCPErrorHandler {
    * }
    * ```
    */
-  static classifyError(error: Error, context: any): any {
+  static classifyError(error: Error, context: unknown): unknown {
     // Basic error classification
     return {
       type: error.constructor.name,
@@ -286,7 +286,7 @@ export class MCPToolWrapper {
    * ```
    */
   static wrap(toolFn: Function, toolName: string) {
-    return async (params: any) => {
+    return async (params: unknown) => {
       try {
         return await toolFn(params);
       } catch (error) {
@@ -341,7 +341,7 @@ export class MCPParameterValidator {
    * );
    * ```
    */
-  static validate(_params: any, _schema: any): boolean {
+  static validate(_params: unknown, _schema: unknown): boolean {
     // Basic validation - could be enhanced with proper schema validation
     return true;
   }
@@ -370,7 +370,7 @@ export class MCPParameterValidator {
    * }
    * ```
    */
-  static validateParams(params: any, toolName: string): any {
+  static validateParams(params: unknown, toolName: string): unknown {
     // Basic parameter validation
     if (!params) {
       throw new ValidationError(`Missing parameters for tool: ${toolName}`);
@@ -433,7 +433,7 @@ export class AgentError extends Error {
    */
   constructor(
     message: string,
-    public agentId?: string,
+    public agentId?: string
   ) {
     super(message);
     this.name = 'AgentError';
@@ -475,7 +475,7 @@ export class NeuralError extends Error {
   constructor(
     message: string,
     public modelId?: string,
-    public operation?: string,
+    public operation?: string
   ) {
     super(message);
     this.name = 'NeuralError';
@@ -517,7 +517,7 @@ export class PersistenceError extends Error {
   constructor(
     message: string,
     public key?: string,
-    public operation?: string,
+    public operation?: string
   ) {
     super(message);
     this.name = 'PersistenceError';
@@ -559,7 +559,7 @@ export class ResourceError extends Error {
   constructor(
     message: string,
     public resourceType?: string,
-    public resourceId?: string,
+    public resourceId?: string
   ) {
     super(message);
     this.name = 'ResourceError';
@@ -601,7 +601,7 @@ export class SwarmError extends Error {
   constructor(
     message: string,
     public swarmId?: string,
-    public agentCount?: number,
+    public agentCount?: number
   ) {
     super(message);
     this.name = 'SwarmError';
@@ -643,7 +643,7 @@ export class TaskError extends Error {
   constructor(
     message: string,
     public taskId?: string,
-    public taskType?: string,
+    public taskType?: string
   ) {
     super(message);
     this.name = 'TaskError';
@@ -685,7 +685,7 @@ export class WasmError extends Error {
   constructor(
     message: string,
     public module?: string,
-    public functionName?: string,
+    public functionName?: string
   ) {
     super(message);
     this.name = 'WasmError';
@@ -727,7 +727,7 @@ export class ZenSwarmError extends Error {
   constructor(
     message: string,
     public swarmType?: string,
-    public coordination?: string,
+    public coordination?: string
   ) {
     super(message);
     this.name = 'ZenSwarmError';
@@ -765,7 +765,7 @@ export interface ErrorContext {
   timestamp: Date;
 
   /** Additional metadata relevant to the error context (optional) */
-  metadata?: Record<string, any> | undefined;
+  metadata?: Record<string, unknown> | undefined;
 
   /** Stack trace of the error occurrence (optional) */
   stackTrace?: string | undefined;
@@ -817,7 +817,7 @@ export class ErrorContextFactory {
    */
   static create(
     operation: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>
   ): ErrorContext {
     return {
       operation,
@@ -875,7 +875,7 @@ export class ErrorContextFactory {
 export class ErrorFactory {
   static createValidationError(
     message: string,
-    field?: string,
+    field?: string
   ): ValidationError {
     return new ValidationError(message, field);
   }
@@ -887,7 +887,7 @@ export class ErrorFactory {
   static createNeuralError(
     message: string,
     modelId?: string,
-    operation?: string,
+    operation?: string
   ): NeuralError {
     return new NeuralError(message, modelId, operation);
   }
@@ -895,7 +895,7 @@ export class ErrorFactory {
   static createPersistenceError(
     message: string,
     key?: string,
-    operation?: string,
+    operation?: string
   ): PersistenceError {
     return new PersistenceError(message, key, operation);
   }
@@ -903,7 +903,7 @@ export class ErrorFactory {
   static createResourceError(
     message: string,
     resourceType?: string,
-    resourceId?: string,
+    resourceId?: string
   ): ResourceError {
     return new ResourceError(message, resourceType, resourceId);
   }
@@ -911,7 +911,7 @@ export class ErrorFactory {
   static createSwarmError(
     message: string,
     swarmId?: string,
-    agentCount?: number,
+    agentCount?: number
   ): SwarmError {
     return new SwarmError(message, swarmId, agentCount);
   }
@@ -919,7 +919,7 @@ export class ErrorFactory {
   static createTaskError(
     message: string,
     taskId?: string,
-    taskType?: string,
+    taskType?: string
   ): TaskError {
     return new TaskError(message, taskId, taskType);
   }
@@ -927,7 +927,7 @@ export class ErrorFactory {
   static createWasmError(
     message: string,
     module?: string,
-    functionName?: string,
+    functionName?: string
   ): WasmError {
     return new WasmError(message, module, functionName);
   }
@@ -935,16 +935,16 @@ export class ErrorFactory {
   static createZenSwarmError(
     message: string,
     swarmType?: string,
-    coordination?: string,
+    coordination?: string
   ): ZenSwarmError {
     return new ZenSwarmError(message, swarmType, coordination);
   }
 
   static createErrorWithContext(
-    ErrorClass: new (message: string, ...args: any[]) => Error,
+    ErrorClass: new (message: string, ...args: unknown[]) => Error,
     message: string,
     context: ErrorContext,
-    ...args: any[]
+    ...args: unknown[]
   ): Error {
     const error = new ErrorClass(message, ...args);
     (error as any).context = context;
@@ -1005,7 +1005,7 @@ export class ErrorFactory {
   static createError(
     errorType: string,
     message: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>
   ): Error {
     const context = ErrorContextFactory.create(`create-${errorType}`, metadata);
 
@@ -1015,14 +1015,14 @@ export class ErrorFactory {
           ValidationError,
           message,
           context,
-          metadata?.['field'],
+          metadata?.['field']
         );
       case 'agent':
         return ErrorFactory.createErrorWithContext(
           AgentError,
           message,
           context,
-          metadata?.['agentId'],
+          metadata?.['agentId']
         );
       case 'neural':
         return ErrorFactory.createErrorWithContext(
@@ -1030,7 +1030,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['modelId'],
-          metadata?.['operation'],
+          metadata?.['operation']
         );
       case 'persistence':
         return ErrorFactory.createErrorWithContext(
@@ -1038,7 +1038,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['key'],
-          metadata?.['operation'],
+          metadata?.['operation']
         );
       case 'resource':
         return ErrorFactory.createErrorWithContext(
@@ -1046,7 +1046,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['resourceType'],
-          metadata?.['resourceId'],
+          metadata?.['resourceId']
         );
       case 'swarm':
         return ErrorFactory.createErrorWithContext(
@@ -1054,7 +1054,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['swarmId'],
-          metadata?.['agentCount'],
+          metadata?.['agentCount']
         );
       case 'task':
         return ErrorFactory.createErrorWithContext(
@@ -1062,7 +1062,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['taskId'],
-          metadata?.['taskType'],
+          metadata?.['taskType']
         );
       case 'wasm':
         return ErrorFactory.createErrorWithContext(
@@ -1070,7 +1070,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['module'],
-          metadata?.['functionName'],
+          metadata?.['functionName']
         );
       case 'zenswarm':
         return ErrorFactory.createErrorWithContext(
@@ -1078,7 +1078,7 @@ export class ErrorFactory {
           message,
           context,
           metadata?.['swarmType'],
-          metadata?.['coordination'],
+          metadata?.['coordination']
         );
       default: {
         // Generic error with context

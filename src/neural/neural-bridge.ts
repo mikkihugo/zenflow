@@ -100,7 +100,7 @@ export class NeuralBridge {
   async createNetwork(
     id: string,
     type: NeuralNetwork['type'],
-    layers: number[],
+    layers: number[]
   ): Promise<string> {
     if (!this.initialized) {
       await this.initialize();
@@ -129,7 +129,7 @@ export class NeuralBridge {
   async trainNetwork(
     networkId: string,
     trainingData: TrainingData,
-    epochs: number = 1000,
+    epochs: number = 1000
   ): Promise<boolean> {
     const network = this.networks.get(networkId);
     if (!network) {
@@ -171,7 +171,7 @@ export class NeuralBridge {
    */
   async predict(
     networkId: string,
-    inputs: number[],
+    inputs: number[]
   ): Promise<PredictionResult> {
     const network = this.networks.get(networkId);
     if (!network) {
@@ -270,7 +270,7 @@ export class NeuralBridge {
   private async simulateTraining(
     _network: NeuralNetwork,
     trainingData: TrainingData,
-    epochs: number,
+    epochs: number
   ): Promise<void> {
     // Simulate training progress
     const batchSize = Math.min(10, trainingData?.inputs.length);
@@ -282,7 +282,7 @@ export class NeuralBridge {
 
       if (batch % 100 === 0) {
         logger.debug(
-          `Training progress: ${Math.round((batch / batches) * 100)}%`,
+          `Training progress: ${Math.round((batch / batches) * 100)}%`
         );
       }
     }
@@ -290,7 +290,7 @@ export class NeuralBridge {
 
   private async simulatePrediction(
     network: NeuralNetwork,
-    _inputs: number[],
+    _inputs: number[]
   ): Promise<number[]> {
     // Simulate prediction computation
     await new Promise((resolve) => setTimeout(resolve, 5));
@@ -331,7 +331,7 @@ export async function createNeuralNetwork(
   id: string,
   type: NeuralNetwork['type'],
   layers: number[],
-  config?: NeuralConfig,
+  config?: NeuralConfig
 ): Promise<string> {
   const bridge = NeuralBridge.getInstance(config);
   return await bridge.createNetwork(id, type, layers);
@@ -340,7 +340,7 @@ export async function createNeuralNetwork(
 export async function trainNeuralNetwork(
   networkId: string,
   trainingData: TrainingData,
-  epochs?: number,
+  epochs?: number
 ): Promise<boolean> {
   const bridge = NeuralBridge.getInstance();
   return await bridge.trainNetwork(networkId, trainingData, epochs);
@@ -348,7 +348,7 @@ export async function trainNeuralNetwork(
 
 export async function predictWithNetwork(
   networkId: string,
-  inputs: number[],
+  inputs: number[]
 ): Promise<PredictionResult> {
   const bridge = NeuralBridge.getInstance();
   return await bridge.predict(networkId, inputs);

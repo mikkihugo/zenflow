@@ -60,7 +60,7 @@ export const InterfaceUtils = {
     ];
 
     const hasAdvancedCommand = args.some((arg) =>
-      advancedCommands.includes(arg),
+      advancedCommands.includes(arg)
     );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
@@ -90,7 +90,7 @@ export const InterfaceUtils = {
     ];
 
     const hasAdvancedCommand = args.some((arg) =>
-      advancedCommands.includes(arg),
+      advancedCommands.includes(arg)
     );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 
@@ -111,7 +111,7 @@ export const InterfaceUtils = {
 
   validateConfig(config: InterfaceConfig): boolean {
     return ['terminal', 'web', 'mcp', 'api', 'advanced-cli'].includes(
-      config?.['mode'],
+      config?.['mode']
     );
   },
 
@@ -136,7 +136,7 @@ export const InterfaceUtils = {
     ];
 
     const hasAdvancedCommand = args.some((arg) =>
-      advancedCommands.includes(arg),
+      advancedCommands.includes(arg)
     );
     const hasAIFlag = args.some((arg) => aiFlags.includes(arg));
 

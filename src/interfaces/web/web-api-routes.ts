@@ -23,7 +23,7 @@ export class WebApiRoutes {
   constructor(
     config: WebConfig,
     sessionManager: WebSessionManager,
-    dataService: WebDataService,
+    dataService: WebDataService
   ) {
     this.config = config;
     this.sessionManager = sessionManager;
@@ -88,7 +88,7 @@ export class WebApiRoutes {
    */
   private async handleSystemStatus(
     _req: Request,
-    res: Response,
+    res: Response
   ): Promise<void> {
     try {
       const status = await this.dataService.getSystemStatus();
@@ -173,7 +173,7 @@ export class WebApiRoutes {
    */
   private async handleGetDocuments(
     _req: Request,
-    res: Response,
+    res: Response
   ): Promise<void> {
     try {
       const documents = await this.dataService.getDocuments();
@@ -192,7 +192,7 @@ export class WebApiRoutes {
    */
   private async handleExecuteCommand(
     req: Request,
-    res: Response,
+    res: Response
   ): Promise<void> {
     try {
       const { command, args } = req.body;
@@ -231,7 +231,7 @@ export class WebApiRoutes {
   private handleUpdateSettings(req: Request, res: Response): void {
     const success = this.sessionManager.updateSessionPreferences(
       req.sessionId!,
-      req.body,
+      req.body
     );
 
     if (success) {

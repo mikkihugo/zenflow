@@ -83,7 +83,7 @@ export const DATABASE_RATE_LIMITS = {
  */
 function createRateLimiter(
   config: RateLimitConfig,
-  operationType: string,
+  operationType: string
 ): ReturnType<typeof rateLimit> {
   return rateLimit({
     windowMs: config?.windowMs,
@@ -149,7 +149,7 @@ function createRateLimiter(
  */
 export const lightOperationsLimiter = createRateLimiter(
   DATABASE_RATE_LIMITS?.light,
-  'light',
+  'light'
 );
 
 /**
@@ -158,7 +158,7 @@ export const lightOperationsLimiter = createRateLimiter(
  */
 export const mediumOperationsLimiter = createRateLimiter(
   DATABASE_RATE_LIMITS?.medium,
-  'medium',
+  'medium'
 );
 
 /**
@@ -167,7 +167,7 @@ export const mediumOperationsLimiter = createRateLimiter(
  */
 export const heavyOperationsLimiter = createRateLimiter(
   DATABASE_RATE_LIMITS?.heavy,
-  'heavy',
+  'heavy'
 );
 
 /**
@@ -176,7 +176,7 @@ export const heavyOperationsLimiter = createRateLimiter(
  */
 export const adminOperationsLimiter = createRateLimiter(
   DATABASE_RATE_LIMITS?.admin,
-  'admin',
+  'admin'
 );
 
 /**
@@ -190,7 +190,7 @@ export const adminOperationsLimiter = createRateLimiter(
 export const dynamicDatabaseRateLimiter = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   const path = req.path.toLowerCase();
   const method = req.method.toLowerCase();
@@ -236,7 +236,7 @@ export const dynamicDatabaseRateLimiter = (
  */
 export const createCustomDatabaseRateLimiter = (
   config: Partial<RateLimitConfig>,
-  operationType: string,
+  operationType: string
 ): ReturnType<typeof rateLimit> => {
   const fullConfig: RateLimitConfig = {
     ...DATABASE_RATE_LIMITS?.medium, // Default to medium
@@ -257,7 +257,7 @@ export const createCustomDatabaseRateLimiter = (
 export const authAwareDatabaseRateLimiter = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   const isAuthenticated = req.auth?.isAuthenticated;
   const userRoles = req.auth?.user?.roles || [];
@@ -307,7 +307,7 @@ export const authAwareDatabaseRateLimiter = (
  * @param req
  */
 export const getRateLimitStatus = (
-  req: Request,
+  req: Request
 ): {
   remaining: number;
   limit: number;
@@ -316,11 +316,11 @@ export const getRateLimitStatus = (
   // These headers are set by express-rate-limit
   const remaining = Number.parseInt(
     req.get('X-RateLimit-Remaining') || '0',
-    10,
+    10
   );
   const limit = Number.parseInt(req.get('X-RateLimit-Limit') || '0', 10);
   const resetTime = new Date(
-    Number.parseInt(req.get('X-RateLimit-Reset') || '0', 10),
+    Number.parseInt(req.get('X-RateLimit-Reset') || '0', 10)
   );
 
   return {
@@ -341,7 +341,7 @@ export const getRateLimitStatus = (
 export const rateLimitInfoMiddleware = (
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   const status = getRateLimitStatus(req);
 
@@ -369,7 +369,7 @@ export const RATE_LIMIT_CONFIGS = DATABASE_RATE_LIMITS;
  */
 export const wouldBeRateLimited = async (
   req: Request,
-  operationType: keyof typeof DATABASE_RATE_LIMITS,
+  operationType: keyof typeof DATABASE_RATE_LIMITS
 ): Promise<boolean> => {
   // This is a simplified check - in a real implementation,
   // you would check against the actual rate limit store

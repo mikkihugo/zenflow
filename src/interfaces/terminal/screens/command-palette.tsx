@@ -7,7 +7,7 @@
 
 import { Box, Text, useInput } from 'ink';
 import TextInput from 'ink-text-input';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Header,
@@ -244,7 +244,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       const titleScore = fuzzyMatch(searchQuery, cmd.title);
       const descScore = fuzzyMatch(searchQuery, cmd.description);
       const keywordScore = Math.max(
-        ...cmd.keywords.map((k) => fuzzyMatch(searchQuery, k)),
+        ...cmd.keywords.map((k) => fuzzyMatch(searchQuery, k))
       );
       const totalScore = Math.max(titleScore, descScore, keywordScore);
 
@@ -264,7 +264,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       setSelectedIndex((prev) => Math.max(0, prev - 1));
     } else if (key.downArrow) {
       setSelectedIndex((prev) =>
-        Math.min(filteredCommands.length - 1, prev + 1),
+        Math.min(filteredCommands.length - 1, prev + 1)
       );
     } else if (key.return) {
       executeSelectedCommand();
@@ -323,10 +323,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header */}
       <Header
         title="Command Palette"
@@ -337,20 +334,9 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       />
 
       {/* Search Input */}
-      <Box
-        paddingX={3}
-        paddingY={2}
-        borderStyle="single"
-        borderColor="cyan"
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
-          <Text
-            color="cyan"
-            bold
-          >
+      <Box paddingX={3} paddingY={2} borderStyle="single" borderColor="cyan">
+        <Box flexDirection="column" width="100%">
+          <Text color="cyan" bold>
             🔍 Search Commands:
           </Text>
           <Box marginTop={1}>
@@ -365,21 +351,10 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       </Box>
 
       {/* Results */}
-      <Box
-        flexGrow={1}
-        paddingX={2}
-        paddingY={1}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2} paddingY={1}>
+        <Box flexDirection="column" width="100%">
           {filteredCommands.length === 0 ? (
-            <Box
-              justifyContent="center"
-              alignItems="center"
-              height={10}
-            >
+            <Box justifyContent="center" alignItems="center" height={10}>
               <Text color="gray">
                 {searchQuery
                   ? 'No commands match your search'
@@ -402,10 +377,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                   borderStyle={isSelected ? 'single' : undefined}
                   borderColor={isSelected ? 'cyan' : undefined}
                 >
-                  <Box
-                    flexDirection="row"
-                    justifyContent="space-between"
-                  >
+                  <Box flexDirection="row" justifyContent="space-between">
                     <Box flexDirection="row">
                       <Text
                         color={isDisabled ? 'gray' : 'white'}
@@ -415,38 +387,23 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
                         {cmd.title}
                       </Text>
                       {cmd.keybinding && (
-                        <Text
-                          color="gray"
-                          dimColor
-                        >
+                        <Text color="gray" dimColor>
                           {' '}
                           ({cmd.keybinding})
                         </Text>
                       )}
                     </Box>
-                    <Text
-                      color={getCategoryColor(cmd.category)}
-                      dimColor
-                    >
+                    <Text color={getCategoryColor(cmd.category)} dimColor>
                       {cmd.category}
                     </Text>
                   </Box>
                   {isSelected && (
-                    <Box
-                      marginTop={1}
-                      paddingLeft={2}
-                    >
-                      <Text
-                        color="gray"
-                        wrap="wrap"
-                      >
+                    <Box marginTop={1} paddingLeft={2}>
+                      <Text color="gray" wrap="wrap">
                         {cmd.description}
                       </Text>
                       {isDisabled && (
-                        <Text
-                          color="red"
-                          dimColor
-                        >
+                        <Text color="red" dimColor>
                           ⚠️ Requires active swarm
                         </Text>
                       )}
@@ -461,34 +418,15 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
 
       {/* Recent Commands */}
       {recentCommands.length > 0 && !searchQuery && (
-        <Box
-          paddingX={2}
-          paddingY={1}
-          borderStyle="single"
-          borderColor="gray"
-        >
+        <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="gray">
           <Box flexDirection="column">
-            <Text
-              color="gray"
-              bold
-            >
+            <Text color="gray" bold>
               📋 Recent Commands:
             </Text>
-            <Box
-              marginTop={1}
-              flexDirection="row"
-              flexWrap="wrap"
-            >
+            <Box marginTop={1} flexDirection="row" flexWrap="wrap">
               {recentCommands.map((cmd, index) => (
-                <Box
-                  key={cmd.id}
-                  marginRight={2}
-                  marginBottom={1}
-                >
-                  <Text
-                    color="cyan"
-                    dimColor
-                  >
+                <Box key={cmd.id} marginRight={2} marginBottom={1}>
+                  <Text color="cyan" dimColor>
                     {index + 1}. {cmd.title}
                   </Text>
                 </Box>
@@ -499,10 +437,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
       )}
 
       {/* Footer */}
-      <Box
-        paddingY={1}
-        paddingX={2}
-      >
+      <Box paddingY={1} paddingX={2}>
         <InteractiveFooter
           currentScreen="Command Palette"
           availableScreens={[

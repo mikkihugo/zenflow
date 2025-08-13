@@ -76,7 +76,7 @@ export interface AgentState {
   config?: AgentConfig;
   workload?: number;
   errorHistory?: AgentError[];
-  performance?: Record<string, any>;
+  performance?: Record<string, unknown>;
   capabilities?: AgentCapabilities;
   load?: number;
 }
@@ -92,10 +92,10 @@ export interface AgentEnvironment {
   version?: string;
   tempDirectory?: string;
   logDirectory?: string;
-  apiEndpoints?: Record<string, any>;
-  credentials?: Record<string, any>;
+  apiEndpoints?: Record<string, unknown>;
+  credentials?: Record<string, unknown>;
   availableTools?: string[];
-  toolConfigs?: Record<string, any>;
+  toolConfigs?: Record<string, unknown>;
 }
 
 export interface AgentError {
@@ -105,7 +105,7 @@ export interface AgentError {
   stack?: string;
   type?: string;
   severity?: 'low' | 'medium' | 'high' | 'critical';
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
   resolved?: boolean;
 }
 
@@ -124,17 +124,17 @@ export interface AgentConfig {
   heartbeatInterval?: number;
   permissions?: string[];
   trustedAgents?: string[];
-  expertise?: Record<string, any>;
-  preferences?: Record<string, any>;
-  cognitiveProfile?: any;
-  memory?: any;
+  expertise?: Record<string, unknown>;
+  preferences?: Record<string, unknown>;
+  cognitiveProfile?: unknown;
+  memory?: unknown;
   capabilities?: AgentCapabilities;
 }
 
 export interface Message {
   id: string;
   type: MessageType;
-  payload: any;
+  payload: unknown;
   timestamp: Date;
   sender?: string;
   recipient?: string;
@@ -157,7 +157,7 @@ export type MessageType =
 
 export interface ExecutionResult {
   success: boolean;
-  result?: any;
+  result?: unknown;
   error?: string;
   timestamp: Date;
   metrics?: {
@@ -165,10 +165,10 @@ export interface ExecutionResult {
     memoryUsage?: number;
     cpuUsage?: number;
   };
-  data?: any;
+  data?: unknown;
   executionTime?: number;
   agentId?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface Agent {

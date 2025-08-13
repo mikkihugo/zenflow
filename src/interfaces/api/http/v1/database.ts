@@ -40,21 +40,21 @@ import {
 // Type definitions for request/response interfaces
 interface QueryRequest {
   sql: string;
-  params?: any[];
-  options?: any;
+  params?: unknown[];
+  options?: unknown;
 }
 
 interface CommandRequest {
   sql: string;
-  params?: any[];
-  options?: any;
+  params?: unknown[];
+  options?: unknown;
 }
 
 interface BatchRequest {
   operations: Array<{
     type: 'query' | 'execute';
     sql: string;
-    params?: any[];
+    params?: unknown[];
   }>;
   useTransaction?: boolean;
   continueOnError?: boolean;
@@ -90,7 +90,7 @@ function getDatabaseControllerInstance() {
     return getDatabaseController();
   } catch (error) {
     throw createInternalError(
-      `Failed to initialize database controller: ${error.message}`,
+      `Failed to initialize database controller: ${error.message}`
     );
   }
 }
@@ -108,7 +108,7 @@ function validateQueryRequest(req: Request): QueryRequest {
     throw createValidationError(
       'sql',
       sql,
-      'SQL query is required and must be a string',
+      'SQL query is required and must be a string'
     );
   }
 
@@ -126,7 +126,7 @@ function validateCommandRequest(req: Request): CommandRequest {
     throw createValidationError(
       'sql',
       sql,
-      'SQL command is required and must be a string',
+      'SQL command is required and must be a string'
     );
   }
 
@@ -144,7 +144,7 @@ function validateBatchRequest(req: Request): BatchRequest {
     throw createValidationError(
       'operations',
       operations,
-      'Operations array is required and must not be empty',
+      'Operations array is required and must not be empty'
     );
   }
 
@@ -155,14 +155,14 @@ function validateBatchRequest(req: Request): BatchRequest {
       throw createValidationError(
         `operations[${index}].type`,
         operation.type,
-        "Type must be 'query' or 'execute'",
+        "Type must be 'query' or 'execute'"
       );
     }
     if (!operation.sql || typeof operation.sql !== 'string') {
       throw createValidationError(
         `operations[${index}].sql`,
         operation.sql,
-        'SQL is required and must be a string',
+        'SQL is required and must be a string'
       );
     }
   }
@@ -181,7 +181,7 @@ function validateMigrationRequest(req: Request): MigrationRequest {
     throw createValidationError(
       'statements',
       statements,
-      'Statements array is required and must not be empty',
+      'Statements array is required and must not be empty'
     );
   }
 
@@ -189,7 +189,7 @@ function validateMigrationRequest(req: Request): MigrationRequest {
     throw createValidationError(
       'version',
       version,
-      'Version is required and must be a string',
+      'Version is required and must be a string'
     );
   }
 
@@ -210,7 +210,7 @@ function validateMigrationRequest(req: Request): MigrationRequest {
  */
 function checkDatabasePermission(
   req: Request,
-  operation: 'read' | 'write' | 'admin',
+  operation: 'read' | 'write' | 'admin'
 ): void {
   const permissionMap = {
     read: 'database:read',
@@ -223,7 +223,7 @@ function checkDatabasePermission(
     throw createValidationError(
       'permission',
       operation,
-      `Insufficient permissions for ${operation} operations`,
+      `Insufficient permissions for ${operation} operations`
     );
   }
 }
@@ -266,10 +266,10 @@ export const createDatabaseRoutes = (): Router => {
         const duration = Date.now() - startTime;
         logPerformance('database_status', duration, req);
         throw createInternalError(
-          `Database status check failed: ${error.message}`,
+          `Database status check failed: ${error.message}`
         );
       }
-    }),
+    })
   );
 
   /**
@@ -300,7 +300,7 @@ export const createDatabaseRoutes = (): Router => {
         logPerformance('database_query', duration, req);
         throw createInternalError(`Query execution failed: ${error.message}`);
       }
-    }),
+    })
   );
 
   /**
@@ -331,7 +331,7 @@ export const createDatabaseRoutes = (): Router => {
         logPerformance('database_execute', duration, req);
         throw createInternalError(`Command execution failed: ${error.message}`);
       }
-    }),
+    })
   );
 
   /**
@@ -362,7 +362,7 @@ export const createDatabaseRoutes = (): Router => {
         logPerformance('database_transaction', duration, req);
         throw createInternalError(`Transaction failed: ${error.message}`);
       }
-    }),
+    })
   );
 
   /**
@@ -392,7 +392,7 @@ export const createDatabaseRoutes = (): Router => {
         logPerformance('database_schema', duration, req);
         throw createInternalError(`Schema retrieval failed: ${error.message}`);
       }
-    }),
+    })
   );
 
   /**
@@ -423,7 +423,7 @@ export const createDatabaseRoutes = (): Router => {
         logPerformance('database_migration', duration, req);
         throw createInternalError(`Migration failed: ${error.message}`);
       }
-    }),
+    })
   );
 
   /**
@@ -452,10 +452,10 @@ export const createDatabaseRoutes = (): Router => {
         const duration = Date.now() - startTime;
         logPerformance('database_analytics', duration, req);
         throw createInternalError(
-          `Analytics retrieval failed: ${error.message}`,
+          `Analytics retrieval failed: ${error.message}`
         );
       }
-    }),
+    })
   );
 
   // ===== SYSTEM ENDPOINTS =====
@@ -518,7 +518,7 @@ export const createDatabaseRoutes = (): Router => {
           },
         });
       }
-    }),
+    })
   );
 
   return router;

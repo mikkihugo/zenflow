@@ -113,7 +113,7 @@ async function validateSQLiteOptimizations() {
 
     log(
       `📊 Memory usage: ${Math.round((memoryDiff / 1024 / 1024) * 100) / 100}MB`,
-      'cyan',
+      'cyan'
     );
 
     if (memoryDiff < 50 * 1024 * 1024) {

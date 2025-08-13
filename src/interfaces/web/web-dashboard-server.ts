@@ -68,11 +68,11 @@ export class WebDashboardServer {
         res.header('Access-Control-Allow-Origin', '*');
         res.header(
           'Access-Control-Allow-Methods',
-          'GET, POST, PUT, DELETE, OPTIONS',
+          'GET, POST, PUT, DELETE, OPTIONS'
         );
         res.header(
           'Access-Control-Allow-Headers',
-          'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+          'Origin, X-Requested-With, Content-Type, Accept, Authorization'
         );
         if (req.method === 'OPTIONS') {
           res.sendStatus(200);
@@ -406,7 +406,7 @@ socket.emit('test', 'Hello from client');
         resolve();
       });
 
-      this.server.on('error', (error: any) => {
+      this.server.on('error', (error: unknown) => {
         if (error.code === 'EADDRINUSE') {
           reject(new Error(`Port ${this.config.port} is already in use`));
         } else {
@@ -517,7 +517,7 @@ socket.emit('test', 'Hello from client');
         .swagger-ui .topbar { background-color: #2196F3; }
         .swagger-ui .topbar .download-url-wrapper { display: none; }
       `,
-      }),
+      })
     );
 
     this.logger.info('📊 Swagger UI available at /api-docs');
@@ -526,7 +526,7 @@ socket.emit('test', 'Hello from client');
   /**
    * Get server capabilities.
    */
-  static getCapabilities(): any {
+  static getCapabilities(): unknown {
     return {
       supportsRealTime: true,
       supportsWebSocket: true,

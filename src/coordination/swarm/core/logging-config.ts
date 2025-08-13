@@ -89,8 +89,8 @@ export class LoggingConfig {
       enableFile?: boolean;
       formatJson?: boolean;
       logDir?: string;
-      [key: string]: any;
-    } = {},
+      [key: string]: unknown;
+    } = {}
   ): Logger {
     if (this.loggers.has(component)) {
       return this.loggers.get(component)!;
@@ -100,7 +100,7 @@ export class LoggingConfig {
 
     // Create logger options with proper handling for exactOptionalPropertyTypes
     // Only include properties when they have defined values
-    const loggerOptions: any = {
+    const loggerOptions: unknown = {
       name: component,
       level,
       logDir: process.env['LOG_DIR'] || options?.logDir || './logs',
@@ -186,10 +186,10 @@ export class LoggingConfig {
    * @param correlationId
    */
   createChildLogger(
-    parentLogger: any,
+    parentLogger: unknown,
     module: string,
-    correlationId: string | null = null,
-  ): any {
+    correlationId: string | null = null
+  ): unknown {
     return parentLogger?.child({
       module,
       correlationId: correlationId || parentLogger?.correlationId,
@@ -199,7 +199,7 @@ export class LoggingConfig {
   /**
    * Log system configuration.
    */
-  logConfiguration(): any {
+  logConfiguration(): unknown {
     const config = {
       globalLevel: this.globalLevel || 'Not set (using component defaults)',
       componentLevels: this.componentLevels,
@@ -224,7 +224,7 @@ export class LoggingConfig {
 export const loggingConfig = new LoggingConfig();
 
 // Convenience functions
-export const getLogger = (component: string, options?: any): Logger =>
+export const getLogger = (component: string, options?: unknown): Logger =>
   loggingConfig?.getLogger(component, options);
 export const setLogLevel = (component: string, level: string): void =>
   loggingConfig?.setLogLevel(component, level);

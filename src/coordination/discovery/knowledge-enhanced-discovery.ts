@@ -93,7 +93,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     config: KnowledgeAwareConfig,
     hiveFact?: HiveFACTSystem,
     swarmKnowledge?: SwarmKnowledgeSync,
-    memoryStore?: SessionMemoryStore,
+    memoryStore?: SessionMemoryStore
   ) {
     super();
     this.config = {
@@ -117,10 +117,10 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    */
   async applyKnowledgeInsights(
     originalDomains: DiscoveredDomain[],
-    context: KnowledgeDiscoveryContext,
+    context: KnowledgeDiscoveryContext
   ): Promise<KnowledgeAwareDomain[]> {
     logger.info(
-      `Applying knowledge insights for ${originalDomains.length} domains`,
+      `Applying knowledge insights for ${originalDomains.length} domains`
     );
 
     try {
@@ -134,7 +134,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
         const knowledgeAware = await this.applyDomainKnowledge(
           domain,
           projectKnowledge,
-          context,
+          context
         );
         knowledgeAwareDomains.push(knowledgeAware);
       }
@@ -142,7 +142,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       // Apply cross-domain knowledge and relationships
       await this.applyCrossDomainKnowledge(
         knowledgeAwareDomains,
-        projectKnowledge,
+        projectKnowledge
       );
 
       // Validate and adjust confidence scores
@@ -152,7 +152,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       await this.storeKnowledgeAwareResults(knowledgeAwareDomains, context);
 
       logger.info(
-        `Successfully applied knowledge insights to ${knowledgeAwareDomains.length} domains`,
+        `Successfully applied knowledge insights to ${knowledgeAwareDomains.length} domains`
       );
       this.emit('discovery:knowledge-applied', {
         domains: knowledgeAwareDomains,
@@ -165,7 +165,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
       // Return original domains with minimal knowledge insights as fallback
       return originalDomains.map((domain) =>
-        this.createMinimalKnowledgeInsights(domain),
+        this.createMinimalKnowledgeInsights(domain)
       );
     }
   }
@@ -176,7 +176,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    * @param context
    */
   private async loadProjectKnowledge(
-    context: KnowledgeDiscoveryContext,
+    context: KnowledgeDiscoveryContext
   ): Promise<Map<string, DomainKnowledge>> {
     const knowledgeMap = new Map<string, DomainKnowledge>();
     let queryCount = 0;
@@ -193,7 +193,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
           const domainKnowledge = await this.queryHiveFACTForDomain(
             domain,
-            context,
+            context
           );
           if (domainKnowledge) {
             knowledgeMap.set(domain, domainKnowledge);
@@ -213,7 +213,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
           const swarmKnowledge = await this.querySwarmKnowledgeForDomain(
             domain,
-            context,
+            context
           );
           if (swarmKnowledge) {
             // Merge with existing knowledge or create new
@@ -221,7 +221,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
             if (existing) {
               knowledgeMap.set(
                 domain,
-                this.mergeKnowledge(existing, swarmKnowledge),
+                this.mergeKnowledge(existing, swarmKnowledge)
               );
             } else {
               knowledgeMap.set(domain, swarmKnowledge);
@@ -244,7 +244,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       }
 
       logger.debug(
-        `Loaded knowledge for ${knowledgeMap.size} domains/technologies with ${queryCount} queries`,
+        `Loaded knowledge for ${knowledgeMap.size} domains/technologies with ${queryCount} queries`
       );
       return knowledgeMap;
     } catch (error) {
@@ -261,7 +261,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    */
   private async queryHiveFACTForDomain(
     domain: string,
-    context: KnowledgeDiscoveryContext,
+    context: KnowledgeDiscoveryContext
   ): Promise<DomainKnowledge | null> {
     try {
       const query = `domain patterns for ${domain} in ${context.projectType} projects`;
@@ -287,13 +287,13 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    */
   private async querySwarmKnowledgeForDomain(
     domain: string,
-    context: KnowledgeDiscoveryContext,
+    context: KnowledgeDiscoveryContext
   ): Promise<DomainKnowledge | null> {
     try {
       const query = `successful patterns for ${domain} domain in ${context.size} projects`;
       const knowledge = await this.swarmKnowledge?.queryKnowledge(
         query,
-        domain,
+        domain
       );
 
       if (!(knowledge && knowledge.results)) return null;
@@ -301,12 +301,12 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       return this.convertSwarmKnowledgeToDomainKnowledge(
         domain,
         knowledge,
-        'swarm-learning',
+        'swarm-learning'
       );
     } catch (error) {
       logger.warn(
         `Failed to query swarm knowledge for domain ${domain}:`,
-        error,
+        error
       );
       return null;
     }
@@ -320,7 +320,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    */
   private async queryTechnologyPatterns(
     technology: string,
-    _context: KnowledgeDiscoveryContext,
+    _context: KnowledgeDiscoveryContext
   ): Promise<DomainKnowledge | null> {
     try {
       let knowledge: DomainKnowledge | null = null;
@@ -334,7 +334,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
           knowledge = this.convertFactsToDomainKnowledge(
             `tech-${technology}`,
             facts,
-            'hive-fact',
+            'hive-fact'
           );
         }
       }
@@ -344,14 +344,14 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
         const query = `${technology} implementation patterns and optimization`;
         const swarmData = await this.swarmKnowledge.queryKnowledge(
           query,
-          'technology',
+          'technology'
         );
 
         if (swarmData) {
           knowledge = this.convertSwarmKnowledgeToDomainKnowledge(
             `tech-${technology}`,
             swarmData,
-            'swarm-learning',
+            'swarm-learning'
           );
         }
       }
@@ -360,7 +360,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     } catch (error) {
       logger.warn(
         `Failed to query technology patterns for ${technology}:`,
-        error,
+        error
       );
       return null;
     }
@@ -376,7 +376,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   private async applyDomainKnowledge(
     domain: DiscoveredDomain,
     projectKnowledge: Map<string, DomainKnowledge>,
-    _context: KnowledgeDiscoveryContext,
+    _context: KnowledgeDiscoveryContext
   ): Promise<KnowledgeAwareDomain> {
     const domainKnowledge =
       projectKnowledge.get(domain.name) ||
@@ -397,13 +397,13 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       knowledgeScore = this.calculateKnowledgeScore(
         domain,
         domainKnowledge,
-        appliedPatterns,
+        appliedPatterns
       );
 
       // Get topology recommendation
       const topologyRec = this.getTopologyRecommendation(
         domain,
-        appliedPatterns,
+        appliedPatterns
       );
       if (
         topologyRec &&
@@ -426,7 +426,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       optimizations = this.generateOptimizations(
         domain,
         domainKnowledge,
-        appliedPatterns,
+        appliedPatterns
       );
 
       // Store applied patterns for this domain
@@ -437,7 +437,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     const originalConfidence = domain.confidence;
     const knowledgeAwareConfidence = this.calculateKnowledgeAwareConfidence(
       originalConfidence,
-      knowledgeScore,
+      knowledgeScore
     );
 
     const knowledgeAware: KnowledgeAwareDomain = {
@@ -454,7 +454,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     };
 
     logger.debug(
-      `Applied knowledge to domain ${domain.name}: confidence ${originalConfidence} -> ${knowledgeAwareConfidence}, patterns: ${appliedPatterns.length}`,
+      `Applied knowledge to domain ${domain.name}: confidence ${originalConfidence} -> ${knowledgeAwareConfidence}, patterns: ${appliedPatterns.length}`
     );
 
     return knowledgeAware;
@@ -468,7 +468,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    */
   private async applyCrossDomainKnowledge(
     domains: KnowledgeAwareDomain[],
-    projectKnowledge: Map<string, DomainKnowledge>,
+    projectKnowledge: Map<string, DomainKnowledge>
   ): Promise<void> {
     // Identify related domains based on knowledge
     for (let i = 0; i < domains.length; i++) {
@@ -480,7 +480,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
         const relationshipStrength = this.calculateDomainRelationshipStrength(
           domain1,
           domain2,
-          projectKnowledge,
+          projectKnowledge
         );
 
         if (relationshipStrength > 0.6) {
@@ -495,7 +495,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
           this.applyCrossDomainOptimizations(
             domain1,
             domain2,
-            relationshipStrength,
+            relationshipStrength
           );
         }
       }
@@ -512,7 +512,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   private convertFactsToDomainKnowledge(
     domain: string,
     facts: unknown[],
-    source: 'hive-fact' | 'swarm-learning' | 'external-mcp',
+    source: 'hive-fact' | 'swarm-learning' | 'external-mcp'
   ): DomainKnowledge {
     const patterns: DomainPattern[] = [];
     const bestPractices: string[] = [];
@@ -533,25 +533,25 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
       if (content.bestPractices || content.insights) {
         bestPractices.push(
-          ...(content.bestPractices || content.insights || []),
+          ...(content.bestPractices || content.insights || [])
         );
       }
 
       if (content.commonPitfalls || content.failures) {
         commonPitfalls.push(
-          ...(content.commonPitfalls || content.failures || []),
+          ...(content.commonPitfalls || content.failures || [])
         );
       }
 
       if (content.relatedDomains || content.dependencies) {
         relatedDomains.push(
-          ...(content.relatedDomains || content.dependencies || []),
+          ...(content.relatedDomains || content.dependencies || [])
         );
       }
 
       if (content.tools || content.recommendations) {
         toolRecommendations.push(
-          ...(content.tools || content.recommendations || []),
+          ...(content.tools || content.recommendations || [])
         );
       }
     }
@@ -578,7 +578,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   private convertSwarmKnowledgeToDomainKnowledge(
     domain: string,
     swarmData: unknown,
-    source: 'hive-fact' | 'swarm-learning' | 'external-mcp',
+    source: 'hive-fact' | 'swarm-learning' | 'external-mcp'
   ): DomainKnowledge {
     // Extract knowledge from swarm learning data
     const patterns = this.extractPatternsFromSwarmData(swarmData);
@@ -606,7 +606,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    */
   private findBestMatchingKnowledge(
     domain: DiscoveredDomain,
-    projectKnowledge: Map<string, DomainKnowledge>,
+    projectKnowledge: Map<string, DomainKnowledge>
   ): DomainKnowledge | null {
     let bestMatch: DomainKnowledge | null = null;
     let bestScore = 0;
@@ -627,17 +627,17 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   private selectRelevantPatterns(
     _domain: DiscoveredDomain,
-    knowledge: DomainKnowledge,
+    knowledge: DomainKnowledge
   ): DomainPattern[] {
     return knowledge.patterns.filter(
-      (pattern) => pattern.confidenceScore > 0.6,
+      (pattern) => pattern.confidenceScore > 0.6
     );
   }
 
   private calculateKnowledgeScore(
     _domain: DiscoveredDomain,
     knowledge: DomainKnowledge,
-    patterns: DomainPattern[],
+    patterns: DomainPattern[]
   ): number {
     return (
       (knowledge.confidenceScore +
@@ -649,7 +649,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   private getTopologyRecommendation(
     _domain: DiscoveredDomain,
-    patterns: DomainPattern[],
+    patterns: DomainPattern[]
   ): string | null {
     const topologies = patterns.map((p) => p.topology);
     return this.getMostCommon(topologies);
@@ -657,7 +657,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   private getAgentRecommendations(
     _domain: DiscoveredDomain,
-    patterns: DomainPattern[],
+    patterns: DomainPattern[]
   ): string[] {
     const allAgents = patterns.flatMap((p) => p.agentTypes);
     return [...new Set(allAgents)];
@@ -665,7 +665,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   private identifyRiskFactors(
     _domain: DiscoveredDomain,
-    knowledge: DomainKnowledge,
+    knowledge: DomainKnowledge
   ): string[] {
     return knowledge.commonPitfalls.slice(0, 5);
   }
@@ -673,28 +673,28 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   private generateOptimizations(
     _domain: DiscoveredDomain,
     knowledge: DomainKnowledge,
-    _patterns: DomainPattern[],
+    _patterns: DomainPattern[]
   ): string[] {
     return knowledge.bestPractices.slice(0, 5);
   }
 
   private calculateKnowledgeAwareConfidence(
     originalConfidence: number,
-    knowledgeScore: number,
+    knowledgeScore: number
   ): number {
     const weight = this.config.knowledgeWeight!;
     return originalConfidence * (1 - weight) + knowledgeScore * weight;
   }
 
   private adjustConfidenceWithKnowledge(
-    _domains: KnowledgeAwareDomain[],
+    _domains: KnowledgeAwareDomain[]
   ): void {
     // Additional confidence adjustments based on cross-domain validation
   }
 
   private async storeKnowledgeAwareResults(
     domains: KnowledgeAwareDomain[],
-    context: KnowledgeDiscoveryContext,
+    context: KnowledgeDiscoveryContext
   ): Promise<void> {
     if (!this.memoryStore) return;
 
@@ -702,7 +702,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       await this.memoryStore.store(
         `knowledge-aware-discovery/${this.config.swarmId}/${Date.now()}`,
         'knowledge-aware-discovery',
-        { domains, context, timestamp: Date.now() },
+        { domains, context, timestamp: Date.now() }
       );
     } catch (error) {
       logger.error('Failed to store knowledge-aware discovery results:', error);
@@ -710,7 +710,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   }
 
   private createMinimalKnowledgeInsights(
-    domain: DiscoveredDomain,
+    domain: DiscoveredDomain
   ): KnowledgeAwareDomain {
     return {
       ...domain,
@@ -746,7 +746,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
 
   private calculateDomainSimilarity(
     _domain: DiscoveredDomain,
-    _knowledge: DomainKnowledge,
+    _knowledge: DomainKnowledge
   ): number {
     // Calculate similarity based on domain name, files, dependencies, etc.
     return 0.5; // Placeholder
@@ -755,7 +755,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   private calculateDomainRelationshipStrength(
     _domain1: KnowledgeAwareDomain,
     _domain2: KnowledgeAwareDomain,
-    _knowledge: Map<string, DomainKnowledge>,
+    _knowledge: Map<string, DomainKnowledge>
   ): number {
     // Calculate relationship strength based on shared patterns, dependencies, etc.
     return 0.5; // Placeholder
@@ -764,14 +764,14 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
   private applyCrossDomainOptimizations(
     _domain1: KnowledgeAwareDomain,
     _domain2: KnowledgeAwareDomain,
-    _strength: number,
+    _strength: number
   ): void {
     // Apply optimizations based on domain relationships
   }
 
   private mergeKnowledge(
     existing: DomainKnowledge,
-    additional: DomainKnowledge,
+    additional: DomainKnowledge
   ): DomainKnowledge {
     return {
       ...existing,
@@ -793,7 +793,7 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       counts.set(item, (counts.get(item) || 0) + 1);
     }
     return Array.from(counts.entries()).reduce((a, b) =>
-      a[1] > b[1] ? a : b,
+      a[1] > b[1] ? a : b
     )[0];
   }
 }

@@ -148,7 +148,7 @@ describe('Edge Case Test Suite - Complete Coverage', () => {
 
       const totalCoverage = Object.values(totalEdgeCases).reduce(
         (sum, count) => sum + count,
-        0,
+        0
       );
 
       expect(totalCoverage).toBe(66);

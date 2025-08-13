@@ -128,7 +128,7 @@ async function testParallelAgents() {
 
     const cmd = `echo '${JSON.stringify(request)}' | node bin/ruv-swarm.js mcp start --protocol=stdio 2>/dev/null | grep -E "jsonrpc|result"`;
     promises.push(
-      execPromise(cmd, { cwd: '/workspaces/ruv-FANN/ruv-swarm/npm' }),
+      execPromise(cmd, { cwd: '/workspaces/ruv-FANN/ruv-swarm/npm' })
     );
   }
 

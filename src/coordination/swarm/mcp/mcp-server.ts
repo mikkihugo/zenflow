@@ -209,7 +209,7 @@ export class StdioMcpServer {
           prompts: {},
           logging: {},
         },
-      },
+      }
     );
   }
 
@@ -301,7 +301,7 @@ export class StdioMcpServer {
             try {
               logger.debug(`Executing tool: ${toolName}`, { args });
               const result = await (toolFunction as Function)(
-                args?.params || ({} as any),
+                args?.params || ({} as any)
               );
 
               // Convert result to MCP format with required content array
@@ -335,7 +335,7 @@ export class StdioMcpServer {
                         tool: toolName,
                       },
                       null,
-                      2,
+                      2
                     ),
                   },
                 ],
@@ -345,7 +345,7 @@ export class StdioMcpServer {
                 },
               };
             }
-          },
+          }
         );
 
         logger.debug(`Registered tool: ${toolName}`);
@@ -355,7 +355,7 @@ export class StdioMcpServer {
     }
 
     logger.info(
-      `Registered ${Object.keys(swarmTools).length} swarm tools, ${Object.keys(hiveTools).length} hive tools, and ${Object.keys(dspySwarmMCPTools).length} DSPy swarm tools`,
+      `Registered ${Object.keys(swarmTools).length} swarm tools, ${Object.keys(hiveTools).length} hive tools, and ${Object.keys(dspySwarmMCPTools).length} DSPy swarm tools`
     );
   }
 

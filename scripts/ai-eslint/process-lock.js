@@ -26,12 +26,12 @@ export class ProcessLock {
       // Check if the process is still running
       if (this.isProcessRunning(existingPid)) {
         throw new Error(
-          `Another Zen ESLint process is already running (PID: ${existingPid})`,
+          `Another Zen ESLint process is already running (PID: ${existingPid})`
         );
       }
       // Stale lock file, remove it
       console.log(
-        `Removing stale lock file (PID ${existingPid} no longer running)`,
+        `Removing stale lock file (PID ${existingPid} no longer running)`
       );
       this.release();
     }

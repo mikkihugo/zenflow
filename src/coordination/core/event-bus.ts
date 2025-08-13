@@ -13,7 +13,7 @@ export interface SystemEvent {
 }
 
 export interface EventBusInterface {
-  emit(eventName: string, ...args: any[]): boolean;
+  emit(eventName: string, ...args: unknown[]): boolean;
   emitSystemEvent(event: SystemEvent): boolean;
   on(eventType: string, handler: (event: SystemEvent) => void): this;
   off(eventType: string, handler: (event: SystemEvent) => void): this;
@@ -59,7 +59,7 @@ export class EventBus extends EventEmitter implements EventBusInterface {
 
   override once(
     eventType: string,
-    handler: (event: SystemEvent) => void,
+    handler: (event: SystemEvent) => void
   ): this {
     return super.once(eventType, handler);
   }

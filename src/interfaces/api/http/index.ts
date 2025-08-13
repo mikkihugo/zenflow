@@ -219,7 +219,7 @@ export const createAPILayer = (config?: Partial<APILayerConfig>): APILayer => {
  * @param layer
  */
 export const checkAPILayerHealth = async (
-  layer: APILayer,
+  layer: APILayer
 ): Promise<{
   status: 'healthy' | 'unhealthy';
   checks: {

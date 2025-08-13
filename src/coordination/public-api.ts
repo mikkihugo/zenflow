@@ -46,7 +46,7 @@ export interface PublicSwarmCoordinator {
  * @example
  */
 export async function createPublicSwarmCoordinator(
-  config?: SwarmConfig,
+  config?: SwarmConfig
 ): Promise<PublicSwarmCoordinator> {
   // Dynamically import to avoid circular dependencies
   const { SwarmCoordinator } = await import(

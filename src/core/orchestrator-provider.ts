@@ -32,7 +32,7 @@ export function setCoordinationProvider(provider: CoordinationProvider): void {
  * @example
  */
 export function createOrchestratorInstance(
-  customCoordinationProvider?: CoordinationProvider,
+  customCoordinationProvider?: CoordinationProvider
 ): Orchestrator {
   const logger = getLogger('orchestrator');
   const eventBus = new EventBus();
@@ -44,7 +44,9 @@ export function createOrchestratorInstance(
   const mcpConfig = config?.getSection('interfaces').mcp.http;
 
   const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
-  const memoryManager = new MemoryManager(memoryConfig) as any as any as any as any;
+  const memoryManager = new MemoryManager(
+    memoryConfig
+  ) as any as any as any as any;
 
   // Use injected coordination provider or fall back to lazy loading
   const coordinationManagerProvider =
@@ -59,7 +61,7 @@ export function createOrchestratorInstance(
     coordinationManagerProvider as any, // Type assertion for now, will be properly typed later
     mcpServer,
     eventBus,
-    logger,
+    logger
   );
 
   return orchestrator;
@@ -85,7 +87,7 @@ export function getOrchestratorInstance(): Orchestrator {
           const coordinationManager = new CoordinationManager(
             coordinationConfig,
             logger,
-            eventBus,
+            eventBus
           );
 
           setCoordinationProvider(coordinationManager as any);
@@ -97,7 +99,7 @@ export function getOrchestratorInstance(): Orchestrator {
     }
 
     orchestratorInstance = createOrchestratorInstance(
-      coordinationProvider || undefined,
+      coordinationProvider || undefined
     );
   }
   return orchestratorInstance;

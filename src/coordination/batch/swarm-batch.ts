@@ -82,10 +82,10 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   async executeBatch(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Promise<SwarmOperationResult[]> {
     logger.info(
-      `Starting batch swarm operations: ${operations.length} operations`,
+      `Starting batch swarm operations: ${operations.length} operations`
     );
 
     // Group operations by type for optimization
@@ -123,7 +123,7 @@ export class SwarmBatchCoordinator {
     }
 
     logger.info(
-      `Completed batch swarm operations: ${results.length} operations processed`,
+      `Completed batch swarm operations: ${results.length} operations processed`
     );
     return results;
   }
@@ -134,7 +134,7 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   private groupOperationsByType(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Record<SwarmOperation['type'], SwarmOperation[]> {
     const groups: Record<SwarmOperation['type'], SwarmOperation[]> = {
       init: [],
@@ -158,14 +158,14 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   private async executeSwarmInits(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Promise<SwarmOperationResult[]> {
     const results: SwarmOperationResult[] = [];
 
     // Execute swarm inits with controlled concurrency
     const chunks = this.chunkOperations(
       operations,
-      this.config.maxConcurrentSwarms,
+      this.config.maxConcurrentSwarms
     );
 
     for (const chunk of chunks) {
@@ -193,7 +193,7 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   private async executeAgentSpawning(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Promise<SwarmOperationResult[]> {
     // Group spawning operations by swarm for optimization
     const swarmGroups = new Map<string, SwarmOperation[]>();
@@ -210,7 +210,7 @@ export class SwarmBatchCoordinator {
 
     // Execute spawning for each swarm concurrently
     const swarmPromises = Array.from(swarmGroups.entries()).map(
-      ([swarmId, ops]) => this.executeSwarmAgentSpawning(swarmId, ops),
+      ([swarmId, ops]) => this.executeSwarmAgentSpawning(swarmId, ops)
     );
 
     const swarmResults = await Promise.allSettled(swarmPromises);
@@ -233,7 +233,7 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   private async executeCoordinationOperations(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Promise<SwarmOperationResult[]> {
     const results: SwarmOperationResult[] = [];
 
@@ -249,12 +249,12 @@ export class SwarmBatchCoordinator {
       // Execute with controlled concurrency
       const chunks = this.chunkOperations(
         operations,
-        this.config.maxConcurrentSwarms,
+        this.config.maxConcurrentSwarms
       );
 
       for (const chunk of chunks) {
         const chunkPromises = chunk.map((op) =>
-          this.executeCoordinationOperation(op),
+          this.executeCoordinationOperation(op)
         );
         const chunkResults = await Promise.allSettled(chunkPromises);
 
@@ -281,19 +281,19 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   private async executeManagementOperations(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Promise<SwarmOperationResult[]> {
     const results: SwarmOperationResult[] = [];
 
     // Execute management operations with high concurrency (they're typically lightweight)
     const chunks = this.chunkOperations(
       operations,
-      this.config.maxConcurrentSwarms * 2,
+      this.config.maxConcurrentSwarms * 2
     );
 
     for (const chunk of chunks) {
       const chunkPromises = chunk.map((op) =>
-        this.executeManagementOperation(op),
+        this.executeManagementOperation(op)
       );
       const chunkResults = await Promise.allSettled(chunkPromises);
 
@@ -318,7 +318,7 @@ export class SwarmBatchCoordinator {
    * @param operation
    */
   private async executeSwarmInit(
-    operation: SwarmOperation,
+    operation: SwarmOperation
   ): Promise<SwarmOperationResult> {
     const startTime = Date.now();
 
@@ -369,14 +369,14 @@ export class SwarmBatchCoordinator {
    */
   private async executeSwarmAgentSpawning(
     swarmId: string,
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): Promise<SwarmOperationResult[]> {
     const results: SwarmOperationResult[] = [];
     const swarmState = this.activeSwarms.get(swarmId);
 
     if (!swarmState) {
       return operations.map((op) =>
-        this.createErrorResult(op, new Error(`Swarm ${swarmId} not found`)),
+        this.createErrorResult(op, new Error(`Swarm ${swarmId} not found`))
       );
     }
 
@@ -386,12 +386,12 @@ export class SwarmBatchCoordinator {
       .filter(Boolean) as AgentType[];
     const totalAgents = operations.reduce(
       (sum, op) => sum + (op.agentCount || 1),
-      0,
+      0
     );
 
     if (totalAgents > this.config.maxAgentsPerSwarm) {
       throw new Error(
-        `Requested ${totalAgents} agents exceeds limit of ${this.config.maxAgentsPerSwarm}`,
+        `Requested ${totalAgents} agents exceeds limit of ${this.config.maxAgentsPerSwarm}`
       );
     }
 
@@ -427,7 +427,7 @@ export class SwarmBatchCoordinator {
       }
     } catch (error) {
       return operations.map((op) =>
-        this.createErrorResult(op, error, startTime),
+        this.createErrorResult(op, error, startTime)
       );
     }
 
@@ -440,7 +440,7 @@ export class SwarmBatchCoordinator {
    * @param operation
    */
   private async executeCoordinationOperation(
-    operation: SwarmOperation,
+    operation: SwarmOperation
   ): Promise<SwarmOperationResult> {
     const startTime = Date.now();
 
@@ -486,7 +486,7 @@ export class SwarmBatchCoordinator {
    * @param operation
    */
   private async executeManagementOperation(
-    operation: SwarmOperation,
+    operation: SwarmOperation
   ): Promise<SwarmOperationResult> {
     const startTime = Date.now();
 
@@ -510,7 +510,7 @@ export class SwarmBatchCoordinator {
    * @param operations
    */
   private optimizeCoordinationOrder(
-    operations: SwarmOperation[],
+    operations: SwarmOperation[]
   ): SwarmOperation[] {
     // Sort by priority (critical first) and estimated duration
     return operations.sort((a, b) => {
@@ -537,7 +537,7 @@ export class SwarmBatchCoordinator {
    */
   private async coordinateTask(
     swarmState: SwarmState,
-    operation: SwarmOperation,
+    operation: SwarmOperation
   ): Promise<Array<{ agentId: string; result: unknown; status: string }>> {
     const strategy = operation.coordination?.strategy || 'parallel';
     const timeout =
@@ -554,7 +554,7 @@ export class SwarmBatchCoordinator {
       // Execute all agent tasks in parallel with timeout
       const promises = swarmState.agents.map(async (agent) => {
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), timeout),
+          setTimeout(() => reject(new Error('Timeout')), timeout)
         );
 
         try {
@@ -573,8 +573,8 @@ export class SwarmBatchCoordinator {
         ...results.map((r) =>
           r.status === 'fulfilled'
             ? r.value
-            : { agentId: 'unknown', result: r.reason, status: 'failed' },
-        ),
+            : { agentId: 'unknown', result: r.reason, status: 'failed' }
+        )
       );
     } else {
       // Sequential execution for other strategies
@@ -613,7 +613,7 @@ export class SwarmBatchCoordinator {
    */
   private async batchSpawnAgents(
     swarmId: string,
-    agentTypes: AgentType[],
+    agentTypes: AgentType[]
   ): Promise<Agent[]> {
     const agents: Agent[] = [];
 
@@ -641,7 +641,7 @@ export class SwarmBatchCoordinator {
    */
   private async getSwarmStatus(
     operation: SwarmOperation,
-    startTime: number,
+    startTime: number
   ): Promise<SwarmOperationResult> {
     const swarmId = operation.swarmId || 'default';
     const swarmState = this.activeSwarms.get(swarmId);
@@ -673,7 +673,7 @@ export class SwarmBatchCoordinator {
    */
   private async terminateSwarm(
     operation: SwarmOperation,
-    startTime: number,
+    startTime: number
   ): Promise<SwarmOperationResult> {
     const swarmId = operation.swarmId || 'default';
 
@@ -715,7 +715,7 @@ export class SwarmBatchCoordinator {
   private createErrorResult(
     operation: SwarmOperation,
     error: unknown,
-    startTime?: number,
+    startTime?: number
   ): SwarmOperationResult {
     const executionTime = startTime ? Date.now() - startTime : 0;
     return {
@@ -746,7 +746,7 @@ export class SwarmBatchCoordinator {
    */
   private async executeTaskOnAgent(
     agentId: string,
-    operation: SwarmOperation,
+    operation: SwarmOperation
   ): Promise<unknown> {
     // Simulate task execution on agent
     await this.simulateOperation(Math.random() * 300 + 100);

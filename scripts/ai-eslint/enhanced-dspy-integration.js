@@ -57,7 +57,7 @@ export class EnhancedDSPyIntegration {
 
     try {
       console.log(
-        '🧠 Initializing Enhanced DSPy with Local TypeScript Architecture...',
+        '🧠 Initializing Enhanced DSPy with Local TypeScript Architecture...'
       );
 
       // Initialize the local TypeScript DSPy system via dynamic import
@@ -146,7 +146,7 @@ initializeDSPy().catch(console.error);
 
         this.isInitialized = true;
         console.log(
-          '🧠 Enhanced DSPy Integration ready for advanced AI-assisted fixing',
+          '🧠 Enhanced DSPy Integration ready for advanced AI-assisted fixing'
         );
       } else {
         throw new Error(`Initialization failed: ${result.error}`);
@@ -182,7 +182,7 @@ initializeDSPy().catch(console.error);
       // Extract and analyze errors
       const errors = this.extractErrorsFromPrompt(prompt);
       console.log(
-        `   🎯 Processing ${errors.length} errors with DSPy Swarm Intelligence`,
+        `   🎯 Processing ${errors.length} errors with DSPy Swarm Intelligence`
       );
 
       // 🧠 Phase 1: Swarm Intelligence Analysis
@@ -194,13 +194,13 @@ initializeDSPy().catch(console.error);
       });
 
       console.log(
-        `   🎯 Swarm Confidence: ${((analysisResult.confidence || 0.85) * 100).toFixed(1)}%`,
+        `   🎯 Swarm Confidence: ${((analysisResult.confidence || 0.85) * 100).toFixed(1)}%`
       );
       console.log(
-        `   🚀 Coordination Strategy: ${analysisResult.strategy || 'Hierarchical Multi-Agent'}`,
+        `   🚀 Coordination Strategy: ${analysisResult.strategy || 'Hierarchical Multi-Agent'}`
       );
       console.log(
-        `   👥 Agents Assigned: ${analysisResult.agentsAssigned || 3}`,
+        `   👥 Agents Assigned: ${analysisResult.agentsAssigned || 3}`
       );
 
       // 🧠 Phase 2: Coordinated Code Generation
@@ -220,7 +220,7 @@ initializeDSPy().catch(console.error);
       const isValid = await this.validateFixWithSwarm(
         filePath,
         fixResult.fixedCode,
-        errors,
+        errors
       );
       if (!isValid) {
         // Rollback if validation fails
@@ -233,7 +233,7 @@ initializeDSPy().catch(console.error);
       const cost = this.estimateSwarmCost(
         errors.length,
         fileContent.length,
-        analysisResult.agentsAssigned,
+        analysisResult.agentsAssigned
       );
 
       // 🧠 Swarm Learning: Update agent performance and optimize
@@ -249,10 +249,10 @@ initializeDSPy().catch(console.error);
       this.updateAverageTime(duration);
 
       console.log(
-        `   ✅ DSPy Swarm fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(4)})`,
+        `   ✅ DSPy Swarm fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(4)})`
       );
       console.log(
-        `   📊 Agents: ${analysisResult.agentsAssigned}, Optimizations: ${this.swarmOptimizations}`,
+        `   📊 Agents: ${analysisResult.agentsAssigned}, Optimizations: ${this.swarmOptimizations}`
       );
 
       // Periodic swarm optimization
@@ -293,7 +293,7 @@ initializeDSPy().catch(console.error);
 
     const agentsAssigned = Math.min(
       3,
-      Math.max(1, Math.ceil(inputs.errorMessages.split('\n').length / 5)),
+      Math.max(1, Math.ceil(inputs.errorMessages.split('\n').length / 5))
     );
     const analysisTypes = [
       'syntax-analyzer',
@@ -333,13 +333,13 @@ initializeDSPy().catch(console.error);
     ];
     await this.simulateSwarmCoordination(
       'generation',
-      inputs.agentRecommendations?.length || 2,
+      inputs.agentRecommendations?.length || 2
     );
 
     // Create enhanced fix (in real implementation, this would use the TypeScript DSPy system)
     const fixedCode = this.generateEnhancedFix(
       inputs.codeInput,
-      inputs.analysis,
+      inputs.analysis
     );
 
     return {
@@ -380,7 +380,7 @@ initializeDSPy().catch(console.error);
             return `import ${imports} from '${path}.js'`; // Add .js extension
           }
           return match;
-        },
+        }
       )
       // Fix missing type annotations
       .replace(/(\w+)\s*=\s*([^;]+);/g, (match, varName, value) => {
@@ -459,7 +459,7 @@ initializeDSPy().catch(console.error);
     if (this.successCount % 5 === 0) {
       this.swarmOptimizations++;
       console.log(
-        `   📈 Swarm optimization #${this.swarmOptimizations} applied`,
+        `   📈 Swarm optimization #${this.swarmOptimizations} applied`
       );
     }
   }
@@ -477,7 +477,7 @@ initializeDSPy().catch(console.error);
 
     if (topPerformers.length > 0) {
       console.log(
-        `   🏆 Top performing agents: ${topPerformers.map(([id]) => id).join(', ')}`,
+        `   🏆 Top performing agents: ${topPerformers.map(([id]) => id).join(', ')}`
       );
 
       // Simulate topology optimization
@@ -487,7 +487,7 @@ initializeDSPy().catch(console.error);
             ? 'mesh'
             : 'hierarchical';
         console.log(
-          `   📊 Swarm topology optimized to: ${this.swarmConfig.topology}`,
+          `   📊 Swarm topology optimized to: ${this.swarmConfig.topology}`
         );
       }
     }
@@ -507,7 +507,7 @@ initializeDSPy().catch(console.error);
         {
           stdio: 'pipe',
           cwd: process.cwd(),
-        },
+        }
       );
 
       let stdout = '';
@@ -581,7 +581,7 @@ initializeDSPy().catch(console.error);
       .slice(0, 5);
     const otherLines = lines.filter(
       (line) =>
-        !(line.trim().startsWith('import') || line.trim().startsWith('export')),
+        !(line.trim().startsWith('import') || line.trim().startsWith('export'))
     );
 
     let result =
@@ -662,16 +662,16 @@ initializeDSPy().catch(console.error);
     console.log(`   🎯 Successful Fixes: ${stats.successfulFixes}`);
     console.log(`   💰 Total Cost: $${stats.totalCost.toFixed(4)}`);
     console.log(
-      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`,
+      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`
     );
     console.log(`   🏗️ Swarm Topology: ${stats.swarmTopology}`);
     console.log(`   📊 Optimizations: ${stats.swarmOptimizations}`);
     console.log(`   👥 Active Agents: ${stats.activeAgents}`);
     console.log(
-      `   🤖 Intelligence: ${stats.intelligenceEnabled ? 'Enabled' : 'Disabled'}`,
+      `   🤖 Intelligence: ${stats.intelligenceEnabled ? 'Enabled' : 'Disabled'}`
     );
     console.log(
-      `   📚 Learning: ${stats.continuousLearning ? 'Active' : 'Inactive'}`,
+      `   📚 Learning: ${stats.continuousLearning ? 'Active' : 'Inactive'}`
     );
   }
 
@@ -680,7 +680,7 @@ initializeDSPy().catch(console.error);
    */
   async fixViolations(violations, options) {
     console.log(
-      `🧠 Enhanced DSPy: Fixing ${violations.length} ESLint violations with swarm intelligence`,
+      `🧠 Enhanced DSPy: Fixing ${violations.length} ESLint violations with swarm intelligence`
     );
 
     if (violations.length === 0) {
@@ -694,22 +694,22 @@ initializeDSPy().catch(console.error);
 
     // Group violations by file for efficient swarm coordination
     const violationsByFile = this.groupViolationsByFile(
-      violations.slice(0, maxFixes),
+      violations.slice(0, maxFixes)
     );
 
     console.log(
-      `   🎯 Processing ${violationsByFile.size} files with swarm coordination`,
+      `   🎯 Processing ${violationsByFile.size} files with swarm coordination`
     );
 
     for (const [filePath, fileViolations] of violationsByFile) {
       try {
         console.log(
-          `   📁 Swarm fixing ${fileViolations.length} violations in ${path.basename(filePath)}`,
+          `   📁 Swarm fixing ${fileViolations.length} violations in ${path.basename(filePath)}`
         );
 
         if (dryRun) {
           console.log(
-            `   🔍 DRY RUN: Would fix ${fileViolations.length} violations`,
+            `   🔍 DRY RUN: Would fix ${fileViolations.length} violations`
           );
           fixed += fileViolations.length;
           continue;
@@ -721,18 +721,18 @@ initializeDSPy().catch(console.error);
         if (result.success) {
           fixed += result.fixedCount;
           console.log(
-            `   ✅ Fixed ${result.fixedCount} violations with swarm intelligence`,
+            `   ✅ Fixed ${result.fixedCount} violations with swarm intelligence`
           );
         } else {
           skipped += fileViolations.length;
           console.log(
-            `   ⚠️  Skipped ${fileViolations.length} violations: ${result.error}`,
+            `   ⚠️  Skipped ${fileViolations.length} violations: ${result.error}`
           );
         }
       } catch (error) {
         skipped += fileViolations.length;
         console.error(
-          `   ❌ Error fixing ${path.basename(filePath)}: ${error.message}`,
+          `   ❌ Error fixing ${path.basename(filePath)}: ${error.message}`
         );
       }
     }
@@ -786,7 +786,7 @@ Focus on systematic resolution with multiple agent perspectives.`;
 
     // Sort by violation count (most violations first)
     const sortedEntries = Array.from(grouped.entries()).sort(
-      (a, b) => b[1].length - a[1].length,
+      (a, b) => b[1].length - a[1].length
     );
 
     return new Map(sortedEntries);

@@ -94,7 +94,7 @@ class MasterTestCoverageRunner {
         {
           cwd: path.dirname(__dirname),
           stdio: 'pipe',
-        },
+        }
       );
 
       let coverageOutput = '';
@@ -107,7 +107,7 @@ class MasterTestCoverageRunner {
           if (coverageOutput.trim()) {
             // Extract coverage percentage if available
             const coverageMatch = coverageOutput.match(
-              /All files\s+\|\s+([\d.]+)/,
+              /All files\s+\|\s+([\d.]+)/
             );
             if (coverageMatch) {
             }
@@ -139,7 +139,7 @@ class MasterTestCoverageRunner {
       const coveragePath = path.join(
         path.dirname(__dirname),
         'coverage',
-        'coverage-final.json',
+        'coverage-final.json'
       );
 
       let coverageData = {};
@@ -164,14 +164,14 @@ class MasterTestCoverageRunner {
         if (file.s) {
           totalStatements += Object.keys(file.s).length;
           coveredStatements += Object.values(file.s).filter(
-            (count) => count > 0,
+            (count) => count > 0
           ).length;
         }
 
         if (file.f) {
           totalFunctions += Object.keys(file.f).length;
           coveredFunctions += Object.values(file.f).filter(
-            (count) => count > 0,
+            (count) => count > 0
           ).length;
         }
 
@@ -282,17 +282,17 @@ class MasterTestCoverageRunner {
 
     const estimatedTotalStatements = 5500; // Approximate based on src folder
     const estimatedCoveredStatements = Math.round(
-      (estimatedTotalStatements * estimatedCoveragePercent) / 100,
+      (estimatedTotalStatements * estimatedCoveragePercent) / 100
     );
 
     const estimatedTotalFunctions = 800;
     const estimatedCoveredFunctions = Math.round(
-      (estimatedTotalFunctions * estimatedCoveragePercent) / 100,
+      (estimatedTotalFunctions * estimatedCoveragePercent) / 100
     );
 
     const estimatedTotalBranches = 2500;
     const estimatedCoveredBranches = Math.round(
-      (estimatedTotalBranches * (estimatedCoveragePercent * 0.8)) / 100,
+      (estimatedTotalBranches * (estimatedCoveragePercent * 0.8)) / 100
     ); // Branches typically lower
 
     return {
@@ -336,7 +336,7 @@ class MasterTestCoverageRunner {
       coverageScore: totalCoverageScore,
       suiteCount: this.results.suites.length,
       successfulSuites: this.results.suites.filter(
-        (s) => s.status === 'completed',
+        (s) => s.status === 'completed'
       ).length,
       failedSuites: this.results.suites.filter((s) => s.status === 'failed')
         .length,
@@ -351,7 +351,7 @@ class MasterTestCoverageRunner {
     // Test coverage recommendations
     if (Number.parseFloat(summary.overallPassRate) < 80) {
       recommendations.push(
-        'Improve overall test pass rate - currently below 80%',
+        'Improve overall test pass rate - currently below 80%'
       );
     }
 
@@ -366,7 +366,7 @@ class MasterTestCoverageRunner {
       recommendations.push('Good progress on line coverage - aim for 50% next');
     } else if (Number.parseFloat(coverage.lines) < 75) {
       recommendations.push(
-        'Excellent line coverage - aim for 75% for production readiness',
+        'Excellent line coverage - aim for 75% for production readiness'
       );
     }
 
@@ -376,7 +376,7 @@ class MasterTestCoverageRunner {
 
     if (Number.parseFloat(coverage.branches) < 60) {
       recommendations.push(
-        'Improve branch coverage for better edge case testing',
+        'Improve branch coverage for better edge case testing'
       );
     }
 
@@ -392,19 +392,19 @@ class MasterTestCoverageRunner {
     // Overall recommendations
     if (summary.totalTests < 100) {
       recommendations.push(
-        'Consider adding more tests to reach 100+ total tests',
+        'Consider adding more tests to reach 100+ total tests'
       );
     }
 
     if (summary.coverageScore < 200) {
       recommendations.push(
-        'Expand test coverage to achieve higher coverage score',
+        'Expand test coverage to achieve higher coverage score'
       );
     }
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Outstanding test coverage! Consider adding performance benchmarks and stress tests.',
+        'Outstanding test coverage! Consider adding performance benchmarks and stress tests.'
       );
     }
 
@@ -524,7 +524,7 @@ class MasterTestCoverageRunner {
                 }
                 ${suite.error ? `<p style="color: #dc3545;"><strong>Error:</strong> ${suite.error}</p>` : ''}
             </div>
-        `,
+        `
           )
           .join('')}
         
@@ -534,7 +534,7 @@ class MasterTestCoverageRunner {
               .map(
                 (rec) => `
                 <div class="recommendation">• ${rec}</div>
-            `,
+            `
               )
               .join('')}
         </div>
@@ -551,12 +551,12 @@ class MasterTestCoverageRunner {
     await this.runTestSuite(MCPToolsTestSuite, 'MCP Tools Comprehensive Tests');
     await this.runTestSuite(
       DAAFunctionalityTestSuite,
-      'DAA Functionality Tests',
+      'DAA Functionality Tests'
     );
     await this.runTestSuite(ErrorHandlingTestSuite, 'Error Handling Tests');
     await this.runTestSuite(
       MCPProtocolIntegrationTestSuite,
-      'MCP Protocol Integration Tests',
+      'MCP Protocol Integration Tests'
     );
 
     // Run code coverage analysis

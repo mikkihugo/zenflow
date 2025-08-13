@@ -65,12 +65,12 @@ class MCPProtocolIntegrationTestSuite {
       // Validate required fields
       assert(
         mcpMessage.jsonrpc === '2.0',
-        'Should have correct JSON-RPC version',
+        'Should have correct JSON-RPC version'
       );
       assert(typeof mcpMessage.method === 'string', 'Should have method field');
       assert(
         typeof mcpMessage.params === 'object',
-        'Should have params object',
+        'Should have params object'
       );
       assert(typeof mcpMessage.id !== 'undefined', 'Should have request ID');
 
@@ -93,15 +93,15 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         mcpResponse.jsonrpc === '2.0',
-        'Response should have correct JSON-RPC version',
+        'Response should have correct JSON-RPC version'
       );
       assert(
         typeof mcpResponse.result === 'object',
-        'Should have result object',
+        'Should have result object'
       );
       assert(
         Array.isArray(mcpResponse.result.content),
-        'Should have content array',
+        'Should have content array'
       );
 
       this.results.coverage.protocol++;
@@ -122,19 +122,19 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         mcpErrorResponse.jsonrpc === '2.0',
-        'Error response should have correct JSON-RPC version',
+        'Error response should have correct JSON-RPC version'
       );
       assert(
         typeof mcpErrorResponse.error === 'object',
-        'Should have error object',
+        'Should have error object'
       );
       assert(
         typeof mcpErrorResponse.error.code === 'number',
-        'Error should have numeric code',
+        'Error should have numeric code'
       );
       assert(
         typeof mcpErrorResponse.error.message === 'string',
-        'Error should have message',
+        'Error should have message'
       );
 
       this.results.coverage.protocol++;
@@ -150,11 +150,11 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         toolListRequest.method === 'tools/list',
-        'Should request tool list',
+        'Should request tool list'
       );
       assert(
         typeof toolListRequest.params === 'object',
-        'Should have params object',
+        'Should have params object'
       );
 
       this.results.coverage.protocol++;
@@ -193,15 +193,15 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           response.id === request.id,
-          'Response ID should match request ID',
+          'Response ID should match request ID'
         );
         assert(
           response.result.content[0].type === 'text',
-          'Should return text content',
+          'Should return text content'
         );
 
         this.results.coverage.communication++;
-      },
+      }
     );
 
     await this.runTest('Communication - Batch request handling', async () => {
@@ -237,7 +237,7 @@ class MCPProtocolIntegrationTestSuite {
       assert(Array.isArray(batchResponse), 'Should handle batch requests');
       assert(
         batchResponse.length === batchRequest.length,
-        'Should return same number of responses',
+        'Should return same number of responses'
       );
 
       this.results.coverage.communication++;
@@ -258,7 +258,7 @@ class MCPProtocolIntegrationTestSuite {
       assert(notification.id === undefined, 'Notifications should not have ID');
       assert(
         notification.method.startsWith('notifications/'),
-        'Should be notification method',
+        'Should be notification method'
       );
 
       this.results.coverage.communication++;
@@ -293,19 +293,19 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           JSON.stringify(deserialized) === JSON.stringify(originalMessage),
-          'Should preserve message integrity',
+          'Should preserve message integrity'
         );
         assert(
           deserialized.params.arguments.capabilities.length === 3,
-          'Should preserve array data',
+          'Should preserve array data'
         );
         assert(
           deserialized.params.arguments.config.timeout === 30000,
-          'Should preserve nested objects',
+          'Should preserve nested objects'
         );
 
         this.results.coverage.serialization++;
-      },
+      }
     );
 
     await this.runTest('Serialization - Binary data handling', async () => {
@@ -329,12 +329,12 @@ class MCPProtocolIntegrationTestSuite {
       const deserialized = JSON.parse(serialized);
       const recoveredBinary = Buffer.from(
         deserialized.params.arguments.data,
-        'base64',
+        'base64'
       );
 
       assert(
         recoveredBinary.toString('utf8') === 'Hello, World!',
-        'Should handle binary data correctly',
+        'Should handle binary data correctly'
       );
 
       this.results.coverage.serialization++;
@@ -363,19 +363,19 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           deserialized.params.arguments.text.includes('🌍'),
-          'Should preserve emoji',
+          'Should preserve emoji'
         );
         assert(
           deserialized.params.arguments.text.includes('中文'),
-          'Should preserve Chinese characters',
+          'Should preserve Chinese characters'
         );
         assert(
           deserialized.params.arguments.math.includes('π'),
-          'Should preserve mathematical symbols',
+          'Should preserve mathematical symbols'
         );
 
         this.results.coverage.serialization++;
-      },
+      }
     );
   }
 
@@ -403,10 +403,10 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           errorResponse.error.code === -32600,
-          'Should return Invalid Request error',
+          'Should return Invalid Request error'
         );
         this.results.coverage.errorHandling++;
-      },
+      }
     );
 
     await this.runTest('Error Handling - Method not found', async () => {
@@ -429,7 +429,7 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         errorResponse.error.code === -32601,
-        'Should return Method not found error',
+        'Should return Method not found error'
       );
       this.results.coverage.errorHandling++;
     });
@@ -457,7 +457,7 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         errorResponse.error.code === -32602,
-        'Should return Invalid params error',
+        'Should return Invalid params error'
       );
       this.results.coverage.errorHandling++;
     });
@@ -482,7 +482,7 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           parseErrorResponse.error.code === -32700,
-          'Should return Parse error',
+          'Should return Parse error'
         );
       }
 
@@ -520,11 +520,11 @@ class MCPProtocolIntegrationTestSuite {
 
       assert(
         deserialized.params.arguments.data.length === 10000,
-        'Should handle large arrays',
+        'Should handle large arrays'
       );
       assert(
         processingTime < 1000,
-        'Should process large payloads efficiently',
+        'Should process large payloads efficiently'
       ); // Less than 1 second
 
       this.results.coverage.performance++;
@@ -547,7 +547,7 @@ class MCPProtocolIntegrationTestSuite {
 
         // Simulate 100 concurrent requests
         const requests = Array.from({ length: 100 }, (_, i) =>
-          createRequest(i + 13),
+          createRequest(i + 13)
         );
         const responses = requests.map((req) => ({
           jsonrpc: '2.0',
@@ -568,11 +568,11 @@ class MCPProtocolIntegrationTestSuite {
         assert(responses.length === 100, 'Should handle concurrent requests');
         assert(
           processingTime < 500,
-          'Should process concurrent requests efficiently',
+          'Should process concurrent requests efficiently'
         );
 
         this.results.coverage.performance++;
-      },
+      }
     );
 
     await this.runTest('Performance - Memory usage monitoring', async () => {
@@ -640,31 +640,31 @@ class MCPProtocolIntegrationTestSuite {
       const sanitizedArgs = {
         topology: maliciousRequest.params.arguments.topology.replace(
           /<script[^>]*>.*?<\/script>/gi,
-          '',
+          ''
         ),
         config: {
           command: maliciousRequest.params.arguments.config.command.replace(
             /[;&|`$()]/g,
-            '',
+            ''
           ),
           sql: maliciousRequest.params.arguments.config.sql.replace(
             /['";<>]/g,
-            '',
+            ''
           ),
         },
       };
 
       assert(
         !sanitizedArgs.topology.includes('<script>'),
-        'Should sanitize XSS attempts',
+        'Should sanitize XSS attempts'
       );
       assert(
         !sanitizedArgs.config.command.includes('rm -rf'),
-        'Should sanitize command injection',
+        'Should sanitize command injection'
       );
       assert(
         !sanitizedArgs.config.sql.includes('DROP TABLE'),
-        'Should sanitize SQL injection',
+        'Should sanitize SQL injection'
       );
 
       this.results.coverage.security++;
@@ -701,7 +701,7 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           errorResponse.error.code === -32000,
-          'Should reject oversized requests',
+          'Should reject oversized requests'
         );
       }
 
@@ -739,7 +739,7 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           errorResponse.error.code === -32601,
-          'Should reject non-whitelisted methods',
+          'Should reject non-whitelisted methods'
         );
       }
 
@@ -801,12 +801,12 @@ class MCPProtocolIntegrationTestSuite {
 
           assert(
             response.id === format.request.id,
-            `Should handle ${format.name}`,
+            `Should handle ${format.name}`
           );
         }
 
         this.results.coverage.compatibility++;
-      },
+      }
     );
 
     await this.runTest('Compatibility - Content type variations', async () => {
@@ -844,7 +844,7 @@ class MCPProtocolIntegrationTestSuite {
 
         assert(
           response.result.content[0].type === content.type,
-          `Should handle ${content.type} content`,
+          `Should handle ${content.type} content`
         );
       }
 
@@ -859,7 +859,7 @@ class MCPProtocolIntegrationTestSuite {
     ).toFixed(1);
     const totalCoverage = Object.values(this.results.coverage).reduce(
       (a, b) => a + b,
-      0,
+      0
     );
 
     const report = {
@@ -885,7 +885,7 @@ class MCPProtocolIntegrationTestSuite {
 
     if (this.results.failed > 0) {
       recommendations.push(
-        'Fix failing MCP protocol tests to ensure compliance',
+        'Fix failing MCP protocol tests to ensure compliance'
       );
     }
 
@@ -919,7 +919,7 @@ class MCPProtocolIntegrationTestSuite {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent MCP protocol coverage! Consider adding stress tests.',
+        'Excellent MCP protocol coverage! Consider adding stress tests.'
       );
     }
 
@@ -946,7 +946,7 @@ class MCPProtocolIntegrationTestSuite {
     // Save report to file
     const reportPath = path.join(
       __dirname,
-      '../test-reports/mcp-protocol-test-report.json',
+      '../test-reports/mcp-protocol-test-report.json'
     );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));

@@ -49,8 +49,8 @@ export class DSPySwarmIntelligence {
   private dspyWrapper: DSPyWrapper | null = null;
   private config: SwarmIntelligenceConfig;
   private learningHistory: Array<{
-    input: any;
-    output: any;
+    input: unknown;
+    output: unknown;
     success: boolean;
     timestamp: Date;
   }> = [];
@@ -114,13 +114,13 @@ export class DSPySwarmIntelligence {
   private async executeDSPyProgram(
     signature: string,
     description: string,
-    input: any,
-    fallbackResult: any,
-    programType: string,
-  ): Promise<any> {
+    input: unknown,
+    fallbackResult: unknown,
+    programType: string
+  ): Promise<unknown> {
     if (!this.dspyWrapper) {
       logger.warn(
-        `DSPy wrapper not initialized for ${programType}, using fallback`,
+        `DSPy wrapper not initialized for ${programType}, using fallback`
       );
       return fallbackResult;
     }
@@ -128,13 +128,13 @@ export class DSPySwarmIntelligence {
     try {
       const program = await this.dspyWrapper.createProgram(
         signature,
-        description,
+        description
       );
       const executionResult = await this.dspyWrapper.execute(program, input);
 
       if (!executionResult?.success) {
         throw new Error(
-          executionResult?.error?.message || `${programType} execution failed`,
+          executionResult?.error?.message || `${programType} execution failed`
         );
       }
 
@@ -161,7 +161,7 @@ export class DSPySwarmIntelligence {
    */
   async selectOptimalAgents(
     taskRequirements: TaskRequirements,
-    availableAgents: AgentPerformanceData[],
+    availableAgents: AgentPerformanceData[]
   ): Promise<{
     selectedAgents: string[];
     reasoning: string;
@@ -179,7 +179,7 @@ export class DSPySwarmIntelligence {
       // Create DSPy program for agent selection
       const program = await this.dspyWrapper.createProgram(
         'task_requirements: object, available_agents: array -> selected_agents: array, reasoning: string, confidence: number',
-        'Intelligently select optimal agents for task execution based on requirements, agent capabilities, and performance history',
+        'Intelligently select optimal agents for task execution based on requirements, agent capabilities, and performance history'
       );
 
       const input = {
@@ -192,12 +192,12 @@ export class DSPySwarmIntelligence {
 
       if (!executionResult?.success) {
         throw new Error(
-          executionResult?.error?.message || 'Agent selection execution failed',
+          executionResult?.error?.message || 'Agent selection execution failed'
         );
       }
 
       const result = this.parseAgentSelectionResponse(
-        JSON.stringify(executionResult?.result),
+        JSON.stringify(executionResult?.result)
       );
 
       // Record learning example
@@ -234,7 +234,7 @@ export class DSPySwarmIntelligence {
     currentTopology: string,
     taskLoad: object,
     agentPerformance: AgentPerformanceData[],
-    communicationPatterns: object,
+    communicationPatterns: object
   ): Promise<{
     optimalTopology: string;
     restructurePlan: object;
@@ -260,7 +260,7 @@ export class DSPySwarmIntelligence {
       'Analyze current swarm topology and recommend optimizations based on task load, agent performance, and communication patterns',
       input,
       fallbackResult,
-      'topology_optimization',
+      'topology_optimization'
     );
 
     return {
@@ -270,7 +270,7 @@ export class DSPySwarmIntelligence {
         result?.restructure_plan || result?.restructurePlan || {},
       performanceGain: result?.performance_gain || result?.performanceGain || 0,
       implementationSteps: this.generateImplementationSteps(
-        result?.restructure_plan || result?.restructurePlan,
+        result?.restructure_plan || result?.restructurePlan
       ),
     };
   }
@@ -284,8 +284,8 @@ export class DSPySwarmIntelligence {
    */
   async optimizeLoadBalancing(
     agentLoads: AgentPerformanceData[],
-    taskQueue: any[],
-    performanceMetrics: object,
+    taskQueue: unknown[],
+    performanceMetrics: object
   ): Promise<{
     loadDistribution: object;
     rebalancingActions: object[];
@@ -310,7 +310,7 @@ export class DSPySwarmIntelligence {
       'Optimize task distribution across agents based on current loads, pending tasks, and performance metrics',
       input,
       fallbackResult,
-      'load_balancing',
+      'load_balancing'
     );
 
     return {
@@ -323,7 +323,7 @@ export class DSPySwarmIntelligence {
       efficiencyScore:
         result?.efficiency_score || result?.efficiencyScore || 0.7,
       urgentActions: this.identifyUrgentActions(
-        result?.rebalancing_actions || result?.rebalancingActions || [],
+        result?.rebalancing_actions || result?.rebalancingActions || []
       ),
     };
   }
@@ -338,7 +338,7 @@ export class DSPySwarmIntelligence {
   async predictPerformance(
     historicalPerformance: object[],
     currentState: object,
-    upcomingTasks: any[],
+    upcomingTasks: unknown[]
   ): Promise<{
     performancePrediction: object;
     bottleneckWarnings: string[];
@@ -363,7 +363,7 @@ export class DSPySwarmIntelligence {
       'Predict future swarm performance and identify potential bottlenecks based on historical data and upcoming workload',
       input,
       fallbackResult,
-      'performance_prediction',
+      'performance_prediction'
     );
 
     // Assess prediction confidence based on historical accuracy
@@ -396,7 +396,7 @@ export class DSPySwarmIntelligence {
   async recoverFromFailure(
     failureContext: object,
     availableAgents: AgentPerformanceData[],
-    taskState: object,
+    taskState: object
   ): Promise<{
     recoveryStrategy: object;
     agentReassignments: object[];
@@ -424,7 +424,7 @@ export class DSPySwarmIntelligence {
       'Plan intelligent recovery from system failures by reassigning tasks and mitigating risks',
       input,
       fallbackResult,
-      'failure_recovery',
+      'failure_recovery'
     );
 
     return {
@@ -443,7 +443,7 @@ export class DSPySwarmIntelligence {
       estimatedRecoveryTime: this.estimateRecoveryTime(
         result?.recovery_strategy ||
           result?.recoveryStrategy ||
-          fallbackResult?.recoveryStrategy,
+          fallbackResult?.recoveryStrategy
       ),
     };
   }
@@ -458,7 +458,7 @@ export class DSPySwarmIntelligence {
   updateDecisionOutcome(decisionId: string, success: boolean, metrics: object) {
     const example = this.learningHistory.find(
       (ex) =>
-        ex.output.decision_id === decisionId || ex.output.id === decisionId,
+        ex.output.decision_id === decisionId || ex.output.id === decisionId
     );
 
     if (example) {
@@ -466,7 +466,7 @@ export class DSPySwarmIntelligence {
       example.output.actual_metrics = metrics;
 
       logger.debug(
-        `Updated decision outcome: ${decisionId} -> ${success ? 'success' : 'failure'}`,
+        `Updated decision outcome: ${decisionId} -> ${success ? 'success' : 'failure'}`
       );
     }
   }
@@ -476,7 +476,7 @@ export class DSPySwarmIntelligence {
    */
   getIntelligenceStats() {
     const recentDecisions = this.learningHistory.filter(
-      (ex) => Date.now() - ex.timestamp.getTime() < 3600000, // Last hour
+      (ex) => Date.now() - ex.timestamp.getTime() < 3600000 // Last hour
     );
 
     const successRate =
@@ -502,7 +502,7 @@ export class DSPySwarmIntelligence {
     };
   }
 
-  private recordLearningExample(programType: string, example: any) {
+  private recordLearningExample(programType: string, example: unknown) {
     this.learningHistory.push({
       ...example,
       programType,
@@ -526,7 +526,7 @@ export class DSPySwarmIntelligence {
   private async performContinuousLearning() {
     const recentExamples = this.learningHistory.filter(
       (ex) =>
-        Date.now() - ex.timestamp.getTime() < this.config.optimizationInterval!,
+        Date.now() - ex.timestamp.getTime() < this.config.optimizationInterval!
     );
 
     if (recentExamples.length < 5) return; // Need minimum examples
@@ -539,7 +539,7 @@ export class DSPySwarmIntelligence {
         acc[programType]?.push(ex);
         return acc;
       },
-      {} as Record<string, any[]>,
+      {} as Record<string, any[]>
     );
 
     // Analyze patterns in examples for continuous learning (simplified approach)
@@ -554,7 +554,7 @@ export class DSPySwarmIntelligence {
             // 3. Cache successful examples for few-shot prompting
 
             logger.debug(
-              `Continuous learning analysis for ${programType}: ${successfulExamples.length} successful examples analyzed`,
+              `Continuous learning analysis for ${programType}: ${successfulExamples.length} successful examples analyzed`
             );
 
             // Simple learning: adjust temperature based on success rate
@@ -562,12 +562,12 @@ export class DSPySwarmIntelligence {
             if (successRate > 0.8 && this.config.temperature! > 0.1) {
               this.config.temperature = Math.max(
                 0.1,
-                this.config.temperature! - 0.05,
+                this.config.temperature! - 0.05
               );
             } else if (successRate < 0.6 && this.config.temperature! < 0.5) {
               this.config.temperature = Math.min(
                 0.5,
-                this.config.temperature! + 0.05,
+                this.config.temperature! + 0.05
               );
             }
           }
@@ -580,14 +580,14 @@ export class DSPySwarmIntelligence {
 
   private fallbackAgentSelection(
     taskRequirements: TaskRequirements,
-    availableAgents: AgentPerformanceData[],
+    availableAgents: AgentPerformanceData[]
   ) {
     // Simple fallback: select agents with highest success rate and required capabilities
     const suitableAgents = availableAgents
       .filter((agent) =>
         taskRequirements.requiredCapabilities.some((cap) =>
-          agent.capabilities.includes(cap),
-        ),
+          agent.capabilities.includes(cap)
+        )
       )
       .sort((a, b) => b.successRate - a.successRate)
       .slice(0, Math.min(3, Math.ceil(taskRequirements.complexity / 30)));
@@ -599,7 +599,7 @@ export class DSPySwarmIntelligence {
     };
   }
 
-  private generateImplementationSteps(restructurePlan: any): string[] {
+  private generateImplementationSteps(restructurePlan: unknown): string[] {
     if (!restructurePlan || typeof restructurePlan !== 'object') {
       return ['No restructuring needed'];
     }
@@ -621,20 +621,20 @@ export class DSPySwarmIntelligence {
     return steps.length > 0 ? steps : ['Apply optimization changes'];
   }
 
-  private identifyUrgentActions(rebalancingActions: any[]): string[] {
+  private identifyUrgentActions(rebalancingActions: unknown[]): string[] {
     if (!Array.isArray(rebalancingActions)) return [];
 
     return rebalancingActions
       .filter(
-        (action) => action.priority === 'urgent' || action.severity === 'high',
+        (action) => action.priority === 'urgent' || action.severity === 'high'
       )
       .map(
         (action) =>
-          action.description || action.action || 'Urgent rebalancing action',
+          action.description || action.action || 'Urgent rebalancing action'
       );
   }
 
-  private assessPredictionConfidence(result: any): number {
+  private assessPredictionConfidence(result: unknown): number {
     // Base confidence on the quality and completeness of the prediction
     let confidence = 0.5;
 
@@ -647,7 +647,7 @@ export class DSPySwarmIntelligence {
     return Math.min(confidence, 0.95);
   }
 
-  private estimateRecoveryTime(recoveryStrategy: any): number {
+  private estimateRecoveryTime(recoveryStrategy: unknown): number {
     if (!recoveryStrategy) return 300; // 5 minutes default
 
     let baseTime = 60; // 1 minute base
@@ -658,7 +658,7 @@ export class DSPySwarmIntelligence {
     return baseTime;
   }
 
-  private parseAgentSelectionResponse(response: string): any {
+  private parseAgentSelectionResponse(response: string): unknown {
     try {
       const jsonMatch = response?.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -683,12 +683,12 @@ export class DSPySwarmIntelligence {
 
   private createBalancedDistribution(
     agentLoads: AgentPerformanceData[],
-    _taskQueue: any[],
+    _taskQueue: unknown[]
   ): object {
-    const distribution: any = {};
+    const distribution: unknown = {};
     const totalCapacity = agentLoads.reduce(
       (sum, agent) => sum + (100 - agent.currentLoad),
-      0,
+      0
     );
 
     agentLoads.forEach((agent) => {

@@ -169,7 +169,7 @@ describe('SystemEventAdapter', () => {
       // Mock a slow emission
       const _originalEmit = adapter.processEventEmission;
       adapter.processEventEmission = vi.fn(
-        () => new Promise((resolve) => setTimeout(resolve, 100)),
+        () => new Promise((resolve) => setTimeout(resolve, 100))
       );
 
       await expect(adapter.emit(slowEvent, { timeout: 50 })).rejects.toThrow();
@@ -185,7 +185,7 @@ describe('SystemEventAdapter', () => {
       const mockListener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['system:startup'],
-        mockListener,
+        mockListener
       );
 
       expect(subscriptionId).toBeDefined();
@@ -197,7 +197,7 @@ describe('SystemEventAdapter', () => {
       const mockListener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['system:startup', 'system:shutdown', 'system:health'],
-        mockListener,
+        mockListener
       );
 
       expect(subscriptionId).toBeDefined();
@@ -210,7 +210,7 @@ describe('SystemEventAdapter', () => {
       const mockListener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['system:startup'],
-        mockListener,
+        mockListener
       );
 
       const result = adapter.unsubscribe(subscriptionId);
@@ -218,7 +218,7 @@ describe('SystemEventAdapter', () => {
 
       const subscriptions = adapter.getSubscriptions();
       expect(
-        subscriptions.find((s) => s.id === subscriptionId),
+        subscriptions.find((s) => s.id === subscriptionId)
       ).toBeUndefined();
     });
 
@@ -240,10 +240,10 @@ describe('SystemEventAdapter', () => {
 
       const subscriptions = adapter.getSubscriptions();
       expect(
-        subscriptions.filter((s) => s.eventTypes.includes('system:startup')),
+        subscriptions.filter((s) => s.eventTypes.includes('system:startup'))
       ).toHaveLength(0);
       expect(
-        subscriptions.filter((s) => s.eventTypes.includes('system:health')),
+        subscriptions.filter((s) => s.eventTypes.includes('system:health'))
       ).toHaveLength(1);
     });
 
@@ -351,7 +351,7 @@ describe('SystemEventAdapter', () => {
         expect.objectContaining({
           ...originalEvent,
           transformed: true,
-        }),
+        })
       );
     });
   });
@@ -409,7 +409,7 @@ describe('SystemEventAdapter', () => {
       };
 
       const adapterWithError = createSystemEventAdapter(
-        configWithErrorRecovery,
+        configWithErrorRecovery
       );
       await adapterWithError.start();
 
@@ -758,19 +758,19 @@ describe('SystemEventAdapter', () => {
     it('should create health event with correct status based on score', () => {
       const healthyEvent = SystemEventHelpers.createHealthEvent(
         'test-component',
-        0.9,
+        0.9
       );
       expect(healthyEvent.status).toBe('success');
 
       const warningEvent = SystemEventHelpers.createHealthEvent(
         'test-component',
-        0.6,
+        0.6
       );
       expect(warningEvent.status).toBe('warning');
 
       const errorEvent = SystemEventHelpers.createHealthEvent(
         'test-component',
-        0.3,
+        0.3
       );
       expect(errorEvent.status).toBe('error');
     });
@@ -782,7 +782,7 @@ describe('SystemEventAdapter', () => {
         error,
         {
           context: 'test',
-        },
+        }
       );
 
       expect(event['source']).toBe('test-component');

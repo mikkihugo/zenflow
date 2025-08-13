@@ -20,15 +20,15 @@ import {
   createCompatibleMCPClient,
   createCompatibleWebSocketClient,
 } from './compatibility.ts';
+import { UACLHelpers, uacl } from './instance.ts';
 import { ClientType } from './types.ts';
-import { uacl, UACLHelpers } from './instance.ts';
 
 export interface ValidationResult {
   component: string;
   status: 'pass' | 'fail' | 'warning';
   message: string;
   error?: Error;
-  details?: any;
+  details?: unknown;
 }
 
 export interface ValidationReport {
@@ -193,7 +193,7 @@ export class UACLValidator {
       const httpClient = await uacl.createHTTPClient(
         'test-http',
         getMCPServerURL(),
-        { enabled: false, priority: 1 }, // Disabled to avoid actual connections
+        { enabled: false, priority: 1 } // Disabled to avoid actual connections
       );
       results.push({
         component: 'HTTP Client Creation',
@@ -218,7 +218,7 @@ export class UACLValidator {
         {
           enabled: false,
           priority: 1,
-        },
+        }
       );
       results.push({
         component: 'WebSocket Client Creation',
@@ -241,7 +241,7 @@ export class UACLValidator {
         'test-knowledge',
         '/fake/path',
         'fake-key',
-        { enabled: false, priority: 1 },
+        { enabled: false, priority: 1 }
       );
       results.push({
         component: 'Knowledge Client Creation',
@@ -270,7 +270,7 @@ export class UACLValidator {
             capabilities: [],
           },
         },
-        { enabled: false, priority: 1 },
+        { enabled: false, priority: 1 }
       );
       results.push({
         component: 'MCP Client Creation',

@@ -142,7 +142,7 @@ export class DataServiceFactory
       if (!isValid) {
         throw new ServiceConfigurationError(
           config?.name,
-          'Invalid data service adapter configuration',
+          'Invalid data service adapter configuration'
         );
       }
 
@@ -150,7 +150,7 @@ export class DataServiceFactory
       if (this.services.has(config?.name)) {
         throw new ServiceInitializationError(
           config?.name,
-          new Error('Service with this name already exists'),
+          new Error('Service with this name already exists')
         );
       }
 
@@ -173,13 +173,13 @@ export class DataServiceFactory
       this.eventEmitter.emit('service-created', config?.name, adapter);
 
       this.logger.info(
-        `Data service adapter created successfully: ${config?.name}`,
+        `Data service adapter created successfully: ${config?.name}`
       );
       return adapter as unknown as IService;
     } catch (error) {
       this.logger.error(
         `Failed to create data service adapter ${config?.name}:`,
-        error,
+        error
       );
       throw error instanceof ServiceError
         ? error
@@ -193,7 +193,7 @@ export class DataServiceFactory
    * @param configs
    */
   async createMultiple(
-    configs: DataServiceAdapterConfig[],
+    configs: DataServiceAdapterConfig[]
   ): Promise<IService[]> {
     this.logger.info(`Creating ${configs.length} data service adapters`);
 
@@ -211,15 +211,15 @@ export class DataServiceFactory
         errors.push(
           new ServiceInitializationError(
             config?.name || 'unknown',
-            result?.reason,
-          ),
+            result?.reason
+          )
         );
       }
     });
 
     if (errors.length > 0) {
       this.logger.warn(
-        `${errors.length} out of ${configs.length} data service adapters failed to create`,
+        `${errors.length} out of ${configs.length} data service adapters failed to create`
       );
       // Log errors but don't throw - return successful services
       errors.forEach((error) => this.logger.error(error.message));
@@ -282,7 +282,7 @@ export class DataServiceFactory
     } catch (error) {
       this.logger.error(
         `Failed to remove data service adapter ${name}:`,
-        error,
+        error
       );
       throw new ServiceOperationError(name, 'remove', error as Error);
     }
@@ -318,7 +318,7 @@ export class DataServiceFactory
       } catch (error) {
         this.logger.error(
           `Failed to start data service adapter ${service.name}:`,
-          error,
+          error
         );
         throw error;
       }
@@ -342,7 +342,7 @@ export class DataServiceFactory
       } catch (error) {
         this.logger.error(
           `Failed to stop data service adapter ${service.name}:`,
-          error,
+          error
         );
       }
     });
@@ -367,7 +367,7 @@ export class DataServiceFactory
       } catch (error) {
         this.logger.error(
           `Health check failed for data service adapter ${service.name}:`,
-          error,
+          error
         );
         results?.set(service.name, {
           name: service.name,
@@ -402,7 +402,7 @@ export class DataServiceFactory
       } catch (error) {
         this.logger.error(
           `Failed to get metrics for data service adapter ${service.name}:`,
-          error,
+          error
         );
       }
     });
@@ -431,7 +431,7 @@ export class DataServiceFactory
         } catch (error) {
           this.logger.error(
             `Failed to destroy data service adapter ${service.name}:`,
-            error,
+            error
           );
         }
       });
@@ -477,7 +477,7 @@ export class DataServiceFactory
       // Basic validation
       if (!(config?.name && config?.type)) {
         this.logger.error(
-          'Configuration missing required fields: name or type',
+          'Configuration missing required fields: name or type'
         );
         return false;
       }
@@ -506,7 +506,7 @@ export class DataServiceFactory
           !validDbTypes.includes(config?.documentData?.databaseType)
         ) {
           this.logger.error(
-            `Invalid database type: ${config?.documentData?.databaseType}`,
+            `Invalid database type: ${config?.documentData?.databaseType}`
           );
           return false;
         }
@@ -533,7 +533,7 @@ export class DataServiceFactory
    *
    * @param type
    */
-  getConfigSchema(type: string): Record<string, any> | undefined {
+  getConfigSchema(type: string): Record<string, unknown> | undefined {
     if (!this.supportsType(type)) {
       return undefined;
     }
@@ -610,7 +610,7 @@ export class DataServiceFactory
    */
   async createWebDataAdapter(
     name: string,
-    config?: Partial<DataServiceAdapterConfig>,
+    config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const webDataConfig = createDefaultDataServiceAdapterConfig(name, {
       type: ServiceType.WEB_DATA,
@@ -627,7 +627,7 @@ export class DataServiceFactory
     });
 
     const adapter = (await this.create(
-      webDataConfig,
+      webDataConfig
     )) as unknown as DataServiceAdapter;
     this.logger.info(`Created web data adapter: ${name}`);
     return adapter;
@@ -643,7 +643,7 @@ export class DataServiceFactory
   async createDocumentAdapter(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<DataServiceAdapterConfig>,
+    config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const documentConfig = createDefaultDataServiceAdapterConfig(name, {
       type: ServiceType.DOCUMENT,
@@ -660,7 +660,7 @@ export class DataServiceFactory
     });
 
     const adapter = (await this.create(
-      documentConfig,
+      documentConfig
     )) as unknown as DataServiceAdapter;
     this.logger.info(`Created document adapter: ${name} (${databaseType})`);
     return adapter;
@@ -676,7 +676,7 @@ export class DataServiceFactory
   async createUnifiedDataAdapter(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
-    config?: Partial<DataServiceAdapterConfig>,
+    config?: Partial<DataServiceAdapterConfig>
   ): Promise<DataServiceAdapter> {
     const unifiedConfig = createDefaultDataServiceAdapterConfig(name, {
       type: ServiceType.DATA,
@@ -709,7 +709,7 @@ export class DataServiceFactory
     });
 
     const adapter = (await this.create(
-      unifiedConfig,
+      unifiedConfig
     )) as unknown as DataServiceAdapter;
     this.logger.info(`Created unified data adapter: ${name} (${databaseType})`);
     return adapter;
@@ -752,7 +752,7 @@ export class DataServiceFactory
   // ============================================
 
   private mergeWithDefaults(
-    config: DataServiceAdapterConfig,
+    config: DataServiceAdapterConfig
   ): DataServiceAdapterConfig {
     return {
       ...config,
@@ -814,7 +814,7 @@ export class DataServiceFactory
 
           if (unhealthyServices.length > 0) {
             this.logger.warn(
-              `Unhealthy data service adapters detected: ${unhealthyServices.join(', ')}`,
+              `Unhealthy data service adapters detected: ${unhealthyServices.join(', ')}`
             );
             this.eventEmitter.emit('health-alert', unhealthyServices);
           }
@@ -841,7 +841,7 @@ export class DataServiceFactory
 
           if (slowServices.length > 0) {
             this.logger.warn(
-              `Slow data service adapters detected: ${slowServices.join(', ')}`,
+              `Slow data service adapters detected: ${slowServices.join(', ')}`
             );
             this.eventEmitter.emit('performance-alert', slowServices);
           }
@@ -865,11 +865,11 @@ export class DataServiceFactory
   }
 
   // Event emitter methods for external event handling
-  on(event: string, listener: (...args: any[]) => void): void {
+  on(event: string, listener: (...args: unknown[]) => void): void {
     this.eventEmitter.on(event, listener);
   }
 
-  off(event: string, listener?: (...args: any[]) => void): void {
+  off(event: string, listener?: (...args: unknown[]) => void): void {
     if (listener) {
       this.eventEmitter.off(event, listener);
     } else {

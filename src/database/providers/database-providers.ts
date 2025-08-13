@@ -525,7 +525,7 @@ export interface DatabaseConfig {
 export class DatabaseProviderFactory {
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {}
 
   /**
@@ -598,7 +598,7 @@ export class DatabaseProviderFactory {
         case 'lancedb':
           return new LanceDBAdapter(
             config,
-            this.logger,
+            this.logger
           ) as VectorDatabaseAdapter;
         case 'mysql':
           return new MySQLAdapter(config, this.logger);
@@ -608,7 +608,7 @@ export class DatabaseProviderFactory {
     } catch (error) {
       this.logger.error(`Failed to create database adapter: ${error}`);
       throw new Error(
-        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Database adapter creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -675,7 +675,7 @@ export class DatabaseProviderFactory {
    * ```
    */
   createGraphAdapter(
-    config: DatabaseConfig & { type: 'kuzu' },
+    config: DatabaseConfig & { type: 'kuzu' }
   ): GraphDatabaseAdapter {
     return new KuzuAdapter(config, this.logger);
   }
@@ -765,7 +765,7 @@ export class DatabaseProviderFactory {
    * ```
    */
   createVectorAdapter(
-    config: DatabaseConfig & { type: 'lancedb' },
+    config: DatabaseConfig & { type: 'lancedb' }
   ): VectorDatabaseAdapter {
     return new LanceDBAdapter(config, this.logger);
   }
@@ -789,7 +789,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -870,7 +870,7 @@ export class PostgreSQLAdapter implements DatabaseAdapter {
    */
   async queryWithResult<T = any>(
     sql: string,
-    params?: unknown[],
+    params?: unknown[]
   ): Promise<DatabaseResult<T>> {
     this.logger.debug(`Executing PostgreSQL query with result: ${sql}`);
 
@@ -1074,12 +1074,12 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
     this.logger.info(
-      `Connecting to SQLite database: ${this.config.database || ':memory:'}`,
+      `Connecting to SQLite database: ${this.config.database || ':memory:'}`
     );
 
     try {
@@ -1302,7 +1302,7 @@ export class KuzuAdapter implements GraphDatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -1591,7 +1591,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {
@@ -1677,7 +1677,9 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
         if (vectorMatch && tableMatch) {
           const vectorStr = vectorMatch?.[1];
           const tableName = tableMatch?.[1] || 'default';
-          const limit = limitMatch ? Number.parseInt(limitMatch[1], 10) : 10 as any;
+          const limit = limitMatch
+            ? Number.parseInt(limitMatch[1], 10)
+            : (10 as any);
 
           // Parse vector from string - fix for possible undefined
           if (vectorStr !== undefined) {
@@ -1709,7 +1711,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
             };
 
             this.logger.debug(
-              `LanceDB vector query completed in ${executionTime}ms`,
+              `LanceDB vector query completed in ${executionTime}ms`
             );
             return result;
           }
@@ -1823,7 +1825,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
   // Vector-specific methods implementation
   async vectorSearch(
     query: number[],
-    limit: number = 10,
+    limit: number = 10
   ): Promise<VectorResult> {
     this.logger.debug(`Executing LanceDB vector search with limit: ${limit}`);
     await this.ensureConnected();
@@ -1853,7 +1855,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
       };
 
       this.logger.debug(
-        `LanceDB vector search completed in ${executionTime}ms`,
+        `LanceDB vector search completed in ${executionTime}ms`
       );
       return result;
     } catch (error) {
@@ -1883,7 +1885,7 @@ export class LanceDBAdapter implements VectorDatabaseAdapter {
 
       const inserted = Array.isArray(result) ? result.length : 1;
       this.logger.debug(
-        `Successfully added ${inserted} vectors to LanceDB via DAL`,
+        `Successfully added ${inserted} vectors to LanceDB via DAL`
       );
     } catch (error) {
       this.logger.error(`Failed to add vectors to LanceDB: ${error}`);
@@ -2010,7 +2012,7 @@ export class MySQLAdapter implements DatabaseAdapter {
 
   constructor(
     private config: DatabaseConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {}
 
   async connect(): Promise<void> {

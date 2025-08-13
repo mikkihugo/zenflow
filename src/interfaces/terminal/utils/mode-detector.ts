@@ -24,7 +24,7 @@ export interface ModeDetectionResult {
  */
 export function detectMode(
   commands: string[],
-  flags: Record<string, any>,
+  flags: Record<string, unknown>
 ): TerminalMode {
   // Force interactive mode if --ui or --tui flag is present
   if (flags.ui || flags.tui) {
@@ -59,7 +59,7 @@ export function detectMode(
  */
 export function detectModeWithReason(
   commands: string[],
-  flags: Record<string, any>,
+  flags: Record<string, unknown>
 ): ModeDetectionResult {
   // Force interactive mode if --ui or --tui flag is present
   if (flags.ui || flags.tui) {

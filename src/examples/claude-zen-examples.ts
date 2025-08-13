@@ -19,7 +19,7 @@ import {
 export async function exampleBasicClaudeZenPattern() {
   // TODO: TypeScript error - createClaudeZenPattern function not available (human review needed)
   throw new Error(
-    'createClaudeZenPattern function not available - needs implementation',
+    'createClaudeZenPattern function not available - needs implementation'
   );
 
   /* Original implementation commented out until createClaudeZenPattern is available:
@@ -147,12 +147,12 @@ export async function exampleProjectInitialization() {
 
       if (speedMatch && speedMatch?.[1]) {
         resultWithPerformance?.performance.speedImprovement = Number.parseFloat(
-          speedMatch?.[1],
+          speedMatch?.[1]
         );
       }
       if (tokenMatch && tokenMatch?.[1]) {
         resultWithPerformance?.performance.tokenReduction = Number.parseFloat(
-          tokenMatch?.[1],
+          tokenMatch?.[1]
         );
       }
     }

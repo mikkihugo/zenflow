@@ -119,7 +119,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     beforeEach(() => {
       engine = new PatternRecognitionEngine(
         createTestConfig(),
-        createTestContext(),
+        createTestContext()
       );
       mockEmit = vi.spyOn(engine, 'emit');
     });
@@ -141,7 +141,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           anomalies: expect.any(Number),
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -172,7 +172,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           taskId: 'task_1',
           pattern: 'data_processing',
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -211,7 +211,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           patterns: expect.any(Number),
           messages: 2,
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
   });
@@ -230,7 +230,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
       coordinator = new LearningCoordinator(
         createTestConfig(),
         createTestContext(),
-        mockLogger,
+        mockLogger
       );
       mockEmit = vi.spyOn(coordinator, 'emit').mockImplementation(() => true);
     });
@@ -281,7 +281,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           agents: ['agent_1'],
           result: expect.any(Object),
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -317,7 +317,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           type: 'optimization',
           confidence: 0.8,
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -349,7 +349,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           category: 'data_processing',
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
   });
@@ -361,7 +361,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
     beforeEach(() => {
       optimizer = new PerformanceOptimizer(
         createTestConfig(),
-        createTestContext(),
+        createTestContext()
       );
       mockEmit = vi.spyOn(optimizer, 'emit');
     });
@@ -403,7 +403,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           expectedImprovement: expect.any(Number),
           confidence: expect.any(Number),
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -464,7 +464,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           efficiency: expect.any(Number),
           utilization: expect.any(Number),
           timestamp: expect.any(Number),
-        }),
+        })
       );
     });
   });
@@ -486,7 +486,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           newValue: expect.any(Number),
           reward: 1.0,
           timestamp: expect.any(Number),
-        }),
+        })
       );
 
       mockEmit.mockRestore();
@@ -513,7 +513,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           epochs: expect.any(Number),
           trainingTime: expect.any(Number),
           timestamp: expect.any(Number),
-        }),
+        })
       );
 
       mockEmit.mockRestore();
@@ -535,7 +535,7 @@ describe('Adaptive Learning System - London TDD (Integration & Interactions)', (
           totalModels: 1,
           totalWeight: 1.0,
           timestamp: expect.any(Number),
-        }),
+        })
       );
 
       mockEmit.mockRestore();
@@ -616,18 +616,18 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
         'testState',
         'goodAction',
         10.0,
-        'nextState',
+        'nextState'
       );
       zeroExplorationEngine.updateQValue(
         'testState',
         'badAction',
         1.0,
-        'nextState',
+        'nextState'
       );
 
       const selectedAction = zeroExplorationEngine.selectAction(
         'testState',
-        actions,
+        actions
       );
       expect(selectedAction).toBe('goodAction');
     });
@@ -639,7 +639,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
     beforeEach(() => {
       engine = new PatternRecognitionEngine(
         createTestConfig(),
-        createTestContext(),
+        createTestContext()
       );
     });
 
@@ -682,7 +682,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
                 ...createMockExecutionData()[0],
                 id: `normal_${i}`,
                 duration: normalDuration + (Math.random() - 0.5) * 100, // Small variance
-              }) as ExecutionData,
+              }) as ExecutionData
           ),
         {
           ...createMockExecutionData()[0],
@@ -696,7 +696,7 @@ describe('Adaptive Learning System - Classical TDD (Algorithms & Math)', () => {
       // Should detect the anomaly
       expect(analysis.anomalies.length).toBeGreaterThan(0);
       const performanceAnomalies = analysis.anomalies.filter(
-        (a) => a.type === 'performance',
+        (a) => a.type === 'performance'
       );
       expect(performanceAnomalies.length).toBeGreaterThan(0);
 
@@ -985,7 +985,7 @@ describe('Adaptive Learning System - Integration Tests', () => {
     // Apply optimizations
     const optimization = optimizer.optimizeBehavior(
       'agent_1',
-      learningResult?.patterns,
+      learningResult?.patterns
     );
     expect(optimization.expectedImprovement).toBeGreaterThan(0);
 

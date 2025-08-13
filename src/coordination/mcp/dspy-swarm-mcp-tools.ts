@@ -913,7 +913,7 @@ export async function dspy_swarm_status(): Promise<{
       learning: {
         totalExamples: status.learningExamples,
         recentOptimizations: status.agents.filter(
-          (a) => Date.now() - a.lastOptimization.getTime() < 3600000, // Last hour
+          (a) => Date.now() - a.lastOptimization.getTime() < 3600000 // Last hour
         ).length,
       },
       overallPerformance: status.overallPerformance,
@@ -1014,7 +1014,7 @@ export async function dspy_swarm_status(): Promise<{
 export async function dspy_swarm_optimize_agent(params: {
   agentId?: string;
   agentType?: AgentType;
-  examples?: Array<{ input: unknown; output: any }>;
+  examples?: Array<{ input: unknown; output: unknown }>;
   forceOptimization?: boolean;
 }): Promise<{
   success: boolean;

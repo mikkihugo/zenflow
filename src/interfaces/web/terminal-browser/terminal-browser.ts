@@ -38,7 +38,7 @@ export interface TerminalBrowserConfig {
  */
 export class TerminalBrowser {
   private config: Required<TerminalBrowserConfig>;
-  private screen: any;
+  private screen: unknown;
   private currentUrl: string = '';
   private history: string[] = [];
   private historyIndex: number = -1;
@@ -241,7 +241,7 @@ export class TerminalBrowser {
         error: error instanceof Error ? error.message : String(error),
       });
       this.showError(
-        `Failed to load: ${error instanceof Error ? error.message : String(error)}`,
+        `Failed to load: ${error instanceof Error ? error.message : String(error)}`
       );
     }
   }
@@ -271,7 +271,7 @@ export class TerminalBrowser {
       // Find content box and update it
       const contentBox = this.screen.children.find(
         (child) =>
-          child.options && (child.options as any).label === ' Web Content ',
+          child.options && (child.options as any).label === ' Web Content '
       ) as any;
 
       if (contentBox) {
@@ -291,7 +291,7 @@ export class TerminalBrowser {
   /**
    * Convert HTML to terminal-friendly text
    */
-  private htmlToTerminalText(element: any): string {
+  private htmlToTerminalText(element: unknown): string {
     let text = '';
 
     if (element.nodeType === 3) {
@@ -359,12 +359,12 @@ export class TerminalBrowser {
   private showLoading(): void {
     const contentBox = this.screen.children.find(
       (child) =>
-        child.options && (child.options as any).label === ' Web Content ',
+        child.options && (child.options as any).label === ' Web Content '
     ) as any;
 
     if (contentBox) {
       contentBox.setContent(
-        '\n{center}{bold}{yellow-fg}Loading...{/}{/center}',
+        '\n{center}{bold}{yellow-fg}Loading...{/}{/center}'
       );
       this.screen.render();
     }
@@ -376,12 +376,12 @@ export class TerminalBrowser {
   private showError(message: string): void {
     const contentBox = this.screen.children.find(
       (child) =>
-        child.options && (child.options as any).label === ' Web Content ',
+        child.options && (child.options as any).label === ' Web Content '
     ) as any;
 
     if (contentBox) {
       contentBox.setContent(
-        `\n{center}{bold}{red-fg}Error: ${message}{/}{/center}`,
+        `\n{center}{bold}{red-fg}Error: ${message}{/}{/center}`
       );
       this.screen.render();
     }
@@ -549,7 +549,7 @@ Press any key to close help...
   /**
    * Get browser status
    */
-  getStatus(): any {
+  getStatus(): unknown {
     return {
       currentUrl: this.currentUrl,
       historyLength: this.history.length,
@@ -565,7 +565,7 @@ Press any key to close help...
  * Create and configure terminal browser instance
  */
 export function createTerminalBrowser(
-  config?: TerminalBrowserConfig,
+  config?: TerminalBrowserConfig
 ): TerminalBrowser {
   return new TerminalBrowser(config);
 }
@@ -575,7 +575,7 @@ export function createTerminalBrowser(
  */
 export async function launchTerminalBrowser(
   url?: string,
-  config?: TerminalBrowserConfig,
+  config?: TerminalBrowserConfig
 ): Promise<void> {
   const browser = createTerminalBrowser(config);
   await browser.openDashboard(url);

@@ -161,7 +161,7 @@ async function runTestSuite(suite, report) {
     const timeout = setTimeout(() => {
       testProcess.kill('SIGTERM');
       suiteResult.errors.push(
-        `Test suite timed out after ${suite.timeout / 1000}s`,
+        `Test suite timed out after ${suite.timeout / 1000}s`
       );
     }, suite.timeout);
 
@@ -177,7 +177,7 @@ async function runTestSuite(suite, report) {
 
       if (errorOutput) {
         suiteResult.errors.push(
-          ...errorOutput.split('\n').filter((line) => line.trim()),
+          ...errorOutput.split('\n').filter((line) => line.trim())
         );
       }
 

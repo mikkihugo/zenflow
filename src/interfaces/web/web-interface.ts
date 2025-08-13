@@ -81,14 +81,14 @@ export class WebInterface {
     this.apiRoutes = new WebApiRoutes(
       this.config,
       this.sessionManager,
-      this.dataService,
+      this.dataService
     );
 
     // WebSocket real-time communication
     this.webSocketManager = new WebSocketManager(
       this.server.getSocketIO(),
       this.config,
-      this.dataService,
+      this.dataService
     );
 
     // HTML generation for fallback UI
@@ -106,7 +106,7 @@ export class WebInterface {
   async run(): Promise<void> {
     try {
       this.logger.info(
-        'Starting Claude Code Flow web interface with enhanced lifecycle management',
+        'Starting Claude Code Flow web interface with enhanced lifecycle management'
       );
 
       // Setup process lifecycle management if container is available
@@ -128,7 +128,7 @@ export class WebInterface {
         const existing = await this.processManager.isInstanceRunning();
         if (existing) {
           throw new Error(
-            `Web interface already running with PID ${existing.pid}`,
+            `Web interface already running with PID ${existing.pid}`
           );
         }
       }
@@ -181,7 +181,7 @@ export class WebInterface {
   /**
    * Auto-setup shared services and API routes
    */
-  private async autoConvertMCPTools(app: any): Promise<void> {
+  private async autoConvertMCPTools(app: unknown): Promise<void> {
     try {
       this.logger.info('🔄 Setting up shared services API routes...');
 
@@ -197,7 +197,7 @@ export class WebInterface {
     } catch (error) {
       this.logger.warn(
         'Shared services setup failed, continuing without:',
-        error instanceof Error ? error.message : String(error),
+        error instanceof Error ? error.message : String(error)
       );
     }
   }
@@ -207,9 +207,9 @@ export class WebInterface {
    *
    * @param app
    */
-  private setupFallbackRoutes(app: any): void {
+  private setupFallbackRoutes(app: unknown): void {
     // Serve inline HTML if no build exists
-    app.get('/', (_req: any, res: any) => {
+    app.get('/', (_req: unknown, res: unknown) => {
       if (existsSync(this.config.staticDir!)) {
         res.sendFile(join(this.config.staticDir!, 'index.html'));
       } else {
@@ -218,7 +218,7 @@ export class WebInterface {
     });
 
     // Catch all for SPA
-    app.get('*', (_req: any, res: any) => {
+    app.get('*', (_req: unknown, res: unknown) => {
       if (existsSync(join(this.config.staticDir!, 'index.html'))) {
         res.sendFile(join(this.config.staticDir!, 'index.html'));
       } else {
@@ -261,10 +261,10 @@ export class WebInterface {
    * Get comprehensive system status.
    */
   async getStatus(): Promise<{
-    server: any;
-    sessions: any;
-    webSocket: any;
-    process: any;
+    server: unknown;
+    sessions: unknown;
+    webSocket: unknown;
+    process: unknown;
     config: WebConfig;
   }> {
     return {
@@ -285,14 +285,14 @@ export class WebInterface {
    * @param event
    * @param data
    */
-  broadcast(event: string, data: any): void {
+  broadcast(event: string, data: unknown): void {
     this.webSocketManager.broadcast(event, data);
   }
 
   /**
    * Get web interface capabilities (static method).
    */
-  static getCapabilities(): any {
+  static getCapabilities(): unknown {
     return WebDashboardServer.getCapabilities();
   }
 
@@ -301,7 +301,7 @@ export class WebInterface {
    */
   healthCheck(): {
     status: 'healthy' | 'warning' | 'error';
-    components: Record<string, any>;
+    components: Record<string, unknown>;
     version: string;
     uptime: number;
   } {

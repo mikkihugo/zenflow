@@ -156,7 +156,7 @@ simulateProtocolHandshake = (mockProtocol: vi.Mock): void => {
         return Promise.resolve({ type: 'handshake_ack', success: true });
       }
       return Promise.resolve({ type: 'response', data: 'mock_response' });
-    },
+    }
   );
 };
 
@@ -166,7 +166,7 @@ declare global {
       createInteractionSpy(name: string): vi.Mock;
       verifyInteractions(spy: vi.Mock, expectedCalls: ExpectedCall[]): void;
       createMockFactory<T>(
-        defaults?: Partial<T>,
+        defaults?: Partial<T>
       ): (overrides?: Partial<T>) => T;
       waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
       simulateProtocolHandshake(mockProtocol: vi.Mock): void;

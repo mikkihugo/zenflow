@@ -218,7 +218,8 @@ class CodeQualityAnalyzer {
 
       // Count methods in class (simplified)
       const classContent = this.getClassContent(content, startPos);
-      const methodCount = (classContent.match(/\w+\s*\([^)]*\)\s*[:{]/g) || []).length;
+      const methodCount = (classContent.match(/\w+\s*\([^)]*\)\s*[:{]/g) || [])
+        .length;
 
       if (methodCount > QUALITY_THRESHOLDS.MAX_CLASS_METHODS) {
         const lineNumber = content.substring(0, startPos).split('\n').length;
@@ -351,8 +352,12 @@ class CodeQualityAnalyzer {
 
   calculateQualityScore() {
     const totalViolations = this.violations.length;
-    const highSeverity = this.violations.filter((v) => v.severity === 'high').length;
-    const mediumSeverity = this.violations.filter((v) => v.severity === 'medium').length;
+    const highSeverity = this.violations.filter(
+      (v) => v.severity === 'high'
+    ).length;
+    const mediumSeverity = this.violations.filter(
+      (v) => v.severity === 'medium'
+    ).length;
 
     // Score out of 100
     let score = 100;
@@ -386,8 +391,10 @@ class CodeQualityAnalyzer {
       violations: this.violations,
       summary: {
         totalViolations: this.violations.length,
-        highSeverity: this.violations.filter((v) => v.severity === 'high').length,
-        mediumSeverity: this.violations.filter((v) => v.severity === 'medium').length,
+        highSeverity: this.violations.filter((v) => v.severity === 'high')
+          .length,
+        mediumSeverity: this.violations.filter((v) => v.severity === 'medium')
+          .length,
         lowSeverity: this.violations.filter((v) => v.severity === 'low').length,
       },
     };
@@ -404,7 +411,9 @@ function analyzeBulk(pattern = 'src/**/*.ts') {
   console.log('🔍 Code Quality Analysis Starting...');
   console.log(`📁 Pattern: ${pattern}\n`);
 
-  const files = glob.sync(pattern, { ignore: ['**/*.d.ts', '**/node_modules/**'] });
+  const files = glob.sync(pattern, {
+    ignore: ['**/*.d.ts', '**/node_modules/**'],
+  });
   const results = [];
 
   for (const file of files) {
@@ -413,7 +422,9 @@ function analyzeBulk(pattern = 'src/**/*.ts') {
 
     if (report.violations.length > 0) {
       console.log(`📄 ${file}:`);
-      console.log(`   Grade: ${report.metrics.grade} (${report.metrics.qualityScore}/100)`);
+      console.log(
+        `   Grade: ${report.metrics.grade} (${report.metrics.qualityScore}/100)`
+      );
       console.log(
         `   Violations: ${report.summary.totalViolations} (🔴 ${report.summary.highSeverity} 🟡 ${report.summary.mediumSeverity} ⚪ ${report.summary.lowSeverity})`
       );
@@ -426,7 +437,12 @@ function analyzeBulk(pattern = 'src/**/*.ts') {
         })
         .slice(0, 3)
         .forEach((v) => {
-          const icon = v.severity === 'high' ? '🔴' : v.severity === 'medium' ? '🟡' : '⚪';
+          const icon =
+            v.severity === 'high'
+              ? '🔴'
+              : v.severity === 'medium'
+                ? '🟡'
+                : '⚪';
           console.log(`     ${icon} Line ${v.line}: ${v.message}`);
         });
       console.log();
@@ -434,15 +450,22 @@ function analyzeBulk(pattern = 'src/**/*.ts') {
   }
 
   // Overall summary
-  const averageScore = results.reduce((sum, r) => sum + r.metrics.qualityScore, 0) / results.length;
-  const totalViolations = results.reduce((sum, r) => sum + r.violations.length, 0);
+  const averageScore =
+    results.reduce((sum, r) => sum + r.metrics.qualityScore, 0) /
+    results.length;
+  const totalViolations = results.reduce(
+    (sum, r) => sum + r.violations.length,
+    0
+  );
 
   console.log('📊 OVERALL QUALITY REPORT');
   console.log('='.repeat(50));
   console.log(`Files analyzed: ${results.length}`);
   console.log(`Average quality score: ${averageScore.toFixed(1)}/100`);
   console.log(`Total violations: ${totalViolations}`);
-  console.log(`Files needing attention: ${results.filter((r) => r.violations.length > 0).length}`);
+  console.log(
+    `Files needing attention: ${results.filter((r) => r.violations.length > 0).length}`
+  );
 
   return results;
 }

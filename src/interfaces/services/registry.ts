@@ -84,7 +84,7 @@ export interface ServiceDiscoveryInfo {
   version: string;
   capabilities: string[];
   tags: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   lastHeartbeat: Date;
   endpoint?: string;
   health: 'healthy' | 'degraded' | 'unhealthy';
@@ -209,7 +209,7 @@ export class EnhancedServiceRegistry
 
   registerFactory<T extends ServiceConfig>(
     type: string,
-    factory: IServiceFactory<T>,
+    factory: IServiceFactory<T>
   ): void {
     this.logger.info(`Registering factory for service type: ${type}`);
 
@@ -223,7 +223,7 @@ export class EnhancedServiceRegistry
   }
 
   getFactory<T extends ServiceConfig>(
-    type: string,
+    type: string
   ): IServiceFactory<T> | undefined {
     return this.factories.get(type) as IServiceFactory<T>;
   }
@@ -299,7 +299,7 @@ export class EnhancedServiceRegistry
 
     // Fallback: search all services
     return Array.from(this.getAllServices().values()).filter(
-      (service) => service.type === type,
+      (service) => service.type === type
     );
   }
 
@@ -376,7 +376,7 @@ export class EnhancedServiceRegistry
           results?.set(name, errorStatus);
           this.healthStatuses.set(name, errorStatus);
         }
-      },
+      }
     );
 
     await Promise.allSettled(healthCheckPromises);
@@ -395,13 +395,13 @@ export class EnhancedServiceRegistry
 
     const totalServices = allServices.size;
     const runningServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.lifecycle === 'running',
+      (status) => status.lifecycle === 'running'
     ).length;
     const healthyServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.health === 'healthy',
+      (status) => status.health === 'healthy'
     ).length;
     const errorServices = Array.from(healthStatuses.values()).filter(
-      (status) => status.lifecycle === 'error' || status.health === 'unhealthy',
+      (status) => status.lifecycle === 'error' || status.health === 'unhealthy'
     ).length;
 
     // Collect metrics from all services
@@ -414,10 +414,10 @@ export class EnhancedServiceRegistry
         } catch (error) {
           this.logger.error(
             `Failed to get metrics for service ${service.name}:`,
-            error,
+            error
           );
         }
-      },
+      }
     );
 
     await Promise.allSettled(metricsPromises);
@@ -443,7 +443,7 @@ export class EnhancedServiceRegistry
 
       // Shutdown all factories
       const shutdownPromises = Array.from(this.factories.values()).map(
-        (factory) => factory.shutdown(),
+        (factory) => factory.shutdown()
       );
       await Promise.allSettled(shutdownPromises);
 
@@ -493,7 +493,7 @@ export class EnhancedServiceRegistry
       if (criteria.capabilities) {
         const serviceCapabilities = service.getCapabilities();
         const hasAllCapabilities = criteria.capabilities.every((cap) =>
-          serviceCapabilities.includes(cap),
+          serviceCapabilities.includes(cap)
         );
         if (!hasAllCapabilities) {
           return false;
@@ -510,7 +510,7 @@ export class EnhancedServiceRegistry
       // Filter by tags
       if (criteria.tags && discoveryInfo) {
         const hasAllTags = criteria.tags.every((tag) =>
-          discoveryInfo.tags.includes(tag),
+          discoveryInfo.tags.includes(tag)
         );
         if (!hasAllTags) {
           return false;
@@ -536,7 +536,7 @@ export class EnhancedServiceRegistry
    */
   registerServiceForDiscovery(
     service: IService,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>
   ): void {
     const discoveryInfo: ServiceDiscoveryInfo = {
       serviceName: service.name,
@@ -576,7 +576,7 @@ export class EnhancedServiceRegistry
       | 'service-unregistered'
       | 'service-status-changed'
       | string,
-    handler: (serviceName: string, service?: IService) => void,
+    handler: (serviceName: string, service?: IService) => void
   ): void {
     super.on(event, handler);
   }
@@ -664,7 +664,7 @@ export class EnhancedServiceRegistry
 
   private setupFactoryEventHandling<T extends ServiceConfig>(
     _type: string,
-    factory: IServiceFactory<T>,
+    factory: IServiceFactory<T>
   ): void {
     // Handle service creation events from factory
     if ('on' in factory && typeof factory.on === 'function') {
@@ -672,7 +672,7 @@ export class EnhancedServiceRegistry
         'service-created',
         (_serviceName: string, service: IService) => {
           this.handleServiceRegistration(service);
-        },
+        }
       );
 
       factory.on('service-removed', (serviceName: string) => {
@@ -718,7 +718,7 @@ export class EnhancedServiceRegistry
   private handleServiceEvent(
     service: IService,
     eventType: ServiceEventType,
-    event: ServiceEvent,
+    event: ServiceEvent
   ): void {
     // Update discovery info
     this.updateServiceHeartbeat(service.name);
@@ -756,7 +756,7 @@ export class EnhancedServiceRegistry
   }
 
   private async performServiceHealthCheck(
-    service: IService,
+    service: IService
   ): Promise<ServiceStatus> {
     const startTime = Date.now();
 
@@ -766,8 +766,8 @@ export class EnhancedServiceRegistry
         new Promise<never>((_, reject) =>
           setTimeout(
             () => reject(new Error('Health check timeout')),
-            this.config.healthMonitoring.timeout,
-          ),
+            this.config.healthMonitoring.timeout
+          )
         ),
       ]);
 
@@ -785,7 +785,7 @@ export class EnhancedServiceRegistry
       throw new ServiceOperationError(
         service.name,
         'health-check',
-        error as Error,
+        error as Error
       );
     }
   }
@@ -800,7 +800,7 @@ export class EnhancedServiceRegistry
 
     if (unhealthyServices.length > 0) {
       this.logger.warn(
-        `Unhealthy services detected: ${unhealthyServices.join(', ')}`,
+        `Unhealthy services detected: ${unhealthyServices.join(', ')}`
       );
       this.emit('health-alert', unhealthyServices);
     }
@@ -810,13 +810,13 @@ export class EnhancedServiceRegistry
   }
 
   private checkAlertThresholds(
-    healthResults: Map<string, ServiceStatus>,
+    healthResults: Map<string, ServiceStatus>
   ): void {
     const totalServices = healthResults.size;
     if (totalServices === 0) return;
 
     const unhealthyCount = Array.from(healthResults?.values()).filter(
-      (status) => status.health !== 'healthy',
+      (status) => status.health !== 'healthy'
     ).length;
 
     const errorRate = (unhealthyCount / totalServices) * 100;
@@ -845,7 +845,7 @@ export class EnhancedServiceRegistry
 
       // Keep only recent metrics within retention period
       const cutoffTime = new Date(
-        Date.now() - this.config.metricsCollection.retention,
+        Date.now() - this.config.metricsCollection.retention
       );
       const filteredHistory = history.filter((m) => m.timestamp > cutoffTime);
       this.metricsHistory.set(metric.name, filteredHistory);
@@ -886,7 +886,7 @@ export class EnhancedServiceRegistry
     });
   }
 
-  private updateServiceHealth(serviceName: string, healthData: any): void {
+  private updateServiceHealth(serviceName: string, healthData: unknown): void {
     const discoveryInfo = this.serviceDiscovery.get(serviceName);
     if (discoveryInfo && healthData) {
       discoveryInfo.health = healthData?.health || discoveryInfo.health;
@@ -894,7 +894,7 @@ export class EnhancedServiceRegistry
     }
   }
 
-  private updateServiceMetrics(serviceName: string, metricsData: any): void {
+  private updateServiceMetrics(serviceName: string, metricsData: unknown): void {
     if (!this.operationMetrics.has(serviceName)) {
       this.operationMetrics.set(serviceName, {
         totalOperations: 0,
@@ -929,7 +929,7 @@ export class EnhancedServiceRegistry
       nodes?.set(name, {
         service,
         dependencies: new Set(
-          service.config.dependencies?.map((dep) => dep.serviceName) || [],
+          service.config.dependencies?.map((dep) => dep.serviceName) || []
         ),
         dependents: new Set<string>(),
         level: 0,
@@ -1038,7 +1038,7 @@ export class EnhancedServiceRegistry
             this.scheduleServiceRecovery(service);
           }
         }
-      },
+      }
     );
 
     await Promise.allSettled(startPromises);
@@ -1053,7 +1053,7 @@ export class EnhancedServiceRegistry
         } catch (error) {
           this.logger.error(`Failed to stop service ${service.name}:`, error);
         }
-      },
+      }
     );
 
     await Promise.allSettled(stopPromises);
@@ -1069,7 +1069,7 @@ export class EnhancedServiceRegistry
       } catch (error) {
         this.logger.error(
           `Service recovery failed for ${service.name}:`,
-          error,
+          error
         );
       }
     }, 5000); // 5 second delay before recovery attempt
@@ -1082,7 +1082,7 @@ export class EnhancedServiceRegistry
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         this.logger.info(
-          `Recovery attempt ${attempt}/${maxRetries} for service: ${service.name}`,
+          `Recovery attempt ${attempt}/${maxRetries} for service: ${service.name}`
         );
 
         // Stop and restart the service
@@ -1099,7 +1099,7 @@ export class EnhancedServiceRegistry
       } catch (error) {
         this.logger.warn(
           `Recovery attempt ${attempt} failed for ${service.name}:`,
-          error,
+          error
         );
 
         if (attempt < maxRetries) {
@@ -1110,7 +1110,7 @@ export class EnhancedServiceRegistry
     }
 
     this.logger.error(
-      `Service recovery failed after ${maxRetries} attempts: ${service.name}`,
+      `Service recovery failed after ${maxRetries} attempts: ${service.name}`
     );
     this.emit('service-recovery-failed', service.name);
   }

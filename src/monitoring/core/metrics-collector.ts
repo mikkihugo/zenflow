@@ -143,13 +143,13 @@ export class MetricsCollector extends EventEmitter {
   private intervalId: NodeJS.Timeout | null = null;
   private metricsHistory: CompositeMetrics[] = [];
   private maxHistorySize = 3600; // 1 hour at 1s intervals
-  private lastIoStats: any = null;
+  private lastIoStats: unknown = null;
 
   constructor(
     options: {
       collectionInterval?: number;
       maxHistorySize?: number;
-    } = {},
+    } = {}
   ) {
     super();
     this.collectionInterval = options?.collectionInterval || 1000;
@@ -383,17 +383,17 @@ export class MetricsCollector extends EventEmitter {
       performance: {
         totalInvocations: Object.values(tools).reduce(
           (sum, tool) => sum + tool.invocations,
-          0,
+          0
         ),
         overallSuccessRate:
           Object.values(tools).reduce(
             (sum, tool) => sum + tool.successRate,
-            0,
+            0
           ) / Object.keys(tools).length,
         averageResponseTime:
           Object.values(tools).reduce(
             (sum, tool) => sum + tool.averageLatency,
-            0,
+            0
           ) / Object.keys(tools).length,
         timeoutRate: this.getRandomMetric(0.02, 0.08),
       },
@@ -418,7 +418,7 @@ export class MetricsCollector extends EventEmitter {
   /**
    * Get I/O statistics (simplified).
    */
-  private async getIoStats(): Promise<any> {
+  private async getIoStats(): Promise<unknown> {
     // This would read from /proc/diskstats on Linux or similar on other platforms
     // For now, return mock data.
     const current = {
@@ -433,7 +433,7 @@ export class MetricsCollector extends EventEmitter {
         readBytes: Math.max(0, current?.readBytes - this.lastIoStats.readBytes),
         writeBytes: Math.max(
           0,
-          current?.writeBytes - this.lastIoStats.writeBytes,
+          current?.writeBytes - this.lastIoStats.writeBytes
         ),
         readOps: Math.max(0, current?.readOps - this.lastIoStats.readOps),
         writeOps: Math.max(0, current?.writeOps - this.lastIoStats.writeOps),
@@ -447,7 +447,7 @@ export class MetricsCollector extends EventEmitter {
   /**
    * Get network statistics (simplified).
    */
-  private async getNetworkStats(): Promise<any> {
+  private async getNetworkStats(): Promise<unknown> {
     // This would read from /proc/net/dev on Linux or similar on other platforms
     // For now, return mock data.
     return {
@@ -488,7 +488,7 @@ export class MetricsCollector extends EventEmitter {
     return this.metricsHistory.filter(
       (metrics) =>
         metrics.system.timestamp >= timeRange.start &&
-        metrics.system.timestamp <= timeRange.end,
+        metrics.system.timestamp <= timeRange.end
     );
   }
 
@@ -519,7 +519,7 @@ export class MetricsCollector extends EventEmitter {
    */
   public async exportMetrics(
     filePath: string,
-    format: 'json' | 'csv' = 'json',
+    format: 'json' | 'csv' = 'json'
   ): Promise<void> {
     const data = this.getHistory();
 

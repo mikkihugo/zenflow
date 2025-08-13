@@ -146,7 +146,7 @@ export class Logger {
   endOperation(
     operationId: string,
     success: boolean = true,
-    data: Record<string, unknown> = {},
+    data: Record<string, unknown> = {}
   ) {
     const operation = this.operations.get(operationId);
     if (operation) {
@@ -158,7 +158,7 @@ export class Logger {
           duration,
           success,
           ...data,
-        },
+        }
       );
       this.operations.delete(operationId);
     }
@@ -167,7 +167,7 @@ export class Logger {
   logConnection(
     event: string,
     sessionId: string,
-    data: Record<string, unknown> = {},
+    data: Record<string, unknown> = {}
   ) {
     this.info(`Connection ${event}`, {
       sessionId,
@@ -179,7 +179,7 @@ export class Logger {
   logMcp(
     direction: string,
     method: string,
-    data: Record<string, unknown> = {},
+    data: Record<string, unknown> = {}
   ) {
     this.debug(`MCP ${direction}: ${method}`, {
       direction,

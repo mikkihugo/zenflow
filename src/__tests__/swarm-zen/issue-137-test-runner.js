@@ -133,7 +133,7 @@ class TestRunner {
             NODE_OPTIONS:
               '--experimental-vm-modules --experimental-wasm-modules --max-old-space-size=4096',
           },
-        },
+        }
       );
 
       let stdout = '';
@@ -298,7 +298,7 @@ class TestRunner {
       if (result.stdout) {
         // Simple regex to extract coverage percentages
         const coverageMatch = result.stdout.match(
-          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/,
+          /All files.*?(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)\s*\|\s*(\d+\.?\d*)/
         );
         if (coverageMatch) {
           coverageInfo.details.push({
@@ -338,27 +338,27 @@ class TestRunner {
 
     if (failed.length > 0) {
       recommendations.push(
-        `${failed.length} test suite(s) failed - review error logs for issues`,
+        `${failed.length} test suite(s) failed - review error logs for issues`
       );
     }
 
     const longRunning = results.filter((r) => r.duration > 300000); // > 5 minutes
     if (longRunning.length > 0) {
       recommendations.push(
-        'Some tests took longer than 5 minutes - consider optimization',
+        'Some tests took longer than 5 minutes - consider optimization'
       );
     }
 
     const coverage = this.extractCoverageInfo();
     if (coverage.statements < 90) {
       recommendations.push(
-        'Code coverage below 90% - consider adding more unit tests',
+        'Code coverage below 90% - consider adding more unit tests'
       );
     }
 
     if (results.every((r) => r.success)) {
       recommendations.push(
-        'All tests passed! Consider running in different environments',
+        'All tests passed! Consider running in different environments'
       );
     }
 
@@ -461,7 +461,7 @@ class TestRunner {
                     ${result.success ? '✅ PASSED' : '❌ FAILED'}
                 </div>
             </div>
-        `,
+        `
           )
           .join('')}
     </div>
@@ -488,7 +488,7 @@ class TestRunner {
       __dirname,
       '..',
       'test-reports',
-      'issue-137-report.html',
+      'issue-137-report.html'
     );
 
     try {

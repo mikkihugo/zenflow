@@ -88,10 +88,10 @@ describe('Product Flow + SPARC Unit Tests', () => {
       // Validate SPARC integration exists and is properly structured
       expect(feature['sparc_implementation']).toBeDefined();
       expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(
-        true,
+        true
       );
       expect(feature['sparc_implementation']?.['sparc_project_id']).toBe(
-        'sparc-auth-api-001',
+        'sparc-auth-api-001'
       );
 
       // Validate all 5 SPARC phases are defined
@@ -112,10 +112,10 @@ describe('Product Flow + SPARC Unit Tests', () => {
 
       // Validate current phase and progress
       expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe(
-        'pseudocode',
+        'pseudocode'
       );
       expect(
-        feature['sparc_implementation']?.['sparc_progress_percentage'],
+        feature['sparc_implementation']?.['sparc_progress_percentage']
       ).toBe(40.0);
     });
 
@@ -209,13 +209,13 @@ describe('Product Flow + SPARC Unit Tests', () => {
       // Validate SPARC task integration
       expect(task['sparc_implementation_details']).toBeDefined();
       expect(
-        task['sparc_implementation_details']?.['parent_feature_sparc_id'],
+        task['sparc_implementation_details']?.['parent_feature_sparc_id']
       ).toBe('sparc-auth-api-001');
       expect(
-        task['sparc_implementation_details']?.['sparc_phase_assignment'],
+        task['sparc_implementation_details']?.['sparc_phase_assignment']
       ).toBe('completion');
       expect(
-        task['sparc_implementation_details']?.['sparc_deliverable_type'],
+        task['sparc_implementation_details']?.['sparc_deliverable_type']
       ).toBe('production_code');
 
       // Validate quality gates
@@ -223,7 +223,7 @@ describe('Product Flow + SPARC Unit Tests', () => {
         task['sparc_implementation_details']?.['sparc_quality_gates'];
       expect(qualityGates).toHaveLength(3);
       expect(qualityGates?.[0].requirement).toContain(
-        'cryptographically secure',
+        'cryptographically secure'
       );
       expect(qualityGates?.[1].requirement).toContain('latency');
       expect(qualityGates?.[2].requirement).toContain('coverage');
@@ -288,7 +288,7 @@ describe('Product Flow + SPARC Unit Tests', () => {
       expect(mapFeatureTypeToSPARCDomain('database')).toBe('memory-systems');
       expect(mapFeatureTypeToSPARCDomain('ui')).toBe('interfaces');
       expect(mapFeatureTypeToSPARCDomain('integration')).toBe(
-        'swarm-coordination',
+        'swarm-coordination'
       );
       expect(mapFeatureTypeToSPARCDomain('infrastructure')).toBe('general');
       expect(mapFeatureTypeToSPARCDomain('unknown')).toBe('general');
@@ -322,7 +322,7 @@ describe('Product Flow + SPARC Unit Tests', () => {
     it('should validate SPARC progress calculation', () => {
       // Define progress calculation logic
       const calculateSPARCProgress = (
-        phases: Record<string, { status: string }>,
+        phases: Record<string, { status: string }>
       ): number => {
         const phaseList = [
           'specification',
@@ -404,7 +404,7 @@ describe('Product Flow + SPARC Unit Tests', () => {
 
       // Validate workflow includes SPARC integration step
       expect(integrationPrinciples.productFlowSteps).toContain(
-        'sparc-integration',
+        'sparc-integration'
       );
 
       // Validate all SPARC phases are defined
@@ -439,8 +439,8 @@ describe('Product Flow + SPARC Unit Tests', () => {
         sparcConcerns.some(
           (sparcConcern) =>
             concern.toLowerCase().includes(sparcConcern.toLowerCase()) ||
-            sparcConcern.toLowerCase().includes(concern.toLowerCase()),
-        ),
+            sparcConcern.toLowerCase().includes(concern.toLowerCase())
+        )
       );
 
       expect(overlap).toHaveLength(0); // No direct overlap
@@ -466,7 +466,7 @@ describe('Product Flow + SPARC Unit Tests', () => {
       expect(qualityGate.requirement).toBeDefined();
       expect(['pending', 'passed', 'failed']).toContain(qualityGate.status);
       expect(['automated', 'manual', 'ai_assisted']).toContain(
-        qualityGate['validation_method'],
+        qualityGate['validation_method']
       );
 
       // Validate requirement is specific and measurable

@@ -40,7 +40,7 @@ interface MessageValidatorContract {
   validateRequest(request: MCPRequest): Promise<ValidationResult>;
   validateResponse(response: MCPResponse): Promise<ValidationResult>;
   validateNotification(
-    notification: MCPNotification,
+    notification: MCPNotification
   ): Promise<ValidationResult>;
 }
 
@@ -64,7 +64,7 @@ class MockMCPMessageValidator implements MessageValidatorContract {
   constructor(
     private schemaValidator = mockSchemaValidator,
     private logger = mockLogger,
-    private metrics = mockMetricsCollector,
+    private metrics = mockMetricsCollector
   ) {}
 
   async validate(message: unknown): Promise<ValidationResult> {
@@ -117,7 +117,7 @@ class MockMCPMessageValidator implements MessageValidatorContract {
     const schema = this.schemaValidator.getSchemaForMethod(request.method);
     const paramsResult = this.schemaValidator.validateParams(
       request.params,
-      schema,
+      schema
     );
 
     if (!paramsResult?.valid) {
@@ -145,14 +145,14 @@ class MockMCPMessageValidator implements MessageValidatorContract {
   }
 
   async validateNotification(
-    notification: MCPNotification,
+    notification: MCPNotification
   ): Promise<ValidationResult> {
     this.logger.debug('Validating MCP notification', {
       method: notification.method,
     });
 
     const methodResult = this.schemaValidator.validateMethod(
-      notification.method,
+      notification.method
     );
     if (!methodResult?.valid) {
       this.metrics.recordValidationError('notification_method_invalid');
@@ -221,17 +221,17 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify JSON-RPC validation conversation
         expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
-          validRequest,
+          validRequest
         );
         expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
-          'tools/list',
+          'tools/list'
         );
         expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
           {},
-          { type: 'object' },
+          { type: 'object' }
         );
         expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
-          'request_valid',
+          'request_valid'
         );
         expect(result?.valid).toBe(true);
       });
@@ -262,10 +262,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify error handling conversation
         expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
-          invalidRequest,
+          invalidRequest
         );
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
-          'jsonrpc_invalid',
+          'jsonrpc_invalid'
         );
         expect(result?.valid).toBe(false);
         expect(result?.errors).toHaveLength(1);
@@ -318,13 +318,13 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
           // Assert - Verify method validation conversation
           expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
-            method,
+            method
           );
           expect(result?.valid).toBe(true);
         }
 
         expect(mockSchemaValidator.validateMethod).toHaveBeenCalledTimes(
-          standardMethods.length,
+          standardMethods.length
         );
       });
 
@@ -359,10 +359,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify unknown method handling
         expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
-          'unknown/method',
+          'unknown/method'
         );
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
-          'method_invalid',
+          'method_invalid'
         );
         expect(result?.valid).toBe(false);
         expect(result?.errors?.[0]?.code).toBe('UNKNOWN_METHOD');
@@ -416,11 +416,11 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify parameter validation conversation
         expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith(
-          'tools/call',
+          'tools/call'
         );
         expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
           toolCallRequest.params,
-          toolCallSchema,
+          toolCallSchema
         );
         expect(result?.valid).toBe(true);
       });
@@ -468,7 +468,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         // Assert - Verify parameter error handling
         expect(mockSchemaValidator.validateParams).toHaveBeenCalled();
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
-          'params_invalid',
+          'params_invalid'
         );
         expect(result?.valid).toBe(false);
         expect(result?.errors?.[0]?.code).toBe('MISSING_REQUIRED');
@@ -504,10 +504,10 @@ describe('MCP Protocol Message Validation - London TDD', () => {
           'Validating MCP response',
           {
             id: 'test-123',
-          },
+          }
         );
         expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
-          'response_valid',
+          'response_valid'
         );
         expect(result?.valid).toBe(true);
       });
@@ -537,7 +537,7 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         // Assert - Verify error response validation
         expect(result?.valid).toBe(true);
         expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
-          'response_valid',
+          'response_valid'
         );
       });
 
@@ -559,15 +559,15 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
         // Assert - Verify malformed error handling
         expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
-          'error_invalid',
+          'error_invalid'
         );
         expect(result?.valid).toBe(false);
         expect(result?.errors).toHaveLength(2);
         expect(result?.errors?.some((e) => e.field === 'error.code')).toBe(
-          true,
+          true
         );
         expect(result?.errors?.some((e) => e.field === 'error.message')).toBe(
-          true,
+          true
         );
       });
     });
@@ -620,22 +620,22 @@ describe('MCP Protocol Message Validation - London TDD', () => {
         messageType: 'object',
       });
       expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
-        complexRequest,
+        complexRequest
       );
       expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
-        'tools/call',
+        'tools/call'
       );
       expect(mockSchemaValidator.getSchemaForMethod).toHaveBeenCalledWith(
-        'tools/call',
+        'tools/call'
       );
       expect(mockSchemaValidator.validateParams).toHaveBeenCalledWith(
         complexRequest.params,
         {
           type: 'object',
-        },
+        }
       );
       expect(mockMetricsCollector.recordValidation).toHaveBeenCalledWith(
-        'request_valid',
+        'request_valid'
       );
 
       expect(result?.valid).toBe(true);
@@ -674,17 +674,17 @@ describe('MCP Protocol Message Validation - London TDD', () => {
 
       // Assert - Verify error cascade conversation
       expect(mockSchemaValidator.validateJsonRpc).toHaveBeenCalledWith(
-        invalidRequest,
+        invalidRequest
       );
       expect(mockSchemaValidator.validateMethod).toHaveBeenCalledWith(
-        'nonexistent/method',
+        'nonexistent/method'
       );
 
       // Should stop at method validation, not proceed to params
       expect(mockSchemaValidator.validateParams).not.toHaveBeenCalled();
 
       expect(mockMetricsCollector.recordValidationError).toHaveBeenCalledWith(
-        'method_invalid',
+        'method_invalid'
       );
       expect(result?.valid).toBe(false);
       expect(result?.errors?.[0]?.code).toBe('METHOD_NOT_FOUND');

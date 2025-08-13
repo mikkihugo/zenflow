@@ -85,7 +85,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       // Initialization time should scale reasonably
       const timePerAgent = initializationTimes.map(
-        (time, i) => time / swarmSizes[i],
+        (time, i) => time / swarmSizes[i]
       );
       const avgTimePerAgent =
         timePerAgent.reduce((a, b) => a + b, 0) / timePerAgent.length;
@@ -120,7 +120,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       const totalTime = performance.getDuration('concurrent-swarm-init');
       expect(totalTime).toBeLessThan(
-        PERFORMANCE_TARGETS?.swarmInitialization * 2,
+        PERFORMANCE_TARGETS?.swarmInitialization * 2
       );
     });
   });
@@ -186,7 +186,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         agentManager.updateAgent(agent.id, {
           capabilities: [...agent.capabilities, 'monitoring'],
           priority: 'high',
-        }),
+        })
       );
 
       await Promise.all(updatePromises);
@@ -197,7 +197,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       performance.start('bulk-agent-terminate');
 
       const terminatePromises = agents.map((agent) =>
-        agentManager.terminateAgent(agent.id, { graceful: true }),
+        agentManager.terminateAgent(agent.id, { graceful: true })
       );
 
       await Promise.all(terminatePromises);
@@ -209,7 +209,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       const terminateTime = performance.getDuration('bulk-agent-terminate');
 
       expect(spawnTime / agents.length).toBeLessThan(
-        PERFORMANCE_TARGETS?.agentSpawning,
+        PERFORMANCE_TARGETS?.agentSpawning
       );
       expect(updateTime).toBeLessThan(2000); // 2 seconds for 30 updates
       expect(terminateTime).toBeLessThan(1500); // 1.5 seconds for 30 terminations
@@ -233,7 +233,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Wait for auto-scaling to kick in
       await testHelpers.waitForCondition(
         () => agentManager.getActiveAgentCount() > initialAgentCount,
-        5000,
+        5000
       );
 
       const scaledAgentCount = await agentManager.getActiveAgentCount();
@@ -244,7 +244,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       await testHelpers.waitForCondition(
         () => agentManager.getActiveAgentCount() <= initialAgentCount + 5,
-        10000,
+        10000
       );
 
       performance.end('auto-scaling-test');
@@ -282,7 +282,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         performance.end(`task-distribution-${batchSize}`);
 
         const distTime = performance.getDuration(
-          `task-distribution-${batchSize}`,
+          `task-distribution-${batchSize}`
         );
         distributionTimes.push(distTime);
 
@@ -293,7 +293,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       // Distribution should scale sub-linearly
       const efficiency = distributionTimes.map(
-        (time, i) => taskBatches[i] / time,
+        (time, i) => taskBatches[i] / time
       );
       const avgEfficiency =
         efficiency.reduce((a, b) => a + b, 0) / efficiency.length;
@@ -341,7 +341,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         {
           routingStrategy: 'capability_match',
           optimizeForLatency: true,
-        },
+        }
       );
 
       performance.end('capability-based-routing');
@@ -363,7 +363,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
           type: 'processing',
           priority,
           submissionTime: Date.now(),
-        })),
+        }))
       );
 
       // Shuffle tasks to test priority sorting
@@ -376,7 +376,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Track task execution order
       const executionOrder: unknown[] = [];
 
-      taskOrchestrator.on('task_started', (task: any) => {
+      taskOrchestrator.on('task_started', (task: unknown) => {
         executionOrder.push({
           id: task.id,
           priority: task.priority,
@@ -390,7 +390,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
 
       // Verify priority ordering
       const criticalTasks = executionOrder.filter(
-        (t) => t.priority === 'critical',
+        (t) => t.priority === 'critical'
       );
       const highTasks = executionOrder.filter((t) => t.priority === 'high');
       const normalTasks = executionOrder.filter((t) => t.priority === 'normal');
@@ -399,7 +399,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       // Critical tasks should start before others
       if (criticalTasks.length > 0 && highTasks.length > 0) {
         expect(criticalTasks[0]?.startTime).toBeLessThanOrEqual(
-          highTasks[0]?.startTime,
+          highTasks[0]?.startTime
         );
       }
 
@@ -435,13 +435,13 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         const result = await swarmCoordinator.sendMessage(
           sender.id,
           receiver.id,
-          message,
+          message
         );
 
         performance.end(`message-latency-${sender.id}-${receiver.id}`);
 
         const latency = performance.getDuration(
-          `message-latency-${sender.id}-${receiver.id}`,
+          `message-latency-${sender.id}-${receiver.id}`
         );
         latencies.push(latency);
 
@@ -473,8 +473,8 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         performance.start(`broadcast-${size}`);
 
         const result = await swarmCoordinator.broadcastMessage(
-          targetAgents?.map((a: any) => a.id),
-          broadcastMessage,
+          targetAgents?.map((a: unknown) => a.id),
+          broadcastMessage
         );
 
         performance.end(`broadcast-${size}`);
@@ -484,7 +484,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
         expect(result?.success).toBe(true);
         expect(result?.deliveredCount).toBe(size);
         expect(broadcastTime).toBeLessThan(
-          PERFORMANCE_TARGETS?.messageLatency * 2,
+          PERFORMANCE_TARGETS?.messageLatency * 2
         );
       }
     });
@@ -510,7 +510,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
             id: `routing-test-${topology}`,
             type: 'test_message',
             content: { test: true },
-          }),
+          })
         );
 
         await Promise.all(routingPromises);
@@ -579,7 +579,7 @@ describe('Swarm Coordination Performance Benchmarks', () => {
       const throughput = operationCount / 30; // operations per second
 
       expect(totalMemoryIncrease).toBeLessThan(
-        PERFORMANCE_TARGETS?.memoryUsage,
+        PERFORMANCE_TARGETS?.memoryUsage
       );
       expect(throughput).toBeGreaterThan(10); // At least 10 ops/sec
     });

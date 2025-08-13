@@ -315,7 +315,7 @@ class DocsDeploymentPipeline {
 
       if (!validation.passed) {
         throw new Error(
-          `Build validation failed: ${validation.issues.length} issues found`,
+          `Build validation failed: ${validation.issues.length} issues found`
         );
       }
       return validation;
@@ -392,7 +392,7 @@ class DocsDeploymentPipeline {
         if (stats.size > 1024 * 1024) {
           // 1MB
           validation.issues.push(
-            `${file}: Large file size (${(stats.size / 1024 / 1024).toFixed(1)}MB)`,
+            `${file}: Large file size (${(stats.size / 1024 / 1024).toFixed(1)}MB)`
           );
         }
       } catch (_error) {
@@ -487,7 +487,7 @@ class DocsDeploymentPipeline {
         optimization.css.minified++;
       } catch (error) {
         console.warn(
-          `⚠️ CSS optimization failed for ${cssFile}: ${error.message}`,
+          `⚠️ CSS optimization failed for ${cssFile}: ${error.message}`
         );
       }
     }
@@ -525,7 +525,7 @@ class DocsDeploymentPipeline {
         optimization.js.minified++;
       } catch (error) {
         console.warn(
-          `⚠️ JS optimization failed for ${jsFile}: ${error.message}`,
+          `⚠️ JS optimization failed for ${jsFile}: ${error.message}`
         );
       }
     }
@@ -561,7 +561,7 @@ class DocsDeploymentPipeline {
         optimization.html.minified++;
       } catch (error) {
         console.warn(
-          `⚠️ HTML optimization failed for ${htmlFile}: ${error.message}`,
+          `⚠️ HTML optimization failed for ${htmlFile}: ${error.message}`
         );
       }
     }
@@ -720,7 +720,7 @@ class DocsDeploymentPipeline {
     if (targetConfig.customDomain) {
       await fs.writeFile(
         path.join(this.deployDir, 'CNAME'),
-        targetConfig.customDomain,
+        targetConfig.customDomain
       );
     }
 
@@ -771,7 +771,7 @@ class DocsDeploymentPipeline {
 
     await fs.writeFile(
       path.join(this.deployDir, 'netlify.toml'),
-      netlifyConfig,
+      netlifyConfig
     );
 
     return config;
@@ -841,7 +841,7 @@ class DocsDeploymentPipeline {
 
     await fs.writeFile(
       path.join(this.deployDir, 'vercel.json'),
-      JSON.stringify(vercelConfig, null, 2),
+      JSON.stringify(vercelConfig, null, 2)
     );
 
     return config;
@@ -876,7 +876,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     // Create robots.txt
     await fs.writeFile(
       path.join(this.deployDir, 'robots.txt'),
-      security.robotsTxt,
+      security.robotsTxt
     );
 
     // Create security.txt
@@ -884,7 +884,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     await fs.mkdir(wellKnownDir, { recursive: true });
     await fs.writeFile(
       path.join(wellKnownDir, 'security.txt'),
-      security.securityTxt,
+      security.securityTxt
     );
 
     return security;
@@ -907,7 +907,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
 
     await fs.writeFile(
       path.join(this.deployDir, 'deployment.json'),
-      JSON.stringify(metadata, null, 2),
+      JSON.stringify(metadata, null, 2)
     );
 
     return metadata;
@@ -940,7 +940,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
       try {
         const deployResult = await this.deployToTarget(
           targetName,
-          targetConfig,
+          targetConfig
         );
         deployments[targetName] = deployResult;
         if (deployResult.url) {
@@ -1098,7 +1098,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     const verifications = {};
 
     for (const [targetName, deployResult] of Object.entries(
-      this.results.deployments,
+      this.results.deployments
     )) {
       if (!(deployResult.success && deployResult.url)) {
         verifications[targetName] = {
@@ -1166,7 +1166,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     const performanceResults = {};
 
     for (const [targetName, deployResult] of Object.entries(
-      this.results.deployments,
+      this.results.deployments
     )) {
       if (!(deployResult.success && deployResult.url)) continue;
 
@@ -1175,7 +1175,7 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
         performanceResults[targetName] = metrics;
       } catch (error) {
         console.warn(
-          `⚠️ Performance test failed for ${targetName}: ${error.message}`,
+          `⚠️ Performance test failed for ${targetName}: ${error.message}`
         );
         performanceResults[targetName] = { error: error.message };
       }
@@ -1216,12 +1216,12 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
     // Save report
     await fs.writeFile(
       path.join(this.deployDir, 'deployment-report.html'),
-      report.html,
+      report.html
     );
 
     await fs.writeFile(
       path.join(this.deployDir, 'deployment-report.md'),
-      report.markdown,
+      report.markdown
     );
   }
 
@@ -1232,11 +1232,11 @@ Canonical: https://docs.claude-zen.com/.well-known/security.txt`,
    */
   async generateFinalReport() {
     const successfulDeployments = Object.entries(
-      this.results.deployments,
+      this.results.deployments
     ).filter(([_, result]) => result.success);
 
     const failedDeployments = Object.entries(this.results.deployments).filter(
-      ([_, result]) => !result.success,
+      ([_, result]) => !result.success
     );
 
     const markdown = `# 🚀 Documentation Deployment Report
@@ -1260,7 +1260,7 @@ ${successfulDeployments
 - **URL:** [${result.url}](${result.url})
 - **Status:** ✅ Success
 - **Deployed:** ${result.timestamp}
-`,
+`
   )
   .join('')}
 
@@ -1275,7 +1275,7 @@ ${failedDeployments
 - **Status:** ❌ Failed
 - **Error:** ${result.error}
 - **Timestamp:** ${result.timestamp}
-`,
+`
   )
   .join('')}`
     : ''
@@ -1290,7 +1290,7 @@ ${Object.entries(this.results.performance)
 - **Load Time:** ${metrics.loadTime || 'N/A'}ms
 - **Page Size:** ${metrics.pageSize || 'N/A'}KB
 - **Performance Score:** ${metrics.lighthouse || 'N/A'}/100
-`,
+`
   )
   .join('')}
 
@@ -1341,7 +1341,7 @@ ${Object.entries(this.results.performance)
             ${result.url ? `<p><strong>URL:</strong> <a href="${result.url}">${result.url}</a></p>` : ''}
             ${result.error ? `<p><strong>Error:</strong> ${result.error}</p>` : ''}
         </div>
-        `,
+        `
           )
           .join('')}
     </div>

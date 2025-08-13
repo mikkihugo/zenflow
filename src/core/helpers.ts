@@ -37,7 +37,7 @@ export function sleep(ms: number): Promise<void> {
 export async function retry<T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  baseDelay: number = 1000,
+  baseDelay: number = 1000
 ): Promise<T> {
   let lastError: Error;
 
@@ -71,7 +71,7 @@ export function deepClone<T>(obj: T): T {
  * @param value
  * @example
  */
-export function isEmpty(value: any): boolean {
+export function isEmpty(value: unknown): boolean {
   if (value == null) return true;
   if (typeof value === 'string') return value.length === 0;
   if (Array.isArray(value)) return value.length === 0;

@@ -84,7 +84,7 @@ export class ADRManager {
     });
 
     this.architectureProject = documents.find(
-      (p) => p.name === 'Architecture Decisions',
+      (p) => p.name === 'Architecture Decisions'
     ) as any;
 
     if (!this.architectureProject) {
@@ -160,7 +160,7 @@ export class ADRManager {
         autoGenerateRelationships: true,
         startWorkflow: 'adr_workflow',
         generateSearchIndex: true,
-      },
+      }
     );
 
     return adr;
@@ -198,7 +198,7 @@ export class ADRManager {
     total: number;
     hasMore: boolean;
   }> {
-    const filters: any = {
+    const filters: unknown = {
       type: 'adr',
       projectId: this.architectureProject?.id,
     };
@@ -207,7 +207,7 @@ export class ADRManager {
     if (options?.priority) filters.priority = options?.priority;
     if (options?.author) filters.author = options?.author;
 
-    const queryOptions: any = {
+    const queryOptions: unknown = {
       includeContent: true,
       includeRelationships: true,
       includeWorkflowState: true,
@@ -235,7 +235,7 @@ export class ADRManager {
 
     if (options?.tags) {
       filteredADRs = filteredADRs.filter((adr) =>
-        options?.tags?.some((tag) => adr.keywords.includes(tag)),
+        options?.tags?.some((tag) => adr.keywords.includes(tag))
       );
     }
 
@@ -261,13 +261,13 @@ export class ADRManager {
       searchType?: 'fulltext' | 'semantic' | 'keyword' | 'combined';
       limit?: number;
       filters?: ADRQueryOptions;
-    } = {},
+    } = {}
   ): Promise<{
     adrs: ADRDocumentEntity[];
     total: number;
     searchMetadata: unknown;
   }> {
-    const searchOptions: any = {
+    const searchOptions: unknown = {
       searchType: options?.searchType || 'combined',
       query,
       projectId: this.architectureProject?.id,
@@ -335,7 +335,7 @@ export class ADRManager {
       | 'implemented'
       | 'superseded'
       | 'deprecated',
-    notes?: string,
+    notes?: string
   ): Promise<ADRDocumentEntity> {
     const adr = await this.getADRByNumber(adrNumber);
     if (!adr) {
@@ -376,7 +376,7 @@ export class ADRManager {
   async supersede(
     newADRNumber: number,
     oldADRNumber: number,
-    reason: string,
+    reason: string
   ): Promise<void> {
     const [newADR, oldADR] = await Promise.all([
       this.getADRByNumber(newADRNumber),
@@ -642,8 +642,8 @@ export class ADRManager {
       ...new Set(
         words.filter(
           (word) =>
-            !stopWords.has(word) && word.length >= 3 && !/^\d+$/.test(word),
-        ),
+            !stopWords.has(word) && word.length >= 3 && !/^\d+$/.test(word)
+        )
       ),
     ];
 

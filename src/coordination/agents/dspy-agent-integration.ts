@@ -215,7 +215,7 @@ export class DSPyAgentIntegration {
 
   constructor(
     swarmCoordinator: SwarmCoordinator,
-    _memoryStore: SessionMemoryStore,
+    _memoryStore: SessionMemoryStore
   ) {
     this.swarmCoordinator = swarmCoordinator;
     // this.memoryStore = memoryStore; // Removed: unused variable
@@ -235,7 +235,7 @@ export class DSPyAgentIntegration {
           model: 'claude-3-5-sonnet-20241022',
           temperature: 0.1,
           maxTokens: 2000,
-        },
+        }
       );
 
       logger.info('DSPy wrapper initialized successfully');
@@ -362,12 +362,12 @@ export class DSPyAgentIntegration {
     programName: string,
     signature: string,
     description: string,
-    examples: Array<{ input: any; output: any }>,
+    examples: Array<{ input: unknown; output: unknown }>,
     options: {
       agentTypes?: DSPyAgentType[];
       coordinationStrategy?: 'parallel' | 'sequential' | 'collaborative';
-    } = {},
-  ): Promise<{ program: any; result: any }> {
+    } = {}
+  ): Promise<{ program: unknown; result: unknown }> {
     logger.info(`Starting DSPy optimization: ${programName}`, {
       signature,
       agentTypes: options?.agentTypes,
@@ -376,18 +376,18 @@ export class DSPyAgentIntegration {
 
     // Use existing swarm coordination for DSPy agents
     const availableAgents = Array.from(this.dspyAgents.values()).filter(
-      (agent) => agent.status === 'idle',
+      (agent) => agent.status === 'idle'
     );
 
     if (options?.agentTypes) {
       // Filter agents by requested types
       const filteredAgents = availableAgents.filter((agent) =>
-        options?.agentTypes?.includes(agent.type as DSPyAgentType),
+        options?.agentTypes?.includes(agent.type as DSPyAgentType)
       );
 
       if (filteredAgents.length === 0) {
         throw new Error(
-          `No available DSPy agents for types: ${options?.agentTypes?.join(', ')}`,
+          `No available DSPy agents for types: ${options?.agentTypes?.join(', ')}`
         );
       }
     }
@@ -415,7 +415,7 @@ export class DSPyAgentIntegration {
     type: DSPyAgentType;
     status: string;
     capabilities: string[];
-    performance: any;
+    performance: unknown;
   }> {
     return Array.from(this.dspyAgents.values()).map((agent) => ({
       id: agent.id,
@@ -432,13 +432,13 @@ export class DSPyAgentIntegration {
   async demonstrateNeuralWorkflowEnhancement(): Promise<{
     canEnhance: boolean;
     enhancementCapabilities: string[];
-    exampleResults: any;
+    exampleResults: unknown;
   }> {
     logger.info('Demonstrating neural workflow enhancement capabilities');
 
     // Check if neural-enhancer agent is available
     const neuralEnhancer = Array.from(this.dspyAgents.values()).find(
-      (agent) => agent.type === 'neural-enhancer',
+      (agent) => agent.type === 'neural-enhancer'
     );
 
     if (!neuralEnhancer) {
@@ -471,7 +471,7 @@ export class DSPyAgentIntegration {
       {
         agentTypes: ['neural-enhancer'],
         coordinationStrategy: 'collaborative',
-      },
+      }
     );
 
     return {
@@ -514,7 +514,7 @@ export class DSPyAgentIntegration {
    */
   private async createDSPyProgram(
     signature: string,
-    description: string,
+    description: string
   ): Promise<DSPyProgram> {
     if (!this.dspyWrapper) {
       throw new Error('DSPy wrapper not initialized. Call initialize() first.');
@@ -522,7 +522,7 @@ export class DSPyAgentIntegration {
 
     const program = await this.dspyWrapper.createProgram(
       signature,
-      description,
+      description
     );
     logger.debug('Created DSPy program using wrapper', {
       signature,
@@ -540,8 +540,8 @@ export class DSPyAgentIntegration {
    */
   private async optimizeProgram(
     program: DSPyProgram,
-    examples: Array<{ input: any; output: any }>,
-  ): Promise<{ performance: any; optimizedProgram?: DSPyProgram }> {
+    examples: Array<{ input: unknown; output: unknown }>
+  ): Promise<{ performance: unknown; optimizedProgram?: DSPyProgram }> {
     if (!this.dspyWrapper) {
       throw new Error('DSPy wrapper not initialized. Call initialize() first.');
     }

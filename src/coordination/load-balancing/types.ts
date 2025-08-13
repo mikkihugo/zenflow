@@ -12,7 +12,7 @@ export interface Agent {
   status: AgentStatus;
   endpoint: string;
   lastHealthCheck: Date;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 export enum AgentStatus {
@@ -31,7 +31,7 @@ export interface Task {
   estimatedDuration: number;
   maxRetries: number;
   timeout: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   createdAt: Date;
 }
 
@@ -161,18 +161,18 @@ export interface LoadBalancingStrategy {
   selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult>;
   updateWeights?(
     agents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<void>;
   onAgentFailure?(agentId: string, error: Error): Promise<void>;
   onTaskComplete?(
     agentId: string,
     task: Task,
     duration: number,
-    success: boolean,
+    success: boolean
   ): Promise<void>;
 }
 
@@ -207,6 +207,6 @@ export interface EmergencyProtocol {
 
 export interface EmergencyAction {
   type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   timeout: number;
 }

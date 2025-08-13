@@ -42,12 +42,12 @@ describe('Product Flow + SPARC Integration', () => {
         enableSPARCIntegration: true,
         autoTriggerSPARC: true,
         sparcQualityGates: true,
-      },
+      }
     );
 
     productFlowSystem = new ProductFlowSystem(
       productWorkflowEngine,
-      documentService,
+      documentService
     );
     sparcEngine = new SPARCEngineCore();
 
@@ -138,10 +138,10 @@ describe('Product Flow + SPARC Integration', () => {
       // Validate SPARC integration structure
       expect(feature['sparc_implementation']).toBeDefined();
       expect(feature['sparc_implementation']?.['use_sparc_methodology']).toBe(
-        true,
+        true
       );
       expect(feature['sparc_implementation']?.['current_sparc_phase']).toBe(
-        'specification',
+        'specification'
       );
 
       // Validate all SPARC phases are defined
@@ -212,13 +212,13 @@ describe('Product Flow + SPARC Integration', () => {
       // Validate SPARC task integration
       expect(task['sparc_implementation_details']).toBeDefined();
       expect(
-        task['sparc_implementation_details']?.['sparc_phase_assignment'],
+        task['sparc_implementation_details']?.['sparc_phase_assignment']
       ).toBe('completion');
       expect(
-        task['sparc_implementation_details']?.['sparc_deliverable_type'],
+        task['sparc_implementation_details']?.['sparc_deliverable_type']
       ).toBe('production_code');
       expect(
-        task['sparc_implementation_details']?.['sparc_quality_gates'],
+        task['sparc_implementation_details']?.['sparc_quality_gates']
       ).toHaveLength(2);
     });
   });
@@ -240,7 +240,7 @@ describe('Product Flow + SPARC Integration', () => {
               'Improve user experience',
             ],
           },
-        },
+        }
       );
 
       expect(result?.success).toBe(true);
@@ -264,11 +264,11 @@ describe('Product Flow + SPARC Integration', () => {
         'complete-product-flow',
         {
           workspaceId,
-        },
+        }
       );
 
       const workflow = await productWorkflowEngine.getProductWorkflowStatus(
-        result?.workflowId!,
+        result?.workflowId!
       );
       expect(workflow).toBeDefined();
 
@@ -310,14 +310,14 @@ describe('Product Flow + SPARC Integration', () => {
 
       // Check that API feature got SPARC project
       const apiFeature = workflow.productFlow.documents.features.find(
-        (f) => f['feature_type'] === 'api',
+        (f) => f['feature_type'] === 'api'
       );
       if (apiFeature) {
         expect(workflow.sparcIntegration.sparcProjects.has(apiFeature.id)).toBe(
-          true,
+          true
         );
         expect(workflow.sparcIntegration.activePhases.get(apiFeature.id)).toBe(
-          'specification',
+          'specification'
         );
       }
     });
@@ -412,7 +412,7 @@ describe('Product Flow + SPARC Integration', () => {
       // Mock some SPARC integration
       workflow.sparcIntegration.sparcProjects.set(
         'feature-1',
-        {} as SPARCProject,
+        {} as SPARCProject
       );
       workflow.sparcIntegration.activePhases.set('feature-1', 'architecture');
       workflow.sparcIntegration.completedPhases.set('feature-1', [
@@ -423,10 +423,10 @@ describe('Product Flow + SPARC Integration', () => {
       // Verify integration state
       expect(workflow.sparcIntegration.sparcProjects.size).toBe(1);
       expect(workflow.sparcIntegration.activePhases.get('feature-1')).toBe(
-        'architecture',
+        'architecture'
       );
       expect(
-        workflow.sparcIntegration.completedPhases.get('feature-1'),
+        workflow.sparcIntegration.completedPhases.get('feature-1')
       ).toHaveLength(2);
     });
   });
@@ -440,24 +440,24 @@ describe('Product Flow + SPARC Integration', () => {
         'complete-product-flow',
         {
           workspaceId,
-        },
+        }
       );
 
       // Pause workflow
       const pauseResult = await productWorkflowEngine.pauseProductWorkflow(
-        result?.workflowId!,
+        result?.workflowId!
       );
       expect(pauseResult?.success).toBe(true);
 
       // Verify paused status
       const workflow = await productWorkflowEngine.getProductWorkflowStatus(
-        result?.workflowId!,
+        result?.workflowId!
       );
       expect(workflow?.status).toBe('paused');
 
       // Resume workflow
       const resumeResult = await productWorkflowEngine.resumeProductWorkflow(
-        result?.workflowId!,
+        result?.workflowId!
       );
       expect(resumeResult?.success).toBe(true);
     });
@@ -471,7 +471,7 @@ describe('Product Flow + SPARC Integration', () => {
         'nonexistent-workflow',
         {
           workspaceId,
-        },
+        }
       );
 
       expect(result?.success).toBe(false);

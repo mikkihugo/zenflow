@@ -31,7 +31,9 @@ module.exports = function transformer(fileInfo, api) {
 
       transformCount = 1;
 
-      console.log(`✅ Fixed: "${firstLine}" → "${shebang}" + "${commentStart}"`);
+      console.log(
+        `✅ Fixed: "${firstLine}" → "${shebang}" + "${commentStart}"`
+      );
     }
   }
 
@@ -45,7 +47,9 @@ module.exports = function transformer(fileInfo, api) {
 
     if (generalMatch && i === 0) {
       // Only fix first line shebangs
-      console.log(`🔧 Fixing general malformed shebang in ${fileInfo.path} line ${i + 1}`);
+      console.log(
+        `🔧 Fixing general malformed shebang in ${fileInfo.path} line ${i + 1}`
+      );
 
       const shebang = generalMatch[1];
       const commentStart = '/**';
@@ -54,12 +58,16 @@ module.exports = function transformer(fileInfo, api) {
       lines.splice(i + 1, 0, commentStart);
 
       transformCount++;
-      console.log(`✅ Fixed line ${i + 1}: "${line}" → "${shebang}" + "${commentStart}"`);
+      console.log(
+        `✅ Fixed line ${i + 1}: "${line}" → "${shebang}" + "${commentStart}"`
+      );
     }
   }
 
   if (transformCount > 0) {
-    console.log(`✅ Fixed ${transformCount} malformed shebang(s) in ${fileInfo.path}`);
+    console.log(
+      `✅ Fixed ${transformCount} malformed shebang(s) in ${fileInfo.path}`
+    );
     return lines.join('\n');
   }
 

@@ -29,7 +29,7 @@ program
   .option(
     '--output <path>',
     'Output file for generated pseudocode',
-    'pseudocode-output.json',
+    'pseudocode-output.json'
   )
   .option('--format <type>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
@@ -92,13 +92,13 @@ program
 
       if (validation.optimizationSuggestions.length > 0) {
         validation.optimizationSuggestions.forEach(
-          (_suggestion: unknown, _index: number) => {},
+          (_suggestion: unknown, _index: number) => {}
         );
       }
 
       if (validation.recommendations.length > 0) {
         validation.recommendations.forEach(
-          (_rec: unknown, _index: number) => {},
+          (_rec: unknown, _index: number) => {}
         );
       }
 
@@ -117,12 +117,12 @@ program
   .option(
     '--domain <type>',
     'Domain type (swarm-coordination|neural-networks|memory-systems|general)',
-    'swarm-coordination',
+    'swarm-coordination'
   )
   .option(
     '--output <path>',
     'Output file for example specification',
-    'example-spec.json',
+    'example-spec.json'
   )
   .action(async (options) => {
     try {
@@ -189,7 +189,7 @@ program
       await writeFile(
         options?.output,
         JSON.stringify(exampleSpec, null, 2),
-        'utf8',
+        'utf8'
       );
     } catch (error) {
       logger.error('❌ Failed to create example specification:', error);

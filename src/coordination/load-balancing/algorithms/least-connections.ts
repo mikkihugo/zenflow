@@ -43,7 +43,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   public async selectAgent(
     task: Task,
     availableAgents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<RoutingResult> {
     if (availableAgents.length === 0) {
       throw new Error('No available agents');
@@ -93,7 +93,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * @param config
    */
   public async updateConfiguration(
-    config: Record<string, unknown>,
+    config: Record<string, unknown>
   ): Promise<void> {
     this.config = { ...this.config, ...config };
   }
@@ -106,7 +106,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
 
     const totalConnections = states.reduce(
       (sum, s) => sum + s.activeConnections,
-      0,
+      0
     );
     const totalCapacity = states.reduce((sum, s) => sum + s.maxConnections, 0);
     const avgUtilization =
@@ -135,7 +135,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     agentId: string,
     _task: Task,
     duration: number,
-    _success: boolean,
+    _success: boolean
   ): Promise<void> {
     const state = this.getOrCreateConnectionState(agentId);
 
@@ -148,7 +148,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     // Keep only recent completions within the window
     const cutoff = new Date(Date.now() - this.config.capacityPredictionWindow);
     state.recentCompletions = state.recentCompletions.filter(
-      (date) => date > cutoff,
+      (date) => date > cutoff
     );
 
     // Update average connection duration
@@ -206,7 +206,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    */
   private async updateConnectionStates(
     agents: Agent[],
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<void> {
     for (const agent of agents) {
       const state = this.getOrCreateConnectionState(agent.id);
@@ -240,7 +240,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   private async scoreAgents(
     agents: Agent[],
     task: Task,
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<
     Array<{
       agent: Agent;
@@ -279,7 +279,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       if (agentMetrics) {
         const responseTimeFactor = Math.min(
           2,
-          agentMetrics.responseTime / 1000,
+          agentMetrics.responseTime / 1000
         ); // Normalize to seconds
         score += responseTimeFactor;
       }
@@ -316,7 +316,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * @param state
    */
   private async updateCapacityPrediction(
-    state: ConnectionState,
+    state: ConnectionState
   ): Promise<void> {
     const now = new Date();
     const timeSinceUpdate = now.getTime() - state.lastCapacityUpdate.getTime();
@@ -332,14 +332,14 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
     // Calculate historical peak capacity
     const historicalPeak = Math.max(
       ...state.connectionHistory,
-      state.maxConnections,
+      state.maxConnections
     );
 
     // Use exponential smoothing to update predicted capacity
     const newPrediction = Math.max(
       throughputBasedCapacity,
       historicalPeak * 0.8, // Conservative estimate
-      state.maxConnections * 0.5, // Minimum threshold
+      state.maxConnections * 0.5 // Minimum threshold
     );
 
     state.predictedCapacity =
@@ -357,11 +357,11 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
   private calculateRecentThroughput(state: ConnectionState): number {
     const now = new Date();
     const windowStart = new Date(
-      now.getTime() - this.config.capacityPredictionWindow,
+      now.getTime() - this.config.capacityPredictionWindow
     );
 
     const recentCompletions = state.recentCompletions.filter(
-      (date) => date > windowStart,
+      (date) => date > windowStart
     );
     const windowDurationSeconds = this.config.capacityPredictionWindow / 1000;
 
@@ -376,7 +376,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    */
   private updateAverageConnectionDuration(
     state: ConnectionState,
-    newDuration: number,
+    newDuration: number
   ): void {
     // Use exponential moving average
     state.averageConnectionDuration =
@@ -410,7 +410,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    */
   private estimateLatency(
     agent: Agent,
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): number {
     const agentMetrics = metrics.get(agent.id);
     const state = this.getOrCreateConnectionState(agent.id);
@@ -432,7 +432,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    */
   private estimateQuality(
     agent: Agent,
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): number {
     const agentMetrics = metrics.get(agent.id);
     const state = this.getOrCreateConnectionState(agent.id);
@@ -483,13 +483,13 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
    * @param states
    */
   private calculateAverageConnectionDuration(
-    states: ConnectionState[],
+    states: ConnectionState[]
   ): number {
     if (states.length === 0) return 0;
 
     const totalDuration = states.reduce(
       (sum, s) => sum + s.averageConnectionDuration,
-      0,
+      0
     );
     return totalDuration / states.length;
   }

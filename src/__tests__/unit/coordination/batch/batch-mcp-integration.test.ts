@@ -47,7 +47,7 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
               content: JSON.stringify(
                 { name: 'test-app', version: '1.0.0' },
                 null,
-                2,
+                2
               ),
             },
           },
@@ -171,20 +171,20 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
       };
 
       const result = (await projectInitBatchTool.handler(
-        params,
+        params
       )) as MCPToolResult;
 
       expect(result?.success).toBe(true);
 
       const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain(
-        'Project "claude-zen-test" Initialized Successfully!',
+        'Project "claude-zen-test" Initialized Successfully!'
       );
       expect(responseText).toContain('speed improvement');
       expect(responseText).toContain('token reduction');
       expect(responseText).toContain('Swarm initialized');
       expect(responseText).toContain(
-        'Agents spawned: researcher, coder, analyst, tester',
+        'Agents spawned: researcher, coder, analyst, tester'
       );
 
       // Verify it mentions the claude-zen performance
@@ -199,17 +199,17 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
       };
 
       const result = (await projectInitBatchTool.handler(
-        params,
+        params
       )) as MCPToolResult;
 
       expect(result?.success).toBe(true);
 
       const responseText = result?.content?.[0]?.text;
       expect(responseText).toContain(
-        'Project "minimal-test" Initialized Successfully!',
+        'Project "minimal-test" Initialized Successfully!'
       );
       expect(responseText).toContain(
-        'Agents spawned: researcher, coder, analyst',
+        'Agents spawned: researcher, coder, analyst'
       ); // Default agents
       expect(responseText).toContain('hierarchical'); // Default topology
     }, 8000);
@@ -306,7 +306,7 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
       };
 
       const result = (await batchExecuteTool.handler(
-        batchParams,
+        batchParams
       )) as MCPToolResult;
 
       expect(result?.success).toBe(true);
@@ -315,7 +315,7 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       // Extract speed improvement from response
       const speedMatch = responseText?.match(
-        /Speed Improvement:\s*\*\*([\d.]+)x\*\*/,
+        /Speed Improvement:\s*\*\*([\d.]+)x\*\*/
       );
       expect(speedMatch).toBeTruthy();
 
@@ -378,7 +378,7 @@ describe('Batch MCP Tools Integration - Claude-zen End-to-End', () => {
 
       // Extract token reduction value
       const tokenMatch = responseText?.match(
-        /Token Reduction:\s*\*\*([\d.]+)%\*\*/,
+        /Token Reduction:\s*\*\*([\d.]+)%\*\*/
       );
       if (tokenMatch) {
         const tokenReduction = Number.parseFloat(tokenMatch?.[1]);

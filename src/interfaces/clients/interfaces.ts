@@ -69,8 +69,8 @@ export interface IHttpClient<T = any> extends IClient<T> {
   /** GET request */
   get<R = any>(
     path: string,
-    params?: Record<string, any>,
-    options?: RequestOptions,
+    params?: Record<string, unknown>,
+    options?: RequestOptions
   ): Promise<R>;
 
   /** POST request */
@@ -86,7 +86,7 @@ export interface IHttpClient<T = any> extends IClient<T> {
   patch<R = any>(
     path: string,
     data?: Partial<T>,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<R>;
 
   /** Set request headers */
@@ -139,7 +139,7 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
   /** Search knowledge entries */
   search<R = any>(
     searchTerm: string,
-    options?: KnowledgeSearchOptions,
+    options?: KnowledgeSearchOptions
   ): Promise<R[]>;
 
   /** Get knowledge entry by ID */
@@ -160,7 +160,7 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
   /** Execute semantic search */
   semanticSearch<R = any>(
     query: string,
-    options?: SemanticSearchOptions,
+    options?: SemanticSearchOptions
   ): Promise<R[]>;
 }
 
@@ -177,7 +177,7 @@ export interface IMcpClient<T = any> extends IClient<T> {
   /** Execute tool */
   executeTool<R = any>(
     toolName: string,
-    parameters: Record<string, any>,
+    parameters: Record<string, unknown>
   ): Promise<R>;
 
   /** Get tool schema */
@@ -185,7 +185,7 @@ export interface IMcpClient<T = any> extends IClient<T> {
 
   /** Subscribe to tool notifications */
   subscribeToNotifications(
-    callback: (notification: McpNotification) => void,
+    callback: (notification: McpNotification) => void
   ): Promise<string>;
 
   /** Get server capabilities */
@@ -223,7 +223,7 @@ export interface ClientConfig {
   headers?: Record<string, string>;
 
   /** Protocol-specific options */
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 
   /** Health check configuration */
   healthCheck?: HealthCheckConfig;
@@ -245,7 +245,7 @@ export interface RequestOptions {
   headers?: Record<string, string>;
 
   /** Query parameters */
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
 
   /** Request body type */
   contentType?: string;
@@ -304,7 +304,7 @@ export interface RetryConfig {
   retryOn?: number[];
 
   /** Custom retry condition */
-  retryCondition?: (error: any) => boolean;
+  retryCondition?: (error: unknown) => boolean;
 }
 
 /**
@@ -323,7 +323,7 @@ export interface HealthCheckConfig {
   timeout?: number;
 
   /** Expected response for healthy status */
-  expectedResponse?: any;
+  expectedResponse?: unknown;
 
   /** Custom health check function */
   customCheck?: () => Promise<boolean>;
@@ -378,7 +378,7 @@ export interface ClientMetadata {
   metrics: ClientMetrics;
 
   /** Additional metadata */
-  custom?: Record<string, any>;
+  custom?: Record<string, unknown>;
 }
 
 /**
@@ -420,7 +420,7 @@ export interface ClientMetrics {
 export interface WebSocketSubscription {
   id: string;
   event: string;
-  callback: (data: any) => void;
+  callback: (data: unknown) => void;
   subscribed: Date;
 }
 
@@ -450,7 +450,7 @@ export interface ReconnectOptions {
 export interface KnowledgeQueryOptions {
   limit?: number;
   offset?: number;
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   includeMetadata?: boolean;
@@ -485,19 +485,19 @@ export interface KnowledgeStats {
 export interface McpTool {
   name: string;
   description: string;
-  inputSchema: Record<string, any>;
-  outputSchema?: Record<string, any>;
+  inputSchema: Record<string, unknown>;
+  outputSchema?: Record<string, unknown>;
 }
 
 export interface McpToolSchema {
   type: string;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
   required?: string[];
 }
 
 export interface McpNotification {
   method: string;
-  params?: Record<string, any>;
+  params?: Record<string, unknown>;
   timestamp: Date;
 }
 
@@ -518,7 +518,7 @@ export interface McpCapabilities {
 export interface McpClientInfo {
   name: string;
   version: string;
-  capabilities?: Record<string, any>;
+  capabilities?: Record<string, unknown>;
 }
 
 export interface McpInitResult {
@@ -539,7 +539,7 @@ export interface ClientError extends Error {
   code: string;
   protocol: ProtocolType;
   statusCode?: number;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   retryable?: boolean;
 }
 
@@ -555,7 +555,7 @@ export interface ClientHealthStatus {
   responseTime: number;
   lastCheck: Date;
   errors?: string[];
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }
 
 /**
@@ -575,8 +575,8 @@ export interface ClientTransaction {
 export interface ClientOperation {
   client: string;
   method: string;
-  data: any;
-  options?: Record<string, any>;
-  result?: any;
+  data: unknown;
+  options?: Record<string, unknown>;
+  result?: unknown;
   error?: ClientError;
 }

@@ -157,7 +157,7 @@ class NeuralEventManager
       await this.routeNeuralEvent(enrichedEvent);
 
       this.logger.debug(
-        `Neural event emitted: ${event.operation} for model ${event.modelId}`,
+        `Neural event emitted: ${event.operation} for model ${event.modelId}`
       );
     } catch (error) {
       this.neuralMetrics.errorCount++;
@@ -185,7 +185,7 @@ class NeuralEventManager
     this.subscriptions.inference.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Inference event subscription created: ${subscriptionId}`,
+      `Inference event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -209,7 +209,7 @@ class NeuralEventManager
     this.subscriptions.performance.set(subscriptionId, listener);
 
     this.logger.debug(
-      `Performance event subscription created: ${subscriptionId}`,
+      `Performance event subscription created: ${subscriptionId}`
     );
     return subscriptionId;
   }
@@ -331,7 +331,7 @@ class NeuralEventManager
         'neural:performance',
         'neural:resource',
       ],
-      this.handleNeuralEvent.bind(this),
+      this.handleNeuralEvent.bind(this)
     );
   }
 
@@ -405,7 +405,7 @@ class NeuralEventManager
         break;
       case 'inference-batch':
         this.logger.debug(
-          `Batch inference completed: ${event.data?.batchSize} samples`,
+          `Batch inference completed: ${event.data?.batchSize} samples`
         );
         break;
       case 'resource-allocated':
@@ -455,7 +455,7 @@ class NeuralEventManager
 
   private async notifySubscribers(
     subscribers: Map<string, (event: NeuralEvent) => void>,
-    event: NeuralEvent,
+    event: NeuralEvent
   ): Promise<void> {
     const notifications = Array.from(subscribers.values()).map(
       async (listener) => {
@@ -464,7 +464,7 @@ class NeuralEventManager
         } catch (error) {
           this.logger.error('Neural event listener failed:', error);
         }
-      },
+      }
     );
 
     await Promise.allSettled(notifications);
@@ -519,7 +519,7 @@ export class NeuralEventManagerFactory
 {
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {
     this.logger.debug('NeuralEventManagerFactory initialized');
   }
@@ -546,7 +546,7 @@ export class NeuralEventManagerFactory
     await this.configureNeuralManager(manager, optimizedConfig);
 
     this.logger.info(
-      `Neural event manager created successfully: ${config.name}`,
+      `Neural event manager created successfully: ${config.name}`
     );
     return manager;
   }
@@ -566,13 +566,13 @@ export class NeuralEventManagerFactory
     // Validate neural-specific settings
     if (config.processing?.timeout && config.processing.timeout < 1000) {
       this.logger.warn(
-        'Neural processing timeout < 1000ms may be too short for ML operations',
+        'Neural processing timeout < 1000ms may be too short for ML operations'
       );
     }
 
     if (config.maxListeners && config.maxListeners < 50) {
       this.logger.warn(
-        'Neural managers should support at least 50 listeners for ML workflows',
+        'Neural managers should support at least 50 listeners for ML workflows'
       );
     }
   }
@@ -610,13 +610,13 @@ export class NeuralEventManagerFactory
    */
   private async configureNeuralManager(
     manager: NeuralEventManager,
-    config: EventManagerConfig,
+    config: EventManagerConfig
   ): Promise<void> {
     // Start monitoring if enabled
     if (config.monitoring?.enabled) {
       await manager.start();
       this.logger.debug(
-        `Neural event manager monitoring started: ${config.name}`,
+        `Neural event manager monitoring started: ${config.name}`
       );
     }
 
@@ -628,13 +628,13 @@ export class NeuralEventManagerFactory
           if (status.status !== 'healthy') {
             this.logger.warn(
               `Neural manager health degraded: ${config.name}`,
-              status.metadata,
+              status.metadata
             );
           }
         } catch (error) {
           this.logger.error(
             `Neural manager health check failed: ${config.name}`,
-            error,
+            error
           );
         }
       }, config.monitoring.healthCheckInterval);

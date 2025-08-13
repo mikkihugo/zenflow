@@ -427,23 +427,23 @@ export const KnowledgeConstants = {
  * Type guards for runtime type checking.
  */
 export const TypeGuards = {
-  isClientType: (value: any): value is ClientType => {
+  isClientType: (value: unknown): value is ClientType => {
     return Object.values(ClientTypes).includes(value);
   },
 
-  isProtocolType: (value: any): value is ProtocolType => {
+  isProtocolType: (value: unknown): value is ProtocolType => {
     return Object.values(ProtocolTypes).includes(value);
   },
 
-  isAuthType: (value: any): value is AuthType => {
+  isAuthType: (value: unknown): value is AuthType => {
     return Object.values(AuthTypes).includes(value);
   },
 
-  isHttpMethod: (value: any): value is HttpMethod => {
+  isHttpMethod: (value: unknown): value is HttpMethod => {
     return Object.values(HttpMethods).includes(value);
   },
 
-  isClientStatus: (value: any): value is ClientStatus => {
+  isClientStatus: (value: unknown): value is ClientStatus => {
     return Object.values(ClientStatuses).includes(value);
   },
 } as const;

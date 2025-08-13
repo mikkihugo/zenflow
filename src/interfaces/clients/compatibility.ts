@@ -25,7 +25,7 @@ import { ClientTypes } from './types.ts';
  *
  * @param config
  */
-export const createCompatibleAPIClient = (config: any = {}): APIClient => {
+export const createCompatibleAPIClient = (config: unknown = {}): APIClient => {
   // Use direct client creation for backward compatibility
   // This maintains the exact same interface as before
   return createAPIClient(config);
@@ -41,7 +41,7 @@ export const createCompatibleAPIClient = (config: any = {}): APIClient => {
  */
 export const createManagedAPIClient = async (
   id: string,
-  config: any = {},
+  config: unknown = {}
 ): Promise<{ client: APIClient; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
   const { uacl } = await import('./instance.ts');
@@ -56,7 +56,7 @@ export const createManagedAPIClient = async (
       bearerToken: config?.bearerToken,
       headers: config?.headers,
       retryAttempts: config?.retryAttempts,
-    },
+    }
   );
 
   return {
@@ -73,7 +73,7 @@ export const createManagedAPIClient = async (
  */
 export const createCompatibleWebSocketClient = (
   url: string,
-  options: any = {},
+  options: unknown = {}
 ): WebSocketClient => {
   return new WebSocketClient(url, options);
 };
@@ -89,7 +89,7 @@ export const createCompatibleWebSocketClient = (
 export const createManagedWebSocketClient = async (
   id: string,
   url: string,
-  options: any = {},
+  options: unknown = {}
 ): Promise<{ client: WebSocketClient; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
   const { uacl } = await import('./instance.ts');
@@ -114,7 +114,7 @@ export const createManagedWebSocketClient = async (
  * @param config
  */
 export const createCompatibleKnowledgeClient = (
-  config: any,
+  config: unknown
 ): FACTIntegration => {
   return new FACTIntegration(config);
 };
@@ -127,7 +127,7 @@ export const createCompatibleKnowledgeClient = (
  */
 export const createManagedKnowledgeClient = async (
   id: string,
-  config: any,
+  config: unknown
 ): Promise<{ client: FACTIntegration; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
   const { uacl } = await import('./instance.ts');
@@ -141,7 +141,7 @@ export const createManagedKnowledgeClient = async (
       pythonPath: config?.pythonPath,
       enableCache: config?.enableCache,
       cacheConfig: config?.cacheConfig,
-    },
+    }
   );
 
   return {
@@ -165,7 +165,7 @@ export const createCompatibleMCPClient = (): ExternalMCPClient => {
  */
 export const createManagedMCPClient = async (
   id: string,
-  servers: any,
+  servers: unknown
 ): Promise<{ client: ExternalMCPClient; instance: ClientInstance }> => {
   // Dynamic import to avoid circular dependency
   const { uacl } = await import('./instance.ts');
@@ -257,7 +257,7 @@ export class UACLMigrationHelper {
     }>;
   } {
     const details = Array.from(
-      UACLMigrationHelper.migrationTracking.entries(),
+      UACLMigrationHelper.migrationTracking.entries()
     ).map(([key, data]) => {
       const [clientType, location] = key.split(':');
       return {
@@ -294,7 +294,7 @@ export class UACLMigrationHelper {
   static async autoMigrate(
     clientType: string,
     id: string,
-    config: any,
+    config: unknown
   ): Promise<ClientInstance | null> {
     try {
       // Dynamic import to avoid circular dependency
@@ -311,7 +311,7 @@ export class UACLMigrationHelper {
             id,
             config?.factRepoPath,
             config?.anthropicApiKey,
-            config,
+            config
           );
         case ClientTypes.MCP:
           return await uacl.createMCPClient(id, config?.servers, config);
@@ -321,7 +321,7 @@ export class UACLMigrationHelper {
     } catch (error) {
       logger.warn(
         `⚠️ UACL Auto-migration failed for ${clientType} client ${id}:`,
-        error,
+        error
       );
       return null;
     }
@@ -370,7 +370,7 @@ export { ExternalMCPClient as LegacyExternalMCPClient };
  */
 export const createEnhancedAPIClient = async (
   id: string,
-  config: any = {},
+  config: unknown = {}
 ): Promise<{ client: APIClient; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage('HTTP', `createEnhancedAPIClient:${id}`);
 
@@ -381,7 +381,7 @@ export const createEnhancedAPIClient = async (
   } catch (error) {
     logger.warn(
       `⚠️ Failed to create UACL-managed HTTP client, falling back to legacy:`,
-      error,
+      error
     );
     return {
       client: createCompatibleAPIClient(config),
@@ -400,24 +400,24 @@ export const createEnhancedAPIClient = async (
 export const createEnhancedWebSocketClient = async (
   id: string,
   url: string,
-  options: any = {},
+  options: unknown = {}
 ): Promise<{ client: WebSocketClient; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage(
     'WebSocket',
-    `createEnhancedWebSocketClient:${id}`,
+    `createEnhancedWebSocketClient:${id}`
   );
 
   try {
     const result = await createManagedWebSocketClient(id, url, options);
     UACLMigrationHelper.markAsMigrated(
       'WebSocket',
-      `createEnhancedWebSocketClient:${id}`,
+      `createEnhancedWebSocketClient:${id}`
     );
     return result;
   } catch (error) {
     logger.warn(
       `⚠️ Failed to create UACL-managed WebSocket client, falling back to legacy:`,
-      error,
+      error
     );
     return {
       client: createCompatibleWebSocketClient(url, options),
@@ -434,24 +434,24 @@ export const createEnhancedWebSocketClient = async (
  */
 export const createEnhancedKnowledgeClient = async (
   id: string,
-  config: any,
+  config: unknown
 ): Promise<{ client: FACTIntegration; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage(
     'Knowledge',
-    `createEnhancedKnowledgeClient:${id}`,
+    `createEnhancedKnowledgeClient:${id}`
   );
 
   try {
     const result = await createManagedKnowledgeClient(id, config);
     UACLMigrationHelper.markAsMigrated(
       'Knowledge',
-      `createEnhancedKnowledgeClient:${id}`,
+      `createEnhancedKnowledgeClient:${id}`
     );
     return result;
   } catch (error) {
     logger.warn(
       `⚠️ Failed to create UACL-managed Knowledge client, falling back to legacy:`,
-      error,
+      error
     );
     return {
       client: createCompatibleKnowledgeClient(config),
@@ -468,7 +468,7 @@ export const createEnhancedKnowledgeClient = async (
  */
 export const createEnhancedMCPClient = async (
   id: string,
-  servers: any,
+  servers: unknown
 ): Promise<{ client: ExternalMCPClient; instance: ClientInstance }> => {
   UACLMigrationHelper.trackLegacyUsage('MCP', `createEnhancedMCPClient:${id}`);
 
@@ -479,7 +479,7 @@ export const createEnhancedMCPClient = async (
   } catch (error) {
     logger.warn(
       `⚠️ Failed to create UACL-managed MCP client, falling back to legacy:`,
-      error,
+      error
     );
     return {
       client: createCompatibleMCPClient(),

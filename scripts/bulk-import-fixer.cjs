@@ -22,35 +22,40 @@ const commonFixes = [
 
 async function getOneErrorFiles() {
   return new Promise((resolve, reject) => {
-    exec('npx tsc --noEmit --skipLibCheck 2>&1 | grep "error TS2307"', (error, stdout, stderr) => {
-      if (error && !stdout) {
-        reject(error);
-        return;
-      }
-
-      const files = [];
-      const lines = stdout.split('\n').filter((line) => line.includes('error TS2307'));
-
-      for (const line of lines) {
-        const match = line.match(/^src\/[^(]+/);
-        if (match) {
-          files.push(match[0]);
+    exec(
+      'npx tsc --noEmit --skipLibCheck 2>&1 | grep "error TS2307"',
+      (error, stdout, stderr) => {
+        if (error && !stdout) {
+          reject(error);
+          return;
         }
+
+        const files = [];
+        const lines = stdout
+          .split('\n')
+          .filter((line) => line.includes('error TS2307'));
+
+        for (const line of lines) {
+          const match = line.match(/^src\/[^(]+/);
+          if (match) {
+            files.push(match[0]);
+          }
+        }
+
+        // Count errors per file
+        const fileCounts = {};
+        files.forEach((file) => {
+          fileCounts[file] = (fileCounts[file] || 0) + 1;
+        });
+
+        // Return only 1-error files
+        const oneErrorFiles = Object.entries(fileCounts)
+          .filter(([_, count]) => count === 1)
+          .map(([file]) => file);
+
+        resolve(oneErrorFiles);
       }
-
-      // Count errors per file
-      const fileCounts = {};
-      files.forEach((file) => {
-        fileCounts[file] = (fileCounts[file] || 0) + 1;
-      });
-
-      // Return only 1-error files
-      const oneErrorFiles = Object.entries(fileCounts)
-        .filter(([_, count]) => count === 1)
-        .map(([file]) => file);
-
-      resolve(oneErrorFiles);
-    });
+    );
   });
 }
 

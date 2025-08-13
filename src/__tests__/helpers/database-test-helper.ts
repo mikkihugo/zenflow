@@ -9,8 +9,8 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 export interface DatabaseConnection {
-  query(sql: string, params?: any[]): Promise<any>;
-  execute(sql: string, params?: any[]): Promise<void>;
+  query(sql: string, params?: unknown[]): Promise<unknown>;
+  execute(sql: string, params?: unknown[]): Promise<void>;
   transaction<T>(callback: (tx: DatabaseConnection) => Promise<T>): Promise<T>;
   close(): Promise<void>;
 }
@@ -18,18 +18,18 @@ export interface DatabaseConnection {
 export interface DatabaseTestHelper {
   setup(): Promise<void>;
   cleanup(): Promise<void>;
-  seed(data: any[]): Promise<void>;
+  seed(data: unknown[]): Promise<void>;
   reset(): Promise<void>;
   getConnection(): DatabaseConnection;
   createSchema(schema: string): Promise<void>;
-  insertTestData(table: string, data: any[]): Promise<void>;
+  insertTestData(table: string, data: unknown[]): Promise<void>;
   truncateTable(table: string): Promise<void>;
   runMigrations(migrations: string[]): Promise<void>;
 }
 
 export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
   private dbPath: string;
-  private db: any = null;
+  private db: unknown = null;
 
   constructor(dbPath?: string) {
     this.dbPath = dbPath || join(tmpdir(), `test-${Date.now()}.db`);
@@ -66,7 +66,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  async seed(data: any[]): Promise<void> {
+  async seed(data: unknown[]): Promise<void> {
     const tableName = 'test_data';
     await this.insertTestData(tableName, data);
   }
@@ -76,7 +76,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
 
     // Get all table names
     const tables = await this.query(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
     );
 
     // Truncate all tables
@@ -89,16 +89,16 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
     const self = this;
 
     return {
-      async query(sql: string, params: any[] = []): Promise<any> {
+      async query(sql: string, params: unknown[] = []): Promise<unknown> {
         return self.query(sql, params);
       },
 
-      async execute(sql: string, params: any[] = []): Promise<void> {
+      async execute(sql: string, params: unknown[] = []): Promise<void> {
         return self.execute(sql, params);
       },
 
       async transaction<T>(
-        callback: (tx: DatabaseConnection) => Promise<T>,
+        callback: (tx: DatabaseConnection) => Promise<T>
       ): Promise<T> {
         await self.execute('BEGIN TRANSACTION');
         try {
@@ -127,7 +127,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  async insertTestData(table: string, data: any[]): Promise<void> {
+  async insertTestData(table: string, data: unknown[]): Promise<void> {
     if (data.length === 0) return;
 
     const columns = Object.keys(data?.[0]);
@@ -161,7 +161,7 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
       // Check if migration already executed
       const existing = await this.query(
         'SELECT id FROM migrations WHERE name = ?',
-        [migrationName],
+        [migrationName]
       );
 
       if (existing.length === 0) {
@@ -173,22 +173,22 @@ export class SQLiteDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private async query(sql: string, params: any[] = []): Promise<any[]> {
+  private async query(sql: string, params: unknown[] = []): Promise<any[]> {
     if (!this.db) throw new Error('Database not initialized');
 
     return new Promise((resolve, reject) => {
-      this.db.all(sql, params, (err: any, rows: any[]) => {
+      this.db.all(sql, params, (err: unknown, rows: unknown[]) => {
         if (err) reject(err);
         else resolve(rows || []);
       });
     });
   }
 
-  private async execute(sql: string, params: any[] = []): Promise<void> {
+  private async execute(sql: string, params: unknown[] = []): Promise<void> {
     if (!this.db) throw new Error('Database not initialized');
 
     return new Promise((resolve, reject) => {
-      this.db.run(sql, params, (err: any) => {
+      this.db.run(sql, params, (err: unknown) => {
         if (err) reject(err);
         else resolve();
       });
@@ -246,7 +246,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     this.sequences.clear();
   }
 
-  async seed(data: any[]): Promise<void> {
+  async seed(data: unknown[]): Promise<void> {
     await this.insertTestData('test_data', data);
   }
 
@@ -260,16 +260,16 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     const self = this;
 
     return {
-      async query(sql: string, params: any[] = []): Promise<any> {
+      async query(sql: string, params: unknown[] = []): Promise<unknown> {
         return self.query(sql, params);
       },
 
-      async execute(sql: string, params: any[] = []): Promise<void> {
+      async execute(sql: string, params: unknown[] = []): Promise<void> {
         return self.execute(sql, params);
       },
 
       async transaction<T>(
-        callback: (tx: DatabaseConnection) => Promise<T>,
+        callback: (tx: DatabaseConnection) => Promise<T>
       ): Promise<T> {
         // Memory database doesn't need transactions for testing
         return callback(this);
@@ -284,13 +284,13 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
   async createSchema(schema: string): Promise<void> {
     // Parse basic CREATE TABLE statements
     const tableMatches = schema.match(
-      /CREATE TABLE(?:\s+IF NOT EXISTS)?\s+(\w+)/gi,
+      /CREATE TABLE(?:\s+IF NOT EXISTS)?\s+(\w+)/gi
     );
     if (tableMatches) {
       for (const match of tableMatches) {
         const tableName = match?.replace(
           /CREATE TABLE(?:\s+IF NOT EXISTS)?\s+/i,
-          '',
+          ''
         );
         if (!this.storage.has(tableName)) {
           this.storage.set(tableName, new Map());
@@ -300,7 +300,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  async insertTestData(table: string, data: any[]): Promise<void> {
+  async insertTestData(table: string, data: unknown[]): Promise<void> {
     if (!this.storage.has(table)) {
       this.storage.set(table, new Map());
       this.sequences.set(table, 0);
@@ -329,7 +329,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private async query(sql: string, params: any[] = []): Promise<any[]> {
+  private async query(sql: string, params: unknown[] = []): Promise<any[]> {
     // Simple SQL parser for memory database
     const upperSql = sql.toUpperCase().trim();
 
@@ -340,7 +340,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     return [];
   }
 
-  private async execute(sql: string, params: any[] = []): Promise<void> {
+  private async execute(sql: string, params: unknown[] = []): Promise<void> {
     const upperSql = sql.toUpperCase().trim();
 
     if (upperSql.startsWith('INSERT')) {
@@ -354,7 +354,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private handleSelect(sql: string, _params: any[]): any[] {
+  private handleSelect(sql: string, _params: unknown[]): unknown[] {
     // Very basic SELECT implementation
     const tableMatch = sql.match(/FROM\s+(\w+)/i);
     if (!tableMatch) return [];
@@ -366,7 +366,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     return Array.from(tableData?.values());
   }
 
-  private handleInsert(sql: string, params: any[]): void {
+  private handleInsert(sql: string, params: unknown[]): void {
     const tableMatch = sql.match(/INSERT INTO\s+(\w+)/i);
     if (!tableMatch) return;
 
@@ -383,7 +383,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     const columnsMatch = sql.match(/\(([^)]+)\)/);
     if (columnsMatch) {
       const columns = columnsMatch?.[1]?.split(',').map((col) => col.trim());
-      const record: any = { id };
+      const record: unknown = { id };
 
       columns.forEach((col, index) => {
         if (params?.[index] !== undefined) {
@@ -396,7 +396,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private handleUpdate(sql: string, _params: any[]): void {
+  private handleUpdate(sql: string, _params: unknown[]): void {
     // Basic UPDATE implementation
     const tableMatch = sql.match(/UPDATE\s+(\w+)/i);
     if (!tableMatch) return;
@@ -412,7 +412,7 @@ export class MemoryDatabaseTestHelper implements DatabaseTestHelper {
     }
   }
 
-  private handleDelete(sql: string, _params: any[]): void {
+  private handleDelete(sql: string, _params: unknown[]): void {
     const tableMatch = sql.match(/DELETE FROM\s+(\w+)/i);
     if (!tableMatch) return;
 
@@ -461,8 +461,8 @@ class MemoryDatabase {
 
   all(
     sql: string,
-    params: any[],
-    callback: (err: any, rows: any[]) => void,
+    params: unknown[],
+    callback: (err: unknown, rows: unknown[]) => void
   ): void {
     this.helper
       .getConnection()
@@ -471,7 +471,7 @@ class MemoryDatabase {
       .catch((err) => callback(err, []));
   }
 
-  run(sql: string, params: any[], callback: (err: any) => void): void {
+  run(sql: string, params: unknown[], callback: (err: unknown) => void): void {
     this.helper
       .getConnection()
       .execute(sql, params)

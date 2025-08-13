@@ -123,7 +123,7 @@ const initialSwarmState: SwarmState = {
  * @param options
  */
 export const useSwarmStatus = (
-  options: UseSwarmStatusOptions = {},
+  options: UseSwarmStatusOptions = {}
 ): UseSwarmStatusReturn => {
   const {
     autoRefresh = true,
@@ -215,7 +215,7 @@ export const useSwarmStatus = (
     ];
 
     const activeAgents = mockAgents.filter(
-      (a) => a.status === 'active' || a.status === 'busy',
+      (a) => a.status === 'active' || a.status === 'busy'
     );
     const uptime =
       Date.now() - (swarmState.status.uptime || Date.now() - 3600000);
@@ -387,7 +387,7 @@ export const useSwarmStatus = (
       setSwarmState((prev) => ({
         ...prev,
         agents: prev.agents.map((agent) =>
-          agent.id === agentId ? { ...agent, status: 'idle' as const } : agent,
+          agent.id === agentId ? { ...agent, status: 'idle' as const } : agent
         ),
         status: {
           ...prev.status,
@@ -455,7 +455,7 @@ export const useSwarmStatus = (
       setSwarmState((prev) => {
         const oldTask = prev.tasks.find((t) => t.id === taskId);
         const newTasks = prev.tasks.map((task) =>
-          task.id === taskId ? { ...task, ...updates } : task,
+          task.id === taskId ? { ...task, ...updates } : task
         );
 
         // Recalculate metrics if status changed

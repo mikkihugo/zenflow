@@ -112,22 +112,22 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
 
     this.setupEventHandlers();
     this.logger.info(
-      `OPS-CUBE Matron ${this.designation} initialized. Operational efficiency protocols active.`,
+      `OPS-CUBE Matron ${this.designation} initialized. Operational efficiency protocols active.`
     );
   }
 
   private setupEventHandlers(): void {
     this.eventBus.on(
       'collective:deployment:request',
-      this.handleDeploymentRequest.bind(this),
+      this.handleDeploymentRequest.bind(this)
     );
     this.eventBus.on(
       'collective:incident:alert',
-      this.handleIncidentAlert.bind(this),
+      this.handleIncidentAlert.bind(this)
     );
     this.eventBus.on(
       'collective:scaling:required',
-      this.handleScalingRequest.bind(this),
+      this.handleScalingRequest.bind(this)
     );
     this.eventBus.on('cube:ops:status:request', this.reportStatus.bind(this));
   }
@@ -135,7 +135,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle deployment requests with Borg efficiency
    */
-  private async handleDeploymentRequest(request: any): Promise<void> {
+  private async handleDeploymentRequest(request: unknown): Promise<void> {
     this.logger.info(`Processing deployment request: ${request.id}`);
 
     // Borg-style deployment coordination
@@ -154,9 +154,9 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle incident alerts with immediate response
    */
-  private async handleIncidentAlert(incident: any): Promise<void> {
+  private async handleIncidentAlert(incident: unknown): Promise<void> {
     this.logger.warn(
-      `Incident detected: ${incident.type} - Severity: ${incident.severity}`,
+      `Incident detected: ${incident.type} - Severity: ${incident.severity}`
     );
 
     const response = {
@@ -173,9 +173,9 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle scaling requests
    */
-  private async handleScalingRequest(request: any): Promise<void> {
+  private async handleScalingRequest(request: unknown): Promise<void> {
     this.logger.info(
-      `Scaling request received: ${request.direction} by ${request.amount}`,
+      `Scaling request received: ${request.direction} by ${request.amount}`
     );
 
     const scalingPlan = {
@@ -204,7 +204,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
 
     this.eventBus.emit('collective:ops-cube:status', status);
     this.logger.info(
-      `Status reported to THE COLLECTIVE. Borg efficiency: ${this.metrics.borgEfficiency}`,
+      `Status reported to THE COLLECTIVE. Borg efficiency: ${this.metrics.borgEfficiency}`
     );
   }
 
@@ -218,7 +218,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
       this.cube.capacity.currentQueens++;
 
       this.logger.info(
-        `Queen ${queenId} assigned to OPS-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`,
+        `Queen ${queenId} assigned to OPS-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`
       );
       this.eventBus.emit('ops-cube:queen:assigned', {
         queenId,
@@ -238,7 +238,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
       this.cube.capacity.currentQueens--;
 
       this.logger.info(
-        `Queen ${queenId} removed from OPS-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`,
+        `Queen ${queenId} removed from OPS-CUBE. Queens: ${this.subordinateQueens.length}/${this.cube.capacity.maxQueens}`
       );
       this.eventBus.emit('ops-cube:queen:removed', {
         queenId,
@@ -269,7 +269,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
       (1 - this.metrics.resourceUtilization) * 0.2;
 
     this.logger.info(
-      `Metrics updated. Borg efficiency: ${this.metrics.borgEfficiency.toFixed(3)}`,
+      `Metrics updated. Borg efficiency: ${this.metrics.borgEfficiency.toFixed(3)}`
     );
   }
 
@@ -279,7 +279,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   public async shutdown(): Promise<void> {
     this.status = 'maintenance';
     this.logger.info(
-      `OPS-CUBE Matron ${this.designation} entering maintenance mode. Operations suspended.`,
+      `OPS-CUBE Matron ${this.designation} entering maintenance mode. Operations suspended.`
     );
     this.eventBus.emit('ops-cube:matron:shutdown', {
       matron: this.designation,

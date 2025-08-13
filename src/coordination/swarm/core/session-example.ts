@@ -39,7 +39,7 @@ async function basicSessionExample() {
       autoCheckpoint: true,
       checkpointInterval: 60000, // 1 minute
       maxCheckpoints: 10,
-    },
+    }
   );
 
   try {
@@ -116,7 +116,7 @@ async function basicSessionExample() {
 
     // Create a manual checkpoint
     const _checkpointId = await swarm.createCheckpoint(
-      'Initial pipeline setup',
+      'Initial pipeline setup'
     );
 
     // Get session statistics
@@ -194,8 +194,8 @@ async function sessionLifecycleExample() {
   // Create a simple mock implementation for now
   // TODO: Implement proper DALFactory integration with DI
   const persistence = {
-    query: async (_sql: string, _params?: any[]) => [],
-    execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+    query: async (_sql: string, _params?: unknown[]) => [],
+    execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
     initialize: async () => {},
     close: async () => {},
   } as any;
@@ -218,7 +218,7 @@ async function sessionLifecycleExample() {
       {
         topology: 'distributed',
         maxAgents: 15,
-      },
+      }
     );
 
     // Simulate some work
@@ -245,7 +245,7 @@ async function sessionLifecycleExample() {
     // Create checkpoints
     const _checkpoint1 = await sessionManager.createCheckpoint(
       sessionId,
-      'Work started',
+      'Work started'
     );
 
     // Pause the session
@@ -282,8 +282,8 @@ async function sessionHealthExample() {
   // Create a simple mock implementation for now
   // TODO: Implement proper DALFactory integration with DI
   const persistence = {
-    query: async (_sql: string, _params?: any[]) => [],
-    execute: async (_sql: string, _params?: any[]) => ({ affectedRows: 1 }),
+    query: async (_sql: string, _params?: unknown[]) => [],
+    execute: async (_sql: string, _params?: unknown[]) => ({ affectedRows: 1 }),
     initialize: async () => {},
     close: async () => {},
   } as any;
@@ -346,18 +346,18 @@ async function advancedSessionExample() {
       checkpointInterval: 45000,
       maxCheckpoints: 8,
       compressionEnabled: true,
-    },
+    }
   );
 
   try {
     await swarm.initialize();
 
     // Create session with event monitoring
-    swarm.on('session:created', (_data: any) => {});
+    swarm.on('session:created', (_data: unknown) => {});
 
-    swarm.on('session:checkpoint_created', (_data: any) => {});
+    swarm.on('session:checkpoint_created', (_data: unknown) => {});
 
-    swarm.on('session:error', (data: any) => {
+    swarm.on('session:error', (data: unknown) => {
       logger.error(`Session error: ${data?.error} during ${data?.operation}`);
     });
 

@@ -354,7 +354,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       case 'basic':
         if (auth.username && auth.password) {
           const credentials = Buffer.from(
-            `${auth.username}:${auth.password}`,
+            `${auth.username}:${auth.password}`
           ).toString('base64');
           client.defaults.headers.common.Authorization = `Basic ${credentials}`;
         }
@@ -399,7 +399,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
    * Get valid OAuth token (refresh if needed).
    */
   private async getValidOAuthToken(
-    credentials: OAuthCredentials,
+    credentials: OAuthCredentials
   ): Promise<string | null> {
     // Check if current token is still valid.
     if (
@@ -424,7 +424,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         credentials.refreshToken =
           response?.data?.refresh_token || credentials.refreshToken;
         credentials.expiresAt = new Date(
-          Date.now() + response?.data?.expires_in * 1000,
+          Date.now() + response?.data?.expires_in * 1000
         );
 
         return credentials.accessToken;
@@ -452,7 +452,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         if (!config || config?.__retryCount >= retryConfig?.attempts) {
           this.emit(
             'error',
-            new RetryExhaustedError(this.name, retryConfig?.attempts, error),
+            new RetryExhaustedError(this.name, retryConfig?.attempts, error)
           );
           return Promise.reject(error);
         }
@@ -463,7 +463,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         if (this.shouldRetry(error, retryConfig)) {
           const delay = this.calculateRetryDelay(
             config?.__retryCount,
-            retryConfig,
+            retryConfig
           );
           await new Promise((resolve) => setTimeout(resolve, delay));
 
@@ -477,14 +477,14 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
         }
 
         return Promise.reject(error);
-      },
+      }
     );
   }
 
   /**
    * Determine if request should be retried.
    */
-  private shouldRetry(error: AxiosError, retryConfig: any): boolean {
+  private shouldRetry(error: AxiosError, retryConfig: unknown): boolean {
     // Use custom retry condition if provided
     if (retryConfig?.retryCondition) {
       return retryConfig?.retryCondition(error);
@@ -507,7 +507,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   /**
    * Calculate retry delay with backoff strategy.
    */
-  private calculateRetryDelay(attempt: number, retryConfig: any): number {
+  private calculateRetryDelay(attempt: number, retryConfig: unknown): number {
     const baseDelay = retryConfig?.delay || 1000;
     const maxDelay = retryConfig?.maxDelay || 30000;
 
@@ -548,12 +548,12 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
           clientError = new TimeoutError(
             this.name,
             this.config.timeout || 30000,
-            error,
+            error
           );
         } else {
           // Generic client error with HTTP details
           clientError = new Error(
-            `HTTP ${error.response.status}: ${error.response.statusText}`,
+            `HTTP ${error.response.status}: ${error.response.statusText}`
           );
           (clientError as any).status = error.response.status;
           (clientError as any).statusText = error.response.statusText;
@@ -563,7 +563,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
         this.emit('error', clientError);
         throw clientError;
-      },
+      }
     );
   }
 
@@ -604,7 +604,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
       (error) => {
         this.recordError(error.config);
         throw error;
-      },
+      }
     );
   }
 
@@ -802,7 +802,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
   async get<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig('GET', endpoint, undefined, options);
     const response = await this.http.get<T>(endpoint, config);
@@ -811,8 +811,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
   async post<T = any>(
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig('POST', endpoint, data, options);
     const response = await this.http.post<T>(endpoint, data, config);
@@ -821,8 +821,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
   async put<T = any>(
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig('PUT', endpoint, data, options);
     const response = await this.http.put<T>(endpoint, data, config);
@@ -831,13 +831,13 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
 
   async delete<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const config = this.buildAxiosConfig(
       'DELETE',
       endpoint,
       undefined,
-      options,
+      options
     );
     const response = await this.http.delete<T>(endpoint, config);
     return this.transformResponse(response);
@@ -861,8 +861,8 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
   private buildAxiosConfig(
     method: string,
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): AxiosRequestConfig {
     return {
       method: method as any,

@@ -37,7 +37,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   }
 
   public async shouldScaleUp(
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<boolean> {
     if (!this.config.enabled) return false;
 
@@ -46,7 +46,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   }
 
   public async shouldScaleDown(
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<boolean> {
     if (!this.config.enabled) return false;
 
@@ -76,7 +76,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
     this.recordScalingAction(
       'scale_up',
       `Added ${count} agents due to high load`,
-      count,
+      count
     );
     this.emit('scale:up', count);
 
@@ -94,7 +94,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
     this.recordScalingAction(
       'scale_down',
       `Removed ${count} agents due to low load`,
-      -count,
+      -count
     );
     this.emit('scale:down', agentsToRemove);
 
@@ -106,7 +106,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   }
 
   private async makeScalingDecision(
-    metrics: Map<string, LoadMetrics>,
+    metrics: Map<string, LoadMetrics>
   ): Promise<ScalingDecision> {
     // Check cooldown period
     const timeSinceLastAction = Date.now() - this.lastScalingAction.getTime();
@@ -134,7 +134,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
       if (agentCount < this.config.maxAgents) {
         const targetCount = Math.min(
           this.config.maxAgents,
-          Math.ceil(agentCount * 1.5), // Scale by 50%
+          Math.ceil(agentCount * 1.5) // Scale by 50%
         );
 
         return {
@@ -155,7 +155,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
       if (agentCount > this.config.minAgents) {
         const targetCount = Math.max(
           this.config.minAgents,
-          Math.floor(agentCount * 0.8), // Scale down by 20%
+          Math.floor(agentCount * 0.8) // Scale down by 20%
         );
 
         return {
@@ -238,7 +238,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
   private recordScalingAction(
     action: string,
     reason: string,
-    countChange: number,
+    countChange: number
   ): void {
     const oldCount = this.currentAgentCount;
     this.currentAgentCount = Math.max(0, this.currentAgentCount + countChange);

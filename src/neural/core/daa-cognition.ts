@@ -10,28 +10,28 @@ interface DAACognitionOptions {
   adaptationRate?: number;
   decisionThreshold?: number;
   maxHistory?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface CognitionDecision {
   id: string;
-  context: any;
+  context: unknown;
   confidence: number;
   timestamp: Date;
-  outcome?: any;
+  outcome?: unknown;
 }
 
 interface CognitionAction {
   id: string;
   type: string;
-  parameters: any;
-  result?: any;
+  parameters: unknown;
+  result?: unknown;
 }
 
 interface CognitionAdaptation {
   id: string;
   trigger: string;
-  change: any;
+  change: unknown;
   effectiveness?: number;
 }
 
@@ -40,7 +40,7 @@ export class DAACognition {
   public actions: Map<string, CognitionAction>;
   public adaptations: Map<string, CognitionAdaptation>;
   public options: DAACognitionOptions;
-  public history: any[];
+  public history: unknown[];
 
   constructor(options: DAACognitionOptions = {}) {
     this.decisions = new Map();
@@ -62,8 +62,8 @@ export class DAACognition {
    * @param options
    */
   async makeDecision(
-    context: any,
-    options: any = {},
+    context: unknown,
+    options: unknown = {}
   ): Promise<CognitionDecision> {
     const decisionId = `decision_${Date.now()}_${Math.random().toString(36).slice(2)}`;
 
@@ -192,7 +192,7 @@ export class DAACognition {
   private async performAction(action) {
     // Mock action performance
     await new Promise((resolve) =>
-      setTimeout(resolve, 10 + Math.random() * 40),
+      setTimeout(resolve, 10 + Math.random() * 40)
     );
 
     return {
@@ -203,7 +203,7 @@ export class DAACognition {
   }
 
   private calculateAdaptations(
-    feedback,
+    feedback
   ): Array<{ type: string; delta: number }> {
     const changes: Array<{ type: string; delta: number }> = [];
 
@@ -241,7 +241,7 @@ export class DAACognition {
         case 'adaptationRate':
           this.options.adaptationRate = Math.max(
             0.01,
-            Math.min(0.5, (this.options.adaptationRate ?? 0.05) + change.delta),
+            Math.min(0.5, (this.options.adaptationRate ?? 0.05) + change.delta)
           );
           break;
         case 'decisionThreshold':
@@ -249,8 +249,8 @@ export class DAACognition {
             0.1,
             Math.min(
               0.9,
-              (this.options.decisionThreshold ?? 0.7) + change.delta,
-            ),
+              (this.options.decisionThreshold ?? 0.7) + change.delta
+            )
           );
           break;
       }
@@ -262,7 +262,7 @@ export class DAACognition {
 
     const total = this.history.reduce(
       (sum, decision) => sum + decision.confidence,
-      0,
+      0
     );
     return total / this.history.length;
   }

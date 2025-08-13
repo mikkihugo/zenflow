@@ -5,7 +5,7 @@
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger(
-  'coordination-load-balancing-optimization-emergency-protocol-handler',
+  'coordination-load-balancing-optimization-emergency-protocol-handler'
 );
 
 /**
@@ -48,7 +48,7 @@ export class EmergencyProtocolHandler
 
   public async handleEmergency(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     const protocol = this.activeProtocols.get(type);
     if (protocol) {
@@ -90,7 +90,7 @@ export class EmergencyProtocolHandler
 
   public async sendAlert(
     _message: string,
-    recipients: string[],
+    recipients: string[]
   ): Promise<void> {
     // In practice, this would:
     // 1. Send notifications via multiple channels
@@ -185,9 +185,9 @@ export class EmergencyProtocolHandler
       this.executeAction(action).catch((error) => {
         logger.error(
           `Failed to execute emergency action ${action.type}:`,
-          error,
+          error
         );
-      }),
+      })
     );
 
     await Promise.allSettled(actionPromises);
@@ -209,7 +209,7 @@ export class EmergencyProtocolHandler
       case 'alert':
         await this.sendAlert(
           action.parameters.message,
-          action.parameters.recipients,
+          action.parameters.recipients
         );
         break;
       default:
@@ -219,7 +219,7 @@ export class EmergencyProtocolHandler
 
   private async executeDefaultEmergencyResponse(
     type: string,
-    severity: 'low' | 'medium' | 'high' | 'critical',
+    severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     switch (severity) {
       case 'critical':
@@ -245,7 +245,7 @@ export class EmergencyProtocolHandler
   private recordEmergency(
     type: string,
     severity: string,
-    action: string,
+    action: string
   ): void {
     this.emergencyHistory.push({
       timestamp: new Date(),

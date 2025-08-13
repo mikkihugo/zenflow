@@ -152,7 +152,7 @@ export class IntelligenceMCPTools {
    * @param name
    * @param args
    */
-  async handleToolCall(name: string, args: any): Promise<unknown> {
+  async handleToolCall(name: string, args: unknown): Promise<unknown> {
     // Handle conversation framework tools
     if (name.startsWith('conversation_')) {
       if (!this.conversationTools) {
@@ -220,7 +220,7 @@ export class IntelligenceMCPTools {
   }
 
   private async analyzeAgentConversationPatterns(
-    args: unknown,
+    args: unknown
   ): Promise<unknown> {
     const { agentId, timeframe = 'week', includeMetrics = true } = args;
 
@@ -240,7 +240,7 @@ export class IntelligenceMCPTools {
         break;
     }
 
-    const analysis: any = {
+    const analysis: unknown = {
       agentId,
       timeframe,
       analysisperiod: {
@@ -286,7 +286,7 @@ export class IntelligenceMCPTools {
   }
 
   private async suggestConversationImprovements(
-    args: unknown,
+    args: unknown
   ): Promise<unknown> {
     const { conversationId, focusArea } = args;
 
@@ -373,22 +373,22 @@ export class IntelligenceMCPTools {
       implementationPlan: {
         immediate:
           suggestionsByArea[focusArea]?.suggestions.filter(
-            (s: any) => s.effort === 'low',
+            (s: unknown) => s.effort === 'low'
           ) || [],
         shortTerm:
           suggestionsByArea[focusArea]?.suggestions.filter(
-            (s: any) => s.effort === 'medium',
+            (s: unknown) => s.effort === 'medium'
           ) || [],
         longTerm:
           suggestionsByArea[focusArea]?.suggestions.filter(
-            (s: any) => s.effort === 'high',
+            (s: unknown) => s.effort === 'high'
           ) || [],
       },
     };
   }
 
   private async createAdaptiveConversationPattern(
-    args: unknown,
+    args: unknown
   ): Promise<unknown> {
     const { basedOnConversations, patternName, domain, targetMetrics } = args;
 
@@ -506,7 +506,7 @@ export class IntelligenceMCPTools {
     } = args;
 
     // Simulate AI-powered conversation outcome prediction
-    const prediction: any = {
+    const prediction: unknown = {
       conversationId,
       predictionTimestamp: new Date().toISOString(),
       predictionHorizon: `${predictionHorizon} minutes`,

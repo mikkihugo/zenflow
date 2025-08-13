@@ -185,12 +185,12 @@ export class ApplicationCoordinator extends EventEmitter {
       try {
         const workflowIds = await this.workflowEngine.processDocumentEvent(
           'document:created',
-          event.document,
+          event.document
         );
 
         if (workflowIds.length > 0) {
           logger.info(
-            `Started ${workflowIds.length} workflows for new document`,
+            `Started ${workflowIds.length} workflows for new document`
           );
         }
       } catch (error) {
@@ -204,14 +204,14 @@ export class ApplicationCoordinator extends EventEmitter {
     });
 
     // Workflow engine events
-    this.workflowEngine.on('workflow:completed', async (event: any) => {
+    this.workflowEngine.on('workflow:completed', async (event: unknown) => {
       logger.info(`Workflow completed: ${event.workflowId}`);
 
       // Auto-export workflow results if configured
       if (this.config.export?.defaultFormat) {
         try {
           const workflowData = await this.memorySystem.retrieve(
-            `workflow:${event.workflowId}`,
+            `workflow:${event.workflowId}`
           );
           if (workflowData) {
             const exportOptions = {
@@ -223,7 +223,7 @@ export class ApplicationCoordinator extends EventEmitter {
             await this.exportSystem.exportData(
               workflowData,
               this.config.export.defaultFormat,
-              exportOptions,
+              exportOptions
             );
           }
         } catch (error) {
@@ -282,7 +282,7 @@ export class ApplicationCoordinator extends EventEmitter {
       if (this.config.workspace?.root) {
         logger.info(`Loading workspace: ${this.config.workspace.root}`);
         this.activeWorkspaceId = await this.documentSystem.loadWorkspace(
-          this.config.workspace.root,
+          this.config.workspace.root
         );
       } else if (this.config.workspace?.autoDetect) {
         // Try to auto-detect workspace
@@ -414,7 +414,7 @@ export class ApplicationCoordinator extends EventEmitter {
       // Process through document system
       await this.documentSystem.processVisionaryDocument(
         this.activeWorkspaceId || 'default',
-        documentPath,
+        documentPath
       );
 
       return {
@@ -439,7 +439,7 @@ export class ApplicationCoordinator extends EventEmitter {
    */
   async exportSystemData(
     format: string,
-    options: any = {},
+    options: unknown = {}
   ): Promise<{
     success: boolean;
     filename?: string;
@@ -463,7 +463,7 @@ export class ApplicationCoordinator extends EventEmitter {
       const result = await this.exportSystem.exportSystemStatus(
         systemData,
         format,
-        options,
+        options
       );
 
       return {
@@ -597,7 +597,7 @@ export class ApplicationCoordinator extends EventEmitter {
    * @param config
    */
   static async create(
-    config?: ApplicationCoordinatorConfig,
+    config?: ApplicationCoordinatorConfig
   ): Promise<ApplicationCoordinator> {
     const system = new ApplicationCoordinator(config);
     await system.initialize();
@@ -610,7 +610,7 @@ export class ApplicationCoordinator extends EventEmitter {
    * @param config
    */
   static async quickStart(
-    config?: ApplicationCoordinatorConfig,
+    config?: ApplicationCoordinatorConfig
   ): Promise<ApplicationCoordinator> {
     const system = await ApplicationCoordinator.create(config);
     await system.launch();

@@ -169,7 +169,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   constructor(
     config: CrossAgentKnowledgeConfig,
     logger: ILogger,
-    eventBus: IEventBus,
+    eventBus: IEventBus
   ) {
     super();
     this.config = config;
@@ -215,12 +215,12 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         {
           componentsInitialized: this.componentStatus.size,
           initializationTime,
-        },
+        }
       );
     } catch (error) {
       this.logger.error(
         'Failed to initialize Cross-Agent Knowledge Integration System',
-        { error },
+        { error }
       );
       throw error;
     }
@@ -234,14 +234,14 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    */
   async processKnowledgeCollectively(
     query: KnowledgeQuery,
-    options: CollectiveProcessingOptions = {},
+    options: CollectiveProcessingOptions = {}
   ): Promise<KnowledgeProcessingResult> {
     const startTime = Date.now();
     const processingId = `collective-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     if (!this.isInitialized) {
       throw new Error(
-        'Cross-Agent Knowledge Integration System not initialized',
+        'Cross-Agent Knowledge Integration System not initialized'
       );
     }
 
@@ -262,25 +262,25 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
       const reasoningResults = await this.applyCollaborativeReasoning(
         query,
         { factResults, ragResults },
-        options,
+        options
       );
 
       // Phase 4: Quality validation
       const validatedResults = await this.validateKnowledgeQuality(
         reasoningResults,
-        options,
+        options
       );
 
       // Phase 5: Generate collective response
       const collectiveResponse = await this.generateCollectiveResponse(
         validatedResults,
-        options,
+        options
       );
 
       // Phase 6: Apply performance optimizations
       const optimizedResponse = await this.applyResponseOptimizations(
         collectiveResponse,
-        options,
+        options
       );
 
       const result: KnowledgeProcessingResult = {
@@ -322,7 +322,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    * @param learningRequest
    */
   async coordinateDistributedLearning(
-    learningRequest: DistributedLearningRequest,
+    learningRequest: DistributedLearningRequest
   ): Promise<DistributedLearningResult> {
     const startTime = Date.now();
 
@@ -336,19 +336,19 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
       const federatedResult =
         await this.distributedLearning.coordinateFederatedLearning(
           learningRequest.participants,
-          learningRequest.globalModel,
+          learningRequest.globalModel
         );
 
       // Aggregate collective experiences
       const experienceAggregation =
         await this.distributedLearning.aggregateCollectiveExperience(
-          learningRequest.experiences,
+          learningRequest.experiences
         );
 
       // Synchronize models across swarm
       const modelSync = await this.distributedLearning.synchronizeSwarmModels(
         learningRequest.models,
-        learningRequest.syncStrategy as any, // TODO: Fix SyncProtocol type mismatch
+        learningRequest.syncStrategy as any // TODO: Fix SyncProtocol type mismatch
       );
 
       // Coordinate intelligence evolution
@@ -363,7 +363,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         intelligenceEvolution,
         overallImprovement: await this.calculateLearningImprovement(
           federatedResult,
-          experienceAggregation,
+          experienceAggregation
         ),
         learningTime: Date.now() - startTime,
         timestamp: Date.now(),
@@ -383,7 +383,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    * @param transferRequest
    */
   async facilitateCrossDomainTransfer(
-    transferRequest: CrossDomainTransferRequest,
+    transferRequest: CrossDomainTransferRequest
   ): Promise<CrossDomainTransferResult> {
     const startTime = Date.now();
 
@@ -399,13 +399,13 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         await this.intelligenceCoordination.facilitateCrossDomainTransfer(
           transferRequest.sourceDomain,
           transferRequest.targetDomain,
-          transferRequest.transferType as any, // TODO: Fix TransferType type mismatch
+          transferRequest.transferType as any // TODO: Fix TransferType type mismatch
         );
 
       // Apply collaborative reasoning for transfer validation
       const transferValidation = await this.validateTransferApplicability(
         intelligenceTransfer,
-        transferRequest,
+        transferRequest
       );
 
       // Ensure quality during transfer
@@ -468,7 +468,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
         uptime: Date.now() - systemHealth.startTime,
         version: '1.0.0',
         componentsInitialized: componentHealth.filter(
-          (c) => c.status === 'healthy',
+          (c) => c.status === 'healthy'
         ).length,
         totalComponents: componentHealth.length,
         memoryUsage: systemHealth.memoryUsage,
@@ -487,7 +487,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
    */
   async shutdown(): Promise<void> {
     this.logger.info(
-      'Shutting down Cross-Agent Knowledge Integration System...',
+      'Shutting down Cross-Agent Knowledge Integration System...'
     );
 
     try {
@@ -517,7 +517,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
       this.emit('system:shutdown');
       this.logger.info(
-        'Cross-Agent Knowledge Integration System shutdown complete',
+        'Cross-Agent Knowledge Integration System shutdown complete'
       );
     } catch (error) {
       this.logger.error('Error during integration system shutdown', { error });
@@ -534,37 +534,37 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     this.performanceOptimization = new PerformanceOptimizationSystem(
       this.config.performanceOptimization,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.qualityManagement = new KnowledgeQualityManagementSystem(
       this.config.qualityManagement,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.intelligenceCoordination = new IntelligenceCoordinationSystem(
       this.config.intelligenceCoordination,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.collaborativeReasoning = new CollaborativeReasoningEngine(
       this.config.collaborativeReasoning,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.distributedLearning = new DistributedLearningSystem(
       this.config.distributedLearning,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     this.collectiveIntelligence = new CollectiveIntelligenceCoordinator(
       this.config.collectiveIntelligence,
       this.logger,
-      this.eventBus,
+      this.eventBus
     );
 
     // Track component initialization
@@ -595,7 +595,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
     this.collaborativeReasoning.on('solution:synthesized', async (data) => {
       await this.performanceOptimization.optimizeKnowledgeSharing(
-        data?.sharing,
+        data?.sharing
       );
     });
 
@@ -647,22 +647,22 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   // Additional utility methods...
   private async gatherFactsCollectively(
     _query: KnowledgeQuery,
-    _options: CollectiveProcessingOptions,
-  ): Promise<any> {
+    _options: CollectiveProcessingOptions
+  ): Promise<unknown> {
     return { count: 0, facts: [] };
   }
 
   private async enhanceWithRAG(
     _query: KnowledgeQuery,
-    _factResults: any,
-    _options: CollectiveProcessingOptions,
-  ): Promise<any> {
+    _factResults: unknown,
+    _options: CollectiveProcessingOptions
+  ): Promise<unknown> {
     return { count: 0, results: [] };
   }
 
   // Missing method implementations to fix TypeScript errors
 
-  private async getSystemHealth(): Promise<any> {
+  private async getSystemHealth(): Promise<unknown> {
     const components = [
       this.collectiveIntelligence,
       this.distributedLearning,
@@ -688,9 +688,9 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   private async applyCollaborativeReasoning(
     _query: KnowledgeQuery,
-    _context: { factResults: any; ragResults: any },
-    _options: CollectiveProcessingOptions,
-  ): Promise<any> {
+    _context: { factResults: unknown; ragResults: unknown },
+    _options: CollectiveProcessingOptions
+  ): Promise<unknown> {
     return {
       consensusScore: 0.85,
       reasoning: 'Collaborative reasoning applied',
@@ -699,9 +699,9 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   private async validateKnowledgeQuality(
-    _results: any,
-    _options: CollectiveProcessingOptions,
-  ): Promise<any> {
+    _results: unknown,
+    _options: CollectiveProcessingOptions
+  ): Promise<unknown> {
     return {
       qualityScore: 0.9,
       validation: 'Quality validated',
@@ -710,8 +710,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   private async generateCollectiveResponse(
-    _validatedResults: any,
-    _options: CollectiveProcessingOptions,
+    _validatedResults: unknown,
+    _options: CollectiveProcessingOptions
   ): Promise<CollectiveKnowledgeResponse> {
     return {
       primaryResponse: 'Generated collective response',
@@ -731,13 +731,13 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   private async applyResponseOptimizations(
     _response: CollectiveKnowledgeResponse,
-    _options: CollectiveProcessingOptions,
+    _options: CollectiveProcessingOptions
   ): Promise<CollectiveKnowledgeResponse> {
     return _response; // Return optimized response
   }
 
   private async getOptimizationSummary(
-    _processingId: string,
+    _processingId: string
   ): Promise<OptimizationSummary> {
     return {
       optimizations_applied: ['response-compression', 'content-filtering'],
@@ -747,7 +747,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   private async storeProcessingResult(
-    _result: KnowledgeProcessingResult,
+    _result: KnowledgeProcessingResult
   ): Promise<void> {
     // Store processing result for learning
     this.logger.info('Storing processing result', {
@@ -756,9 +756,9 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   private async calculateLearningImprovement(
-    _federatedResult: any,
-    _experienceAggregation: any,
-  ): Promise<any> {
+    _federatedResult: unknown,
+    _experienceAggregation: unknown
+  ): Promise<unknown> {
     return {
       accuracyImprovement: 0.05,
       efficiencyGain: 0.1,
@@ -766,7 +766,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     };
   }
 
-  private async getComponentMetrics(): Promise<any> {
+  private async getComponentMetrics(): Promise<unknown> {
     return {
       componentCount: 6,
       activeComponents: 6,
@@ -784,7 +784,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     };
   }
 
-  private async getIntegrationSpecificMetrics(): Promise<any> {
+  private async getIntegrationSpecificMetrics(): Promise<unknown> {
     return {
       factIntegration: { active: true, performance: 0.9 },
       ragIntegration: { active: true, performance: 0.85 },
@@ -792,7 +792,7 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     };
   }
 
-  private async getCollectiveIntelligenceMetrics(): Promise<any> {
+  private async getCollectiveIntelligenceMetrics(): Promise<unknown> {
     return {
       coordinationEfficiency: 0.85,
       knowledgeSharingRate: 0.9,
@@ -822,9 +822,9 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   private async validateTransferApplicability(
-    _intelligenceTransfer: any,
-    _transferRequest: CrossDomainTransferRequest,
-  ): Promise<any> {
+    _intelligenceTransfer: unknown,
+    _transferRequest: CrossDomainTransferRequest
+  ): Promise<unknown> {
     return {
       applicable: true,
       confidence: 0.85,
@@ -833,8 +833,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
   }
 
   private async validateTransferQuality(
-    _transferValidation: any,
-  ): Promise<any> {
+    _transferValidation: unknown
+  ): Promise<unknown> {
     return {
       validationScore: 0.9,
       validatedKnowledge: _transferValidation,
@@ -843,12 +843,12 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
     };
   }
 
-  private async distributeModel(_model: any): Promise<void> {
+  private async distributeModel(_model: unknown): Promise<void> {
     this.logger.info(
       'Distributing model across intelligence coordination system',
       {
         model: _model,
-      },
+      }
     );
   }
 
@@ -865,7 +865,7 @@ export interface KnowledgeQuery {
   content: string;
   type: string;
   urgency: 'low' | 'medium' | 'high' | 'critical';
-  metadata: any;
+  metadata: unknown;
 }
 
 export interface CollectiveProcessingOptions {
@@ -877,10 +877,10 @@ export interface CollectiveProcessingOptions {
 }
 
 export interface DistributedLearningRequest {
-  participants: any[];
-  globalModel: any;
-  experiences: any[];
-  models: any[];
+  participants: unknown[];
+  globalModel: unknown;
+  experiences: unknown[];
+  models: unknown[];
   type: string;
   syncStrategy: string;
 }
@@ -893,31 +893,31 @@ export interface CrossDomainTransferRequest {
 }
 
 export interface IntegrationMetrics {
-  systemHealth: any;
-  componentMetrics: any;
-  performance: any;
-  integration: any;
-  collective: any;
+  systemHealth: unknown;
+  componentMetrics: unknown;
+  performance: unknown;
+  integration: unknown;
+  collective: unknown;
 }
 
 // Additional result types
 export interface DistributedLearningResult {
   learningId: string;
-  federatedResult: any;
-  experienceAggregation: any;
-  modelSync: any;
-  intelligenceEvolution: any;
-  overallImprovement: any;
+  federatedResult: unknown;
+  experienceAggregation: unknown;
+  modelSync: unknown;
+  intelligenceEvolution: unknown;
+  overallImprovement: unknown;
   learningTime: number;
   timestamp: number;
 }
 
 export interface CrossDomainTransferResult {
   transferId: string;
-  intelligenceTransfer: any;
-  transferValidation: any;
-  qualityAssurance: any;
-  performanceOptimization: any;
+  intelligenceTransfer: unknown;
+  transferValidation: unknown;
+  qualityAssurance: unknown;
+  performanceOptimization: unknown;
   overallSuccess: boolean;
   transferTime: number;
   timestamp: number;
@@ -967,7 +967,7 @@ export interface KnowledgeSource {
   id: string;
   type: string;
   reliability: number;
-  metadata: any;
+  metadata: unknown;
 }
 
 export interface EmergentInsight {
@@ -1000,12 +1000,12 @@ export interface OptimizationSummary {
 export async function createCrossAgentKnowledgeIntegration(
   config: CrossAgentKnowledgeConfig,
   logger: ILogger,
-  eventBus: IEventBus,
+  eventBus: IEventBus
 ): Promise<CrossAgentKnowledgeIntegration> {
   const integration = new CrossAgentKnowledgeIntegration(
     config,
     logger,
-    eventBus,
+    eventBus
   );
   await integration.initialize();
   return integration;

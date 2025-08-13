@@ -318,7 +318,7 @@ class IntegrationTester {
     }
     this.log(
       'Neural components not fully available (expected after simplification)',
-      'warn',
+      'warn'
     );
     return true; // Not a failure, just a warning
   }
@@ -376,7 +376,7 @@ class IntegrationTester {
 
     fs.writeFileSync(
       'integration-test-report.json',
-      JSON.stringify(reportData, null, 2),
+      JSON.stringify(reportData, null, 2)
     );
     this.log(`\nDetailed report saved to: integration-test-report.json`);
 

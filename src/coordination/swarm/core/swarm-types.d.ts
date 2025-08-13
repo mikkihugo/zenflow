@@ -26,7 +26,7 @@ declare module 'ruv-swarm' {
     getSwarmStatus(swarmId: string, detailed?: boolean): Promise<SwarmStatus>;
     getAllSwarms(): Promise<SwarmInfo[]>;
     getGlobalMetrics(): Promise<GlobalMetrics>;
-    spawnAgent(name: string, type?: AgentType, options?: any): Promise<Agent>;
+    spawnAgent(name: string, type?: AgentType, options?: unknown): Promise<Agent>;
   }
 
   // Configuration options
@@ -57,7 +57,7 @@ declare module 'ruv-swarm' {
     tasks: Map<string, Task>;
 
     spawn(config: AgentConfig): Promise<Agent>;
-    spawnAgent(name: string, type?: AgentType, options?: any): Promise<Agent>;
+    spawnAgent(name: string, type?: AgentType, options?: unknown): Promise<Agent>;
     orchestrate(taskConfig: TaskConfig): Promise<Task>;
     getStatus(detailed?: boolean): Promise<SwarmStatus>;
     monitor(duration?: number, interval?: number): Promise<MonitorResult>;
@@ -90,7 +90,7 @@ declare module 'ruv-swarm' {
     neuralNetworkId: string | null;
     status: 'idle' | 'busy' | 'offline';
 
-    execute(task: any): Promise<TaskResult>;
+    execute(task: unknown): Promise<TaskResult>;
     getMetrics(): Promise<AgentMetrics>;
     updateStatus(status: string): Promise<void>;
   }
@@ -110,10 +110,10 @@ declare module 'ruv-swarm' {
     description: string;
     status: 'pending' | 'in_progress' | 'completed' | 'failed';
     assignedAgents: string[];
-    result: any;
+    result: unknown;
 
     getStatus(): Promise<TaskStatus>;
-    getResults(): Promise<any>;
+    getResults(): Promise<unknown>;
   }
 
   // WASM Module Loader
@@ -139,7 +139,7 @@ declare module 'ruv-swarm' {
     swarm_init(params: SwarmInitParams): Promise<SwarmInitResult>;
     agent_spawn(params: AgentSpawnParams): Promise<AgentSpawnResult>;
     task_orchestrate(
-      params: TaskOrchestrateParams,
+      params: TaskOrchestrateParams
     ): Promise<TaskOrchestrateResult>;
     swarm_status(params: SwarmStatusParams): Promise<SwarmStatusResult>;
     benchmark_run(params: BenchmarkParams): Promise<BenchmarkResult>;
@@ -150,7 +150,7 @@ declare module 'ruv-swarm' {
     neural_status(params: NeuralStatusParams): Promise<NeuralStatusResult>;
     neural_train(params: NeuralTrainParams): Promise<NeuralTrainResult>;
     neural_patterns(
-      params: NeuralPatternsParams,
+      params: NeuralPatternsParams
     ): Promise<NeuralPatternsResult>;
   }
 
@@ -163,16 +163,16 @@ declare module 'ruv-swarm' {
 
     createAgentNeuralNetwork(
       agentId: string,
-      config?: NeuralConfig,
+      config?: NeuralConfig
     ): Promise<NeuralNetwork>;
     fineTuneNetwork(
       agentId: string,
       trainingData: TrainingData,
-      options?: TrainingOptions,
+      options?: TrainingOptions
     ): Promise<NeuralMetrics>;
     enableCollaborativeLearning(
       agentIds: string[],
-      options?: CollaborativeOptions,
+      options?: CollaborativeOptions
     ): Promise<CollaborativeSession>;
     getNetworkMetrics(agentId: string): NeuralMetrics | null;
     saveNetworkState(agentId: string, filePath: string): Promise<boolean>;

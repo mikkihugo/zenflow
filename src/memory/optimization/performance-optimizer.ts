@@ -49,7 +49,7 @@ export interface OptimizationAction {
   impact: 'low' | 'medium' | 'high';
   timestamp: number;
   status: 'pending' | 'executing' | 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
 }
 
 /**
@@ -239,7 +239,7 @@ export class PerformanceOptimizer extends EventEmitter {
    *
    * @param action
    */
-  private async performOptimization(action: OptimizationAction): Promise<any> {
+  private async performOptimization(action: OptimizationAction): Promise<unknown> {
     switch (action.type) {
       case 'cache_adjust':
         return await this.adjustCache();
@@ -259,7 +259,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Adjust cache settings.
    */
-  private async adjustCache(): Promise<any> {
+  private async adjustCache(): Promise<unknown> {
     // Simulate cache adjustment
     const currentCacheSize = 1000; // Default size
     const newCacheSize = Math.min(currentCacheSize * 1.5, 5000); // Increase by 50%, max 5000
@@ -285,7 +285,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Rebuild indexes for better performance.
    */
-  private async rebuildIndexes(): Promise<any> {
+  private async rebuildIndexes(): Promise<unknown> {
     const results = [];
     for (const [id, _backend] of this.backends) {
       try {
@@ -306,7 +306,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Toggle compression to save memory.
    */
-  private async toggleCompression(): Promise<any> {
+  private async toggleCompression(): Promise<unknown> {
     const results = [];
     for (const [id, _backend] of this.backends) {
       try {
@@ -328,7 +328,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Adjust prefetch strategy.
    */
-  private async adjustPrefetch(): Promise<any> {
+  private async adjustPrefetch(): Promise<unknown> {
     const results = [];
     for (const [id, _backend] of this.backends) {
       try {
@@ -348,7 +348,7 @@ export class PerformanceOptimizer extends EventEmitter {
   /**
    * Rebalance partitions for better distribution.
    */
-  private async rebalancePartitions(): Promise<any> {
+  private async rebalancePartitions(): Promise<unknown> {
     const results = [];
     for (const [id, _backend] of this.backends) {
       try {
@@ -385,13 +385,13 @@ export class PerformanceOptimizer extends EventEmitter {
 
     // Analyze trends
     const latencyTrend = this.calculateTrend(
-      history.map((h) => h.metrics.averageLatency),
+      history.map((h) => h.metrics.averageLatency)
     );
     const errorTrend = this.calculateTrend(
-      history.map((h) => h.metrics.errorRate),
+      history.map((h) => h.metrics.errorRate)
     );
     const cacheTrend = this.calculateTrend(
-      history.map((h) => h.metrics.cacheHitRate),
+      history.map((h) => h.metrics.cacheHitRate)
     );
 
     // Suggest optimizations based on trends
@@ -451,16 +451,16 @@ export class PerformanceOptimizer extends EventEmitter {
       actions: {
         total: this.actions.size,
         pending: Array.from(this.actions.values()).filter(
-          (a) => a.status === 'pending',
+          (a) => a.status === 'pending'
         ).length,
         executing: Array.from(this.actions.values()).filter(
-          (a) => a.status === 'executing',
+          (a) => a.status === 'executing'
         ).length,
         completed: Array.from(this.actions.values()).filter(
-          (a) => a.status === 'completed',
+          (a) => a.status === 'completed'
         ).length,
         failed: Array.from(this.actions.values()).filter(
-          (a) => a.status === 'failed',
+          (a) => a.status === 'failed'
         ).length,
       },
       backends: this.backends.size,

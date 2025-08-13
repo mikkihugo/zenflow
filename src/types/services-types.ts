@@ -7,7 +7,7 @@ export class ServiceOperationError extends Error {
   constructor(
     message: string,
     public readonly service: string,
-    public readonly operation?: string,
+    public readonly operation?: string
   ) {
     super(message);
     this.name = 'ServiceOperationError';
@@ -23,7 +23,7 @@ export class ServiceTimeoutError extends Error {
   constructor(
     message: string,
     public readonly service: string,
-    public readonly operation?: string,
+    public readonly operation?: string
   ) {
     super(message);
     this.name = 'ServiceTimeoutError';

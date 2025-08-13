@@ -76,7 +76,7 @@ export class APIError extends Error {
     code: string,
     message: string,
     details?: Record<string, unknown>,
-    traceId?: string,
+    traceId?: string
   ) {
     super(message);
     this.name = 'APIError';
@@ -152,7 +152,7 @@ export const errorHandler: ErrorRequestHandler = (
   error: Error | APIError,
   req: Request,
   res: Response,
-  _next: NextFunction,
+  _next: NextFunction
 ): void => {
   const traceId = generateTraceId();
 
@@ -280,7 +280,7 @@ export const notFoundHandler = (req: Request, res: Response): void => {
  * @param fn
  */
 export const asyncHandler = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>,
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<unknown>
 ) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     Promise.resolve(fn(req, res, next)).catch(next);
@@ -300,7 +300,7 @@ export const createValidationError = (
   field: string,
   value: unknown,
   message: string,
-  traceId?: string,
+  traceId?: string
 ): APIError => {
   return new APIError(
     422,
@@ -311,7 +311,7 @@ export const createValidationError = (
       value,
       validationMessage: message,
     },
-    traceId,
+    traceId
   );
 };
 
@@ -326,7 +326,7 @@ export const createValidationError = (
 export const createNotFoundError = (
   resource: string,
   identifier: string,
-  traceId?: string,
+  traceId?: string
 ): APIError => {
   return new APIError(
     404,
@@ -336,7 +336,7 @@ export const createNotFoundError = (
       resource,
       identifier,
     },
-    traceId,
+    traceId
   );
 };
 
@@ -351,7 +351,7 @@ export const createNotFoundError = (
 export const createConflictError = (
   resource: string,
   reason: string,
-  traceId?: string,
+  traceId?: string
 ): APIError => {
   return new APIError(
     409,
@@ -361,7 +361,7 @@ export const createConflictError = (
       resource,
       conflictReason: reason,
     },
-    traceId,
+    traceId
   );
 };
 
@@ -376,7 +376,7 @@ export const createConflictError = (
 export const createRateLimitError = (
   limit: number,
   windowMs: number,
-  traceId?: string,
+  traceId?: string
 ): APIError => {
   return new APIError(
     429,
@@ -387,7 +387,7 @@ export const createRateLimitError = (
       windowMs,
       retryAfter: Math.ceil(windowMs / 1000),
     },
-    traceId,
+    traceId
   );
 };
 
@@ -402,13 +402,13 @@ export const createRateLimitError = (
 export const createInternalError = (
   message: string,
   details?: Record<string, unknown>,
-  traceId?: string,
+  traceId?: string
 ): APIError => {
   return new APIError(
     500,
     ErrorCodes.INTERNAL_SERVER_ERROR,
     message,
     details,
-    traceId,
+    traceId
   );
 };

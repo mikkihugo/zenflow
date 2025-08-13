@@ -22,13 +22,13 @@ interface CoordinationStrategy {
     scalability: number;
     robustness: number;
   };
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
 }
 
 interface ConsensusProtocol {
   name: string;
   description: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   applicability: {
     trustRequired: number;
     performanceWeight: number;
@@ -38,10 +38,10 @@ interface ConsensusProtocol {
 
 interface AgentInfo {
   id: string;
-  agent: any;
+  agent: unknown;
   capabilities: AgentCapabilities;
   trustScore: number;
-  performanceHistory: any[];
+  performanceHistory: unknown[];
   communicationChannels: Set<string>;
   coordinationRole: string;
   lastHeartbeat: number;
@@ -68,7 +68,7 @@ interface CoordinationSession {
   startTime: number;
   messageQueue: Map<string, any[]>;
   consensusRounds: number;
-  coordinationEvents: any[];
+  coordinationEvents: unknown[];
   knowledgeGraph?: Map<string, any>;
 }
 
@@ -350,7 +350,7 @@ export class NeuralCoordinationProtocol {
    * @param agentId
    * @param agent
    */
-  async registerAgent(agentId: string, agent: any): Promise<AgentInfo> {
+  async registerAgent(agentId: string, agent: unknown): Promise<AgentInfo> {
     const agentInfo: AgentInfo = {
       id: agentId,
       agent,
@@ -384,7 +384,7 @@ export class NeuralCoordinationProtocol {
    *
    * @param agent
    */
-  private analyzeAgentCapabilities(agent: any): AgentCapabilities {
+  private analyzeAgentCapabilities(agent: unknown): AgentCapabilities {
     const capabilities: AgentCapabilities = {
       communicationBandwidth: 1000, // Default bandwidth
       processingPower: 1.0,
@@ -576,7 +576,7 @@ export class NeuralCoordinationProtocol {
    *
    * @param session
    */
-  private estimateTaskComplexity(session: any): number {
+  private estimateTaskComplexity(session: unknown): number {
     let complexity = 0.5; // Base complexity
 
     // Increase complexity based on agent count
@@ -853,7 +853,7 @@ export class NeuralCoordinationProtocol {
    * @param session
    * @param session.id
    */
-  async coordinate(session: { id: string }): Promise<any> {
+  async coordinate(session: { id: string }): Promise<unknown> {
     const coordinationSession = this.activeSessions.get(session.id);
     if (!coordinationSession) {
       throw new Error(`Session ${session.id} not found`);
@@ -895,7 +895,7 @@ export class NeuralCoordinationProtocol {
    *
    * @param session
    */
-  private async executeCoordinationStrategy(session: CoordinationSession): Promise<any> {
+  private async executeCoordinationStrategy(session: CoordinationSession): Promise<unknown> {
     const { strategy } = session;
 
     switch (strategy.name) {
@@ -921,7 +921,7 @@ export class NeuralCoordinationProtocol {
   }
 
   // Strategy execution methods - simplified implementations
-  private async executeHierarchicalCoordination(session: CoordinationSession): Promise<any> {
+  private async executeHierarchicalCoordination(session: CoordinationSession): Promise<unknown> {
     const leader = this.selectLeader(session);
     return {
       strategy: 'hierarchical',
@@ -931,7 +931,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executePeerToPeerCoordination(_session: CoordinationSession): Promise<any> {
+  private async executePeerToPeerCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'peer_to_peer',
       success: true,
@@ -939,7 +939,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executeSwarmCoordination(_session: CoordinationSession): Promise<any> {
+  private async executeSwarmCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'swarm',
       success: true,
@@ -947,7 +947,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executeMarketBasedCoordination(_session: CoordinationSession): Promise<any> {
+  private async executeMarketBasedCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'market_based',
       success: true,
@@ -955,7 +955,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executeContractNetCoordination(_session: CoordinationSession): Promise<any> {
+  private async executeContractNetCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'contract_net',
       success: true,
@@ -963,7 +963,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executeBlackboardCoordination(_session: CoordinationSession): Promise<any> {
+  private async executeBlackboardCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'blackboard',
       success: true,
@@ -971,7 +971,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executeMARLCoordination(_session: CoordinationSession): Promise<any> {
+  private async executeMARLCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'marl',
       success: true,
@@ -979,7 +979,7 @@ export class NeuralCoordinationProtocol {
     };
   }
 
-  private async executeByzantineCoordination(_session: CoordinationSession): Promise<any> {
+  private async executeByzantineCoordination(_session: CoordinationSession): Promise<unknown> {
     return {
       strategy: 'byzantine_ft',
       success: true,
@@ -989,8 +989,8 @@ export class NeuralCoordinationProtocol {
 
   private async executeConsensusProtocol(
     session: CoordinationSession,
-    _coordinationResult: any
-  ): Promise<any> {
+    _coordinationResult: unknown
+  ): Promise<unknown> {
     const { consensusProtocol } = session;
     if (!consensusProtocol) return null;
 
@@ -1016,7 +1016,7 @@ export class NeuralCoordinationProtocol {
     return bestAgent;
   }
 
-  private updateCoordinationMetrics(session: CoordinationSession, result: any): void {
+  private updateCoordinationMetrics(session: CoordinationSession, result: unknown): void {
     for (const agentId of session.agentIds) {
       const metrics = this.coordinationMetrics.get(agentId);
       if (metrics) {
@@ -1039,14 +1039,14 @@ export class NeuralCoordinationProtocol {
    *
    * @param sessionId
    */
-  async getResults(sessionId: string): Promise<any> {
+  async getResults(sessionId: string): Promise<unknown> {
     return this.coordinationResults.get(sessionId) || null;
   }
 
   /**
    * Get coordination statistics.
    */
-  getStatistics(): any {
+  getStatistics(): unknown {
     const activeSessions = this.activeSessions.size;
     const totalAgents = this.coordinationMetrics.size;
     let avgSuccessRate = 0;

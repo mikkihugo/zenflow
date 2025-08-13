@@ -60,39 +60,44 @@ function calculateCorrectModulePath(filePath, moduleName) {
 
   if (depth === 0) {
     return `./${moduleName}`;
-  } else if (depth === 1) {
-    return `../${moduleName}`;
-  } else {
-    return '../'.repeat(depth) + moduleName;
   }
+  if (depth === 1) {
+    return `../${moduleName}`;
+  }
+  return '../'.repeat(depth) + moduleName;
 }
 
 async function getSimpleModuleResolutionFiles() {
   return new Promise((resolve, reject) => {
-    exec('npx tsc --noEmit --skipLibCheck 2>&1 | grep "error TS2307"', (error, stdout, stderr) => {
-      if (error && !stdout) {
-        resolve([]);
-        return;
-      }
-
-      const fileErrors = new Map();
-      const lines = stdout.split('\n').filter((line) => line.includes('error TS2307'));
-
-      for (const line of lines) {
-        const match = line.match(/^(src\/[^(]+)/);
-        if (match) {
-          const file = match[1];
-          fileErrors.set(file, (fileErrors.get(file) || 0) + 1);
+    exec(
+      'npx tsc --noEmit --skipLibCheck 2>&1 | grep "error TS2307"',
+      (error, stdout, stderr) => {
+        if (error && !stdout) {
+          resolve([]);
+          return;
         }
+
+        const fileErrors = new Map();
+        const lines = stdout
+          .split('\n')
+          .filter((line) => line.includes('error TS2307'));
+
+        for (const line of lines) {
+          const match = line.match(/^(src\/[^(]+)/);
+          if (match) {
+            const file = match[1];
+            fileErrors.set(file, (fileErrors.get(file) || 0) + 1);
+          }
+        }
+
+        // Return only files with 1-2 Module Resolution errors
+        const simpleFiles = Array.from(fileErrors.entries())
+          .filter(([_, count]) => count <= 2)
+          .map(([file]) => file);
+
+        resolve(simpleFiles);
       }
-
-      // Return only files with 1-2 Module Resolution errors
-      const simpleFiles = Array.from(fileErrors.entries())
-        .filter(([_, count]) => count <= 2)
-        .map(([file]) => file);
-
-      resolve(simpleFiles);
-    });
+    );
   });
 }
 
@@ -144,7 +149,9 @@ function fixModuleResolution(filePath) {
 
     if (fixed) {
       fs.writeFileSync(filePath, content);
-      console.log(`✅ ${path.relative('.', filePath)}: ${fixCount} module resolution fixes`);
+      console.log(
+        `✅ ${path.relative('.', filePath)}: ${fixCount} module resolution fixes`
+      );
       return fixCount;
     }
 
@@ -157,11 +164,15 @@ function fixModuleResolution(filePath) {
 
 async function main() {
   console.log('🔧 STREAM C: Bulk Module Resolution Fixer');
-  console.log('⚡ Targeting 1-2 error files with simple Module Resolution issues...\n');
+  console.log(
+    '⚡ Targeting 1-2 error files with simple Module Resolution issues...\n'
+  );
 
   try {
     const simpleFiles = await getSimpleModuleResolutionFiles();
-    console.log(`📊 Found ${simpleFiles.length} files with 1-2 Module Resolution errors\n`);
+    console.log(
+      `📊 Found ${simpleFiles.length} files with 1-2 Module Resolution errors\n`
+    );
 
     let totalFiles = 0;
     let totalFixes = 0;

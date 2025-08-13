@@ -63,7 +63,7 @@ export class HybridTestUtility {
 
   private shouldMock(
     dependency: string,
-    approach: 'london' | 'classical',
+    approach: 'london' | 'classical'
   ): boolean {
     const alwaysMock = ['http', 'file', 'network', 'external'];
     const neverMock = ['math', 'pure', 'algorithm'];
@@ -76,7 +76,7 @@ export class HybridTestUtility {
 
   private createMockForDependency(
     dependency: string,
-    approach: 'london' | 'classical',
+    approach: 'london' | 'classical'
   ): jest.Mock {
     const mock = vi.fn();
 
@@ -95,7 +95,7 @@ export class HybridTestUtility {
   }
 
   private getRealisticBehavior(
-    dependency: string,
+    dependency: string
   ): (...args: unknown[]) => any {
     const behaviors: Record<string, (...args: unknown[]) => any> = {
       database: () => ({ success: true, data: [] }),
@@ -197,7 +197,7 @@ export class LondonAssertions {
    */
   verifyCoordinationPattern(
     mock: jest.Mock,
-    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe',
+    expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe'
   ) {
     const calls = mock.mock.calls;
 
@@ -226,7 +226,7 @@ export class ClassicalAssertions {
   verifyComputation(
     actual: number | number[],
     expected: number | number[],
-    tolerance: number = 1e-10,
+    tolerance: number = 1e-10
   ) {
     if (Array.isArray(actual) && Array.isArray(expected)) {
       expect(actual).toHaveLength(expected.length);
@@ -250,7 +250,7 @@ export class ClassicalAssertions {
   verifyConvergence(
     values: number[],
     targetValue: number,
-    tolerance: number = 1e-6,
+    tolerance: number = 1e-6
   ) {
     const lastValue = values[values.length - 1];
     expect(Math.abs(lastValue - targetValue)).toBeLessThanOrEqual(tolerance);
@@ -274,9 +274,9 @@ export class ClassicalAssertions {
    * @param transformationRules
    */
   verifyTransformation(
-    input: any,
-    output: any,
-    transformationRules: Record<string, (input: unknown) => any>,
+    input: unknown,
+    output: unknown,
+    transformationRules: Record<string, (input: unknown) => any>
   ) {
     for (const [_rule, transform] of Object.entries(transformationRules)) {
       const expected = transform(input);
@@ -291,8 +291,8 @@ export class ClassicalAssertions {
    * @param invariants
    */
   verifyStateConsistency(
-    state: any,
-    invariants: Array<(state: unknown) => boolean>,
+    state: unknown,
+    invariants: Array<(state: unknown) => boolean>
   ) {
     invariants.forEach((invariant, _index) => {
       expect(invariant(state)).toBe(true);
@@ -308,7 +308,7 @@ export class ClassicalAssertions {
  */
 export function createHybridTestSetup(
   domain: string,
-  config?: Partial<HybridTestConfig>,
+  config?: Partial<HybridTestConfig>
 ): HybridTestUtility {
   const defaultConfig: HybridTestConfig = {
     approach: 'hybrid',

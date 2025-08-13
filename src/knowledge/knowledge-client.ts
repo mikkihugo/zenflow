@@ -37,7 +37,7 @@ export interface FACTQuery {
   query: string;
   tools?: string[];
   useCache?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface FACTResult {
@@ -47,7 +47,7 @@ export interface FACTResult {
   cacheHit: boolean;
   toolsUsed: string[];
   cost?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Aliases for knowledge client compatibility
@@ -178,7 +178,7 @@ export class FACTIntegration extends EventEmitter {
    */
   async getDocumentation(
     framework: string,
-    version?: string,
+    version?: string
   ): Promise<FACTResult> {
     const queries = {
       react: `Get the latest React ${version || '19'} documentation including hooks, components, and best practices. Include code examples and migration notes.`,
@@ -243,7 +243,7 @@ export class FACTIntegration extends EventEmitter {
    */
   async searchCommunityKnowledge(
     topic: string,
-    tags?: string[],
+    tags?: string[]
   ): Promise<FACTResult> {
     const tagStr = tags ? ` with tags: ${tags.join(', ')}` : '';
     const query = `Search Stack Overflow and developer communities for: ${topic}${tagStr}. Get top solutions, code examples, and best practices.`;
@@ -314,7 +314,7 @@ export class FACTIntegration extends EventEmitter {
       await fs.access(srcPath);
     } catch (_error) {
       throw new Error(
-        `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`,
+        `FACT repository not found at ${this.config.factRepoPath}. Please clone it first: git clone https://github.com/ruvnet/FACT.git`
       );
     }
   }
@@ -368,8 +368,8 @@ export class FACTIntegration extends EventEmitter {
    */
   private async executeFACTQuery(
     queryId: string,
-    factQuery: FACTQuery,
-  ): Promise<any> {
+    factQuery: FACTQuery
+  ): Promise<unknown> {
     const command = {
       action: 'query',
       query_id: queryId,
@@ -387,7 +387,7 @@ export class FACTIntegration extends EventEmitter {
    *
    * @param command
    */
-  private async executePythonCommand(command: string): Promise<any> {
+  private async executePythonCommand(command: string): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const pythonArgs = [
         path.join(this.config.factRepoPath, 'main.py'),
@@ -451,7 +451,7 @@ let globalFACTInstance: FACTIntegration | null = null;
  * @example
  */
 export async function initializeFACT(
-  config: FACTConfig,
+  config: FACTConfig
 ): Promise<FACTIntegration> {
   if (globalFACTInstance) {
     return globalFACTInstance;

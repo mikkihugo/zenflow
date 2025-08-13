@@ -33,7 +33,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
 
     bridge = new CollectiveKnowledgeBridge(
       mockHiveCoordinator as any,
-      mockMemoryStore as any,
+      mockMemoryStore as any
     );
     (bridge as any).hiveFact = mockHiveFACT;
 
@@ -48,7 +48,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
     test('should initialize successfully with valid dependencies', async () => {
       const newBridge = new CollectiveKnowledgeBridge(
         mockHiveCoordinator as any,
-        mockMemoryStore as any,
+        mockMemoryStore as any
       );
       (newBridge as any).hiveFact = mockHiveFACT;
 
@@ -59,12 +59,12 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
     test('should throw error when HiveFACT is not available', async () => {
       const newBridge = new CollectiveKnowledgeBridge(
         mockHiveCoordinator as any,
-        mockMemoryStore as any,
+        mockMemoryStore as any
       );
       // Don't set hiveFact
 
       await expect(newBridge.initialize()).rejects.toThrow(
-        'HiveFACT system not available',
+        'HiveFACT system not available'
       );
     });
   });
@@ -81,7 +81,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
         expect.objectContaining({
           swarmId: 'swarm-1',
           interests: ['authentication', 'frontend'],
-        }),
+        })
       );
     });
 
@@ -216,13 +216,13 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       expect(response?.success).toBe(true);
       expect(response?.data?.results?.[0]).toHaveProperty('swarmContext');
       expect(response?.data?.results?.[0]?.swarmContext).toHaveProperty(
-        'relevanceScore',
+        'relevanceScore'
       );
       expect(response?.data?.results?.[0]?.swarmContext).toHaveProperty(
-        'usageHistory',
+        'usageHistory'
       );
       expect(response?.data?.results?.[0]?.swarmContext?.usageHistory).toBe(
-        'previously-used',
+        'previously-used'
       );
     });
   });
@@ -262,7 +262,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       expect(mockMemoryStore.store).toHaveBeenCalledWith(
         expect.stringContaining('hive-bridge/contributions/swarm-1/'),
         'contribution',
-        contribution,
+        contribution
       );
     });
 
@@ -355,7 +355,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
 
       expect(response?.success).toBe(false);
       expect(response?.error).toBe(
-        'Domain is required for knowledge subscription',
+        'Domain is required for knowledge subscription'
       );
     });
   });
@@ -440,13 +440,13 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const eventsEmitted: string[] = [];
 
       bridge.on('swarm:registered', () =>
-        eventsEmitted.push('swarm:registered'),
+        eventsEmitted.push('swarm:registered')
       );
       bridge.on('knowledge:contributed', () =>
-        eventsEmitted.push('knowledge:contributed'),
+        eventsEmitted.push('knowledge:contributed')
       );
       bridge.on('knowledge:distributed', () =>
-        eventsEmitted.push('knowledge:distributed'),
+        eventsEmitted.push('knowledge:distributed')
       );
 
       // Register swarm

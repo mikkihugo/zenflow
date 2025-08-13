@@ -22,7 +22,7 @@ try {
   mcpTools = await import('../src/mcp-tools-enhanced.js');
 } catch (_error) {
   console.warn(
-    'Warning: MCP tools module not found, using mock implementation',
+    'Warning: MCP tools module not found, using mock implementation'
   );
   mcpTools = {
     default: {
@@ -117,7 +117,7 @@ class MCPToolsTestSuite {
       });
       assert(
         result.success === true,
-        'swarm_init should succeed with valid topology',
+        'swarm_init should succeed with valid topology'
       );
       this.results.coverage.validInputs++;
     });
@@ -245,7 +245,7 @@ class MCPToolsTestSuite {
       });
       assert(
         result.success === true,
-        'daa_agent_create should create DAA agent',
+        'daa_agent_create should create DAA agent'
       );
       this.results.coverage.validInputs++;
     });
@@ -268,10 +268,10 @@ class MCPToolsTestSuite {
         });
         assert(
           result.success === true,
-          'daa_workflow_create should create workflow',
+          'daa_workflow_create should create workflow'
         );
         this.results.coverage.validInputs++;
-      },
+      }
     );
 
     await this.runTest(
@@ -282,10 +282,10 @@ class MCPToolsTestSuite {
         });
         assert(
           result.success === true,
-          'daa_workflow_execute should execute workflow',
+          'daa_workflow_execute should execute workflow'
         );
         this.results.coverage.validInputs++;
-      },
+      }
     );
 
     await this.runTest('daa_knowledge_share - Share knowledge', async () => {
@@ -295,7 +295,7 @@ class MCPToolsTestSuite {
       });
       assert(
         result.success === true,
-        'daa_knowledge_share should share knowledge',
+        'daa_knowledge_share should share knowledge'
       );
       this.results.coverage.validInputs++;
     });
@@ -308,10 +308,10 @@ class MCPToolsTestSuite {
         });
         assert(
           result.success === true,
-          'daa_learning_status should return status',
+          'daa_learning_status should return status'
         );
         this.results.coverage.validInputs++;
-      },
+      }
     );
 
     await this.runTest('daa_cognitive_pattern - Analyze patterns', async () => {
@@ -321,7 +321,7 @@ class MCPToolsTestSuite {
       });
       assert(
         result.success === true,
-        'daa_cognitive_pattern should analyze patterns',
+        'daa_cognitive_pattern should analyze patterns'
       );
       this.results.coverage.validInputs++;
     });
@@ -333,7 +333,7 @@ class MCPToolsTestSuite {
       });
       assert(
         result.success === true,
-        'daa_meta_learning should enable meta-learning',
+        'daa_meta_learning should enable meta-learning'
       );
       this.results.coverage.validInputs++;
     });
@@ -346,10 +346,10 @@ class MCPToolsTestSuite {
         });
         assert(
           result.success === true,
-          'daa_performance_metrics should return metrics',
+          'daa_performance_metrics should return metrics'
         );
         this.results.coverage.validInputs++;
-      },
+      }
     );
 
     this.results.coverage.tools = 25; // All 25 tools tested
@@ -449,7 +449,7 @@ class MCPToolsTestSuite {
         } catch (_error) {
           this.results.coverage.edgeCases++;
         }
-      },
+      }
     );
 
     await this.runTest('memory_usage - Very detailed request', async () => {
@@ -467,13 +467,13 @@ class MCPToolsTestSuite {
           this.tools.agent_spawn({
             type: 'researcher',
             name: `concurrent-agent-${i}`,
-          }),
+          })
         );
       }
       const results = await Promise.all(promises);
       assert(
         results.every((r) => r.success),
-        'All concurrent operations should succeed',
+        'All concurrent operations should succeed'
       );
     });
 
@@ -484,13 +484,13 @@ class MCPToolsTestSuite {
           this.tools.task_orchestrate({
             task: `concurrent-task-${i}`,
             strategy: 'parallel',
-          }),
+          })
         );
       }
       const results = await Promise.all(promises);
       assert(
         results.every((r) => r.success),
-        'All concurrent tasks should be orchestrated',
+        'All concurrent tasks should be orchestrated'
       );
     });
   }
@@ -541,7 +541,7 @@ class MCPToolsTestSuite {
 
     if (this.results.coverage.invalidInputs < 10) {
       recommendations.push(
-        'Add more invalid input tests for better error handling coverage',
+        'Add more invalid input tests for better error handling coverage'
       );
     }
 
@@ -551,7 +551,7 @@ class MCPToolsTestSuite {
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent test coverage! Consider adding performance tests.',
+        'Excellent test coverage! Consider adding performance tests.'
       );
     }
 
@@ -574,7 +574,7 @@ class MCPToolsTestSuite {
     // Save report to file
     const reportPath = path.join(
       __dirname,
-      '../test-reports/mcp-tools-test-report.json',
+      '../test-reports/mcp-tools-test-report.json'
     );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));

@@ -164,7 +164,7 @@ class AdvancedLintFixer {
           return `${indent}${statement};`;
         }
         return match;
-      },
+      }
     );
 
     // Fix incomplete object literals
@@ -207,13 +207,13 @@ class AdvancedLintFixer {
           return `${indent}// ${identifier}; // Fixed: was standalone identifier`;
         }
         return match;
-      },
+      }
     );
 
     // Fix incomplete function declarations
     modified = modified.replace(
       /^(\s*)function\s*$/gm,
-      '$1function placeholder() {}',
+      '$1function placeholder() {}'
     );
 
     this.updateStats('declaration-expected', fixes);
@@ -250,7 +250,7 @@ class AdvancedLintFixer {
           return `${indent}${statement};`;
         }
         return match;
-      },
+      }
     );
 
     this.updateStats('semicolon-expected', fixes);
@@ -272,7 +272,7 @@ class AdvancedLintFixer {
       (_match, prop1, indent, prop2) => {
         fixes++;
         return `${prop1},\n${indent}${prop2}`;
-      },
+      }
     );
 
     // Fix missing commas in array literals
@@ -291,7 +291,7 @@ class AdvancedLintFixer {
           return `${item1},\n${indent}${item2}`;
         }
         return match;
-      },
+      }
     );
 
     this.updateStats('comma-expected', fixes);
@@ -319,7 +319,7 @@ class AdvancedLintFixer {
       (_match, indent, identifier) => {
         fixes++;
         return `${indent}// ${identifier}: // Fixed: unexpected colon`;
-      },
+      }
     );
 
     // Fix malformed console statements
@@ -341,13 +341,13 @@ class AdvancedLintFixer {
     // Fix incomplete import statements
     modified = modified.replace(
       /^(\s*)import\s*$/gm,
-      '$1// import statement incomplete',
+      '$1// import statement incomplete'
     );
 
     // Fix incomplete export statements
     modified = modified.replace(
       /^(\s*)export\s*$/gm,
-      '$1// export statement incomplete',
+      '$1// export statement incomplete'
     );
 
     // Fix mixed module syntax in ES modules
@@ -362,7 +362,7 @@ class AdvancedLintFixer {
         (_match, varName, moduleName) => {
           fixes++;
           return `import ${varName} from '${moduleName}';`;
-        },
+        }
       );
 
       // Convert module.exports to export
@@ -371,7 +371,7 @@ class AdvancedLintFixer {
         (_match, exportValue) => {
           fixes++;
           return `export default ${exportValue};`;
-        },
+        }
       );
     }
 
@@ -394,7 +394,7 @@ class AdvancedLintFixer {
     // Fix missing function keyword after async
     modified = modified.replace(
       /^(\s*)async\s+(\w+)\s*\(/gm,
-      '$1async function $2(',
+      '$1async function $2('
     );
 
     this.updateStats('async-syntax', fixes);
@@ -417,7 +417,7 @@ class AdvancedLintFixer {
     // Fix incomplete type annotations
     modified = modified.replace(
       /:\s*$/gm,
-      ': any; // Fixed: incomplete type annotation',
+      ': any; // Fixed: incomplete type annotation'
     );
 
     this.updateStats('type-annotations', fixes);
@@ -431,7 +431,7 @@ class AdvancedLintFixer {
     this.stats.totalFixes += count;
     this.stats.fixesByType.set(
       fixType,
-      (this.stats.fixesByType.get(fixType) || 0) + count,
+      (this.stats.fixesByType.get(fixType) || 0) + count
     );
   }
 

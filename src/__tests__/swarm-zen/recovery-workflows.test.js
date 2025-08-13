@@ -92,7 +92,7 @@ describe('Health Monitor', () => {
       {
         category: 'test',
         priority: 'low',
-      },
+      }
     );
 
     expect(checkId).toBeDefined();
@@ -417,7 +417,7 @@ describe('Chaos Engineering', () => {
   test('should initialize with built-in experiments', async () => {
     expect(chaosEngineering.experiments.size).toBeGreaterThan(0);
     expect(chaosEngineering.experiments.has('memory_pressure_recovery')).toBe(
-      true,
+      true
     );
     expect(chaosEngineering.failureInjectors.size).toBeGreaterThan(0);
   });
@@ -430,7 +430,7 @@ describe('Chaos Engineering', () => {
         failureType: 'memory_pressure',
         duration: 1000,
         blastRadius: 0.1,
-      },
+      }
     );
 
     expect(experimentId).toBeDefined();
@@ -742,7 +742,7 @@ describe('Performance and Load Testing', () => {
     for (let i = 0; i < 3; i++) {
       // Within concurrent limit
       recoveryPromises.push(
-        recoveryWorkflows.triggerRecovery(`test.trigger.${i}`),
+        recoveryWorkflows.triggerRecovery(`test.trigger.${i}`)
       );
     }
 
@@ -783,7 +783,7 @@ describe('Error Handling and Edge Cases', () => {
 
     // Manually try to initialize a failing component
     await expect(
-      integration.initializeComponent('failing', FailingComponent),
+      integration.initializeComponent('failing', FailingComponent)
     ).rejects.toThrow('Initialization failed');
 
     await integration.shutdown();

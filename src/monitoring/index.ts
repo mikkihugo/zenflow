@@ -117,7 +117,7 @@ export class PerformanceMonitoringSystem {
  * @example
  */
 export async function createMonitoringSystem(
-  config?: Partial<IntegrationConfig>,
+  config?: Partial<IntegrationConfig>
 ): Promise<PerformanceMonitoringSystem> {
   const system = new PerformanceMonitoringSystem(config);
   await system.start();
@@ -138,7 +138,7 @@ export async function setupClaudeZenMonitoring(
     dashboardPort?: number;
     enableOptimization?: boolean;
     metricsInterval?: number;
-  } = {},
+  } = {}
 ): Promise<{
   system: PerformanceMonitoringSystem;
   hooks: import('./integrations/system-integration.ts').SystemHooks;
@@ -240,7 +240,7 @@ export const examples = {
     // Log critical issues
     integration.on('insights:processed', (insights) => {
       const criticalAnomalies = insights.anomalies.filter(
-        (a) => a.severity === 'critical',
+        (a) => a.severity === 'critical'
       );
       if (criticalAnomalies.length > 0) {
         logger.error('CRITICAL PERFORMANCE ISSUES:', criticalAnomalies);

@@ -28,7 +28,7 @@ interface OutputFormatter {
 }
 
 interface ErrorHandler {
-  handle(error: Error, context?: any): Promise<ErrorResult>;
+  handle(error: Error, context?: unknown): Promise<ErrorResult>;
 }
 
 interface ParseResult {
@@ -65,14 +65,14 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     parser: ArgumentParser,
     formatter: OutputFormatter,
     errorHandler: ErrorHandler,
-    mockExecute?: jest.Mock,
+    mockExecute?: jest.Mock
   ) {
     super();
     this.registry = registry;
     this.parser = parser;
     this.formatter = formatter;
     this.errorHandler = errorHandler;
-    this.mockExecute = mockExecute || vi.fn() as any;
+    this.mockExecute = mockExecute || (vi.fn() as any);
   }
 
   async initialize(): Promise<void> {
@@ -170,7 +170,7 @@ describe('CLI Commands Integration - TDD London', () => {
       mockParser,
       mockFormatter,
       mockErrorHandler,
-      mockExecute,
+      mockExecute
     );
   });
 
@@ -277,7 +277,7 @@ describe('CLI Commands Integration - TDD London', () => {
 
       // Act & Assert
       await expect(cliSystem.execute(input)).rejects.toThrow(
-        'Command not found',
+        'Command not found'
       );
     });
 
@@ -309,12 +309,12 @@ describe('CLI Commands Integration - TDD London', () => {
         mockRegistry,
         mockParser,
         mockFormatter,
-        mockErrorHandler,
+        mockErrorHandler
       );
 
       // Act & Assert
       await expect(uninitializedSystem.execute(['test'])).rejects.toThrow(
-        'CLI system not initialized',
+        'CLI system not initialized'
       );
     });
   });
@@ -478,7 +478,7 @@ describe('CLI Commands Integration - TDD London', () => {
       ];
 
       mockRegistry.findByCategory.mockReturnValue(
-        coreCommands as CommandMetadata[],
+        coreCommands as CommandMetadata[]
       );
 
       await cliSystem.initialize();
@@ -603,12 +603,12 @@ describe('CLI Commands Integration - TDD London', () => {
         mockRegistry,
         mockParser,
         mockFormatter,
-        mockErrorHandler,
+        mockErrorHandler
       );
 
       // Act & Assert
       await expect(errorSystem.initialize()).rejects.toThrow(
-        'Initialization failed',
+        'Initialization failed'
       );
     });
   });

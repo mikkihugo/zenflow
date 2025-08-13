@@ -102,7 +102,7 @@ export interface WebSocketAuthenticationConfig extends AuthenticationConfig {
   // Custom authentication function
   customAuth?: (
     url: string,
-    protocols?: string[],
+    protocols?: string[]
   ) => {
     url: string;
     protocols?: string[];
@@ -140,7 +140,7 @@ export interface WebSocketHeartbeatConfig {
   enabled: boolean;
   interval: number; // milliseconds
   timeout?: number; // milliseconds to wait for pong
-  message?: any; // custom heartbeat message
+  message?: unknown; // custom heartbeat message
   autoStart?: boolean; // start heartbeat after connection
 }
 
@@ -218,7 +218,7 @@ export interface WebSocketClientConfig extends ClientConfig {
   maxRedirects?: number;
 
   // Node.js specific options
-  agent?: any; // HTTP agent for Node.js
+  agent?: unknown; // HTTP agent for Node.js
 
   // Binary handling
   binaryType?: 'nodebuffer' | 'arraybuffer' | 'fragments';
@@ -274,7 +274,7 @@ export interface WebSocketMessage<T = any> {
   data: T;
   timestamp?: number;
   priority?: 'high' | 'normal' | 'low';
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 
   // Response handling
   expectResponse?: boolean;
@@ -337,13 +337,13 @@ export interface WebSocketEvents {
   reconnectFailed: (attempts: number) => void;
 
   // Message events
-  message: (data: any, metadata?: any) => void;
-  binaryMessage: (data: ArrayBuffer, metadata?: any) => void;
+  message: (data: unknown, metadata?: unknown) => void;
+  binaryMessage: (data: ArrayBuffer, metadata?: unknown) => void;
 
   // Heartbeat events
-  ping: (data?: any) => void;
-  pong: (data?: any) => void;
-  heartbeat: (data?: any) => void;
+  ping: (data?: unknown) => void;
+  pong: (data?: unknown) => void;
+  heartbeat: (data?: unknown) => void;
 
   // Queue events
   queueFull: (queueSize: number) => void;
@@ -356,11 +356,11 @@ export interface WebSocketEvents {
   // State events
   stateChange: (
     oldState: WebSocketReadyState,
-    newState: WebSocketReadyState,
+    newState: WebSocketReadyState
   ) => void;
 
   // Custom events
-  [eventName: string]: (...args: any[]) => void;
+  [eventName: string]: (...args: unknown[]) => void;
 }
 
 /**
@@ -448,7 +448,7 @@ export interface WebSocketExtension {
   name: string;
   params?: Record<string, string | number | boolean>;
   enabled: boolean;
-  config?: any;
+  config?: unknown;
 }
 
 /**
@@ -484,7 +484,7 @@ export interface WebSocketSecurityConfig {
   validation?: {
     maxMessageSize: number;
     allowedOrigins?: string[];
-    messageSchema?: any; // JSON schema for message validation
+    messageSchema?: unknown; // JSON schema for message validation
   };
 }
 
@@ -492,19 +492,19 @@ export interface WebSocketSecurityConfig {
  * Type guards for WebSocket types.
  */
 export const WebSocketTypeGuards = {
-  isWebSocketConfig: (config: any): config is WebSocketClientConfig => {
+  isWebSocketConfig: (config: unknown): config is WebSocketClientConfig => {
     return config && typeof config.url === 'string';
   },
 
-  isWebSocketMessage: (message: any): message is WebSocketMessage => {
+  isWebSocketMessage: (message: unknown): message is WebSocketMessage => {
     return message && typeof message === 'object' && 'data' in message;
   },
 
-  isValidReadyState: (state: any): state is WebSocketReadyState => {
+  isValidReadyState: (state: unknown): state is WebSocketReadyState => {
     return typeof state === 'number' && state >= 0 && state <= 3;
   },
 
-  isValidCloseCode: (code: any): code is WebSocketCloseCode => {
+  isValidCloseCode: (code: unknown): code is WebSocketCloseCode => {
     return (
       typeof code === 'number' &&
       Object.values(WebSocketCloseCode).includes(code)
@@ -542,7 +542,7 @@ export const WebSocketUtils = {
     attempt: number,
     baseDelay: number,
     maxDelay: number,
-    jitter = false,
+    jitter = false
   ): number => {
     let delay = Math.min(baseDelay * 2 ** attempt, maxDelay);
 

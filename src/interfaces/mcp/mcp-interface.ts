@@ -23,9 +23,9 @@ export interface MCPInterfaceConfig {
 export interface MCPMessage {
   id: string;
   method: string;
-  params?: any;
-  result?: any;
-  error?: any;
+  params?: unknown;
+  result?: unknown;
+  error?: unknown;
 }
 
 export class MCPInterface extends EventEmitter {
@@ -82,7 +82,7 @@ export class MCPInterface extends EventEmitter {
    * @param name
    * @param args
    */
-  async callTool(name: string, args: any): Promise<any> {
+  async callTool(name: string, args: unknown): Promise<unknown> {
     const toolName = `${this.config.toolPrefix}${name}`;
 
     logger.debug(`Calling MCP tool: ${toolName}`, args);
@@ -109,7 +109,7 @@ export class MCPInterface extends EventEmitter {
     };
 
     const response = await this.sendMessage(message);
-    return response?.tools?.map((tool: any) => tool.name) || [];
+    return response?.tools?.map((tool: unknown) => tool.name) || [];
   }
 
   private async connect(): Promise<void> {
@@ -124,7 +124,7 @@ export class MCPInterface extends EventEmitter {
     this.emit('disconnected');
   }
 
-  private async sendMessage(message: MCPMessage): Promise<any> {
+  private async sendMessage(message: MCPMessage): Promise<unknown> {
     if (!this.isConnected) {
       throw new Error('MCP interface not connected');
     }
@@ -155,7 +155,7 @@ export class MCPInterface extends EventEmitter {
     this.retryCount++;
     this.reconnectTimer = setTimeout(() => {
       logger.info(
-        `Attempting to reconnect (${this.retryCount}/${this.config.maxRetries})...`,
+        `Attempting to reconnect (${this.retryCount}/${this.config.maxRetries})...`
       );
       this.connect().catch(() => this.handleReconnect());
     }, this.config.reconnectInterval);

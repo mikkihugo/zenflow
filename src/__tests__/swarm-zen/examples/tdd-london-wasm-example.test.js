@@ -74,7 +74,7 @@ describe('TDD London Style WASM Testing Examples', () => {
           'assignTask',
           'getState',
           'destroy',
-        ]),
+        ])
       ).toBe(true);
 
       // Verify no unexpected interactions
@@ -86,7 +86,7 @@ describe('TDD London Style WASM Testing Examples', () => {
           'assignTask',
           'getState',
           'destroy',
-        ]),
+        ])
       ).toBe(true);
 
       // Check specific interactions

@@ -63,7 +63,7 @@ export class SafeNeuralNetwork {
   private biases: number[][];
   private isInitialized = false;
   private isTrained = false;
-  private wasmModule: any = null;
+  private wasmModule: unknown = null;
 
   constructor(config: NeuralNetworkConfig) {
     this.config = config;
@@ -131,7 +131,7 @@ export class SafeNeuralNetwork {
    */
   async train(
     data: TrainingData,
-    options: TrainingOptions,
+    options: TrainingOptions
   ): Promise<NeuralResult> {
     if (!this.isInitialized) {
       return {
@@ -200,12 +200,12 @@ export class SafeNeuralNetwork {
       if (data?.validationInputs && data?.validationOutputs) {
         const validationResult = await this.validateNetwork(
           data?.validationInputs,
-          data?.validationOutputs,
+          data?.validationOutputs
         );
         if (isInferenceResult(validationResult)) {
           accuracy = this.calculateAccuracy(
             validationResult?.predictions,
-            data?.validationOutputs,
+            data?.validationOutputs
           );
         }
       }
@@ -381,7 +381,7 @@ export class SafeNeuralNetwork {
 
   private async trainEpoch(
     _data: TrainingData,
-    _options: TrainingOptions,
+    _options: TrainingOptions
   ): Promise<NeuralResult> {
     try {
       // Mock training epoch - replace with actual backpropagation
@@ -411,7 +411,7 @@ export class SafeNeuralNetwork {
 
   private async validateNetwork(
     inputs: number[][],
-    _outputs: number[][],
+    _outputs: number[][]
   ): Promise<NeuralResult> {
     try {
       const predictions: number[] = [];
@@ -445,7 +445,7 @@ export class SafeNeuralNetwork {
   }
 
   private async predictWithWasm(
-    inputs: number[],
+    inputs: number[]
   ): Promise<WasmResult<number[]>> {
     try {
       const startTime = Date.now();
@@ -494,7 +494,7 @@ export class SafeNeuralNetwork {
 
   private calculateAccuracy(
     predictions: number[],
-    expected: number[][],
+    expected: number[][]
   ): number {
     if (predictions.length !== expected.length) return 0;
 
@@ -535,7 +535,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
   if (isNeuralError(initResult)) {
     logger.error(
       '❌ Network initialization failed:',
-      initResult?.error?.message,
+      initResult?.error?.message
     );
     return;
   }
@@ -584,7 +584,7 @@ export async function safeNeuralUsageExample(): Promise<void> {
     } else if (isNeuralError(predictionResult)) {
       logger.error(
         `❌ Prediction failed for input [${input.join(', ')}]:`,
-        predictionResult?.error?.message,
+        predictionResult?.error?.message
       );
     }
   }

@@ -24,7 +24,7 @@ export interface ConversationFrameworkConfig {
   memoryConfig?: {
     path?: string;
     basePath?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -65,7 +65,7 @@ export class ConversationFramework {
    * @param config
    */
   static async create(
-    config: ConversationFrameworkConfig = {},
+    config: ConversationFrameworkConfig = {}
   ): Promise<ConversationFrameworkSystem> {
     const { memoryBackend = 'json', memoryConfig = {} } = config;
 
@@ -148,7 +148,7 @@ export class ConversationFramework {
    *
    * @param config
    */
-  static validateConfig(config: any): { valid: boolean; errors: string[] } {
+  static validateConfig(config: unknown): { valid: boolean; errors: string[] } {
     const errors: string[] = [];
 
     if (!config?.title || typeof config?.title !== 'string') {
@@ -175,10 +175,10 @@ export class ConversationFramework {
     }
 
     if (config?.participants) {
-      config?.participants?.forEach((participant: any, index: number) => {
+      config?.participants?.forEach((participant: unknown, index: number) => {
         if (!(participant.id && participant.type && participant.swarmId)) {
           errors.push(
-            `Participant ${index} missing required fields (id, type, swarmId)`,
+            `Participant ${index} missing required fields (id, type, swarmId)`
           );
         }
       });

@@ -53,13 +53,13 @@ export class DSPySimpleIntegration {
       // Create error diagnosis program
       this.errorDiagnosisProgram = await this.dspy.createProgram(
         'error_text: string, file_context: string -> diagnosis: string, fix_approach: string, confidence: number',
-        'Analyze TypeScript compilation errors and provide direct fix approaches',
+        'Analyze TypeScript compilation errors and provide direct fix approaches'
       );
 
       // Create code generation program
       this.codeGenerationProgram = await this.dspy.createProgram(
         'error_description: string, fix_approach: string, original_code: string -> fixed_code: string, explanation: string',
-        'Generate fixed TypeScript code based on error diagnosis and fix approach',
+        'Generate fixed TypeScript code based on error diagnosis and fix approach'
       );
 
       console.log('🧠 DSPy Simple Integration initialized');
@@ -95,7 +95,7 @@ export class DSPySimpleIntegration {
       // Check pattern cache first
       const patternKey = this.generatePatternKey(
         errors,
-        path.extname(filePath),
+        path.extname(filePath)
       );
       if (this.patternCache.has(patternKey)) {
         console.log(`   ⚡ PATTERN CACHE: Using learned fix`);
@@ -103,7 +103,7 @@ export class DSPySimpleIntegration {
           filePath,
           patternKey,
           fileContent,
-          startTime,
+          startTime
         );
       }
 
@@ -114,21 +114,21 @@ export class DSPySimpleIntegration {
         {
           error_text: errorText,
           file_context: fileContent.substring(0, 2000), // First 2000 chars for context
-        },
+        }
       );
 
       if (!diagnosisResult?.success) {
         throw new Error(
-          `Diagnosis failed: ${diagnosisResult?.error?.message || 'Unknown error'}`,
+          `Diagnosis failed: ${diagnosisResult?.error?.message || 'Unknown error'}`
         );
       }
 
       const diagnosis = diagnosisResult.result;
       console.log(
-        `   🎯 Confidence: ${((diagnosis.confidence || 0.7) * 100).toFixed(1)}%`,
+        `   🎯 Confidence: ${((diagnosis.confidence || 0.7) * 100).toFixed(1)}%`
       );
       console.log(
-        `   📝 Approach: ${(diagnosis.fix_approach || '').substring(0, 60)}...`,
+        `   📝 Approach: ${(diagnosis.fix_approach || '').substring(0, 60)}...`
       );
 
       // Generate fixed code
@@ -138,12 +138,12 @@ export class DSPySimpleIntegration {
           error_description: diagnosis.diagnosis || '',
           fix_approach: diagnosis.fix_approach || '',
           original_code: fileContent,
-        },
+        }
       );
 
       if (!codeGenResult?.success) {
         throw new Error(
-          `Code generation failed: ${codeGenResult?.error?.message || 'Unknown error'}`,
+          `Code generation failed: ${codeGenResult?.error?.message || 'Unknown error'}`
         );
       }
 
@@ -167,7 +167,7 @@ export class DSPySimpleIntegration {
       this.totalCost += cost;
 
       console.log(
-        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(2)})`,
+        `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(2)})`
       );
 
       // Save progress periodically
@@ -268,7 +268,7 @@ export class DSPySimpleIntegration {
           error_description: pattern.diagnosis,
           fix_approach: pattern.fixApproach,
           original_code: fileContent,
-        },
+        }
       );
 
       if (!codeGenResult?.success) {
@@ -283,7 +283,7 @@ export class DSPySimpleIntegration {
       this.totalCost += cost;
 
       console.log(
-        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(2)}) - Used ${pattern.usageCount}x`,
+        `   ⚡ Pattern applied in ${(duration / 1000).toFixed(1)}s (cost: $${cost.toFixed(2)}) - Used ${pattern.usageCount}x`
       );
 
       return {

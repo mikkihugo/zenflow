@@ -15,7 +15,7 @@
 export interface DIToken<T> {
   readonly symbol: symbol;
   readonly name: string;
-  readonly type?: new (...args: any[]) => T;
+  readonly type?: new (...args: unknown[]) => T;
 }
 
 /**
@@ -107,7 +107,7 @@ export interface ServiceConfiguration {
  */
 export interface ServiceMapping {
   token: DIToken<any>;
-  implementation: new (...args: any[]) => any;
+  implementation: new (...args: unknown[]) => any;
   lifestyle: ProviderLifestyle;
   dependencies: DIToken<any>[];
 }
@@ -146,7 +146,7 @@ export interface DIContainerOptions {
 export class DIError extends Error {
   constructor(
     message: string,
-    public readonly code?: string,
+    public readonly code?: string
   ) {
     super(message);
     this.name = 'DIError';
@@ -157,7 +157,7 @@ export class CircularDependencyError extends DIError {
   constructor(dependencyChain: string[]) {
     super(
       `Circular dependency detected: ${dependencyChain.join(' -> ')}`,
-      'CIRCULAR_DEPENDENCY',
+      'CIRCULAR_DEPENDENCY'
     );
     this.name = 'CircularDependencyError';
   }
@@ -176,22 +176,22 @@ export class ServiceNotFoundError extends DIError {
  * @example
  */
 export interface InjectionMetadata {
-  parameterTypes: any[];
+  parameterTypes: unknown[];
   injectionTokens: (DIToken<any> | undefined)[];
 }
 
 /**
  * Constructor type for injectable classes.
  */
-export type Constructor<T = {}> = new (...args: any[]) => T;
+export type Constructor<T = {}> = new (...args: unknown[]) => T;
 
 /**
  * Parameter decorator type.
  */
 export type ParameterDecorator = (
-  target: any,
+  target: unknown,
   propertyKey: string | symbol | undefined,
-  parameterIndex: number,
+  parameterIndex: number
 ) => void;
 
 /**

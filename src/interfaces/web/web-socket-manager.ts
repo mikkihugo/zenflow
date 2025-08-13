@@ -15,7 +15,7 @@ import type { WebDataService } from './web-data-service.ts';
 
 export interface BroadcastData {
   event: string;
-  data: any;
+  data: unknown;
   timestamp: string;
 }
 
@@ -29,7 +29,7 @@ export class WebSocketManager {
   constructor(
     io: SocketIOServer,
     config: WebConfig,
-    dataService: WebDataService,
+    dataService: WebDataService
   ) {
     this.io = io;
     this.config = config;
@@ -76,7 +76,7 @@ export class WebSocketManager {
 
       socket.on('disconnect', (reason) => {
         this.logger.debug(
-          `Client disconnected: ${socket.id}, reason: ${reason}`,
+          `Client disconnected: ${socket.id}, reason: ${reason}`
         );
       });
 
@@ -97,7 +97,7 @@ export class WebSocketManager {
    * @param socket
    * @param channel
    */
-  private async sendChannelData(socket: any, channel: string): Promise<void> {
+  private async sendChannelData(socket: unknown, channel: string): Promise<void> {
     try {
       switch (channel) {
         case 'system': {
@@ -130,7 +130,7 @@ export class WebSocketManager {
     } catch (error) {
       this.logger.error(
         `Failed to send initial data for channel ${channel}:`,
-        error,
+        error
       );
     }
   }
@@ -173,7 +173,7 @@ export class WebSocketManager {
     this.broadcastIntervals.push(
       systemInterval,
       tasksInterval,
-      metricsInterval,
+      metricsInterval
     );
 
     this.logger.info('Real-time data broadcasting started');
@@ -185,7 +185,7 @@ export class WebSocketManager {
    * @param event
    * @param data
    */
-  broadcast(event: string, data: any): void {
+  broadcast(event: string, data: unknown): void {
     if (!this.config.realTime) return;
 
     const broadcastData: BroadcastData = {
@@ -205,7 +205,7 @@ export class WebSocketManager {
    * @param event
    * @param data
    */
-  broadcastToRoom(room: string, event: string, data: any): void {
+  broadcastToRoom(room: string, event: string, data: unknown): void {
     if (!this.config.realTime) return;
 
     const broadcastData: BroadcastData = {
@@ -229,7 +229,7 @@ export class WebSocketManager {
     const sockets = this.io.sockets.sockets;
     const connectedClients = Array.from(sockets.keys());
     const rooms = Array.from(this.io.sockets.adapter.rooms.keys()).filter(
-      (room) => !connectedClients.includes(room),
+      (room) => !connectedClients.includes(room)
     ); // Filter out client IDs
 
     return {

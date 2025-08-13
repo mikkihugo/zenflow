@@ -48,7 +48,7 @@ class HybridFixer {
     lines.forEach((line) => {
       // Parse TypeScript error format: src/file.ts(123,45): error TS2345: Message
       const match = line.match(
-        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/,
+        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/
       );
       if (match) {
         const [, filePath, line, col, errorCode, message] = match;
@@ -107,7 +107,7 @@ class HybridFixer {
 
       // Apply comprehensive fixes in order of priority
       console.log(
-        `  📊 Error types: ${Array.from(errorsByType.keys()).join(', ')}`,
+        `  📊 Error types: ${Array.from(errorsByType.keys()).join(', ')}`
       );
 
       // 1. Fix 'any' types first (highest priority)
@@ -124,13 +124,13 @@ class HybridFixer {
       if (errorsByType.has('undeclared-variable')) {
         const undeclaredFixes = this.fixUndeclaredVariables(
           content,
-          errorsByType.get('undeclared-variable'),
+          errorsByType.get('undeclared-variable')
         );
         if (undeclaredFixes.fixed) {
           content = undeclaredFixes.content;
           totalFixes += undeclaredFixes.count;
           console.log(
-            `    ✅ Fixed ${undeclaredFixes.count} undeclared variables`,
+            `    ✅ Fixed ${undeclaredFixes.count} undeclared variables`
           );
         }
       }
@@ -364,7 +364,7 @@ class HybridFixer {
       console.log(`    📐 Formatted with Biome`);
     } catch (error) {
       console.log(
-        `    ⚠️  Biome formatting issues (file may have syntax errors)`,
+        `    ⚠️  Biome formatting issues (file may have syntax errors)`
       );
     }
   }
@@ -383,7 +383,7 @@ class HybridFixer {
 
   async runUntilZeroErrors() {
     console.log(
-      '🚀 Hybrid TypeScript + Biome Fixer - Running until 0 errors!\n',
+      '🚀 Hybrid TypeScript + Biome Fixer - Running until 0 errors!\n'
     );
 
     let iteration = 1;
@@ -410,7 +410,7 @@ class HybridFixer {
       }
 
       console.log(
-        `📊 Processing ${fileErrors.size} files with TypeScript errors...`,
+        `📊 Processing ${fileErrors.size} files with TypeScript errors...`
       );
 
       // Process each file comprehensively
@@ -418,7 +418,7 @@ class HybridFixer {
       for (const [filePath, errors] of fileErrors.entries()) {
         const fixes = await this.processSingleFileComprehensive(
           filePath,
-          errors,
+          errors
         );
         iterationFixes += fixes;
       }
@@ -430,10 +430,10 @@ class HybridFixer {
 
       if (iterationFixes === 0) {
         console.log(
-          '\n⚠️  No automatic fixes possible - manual intervention needed',
+          '\n⚠️  No automatic fixes possible - manual intervention needed'
         );
         console.log(
-          '📋 Remaining errors require manual fixes (complex type issues, missing imports, etc.)',
+          '📋 Remaining errors require manual fixes (complex type issues, missing imports, etc.)'
         );
         break;
       }
@@ -457,7 +457,7 @@ async function main() {
 
   console.log('🔧 Hybrid TypeScript + Biome Fixer');
   console.log(
-    '📋 Uses TypeScript compiler errors (like ESLint) + Biome formatting',
+    '📋 Uses TypeScript compiler errors (like ESLint) + Biome formatting'
   );
   console.log(`🎯 Mode: ${options.dryRun ? 'DRY RUN' : 'LIVE FIXING'}\n`);
 

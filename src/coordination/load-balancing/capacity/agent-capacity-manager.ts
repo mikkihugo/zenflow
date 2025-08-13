@@ -114,19 +114,19 @@ export class AgentCapacityManager implements CapacityManager {
    */
   public async predictCapacity(
     agentId: string,
-    timeHorizon: number,
+    timeHorizon: number
   ): Promise<number> {
     const profile = this.getOrCreateProfile(agentId);
 
     // Use capacity predictor for time-based prediction
     const prediction = await this.capacityPredictor.predict(
       profile,
-      timeHorizon,
+      timeHorizon
     );
 
     return Math.max(
       this.config.minCapacity,
-      Math.min(this.config.maxCapacity, prediction),
+      Math.min(this.config.maxCapacity, prediction)
     );
   }
 
@@ -138,7 +138,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   public async updateCapacity(
     agentId: string,
-    metrics: LoadMetrics,
+    metrics: LoadMetrics
   ): Promise<void> {
     const profile = this.getOrCreateProfile(agentId);
 
@@ -165,7 +165,7 @@ export class AgentCapacityManager implements CapacityManager {
     // Update predicted capacity
     profile.predictedCapacity = await this.capacityPredictor.predict(
       profile,
-      this.config.predictionHorizon,
+      this.config.predictionHorizon
     );
 
     // Update capacity trend
@@ -182,7 +182,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   public async isCapacityAvailable(
     agentId: string,
-    requiredResources: Record<string, number>,
+    requiredResources: Record<string, number>
   ): Promise<boolean> {
     const profile = this.getOrCreateProfile(agentId);
     const currentMetrics =
@@ -195,7 +195,7 @@ export class AgentCapacityManager implements CapacityManager {
     // Check resource constraints
     const constraints = this.evaluateResourceConstraints(profile);
     const criticalConstraints = constraints.filter(
-      (c) => c.severity === 'critical',
+      (c) => c.severity === 'critical'
     );
 
     if (criticalConstraints.length > 0) {
@@ -255,14 +255,14 @@ export class AgentCapacityManager implements CapacityManager {
   private async updateProfile(profile: AgentCapacityProfile): Promise<void> {
     // Get latest resource metrics
     const currentMetrics = await this.resourceMonitor.getCurrentMetrics(
-      profile.agentId,
+      profile.agentId
     );
 
     if (currentMetrics) {
       // Update resource constraints
       profile.resourceConstraints = this.evaluateResourceConstraints(
         profile,
-        currentMetrics,
+        currentMetrics
       );
 
       // Update performance metrics
@@ -278,7 +278,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private async calculateOptimalCapacity(
     profile: AgentCapacityProfile,
-    metrics: LoadMetrics,
+    metrics: LoadMetrics
   ): Promise<number> {
     let optimalCapacity = profile.currentCapacity;
 
@@ -287,7 +287,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     // Factor 2: Performance metrics
     const performanceScore = this.calculatePerformanceScore(
-      profile.performanceMetrics,
+      profile.performanceMetrics
     );
 
     // Factor 3: Historical utilization patterns
@@ -308,13 +308,13 @@ export class AgentCapacityManager implements CapacityManager {
       // High performance, can increase capacity
       optimalCapacity = Math.min(
         this.config.maxCapacity,
-        profile.currentCapacity * (1 + this.config.adaptationRate),
+        profile.currentCapacity * (1 + this.config.adaptationRate)
       );
     } else if (combinedScore < 0.4) {
       // Low performance, should decrease capacity
       optimalCapacity = Math.max(
         this.config.minCapacity,
-        profile.currentCapacity * (1 - this.config.adaptationRate),
+        profile.currentCapacity * (1 - this.config.adaptationRate)
       );
     }
 
@@ -355,7 +355,7 @@ export class AgentCapacityManager implements CapacityManager {
     const errorScore = Math.max(0, 1 - performance.errorRate);
     const responseTimeScore = Math.max(
       0,
-      1 - performance.averageResponseTime / 10000,
+      1 - performance.averageResponseTime / 10000
     );
     const efficiencyScore = performance.resourceEfficiency;
 
@@ -394,11 +394,11 @@ export class AgentCapacityManager implements CapacityManager {
    * @param profile
    */
   private async calculateDemandScore(
-    profile: AgentCapacityProfile,
+    profile: AgentCapacityProfile
   ): Promise<number> {
     const predictedDemand = await this.capacityPredictor.predictDemand(
       profile,
-      this.config.predictionHorizon,
+      this.config.predictionHorizon
     );
 
     const currentCapacity = profile.currentCapacity;
@@ -427,7 +427,7 @@ export class AgentCapacityManager implements CapacityManager {
   private applyConstraints(
     profile: AgentCapacityProfile,
     proposedCapacity: number,
-    metrics: LoadMetrics,
+    metrics: LoadMetrics
   ): number {
     let constrainedCapacity = proposedCapacity;
 
@@ -439,13 +439,13 @@ export class AgentCapacityManager implements CapacityManager {
         // Critical constraints force capacity reduction
         constrainedCapacity = Math.min(
           constrainedCapacity,
-          profile.currentCapacity * 0.5,
+          profile.currentCapacity * 0.5
         );
       } else if (constraint.severity === 'high') {
         // High severity constraints limit capacity growth
         constrainedCapacity = Math.min(
           constrainedCapacity,
-          profile.currentCapacity,
+          profile.currentCapacity
         );
       }
     }
@@ -454,21 +454,21 @@ export class AgentCapacityManager implements CapacityManager {
     if (metrics.cpuUsage > this.config.emergencyThresholds.cpu) {
       constrainedCapacity = Math.min(
         constrainedCapacity,
-        profile.currentCapacity * 0.8,
+        profile.currentCapacity * 0.8
       );
     }
 
     if (metrics.memoryUsage > this.config.emergencyThresholds.memory) {
       constrainedCapacity = Math.min(
         constrainedCapacity,
-        profile.currentCapacity * 0.8,
+        profile.currentCapacity * 0.8
       );
     }
 
     if (metrics.errorRate > this.config.emergencyThresholds.errorRate) {
       constrainedCapacity = Math.min(
         constrainedCapacity,
-        profile.currentCapacity * 0.7,
+        profile.currentCapacity * 0.7
       );
     }
 
@@ -483,7 +483,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private evaluateResourceConstraints(
     profile: AgentCapacityProfile,
-    metrics?: LoadMetrics,
+    metrics?: LoadMetrics
   ): ResourceConstraint[] {
     const constraints: ResourceConstraint[] = [];
 
@@ -501,7 +501,7 @@ export class AgentCapacityManager implements CapacityManager {
         currentValue: metrics.cpuUsage,
         severity: this.calculateConstraintSeverity(
           metrics.cpuUsage,
-          thresholds.cpuThreshold,
+          thresholds.cpuThreshold
         ),
       });
     }
@@ -514,7 +514,7 @@ export class AgentCapacityManager implements CapacityManager {
         currentValue: metrics.memoryUsage,
         severity: this.calculateConstraintSeverity(
           metrics.memoryUsage,
-          thresholds.memoryThreshold,
+          thresholds.memoryThreshold
         ),
       });
     }
@@ -527,7 +527,7 @@ export class AgentCapacityManager implements CapacityManager {
         currentValue: metrics.diskUsage,
         severity: this.calculateConstraintSeverity(
           metrics.diskUsage,
-          thresholds.diskThreshold,
+          thresholds.diskThreshold
         ),
       });
     }
@@ -540,7 +540,7 @@ export class AgentCapacityManager implements CapacityManager {
         currentValue: metrics.networkUsage,
         severity: this.calculateConstraintSeverity(
           metrics.networkUsage,
-          thresholds.networkThreshold,
+          thresholds.networkThreshold
         ),
       });
     }
@@ -556,7 +556,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private calculateConstraintSeverity(
     currentValue: number,
-    threshold: number,
+    threshold: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     const violation = (currentValue - threshold) / threshold;
 
@@ -574,7 +574,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private updatePerformanceMetrics(
     profile: AgentCapacityProfile,
-    metrics: LoadMetrics,
+    metrics: LoadMetrics
   ): void {
     const perf = profile.performanceMetrics;
     const alpha = this.config.adaptationRate;
@@ -613,7 +613,7 @@ export class AgentCapacityManager implements CapacityManager {
    */
   private updateAdaptiveThresholds(
     profile: AgentCapacityProfile,
-    metrics: LoadMetrics,
+    metrics: LoadMetrics
   ): void {
     const thresholds = profile.adaptiveThresholds;
     const rate = this.config.thresholdAdaptationRate;
@@ -624,14 +624,14 @@ export class AgentCapacityManager implements CapacityManager {
       thresholds.cpuThreshold = Math.min(0.9, thresholds.cpuThreshold + rate);
       thresholds.memoryThreshold = Math.min(
         0.9,
-        thresholds.memoryThreshold + rate,
+        thresholds.memoryThreshold + rate
       );
     } else if (metrics.errorRate > 0.05 || metrics.responseTime > 5000) {
       // Poor performance, decrease thresholds
       thresholds.cpuThreshold = Math.max(0.5, thresholds.cpuThreshold - rate);
       thresholds.memoryThreshold = Math.max(
         0.5,
-        thresholds.memoryThreshold - rate,
+        thresholds.memoryThreshold - rate
       );
     }
   }
@@ -661,7 +661,7 @@ export class AgentCapacityManager implements CapacityManager {
 
     return Math.max(
       0,
-      effectiveCapacity - currentUtilization * profile.currentCapacity,
+      effectiveCapacity - currentUtilization * profile.currentCapacity
     );
   }
 
@@ -671,7 +671,7 @@ export class AgentCapacityManager implements CapacityManager {
    * @param profile
    */
   private calculateCapacityTrend(
-    profile: AgentCapacityProfile,
+    profile: AgentCapacityProfile
   ): 'increasing' | 'decreasing' | 'stable' {
     const history = profile.utilizationHistory;
     if (history.length < 10) return 'stable';
@@ -699,7 +699,7 @@ export class AgentCapacityManager implements CapacityManager {
   private async adjustCapacity(
     profile: AgentCapacityProfile,
     newCapacity: number,
-    reason: string,
+    reason: string
   ): Promise<void> {
     const oldCapacity = profile.currentCapacity;
     profile.currentCapacity = newCapacity;
@@ -731,7 +731,7 @@ export class AgentCapacityManager implements CapacityManager {
     const historyLength = profile.utilizationHistory.length;
     const dataQuality = Math.min(
       1,
-      historyLength / this.config.utilizationWindow,
+      historyLength / this.config.utilizationWindow
     );
 
     const performanceConsistency =
@@ -746,7 +746,7 @@ export class AgentCapacityManager implements CapacityManager {
    * @param profile
    */
   private calculatePerformanceConsistency(
-    profile: AgentCapacityProfile,
+    profile: AgentCapacityProfile
   ): number {
     const perf = profile.performanceMetrics;
     const totalTasks = perf.successfulTasks + perf.failedTasks;

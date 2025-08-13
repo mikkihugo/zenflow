@@ -47,7 +47,7 @@ export abstract class BaseDSPyAgentProgram {
   async initialize(): Promise<void> {
     this.program = await this.dspyWrapper.createProgram(
       this.getSignature(),
-      this.getDescription(),
+      this.getDescription()
     );
     logger.info(`Initialized DSPy agent program: ${this.constructor.name}`);
   }
@@ -55,7 +55,7 @@ export abstract class BaseDSPyAgentProgram {
   /**
    * Execute the program with input.
    */
-  async execute(input: any): Promise<any> {
+  async execute(input: unknown): Promise<unknown> {
     if (!this.program) {
       throw new Error('Program not initialized');
     }
@@ -89,7 +89,7 @@ export abstract class BaseDSPyAgentProgram {
    * Add learning examples.
    */
   async addExamples(
-    examples: Array<{ input: any; output: any }>,
+    examples: Array<{ input: unknown; output: unknown }>
   ): Promise<void> {
     if (!this.program) return;
 
@@ -170,7 +170,7 @@ export class CodeGeneratorProgram extends BaseDSPyAgentProgram {
   async generateCode(
     requirements: string,
     context: string = '',
-    styleGuide: string = 'typescript-strict',
+    styleGuide: string = 'typescript-strict'
   ) {
     return await this.execute({
       requirements,
@@ -208,7 +208,7 @@ export class CodeAnalyzerProgram extends BaseDSPyAgentProgram {
   async analyzeCode(
     code: string,
     filePath: string,
-    projectContext: string = '',
+    projectContext: string = ''
   ) {
     return await this.execute({
       code,
@@ -248,7 +248,7 @@ export class ArchitectureDesignerProgram extends BaseDSPyAgentProgram {
     requirements: string,
     constraints: string[] = [],
     domain: string = 'general',
-    scale: string = 'medium',
+    scale: string = 'medium'
   ) {
     return await this.execute({
       requirements,
@@ -287,7 +287,7 @@ export class TestEngineerProgram extends BaseDSPyAgentProgram {
   async generateTests(
     code: string,
     requirements: string,
-    testStrategy: string = 'comprehensive',
+    testStrategy: string = 'comprehensive'
   ) {
     return await this.execute({
       code,
@@ -326,7 +326,7 @@ export class ResearchSpecialistProgram extends BaseDSPyAgentProgram {
     query: string,
     domain: string = 'technology',
     depth: string = 'moderate',
-    sources: string[] = [],
+    sources: string[] = []
   ) {
     return await this.execute({
       query,
@@ -363,10 +363,10 @@ export class TaskCoordinatorProgram extends BaseDSPyAgentProgram {
    * Coordinate multi-agent task execution.
    */
   async coordinateTasks(
-    tasks: any[],
-    agents: any[],
-    dependencies: any[] = [],
-    constraints: any = {},
+    tasks: unknown[],
+    agents: unknown[],
+    dependencies: unknown[] = [],
+    constraints: unknown = {}
   ) {
     return await this.execute({
       tasks,
@@ -406,7 +406,7 @@ export class ErrorDiagnosisProgram extends BaseDSPyAgentProgram {
     errorMessage: string,
     stackTrace: string = '',
     codeContext: string = '',
-    environment: string = 'development',
+    environment: string = 'development'
   ) {
     return await this.execute({
       error_message: errorMessage,
@@ -444,9 +444,9 @@ export class PerformanceOptimizerProgram extends BaseDSPyAgentProgram {
    */
   async optimizePerformance(
     code: string,
-    metrics: any = {},
-    constraints: any[] = [],
-    targets: any = {},
+    metrics: unknown = {},
+    constraints: unknown[] = [],
+    targets: unknown = {}
   ) {
     return await this.execute({
       code,

@@ -17,11 +17,11 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 }) => {
   const totalAgents = Array.from(state.deploymentStatus.values()).reduce(
     (sum, status) => sum + status.agents.created,
-    0,
+    0
   );
 
   const deployedSwarms = Array.from(state.deploymentStatus.values()).filter(
-    (status) => status.status === 'deployed',
+    (status) => status.status === 'deployed'
   ).length;
 
   const averageConfidence =
@@ -35,27 +35,16 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
       acc[config?.topology] = (acc[config?.topology] || 0) + 1;
       return acc;
     },
-    {} as Record<string, number>,
+    {} as Record<string, number>
   );
 
   return (
     <Box flexDirection="column">
       {/* Main Status Header */}
-      <Box
-        borderStyle="double"
-        paddingX={2}
-        paddingY={1}
-        marginBottom={1}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box borderStyle="double" paddingX={2} paddingY={1} marginBottom={1}>
+        <Box flexDirection="column" width="100%">
           <Box>
-            <Text
-              bold
-              color="green"
-            >
+            <Text bold color="green">
               🎉 DEPLOYMENT COMPLETE
             </Text>
             <Spacer />
@@ -115,14 +104,8 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
       {/* Detailed Swarm Status */}
       {showDetailed && (
-        <Box
-          flexDirection="column"
-          marginBottom={1}
-        >
-          <Text
-            bold
-            marginBottom={1}
-          >
+        <Box flexDirection="column" marginBottom={1}>
+          <Text bold marginBottom={1}>
             🐝 Active Swarms.
           </Text>
           {Array.from(state.deploymentStatus.entries()).map(
@@ -133,15 +116,9 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
                 paddingX={1}
                 marginBottom={0}
               >
-                <Box
-                  flexDirection="column"
-                  width="100%"
-                >
+                <Box flexDirection="column" width="100%">
                   <Box>
-                    <Text
-                      bold
-                      color="green"
-                    >
+                    <Text bold color="green">
                       ✅ {domain}
                     </Text>
                     <Spacer />
@@ -163,17 +140,13 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
                   </Box>
                 </Box>
               </Box>
-            ),
+            )
           )}
         </Box>
       )}
 
       {/* Next Steps */}
-      <Box
-        borderStyle="single"
-        paddingX={1}
-        flexDirection="column"
-      >
+      <Box borderStyle="single" paddingX={1} flexDirection="column">
         <Text bold>🎯 Next Steps</Text>
         <Box marginTop={0}>
           <Text>• Use </Text>
@@ -199,15 +172,8 @@ export const StatusDashboard: React.FC<StatusDashboardProps> = ({
 
       {/* Health Check */}
       <Box marginTop={1}>
-        <Box
-          borderStyle="single"
-          paddingX={1}
-          width="100%"
-        >
-          <Text
-            bold
-            color="green"
-          >
+        <Box borderStyle="single" paddingX={1} width="100%">
+          <Text bold color="green">
             💚 System Health: OPERATIONAL
           </Text>
           <Spacer />

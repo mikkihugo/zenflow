@@ -338,7 +338,7 @@ export class NeuralDomainMapper {
   async mapDomainRelationships(
     domains: Domain[],
     dependencies: DependencyGraph,
-    bazelMetadata?: Record<string, unknown>,
+    bazelMetadata?: Record<string, unknown>
   ): Promise<DomainRelationshipMap> {
     // Convert to graph format with enhanced Bazel data if available
     const graphData = bazelMetadata
@@ -376,12 +376,12 @@ export class NeuralDomainMapper {
           predictions,
           domains,
           (graphData as { adjacency: unknown[][] }).adjacency,
-          bazelMetadata,
+          bazelMetadata
         )
       : this.extractBoundaries(
           predictions,
           domains,
-          (graphData as { adjacency: unknown[][] }).adjacency,
+          (graphData as { adjacency: unknown[][] }).adjacency
         );
 
     // Enhanced LLM validation using smart provider selection or A/B testing
@@ -444,7 +444,7 @@ export class NeuralDomainMapper {
       };
     }
     throw new Error(
-      `LLM validation rejected domain boundaries: ${approvalResult.reasoning}`,
+      `LLM validation rejected domain boundaries: ${approvalResult.reasoning}`
     );
   }
 
@@ -460,7 +460,7 @@ export class NeuralDomainMapper {
 
   private convertToGraphData(
     domains: Domain[],
-    dependencies: DependencyGraph,
+    dependencies: DependencyGraph
   ): unknown {
     const numDomains = domains.length;
     const domainIndexMap = new Map(domains.map((d, i) => [d.name, i]));
@@ -508,7 +508,7 @@ export class NeuralDomainMapper {
   private extractBoundaries(
     predictions: { shape: number[]; [key: number]: number },
     domains: Domain[],
-    adjacency: unknown[][],
+    adjacency: unknown[][]
   ): DomainRelationshipMap {
     const relationships = [] as unknown[];
     const cohesionScores = [] as { domainName: string; score: number }[];
@@ -539,7 +539,7 @@ export class NeuralDomainMapper {
       const key = `${sourceDomainName}->${targetDomainName}`;
       crossDomainDependencies.set(
         key,
-        (crossDomainDependencies.get(key) || 0) + 1,
+        (crossDomainDependencies.get(key) || 0) + 1
       );
     }
 
@@ -573,7 +573,7 @@ export class NeuralDomainMapper {
       }[],
       cohesionScores: cohesionScores,
       crossDomainDependencies: Array.from(
-        crossDomainDependencies.entries(),
+        crossDomainDependencies.entries()
       ).map(([key, count]) => {
         const [sourceDomain, targetDomain] = key.split('->');
         return {
@@ -596,7 +596,7 @@ export class NeuralDomainMapper {
   private convertBazelToGraphData(
     domains: Domain[],
     dependencies: DependencyGraph,
-    bazelMetadata: Record<string, unknown>,
+    bazelMetadata: Record<string, unknown>
   ): {
     nodes: Float32Array & { shape: number[] };
     edges: Float32Array & { shape: number[] };
@@ -613,7 +613,7 @@ export class NeuralDomainMapper {
       if (domain) {
         const packageTargets = Array.isArray(bazelMetadata['targets'])
           ? bazelMetadata['targets'].filter(
-              (t: unknown) => t.package === domain.name,
+              (t: unknown) => t.package === domain.name
             )
           : [];
 
@@ -625,7 +625,7 @@ export class NeuralDomainMapper {
           packageTargets,
           Array.isArray(bazelMetadata['languages'])
             ? (bazelMetadata['languages'] as string[])
-            : [],
+            : []
         ); // Language complexity
         nodeFeatures[i * 6 + 5] =
           this.calculateTargetTypeDistribution(packageTargets); // Target type diversity
@@ -646,7 +646,7 @@ export class NeuralDomainMapper {
         bazelMetadata['targetDependencies'] as Record<
           string,
           Record<string, number>
-        >,
+        >
       )) {
         const sourceIndex = domainIndexMap.get(sourcePkg);
         if (sourceIndex === undefined) continue;
@@ -660,12 +660,12 @@ export class NeuralDomainMapper {
           // Enhanced edge features: [dependency_count, target_type_similarity, language_compatibility]
           const sourceTargets = Array.isArray(bazelMetadata['targets'])
             ? bazelMetadata['targets'].filter(
-                (t: unknown) => t.package === sourcePkg,
+                (t: unknown) => t.package === sourcePkg
               )
             : [];
           const targetTargets = Array.isArray(bazelMetadata['targets'])
             ? bazelMetadata['targets'].filter(
-                (t: unknown) => t.package === targetPkg,
+                (t: unknown) => t.package === targetPkg
               )
             : [];
 
@@ -677,7 +677,7 @@ export class NeuralDomainMapper {
               targetTargets,
               Array.isArray(bazelMetadata['languages'])
                 ? (bazelMetadata['languages'] as string[])
-                : [],
+                : []
             ), // Language compatibility
           ]);
         }
@@ -685,7 +685,7 @@ export class NeuralDomainMapper {
     } else {
       // Fallback to regular dependency analysis
       for (const [sourceDomain, targetDomains] of Object.entries(
-        dependencies,
+        dependencies
       )) {
         const sourceIndex = domainIndexMap.get(sourceDomain);
         if (sourceIndex === undefined) continue;
@@ -731,7 +731,7 @@ export class NeuralDomainMapper {
     predictions: { shape: number[]; [key: number]: number },
     domains: Domain[],
     adjacency: unknown[][],
-    bazelMetadata: Record<string, unknown>,
+    bazelMetadata: Record<string, unknown>
   ): DomainRelationshipMap {
     const relationships = [] as unknown[];
     const cohesionScores = [] as { domainName: string; score: number }[];
@@ -751,7 +751,7 @@ export class NeuralDomainMapper {
       if (domain) {
         const domainTargets = Array.isArray(bazelMetadata['targets'])
           ? bazelMetadata['targets'].filter(
-              (t: unknown) => t.package === domain.name,
+              (t: unknown) => t.package === domain.name
             )
           : [];
         const targetTypeBonus =
@@ -773,7 +773,7 @@ export class NeuralDomainMapper {
         bazelMetadata['targetDependencies'] as Record<
           string,
           Record<string, number>
-        >,
+        >
       )) {
         for (const [targetPkg, count] of Object.entries(targets)) {
           const key = `${sourcePkg}->${targetPkg}`;
@@ -792,7 +792,7 @@ export class NeuralDomainMapper {
         const key = `${sourceDomainName}->${targetDomainName}`;
         crossDomainDependencies.set(
           key,
-          (crossDomainDependencies.get(key) || 0) + 1,
+          (crossDomainDependencies.get(key) || 0) + 1
         );
       }
     }
@@ -813,17 +813,17 @@ export class NeuralDomainMapper {
         if (!(iDomain && jDomain)) continue;
         const iTargets = Array.isArray(bazelMetadata['targets'])
           ? bazelMetadata['targets'].filter(
-              (t: unknown) => t.package === iDomain.name,
+              (t: unknown) => t.package === iDomain.name
             )
           : [];
         const jTargets = Array.isArray(bazelMetadata['targets'])
           ? bazelMetadata['targets'].filter(
-              (t: unknown) => t.package === jDomain.name,
+              (t: unknown) => t.package === jDomain.name
             )
           : [];
         const bazelBonus = this.calculateBazelRelationshipBonus(
           iTargets,
-          jTargets,
+          jTargets
         );
 
         const enhancedStrength = strength * (1 + bazelBonus);
@@ -846,7 +846,7 @@ export class NeuralDomainMapper {
                 jTargets,
                 Array.isArray(bazelMetadata['languages'])
                   ? (bazelMetadata['languages'] as string[])
-                  : [],
+                  : []
               ),
               dependencyStrength: bazelBonus,
             },
@@ -863,7 +863,7 @@ export class NeuralDomainMapper {
       }[],
       cohesionScores: cohesionScores,
       crossDomainDependencies: Array.from(
-        crossDomainDependencies.entries(),
+        crossDomainDependencies.entries()
       ).map(([key, count]) => {
         const [sourceDomain, targetDomain] = key.split('->');
         return {
@@ -897,7 +897,7 @@ export class NeuralDomainMapper {
 
   private calculateLanguageComplexity(
     targets: Array<{ type: string }>,
-    languages: string[],
+    languages: string[]
   ): number {
     const targetLanguages = new Set<string>();
     for (const target of targets) {
@@ -912,7 +912,7 @@ export class NeuralDomainMapper {
   }
 
   private calculateTargetTypeDistribution(
-    targets: Array<{ type: string }>,
+    targets: Array<{ type: string }>
   ): number {
     const types = new Set(targets.map((t) => t.type.split('_')[1] || t.type)); // library, binary, test
     return types.size / Math.max(targets.length, 1);
@@ -920,12 +920,12 @@ export class NeuralDomainMapper {
 
   private calculateTargetTypeSimilarity(
     sourceTargets: Array<{ type: string }>,
-    targetTargets: Array<{ type: string }>,
+    targetTargets: Array<{ type: string }>
   ): number {
     const sourceTypes = new Set(sourceTargets.map((t) => t.type));
     const targetTypes = new Set(targetTargets.map((t) => t.type));
     const intersection = new Set(
-      [...sourceTypes].filter((t) => targetTypes.has(t)),
+      [...sourceTypes].filter((t) => targetTypes.has(t))
     );
     const union = new Set([...sourceTypes, ...targetTypes]);
     return union.size > 0 ? intersection.size / union.size : 0;
@@ -934,19 +934,19 @@ export class NeuralDomainMapper {
   private calculateLanguageCompatibility(
     sourceTargets: Array<{ type: string }>,
     targetTargets: Array<{ type: string }>,
-    _languages: string[],
+    _languages: string[]
   ): number {
     const sourceLangs = this.extractLanguagesFromTargets(sourceTargets);
     const targetLangs = this.extractLanguagesFromTargets(targetTargets);
     const intersection = sourceLangs.filter((lang) =>
-      targetLangs.includes(lang),
+      targetLangs.includes(lang)
     );
     const union = [...new Set([...sourceLangs, ...targetLangs])];
     return union.length > 0 ? intersection.length / union.length : 0;
   }
 
   private calculateTargetCohesionBonus(
-    targets: Array<{ type: string }>,
+    targets: Array<{ type: string }>
   ): number {
     // Higher bonus for packages with diverse but related target types
     const types = targets.map((t) => t.type);
@@ -963,7 +963,7 @@ export class NeuralDomainMapper {
 
   private calculateBazelRelationshipBonus(
     iTargets: Array<{ package?: string; deps?: string[] }>,
-    jTargets: Array<{ package?: string }>,
+    jTargets: Array<{ package?: string }>
   ): number {
     // Check for direct target dependencies
     for (const target of iTargets) {
@@ -982,7 +982,7 @@ export class NeuralDomainMapper {
   private findSharedLanguages(
     iTargets: Array<{ type: string }>,
     jTargets: Array<{ type: string }>,
-    _languages: string[],
+    _languages: string[]
   ): string[] {
     const iLangs = this.extractLanguagesFromTargets(iTargets);
     const jLangs = this.extractLanguagesFromTargets(jTargets);
@@ -990,7 +990,7 @@ export class NeuralDomainMapper {
   }
 
   private extractLanguagesFromTargets(
-    targets: Array<{ type: string }>,
+    targets: Array<{ type: string }>
   ): string[] {
     const languages: string[] = [];
     for (const target of targets) {

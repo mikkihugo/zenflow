@@ -16,7 +16,7 @@ export interface NeuralWASM {
   train(
     networkId: string,
     data: number[][],
-    labels: number[][],
+    labels: number[][]
   ): Promise<WASMPerformanceMetrics>;
   predict(networkId: string, input: number[]): Promise<number[]>;
 

@@ -96,7 +96,7 @@ export class ConfigurationLoader {
   private async loadFromFile(filePath: string): Promise<void> {
     try {
       const resolvedPath = path.resolve(
-        filePath.replace('~', process.env['HOME'] || '~'),
+        filePath.replace('~', process.env['HOME'] || '~')
       );
 
       if (!fs.existsSync(resolvedPath)) {
@@ -136,7 +136,7 @@ export class ConfigurationLoader {
     for (const [envVar, mapping] of Object.entries(ENV_MAPPINGS)) {
       const value = process.env[envVar];
       if (value !== undefined) {
-        let parsedValue: any = value;
+        let parsedValue: unknown = value;
 
         // Parse value based on type
         switch (mapping.type) {
@@ -191,7 +191,7 @@ export class ConfigurationLoader {
         const value = args[i + 1];
 
         if (value && !value.startsWith('--')) {
-          let parsedValue: any = value;
+          let parsedValue: unknown = value;
 
           // Try to parse as JSON for complex values
           if (value.startsWith('{') || value.startsWith('[')) {
@@ -240,7 +240,7 @@ export class ConfigurationLoader {
    * @param target
    * @param source
    */
-  private deepMerge(target: any, source: any): any {
+  private deepMerge(target: unknown, source: unknown): unknown {
     const result = { ...target };
 
     for (const key in source) {
@@ -265,7 +265,7 @@ export class ConfigurationLoader {
    * @param path
    * @param value
    */
-  private setNestedProperty(obj: any, path: string, value: any): void {
+  private setNestedProperty(obj: unknown, path: string, value: unknown): void {
     const parts = path.split('.');
     let current = obj;
 

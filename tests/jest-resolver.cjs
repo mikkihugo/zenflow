@@ -24,7 +24,10 @@ module.exports = (request, options) => {
     }
 
     // Also try index.ts if it's a directory import
-    const indexTsPath = resolve(options.basedir, request.replace(/\.js$/, '/index.ts'));
+    const indexTsPath = resolve(
+      options.basedir,
+      request.replace(/\.js$/, '/index.ts')
+    );
     if (existsSync(indexTsPath)) {
       return request.replace(/\.js$/, '/index.ts');
     }

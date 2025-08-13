@@ -8,7 +8,7 @@
 import { readdir, stat } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { Box, Text, useInput } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Header,
@@ -57,10 +57,10 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   const [showHidden, setShowHidden] = useState<boolean>(false);
   const [showGitIgnored, setShowGitIgnored] = useState<boolean>(true); // Show ignored files by default (greyed out)
   const [sortBy, setSortBy] = useState<'name' | 'type' | 'size' | 'modified'>(
-    'name',
+    'name'
   );
   const [gitIgnorePatterns, setGitIgnorePatterns] = useState<Set<string>>(
-    new Set(),
+    new Set()
   );
 
   // Load .gitignore patterns for file filtering
@@ -109,7 +109,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         return new Set(['.git', 'node_modules', '.DS_Store', '*.log']);
       }
     },
-    [],
+    []
   );
 
   // Check if a file should be ignored and return the matching pattern
@@ -117,7 +117,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
     (
       filePath: string,
       patterns: Set<string>,
-      projectRoot: string,
+      projectRoot: string
     ): { ignored: boolean; reason?: string } => {
       try {
         const { relative } = require('node:path');
@@ -157,7 +157,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
         return { ignored: false };
       }
     },
-    [],
+    []
   );
 
   // Find project root (directory containing .git)
@@ -177,7 +177,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       }
       return startPath; // Fallback to start path if no .git found
     },
-    [],
+    []
   );
 
   // Load directory contents
@@ -198,7 +198,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
           const gitIgnoreResult = checkGitIgnore(
             fullPath,
             patterns,
-            projectRoot,
+            projectRoot
           );
 
           // Skip hidden files unless showHidden is true (but check gitignore first)
@@ -263,7 +263,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       loadGitignorePatterns,
       checkGitIgnore,
       findProjectRoot,
-    ],
+    ]
   );
 
   // Load current directory
@@ -436,10 +436,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header */}
       <Header
         title="File Browser"
@@ -450,26 +447,12 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       />
 
       {/* Path and Stats */}
-      <Box
-        paddingX={2}
-        paddingY={1}
-        borderStyle="single"
-        borderColor="gray"
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
-          <Box
-            flexDirection="row"
-            justifyContent="space-between"
-          >
+      <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="gray">
+        <Box flexDirection="column" width="100%">
+          <Box flexDirection="row" justifyContent="space-between">
             <Box flexDirection="row">
               <Text color="cyan">📍 Path: </Text>
-              <Text
-                color="white"
-                wrap="truncate"
-              >
+              <Text color="white" wrap="truncate">
                 {currentPath}
               </Text>
             </Box>
@@ -486,10 +469,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
               📊 {items.filter((i) => i.type === 'file').length} files,{' '}
               {items.filter((i) => i.type === 'directory').length} directories
               {items.some((i) => i.isGitIgnored) && (
-                <Text
-                  color="gray"
-                  dimColor
-                >
+                <Text color="gray" dimColor>
                   {' '}
                   • {items.filter((i) => i.isGitIgnored).length} ignored
                 </Text>
@@ -500,43 +480,21 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       </Box>
 
       {/* File List */}
-      <Box
-        flexGrow={1}
-        paddingX={2}
-        paddingY={1}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2} paddingY={1}>
+        <Box flexDirection="column" width="100%">
           {isLoading ? (
-            <Box
-              justifyContent="center"
-              alignItems="center"
-              height={10}
-            >
+            <Box justifyContent="center" alignItems="center" height={10}>
               <Text color="cyan">Loading directory...</Text>
             </Box>
           ) : error ? (
-            <Box
-              justifyContent="center"
-              alignItems="center"
-              height={10}
-            >
-              <Box
-                flexDirection="column"
-                alignItems="center"
-              >
+            <Box justifyContent="center" alignItems="center" height={10}>
+              <Box flexDirection="column" alignItems="center">
                 <Text color="red">❌ {error}</Text>
                 <Text color="gray">Press 'R' to retry or 'U' to go up</Text>
               </Box>
             </Box>
           ) : items.length === 0 ? (
-            <Box
-              justifyContent="center"
-              alignItems="center"
-              height={10}
-            >
+            <Box justifyContent="center" alignItems="center" height={10}>
               <Text color="gray">Empty directory</Text>
             </Box>
           ) : (
@@ -568,10 +526,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                       >
                         {getFileIcon(item)} {item.name}
                         {item.isGitIgnored && (
-                          <Text
-                            color="gray"
-                            dimColor
-                          >
+                          <Text color="gray" dimColor>
                             {' '}
                             (ignored)
                           </Text>
@@ -608,23 +563,12 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
 
       {/* File Details */}
       {items[selectedIndex] && (
-        <Box
-          paddingX={2}
-          paddingY={1}
-          borderStyle="single"
-          borderColor="cyan"
-        >
+        <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="cyan">
           <Box flexDirection="column">
-            <Text
-              color="cyan"
-              bold
-            >
+            <Text color="cyan" bold>
               📋 Selected Item:
             </Text>
-            <Box
-              marginTop={1}
-              flexDirection="row"
-            >
+            <Box marginTop={1} flexDirection="row">
               <Box width="70%">
                 <Text>
                   {getFileIcon(items[selectedIndex])}{' '}
@@ -635,19 +579,13 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                     {items[selectedIndex].name}
                   </Text>
                   {items[selectedIndex].isGitIgnored && (
-                    <Text
-                      color="gray"
-                      dimColor
-                    >
+                    <Text color="gray" dimColor>
                       {' '}
                       (ignored by {items[selectedIndex].gitIgnoreReason})
                     </Text>
                   )}
                 </Text>
-                <Text
-                  color="gray"
-                  dimColor
-                >
+                <Text color="gray" dimColor>
                   {items[selectedIndex].path}
                 </Text>
               </Box>
@@ -659,18 +597,12 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
                   </Text>
                 )}
                 {items[selectedIndex].modified && (
-                  <Text
-                    color="gray"
-                    dimColor
-                  >
+                  <Text color="gray" dimColor>
                     Modified: {formatDate(items[selectedIndex].modified)}
                   </Text>
                 )}
                 {items[selectedIndex].isGitIgnored && (
-                  <Text
-                    color="yellow"
-                    dimColor
-                  >
+                  <Text color="yellow" dimColor>
                     🚫 Git Ignored
                   </Text>
                 )}
@@ -681,10 +613,7 @@ export const FileBrowser: React.FC<FileBrowserProps> = ({
       )}
 
       {/* Footer */}
-      <Box
-        paddingY={1}
-        paddingX={2}
-      >
+      <Box paddingY={1} paddingX={2}>
         <InteractiveFooter
           currentScreen="File Browser"
           availableScreens={[

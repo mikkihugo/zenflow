@@ -36,7 +36,7 @@ export interface ArchitectureMCPTools {
 
   generateArchitectureFromSpec: (params: {
     specification: DetailedSpecification;
-    pseudocode: any[];
+    pseudocode: unknown[];
     projectId?: string;
   }) => Promise<{
     success: boolean;
@@ -400,12 +400,12 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   private storageService: ArchitectureStorageService;
 
   constructor(
-    private db: any, // DatabaseAdapter
-    private logger?: any, // Logger interface
+    private db: unknown, // DatabaseAdapter
+    private logger?: unknown // Logger interface
   ) {
     this.architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(
       db,
-      logger,
+      logger
     );
     this.storageService = new ArchitectureStorageService(db);
   }
@@ -438,7 +438,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }> {
     try {
       this.logger?.info(
-        `Generating architecture for domain: ${params?.domain || 'general'}`,
+        `Generating architecture for domain: ${params?.domain || 'general'}`
       );
 
       // Validate pseudocode structure
@@ -447,19 +447,19 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
         params?.pseudocode?.algorithms.length === 0
       ) {
         throw new Error(
-          'Pseudocode structure must contain at least one algorithm',
+          'Pseudocode structure must contain at least one algorithm'
         );
       }
 
       // Generate architecture using the enhanced engine
       const architecture = await this.architectureEngine.designArchitecture(
-        params?.pseudocode,
+        params?.pseudocode
       );
 
       // Save with project association if provided
       const architectureId = await this.storageService.saveArchitecture(
         architecture,
-        params?.projectId,
+        params?.projectId
       );
 
       return {
@@ -489,7 +489,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
    */
   async generateArchitectureFromSpec(params: {
     specification: DetailedSpecification;
-    pseudocode: any[];
+    pseudocode: unknown[];
     projectId?: string;
   }): Promise<{
     success: boolean;
@@ -499,14 +499,14 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }> {
     try {
       this.logger?.info(
-        `Generating architecture from specification with ${params?.pseudocode.length} algorithms`,
+        `Generating architecture from specification with ${params?.pseudocode.length} algorithms`
       );
 
       // Generate system architecture from specification and pseudocode
       const systemArchitecture =
         await this.architectureEngine.designSystemArchitecture(
           params?.specification,
-          params?.pseudocode,
+          params?.pseudocode
         );
 
       // Create full architecture design
@@ -515,18 +515,18 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
         systemArchitecture,
         componentDiagrams:
           await this.architectureEngine.generateComponentDiagrams(
-            systemArchitecture,
+            systemArchitecture
           ),
         dataFlow: await this.architectureEngine.designDataFlow(
-          systemArchitecture.components,
+          systemArchitecture.components
         ),
         deploymentPlan:
           await this.architectureEngine.planDeploymentArchitecture(
-            systemArchitecture,
+            systemArchitecture
           ),
         validationResults:
           await this.architectureEngine.validateArchitecturalConsistency(
-            systemArchitecture,
+            systemArchitecture
           ),
         components: systemArchitecture.components,
         relationships: [], // Component relationships
@@ -541,7 +541,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       // Save the architecture
       const architectureId = await this.storageService.saveArchitecture(
         architecture,
-        params?.projectId,
+        params?.projectId
       );
 
       return {
@@ -553,7 +553,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
     } catch (error) {
       this.logger?.error(
         'Failed to generate architecture from specification:',
-        error,
+        error
       );
       return {
         success: false,
@@ -585,7 +585,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
 
       // Get architecture from database
       const architecture = await this.storageService.getArchitectureById(
-        params?.architectureId,
+        params?.architectureId
       );
       if (!architecture) {
         throw new Error(`Architecture not found: ${params?.architectureId}`);
@@ -594,14 +594,14 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       // Perform validation
       const validation =
         await this.architectureEngine.validateArchitecturalConsistency(
-          architecture.systemArchitecture,
+          architecture.systemArchitecture
         );
 
       // Save validation results
       await this.storageService.saveValidation(
         params?.architectureId,
         validation,
-        params?.validationType || 'general',
+        params?.validationType || 'general'
       );
 
       return {
@@ -644,7 +644,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       this.logger?.info(`Retrieving architecture: ${params?.architectureId}`);
 
       const architecture = await this.storageService.getArchitectureById(
-        params?.architectureId,
+        params?.architectureId
       );
 
       return {
@@ -728,7 +728,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       const updatedArchitecture =
         await this.architectureEngine.updateArchitecture(
           params?.architectureId,
-          params?.updates,
+          params?.updates
         );
 
       return {
@@ -838,11 +838,11 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }> {
     try {
       this.logger?.info(
-        `Exporting architecture ${params?.architectureId} as ${params?.format}`,
+        `Exporting architecture ${params?.architectureId} as ${params?.format}`
       );
 
       const architecture = await this.storageService.getArchitectureById(
-        params?.architectureId,
+        params?.architectureId
       );
       if (!architecture) {
         throw new Error(`Architecture not found: ${params?.architectureId}`);
@@ -909,16 +909,16 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
   }> {
     try {
       this.logger?.info(
-        `Cloning architecture: ${params?.sourceArchitectureId}`,
+        `Cloning architecture: ${params?.sourceArchitectureId}`
       );
 
       // Get source architecture
       const sourceArchitecture = await this.storageService.getArchitectureById(
-        params?.sourceArchitectureId,
+        params?.sourceArchitectureId
       );
       if (!sourceArchitecture) {
         throw new Error(
-          `Source architecture not found: ${params?.sourceArchitectureId}`,
+          `Source architecture not found: ${params?.sourceArchitectureId}`
         );
       }
 
@@ -934,7 +934,7 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
       // Save cloned architecture
       const newArchitectureId = await this.storageService.saveArchitecture(
         clonedArchitecture,
-        params?.targetProjectId,
+        params?.targetProjectId
       );
 
       return {
@@ -956,9 +956,9 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
 
   // Helper methods for export functionality
 
-  private jsonToYaml(obj: any): string {
+  private jsonToYaml(obj: unknown): string {
     // Simple JSON to YAML conversion (basic implementation)
-    const yamlify = (obj: any, depth: number = 0): string => {
+    const yamlify = (obj: unknown, depth: number = 0): string => {
       const indent = '  '.repeat(depth);
       if (typeof obj !== 'object' || obj === null) {
         return JSON.stringify(obj);
@@ -1010,8 +1010,8 @@ export class ArchitectureMCPToolsImpl implements ArchitectureMCPTools {
  * @example
  */
 export async function createArchitectureMCPTools(
-  db: any,
-  logger?: any,
+  db: unknown,
+  logger?: unknown
 ): Promise<ArchitectureMCPToolsImpl> {
   const tools = new ArchitectureMCPToolsImpl(db, logger);
   await tools.initialize();

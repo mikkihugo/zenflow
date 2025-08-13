@@ -16,7 +16,7 @@ interface AgentCapacityProfile {
 export class CapacityPredictor {
   public async predict(
     profile: AgentCapacityProfile,
-    timeHorizon: number,
+    timeHorizon: number
   ): Promise<number> {
     // Simple linear prediction based on recent trends
     const history = profile.utilizationHistory.slice(-20);
@@ -39,14 +39,14 @@ export class CapacityPredictor {
 
   public async predictDemand(
     profile: AgentCapacityProfile,
-    _timeHorizon: number,
+    _timeHorizon: number
   ): Promise<number> {
     // Predict future demand based on historical patterns
     const history = profile.utilizationHistory.slice(-30);
     if (history.length < 10) {
       return Math.max(
         1,
-        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 3,
+        profile.utilizationHistory[profile.utilizationHistory.length - 1] || 3
       );
     }
 

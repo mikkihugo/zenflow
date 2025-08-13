@@ -8,7 +8,7 @@
 import type { Anthropic } from '@anthropic-ai/sdk';
 
 export function filterMessagesForClaudeCode(
-  messages: Anthropic.Messages.MessageParam[],
+  messages: Anthropic.Messages.MessageParam[]
 ): Anthropic.Messages.MessageParam[] {
   return messages.map((message) => {
     if (typeof message.content === 'string') {

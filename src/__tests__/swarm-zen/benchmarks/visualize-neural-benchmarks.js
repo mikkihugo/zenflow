@@ -17,7 +17,7 @@ class BenchmarkVisualizer {
       process.cwd(),
       '.ruv-swarm',
       'benchmarks',
-      'neural-benchmark-1751398753060.json',
+      'neural-benchmark-1751398753060.json'
     );
     this.benchmarkData = JSON.parse(await fs.readFile(benchmarkPath, 'utf8'));
   }
@@ -37,13 +37,13 @@ class BenchmarkVisualizer {
     const accuracyData = {};
     Object.entries(this.benchmarkData.results).forEach(([model, data]) => {
       accuracyData[model.toUpperCase()] = Number.parseFloat(
-        data.architecture.accuracy,
+        data.architecture.accuracy
       );
     });
     this.generateASCIIChart(
       accuracyData,
       '🎯 MODEL ACCURACY COMPARISON (%)',
-      70,
+      70
     );
 
     // Inference Speed Comparison
@@ -71,7 +71,7 @@ class BenchmarkVisualizer {
     const paramData = {};
     Object.entries(this.benchmarkData.results).forEach(([model, data]) => {
       paramData[model.toUpperCase()] = Math.floor(
-        data.architecture.parameters / 1000,
+        data.architecture.parameters / 1000
       );
     });
     this.generateASCIIChart(paramData, '🔢 PARAMETERS (thousands)', 70);
@@ -143,7 +143,7 @@ class BenchmarkVisualizer {
           return { model, value };
         })
         .sort((a, b) =>
-          metric.higher ? b.value - a.value : a.value - b.value,
+          metric.higher ? b.value - a.value : a.value - b.value
         );
 
       ranked.forEach((item, index) => {
@@ -165,7 +165,7 @@ class BenchmarkVisualizer {
         speed: data.inference.mean,
         memory: data.memory.totalMemory,
         efficiency: data.memory.efficiency,
-      }),
+      })
     );
     models
       .sort((a, b) => b.accuracy * b.speed - a.accuracy * a.speed)

@@ -66,21 +66,21 @@ const mockAuthHandler = {
 
 interface IntegrationLayerContract {
   initialize(webPort: number, mcpEndpoint: string): Promise<void>;
-  bridgeRequest(httpRequest: any): Promise<any>;
+  bridgeRequest(httpRequest: unknown): Promise<unknown>;
   setupRoutes(): void;
   shutdown(): Promise<void>;
 }
 
 interface RequestTransformationContract {
-  httpToMcp(httpRequest: any): any;
-  mcpToHttp(mcpResponse: any): any;
-  validateTransformation(original: any, transformed: any): boolean;
+  httpToMcp(httpRequest: unknown): unknown;
+  mcpToHttp(mcpResponse: unknown): unknown;
+  validateTransformation(original: unknown, transformed: unknown): boolean;
 }
 
 interface ErrorBridgingContract {
-  transformMcpError(mcpError: any): any;
-  transformHttpError(httpError: any): any;
-  shouldRetry(error: any): boolean;
+  transformMcpError(mcpError: unknown): unknown;
+  transformHttpError(httpError: unknown): unknown;
+  shouldRetry(error: unknown): boolean;
 }
 
 describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
@@ -108,32 +108,32 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
 
     setupRoutes() {
       // Route: List available tools
-      mockWebApiServer.get('/api/tools', async (req: any, res: any) => {
+      mockWebApiServer.get('/api/tools', async (req: unknown, res: unknown) => {
         return this.handleToolsList(req, res);
       });
 
       // Route: Execute tool
       mockWebApiServer.post(
         '/api/tools/:toolName',
-        async (req: any, res: any) => {
+        async (req: unknown, res: unknown) => {
           return this.handleToolExecution(req, res);
-        },
+        }
       );
 
       // Route: Queen task coordination
       mockWebApiServer.post(
         '/api/queens/:queenType/task',
-        async (req: any, res: any) => {
+        async (req: unknown, res: unknown) => {
           return this.handleQueenTask(req, res);
-        },
+        }
       );
     }
 
-    async handleToolsList(req: any, _res: any) {
+    async handleToolsList(req: unknown, _res: unknown) {
       try {
         // Authenticate request
         const _authContext = await mockAuthHandler.validateApiKey(
-          req.headers.authorization,
+          req.headers.authorization
         );
 
         // Get tools from MCP server
@@ -149,7 +149,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       }
     }
 
-    async handleToolExecution(req: any, _res: any) {
+    async handleToolExecution(req: unknown, _res: unknown) {
       try {
         // Validate and transform request
         const isValid = mockRequestTransformer.validateHttpRequest(req);
@@ -178,7 +178,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       }
     }
 
-    async handleQueenTask(req: any, _res: any) {
+    async handleQueenTask(req: unknown, _res: unknown) {
       try {
         const queenType = req.params.queenType;
         const task = req.body;
@@ -277,12 +277,12 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
 
         const response = await integrationLayer.handleToolsList(
           mockReq,
-          mockRes,
+          mockRes
         );
 
         // Assert - Verify complete transformation chain
         expect(mockAuthHandler.validateApiKey).toHaveBeenCalledWith(
-          'Bearer test-token',
+          'Bearer test-token'
         );
         expect(mockMcpServer.listTools).toHaveBeenCalled();
         expect(mockRequestTransformer.mcpToHttp).toHaveBeenCalledWith(
@@ -290,7 +290,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
             result: expect.objectContaining({
               tools: expect.any(Array),
             }),
-          }),
+          })
         );
         expect(mockResponseFormatter?.formatSuccess).toHaveBeenCalled();
 
@@ -353,12 +353,12 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         // Act - Execute tool via HTTP
         const response = await integrationLayer.handleToolExecution(
           httpToolRequest,
-          {},
+          {}
         );
 
         // Assert - Verify request/response transformation chain
         expect(mockRequestTransformer.validateHttpRequest).toHaveBeenCalledWith(
-          httpToolRequest,
+          httpToolRequest
         );
         expect(mockRequestTransformer.httpToMcp).toHaveBeenCalledWith({
           method: 'tools/call',
@@ -449,7 +449,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
         // Act - Execute Queen task via API
         const response = await integrationLayer.handleQueenTask(
           queenTaskRequest,
-          {},
+          {}
         );
 
         // Assert - Verify Queen coordination workflow
@@ -525,7 +525,7 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
             params: { toolName: 'invalid-tool' },
             body: {},
           },
-          {},
+          {}
         );
 
         // Assert - Verify error transformation chain
@@ -551,17 +551,17 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
 
       const protocolIntegrator = {
         bridge: (
-          sourceRequest: any,
+          sourceRequest: unknown,
           sourceProtocol: string,
-          targetProtocol: string,
+          targetProtocol: string
         ) => {
           const translated = mockProtocolBridge.translateRequest(
             sourceRequest,
-            targetProtocol,
+            targetProtocol
           );
           const isValid = mockProtocolBridge.validateTranslation(
             sourceRequest,
-            translated,
+            translated
           );
 
           if (!isValid) {
@@ -586,11 +586,11 @@ describe('Claude-Zen Web ↔ MCP Integration Layer - London School TDD', () => {
       // Assert - Verify protocol interaction
       expect(mockProtocolBridge.translateRequest).toHaveBeenCalledWith(
         httpRequest,
-        'MCP',
+        'MCP'
       );
       expect(mockProtocolBridge.validateTranslation).toHaveBeenCalledWith(
         httpRequest,
-        result,
+        result
       );
       expect(result?.method).toBe('translated');
     });

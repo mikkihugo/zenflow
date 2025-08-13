@@ -23,7 +23,7 @@ export interface WebConfig {
   };
   theme?: 'dark' | 'light';
   realTime?: boolean;
-  coreSystem?: any; // Reference to core system/orchestrator
+  coreSystem?: unknown; // Reference to core system/orchestrator
   container?: DIContainer; // DI container for enhanced architecture
 }
 
@@ -46,7 +46,7 @@ export const DEFAULT_WEB_CONFIG: Required<
   Omit<WebConfig, 'auth' | 'coreSystem'>
 > & {
   auth: WebConfig['auth'];
-  coreSystem?: any;
+  coreSystem?: unknown;
 } = {
   port: 3456,
   host: '0.0.0.0',
@@ -70,7 +70,7 @@ export function createWebConfig(config: WebConfig = {}): Required<
   Omit<WebConfig, 'auth' | 'coreSystem'>
 > & {
   auth: WebConfig['auth'];
-  coreSystem?: any;
+  coreSystem?: unknown;
 } {
   return {
     ...DEFAULT_WEB_CONFIG,

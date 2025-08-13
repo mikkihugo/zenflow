@@ -115,7 +115,7 @@ describe('LanceDB Adapter Integration', () => {
 
       // Should have embeddings table
       const embeddingsTable = schema.tables.find(
-        (t) => t.name === 'embeddings',
+        (t) => t.name === 'embeddings'
       );
       expect(embeddingsTable).toBeDefined();
     } catch (error) {

@@ -42,7 +42,7 @@ export interface MemoryErrorContext {
   operation?: string;
   key?: string;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export class MemoryError extends Error {
@@ -59,7 +59,7 @@ export class MemoryError extends Error {
       recoverable?: boolean;
       severity?: 'low' | 'medium' | 'high' | 'critical';
       cause?: Error;
-    } = {},
+    } = {}
   ) {
     super(message);
     this.name = 'MemoryError';
@@ -102,7 +102,7 @@ export class MemoryError extends Error {
    * @param code
    */
   static getSeverity(
-    code: MemoryErrorCode,
+    code: MemoryErrorCode
   ): 'low' | 'medium' | 'high' | 'critical' {
     const severityMap = {
       [MemoryErrorCode.COORDINATION_FAILED]: 'high',
@@ -184,7 +184,7 @@ export class MemoryCoordinationError extends MemoryError {
   constructor(
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(MemoryErrorCode.COORDINATION_FAILED, message, context, options);
     this.name = 'MemoryCoordinationError';
@@ -196,7 +196,7 @@ export class MemoryBackendError extends MemoryError {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
     this.name = 'MemoryBackendError';
@@ -208,7 +208,7 @@ export class MemoryDataError extends MemoryError {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
     this.name = 'MemoryDataError';
@@ -220,7 +220,7 @@ export class MemoryPerformanceError extends MemoryError {
     code: MemoryErrorCode,
     message: string,
     context: MemoryErrorContext,
-    options: { cause?: Error } = {},
+    options: { cause?: Error } = {}
   ) {
     super(code, message, context, options);
     this.name = 'MemoryPerformanceError';
@@ -258,7 +258,7 @@ export class MemoryErrorClassifier {
       actionRequired: priority === 'high' || priority === 'critical',
       suggestedActions: MemoryErrorClassifier.getSuggestedActions(
         category,
-        error.message,
+        error.message
       ),
     };
   }
@@ -298,13 +298,13 @@ export class MemoryErrorClassifier {
         error.severity === 'high' || error.severity === 'critical',
       suggestedActions: MemoryErrorClassifier.getSuggestedActions(
         category,
-        error.message,
+        error.message
       ),
     };
   }
 
   private static inferCategory(
-    error: Error,
+    error: Error
   ): 'coordination' | 'backend' | 'data' | 'performance' | 'system' {
     const message = error.message.toLowerCase();
 
@@ -340,7 +340,7 @@ export class MemoryErrorClassifier {
   }
 
   private static inferPriority(
-    error: Error,
+    error: Error
   ): 'low' | 'medium' | 'high' | 'critical' {
     const message = error.message.toLowerCase();
 
@@ -370,7 +370,7 @@ export class MemoryErrorClassifier {
 
   private static getSuggestedActions(
     category: string,
-    message: string,
+    message: string
   ): string[] {
     const actions = [];
 

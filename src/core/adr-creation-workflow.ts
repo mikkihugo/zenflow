@@ -110,10 +110,10 @@ export class ADRCreationWorkflow extends EventEmitter {
    */
   async createADRFromDecision(
     context: ADRDecisionContext,
-    architect: string,
+    architect: string
   ): Promise<Document> {
     logger.info(
-      `🏗️ Creating ADR for architectural decision: ${context.problem}`,
+      `🏗️ Creating ADR for architectural decision: ${context.problem}`
     );
 
     // Generate ADR number (would typically query existing ADRs)
@@ -157,7 +157,7 @@ export class ADRCreationWorkflow extends EventEmitter {
     // Process the ADR document
     await this.docProcessor.processDocument(
       adrDocument.path,
-      adrDocument.content,
+      adrDocument.content
     );
 
     // Emit ADR created event for governance tracking
@@ -182,10 +182,10 @@ export class ADRCreationWorkflow extends EventEmitter {
   async updateADRStatus(
     adrId: string,
     newStatus: ADRTemplate['status'],
-    architect: string,
+    architect: string
   ): Promise<void> {
     logger.info(
-      `📝 Updating ADR ${adrId} status to ${newStatus} by ${architect}`,
+      `📝 Updating ADR ${adrId} status to ${newStatus} by ${architect}`
     );
 
     // This would update the existing ADR document
@@ -257,7 +257,7 @@ ${option.cons.map((c) => `- ${c}`).join('\n')}
 
 **Complexity:** ${option.complexity}/5  
 **Risk:** ${option.risk}
-`,
+`
   )
   .join('\n')}
     `.trim();
@@ -351,7 +351,7 @@ ${template.relatedADRs.map((adr) => `- ${adr}`).join('\n')}
  */
 export function createADRCreationWorkflow(
   docProcessor: DocumentProcessor,
-  workflowEngine: WorkflowEngine,
+  workflowEngine: WorkflowEngine
 ): ADRCreationWorkflow {
   return new ADRCreationWorkflow(docProcessor, workflowEngine);
 }

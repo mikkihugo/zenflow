@@ -109,7 +109,7 @@ async function testConcurrentReads() {
       concurrentReads.push(
         pool.read('SELECT * FROM test_data WHERE id = ?', [
           Math.floor(Math.random() * 1000) + 1,
-        ]),
+        ])
       );
     }
 
@@ -164,8 +164,8 @@ async function testWriteQueueUnderLoad() {
         writePromises.push(
           pool.write(
             'INSERT INTO load_test (thread_id, operation_id, value) VALUES (?, ?, ?)',
-            [thread, op, `data-${thread}-${op}`],
-          ),
+            [thread, op, `data-${thread}-${op}`]
+          )
         );
       }
     }
@@ -180,7 +180,7 @@ async function testWriteQueueUnderLoad() {
     if (count[0].total === totalOperations) {
     } else {
       throw new Error(
-        `Expected ${totalOperations} writes, got ${count[0].total}`,
+        `Expected ${totalOperations} writes, got ${count[0].total}`
       );
     }
 
@@ -225,7 +225,7 @@ async function testWorkerThreadPerformance() {
           `category-${i % 10}`,
           Math.floor(Math.random() * 1000),
           `description-${i}`,
-        ],
+        ]
       );
     }
 
@@ -246,8 +246,8 @@ async function testWorkerThreadPerformance() {
           WHERE category = ? 
           GROUP BY category
         `,
-          [`category-${i % 10}`],
-        ),
+          [`category-${i % 10}`]
+        )
       );
     }
 
@@ -299,7 +299,7 @@ async function testHAPersistenceLayer() {
           name: `Agent ${i}`,
           type: 'researcher',
           capabilities: ['research', 'analysis'],
-        }),
+        })
       );
     }
 
@@ -312,7 +312,7 @@ async function testHAPersistenceLayer() {
         persistence.storeMemory(`agent-${i}`, 'test-key', {
           value: `test-value-${i}`,
           timestamp: Date.now(),
-        }),
+        })
       );
     }
 
@@ -327,7 +327,7 @@ async function testHAPersistenceLayer() {
       } else {
         // Write operation
         mixedPromises.push(
-          persistence.updateAgentStatus(`agent-${i % 50}`, 'busy'),
+          persistence.updateAgentStatus(`agent-${i % 50}`, 'busy')
         );
       }
     }
@@ -340,7 +340,7 @@ async function testHAPersistenceLayer() {
 
     if (persistenceStats.totalErrors > 0) {
       throw new Error(
-        `${persistenceStats.totalErrors} errors occurred during testing`,
+        `${persistenceStats.totalErrors} errors occurred during testing`
       );
     }
 
@@ -392,7 +392,7 @@ async function testStressTestSustainedLoad() {
               pool
                 .read('SELECT COUNT(*) as count FROM stress_test')
                 .then(() => operationCount++)
-                .catch(() => errorCount++),
+                .catch(() => errorCount++)
             );
           } else {
             // Write operation (30% of operations)
@@ -402,7 +402,7 @@ async function testStressTestSustainedLoad() {
                   `data-${operationCount}`,
                 ])
                 .then(() => operationCount++)
-                .catch(() => errorCount++),
+                .catch(() => errorCount++)
             );
           }
         }
@@ -424,7 +424,7 @@ async function testStressTestSustainedLoad() {
     if (errorCount / operationCount > 0.01) {
       // Allow up to 1% error rate
       throw new Error(
-        `Error rate too high: ${((errorCount / operationCount) * 100).toFixed(2)}%`,
+        `Error rate too high: ${((errorCount / operationCount) * 100).toFixed(2)}%`
       );
     }
 
@@ -477,7 +477,7 @@ async function testConnectionRecovery() {
       stressPromises.push(
         pool.write('INSERT INTO recovery_test (value) VALUES (?)', [
           `stress-${i}`,
-        ]),
+        ])
       );
     }
 
@@ -488,7 +488,7 @@ async function testConnectionRecovery() {
       'test-2',
     ]);
     const _result2 = await pool.read(
-      'SELECT COUNT(*) as count FROM recovery_test',
+      'SELECT COUNT(*) as count FROM recovery_test'
     );
 
     // Check pool health

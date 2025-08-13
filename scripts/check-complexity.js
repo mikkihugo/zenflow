@@ -56,7 +56,7 @@ function checkFileComplexity(filepath) {
     // File size check
     if (nonEmptyLines > MAX_LINES_PER_FILE) {
       console.log(
-        `  🔴 File too large: ${nonEmptyLines} lines (max: ${MAX_LINES_PER_FILE})`,
+        `  🔴 File too large: ${nonEmptyLines} lines (max: ${MAX_LINES_PER_FILE})`
       );
     }
 
@@ -72,7 +72,7 @@ function checkFileComplexity(filepath) {
       // Check cyclomatic complexity
       if (report.aggregate.cyclomatic > MAX_CYCLOMATIC_COMPLEXITY) {
         console.log(
-          `  🔴 High cyclomatic complexity: ${report.aggregate.cyclomatic} (max: ${MAX_CYCLOMATIC_COMPLEXITY})`,
+          `  🔴 High cyclomatic complexity: ${report.aggregate.cyclomatic} (max: ${MAX_CYCLOMATIC_COMPLEXITY})`
         );
       }
 
@@ -80,12 +80,12 @@ function checkFileComplexity(filepath) {
       for (const func of report.functions) {
         if (func.cyclomatic > MAX_CYCLOMATIC_COMPLEXITY) {
           console.log(
-            `  🟡 Function "${func.name}" complexity: ${func.cyclomatic} (max: ${MAX_CYCLOMATIC_COMPLEXITY})`,
+            `  🟡 Function "${func.name}" complexity: ${func.cyclomatic} (max: ${MAX_CYCLOMATIC_COMPLEXITY})`
           );
         }
         if (func.sloc.logical > MAX_LINES_PER_FUNCTION) {
           console.log(
-            `  🟡 Function "${func.name}" too long: ${func.sloc.logical} lines (max: ${MAX_LINES_PER_FUNCTION})`,
+            `  🟡 Function "${func.name}" too long: ${func.sloc.logical} lines (max: ${MAX_LINES_PER_FUNCTION})`
           );
         }
       }
@@ -95,13 +95,13 @@ function checkFileComplexity(filepath) {
         nonEmptyLines <= MAX_LINES_PER_FILE
       ) {
         console.log(
-          `  ✅ Complexity OK (cyclomatic: ${report.aggregate.cyclomatic}, lines: ${nonEmptyLines})`,
+          `  ✅ Complexity OK (cyclomatic: ${report.aggregate.cyclomatic}, lines: ${nonEmptyLines})`
         );
       }
     } catch (parseError) {
       // Simple line count for files that can't be parsed
       console.log(
-        `  ⚠️  Parse error, checking line count only: ${nonEmptyLines} lines`,
+        `  ⚠️  Parse error, checking line count only: ${nonEmptyLines} lines`
       );
     }
 
@@ -126,7 +126,7 @@ async function main() {
 
   console.log('📊 Complexity analysis complete!');
   console.log(
-    `\nLimits: Cyclomatic ≤ ${MAX_CYCLOMATIC_COMPLEXITY}, File lines ≤ ${MAX_LINES_PER_FILE}, Function lines ≤ ${MAX_LINES_PER_FUNCTION}`,
+    `\nLimits: Cyclomatic ≤ ${MAX_CYCLOMATIC_COMPLEXITY}, File lines ≤ ${MAX_LINES_PER_FILE}, Function lines ≤ ${MAX_LINES_PER_FUNCTION}`
   );
 }
 

@@ -114,12 +114,12 @@ class LSTMModel extends NeuralModel {
     // Validate input dimensions
     if (inputSize !== this.config.inputSize) {
       throw new Error(
-        `Input size mismatch: expected ${this.config.inputSize}, got ${inputSize}`,
+        `Input size mismatch: expected ${this.config.inputSize}, got ${inputSize}`
       );
     }
     if (batchSize <= 0 || sequenceLength <= 0) {
       throw new Error(
-        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`,
+        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`
       );
     }
 
@@ -131,7 +131,7 @@ class LSTMModel extends NeuralModel {
       const { hiddenStates, finalHidden } = await this.forwardLayer(
         layerInput,
         layer,
-        training,
+        training
       );
 
       // Use hidden states as input to next layer
@@ -150,7 +150,7 @@ class LSTMModel extends NeuralModel {
       output = this.linearTransform(
         lastHidden,
         this.outputLayer.weight,
-        this.outputLayer.bias,
+        this.outputLayer.bias
       );
     }
 
@@ -164,12 +164,12 @@ class LSTMModel extends NeuralModel {
     // Validate layer parameters
     if (layerIdx >= this.cells.length) {
       throw new Error(
-        `Layer index ${layerIdx} out of bounds (max: ${this.cells.length - 1})`,
+        `Layer index ${layerIdx} out of bounds (max: ${this.cells.length - 1})`
       );
     }
     if (batchSize <= 0 || sequenceLength <= 0) {
       throw new Error(
-        `Invalid layer input dimensions: batch=${batchSize}, sequence=${sequenceLength}`,
+        `Invalid layer input dimensions: batch=${batchSize}, sequence=${sequenceLength}`
       );
     }
 
@@ -181,19 +181,19 @@ class LSTMModel extends NeuralModel {
         input,
         cells[0],
         false,
-        training,
+        training
       );
       const backwardStates = await this.forwardDirection(
         input,
         cells[1],
         true,
-        training,
+        training
       );
 
       // Concatenate forward and backward states
       const concatenated = this.concatenateBidirectional(
         forwardStates.states,
-        backwardStates.states,
+        backwardStates.states
       );
 
       return {
@@ -260,7 +260,7 @@ class LSTMModel extends NeuralModel {
     const stackedStates = this.stackHiddenStates(
       hiddenStates,
       batchSize,
-      sequenceLength,
+      sequenceLength
     );
 
     return {
@@ -278,10 +278,10 @@ class LSTMModel extends NeuralModel {
       this.add(
         this.add(
           this.matmulBatch(x, cell.Wi),
-          this.matmulBatch(hPrev, cell.Ui),
+          this.matmulBatch(hPrev, cell.Ui)
         ),
-        cell.bi,
-      ),
+        cell.bi
+      )
     );
 
     // Forget gate
@@ -289,10 +289,10 @@ class LSTMModel extends NeuralModel {
       this.add(
         this.add(
           this.matmulBatch(x, cell.Wf),
-          this.matmulBatch(hPrev, cell.Uf),
+          this.matmulBatch(hPrev, cell.Uf)
         ),
-        cell.bf,
-      ),
+        cell.bf
+      )
     );
 
     // Cell candidate
@@ -300,16 +300,16 @@ class LSTMModel extends NeuralModel {
       this.add(
         this.add(
           this.matmulBatch(x, cell.Wc),
-          this.matmulBatch(hPrev, cell.Uc),
+          this.matmulBatch(hPrev, cell.Uc)
         ),
-        cell.bc,
-      ),
+        cell.bc
+      )
     );
 
     // New cell state
     const c = this.add(
       this.elementwiseMultiply(f, cPrev),
-      this.elementwiseMultiply(i, cTilde),
+      this.elementwiseMultiply(i, cTilde)
     );
 
     // Output gate
@@ -317,10 +317,10 @@ class LSTMModel extends NeuralModel {
       this.add(
         this.add(
           this.matmulBatch(x, cell.Wo),
-          this.matmulBatch(hPrev, cell.Uo),
+          this.matmulBatch(hPrev, cell.Uo)
         ),
-        cell.bo,
-      ),
+        cell.bo
+      )
     );
 
     // New hidden state
@@ -385,7 +385,7 @@ class LSTMModel extends NeuralModel {
     const hiddenSize = shape[2];
 
     const concatenated = new Float32Array(
-      batchSize * sequenceLength * hiddenSize * 2,
+      batchSize * sequenceLength * hiddenSize * 2
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -446,7 +446,7 @@ class LSTMModel extends NeuralModel {
     const hiddenSize = shape[2];
 
     const output = new Float32Array(
-      batchSize * sequenceLength * this.config.outputSize,
+      batchSize * sequenceLength * this.config.outputSize
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -463,7 +463,7 @@ class LSTMModel extends NeuralModel {
         const out = this.linearTransform(
           h,
           this.outputLayer.weight,
-          this.outputLayer.bias,
+          this.outputLayer.bias
         );
 
         // Store in output
@@ -529,7 +529,7 @@ class LSTMModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Forward pass

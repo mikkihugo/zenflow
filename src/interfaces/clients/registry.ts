@@ -159,7 +159,7 @@ export interface RegistryEvents {
   'client:unregistered': (clientId: string) => void;
   'client:status_changed': (
     clientId: string,
-    status: ClientInstance['status'],
+    status: ClientInstance['status']
   ) => void;
   'client:health_check': (clientId: string, healthy: boolean) => void;
   'registry:error': (error: Error) => void;
@@ -283,7 +283,7 @@ export class ClientRegistry extends EventEmitter {
    */
   getByType(type: ClientType): ClientInstance[] {
     return Array.from(this.clients.values()).filter(
-      (client) => client.type === type,
+      (client) => client.type === type
     );
   }
 
@@ -318,7 +318,7 @@ export class ClientRegistry extends EventEmitter {
    */
   getByPriority(type?: ClientType): ClientInstance[] {
     return this.getAll((client) => !type || client.type === type).sort(
-      (a, b) => b.config.priority - a.config.priority,
+      (a, b) => b.config.priority - a.config.priority
     );
   }
 
@@ -349,7 +349,7 @@ export class ClientRegistry extends EventEmitter {
         acc[type] = this.getByType(type).length;
         return acc;
       },
-      {} as Record<ClientType, number>,
+      {} as Record<ClientType, number>
     );
 
     const byStatus = all.reduce(
@@ -357,7 +357,7 @@ export class ClientRegistry extends EventEmitter {
         acc[client.status] = (acc[client.status] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
 
     const healthy = all.filter((c) => c.status === 'connected').length;
@@ -520,7 +520,7 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerHTTPClient(
-    config: Omit<HTTPClientConfig, 'type'>,
+    config: Omit<HTTPClientConfig, 'type'>
   ): Promise<ClientInstance> {
     return globalClientRegistry.register({ ...config, type: ClientType.HTTP });
   },
@@ -531,7 +531,7 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerWebSocketClient(
-    config: Omit<WebSocketClientConfig, 'type'>,
+    config: Omit<WebSocketClientConfig, 'type'>
   ): Promise<ClientInstance> {
     return globalClientRegistry.register({
       ...config,
@@ -545,7 +545,7 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerKnowledgeClient(
-    config: Omit<KnowledgeClientConfig, 'type'>,
+    config: Omit<KnowledgeClientConfig, 'type'>
   ): Promise<ClientInstance> {
     return globalClientRegistry.register({
       ...config,
@@ -559,7 +559,7 @@ export const ClientRegistryHelpers = {
    * @param config
    */
   async registerMCPClient(
-    config: Omit<MCPClientConfig, 'type'>,
+    config: Omit<MCPClientConfig, 'type'>
   ): Promise<ClientInstance> {
     return globalClientRegistry.register({ ...config, type: ClientType.MCP });
   },

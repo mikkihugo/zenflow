@@ -43,7 +43,7 @@ export class WebSocketCoordinator {
 
   constructor(
     io: SocketIOServer,
-    private config: WebSocketConfig = {},
+    private config: WebSocketConfig = {}
   ) {
     this.io = io;
     this.setupWebSocket();
@@ -110,7 +110,7 @@ export class WebSocketCoordinator {
    * @param event
    * @param data
    */
-  broadcast(event: string, data: any): void {
+  broadcast(event: string, data: unknown): void {
     if (!this.config.realTime) return;
 
     this.io.emit(event, {
@@ -128,7 +128,7 @@ export class WebSocketCoordinator {
    * @param event
    * @param data
    */
-  sendToSession(sessionId: string, event: string, data: any): boolean {
+  sendToSession(sessionId: string, event: string, data: unknown): boolean {
     const socket = this.io.sockets.sockets.get(sessionId);
     if (!socket) {
       this.logger.warn(`Session not found: ${sessionId}`);
@@ -167,7 +167,7 @@ export class WebSocketCoordinator {
    */
   updateSessionPreferences(
     sessionId: string,
-    preferences: Partial<WebSession['preferences']>,
+    preferences: Partial<WebSession['preferences']>
   ): boolean {
     const session = this.sessions.get(sessionId);
     if (!session) {
@@ -225,7 +225,7 @@ export class WebSocketCoordinator {
       totalSessions > 0
         ? sessions.reduce(
             (sum, s) => sum + (now.getTime() - s.createdAt.getTime()),
-            0,
+            0
           ) / totalSessions
         : 0;
 

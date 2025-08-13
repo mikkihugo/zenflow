@@ -127,7 +127,7 @@ export class HealthChecker extends EventEmitter implements HealthChecker {
       this.checkHealth(agent).catch((error) => {
         logger.error(`Health check failed for agent ${agent.id}:`, error);
         return false;
-      }),
+      })
     );
 
     await Promise.allSettled(healthCheckPromises);

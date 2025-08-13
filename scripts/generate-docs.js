@@ -74,10 +74,10 @@ class DocumentationGenerator {
       if (parsed) {
         // Try to find the function/class that follows this comment
         const afterComment = content.substring(
-          content.indexOf(match) + match.length,
+          content.indexOf(match) + match.length
         );
         const functionMatch = afterComment.match(
-          /(?:function|class|const|let|var)\s+(\w+)/,
+          /(?:function|class|const|let|var)\s+(\w+)/
         );
 
         docs.push({
@@ -115,7 +115,7 @@ class DocumentationGenerator {
       if (line.startsWith('@param')) {
         currentSection = 'param';
         const paramMatch = line.match(
-          /@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/,
+          /@param\s+\{([^}]+)\}\s+(\w+)\s*-?\s*(.*)/
         );
 
         if (paramMatch) {

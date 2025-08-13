@@ -24,7 +24,7 @@ if (fs.existsSync(scriptsDir)) {
     content = content.replace(/^(\s*)console\.log\(/gm, '$1// console.log(');
     content = content.replace(
       /^(\s*)console\.error\(/gm,
-      '$1// console.error(',
+      '$1// console.error('
     );
 
     if (content.length !== originalLength) {
@@ -124,14 +124,14 @@ logger.info('\n🎯 Google-style ESLint improvements applied!');
 logger.info('\nDevelopment Usage:');
 logger.info('  npm run lint:dev        # Google-style dev linting (warnings)');
 logger.info(
-  '  npm run lint:strict     # Full strict linting for CI/production',
+  '  npm run lint:strict     # Full strict linting for CI/production'
 );
 logger.info('  npm run gts:fix         # Google TypeScript Style auto-fix');
 
 logger.info('\nJSDoc & Documentation:');
 logger.info('  npm run docs:generate   # Auto-generate JSDoc documentation');
 logger.info(
-  '  npm run docs:serve      # Serve docs on http://localhost:3000/docs',
+  '  npm run docs:serve      # Serve docs on http://localhost:3000/docs'
 );
 
 logger.info('\n📊 Expected results:');

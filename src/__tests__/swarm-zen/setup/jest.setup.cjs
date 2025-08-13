@@ -57,7 +57,7 @@ jest.mock(
     receiveMessageOnPort: vi.fn(),
     threadId: 0,
   }),
-  { virtual: true },
+  { virtual: true }
 );
 
 // Mock fs/promises for Node.js compatibility
@@ -71,7 +71,7 @@ jest.mock(
     stat: vi.fn(),
     access: vi.fn(),
   }),
-  { virtual: true },
+  { virtual: true }
 );
 
 // Mock better-sqlite3 for tests that don't need real database
@@ -91,7 +91,7 @@ jest.mock(
       pragma: vi.fn(),
     }));
   },
-  { virtual: true },
+  { virtual: true }
 );
 
 // Mock UUID generation for consistent test results
@@ -100,10 +100,10 @@ jest.mock(
   () => ({
     v4: vi.fn(
       () =>
-        `mock-uuid-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
+        `mock-uuid-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
     ),
   }),
-  { virtual: true },
+  { virtual: true }
 );
 
 // Mock WebSocket for MCP tests
@@ -125,7 +125,7 @@ jest.mock(
       close: vi.fn(),
     })),
   }),
-  { virtual: true },
+  { virtual: true }
 );
 
 // Performance polyfill for older Node.js versions

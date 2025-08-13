@@ -75,7 +75,9 @@ module.exports = function transformer(file, api) {
     if (interfaceName && hasGenericPrefix(interfaceName)) {
       const newInterfaceName = removeGenericPrefix(interfaceName);
       if (newInterfaceName !== interfaceName) {
-        console.log(`🔌 INTERFACE RENAME: ${interfaceName} → ${newInterfaceName}`);
+        console.log(
+          `🔌 INTERFACE RENAME: ${interfaceName} → ${newInterfaceName}`
+        );
         path.value.id.name = newInterfaceName;
         hasChanges = true;
       }
@@ -116,7 +118,9 @@ module.exports = function transformer(file, api) {
     if (name && name.startsWith('_') && !isPrivateMember(path)) {
       const newName = name.substring(1);
       if (newName && !isReservedWord(newName)) {
-        console.log(`🔧 UNDERSCORE REMOVAL: ${name} → ${newName} (not private)`);
+        console.log(
+          `🔧 UNDERSCORE REMOVAL: ${name} → ${newName} (not private)`
+        );
         path.value.name = newName;
         hasChanges = true;
       }
@@ -149,7 +153,9 @@ function getImprovedFileName(fileName) {
 function hasGenericPrefix(name) {
   const lowerName = name.toLowerCase();
   return Object.keys(GENERIC_PREFIXES).some(
-    (prefix) => lowerName.startsWith(prefix.replace('-', '')) || lowerName.startsWith(prefix)
+    (prefix) =>
+      lowerName.startsWith(prefix.replace('-', '')) ||
+      lowerName.startsWith(prefix)
   );
 }
 
@@ -303,7 +309,10 @@ function isReservedWord(word) {
 // File renaming function (to be called separately)
 function generateFileRenamingScript() {
   const renamingPairs = Object.entries(NAMING_REPLACEMENTS)
-    .map(([old, new_]) => `mv "src/**/*${old}*" "src/**/*${new_}*" 2>/dev/null || true`)
+    .map(
+      ([old, new_]) =>
+        `mv "src/**/*${old}*" "src/**/*${new_}*" 2>/dev/null || true`
+    )
     .join('\n');
 
   return `#!/bin/bash

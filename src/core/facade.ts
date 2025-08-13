@@ -135,7 +135,7 @@ export interface ISwarmService {
   destroySwarm(swarmId: string): Promise<void>;
   coordinateSwarm(
     swarmId: string,
-    operation: string,
+    operation: string
   ): Promise<CoordinationResult>;
   spawnAgent(swarmId: string, agentConfig: AgentConfig): Promise<AgentResult>;
   listSwarms(): Promise<SwarmInfo[]>;
@@ -145,12 +145,12 @@ export interface INeuralService {
   trainModel(data: TrainingData): Promise<ModelResult>;
   predictWithModel(
     modelId: string,
-    input: unknown[],
+    input: unknown[]
   ): Promise<PredictionResult>;
   evaluateModel(modelId: string, testData: TestData): Promise<EvaluationResult>;
   optimizeModel(
     modelId: string,
-    strategy: OptimizationStrategy,
+    strategy: OptimizationStrategy
   ): Promise<OptimizationResult>;
   listModels(): Promise<ModelInfo[]>;
   deleteModel(modelId: string): Promise<void>;
@@ -171,13 +171,13 @@ export interface IDatabaseService {
   update(
     tableName: string,
     id: string,
-    data: Record<string, unknown>,
+    data: Record<string, unknown>
   ): Promise<boolean>;
   delete(tableName: string, id: string): Promise<boolean>;
   vectorSearch(
     embedding: number[],
     limit: number,
-    filters?: Record<string, unknown>,
+    filters?: Record<string, unknown>
   ): Promise<VectorSearchResult[]>;
   createIndex(tableName: string, columns: string[]): Promise<void>;
   getHealth(): Promise<DatabaseHealth>;
@@ -195,7 +195,7 @@ export interface IInterfaceService {
 export interface IWorkflowService {
   executeWorkflow(
     workflowId: string,
-    inputs: Record<string, unknown>,
+    inputs: Record<string, unknown>
   ): Promise<WorkflowResult>;
   createWorkflow(definition: WorkflowDefinition): Promise<string>;
   listWorkflows(): Promise<WorkflowInfo[]>;
@@ -619,7 +619,7 @@ export interface IMetricsCollector {
   endOperation(
     operationType: string,
     operationId: string,
-    status: 'success' | 'error',
+    status: 'success' | 'error'
   ): void;
   getOperationMetrics(operationId: string): OperationMetrics;
   getSystemMetrics(): SystemMetrics;
@@ -643,7 +643,7 @@ export class ClaudeZenFacade extends EventEmitter {
     private eventManager: ISystemEventManager,
     private commandQueue: MCPCommandQueue,
     private logger: ILogger,
-    private metrics: IMetricsCollector,
+    private metrics: IMetricsCollector
   ) {
     super();
     this.setMaxListeners(1000);
@@ -665,7 +665,7 @@ export class ClaudeZenFacade extends EventEmitter {
       const validation = await this.validateProjectConfig(config);
       if (!validation.valid) {
         throw new Error(
-          `Configuration validation failed: ${validation.errors.join(', ')}`,
+          `Configuration validation failed: ${validation.errors.join(', ')}`
         );
       }
 
@@ -695,7 +695,7 @@ export class ClaudeZenFacade extends EventEmitter {
 
       if (swarmResult?.status === 'rejected') {
         initErrors.push(
-          `Swarm initialization failed: ${swarmResult?.reason?.message}`,
+          `Swarm initialization failed: ${swarmResult?.reason?.message}`
         );
       }
       if (memorySetup.status === 'rejected') {
@@ -703,7 +703,7 @@ export class ClaudeZenFacade extends EventEmitter {
       }
       if (databaseSetup?.status === 'rejected') {
         initWarnings.push(
-          `Database setup failed: ${databaseSetup?.reason?.message}`,
+          `Database setup failed: ${databaseSetup?.reason?.message}`
         );
       }
 
@@ -720,7 +720,7 @@ export class ClaudeZenFacade extends EventEmitter {
         });
       } catch (error) {
         initWarnings.push(
-          `Project persistence failed: ${(error as Error).message}`,
+          `Project persistence failed: ${(error as Error).message}`
         );
       }
 
@@ -738,7 +738,7 @@ export class ClaudeZenFacade extends EventEmitter {
             })
             .catch((error) => {
               initWarnings.push(`HTTP MCP startup failed: ${error.message}`);
-            }),
+            })
         );
       }
 
@@ -751,9 +751,9 @@ export class ClaudeZenFacade extends EventEmitter {
             })
             .catch((error) => {
               initWarnings.push(
-                `Web dashboard startup failed: ${error.message}`,
+                `Web dashboard startup failed: ${error.message}`
               );
-            }),
+            })
         );
       }
 
@@ -766,7 +766,7 @@ export class ClaudeZenFacade extends EventEmitter {
             })
             .catch((error) => {
               initWarnings.push(`TUI startup failed: ${error.message}`);
-            }),
+            })
         );
       }
 
@@ -783,7 +783,7 @@ export class ClaudeZenFacade extends EventEmitter {
             this.logger.info(`Neural model ${modelType} initialization queued`);
           } catch (error) {
             initWarnings.push(
-              `Neural model ${modelType} initialization failed: ${(error as Error).message}`,
+              `Neural model ${modelType} initialization failed: ${(error as Error).message}`
             );
           }
         }
@@ -798,7 +798,7 @@ export class ClaudeZenFacade extends EventEmitter {
             this.logger.info(`Workflow ${workflowId} setup queued`);
           } catch (error) {
             initWarnings.push(
-              `Workflow ${workflowId} setup failed: ${(error as Error).message}`,
+              `Workflow ${workflowId} setup failed: ${(error as Error).message}`
             );
           }
         }
@@ -824,7 +824,7 @@ export class ClaudeZenFacade extends EventEmitter {
       this.metrics.endOperation(
         'project_init',
         operationId,
-        result?.status === 'failed' ? 'error' : 'success',
+        result?.status === 'failed' ? 'error' : 'success'
       );
 
       // Emit project initialization event
@@ -849,7 +849,7 @@ export class ClaudeZenFacade extends EventEmitter {
    */
   async processDocument(
     documentPath: string,
-    options: ProcessingOptions = {},
+    options: ProcessingOptions = {}
   ): Promise<DocumentProcessingResult> {
     const operationId = this.generateOperationId();
     const startTime = Date.now();
@@ -908,7 +908,7 @@ export class ClaudeZenFacade extends EventEmitter {
                 modelId: 'fallback',
                 processingTime: 0,
               };
-            }),
+            })
         );
       }
 
@@ -920,7 +920,7 @@ export class ClaudeZenFacade extends EventEmitter {
         this.analyzeSentiment(document.content).catch((error) => {
           this.logger.warn('Sentiment analysis failed', { error, operationId });
           return null;
-        }),
+        })
       );
 
       // Topic analysis
@@ -928,7 +928,7 @@ export class ClaudeZenFacade extends EventEmitter {
         this.analyzeTopics(document.content).catch((error) => {
           this.logger.warn('Topic analysis failed', { error, operationId });
           return [];
-        }),
+        })
       );
 
       const [
@@ -948,7 +948,7 @@ export class ClaudeZenFacade extends EventEmitter {
           topicAnalysis,
           timestamp: new Date(),
         },
-        { ttl: 3600 },
+        { ttl: 3600 }
       ); // 1 hour TTL
 
       // Generate actionable recommendations using swarm coordination
@@ -956,7 +956,7 @@ export class ClaudeZenFacade extends EventEmitter {
         textAnalysis,
         structureAnalysis,
         sentimentAnalysis,
-        topicAnalysis,
+        topicAnalysis
       );
 
       const result: DocumentProcessingResult = {
@@ -1090,7 +1090,7 @@ export class ClaudeZenFacade extends EventEmitter {
    */
   async executeWorkflow(
     workflowId: string,
-    inputs: Record<string, unknown>,
+    inputs: Record<string, unknown>
   ): Promise<WorkflowResult> {
     const operationId = this.generateOperationId();
     this.logger.info('Executing workflow', { workflowId, inputs, operationId });
@@ -1098,7 +1098,7 @@ export class ClaudeZenFacade extends EventEmitter {
     try {
       const result = await this.workflowService.executeWorkflow(
         workflowId,
-        inputs,
+        inputs
       );
 
       // Store workflow execution history
@@ -1107,7 +1107,7 @@ export class ClaudeZenFacade extends EventEmitter {
         result,
         {
           ttl: 86400,
-        },
+        }
       );
 
       this.emit('workflow:executed', result);
@@ -1128,7 +1128,7 @@ export class ClaudeZenFacade extends EventEmitter {
    * @param operations
    */
   async executeBatch(
-    operations: Array<{ type: string; params: any }>,
+    operations: Array<{ type: string; params: unknown }>
   ): Promise<any[]> {
     const operationId = this.generateOperationId();
     this.logger.info('Executing batch operations', {
@@ -1169,13 +1169,13 @@ export class ClaudeZenFacade extends EventEmitter {
           case 'document:process':
             result = await this.processDocument(
               operation.params.path,
-              operation.params.options,
+              operation.params.options
             );
             break;
           case 'workflow:execute':
             result = await this.executeWorkflow(
               operation.params.workflowId,
-              operation.params.inputs,
+              operation.params.inputs
             );
             break;
           default:
@@ -1256,7 +1256,7 @@ export class ClaudeZenFacade extends EventEmitter {
         this.logger.info('Neural training completed', {
           modelId: event.modelId,
         });
-      },
+      }
     );
 
     this.commandQueue.on('command:executed', (event) => {
@@ -1265,7 +1265,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private async validateProjectConfig(
-    config: ProjectInitConfig,
+    config: ProjectInitConfig
   ): Promise<ValidationResult> {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -1295,7 +1295,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private async loadDocument(
-    path: string,
+    path: string
   ): Promise<{ id: string; content: string; metadata: unknown } | null> {
     // This would integrate with actual document loading service
     return {
@@ -1323,7 +1323,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private async analyzeDocumentStructure(
-    document: any,
+    document: unknown
   ): Promise<DocumentStructure> {
     // Simplified document structure analysis
     return {
@@ -1336,7 +1336,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private async analyzeSentiment(
-    _content: string,
+    _content: string
   ): Promise<SentimentAnalysis | null> {
     // This would integrate with actual sentiment analysis service
     return {
@@ -1358,10 +1358,10 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private async generateRecommendations(
-    _textAnalysis: any,
-    structureAnalysis: any,
-    _sentimentAnalysis: any,
-    _topicAnalysis: any,
+    _textAnalysis: unknown,
+    structureAnalysis: unknown,
+    _sentimentAnalysis: unknown,
+    _topicAnalysis: unknown
   ): Promise<Recommendation[]> {
     const recommendations: Recommendation[] = [];
 
@@ -1479,7 +1479,7 @@ export class ClaudeZenFacade extends EventEmitter {
     try {
       const interfaces = await this.interfaceService.getInterfaceStatus();
       const runningInterfaces = interfaces.filter(
-        (i) => i.status === 'running',
+        (i) => i.status === 'running'
       ).length;
       const health =
         interfaces.length > 0 ? runningInterfaces / interfaces.length : 1;
@@ -1511,7 +1511,7 @@ export class ClaudeZenFacade extends EventEmitter {
     try {
       const models = await this.neuralService.listModels();
       const recentModels = models.filter(
-        (m) => m.lastUsed > new Date(Date.now() - 86400000),
+        (m) => m.lastUsed > new Date(Date.now() - 86400000)
       ).length;
       const health =
         models.length > 0 ? Math.min(recentModels / models.length, 1) : 0.5;
@@ -1543,7 +1543,7 @@ export class ClaudeZenFacade extends EventEmitter {
     try {
       const workflows = await this.workflowService.listWorkflows();
       const activeWorkflows = workflows.filter(
-        (w) => w.status === 'active',
+        (w) => w.status === 'active'
       ).length;
       const health =
         workflows.length > 0 ? activeWorkflows / workflows.length : 1;
@@ -1557,7 +1557,7 @@ export class ClaudeZenFacade extends EventEmitter {
           activeWorkflows,
           totalExecutions: workflows.reduce(
             (sum, w) => sum + w.executionCount,
-            0,
+            0
           ),
         },
         lastChecked: new Date(),
@@ -1574,7 +1574,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private extractComponentStatus(
-    settledResult: PromiseSettledResult<ComponentStatus>,
+    settledResult: PromiseSettledResult<ComponentStatus>
   ): ComponentStatus {
     if (settledResult?.status === 'fulfilled') {
       return settledResult?.value;
@@ -1589,7 +1589,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private async collectSystemAlerts(
-    components: Record<string, ComponentStatus>,
+    components: Record<string, ComponentStatus>
   ): Promise<SystemAlert[]> {
     const alerts: SystemAlert[] = [];
 

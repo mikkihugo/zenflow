@@ -20,10 +20,10 @@ export * from './hook-system.ts';
 
 // Hook system interfaces
 export interface HookSystem {
-  validateSafety(context: any): Promise<any>;
-  assignAgents(context: any): Promise<any>;
-  trackPerformance(context: any): Promise<any>;
-  loadContext(context: any): Promise<any>;
+  validateSafety(context: unknown): Promise<unknown>;
+  assignAgents(context: unknown): Promise<unknown>;
+  trackPerformance(context: unknown): Promise<unknown>;
+  loadContext(context: unknown): Promise<unknown>;
 }
 
 export interface HookConfiguration {
@@ -79,7 +79,7 @@ export class HookSystem extends EventEmitter implements HookSystem {
     };
   }
 
-  async validateSafety(_context: any): Promise<any> {
+  async validateSafety(_context: unknown): Promise<unknown> {
     if (!this.config.safetyValidation.enabled) {
       return { safe: true, warnings: [] };
     }
@@ -102,7 +102,7 @@ export class HookSystem extends EventEmitter implements HookSystem {
     }
   }
 
-  async assignAgents(_context: any): Promise<any> {
+  async assignAgents(_context: unknown): Promise<unknown> {
     if (!this.config.agentAssignment.enabled) {
       return { assignments: [] };
     }
@@ -124,7 +124,7 @@ export class HookSystem extends EventEmitter implements HookSystem {
     }
   }
 
-  async trackPerformance(_context: any): Promise<any> {
+  async trackPerformance(_context: unknown): Promise<unknown> {
     if (!this.config.performanceTracking.enabled) {
       return { tracked: false };
     }
@@ -146,7 +146,7 @@ export class HookSystem extends EventEmitter implements HookSystem {
     }
   }
 
-  async loadContext(context: any): Promise<any> {
+  async loadContext(context: unknown): Promise<unknown> {
     if (!this.config.contextLoading.enabled) {
       return { loaded: false };
     }

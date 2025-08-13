@@ -8,7 +8,7 @@ async function testWithLoader() {
   try {
     await loader.initialize();
     const exports = Object.keys(loader).filter(
-      (key) => typeof loader[key] === 'function',
+      (key) => typeof loader[key] === 'function'
     );
     exports.forEach((_exp) => {});
   } catch (error) {

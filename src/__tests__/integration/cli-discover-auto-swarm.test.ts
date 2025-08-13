@@ -1,6 +1,6 @@
 describe('CLI Discover Auto-Swarm Integration', () => {
-  let mockMemoryStore: any;
-  let mockAgui: any;
+  let mockMemoryStore: unknown;
+  let mockAgui: unknown;
 
   beforeEach(() => {
     // Mock dependencies used by discover command
@@ -57,7 +57,7 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     const calculateResourceConstraints = () => {
       const baseCpuLimit = Math.min(
         8,
-        Math.max(2, mockConfidenceResult?.domains.size * 2),
+        Math.max(2, mockConfidenceResult?.domains.size * 2)
       );
       const baseMemoryLimit =
         mockConfidenceResult?.domains.size < 3
@@ -67,7 +67,7 @@ describe('CLI Discover Auto-Swarm Integration', () => {
             : '8GB';
       const baseMaxAgents = Math.min(
         10 * mockConfidenceResult?.domains.size,
-        50,
+        50
       );
 
       return {
@@ -91,27 +91,27 @@ describe('CLI Discover Auto-Swarm Integration', () => {
         enableHumanValidation: false, // Skip validation for test
         maxSwarmsPerDomain: 1,
         resourceConstraints: calculateResourceConstraints(),
-      },
+      }
     );
 
     // Track events (same as discover.ts)
-    const events: any[] = [];
+    const events: unknown[] = [];
     swarmFactory.on('factory:start', (event) =>
-      events.push({ type: 'start', ...event }),
+      events.push({ type: 'start', ...event })
     );
     swarmFactory.on('swarm:created', (event) =>
-      events.push({ type: 'created', ...event }),
+      events.push({ type: 'created', ...event })
     );
     swarmFactory.on('swarm:initialized', (event) =>
-      events.push({ type: 'initialized', ...event }),
+      events.push({ type: 'initialized', ...event })
     );
     swarmFactory.on('factory:complete', (event) =>
-      events.push({ type: 'complete', ...event }),
+      events.push({ type: 'complete', ...event })
     );
 
     // Create swarms for domains
     const swarmConfigs = await swarmFactory.createSwarmsForDomains(
-      mockConfidenceResult?.domains,
+      mockConfidenceResult?.domains
     );
 
     // Verify results

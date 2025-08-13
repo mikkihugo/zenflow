@@ -18,7 +18,7 @@ import { BaseService } from './base-service.ts';
  * @example
  */
 export class WebService extends BaseService implements IService {
-  private server?: any; // Would be Express server in real implementation
+  private server?: unknown; // Would be Express server in real implementation
   private middleware: Array<{ name: string; handler: Function }> = [];
   private routes = new Map<string, Function>();
 
@@ -58,7 +58,7 @@ export class WebService extends BaseService implements IService {
     this.initializeRoutes();
 
     this.logger.info(
-      `Web service ${this.name} initialized for ${serverConfig?.host}:${serverConfig?.port}`,
+      `Web service ${this.name} initialized for ${serverConfig?.host}:${serverConfig?.port}`
     );
   }
 
@@ -115,7 +115,7 @@ export class WebService extends BaseService implements IService {
     } catch (error) {
       this.logger.error(
         `Health check failed for web service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -123,8 +123,8 @@ export class WebService extends BaseService implements IService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    _options?: ServiceOperationOptions,
+    params?: unknown,
+    _options?: ServiceOperationOptions
   ): Promise<T> {
     this.logger.debug(`Executing web operation: ${operation}`);
 
@@ -142,7 +142,7 @@ export class WebService extends BaseService implements IService {
         return (await this.addRoute(
           params?.path,
           params?.method,
-          params?.handler,
+          params?.handler
         )) as T;
 
       case 'remove-route':
@@ -166,7 +166,7 @@ export class WebService extends BaseService implements IService {
   // Web Service Specific Methods
   // ============================================
 
-  private getServerInfo(): any {
+  private getServerInfo(): unknown {
     const config = this.config as WebServiceConfig;
     return {
       name: this.name,
@@ -184,7 +184,7 @@ export class WebService extends BaseService implements IService {
 
   private async addMiddleware(
     name: string,
-    handler: Function,
+    handler: Function
   ): Promise<boolean> {
     if (!(name && handler)) {
       throw new Error('Middleware name and handler are required');
@@ -215,7 +215,7 @@ export class WebService extends BaseService implements IService {
   private async addRoute(
     path: string,
     method: string,
-    handler: Function,
+    handler: Function
   ): Promise<boolean> {
     if (!(path && method && handler)) {
       throw new Error('Route path, method, and handler are required');
@@ -250,7 +250,7 @@ export class WebService extends BaseService implements IService {
     return this.middleware.map((m) => ({ name: m.name }));
   }
 
-  private getServerStats(): any {
+  private getServerStats(): unknown {
     return {
       routeCount: this.routes.size,
       middlewareCount: this.middleware.length,
@@ -295,7 +295,7 @@ export class WebService extends BaseService implements IService {
     }
 
     this.logger.debug(
-      `Initialized ${this.middleware.length} middleware components`,
+      `Initialized ${this.middleware.length} middleware components`
     );
   }
 

@@ -98,7 +98,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
 
   constructor(
     hiveCoordinator?: HiveSwarmCoordinator,
-    memoryStore?: SessionMemoryStore,
+    memoryStore?: SessionMemoryStore
   ) {
     super();
     if (hiveCoordinator !== undefined) {
@@ -122,7 +122,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       const fact = getHiveFACT();
       if (!fact) {
         throw new Error(
-          'HiveFACT system not available. Initialize HiveSwarmCoordinator first.',
+          'HiveFACT system not available. Initialize HiveSwarmCoordinator first.'
         );
       }
       this.hiveFact = fact;
@@ -154,7 +154,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    */
   async registerSwarm(
     swarmId: string,
-    interests: string[] = [],
+    interests: string[] = []
   ): Promise<void> {
     logger.info(`Registering swarm ${swarmId} with knowledge bridge`);
 
@@ -174,7 +174,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
           swarmId,
           interests: Array.from(swarmInterests),
           registeredAt: Date.now(),
-        },
+        }
       );
     }
 
@@ -187,11 +187,11 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param request
    */
   async processKnowledgeRequest(
-    request: KnowledgeRequest,
+    request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
     const startTime = Date.now();
     logger.debug(
-      `Processing knowledge request ${request.requestId} from swarm ${request.swarmId}`,
+      `Processing knowledge request ${request.requestId} from swarm ${request.swarmId}`
     );
 
     try {
@@ -228,14 +228,14 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       // Log performance metrics
       const duration = Date.now() - startTime;
       logger.debug(
-        `Knowledge request ${request.requestId} completed in ${duration}ms`,
+        `Knowledge request ${request.requestId} completed in ${duration}ms`
       );
 
       return response;
     } catch (error) {
       logger.error(
         `Failed to process knowledge request ${request.requestId}:`,
-        error,
+        error
       );
 
       this.pendingRequests.delete(request.requestId);
@@ -261,7 +261,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param request
    */
   private async handleKnowledgeQuery(
-    request: KnowledgeRequest,
+    request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
     const { query, domain, filters = {} } = request.payload;
 
@@ -293,7 +293,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     const enhancedResults = await this.enhanceResultsWithSwarmContext(
       searchResults ?? [],
       request.swarmId,
-      request.agentId,
+      request.agentId
     );
 
     return {
@@ -310,7 +310,8 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         source: 'hive-fact',
         timestamp: Date.now(),
         confidence: this.calculateAverageConfidence(searchResults ?? []),
-        cacheHit: searchResults?.some((r: any) => (r.accessCount ?? 0) > 1) ?? false,
+        cacheHit:
+          searchResults?.some((r: unknown) => (r.accessCount ?? 0) > 1) ?? false,
       },
     };
   }
@@ -321,7 +322,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param request
    */
   private async handleKnowledgeContribution(
-    request: KnowledgeRequest,
+    request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
     const contribution = request.payload.knowledge as SwarmContribution;
 
@@ -345,7 +346,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       await this.memoryStore.store(
         `hive-bridge/contributions/${request.swarmId}/${Date.now()}`,
         'contribution',
-        contribution,
+        contribution
       );
     }
 
@@ -377,7 +378,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param request
    */
   private async handleKnowledgeUpdate(
-    request: KnowledgeRequest,
+    request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
     const updateData = request.payload.knowledge;
 
@@ -417,7 +418,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param request
    */
   private async handleKnowledgeSubscription(
-    request: KnowledgeRequest,
+    request: KnowledgeRequest
   ): Promise<KnowledgeResponse> {
     const { domain } = request.payload;
 
@@ -455,7 +456,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   private async enhanceResultsWithSwarmContext(
     results: UniversalFact[],
     swarmId: string,
-    agentId?: string,
+    agentId?: string
   ): Promise<Array<UniversalFact & { swarmContext: SwarmContext }>> {
     const enhancedResults: Array<
       UniversalFact & { swarmContext: SwarmContext }
@@ -479,7 +480,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     }
 
     return enhancedResults?.sort(
-      (a, b) => b.swarmContext.relevanceScore - a.swarmContext.relevanceScore,
+      (a, b) => b.swarmContext.relevanceScore - a.swarmContext.relevanceScore
     );
   }
 
@@ -491,7 +492,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    */
   private calculateSwarmRelevance(
     fact: UniversalFact,
-    swarmId: string,
+    swarmId: string
   ): number {
     let relevance = fact.metadata.confidence;
 
@@ -503,7 +504,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     // Boost if used by similar/related swarms
     const relatedSwarms = this.findRelatedSwarms(swarmId);
     const usedByRelated = Array.from(fact.swarmAccess).some((id) =>
-      relatedSwarms.includes(id),
+      relatedSwarms.includes(id)
     );
     if (usedByRelated) {
       relevance += 0.1;
@@ -520,7 +521,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    */
   private calculateAgentCompatibility(
     _fact: UniversalFact,
-    _agentId: string,
+    _agentId: string
   ): number {
     // This would analyze agent capabilities vs fact requirements
     // For now, return a default compatibility score
@@ -547,7 +548,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     if (results.length === 0) return 0;
     const total = results.reduce(
       (sum, fact) => sum + fact.metadata.confidence,
-      0,
+      0
     );
     return total / results.length;
   }
@@ -558,7 +559,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   private setupEventHandlers(): void {
     // Listen for HiveFACT updates
     if (this.hiveFact) {
-      this.hiveFact.on('fact-updated', (data: any) => {
+      this.hiveFact.on('fact-updated', (data: unknown) => {
         this.distributeKnowledgeUpdate({
           updateId: `fact-update-${Date.now()}`,
           type: 'fact-updated',
@@ -569,7 +570,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         });
       });
 
-      this.hiveFact.on('fact-refreshed', (data: any) => {
+      this.hiveFact.on('fact-refreshed', (data: unknown) => {
         this.distributeKnowledgeUpdate({
           updateId: `fact-refresh-${Date.now()}`,
           type: 'fact-updated',
@@ -583,7 +584,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
 
     // Listen for hive coordinator events
     if (this.hiveCoordinator) {
-      this.hiveCoordinator.on('swarm:registered', (data: any) => {
+      this.hiveCoordinator.on('swarm:registered', (data: unknown) => {
         this.registerSwarm(data?.swarmId, []).catch((error) => {
           logger.error(`Failed to register swarm ${data?.swarmId}:`, error);
         });
@@ -610,7 +611,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       if (contributions.length === 0) continue;
 
       logger.debug(
-        `Processing ${contributions.length} contributions from swarm ${swarmId}`,
+        `Processing ${contributions.length} contributions from swarm ${swarmId}`
       );
 
       const processedContributions: SwarmContribution[] = [];
@@ -622,7 +623,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         } catch (error) {
           logger.error(
             `Failed to process contribution from ${swarmId}:`,
-            error,
+            error
           );
         }
       }
@@ -630,7 +631,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       // Remove processed contributions
       this.contributionQueue.set(
         swarmId,
-        contributions.filter((c) => !processedContributions.includes(c)),
+        contributions.filter((c) => !processedContributions.includes(c))
       );
     }
   }
@@ -641,12 +642,12 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param contribution
    */
   private async processSwarmContribution(
-    contribution: SwarmContribution,
+    contribution: SwarmContribution
   ): Promise<void> {
     // Validate contribution quality
     if (contribution.confidence < 0.6) {
       logger.debug(
-        `Skipping low-confidence contribution from ${contribution.swarmId}`,
+        `Skipping low-confidence contribution from ${contribution.swarmId}`
       );
       return;
     }
@@ -679,7 +680,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       await this.memoryStore.store(
         `hive-bridge/processed-contributions/${contribution.swarmId}/${contribution.timestamp}`,
         'processed-contribution',
-        fact,
+        fact
       );
     }
 
@@ -703,7 +704,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * @param update
    */
   private async distributeKnowledgeUpdate(
-    update: KnowledgeDistributionUpdate,
+    update: KnowledgeDistributionUpdate
   ): Promise<void> {
     const relevantSwarms = this.findSwarmsInterestedInDomain(update.domain);
 
@@ -712,7 +713,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     }
 
     logger.info(
-      `Distributing knowledge update ${update.updateId} to ${relevantSwarms.size} swarms`,
+      `Distributing knowledge update ${update.updateId} to ${relevantSwarms.size} swarms`
     );
 
     for (const swarmId of relevantSwarms) {
@@ -731,7 +732,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
           await this.memoryStore.store(
             `hive-bridge/updates/${swarmId}/${update.updateId}`,
             'knowledge-update',
-            update,
+            update
           );
         }
       } catch (error) {
@@ -773,7 +774,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     averageResponseTime: number;
   } {
     const queuedContributions = Array.from(
-      this.contributionQueue.values(),
+      this.contributionQueue.values()
     ).reduce((sum, queue) => sum + queue.length, 0);
 
     return {

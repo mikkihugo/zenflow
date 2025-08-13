@@ -16,7 +16,7 @@ export interface Preset {
   learningRate: number;
   dropout?: number;
   activation?: string;
-  [k: string]: any; // Allow extension for legacy dynamic fields
+  [k: string]: unknown; // Allow extension for legacy dynamic fields
 }
 
 // Define CompletePreset type
@@ -75,7 +75,7 @@ export class CognitivePatternSelector {
   private patterns: Map<string, any>;
   private selectionHistory: Array<{
     taskType: string;
-    requirements: any;
+    requirements: unknown;
     selected?: string;
     timestamp: Date;
   }>;
@@ -91,7 +91,7 @@ export class CognitivePatternSelector {
    * @param taskType
    * @param requirements
    */
-  selectPattern(taskType: string, requirements: Record<string, any> = {}) {
+  selectPattern(taskType: string, requirements: Record<string, unknown> = {}) {
     const candidates = this.getCandidatePatterns(taskType, requirements);
     const selected = this.scoreAndSelect(candidates, requirements);
 
@@ -111,18 +111,18 @@ export class CognitivePatternSelector {
    * @param pattern
    * @param pattern.id
    */
-  registerPattern(pattern: { id: string; [k: string]: any }) {
+  registerPattern(pattern: { id: string; [k: string]: unknown }) {
     this.patterns.set(pattern.id, pattern);
   }
 
   private getCandidatePatterns(
     _taskType: string,
-    requirements: Record<string, any>,
+    requirements: Record<string, unknown>
   ) {
     const presets = Object.values(COMPLETE_NEURAL_PRESETS);
     const custom = Array.from(this.patterns.values());
 
-    return [...presets, ...custom].filter((pattern: any) => {
+    return [...presets, ...custom].filter((pattern: unknown) => {
       const reqArch = requirements['architecture'];
       if (reqArch && pattern['architecture'] !== reqArch) {
         return false;
@@ -132,8 +132,8 @@ export class CognitivePatternSelector {
   }
 
   private scoreAndSelect(
-    candidates: Array<Record<string, any>>,
-    requirements: Record<string, any>,
+    candidates: Array<Record<string, unknown>>,
+    requirements: Record<string, unknown>
   ) {
     if (candidates.length === 0) return null;
 
@@ -147,8 +147,8 @@ export class CognitivePatternSelector {
   }
 
   private calculateScore(
-    pattern: Record<string, any>,
-    requirements: Record<string, any>,
+    pattern: Record<string, unknown>,
+    requirements: Record<string, unknown>
   ) {
     let score = 0.5; // Base score
 
@@ -192,7 +192,7 @@ export class CognitivePatternSelector {
   selectPatternsForPreset(
     modelType: string,
     _presetName: string,
-    taskContext: any = {},
+    taskContext: unknown = {}
   ) {
     // Return appropriate cognitive patterns based on model type and context
     const patterns: string[] = [];
@@ -226,7 +226,7 @@ export class CognitivePatternSelector {
    * @param requirements
    * @param _requirements
    */
-  getPresetRecommendations(useCase: string, _requirements: any = {}) {
+  getPresetRecommendations(useCase: string, _requirements: unknown = {}) {
     const recommendations: Array<{
       preset: string;
       score: number;
@@ -281,7 +281,7 @@ export class CognitivePatternSelector {
  */
 export interface AdaptationRecord {
   timestamp: Date;
-  originalConfig: any;
+  originalConfig: unknown;
   id?: string;
   adaptations?: Array<{
     parameter: string;
@@ -290,11 +290,11 @@ export interface AdaptationRecord {
     reason: string;
   }>;
   expectedImprovement?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface PerformanceRecord {
-  performance: { accuracy?: number; loss?: number; [k: string]: any };
+  performance: { accuracy?: number; loss?: number; [k: string]: unknown };
   timestamp: Date;
 }
 
@@ -316,8 +316,8 @@ export class NeuralAdaptationEngine {
    * @param performanceData.loss
    */
   adapt(
-    networkConfig: any,
-    performanceData: { accuracy?: number; loss?: number; [k: string]: any },
+    networkConfig: unknown,
+    performanceData: { accuracy?: number; loss?: number; [k: string]: unknown }
   ) {
     const adaptation = this.generateAdaptation(networkConfig, performanceData);
 
@@ -340,7 +340,7 @@ export class NeuralAdaptationEngine {
    *
    * @param _networkConfig
    */
-  getRecommendations(_networkConfig: any) {
+  getRecommendations(_networkConfig: unknown) {
     const recentPerformance = this.performanceHistory.slice(-10);
 
     if (recentPerformance.length === 0) {
@@ -350,7 +350,7 @@ export class NeuralAdaptationEngine {
     const avgPerformance =
       recentPerformance.reduce(
         (sum, p) => sum + (p.performance.accuracy || 0),
-        0,
+        0
       ) / recentPerformance.length || 0;
 
     if (avgPerformance < 0.7) {
@@ -372,8 +372,8 @@ export class NeuralAdaptationEngine {
   }
 
   private generateAdaptation(
-    _config: any,
-    performance: { accuracy?: number; loss?: number; [k: string]: any },
+    _config: unknown,
+    performance: { accuracy?: number; loss?: number; [k: string]: unknown }
   ) {
     const adaptations: Array<{
       parameter: string;
@@ -421,7 +421,7 @@ export class NeuralAdaptationEngine {
       change: string;
       factor?: number;
       reason: string;
-    }>,
+    }>
   ) {
     // Simple heuristic for improvement estimation
     return adaptations.length * 0.05; // 5% improvement per adaptation
@@ -437,7 +437,7 @@ export class NeuralAdaptationEngine {
   async initializeAdaptation(
     agentId: string,
     modelType: string,
-    template: string,
+    template: string
   ) {
     const initialization = {
       agentId,
@@ -462,7 +462,7 @@ export class NeuralAdaptationEngine {
    * @param agentId
    * @param adaptationResult
    */
-  async recordAdaptation(agentId: string, adaptationResult: any) {
+  async recordAdaptation(agentId: string, adaptationResult: unknown) {
     this.adaptations.push({
       agentId,
       adaptationResult,
@@ -485,7 +485,7 @@ export class NeuralAdaptationEngine {
    */
   async getAdaptationRecommendations(agentId: string) {
     const agentAdaptations = this.adaptations.filter(
-      (a) => (a as any)['agentId'] === agentId,
+      (a) => (a as any)['agentId'] === agentId
     );
 
     if (agentAdaptations.length === 0) {
@@ -533,7 +533,7 @@ export class NeuralAdaptationEngine {
       totalAdaptations: number;
       averageImprovement: number;
       commonPatterns: Array<{ type: string; count: number }>;
-      recommendations: any[];
+      recommendations: unknown[];
     } = {
       totalAdaptations: this.adaptations.length,
       averageImprovement: 0,

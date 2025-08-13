@@ -62,8 +62,8 @@ export interface MCPClientConfig extends ClientConfig {
 export interface MCPTool {
   name: string;
   description: string;
-  inputSchema?: any;
-  outputSchema?: any;
+  inputSchema?: unknown;
+  outputSchema?: unknown;
 }
 
 /**
@@ -75,12 +75,12 @@ export interface MCPMessage {
   jsonrpc: '2.0';
   id?: string | number;
   method?: string;
-  params?: any;
-  result?: any;
+  params?: unknown;
+  result?: unknown;
   error?: {
     code: number;
     message: string;
-    data?: any;
+    data?: unknown;
   };
 }
 
@@ -116,8 +116,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
   private _pendingRequests: Map<
     string | number,
     {
-      resolve: (value: any) => void;
-      reject: (error: any) => void;
+      resolve: (value: unknown) => void;
+      reject: (error: unknown) => void;
       timeout: NodeJS.Timeout;
     }
   > = new Map();
@@ -252,7 +252,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
 
     if (!response?.ok) {
       throw new Error(
-        `HTTP connection failed: ${response?.status} ${response?.statusText}`,
+        `HTTP connection failed: ${response?.status} ${response?.statusText}`
       );
     }
   }
@@ -374,8 +374,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    */
   async post<T = any>(
     toolName: string,
-    parameters?: any,
-    options?: RequestOptions,
+    parameters?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const startTime = Date.now();
 
@@ -388,7 +388,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       const result = await this._executeToolCall(
         toolName,
         parameters || {},
-        options,
+        options
       );
       const responseTime = Date.now() - startTime;
 
@@ -424,7 +424,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    */
   async get<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     if (endpoint === '/tools') {
       const tools = Array.from(this._tools.values());
@@ -496,8 +496,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    */
   private async _executeToolCall(
     toolName: string,
-    parameters: any,
-    options?: RequestOptions,
+    parameters: unknown,
+    options?: RequestOptions
   ): Promise<MCPToolResult> {
     const message: MCPMessage = {
       jsonrpc: '2.0',
@@ -543,8 +543,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    */
   private async _sendMessage(
     message: MCPMessage,
-    timeout = 30000,
-  ): Promise<any> {
+    timeout = 30000
+  ): Promise<unknown> {
     if (!this._isConnected) {
       throw new ConnectionError(this.name);
     }
@@ -563,8 +563,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    */
   private async _sendStdioMessage(
     message: MCPMessage,
-    timeout: number,
-  ): Promise<any> {
+    timeout: number
+  ): Promise<unknown> {
     return new Promise((resolve, reject) => {
       if (!this._process?.stdin) {
         reject(new Error('Process stdin not available'));
@@ -593,7 +593,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
             this._pendingRequests.delete(message.id);
           }
           reject(
-            new ClientError('Failed to send message', 'SEND_ERROR', this.name),
+            new ClientError('Failed to send message', 'SEND_ERROR', this.name)
           );
         } else if (message.id === undefined) {
           // Notification - resolve immediately
@@ -611,8 +611,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
    */
   private async _sendHTTPMessage(
     message: MCPMessage,
-    timeout: number,
-  ): Promise<any> {
+    timeout: number
+  ): Promise<unknown> {
     const response = await fetch(`${this._mcpConfig.url}/mcp`, {
       method: 'POST',
       headers: {
@@ -627,7 +627,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       throw new ClientError(
         `HTTP request failed: ${response?.status} ${response?.statusText}`,
         'HTTP_ERROR',
-        this.name,
+        this.name
       );
     }
 
@@ -637,7 +637,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       throw new ClientError(
         `MCP error: ${result?.error?.message}`,
         'MCP_ERROR',
-        this.name,
+        this.name
       );
     }
 
@@ -668,8 +668,8 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
               new ClientError(
                 `MCP error: ${message.error.message}`,
                 'MCP_ERROR',
-                this.name,
-              ),
+                this.name
+              )
             );
           } else {
             pending.resolve(message.result);
@@ -678,7 +678,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
       } catch (error) {
         logger.warn(
           `Failed to parse MCP message [${this.name}]: ${line}`,
-          error,
+          error
         );
       }
     }
@@ -704,7 +704,7 @@ export class MCPClientAdapter extends EventEmitter implements IClient {
             this._mcpConfig.authentication.password
           ) {
             const credentials = btoa(
-              `${this._mcpConfig.authentication.username}:${this._mcpConfig.authentication.password}`,
+              `${this._mcpConfig.authentication.username}:${this._mcpConfig.authentication.password}`
             );
             headers['Authorization'] = `Basic ${credentials}`;
           }
@@ -902,8 +902,8 @@ export class MCPClientFactory implements IClientFactory<ClientConfig> {
       client
         .destroy()
         .catch((error) =>
-          logger.warn(`Error shutting down client ${client.name}:`, error),
-        ),
+          logger.warn(`Error shutting down client ${client.name}:`, error)
+        )
     );
 
     await Promise.all(shutdownPromises);
@@ -938,7 +938,7 @@ export function createMCPConfigFromLegacy(
     command?: string[];
     timeout?: number;
     capabilities?: string[];
-  },
+  }
 ): MCPClientConfig {
   const protocol = legacyConfig?.command ? 'stdio' : 'http';
 

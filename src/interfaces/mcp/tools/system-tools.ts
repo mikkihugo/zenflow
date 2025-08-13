@@ -22,7 +22,7 @@ const systemTools: MCPTool[] = [
         includePerformance: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { detailed = false, includePerformance = true } = params;
 
       return {
@@ -80,7 +80,7 @@ const systemTools: MCPTool[] = [
         includeLoad: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { testSuite = 'basic', duration = 60, includeLoad = true } = params;
 
       // Simulate benchmark run
@@ -135,10 +135,10 @@ const systemTools: MCPTool[] = [
         },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { includeExternal = false, components = ['core', 'memory', 'database'] } = params;
 
-      const results: Record<string, any> = {};
+      const results: Record<string, unknown> = {};
 
       for (const component of components) {
         results?.[component] = {

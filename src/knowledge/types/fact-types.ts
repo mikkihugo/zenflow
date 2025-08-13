@@ -13,13 +13,13 @@ export interface FACTStorageConfig {
   defaultTTL: number;
   cleanupInterval: number;
   maxEntryAge: number;
-  backendConfig?: Record<string, any>;
+  backendConfig?: Record<string, unknown>;
 }
 
 export interface FACTKnowledgeEntry {
   id: string;
   query: string;
-  result: any;
+  result: unknown;
   source: string;
   timestamp: number;
   ttl: number;
@@ -30,7 +30,7 @@ export interface FACTKnowledgeEntry {
     domains: string[];
     confidence?: number;
     version?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -76,5 +76,5 @@ export interface FACTBackendStats {
   oldestEntry?: number;
   newestEntry?: number;
   storageSize?: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }

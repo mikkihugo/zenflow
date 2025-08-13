@@ -44,13 +44,13 @@ class RegressionTestingPipeline {
       // Stage 1: Environment Setup
       await this.runStage(
         'Environment Setup',
-        this.setupEnvironment.bind(this),
+        this.setupEnvironment.bind(this)
       );
 
       // Stage 2: Code Quality Checks
       await this.runStage(
         'Code Quality Checks',
-        this.runCodeQualityChecks.bind(this),
+        this.runCodeQualityChecks.bind(this)
       );
 
       // Stage 3: Unit Tests with Coverage
@@ -59,13 +59,13 @@ class RegressionTestingPipeline {
       // Stage 4: Integration Tests
       await this.runStage(
         'Integration Tests',
-        this.runIntegrationTests.bind(this),
+        this.runIntegrationTests.bind(this)
       );
 
       // Stage 5: Performance Benchmarks
       await this.runStage(
         'Performance Benchmarks',
-        this.runPerformanceBenchmarks.bind(this),
+        this.runPerformanceBenchmarks.bind(this)
       );
 
       // Stage 6: Load Testing
@@ -74,25 +74,25 @@ class RegressionTestingPipeline {
       // Stage 7: Security Scanning
       await this.runStage(
         'Security Scanning',
-        this.runSecurityScans.bind(this),
+        this.runSecurityScans.bind(this)
       );
 
       // Stage 8: Cross-Platform Testing
       await this.runStage(
         'Cross-Platform Testing',
-        this.runCrossPlatformTests.bind(this),
+        this.runCrossPlatformTests.bind(this)
       );
 
       // Stage 9: Regression Analysis
       await this.runStage(
         'Regression Analysis',
-        this.performRegressionAnalysis.bind(this),
+        this.performRegressionAnalysis.bind(this)
       );
 
       // Stage 10: Report Generation
       await this.runStage(
         'Report Generation',
-        this.generateRegressionReport.bind(this),
+        this.generateRegressionReport.bind(this)
       );
     } catch (error) {
       console.error('❌ Pipeline failed:', error);
@@ -147,8 +147,8 @@ class RegressionTestingPipeline {
       const packageJson = JSON.parse(
         await fs.readFile(
           '/workspaces/ruv-FANN/ruv-swarm/npm/package.json',
-          'utf8',
-        ),
+          'utf8'
+        )
       );
       setupResult.output.push(`Package version: ${packageJson.version}`);
 
@@ -196,20 +196,20 @@ class RegressionTestingPipeline {
       });
       qualityResult.data.linting.passed = lintResult.success;
       qualityResult.data.linting.issues = this.countLintIssues(
-        lintResult.output,
+        lintResult.output
       );
       qualityResult.output.push(
-        `Linting: ${lintResult.success ? 'PASSED' : 'FAILED'} (${qualityResult.data.linting.issues} issues)`,
+        `Linting: ${lintResult.success ? 'PASSED' : 'FAILED'} (${qualityResult.data.linting.issues} issues)`
       );
 
       // Check if TypeScript definitions exist
       const tsFiles = await this.findFiles(
         '/workspaces/ruv-FANN/ruv-swarm/npm/src',
-        '.d.ts',
+        '.d.ts'
       );
       qualityResult.data.typeChecking.passed = tsFiles.length > 0;
       qualityResult.output.push(
-        `Type definitions: ${tsFiles.length} files found`,
+        `Type definitions: ${tsFiles.length} files found`
       );
 
       qualityResult.passed =
@@ -252,11 +252,11 @@ class RegressionTestingPipeline {
       unitTestResult.data.testsRun = this.extractTestCount(testOutput, 'total');
       unitTestResult.data.testsPassed = this.extractTestCount(
         testOutput,
-        'passed',
+        'passed'
       );
       unitTestResult.data.testsFailed = this.extractTestCount(
         testOutput,
-        'failed',
+        'failed'
       );
 
       // Parse coverage results
@@ -266,10 +266,10 @@ class RegressionTestingPipeline {
       unitTestResult.passed =
         testResult.success && unitTestResult.data.testsFailed === 0;
       unitTestResult.output.push(
-        `Tests: ${unitTestResult.data.testsPassed}/${unitTestResult.data.testsRun} passed`,
+        `Tests: ${unitTestResult.data.testsPassed}/${unitTestResult.data.testsRun} passed`
       );
       unitTestResult.output.push(
-        `Coverage: ${coverageData.lines}% lines, ${coverageData.branches}% branches`,
+        `Coverage: ${coverageData.lines}% lines, ${coverageData.branches}% branches`
       );
     } catch (error) {
       unitTestResult.passed = false;
@@ -297,12 +297,12 @@ class RegressionTestingPipeline {
         {
           cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
           timeout: 300000, // 5 minutes
-        },
+        }
       );
 
       integrationResult.passed = testResult.success;
       integrationResult.output.push(
-        `Integration tests: ${testResult.success ? 'PASSED' : 'FAILED'}`,
+        `Integration tests: ${testResult.success ? 'PASSED' : 'FAILED'}`
       );
 
       // Parse integration test results if available
@@ -317,7 +317,7 @@ class RegressionTestingPipeline {
       } catch (_error) {
         // Results file not found, use basic data
         integrationResult.output.push(
-          'Integration results file not found, using basic metrics',
+          'Integration results file not found, using basic metrics'
         );
       }
     } catch (error) {
@@ -347,7 +347,7 @@ class RegressionTestingPipeline {
         {
           cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
           timeout: 600000, // 10 minutes
-        },
+        }
       );
 
       perfResult.passed = perfTestResult.success;
@@ -366,13 +366,13 @@ class RegressionTestingPipeline {
         };
 
         perfResult.output.push(
-          `SIMD Performance: ${perfResult.data.simdPerformance || 'N/A'}`,
+          `SIMD Performance: ${perfResult.data.simdPerformance || 'N/A'}`
         );
         perfResult.output.push(
-          `Speed Optimization: ${perfResult.data.speedOptimization || 'N/A'}`,
+          `Speed Optimization: ${perfResult.data.speedOptimization || 'N/A'}`
         );
         perfResult.output.push(
-          `Memory Usage: ${perfResult.data.memoryUsage || 'N/A'}`,
+          `Memory Usage: ${perfResult.data.memoryUsage || 'N/A'}`
         );
       } catch (_error) {
         perfResult.output.push('Performance results file not found');
@@ -404,7 +404,7 @@ class RegressionTestingPipeline {
         {
           cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
           timeout: 1800000, // 30 minutes
-        },
+        }
       );
 
       loadResult.passed = loadTestResult.success;
@@ -424,7 +424,7 @@ class RegressionTestingPipeline {
 
         loadResult.output.push(`Max Agents: ${loadResult.data.maxAgents}`);
         loadResult.output.push(
-          `Avg Response: ${loadResult.data.avgResponseTime}ms`,
+          `Avg Response: ${loadResult.data.avgResponseTime}ms`
         );
         loadResult.output.push(`Memory Peak: ${loadResult.data.memoryPeak}MB`);
         loadResult.output.push(`Error Rate: ${loadResult.data.errorRate}%`);
@@ -458,7 +458,7 @@ class RegressionTestingPipeline {
         {
           cwd: '/workspaces/ruv-FANN/ruv-swarm/npm',
           timeout: 600000, // 10 minutes
-        },
+        }
       );
 
       // Load security results
@@ -480,13 +480,13 @@ class RegressionTestingPipeline {
           securityResult.data.securityScore >= 70;
 
         securityResult.output.push(
-          `Security Score: ${securityResult.data.securityScore}/100`,
+          `Security Score: ${securityResult.data.securityScore}/100`
         );
         securityResult.output.push(
-          `Security Level: ${securityResult.data.securityLevel}`,
+          `Security Level: ${securityResult.data.securityLevel}`
         );
         securityResult.output.push(
-          `Vulnerabilities: ${securityResult.data.vulnerabilities}`,
+          `Vulnerabilities: ${securityResult.data.vulnerabilities}`
         );
       } catch (_error) {
         securityResult.output.push('Security results file not found');
@@ -535,13 +535,13 @@ class RegressionTestingPipeline {
         platformResult.data.wasmSupport && platformResult.data.sqliteSupport;
 
       platformResult.output.push(
-        `Platform: ${platformResult.data.platform} ${platformResult.data.arch}`,
+        `Platform: ${platformResult.data.platform} ${platformResult.data.arch}`
       );
       platformResult.output.push(
-        `WASM Support: ${platformResult.data.wasmSupport ? 'YES' : 'NO'}`,
+        `WASM Support: ${platformResult.data.wasmSupport ? 'YES' : 'NO'}`
       );
       platformResult.output.push(
-        `SQLite Support: ${platformResult.data.sqliteSupport ? 'YES' : 'NO'}`,
+        `SQLite Support: ${platformResult.data.sqliteSupport ? 'YES' : 'NO'}`
       );
     } catch (error) {
       platformResult.passed = false;
@@ -588,31 +588,31 @@ class RegressionTestingPipeline {
         regressionResult.passed = this.pipelineResults.regressions.length === 0;
 
         regressionResult.output.push(
-          `Regressions detected: ${regressionResult.data.regressionCount}`,
+          `Regressions detected: ${regressionResult.data.regressionCount}`
         );
         regressionResult.output.push(
-          `Improvements detected: ${regressionResult.data.improvementCount}`,
+          `Improvements detected: ${regressionResult.data.improvementCount}`
         );
 
         if (regressionResult.data.regressionCount > 0) {
           regressionResult.output.push(
-            '❌ Regression analysis FAILED - performance degradation detected',
+            '❌ Regression analysis FAILED - performance degradation detected'
           );
         } else {
           regressionResult.output.push(
-            '✅ Regression analysis PASSED - no performance degradation',
+            '✅ Regression analysis PASSED - no performance degradation'
           );
         }
       } else {
         regressionResult.output.push(
-          'No baseline found - saving current results as baseline',
+          'No baseline found - saving current results as baseline'
         );
         await this.saveBaseline(this.collectCurrentResults());
       }
     } catch (error) {
       regressionResult.passed = false;
       regressionResult.output.push(
-        `Regression analysis error: ${error.message}`,
+        `Regression analysis error: ${error.message}`
       );
     }
 
@@ -629,7 +629,7 @@ class RegressionTestingPipeline {
     try {
       // Determine overall pipeline status
       const passedStages = this.pipelineResults.stages.filter(
-        (s) => s.passed,
+        (s) => s.passed
       ).length;
       const totalStages = this.pipelineResults.stages.length;
       const successRate = (passedStages / totalStages) * 100;
@@ -647,7 +647,7 @@ class RegressionTestingPipeline {
           successRate: `${successRate.toFixed(1)}%`,
           duration: this.pipelineResults.stages.reduce(
             (sum, stage) => sum + stage.duration,
-            0,
+            0
           ),
         },
         cicdIntegration: {
@@ -668,11 +668,11 @@ class RegressionTestingPipeline {
       await this.generateCICDOutputs(report);
 
       reportResult.output.push(
-        `Overall Status: ${this.pipelineResults.overallStatus}`,
+        `Overall Status: ${this.pipelineResults.overallStatus}`
       );
       reportResult.output.push(`Success Rate: ${report.summary.successRate}`);
       reportResult.output.push(
-        `Duration: ${Math.round(report.summary.duration / 1000)}s`,
+        `Duration: ${Math.round(report.summary.duration / 1000)}s`
       );
       reportResult.output.push(`Report saved to: ${reportPath}`);
     } catch (error) {
@@ -727,7 +727,7 @@ class RegressionTestingPipeline {
 
   countLintIssues(output) {
     const matches = output.match(
-      /\d+ problems? \(\d+ errors?, \d+ warnings?\)/,
+      /\d+ problems? \(\d+ errors?, \d+ warnings?\)/
     );
     if (matches) {
       const numbers = matches[0].match(/\d+/g);
@@ -782,7 +782,7 @@ class RegressionTestingPipeline {
 
     const totalDuration = results.tests.reduce(
       (sum, test) => sum + (test.duration || 0),
-      0,
+      0
     );
     const totalTests = results.tests.length;
 
@@ -802,13 +802,13 @@ class RegressionTestingPipeline {
 
   collectCurrentResults() {
     const perfStage = this.pipelineResults.stages.find(
-      (s) => s.name === 'Performance Benchmarks',
+      (s) => s.name === 'Performance Benchmarks'
     );
     const loadStage = this.pipelineResults.stages.find(
-      (s) => s.name === 'Load Testing',
+      (s) => s.name === 'Load Testing'
     );
     const unitStage = this.pipelineResults.stages.find(
-      (s) => s.name === 'Unit Tests',
+      (s) => s.name === 'Unit Tests'
     );
 
     return {
@@ -833,13 +833,13 @@ class RegressionTestingPipeline {
     this.checkPerformanceRegression(
       'SIMD Performance',
       baseline.performance?.simdPerformance,
-      current.performance?.simdPerformance,
+      current.performance?.simdPerformance
     );
 
     this.checkPerformanceRegression(
       'Speed Optimization',
       baseline.performance?.speedOptimization,
-      current.performance?.speedOptimization,
+      current.performance?.speedOptimization
     );
 
     // Memory regression checks
@@ -847,7 +847,7 @@ class RegressionTestingPipeline {
       'Memory Usage',
       this.parseMemoryValue(baseline.loadTesting?.memoryPeak),
       this.parseMemoryValue(current.loadTesting?.memoryPeak),
-      this.thresholds.memory,
+      this.thresholds.memory
     );
 
     // Response time regression checks
@@ -855,7 +855,7 @@ class RegressionTestingPipeline {
       'Response Time',
       baseline.loadTesting?.avgResponseTime,
       current.loadTesting?.avgResponseTime,
-      this.thresholds.performance,
+      this.thresholds.performance
     );
 
     // Coverage regression checks
@@ -864,7 +864,7 @@ class RegressionTestingPipeline {
       baseline.unitTests?.coverage?.lines,
       current.unitTests?.coverage?.lines,
       this.thresholds.coverage,
-      true,
+      true
     ); // Lower is worse for coverage
   }
 
@@ -874,7 +874,7 @@ class RegressionTestingPipeline {
     }
 
     const baselineMultiplier = Number.parseFloat(
-      baselineValue.replace('x', ''),
+      baselineValue.replace('x', '')
     );
     const currentMultiplier = Number.parseFloat(currentValue.replace('x', ''));
 
@@ -907,7 +907,7 @@ class RegressionTestingPipeline {
     baselineValue,
     currentValue,
     threshold,
-    lowerIsBetter = false,
+    lowerIsBetter = false
   ) {
     if (baselineValue === undefined || currentValue === undefined) {
       return;
@@ -958,7 +958,7 @@ class RegressionTestingPipeline {
     ];
     const criticalPassed = criticalStages.every(
       (stageName) =>
-        this.pipelineResults.stages.find((s) => s.name === stageName)?.passed,
+        this.pipelineResults.stages.find((s) => s.name === stageName)?.passed
     );
 
     return criticalPassed && this.pipelineResults.regressions.length === 0;
@@ -974,7 +974,7 @@ class RegressionTestingPipeline {
     const failedStages = this.pipelineResults.stages.filter((s) => !s.passed);
     if (failedStages.length > 0) {
       recommendations.push(
-        `Fix failing stages: ${failedStages.map((s) => s.name).join(', ')}`,
+        `Fix failing stages: ${failedStages.map((s) => s.name).join(', ')}`
       );
     }
 
@@ -996,14 +996,14 @@ success_rate=${report.summary.successRate}
 
     await fs.writeFile(
       '/workspaces/ruv-FANN/ruv-swarm/npm/test/github-outputs.txt',
-      githubOutput,
+      githubOutput
     );
 
     // Generate JUnit XML for test reporting
     const junitXml = this.generateJUnitXML(report);
     await fs.writeFile(
       '/workspaces/ruv-FANN/ruv-swarm/npm/test/regression-results.xml',
-      junitXml,
+      junitXml
     );
   }
 
@@ -1013,7 +1013,7 @@ success_rate=${report.summary.successRate}
         (stage) => `
     <testcase name="${stage.name}" time="${stage.duration / 1000}" classname="RegressionPipeline">
         ${stage.passed ? '' : `<failure message="${stage.errors.join('; ')}">${stage.errors.join('\n')}</failure>`}
-    </testcase>`,
+    </testcase>`
       )
       .join('');
 

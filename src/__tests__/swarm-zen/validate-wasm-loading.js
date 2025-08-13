@@ -76,7 +76,7 @@ async function testWasmMemory() {
       __dirname,
       '..',
       'wasm',
-      'ruv_swarm_wasm_bg.wasm',
+      'ruv_swarm_wasm_bg.wasm'
     );
     const wasmStats = await fs.stat(wasmPath);
 
@@ -212,10 +212,10 @@ async function generateReport() {
   // Calculate summary
   results.summary.total = results.tests.length;
   results.summary.passed = results.tests.filter(
-    (t) => t.status === 'passed',
+    (t) => t.status === 'passed'
   ).length;
   results.summary.failed = results.tests.filter(
-    (t) => t.status === 'failed',
+    (t) => t.status === 'failed'
   ).length;
   results.summary.passRate = (
     (results.summary.passed / results.summary.total) *
@@ -227,7 +227,7 @@ async function generateReport() {
     __dirname,
     '..',
     'test-results',
-    'wasm-validation.json',
+    'wasm-validation.json'
   );
   await fs.mkdir(path.dirname(resultsPath), { recursive: true });
   await fs.writeFile(resultsPath, JSON.stringify(results, null, 2));

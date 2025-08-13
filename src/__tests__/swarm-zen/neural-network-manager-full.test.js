@@ -87,7 +87,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       }
 
       expect(() =>
-        manager.createNetwork('invalid', { activation: 'unknown' }),
+        manager.createNetwork('invalid', { activation: 'unknown' })
       ).toThrow();
     });
   });
@@ -170,7 +170,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Outputs should vary due to dropout
       const allSame = outputs.every(
-        (o) => JSON.stringify(o) === JSON.stringify(outputs[0]),
+        (o) => JSON.stringify(o) === JSON.stringify(outputs[0])
       );
       expect(allSame).toBe(false);
     });
@@ -194,7 +194,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Outputs should be deterministic
       const allSame = outputs.every(
-        (o) => JSON.stringify(o) === JSON.stringify(outputs[0]),
+        (o) => JSON.stringify(o) === JSON.stringify(outputs[0])
       );
       expect(allSame).toBe(true);
     });
@@ -325,7 +325,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
 
       // Velocities should be non-zero
       const hasNonZeroVelocity = network.velocities.some((v) =>
-        v?.weights?.some((row) => row.some((w) => w !== 0)),
+        v?.weights?.some((row) => row.some((w) => w !== 0))
       );
       expect(hasNonZeroVelocity).toBe(true);
     });
@@ -375,7 +375,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
       // Network should remain stable despite high learning rate
       const output = manager.forward('clip-test', [1, 1]);
       expect(output.every((v) => !Number.isNaN(v) && Number.isFinite(v))).toBe(
-        true,
+        true
       );
     });
   });
@@ -424,7 +424,7 @@ describe('NeuralNetworkManager Comprehensive Tests', () => {
           layers: expect.any(Array),
           config: expect.any(Object),
           stats: expect.any(Object),
-        }),
+        })
       );
     });
 

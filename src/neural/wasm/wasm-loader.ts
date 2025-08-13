@@ -8,7 +8,7 @@
 
 export class WasmModuleLoader {
   private loaded = false;
-  private module: any = null;
+  private module: unknown = null;
 
   async load(): Promise<void> {
     if (this.loaded) return;
@@ -30,7 +30,7 @@ export class WasmModuleLoader {
     await this.load();
   }
 
-  getModule(): any {
+  getModule(): unknown {
     return this.module;
   }
 
@@ -44,7 +44,7 @@ export class WasmModuleLoader {
     return 0; // Stub implementation
   }
 
-  getModuleStatus(): any {
+  getModuleStatus(): unknown {
     return {
       loaded: this.loaded,
       memoryUsage: 0,

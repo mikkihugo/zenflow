@@ -270,12 +270,12 @@ export interface AdvancedCoordinationSystem {
 }
 
 export interface CoordinationMetrics {
-  topology: any;
-  distribution: any;
-  communication: any;
-  lifecycle: any;
-  patterns: any;
-  optimization: any;
+  topology: unknown;
+  distribution: unknown;
+  communication: unknown;
+  lifecycle: unknown;
+  patterns: unknown;
+  optimization: unknown;
   overall: {
     efficiency: number;
     reliability: number;
@@ -295,7 +295,7 @@ export interface CoordinationMetrics {
 export async function createAdvancedCoordinationSystem(
   config: AdvancedCoordinationConfig,
   logger: ILogger,
-  eventBus: IEventBus,
+  eventBus: IEventBus
 ): Promise<AdvancedCoordinationSystem> {
   // Create topology manager
   const topologyManager = new TopologyManager(
@@ -306,14 +306,14 @@ export async function createAdvancedCoordinationSystem(
       adaptation: config?.topology?.adaptation,
     },
     logger,
-    eventBus,
+    eventBus
   );
 
   // Create task distribution engine
   const distributionEngine = new TaskDistributionEngine(
     config?.distribution,
     logger,
-    eventBus,
+    eventBus
   );
 
   // Create communication protocols
@@ -321,7 +321,7 @@ export async function createAdvancedCoordinationSystem(
     config?.nodeId,
     config?.communication,
     logger,
-    eventBus,
+    eventBus
   );
 
   // Create agent lifecycle manager
@@ -339,7 +339,7 @@ export async function createAdvancedCoordinationSystem(
       qualityThresholds: config?.lifecycle?.qualityThresholds,
     },
     logger,
-    eventBus,
+    eventBus
   );
 
   // Create coordination patterns
@@ -347,14 +347,14 @@ export async function createAdvancedCoordinationSystem(
     config?.nodeId,
     config?.patterns,
     logger,
-    eventBus,
+    eventBus
   );
 
   // Create performance optimizer
   const performanceOptimizer = new PerformanceOptimizer(
     config?.optimization,
     logger,
-    eventBus,
+    eventBus
   );
 
   // Set up cross-system integrations
@@ -367,7 +367,7 @@ export async function createAdvancedCoordinationSystem(
       coordinationPatterns,
       performanceOptimizer,
     },
-    logger,
+    logger
   );
 
   return {
@@ -389,7 +389,7 @@ export async function createAdvancedCoordinationSystem(
  */
 async function setupIntegrations(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger,
+  logger: ILogger
 ): Promise<void> {
   // Topology -> Distribution: Optimal task routing based on network topology
   systems.topologyManager.on('topology:optimized', (data) => {
@@ -411,7 +411,7 @@ async function setupIntegrations(
   systems.communicationProtocols.on('network:partition', (data) => {
     logger.warn(
       'Network partition detected, switching coordination pattern',
-      data,
+      data
     );
     systems.coordinationPatterns
       .switchPattern('leader-follower')
@@ -448,7 +448,7 @@ async function setupIntegrations(
  * @example
  */
 export function getCoordinationMetrics(
-  systems: AdvancedCoordinationSystem,
+  systems: AdvancedCoordinationSystem
 ): CoordinationMetrics {
   const topologyMetrics = systems.topologyManager.getTopologyMetrics();
   const distributionMetrics = systems.distributionEngine.getMetrics();
@@ -512,19 +512,19 @@ export function getCoordinationMetrics(
   };
 }
 
-function calculateOptimizationEfficiency(metrics: any): number {
+function calculateOptimizationEfficiency(metrics: unknown): number {
   // Calculate efficiency based on optimization metrics
   const latencyScore = Math.max(0, 1 - metrics.latency.average / 1000);
   const throughputScore = Math.min(
     1,
-    metrics.throughput.requestsPerSecond / 1000,
+    metrics.throughput.requestsPerSecond / 1000
   );
   const resourceScore = Math.max(0, 1 - metrics.resourceUsage.cpuUsage);
 
   return (latencyScore + throughputScore + resourceScore) / 3;
 }
 
-function calculateAdaptabilityScore(metrics: any): number {
+function calculateAdaptabilityScore(metrics: unknown): number {
   // Calculate adaptability based on how well the system adapts to changes
   const cacheAdaptability = metrics.cacheMetrics.hitRate;
   const batchAdaptability = metrics.batchMetrics.utilizationRate;
@@ -542,7 +542,7 @@ function calculateAdaptabilityScore(metrics: any): number {
  */
 export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger,
+  logger: ILogger
 ): Promise<void> {
   logger.info('Shutting down advanced coordination system...');
 
@@ -569,7 +569,7 @@ export async function shutdownCoordinationSystem(
  * @example
  */
 export function getDefaultCoordinationConfig(
-  nodeId: string,
+  nodeId: string
 ): AdvancedCoordinationConfig {
   return {
     nodeId,

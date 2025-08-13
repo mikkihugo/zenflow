@@ -16,7 +16,7 @@ export interface QueryRequest {
   /** SQL query to execute */
   sql: string;
   /** Parameters for parameterized queries */
-  params?: any[];
+  params?: unknown[];
   /** Additional query options */
   options?: {
     /** Query timeout in milliseconds */
@@ -39,7 +39,7 @@ export interface CommandRequest {
   /** SQL command to execute */
   sql: string;
   /** Parameters for parameterized commands */
-  params?: any[];
+  params?: unknown[];
   /** Additional command options */
   options?: {
     /** Command timeout in milliseconds */
@@ -64,7 +64,7 @@ export interface BatchRequest {
     /** SQL statement */
     sql: string;
     /** Parameters */
-    params?: any[];
+    params?: unknown[];
   }>;
   /** Whether to execute in a transaction */
   useTransaction?: boolean;
@@ -97,7 +97,7 @@ export interface DatabaseResponse {
   /** Whether the operation was successful */
   success: boolean;
   /** Response data (varies by operation) */
-  data?: any;
+  data?: unknown;
   /** Error message if operation failed */
   error?: string;
   /** Operation metadata and statistics */
@@ -145,18 +145,18 @@ export interface DatabaseHealthStatus {
  * @example
  */
 class ConsoleLogger {
-  debug(_message: string, _meta?: any): void {
+  debug(_message: string, _meta?: unknown): void {
     if (process.env['NODE_ENV'] === 'development') {
     }
   }
 
-  info(_message: string, _meta?: any): void {}
+  info(_message: string, _meta?: unknown): void {}
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     logger.warn(`[WARN] ${message}`, meta || '');
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     logger.error(`[ERROR] ${message}`, meta || '');
   }
 }
@@ -234,9 +234,9 @@ class MockDatabaseAdapter {
 
   async query(
     sql: string,
-    _params?: any[],
+    _params?: unknown[]
   ): Promise<{
-    rows: any[];
+    rows: unknown[];
     fields: Array<{ name: string; type: string }>;
     rowCount: number;
   }> {
@@ -268,10 +268,10 @@ class MockDatabaseAdapter {
 
   async execute(
     _sql: string,
-    _params?: any[],
+    _params?: unknown[]
   ): Promise<{
     affectedRows: number;
-    insertId?: any;
+    insertId?: unknown;
     executionTime: number;
   }> {
     // Simulate command execution
@@ -284,7 +284,7 @@ class MockDatabaseAdapter {
     };
   }
 
-  async transaction<T>(fn: (tx: any) => Promise<T>): Promise<T> {
+  async transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T> {
     // Mock transaction - just execute the function with this adapter
     return fn(this);
   }
@@ -377,7 +377,7 @@ class SimplifiedDatabaseController {
   /**
    * Same interface as DatabaseController methods.
    */
-  async getDatabaseStatus(): Promise<any> {
+  async getDatabaseStatus(): Promise<unknown> {
     const startTime = Date.now();
 
     try {
@@ -430,12 +430,12 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeQuery(request: any): Promise<any> {
+  async executeQuery(request: unknown): Promise<unknown> {
     const startTime = Date.now();
 
     try {
       this.logger.debug(
-        `Executing database query: ${request.sql.substring(0, 100)}...`,
+        `Executing database query: ${request.sql.substring(0, 100)}...`
       );
 
       if (!request.sql) {
@@ -445,7 +445,7 @@ class SimplifiedDatabaseController {
       // Validate that this is actually a query (SELECT statement)
       if (!this.isQueryStatement(request.sql)) {
         throw new Error(
-          'Only SELECT statements are allowed for query operations',
+          'Only SELECT statements are allowed for query operations'
         );
       }
 
@@ -456,7 +456,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`,
+        `Query completed successfully in ${executionTime}ms, returned ${result?.rowCount} rows`
       );
 
       return {
@@ -493,12 +493,12 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeCommand(request: any): Promise<any> {
+  async executeCommand(request: unknown): Promise<unknown> {
     const startTime = Date.now();
 
     try {
       this.logger.debug(
-        `Executing database command: ${request.sql.substring(0, 100)}...`,
+        `Executing database command: ${request.sql.substring(0, 100)}...`
       );
 
       if (!request.sql) {
@@ -512,7 +512,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.debug(
-        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`,
+        `Command completed successfully in ${executionTime}ms, affected ${result?.affectedRows} rows`
       );
 
       return {
@@ -549,12 +549,12 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeTransaction(request: any): Promise<any> {
+  async executeTransaction(request: unknown): Promise<unknown> {
     const startTime = Date.now();
 
     try {
       this.logger.debug(
-        `Executing transaction with ${request.operations.length} operations`,
+        `Executing transaction with ${request.operations.length} operations`
       );
 
       if (!request.operations || request.operations.length === 0) {
@@ -616,13 +616,13 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       const totalRows = results.reduce(
-        (sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0),
-        0,
+        (sum: number, r: unknown) => sum + (r.rowCount || r.affectedRows || 0),
+        0
       );
-      const successfulOps = results.filter((r: any) => r.success).length;
+      const successfulOps = results.filter((r: unknown) => r.success).length;
 
       this.logger.debug(
-        `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`,
+        `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
       );
 
       return {
@@ -662,7 +662,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async getDatabaseSchema(): Promise<any> {
+  async getDatabaseSchema(): Promise<unknown> {
     const startTime = Date.now();
 
     try {
@@ -679,11 +679,11 @@ class SimplifiedDatabaseController {
         totalViews: schema.views.length,
         totalColumns: schema.tables.reduce(
           (sum, table) => sum + table.columns.length,
-          0,
+          0
         ),
         totalIndexes: schema.tables.reduce(
           (sum, table) => sum + table.indexes.length,
-          0,
+          0
         ),
       };
 
@@ -723,12 +723,12 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeMigration(request: any): Promise<any> {
+  async executeMigration(request: unknown): Promise<unknown> {
     const startTime = Date.now();
 
     try {
       this.logger.info(
-        `Executing migration: ${request.version} - ${request.description || 'No description'}`,
+        `Executing migration: ${request.version} - ${request.description || 'No description'}`
       );
 
       if (!request.statements || request.statements.length === 0) {
@@ -769,7 +769,7 @@ class SimplifiedDatabaseController {
             description: request.description,
             validationResults,
             totalStatements: request.statements.length,
-            validStatements: validationResults.filter((r: any) => r.valid)
+            validStatements: validationResults.filter((r: unknown) => r.valid)
               .length,
           },
           metadata: {
@@ -812,7 +812,7 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.info(
-        `Migration ${request.version} completed successfully in ${executionTime}ms`,
+        `Migration ${request.version} completed successfully in ${executionTime}ms`
       );
 
       return {
@@ -826,8 +826,8 @@ class SimplifiedDatabaseController {
         },
         metadata: {
           rowCount: results.reduce(
-            (sum: number, r: any) => sum + (r.affectedRows || 0),
-            0,
+            (sum: number, r: unknown) => sum + (r.affectedRows || 0),
+            0
           ),
           executionTime,
           timestamp: Date.now(),
@@ -853,7 +853,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async getDatabaseAnalytics(): Promise<any> {
+  async getDatabaseAnalytics(): Promise<unknown> {
     const startTime = Date.now();
 
     try {
@@ -869,7 +869,7 @@ class SimplifiedDatabaseController {
         health: {
           status: isHealthy ? 'healthy' : 'unhealthy',
           uptime: Math.floor(
-            (Date.now() - this.performanceMetrics.startTime) / 1000,
+            (Date.now() - this.performanceMetrics.startTime) / 1000
           ),
           lastOperation: this.performanceMetrics.lastOperationTime,
         },

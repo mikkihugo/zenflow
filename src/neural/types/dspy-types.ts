@@ -137,7 +137,7 @@ export interface DSPyConfig {
   maxTokens?: number;
   apiKey?: string;
   baseURL?: string;
-  modelParams?: Record<string, any>;
+  modelParams?: Record<string, unknown>;
   timeout?: number;
   retryCount?: number;
   enableLogging?: boolean;
@@ -189,8 +189,8 @@ export interface DSPyConfig {
  * ```
  */
 export interface DSPyExample {
-  input: Record<string, any>;
-  output: Record<string, any>;
+  input: Record<string, unknown>;
+  output: Record<string, unknown>;
   metadata?: {
     source?: string;
     quality?: number;
@@ -258,14 +258,14 @@ export interface DSPyExample {
  */
 export interface DSPyExecutionResult {
   success: boolean;
-  result?: Record<string, any>;
+  result?: Record<string, unknown>;
   metadata: {
     executionTime: number;
     confidence: number;
     timestamp?: Date;
     model?: string;
     tokensUsed?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   error?: Error;
 }
@@ -282,7 +282,7 @@ export interface DSPyOptimizationConfig {
   evaluationMetric?: string;
   validationSplit?: number;
   earlyStoppingPatience?: number;
-  strategyParams?: Record<string, any>;
+  strategyParams?: Record<string, unknown>;
 }
 
 /**
@@ -312,7 +312,7 @@ export interface DSPyProgram {
   id?: string;
   signature: string;
   description: string;
-  forward(input: Record<string, any>): Promise<Record<string, any>>;
+  forward(input: Record<string, unknown>): Promise<Record<string, unknown>>;
   getMetadata?(): DSPyProgramMetadata;
 }
 
@@ -341,16 +341,16 @@ export interface DSPyWrapper {
   createProgram(signature: string, description: string): Promise<DSPyProgram>;
   execute(
     program: DSPyProgram,
-    input: Record<string, any>,
+    input: Record<string, unknown>
   ): Promise<DSPyExecutionResult>;
   addExamples(program: DSPyProgram, examples: DSPyExample[]): Promise<void>;
   optimize(
     program: DSPyProgram,
-    config?: DSPyOptimizationConfig,
+    config?: DSPyOptimizationConfig
   ): Promise<DSPyOptimizationResult>;
   getConfig(): DSPyConfig | null;
   healthCheck(): Promise<boolean>;
-  getStats(): any;
+  getStats(): unknown;
   cleanup(): Promise<void>;
 }
 
@@ -537,10 +537,10 @@ const DSPY_LIMITS = {
  */
 class DSPyBaseError extends Error {
   public readonly code: string;
-  public readonly context: Record<string, any> | undefined;
+  public readonly context: Record<string, unknown> | undefined;
   public readonly timestamp: Date;
 
-  constructor(message: string, code: string, context?: Record<string, any>) {
+  constructor(message: string, code: string, context?: Record<string, unknown>) {
     super(message);
     this.name = this.constructor.name;
     this.code = code;
@@ -558,7 +558,7 @@ class DSPyBaseError extends Error {
  * @example
  */
 class DSPyAPIError extends DSPyBaseError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 'DSPY_API_ERROR', context);
   }
 }
@@ -569,7 +569,7 @@ class DSPyAPIError extends DSPyBaseError {
  * @example
  */
 class DSPyConfigurationError extends DSPyBaseError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 'DSPY_CONFIGURATION_ERROR', context);
   }
 }
@@ -580,7 +580,7 @@ class DSPyConfigurationError extends DSPyBaseError {
  * @example
  */
 class DSPyExecutionError extends DSPyBaseError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 'DSPY_EXECUTION_ERROR', context);
   }
 }
@@ -591,7 +591,7 @@ class DSPyExecutionError extends DSPyBaseError {
  * @example
  */
 class DSPyOptimizationError extends DSPyBaseError {
-  constructor(message: string, context?: Record<string, any>) {
+  constructor(message: string, context?: Record<string, unknown>) {
     super(message, 'DSPY_OPTIMIZATION_ERROR', context);
   }
 }
@@ -606,7 +606,7 @@ class DSPyOptimizationError extends DSPyBaseError {
  * @param obj
  * @example
  */
-function isDSPyConfig(obj: any): obj is DSPyConfig {
+function isDSPyConfig(obj: unknown): obj is DSPyConfig {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -638,7 +638,7 @@ function isDSPyConfig(obj: any): obj is DSPyConfig {
  * @param obj
  * @example
  */
-function isDSPyProgram(obj: any): obj is DSPyProgram {
+function isDSPyProgram(obj: unknown): obj is DSPyProgram {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -656,7 +656,7 @@ function isDSPyProgram(obj: any): obj is DSPyProgram {
  * @param obj
  * @example
  */
-function isDSPyExample(obj: any): obj is DSPyExample {
+function isDSPyExample(obj: unknown): obj is DSPyExample {
   return (
     obj &&
     typeof obj === 'object' &&
@@ -675,7 +675,7 @@ function isDSPyExample(obj: any): obj is DSPyExample {
  * @param obj
  * @example
  */
-function isDSPyOptimizationConfig(obj: any): obj is DSPyOptimizationConfig {
+function isDSPyOptimizationConfig(obj: unknown): obj is DSPyOptimizationConfig {
   const validStrategies = ['bootstrap', 'mipro', 'copro', 'auto', 'custom'];
   return (
     obj &&
@@ -722,7 +722,7 @@ function validateDSPyConfig(config: Partial<DSPyConfig>): DSPyConfig {
       'Invalid configuration after normalization',
       {
         config: normalized,
-      },
+      }
     );
   }
 
@@ -761,8 +761,8 @@ function validateSignature(signature: string): boolean {
  */
 function createValidationError(
   field: string,
-  value: any,
-  expected: string,
+  value: unknown,
+  expected: string
 ): DSPyConfigurationError {
   return new DSPyConfigurationError(`Invalid ${field}: expected ${expected}`, {
     field,
@@ -777,8 +777,8 @@ function createValidationError(
  * @param input
  * @example
  */
-function sanitizeInput(input: Record<string, any>): Record<string, any> {
-  const sanitized: Record<string, any> = {};
+function sanitizeInput(input: Record<string, unknown>): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(input)) {
     if (

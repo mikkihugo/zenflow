@@ -1,28 +1,28 @@
 /**
  * Event Manager Types - Extracted to break circular dependencies.
- * 
+ *
  * This file contains type definitions that were causing circular imports
  * between factories.ts and adapter files.
  */
 
 import type {
-  EventManagerConfig,
-  IEventManager,
-  SystemEvent,
   CommunicationEvent,
   CoordinationEvent,
   DatabaseEvent,
+  EventManagerConfig,
+  IEventManager,
   InterfaceEvent,
   MemoryEvent,
   NeuralEvent,
-  WorkflowEvent
+  SystemEvent,
+  WorkflowEvent,
 } from './core/interfaces.ts';
 
 /**
  * Workflow Event Manager Interface.
  */
 export interface IWorkflowEventManager extends IEventManager<WorkflowEvent> {
-  processWorkflowStep(stepId: string, data: any): Promise<void>;
+  processWorkflowStep(stepId: string, data: unknown): Promise<void>;
   getWorkflowStatus(workflowId: string): Promise<string>;
   cancelWorkflow(workflowId: string): Promise<void>;
 }
@@ -31,8 +31,8 @@ export interface IWorkflowEventManager extends IEventManager<WorkflowEvent> {
  * Neural Event Manager Interface.
  */
 export interface INeuralEventManager extends IEventManager<NeuralEvent> {
-  processNeuralSignal(signal: any): Promise<void>;
-  trainModel(modelId: string, data: any): Promise<void>;
+  processNeuralSignal(signal: unknown): Promise<void>;
+  trainModel(modelId: string, data: unknown): Promise<void>;
   getModelStatus(modelId: string): Promise<string>;
 }
 
@@ -40,8 +40,8 @@ export interface INeuralEventManager extends IEventManager<NeuralEvent> {
  * Memory Event Manager Interface.
  */
 export interface IMemoryEventManager extends IEventManager<MemoryEvent> {
-  storeMemoryEvent(key: string, data: any): Promise<void>;
-  retrieveMemoryEvent(key: string): Promise<any>;
+  storeMemoryEvent(key: string, data: unknown): Promise<void>;
+  retrieveMemoryEvent(key: string): Promise<unknown>;
   clearMemoryCache(): Promise<void>;
 }
 
@@ -50,7 +50,7 @@ export interface IMemoryEventManager extends IEventManager<MemoryEvent> {
  */
 export interface IInterfaceEventManager extends IEventManager<InterfaceEvent> {
   handleUIInteraction(element: string, action: string): Promise<void>;
-  updateInterface(componentId: string, state: any): Promise<void>;
+  updateInterface(componentId: string, state: unknown): Promise<void>;
   refreshComponent(componentId: string): Promise<void>;
 }
 
@@ -75,17 +75,19 @@ export interface ISystemEventManager extends IEventManager<SystemEvent> {
 /**
  * Communication Event Manager Interface.
  */
-export interface ICommunicationEventManager extends IEventManager<CommunicationEvent> {
-  sendMessage(channel: string, message: any): Promise<void>;
-  receiveMessage(channel: string): Promise<any>;
+export interface ICommunicationEventManager
+  extends IEventManager<CommunicationEvent> {
+  sendMessage(channel: string, message: unknown): Promise<void>;
+  receiveMessage(channel: string): Promise<unknown>;
   closeChannel(channel: string): Promise<void>;
 }
 
 /**
  * Coordination Event Manager Interface.
  */
-export interface ICoordinationEventManager extends IEventManager<CoordinationEvent> {
+export interface ICoordinationEventManager
+  extends IEventManager<CoordinationEvent> {
   coordinateTask(taskId: string): Promise<void>;
   assignAgent(agentId: string, task: string): Promise<void>;
-  getCoordinationStatus(): Promise<any>;
+  getCoordinationStatus(): Promise<unknown>;
 }

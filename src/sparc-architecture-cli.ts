@@ -28,12 +28,12 @@ program
   .requiredOption('--pseudocode-file <path>', 'Path to pseudocode JSON file')
   .option(
     '--spec-file <path>',
-    'Path to specification JSON file for additional context',
+    'Path to specification JSON file for additional context'
   )
   .option(
     '--output <path>',
     'Output file path for architecture',
-    'architecture.json',
+    'architecture.json'
   )
   .option('--format <format>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
@@ -73,7 +73,7 @@ program
       if (specification) {
         const systemArchitecture = await engine.designSystemArchitecture(
           specification,
-          pseudocodeData?.algorithms,
+          pseudocodeData?.algorithms
         );
         architecture = {
           systemArchitecture,
@@ -112,7 +112,7 @@ program
   .description('Validate architecture design for consistency and quality')
   .requiredOption(
     '--architecture-file <path>',
-    'Path to architecture JSON file',
+    'Path to architecture JSON file'
   )
   .option('--detailed', 'Show detailed validation results')
   .action(async (options) => {
@@ -142,7 +142,7 @@ program
         validationResults?.forEach((result, index) => {
           const status = result.passed ? '✅' : '❌';
           console.log(
-            `${index + 1}. ${status} ${result.rule}: ${result.message}`,
+            `${index + 1}. ${status} ${result.rule}: ${result.message}`
           );
         });
       }
@@ -161,12 +161,12 @@ program
   .description('Generate implementation plan from architecture')
   .requiredOption(
     '--architecture-file <path>',
-    'Path to architecture JSON file',
+    'Path to architecture JSON file'
   )
   .option(
     '--output <path>',
     'Output file path for implementation plan',
-    'implementation-plan.json',
+    'implementation-plan.json'
   )
   .option('--format <format>', 'Output format (json|markdown)', 'json')
   .action(async (options) => {
@@ -259,7 +259,7 @@ function generateArchitectureMarkdown(architecture: any): string {
           markdown += `- ${tradeoff}\n`;
         });
         markdown += `\n---\n\n`;
-      },
+      }
     );
   }
 
@@ -285,7 +285,7 @@ function generateArchitectureMarkdown(architecture: any): string {
         }
 
         markdown += `---\n\n`;
-      },
+      }
     );
   }
 
@@ -367,7 +367,7 @@ function generateImplementationPlanMarkdown(plan: any): string {
       plan.riskAssessment.mitigationPlans.forEach(
         (mitigation: string, index: number) => {
           markdown += `${index + 1}. ${mitigation}\n`;
-        },
+        }
       );
       markdown += `\n`;
     }

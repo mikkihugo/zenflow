@@ -10,48 +10,48 @@ import { createToken } from './token-factory.ts';
 
 // Core infrastructure interfaces (to be implemented)
 export interface ILogger {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
+  debug(message: string, meta?: unknown): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
 }
 
 export interface IConfig {
   get<T>(key: string, defaultValue?: T): T;
-  set(key: string, value: any): void;
+  set(key: string, value: unknown): void;
   has(key: string): boolean;
 }
 
 export interface IEventBus {
-  emit(event: string, data: any): void;
-  on(event: string, handler: (data: any) => void): void;
-  off(event: string, handler: (data: any) => void): void;
+  emit(event: string, data: unknown): void;
+  on(event: string, handler: (data: unknown) => void): void;
+  off(event: string, handler: (data: unknown) => void): void;
 }
 
 export interface IDatabase {
   initialize?(): Promise<void>;
-  query<T>(sql: string, params?: any[]): Promise<T[]>;
-  execute(sql: string, params?: any[]): Promise<void>;
+  query<T>(sql: string, params?: unknown[]): Promise<T[]>;
+  execute(sql: string, params?: unknown[]): Promise<void>;
   transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T>;
   shutdown?(): Promise<void>;
 
   // Task management methods
-  createTask(task: any): Promise<void>;
-  updateTask(taskId: string, updates: any): Promise<void>;
+  createTask(task: unknown): Promise<void>;
+  updateTask(taskId: string, updates: unknown): Promise<void>;
   getSwarmTasks(swarmId: string, status?: string): Promise<any[]>;
 
   // Agent management methods
-  updateAgent(agentId: string, updates: any): Promise<void>;
+  updateAgent(agentId: string, updates: unknown): Promise<void>;
 
   // Metrics methods
   getMetrics(entityId: string, metricType: string): Promise<any[]>;
 }
 
 export interface IHttpClient {
-  get<T>(url: string, config?: any): Promise<T>;
-  post<T>(url: string, data?: any, config?: any): Promise<T>;
-  put<T>(url: string, data?: any, config?: any): Promise<T>;
-  delete<T>(url: string, config?: any): Promise<T>;
+  get<T>(url: string, config?: unknown): Promise<T>;
+  post<T>(url: string, data?: unknown, config?: unknown): Promise<T>;
+  put<T>(url: string, data?: unknown, config?: unknown): Promise<T>;
+  delete<T>(url: string, config?: unknown): Promise<T>;
 }
 
 // Core system tokens

@@ -46,7 +46,7 @@ export type MessageType =
 export interface MessageContent {
   text: string;
   code?: string;
-  data?: any;
+  data?: unknown;
   attachments?: ConversationAttachment[];
 }
 
@@ -60,8 +60,8 @@ export interface MessageMetadata {
 
 export interface ConversationAttachment {
   type: 'file' | 'image' | 'data' | 'code' | 'link';
-  content: any;
-  metadata?: Record<string, any>;
+  content: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -94,7 +94,7 @@ export type ConversationStatus =
   | 'error';
 
 export interface ConversationContext {
-  task?: any;
+  task?: unknown;
   goal: string;
   constraints: string[];
   resources: string[];
@@ -111,7 +111,7 @@ export interface ConversationOutcome {
     | 'code'
     | 'analysis'
     | 'recommendation';
-  content: any;
+  content: unknown;
   confidence: number;
   contributors: AgentId[];
   timestamp: Date;
@@ -165,7 +165,7 @@ export interface ConversationStep {
 
 export interface StepTrigger {
   type: 'time' | 'message' | 'consensus' | 'external' | 'manual';
-  condition: any;
+  condition: unknown;
 }
 
 export interface StepAction {
@@ -175,7 +175,7 @@ export interface StepAction {
     | 'make_decision'
     | 'summarize'
     | 'escalate';
-  params: any;
+  params: unknown;
   agent?: string; // role name
 }
 
@@ -185,7 +185,7 @@ export interface PatternConstraint {
     | 'message_limit'
     | 'participant_limit'
     | 'quality_threshold';
-  value: any;
+  value: unknown;
 }
 
 /**
@@ -200,14 +200,14 @@ export interface ConversationOrchestrator {
   sendMessage(message: ConversationMessage): Promise<void>;
   moderateConversation(
     conversationId: string,
-    action: ModerationAction,
+    action: ModerationAction
   ): Promise<void>;
   getConversationHistory(
-    conversationId: string,
+    conversationId: string
   ): Promise<ConversationMessage[]>;
   terminateConversation(
     conversationId: string,
-    reason?: string,
+    reason?: string
   ): Promise<ConversationOutcome[]>;
 }
 
@@ -253,13 +253,13 @@ export interface LearningInsight {
   type: 'efficiency' | 'quality' | 'participation' | 'outcome';
   description: string;
   confidence: number;
-  evidence: any[];
+  evidence: unknown[];
   applicability: string[];
 }
 
 export interface PatternImprovement {
   target: 'workflow' | 'roles' | 'constraints' | 'triggers';
-  change: any;
+  change: unknown;
   rationale: string;
   expectedImpact: number;
 }
@@ -283,7 +283,7 @@ export interface ConversationMemory {
   searchConversations(query: ConversationQuery): Promise<ConversationSession[]>;
   updateConversation(
     id: string,
-    updates: Partial<ConversationSession>,
+    updates: Partial<ConversationSession>
   ): Promise<void>;
   deleteConversation(id: string): Promise<void>;
   getAgentConversationHistory(agentId: string): Promise<ConversationSession[]>;

@@ -77,10 +77,10 @@ export class DocumentService {
   private relationshipRepository!: IRepository<DocumentRelationshipEntity>;
   private workflowRepository!: IRepository<DocumentWorkflowStateEntity>;
   private documentDAO!: IRepository<BaseDocumentEntity>;
-  private coordinator: any; // xxx NEEDS_HUMAN: Define proper coordinator type or import from a module
+  private coordinator: unknown; // xxx NEEDS_HUMAN: Define proper coordinator type or import from a module
 
   constructor(
-    private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
+    private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
   ) {}
 
   /**
@@ -90,23 +90,23 @@ export class DocumentService {
     // Initialize repositories using DAL factory
     this.documentRepository = await createDao<BaseDocumentEntity>(
       'Document',
-      this.databaseType,
+      this.databaseType
     );
     this.projectRepository = await createDao<ProjectEntity>(
       'Project',
-      this.databaseType,
+      this.databaseType
     );
     this.relationshipRepository = await createDao<DocumentRelationshipEntity>(
       'DocumentRelationship',
-      this.databaseType,
+      this.databaseType
     );
     this.workflowRepository = await createDao<DocumentWorkflowStateEntity>(
       'DocumentWorkflowState',
-      this.databaseType,
+      this.databaseType
     );
     this.documentDAO = await createDao<BaseDocumentEntity>(
       'Document',
-      this.databaseType,
+      this.databaseType
     );
   }
 
@@ -120,7 +120,7 @@ export class DocumentService {
    */
   async createDocument<T extends BaseDocumentEntity>(
     document: Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>,
-    options: DocumentCreateOptions = {},
+    options: DocumentCreateOptions = {}
   ): Promise<T> {
     const id = nanoid();
     const now = new Date();
@@ -163,7 +163,7 @@ export class DocumentService {
    */
   async getDocument<T extends BaseDocumentEntity>(
     id: string,
-    options: DocumentQueryOptions = {},
+    options: DocumentQueryOptions = {}
   ): Promise<T | null> {
     const query: DatabaseQuery = {
       type: 'select',
@@ -190,8 +190,8 @@ export class DocumentService {
       return null;
     }
 
-    const document: any = this.deserializeDocument<T>(
-      result?.result?.documents?.[0],
+    const document: unknown = this.deserializeDocument<T>(
+      result?.result?.documents?.[0]
     );
 
     // Load relationships if requested
@@ -217,7 +217,7 @@ export class DocumentService {
   async updateDocument<T extends BaseDocumentEntity>(
     id: string,
     updates: Partial<Omit<T, 'id' | 'created_at' | 'updated_at' | 'checksum'>>,
-    options: DocumentCreateOptions = {},
+    options: DocumentCreateOptions = {}
   ): Promise<T> {
     const existing = await this.getDocument<T>(id);
     if (!existing) {
@@ -332,7 +332,7 @@ export class DocumentService {
       parentDocumentId?: string;
       workflowStage?: string;
     },
-    options: DocumentQueryOptions = {},
+    options: DocumentQueryOptions = {}
   ): Promise<{
     documents: T[];
     total: number;
@@ -366,8 +366,8 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
     const documents =
-      result?.result?.documents.map((doc: any) =>
-        this.deserializeDocument<T>(doc),
+      result?.result?.documents.map((doc: unknown) =>
+        this.deserializeDocument<T>(doc)
       ) || [];
 
     return {
@@ -385,7 +385,7 @@ export class DocumentService {
    * @param searchOptions
    */
   async searchDocuments<T extends BaseDocumentEntity>(
-    searchOptions: DocumentSearchOptions,
+    searchOptions: DocumentSearchOptions
   ): Promise<{
     documents: T[];
     total: number;
@@ -417,8 +417,8 @@ export class DocumentService {
 
     const result = await this.coordinator.executeQuery(query);
     const documents =
-      result?.result?.documents.map((doc: any) =>
-        this.deserializeDocument<T>(doc),
+      result?.result?.documents.map((doc: unknown) =>
+        this.deserializeDocument<T>(doc)
       ) || [];
 
     const processingTime = Date.now() - startTime;
@@ -446,7 +446,7 @@ export class DocumentService {
    * @param project
    */
   async createProject(
-    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>,
+    project: Omit<ProjectEntity, 'id' | 'created_at' | 'updated_at'>
   ): Promise<ProjectEntity> {
     const id = nanoid();
     const now = new Date();
@@ -526,19 +526,19 @@ export class DocumentService {
     // Get all project documents
     const { documents } = await this.queryDocuments(
       { projectId },
-      { includeContent: true, includeRelationships: true },
+      { includeContent: true, includeRelationships: true }
     );
 
     // Group documents by type
     const groupedDocuments = {
       visions: documents.filter(
-        (d) => d.type === 'vision',
+        (d) => d.type === 'vision'
       ) as VisionDocumentEntity[],
       adrs: documents.filter((d) => d.type === 'adr') as ADRDocumentEntity[],
       prds: documents.filter((d) => d.type === 'prd') as PRDDocumentEntity[],
       epics: documents.filter((d) => d.type === 'epic') as EpicDocumentEntity[],
       features: documents.filter(
-        (d) => d.type === 'feature',
+        (d) => d.type === 'feature'
       ) as FeatureDocumentEntity[],
       tasks: documents.filter((d) => d.type === 'task') as TaskDocumentEntity[],
     };
@@ -561,7 +561,7 @@ export class DocumentService {
   async startDocumentWorkflow(
     documentId: string,
     workflowName: string,
-    initialStage = 'started',
+    initialStage = 'started'
   ): Promise<DocumentWorkflowStateEntity> {
     const id = nanoid();
     const now = new Date();
@@ -612,7 +612,7 @@ export class DocumentService {
   async advanceDocumentWorkflow(
     documentId: string,
     nextStage: string,
-    results?: Record<string, any>,
+    results?: Record<string, unknown>
   ): Promise<DocumentWorkflowStateEntity> {
     const existing = await this.getDocumentWorkflowState(documentId);
     if (!existing) {
@@ -652,7 +652,7 @@ export class DocumentService {
     return updatedState;
   }
 
-  private serializeDocument(document: BaseDocumentEntity): any {
+  private serializeDocument(document: BaseDocumentEntity): unknown {
     return {
       ...document,
       tags: JSON.stringify(document.tags),
@@ -662,7 +662,7 @@ export class DocumentService {
     };
   }
 
-  private deserializeDocument<T extends BaseDocumentEntity>(data: any): T {
+  private deserializeDocument<T extends BaseDocumentEntity>(data: unknown): T {
     return {
       ...data,
       tags: JSON.parse(data?.tags || '[]'),
@@ -679,8 +679,8 @@ export class DocumentService {
     return Buffer.from(content).toString('base64').slice(0, 16);
   }
 
-  private buildQueryFilter(filters: any): any {
-    const filter: any = {};
+  private buildQueryFilter(filters: unknown): unknown {
+    const filter: unknown = {};
 
     if (filters.type) {
       if (Array.isArray(filters.type)) {
@@ -708,7 +708,7 @@ export class DocumentService {
   }
 
   private buildFullTextSearchQuery(
-    options: DocumentSearchOptions,
+    options: DocumentSearchOptions
   ): DatabaseQuery {
     return {
       type: 'select',
@@ -735,7 +735,7 @@ export class DocumentService {
   }
 
   private buildSemanticSearchQuery(
-    options: DocumentSearchOptions,
+    options: DocumentSearchOptions
   ): DatabaseQuery {
     return {
       type: 'select',
@@ -760,7 +760,7 @@ export class DocumentService {
   }
 
   private buildKeywordSearchQuery(
-    options: DocumentSearchOptions,
+    options: DocumentSearchOptions
   ): DatabaseQuery {
     return {
       type: 'select',
@@ -785,7 +785,7 @@ export class DocumentService {
   }
 
   private buildCombinedSearchQuery(
-    options: DocumentSearchOptions,
+    options: DocumentSearchOptions
   ): DatabaseQuery {
     return {
       type: 'select',
@@ -813,8 +813,8 @@ export class DocumentService {
     };
   }
 
-  private buildSearchFilters(options: DocumentSearchOptions): any {
-    const filters: any = {};
+  private buildSearchFilters(options: DocumentSearchOptions): unknown {
+    const filters: unknown = {};
 
     if (options?.documentTypes?.length) {
       filters.document_type = { $in: options?.documentTypes };
@@ -849,51 +849,51 @@ export class DocumentService {
 
   // Placeholder methods for relationship and workflow operations
   private async generateDocumentRelationships(
-    _document: BaseDocumentEntity,
+    _document: BaseDocumentEntity
   ): Promise<void> {
     // Implementation would analyze document content and create relationships
   }
 
   private async getDocumentRelationships(
-    _documentId: string,
+    _documentId: string
   ): Promise<DocumentRelationshipEntity[]> {
     // Implementation would query relationships table
     return [];
   }
 
   private async getDocumentWorkflowState(
-    _documentId: string,
+    _documentId: string
   ): Promise<DocumentWorkflowStateEntity | null> {
     // Implementation would query workflow states table
     return null;
   }
 
   private async generateSearchIndex(
-    _document: BaseDocumentEntity,
+    _document: BaseDocumentEntity
   ): Promise<void> {
     // Implementation would create search index entry
   }
 
   private async updateSearchIndex(
-    _document: BaseDocumentEntity,
+    _document: BaseDocumentEntity
   ): Promise<void> {
     // Implementation would update search index
   }
 
   private async updateDocumentRelationships(
-    _document: BaseDocumentEntity,
+    _document: BaseDocumentEntity
   ): Promise<void> {
     // Implementation would update relationships based on content changes
   }
 
   private async deleteDocumentRelationships(
-    _documentId: string,
+    _documentId: string
   ): Promise<void> {
     // Implementation would delete all relationships for document
   }
 
   private async deleteDocumentWorkflowState(
-    _documentId: string,
+    _documentId: string
   ): Promise<void> {
     // Implementation would delete workflow state
   }

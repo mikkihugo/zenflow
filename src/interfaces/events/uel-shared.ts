@@ -1,6 +1,6 @@
 /**
  * UEL Shared Types and Utilities - Breaks Circular Dependencies
- * 
+ *
  * Shared functionality between uel-singleton.ts and system-integrations.ts
  * to eliminate the circular import.
  */
@@ -11,11 +11,11 @@ import type { EventManagerConfig } from './core/interfaces.ts';
  * UEL Enhanced Event Bus Interface.
  */
 export interface IUELEnhancedEventBus {
-  emit(event: string, data: any): Promise<void>;
-  on(event: string, handler: (data: any) => void): void;
-  off(event: string, handler: (data: any) => void): void;
-  once(event: string, handler: (data: any) => void): Promise<any>;
-  getEventHistory(event: string): any[];
+  emit(event: string, data: unknown): Promise<void>;
+  on(event: string, handler: (data: unknown) => void): void;
+  off(event: string, handler: (data: unknown) => void): void;
+  once(event: string, handler: (data: unknown) => void): Promise<unknown>;
+  getEventHistory(event: string): unknown[];
   clearEventHistory(event: string): void;
 }
 
@@ -51,7 +51,9 @@ export const UEL_EVENTS = {
 /**
  * Helper function to create UEL configuration.
  */
-export function createUELConfig(partial?: Partial<EventManagerConfig>): EventManagerConfig {
+export function createUELConfig(
+  partial?: Partial<EventManagerConfig>
+): EventManagerConfig {
   return {
     timeout: UEL_CONFIG.DEFAULT_TIMEOUT,
     retries: UEL_CONFIG.MAX_RETRIES,

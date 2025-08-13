@@ -171,7 +171,7 @@ export class DocumentationLinker extends EventEmitter {
         // Skip excluded patterns
         if (
           this.config.excludePatterns.some((pattern) =>
-            fullPath.includes(pattern),
+            fullPath.includes(pattern)
           )
         ) {
           continue;
@@ -238,7 +238,7 @@ export class DocumentationLinker extends EventEmitter {
         // Skip excluded patterns
         if (
           this.config.excludePatterns.some((pattern) =>
-            fullPath.includes(pattern),
+            fullPath.includes(pattern)
           )
         ) {
           continue;
@@ -302,7 +302,7 @@ export class DocumentationLinker extends EventEmitter {
         // Find function/class definitions that might need documentation
         if (line) {
           const functionMatch = line.match(
-            /(?:function|class|interface|type)\s+(\w+)/,
+            /(?:function|class|interface|type)\s+(\w+)/
           );
           if (functionMatch) {
             const precedingComment =
@@ -331,12 +331,12 @@ export class DocumentationLinker extends EventEmitter {
   }
 
   private async addCodeReference(
-    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>,
+    reference: Omit<CodeReference, 'suggestedLinks' | 'confidence'>
   ): Promise<void> {
     const suggestedLinks = this.findRelatedDocumentation(reference.text);
     const confidence = this.calculateLinkConfidence(
       reference.text,
-      suggestedLinks,
+      suggestedLinks
     );
 
     if (
@@ -401,7 +401,7 @@ export class DocumentationLinker extends EventEmitter {
     // Enhancement suggestions for existing documentation
     for (const [docId, doc] of this.documentationIndex) {
       const relatedCode = this.codeReferences.filter((ref) =>
-        ref.suggestedLinks.some((link) => link.documentId === docId),
+        ref.suggestedLinks.some((link) => link.documentId === docId)
       );
 
       if (relatedCode.length > 0) {
@@ -466,7 +466,7 @@ export class DocumentationLinker extends EventEmitter {
 
     // High-confidence code references
     const highConfidenceRefs = this.codeReferences.filter(
-      (ref) => ref.confidence > 0.8,
+      (ref) => ref.confidence > 0.8
     );
     if (highConfidenceRefs.length > 0) {
       report.push('## High-Confidence Code References');
@@ -479,7 +479,7 @@ export class DocumentationLinker extends EventEmitter {
           report.push('**Suggested Links**:');
           for (const link of ref.suggestedLinks.slice(0, 3)) {
             report.push(
-              `- ${link.title} (${Math.round(link.relevance * 100)}%)`,
+              `- ${link.title} (${Math.round(link.relevance * 100)}%)`
             );
           }
         }
@@ -502,7 +502,7 @@ export class DocumentationLinker extends EventEmitter {
           report.push(`### ${sourceDoc.title} → ${targetDoc?.title}`);
           report.push(`**Relationship**: ${crossRef.linkType}`);
           report.push(
-            `**Confidence**: ${Math.round(crossRef.confidence * 100)}%`,
+            `**Confidence**: ${Math.round(crossRef.confidence * 100)}%`
           );
           report.push(`**Context**: ${crossRef.context}`);
           report.push('');
@@ -521,7 +521,7 @@ export class DocumentationLinker extends EventEmitter {
         report.push(`**Description**: ${suggestion.description}`);
         report.push(`**Priority**: ${suggestion.priority}`);
         report.push(
-          `**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}`,
+          `**Auto-fixable**: ${suggestion.autoFixable ? 'Yes' : 'No'}`
         );
         report.push('');
       }
@@ -568,7 +568,7 @@ export class DocumentationLinker extends EventEmitter {
       for (const word of words) {
         if (
           titleWords.some(
-            (titleWord) => titleWord.includes(word) || word.includes(titleWord),
+            (titleWord) => titleWord.includes(word) || word.includes(titleWord)
           )
         ) {
           score += 2;
@@ -603,14 +603,12 @@ export class DocumentationLinker extends EventEmitter {
 
   private calculateLinkConfidence(
     text: string,
-    suggestedLinks: unknown[],
+    suggestedLinks: unknown[]
   ): number {
     if (suggestedLinks.length === 0) return 0;
 
     const maxRelevance = Math.max(
-      ...suggestedLinks.map(
-        (link) => (link as { relevance: number }).relevance,
-      ),
+      ...suggestedLinks.map((link) => (link as { relevance: number }).relevance)
     );
     const textSpecificity = Math.min(text.length / 100, 1); // Longer text is more specific
     const linkCount = Math.min(suggestedLinks.length / 3, 1); // More links indicate higher relevance
@@ -620,11 +618,11 @@ export class DocumentationLinker extends EventEmitter {
 
   private analyzeDocumentRelationship(
     doc1: DocumentationIndex,
-    doc2: DocumentationIndex,
+    doc2: DocumentationIndex
   ): CrossReference | null {
     // Simple relationship analysis
     const commonKeywords = doc1.keywords.filter((k) =>
-      doc2.keywords.includes(k),
+      doc2.keywords.includes(k)
     );
 
     if (commonKeywords.length > 0) {
@@ -693,14 +691,14 @@ export class DocumentationLinker extends EventEmitter {
     // Try to extract from filename
     const filename = relative(process.cwd(), filePath).replace(
       extname(filePath),
-      '',
+      ''
     );
     return filename.split('/').pop()?.replace(/[-_]/g, ' ') || 'Untitled';
   }
 
   private determineDocumentType(
     filePath: string,
-    content: string,
+    content: string
   ): DocumentationIndex['type'] {
     const path = filePath.toLowerCase();
 
@@ -743,7 +741,7 @@ export class DocumentationLinker extends EventEmitter {
   }
 
   private extractSections(
-    content: string,
+    content: string
   ): Array<{ title: string; level: number; content: string }> {
     const sections: Array<{ title: string; level: number; content: string }> =
       [];
@@ -816,7 +814,7 @@ export class DocumentationLinker extends EventEmitter {
   private getContextLines(
     lines: string[],
     lineIndex: number,
-    contextSize: number,
+    contextSize: number
   ): string {
     const start = Math.max(0, lineIndex - contextSize);
     const end = Math.min(lines.length, lineIndex + contextSize + 1);

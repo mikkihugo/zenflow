@@ -54,7 +54,7 @@ interface ServerConfig {
 
 export class UnifiedClaudeZenServer {
   private app: express.Application;
-  private server: any = null;
+  private server: unknown = null;
   private io?: SocketIOServer;
   private config: ServerConfig;
 
@@ -141,7 +141,7 @@ export class UnifiedClaudeZenServer {
               imgSrc: ["'self'", 'data:', 'https:'],
             },
           },
-        }),
+        })
       );
     }
 
@@ -158,7 +158,7 @@ export class UnifiedClaudeZenServer {
           credentials: true,
           methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
           allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
-        }),
+        })
       );
     }
 
@@ -171,7 +171,7 @@ export class UnifiedClaudeZenServer {
           message: 'Too many requests from this IP',
           standardHeaders: true,
           legacyHeaders: false,
-        }),
+        })
       );
     }
 
@@ -235,7 +235,7 @@ export class UnifiedClaudeZenServer {
         err: Error,
         req: express.Request,
         res: express.Response,
-        next: express.NextFunction,
+        next: express.NextFunction
       ) => {
         logger.error('Unhandled server error', {
           error: err.message,
@@ -252,7 +252,7 @@ export class UnifiedClaudeZenServer {
               : err.message,
           timestamp: new Date().toISOString(),
         });
-      },
+      }
     );
 
     // 404 handler
@@ -261,7 +261,7 @@ export class UnifiedClaudeZenServer {
         error: 'Not found',
         message: `Route ${req.originalUrl} not found`,
         availableEndpoints: Object.keys(this.config.features).filter(
-          (f) => this.config.features[f as keyof typeof this.config.features],
+          (f) => this.config.features[f as keyof typeof this.config.features]
         ),
       });
     });
@@ -373,22 +373,22 @@ export class UnifiedClaudeZenServer {
 
         console.log(`🚀 Unified Claude-Zen Server started:`);
         console.log(
-          `   📍 Address: http://${this.config.host}:${this.config.port}`,
+          `   📍 Address: http://${this.config.host}:${this.config.port}`
         );
         console.log(
           `   🔧 Features: ${Object.keys(this.config.features)
             .filter(
               (f) =>
-                this.config.features[f as keyof typeof this.config.features],
+                this.config.features[f as keyof typeof this.config.features]
             )
-            .join(', ')}`,
+            .join(', ')}`
         );
         console.log(
-          `   💡 Health: http://${this.config.host}:${this.config.port}/health`,
+          `   💡 Health: http://${this.config.host}:${this.config.port}/health`
         );
 
         resolve();
-      }).on('error', (err: any) => {
+      }).on('error', (err: unknown) => {
         logger.error('Server failed to start', {
           error: err.message,
           stack: err.stack,
@@ -415,7 +415,7 @@ export class UnifiedClaudeZenServer {
     return this.app;
   }
 
-  getServer(): any {
+  getServer(): unknown {
     return this.server;
   }
 

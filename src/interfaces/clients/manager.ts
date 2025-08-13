@@ -430,11 +430,11 @@ export class ClientManager extends EventEmitter {
     this.registry.registerFactory(ClientType.HTTP, new HTTPClientFactory());
     this.registry.registerFactory(
       ClientType.WEBSOCKET,
-      new WebSocketClientFactory(),
+      new WebSocketClientFactory()
     );
     this.registry.registerFactory(
       ClientType.KNOWLEDGE,
-      new KnowledgeClientFactory(),
+      new KnowledgeClientFactory()
     );
     this.registry.registerFactory(ClientType.MCP, new MCPClientFactory());
 
@@ -659,7 +659,7 @@ export class ClientManager extends EventEmitter {
 
     const totalRequests = allMetrics.reduce(
       (sum, m) => sum + m.requests.total,
-      0,
+      0
     );
     const totalErrors = allMetrics.reduce((sum, m) => sum + m.errors.total, 0);
     const avgLatency =
@@ -690,7 +690,7 @@ export class ClientManager extends EventEmitter {
       {} as Record<
         ClientType,
         { total: number; connected: number; avgLatency: number }
-      >,
+      >
     );
 
     return {
@@ -731,7 +731,7 @@ export class ClientManager extends EventEmitter {
     for (const type of Object.values(ClientType)) {
       const typeClients = this.getClientsByType(type);
       const healthyType = typeClients.filter(
-        (c) => c.status === 'connected',
+        (c) => c.status === 'connected'
       ).length;
       const totalType = typeClients.length;
 
@@ -914,7 +914,7 @@ export const ClientManagerHelpers = {
   async createHTTPClient(
     id: string,
     baseURL: string,
-    options: Partial<HTTPClientConfig> = {},
+    options: Partial<HTTPClientConfig> = {}
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
@@ -938,7 +938,7 @@ export const ClientManagerHelpers = {
   async createWebSocketClient(
     id: string,
     url: string,
-    options: Partial<WebSocketClientConfig> = {},
+    options: Partial<WebSocketClientConfig> = {}
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
@@ -966,7 +966,7 @@ export const ClientManagerHelpers = {
     id: string,
     factRepoPath: string,
     anthropicApiKey: string,
-    options: Partial<KnowledgeClientConfig> = {},
+    options: Partial<KnowledgeClientConfig> = {}
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,
@@ -992,7 +992,7 @@ export const ClientManagerHelpers = {
   async createMCPClient(
     id: string,
     servers: MCPClientConfig['servers'],
-    options: Partial<MCPClientConfig> = {},
+    options: Partial<MCPClientConfig> = {}
   ): Promise<ClientInstance> {
     return globalClientManager.createClient({
       id,

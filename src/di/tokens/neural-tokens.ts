@@ -10,38 +10,38 @@ import { createToken } from './token-factory.ts';
 
 // Neural network interfaces (to be implemented)
 export interface INeuralNetworkTrainer {
-  createNetwork(config: any): Promise<string>;
-  trainNetwork(networkId: string, data: any): Promise<any>;
-  evaluateNetwork(networkId: string, testData: any): Promise<any>;
+  createNetwork(config: unknown): Promise<string>;
+  trainNetwork(networkId: string, data: unknown): Promise<unknown>;
+  evaluateNetwork(networkId: string, testData: unknown): Promise<unknown>;
   saveModel(networkId: string, path: string): Promise<void>;
   loadModel(path: string): Promise<string>;
 }
 
 export interface IDataLoader {
-  loadTrainingData(source: string): Promise<any>;
-  loadTestData(source: string): Promise<any>;
-  preprocessData(data: any, options: any): Promise<any>;
-  augmentData(data: any, options: any): Promise<any>;
+  loadTrainingData(source: string): Promise<unknown>;
+  loadTestData(source: string): Promise<unknown>;
+  preprocessData(data: unknown, options: unknown): Promise<unknown>;
+  augmentData(data: unknown, options: unknown): Promise<unknown>;
 }
 
 export interface IOptimizationEngine {
-  optimize(model: any, data: any, options: any): Promise<any>;
-  tuneHyperparameters(model: any, data: any): Promise<any>;
-  validateOptimization(model: any, data: any): Promise<any>;
+  optimize(model: unknown, data: unknown, options: unknown): Promise<unknown>;
+  tuneHyperparameters(model: unknown, data: unknown): Promise<unknown>;
+  validateOptimization(model: unknown, data: unknown): Promise<unknown>;
 }
 
 export interface IModelStorage {
-  saveModel(model: any, metadata: any): Promise<string>;
-  loadModel(modelId: string): Promise<any>;
+  saveModel(model: unknown, metadata: unknown): Promise<string>;
+  loadModel(modelId: string): Promise<unknown>;
   deleteModel(modelId: string): Promise<void>;
   listModels(): Promise<any[]>;
 }
 
 export interface IMetricsCollector {
-  recordMetric(name: string, value: number, metadata?: any): Promise<void>;
-  getMetrics(query: any): Promise<any[]>;
-  clearMetrics(filter?: any): Promise<void>;
-  generateReport(timeRange: any): Promise<any>;
+  recordMetric(name: string, value: number, metadata?: unknown): Promise<void>;
+  getMetrics(query: unknown): Promise<any[]>;
+  clearMetrics(filter?: unknown): Promise<void>;
+  generateReport(timeRange: unknown): Promise<unknown>;
 }
 
 // Neural network tokens

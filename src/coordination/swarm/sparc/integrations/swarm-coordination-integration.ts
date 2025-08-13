@@ -5,7 +5,7 @@
 import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger(
-  'coordination-swarm-sparc-integrations-swarm-coordination-integration',
+  'coordination-swarm-sparc-integrations-swarm-coordination-integration'
 );
 
 /**
@@ -59,9 +59,9 @@ export class SPARCSwarmCoordinator {
   private taskCoordinator: TaskCoordinator;
   private taskAPI: TaskAPI;
   private activeSPARCSwarms: Map<string, Set<string>>;
-  private logger?: any;
+  private logger?: unknown;
 
-  constructor(logger?: any) {
+  constructor(logger?: unknown) {
     this.taskCoordinator = TaskCoordinator.getInstance();
     this.taskAPI = new TaskAPI();
     this.activeSPARCSwarms = new Map();
@@ -86,14 +86,14 @@ export class SPARCSwarmCoordinator {
         prompt: this.generatePhasePrompt(
           project,
           project.currentPhase,
-          agentType,
+          agentType
         ),
         subagent_type: agentType,
         use_claude_subagent: true,
         domain_context: `SPARC methodology - ${project.domain}`,
         expected_output: this.getPhaseExpectedOutput(
           project.currentPhase,
-          agentType,
+          agentType
         ),
         tools_required: this.getRequiredTools(project.currentPhase, agentType),
         priority: 'high',
@@ -122,7 +122,7 @@ export class SPARCSwarmCoordinator {
    */
   async executeSPARCPhase(
     projectId: string,
-    phase: SPARCPhase,
+    phase: SPARCPhase
   ): Promise<{ success: boolean; results: Map<AgentType, any> }> {
     const swarmId = `sparc-${projectId}`;
     const results = new Map<AgentType, any>();
@@ -143,7 +143,7 @@ export class SPARCSwarmCoordinator {
         prompt: this.generatePhasePrompt(
           { id: projectId } as SPARCProject,
           phase,
-          agentType,
+          agentType
         ),
         subagent_type: agentType,
         use_claude_subagent: true,
@@ -205,7 +205,7 @@ export class SPARCSwarmCoordinator {
   private generatePhasePrompt(
     project: SPARCProject,
     phase: SPARCPhase,
-    agentType: AgentType,
+    agentType: AgentType
   ): string {
     const basePrompt = `You are a ${agentType} working on SPARC methodology ${phase} phase for "${project.name}".`;
 
@@ -254,7 +254,7 @@ export class SPARCSwarmCoordinator {
    */
   private getPhaseExpectedOutput(
     phase: SPARCPhase,
-    agentType: AgentType,
+    agentType: AgentType
   ): string {
     const outputMap: Record<string, string> = {
       'specification-requirements-analyst':
@@ -392,7 +392,7 @@ export class SPARCSwarmCoordinator {
    * @param _taskId
    */
   private async getTaskStatus(
-    _taskId: string,
+    _taskId: string
   ): Promise<'pending' | 'running' | 'completed' | 'failed'> {
     // In a real implementation, this would call the TaskAPI
     // For now, return a mock status based on task age or other criteria

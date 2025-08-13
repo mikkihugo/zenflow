@@ -473,7 +473,7 @@ describe('Task Class Tests', () => {
       assert(executionTime > 0);
       assert.strictEqual(
         task.result.execution_summary.execution_time_ms,
-        executionTime,
+        executionTime
       );
     });
   });

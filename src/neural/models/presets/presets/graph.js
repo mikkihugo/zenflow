@@ -385,7 +385,7 @@ export const graphPresets = {
 export const getGraphPreset = (presetName) => {
   if (!graphPresets[presetName]) {
     throw new Error(
-      `Graph preset '${presetName}' not found. Available presets: ${Object.keys(graphPresets).join(', ')}`,
+      `Graph preset '${presetName}' not found. Available presets: ${Object.keys(graphPresets).join(', ')}`
     );
   }
   return graphPresets[presetName];

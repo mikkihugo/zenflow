@@ -39,7 +39,7 @@ export interface BaseDocumentEntity {
   related_documents: string[];
   version: string;
   checksum: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   created_at: Date;
   updated_at: Date;
 }
@@ -85,7 +85,7 @@ export interface BaseProductEntity {
   // Metadata
   version: string;
   checksum: string;
-  metadata: Record<string, any>; // Generic metadata for extensibility
+  metadata: Record<string, unknown>; // Generic metadata for extensibility
   name?: string; // Optional name property for compatibility
   created_at: Date;
   updated_at: Date;
@@ -245,8 +245,8 @@ export interface FeatureDocumentEntity extends BaseProductEntity {
       method: string;
       path: string;
       description: string;
-      parameters?: any;
-      responses?: any;
+      parameters?: unknown;
+      responses?: unknown;
     }>;
   };
 
@@ -464,7 +464,7 @@ export interface ProductRelationshipEntity {
     | 'supersedes'
     | 'sparc_implements';
   created_at: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -493,7 +493,7 @@ export interface ProductWorkflowStateEntity {
   approved_at?: Date;
 
   // Results
-  workflow_results?: Record<string, any>;
+  workflow_results?: Record<string, unknown>;
   generated_artifacts: string[]; // Document IDs or file paths
 
   // SPARC integration workflow state
@@ -899,37 +899,37 @@ export const PRODUCT_DATABASE_SCHEMAS = {
  * @example
  */
 export function isVisionDocument(
-  doc: BaseProductEntity,
+  doc: BaseProductEntity
 ): doc is VisionDocumentEntity {
   return doc.type === 'vision';
 }
 
 export function isADRDocument(
-  doc: BaseProductEntity,
+  doc: BaseProductEntity
 ): doc is ADRDocumentEntity {
   return doc.type === 'adr';
 }
 
 export function isPRDDocument(
-  doc: BaseProductEntity,
+  doc: BaseProductEntity
 ): doc is PRDDocumentEntity {
   return doc.type === 'prd';
 }
 
 export function isEpicDocument(
-  doc: BaseProductEntity,
+  doc: BaseProductEntity
 ): doc is EpicDocumentEntity {
   return doc.type === 'epic';
 }
 
 export function isFeatureDocument(
-  doc: BaseProductEntity,
+  doc: BaseProductEntity
 ): doc is FeatureDocumentEntity {
   return doc.type === 'feature';
 }
 
 export function isTaskDocument(
-  doc: BaseProductEntity,
+  doc: BaseProductEntity
 ): doc is TaskDocumentEntity {
   return doc.type === 'task';
 }

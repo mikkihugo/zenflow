@@ -29,7 +29,7 @@ export interface SwarmAgent {
   type: AgentType;
   status: AgentStatus;
   capabilities: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface SwarmConfig {
@@ -94,15 +94,15 @@ export type CoordinationStrategy = 'parallel' | 'sequential' | 'adaptive';
 
 export interface MemoryEntry {
   key: string;
-  value: any;
+  value: unknown;
   timestamp: Date;
   ttl?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface StorageProvider {
-  get(key: string): Promise<any>;
-  set(key: string, value: any, ttl?: number): Promise<void>;
+  get(key: string): Promise<unknown>;
+  set(key: string, value: unknown, ttl?: number): Promise<void>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   keys(): Promise<string[]>;
@@ -117,7 +117,7 @@ export interface SystemEvent {
   type: string;
   source: string;
   target?: string;
-  data: any;
+  data: unknown;
   timestamp: Date;
   correlationId?: string;
 }
@@ -127,7 +127,7 @@ export interface Message {
   from: string;
   to: string;
   type: string;
-  payload: any;
+  payload: unknown;
   timestamp: Date;
   priority?: 'low' | 'medium' | 'high' | 'urgent';
 }
@@ -151,7 +151,7 @@ export type TaskType =
 
 export interface ComponentConfig {
   enabled: boolean;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface SystemHealth {
@@ -183,7 +183,7 @@ export interface Task {
   assignee?: string;
   assignedTo?: string; // Legacy compatibility
   dependencies?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created: Date;
   updated: Date;
   completed?: Date;
@@ -239,7 +239,7 @@ export interface ModelMetadata {
   learningRate: number;
   epochs: number;
   batchSize: number;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 // ============================================
@@ -260,7 +260,7 @@ export interface APIResponse<T = any> {
 export interface APIError {
   code: string;
   message: string;
-  details?: any;
+  details?: unknown;
   stack?: string;
 }
 
@@ -282,22 +282,22 @@ export type OptionalFields<T, K extends keyof T> = Omit<T, K> &
 // ============================================
 
 export interface CoordinationProvider {
-  createCoordinator(config: SwarmConfig): Promise<any>;
+  createCoordinator(config: SwarmConfig): Promise<unknown>;
   getSwarm(id: string): Promise<ZenSwarm | null>;
   listSwarms(): Promise<ZenSwarm[]>;
   terminateSwarm(id: string): Promise<void>;
 }
 
 export interface MemoryProvider {
-  store(key: string, value: any, ttl?: number): Promise<void>;
-  retrieve(key: string): Promise<any>;
+  store(key: string, value: unknown, ttl?: number): Promise<void>;
+  retrieve(key: string): Promise<unknown>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
 }
 
 export interface LoggingProvider {
-  debug(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
+  debug(message: string, ...args: unknown[]): void;
+  info(message: string, ...args: unknown[]): void;
+  warn(message: string, ...args: unknown[]): void;
+  error(message: string, ...args: unknown[]): void;
 }

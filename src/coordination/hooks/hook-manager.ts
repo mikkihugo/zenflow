@@ -20,7 +20,7 @@ export interface HookManagerConfig {
 
 export interface HookExecutionResult {
   success: boolean;
-  result?: any;
+  result?: unknown;
   error?: Error;
   duration: number;
 }
@@ -34,10 +34,10 @@ export class DefaultHookManager extends EventEmitter {
   private hookSystem: HookSystem;
   private config: HookManagerConfig;
   private activeHooks = new Set<string>();
-  private logger: any;
+  private logger: unknown;
   // xxx NEEDS_HUMAN: performanceOptimizer declared but not used - verify if needed for future features
   // private performanceOptimizer: {
-  //   optimize: (context: any) => Promise<{ optimized: boolean; context: any }>;
+  //   optimize: (context: unknown) => Promise<{ optimized: boolean; context: unknown }>;
   //   getMetrics: () => { hooks: number };
   // };
 
@@ -55,15 +55,15 @@ export class DefaultHookManager extends EventEmitter {
     this.logger = logger;
     // xxx NEEDS_HUMAN: performanceOptimizer initialization removed - was not being used
     // this.performanceOptimizer = {
-    //   optimize: async (context: any) => ({ optimized: true, context }),
+    //   optimize: async (context: unknown) => ({ optimized: true, context }),
     //   getMetrics: () => ({ hooks: this.activeHooks.size }),
     // };
   }
 
   async executeHook(
     hookName: string,
-    context: any,
-    _timeout?: number,
+    context: unknown,
+    _timeout?: number
   ): Promise<HookExecutionResult> {
     const startTime = Date.now();
     const hookId = `${hookName}-${startTime}`;
@@ -77,7 +77,7 @@ export class DefaultHookManager extends EventEmitter {
       this.activeHooks.add(hookId);
 
       // Execute based on hook name
-      let result: any;
+      let result: unknown;
       switch (hookName) {
         case 'safety-validation':
           result = await this.hookSystem.validateSafety(context);
@@ -99,7 +99,7 @@ export class DefaultHookManager extends EventEmitter {
 
       if (this.config.enableLogging) {
         this.logger.info(
-          `Hook ${hookName} executed successfully in ${duration}ms`,
+          `Hook ${hookName} executed successfully in ${duration}ms`
         );
       }
 
@@ -114,7 +114,7 @@ export class DefaultHookManager extends EventEmitter {
       if (this.config.enableLogging) {
         this.logger.error(
           `Hook ${hookName} failed after ${duration}ms:`,
-          error,
+          error
         );
       }
 
@@ -129,14 +129,14 @@ export class DefaultHookManager extends EventEmitter {
   }
 
   async executeMultipleHooks(
-    hooks: Array<{ name: string; context: any }>,
-    options?: { parallel?: boolean; failFast?: boolean },
+    hooks: Array<{ name: string; context: unknown }>,
+    options?: { parallel?: boolean; failFast?: boolean }
   ): Promise<HookExecutionResult[]> {
     const { parallel = false, failFast = false } = options || {};
 
     if (parallel) {
       const promises = hooks.map(({ name, context }) =>
-        this.executeHook(name, context),
+        this.executeHook(name, context)
       );
 
       if (failFast) {
@@ -150,8 +150,8 @@ export class DefaultHookManager extends EventEmitter {
                 success: false,
                 error: new Error('Hook execution failed'),
                 duration: 0,
-              },
-        ),
+              }
+        )
       );
     }
     const results: HookExecutionResult[] = [];

@@ -80,7 +80,7 @@ function testMCPConfiguration(): void {
     // Check claude_desktop_config.json
     if (existsSync('claude_desktop_config.json')) {
       const config = JSON.parse(
-        readFileSync('claude_desktop_config.json', 'utf8'),
+        readFileSync('claude_desktop_config.json', 'utf8')
       );
 
       if (config?.mcpServers) {
@@ -88,7 +88,7 @@ function testMCPConfiguration(): void {
 
         // List configured servers
         for (const [_name, _serverConfig] of Object.entries(
-          config?.mcpServers,
+          config?.mcpServers
         )) {
         }
       } else {

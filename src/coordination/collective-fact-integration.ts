@@ -39,7 +39,7 @@ interface IFactOrchestrator {
       sources: string[];
       maxResults?: number;
       timeout?: number;
-    },
+    }
   ): Promise<{
     knowledge?: Array<{
       content?: string;
@@ -91,7 +91,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    * @param collectiveCoordinator
    */
   async initialize(
-    collectiveCoordinator?: CollectiveSwarmCoordinator,
+    collectiveCoordinator?: CollectiveSwarmCoordinator
   ): Promise<void> {
     logger.info('Initializing Collective FACT System...');
 
@@ -116,7 +116,7 @@ export class CollectiveFACTSystem extends EventEmitter {
 
     this.emit('initialized');
     logger.info(
-      `Collective FACT System initialized with ${this.universalFacts.size} pre-loaded facts`,
+      `Collective FACT System initialized with ${this.universalFacts.size} pre-loaded facts`
     );
   }
 
@@ -130,7 +130,7 @@ export class CollectiveFACTSystem extends EventEmitter {
   async getFact(
     type: UniversalFact['type'],
     subject: string,
-    swarmId?: string,
+    swarmId?: string
   ): Promise<UniversalFact | null> {
     const factKey = `${type}:${subject}`;
 
@@ -228,13 +228,13 @@ export class CollectiveFACTSystem extends EventEmitter {
     // Sort by relevance and limit
     const sortedResults = results
       ?.sort(
-        (a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0),
+        (a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0)
       )
       .slice(0, query.limit || 10);
 
     // Convert to FACTKnowledgeEntry format
     return sortedResults.map((fact) =>
-      this.convertToFACTKnowledgeEntry(fact, query),
+      this.convertToFACTKnowledgeEntry(fact, query)
     );
   }
 
@@ -260,7 +260,7 @@ export class CollectiveFACTSystem extends EventEmitter {
     // Sort by relevance and limit
     return results
       ?.sort(
-        (a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0),
+        (a, b) => (b.metadata?.confidence || 0) - (a.metadata?.confidence || 0)
       )
       .slice(0, query.limit || 10);
   }
@@ -273,7 +273,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    */
   async getNPMPackageFacts(
     packageName: string,
-    version?: string,
+    version?: string
   ): Promise<UniversalFact> {
     const subject = version ? `${packageName}@${version}` : packageName;
     const fact = await this.getFact('npm-package', subject);
@@ -293,7 +293,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    */
   async getGitHubRepoFacts(
     owner: string,
-    repo: string,
+    repo: string
   ): Promise<UniversalFact> {
     const subject = `github.com/${owner}/${repo}`;
     const fact = await this.getFact('github-repo', subject);
@@ -313,7 +313,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    */
   async getAPIDocsFacts(
     api: string,
-    endpoint?: string,
+    endpoint?: string
   ): Promise<UniversalFact> {
     const subject = endpoint ? `${api}/${endpoint}` : api;
     const fact = await this.getFact('api-docs', subject);
@@ -348,7 +348,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    */
   private async gatherFact(
     type: UniversalFact['type'],
-    subject: string,
+    subject: string
   ): Promise<UniversalFact | null> {
     try {
       // Determine query based on fact type
@@ -411,7 +411,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    */
   private buildQueryForFactType(
     type: UniversalFact['type'],
-    subject: string,
+    subject: string
   ): string {
     switch (type) {
       case 'npm-package':
@@ -498,7 +498,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    * @param query
    */
   private async searchExternalFacts(
-    query: FACTSearchQuery,
+    query: FACTSearchQuery
   ): Promise<UniversalFact[]> {
     // Try to use real search implementation if available
     try {
@@ -511,7 +511,7 @@ export class CollectiveFACTSystem extends EventEmitter {
           query.type && query.query
             ? this.buildQueryForFactType(
                 query.type as UniversalFact['type'],
-                query.query,
+                query.query
               )
             : query.query || '';
 
@@ -521,7 +521,7 @@ export class CollectiveFACTSystem extends EventEmitter {
             sources: this.config.knowledgeSources || ['web', 'internal'],
             maxResults: query.limit || 10,
             timeout: query.timeout || 30000,
-          },
+          }
         );
 
         if (result && result?.knowledge && Array.isArray(result?.knowledge)) {
@@ -551,7 +551,7 @@ export class CollectiveFACTSystem extends EventEmitter {
               accessCount: 0,
               cubeAccess: new Set(),
               swarmAccess: new Set(),
-            }),
+            })
           );
         }
       }
@@ -561,7 +561,7 @@ export class CollectiveFACTSystem extends EventEmitter {
 
     // If no real search implementation available, return empty results with warning
     logger.warn(
-      '🔍 External search not implemented - returning empty results. Consider implementing factOrchestrator.gatherKnowledge() for real search functionality.',
+      '🔍 External search not implemented - returning empty results. Consider implementing factOrchestrator.gatherKnowledge() for real search functionality.'
     );
 
     // Return empty array instead of fake data
@@ -647,13 +647,13 @@ export class CollectiveFACTSystem extends EventEmitter {
       cacheHitRate: cacheStats.hitRate || 0,
       oldestEntry: Math.min(
         ...Array.from(this.universalFacts.values()).map(
-          (f) => f.metadata?.timestamp || f.timestamp,
-        ),
+          (f) => f.metadata?.timestamp || f.timestamp
+        )
       ),
       newestEntry: Math.max(
         ...Array.from(this.universalFacts.values()).map(
-          (f) => f.metadata?.timestamp || f.timestamp,
-        ),
+          (f) => f.metadata?.timestamp || f.timestamp
+        )
       ),
       topDomains: this.config.knowledgeSources || [],
       storageHealth: 'excellent',
@@ -668,7 +668,7 @@ export class CollectiveFACTSystem extends EventEmitter {
    */
   private convertToFACTKnowledgeEntry(
     fact: UniversalFact,
-    query: FACTSearchQuery,
+    query: FACTSearchQuery
   ): FACTKnowledgeEntry {
     return {
       query: query.query || fact.subject || '',
@@ -718,7 +718,7 @@ let globalCollectiveFACT: CollectiveFACTSystem | null = null;
  */
 export async function initializeCollectiveFACT(
   config?: CollectiveFACTConfig,
-  collectiveCoordinator?: CollectiveSwarmCoordinator,
+  collectiveCoordinator?: CollectiveSwarmCoordinator
 ): Promise<CollectiveFACTSystem> {
   if (globalCollectiveFACT) {
     return globalCollectiveFACT;

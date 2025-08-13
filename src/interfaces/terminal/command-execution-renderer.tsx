@@ -10,7 +10,8 @@
  */
 
 import { Box, Text, useApp } from 'ink';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 import AdvancedCLICommands from './advanced-cli-commands.js';
 import {
   CommandExecutionEngine,
@@ -25,7 +26,7 @@ import {
 
 export interface CommandExecutionProps {
   commands: string[];
-  flags: Record<string, any>;
+  flags: Record<string, unknown>;
   onExit: (code: number) => void;
 }
 
@@ -99,7 +100,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
             const advancedResult = await advancedCLI.executeCommand(
               command,
               args,
-              flags,
+              flags
             );
             result = {
               success: advancedResult?.success,
@@ -119,7 +120,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
           result = await CommandExecutionEngine.executeCommand(
             command,
             args,
-            flags,
+            flags
           );
         }
 
@@ -133,7 +134,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
           () => {
             onExit(result?.success ? 0 : 1);
           },
-          flags.interactive ? 0 : 1000,
+          flags.interactive ? 0 : 1000
         );
       } catch (error) {
         setState({
@@ -145,7 +146,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
           () => {
             onExit(1);
           },
-          flags.interactive ? 0 : 1000,
+          flags.interactive ? 0 : 1000
         );
       }
     };
@@ -166,10 +167,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
     }
 
     return (
-      <Box
-        flexDirection="column"
-        padding={1}
-      >
+      <Box flexDirection="column" padding={1}>
         <Header
           title="🧠 Advanced CLI Execution Result"
           subtitle={commands.join(' ')}
@@ -201,10 +199,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
         ) : (
           <Box flexDirection="column">
             <Box marginBottom={1}>
-              <StatusBadge
-                status="error"
-                text="❌ Command failed"
-              />
+              <StatusBadge status="error" text="❌ Command failed" />
             </Box>
 
             <Box marginBottom={1}>
@@ -223,7 +218,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
     );
   };
 
-  const renderAdvancedResultData = (data: any) => {
+  const renderAdvancedResultData = (data: unknown) => {
     // Enhanced rendering for Advanced CLI results
     if (typeof data === 'object' && data !== null) {
       const elements = [];
@@ -231,82 +226,54 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
       // Show summary information
       if (data?.summary) {
         elements.push(
-          <Box
-            key="summary"
-            marginBottom={1}
-          >
-            <Text
-              bold
-              color="cyan"
-            >
+          <Box key="summary" marginBottom={1}>
+            <Text bold color="cyan">
               📊 Summary:{' '}
             </Text>
             <Text>{data?.summary}</Text>
-          </Box>,
+          </Box>
         );
       }
 
       // Show metrics if available
       if (data?.metrics) {
         elements.push(
-          <Box
-            key="metrics"
-            marginBottom={1}
-            flexDirection="column"
-          >
-            <Text
-              bold
-              color="yellow"
-            >
+          <Box key="metrics" marginBottom={1} flexDirection="column">
+            <Text bold color="yellow">
               📈 Metrics:
             </Text>
-            <Box
-              marginLeft={2}
-              flexDirection="column"
-            >
+            <Box marginLeft={2} flexDirection="column">
               {Object.entries(data?.metrics).map(([key, value]) => (
                 <Text key={key}>
                   {key}: <Text color="green">{String(value)}</Text>
                 </Text>
               ))}
             </Box>
-          </Box>,
+          </Box>
         );
       }
 
       // Show duration if available
       if (data?.duration) {
         elements.push(
-          <Box
-            key="duration"
-            marginBottom={1}
-          >
-            <Text
-              bold
-              color="blue"
-            >
+          <Box key="duration" marginBottom={1}>
+            <Text bold color="blue">
               ⏱️ Duration:{' '}
             </Text>
             <Text color="cyan">{data?.duration}ms</Text>
-          </Box>,
+          </Box>
         );
       }
 
       // Show additional details
       if (data?.details) {
         elements.push(
-          <Box
-            key="details"
-            marginBottom={1}
-          >
-            <Text
-              bold
-              color="magenta"
-            >
+          <Box key="details" marginBottom={1}>
+            <Text bold color="magenta">
               ℹ️ Details:{' '}
             </Text>
             <Text>{data?.details}</Text>
-          </Box>,
+          </Box>
         );
       }
 
@@ -315,18 +282,12 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
         const fileCount =
           data?.filesCreated || data?.result?.generatedFiles?.length || 0;
         elements.push(
-          <Box
-            key="files"
-            marginBottom={1}
-          >
-            <Text
-              bold
-              color="green"
-            >
+          <Box key="files" marginBottom={1}>
+            <Text bold color="green">
               📁 Files:{' '}
             </Text>
             <Text color="cyan">{fileCount} files generated</Text>
-          </Box>,
+          </Box>
         );
       }
 
@@ -334,18 +295,12 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
       if (data?.qualityScore || data?.result?.qualityScore) {
         const score = data?.qualityScore || data?.result?.qualityScore;
         elements.push(
-          <Box
-            key="quality"
-            marginBottom={1}
-          >
-            <Text
-              bold
-              color="yellow"
-            >
+          <Box key="quality" marginBottom={1}>
+            <Text bold color="yellow">
               🎯 Quality Score:{' '}
             </Text>
             <Text color="green">{score}%</Text>
-          </Box>,
+          </Box>
         );
       }
 
@@ -355,21 +310,11 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
         typeof data?.result?.aiEnhancements === 'object'
       ) {
         elements.push(
-          <Box
-            key="ai-enhancements"
-            marginBottom={1}
-            flexDirection="column"
-          >
-            <Text
-              bold
-              color="blue"
-            >
+          <Box key="ai-enhancements" marginBottom={1} flexDirection="column">
+            <Text bold color="blue">
               🤖 AI Enhancements:
             </Text>
-            <Box
-              marginLeft={2}
-              flexDirection="column"
-            >
+            <Box marginLeft={2} flexDirection="column">
               {Object.entries(data?.result?.aiEnhancements).map(
                 ([key, value]) => (
                   <Text key={key}>
@@ -378,25 +323,22 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
                       {value ? '✅' : '❌'}
                     </Text>
                   </Text>
-                ),
+                )
               )}
             </Box>
-          </Box>,
+          </Box>
         );
       }
 
       // Fallback to JSON for other data
       if (elements.length === 0) {
         elements.push(
-          <Box
-            key="raw-data"
-            flexDirection="column"
-          >
+          <Box key="raw-data" flexDirection="column">
             <Text bold>Result Data:</Text>
             <Box marginLeft={2}>
               <Text>{formatResultData(data)}</Text>
             </Box>
-          </Box>,
+          </Box>
         );
       }
 
@@ -413,7 +355,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
     );
   };
 
-  const formatResultData = (data: any): string => {
+  const formatResultData = (data: unknown): string => {
     if (typeof data === 'object' && data !== null) {
       // Special formatting for help command
       if (data.title && data.commands) {
@@ -431,7 +373,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
     return String(data);
   };
 
-  const formatHelpOutput = (data: any): string => {
+  const formatHelpOutput = (data: unknown): string => {
     let output = `${data.title}\n`;
     output += `Version: ${data.version}\n\n`;
     output += '🔹 Available Commands:\n';
@@ -459,7 +401,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
     return output;
   };
 
-  const formatStatusOutput = (data: any): string => {
+  const formatStatusOutput = (data: unknown): string => {
     let output = `🖥️ System Status\n`;
     output += `Version: ${data.version}\n`;
     output += `Status: ${data.status.toUpperCase()}\n`;
@@ -492,7 +434,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
 
     if (data.performance && data.performance.loadAverage) {
       const loads = data.performance.loadAverage.map((l: number) =>
-        l.toFixed(2),
+        l.toFixed(2)
       );
       output += `\n📊 Performance:\n`;
       output += `  Load Average: ${loads.join(', ')}\n`;
@@ -524,10 +466,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
 
       case 'idle':
         return (
-          <Box
-            flexDirection="column"
-            padding={1}
-          >
+          <Box flexDirection="column" padding={1}>
             <Header title="Claude Code Zen Command Execution" />
             <Text>
               No command provided. Use 'claude-zen help' for usage information.
@@ -561,10 +500,7 @@ export const CommandExecutionRenderer: React.FC<CommandExecutionProps> = ({
   }
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {state.error ? renderError() : renderContent()}
     </Box>
   );

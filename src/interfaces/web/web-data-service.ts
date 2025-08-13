@@ -53,7 +53,7 @@ export interface DocumentData {
 
 export interface CommandResult {
   command: string;
-  args: any[];
+  args: unknown[];
   output: string;
   exitCode: number;
   timestamp: string;
@@ -113,7 +113,7 @@ export class WebDataService {
    *
    * @param config
    */
-  async createSwarm(config: any): Promise<SwarmData> {
+  async createSwarm(config: unknown): Promise<SwarmData> {
     this.logger.info(`Creating swarm with config:`, config);
 
     const swarm: SwarmData = {
@@ -163,7 +163,7 @@ export class WebDataService {
    *
    * @param config
    */
-  async createTask(config: any): Promise<TaskData> {
+  async createTask(config: unknown): Promise<TaskData> {
     this.logger.info(`Creating task with config:`, config);
 
     const task: TaskData = {
@@ -212,12 +212,12 @@ export class WebDataService {
    * @param command
    * @param args
    */
-  async executeCommand(command: string, args: any[]): Promise<CommandResult> {
+  async executeCommand(command: string, args: unknown[]): Promise<CommandResult> {
     this.logger.info(`Executing command: ${command} with args:`, args);
 
     // Mock command execution
     await new Promise((resolve) =>
-      setTimeout(resolve, Math.random() * 2000 + 500),
+      setTimeout(resolve, Math.random() * 2000 + 500)
     );
 
     return {

@@ -8,8 +8,8 @@
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
-import React from 'react';
-import { useCallback, useState, useEffect } from 'react';
+import type React from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   Header,
   InteractiveFooter,
@@ -23,7 +23,7 @@ export interface MCPTool {
   description: string;
   category: string;
   parameters: MCPParameter[];
-  example?: any;
+  example?: unknown;
 }
 
 export interface MCPParameter {
@@ -31,13 +31,13 @@ export interface MCPParameter {
   type: 'string' | 'number' | 'boolean' | 'object' | 'array';
   required: boolean;
   description: string;
-  default?: any;
+  default?: unknown;
   enum?: string[];
 }
 
 export interface TestResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   duration: number;
   timestamp: Date;
@@ -64,15 +64,17 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   >('tools');
   const [selectedTool, setSelectedTool] = useState<MCPTool | null>(null);
   const [selectedToolIndex, setSelectedToolIndex] = useState<number>(0);
-  const [parameterValues, setParameterValues] = useState<Record<string, any>>(
-    {},
+  const [parameterValues, setParameterValues] = useState<Record<string, unknown>>(
+    {}
   );
   const [currentParamIndex, setCurrentParamIndex] = useState<number>(0);
   const [parameterInput, setParameterInput] = useState<string>('');
   const [isExecuting, setIsExecuting] = useState<boolean>(false);
   const [testResults, setTestResults] = useState<TestResult[]>([]);
   const [resultIndex, setResultIndex] = useState<number>(0);
-  const [mcpConnectionStatus, setMcpConnectionStatus] = useState<'unknown' | 'connected' | 'disconnected'>('unknown');
+  const [mcpConnectionStatus, setMcpConnectionStatus] = useState<
+    'unknown' | 'connected' | 'disconnected'
+  >('unknown');
   const [availableTools, setAvailableTools] = useState<MCPTool[]>([]);
 
   // Test MCP connection and load available tools on mount
@@ -81,7 +83,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
       try {
         const isConnected = await mcpClient.testConnection();
         setMcpConnectionStatus(isConnected ? 'connected' : 'disconnected');
-        
+
         if (isConnected) {
           const tools = await mcpClient.getAvailableTools();
           setAvailableTools(tools);
@@ -90,7 +92,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
         setMcpConnectionStatus('disconnected');
       }
     };
-    
+
     initializeMCP();
   }, []);
 
@@ -287,7 +289,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
         setSelectedToolIndex((prev) => Math.max(0, prev - 1));
       } else if (key.downArrow) {
         setSelectedToolIndex((prev) =>
-          Math.min(availableTools.length - 1, prev + 1),
+          Math.min(availableTools.length - 1, prev + 1)
         );
       } else if (key.return) {
         const tool = availableTools[selectedToolIndex];
@@ -302,7 +304,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
         setParameterInput(getCurrentParameterValue());
       } else if (key.downArrow && !parameterInput) {
         setCurrentParamIndex((prev) =>
-          Math.min((selectedTool?.parameters.length || 1) - 1, prev + 1),
+          Math.min((selectedTool?.parameters.length || 1) - 1, prev + 1)
         );
         setParameterInput(getCurrentParameterValue());
       } else if (key.return) {
@@ -340,7 +342,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
     if (!selectedTool) return;
     const param = selectedTool.parameters[currentParamIndex];
 
-    let parsedValue: any;
+    let parsedValue: unknown;
     try {
       switch (param.type) {
         case 'number':
@@ -382,7 +384,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
       setMcpConnectionStatus('unknown');
       const isConnected = await mcpClient.testConnection();
       setMcpConnectionStatus(isConnected ? 'connected' : 'disconnected');
-      
+
       if (isConnected) {
         const tools = await mcpClient.getAvailableTools();
         setAvailableTools(tools);
@@ -399,8 +401,11 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
 
     try {
       // Execute real MCP tool using our client
-      const toolResult = await mcpClient.executeTool(selectedTool.name, parameterValues);
-      
+      const toolResult = await mcpClient.executeTool(
+        selectedTool.name,
+        parameterValues
+      );
+
       const result: TestResult = {
         success: toolResult.success,
         data: toolResult.data,
@@ -428,17 +433,20 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   }, [selectedTool, parameterValues]);
 
   const renderToolSelection = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
       <Box flexDirection="row" alignItems="center" marginBottom={1}>
         <Text bold color="cyan">
           🛠️ Available MCP Tools
         </Text>
-        <Text color={mcpConnectionStatus === 'connected' ? 'green' : 'red'} marginLeft={2}>
-          [{mcpConnectionStatus === 'connected' ? '✓ CONNECTED' : '✗ DISCONNECTED'}]
+        <Text
+          color={mcpConnectionStatus === 'connected' ? 'green' : 'red'}
+          marginLeft={2}
+        >
+          [
+          {mcpConnectionStatus === 'connected'
+            ? '✓ CONNECTED'
+            : '✗ DISCONNECTED'}
+          ]
         </Text>
         {mcpConnectionStatus === 'connected' && (
           <Text color="gray" marginLeft={1}>
@@ -464,39 +472,22 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
       />
 
       {availableTools[selectedToolIndex] && (
-        <Box
-          marginTop={2}
-          borderStyle="single"
-          borderColor="cyan"
-          padding={2}
-        >
+        <Box marginTop={2} borderStyle="single" borderColor="cyan" padding={2}>
           <Box flexDirection="column">
-            <Text
-              color="cyan"
-              bold
-            >
+            <Text color="cyan" bold>
               {availableTools[selectedToolIndex].name}
             </Text>
-            <Text
-              color="gray"
-              marginTop={1}
-            >
+            <Text color="gray" marginTop={1}>
               Category: {availableTools[selectedToolIndex].category}
             </Text>
-            <Text
-              wrap="wrap"
-              marginTop={1}
-            >
+            <Text wrap="wrap" marginTop={1}>
               {availableTools[selectedToolIndex].description}
             </Text>
-            <Text
-              color="yellow"
-              marginTop={1}
-            >
+            <Text color="yellow" marginTop={1}>
               Parameters: {availableTools[selectedToolIndex].parameters.length}(
               {
                 availableTools[selectedToolIndex].parameters.filter(
-                  (p) => p.required,
+                  (p) => p.required
                 ).length
               }{' '}
               required)
@@ -508,20 +499,9 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   );
 
   const renderParameterForm = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
-      <Box
-        flexDirection="row"
-        justifyContent="space-between"
-        marginBottom={2}
-      >
-        <Text
-          bold
-          color="cyan"
-        >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
+      <Box flexDirection="row" justifyContent="space-between" marginBottom={2}>
+        <Text bold color="cyan">
           🔧 Configure: {selectedTool?.name}
         </Text>
         <StatusBadge
@@ -546,44 +526,28 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
             marginBottom={1}
           >
             <Box flexDirection="row">
-              <Text
-                color={param.required ? 'red' : 'white'}
-                bold={isSelected}
-              >
+              <Text color={param.required ? 'red' : 'white'} bold={isSelected}>
                 {param.required ? '* ' : '  '}
                 {param.name}
               </Text>
-              <Text
-                color="gray"
-                dimColor
-              >
+              <Text color="gray" dimColor>
                 {' '}
                 ({param.type}){param.enum && ` [${param.enum.join('|')}]`}
               </Text>
               {hasValue && (
-                <Text
-                  color="green"
-                  dimColor
-                >
+                <Text color="green" dimColor>
                   {' '}
                   ✓
                 </Text>
               )}
             </Box>
 
-            <Text
-              color="gray"
-              wrap="wrap"
-              marginLeft={2}
-            >
+            <Text color="gray" wrap="wrap" marginLeft={2}>
               {param.description}
             </Text>
 
             {isSelected && (
-              <Box
-                marginTop={1}
-                marginLeft={2}
-              >
+              <Box marginTop={1} marginLeft={2}>
                 <Text color="cyan">Value: </Text>
                 <TextInput
                   value={parameterInput}
@@ -601,10 +565,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
             )}
 
             {!isSelected && hasValue && (
-              <Box
-                marginTop={1}
-                marginLeft={2}
-              >
+              <Box marginTop={1} marginLeft={2}>
                 <Text color="green">
                   Current:{' '}
                   {typeof value === 'object'
@@ -617,17 +578,9 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
         );
       })}
 
-      <Box
-        marginTop={2}
-        borderStyle="single"
-        borderColor="yellow"
-        padding={1}
-      >
+      <Box marginTop={2} borderStyle="single" borderColor="yellow" padding={1}>
         <Box flexDirection="column">
-          <Text
-            color="yellow"
-            bold
-          >
+          <Text color="yellow" bold>
             Actions:
           </Text>
           <Text color="gray">
@@ -647,25 +600,13 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   );
 
   const renderResults = () => (
-    <Box
-      flexDirection="column"
-      paddingX={2}
-      paddingY={1}
-    >
-      <Text
-        bold
-        color="cyan"
-        marginBottom={1}
-      >
+    <Box flexDirection="column" paddingX={2} paddingY={1}>
+      <Text bold color="cyan" marginBottom={1}>
         📊 Test Results ({testResults.length})
       </Text>
 
       {testResults.length === 0 ? (
-        <Box
-          justifyContent="center"
-          alignItems="center"
-          height={10}
-        >
+        <Box justifyContent="center" alignItems="center" height={10}>
           <Text color="gray">
             No test results yet. Run a tool to see results.
           </Text>
@@ -686,53 +627,31 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
                 borderColor={isSelected ? 'cyan' : undefined}
                 marginBottom={1}
               >
-                <Box
-                  flexDirection="row"
-                  justifyContent="space-between"
-                >
-                  <Text
-                    color={result.success ? 'green' : 'red'}
-                    bold
-                  >
+                <Box flexDirection="row" justifyContent="space-between">
+                  <Text color={result.success ? 'green' : 'red'} bold>
                     {result.success ? '✅' : '❌'}
                     {result.data?.toolName || 'Unknown Tool'}
                   </Text>
-                  <Text
-                    color="gray"
-                    dimColor
-                  >
+                  <Text color="gray" dimColor>
                     {result.duration}ms
                   </Text>
                 </Box>
 
-                <Text
-                  color="gray"
-                  dimColor
-                >
+                <Text color="gray" dimColor>
                   {result.timestamp.toLocaleTimeString()}
                 </Text>
 
                 {isSelected && (
-                  <Box
-                    marginTop={1}
-                    flexDirection="column"
-                  >
+                  <Box marginTop={1} flexDirection="column">
                     {result.success && result.data && (
                       <Box flexDirection="column">
-                        <Text
-                          color="green"
-                          bold
-                        >
+                        <Text color="green" bold>
                           MCP Response:
                         </Text>
-                        <Text
-                          color="white"
-                          wrap="wrap"
-                        >
-                          {typeof result.data === 'object' 
+                        <Text color="white" wrap="wrap">
+                          {typeof result.data === 'object'
                             ? JSON.stringify(result.data, null, 2)
-                            : String(result.data)
-                          }
+                            : String(result.data)}
                         </Text>
                         {result.data?.id && (
                           <Text color="cyan" marginTop={1}>
@@ -749,16 +668,10 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
 
                     {!result.success && result.error && (
                       <Box flexDirection="column">
-                        <Text
-                          color="red"
-                          bold
-                        >
+                        <Text color="red" bold>
                           Error:
                         </Text>
-                        <Text
-                          color="red"
-                          wrap="wrap"
-                        >
+                        <Text color="red" wrap="wrap">
                           {result.error}
                         </Text>
                       </Box>
@@ -785,10 +698,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header */}
       <Header
         title="MCP Tool Tester"
@@ -806,10 +716,7 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
       </Box>
 
       {/* Footer */}
-      <Box
-        paddingY={1}
-        paddingX={2}
-      >
+      <Box paddingY={1} paddingX={2}>
         <InteractiveFooter
           currentScreen="MCP Tool Tester"
           availableScreens={

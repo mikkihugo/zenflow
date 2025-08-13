@@ -59,8 +59,8 @@ export const APIUtils = {
    * @param response
    */
   parseResponse: (
-    response: any,
-  ): { success: boolean; data?: any; error?: string } => {
+    response: unknown
+  ): { success: boolean; data?: unknown; error?: string } => {
     if (response && typeof response === 'object') {
       if (response?.error) {
         return { success: false, error: response?.error };
@@ -76,7 +76,7 @@ export const APIUtils = {
    * @param method
    * @param params
    */
-  formatRequest: (method: string, params: any = {}): any => {
+  formatRequest: (method: string, params: unknown = {}): unknown => {
     return {
       jsonrpc: '2.0',
       method,
@@ -98,7 +98,7 @@ export class APIClientFactory {
    */
   static getWebSocketClient(
     url: string,
-    instanceKey = 'default',
+    instanceKey = 'default'
   ): WebSocketClient {
     const key = `ws:${instanceKey}`;
 

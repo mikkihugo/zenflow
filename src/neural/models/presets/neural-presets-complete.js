@@ -876,10 +876,10 @@ export class CognitivePatternSelector {
   handleHighComplexity(patterns) {
     // For high complexity, ensure both analytical and creative patterns
     const hasAnalytical = patterns.some((p) =>
-      ['convergent', 'critical', 'systems'].includes(p),
+      ['convergent', 'critical', 'systems'].includes(p)
     );
     const hasCreative = patterns.some((p) =>
-      ['divergent', 'lateral', 'abstract'].includes(p),
+      ['divergent', 'lateral', 'abstract'].includes(p)
     );
 
     if (!hasAnalytical) {
@@ -992,7 +992,7 @@ export class CognitivePatternSelector {
             cognitivePatterns: this.selectPatternsForPreset(
               modelType,
               presetName,
-              requirements,
+              requirements
             ),
           });
         }
@@ -1015,7 +1015,7 @@ export class CognitivePatternSelector {
     if (requirements.maxInferenceTime) {
       const inferenceTime = Number.parseInt(
         preset.performance.inferenceTime,
-        10,
+        10
       );
       if (inferenceTime <= requirements.maxInferenceTime) {
         score += 0.2;
@@ -1045,7 +1045,7 @@ export class CognitivePatternSelector {
     // Cognitive pattern alignment
     if (requirements.cognitivePreference) {
       const hasPreferred = preset.cognitivePatterns.some(
-        (p) => p === requirements.cognitivePreference,
+        (p) => p === requirements.cognitivePreference
       );
       if (hasPreferred) {
         score += 0.2;
@@ -1088,7 +1088,7 @@ export class NeuralAdaptationEngine {
 
     this.performanceBaselines.set(
       `${modelType}/${presetName}`,
-      preset.performance,
+      preset.performance
     );
   }
 
@@ -1107,7 +1107,7 @@ export class NeuralAdaptationEngine {
       result: adaptationResult,
       performanceGain: this.calculatePerformanceGain(
         adaptationResult,
-        history.baselinePerformance,
+        history.baselinePerformance
       ),
     });
 
@@ -1216,7 +1216,7 @@ export class NeuralAdaptationEngine {
   suggestHyperparameters(history) {
     // Analyze successful adaptations
     const successfulAdaptations = history.adaptations.filter(
-      (a) => a.performanceGain.accuracyGain > 0,
+      (a) => a.performanceGain.accuracyGain > 0
     );
 
     if (successfulAdaptations.length === 0) {
@@ -1258,7 +1258,7 @@ export class NeuralAdaptationEngine {
       (a, i) =>
         i === 0 ||
         a.performanceGain.accuracyGain >=
-          recentPerformance[i - 1].performanceGain.accuracyGain,
+          recentPerformance[i - 1].performanceGain.accuracyGain
     );
 
     if (isImproving) {

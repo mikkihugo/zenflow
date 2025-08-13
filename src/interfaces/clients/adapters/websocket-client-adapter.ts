@@ -5,7 +5,7 @@
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger(
-  'interfaces-clients-adapters-websocket-client-adapter',
+  'interfaces-clients-adapters-websocket-client-adapter'
 );
 
 /**
@@ -659,7 +659,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async get<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('GET', endpoint, undefined, options);
   }
@@ -669,8 +669,8 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async post<T = any>(
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('POST', endpoint, data, options);
   }
@@ -680,8 +680,8 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async put<T = any>(
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('PUT', endpoint, data, options);
   }
@@ -691,7 +691,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async delete<T = any>(
     endpoint: string,
-    options?: RequestOptions,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     return this.sendRequest('DELETE', endpoint, undefined, options);
   }
@@ -709,7 +709,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   on(
     event: 'connect' | 'disconnect' | 'error' | 'retry' | string,
-    handler: (...args: unknown[]) => void,
+    handler: (...args: unknown[]) => void
   ): void {
     super.on(event, handler);
   }
@@ -764,7 +764,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
    */
   async sendMessage<T = any>(
     message: WebSocketMessage<T>,
-    _options?: WebSocketRequestOptions,
+    _options?: WebSocketRequestOptions
   ): Promise<void> {
     const messageWithId = {
       id: this.generateMessageId(),
@@ -882,8 +882,8 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
   private async sendRequest<T = any>(
     method: string,
     endpoint: string,
-    data?: any,
-    options?: RequestOptions,
+    data?: unknown,
+    options?: RequestOptions
   ): Promise<ClientResponse<T>> {
     const requestId = this.generateMessageId();
     const startTime = Date.now();
@@ -906,7 +906,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
           this.off(`response:${requestId}`, responseHandler);
           reject(new Error('Request timeout'));
         },
-        options?.timeout || this.config.timeout || 30000,
+        options?.timeout || this.config.timeout || 30000
       );
 
       const responseHandler = (responseData: unknown) => {
@@ -1140,7 +1140,7 @@ export class WebSocketClientFactory {
    * @param configs
    */
   async createMultiple(
-    configs: WebSocketClientConfig[],
+    configs: WebSocketClientConfig[]
   ): Promise<WebSocketClientAdapter[]> {
     return Promise.all(configs.map((config) => this.create(config)));
   }
@@ -1249,7 +1249,7 @@ export class WebSocketClientFactory {
     const shutdownPromises = Array.from(this.clients.values()).map((client) =>
       client.destroy().catch((error) => {
         logger.error(`Error shutting down WebSocket client:`, error);
-      }),
+      })
     );
 
     await Promise.all(shutdownPromises);
@@ -1266,7 +1266,7 @@ export class WebSocketClientFactory {
 
 // Export convenience functions
 export async function createWebSocketClient(
-  config: WebSocketClientConfig,
+  config: WebSocketClientConfig
 ): Promise<WebSocketClientAdapter> {
   const factory = new WebSocketClientFactory();
   return await factory.create(config);

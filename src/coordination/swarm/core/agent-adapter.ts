@@ -24,7 +24,7 @@ import type {
  * @example
  */
 export function adaptAgentForCoordination(
-  baseAgent: BaseAgent,
+  baseAgent: BaseAgent
 ): CoordinationAgent {
   return {
     ...baseAgent,
@@ -56,7 +56,7 @@ export function adaptAgentForCoordination(
  * @example
  */
 export function adaptTaskForExecution(
-  coordinationTask: CoordinationTask,
+  coordinationTask: CoordinationTask
 ): BaseTask {
   return {
     ...coordinationTask,
@@ -83,7 +83,7 @@ export function adaptTaskForExecution(
  */
 export async function executeTaskWithAgent(
   agent: BaseAgent | CoordinationAgent,
-  task: CoordinationTask,
+  task: CoordinationTask
 ): Promise<unknown> {
   // Convert coordination task to base task format
   const baseTask = adaptTaskForExecution(task);
@@ -98,7 +98,7 @@ export async function executeTaskWithAgent(
  * @param agent
  * @example
  */
-export function createAgentPoolEntry(agent: BaseAgent): any {
+export function createAgentPoolEntry(agent: BaseAgent): unknown {
   // Return properly typed entry for agent pool
   return {
     agent: adaptAgentForCoordination(agent),

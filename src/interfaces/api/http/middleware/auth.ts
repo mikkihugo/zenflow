@@ -48,7 +48,7 @@ export interface AuthContext {
 export const authMiddleware = (
   req: Request & { auth?: AuthContext },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   // Create anonymous user context
   const authContext: AuthContext = {
@@ -75,7 +75,7 @@ export const authMiddleware = (
         authStatus: 'no_auth_required',
         userType: 'anonymous',
         permissions: authContext.user?.permissions,
-      },
+      }
     );
   }
 
@@ -97,7 +97,7 @@ export const authMiddleware = (
 export const optionalAuthMiddleware = (
   req: Request & { auth?: AuthContext },
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ): void => {
   // Check for auth headers (but don't enforce)
   const authHeader = req.headers['authorization'];
@@ -129,7 +129,7 @@ export const optionalAuthMiddleware = (
           hasAuthHeader: !!authHeader,
           hasApiKey: !!apiKey,
           tokenType: authContext.tokenType,
-        },
+        }
       );
     }
   } else {
@@ -161,7 +161,7 @@ export const optionalAuthMiddleware = (
  */
 export const hasPermission = (
   req: Request & { auth?: AuthContext },
-  permission: string,
+  permission: string
 ): boolean => {
   const authContext = req.auth;
 
@@ -186,7 +186,7 @@ export const hasPermission = (
  */
 export const hasRole = (
   req: Request & { auth?: AuthContext },
-  role: string,
+  role: string
 ): boolean => {
   const authContext = req.auth;
 
@@ -222,7 +222,7 @@ export const isAdmin = (req: Request): boolean => {
  * @param req
  */
 export const getCurrentUser = (
-  req: Request & { auth?: AuthContext },
+  req: Request & { auth?: AuthContext }
 ): User | undefined => {
   return req.auth?.user;
 };

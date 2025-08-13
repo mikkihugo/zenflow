@@ -110,7 +110,7 @@ async function testCLIFunctionality() {
     architecture.components.forEach((comp, i) => {});
   }
   const validation = await engine.validateArchitecturalConsistency(
-    architecture.systemArchitecture,
+    architecture.systemArchitecture
   );
 }
 

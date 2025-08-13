@@ -936,7 +936,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
   },
 
   customizeSpecification(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): DetailedSpecification {
     const customized = { ...this.specification };
     // Enhanced: Add project name and description to specification

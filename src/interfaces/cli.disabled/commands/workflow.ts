@@ -20,7 +20,7 @@ const logger = createLogger('workflow-cli');
 export interface WorkflowCommand {
   name: string;
   description: string;
-  handler: (input: string[], flags: any) => Promise<void> | void;
+  handler: (input: string[], flags: unknown) => Promise<void> | void;
 }
 
 /**
@@ -30,7 +30,7 @@ export const initWorkflowCommand: WorkflowCommand = {
   name: 'init',
   description:
     'Initialize advanced multi-level workflow with adaptive memory management',
-  async handler(input: string[], flags: any) {
+  async handler(input: string[], flags: unknown) {
     const repoPath = input[0];
     logger.info('🚀 Initializing Advanced Multi-Level Workflow Architecture');
 
@@ -40,7 +40,7 @@ export const initWorkflowCommand: WorkflowCommand = {
 
     const memoryOptimizer = createAdaptiveOptimizer();
     logger.info(
-      '🧠 Adaptive Memory Optimizer: INITIALIZED (Ultra-Conservative Mode)',
+      '🧠 Adaptive Memory Optimizer: INITIALIZED (Ultra-Conservative Mode)'
     );
 
     // Create repository configuration with auto-detected settings
@@ -52,11 +52,11 @@ export const initWorkflowCommand: WorkflowCommand = {
 
     logger.info('\n🏗️ Multi-Level Architecture Initialized:');
     logger.info(
-      `   📁 Repository: ${repoConfig.repoName} (${repoConfig.repoPath})`,
+      `   📁 Repository: ${repoConfig.repoName} (${repoConfig.repoPath})`
     );
     logger.info(`   🎯 Flow Topology: ${repoConfig.flowTopology}`);
     logger.info(
-      `   ⚡ Parallel Streams: Portfolio=${repoConfig.maxParallelStreams.portfolio}, Program=${repoConfig.maxParallelStreams.program}, Swarm=${repoConfig.maxParallelStreams.swarm}`,
+      `   ⚡ Parallel Streams: Portfolio=${repoConfig.maxParallelStreams.portfolio}, Program=${repoConfig.maxParallelStreams.program}, Swarm=${repoConfig.maxParallelStreams.swarm}`
     );
     logger.info(`   🧠 ML Optimization: ${repoConfig.mlOptimizationLevel}`);
     logger.info(`   🔄 Auto-scaling: ENABLED (Ultra-Safe)`);
@@ -64,32 +64,32 @@ export const initWorkflowCommand: WorkflowCommand = {
     // Display feature status
     logger.info('\n✅ Advanced Features Enabled:');
     logger.info(
-      `   🎯 Advanced Kanban Flow: ${repoConfig.enableAdvancedKanbanFlow ? 'ENABLED' : 'DISABLED'}`,
+      `   🎯 Advanced Kanban Flow: ${repoConfig.enableAdvancedKanbanFlow ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   🤖 ML Optimization: ${repoConfig.enableMLOptimization ? 'ENABLED' : 'DISABLED'}`,
+      `   🤖 ML Optimization: ${repoConfig.enableMLOptimization ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   🔍 Bottleneck Detection: ${repoConfig.enableBottleneckDetection ? 'ENABLED' : 'DISABLED'}`,
+      `   🔍 Bottleneck Detection: ${repoConfig.enableBottleneckDetection ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   📊 Predictive Analytics: ${repoConfig.enablePredictiveAnalytics ? 'ENABLED' : 'DISABLED'}`,
+      `   📊 Predictive Analytics: ${repoConfig.enablePredictiveAnalytics ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   📈 Real-Time Monitoring: ${repoConfig.enableRealTimeMonitoring ? 'ENABLED' : 'DISABLED'}`,
+      `   📈 Real-Time Monitoring: ${repoConfig.enableRealTimeMonitoring ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   ⚡ Resource Management: ${repoConfig.enableIntelligentResourceManagement ? 'ENABLED' : 'DISABLED'}`,
+      `   ⚡ Resource Management: ${repoConfig.enableIntelligentResourceManagement ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   🎮 AGUI Gates: ${repoConfig.enableAGUIGates ? 'ENABLED' : 'DISABLED'}`,
+      `   🎮 AGUI Gates: ${repoConfig.enableAGUIGates ? 'ENABLED' : 'DISABLED'}`
     );
     logger.info(
-      `   🔄 Cross-Level Optimization: ${repoConfig.enableCrossLevelOptimization ? 'ENABLED' : 'DISABLED'}`,
+      `   🔄 Cross-Level Optimization: ${repoConfig.enableCrossLevelOptimization ? 'ENABLED' : 'DISABLED'}`
     );
 
     logger.info(
-      '\n🎉 Workflow architecture ready! Use `workflow monitor` to track performance.',
+      '\n🎉 Workflow architecture ready! Use `workflow monitor` to track performance.'
     );
   },
 };
@@ -101,7 +101,7 @@ export const monitorWorkflowCommand: WorkflowCommand = {
   name: 'monitor',
   description:
     'Monitor workflow performance, memory usage, and adaptive scaling',
-  async handler(input: string[], flags: any) {
+  async handler(input: string[], flags: unknown) {
     logger.info('📊 Advanced Workflow Performance Monitor');
 
     const memoryOptimizer = createAdaptiveOptimizer();
@@ -113,23 +113,23 @@ export const monitorWorkflowCommand: WorkflowCommand = {
     logger.info(`   Platform: ${systemInfo.platform}`);
     logger.info(`   CPU Cores: ${systemInfo.cpuCores}`);
     logger.info(
-      `   Conservative Mode: ${systemInfo.recommendedConfig.conservative ? 'YES' : 'NO'}`,
+      `   Conservative Mode: ${systemInfo.recommendedConfig.conservative ? 'YES' : 'NO'}`
     );
 
     // Display current memory statistics
     const memStats = memoryOptimizer.getMemoryStats();
     logger.info('\n📈 Current Memory Allocation:');
     logger.info(
-      `   Portfolio Streams: ${memStats.allocated.portfolio}/${memStats.allocated.portfolio + memStats.available.portfolio} (${((memStats.allocated.portfolio / (memStats.allocated.portfolio + memStats.available.portfolio)) * 100).toFixed(1)}% utilized)`,
+      `   Portfolio Streams: ${memStats.allocated.portfolio}/${memStats.allocated.portfolio + memStats.available.portfolio} (${((memStats.allocated.portfolio / (memStats.allocated.portfolio + memStats.available.portfolio)) * 100).toFixed(1)}% utilized)`
     );
     logger.info(
-      `   Program Streams: ${memStats.allocated.program}/${memStats.allocated.program + memStats.available.program} (${((memStats.allocated.program / (memStats.allocated.program + memStats.available.program)) * 100).toFixed(1)}% utilized)`,
+      `   Program Streams: ${memStats.allocated.program}/${memStats.allocated.program + memStats.available.program} (${((memStats.allocated.program / (memStats.allocated.program + memStats.available.program)) * 100).toFixed(1)}% utilized)`
     );
     logger.info(
-      `   Swarm Streams: ${memStats.allocated.swarm}/${memStats.allocated.swarm + memStats.available.swarm} (${((memStats.allocated.swarm / (memStats.allocated.swarm + memStats.available.swarm)) * 100).toFixed(1)}% utilized)`,
+      `   Swarm Streams: ${memStats.allocated.swarm}/${memStats.allocated.swarm + memStats.available.swarm} (${((memStats.allocated.swarm / (memStats.allocated.swarm + memStats.available.swarm)) * 100).toFixed(1)}% utilized)`
     );
     logger.info(
-      `   Overall Utilization: ${(memStats.utilization * 100).toFixed(1)}%`,
+      `   Overall Utilization: ${(memStats.utilization * 100).toFixed(1)}%`
     );
 
     // Get optimization recommendations
@@ -140,7 +140,7 @@ export const monitorWorkflowCommand: WorkflowCommand = {
         logger.info(`   ${rec}`);
       });
       logger.info(
-        `   Potential Performance Gain: ${optimization.potentialGains.toFixed(1)}%`,
+        `   Potential Performance Gain: ${optimization.potentialGains.toFixed(1)}%`
       );
     } else {
       logger.info('\n✅ System is optimally configured');
@@ -150,14 +150,14 @@ export const monitorWorkflowCommand: WorkflowCommand = {
     if (optimization.currentPerformance) {
       logger.info('\n📊 Performance Trends:');
       logger.info(
-        `   Memory Trend: ${optimization.currentPerformance.memoryTrend}`,
+        `   Memory Trend: ${optimization.currentPerformance.memoryTrend}`
       );
       logger.info(`   CPU Trend: ${optimization.currentPerformance.cpuTrend}`);
       logger.info(
-        `   Throughput Trend: ${optimization.currentPerformance.throughputTrend}`,
+        `   Throughput Trend: ${optimization.currentPerformance.throughputTrend}`
       );
       logger.info(
-        `   Recommendation: ${optimization.currentPerformance.recommendation}`,
+        `   Recommendation: ${optimization.currentPerformance.recommendation}`
       );
     }
 
@@ -186,7 +186,7 @@ export const monitorWorkflowCommand: WorkflowCommand = {
       });
     } else {
       logger.info(
-        '\n📝 Use --watch for continuous monitoring (Ctrl+C to stop)',
+        '\n📝 Use --watch for continuous monitoring (Ctrl+C to stop)'
       );
     }
   },
@@ -199,25 +199,25 @@ export const configureWorkflowCommand: WorkflowCommand = {
   name: 'configure',
   description:
     'Configure workflow settings, memory limits, and optimization parameters',
-  async handler(input: string[], flags: any) {
+  async handler(input: string[], flags: unknown) {
     logger.info('⚙️ Advanced Workflow Configuration');
 
     const systemInfo = getSystemInfo();
 
     logger.info('\n🎯 Current System Recommendations:');
     logger.info(
-      `   Max Portfolio Streams: ${systemInfo.recommendedConfig.maxPortfolioStreams}`,
+      `   Max Portfolio Streams: ${systemInfo.recommendedConfig.maxPortfolioStreams}`
     );
     logger.info(
-      `   Max Program Streams: ${systemInfo.recommendedConfig.maxProgramStreams}`,
+      `   Max Program Streams: ${systemInfo.recommendedConfig.maxProgramStreams}`
     );
     logger.info(
-      `   Max Swarm Streams: ${systemInfo.recommendedConfig.maxSwarmStreams}`,
+      `   Max Swarm Streams: ${systemInfo.recommendedConfig.maxSwarmStreams}`
     );
 
     if (flags.setMemoryLimit) {
       logger.info(
-        `\n📊 Setting custom memory limit: ${flags.setMemoryLimit}GB`,
+        `\n📊 Setting custom memory limit: ${flags.setMemoryLimit}GB`
       );
       // This would integrate with actual configuration system
     }
@@ -246,7 +246,7 @@ export const testWorkflowCommand: WorkflowCommand = {
   name: 'test',
   description:
     'Test workflow performance, validate system health, and run diagnostics',
-  async handler(input: string[], flags: any) {
+  async handler(input: string[], flags: unknown) {
     logger.info('🧪 Advanced Workflow Performance Testing');
 
     const memoryOptimizer = createAdaptiveOptimizer();
@@ -267,7 +267,7 @@ export const testWorkflowCommand: WorkflowCommand = {
     };
 
     const validation = await import('../../../config/system-info.ts').then(
-      (module) => module.validateConfigForSystem(testConfig),
+      (module) => module.validateConfigForSystem(testConfig)
     );
 
     if (validation.safe) {
@@ -296,19 +296,19 @@ export const testWorkflowCommand: WorkflowCommand = {
 
     const endTime = Date.now();
     logger.info(
-      `   ✅ Performance simulation completed in ${endTime - startTime}ms`,
+      `   ✅ Performance simulation completed in ${endTime - startTime}ms`
     );
 
     // Get optimization analysis
     const optimization = memoryOptimizer.optimizeAllocation();
     logger.info('\n📊 Performance Analysis:');
     logger.info(
-      `   Optimization potential: ${optimization.potentialGains.toFixed(1)}%`,
+      `   Optimization potential: ${optimization.potentialGains.toFixed(1)}%`
     );
 
     if (optimization.canOptimize) {
       logger.info(
-        '   💡 Recommendations available (run `workflow monitor` for details)',
+        '   💡 Recommendations available (run `workflow monitor` for details)'
       );
     } else {
       logger.info('   ✅ System is running optimally');
@@ -323,7 +323,7 @@ export const testWorkflowCommand: WorkflowCommand = {
 
     logger.info('\n🎉 Workflow testing completed successfully!');
     logger.info(
-      '📝 Use `workflow monitor --watch` for continuous performance tracking',
+      '📝 Use `workflow monitor --watch` for continuous performance tracking'
     );
   },
 };
@@ -334,10 +334,10 @@ export const testWorkflowCommand: WorkflowCommand = {
 export const scaleWorkflowCommand: WorkflowCommand = {
   name: 'scale',
   description: 'Manually scale workflow capacity (override auto-scaling)',
-  async handler(input: string[], flags: any) {
+  async handler(input: string[], flags: unknown) {
     const direction = input[0] as 'up' | 'down';
     logger.info(
-      `📈 Manual Workflow Scaling: ${direction?.toUpperCase() || 'UNKNOWN'}`,
+      `📈 Manual Workflow Scaling: ${direction?.toUpperCase() || 'UNKNOWN'}`
     );
 
     if (!(direction && ['up', 'down'].includes(direction))) {
@@ -353,13 +353,13 @@ export const scaleWorkflowCommand: WorkflowCommand = {
     logger.info(`   Program: ${currentStats.allocated.program} active`);
     logger.info(`   Swarm: ${currentStats.allocated.swarm} active`);
     logger.info(
-      `   Utilization: ${(currentStats.utilization * 100).toFixed(1)}%`,
+      `   Utilization: ${(currentStats.utilization * 100).toFixed(1)}%`
     );
 
     if (direction === 'up') {
       logger.info('\n⚠️  Manual scale-up requested');
       logger.info(
-        '   Note: Auto-scaling will override manual changes based on performance',
+        '   Note: Auto-scaling will override manual changes based on performance'
       );
 
       if (currentStats.utilization > 0.7) {
@@ -487,7 +487,7 @@ export function createWorkflowCLI() {
           default: 20,
         },
       },
-    },
+    }
   );
 
   return cli;

@@ -82,7 +82,7 @@ export class AutomatedDeadCodeManager {
         totalItems: allItems.length,
         highConfidenceItems: allItems.filter((item) => item.confidence > 0.8),
         mediumConfidenceItems: allItems.filter(
-          (item) => item.confidence > 0.5 && item.confidence <= 0.8,
+          (item) => item.confidence > 0.5 && item.confidence <= 0.8
         ),
         lowConfidenceItems: allItems.filter((item) => item.confidence <= 0.5),
         scanDuration: Date.now() - startTime,
@@ -107,7 +107,7 @@ export class AutomatedDeadCodeManager {
    * Present dead code findings to human for decision making
    */
   async presentToHuman(
-    scanResult: DeadCodeScanResult,
+    scanResult: DeadCodeScanResult
   ): Promise<DeadCodeDecision[]> {
     if (!this.aguiInterface) {
       logger.warn('No AGUI interface available for human interaction');
@@ -134,7 +134,7 @@ export class AutomatedDeadCodeManager {
     // Ask about batch operations for medium confidence items
     if (scanResult.mediumConfidenceItems.length > 0) {
       const batchDecision = await this.askAboutBatchOperation(
-        scanResult.mediumConfidenceItems,
+        scanResult.mediumConfidenceItems
       );
       decisions.push(...batchDecision);
     }
@@ -146,7 +146,7 @@ export class AutomatedDeadCodeManager {
    * Ask human about a specific dead code item
    */
   private async askHumanAboutDeadCode(
-    item: DeadCodeItem,
+    item: DeadCodeItem
   ): Promise<DeadCodeDecision> {
     if (!this.aguiInterface) {
       throw new Error('AGUI interface required for human interaction');
@@ -203,7 +203,7 @@ export class AutomatedDeadCodeManager {
    * Ask about batch operations for multiple items
    */
   private async askAboutBatchOperation(
-    items: DeadCodeItem[],
+    items: DeadCodeItem[]
   ): Promise<DeadCodeDecision[]> {
     if (!this.aguiInterface) return [];
 
@@ -284,7 +284,7 @@ export class AutomatedDeadCodeManager {
    * Schedule automated dead code scans
    */
   async scheduleAutomatedScans(
-    intervalMs: number = 7 * 24 * 60 * 60 * 1000,
+    intervalMs: number = 7 * 24 * 60 * 60 * 1000
   ): Promise<void> {
     // Weekly
     logger.info('Scheduling automated dead code scans', { intervalMs });
@@ -322,7 +322,7 @@ export class AutomatedDeadCodeManager {
         {
           encoding: 'utf8',
           timeout: 30000,
-        },
+        }
       );
 
       return this.parseTsPruneOutput(output);
@@ -342,7 +342,7 @@ export class AutomatedDeadCodeManager {
         {
           encoding: 'utf8',
           timeout: 45000,
-        },
+        }
       );
 
       return this.parseKnipOutput(output);
@@ -394,7 +394,7 @@ export class AutomatedDeadCodeManager {
 
       // Parse knip's structured output
       if (data.files) {
-        data.files.forEach((file: any, index: number) => {
+        data.files.forEach((file: unknown, index: number) => {
           items.push({
             id: `knip-file-${index}`,
             type: 'file',
@@ -407,7 +407,7 @@ export class AutomatedDeadCodeManager {
       }
 
       if (data.exports) {
-        data.exports.forEach((exp: any, index: number) => {
+        data.exports.forEach((exp: unknown, index: number) => {
           items.push({
             id: `knip-export-${index}`,
             type: 'export',
@@ -486,10 +486,10 @@ export class AutomatedDeadCodeManager {
     parts.push(`📍 Location: ${item.location}`);
     parts.push(`🔍 Type: ${item.type}`);
     parts.push(
-      `📊 Confidence: ${(item.confidence * 100).toFixed(1)}% that it's unused`,
+      `📊 Confidence: ${(item.confidence * 100).toFixed(1)}% that it's unused`
     );
     parts.push(
-      `🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove`,
+      `🛡️ Safety Score: ${(item.safetyScore * 100).toFixed(1)}% safe to remove`
     );
 
     if (item.context?.publicAPI) {
@@ -511,27 +511,27 @@ export class AutomatedDeadCodeManager {
 
     if (item.confidence > 0.9 && item.safetyScore > 0.8) {
       recommendations.push(
-        '✅ Recommended: REMOVE - High confidence, low risk',
+        '✅ Recommended: REMOVE - High confidence, low risk'
       );
     } else if (item.confidence > 0.7 && item.safetyScore > 0.6) {
       recommendations.push(
-        '⚠️ Recommended: INVESTIGATE - Medium confidence and safety',
+        '⚠️ Recommended: INVESTIGATE - Medium confidence and safety'
       );
     } else {
       recommendations.push(
-        '🤔 Recommended: KEEP - Lower confidence or higher risk',
+        '🤔 Recommended: KEEP - Lower confidence or higher risk'
       );
     }
 
     if (item.context?.publicAPI) {
       recommendations.push(
-        '⚠️ Consider: This might be used by external consumers',
+        '⚠️ Consider: This might be used by external consumers'
       );
     }
 
     if (item.type === 'export' && item.safetyScore < 0.4) {
       recommendations.push(
-        '💡 Consider: WIRE-UP - This might need to be connected to something',
+        '💡 Consider: WIRE-UP - This might need to be connected to something'
       );
     }
 
@@ -542,7 +542,7 @@ export class AutomatedDeadCodeManager {
    * Parse action from human response
    */
   private parseActionFromResponse(
-    response: string,
+    response: string
   ): DeadCodeDecision['action'] {
     const lower = response.toLowerCase();
 
@@ -582,7 +582,7 @@ export class AutomatedDeadCodeManager {
    * Generate dead code report
    */
   private async generateDeadCodeReport(
-    scanResult: DeadCodeScanResult,
+    scanResult: DeadCodeScanResult
   ): Promise<void> {
     const report = {
       timestamp: scanResult.timestamp,
@@ -594,7 +594,7 @@ export class AutomatedDeadCodeManager {
       },
       recommendations: {
         safeToRemove: scanResult.highConfidenceItems.filter(
-          (i) => i.safetyScore > 0.8,
+          (i) => i.safetyScore > 0.8
         ).length,
         needsInvestigation: scanResult.mediumConfidenceItems.length,
         shouldKeep: scanResult.lowConfidenceItems.length,

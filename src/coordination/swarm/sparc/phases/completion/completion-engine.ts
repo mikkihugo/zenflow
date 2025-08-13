@@ -42,7 +42,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * @param refinement
    */
   async generateImplementation(
-    refinement: RefinementResult,
+    refinement: RefinementResult
   ): Promise<ImplementationArtifacts> {
     const codeGeneration = await this.generateCode(refinement);
     const testGeneration = await this.generateTests(refinement);
@@ -72,7 +72,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
       codeGeneration,
       testGeneration,
       documentationGeneration,
-      deploymentArtifacts,
+      deploymentArtifacts
     );
 
     return {
@@ -113,7 +113,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * @param refinement
    */
   private async generateCode(
-    refinement: RefinementResult,
+    refinement: RefinementResult
   ): Promise<SourceCodeArtifact[]> {
     const artifacts: SourceCodeArtifact[] = [];
 
@@ -128,7 +128,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate data access layer
     const dataComponents = refinement.refinedArchitecture.components.filter(
-      (c: any) => c.type === 'database',
+      (c: unknown) => c.type === 'database'
     );
     for (const component of dataComponents) {
       artifacts.push(await this.generateRepositoryCode(component));
@@ -138,13 +138,13 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate API endpoints
     artifacts.push(
-      await this.generateAPIControllers(refinement.refinedArchitecture),
+      await this.generateAPIControllers(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateAPIRoutes(refinement.refinedArchitecture),
+      await this.generateAPIRoutes(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateAPIMiddleware(refinement.refinedArchitecture),
+      await this.generateAPIMiddleware(refinement.refinedArchitecture)
     );
 
     // Generate infrastructure code
@@ -152,7 +152,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     artifacts.push(await this.generateLoggingFramework());
     artifacts.push(await this.generateErrorHandling());
     artifacts.push(
-      await this.generateSecurityFramework(refinement.securityOptimizations),
+      await this.generateSecurityFramework(refinement.securityOptimizations)
     );
 
     return artifacts;
@@ -164,7 +164,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * @param refinement
    */
   private async generateTests(
-    refinement: RefinementResult,
+    refinement: RefinementResult
   ): Promise<TestSuite[]> {
     const testCases: TestCase[] = [];
 
@@ -175,7 +175,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate integration tests
     testCases.push(
-      await this.generateIntegrationTests(refinement.refinedArchitecture),
+      await this.generateIntegrationTests(refinement.refinedArchitecture)
     );
 
     // Generate end-to-end tests
@@ -183,17 +183,17 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate performance tests
     testCases.push(
-      await this.generatePerformanceTests(refinement.performanceOptimizations),
+      await this.generatePerformanceTests(refinement.performanceOptimizations)
     );
 
     // Generate security tests
     testCases.push(
-      await this.generateSecurityTests(refinement.securityOptimizations),
+      await this.generateSecurityTests(refinement.securityOptimizations)
     );
 
     // Generate load tests
     testCases.push(
-      await this.generateLoadTests(refinement.scalabilityOptimizations),
+      await this.generateLoadTests(refinement.scalabilityOptimizations)
     );
 
     // Convert TestCase[] to TestSuite[]
@@ -207,7 +207,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * @param project
    */
   async generateDocumentation(
-    project: SPARCProject,
+    project: SPARCProject
   ): Promise<DocumentationSet> {
     const artifacts: DocumentationArtifact[] = [];
 
@@ -216,7 +216,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate architecture documentation
     artifacts.push(
-      await this.generateArchitectureDocumentation(project.architecture),
+      await this.generateArchitectureDocumentation(project.architecture)
     );
 
     // Generate user documentation
@@ -234,8 +234,8 @@ export class CompletionPhaseEngine implements CompletionEngine {
     // Generate security documentation
     artifacts.push(
       await this.generateSecurityDocumentation(
-        project.architecture.securityRequirements,
-      ),
+        project.architecture.securityRequirements
+      )
     );
 
     return artifacts;
@@ -247,27 +247,27 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * @param refinement
    */
   private async generateDeploymentArtifacts(
-    refinement: RefinementResult,
+    refinement: RefinementResult
   ): Promise<DeploymentPlan> {
     const artifacts: DeploymentScript[] = [];
 
     // Generate containerization artifacts
     artifacts.push(
-      await this.generateDockerfiles(refinement.refinedArchitecture),
+      await this.generateDockerfiles(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateDockerCompose(refinement.refinedArchitecture),
+      await this.generateDockerCompose(refinement.refinedArchitecture)
     );
 
     // Generate Kubernetes manifests
     artifacts.push(
-      await this.generateKubernetesManifests(refinement.refinedArchitecture),
+      await this.generateKubernetesManifests(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateKubernetesConfigMaps(refinement.refinedArchitecture),
+      await this.generateKubernetesConfigMaps(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateKubernetesSecrets(refinement.securityOptimizations),
+      await this.generateKubernetesSecrets(refinement.securityOptimizations)
     );
 
     // Generate CI/CD pipelines
@@ -276,21 +276,21 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
     // Generate infrastructure as code
     artifacts.push(
-      await this.generateTerraformModules(refinement.refinedArchitecture),
+      await this.generateTerraformModules(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateAnsiblePlaybooks(refinement.refinedArchitecture),
+      await this.generateAnsiblePlaybooks(refinement.refinedArchitecture)
     );
 
     // Generate monitoring and observability
     artifacts.push(
-      await this.generatePrometheusConfig(refinement.refinedArchitecture),
+      await this.generatePrometheusConfig(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateGrafanaDashboards(refinement.refinedArchitecture),
+      await this.generateGrafanaDashboards(refinement.refinedArchitecture)
     );
     artifacts.push(
-      await this.generateAlertingRules(refinement.refinedArchitecture),
+      await this.generateAlertingRules(refinement.refinedArchitecture)
     );
 
     return artifacts.map((script) => ({
@@ -312,7 +312,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
    * @param _refinement
    */
   private async establishQualityGates(
-    _refinement: RefinementResult,
+    _refinement: RefinementResult
   ): Promise<ValidationResult[]> {
     return [
       {
@@ -358,7 +358,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     _codeGen: SourceCodeArtifact[],
     testGen: TestSuite[],
     _docGen: DocumentationGeneration,
-    _deployArtifacts: DeploymentPlan,
+    _deployArtifacts: DeploymentPlan
   ): Promise<ProductionReadinessReport[]> {
     return [
       {
@@ -551,7 +551,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   // Code generation helper methods
   private async generateServiceCode(
-    component: any,
+    component: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: `src/services/${component.name.toLowerCase()}.ts`,
@@ -563,7 +563,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateServiceInterface(
-    component: any,
+    component: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: `src/interfaces/I${component.name}.ts`,
@@ -575,7 +575,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateServiceConfiguration(
-    component: any,
+    component: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: `src/config/${component.name.toLowerCase()}.config.ts`,
@@ -587,7 +587,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateRepositoryCode(
-    component: any,
+    component: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: `src/repositories/${component.name.toLowerCase()}-repository.ts`,
@@ -599,7 +599,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateDataModelCode(
-    component: any,
+    component: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: `src/models/${component.name.toLowerCase()}-model.ts`,
@@ -611,7 +611,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateMigrationScripts(
-    component: any,
+    component: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: `migrations/001_create_${component.name.toLowerCase()}_table.sql`,
@@ -623,7 +623,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateAPIControllers(
-    architecture: any,
+    architecture: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       id: nanoid(),
@@ -639,7 +639,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateAPIRoutes(
-    architecture: any,
+    architecture: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: 'src/routes/routes.ts',
@@ -651,7 +651,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateAPIMiddleware(
-    architecture: any,
+    architecture: unknown
   ): Promise<SourceCodeArtifact> {
     return {
       path: 'src/middleware/middleware.ts',
@@ -693,7 +693,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateSecurityFramework(
-    securityOpts: unknown[],
+    securityOpts: unknown[]
   ): Promise<SourceCodeArtifact> {
     return {
       path: 'src/security/security-framework.ts',
@@ -728,7 +728,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateIntegrationTests(
-    architecture: unknown,
+    architecture: unknown
   ): Promise<TestCase> {
     return {
       name: 'Integration tests',
@@ -774,7 +774,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generatePerformanceTests(
-    performanceOpts: unknown[],
+    performanceOpts: unknown[]
   ): Promise<TestCase> {
     return {
       name: 'Performance tests',
@@ -794,13 +794,13 @@ export class CompletionPhaseEngine implements CompletionEngine {
         },
       ],
       requirements: performanceOpts.map(
-        (opt: unknown) => opt.description || 'Performance requirement',
+        (opt: unknown) => opt.description || 'Performance requirement'
       ),
     };
   }
 
   private async generateSecurityTests(
-    securityOpts: unknown[],
+    securityOpts: unknown[]
   ): Promise<TestCase> {
     return {
       name: 'Security tests',
@@ -820,13 +820,13 @@ export class CompletionPhaseEngine implements CompletionEngine {
         },
       ],
       requirements: securityOpts.map(
-        (opt: unknown) => opt.description || 'Security requirement',
+        (opt: unknown) => opt.description || 'Security requirement'
       ),
     };
   }
 
   private async generateLoadTests(
-    scalabilityOpts: unknown[],
+    scalabilityOpts: unknown[]
   ): Promise<TestCase> {
     return {
       name: 'Load tests',
@@ -846,14 +846,14 @@ export class CompletionPhaseEngine implements CompletionEngine {
         },
       ],
       requirements: scalabilityOpts.map(
-        (opt: unknown) => opt.description || 'Scalability requirement',
+        (opt: unknown) => opt.description || 'Scalability requirement'
       ),
     };
   }
 
   // Documentation generation helper methods
   private async generateAPIDocumentation(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -866,7 +866,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateArchitectureDocumentation(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -879,7 +879,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateUserDocumentation(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -892,7 +892,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateDeveloperDocumentation(
-    _refinement: any,
+    _refinement: unknown
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -905,7 +905,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateDeploymentDocumentation(
-    _refinement: any,
+    _refinement: unknown
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -918,7 +918,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateTroubleshootingGuide(
-    _refinement: any,
+    _refinement: unknown
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -931,7 +931,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateSecurityDocumentation(
-    _securityOpts: unknown[],
+    _securityOpts: unknown[]
   ): Promise<DocumentationArtifact> {
     return {
       id: nanoid(),
@@ -945,7 +945,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   // Deployment artifact generation helper methods
   private async generateDockerfiles(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -958,7 +958,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateDockerCompose(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -971,7 +971,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateKubernetesManifests(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -984,7 +984,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateKubernetesConfigMaps(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -997,7 +997,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateKubernetesSecrets(
-    _securityOpts: unknown[],
+    _securityOpts: unknown[]
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1010,7 +1010,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateCIPipeline(
-    _refinement: any,
+    _refinement: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1023,7 +1023,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateCDPipeline(
-    _refinement: any,
+    _refinement: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1036,7 +1036,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateTerraformModules(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1049,7 +1049,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateAnsiblePlaybooks(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1062,7 +1062,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generatePrometheusConfig(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1075,7 +1075,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateGrafanaDashboards(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1088,7 +1088,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
   }
 
   private async generateAlertingRules(
-    _architecture: any,
+    _architecture: unknown
   ): Promise<DeploymentArtifact> {
     return {
       id: nanoid(),
@@ -1250,7 +1250,7 @@ export class SecurityFramework {
    * @param implementation
    */
   async validateCompletion(
-    implementation: ImplementationArtifacts,
+    implementation: ImplementationArtifacts
   ): Promise<CompletionValidation> {
     const validationResults: ValidationResult[] = [];
 
@@ -1294,7 +1294,7 @@ export class SecurityFramework {
     const readinessScore =
       implementation.productionReadinessChecks.reduce(
         (sum, check) => sum + check.score,
-        0,
+        0
       ) / implementation.productionReadinessChecks.length;
     validationResults.push({
       criterion: 'Production readiness',
@@ -1335,7 +1335,7 @@ export class SecurityFramework {
    * @param validationResults
    */
   private generateCompletionRecommendations(
-    validationResults: ValidationResult[],
+    validationResults: ValidationResult[]
   ): string[] {
     const recommendations: string[] = [];
 
@@ -1344,22 +1344,22 @@ export class SecurityFramework {
         switch (result?.criterion) {
           case 'Code generation completeness':
             recommendations.push(
-              'Complete code generation for all system components',
+              'Complete code generation for all system components'
             );
             break;
           case 'Test coverage':
             recommendations.push(
-              'Increase test coverage to achieve 90% threshold',
+              'Increase test coverage to achieve 90% threshold'
             );
             break;
           case 'Documentation completeness':
             recommendations.push(
-              'Generate comprehensive documentation for all aspects',
+              'Generate comprehensive documentation for all aspects'
             );
             break;
           case 'Production readiness':
             recommendations.push(
-              'Address production readiness issues before deployment',
+              'Address production readiness issues before deployment'
             );
             break;
         }
@@ -1369,7 +1369,7 @@ export class SecurityFramework {
     if (recommendations.length === 0) {
       recommendations.push('System is ready for production deployment');
       recommendations.push(
-        'Monitor deployment and gather feedback for future iterations',
+        'Monitor deployment and gather feedback for future iterations'
       );
     }
 
@@ -1378,17 +1378,17 @@ export class SecurityFramework {
 
   // Helper methods for type conversions
   private convertToProductionReadinessChecks(
-    reports: ProductionReadinessReport[],
+    reports: ProductionReadinessReport[]
   ): ProductionReadinessCheck[] {
     return reports.flatMap((report) =>
-      report.validations.map((validation: any) => ({
+      report.validations.map((validation: unknown) => ({
         name: validation.criterion,
         type: 'security' as const,
         passed: validation.passed,
         score: validation.score,
         details: validation.details || '',
         recommendations: [],
-      })),
+      }))
     );
   }
 
@@ -1437,7 +1437,7 @@ export class SecurityFramework {
   // Additional interface methods required by CompletionEngine
   async generateProductionCode(
     _architecture: SystemArchitecture,
-    _refinements: RefinementStrategy[],
+    _refinements: RefinementStrategy[]
   ): Promise<CodeArtifacts> {
     const artifacts: SourceCodeArtifact[] = [];
     // Implementation similar to generateCode but using architecture directly
@@ -1462,7 +1462,7 @@ export class SecurityFramework {
   }
 
   async validateProductionReadiness(
-    _implementation: unknown,
+    _implementation: unknown
   ): Promise<unknown> {
     return {
       readyForProduction: true,
@@ -1475,7 +1475,7 @@ export class SecurityFramework {
 
   async deployToProduction(
     _artifacts: CodeArtifacts,
-    _config: DeploymentConfig,
+    _config: DeploymentConfig
   ): Promise<DeploymentResult> {
     return {
       success: true,

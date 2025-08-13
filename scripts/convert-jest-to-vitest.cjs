@@ -44,15 +44,15 @@ const filesToConvert = [
   'src/__tests__/integration/database/lancedb-adapter.test.ts',
   'src/__tests__/integration/memory-stores/index.test.ts',
   'src/intelligence/adaptive-learning/__tests__/adaptive-learning.test.ts',
-  'src/coordination/swarm/core/session-manager.test.ts'
+  'src/coordination/swarm/core/session-manager.test.ts',
 ];
 
 let convertedCount = 0;
-let errors = [];
+const errors = [];
 
 for (const filePath of filesToConvert) {
   const fullPath = path.join(process.cwd(), filePath);
-  
+
   try {
     if (!fs.existsSync(fullPath)) {
       console.log(`⚠️  File not found: ${filePath}`);
@@ -72,7 +72,7 @@ for (const filePath of filesToConvert) {
     if (content.includes('vi.fn(')) {
       content = content.replace(/jest\.fn\(/g, 'vi.fn(');
       modified = true;
-      
+
       // Add vi import if needed
       if (!content.includes('vi') && content.includes("from 'vitest'")) {
         content = content.replace(
@@ -106,7 +106,6 @@ for (const filePath of filesToConvert) {
     } else {
       console.log(`⏭️  No changes needed: ${filePath}`);
     }
-
   } catch (error) {
     console.error(`❌ Error converting ${filePath}:`, error.message);
     errors.push({ file: filePath, error: error.message });

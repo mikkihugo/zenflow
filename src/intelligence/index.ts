@@ -62,20 +62,20 @@ export const IntelligenceUtils = {
    *
    * @param config
    */
-  validateConfig: (config: any): boolean => {
+  validateConfig: (config: unknown): boolean => {
     return Boolean(
       config &&
         (config?.['learningRate'] || config?.['adaptationRate']) &&
         config?.['patternRecognition'] &&
         config?.['learning'] &&
-        config?.['optimization'],
+        config?.['optimization']
     );
   },
 
   /**
    * Get intelligence metrics.
    */
-  getMetrics: (): Record<string, any> => {
+  getMetrics: (): Record<string, unknown> => {
     return {
       adaptationRate: 0.1,
       learningEfficiency: 0.92,
@@ -93,7 +93,7 @@ export const IntelligenceUtils = {
    *
    * @param config
    */
-  initialize: async (config: any = {}) => {
+  initialize: async (config: unknown = {}) => {
     const defaultConfig = {
       patternRecognition: {
         enabled: true,
@@ -157,20 +157,20 @@ export const IntelligenceUtils = {
         patternRecognitionModule &&
         new patternRecognitionModule['PatternRecognitionEngine'](
           defaultConfig,
-          systemContext,
+          systemContext
         ),
       learningCoordinator:
         learningCoordinatorModule &&
         // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
         new learningCoordinatorModule['LearningCoordinator'](
           defaultConfig,
-          systemContext,
+          systemContext
         ),
       performanceOptimizer:
         performanceOptimizerModule &&
         new performanceOptimizerModule['PerformanceOptimizer'](
           defaultConfig,
-          systemContext,
+          systemContext
         ),
       mlRegistry:
         mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
@@ -186,7 +186,7 @@ export const IntelligenceUtils = {
    *
    * @param config
    */
-  createAdaptiveLearningSystem: async (config?: any) => {
+  createAdaptiveLearningSystem: async (config?: unknown) => {
     const { PatternRecognitionEngine } = await import(
       './adaptive-learning/pattern-recognition-engine.ts'
     );
@@ -255,7 +255,7 @@ export class IntelligenceFactory {
    * @param type
    * @param config
    */
-  static async getSystem(type: string, config: any = {}): Promise<any> {
+  static async getSystem(type: string, config: unknown = {}): Promise<unknown> {
     if (!IntelligenceFactory.systems.has(type)) {
       const system = await IntelligenceUtils.initialize(config);
       IntelligenceFactory.systems.set(type, system);
@@ -269,7 +269,7 @@ export class IntelligenceFactory {
    *
    * @param config
    */
-  static async getAdaptiveLearningSystem(config: any = {}): Promise<any> {
+  static async getAdaptiveLearningSystem(config: unknown = {}): Promise<unknown> {
     const key = `adaptive_learning_${JSON.stringify(config)}`;
 
     if (!IntelligenceFactory.systems.has(key)) {

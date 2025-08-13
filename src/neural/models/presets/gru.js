@@ -108,12 +108,12 @@ class GRUModel extends NeuralModel {
     // Validate input dimensions
     if (batchSize <= 0 || sequenceLength <= 0) {
       throw new Error(
-        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`,
+        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`
       );
     }
     if (input.shape[2] !== this.config.inputSize) {
       throw new Error(
-        `Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`,
+        `Input size mismatch: expected ${this.config.inputSize}, got ${input.shape[2]}`
       );
     }
 
@@ -128,7 +128,7 @@ class GRUModel extends NeuralModel {
         layerInput,
         hiddenStates[layer],
         layer,
-        training,
+        training
       );
 
       layerInput = layerOutput.output;
@@ -174,7 +174,7 @@ class GRUModel extends NeuralModel {
 
       // Process sequence in appropriate direction
       const sequenceOutput = new Float32Array(
-        batchSize * sequenceLength * this.config.hiddenSize,
+        batchSize * sequenceLength * this.config.hiddenSize
       );
 
       let hidden = hiddenStates[dir];
@@ -331,7 +331,7 @@ class GRUModel extends NeuralModel {
   concatenateBidirectional(forward, backward) {
     const [batchSize, sequenceLength, hiddenSize] = forward.shape;
     const output = new Float32Array(
-      batchSize * sequenceLength * hiddenSize * 2,
+      batchSize * sequenceLength * hiddenSize * 2
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -426,7 +426,7 @@ class GRUModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Forward pass

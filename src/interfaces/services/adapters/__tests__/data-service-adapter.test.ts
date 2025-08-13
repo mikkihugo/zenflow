@@ -168,7 +168,7 @@ describe('DataServiceAdapter', () => {
     it('should throw error when starting without initialization', async () => {
       // Act & Assert
       await expect(adapter.start()).rejects.toThrow(
-        'Cannot start service in uninitialized state',
+        'Cannot start service in uninitialized state'
       );
     });
 
@@ -272,7 +272,7 @@ describe('DataServiceAdapter', () => {
         updated_at: new Date(),
       };
       MockedDocumentService.createDocument.mockResolvedValue(
-        createdDocument as any,
+        createdDocument as any
       );
 
       // Act
@@ -283,7 +283,7 @@ describe('DataServiceAdapter', () => {
       // Assert
       expect(mockDocumentService.createDocument).toHaveBeenCalledWith(
         mockDocument,
-        undefined,
+        undefined
       );
       expect(response?.success).toBe(true);
       expect(response?.data).toEqual(createdDocument);
@@ -307,7 +307,7 @@ describe('DataServiceAdapter', () => {
         },
       };
       MockedDocumentService.searchDocuments.mockResolvedValue(
-        mockResults as any,
+        mockResults as any
       );
 
       // Act
@@ -317,7 +317,7 @@ describe('DataServiceAdapter', () => {
 
       // Assert
       expect(mockDocumentService.searchDocuments).toHaveBeenCalledWith(
-        searchOptions,
+        searchOptions
       );
       expect(response?.success).toBe(true);
       expect(response?.data).toEqual(mockResults);
@@ -349,7 +349,7 @@ describe('DataServiceAdapter', () => {
     it('should not retry non-retryable operations', async () => {
       // Arrange
       mockWebDataService?.createSwarm?.mockRejectedValue(
-        new Error('Creation failed'),
+        new Error('Creation failed')
       );
 
       // Act
@@ -434,7 +434,7 @@ describe('DataServiceAdapter', () => {
     it('should reject configuration with missing required fields', async () => {
       // Arrange
       const invalidConfig = { ...config };
-      delete (invalidConfig as any).name;
+      (invalidConfig as any).name = undefined;
 
       // Act
       const isValid = await adapter.validateConfig(invalidConfig);
@@ -560,7 +560,7 @@ describe('DataServiceAdapter', () => {
     it('should track error metrics', async () => {
       // Arrange
       mockWebDataService?.getSystemStatus?.mockRejectedValue(
-        new Error('Test error'),
+        new Error('Test error')
       );
 
       // Act
@@ -624,7 +624,7 @@ describe('DataServiceAdapter', () => {
       expect(status.dependencies).toHaveProperty('web-data-service');
       expect(status.dependencies).toHaveProperty('document-service');
       expect(status.dependencies?.['web-data-service'].status).toMatch(
-        /healthy|unhealthy|unknown/,
+        /healthy|unhealthy|unknown/
       );
     });
 
@@ -700,7 +700,7 @@ describe('DataServiceFactory', () => {
     it('should create adapter instances correctly', async () => {
       // Arrange
       const config = createDefaultDataServiceAdapterConfig(
-        'test-factory-adapter',
+        'test-factory-adapter'
       );
       MockedDocumentService.initialize.mockResolvedValue();
 
@@ -721,7 +721,7 @@ describe('DataServiceFactory', () => {
 
       // Act & Assert
       await expect(factory.create(config)).rejects.toThrow(
-        'Service with this name already exists',
+        'Service with this name already exists'
       );
     });
 
@@ -737,7 +737,7 @@ describe('DataServiceFactory', () => {
 
       // Act & Assert
       await expect(factory.create(invalidConfig)).rejects.toThrow(
-        'Invalid data service adapter configuration',
+        'Invalid data service adapter configuration'
       );
     });
   });
@@ -775,7 +775,7 @@ describe('DataServiceFactory', () => {
       // Act
       const adapter = await factory.createDocumentAdapter(
         'doc-adapter',
-        'mysql',
+        'mysql'
       );
 
       // Assert
@@ -789,7 +789,7 @@ describe('DataServiceFactory', () => {
       // Act
       const adapter = await factory.createUnifiedDataAdapter(
         'unified-adapter',
-        'postgresql',
+        'postgresql'
       );
 
       // Assert
@@ -971,7 +971,7 @@ describe('DataServiceHelper', () => {
       const pipeline = [
         {
           type: 'filter' as const,
-          config: { predicate: (item: any) => item?.active },
+          config: { predicate: (item: unknown) => item?.active },
         },
         {
           type: 'sort' as const,
@@ -980,7 +980,7 @@ describe('DataServiceHelper', () => {
         {
           type: 'map' as const,
           config: {
-            mapper: (item: any) => ({ ...item, doubled: item?.value * 2 }),
+            mapper: (item: unknown) => ({ ...item, doubled: item?.value * 2 }),
           },
         },
       ];
@@ -1116,11 +1116,11 @@ describe('DataServiceUtils', () => {
       // Act
       const validResult = DataServiceUtils?.validateConfiguration(
         validConfig,
-        schema,
+        schema
       );
       const invalidResult = DataServiceUtils?.validateConfiguration(
         invalidConfig,
-        schema,
+        schema
       );
 
       // Assert

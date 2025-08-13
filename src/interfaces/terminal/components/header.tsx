@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import React from 'react';
+import type React from 'react';
 
 export interface SwarmStatus {
   status: 'active' | 'initializing' | 'error' | 'idle';
@@ -90,7 +90,7 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <Box
       borderStyle={showBorder ? 'single' : undefined}
-      borderColor="cyan" 
+      borderColor="cyan"
       paddingX={1}
     >
       <Text bold color="cyan">
@@ -99,34 +99,28 @@ export const Header: React.FC<HeaderProps> = ({
       </Text>
       {swarmStatus && (
         <Text color="gray">
-          {' '}{getStatusIcon(swarmStatus.status)} {swarmStatus.status}
+          {' '}
+          {getStatusIcon(swarmStatus.status)} {swarmStatus.status}
           {mode === 'swarm' && (
             <Text dimColor>
-              {' • '}{swarmStatus.activeAgents}/{swarmStatus.totalAgents} agents
+              {' • '}
+              {swarmStatus.activeAgents}/{swarmStatus.totalAgents} agents
             </Text>
           )}
         </Text>
       )}
-      {subtitle && (
-        <Text dimColor> • {subtitle}</Text>
-      )}
+      {subtitle && <Text dimColor> • {subtitle}</Text>}
     </Box>
   );
 };
 
 // Export specific variants for convenience.
 export const StandardHeader: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
-  <Header
-    {...props}
-    mode="standard"
-  />
+  <Header {...props} mode="standard" />
 );
 
 export const SwarmHeader: React.FC<Omit<HeaderProps, 'mode'>> = (props) => (
-  <Header
-    {...props}
-    mode="swarm"
-  />
+  <Header {...props} mode="swarm" />
 );
 
 export default Header;

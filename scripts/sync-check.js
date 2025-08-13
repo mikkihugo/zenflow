@@ -48,7 +48,7 @@ class UpstreamSyncChecker {
         `git rev-parse ${this.upstreamRemote}/main`,
         {
           silent: true,
-        },
+        }
       ).trim();
 
       if (ourCommit === upstreamCommit) {
@@ -58,13 +58,13 @@ class UpstreamSyncChecker {
       try {
         const behindCount = this.execCommand(
           `git rev-list --count ${ourCommit}..${upstreamCommit}`,
-          { silent: true },
+          { silent: true }
         ).trim();
 
         if (Number.parseInt(behindCount) > 0) {
           const recentCommits = this.execCommand(
             `git log --oneline -5 ${this.upstreamRemote}/main`,
-            { silent: true },
+            { silent: true }
           ).trim();
 
           recentCommits.split('\n').forEach((_commit) => {});

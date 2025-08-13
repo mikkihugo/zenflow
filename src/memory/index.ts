@@ -130,7 +130,7 @@ export class MemorySystemFactory {
       for (const backendConfig of config?.['backends']) {
         const backend = await MemoryBackendFactory.createBackend(
           backendConfig?.type as 'sqlite' | 'json' | 'lancedb' | 'memory',
-          backendConfig?.config,
+          backendConfig?.config
         );
         await backend.initialize();
         backends.set(backendConfig?.id, backend);
@@ -219,7 +219,7 @@ export class MemorySystemFactory {
       id: string;
       type: string;
       config: Record<string, unknown>;
-    }>,
+    }>
   ) {
     return MemorySystemFactory.createAdvancedMemorySystem({
       backends,

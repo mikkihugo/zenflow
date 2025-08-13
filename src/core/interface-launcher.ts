@@ -124,7 +124,7 @@ export class InterfaceLauncher extends EventEmitter {
 
         if (!options?.['silent']) {
           logger.info(
-            `✅ ${detection.mode.toUpperCase()} interface launched successfully`,
+            `✅ ${detection.mode.toUpperCase()} interface launched successfully`
           );
           if (result?.url) {
             logger.info(`🌐 Available at: ${result?.url}`);
@@ -138,7 +138,7 @@ export class InterfaceLauncher extends EventEmitter {
         error instanceof Error ? error.message : 'Unknown error';
       logger.error(
         `❌ Failed to launch ${detection.mode} interface:`,
-        errorMessage,
+        errorMessage
       );
 
       return {
@@ -175,7 +175,7 @@ export class InterfaceLauncher extends EventEmitter {
         {
           stdio: 'inherit',
           cwd: process.cwd(),
-        },
+        }
       );
 
       return new Promise<LaunchResult>((resolve, reject) => {
@@ -222,7 +222,7 @@ export class InterfaceLauncher extends EventEmitter {
         {
           stdio: 'inherit',
           cwd: process.cwd(),
-        },
+        }
       );
 
       return new Promise<LaunchResult>((resolve, reject) => {
@@ -256,7 +256,7 @@ export class InterfaceLauncher extends EventEmitter {
    */
   private async launchWeb(
     options: LaunchOptions,
-    port?: number,
+    port?: number
   ): Promise<LaunchResult> {
     const webPort = port || options?.['webPort'] || 3456;
 
@@ -330,7 +330,7 @@ export class InterfaceLauncher extends EventEmitter {
               'components' in status
             ) {
               for (const [_name, _info] of Object.entries(
-                status.components as Record<string, unknown>,
+                status.components as Record<string, unknown>
               )) {
               }
             }
@@ -486,7 +486,7 @@ export class InterfaceLauncher extends EventEmitter {
 
 // Export convenience functions
 export const launchInterface = async (
-  options?: LaunchOptions,
+  options?: LaunchOptions
 ): Promise<LaunchResult> => {
   const launcher = InterfaceLauncher.getInstance();
   return launcher.launch(options);

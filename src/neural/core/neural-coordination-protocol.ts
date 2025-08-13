@@ -8,14 +8,14 @@
 
 export class NeuralCoordinationProtocol {
   public nodes: Map<string, any>;
-  public messages: any[];
+  public messages: unknown[];
   private sessions?: Map<string, any>;
   private coordinationResults?: Map<string, any>;
   public options: {
     syncInterval: number;
     maxMessages: number;
     compressionEnabled: boolean;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 
   constructor(options = {}) {
@@ -149,7 +149,7 @@ export class NeuralCoordinationProtocol {
    * @param agentId
    * @param agent
    */
-  async registerAgent(agentId: string, agent: any) {
+  async registerAgent(agentId: string, agent: unknown) {
     const nodeInfo = {
       id: agentId,
       agent,
@@ -181,7 +181,7 @@ export class NeuralCoordinationProtocol {
    *
    * @param session
    */
-  async initializeSession(session: any) {
+  async initializeSession(session: unknown) {
     const sessionInfo = {
       id: session.id,
       agentIds: session.agentIds || [],
@@ -217,7 +217,7 @@ export class NeuralCoordinationProtocol {
    *
    * @param session
    */
-  async coordinate(session: any) {
+  async coordinate(session: unknown) {
     const sessionInfo = this.sessions?.get(session.id);
     if (!sessionInfo) {
       throw new Error(`Session ${session.id} not found`);
@@ -292,7 +292,7 @@ export class NeuralCoordinationProtocol {
 
     const total = nodes?.reduce(
       (sum, node) => sum + (node?.messageCount || 0),
-      0,
+      0
     );
     return total / nodes.length;
   }

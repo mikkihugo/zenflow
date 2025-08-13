@@ -72,7 +72,7 @@ export async function initializeAISafetySystem(): Promise<AISafetyOrchestrator> 
 export async function monitorAIInteraction(
   response: string,
   toolCalls: string[],
-  agentId: string = 'unknown',
+  agentId: string = 'unknown'
 ): Promise<DeceptionAlert[]> {
   if (!globalSafetyOrchestrator) {
     await initializeAISafetySystem();

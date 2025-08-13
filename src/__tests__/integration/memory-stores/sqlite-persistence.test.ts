@@ -35,7 +35,7 @@ class SQLiteMemoryStore {
 
   async initialize(): Promise<void> {
     return new Promise((resolve, reject) => {
-      this.db = new Database(this.dbPath, (err: any) => {
+      this.db = new Database(this.dbPath, (err: unknown) => {
         if (err) {
           reject(err);
           return;
@@ -64,7 +64,7 @@ class SQLiteMemoryStore {
     }
   }
 
-  async store(sessionId: string, data: unknown, metadata?: any): Promise<void> {
+  async store(sessionId: string, data: unknown, metadata?: unknown): Promise<void> {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const now = Date.now();
@@ -77,7 +77,7 @@ class SQLiteMemoryStore {
         JSON.stringify(metadata || {}),
         now,
         now,
-      ],
+      ]
     );
   }
 
@@ -93,7 +93,7 @@ class SQLiteMemoryStore {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const rows = await this.all(
-      'SELECT id FROM sessions ORDER BY updated_at DESC',
+      'SELECT id FROM sessions ORDER BY updated_at DESC'
     );
     return rows.map((row: unknown) => row.id);
   }
@@ -111,7 +111,7 @@ class SQLiteMemoryStore {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const result = await this.get(
-      'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions',
+      'SELECT COUNT(*) as count, SUM(LENGTH(data)) as size FROM sessions'
     );
 
     return {
@@ -150,7 +150,7 @@ class SQLiteMemoryStore {
   async close(): Promise<void> {
     if (this.db) {
       return new Promise((resolve, reject) => {
-        this.db?.close((err: any) => {
+        this.db?.close((err: unknown) => {
           if (err) reject(err);
           else {
             this.isInitialized = false;
@@ -230,7 +230,7 @@ describe('SQLite Persistence Integration Tests', () => {
       expect(result).toHaveLength(1);
       expect(result?.[0]?.id).toBe('session1');
       expect(mockConnection.query).toHaveBeenCalledWith(
-        'SELECT * FROM sessions',
+        'SELECT * FROM sessions'
       );
     });
 
@@ -431,13 +431,13 @@ describe('SQLite Persistence Integration Tests', () => {
       const uninitializedStore = new SQLiteMemoryStore(dbPath);
 
       await expect(uninitializedStore.store('test', {})).rejects.toThrow(
-        'Database not initialized',
+        'Database not initialized'
       );
       await expect(uninitializedStore.retrieve('test')).rejects.toThrow(
-        'Database not initialized',
+        'Database not initialized'
       );
       await expect(uninitializedStore.listSessions()).rejects.toThrow(
-        'Database not initialized',
+        'Database not initialized'
       );
     });
 

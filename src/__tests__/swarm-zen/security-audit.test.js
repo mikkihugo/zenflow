@@ -679,8 +679,8 @@ class SecurityAuditor {
             (agent) =>
               agent
                 .execute({ task: `Memory test iteration ${i}`, timeout: 2000 })
-                .catch(() => {}), // Ignore errors for this test
-          ),
+                .catch(() => {}) // Ignore errors for this test
+          )
         );
 
         // Clean up references
@@ -700,7 +700,7 @@ class SecurityAuditor {
           if (growth > 10 * 1024 * 1024) {
             // More than 10MB growth
             console.warn(
-              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`,
+              `Memory growth detected at iteration ${i}: ${Math.round(growth / 1024 / 1024)}MB`
             );
           }
         }
@@ -981,7 +981,7 @@ class SecurityAuditor {
 
     this.auditResults.overallSecurity.score = Math.max(
       0,
-      baseScore - securityPenalty - memoryPenalty,
+      baseScore - securityPenalty - memoryPenalty
     );
 
     // Determine security level
@@ -1018,17 +1018,17 @@ class SecurityAuditor {
 
     if (this.securityIssues > 0) {
       recommendations.push(
-        'Implement stricter input validation and sanitization',
+        'Implement stricter input validation and sanitization'
       );
       recommendations.push(
-        'Review and strengthen SQL injection prevention measures',
+        'Review and strengthen SQL injection prevention measures'
       );
       recommendations.push('Add rate limiting to prevent abuse');
     }
 
     if (this.memoryLeaks > 0) {
       recommendations.push(
-        'Investigate and fix memory leaks in agent lifecycle',
+        'Investigate and fix memory leaks in agent lifecycle'
       );
       recommendations.push('Implement automatic garbage collection monitoring');
       recommendations.push('Add memory usage limits and alerts');

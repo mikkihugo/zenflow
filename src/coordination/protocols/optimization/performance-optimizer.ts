@@ -171,7 +171,7 @@ export interface BatchItem<T> {
 // Connection pooling types
 export interface PooledConnection {
   id: string;
-  connection: any;
+  connection: unknown;
   created: Date;
   lastUsed: Date;
   isActive: boolean;
@@ -200,7 +200,7 @@ export interface CacheEntry<T> {
 
 export interface DeduplicationEntry {
   hash: string;
-  result: any;
+  result: unknown;
   timestamp: Date;
   accessCount: number;
 }
@@ -239,17 +239,17 @@ export class PerformanceOptimizer extends EventEmitter {
   constructor(
     private config: OptimizationConfig,
     private logger: ILogger,
-    private eventBus: IEventBus,
+    private eventBus: IEventBus
   ) {
     super();
 
     this.batchProcessor = new AdaptiveBatchProcessor(
       config?.batchSizing,
-      logger,
+      logger
     );
     this.connectionPool = new AdvancedConnectionPool(
       config?.connectionPooling,
-      logger,
+      logger
     );
     this.cache = new IntelligentCache(config?.caching, logger);
     this.monitor = new RealTimeMonitor(config?.monitoring, logger, eventBus);
@@ -303,7 +303,7 @@ export class PerformanceOptimizer extends EventEmitter {
    */
   async processBatch<T>(
     items: T[],
-    processor: (batch: T[]) => Promise<void>,
+    processor: (batch: T[]) => Promise<void>
   ): Promise<void> {
     return await this.batchProcessor.process(items, processor);
   }
@@ -336,7 +336,7 @@ export class PerformanceOptimizer extends EventEmitter {
   async cacheData<T>(
     key: string,
     value: T,
-    options?: { ttl?: number; compress?: boolean },
+    options?: { ttl?: number; compress?: boolean }
   ): Promise<void> {
     await this.cache.set(key, value, options);
   }
@@ -375,7 +375,7 @@ export class PerformanceOptimizer extends EventEmitter {
   > {
     return await this.optimizer.getRecommendations(
       this.metrics,
-      this.optimizationHistory,
+      this.optimizationHistory
     );
   }
 
@@ -470,7 +470,7 @@ export class PerformanceOptimizer extends EventEmitter {
       // Apply top recommendations
       const toApply = applicableRecommendations.slice(
         0,
-        this.config.adaptation.maxChangesPerPeriod,
+        this.config.adaptation.maxChangesPerPeriod
       );
 
       for (const recommendation of toApply) {
@@ -544,7 +544,7 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   private async measureOptimizationImpact(
-    _action: OptimizationAction,
+    _action: OptimizationAction
   ): Promise<number> {
     // Measure performance improvement after optimization
     const currentMetrics = this.metrics;
@@ -586,7 +586,7 @@ export class PerformanceOptimizer extends EventEmitter {
     const latencyScore = Math.max(0, 1 - metrics.latency.average / 1000); // Normalize to 1s max
     const throughputScore = Math.min(
       1,
-      metrics.throughput.requestsPerSecond / 1000,
+      metrics.throughput.requestsPerSecond / 1000
     ); // Normalize to 1000 RPS max
     const resourceScore = Math.max(0, 1 - metrics.resourceUsage.cpuUsage);
     const cacheScore = metrics.cacheMetrics.hitRate;
@@ -609,12 +609,12 @@ export class PerformanceOptimizer extends EventEmitter {
   }
 
   // Event handlers
-  private handleMetricsUpdate(data: any): void {
+  private handleMetricsUpdate(data: unknown): void {
     this.metrics = { ...this.metrics, ...data?.metrics };
     this.emit('metrics:updated', this.metrics);
   }
 
-  private handleAlert(data: any): void {
+  private handleAlert(data: unknown): void {
     this.logger.warn('Performance alert triggered', data);
     this.emit('alert:performance', data);
 
@@ -626,27 +626,27 @@ export class PerformanceOptimizer extends EventEmitter {
     }
   }
 
-  private handleAnomaly(data: any): void {
+  private handleAnomaly(data: unknown): void {
     this.logger.warn('Performance anomaly detected', data);
     this.emit('anomaly:detected', data);
   }
 
-  private handleBatchProcessed(data: any): void {
+  private handleBatchProcessed(data: unknown): void {
     this.metrics.batchMetrics = { ...this.metrics.batchMetrics, ...data };
   }
 
-  private handleConnectionStats(data: any): void {
+  private handleConnectionStats(data: unknown): void {
     this.metrics.connectionMetrics = {
       ...this.metrics.connectionMetrics,
       ...data,
     };
   }
 
-  private handleCacheStats(data: any): void {
+  private handleCacheStats(data: unknown): void {
     this.metrics.cacheMetrics = { ...this.metrics.cacheMetrics, ...data };
   }
 
-  private handleLoadSpike(data: any): void {
+  private handleLoadSpike(data: unknown): void {
     this.logger.info('Load spike detected, applying optimizations', data);
 
     // Apply immediate optimizations for load spikes
@@ -656,7 +656,7 @@ export class PerformanceOptimizer extends EventEmitter {
         parameters: {
           size: Math.min(
             this.config.batchSizing.maxSize,
-            this.batchProcessor.getCurrentSize() * 1.5,
+            this.batchProcessor.getCurrentSize() * 1.5
           ),
         },
         timestamp: new Date(),
@@ -668,7 +668,7 @@ export class PerformanceOptimizer extends EventEmitter {
         parameters: {
           size: Math.min(
             this.config.connectionPooling.maxSize,
-            this.connectionPool.getStats().totalConnections * 1.2,
+            this.connectionPool.getStats().totalConnections * 1.2
           ),
         },
         timestamp: new Date(),
@@ -680,7 +680,7 @@ export class PerformanceOptimizer extends EventEmitter {
     });
   }
 
-  private handleResourcePressure(data: any): void {
+  private handleResourcePressure(data: unknown): void {
     this.logger.warn('Resource pressure detected, reducing load', data);
 
     // Apply resource-conserving optimizations
@@ -690,7 +690,7 @@ export class PerformanceOptimizer extends EventEmitter {
         parameters: {
           size: Math.max(
             this.config.batchSizing.minSize,
-            this.batchProcessor.getCurrentSize() * 0.8,
+            this.batchProcessor.getCurrentSize() * 0.8
           ),
         },
         timestamp: new Date(),
@@ -788,7 +788,7 @@ interface OptimizationAction {
     | 'cache_size'
     | 'cache_ttl'
     | 'prefetch_strategy';
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   timestamp: Date;
   impact: number;
   successful: boolean;
@@ -796,7 +796,7 @@ interface OptimizationAction {
 
 interface OptimizationRecommendation {
   type: OptimizationAction['type'];
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   confidence: number;
   impact: number;
   reasoning: string;
@@ -805,14 +805,14 @@ interface OptimizationRecommendation {
 // Supporting classes (implementations would be detailed)
 class AdaptiveBatchProcessor extends EventEmitter {
   private currentBatchSize: number;
-  private items: any[] = [];
+  private items: unknown[] = [];
   private processing = false;
   private queueDepth = 0;
   private processingTimes: number[] = [];
 
   constructor(
     private config: BatchSizingConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {
     super();
     this.currentBatchSize = config?.initialSize;
@@ -820,7 +820,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
 
   async process<T>(
     items: T[],
-    processor: (batch: T[]) => Promise<void>,
+    processor: (batch: T[]) => Promise<void>
   ): Promise<void> {
     this.items.push(...items);
     this.queueDepth = this.items.length;
@@ -831,7 +831,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
   }
 
   private async processBatch<T>(
-    processor: (batch: T[]) => Promise<void>,
+    processor: (batch: T[]) => Promise<void>
   ): Promise<void> {
     if (this.processing || this.items.length === 0) return;
 
@@ -881,7 +881,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
       // Reduce batch size to improve latency
       this.currentBatchSize = Math.max(
         this.config.minSize,
-        Math.floor(this.currentBatchSize * (1 - this.config.adaptationRate)),
+        Math.floor(this.currentBatchSize * (1 - this.config.adaptationRate))
       );
     } else if (
       avgProcessingTime < this.config.targetLatency * 0.8 &&
@@ -890,7 +890,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
       // Increase batch size to improve throughput
       this.currentBatchSize = Math.min(
         this.config.maxSize,
-        Math.ceil(this.currentBatchSize * (1 + this.config.adaptationRate)),
+        Math.ceil(this.currentBatchSize * (1 + this.config.adaptationRate))
       );
     }
   }
@@ -898,7 +898,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
   async setBatchSize(size: number): Promise<void> {
     this.currentBatchSize = Math.max(
       this.config.minSize,
-      Math.min(this.config.maxSize, size),
+      Math.min(this.config.maxSize, size)
     );
   }
 
@@ -926,7 +926,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
 
   constructor(
     private config: ConnectionPoolingConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {
     super();
     this.stats = {
@@ -1033,7 +1033,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
   async resize(newSize: number): Promise<void> {
     const targetSize = Math.max(
       this.config.minIdle,
-      Math.min(this.config.maxSize, newSize),
+      Math.min(this.config.maxSize, newSize)
     );
 
     if (targetSize > this.connections.length) {
@@ -1106,7 +1106,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
   }
 
   private async checkConnectionHealth(
-    _connection: PooledConnection,
+    _connection: PooledConnection
   ): Promise<number> {
     // Simulate health check
     return Math.random() > 0.1 ? 1.0 : 0.0; // 90% healthy
@@ -1163,7 +1163,7 @@ class IntelligentCache extends EventEmitter {
 
   constructor(
     private config: CachingConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {
     super();
 
@@ -1171,7 +1171,7 @@ class IntelligentCache extends EventEmitter {
     this.cache = new LRUCache({
       max: config?.maxSize,
       ttl: config?.ttl,
-      dispose: (value: any, key: string) => {
+      dispose: (value: unknown, key: string) => {
         this.handleEviction(key, value);
       },
     });
@@ -1189,7 +1189,7 @@ class IntelligentCache extends EventEmitter {
   async set<T>(
     key: string,
     value: T,
-    options?: { ttl?: number; compress?: boolean },
+    options?: { ttl?: number; compress?: boolean }
   ): Promise<void> {
     const entry: CacheEntry<T> = {
       key,
@@ -1268,7 +1268,7 @@ class IntelligentCache extends EventEmitter {
   async resize(newSize: number): Promise<void> {
     // LRUCache doesn't have resize, so create new cache with new size
     const oldEntries: [string, CacheEntry<any>][] = Array.from(
-      this.cache.entries(),
+      this.cache.entries()
     );
     this.cache = new LRUCache({
       max: newSize,
@@ -1302,7 +1302,7 @@ class IntelligentCache extends EventEmitter {
   }
 
   async setPrefetchStrategy(
-    strategy: 'none' | 'lru' | 'predictive',
+    strategy: 'none' | 'lru' | 'predictive'
   ): Promise<void> {
     this.prefetchStrategy = strategy;
 
@@ -1360,7 +1360,7 @@ class IntelligentCache extends EventEmitter {
       // Max 10k entries
       const entries = Array.from(this.deduplicationCache.entries());
       entries.sort(
-        ([, a], [, b]) => a.timestamp.getTime() - b.timestamp.getTime(),
+        ([, a], [, b]) => a.timestamp.getTime() - b.timestamp.getTime()
       );
 
       // Remove oldest 10%
@@ -1372,12 +1372,12 @@ class IntelligentCache extends EventEmitter {
   }
 
   // xxx NEEDS_HUMAN: compress method currently unused - may be needed for future compression implementation
-  // private compress(value: any): any {
+  // private compress(value: unknown): unknown {
   //   // Simulate compression - not used currently but kept for future implementation
   //   return value;
   // }
 
-  private decompress(value: any): any {
+  private decompress(value: unknown): unknown {
     // Simulate decompression
     return value;
   }
@@ -1408,7 +1408,7 @@ class RealTimeMonitor extends EventEmitter {
   constructor(
     private config: MonitoringConfig,
     private logger: ILogger,
-    eventBus: IEventBus,
+    eventBus: IEventBus
   ) {
     super();
     // xxx NEEDS_HUMAN: eventBus parameter kept for future event propagation implementation
@@ -1603,7 +1603,7 @@ class RealTimeMonitor extends EventEmitter {
 
   private getAlertSeverity(
     _alertName: string,
-    value: number,
+    value: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     // Simplified severity calculation
     return value > 0.9
@@ -1650,7 +1650,7 @@ class PerformancePredictor {
 
   async predictLoad(
     metrics: PerformanceMetrics,
-    horizon: number,
+    horizon: number
   ): Promise<LoadPrediction> {
     const features = this.extractFeatures(metrics);
     const model = this.models.get('load');
@@ -1786,7 +1786,7 @@ class AdaptationEngine {
 
   constructor(
     private config: AdaptationConfig,
-    private logger: ILogger,
+    private logger: ILogger
   ) {
     // Learning history will be used for ML-based optimization in future
     void this.learningHistory; // xxx NEEDS_HUMAN: Will be used for ML-based optimization
@@ -1796,7 +1796,7 @@ class AdaptationEngine {
 
   async getRecommendations(
     metrics: PerformanceMetrics,
-    _history: OptimizationAction[],
+    _history: OptimizationAction[]
   ): Promise<OptimizationRecommendation[]> {
     const recommendations: OptimizationRecommendation[] = [];
 

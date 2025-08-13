@@ -32,7 +32,7 @@ export class ProductFlowSystem extends EventEmitter {
 
   constructor(
     workflowEngine: ProductWorkflowEngine,
-    documentService: DocumentManager,
+    documentService: DocumentManager
   ) {
     super();
     this.workflowEngine = workflowEngine;
@@ -57,7 +57,7 @@ export class ProductFlowSystem extends EventEmitter {
    */
   async processVisionaryDocument(
     workspaceId: string,
-    docPath: string,
+    docPath: string
   ): Promise<void> {
     logger.info(`🚀 Processing visionary document: ${docPath}`);
 
@@ -68,7 +68,7 @@ export class ProductFlowSystem extends EventEmitter {
         {
           workspaceId,
           variables: { visionDocPath: docPath },
-        },
+        }
       );
 
       if (result?.success && result?.workflowId) {
@@ -81,7 +81,7 @@ export class ProductFlowSystem extends EventEmitter {
     } catch (error) {
       logger.error(
         `❌ Failed to process visionary document ${docPath}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -97,7 +97,7 @@ export class ProductFlowSystem extends EventEmitter {
     this.activeWorkspaces.set(workspaceId, workspacePath);
 
     logger.info(
-      `📁 Loaded Product Flow workspace: ${workspaceId} at ${workspacePath}`,
+      `📁 Loaded Product Flow workspace: ${workspaceId} at ${workspacePath}`
     );
     return workspaceId;
   }

@@ -145,7 +145,7 @@ export class ZenSwarm extends EventEmitter implements SwarmEventEmitter {
     } catch (error) {
       logger.warn(
         'Failed to load WASM module, falling back to JS implementation:',
-        error,
+        error
       );
     }
 

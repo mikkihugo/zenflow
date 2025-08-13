@@ -129,18 +129,11 @@ export const SwarmConfigPanel: React.FC<SwarmConfigPanelProps> = ({
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text
-          bold
-          color="magenta"
-        >
+        <Text bold color="magenta">
           {domain} Swarm Configuration
         </Text>
       </Box>
-      <Box
-        borderStyle="single"
-        paddingX={1}
-        flexDirection="column"
-      >
+      <Box borderStyle="single" paddingX={1} flexDirection="column">
         {/* Topology Configuration */}
         <Box marginBottom={1}>
           <Box width={20}>

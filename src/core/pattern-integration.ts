@@ -88,15 +88,15 @@ export class IntegratedSwarmService implements ISwarmService {
     private swarmCoordinator: SwarmCoordinator,
     private eventManager: SystemEventManager,
     private commandQueue: MCPCommandQueue,
-    private agentManager: AgentManager,
+    private agentManager: AgentManager
   ) {}
 
-  async initializeSwarm(config: any): Promise<any> {
+  async initializeSwarm(config: unknown): Promise<unknown> {
     // Create command for swarm initialization
     const command = CommandFactory.createSwarmInitCommand(
       config,
       this,
-      this.createCommandContext(),
+      this.createCommandContext()
     );
 
     // Execute through command queue for undo support
@@ -119,7 +119,7 @@ export class IntegratedSwarmService implements ISwarmService {
           throughput: 0,
           reliability: 1,
           resourceUsage: { cpu: 0, memory: 0, network: 0 },
-        },
+        }
       );
 
       await this.eventManager.notify(swarmEvent);
@@ -131,7 +131,7 @@ export class IntegratedSwarmService implements ISwarmService {
     return result?.data;
   }
 
-  async getSwarmStatus(swarmId: string): Promise<any> {
+  async getSwarmStatus(swarmId: string): Promise<unknown> {
     const agentGroup = this.agentManager.getSwarmGroup(swarmId);
     if (!agentGroup) {
       throw new Error(`Swarm ${swarmId} not found`);
@@ -162,7 +162,7 @@ export class IntegratedSwarmService implements ISwarmService {
         throughput: 0,
         reliability: 0,
         resourceUsage: { cpu: 0, memory: 0, network: 0 },
-      },
+      }
     );
 
     await this.eventManager.notify(swarmEvent);
@@ -170,7 +170,7 @@ export class IntegratedSwarmService implements ISwarmService {
 
   async coordinateSwarm(
     swarmId: string,
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationResult> {
     const agentGroup = this.agentManager.getSwarmGroup(swarmId);
     if (!agentGroup) {
@@ -190,22 +190,24 @@ export class IntegratedSwarmService implements ISwarmService {
     return this.swarmCoordinator.executeCoordination(agents, context);
   }
 
-  async spawnAgent(swarmId: string, agentConfig: any): Promise<any> {
+  async spawnAgent(swarmId: string, agentConfig: unknown): Promise<unknown> {
     const command = CommandFactory.createAgentSpawnCommand(
       agentConfig,
       this,
       swarmId,
-      this.createCommandContext(),
+      this.createCommandContext()
     );
 
-    const result = await this.commandQueue.execute(command) as any as any as any as any;
+    const result = (await this.commandQueue.execute(
+      command
+    )) as any as any as any as any;
 
     if (result?.success && result?.data) {
       // Add agent to the swarm group
       await this.agentManager.addAgentToSwarm(
         swarmId,
         result?.data?.agentId,
-        agentConfig,
+        agentConfig
       );
     }
 
@@ -251,13 +253,13 @@ export class AgentManager extends EventEmitter {
 
   async createSwarmGroup(
     swarmId: string,
-    swarmConfig: any,
+    swarmConfig: unknown
   ): Promise<HierarchicalAgentGroup> {
     const group = AgentFactory.createHierarchicalGroup(
       swarmId,
       `Swarm-${swarmId}`,
       [],
-      this.config.agents.maxGroupDepth,
+      this.config.agents.maxGroupDepth
     );
 
     group.setLoadBalancingStrategy(this.config.agents.defaultLoadBalancing);
@@ -267,7 +269,7 @@ export class AgentManager extends EventEmitter {
       const agentId = `${swarmId}-agent-${i}`;
       const agent = await this.createAgent(
         agentId,
-        swarmConfig?.capabilities || [],
+        swarmConfig?.capabilities || []
       );
       group.addMember(agent);
       this.individualAgents.set(agentId, agent);
@@ -307,7 +309,7 @@ export class AgentManager extends EventEmitter {
   async addAgentToSwarm(
     swarmId: string,
     agentId: string,
-    agentConfig: any,
+    agentConfig: unknown
   ): Promise<void> {
     const group = this.swarmGroups.get(swarmId);
     if (!group) {
@@ -316,7 +318,7 @@ export class AgentManager extends EventEmitter {
 
     const agent = await this.createAgent(
       agentId,
-      agentConfig?.capabilities || [],
+      agentConfig?.capabilities || []
     );
     group.addMember(agent);
     this.individualAgents.set(agentId, agent);
@@ -347,8 +349,8 @@ export class AgentManager extends EventEmitter {
 
   async executeTaskOnSwarm(
     swarmId: string,
-    task: TaskDefinition,
-  ): Promise<any> {
+    task: TaskDefinition
+  ): Promise<unknown> {
     const group = this.swarmGroups.get(swarmId);
     if (!group) {
       throw new Error(`Swarm ${swarmId} not found`);
@@ -359,7 +361,7 @@ export class AgentManager extends EventEmitter {
 
   private async createAgent(
     agentId: string,
-    capabilityNames: string[],
+    capabilityNames: string[]
   ): Promise<Agent> {
     const capabilities = capabilityNames.map((name) =>
       AgentFactory.createCapability(
@@ -367,8 +369,8 @@ export class AgentManager extends EventEmitter {
         '1.0.0',
         `${name} capability`,
         {},
-        { cpu: 0.1, memory: 64, network: 10, storage: 10 },
-      ),
+        { cpu: 0.1, memory: 64, network: 10, storage: 10 }
+      )
     );
 
     const agent = AgentFactory.createAgent(
@@ -380,7 +382,7 @@ export class AgentManager extends EventEmitter {
         memory: 1024,
         network: 100,
         storage: 1024,
-      },
+      }
     );
 
     await agent.initialize({
@@ -403,7 +405,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   private swarmService!: IntegratedSwarmService;
   private facade!: ClaudeZenFacade;
 
-  constructor(config: IntegrationConfig, logger: any, metrics: any) {
+  constructor(config: IntegrationConfig, logger: unknown, metrics: unknown) {
     super();
     this.config = config;
 
@@ -419,7 +421,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     this.setupIntegrationEventHandlers();
   }
 
-  private initializeEventSystem(logger: any): void {
+  private initializeEventSystem(logger: unknown): void {
     this.eventManager = new SystemEventManager(logger);
 
     // Add observers based on configuration
@@ -444,7 +446,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     }
   }
 
-  private initializeCommandSystem(logger: any): void {
+  private initializeCommandSystem(logger: unknown): void {
     this.commandQueue = new MCPCommandQueue(logger);
 
     // Configure command queue based on config
@@ -455,7 +457,7 @@ export class IntegratedPatternSystem extends EventEmitter {
 
   private initializeCoordinationSystem(): void {
     const defaultStrategy = StrategyFactory.createStrategy(
-      this.config.swarm.defaultTopology,
+      this.config.swarm.defaultTopology
     );
     this.swarmCoordinator = new SwarmCoordinator(defaultStrategy);
   }
@@ -495,11 +497,11 @@ export class IntegratedPatternSystem extends EventEmitter {
       this.swarmCoordinator,
       this.eventManager,
       this.commandQueue,
-      this.agentManager,
+      this.agentManager
     );
   }
 
-  private async initializeFacade(logger: any, metrics: any): Promise<void> {
+  private async initializeFacade(logger: unknown, metrics: unknown): Promise<void> {
     // Create real services connected to actual systems
     const realNeuralService: INeuralService =
       await this.createRealNeuralService();
@@ -522,7 +524,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       this.eventManager as any,
       this.commandQueue,
       logger,
-      metrics,
+      metrics
     );
   }
 
@@ -599,7 +601,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   // Integrated high-level operations
-  async createIntegratedSwarm(config: any): Promise<any> {
+  async createIntegratedSwarm(config: unknown): Promise<unknown> {
     // Use facade for high-level operation
     const projectResult = await this.facade.initializeProject({
       name: `integrated-swarm-${Date.now()}`,
@@ -622,8 +624,8 @@ export class IntegratedPatternSystem extends EventEmitter {
 
   async executeIntegratedTask(
     swarmId: string,
-    taskDefinition: any,
-  ): Promise<any> {
+    taskDefinition: unknown
+  ): Promise<unknown> {
     // Create MCP command for task execution
     const command = CommandFactory.createTaskOrchestrationCommand(
       taskDefinition,
@@ -641,7 +643,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           storage: 0.9,
           timestamp: new Date(),
         },
-      },
+      }
     );
 
     // Execute through command queue
@@ -651,7 +653,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       // Execute through agent system
       const taskResult = await this.agentManager.executeTaskOnSwarm(
         swarmId,
-        taskDefinition,
+        taskDefinition
       );
 
       // Emit completion event
@@ -665,7 +667,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           throughput: 1,
           reliability: 1,
           resourceUsage: commandResult?.resourceUsage,
-        },
+        }
       );
 
       await this.eventManager.notify(taskEvent);
@@ -676,7 +678,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     throw new Error(`Task execution failed: ${commandResult?.error?.message}`);
   }
 
-  async broadcastToProtocols(message: any): Promise<any[]> {
+  async broadcastToProtocols(message: unknown): Promise<any[]> {
     // Convert to protocol message format
     const protocolMessage = {
       id: `msg-${Date.now()}`,
@@ -690,7 +692,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     return this.protocolManager.broadcast(protocolMessage);
   }
 
-  getIntegratedSystemStatus(): any {
+  getIntegratedSystemStatus(): unknown {
     return {
       patterns: {
         strategy: {
@@ -723,7 +725,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           swarmGroups: this.agentManager.listSwarmGroups().length,
           totalAgents: this.agentManager
             .listSwarmGroups()
-            .reduce((sum, group: any) => sum + group.agentCount, 0),
+            .reduce((sum, group: unknown) => sum + group.agentCount, 0),
         },
       },
       integration: {
@@ -748,7 +750,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         await this.protocolManager.addProtocol(
           `integrated-${protocolType}`,
           protocolType,
-          config,
+          config
         );
       } catch (error) {
         logger.warn(`Failed to initialize protocol ${protocolType}:`, error);
@@ -768,7 +770,7 @@ export class IntegratedPatternSystem extends EventEmitter {
 
     // Using mock implementation until neural modules are implemented
     return {
-      trainModel: async (config: any) => {
+      trainModel: async (config: unknown) => {
         const startTime = Date.now();
         // Mock training with reasonable default values
         return {
@@ -805,7 +807,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           evaluationTime: Math.floor(Math.random() * 1000) + 100,
         };
       },
-      optimizeModel: async (modelId: string, strategy: any) => {
+      optimizeModel: async (modelId: string, strategy: unknown) => {
         const startTime = Date.now();
         // Mock optimization with slight improvement
         return {
@@ -836,17 +838,19 @@ export class IntegratedPatternSystem extends EventEmitter {
     try {
       // Import memory coordinator with fallback
       const memoryModule = await import('./memory-coordinator.ts').catch(
-        () => null,
+        () => null
       );
       if (!memoryModule?.MemorySystem) {
         throw new Error('MemorySystem not available');
       }
       const { MemorySystem } = memoryModule;
-      const memoryCoordinator = new MemorySystem({}) as any as any as any as any;
+      const memoryCoordinator = new MemorySystem(
+        {}
+      ) as any as any as any as any;
       await memoryCoordinator.initialize();
 
       return {
-        store: async (key: string, value: any) => {
+        store: async (key: string, value: unknown) => {
           await memoryCoordinator.store(key, value);
         },
         retrieve: async <T>(key: string): Promise<T | null> => {
@@ -928,11 +932,11 @@ export class IntegratedPatternSystem extends EventEmitter {
           // Would use DAL to execute query
           return [];
         },
-        insert: async (_table: string, _data: any) => {
+        insert: async (_table: string, _data: unknown) => {
           // Would use DAL to insert
           return `real-id-${Date.now()}`;
         },
-        update: async (_table: string, _id: string, _data: any) => {
+        update: async (_table: string, _id: string, _data: unknown) => {
           // Would use DAL to update
           return true;
         },
@@ -940,7 +944,7 @@ export class IntegratedPatternSystem extends EventEmitter {
           // Would use DAL to delete
           return true;
         },
-        vectorSearch: async (_query: any) => {
+        vectorSearch: async (_query: unknown) => {
           // Would use vector repository
           return [];
         },
@@ -964,7 +968,7 @@ export class IntegratedPatternSystem extends EventEmitter {
         delete: async () => false,
         vectorSearch: async () => [],
         createIndex: async () => {},
-        getHealth: async (): Promise<any> => ({
+        getHealth: async (): Promise<unknown> => ({
           status: 'unavailable',
           connectionCount: 0,
           queryLatency: 0,
@@ -980,7 +984,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   private async createRealInterfaceService(): Promise<IInterfaceService> {
     try {
       return {
-        startHTTPMCP: async (config?: any) => {
+        startHTTPMCP: async (config?: unknown) => {
           const port = config?.port || 3000;
           // Would start real HTTP MCP server process
           const serverId = `http-mcp-${Date.now()}`;
@@ -991,7 +995,7 @@ export class IntegratedPatternSystem extends EventEmitter {
             uptime: 0,
           };
         },
-        startWebDashboard: async (config?: any) => {
+        startWebDashboard: async (config?: unknown) => {
           const port = config?.port || 3456;
           // Would start real web dashboard process
           const serverId = `web-${Date.now()}`;
@@ -1002,7 +1006,7 @@ export class IntegratedPatternSystem extends EventEmitter {
             activeConnections: 0,
           };
         },
-        startTUI: async (config?: any) => {
+        startTUI: async (config?: unknown) => {
           // Would spawn real TUI process
           const instanceId = `tui-${Date.now()}`;
           return {
@@ -1011,7 +1015,7 @@ export class IntegratedPatternSystem extends EventEmitter {
             status: 'running',
           };
         },
-        startCLI: async (_config?: any) => {
+        startCLI: async (_config?: unknown) => {
           // Would start real CLI instance
           const instanceId = `cli-${Date.now()}`;
           return {
@@ -1029,24 +1033,24 @@ export class IntegratedPatternSystem extends EventEmitter {
       };
     } catch (_error) {
       return {
-        startHTTPMCP: async (): Promise<any> => ({
+        startHTTPMCP: async (): Promise<unknown> => ({
           serverId: '',
           port: 0,
           status: 'failed',
           uptime: 0,
         }),
-        startWebDashboard: async (): Promise<any> => ({
+        startWebDashboard: async (): Promise<unknown> => ({
           serverId: '',
           port: 0,
           status: 'failed',
           activeConnections: 0,
         }),
-        startTUI: async (): Promise<any> => ({
+        startTUI: async (): Promise<unknown> => ({
           instanceId: '',
           mode: '',
           status: 'failed',
         }),
-        startCLI: async (): Promise<any> => ({
+        startCLI: async (): Promise<unknown> => ({
           instanceId: '',
           status: 'failed',
         }),
@@ -1062,7 +1066,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   private async createRealWorkflowService(): Promise<IWorkflowService> {
     try {
       return {
-        executeWorkflow: async (workflowId: string, _inputs?: any) => {
+        executeWorkflow: async (workflowId: string, _inputs?: unknown) => {
           const executionId = `exec-${Date.now()}`;
           const startTime = new Date();
 
@@ -1075,7 +1079,7 @@ export class IntegratedPatternSystem extends EventEmitter {
             results: {},
           };
         },
-        createWorkflow: async (_definition: any) => {
+        createWorkflow: async (_definition: unknown) => {
           return `workflow-${Date.now()}`;
         },
         listWorkflows: async () => {

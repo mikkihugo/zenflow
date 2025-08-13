@@ -73,8 +73,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'performance.test',
           Domain.CORE,
           {},
-          { tags: [`batch-${Math.floor(i / 100)}`, `event-${i}`] },
-        ),
+          { tags: [`batch-${Math.floor(i / 100)}`, `event-${i}`] }
+        )
       );
 
       // Emit events in batch
@@ -125,8 +125,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'multi-handler.test',
           Domain.CORE,
           {},
-          { tags: [`test-${i}`] },
-        ),
+          { tags: [`test-${i}`] }
+        )
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -137,7 +137,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       // Performance assertions
       expect(results.every((r) => r.success)).toBe(true);
       expect(
-        results.every((r) => r.handlerResults.length === handlerCount),
+        results.every((r) => r.handlerResults.length === handlerCount)
       ).toBe(true);
 
       // Each handler should have been called for each event
@@ -181,12 +181,12 @@ describe('TypeSafeEventBus Performance Tests', () => {
                 {
                   source: `source-${sourceIndex}`,
                   tags: [`source-${sourceIndex}`, `event-${eventIndex}`],
-                },
-              ),
+                }
+              )
           );
 
           return eventBus.emitEventBatch(events, { maxConcurrency: 50 });
-        },
+        }
       );
 
       const allResults = await Promise.all(sourcePromises);
@@ -236,8 +236,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
               { data: `test-data-${i + j}` }, // Add some data to test memory usage
               {
                 tags: [`chunk-${Math.floor(i / chunkSize)}`, `event-${i + j}`],
-              },
-            ),
+              }
+            )
         );
 
         await eventBus.emitEventBatch(chunk);
@@ -293,8 +293,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
             eventType,
             Domain.CORE,
             { value: i % 100 }, // Repeated data patterns
-            { correlationId: createCorrelationId() },
-          ),
+            { correlationId: createCorrelationId() }
+          )
         );
       }
 
@@ -347,8 +347,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'validation.test',
           domains[i % domains.length],
           { index: i },
-          { correlationId: createCorrelationId() },
-        ),
+          { correlationId: createCorrelationId() }
+        )
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -383,7 +383,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
           'cross.domain.test',
           Domain.WORKFLOWS,
           { routingIndex: i },
-          { correlationId: createCorrelationId() },
+          { correlationId: createCorrelationId() }
         );
 
         const fromDomain = i % 2 === 0 ? Domain.CORE : Domain.COORDINATION;
@@ -393,7 +393,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
           event,
           fromDomain,
           toDomain,
-          `routing_test_${i}`,
+          `routing_test_${i}`
         );
       });
 
@@ -435,7 +435,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const startTime = Date.now();
 
       const events = Array.from({ length: eventCount }, (_, i) =>
-        createEvent<BaseEvent>('mixed.speed.test', Domain.CORE, { index: i }),
+        createEvent<BaseEvent>('mixed.speed.test', Domain.CORE, { index: i })
       );
 
       const results = await eventBus.emitEventBatch(events, {
@@ -481,7 +481,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const events = Array.from({ length: eventCount }, (_, i) =>
         createEvent<BaseEvent>('error.resilience.test', Domain.CORE, {
           index: i,
-        }),
+        })
       );
 
       const results = await eventBus.emitEventBatch(events);
@@ -497,7 +497,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const totalHandlerErrors = results.reduce(
         (sum, result) =>
           sum + result.handlerResults.filter((hr) => !hr.success).length,
-        0,
+        0
       );
 
       const actualErrorRate = totalHandlerErrors / (eventCount * 2); // 2 handlers per event
@@ -540,7 +540,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
                 priority: EventPriority.NORMAL,
                 timeout: 30000,
               },
-            }),
+            })
           );
         } else {
           events.push(
@@ -551,7 +551,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
                 requiredApproval: true,
                 context: { test: true, index: i },
               },
-            }),
+            })
           );
         }
       }
@@ -599,7 +599,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
           Domain.CORE,
           {
             timestamp: Date.now(),
-          },
+          }
         );
 
         await eventBus.emitEvent(event);
@@ -670,8 +670,8 @@ describe('TypeSafeEventBus Performance Tests', () => {
             'stability.test',
             Domain.CORE,
             { phase, index: i },
-            { tags: [`phase-${phase}`, `event-${i}`] },
-          ),
+            { tags: [`phase-${phase}`, `event-${i}`] }
+          )
         );
 
         await eventBus.emitEventBatch(events);
@@ -704,7 +704,7 @@ describe('TypeSafeEventBus Performance Tests', () => {
       const eventsPerSecondVariance =
         phaseResults.reduce(
           (sum, p) => sum + (p.eventsPerSecond - avgEventsPerSecond) ** 2,
-          0,
+          0
         ) / phases;
       const eventsPerSecondStdDev = Math.sqrt(eventsPerSecondVariance);
       const coefficientOfVariation = eventsPerSecondStdDev / avgEventsPerSecond;
@@ -755,7 +755,7 @@ describe('Event System Stress Tests', () => {
         const batchStartIndex = batch * batchSize;
         const batchEndIndex = Math.min(
           batchStartIndex + batchSize,
-          extremeEventCount,
+          extremeEventCount
         );
         const batchEvents = Array.from(
           { length: batchEndIndex - batchStartIndex },
@@ -763,7 +763,7 @@ describe('Event System Stress Tests', () => {
             createEvent<BaseEvent>('stress.test', Domain.CORE, {
               batchIndex: batch,
               eventIndex: batchStartIndex + i,
-            }),
+            })
         );
 
         await eventBus.emitEventBatch(batchEvents);

@@ -88,7 +88,7 @@ export interface MemoryConfig {
   /** Enable compression */
   compression?: boolean;
   /** Backend-specific configuration */
-  backendConfig?: Record<string, any>;
+  backendConfig?: Record<string, unknown>;
 }
 
 /**
@@ -103,14 +103,14 @@ export interface BackendInterface {
   store(
     key: string,
     value: JSONValue,
-    namespace?: string,
+    namespace?: string
   ): Promise<StorageResult>;
   /** Retrieve a value */
   retrieve(key: string, namespace?: string): Promise<JSONValue | null>;
   /** Search for values */
   search(
     pattern: string,
-    namespace?: string,
+    namespace?: string
   ): Promise<Record<string, JSONValue>>;
   /** Delete a value */
   delete(key: string, namespace?: string): Promise<boolean>;
@@ -166,7 +166,7 @@ class JSONBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -197,7 +197,7 @@ class JSONBackend implements BackendInterface {
 
   async retrieve(
     key: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<JSONValue | null> {
     const fullKey = `${namespace}:${key}`;
     const entry = this.data.get(fullKey);
@@ -206,7 +206,7 @@ class JSONBackend implements BackendInterface {
 
   async search(
     pattern: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<Record<string, JSONValue>> {
     const results: Record<string, JSONValue> = {};
     const prefix = `${namespace}:`;
@@ -264,13 +264,13 @@ class JSONBackend implements BackendInterface {
       const stats = await this.getStats();
       if (stats.size > this.config.maxSize) {
         throw new Error(
-          `Storage size ${stats.size} exceeds limit ${this.config.maxSize}`,
+          `Storage size ${stats.size} exceeds limit ${this.config.maxSize}`
         );
       }
     }
 
     // Convert Map to object for JSON serialization
-    const obj: Record<string, any> = {};
+    const obj: Record<string, unknown> = {};
     for (const [key, value] of this.data.entries()) {
       obj[key] = value;
     }
@@ -285,7 +285,7 @@ class JSONBackend implements BackendInterface {
  * @example
  */
 class SQLiteBackend implements BackendInterface {
-  private db?: any;
+  private db?: unknown;
   private dbPath: string;
   private config: MemoryConfig;
 
@@ -339,7 +339,7 @@ class SQLiteBackend implements BackendInterface {
   async store(
     key: string,
     value: JSONValue,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<StorageResult> {
     const fullKey = `${namespace}:${key}`;
     const timestamp = Date.now();
@@ -360,7 +360,7 @@ class SQLiteBackend implements BackendInterface {
         serializedValue,
         valueType,
         timestamp,
-        size,
+        size
       );
 
       return {
@@ -380,7 +380,7 @@ class SQLiteBackend implements BackendInterface {
 
   async retrieve(
     key: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<JSONValue | null> {
     try {
       const stmt = this.db.prepare(`
@@ -400,7 +400,7 @@ class SQLiteBackend implements BackendInterface {
 
   async search(
     pattern: string,
-    namespace: string = 'default',
+    namespace: string = 'default'
   ): Promise<Record<string, JSONValue>> {
     const results: Record<string, JSONValue> = {};
     const searchPattern = pattern.replace('*', '%');
@@ -451,7 +451,7 @@ class SQLiteBackend implements BackendInterface {
       `);
 
       const rows = stmt.all();
-      return rows.map((row: any) => row.namespace);
+      return rows.map((row: unknown) => row.namespace);
     } catch (error) {
       logger.error('SQLite listNamespaces error:', error);
       return [];
@@ -461,10 +461,10 @@ class SQLiteBackend implements BackendInterface {
   async getStats(): Promise<BackendStats> {
     try {
       const countStmt = this.db.prepare(
-        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM memory',
+        'SELECT COUNT(*) as count, SUM(size) as totalSize FROM memory'
       );
       const nsStmt = this.db.prepare(
-        'SELECT COUNT(DISTINCT namespace) as namespaces FROM memory',
+        'SELECT COUNT(DISTINCT namespace) as namespaces FROM memory'
       );
 
       const countResult = countStmt.get();
@@ -510,7 +510,7 @@ class LanceDBBackend implements BackendInterface {
   async store(
     key: string,
     _value: JSONValue,
-    namespace?: string,
+    namespace?: string
   ): Promise<StorageResult> {
     // Stub implementation
     return {
@@ -527,7 +527,7 @@ class LanceDBBackend implements BackendInterface {
 
   async search(
     _pattern: string,
-    _namespace?: string,
+    _namespace?: string
   ): Promise<Record<string, JSONValue>> {
     // Stub implementation
     return {};
@@ -595,7 +595,7 @@ export class MemorySystem extends EventEmitter {
     if (this.initialized) return;
 
     logger.info(
-      `Initializing memory system with ${this.config.backend} backend`,
+      `Initializing memory system with ${this.config.backend} backend`
     );
 
     try {
@@ -621,7 +621,7 @@ export class MemorySystem extends EventEmitter {
   async store(
     key: string,
     value: JSONValue,
-    namespace?: string,
+    namespace?: string
   ): Promise<StorageResult> {
     await this.ensureInitialized();
 
@@ -667,7 +667,7 @@ export class MemorySystem extends EventEmitter {
    */
   async search(
     pattern: string,
-    namespace?: string,
+    namespace?: string
   ): Promise<Record<string, JSONValue>> {
     await this.ensureInitialized();
 
@@ -760,7 +760,7 @@ export class MemorySystem extends EventEmitter {
   async storeDocument(
     type: string,
     id: string,
-    document: any,
+    document: unknown
   ): Promise<StorageResult> {
     const key = `${type}:${id}`;
     return this.store(
@@ -771,7 +771,7 @@ export class MemorySystem extends EventEmitter {
         id,
         updatedAt: new Date().toISOString(),
       },
-      'documents',
+      'documents'
     );
   }
 
@@ -782,7 +782,7 @@ export class MemorySystem extends EventEmitter {
    * @param id - Document ID.
    * @returns Document data or null.
    */
-  async retrieveDocument(type: string, id: string): Promise<any> {
+  async retrieveDocument(type: string, id: string): Promise<unknown> {
     const key = `${type}:${id}`;
     return this.retrieve(key, 'documents');
   }
@@ -793,7 +793,7 @@ export class MemorySystem extends EventEmitter {
    * @param type - Document type.
    * @returns Record of matching documents.
    */
-  async searchDocuments(type: string): Promise<Record<string, any>> {
+  async searchDocuments(type: string): Promise<Record<string, unknown>> {
     const pattern = `${type}:*`;
     return this.search(pattern, 'documents');
   }
@@ -807,7 +807,7 @@ export class MemorySystem extends EventEmitter {
    */
   async storeWorkflow(
     workflowId: string,
-    workflow: any,
+    workflow: unknown
   ): Promise<StorageResult> {
     return this.store(workflowId, workflow, 'workflows');
   }
@@ -818,7 +818,7 @@ export class MemorySystem extends EventEmitter {
    * @param workflowId - Workflow ID.
    * @returns Workflow data or null.
    */
-  async retrieveWorkflow(workflowId: string): Promise<any> {
+  async retrieveWorkflow(workflowId: string): Promise<unknown> {
     return this.retrieve(workflowId, 'workflows');
   }
 
@@ -828,7 +828,7 @@ export class MemorySystem extends EventEmitter {
    * @param pattern - Search pattern.
    * @returns Record of matching workflows.
    */
-  async searchWorkflows(pattern: string = '*'): Promise<Record<string, any>> {
+  async searchWorkflows(pattern: string = '*'): Promise<Record<string, unknown>> {
     return this.search(pattern, 'workflows');
   }
 }

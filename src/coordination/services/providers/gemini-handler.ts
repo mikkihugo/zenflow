@@ -79,7 +79,7 @@ export const geminiDefaultModelId: GeminiModelId = 'gemini-2.5-flash'; // Fast a
 export interface ApiHandler {
   createMessage(
     systemPrompt: string,
-    messages: Anthropic.Messages.MessageParam[],
+    messages: Anthropic.Messages.MessageParam[]
   ): ApiStream;
   getModel(): { id: string; info: ModelInfo };
   getApiStreamUsage?(): Promise<ApiStreamUsageChunk | undefined>;
@@ -118,7 +118,7 @@ export function withRetry(config: {
   return (
     target: unknown,
     propertyKey: string,
-    descriptor: PropertyDescriptor,
+    descriptor: PropertyDescriptor
   ) => {
     const originalMethod = descriptor.value;
 
@@ -149,7 +149,7 @@ export function withRetry(config: {
 
           const delay = Math.min(
             config.baseDelay * 2 ** attempt,
-            config.maxDelay,
+            config.maxDelay
           );
 
           await new Promise((resolve) => setTimeout(resolve, delay));
@@ -168,7 +168,7 @@ export function withRetry(config: {
  */
 function convertMessagesToGemini(
   systemPrompt: string,
-  messages: Anthropic.Messages.MessageParam[],
+  messages: Anthropic.Messages.MessageParam[]
 ) {
   const contents = [];
 
@@ -202,8 +202,8 @@ function convertMessagesToGemini(
     } else if (Array.isArray(message.content)) {
       // Extract text from content blocks, skip images
       text = message.content
-        .filter((c: any) => c.type === 'text')
-        .map((c: any) => (c as any).text)
+        .filter((c: unknown) => c.type === 'text')
+        .map((c: unknown) => (c as any).text)
         .join('\n');
     }
 
@@ -246,7 +246,7 @@ export class GeminiHandler implements ApiHandler {
     } catch (error) {
       throw new Error(
         `Failed to load Gemini credentials: ${error instanceof Error ? error.message : error}\n` +
-          'Run "gemini" CLI first to authenticate with Google.',
+          'Run "gemini" CLI first to authenticate with Google.'
       );
     }
   }
@@ -277,7 +277,7 @@ export class GeminiHandler implements ApiHandler {
       // Check if token is expired
       if (creds.expiry_date && Date.now() > creds.expiry_date) {
         throw new Error(
-          'Gemini OAuth token has expired. Run "gemini" CLI to refresh authentication.',
+          'Gemini OAuth token has expired. Run "gemini" CLI to refresh authentication.'
         );
       }
 
@@ -307,7 +307,7 @@ export class GeminiHandler implements ApiHandler {
   })
   async *createMessage(
     systemPrompt: string,
-    messages: Anthropic.Messages.MessageParam[],
+    messages: Anthropic.Messages.MessageParam[]
   ): ApiStream {
     await this.initializeClient();
 
@@ -342,8 +342,7 @@ export class GeminiHandler implements ApiHandler {
 
       // Calculate approximate token usage (Gemini doesn't provide exact counts in streaming)
       inputTokens = Math.ceil(
-        contents.reduce((acc, c) => acc + (c.parts[0].text?.length || 0), 0) /
-          4,
+        contents.reduce((acc, c) => acc + (c.parts[0].text?.length || 0), 0) / 4
       );
       outputTokens = Math.ceil(fullText.length / 4);
 
@@ -360,19 +359,19 @@ export class GeminiHandler implements ApiHandler {
       // Handle common Gemini errors
       if (errorMessage.includes('API_KEY_INVALID')) {
         throw new Error(
-          'Gemini authentication failed. Run "gemini" CLI to re-authenticate.',
+          'Gemini authentication failed. Run "gemini" CLI to re-authenticate.'
         );
       }
 
       if (errorMessage.includes('RATE_LIMIT_EXCEEDED')) {
         throw new Error(
-          'Gemini rate limit exceeded. Please wait a moment before retrying.',
+          'Gemini rate limit exceeded. Please wait a moment before retrying.'
         );
       }
 
       if (errorMessage.includes('QUOTA_EXCEEDED')) {
         throw new Error(
-          'Gemini quota exceeded. You may have hit daily limits.',
+          'Gemini quota exceeded. You may have hit daily limits.'
         );
       }
 

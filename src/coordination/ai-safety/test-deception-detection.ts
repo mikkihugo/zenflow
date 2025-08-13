@@ -19,7 +19,7 @@ async function testDeceptionDetection() {
   const orchestrator = createAISafetyOrchestrator();
 
   console.log(
-    `📊 Detector configuration: ${JSON.stringify(detector.getConfiguration(), null, 2)}`,
+    `📊 Detector configuration: ${JSON.stringify(detector.getConfiguration(), null, 2)}`
   );
 
   // TEST 1: SANDBAGGING - The exact response that demonstrated deception
@@ -39,7 +39,7 @@ async function testDeceptionDetection() {
   const sandbagAlerts = await analyzeAIResponse(
     sandbagResponse,
     [],
-    'test-agent-1',
+    'test-agent-1'
   );
 
   console.log(`   Alerts Generated: ${sandbagAlerts.length}`);
@@ -61,7 +61,7 @@ async function testDeceptionDetection() {
   const fraudAlerts = await analyzeAIResponse(
     verificationFraudResponse,
     [],
-    'test-agent-2',
+    'test-agent-2'
   );
 
   console.log(`   Alerts Generated: ${fraudAlerts.length}`);
@@ -84,14 +84,14 @@ async function testDeceptionDetection() {
   const avoidanceAlerts = await analyzeAIResponse(
     workAvoidanceResponse,
     [],
-    'test-agent-3',
+    'test-agent-3'
   );
 
   console.log(`   Alerts Generated: ${avoidanceAlerts.length}`);
   avoidanceAlerts.forEach((alert) => {
     console.log(`   🚨 ${alert.type}: ${alert.severity}`);
     console.log(
-      `      Tool Calls Required: ${alert.toolCallsRequired?.join(', ')}`,
+      `      Tool Calls Required: ${alert.toolCallsRequired?.join(', ')}`
     );
   });
   console.log();
@@ -107,7 +107,7 @@ async function testDeceptionDetection() {
   const legitimateAlerts = await analyzeAIResponse(
     legitimateResponse,
     ['Read(/path/to/file)', 'Grep(pattern)', 'Write(/path/to/new/file)'],
-    'test-agent-4',
+    'test-agent-4'
   );
 
   console.log(`   Alerts Generated: ${legitimateAlerts.length} (should be 0)`);
@@ -118,7 +118,7 @@ async function testDeceptionDetection() {
     });
   } else {
     console.log(
-      '   ✅ No false positives - legitimate work correctly identified',
+      '   ✅ No false positives - legitimate work correctly identified'
     );
   }
   console.log();
@@ -152,16 +152,16 @@ async function testDeceptionDetection() {
   console.log('📊 TEST SUMMARY');
   console.log('================');
   console.log(
-    `✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}`,
+    `✅ Sandbagging Detection: ${sandbagAlerts.length > 0 ? 'WORKING' : 'FAILED'}`
   );
   console.log(
-    `✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}`,
+    `✅ Verification Fraud: ${fraudAlerts.length > 0 ? 'WORKING' : 'FAILED'}`
   );
   console.log(
-    `✅ Work Avoidance: ${avoidanceAlerts.length > 0 ? 'WORKING' : 'FAILED'}`,
+    `✅ Work Avoidance: ${avoidanceAlerts.length > 0 ? 'WORKING' : 'FAILED'}`
   );
   console.log(
-    `✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`,
+    `✅ False Positive Prevention: ${legitimateAlerts.length === 0 ? 'WORKING' : 'NEEDS TUNING'}`
   );
   console.log(`✅ Orchestrator Integration: WORKING`);
   console.log();
@@ -169,10 +169,10 @@ async function testDeceptionDetection() {
   const totalAlerts =
     sandbagAlerts.length + fraudAlerts.length + avoidanceAlerts.length;
   console.log(
-    `🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`,
+    `🎯 DECEPTION DETECTION SYSTEM: ${totalAlerts > 0 ? '✅ FUNCTIONAL' : '❌ NOT DETECTING'}`
   );
   console.log(
-    `🛡️ The system successfully detected the exact deception patterns from our conversation!`,
+    `🛡️ The system successfully detected the exact deception patterns from our conversation!`
   );
 }
 

@@ -36,7 +36,9 @@ module.exports = function transformer(file, api, options) {
 
         // Log the transformation if in verbose mode
         if (options.verbose) {
-          console.log(`Transformed: process.env.${propertyName} → process.env['${propertyName}']`);
+          console.log(
+            `Transformed: process.env.${propertyName} → process.env['${propertyName}']`
+          );
         }
       }
     });

@@ -56,7 +56,7 @@ export interface MemoryAlert {
   message: string;
   timestamp: number;
   source: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   acknowledged: boolean;
   resolved: boolean;
 }
@@ -188,7 +188,7 @@ export class MemoryMonitor extends EventEmitter {
     const bucket = Math.floor(duration / 10) * 10; // 10ms buckets
     this.latencyHistogram.set(
       bucket,
-      (this.latencyHistogram.get(bucket) || 0) + 1,
+      (this.latencyHistogram.get(bucket) || 0) + 1
     );
 
     // Limit history size
@@ -215,7 +215,7 @@ export class MemoryMonitor extends EventEmitter {
       const now = Date.now();
       const windowMs = this.config.collectInterval * 5; // 5 collection periods
       const recentOperations = this.operationHistory.filter(
-        (op) => now - op.timestamp < windowMs,
+        (op) => now - op.timestamp < windowMs
       );
 
       // Calculate performance metrics
@@ -271,7 +271,7 @@ export class MemoryMonitor extends EventEmitter {
       const backendMetrics: MemoryMetrics['backends'] = {};
       for (const [id, _backend] of this.backends) {
         const backendOps = recentOperations.filter((op) =>
-          op.operation.includes(id),
+          op.operation.includes(id)
         );
         const errors = backendOps.filter((op) => !op.success).length;
         const avgLatency =
@@ -300,7 +300,7 @@ export class MemoryMonitor extends EventEmitter {
           acc[op.operation] = (acc[op.operation] || 0) + 1;
           return acc;
         },
-        {} as Record<string, number>,
+        {} as Record<string, number>
       );
 
       const metrics: MemoryMetrics = {
@@ -326,7 +326,7 @@ export class MemoryMonitor extends EventEmitter {
 
       // Limit metrics history
       const maxMetrics = Math.floor(
-        this.config.retentionPeriod / this.config.collectInterval,
+        this.config.retentionPeriod / this.config.collectInterval
       );
       if (this.metrics.length > maxMetrics) {
         this.metrics = this.metrics.slice(-Math.floor(maxMetrics * 0.8));
@@ -450,7 +450,7 @@ export class MemoryMonitor extends EventEmitter {
     alertData: Omit<
       MemoryAlert,
       'id' | 'timestamp' | 'acknowledged' | 'resolved'
-    >,
+    >
   ): void {
     const alert: MemoryAlert = {
       id: `alert_${Date.now()}_${Math.random().toString(36).slice(2)}`,
@@ -517,7 +517,7 @@ export class MemoryMonitor extends EventEmitter {
    */
   getMetricsRange(startTime: number, endTime: number): MemoryMetrics[] {
     return this.metrics.filter(
-      (m) => m.timestamp >= startTime && m.timestamp <= endTime,
+      (m) => m.timestamp >= startTime && m.timestamp <= endTime
     );
   }
 
@@ -567,7 +567,7 @@ export class MemoryMonitor extends EventEmitter {
             acc[alert.severity] = (acc[alert.severity] || 0) + 1;
             return acc;
           },
-          {} as Record<string, number>,
+          {} as Record<string, number>
         ),
       },
       components: {
@@ -584,7 +584,7 @@ export class MemoryMonitor extends EventEmitter {
   generateHealthReport(): {
     overall: 'healthy' | 'warning' | 'critical';
     score: number;
-    details: Record<string, any>;
+    details: Record<string, unknown>;
     recommendations: string[];
   } {
     const currentMetrics = this.getCurrentMetrics();
@@ -607,7 +607,7 @@ export class MemoryMonitor extends EventEmitter {
       errorRate: Math.max(0, 100 - currentMetrics?.errorRate * 1000),
       memory: Math.max(
         0,
-        100 - (currentMetrics?.totalMemoryUsage / 1000) * 100,
+        100 - (currentMetrics?.totalMemoryUsage / 1000) * 100
       ),
       cache: currentMetrics?.cacheHitRate * 100,
       nodes:

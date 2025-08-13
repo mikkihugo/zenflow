@@ -44,9 +44,9 @@ describe('Test Helper Utilities - Example Usage', () => {
         // Mock a service class
         class UserService {
           constructor(
-            private database: any,
-            private emailService: any,
-            private logger: any
+            private database: unknown,
+            private emailService: unknown,
+            private logger: unknown
           ) {}
 
           async createUser(userData: unknown) {
@@ -260,14 +260,14 @@ describe('Test Helper Utilities - Example Usage', () => {
       // Test data generation
       const testData = testDataFactory?.createPerformanceData(1000);
 
-      function linearSearch(arr: unknown[], target: any): number {
+      function linearSearch(arr: unknown[], target: unknown): number {
         for (let i = 0; i < arr.length; i++) {
           if (arr[i]?.id === target) return i;
         }
         return -1;
       }
 
-      function binarySearch(arr: unknown[], target: any): number {
+      function binarySearch(arr: unknown[], target: unknown): number {
         let left = 0;
         let right = arr.length - 1;
 
@@ -302,8 +302,8 @@ describe('Test Helper Utilities - Example Usage', () => {
       expect(results?.[1]?.ranking).toBeLessThanOrEqual(2);
 
       // Binary search should be faster (lower ranking = better performance)
-      const binaryResult = results?.find((r: any) => r.name === 'Binary Search');
-      const linearResult = results?.find((r: any) => r.name === 'Linear Search');
+      const binaryResult = results?.find((r: unknown) => r.name === 'Binary Search');
+      const linearResult = results?.find((r: unknown) => r.name === 'Linear Search');
 
       expect(binaryResult?.ranking).toBeLessThan(linearResult?.ranking);
 
@@ -357,7 +357,7 @@ describe('Test Helper Utilities - Example Usage', () => {
 
       // Verify data structure
       expect(users).toHaveLength(5);
-      users.forEach((user: any) => {
+      users.forEach((user: unknown) => {
         expect(user).toHaveProperty('id');
         expect(user).toHaveProperty('name');
         expect(user).toHaveProperty('email');
@@ -390,20 +390,20 @@ describe('Test Helper Utilities - Example Usage', () => {
       const trainingData = testDataFactory?.createNeuralTrainingData(100);
 
       expect(trainingData).toHaveLength(100);
-      trainingData?.forEach((sample: any) => {
+      trainingData?.forEach((sample: unknown) => {
         expect(sample).toHaveProperty('input');
         expect(sample).toHaveProperty('output');
         expect(sample.input).toHaveLength(3);
         expect(sample.output).toHaveLength(2);
 
         // Verify input range [-1, 1]
-        sample.input.forEach((value: any) => {
+        sample.input.forEach((value: unknown) => {
           expect(value).toBeGreaterThanOrEqual(-1);
           expect(value).toBeLessThanOrEqual(1);
         });
 
         // Verify output range [0, 1]
-        sample.output.forEach((value: any) => {
+        sample.output.forEach((value: unknown) => {
           expect(value).toBeGreaterThanOrEqual(0);
           expect(value).toBeLessThanOrEqual(1);
         });

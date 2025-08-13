@@ -60,7 +60,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
   constructor(
     options: SwarmOptions = {},
     sessionConfig: SessionConfig = {},
-    persistence?: SessionCoordinationDao,
+    persistence?: SessionCoordinationDao
   ) {
     super(options);
 
@@ -74,8 +74,8 @@ export class SessionEnabledSwarm extends ZenSwarm {
       persistenceLayer = {
         // Repository methods
         findById: async (_id: string | number) => null,
-        findBy: async (_criteria: Partial<any>, _options?: any) => [],
-        findAll: async (_options?: any) => [],
+        findBy: async (_criteria: Partial<any>, _options?: unknown) => [],
+        findAll: async (_options?: unknown) => [],
         create: async (_entity: Omit<any, 'id'>) => ({
           id: 'mock-id',
           name: 'mock-session',
@@ -94,7 +94,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
         delete: async (_id: string | number) => true,
         count: async (_criteria?: Partial<any>) => 0,
         exists: async (_id: string | number) => false,
-        executeCustomQuery: async (_query: any) => null,
+        executeCustomQuery: async (_query: unknown) => null,
         // Coordination methods
         acquireLock: async (_resourceId: string, _lockTimeout?: number) => ({
           id: 'mock-lock',
@@ -104,10 +104,10 @@ export class SessionEnabledSwarm extends ZenSwarm {
           owner: 'mock-session-integration',
         }),
         releaseLock: async (_lockId: string) => {},
-        subscribe: async (_pattern: string, _callback: any) =>
+        subscribe: async (_pattern: string, _callback: unknown) =>
           `mock-sub-${Date.now()}`,
         unsubscribe: async (_subscriptionId: string) => {},
-        publish: async (_channel: string, _event: any) => {},
+        publish: async (_channel: string, _event: unknown) => {},
         getCoordinationStats: async () => ({
           activeLocks: 0,
           activeSubscriptions: 0,
@@ -165,7 +165,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
     const sessionId = await this.sessionManager.createSession(
       sessionName,
       this.options,
-      currentState,
+      currentState
     );
 
     this.currentSessionId = sessionId;
@@ -227,7 +227,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
     const checkpointId = await this.sessionManager.createCheckpoint(
       this.currentSessionId,
-      description || 'Manual checkpoint',
+      description || 'Manual checkpoint'
     );
 
     this.emit('session:checkpoint_created' as SwarmEvent, {
@@ -251,12 +251,12 @@ export class SessionEnabledSwarm extends ZenSwarm {
 
     await this.sessionManager.restoreFromCheckpoint(
       this.currentSessionId,
-      checkpointId,
+      checkpointId
     );
 
     // Reload the session to get the restored state
     const session = await this.sessionManager.loadSession(
-      this.currentSessionId,
+      this.currentSessionId
     );
     await this.restoreFromSessionState(session);
 
@@ -338,7 +338,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
    *
    * @param filter
    */
-  async listSessions(filter?: any): Promise<SessionState[]> {
+  async listSessions(filter?: unknown): Promise<SessionState[]> {
     if (!this.sessionIntegrationEnabled) {
       throw new Error('Session integration not enabled. Call init() first.');
     }
@@ -362,9 +362,9 @@ export class SessionEnabledSwarm extends ZenSwarm {
    *
    * @param sessionId
    */
-  async getSessionStats(sessionId?: string): Promise<Record<string, any>> {
+  async getSessionStats(sessionId?: string): Promise<Record<string, unknown>> {
     return this.sessionManager.getSessionStats(
-      sessionId || this.currentSessionId,
+      sessionId || this.currentSessionId
     );
   }
 
@@ -389,7 +389,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             operation: 'addAgent',
             agentId,
           });
-        }),
+        })
       );
     }
 
@@ -417,7 +417,7 @@ export class SessionEnabledSwarm extends ZenSwarm {
             operation: 'submitTask',
             taskId,
           });
-        }),
+        })
       );
     }
 
@@ -617,7 +617,7 @@ export class SessionRecoveryService extends EventEmitter {
       // Attempt recovery using checkpoints
       const recoveredSession = await SessionRecovery.recoverSession(
         session,
-        session.checkpoints,
+        session.checkpoints
       );
 
       if (!recoveredSession) {
@@ -631,7 +631,7 @@ export class SessionRecoveryService extends EventEmitter {
       // Save recovered session
       await this.sessionManager.saveSession(
         sessionId,
-        recoveredSession.swarmState,
+        recoveredSession.swarmState
       );
 
       this.emit('recovery:completed', {
@@ -655,9 +655,9 @@ export class SessionRecoveryService extends EventEmitter {
   /**
    * Run health check on all sessions.
    */
-  async runHealthCheck(): Promise<Record<string, any>> {
+  async runHealthCheck(): Promise<Record<string, unknown>> {
     const sessions = await this.sessionManager.listSessions();
-    const healthReport: Record<string, any> = {
+    const healthReport: Record<string, unknown> = {
       total: sessions.length,
       healthy: 0,
       corrupted: 0,
@@ -706,8 +706,8 @@ export class SessionRecoveryService extends EventEmitter {
     const healthReport = await this.runHealthCheck();
 
     const autoRecoverySessions = healthReport['recoveryRecommendations']
-      ?.filter((rec: any) => rec.recommendation === 'automatic_recovery')
-      .map((rec: any) => rec.sessionId);
+      ?.filter((rec: unknown) => rec.recommendation === 'automatic_recovery')
+      .map((rec: unknown) => rec.sessionId);
 
     this.emit('auto_recovery:scheduled', {
       sessions: autoRecoverySessions,
@@ -746,7 +746,7 @@ export class SessionRecoveryService extends EventEmitter {
 export function createSessionEnabledSwarm(
   swarmOptions?: SwarmOptions,
   sessionConfig?: SessionConfig,
-  persistence?: SessionCoordinationDao,
+  persistence?: SessionCoordinationDao
 ): SessionEnabledSwarm {
   return new SessionEnabledSwarm(swarmOptions, sessionConfig, persistence);
 }

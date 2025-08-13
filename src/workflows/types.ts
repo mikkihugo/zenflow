@@ -44,12 +44,12 @@ export interface WorkflowExecution {
   endTime?: string;
   currentStep: number;
   totalSteps: number;
-  results: Record<string, any>;
+  results: Record<string, unknown>;
   metrics: {
     duration?: number;
     stepsCompleted: number;
     stepsFailed: number;
-    resourcesUsed: Record<string, any>;
+    resourcesUsed: Record<string, unknown>;
   };
 }
 
@@ -70,6 +70,6 @@ export interface WorkflowEvent {
     | 'step.failed';
   workflowId: string;
   stepIndex?: number;
-  data?: Record<string, any>;
+  data?: Record<string, unknown>;
   timestamp: string;
 }

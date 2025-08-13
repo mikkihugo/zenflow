@@ -15,7 +15,7 @@ export interface ConnectionEvent {
   connectionId: string;
   event: string;
   timestamp: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   memoryUsage: NodeJS.MemoryUsage;
   cpuUsage: NodeJS.CpuUsage;
   duration?: number;
@@ -72,7 +72,7 @@ export class ConnectionDiagnostics {
   private maxHistorySize: number;
   private activeConnections: Map<
     string,
-    { startTime: number; [key: string]: any }
+    { startTime: number; [key: string]: unknown }
   >;
 
   constructor(logger?: LoggerInterface | null) {
@@ -93,7 +93,7 @@ export class ConnectionDiagnostics {
   recordEvent(
     connectionId: string,
     event: string,
-    details: Record<string, any> = {},
+    details: Record<string, unknown> = {}
   ): ConnectionEvent {
     const timestamp = new Date().toISOString();
     const entry = {
@@ -138,7 +138,7 @@ export class ConnectionDiagnostics {
         acc[event['event']] = (acc[event['event']] || 0) + 1;
         return acc;
       },
-      {},
+      {}
     );
 
     const failures = this.connectionHistory.filter((e) => e.event === 'failed');
@@ -169,7 +169,7 @@ export class ConnectionDiagnostics {
         acc[error] = (acc[error] || 0) + 1;
         return acc;
       },
-      {},
+      {}
     );
 
     // Find time patterns
@@ -234,7 +234,7 @@ export class ConnectionDiagnostics {
    */
   generateRecommendations(
     summary: ConnectionSummary,
-    patterns: PatternAnalysis,
+    patterns: PatternAnalysis
   ): Recommendation[] {
     const recommendations: Recommendation[] = [];
 
@@ -276,7 +276,7 @@ export interface OperationData {
   name: string;
   startTime: number;
   startMemory: NodeJS.MemoryUsage;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   endTime?: number;
   duration?: number;
   success?: boolean;
@@ -315,7 +315,7 @@ export class PerformanceDiagnostics {
    * @param name
    * @param metadata
    */
-  startOperation(name: string, metadata: Record<string, any> = {}): string {
+  startOperation(name: string, metadata: Record<string, unknown> = {}): string {
     const id = `${name}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     this.operations.set(id, {
       name,
@@ -622,7 +622,7 @@ export class DiagnosticsManager {
    * @param outputPath
    */
   async generateFullReport(
-    outputPath: string | null = null,
+    outputPath: string | null = null
   ): Promise<FullDiagnosticReport> {
     const report = {
       timestamp: new Date().toISOString(),

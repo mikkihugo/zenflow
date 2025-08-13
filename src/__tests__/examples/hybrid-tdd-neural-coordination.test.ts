@@ -32,7 +32,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         weights: neuralSuite.math.generateMatrix(4, 2),
         biases: neuralSuite.math.generateMatrix(4, 1),
 
-        train: (data: any[], config: any) => {
+        train: (data: unknown[], config: unknown) => {
           const errors: number[] = [];
           for (let epoch = 0; epoch < config?.epochs; epoch++) {
             let epochError = 0;
@@ -41,7 +41,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
               const prediction = mockNetwork.predict(sample.input);
               const error = neuralSuite.math.calculateMSE(
                 prediction,
-                sample.output,
+                sample.output
               );
               epochError += error;
             }
@@ -72,20 +72,20 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Classical TDD assertions: Verify actual results
       neuralSuite.validator.validateConvergence(
         result?.errors,
-        neuralSuite.config,
+        neuralSuite.config
       );
       expect(result?.converged).toBe(true);
 
       // Test predictions on training data
       const predictions = trainingData?.map((sample) =>
-        mockNetwork.predict(sample.input),
+        mockNetwork.predict(sample.input)
       );
       const expectedOutputs = trainingData?.map((sample) => sample.output);
 
       const accuracy = neuralSuite.validator.validatePredictionAccuracy(
         predictions,
         expectedOutputs,
-        0.2, // Allow higher tolerance for this demo
+        0.2 // Allow higher tolerance for this demo
       );
 
       expect(accuracy.accuracy).toBeGreaterThan(0.75); // 75% accuracy threshold
@@ -106,7 +106,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         // Verify computation is deterministic
         const result2 = neuralSuite.math.matrixMultiply(matrix1, matrix2);
         expect(neuralSuite.math.compareMatrices(result, result2, 1e-10)).toBe(
-          true,
+          true
         );
       }, 1000); // Max 1 second for matrix multiplication
       expect(performanceResult).toBeLessThan(1000);
@@ -191,7 +191,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Validate protocol compliance
       CoordinationProtocolValidator.validateCoordinationPattern(
         interactions,
-        'broadcast',
+        'broadcast'
       );
     });
 
@@ -205,7 +205,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Test error detection
       const statusResult = swarm.coordinator('status', {});
       const failedAgent = statusResult?.agents?.find(
-        (agent: any) => agent.id === 'agent-1',
+        (agent: unknown) => agent.id === 'agent-1'
       );
 
       expect(failedAgent).toBeDefined();
@@ -223,7 +223,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Verify error handling interactions
       const interactions = coordinationSuite.builder.getInteractions();
       const errorInteractions = interactions.filter(
-        (i) => i.action === 'status' || i.data?.type === 'error',
+        (i) => i.action === 'status' || i.data?.type === 'error'
       );
 
       expect(errorInteractions.length).toBeGreaterThan(0);
@@ -259,7 +259,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         return { success: true };
       });
 
-      mocks['message-router']?.mockImplementation((_message: any) => {
+      mocks['message-router']?.mockImplementation((_message: unknown) => {
         return { delivered: true, timestamp: Date.now() };
       });
 
@@ -272,7 +272,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
       // Step 2: Distribute training data (London - test message routing)
       const distributionResult = mocks['coordination-protocol'](
-        'distribute_training',
+        'distribute_training'
       );
       expect(distributionResult?.distributed).toBe(true);
 
@@ -310,7 +310,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Step 5: Verify coordination interactions (London - verify interactions)
       expect(mocks['coordination-protocol']).toHaveBeenCalledWith('initialize');
       expect(mocks['coordination-protocol']).toHaveBeenCalledWith(
-        'distribute_training',
+        'distribute_training'
       );
       expect(mocks['message-router']).toHaveBeenCalledTimes(3);
 

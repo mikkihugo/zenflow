@@ -358,7 +358,7 @@ class NeuralAgent {
 
     const totalTime = this.experience.reduce(
       (sum, e) => sum + e.executionTime,
-      0,
+      0
     );
     this.performance.averageTime = totalTime / this.experience.length;
   }
@@ -377,7 +377,7 @@ class NeuralAgent {
     const targets = this.experience.map((e) => {
       // Create target output based on success
       const target = new Array(
-        this.network.layers[this.network.layers.length - 1],
+        this.network.layers[this.network.layers.length - 1]
       ).fill(0.1);
       if (e.success) {
         const maxIndex = e.output.indexOf(Math.max(...e.output));
@@ -414,7 +414,7 @@ class NeuralAgent {
           (sum, layer) =>
             sum +
             layer.reduce((layerSum, neuron) => layerSum + neuron.length, 0),
-          0,
+          0
         ),
       },
       recentDecisions: this.experience.slice(-5).map((e) => ({
@@ -450,7 +450,7 @@ class SwarmIntelligence {
           ...e,
           agentId: agent.id,
           agentType: agent.type,
-        })),
+        }))
       );
     }
 
@@ -532,7 +532,7 @@ class SwarmIntelligence {
 
     const targets = patterns.map((p) => {
       const target = new Array(
-        this.swarmNetwork.layers[this.swarmNetwork.layers.length - 1],
+        this.swarmNetwork.layers[this.swarmNetwork.layers.length - 1]
       ).fill(0.1);
       target[p.recommendation === 'preferred' ? 0 : 1] = 0.9;
       return target;
@@ -559,7 +559,7 @@ class SwarmIntelligence {
 
     // Historical performance
     const relevantPattern = Array.from(this.sharedKnowledge.values()).find(
-      (p) => p.id.includes(task.type),
+      (p) => p.id.includes(task.type)
     );
 
     if (relevantPattern) {
@@ -687,7 +687,7 @@ async function runNeuralIntegrationTests() {
     // More realistic assertion - improvement should be positive OR final error should be low
     assert(
       improvement > 0 || finalError < 0.5,
-      `Training should show improvement or converge: improvement=${improvement.toFixed(4)}, finalError=${finalError.toFixed(4)}`,
+      `Training should show improvement or converge: improvement=${improvement.toFixed(4)}, finalError=${finalError.toFixed(4)}`
     );
   });
 
@@ -743,7 +743,7 @@ async function runNeuralIntegrationTests() {
     assert(typeof learningResult.improvement === 'number');
     assert(
       learningResult.improvement >= 0,
-      `Improvement should be non-negative: ${learningResult.improvement}`,
+      `Improvement should be non-negative: ${learningResult.improvement}`
     );
   });
 
@@ -764,7 +764,7 @@ async function runNeuralIntegrationTests() {
     assert.strictEqual(insights.performance.tasksCompleted, 5);
     assert(
       insights.performance.successRate >= 0 &&
-        insights.performance.successRate <= 1,
+        insights.performance.successRate <= 1
     );
     assert(insights.performance.averageTime > 0);
     assert(insights.recentDecisions.length <= 5);
@@ -779,7 +779,7 @@ async function runNeuralIntegrationTests() {
       const agent = new NeuralAgent(
         uuidv4(),
         ['researcher', 'coder', 'analyst'][i % 3],
-        {},
+        {}
       );
       swarm.addAgent(agent);
     }
@@ -942,8 +942,8 @@ async function runNeuralIntegrationTests() {
         new NeuralAgent(
           uuidv4(),
           ['researcher', 'coder', 'analyst', 'optimizer'][i % 4],
-          {},
-        ),
+          {}
+        )
       );
     }
 
@@ -954,7 +954,7 @@ async function runNeuralIntegrationTests() {
         id: uuidv4(),
         type: 'analysis',
         priority: 'high',
-      }),
+      })
     );
 
     const results = await Promise.all(promises);

@@ -33,7 +33,7 @@ export const WorkflowUtils = {
    * @param name
    * @param steps
    */
-  createWorkflow: (name: string, steps: any[]): any => ({
+  createWorkflow: (name: string, steps: unknown[]): unknown => ({
     name,
     steps,
     version: '1.0.0',
@@ -62,9 +62,9 @@ export const WorkflowUtils = {
    */
   createTransformStep: (
     input: string,
-    transformation: any,
+    transformation: unknown,
     output?: string,
-    name?: string,
+    name?: string
   ) => ({
     type: 'transform',
     name: name || 'Transform Data',
@@ -82,9 +82,9 @@ export const WorkflowUtils = {
    */
   createConditionStep: (
     condition: string,
-    thenStep: any,
-    elseStep?: any,
-    name?: string,
+    thenStep: unknown,
+    elseStep?: unknown,
+    name?: string
   ) => ({
     type: 'condition',
     name: name || 'Conditional Step',
@@ -97,7 +97,7 @@ export const WorkflowUtils = {
    * @param tasks
    * @param name
    */
-  createParallelStep: (tasks: any[], name?: string) => ({
+  createParallelStep: (tasks: unknown[], name?: string) => ({
     type: 'parallel',
     name: name || 'Parallel Execution',
     params: { tasks },
@@ -110,7 +110,7 @@ export const WorkflowUtils = {
    * @param step
    * @param name
    */
-  createLoopStep: (items: string, step: any, name?: string) => ({
+  createLoopStep: (items: string, step: unknown, name?: string) => ({
     type: 'loop',
     name: name || 'Loop',
     params: { items, step },
@@ -121,13 +121,13 @@ export const WorkflowUtils = {
    *
    * @param workflow
    */
-  validateWorkflow: (workflow: any): boolean => {
+  validateWorkflow: (workflow: unknown): boolean => {
     if (!(workflow.name && workflow.steps && Array.isArray(workflow.steps))) {
       return false;
     }
 
     return workflow.steps.every(
-      (step: any) => step.type && typeof step.type === 'string',
+      (step: unknown) => step.type && typeof step.type === 'string'
     );
   },
 
@@ -154,8 +154,8 @@ export class WorkflowFactory {
    * @param instanceKey
    */
   static getInstance(
-    config: any = {},
-    instanceKey = 'default',
+    config: unknown = {},
+    instanceKey = 'default'
   ): WorkflowEngine {
     if (!WorkflowFactory.instances.has(instanceKey)) {
       const engine = new WorkflowEngine(config);

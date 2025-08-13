@@ -89,7 +89,7 @@ export async function unifiedIntegrationExample(): Promise<void> {
     };
     await memorySystem.backends['cache']?.store(
       `swarm:${swarmId}:metadata`,
-      swarmMetadata,
+      swarmMetadata
     );
 
     // Use semantic memory to store swarm context
@@ -99,7 +99,7 @@ export async function unifiedIntegrationExample(): Promise<void> {
       domain: 'system integration',
     });
     for (const [name, spec] of Object.entries(
-      memorySystem.metrics.performance,
+      memorySystem.metrics.performance
     )) {
     }
     const healthChecks = await Promise.allSettled([
@@ -131,11 +131,11 @@ function registerCoreServices(container: DIContainer): void {
   container.register(CORE_TOKENS.Logger, {
     type: 'singleton',
     create: () => ({
-      debug: (msg: string, meta?: any) => {},
-      info: (msg: string, meta?: any) => {},
-      warn: (msg: string, meta?: any) =>
+      debug: (msg: string, meta?: unknown) => {},
+      info: (msg: string, meta?: unknown) => {},
+      warn: (msg: string, meta?: unknown) =>
         console.warn(`[WARN] ${msg}`, meta || ''),
-      error: (msg: string, meta?: any) =>
+      error: (msg: string, meta?: unknown) =>
         console.error(`[ERROR] ${msg}`, meta || ''),
     }),
   });
@@ -146,7 +146,7 @@ function registerCoreServices(container: DIContainer): void {
     create: () => ({
       get: <T>(key: string, defaultValue?: T): T => {
         // Simple config implementation
-        const configs: Record<string, any> = {
+        const configs: Record<string, unknown> = {
           'database.sqlite.path': './example-data/database.db',
           'database.kuzu.path': './example-data/graph.kuzu',
           'database.lancedb.path': './example-data/vectors.lance',
@@ -155,7 +155,7 @@ function registerCoreServices(container: DIContainer): void {
         };
         return configs?.[key as keyof typeof obj] ?? defaultValue;
       },
-      set: (key: string, value: any) => {},
+      set: (key: string, value: unknown) => {},
       has: (key: string) =>
         key.startsWith('database.') ||
         key.startsWith('memory.') ||
@@ -177,7 +177,7 @@ function registerDatabaseServices(container: DIContainer): void {
     create: (container) =>
       new DatabaseProviderFactory(
         container.resolve(CORE_TOKENS.Logger),
-        container.resolve(CORE_TOKENS.Config),
+        container.resolve(CORE_TOKENS.Config)
       ),
   });
 
@@ -189,8 +189,8 @@ function registerDatabaseServices(container: DIContainer): void {
         container.resolve(CORE_TOKENS.Logger),
         container.resolve(CORE_TOKENS.Config),
         container.resolve(
-          DATABASE_TOKENS?.ProviderFactory,
-        ) as DatabaseProviderFactory,
+          DATABASE_TOKENS?.ProviderFactory
+        ) as DatabaseProviderFactory
       ),
   });
 }
@@ -217,7 +217,7 @@ export async function specializedUsageExamples(): Promise<void> {
   const apiResponse = { data: 'expensive computation result', cached: true };
   await memorySystem.backends['cache']?.store(
     'api:expensive-call',
-    apiResponse,
+    apiResponse
   );
   const _cachedResult =
     await memorySystem.backends['cache']?.retrieve('api:expensive-call');

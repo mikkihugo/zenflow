@@ -152,13 +152,13 @@ class NeuralNetwork {
   private activationFunction: string;
   private learningRate: number;
   private momentum: number;
-  private memoryOptimizer: any;
+  private memoryOptimizer: unknown;
   private weights: number[][][];
   private biases: number[][];
   private previousWeightDeltas: number[][][];
-  private memoryAllocations: any[];
+  private memoryAllocations: unknown[];
 
-  constructor(config: NeuralNetworkConfig, memoryOptimizer: any = null) {
+  constructor(config: NeuralNetworkConfig, memoryOptimizer: unknown = null) {
     this.config = config;
     this.layers = config?.networkLayers;
     this.activationFunction = config?.activationFunction;
@@ -197,12 +197,12 @@ class NeuralNetwork {
         const weightAlloc = this.memoryOptimizer.allocateFromPool(
           'weights',
           weightSize,
-          this.config.cognitivePattern || 'default',
+          this.config.cognitivePattern || 'default'
         );
         const biasAlloc = this.memoryOptimizer.allocateFromPool(
           'weights',
           biasSize,
-          this.config.cognitivePattern || 'default',
+          this.config.cognitivePattern || 'default'
         );
 
         if (weightAlloc && biasAlloc) {
@@ -215,14 +215,14 @@ class NeuralNetwork {
         outputSize,
         inputSize,
         -limit,
-        limit,
+        limit
       );
       this.biases[i] = this._createVector(outputSize, -0.1, 0.1);
       this.previousWeightDeltas[i] = this._createMatrix(
         outputSize,
         inputSize,
         0,
-        0,
+        0
       );
     }
   }
@@ -231,7 +231,7 @@ class NeuralNetwork {
     rows: number,
     cols: number,
     min: number,
-    max: number,
+    max: number
   ): number[][] {
     const matrix: number[][] = [];
     for (let i = 0; i < rows; i++) {
@@ -424,10 +424,10 @@ class NeuralNetwork {
  * @example
  */
 class NeuralAgent extends EventEmitter {
-  private agent: any;
+  private agent: unknown;
   private agentType: string;
   private cognitiveProfile: CognitiveProfile;
-  private memoryOptimizer: any;
+  private memoryOptimizer: unknown;
   private neuralNetwork: NeuralNetwork;
   private learningHistory: LearningHistoryEntry[];
   private taskHistory: TaskHistoryEntry[];
@@ -435,7 +435,7 @@ class NeuralAgent extends EventEmitter {
   private cognitiveState: CognitiveState;
   private memoryUsage: MemoryUsage;
 
-  constructor(agent: any, agentType: string, memoryOptimizer: any = null) {
+  constructor(agent: unknown, agentType: string, memoryOptimizer: unknown = null) {
     super();
     this.agent = agent;
     this.agentType = agentType;
@@ -494,7 +494,7 @@ class NeuralAgent extends EventEmitter {
    *
    * @param task
    */
-  async analyzeTask(task: Task): Promise<any> {
+  async analyzeTask(task: Task): Promise<unknown> {
     // Convert task to neural input vector
     const inputVector = this._taskToVector(task);
 
@@ -570,7 +570,7 @@ class NeuralAgent extends EventEmitter {
       description.length / 1000, // Length normalized
       (description.match(/\b\w+\b/g) || []).length / 100, // Word count
       (description.match(/[A-Z]/g) || []).length / description.length, // Capitalization ratio
-      (description.match(/[0-9]/g) || []).length / description.length, // Numeric ratio
+      (description.match(/[0-9]/g) || []).length / description.length // Numeric ratio
     );
 
     // Task metadata
@@ -601,7 +601,7 @@ class NeuralAgent extends EventEmitter {
       this.cognitiveState.attention,
       this.cognitiveState.fatigue,
       this.cognitiveState.confidence,
-      this.cognitiveState.exploration,
+      this.cognitiveState.exploration
     );
 
     // Pad or truncate to expected input size
@@ -617,7 +617,7 @@ class NeuralAgent extends EventEmitter {
    *
    * @param analysis
    */
-  private _applyCognitivePattern(analysis: any): void {
+  private _applyCognitivePattern(analysis: unknown): void {
     const primary = this.cognitiveProfile.primary;
     const secondary = this.cognitiveProfile.secondary;
 
@@ -662,17 +662,17 @@ class NeuralAgent extends EventEmitter {
    *
    * @param analysis
    */
-  private _updateCognitiveState(analysis: any): void {
+  private _updateCognitiveState(analysis: unknown): void {
     // Fatigue increases with complexity
     this.cognitiveState.fatigue = Math.min(
       this.cognitiveState.fatigue + analysis.complexity * 0.1,
-      1.0,
+      1.0
     );
 
     // Attention decreases with fatigue
     this.cognitiveState.attention = Math.max(
       1.0 - this.cognitiveState.fatigue * 0.5,
-      0.3,
+      0.3
     );
 
     // Confidence adjusts based on recent performance
@@ -700,8 +700,8 @@ class NeuralAgent extends EventEmitter {
   private _calculatePerformance(
     _task: Task,
     result: TaskResult,
-    executionTime: number,
-  ): any {
+    executionTime: number
+  ): unknown {
     const performance = {
       speed: Math.max(0, 1 - executionTime / 60000), // Normalize to 1 minute
       accuracy: result?.success ? 0.8 : 0.2,
@@ -715,7 +715,7 @@ class NeuralAgent extends EventEmitter {
       if (result?.metrics?.linesOfCode) {
         performance.efficiency = Math.min(
           1.0,
-          100 / result?.metrics?.linesOfCode,
+          100 / result?.metrics?.linesOfCode
         );
       }
       if (result?.metrics?.testsPass) {
@@ -743,7 +743,7 @@ class NeuralAgent extends EventEmitter {
   private async _learnFromExecution(
     task: Task,
     result: TaskResult,
-    performance: any,
+    performance: unknown
   ): Promise<void> {
     // Prepare training data
     const input = this._taskToVector(task);
@@ -789,7 +789,7 @@ class NeuralAgent extends EventEmitter {
    *
    * @param performance
    */
-  private _updatePerformanceMetrics(performance: any): void {
+  private _updatePerformanceMetrics(performance: unknown): void {
     const alpha = 0.1; // Learning rate for exponential moving average
 
     this.performanceMetrics.accuracy =
@@ -835,13 +835,13 @@ class NeuralAgent extends EventEmitter {
 
       // Description similarity (simple word overlap)
       const currentWords = new Set(
-        (task.description || '').toLowerCase().split(/\s+/),
+        (task.description || '').toLowerCase().split(/\s+/)
       );
       const historicalWords = new Set(
-        (historicalTask.task.description || '').toLowerCase().split(/\s+/),
+        (historicalTask.task.description || '').toLowerCase().split(/\s+/)
       );
       const intersection = new Set(
-        [...currentWords].filter((x) => historicalWords.has(x)),
+        [...currentWords].filter((x) => historicalWords.has(x))
       );
       const union = new Set([...currentWords, ...historicalWords]);
       if (union.size > 0) {
@@ -869,8 +869,8 @@ class NeuralAgent extends EventEmitter {
    * @param pattern
    */
   private _applySecondaryPattern(
-    analysis: any,
-    pattern: CognitivePattern,
+    analysis: unknown,
+    pattern: CognitivePattern
   ): void {
     const influence = 0.5; // Secondary patterns have less influence
 
@@ -912,11 +912,11 @@ class NeuralAgent extends EventEmitter {
       setTimeout(async () => {
         this.cognitiveState.fatigue = Math.max(
           0,
-          this.cognitiveState.fatigue - 0.3,
+          this.cognitiveState.fatigue - 0.3
         );
         this.cognitiveState.attention = Math.min(
           1.0,
-          this.cognitiveState.attention + 0.2,
+          this.cognitiveState.attention + 0.2
         );
 
         // Perform garbage collection on memory pools during rest
@@ -988,7 +988,7 @@ class NeuralAgent extends EventEmitter {
   /**
    * Get agent status including neural state.
    */
-  getStatus(): any {
+  getStatus(): unknown {
     return {
       ...this.agent,
       neuralState: {
@@ -1010,7 +1010,7 @@ class NeuralAgent extends EventEmitter {
   /**
    * Save neural state for persistence.
    */
-  saveNeuralState(): any {
+  saveNeuralState(): unknown {
     return {
       agentType: this.agentType,
       neuralNetwork: this.neuralNetwork.save(),
@@ -1026,7 +1026,7 @@ class NeuralAgent extends EventEmitter {
    *
    * @param data
    */
-  loadNeuralState(data: any): void {
+  loadNeuralState(data: unknown): void {
     if (data?.neuralNetwork) {
       this.neuralNetwork.load(data?.neuralNetwork);
     }
@@ -1051,7 +1051,7 @@ class NeuralAgent extends EventEmitter {
  * @example
  */
 class NeuralAgentFactory {
-  private static memoryOptimizer: any = null;
+  private static memoryOptimizer: unknown = null;
 
   static async initializeFactory(): Promise<void> {
     if (!NeuralAgentFactory.memoryOptimizer) {
@@ -1064,7 +1064,7 @@ class NeuralAgentFactory {
     }
   }
 
-  static createNeuralAgent(baseAgent: any, agentType: string): NeuralAgent {
+  static createNeuralAgent(baseAgent: unknown, agentType: string): NeuralAgent {
     if (!AGENT_COGNITIVE_PROFILES[agentType]) {
       throw new Error(`Unknown agent type: ${agentType}`);
     }
@@ -1073,7 +1073,7 @@ class NeuralAgentFactory {
     return new NeuralAgent(
       baseAgent,
       agentType,
-      NeuralAgentFactory.memoryOptimizer,
+      NeuralAgentFactory.memoryOptimizer
     );
   }
 

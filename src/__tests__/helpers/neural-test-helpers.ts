@@ -33,11 +33,11 @@ export class NeuralTestDataGenerator {
   generateRandomVector(
     size: number,
     min: number = -1,
-    max: number = 1,
+    max: number = 1
   ): number[] {
     return Array.from(
       { length: size },
-      () => Math.random() * (max - min) + min,
+      () => Math.random() * (max - min) + min
     );
   }
 
@@ -53,10 +53,10 @@ export class NeuralTestDataGenerator {
     batchSize: number,
     featureSize: number,
     min: number = -1,
-    max: number = 1,
+    max: number = 1
   ): number[][] {
     return Array.from({ length: batchSize }, () =>
-      this.generateRandomVector(featureSize, min, max),
+      this.generateRandomVector(featureSize, min, max)
     );
   }
 
@@ -95,7 +95,7 @@ export class NeuralTestDataGenerator {
    */
   static generateLinearData(
     samples: number,
-    noise: number = 0.1,
+    noise: number = 0.1
   ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
     for (let i = 0; i < samples; i++) {
@@ -120,12 +120,12 @@ export class NeuralTestDataGenerator {
   static generatePolynomialData(
     samples: number,
     degree: number = 2,
-    noise: number = 0.1,
+    noise: number = 0.1
   ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
     const coefficients = Array.from(
       { length: degree + 1 },
-      () => Math.random() * 2 - 1,
+      () => Math.random() * 2 - 1
     );
 
     for (let i = 0; i < samples; i++) {
@@ -153,7 +153,7 @@ export class NeuralTestDataGenerator {
    */
   static generateSpiralData(
     samplesPerClass: number = 50,
-    classes: number = 2,
+    classes: number = 2
   ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
 
@@ -194,7 +194,7 @@ export class NeuralTestDataGenerator {
   static generateTimeSeriesData(
     length: number,
     frequency: number = 1,
-    noise: number = 0.1,
+    noise: number = 0.1
   ): NeuralTestData[] {
     const data: NeuralTestData[] = [];
 
@@ -248,7 +248,7 @@ export class NeuralNetworkValidator {
    */
   static validateConvergence(
     errors: number[],
-    config: TrainingTestConfig,
+    config: TrainingTestConfig
   ): { converged: boolean; finalError: number; epochs: number } {
     const finalError = errors[errors.length - 1];
     const converged = finalError < config?.convergenceThreshold;
@@ -278,7 +278,7 @@ export class NeuralNetworkValidator {
   static validatePredictionAccuracy(
     predictions: number[][],
     expected: number[][],
-    tolerance: number = 1e-6,
+    tolerance: number = 1e-6
   ): { accuracy: number; errors: number[] } {
     expect(predictions).toHaveLength(expected.length);
 
@@ -290,7 +290,7 @@ export class NeuralNetworkValidator {
 
       const error = NeuralNetworkValidator.calculateMSE(
         predictions[i],
-        expected[i],
+        expected[i]
       );
       errors.push(error);
 
@@ -312,7 +312,7 @@ export class NeuralNetworkValidator {
    */
   static validateWeightInitialization(
     weights: number[][],
-    method: 'xavier' | 'he' | 'random',
+    method: 'xavier' | 'he' | 'random'
   ): void {
     const flatWeights = weights.flat();
     const mean =
@@ -385,7 +385,7 @@ export class NeuralPerformanceTester {
    */
   static async benchmarkTraining(
     trainingFunction: () => Promise<void>,
-    expectedMaxTime: number,
+    expectedMaxTime: number
   ): Promise<{ duration: number; withinExpected: boolean }> {
     const start = Date.now();
     await trainingFunction();
@@ -407,7 +407,7 @@ export class NeuralPerformanceTester {
   static benchmarkPrediction(
     predictionFunction: () => number[],
     iterations: number,
-    expectedMaxTimePerPrediction: number,
+    expectedMaxTimePerPrediction: number
   ): { avgTime: number; totalTime: number; withinExpected: boolean } {
     const times: number[] = [];
 
@@ -435,7 +435,7 @@ export class NeuralPerformanceTester {
    */
   static validateMemoryUsage(
     networkFunction: () => void,
-    maxMemoryIncreaseMB: number,
+    maxMemoryIncreaseMB: number
   ): { memoryIncrease: number; withinLimit: boolean } {
     if (!global.gc) {
       console.warn('Garbage collection not available, skipping memory test');
@@ -470,7 +470,7 @@ export class NeuralMathHelpers {
   static generateMatrix(
     rows: number,
     cols: number,
-    fillType: 'random' | 'zeros' | 'ones' | 'identity' = 'random',
+    fillType: 'random' | 'zeros' | 'ones' | 'identity' = 'random'
   ): number[][] {
     const matrix: number[][] = [];
 
@@ -553,7 +553,7 @@ export class NeuralMathHelpers {
   static numericalGradient(
     f: (x: number) => number,
     x: number,
-    h: number = 1e-5,
+    h: number = 1e-5
   ): number {
     return (f(x + h) - f(x - h)) / (2 * h);
   }
@@ -568,7 +568,7 @@ export class NeuralMathHelpers {
   static compareMatrices(
     a: number[][],
     b: number[][],
-    tolerance: number = 1e-10,
+    tolerance: number = 1e-10
   ): boolean {
     if (a.length !== b.length) return false;
 

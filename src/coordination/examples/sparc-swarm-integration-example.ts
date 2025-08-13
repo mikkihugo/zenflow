@@ -45,13 +45,13 @@ export class SPARCSwarmIntegrationExample {
 
     this.databaseSystem = new DatabaseDrivenSystem(
       documentService,
-      workflowEngine,
+      workflowEngine
     );
     this.sparcSwarm = new SPARCSwarmCoordinator();
     this.bridge = new DatabaseSPARCBridge(
       this.databaseSystem,
       documentService,
-      this.sparcSwarm,
+      this.sparcSwarm
     );
     this.taskCoordinator = TaskCoordinator.getInstance();
   }
@@ -82,7 +82,7 @@ export class SPARCSwarmIntegrationExample {
       await this.monitorResults(assignmentId);
 
       logger.info(
-        '✅ SPARC-Swarm Integration Demonstration completed successfully',
+        '✅ SPARC-Swarm Integration Demonstration completed successfully'
       );
     } catch (error) {
       logger.error('❌ Integration demonstration failed:', error);
@@ -111,7 +111,7 @@ export class SPARCSwarmIntegrationExample {
     // Initialize task coordinator with SPARC integration
     await this.taskCoordinator.initializeSPARCIntegration(
       this.bridge,
-      this.sparcSwarm,
+      this.sparcSwarm
     );
     logger.info('  ✅ Task coordinator SPARC integration initialized');
 
@@ -123,7 +123,7 @@ export class SPARCSwarmIntegrationExample {
    */
   private async createDemoWorkspace(): Promise<string> {
     logger.info(
-      '📁 Creating demo workspace with database-driven product flow...',
+      '📁 Creating demo workspace with database-driven product flow...'
     );
 
     const workspaceId = await this.databaseSystem.createProjectWorkspace({
@@ -145,7 +145,7 @@ export class SPARCSwarmIntegrationExample {
    * @param workspaceId
    */
   private async createDemoFeature(
-    workspaceId: string,
+    workspaceId: string
   ): Promise<FeatureDocumentEntity> {
     logger.info('🎯 Creating demo feature in database-driven system...');
 
@@ -192,7 +192,7 @@ export class SPARCSwarmIntegrationExample {
             },
           ],
         },
-      },
+      }
     );
 
     // Generate features from vision (database-driven workflow)
@@ -200,7 +200,7 @@ export class SPARCSwarmIntegrationExample {
       await this.databaseSystem.generateDocumentsFromSource(
         workspaceId,
         feature.id,
-        'feature' as DocumentType,
+        'feature' as DocumentType
       );
 
     if (generatedFeatures.length === 0) {
@@ -220,7 +220,7 @@ export class SPARCSwarmIntegrationExample {
    * @param feature
    */
   private async assignFeatureToSparc(
-    feature: FeatureDocumentEntity,
+    feature: FeatureDocumentEntity
   ): Promise<string> {
     logger.info('🤖 Assigning feature to SPARC swarm...');
 
@@ -229,17 +229,17 @@ export class SPARCSwarmIntegrationExample {
     logger.info(`  ✅ Feature assigned to SPARC swarm: ${assignmentId}`);
     logger.info('  🔄 SPARC methodology phases will execute:');
     logger.info(
-      '    1. 📝 Specification - Requirements analysis and acceptance criteria',
+      '    1. 📝 Specification - Requirements analysis and acceptance criteria'
     );
     logger.info('    2. 📐 Pseudocode - Algorithm design and logic structure');
     logger.info(
-      '    3. 🏗️ Architecture - System design and component architecture',
+      '    3. 🏗️ Architecture - System design and component architecture'
     );
     logger.info(
-      '    4. 🔍 Refinement - Code review, optimization, and quality assurance',
+      '    4. 🔍 Refinement - Code review, optimization, and quality assurance'
     );
     logger.info(
-      '    5. 🎯 Completion - Testing, deployment, and final validation',
+      '    5. 🎯 Completion - Testing, deployment, and final validation'
     );
 
     return assignmentId;
@@ -251,7 +251,7 @@ export class SPARCSwarmIntegrationExample {
    * @param feature
    */
   private async demonstrateTaskCoordination(
-    feature: FeatureDocumentEntity,
+    feature: FeatureDocumentEntity
   ): Promise<void> {
     logger.info('🔧 Demonstrating task coordination with SPARC methodology...');
 
@@ -286,7 +286,7 @@ export class SPARCSwarmIntegrationExample {
     if (taskResult?.sparc_task_id) {
       logger.info(`    SPARC task ID: ${taskResult?.sparc_task_id}`);
       logger.info(
-        `    Artifacts generated: ${taskResult?.implementation_artifacts?.length || 0}`,
+        `    Artifacts generated: ${taskResult?.implementation_artifacts?.length || 0}`
       );
     }
   }
@@ -311,16 +311,16 @@ export class SPARCSwarmIntegrationExample {
     const workStatus = await this.bridge.getWorkStatus();
     logger.info('  📋 Work Status:');
     logger.info(
-      `    Total assignments: ${workStatus.metrics.totalAssignments}`,
+      `    Total assignments: ${workStatus.metrics.totalAssignments}`
     );
     logger.info(
-      `    Completed assignments: ${workStatus.metrics.completedAssignments}`,
+      `    Completed assignments: ${workStatus.metrics.completedAssignments}`
     );
     logger.info(
-      `    Success rate: ${(workStatus.metrics.successRate * 100).toFixed(1)}%`,
+      `    Success rate: ${(workStatus.metrics.successRate * 100).toFixed(1)}%`
     );
     logger.info(
-      `    Avg completion time: ${Math.round(workStatus.metrics.averageCompletionTime / 1000)}s`,
+      `    Avg completion time: ${Math.round(workStatus.metrics.averageCompletionTime / 1000)}s`
     );
 
     // Get SPARC metrics
@@ -328,10 +328,10 @@ export class SPARCSwarmIntegrationExample {
     logger.info('  🤖 SPARC Swarm Metrics:');
     logger.info(`    SPARC tasks total: ${sparcMetrics.sparcTasksTotal}`);
     logger.info(
-      `    SPARC tasks completed: ${sparcMetrics.sparcTasksCompleted}`,
+      `    SPARC tasks completed: ${sparcMetrics.sparcTasksCompleted}`
     );
     logger.info(
-      `    Average cycle time: ${Math.round(sparcMetrics.averageSparcCycleTime / 1000)}s`,
+      `    Average cycle time: ${Math.round(sparcMetrics.averageSparcCycleTime / 1000)}s`
     );
 
     // Get active SPARC tasks

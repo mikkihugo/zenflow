@@ -34,7 +34,7 @@ export class AssertionHelpers {
   toBeApproximately(
     actual: number,
     expected: number,
-    precision?: number,
+    precision?: number
   ): void {
     const actualPrecision = precision ?? this.options.precision!;
     const _message =
@@ -52,26 +52,26 @@ export class AssertionHelpers {
    */
   toMeetPerformanceThreshold(
     metrics: PerformanceMetrics,
-    thresholds: Partial<PerformanceMetrics>,
+    thresholds: Partial<PerformanceMetrics>
   ): void {
     if (thresholds.executionTime !== undefined) {
       const _message = `Execution time ${metrics.executionTime}ms exceeded threshold ${thresholds.executionTime}ms`;
       expect(metrics.executionTime).toBeLessThanOrEqual(
-        thresholds.executionTime,
+        thresholds.executionTime
       );
     }
 
     if (thresholds.memoryUsage?.heap !== undefined) {
       const _message = `Heap usage ${metrics.memoryUsage.heap} exceeded threshold ${thresholds.memoryUsage.heap}`;
       expect(metrics.memoryUsage.heap).toBeLessThanOrEqual(
-        thresholds.memoryUsage.heap,
+        thresholds.memoryUsage.heap
       );
     }
 
     if (thresholds.memoryUsage?.total !== undefined) {
       const _message = `Total memory ${metrics.memoryUsage.total} exceeded threshold ${thresholds.memoryUsage.total}`;
       expect(metrics.memoryUsage.total).toBeLessThanOrEqual(
-        thresholds.memoryUsage.total,
+        thresholds.memoryUsage.total
       );
     }
 
@@ -92,7 +92,7 @@ export class AssertionHelpers {
       setTimeout(
         () =>
           reject(new Error(`Promise did not resolve within ${timeoutMs}ms`)),
-        timeoutMs,
+        timeoutMs
       );
     });
 
@@ -109,7 +109,7 @@ export class AssertionHelpers {
    */
   async toEventuallyBeTrue(
     predicate: () => boolean | Promise<boolean>,
-    options: { timeout?: number; interval?: number } = {},
+    options: { timeout?: number; interval?: number } = {}
   ): Promise<void> {
     const timeout = options?.timeout || 5000;
     const interval = options?.interval || 100;
@@ -155,13 +155,13 @@ export class AssertionHelpers {
   toDeepEqualWith<T>(
     actual: T,
     expected: T,
-    customComparator?: (a: any, b: any, path: string) => boolean,
+    customComparator?: (a: unknown, b: unknown, path: string) => boolean
   ): void {
     if (customComparator) {
       const isEqual = this.deepEqualWithCustom(
         actual,
         expected,
-        customComparator,
+        customComparator
       );
       expect(isEqual).toBe(true);
     } else {
@@ -189,7 +189,7 @@ export class AssertionHelpers {
   toMatchPattern(
     actual: string,
     pattern: RegExp,
-    customMessage?: string,
+    customMessage?: string
   ): void {
     const _message =
       customMessage || `Expected "${actual}" to match pattern ${pattern}`;
@@ -211,7 +211,7 @@ export class AssertionHelpers {
       message?: string;
       code?: string | number;
       type?: string;
-    },
+    }
   ): void {
     expect(actual).toBeInstanceOf(Error);
 
@@ -236,7 +236,7 @@ export class AssertionHelpers {
    */
   async toThrowAsyncError<T>(
     operation: () => Promise<T>,
-    expectedError?: string | RegExp | Error,
+    expectedError?: string | RegExp | Error
   ): Promise<void> {
     try {
       await operation();
@@ -262,9 +262,9 @@ export class AssertionHelpers {
    * @param expectedHeaders
    */
   toBeHttpResponse(
-    response: any,
+    response: unknown,
     expectedStatus: number,
-    expectedHeaders?: Record<string, string>,
+    expectedHeaders?: Record<string, string>
   ): void {
     expect(response?.status).toBe(expectedStatus);
 
@@ -285,7 +285,7 @@ export class AssertionHelpers {
   toConvergeToTarget(
     trainingResults: { epoch: number; error: number }[],
     targetError: number,
-    maxEpochs?: number,
+    maxEpochs?: number
   ): void {
     const finalResult = trainingResults?.[trainingResults.length - 1];
 
@@ -299,7 +299,7 @@ export class AssertionHelpers {
     const errorReductions = trainingResults
       ?.slice(1)
       .filter(
-        (result, index) => result?.error < trainingResults?.[index]?.error,
+        (result, index) => result?.error < trainingResults?.[index]?.error
       );
 
     const reductionRatio =
@@ -318,13 +318,13 @@ export class AssertionHelpers {
    * @param expectedPatterns.completion
    */
   toHaveSwarmCoordination(
-    swarmMetrics: any,
+    swarmMetrics: unknown,
     expectedPatterns: {
       agentCount?: number;
       topology?: string;
       efficiency?: number;
       completion?: number;
-    },
+    }
   ): void {
     if (expectedPatterns.agentCount !== undefined) {
       expect(swarmMetrics.activeAgents).toBe(expectedPatterns.agentCount);
@@ -336,13 +336,13 @@ export class AssertionHelpers {
 
     if (expectedPatterns.efficiency !== undefined) {
       expect(swarmMetrics.efficiency).toBeGreaterThanOrEqual(
-        expectedPatterns.efficiency,
+        expectedPatterns.efficiency
       );
     }
 
     if (expectedPatterns.completion !== undefined) {
       expect(swarmMetrics.completionRate).toBeGreaterThanOrEqual(
-        expectedPatterns.completion,
+        expectedPatterns.completion
       );
     }
   }
@@ -354,8 +354,8 @@ export class AssertionHelpers {
    * @param expectedSequence
    */
   toHaveInteractionSequence(
-    mock: any,
-    expectedSequence: { method: string; args?: any[] }[],
+    mock: unknown,
+    expectedSequence: { method: string; args?: unknown[] }[]
   ): void {
     const interactions = mock.__interactions || [];
 
@@ -383,7 +383,7 @@ export class AssertionHelpers {
       | 'monotonic-increasing'
       | 'monotonic-decreasing'
       | 'convex'
-      | 'concave',
+      | 'concave'
   ): void {
     switch (property) {
       case 'monotonic-increasing':
@@ -419,10 +419,10 @@ export class AssertionHelpers {
   }
 
   private deepEqualWithCustom(
-    a: any,
-    b: any,
-    customComparator: (a: any, b: any, path: string) => boolean,
-    path: string = '',
+    a: unknown,
+    b: unknown,
+    customComparator: (a: unknown, b: unknown, path: string) => boolean,
+    path: string = ''
   ): boolean {
     if (customComparator(a, b, path)) {
       return true;
@@ -445,7 +445,7 @@ export class AssertionHelpers {
             a[key],
             b[key],
             customComparator,
-            `${path}.${key}`,
+            `${path}.${key}`
           )
         ) {
           return false;
@@ -470,28 +470,28 @@ export const assertionHelpers = new AssertionHelpers();
 export function expectApproximately(
   actual: number,
   expected: number,
-  precision?: number,
+  precision?: number
 ): void {
   assertionHelpers.toBeApproximately(actual, expected, precision);
 }
 
 export function expectPerformance(
   metrics: PerformanceMetrics,
-  thresholds: Partial<PerformanceMetrics>,
+  thresholds: Partial<PerformanceMetrics>
 ): void {
   assertionHelpers.toMeetPerformanceThreshold(metrics, thresholds);
 }
 
 export async function expectEventually(
   predicate: () => boolean | Promise<boolean>,
-  options?: { timeout?: number; interval?: number },
+  options?: { timeout?: number; interval?: number }
 ): Promise<void> {
   return assertionHelpers.toEventuallyBeTrue(predicate, options);
 }
 
 export function expectInteractionSequence(
-  mock: any,
-  sequence: { method: string; args?: any[] }[],
+  mock: unknown,
+  sequence: { method: string; args?: unknown[] }[]
 ): void {
   assertionHelpers.toHaveInteractionSequence(mock, sequence);
 }

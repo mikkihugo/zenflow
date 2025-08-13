@@ -45,7 +45,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -68,7 +68,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   /**
@@ -86,7 +86,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.agents.getAgent(agentId);
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -109,7 +109,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(204).send();
-    }),
+    })
   );
 
   // ===== TASK MANAGEMENT =====
@@ -134,7 +134,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(201).json(result);
-    }),
+    })
   );
 
   /**
@@ -152,7 +152,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.tasks.getTask(taskId);
       res.json(result);
-    }),
+    })
   );
 
   // ===== SWARM MANAGEMENT =====
@@ -168,7 +168,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.swarm.getConfig();
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -190,7 +190,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   // ===== HEALTH & METRICS =====
@@ -207,7 +207,7 @@ export const createCoordinationRoutes = (): Router => {
       // Set appropriate HTTP status based on health
       const statusCode = result?.status === 'healthy' ? 200 : 503;
       res.status(statusCode).json(result);
-    }),
+    })
   );
 
   /**
@@ -230,7 +230,7 @@ export const createCoordinationRoutes = (): Router => {
 
       const result = await CoordinationAPI.health.getMetrics(timeRange);
       res.json(result);
-    }),
+    })
   );
 
   // ===== ADVANCED COORDINATION ENDPOINTS =====
@@ -263,7 +263,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.status(202).json(result);
-    }),
+    })
   );
 
   /**
@@ -290,7 +290,7 @@ export const createCoordinationRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -322,7 +322,7 @@ export const createCoordinationRoutes = (): Router => {
       });
 
       res.json(result);
-    }),
+    })
   );
 
   /**
@@ -349,7 +349,7 @@ export const createCoordinationRoutes = (): Router => {
       };
 
       res.json(result);
-    }),
+    })
   );
 
   return router;

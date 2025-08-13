@@ -14,13 +14,13 @@ import {
 
 // Simple console logger to avoid circular dependencies
 const logger = {
-  debug: (message: string, meta?: any) =>
+  debug: (message: string, meta?: unknown) =>
     console.log(`[DEBUG] ${message}`, meta || ''),
-  info: (message: string, meta?: any) =>
+  info: (message: string, meta?: unknown) =>
     console.log(`[INFO] ${message}`, meta || ''),
-  warn: (message: string, meta?: any) =>
+  warn: (message: string, meta?: unknown) =>
     console.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: any) =>
+  error: (message: string, meta?: unknown) =>
     console.error(`[ERROR] ${message}`, meta || ''),
 };
 
@@ -102,7 +102,7 @@ export class AISafetyOrchestrator extends EventEmitter {
   private deceptionDetector: AIDeceptionDetector;
   private isMonitoring: boolean;
   private metrics: SafetyMetrics;
-  private _config: any;
+  private _config: unknown;
   private interventionHistory: Map<string, DeceptionAlert[]>;
 
   constructor() {
@@ -115,7 +115,7 @@ export class AISafetyOrchestrator extends EventEmitter {
     this.setupEventHandlers();
 
     logger.info(
-      '🛡️ AI Safety Orchestrator initialized with 3-phase coordination',
+      '🛡️ AI Safety Orchestrator initialized with 3-phase coordination'
     );
   }
 
@@ -130,7 +130,7 @@ export class AISafetyOrchestrator extends EventEmitter {
 
     this.isMonitoring = true;
     logger.info(
-      '🚨 AI Safety monitoring ACTIVE - 3-phase coordination protocol engaged',
+      '🚨 AI Safety monitoring ACTIVE - 3-phase coordination protocol engaged'
     );
 
     // Apply the proven coordination protocol
@@ -200,7 +200,7 @@ export class AISafetyOrchestrator extends EventEmitter {
     const startTime = Date.now();
 
     logger.info(
-      '⚡ Phase 1: Automated detection - scanning for immediate threats',
+      '⚡ Phase 1: Automated detection - scanning for immediate threats'
     );
 
     // Use existing coordination protocol proven effective
@@ -234,12 +234,12 @@ export class AISafetyOrchestrator extends EventEmitter {
    * @param phase1Result
    */
   private async runBehavioralAnalysis(
-    phase1Result: AutomatedDetectionResult,
+    phase1Result: AutomatedDetectionResult
   ): Promise<BehavioralAnalysisResult> {
     const startTime = Date.now();
 
     logger.info(
-      '🧠 Phase 2: Behavioral analysis - analyzing patterns and trends',
+      '🧠 Phase 2: Behavioral analysis - analyzing patterns and trends'
     );
 
     const analysisResult = {
@@ -273,12 +273,12 @@ export class AISafetyOrchestrator extends EventEmitter {
    */
   private async triggerHumanEscalation(
     phase1: AutomatedDetectionResult,
-    phase2: BehavioralAnalysisResult,
+    phase2: BehavioralAnalysisResult
   ): Promise<HumanEscalationResult> {
     const startTime = Date.now();
 
     logger.error(
-      '🚨 Phase 3: Human escalation TRIGGERED - critical safety event',
+      '🚨 Phase 3: Human escalation TRIGGERED - critical safety event'
     );
 
     const escalationResult = {
@@ -325,7 +325,7 @@ export class AISafetyOrchestrator extends EventEmitter {
    * @param interactionData
    */
   async analyzeInteraction(
-    interactionData: AIInteractionData,
+    interactionData: AIInteractionData
   ): Promise<DeceptionAlert[]> {
     this.metrics.totalInteractions++;
 
@@ -370,7 +370,7 @@ export class AISafetyOrchestrator extends EventEmitter {
    *
    * @param notification
    */
-  private async notifyHumanOperators(notification: any): Promise<boolean> {
+  private async notifyHumanOperators(notification: unknown): Promise<boolean> {
     logger.error('📢 HUMAN NOTIFICATION:', notification);
 
     // This would integrate with alerting system
@@ -392,7 +392,7 @@ export class AISafetyOrchestrator extends EventEmitter {
   /**
    * Get current orchestrator configuration.
    */
-  getConfiguration(): any {
+  getConfiguration(): unknown {
     return this._config;
   }
 
@@ -436,7 +436,7 @@ export class AISafetyOrchestrator extends EventEmitter {
       this.handleCriticalDeception(alert);
     });
 
-    this.deceptionDetector.on('deception:escalation', (data: any) => {
+    this.deceptionDetector.on('deception:escalation', (data: unknown) => {
       this.handleEscalation(data);
     });
   }
@@ -479,7 +479,7 @@ export class AISafetyOrchestrator extends EventEmitter {
    *
    * @param data
    */
-  private async handleEscalation(data: any): Promise<void> {
+  private async handleEscalation(data: unknown): Promise<void> {
     logger.error(`🚨 ESCALATION for agent ${data.agentId}:`, {
       totalInterventions: data.totalInterventions,
       recentAlerts: data.recentAlerts.length,
@@ -499,7 +499,7 @@ export class AISafetyOrchestrator extends EventEmitter {
         behavioralDeviations: data.totalInterventions,
         guidedInterventions: 0,
         timeMs: 0,
-      },
+      }
     );
 
     this.emit('safety:escalation', data);
@@ -532,7 +532,7 @@ export class AISafetyOrchestrator extends EventEmitter {
   /**
    * Get safety statistics.
    */
-  getSafetyMetrics(): SafetyMetrics & { detectorStats: any } {
+  getSafetyMetrics(): SafetyMetrics & { detectorStats: unknown } {
     return {
       ...this.metrics,
       detectorStats: this.deceptionDetector.getStatistics(),

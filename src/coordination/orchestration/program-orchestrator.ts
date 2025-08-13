@@ -253,7 +253,7 @@ export class ProgramOrchestrator extends EventEmitter {
     eventBus: TypeSafeEventBus,
     memory: MemorySystem,
     gatesManager: WorkflowGatesManager,
-    config: Partial<ProgramOrchestratorConfig> = {},
+    config: Partial<ProgramOrchestratorConfig> = {}
   ) {
     super();
 
@@ -343,7 +343,7 @@ export class ProgramOrchestrator extends EventEmitter {
     epicTitle: string,
     technicalSpecs: TechnicalSpecification,
     dependencies: ProgramDependency[],
-    assignedTeams: string[],
+    assignedTeams: string[]
   ): Promise<ProgramItem> {
     const epic: ProgramItem = {
       id: `epic-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -402,12 +402,12 @@ export class ProgramOrchestrator extends EventEmitter {
 
     // Find Epics ready to start (no unresolved dependencies)
     const readyEpics = processingEpics.filter((epicId) =>
-      this.areDependenciesResolved(epicId, dependencyGraph),
+      this.areDependenciesResolved(epicId, dependencyGraph)
     );
 
     // Start processing ready Epics
     const processingPromises = readyEpics.map((epicId) =>
-      this.processEpic(epicId),
+      this.processEpic(epicId)
     );
 
     this.logger.info('Starting parallel Epic processing', {
@@ -444,7 +444,7 @@ export class ProgramOrchestrator extends EventEmitter {
 
     // Check for blocked dependencies
     const blockedDependencies = analysis.dependencies.filter(
-      (dep) => dep.status === 'blocked',
+      (dep) => dep.status === 'blocked'
     );
 
     if (blockedDependencies.length > 0) {
@@ -478,25 +478,25 @@ export class ProgramOrchestrator extends EventEmitter {
     piNumber: number,
     businessObjectives: string[],
     teamCapacities: TeamCapacity[],
-    strategicThemes: string[],
+    strategicThemes: string[]
   ): Promise<ProgramIncrementConfig> {
     const piStartDate = this.calculatePIStartDate(piNumber);
     const piEndDate = new Date(
       piStartDate.getTime() +
-        this.config.piLengthWeeks * 7 * 24 * 60 * 60 * 1000,
+        this.config.piLengthWeeks * 7 * 24 * 60 * 60 * 1000
     );
 
     // Generate PI objectives from business objectives and Epic backlog
     const piObjectives = await this.generatePIObjectives(
       businessObjectives,
       strategicThemes,
-      teamCapacities,
+      teamCapacities
     );
 
     // Analyze capacity and commitments
     const capacityAnalysis = await this.analyzeTeamCapacity(
       teamCapacities,
-      piObjectives,
+      piObjectives
     );
 
     // Plan Epic sequencing and assignments
@@ -513,7 +513,7 @@ export class ProgramOrchestrator extends EventEmitter {
       milestones: this.generatePIMilestones(
         piStartDate,
         piEndDate,
-        piObjectives,
+        piObjectives
       ),
     };
 
@@ -529,7 +529,7 @@ export class ProgramOrchestrator extends EventEmitter {
       objectiveCount: piObjectives.length,
       totalCapacity: teamCapacities.reduce(
         (sum, team) => sum + team.totalCapacity,
-        0,
+        0
       ),
     });
 
@@ -609,7 +609,7 @@ export class ProgramOrchestrator extends EventEmitter {
    */
   async setupCrossTeamCoordination(
     epicId: string,
-    teams: string[],
+    teams: string[]
   ): Promise<void> {
     const coordination: EpicCoordination = {
       epicId,
@@ -657,12 +657,14 @@ export class ProgramOrchestrator extends EventEmitter {
 
     if (issues.length > 0) {
       // Create coordination gates for critical issues
-      for (const issue of issues.filter((i: any) => i.urgency === 'critical')) {
+      for (const issue of issues.filter((i: unknown) => i.urgency === 'critical')) {
         await this.createCoordinationGate(coordination, issue);
       }
 
       // Escalate high priority issues
-      const highPriorityIssues = issues.filter((i: any) => i.urgency === 'high');
+      const highPriorityIssues = issues.filter(
+        (i: unknown) => i.urgency === 'high'
+      );
       if (highPriorityIssues.length > 0) {
         await this.escalateCoordinationIssues(coordination, highPriorityIssues);
       }
@@ -692,7 +694,7 @@ export class ProgramOrchestrator extends EventEmitter {
    */
   async manageProgramResources(): Promise<ResourceAllocationResult> {
     const activeEpics = Array.from(this.state.programItems.values()).filter(
-      (epic) => epic.status === 'development' || epic.status === 'designing',
+      (epic) => epic.status === 'development' || epic.status === 'designing'
     );
 
     const resourceDemand = await this.calculateResourceDemand(activeEpics);
@@ -701,7 +703,7 @@ export class ProgramOrchestrator extends EventEmitter {
     // Optimize resource allocation
     const allocation = await this.optimizeResourceAllocation(
       resourceDemand,
-      availableResources,
+      availableResources
     );
 
     // Apply resource assignments
@@ -779,7 +781,7 @@ export class ProgramOrchestrator extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'program-orchestrator:state',
+        'program-orchestrator:state'
       );
       if (persistedState) {
         this.state = {
@@ -856,7 +858,7 @@ export class ProgramOrchestrator extends EventEmitter {
   // Placeholder implementations for complex methods
   private calculateEpicPriority(
     specs: TechnicalSpecification,
-    deps: ProgramDependency[],
+    deps: ProgramDependency[]
   ): ProgramPriority {
     // Placeholder implementation
     return ProgramPriority.HIGH;
@@ -869,7 +871,7 @@ export class ProgramOrchestrator extends EventEmitter {
 
   private assessTechnicalRisk(
     specs: TechnicalSpecification,
-    deps: ProgramDependency[],
+    deps: ProgramDependency[]
   ): number {
     // Placeholder implementation
     return 45; // Medium risk score
@@ -877,7 +879,7 @@ export class ProgramOrchestrator extends EventEmitter {
 
   private estimateProgramTimeline(
     specs: TechnicalSpecification,
-    deps: ProgramDependency[],
+    deps: ProgramDependency[]
   ): ProgramTimeline {
     const startDate = new Date();
     const endDate = new Date(startDate.getTime() + 90 * 24 * 60 * 60 * 1000); // 90 days
@@ -891,7 +893,7 @@ export class ProgramOrchestrator extends EventEmitter {
   }
 
   private async createTechnicalGates(
-    specs: TechnicalSpecification,
+    specs: TechnicalSpecification
   ): Promise<ProgramGate[]> {
     // Placeholder - would create appropriate technical gates
     return [];
@@ -919,7 +921,7 @@ export class ProgramOrchestrator extends EventEmitter {
   }
 
   private async createProgramWorkflowStream(
-    epic: ProgramItem,
+    epic: ProgramItem
   ): Promise<WorkflowStream<ProgramItem>> {
     const streamId = `program-stream-${epic.id}`;
 
@@ -974,27 +976,27 @@ export class ProgramOrchestrator extends EventEmitter {
   // Many more placeholder implementations would follow...
   private async setupCrossTeamCoordination(
     epicId: string,
-    assignedTeams: string[],
+    assignedTeams: string[]
   ): Promise<void> {}
   private async analyzeDependencies(
     epicId: string,
-    dependencies: ProgramDependency[],
+    dependencies: ProgramDependency[]
   ): Promise<void> {}
   private async buildDependencyGraph(
-    epicIds: string[],
+    epicIds: string[]
   ): Promise<Map<string, string[]>> {
     return new Map();
   }
   private areDependenciesResolved(
     epicId: string,
-    graph: Map<string, string[]>,
+    graph: Map<string, string[]>
   ): boolean {
     return true;
   }
   private async processEpic(epicId: string): Promise<void> {}
   private async processDependentEpics(
     epicIds: string[],
-    graph: Map<string, string[]>,
+    graph: Map<string, string[]>
   ): Promise<void> {}
 
   // Additional placeholder methods would continue...

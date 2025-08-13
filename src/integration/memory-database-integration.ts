@@ -90,7 +90,7 @@ export async function createIntegratedSystem() {
   container.register(CORE_TOKENS.Config, {
     type: 'singleton',
     create: () => ({
-      get: (key: string, defaultValue?: any) => defaultValue,
+      get: (key: string, defaultValue?: unknown) => defaultValue,
       set: () => {},
       has: () => false,
     }),
@@ -103,7 +103,7 @@ export async function createIntegratedSystem() {
       createProvider: async (type: string, config: Record<string, unknown>) => {
         // This would be properly implemented in production
         throw new Error(
-          'Provider factory not fully implemented for this example',
+          'Provider factory not fully implemented for this example'
         );
       },
     }),
@@ -116,7 +116,7 @@ export async function createIntegratedSystem() {
       new DALFactory(
         c.resolve(CORE_TOKENS.Logger),
         c.resolve(CORE_TOKENS.Config),
-        c.resolve(DATABASE_TOKENS?.['ProviderFactory']) as any,
+        c.resolve(DATABASE_TOKENS?.['ProviderFactory']) as any
       ),
   });
 

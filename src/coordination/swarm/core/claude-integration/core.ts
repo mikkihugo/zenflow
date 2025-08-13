@@ -71,7 +71,7 @@ class ClaudeIntegrationCore {
   async addMcpServer() {
     if (!(await this.isClaudeAvailable())) {
       throw new Error(
-        'Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code',
+        'Claude Code CLI not found. Install with: npm install -g @anthropic-ai/claude-code'
       );
     }
 
@@ -119,7 +119,7 @@ class ClaudeIntegrationCore {
     } catch (error) {
       logger.error(
         '❌ Failed to initialize Claude integration:',
-        (error as Error).message,
+        (error as Error).message
       );
       throw error;
     }
@@ -134,7 +134,7 @@ class ClaudeIntegrationCore {
    */
   async invokeClaudeWithPrompt(
     prompt: string,
-    options: ClaudeInvokeOptions = {},
+    options: ClaudeInvokeOptions = {}
   ) {
     if (!(prompt && prompt.trim())) {
       throw new Error('No prompt provided');

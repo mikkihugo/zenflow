@@ -43,7 +43,7 @@ class WasmBindingProvider implements WasmBindingInterface {
       } catch (error) {
         logger.warn(
           'Neural WASM public API not available, using fallback:',
-          error,
+          error
         );
         this.wasmModule = { fallback: true };
       }
@@ -65,7 +65,7 @@ class WasmBindingProvider implements WasmBindingInterface {
   }
 
   async createNeuralNetwork(
-    config: NeuralConfig,
+    config: NeuralConfig
   ): Promise<NeuralNetworkInterface> {
     // TODO: Use WASM module when implementation is ready
     // const wasmModule = await this.loadWasm();

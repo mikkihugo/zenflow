@@ -85,7 +85,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
    */
   async createSwarmStorage(
     swarmId: string,
-    metadata: Partial<SwarmMeta>,
+    metadata: Partial<SwarmMeta>
   ): Promise<string> {
     const swarmDir = path.join(this.swarmsPath, 'active', swarmId);
     await fs.mkdir(swarmDir, { recursive: true });
@@ -105,7 +105,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
 
     await fs.writeFile(
       path.join(swarmDir, 'meta.json'),
-      JSON.stringify(meta, null, 2),
+      JSON.stringify(meta, null, 2)
     );
 
     this.emit('swarm:created', { swarmId, path: swarmDir });
@@ -154,7 +154,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
     const archiveDir = path.join(
       this.swarmsPath,
       'archived',
-      this.getArchiveMonth(),
+      this.getArchiveMonth()
     );
 
     await fs.mkdir(archiveDir, { recursive: true });
@@ -172,8 +172,8 @@ export class SwarmMaintenanceManager extends EventEmitter {
         path.dirname(activeDir),
         swarmId,
       ]);
-      tar.on('close', (code: any) =>
-        code === 0 ? resolve(void 0) : reject(new Error(`tar failed: ${code}`)),
+      tar.on('close', (code: unknown) =>
+        code === 0 ? resolve(void 0) : reject(new Error(`tar failed: ${code}`))
       );
     });
 
@@ -209,7 +209,7 @@ export class SwarmMaintenanceManager extends EventEmitter {
 
         const monthDate = new Date(
           Number.parseInt(yearStr),
-          Number.parseInt(monthStr) - 1,
+          Number.parseInt(monthStr) - 1
         );
 
         if (monthDate < cutoffDate) {
@@ -260,11 +260,11 @@ export class SwarmMaintenanceManager extends EventEmitter {
     const sizeResult = await new Promise<string>((resolve, reject) => {
       const du = spawn('du', ['-sb', this.swarmsPath]);
       let output = '';
-      du.stdout.on('data', (data: any) => {
+      du.stdout.on('data', (data: unknown) => {
         output += data;
       });
-      du.on('close', (code: any) =>
-        code === 0 ? resolve(output) : reject(new Error(`du failed: ${code}`)),
+      du.on('close', (code: unknown) =>
+        code === 0 ? resolve(output) : reject(new Error(`du failed: ${code}`))
       );
     });
 

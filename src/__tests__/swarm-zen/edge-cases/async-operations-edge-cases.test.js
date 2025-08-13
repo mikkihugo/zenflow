@@ -105,7 +105,7 @@ describe('Async Operations Edge Cases', () => {
       };
 
       await expect(nestedOperation()).rejects.toThrow(
-        'Wrapped: Inner rejection',
+        'Wrapped: Inner rejection'
       );
     });
 
@@ -190,19 +190,19 @@ describe('Async Operations Edge Cases', () => {
           setTimeout(() => {
             results.push(1);
             resolve(1);
-          }, 100),
+          }, 100)
         ),
         new Promise((resolve) =>
           setTimeout(() => {
             results.push(2);
             resolve(2);
-          }, 50),
+          }, 50)
         ),
         new Promise((resolve) =>
           setTimeout(() => {
             results.push(3);
             resolve(3);
-          }, 75),
+          }, 75)
         ),
       ];
 
@@ -298,13 +298,13 @@ describe('Async Operations Edge Cases', () => {
     it('should handle Promise.race with all rejections', async () => {
       const rejections = [
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Error 1')), 100),
+          setTimeout(() => reject(new Error('Error 1')), 100)
         ),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Error 2')), 50),
+          setTimeout(() => reject(new Error('Error 2')), 50)
         ),
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Error 3')), 150),
+          setTimeout(() => reject(new Error('Error 3')), 150)
         ),
       ];
 
@@ -322,7 +322,7 @@ describe('Async Operations Edge Cases', () => {
       ];
 
       await expect(Promise.any(rejections)).rejects.toThrow(
-        'All promises were rejected',
+        'All promises were rejected'
       );
     });
   });

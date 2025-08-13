@@ -44,7 +44,7 @@ export interface BackendStats {
  * @example
  */
 export function memoryStatsToBackendStats(
-  memoryStats: MemoryStats,
+  memoryStats: MemoryStats
 ): BackendStats {
   return {
     entries: memoryStats.totalEntries,
@@ -62,7 +62,7 @@ export function memoryStatsToBackendStats(
  * @example
  */
 export function backendStatsToMemoryStats(
-  backendStats: BackendStats,
+  backendStats: BackendStats
 ): MemoryStats {
   return {
     totalEntries: backendStats.entries,
@@ -103,7 +103,7 @@ export interface BackendInterface {
   /** Search for values matching a pattern */
   search(
     pattern: string,
-    namespace?: string,
+    namespace?: string
   ): Promise<Record<string, JSONValue>>;
 
   /** List available namespaces */
@@ -217,5 +217,5 @@ export interface MemoryHealthCheck {
   latency: number;
   backend: string;
   timestamp: number;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
 }

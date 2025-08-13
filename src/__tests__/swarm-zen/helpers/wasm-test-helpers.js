@@ -125,7 +125,7 @@ export function createWasmModuleSpy() {
     verifyInteractionSequence: (expectedSequence) => {
       const actualSequence = interactions.map((i) => i.method);
       return expectedSequence.every(
-        (method, index) => actualSequence[index] === method,
+        (method, index) => actualSequence[index] === method
       );
     },
     verifyNoUnexpectedInteractions: (allowedMethods) => {
@@ -175,7 +175,7 @@ export class WasmModuleTestDouble {
     const lastExpectation = this.expectations[this.expectations.length - 1];
     this.stubs.set(
       `${lastExpectation.method}-${JSON.stringify(lastExpectation.args)}`,
-      value,
+      value
     );
     return this;
   }
@@ -207,7 +207,7 @@ export class WasmModuleTestDouble {
       return !this.actualCalls.some(
         (call) =>
           call.method === expectation.method &&
-          JSON.stringify(call.args) === JSON.stringify(expectation.args),
+          JSON.stringify(call.args) === JSON.stringify(expectation.args)
       );
     });
 
@@ -215,7 +215,7 @@ export class WasmModuleTestDouble {
       throw new Error(
         `Unmet expectations:\n${unmetExpectations
           .map((e) => `  - ${e.method}(${e.args.join(', ')})`)
-          .join('\n')}`,
+          .join('\n')}`
       );
     }
   }

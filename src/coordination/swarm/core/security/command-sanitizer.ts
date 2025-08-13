@@ -21,7 +21,7 @@ class CommandSanitizer {
   static async safeExec(
     command: string,
     args: string[] = [],
-    options: any = {},
+    options: unknown = {}
   ) {
     return new Promise((resolve, reject) => {
       const child = spawn(command, args, {
@@ -33,18 +33,18 @@ class CommandSanitizer {
       let stderr = '';
 
       if (child?.stdout) {
-        child?.stdout?.on('data', (data: any) => {
+        child?.stdout?.on('data', (data: unknown) => {
           stdout += data.toString();
         });
       }
 
       if (child?.stderr) {
-        child?.stderr?.on('data', (data: any) => {
+        child?.stderr?.on('data', (data: unknown) => {
           stderr += data.toString();
         });
       }
 
-      child?.on('close', (code: any) => {
+      child?.on('close', (code: unknown) => {
         if (code === 0) {
           resolve({ stdout: stdout.trim(), stderr: stderr.trim(), code });
         } else {
@@ -52,7 +52,7 @@ class CommandSanitizer {
         }
       });
 
-      child?.on('error', (error: any) => {
+      child?.on('error', (error: unknown) => {
         reject(error);
       });
     });
@@ -67,7 +67,7 @@ class CommandSanitizer {
     const num = Number.parseInt(issueNumber, 10);
     if (Number.isNaN(num) || num <= 0 || num > 999999) {
       throw new Error(
-        'Invalid issue number: must be positive integer < 1000000',
+        'Invalid issue number: must be positive integer < 1000000'
       );
     }
     return num;
@@ -83,7 +83,7 @@ class CommandSanitizer {
     const repoRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]*[a-zA-Z0-9])?$/;
     if (!repoRegex.test(identifier) || identifier.length > 39) {
       throw new Error(
-        'Invalid repository identifier: must be alphanumeric with hyphens, max 39 chars',
+        'Invalid repository identifier: must be alphanumeric with hyphens, max 39 chars'
       );
     }
     return identifier;
@@ -99,7 +99,7 @@ class CommandSanitizer {
     const sanitized = swarmId.replace(/[^a-zA-Z0-9_-]/g, '');
     if (sanitized.length === 0 || sanitized.length > 50) {
       throw new Error(
-        'Invalid swarm ID: must be alphanumeric with underscores/hyphens, max 50 chars',
+        'Invalid swarm ID: must be alphanumeric with underscores/hyphens, max 50 chars'
       );
     }
     return sanitized;
@@ -115,7 +115,7 @@ class CommandSanitizer {
     const sanitized = label.replace(/[^a-zA-Z0-9._-]/g, '');
     if (sanitized.length === 0 || sanitized.length > 50) {
       throw new Error(
-        'Invalid label: must be alphanumeric with dots/underscores/hyphens, max 50 chars',
+        'Invalid label: must be alphanumeric with dots/underscores/hyphens, max 50 chars'
       );
     }
     return sanitized;
@@ -153,7 +153,7 @@ class CommandSanitizer {
     // Prevent directory traversal
     if (normalized.includes('..') || path.isAbsolute(normalized)) {
       throw new Error(
-        'Invalid file path: no directory traversal or absolute paths allowed',
+        'Invalid file path: no directory traversal or absolute paths allowed'
       );
     }
 
@@ -162,7 +162,7 @@ class CommandSanitizer {
     const ext = path.extname(normalized).toLowerCase();
     if (!allowedExtensions.includes(ext)) {
       throw new Error(
-        `Invalid file extension: only ${allowedExtensions.join(', ')} allowed`,
+        `Invalid file extension: only ${allowedExtensions.join(', ')} allowed`
       );
     }
 
@@ -198,7 +198,7 @@ class CommandSanitizer {
 
     if (missing.length > 0) {
       throw new Error(
-        `Missing required environment variables: ${missing.join(', ')}`,
+        `Missing required environment variables: ${missing.join(', ')}`
       );
     }
 
@@ -264,21 +264,19 @@ class CommandSanitizer {
       case 'issue-edit':
         if (params?.issueNumber) {
           args.push(
-            CommandSanitizer.validateIssueNumber(
-              params?.issueNumber,
-            ).toString(),
+            CommandSanitizer.validateIssueNumber(params?.issueNumber).toString()
           );
         }
         if (params?.addLabel) {
           args.push(
             '--add-label',
-            CommandSanitizer.sanitizeLabel(params?.addLabel),
+            CommandSanitizer.sanitizeLabel(params?.addLabel)
           );
         }
         if (params?.removeLabel) {
           args.push(
             '--remove-label',
-            CommandSanitizer.sanitizeLabel(params?.removeLabel),
+            CommandSanitizer.sanitizeLabel(params?.removeLabel)
           );
         }
         break;
@@ -286,9 +284,7 @@ class CommandSanitizer {
       case 'issue-comment':
         if (params?.issueNumber) {
           args.push(
-            CommandSanitizer.validateIssueNumber(
-              params?.issueNumber,
-            ).toString(),
+            CommandSanitizer.validateIssueNumber(params?.issueNumber).toString()
           );
         }
         if (params?.body) {
@@ -306,13 +302,13 @@ class CommandSanitizer {
         if (params?.base) {
           args.push(
             '--base',
-            CommandSanitizer.sanitizeBranchName(params?.base),
+            CommandSanitizer.sanitizeBranchName(params?.base)
           );
         }
         if (params?.head) {
           args.push(
             '--head',
-            CommandSanitizer.sanitizeBranchName(params?.head),
+            CommandSanitizer.sanitizeBranchName(params?.head)
           );
         }
         break;

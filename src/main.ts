@@ -61,7 +61,7 @@ Examples:
   process.exit(0);
 }
 
-// Determine mode from positional args (more reliable than mode option)  
+// Determine mode from positional args (more reliable than mode option)
 const mode = process.argv[2] || args.mode || 'web';
 
 async function checkIfRunning(): Promise<boolean> {
@@ -87,9 +87,11 @@ async function main() {
   // Check if another instance is already running (except for swarm mode)
   if (mode !== 'swarm') {
     const isRunning = await checkIfRunning();
-    
+
     if (isRunning) {
-      logger.info('📡 Claude-zen is already running - attaching TUI interface...');
+      logger.info(
+        '📡 Claude-zen is already running - attaching TUI interface...'
+      );
       // Always launch TUI that connects to existing web server
       const { main } = await import('./interfaces/terminal/main.ts');
       await main();
@@ -120,8 +122,10 @@ async function main() {
       case 'web': {
         // Web mode: Web interface only (no TUI)
         logger.info('🚀 Starting web interface...');
-        logger.info('🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring');
-        
+        logger.info(
+          '🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring'
+        );
+
         // Start web server with full DI container
         const { WebInterface } = await import(
           './interfaces/web/web-interface.js'
@@ -133,9 +137,9 @@ async function main() {
 
         await webApp.run();
         logger.info(
-          `✅ Web interface running at http://localhost:${args.port || '3000'}`,
+          `✅ Web interface running at http://localhost:${args.port || '3000'}`
         );
-        
+
         // Keep process alive
         await new Promise(() => {});
         break;
@@ -152,10 +156,10 @@ async function main() {
       case 'swarm': {
         // Swarm mode: Stdio MCP swarm server only (no web, no TUI)
         logger.info('🐝 Starting stdio MCP swarm server...');
-        
+
         // TODO: Implement swarm stdio server
         logger.info('🐝 Swarm server mode - stdio MCP interface');
-        
+
         // Keep process alive for stdio communication
         process.stdin.resume();
         break;
@@ -164,8 +168,10 @@ async function main() {
       default: {
         // Default mode: Full system (Web + AI + TUI + MCP + Safety)
         logger.info('🚀 Starting full claude-zen system...');
-        logger.info('🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring');
-        
+        logger.info(
+          '🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring'
+        );
+
         // Start web server with full DI container
         const { WebInterface } = await import(
           './interfaces/web/web-interface.js'
@@ -177,9 +183,9 @@ async function main() {
 
         await webApp.run();
         logger.info(
-          `✅ Full system running - Web interface: http://localhost:${args.port || '3000'}`,
+          `✅ Full system running - Web interface: http://localhost:${args.port || '3000'}`
         );
-        
+
         // Also start TUI interface
         logger.info('🖥️ Launching TUI interface...');
         const { main } = await import('./interfaces/terminal/main.js');

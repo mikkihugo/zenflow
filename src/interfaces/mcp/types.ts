@@ -12,14 +12,14 @@
 export interface MCPTool {
   name: string;
   description: string;
-  inputSchema: any;
-  handler: (params: any) => Promise<any>;
+  inputSchema: unknown;
+  handler: (params: unknown) => Promise<unknown>;
   category: string;
   version: string;
   priority: number;
   metadata: {
     tags: string[];
-    examples: any[];
+    examples: unknown[];
   };
   permissions: Array<{ type: string; resource: string }>;
 }

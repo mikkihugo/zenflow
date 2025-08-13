@@ -47,7 +47,7 @@ class PerformanceAnalyzer {
     ]);
 
     const hasModuleWarning = result.error.includes(
-      'MODULE_TYPELESS_PACKAGE_JSON',
+      'MODULE_TYPELESS_PACKAGE_JSON'
     );
     this.results.fixes.push({
       issue: 'Module type warnings',
@@ -120,13 +120,13 @@ class PerformanceAnalyzer {
     const scoreMatch = benchResult.output.match(/Overall Score: (\d+)%/);
     const wasmMatch = benchResult.output.match(/WASM Module Loading.*?(\d+)ms/);
     const swarmMatch = benchResult.output.match(
-      /Swarm Init.*?Average: ([\d.]+)ms/,
+      /Swarm Init.*?Average: ([\d.]+)ms/
     );
     const agentMatch = benchResult.output.match(
-      /Agent Spawn.*?Average: ([\d.]+)ms/,
+      /Agent Spawn.*?Average: ([\d.]+)ms/
     );
     const neuralMatch = benchResult.output.match(
-      /Neural Processing.*?(\d+) ops\/sec/,
+      /Neural Processing.*?(\d+) ops\/sec/
     );
 
     this.results.metrics.benchmarks = {
@@ -359,13 +359,13 @@ The system is now more robust, with ${(this.results.metrics.inputValidation?.sco
 
     await fs.writeFile(
       path.join(__dirname, 'v0.2.1-performance-report.md'),
-      report,
+      report
     );
 
     // Also save raw data
     await fs.writeFile(
       path.join(__dirname, 'v0.2.1-performance-data.json'),
-      JSON.stringify(this.results, null, 2),
+      JSON.stringify(this.results, null, 2)
     );
 
     return report;

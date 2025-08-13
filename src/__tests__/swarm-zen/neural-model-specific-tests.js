@@ -89,7 +89,7 @@ class ModelSpecificTests {
     this.results.attention.multiHead = {
       configurations: results,
       optimalHeads: results.sort(
-        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime,
+        (a, b) => a.accuracy / a.computeTime - b.accuracy / b.computeTime
       )[0].heads,
       scalability: 'linear',
     };
@@ -249,7 +249,7 @@ class ModelSpecificTests {
 
     const outputFile = path.join(
       outputDir,
-      `model-specific-tests-${Date.now()}.json`,
+      `model-specific-tests-${Date.now()}.json`
     );
     await fs.writeFile(outputFile, JSON.stringify(report, null, 2));
     this.displaySummary();

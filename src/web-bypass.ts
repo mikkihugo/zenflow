@@ -2,15 +2,15 @@
 
 /**
  * Minimal Web Server Bypass for Circular Dependency Issues
- * 
+ *
  * This bypasses the circular dependency problems by creating a simple
  * Express server that doesn't import the complex DI container system.
  */
 
-import express from 'express';
-import cors from 'cors';
-import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import cors from 'cors';
+import express from 'express';
 import { BootstrapLogger } from './core/bootstrap-logger.ts';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -39,11 +39,13 @@ class MinimalWebServer {
 
   private setupMiddleware(): void {
     // Enable CORS
-    this.app.use(cors({
-      origin: '*',
-      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
-    }));
+    this.app.use(
+      cors({
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+      })
+    );
 
     // Parse JSON bodies
     this.app.use(express.json({ limit: '10mb' }));
@@ -62,7 +64,7 @@ class MinimalWebServer {
         message: 'Claude Code Zen Web Server (Bypass Mode)',
         timestamp: new Date().toISOString(),
         version: '1.0.0-alpha.43',
-        mode: 'bypass'
+        mode: 'bypass',
       });
     });
 
@@ -78,10 +80,10 @@ class MinimalWebServer {
             'basic-web-server',
             'health-checks',
             'static-file-serving',
-            'cors-enabled'
+            'cors-enabled',
           ],
-          note: 'This is a minimal bypass server avoiding circular dependencies'
-        }
+          note: 'This is a minimal bypass server avoiding circular dependencies',
+        },
       });
     });
 
@@ -92,8 +94,8 @@ class MinimalWebServer {
         data: {
           status: 'available',
           backend: 'bypass-mode',
-          note: 'Memory system bypassed to avoid circular dependencies'
-        }
+          note: 'Memory system bypassed to avoid circular dependencies',
+        },
       });
     });
 
@@ -104,8 +106,8 @@ class MinimalWebServer {
         data: {
           status: 'disabled',
           reason: 'Running in bypass mode',
-          note: 'Full swarm features available in normal mode'
-        }
+          note: 'Full swarm features available in normal mode',
+        },
       });
     });
 
@@ -209,21 +211,28 @@ class MinimalWebServer {
           'GET /health',
           'GET /api/status',
           'GET /api/memory/status',
-          'GET /api/swarm/status'
-        ]
+          'GET /api/swarm/status',
+        ],
       });
     });
 
     // Error handler
-    this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-      this.logger.error('Server error:', err);
-      res.status(500).json({
-        success: false,
-        error: 'Internal Server Error',
-        message: 'An error occurred while processing your request',
-        timestamp: new Date().toISOString()
-      });
-    });
+    this.app.use(
+      (
+        err: any,
+        req: express.Request,
+        res: express.Response,
+        next: express.NextFunction
+      ) => {
+        this.logger.error('Server error:', err);
+        res.status(500).json({
+          success: false,
+          error: 'Internal Server Error',
+          message: 'An error occurred while processing your request',
+          timestamp: new Date().toISOString(),
+        });
+      }
+    );
   }
 
   async start(): Promise<void> {
@@ -232,9 +241,15 @@ class MinimalWebServer {
         this.server = this.app.listen(this.port, this.host, () => {
           this.logger.info(`🚀 Claude Code Zen Web Server (Bypass Mode)`);
           this.logger.info(`📍 Running at: http://${this.host}:${this.port}`);
-          this.logger.info(`🏥 Health check: http://${this.host}:${this.port}/health`);
-          this.logger.info(`📊 API status: http://${this.host}:${this.port}/api/status`);
-          this.logger.warn(`⚠️  Note: Running in bypass mode to avoid circular dependencies`);
+          this.logger.info(
+            `🏥 Health check: http://${this.host}:${this.port}/health`
+          );
+          this.logger.info(
+            `📊 API status: http://${this.host}:${this.port}/api/status`
+          );
+          this.logger.warn(
+            `⚠️  Note: Running in bypass mode to avoid circular dependencies`
+          );
           this.logger.info(`✅ Server started successfully`);
           resolve();
         });
@@ -248,7 +263,6 @@ class MinimalWebServer {
             reject(error);
           }
         });
-
       } catch (error) {
         this.logger.error('❌ Failed to start server:', error);
         reject(error);
@@ -272,7 +286,7 @@ class MinimalWebServer {
 
 // CLI execution
 if (import.meta.url === `file://${process.argv[1]}`) {
-  const port = process.argv.includes('--port') 
+  const port = process.argv.includes('--port')
     ? Number.parseInt(process.argv[process.argv.indexOf('--port') + 1]) || 3000
     : 3000;
 

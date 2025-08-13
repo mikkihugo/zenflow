@@ -88,7 +88,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       // RPROP should converge faster or achieve lower error
       expect(
         resultRPROP?.finalError < resultBP?.finalError ||
-          resultRPROP?.epochs < resultBP?.epochs,
+          resultRPROP?.epochs < resultBP?.epochs
       ).toBe(true);
     });
 
@@ -148,7 +148,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       // Should achieve better convergence than linear methods
       expect(result?.finalError).toBeLessThan(0.05);
       expect(performance.getDuration('quickprop-convergence')).toBeLessThan(
-        5000,
+        5000
       ); // 5 seconds max
     });
 
@@ -397,7 +397,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
             (_, j) => ({
               input: [Math.random(), Math.random(), Math.random()],
               output: [Math.random()],
-            }),
+            })
           );
           yield batch;
         }
@@ -427,7 +427,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       expect(avgError).toBeLessThan(1.0);
       expect(batchCount).toBe(100); // 10,000 / 100
       expect(performance.getDuration('large-dataset-training')).toBeLessThan(
-        30000,
+        30000
       ); // 30 seconds max
     });
 
@@ -465,7 +465,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
   });
 
   // Helper function for test error calculation
-  function calculateTestError(network: NeuralNetwork, testData: any[]): number {
+  function calculateTestError(network: NeuralNetwork, testData: unknown[]): number {
     let totalError = 0;
 
     for (const sample of testData) {
@@ -473,7 +473,7 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
       const error = sample.output.reduce(
         (sum: number, target: number, i: number) =>
           sum + (target - prediction[i]) ** 2,
-        0,
+        0
       );
       totalError += error;
     }

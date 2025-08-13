@@ -76,8 +76,8 @@ describe('TODO Implementation Tests', () => {
       const originalSwarmCoordinator = (global as any).swarmCoordinator;
       const originalHttpMcpServer = (global as any).httpMcpServer;
 
-      delete (global as any).swarmCoordinator;
-      delete (global as any).httpMcpServer;
+      (global as any).swarmCoordinator = undefined;
+      (global as any).httpMcpServer = undefined;
 
       // Should handle missing components gracefully
       await expect(shutdownClaudeZen()).resolves.not.toThrow();
@@ -113,7 +113,7 @@ describe('TODO Implementation Tests', () => {
       Object.values(health.components).forEach((component) => {
         expect(component).toHaveProperty('status');
         expect(['healthy', 'degraded', 'unhealthy', 'unknown']).toContain(
-          component.status,
+          component.status
         );
       });
 
@@ -195,7 +195,7 @@ describe('TODO Implementation Tests', () => {
       await expect(
         engine.startWorkflow('error-test-workflow', {
           workspaceId: 'test-workspace',
-        }),
+        })
       ).resolves.toHaveProperty('success', true);
     });
   });

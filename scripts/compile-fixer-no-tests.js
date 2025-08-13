@@ -32,7 +32,7 @@ class CompileFixerNoTests {
       if (error.stdout) {
         const parsed = this.parseTypeScriptErrors(error.stdout);
         console.log(
-          `📊 Found compilation errors in ${parsed.size} files (tests excluded)`,
+          `📊 Found compilation errors in ${parsed.size} files (tests excluded)`
         );
         return parsed;
       }
@@ -47,7 +47,7 @@ class CompileFixerNoTests {
     lines.forEach((line) => {
       // Parse: src/file.ts(123,45): error TS2345: Message
       const match = line.match(
-        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/,
+        /^([^(]+)\((\d+),(\d+)\):\s*error\s+TS(\d+):\s*(.+)$/
       );
       if (match) {
         const [, filePath, line, col, errorCode, message] = match;
@@ -92,7 +92,7 @@ class CompileFixerNoTests {
   // Fix ONE file with ALL its compilation errors, then lint it
   async fixSingleFile(filePath, errors) {
     console.log(
-      `\n🔧 Fixing ${filePath} (${errors.length} compilation errors)`,
+      `\n🔧 Fixing ${filePath} (${errors.length} compilation errors)`
     );
 
     if (!fs.existsSync(filePath)) {
@@ -124,7 +124,7 @@ class CompileFixerNoTests {
           await this.formatWithBiome(filePath);
         } else {
           console.log(
-            `  📊 Some compilation errors remain (may need manual fixes)`,
+            `  📊 Some compilation errors remain (may need manual fixes)`
           );
         }
 
@@ -304,7 +304,7 @@ class CompileFixerNoTests {
 
   async runUntilCompiles() {
     console.log(
-      '🚀 Production Code Compilation Fixer - Fix TypeScript errors (NO TESTS)!\n',
+      '🚀 Production Code Compilation Fixer - Fix TypeScript errors (NO TESTS)!\n'
     );
 
     let iteration = 1;
@@ -317,17 +317,17 @@ class CompileFixerNoTests {
 
       if (fileErrors.size === 0) {
         console.log(
-          '\n🎉 SUCCESS! Production TypeScript compilation is clean!',
+          '\n🎉 SUCCESS! Production TypeScript compilation is clean!'
         );
 
         // Final style pass with Biome on production files only
         console.log(
-          '\n📐 Running final Biome formatting on production files...',
+          '\n📐 Running final Biome formatting on production files...'
         );
         try {
           execSync(
             'npx biome format --write src --ignore-pattern="**/__tests__/**" --ignore-pattern="**/*.test.*" --ignore-pattern="**/*.spec.*"',
-            { stdio: 'inherit' },
+            { stdio: 'inherit' }
           );
           console.log('✅ All production files formatted!');
         } catch (error) {
@@ -337,7 +337,7 @@ class CompileFixerNoTests {
       }
 
       console.log(
-        `📊 Fixing ${fileErrors.size} production files with compilation errors...`,
+        `📊 Fixing ${fileErrors.size} production files with compilation errors...`
       );
 
       let iterationFixes = 0;

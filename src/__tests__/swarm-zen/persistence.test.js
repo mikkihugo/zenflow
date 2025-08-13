@@ -435,7 +435,7 @@ async function runPersistenceTests() {
       await db.updateTaskStatus(
         task.id,
         'completed',
-        'Successfully implemented',
+        'Successfully implemented'
       );
       retrieved = await db.get('SELECT * FROM tasks WHERE id = ?', [task.id]);
       assert.strictEqual(retrieved.status, 'completed');
@@ -535,7 +535,7 @@ async function runPersistenceTests() {
 
       const allMetrics = await db.all(
         'SELECT DISTINCT metric_type FROM metrics WHERE agent_id = ?',
-        [agentId],
+        [agentId]
       );
       assert.strictEqual(allMetrics.length, 3);
     });
@@ -551,7 +551,7 @@ async function runPersistenceTests() {
             id: uuidv4(),
             name: `concurrent-agent-${i}`,
             agent_type: 'coder',
-          }),
+          })
         );
       }
 
@@ -620,7 +620,7 @@ async function runPersistenceTests() {
       for (let i = 0; i < 5; i++) {
         await db.run(
           'INSERT INTO memory (key, value, expires_at) VALUES (?, ?, ?)',
-          [`expired_${i}`, '{}', new Date(Date.now() - 1000).toISOString()],
+          [`expired_${i}`, '{}', new Date(Date.now() - 1000).toISOString()]
         );
       }
 
@@ -650,7 +650,7 @@ async function runPersistenceTests() {
             name: `perf-agent-${i}`,
             agent_type: ['researcher', 'coder', 'analyst'][i % 3],
             capabilities: { index: i },
-          }),
+          })
         );
       }
 
@@ -661,7 +661,7 @@ async function runPersistenceTests() {
       const queryStart = Date.now();
       const _coders = await db.all(
         'SELECT * FROM agents WHERE agent_type = ?',
-        ['coder'],
+        ['coder']
       );
       const queryTime = Date.now() - queryStart;
 

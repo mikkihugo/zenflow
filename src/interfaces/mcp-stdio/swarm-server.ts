@@ -45,7 +45,7 @@ export class StdioMCPServer {
         capabilities: {
           tools: {},
         },
-      },
+      }
     );
 
     this.swarmService = new SwarmService();
@@ -228,7 +228,7 @@ export class StdioMCPServer {
             };
             const result = await this.swarmService.spawnAgent(
               args.swarmId as string,
-              config,
+              config
             );
             return {
               content: [
@@ -264,7 +264,7 @@ export class StdioMCPServer {
 
           case 'swarm_status': {
             const result = await this.swarmService.getSwarmStatus(
-              args.swarmId as string,
+              args.swarmId as string
             );
             return {
               content: [
@@ -278,7 +278,7 @@ export class StdioMCPServer {
 
           case 'task_status': {
             const result = await this.swarmService.getTaskStatus(
-              args.taskId as string,
+              args.taskId as string
             );
             return {
               content: [
@@ -310,7 +310,7 @@ export class StdioMCPServer {
                   success: false,
                 },
                 null,
-                2,
+                2
               ),
             },
           ],
@@ -356,7 +356,7 @@ export class StdioMCPServer {
   /**
    * Get server status and statistics
    */
-  getStatus(): any {
+  getStatus(): unknown {
     return {
       type: 'stdio-mcp',
       protocol: 'stdio',

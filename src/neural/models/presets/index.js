@@ -30,7 +30,7 @@ export const createNeuralModel = (type, config = {}) => {
 
   if (!models[type]) {
     throw new Error(
-      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`,
+      `Unknown neural model type: ${type}. Available types: ${Object.keys(models).join(', ')}`
     );
   }
 
@@ -325,7 +325,7 @@ export const getModelPreset = (modelType, presetName) => {
 
   if (!MODEL_PRESETS[modelType][presetName]) {
     throw new Error(
-      `No preset named '${presetName}' for model type: ${modelType}`,
+      `No preset named '${presetName}' for model type: ${modelType}`
     );
   }
 

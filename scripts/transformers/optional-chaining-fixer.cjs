@@ -95,17 +95,26 @@ module.exports = function transformer(file, api, options) {
       const parent = path.parent.value;
 
       // Check if this is the left side of an assignment expression
-      if (parent.type === 'AssignmentExpression' && parent.left === path.value) {
+      if (
+        parent.type === 'AssignmentExpression' &&
+        parent.left === path.value
+      ) {
         return false;
       }
 
       // Check if this is the argument of an update expression (++/--)
-      if (parent.type === 'UpdateExpression' && parent.argument === path.value) {
+      if (
+        parent.type === 'UpdateExpression' &&
+        parent.argument === path.value
+      ) {
         return false;
       }
 
       // Check if this is part of a destructuring assignment target
-      if (parent.type === 'Property' && path.parent.parent?.value?.type === 'ObjectPattern') {
+      if (
+        parent.type === 'Property' &&
+        path.parent.parent?.value?.type === 'ObjectPattern'
+      ) {
         return false;
       }
     }
@@ -123,7 +132,9 @@ module.exports = function transformer(file, api, options) {
     // Skip if accessing prototype methods
     if (
       property &&
-      ['constructor', 'toString', 'valueOf', 'hasOwnProperty'].includes(property.name)
+      ['constructor', 'toString', 'valueOf', 'hasOwnProperty'].includes(
+        property.name
+      )
     ) {
       return false;
     }
@@ -144,7 +155,15 @@ module.exports = function transformer(file, api, options) {
     // Skip common global objects
     if (
       object.type === 'Identifier' &&
-      ['console', 'window', 'document', 'process', 'global', 'Buffer', 'JSON'].includes(object.name)
+      [
+        'console',
+        'window',
+        'document',
+        'process',
+        'global',
+        'Buffer',
+        'JSON',
+      ].includes(object.name)
     ) {
       return false;
     }
@@ -211,7 +230,9 @@ module.exports = function transformer(file, api, options) {
       logTransformation(before, after, line);
 
       if (dryRun) {
-        console.log(`[DRY RUN] Would transform: ${before} → ${after} (line ${line})`);
+        console.log(
+          `[DRY RUN] Would transform: ${before} → ${after} (line ${line})`
+        );
       }
     }
   });
@@ -234,7 +255,9 @@ module.exports = function transformer(file, api, options) {
       logTransformation(before, after, line);
 
       if (dryRun) {
-        console.log(`[DRY RUN] Would fix assignment: ${before} → ${after} (line ${line})`);
+        console.log(
+          `[DRY RUN] Would fix assignment: ${before} → ${after} (line ${line})`
+        );
       }
     }
   });
@@ -267,7 +290,9 @@ module.exports = function transformer(file, api, options) {
       logTransformation(before, after, line);
 
       if (dryRun) {
-        console.log(`[DRY RUN] Would transform: ${before} → ${after} (line ${line})`);
+        console.log(
+          `[DRY RUN] Would transform: ${before} → ${after} (line ${line})`
+        );
       }
     }
   });
@@ -299,7 +324,9 @@ module.exports = function transformer(file, api, options) {
         logTransformation(before, after, line);
 
         if (dryRun) {
-          console.log(`[DRY RUN] Would transform chain: ${before} → ${after} (line ${line})`);
+          console.log(
+            `[DRY RUN] Would transform chain: ${before} → ${after} (line ${line})`
+          );
         }
       }
     });
@@ -330,7 +357,9 @@ module.exports = function transformer(file, api, options) {
       logTransformation(before, after, line);
 
       if (dryRun) {
-        console.log(`[DRY RUN] Would transform find result: ${before} → ${after} (line ${line})`);
+        console.log(
+          `[DRY RUN] Would transform find result: ${before} → ${after} (line ${line})`
+        );
       }
     }
   });
@@ -375,7 +404,9 @@ module.exports = function transformer(file, api, options) {
 
   if (dryRun) {
     console.log(`\n[DRY RUN] File: ${file.path}`);
-    console.log(`[DRY RUN] Would make ${hasChanges ? 'changes' : 'no changes'}`);
+    console.log(
+      `[DRY RUN] Would make ${hasChanges ? 'changes' : 'no changes'}`
+    );
     return null; // Don't modify in dry run mode
   }
 

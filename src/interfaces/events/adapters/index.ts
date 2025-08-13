@@ -198,7 +198,7 @@ export const EventAdapterUtils = {
    */
   createSystemAdapter: (
     name: string,
-    overrides?: Partial<SystemEventAdapterConfig>,
+    overrides?: Partial<SystemEventAdapterConfig>
   ) => {
     const config = _createDefaultSystemEventAdapterConfig(name, overrides);
     return _createSystemEventAdapter(config);
@@ -212,11 +212,11 @@ export const EventAdapterUtils = {
    */
   createCoordinationAdapter: (
     name: string,
-    overrides?: Partial<CoordinationEventAdapterConfig>,
+    overrides?: Partial<CoordinationEventAdapterConfig>
   ) => {
     const config = _createDefaultCoordinationEventAdapterConfig(
       name,
-      overrides,
+      overrides
     );
     return _createCoordinationEventAdapter(config);
   },
@@ -229,11 +229,11 @@ export const EventAdapterUtils = {
    */
   createCommunicationAdapter: (
     name: string,
-    overrides?: Partial<CommunicationEventAdapterConfig>,
+    overrides?: Partial<CommunicationEventAdapterConfig>
   ) => {
     const config = _createDefaultCommunicationEventAdapterConfig(
       name,
-      overrides,
+      overrides
     );
     return _createCommunicationEventAdapter(config);
   },
@@ -246,7 +246,7 @@ export const EventAdapterUtils = {
    */
   createMonitoringAdapter: (
     name: string,
-    overrides?: Partial<MonitoringEventAdapterConfig>,
+    overrides?: Partial<MonitoringEventAdapterConfig>
   ) => {
     const config = _createDefaultMonitoringEventAdapterConfig(name, overrides);
     return _createMonitoringEventAdapter(config);

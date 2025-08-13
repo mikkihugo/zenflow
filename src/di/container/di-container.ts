@@ -78,7 +78,7 @@ export class DIContainer implements IDIContainer {
       }
       throw new DIError(
         `Failed to resolve service '${token.name}': ${error}`,
-        'RESOLUTION_FAILED',
+        'RESOLUTION_FAILED'
       );
     }
   }
@@ -157,7 +157,7 @@ export class DIContainer implements IDIContainer {
       if (this.resolutionStack.length >= this.options.maxResolutionDepth) {
         throw new DIError(
           `Maximum resolution depth exceeded (${this.options.maxResolutionDepth})`,
-          'MAX_DEPTH_EXCEEDED',
+          'MAX_DEPTH_EXCEEDED'
         );
       }
     }
@@ -180,7 +180,7 @@ export class DIContainer implements IDIContainer {
         default:
           throw new DIError(
             `Unknown provider type: ${(provider as any).type}`,
-            'UNKNOWN_PROVIDER_TYPE',
+            'UNKNOWN_PROVIDER_TYPE'
           );
       }
     } finally {

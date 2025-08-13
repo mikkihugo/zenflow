@@ -149,12 +149,12 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * // }
    * ```
    */
-  protected mapRowToEntity(row: any): T {
+  protected mapRowToEntity(row: unknown): T {
     if (!row) {
       throw new Error('Cannot map null/undefined row to entity');
     }
 
-    const entity = {} as Record<string, any>;
+    const entity = {} as Record<string, unknown>;
 
     // Handle common SQL data type conversions
     for (const [key, value] of Object.entries(row)) {
@@ -214,7 +214,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    *
    * @protected
    * @param {Partial<T>} entity - Entity object to convert.
-   * @returns {Record<string, any>} Database row object ready for SQL operations.
+   * @returns {Record<string, unknown>} Database row object ready for SQL operations.
    * @example Entity to Row Mapping
    * ```typescript
    * // Entity object (typed)
@@ -240,12 +240,12 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
    * // }
    * ```
    */
-  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
+  protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
     if (!entity) {
       return {};
     }
 
-    const row = {} as Record<string, any>;
+    const row = {} as Record<string, unknown>;
 
     for (const [key, value] of Object.entries(entity)) {
       if (value === null || value === undefined) {
@@ -353,10 +353,10 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     joinTable: string,
     joinCondition: string,
     criteria?: Partial<T>,
-    options?: any,
+    options?: unknown
   ): Promise<T[]> {
     this.logger.debug(
-      `Finding entities with JOIN: ${this.tableName} JOIN ${joinTable}`,
+      `Finding entities with JOIN: ${this.tableName} JOIN ${joinTable}`
     );
 
     try {
@@ -366,7 +366,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
       const orderClause = this.buildOrderClause(options?.['sort']);
       const limitClause = this.buildLimitClause(
         options?.['limit'],
-        options?.['offset'],
+        options?.['offset']
       );
 
       const sql = `
@@ -387,7 +387,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`JOIN query failed: ${error}`);
       throw new Error(
-        `JOIN query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `JOIN query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -461,10 +461,10 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   async aggregate(
     aggregateFunction: 'COUNT' | 'SUM' | 'AVG' | 'MIN' | 'MAX',
     column: string = '*',
-    criteria?: Partial<T>,
+    criteria?: Partial<T>
   ): Promise<number> {
     this.logger.debug(
-      `Executing aggregate ${aggregateFunction}(${column}) on ${this.tableName}`,
+      `Executing aggregate ${aggregateFunction}(${column}) on ${this.tableName}`
     );
 
     try {
@@ -481,7 +481,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`Aggregate query failed: ${error}`);
       throw new Error(
-        `Aggregate query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Aggregate query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -559,12 +559,12 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     if (entities.length === 0) return [];
 
     this.logger.debug(
-      `Batch inserting ${entities.length} entities into ${this.tableName}`,
+      `Batch inserting ${entities.length} entities into ${this.tableName}`
     );
 
     try {
       const mappedEntities = entities.map((entity) =>
-        this.mapEntityToRow(entity as Partial<T>),
+        this.mapEntityToRow(entity as Partial<T>)
       );
 
       if (mappedEntities.length === 0 || !mappedEntities[0]) {
@@ -594,7 +594,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`Batch insert failed: ${error}`);
       throw new Error(
-        `Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Batch insert failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -687,7 +687,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`Update many failed: ${error}`);
       throw new Error(
-        `Update many failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Update many failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -755,7 +755,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
 
       if (!whereClause) {
         throw new Error(
-          'DELETE without WHERE clause is not allowed for safety',
+          'DELETE without WHERE clause is not allowed for safety'
         );
       }
 
@@ -767,7 +767,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`Delete many failed: ${error}`);
       throw new Error(
-        `Delete many failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Delete many failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -844,10 +844,10 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
   async search(
     field: string,
     searchTerm: string,
-    _options?: any,
+    _options?: unknown
   ): Promise<T[]> {
     this.logger.debug(
-      `Searching in ${this.tableName}.${field} for: ${searchTerm}`,
+      `Searching in ${this.tableName}.${field} for: ${searchTerm}`
     );
 
     try {
@@ -859,7 +859,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`Search failed: ${error}`);
       throw new Error(
-        `Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Search failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }
@@ -949,17 +949,17 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     dateField: string,
     startDate: Date,
     endDate: Date,
-    options?: any,
+    options?: unknown
   ): Promise<T[]> {
     this.logger.debug(
-      `Finding entities by date range: ${dateField} between ${startDate} and ${endDate}`,
+      `Finding entities by date range: ${dateField} between ${startDate} and ${endDate}`
     );
 
     try {
       const orderClause = this.buildOrderClause(options?.['sort']);
       const limitClause = this.buildLimitClause(
         options?.['limit'],
-        options?.['offset'],
+        options?.['offset']
       );
 
       const sql = `
@@ -976,7 +976,7 @@ export class RelationalDao<T> extends BaseDao<T> implements IDao<T> {
     } catch (error) {
       this.logger.error(`Date range query failed: ${error}`);
       throw new Error(
-        `Date range query failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        `Date range query failed: ${error instanceof Error ? error.message : 'Unknown error'}`
       );
     }
   }

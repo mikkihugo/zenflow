@@ -12,8 +12,8 @@ try {
   const output = error.stdout || '';
   const lines = output.split('\n');
 
-  let productionErrors = [];
-  let testErrors = [];
+  const productionErrors = [];
+  const testErrors = [];
 
   for (const line of lines) {
     if (line.includes('error TS') && line.includes('src/')) {
@@ -34,7 +34,7 @@ try {
   console.log(`   Production Errors: ${productionErrors.length}`);
   console.log(`   Test Errors: ${testErrors.length}`);
   console.log(
-    `   Total Errors: ${productionErrors.length + testErrors.length}\n`,
+    `   Total Errors: ${productionErrors.length + testErrors.length}\n`
   );
 
   if (productionErrors.length > 0) {
@@ -44,13 +44,13 @@ try {
     });
   } else {
     console.log(
-      '✅ No Production Code Errors - All TypeScript errors are in test files!',
+      '✅ No Production Code Errors - All TypeScript errors are in test files!'
     );
   }
 
   if (testErrors.length > 0 && productionErrors.length === 0) {
     console.log(
-      "\n📝 Note: All TypeScript errors are in test files, which don't affect runtime compilation.",
+      "\n📝 Note: All TypeScript errors are in test files, which don't affect runtime compilation."
     );
   }
 }

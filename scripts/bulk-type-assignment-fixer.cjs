@@ -65,7 +65,9 @@ async function getSimpleTypeAssignmentFiles() {
         }
 
         const fileErrors = new Map();
-        const lines = stdout.split('\n').filter((line) => line.includes('error TS'));
+        const lines = stdout
+          .split('\n')
+          .filter((line) => line.includes('error TS'));
 
         for (const line of lines) {
           const match = line.match(/^(src\/[^(]+)/);
@@ -123,7 +125,10 @@ function fixTypeAssignments(filePath) {
       { from: '?.', to: '?.' }, // This one doesn't change anything but validates optional chaining exists
 
       // Fix bracket notation access
-      { from: "object['property']", to: "object['property' as keyof typeof object]" },
+      {
+        from: "object['property']",
+        to: "object['property' as keyof typeof object]",
+      },
     ];
 
     for (const fix of specificFixes) {
@@ -140,7 +145,9 @@ function fixTypeAssignments(filePath) {
 
     if (fixed) {
       fs.writeFileSync(filePath, content);
-      console.log(`✅ ${path.relative('.', filePath)}: ${fixCount} type assignment fixes`);
+      console.log(
+        `✅ ${path.relative('.', filePath)}: ${fixCount} type assignment fixes`
+      );
       return fixCount;
     }
 
@@ -153,11 +160,15 @@ function fixTypeAssignments(filePath) {
 
 async function main() {
   console.log('🔧 STREAM D: Bulk Type Assignment Fixer');
-  console.log('⚡ Targeting 1-3 error files with simple Type Assignment issues...\n');
+  console.log(
+    '⚡ Targeting 1-3 error files with simple Type Assignment issues...\n'
+  );
 
   try {
     const simpleFiles = await getSimpleTypeAssignmentFiles();
-    console.log(`📊 Found ${simpleFiles.length} files with 1-3 Type Assignment errors\n`);
+    console.log(
+      `📊 Found ${simpleFiles.length} files with 1-3 Type Assignment errors\n`
+    );
 
     let totalFiles = 0;
     let totalFixes = 0;

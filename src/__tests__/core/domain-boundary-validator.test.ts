@@ -138,10 +138,10 @@ describe('DomainBoundaryValidator', () => {
       const dataWithoutOptional = { required: 'test' };
 
       expect(validator.validateInput(dataWithOptional, optionalSchema)).toEqual(
-        dataWithOptional,
+        dataWithOptional
       );
       expect(
-        validator.validateInput(dataWithoutOptional, optionalSchema),
+        validator.validateInput(dataWithoutOptional, optionalSchema)
       ).toEqual(dataWithoutOptional);
     });
 
@@ -153,7 +153,7 @@ describe('DomainBoundaryValidator', () => {
       };
 
       expect(validator.validateInput('longstring', customSchema)).toBe(
-        'longstring',
+        'longstring'
       );
 
       expect(() => {
@@ -203,7 +203,7 @@ describe('DomainBoundaryValidator', () => {
       };
 
       expect(validator.validateInput(validNestedData, nestedSchema)).toEqual(
-        validNestedData,
+        validNestedData
       );
     });
   });
@@ -269,7 +269,7 @@ describe('DomainBoundaryValidator', () => {
       if (!result.success) {
         expect(result.error).toBeInstanceOf(ContractViolationError);
         expect((result.error as ContractViolationError).contractRule).toBe(
-          'failing-rule',
+          'failing-rule'
         );
       }
     });
@@ -380,7 +380,7 @@ describe('DomainBoundaryValidator', () => {
       validator.trackCrossings(
         Domain.CORE,
         Domain.COORDINATION,
-        'test-operation',
+        'test-operation'
       );
 
       const crossings = validator.getDomainCrossings();
@@ -401,7 +401,7 @@ describe('DomainBoundaryValidator', () => {
         smallValidator.trackCrossings(
           Domain.CORE,
           Domain.COORDINATION,
-          `operation-${i}`,
+          `operation-${i}`
         );
       }
 
@@ -415,7 +415,7 @@ describe('DomainBoundaryValidator', () => {
         validator.trackCrossings(
           Domain.CORE,
           Domain.COORDINATION,
-          `operation-${i}`,
+          `operation-${i}`
         );
       }
 
@@ -520,7 +520,7 @@ describe('DomainBoundaryValidator', () => {
         'test-rule',
         Domain.CORE,
         'test-operation',
-        'warning',
+        'warning'
       );
 
       expect(error.contractRule).toBe('test-rule');
@@ -690,7 +690,7 @@ describe('DomainBoundaryValidator', () => {
         schema,
         Domain.CORE,
         Domain.COORDINATION,
-        'cross-domain-test',
+        'cross-domain-test'
       );
 
       expect(result).toBe(data);
@@ -799,7 +799,7 @@ describe('DomainBoundaryValidator', () => {
 
       expect(validator.validateInput(null, nullableSchema)).toBe(null);
       expect(validator.validateInput(undefined, undefinedSchema)).toBe(
-        undefined,
+        undefined
       );
     });
 
@@ -818,7 +818,7 @@ describe('DomainBoundaryValidator', () => {
     });
 
     test('handles circular references gracefully', () => {
-      const circularObj: any = { name: 'test' };
+      const circularObj: unknown = { name: 'test' };
       circularObj.self = circularObj;
 
       const schema: TypeSchema = {

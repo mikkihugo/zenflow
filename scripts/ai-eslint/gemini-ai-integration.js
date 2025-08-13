@@ -47,7 +47,7 @@ export class GeminiAIIntegration {
       this.initialized = true;
 
       this.logger.info(
-        'Gemini AI Integration initialized with structured logging',
+        'Gemini AI Integration initialized with structured logging'
       );
     } catch (error) {
       console.error('Failed to initialize logging:', error.message);
@@ -69,10 +69,10 @@ export class GeminiAIIntegration {
     await this.initializeLogging();
 
     this.logger.info(
-      `🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`,
+      `🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`
     );
     console.log(
-      `🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`,
+      `🤖 Starting REAL Gemini AI fixing for ${violations.length} violations...`
     );
 
     // Log operation start with structured data
@@ -83,21 +83,21 @@ export class GeminiAIIntegration {
       });
     }
     console.log(
-      `   🔧 Starting violation fixing - ${violations.length} total violations`,
+      `   🔧 Starting violation fixing - ${violations.length} total violations`
     );
     console.log(`   ⚙️  Options:`, options);
 
     const { maxFixes = 50, dryRun = false } = options;
     const prioritizedViolations = this.prioritizeViolations(violations).slice(
       0,
-      maxFixes,
+      maxFixes
     );
 
     // Group violations by file for efficient batching
     const violationsByFile = this.groupViolationsByFile(prioritizedViolations);
 
     console.log(
-      `🎯 Processing ${prioritizedViolations.length} violations across ${violationsByFile.size} files...`,
+      `🎯 Processing ${prioritizedViolations.length} violations across ${violationsByFile.size} files...`
     );
 
     let fileIndex = 0;
@@ -105,10 +105,10 @@ export class GeminiAIIntegration {
       fileIndex++;
       const progress = ((fileIndex / violationsByFile.size) * 100).toFixed(1);
       console.log(
-        `\n📝 Fixing file ${fileIndex}/${violationsByFile.size} (${progress}%)`,
+        `\n📝 Fixing file ${fileIndex}/${violationsByFile.size} (${progress}%)`
       );
       console.log(
-        `   📁 File: ${path.basename(filePath)} (${fileViolations.length} violations)`,
+        `   📁 File: ${path.basename(filePath)} (${fileViolations.length} violations)`
       );
 
       try {
@@ -118,22 +118,22 @@ export class GeminiAIIntegration {
             this.logger,
             filePath,
             fileViolations,
-            this.categorizeViolations(fileViolations),
+            this.categorizeViolations(fileViolations)
           );
         }
         console.log(
-          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`,
+          `   📊 Analysis: ${fileViolations.length} violations in ${path.basename(filePath)}`
         );
 
         const fixed = await this.fixFileViolations(
           filePath,
           fileViolations,
-          dryRun,
+          dryRun
         );
         if (fixed) {
           this.fixedCount += fileViolations.length;
           console.log(
-            `   ✅ Fixed ${fileViolations.length} violations successfully`,
+            `   ✅ Fixed ${fileViolations.length} violations successfully`
           );
           this.logger.info(
             `Fixed ${fileViolations.length} violations in ${path.basename(filePath)}`,
@@ -141,7 +141,7 @@ export class GeminiAIIntegration {
               filePath,
               violationCount: fileViolations.length,
               violationTypes: fileViolations.map((v) => v.rule),
-            },
+            }
           );
         } else {
           this.skippedCount += fileViolations.length;
@@ -163,7 +163,7 @@ export class GeminiAIIntegration {
         const todoMarked = this.markAsTodo(
           filePath,
           fileViolations,
-          error.message,
+          error.message
         );
         if (todoMarked) {
           this.todoCount += fileViolations.length;
@@ -193,7 +193,7 @@ export class GeminiAIIntegration {
       logClaudeOperation(
         this.logger,
         'gemini_fix_violations_complete',
-        results,
+        results
       );
     }
     console.log(`   🎊 Completion results:`, results);
@@ -225,7 +225,7 @@ export class GeminiAIIntegration {
     const relativePath = path.relative(REPO_ROOT, filePath);
 
     console.log(
-      `   📝 Fixing ${violations.length} violations: ${violations.map((v) => v.rule).join(', ')}`,
+      `   📝 Fixing ${violations.length} violations: ${violations.map((v) => v.rule).join(', ')}`
     );
     console.log(`   📁 File: ${relativePath}`);
 
@@ -236,7 +236,7 @@ export class GeminiAIIntegration {
     try {
       if (dryRun) {
         console.log(
-          `   🔍 DRY RUN: Would call Gemini CLI to fix ${violations.length} violations`,
+          `   🔍 DRY RUN: Would call Gemini CLI to fix ${violations.length} violations`
         );
         return false;
       }
@@ -252,7 +252,7 @@ export class GeminiAIIntegration {
         const updatedContent = fs.readFileSync(filePath, 'utf8');
         if (updatedContent !== originalContent) {
           console.log(
-            `   🔄 Gemini fixed the file (${updatedContent.length} chars)`,
+            `   🔄 Gemini fixed the file (${updatedContent.length} chars)`
           );
           console.log(`   💾 File updated by Gemini`);
           return true;
@@ -299,7 +299,7 @@ export class GeminiAIIntegration {
         const updatedContent = fs.readFileSync(violation.file, 'utf8');
         if (updatedContent !== originalContent) {
           console.log(
-            `   🔄 Gemini fixed the file (${updatedContent.length} chars)`,
+            `   🔄 Gemini fixed the file (${updatedContent.length} chars)`
           );
           console.log(`   💾 File updated by Gemini`);
           return true;
@@ -342,7 +342,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
       });
     }
     console.log(
-      `   🔧 Starting Gemini CLI with prompt length: ${prompt.length} chars`,
+      `   🔧 Starting Gemini CLI with prompt length: ${prompt.length} chars`
     );
 
     return new Promise((resolve, reject) => {
@@ -362,7 +362,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
             ...process.env,
             GOOGLE_CLOUD_PROJECT: 'singularity-460212', // From existing script
           },
-        },
+        }
       );
 
       // Ensure logs directory exists for any remaining file operations
@@ -384,7 +384,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
         });
       }
       console.log(
-        `   📊 Gemini CLI session started: ${sessionId} for ${fileName}`,
+        `   📊 Gemini CLI session started: ${sessionId} for ${fileName}`
       );
 
       let stdout = '';
@@ -420,12 +420,12 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
           });
         }
         console.log(
-          `   📥 Gemini stdout: ${chunk.length} chars received (session: ${sessionId})`,
+          `   📥 Gemini stdout: ${chunk.length} chars received (session: ${sessionId})`
         );
 
         if (chunk.length > 50) {
           console.log(
-            `   🧠 Gemini: Working... (${chunk.length} chars received)`,
+            `   🧠 Gemini: Working... (${chunk.length} chars received)`
           );
         }
       });
@@ -478,7 +478,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
 
         if (stdout.length > 0) {
           console.log(
-            `   📤 Gemini output: "${stdout.slice(0, 200)}${stdout.length > 200 ? '...' : ''}"`,
+            `   📤 Gemini output: "${stdout.slice(0, 200)}${stdout.length > 200 ? '...' : ''}"`
           );
         }
 
@@ -497,7 +497,7 @@ Focus on fixing the specific ESLint violations while maintaining the existing co
           });
         }
         console.log(
-          `   🏁 Gemini CLI session completed - Session: ${sessionId}, Exit code: ${code}`,
+          `   🏁 Gemini CLI session completed - Session: ${sessionId}, Exit code: ${code}`
         );
 
         if (code === 0) {

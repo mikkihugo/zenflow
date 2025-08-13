@@ -179,7 +179,7 @@ export interface WeightsExport {
  * @example
  */
 export class NeuralCLI {
-  private ruvSwarm: any = null;
+  private ruvSwarm: unknown = null;
 
   /**
    * Initialize the neural system.
@@ -187,7 +187,7 @@ export class NeuralCLI {
    * @param config
    * @param _config
    */
-  async initialize(_config: NeuralConfig = {}): Promise<any> {
+  async initialize(_config: NeuralConfig = {}): Promise<unknown> {
     if (!this.ruvSwarm) {
       // TODO: Replace with proper ZenSwarm import after coordination restructure
       // const { ZenSwarm } = await import('../../coordination/swarm/core/index-complete');
@@ -267,7 +267,7 @@ export class NeuralCLI {
 
       if (typeof status === 'object') {
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Error getting neural status:', error.message);
       process.exit(1);
     }
@@ -285,10 +285,10 @@ export class NeuralCLI {
     const modelType = this.getArg(args, '--model') || 'attention';
     const iterations = Number.parseInt(
       this.getArg(args, '--iterations') || '10',
-      10,
+      10
     );
     const learningRate = Number.parseFloat(
-      this.getArg(args, '--learning-rate') || '0.001',
+      this.getArg(args, '--learning-rate') || '0.001'
     );
 
     try {
@@ -299,7 +299,7 @@ export class NeuralCLI {
         const accuracy = Math.min(95, 60 + progress * 30 + Math.random() * 5);
 
         process.stdout.write(
-          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`,
+          `\r🔄 Training: [${'█'.repeat(Math.floor(progress * 20))}${' '.repeat(20 - Math.floor(progress * 20))}] ${(progress * 100).toFixed(0)}% | Loss: ${loss.toFixed(4)} | Accuracy: ${accuracy.toFixed(1)}%`
         );
 
         // Simulate training delay
@@ -328,10 +328,10 @@ export class NeuralCLI {
       await fs.mkdir(outputDir, { recursive: true });
       const outputFile = path.join(
         outputDir,
-        `training-${modelType}-${Date.now()}.json`,
+        `training-${modelType}-${Date.now()}.json`
       );
       await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('\\n❌ Training failed:', error.message);
       process.exit(1);
     }
@@ -383,9 +383,9 @@ export class NeuralCLI {
 
       // Use pattern-specific memory configuration
       const _memoryUsage = await this.getPatternMemoryUsage(
-        patternType === 'all' ? 'convergent' : (patternType as PatternType),
+        patternType === 'all' ? 'convergent' : (patternType as PatternType)
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Error analyzing patterns:', error.message);
       process.exit(1);
     }
@@ -442,9 +442,9 @@ export class NeuralCLI {
       // Show summary
       const _totalParams = Object.values(weights.models).reduce(
         (sum, model) => sum + model.parameters,
-        0,
+        0
       );
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('❌ Export failed:', error.message);
       process.exit(1);
     }
@@ -456,7 +456,7 @@ export class NeuralCLI {
    * @param trainingResults
    */
   calculateConvergenceRate(
-    trainingResults: Array<{ loss: number; accuracy: number }>,
+    trainingResults: Array<{ loss: number; accuracy: number }>
   ): string {
     if (trainingResults.length < 3) {
       return 'insufficient_data';
@@ -464,10 +464,10 @@ export class NeuralCLI {
 
     const recentResults = trainingResults?.slice(-5); // Last 5 iterations
     const lossVariance = this.calculateVariance(
-      recentResults?.map((r) => r.loss),
+      recentResults?.map((r) => r.loss)
     );
     const accuracyTrend = this.calculateTrend(
-      recentResults?.map((r) => r.accuracy),
+      recentResults?.map((r) => r.accuracy)
     );
 
     if (lossVariance < 0.001 && accuracyTrend > 0) {
@@ -618,7 +618,7 @@ export class NeuralCLI {
         totalSessions > 0
           ? {
               loadedModels: Object.keys(modelDetails).filter(
-                (m) => modelDetails[m]?.hasSavedWeights,
+                (m) => modelDetails[m]?.hasSavedWeights
               ).length,
               sessionStart: new Date().toLocaleString(),
               memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,
@@ -654,7 +654,7 @@ export class NeuralCLI {
    * @param patternType
    */
   private async getPatternMemoryUsage(
-    patternType: PatternType,
+    patternType: PatternType
   ): Promise<number> {
     const config =
       PATTERN_MEMORY_CONFIG?.[patternType] || PATTERN_MEMORY_CONFIG?.convergent;
@@ -820,7 +820,7 @@ export class NeuralCLI {
     const neuralModels = ['attention', 'lstm', 'transformer'];
     for (const pattern of cognitivePatterns) {
       for (const [_category, items] of Object.entries(
-        patterns[pattern] || {},
+        patterns[pattern] || {}
       )) {
         items?.forEach((_item) => {});
       }
@@ -840,7 +840,7 @@ export class NeuralCLI {
    */
   private displaySpecificPattern(
     patternType: string,
-    patterns: Record<string, PatternData>,
+    patterns: Record<string, PatternData>
   ): void {
     const patternData = patterns[patternType.toLowerCase()];
 

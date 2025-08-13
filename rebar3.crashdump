@@ -1,0 +1,19 @@
+Error: terminating
+[{application_controller,call,2,
+                         [{file,"application_controller.erl"},{line,505}]},
+ {rebar3,ensure_running,2,
+         [{file,"/home/runner/work/rebar3/rebar3/apps/rebar/src/rebar3.erl"},
+          {line,409}]},
+ {rebar3,start_and_load_apps,1,
+         [{file,"/home/runner/work/rebar3/rebar3/apps/rebar/src/rebar3.erl"},
+          {line,395}]},
+ {rebar3,run,1,
+         [{file,"/home/runner/work/rebar3/rebar3/apps/rebar/src/rebar3.erl"},
+          {line,98}]},
+ {rebar3,main,1,
+         [{file,"/home/runner/work/rebar3/rebar3/apps/rebar/src/rebar3.erl"},
+          {line,66}]},
+ {escript,run,2,[{file,"escript.erl"},{line,750}]},
+ {escript,start,1,[{file,"escript.erl"},{line,277}]},
+ {init,start_em,1,[]}]
+

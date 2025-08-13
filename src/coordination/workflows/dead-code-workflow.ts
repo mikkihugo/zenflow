@@ -131,23 +131,23 @@ export class DeadCodeWorkflowHandler {
       // Register step handlers
       this.workflowEngine.registerStepHandler(
         'scanDeadCode',
-        this.scanDeadCode.bind(this),
+        this.scanDeadCode.bind(this)
       );
       this.workflowEngine.registerStepHandler(
         'analyzeScanResults',
-        this.analyzeScanResults.bind(this),
+        this.analyzeScanResults.bind(this)
       );
       this.workflowEngine.registerStepHandler(
         'presentToHuman',
-        this.presentToHuman.bind(this),
+        this.presentToHuman.bind(this)
       );
       this.workflowEngine.registerStepHandler(
         'executeDecisions',
-        this.executeDecisions.bind(this),
+        this.executeDecisions.bind(this)
       );
       this.workflowEngine.registerStepHandler(
         'generateReport',
-        this.generateReport.bind(this),
+        this.generateReport.bind(this)
       );
 
       logger.info('Dead code workflow initialized successfully');
@@ -158,7 +158,7 @@ export class DeadCodeWorkflowHandler {
    * Start dead code management workflow
    */
   async startDeadCodeWorkflow(
-    options: { autoApprove?: boolean; maxItemsToReview?: number } = {},
+    options: { autoApprove?: boolean; maxItemsToReview?: number } = {}
   ): Promise<string> {
     if (!this.workflowEngine) {
       throw new Error('Workflow engine not available');
@@ -172,7 +172,7 @@ export class DeadCodeWorkflowHandler {
 
     const workflowId = await this.workflowEngine.startWorkflow(
       'dead-code-management',
-      context,
+      context
     );
 
     logger.info('Dead code workflow started', { workflowId, options });
@@ -184,7 +184,7 @@ export class DeadCodeWorkflowHandler {
    */
   private async scanDeadCode(
     step: WorkflowStep,
-    context: DeadCodeWorkflowContext,
+    context: DeadCodeWorkflowContext
   ): Promise<void> {
     logger.info('Starting dead code scan...');
 
@@ -208,7 +208,7 @@ export class DeadCodeWorkflowHandler {
    */
   private async analyzeScanResults(
     step: WorkflowStep,
-    context: DeadCodeWorkflowContext,
+    context: DeadCodeWorkflowContext
   ): Promise<void> {
     if (!context.scanResult) {
       throw new Error('No scan result available for analysis');
@@ -218,13 +218,13 @@ export class DeadCodeWorkflowHandler {
 
     const analysis = {
       criticalItems: context.scanResult.highConfidenceItems.filter(
-        (item) => item.confidence > 0.9 && item.safetyScore > 0.8,
+        (item) => item.confidence > 0.9 && item.safetyScore > 0.8
       ),
       requiresReview: context.scanResult.highConfidenceItems.filter(
-        (item) => item.confidence > 0.8 || item.safetyScore < 0.6,
+        (item) => item.confidence > 0.8 || item.safetyScore < 0.6
       ),
       lowPriority: context.scanResult.mediumConfidenceItems.concat(
-        context.scanResult.lowConfidenceItems,
+        context.scanResult.lowConfidenceItems
       ),
     };
 
@@ -243,7 +243,7 @@ export class DeadCodeWorkflowHandler {
    */
   private async presentToHuman(
     step: WorkflowStep,
-    context: DeadCodeWorkflowContext,
+    context: DeadCodeWorkflowContext
   ): Promise<void> {
     if (!context.scanResult) {
       throw new Error('No scan result available for human review');
@@ -254,7 +254,7 @@ export class DeadCodeWorkflowHandler {
     if (context.autoApprove) {
       // Auto-approve safe removals
       const safeItems = context.scanResult.highConfidenceItems.filter(
-        (item) => item.confidence > 0.9 && item.safetyScore > 0.8,
+        (item) => item.confidence > 0.9 && item.safetyScore > 0.8
       );
 
       context.decisions = safeItems.map((item) => ({
@@ -270,7 +270,7 @@ export class DeadCodeWorkflowHandler {
     } else {
       // Present to human for decision
       const decisions = await this.deadCodeManager.presentToHuman(
-        context.scanResult,
+        context.scanResult
       );
       context.decisions = decisions;
 
@@ -285,7 +285,7 @@ export class DeadCodeWorkflowHandler {
    */
   private async executeDecisions(
     step: WorkflowStep,
-    context: DeadCodeWorkflowContext,
+    context: DeadCodeWorkflowContext
   ): Promise<void> {
     if (!context.decisions || context.decisions.length === 0) {
       logger.info('No decisions to execute');
@@ -347,7 +347,7 @@ export class DeadCodeWorkflowHandler {
    */
   private async generateReport(
     step: WorkflowStep,
-    context: DeadCodeWorkflowContext,
+    context: DeadCodeWorkflowContext
   ): Promise<void> {
     logger.info('Generating dead code management report...');
 
@@ -390,17 +390,17 @@ export class DeadCodeWorkflowHandler {
         recommendations.push('👍 Good code hygiene - minimal dead code found.');
       } else if (total < 20) {
         recommendations.push(
-          '⚠️ Consider regular dead code cleanup to maintain code quality.',
+          '⚠️ Consider regular dead code cleanup to maintain code quality.'
         );
       } else {
         recommendations.push(
-          '🚨 High amount of dead code detected - prioritize cleanup efforts.',
+          '🚨 High amount of dead code detected - prioritize cleanup efforts.'
         );
       }
 
       if (context.scanResult.highConfidenceItems.length > 10) {
         recommendations.push(
-          '🔍 Consider enabling auto-removal for high-confidence, safe-to-remove items.',
+          '🔍 Consider enabling auto-removal for high-confidence, safe-to-remove items.'
         );
       }
 
@@ -409,16 +409,16 @@ export class DeadCodeWorkflowHandler {
         context.executionResults.errors > 0
       ) {
         recommendations.push(
-          '⚠️ Some removal operations failed - manual review recommended.',
+          '⚠️ Some removal operations failed - manual review recommended.'
         );
       }
     }
 
     recommendations.push(
-      '📅 Schedule regular dead code scans (weekly recommended).',
+      '📅 Schedule regular dead code scans (weekly recommended).'
     );
     recommendations.push(
-      '🔧 Consider integrating dead code detection into your CI/CD pipeline.',
+      '🔧 Consider integrating dead code detection into your CI/CD pipeline.'
     );
 
     return recommendations;
@@ -427,7 +427,7 @@ export class DeadCodeWorkflowHandler {
   /**
    * Get workflow statistics
    */
-  getWorkflowStats(): any {
+  getWorkflowStats(): unknown {
     const history = this.deadCodeManager.getScanHistory();
     const pending = this.deadCodeManager.getPendingDecisions();
 

@@ -31,14 +31,14 @@ describe('Hooks System 100% Coverage', () => {
       // Non-function handler
       assert.throws(
         () => hooks.register('test-hook', 'not-a-function'),
-        /Handler must be a function/,
+        /Handler must be a function/
       );
 
       // Duplicate registration
       hooks.register('duplicate', () => {});
       assert.throws(
         () => hooks.register('duplicate', () => {}),
-        /Hook already registered/,
+        /Hook already registered/
       );
     });
 
@@ -49,7 +49,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         hooks.execute('failing-hook', { data: 'test' }),
-        /Hook failed/,
+        /Hook failed/
       );
     });
 
@@ -73,7 +73,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         hooks.execute('validated-hook', { optional: 'value' }),
-        /Missing required field/,
+        /Missing required field/
       );
     });
 
@@ -124,14 +124,14 @@ describe('Hooks System 100% Coverage', () => {
     it('should handle command execution with missing arguments', async () => {
       await assert.rejects(
         cliHooks.execute('swarm', []), // Missing required args
-        /Missing required arguments/,
+        /Missing required arguments/
       );
     });
 
     it('should handle command validation failures', async () => {
       await assert.rejects(
         cliHooks.execute('swarm', ['init', '--invalid-flag']),
-        /Unknown flag/,
+        /Unknown flag/
       );
     });
 
@@ -144,7 +144,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         cliHooks.prompt('Enter value:'),
-        /Not in interactive terminal/,
+        /Not in interactive terminal/
       );
 
       process.stdin.isTTY = originalIsTTY;
@@ -163,7 +163,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         claude.complete({ prompt: 'test' }),
-        /Invalid API key/,
+        /Invalid API key/
       );
     });
 
@@ -186,7 +186,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         claude.complete({ prompt: 'test' }),
-        /Failed to parse response/,
+        /Failed to parse response/
       );
     });
 
@@ -195,7 +195,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         claude.complete({ prompt: hugePrompt }),
-        /Context window exceeded/,
+        /Context window exceeded/
       );
     });
   });
@@ -212,7 +212,7 @@ describe('Hooks System 100% Coverage', () => {
 
       assert.throws(
         () => commands.register('test', () => {}),
-        /Command already exists/,
+        /Command already exists/
       );
     });
 
@@ -221,7 +221,7 @@ describe('Hooks System 100% Coverage', () => {
 
       assert.throws(
         () => commands.register('test2', () => {}, { aliases: ['t'] }),
-        /Alias already in use/,
+        /Alias already in use/
       );
     });
 
@@ -232,7 +232,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         commands.execute('admin', {}, { isAdmin: false }),
-        /Insufficient permissions/,
+        /Insufficient permissions/
       );
     });
 
@@ -246,7 +246,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         commands.execute('validated', { age: -5 }),
-        /Validation failed/,
+        /Validation failed/
       );
     });
   });
@@ -261,7 +261,7 @@ describe('Hooks System 100% Coverage', () => {
     it('should handle connection failures', async () => {
       await assert.rejects(
         remote.connect('invalid://url'),
-        /Failed to connect/,
+        /Failed to connect/
       );
     });
 
@@ -279,7 +279,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         remote.send(circularRef),
-        /Failed to serialize message/,
+        /Failed to serialize message/
       );
     });
 
@@ -311,7 +311,7 @@ describe('Hooks System 100% Coverage', () => {
           title: '', // Empty title
           body: 'Test PR',
         }),
-        /PR title required/,
+        /PR title required/
       );
     });
 
@@ -322,7 +322,7 @@ describe('Hooks System 100% Coverage', () => {
           files: [{ path: 'test.js', content: 'test' }],
           force: true,
         }),
-        /Branch protection/,
+        /Branch protection/
       );
     });
 
@@ -343,7 +343,7 @@ describe('Hooks System 100% Coverage', () => {
 
       assert.throws(
         () => coordinator.validateWebhook(payload, invalidSignature),
-        /Invalid webhook signature/,
+        /Invalid webhook signature/
       );
     });
   });
@@ -377,7 +377,7 @@ describe('Hooks System 100% Coverage', () => {
           file: 'test.py',
           formatted: false,
         }),
-        /Python files must be formatted/,
+        /Python files must be formatted/
       );
     });
 
@@ -386,7 +386,7 @@ describe('Hooks System 100% Coverage', () => {
 
       await assert.rejects(
         claudeHooks.saveSession({ id: 'test', data: {} }),
-        /Failed to save session/,
+        /Failed to save session/
       );
     });
 

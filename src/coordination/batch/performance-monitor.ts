@@ -75,7 +75,7 @@ export class BatchPerformanceMonitor {
    */
   recordBatchExecution(
     summary: BatchExecutionSummary,
-    resourceUsage?: { memory: number; cpu: number },
+    resourceUsage?: { memory: number; cpu: number }
   ): PerformanceMetrics {
     const metrics: PerformanceMetrics = {
       executionMode: 'batch',
@@ -122,7 +122,7 @@ export class BatchPerformanceMonitor {
     operationCount: number,
     executionTime: number,
     successfulOperations: number,
-    resourceUsage?: { memory: number; cpu: number },
+    resourceUsage?: { memory: number; cpu: number }
   ): PerformanceMetrics {
     const metrics: PerformanceMetrics = {
       executionMode: 'sequential',
@@ -159,7 +159,7 @@ export class BatchPerformanceMonitor {
    */
   comparePerformance(
     batchMetrics: PerformanceMetrics,
-    sequentialMetrics: PerformanceMetrics,
+    sequentialMetrics: PerformanceMetrics
   ): PerformanceComparison {
     const speedImprovement =
       sequentialMetrics.totalExecutionTime > 0
@@ -187,7 +187,7 @@ export class BatchPerformanceMonitor {
     // Estimate token reduction based on performance improvement
     const tokenReduction = Math.min(
       35,
-      Math.max(0, (speedImprovement - 1) * 12),
+      Math.max(0, (speedImprovement - 1) * 12)
     );
 
     const recommendations = this.generateRecommendations(
@@ -195,7 +195,7 @@ export class BatchPerformanceMonitor {
       throughputImprovement,
       resourceEfficiency,
       batchMetrics,
-      sequentialMetrics,
+      sequentialMetrics
     );
 
     return {
@@ -223,50 +223,50 @@ export class BatchPerformanceMonitor {
     throughputImprovement: number,
     resourceEfficiency: number,
     batchMetrics: PerformanceMetrics,
-    _sequentialMetrics: PerformanceMetrics,
+    _sequentialMetrics: PerformanceMetrics
   ): string[] {
     const recommendations: string[] = [];
 
     // Speed improvement recommendations
     if (speedImprovement < 2.0) {
       recommendations.push(
-        'Consider increasing batch size or optimizing operation concurrency',
+        'Consider increasing batch size or optimizing operation concurrency'
       );
     } else if (speedImprovement > 4.0) {
       recommendations.push(
-        'Excellent speed improvement achieved! Current configuration is optimal',
+        'Excellent speed improvement achieved! Current configuration is optimal'
       );
     }
 
     // Throughput recommendations
     if (throughputImprovement < 1.5) {
       recommendations.push(
-        'Low throughput improvement detected. Check for bottlenecks in operation execution',
+        'Low throughput improvement detected. Check for bottlenecks in operation execution'
       );
     }
 
     // Resource efficiency recommendations
     if (resourceEfficiency < 0.8) {
       recommendations.push(
-        'High resource usage detected. Consider reducing batch concurrency or optimizing operations',
+        'High resource usage detected. Consider reducing batch concurrency or optimizing operations'
       );
     }
 
     // Success rate recommendations
     if (batchMetrics.successRate < 0.95) {
       recommendations.push(
-        'Low success rate in batch execution. Check error handling and operation dependencies',
+        'Low success rate in batch execution. Check error handling and operation dependencies'
       );
     }
 
     // Operation count recommendations
     if (batchMetrics.operationCount < 3) {
       recommendations.push(
-        'Small batch size detected. Batch operations are most effective with 5+ operations',
+        'Small batch size detected. Batch operations are most effective with 5+ operations'
       );
     } else if (batchMetrics.operationCount > 20) {
       recommendations.push(
-        'Large batch size detected. Consider splitting into smaller batches for better error handling',
+        'Large batch size detected. Consider splitting into smaller batches for better error handling'
       );
     }
 
@@ -281,11 +281,11 @@ export class BatchPerformanceMonitor {
    */
   getPerformanceTrends(
     metric: keyof PerformanceMetrics,
-    hours = 24,
+    hours = 24
   ): PerformanceTrend {
     const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
     const recentMetrics = this.metricsHistory.filter(
-      (m) => m.timestamp >= cutoffTime,
+      (m) => m.timestamp >= cutoffTime
     );
 
     if (recentMetrics.length < 2) {
@@ -322,7 +322,7 @@ export class BatchPerformanceMonitor {
    */
   private calculateTrend(
     values: number[],
-    timestamps: number[],
+    timestamps: number[]
   ): 'improving' | 'declining' | 'stable' {
     if (values.length < 2) return 'stable';
 
@@ -331,7 +331,7 @@ export class BatchPerformanceMonitor {
     const sumY = values.reduce((sum, v) => sum + v, 0);
     const sumXY = timestamps.reduce(
       (sum, t, i) => sum + t * (values[i] ?? 0),
-      0,
+      0
     );
     const sumXX = timestamps.reduce((sum, t) => sum + t * t, 0);
 
@@ -375,14 +375,14 @@ export class BatchPerformanceMonitor {
   } {
     const cutoffTime = Date.now() - hours * 60 * 60 * 1000;
     const recentMetrics = this.metricsHistory.filter(
-      (m) => m.timestamp >= cutoffTime,
+      (m) => m.timestamp >= cutoffTime
     );
 
     const batchMetrics = recentMetrics.filter(
-      (m) => m.executionMode === 'batch',
+      (m) => m.executionMode === 'batch'
     );
     const sequentialMetrics = recentMetrics.filter(
-      (m) => m.executionMode === 'sequential',
+      (m) => m.executionMode === 'sequential'
     );
 
     let averageSpeedImprovement = 1;
@@ -397,18 +397,18 @@ export class BatchPerformanceMonitor {
         const closestSequential = sequentialMetrics.reduce(
           (closest, current) => {
             const currentDiff = Math.abs(
-              current?.timestamp - batchMetric.timestamp,
+              current?.timestamp - batchMetric.timestamp
             );
             const closestDiff = Math.abs(
-              closest.timestamp - batchMetric.timestamp,
+              closest.timestamp - batchMetric.timestamp
             );
             return currentDiff < closestDiff ? current : closest;
-          },
+          }
         );
 
         const comparison = this.comparePerformance(
           batchMetric,
-          closestSequential,
+          closestSequential
         );
         speedImprovements.push(comparison.speedImprovement);
         tokenReductions.push(comparison.tokenReduction);
@@ -426,7 +426,7 @@ export class BatchPerformanceMonitor {
       batchMetrics.length,
       sequentialMetrics.length,
       averageSpeedImprovement,
-      averageTokenReduction,
+      averageTokenReduction
     );
 
     return {
@@ -451,35 +451,35 @@ export class BatchPerformanceMonitor {
     batchCount: number,
     sequentialCount: number,
     avgSpeedImprovement: number,
-    avgTokenReduction: number,
+    avgTokenReduction: number
   ): string[] {
     const recommendations: string[] = [];
 
     if (batchCount === 0) {
       recommendations.push(
-        'No batch executions detected. Consider using batch operations for better performance',
+        'No batch executions detected. Consider using batch operations for better performance'
       );
     } else if (batchCount / (batchCount + sequentialCount) < 0.5) {
       recommendations.push(
-        'Low batch execution ratio. Consider batching more operations together',
+        'Low batch execution ratio. Consider batching more operations together'
       );
     }
 
     if (avgSpeedImprovement < 2.8) {
       recommendations.push(
-        'Speed improvement below claude-zen target (2.8x). Optimize batch configuration',
+        'Speed improvement below claude-zen target (2.8x). Optimize batch configuration'
       );
     }
 
     if (avgTokenReduction < 20) {
       recommendations.push(
-        'Token reduction below optimal. Consider larger batch sizes',
+        'Token reduction below optimal. Consider larger batch sizes'
       );
     }
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Performance metrics are within expected ranges. Continue current batch strategy',
+        'Performance metrics are within expected ranges. Continue current batch strategy'
       );
     }
 
@@ -545,7 +545,7 @@ export class BatchPerformanceMonitor {
     if (this.metricsHistory.length > this.maxHistorySize) {
       this.metricsHistory.splice(
         0,
-        this.metricsHistory.length - this.maxHistorySize,
+        this.metricsHistory.length - this.maxHistorySize
       );
     }
   }

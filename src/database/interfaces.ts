@@ -78,20 +78,20 @@ export interface IGraphRepository<T> extends IRepository<T> {
   traverse(
     startNode: string | number,
     relationshipType: string,
-    maxDepth?: number,
+    maxDepth?: number
   ): Promise<GraphTraversalResult>;
 
   /** Find nodes by label and properties */
   findNodesByLabel(
     label: string,
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>
   ): Promise<GraphNode[]>;
 
   /** Find relationships between nodes */
   findRelationships(
     fromNodeId: string | number,
     toNodeId: string | number,
-    relationshipType?: string,
+    relationshipType?: string
   ): Promise<GraphRelationship[]>;
 
   /** Create relationship between nodes */
@@ -99,13 +99,13 @@ export interface IGraphRepository<T> extends IRepository<T> {
     fromNodeId: string | number,
     toNodeId: string | number,
     relationshipType: string,
-    properties?: Record<string, any>,
+    properties?: Record<string, unknown>
   ): Promise<GraphRelationship>;
 
   /** Execute Cypher query */
   executeCypher(
     cypher: string,
-    parameters?: Record<string, any>,
+    parameters?: Record<string, unknown>
   ): Promise<GraphQueryResult>;
 }
 
@@ -118,7 +118,7 @@ export interface IVectorRepository<T> extends IRepository<T> {
   /** Perform vector similarity search */
   similaritySearch(
     queryVector: number[],
-    options?: VectorSearchOptions,
+    options?: VectorSearchOptions
   ): Promise<VectorSearchResult<T>[]>;
 
   /** Add vectors in batch */
@@ -185,7 +185,7 @@ export interface SessionEntity {
   createdAt: Date;
   lastAccessedAt: Date;
   status: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface CheckpointEntity {
@@ -194,7 +194,7 @@ export interface CheckpointEntity {
   timestamp: Date;
   checksum: string;
   description: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -205,16 +205,16 @@ export interface CheckpointEntity {
  */
 export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
   /** Store memory for a specific agent */
-  storeAgentMemory(agentId: string, key: string, value: any): Promise<void>;
+  storeAgentMemory(agentId: string, key: string, value: unknown): Promise<void>;
 
   /** Retrieve specific memory for an agent */
   getAgentMemory(
     agentId: string,
-    key: string,
-  ): Promise<{ key: string; value: any } | null>;
+    key: string
+  ): Promise<{ key: string; value: unknown } | null>;
 
   /** Get all memory for an agent */
-  getAllMemory(agentId: string): Promise<Array<{ key: string; value: any }>>;
+  getAllMemory(agentId: string): Promise<Array<{ key: string; value: unknown }>>;
 
   /** Update agent status */
   updateAgentStatus(agentId: string, status: string): Promise<void>;
@@ -274,7 +274,7 @@ export interface DatabaseQuery {
   type: 'select' | 'insert' | 'update' | 'delete' | 'aggregate';
   table?: string;
   columns?: string[];
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
   joins?: Array<{
     type: 'inner' | 'left' | 'right' | 'full';
     table: string;
@@ -284,7 +284,7 @@ export interface DatabaseQuery {
   limit?: number;
   offset?: number;
   groupBy?: string[];
-  having?: Record<string, any>;
+  having?: Record<string, unknown>;
 }
 
 /**
@@ -296,7 +296,7 @@ export interface ICoordinationRepository<T> extends IRepository<T> {
   /** Lock resource for coordination */
   acquireLock(
     resourceId: string,
-    lockTimeout?: number,
+    lockTimeout?: number
   ): Promise<CoordinationLock>;
 
   /** Release lock */
@@ -305,7 +305,7 @@ export interface ICoordinationRepository<T> extends IRepository<T> {
   /** Subscribe to changes */
   subscribe(
     pattern: string,
-    callback: (change: CoordinationChange<T>) => void,
+    callback: (change: CoordinationChange<T>) => void
   ): Promise<string>;
 
   /** Unsubscribe from changes */
@@ -320,7 +320,7 @@ export interface ICoordinationRepository<T> extends IRepository<T> {
   /** Execute raw SQL/query - legacy compatibility */
   execute(
     sql: string,
-    params?: unknown[],
+    params?: unknown[]
   ): Promise<{ affectedRows?: number; insertId?: number }>;
 
   /** Query database directly - legacy compatibility */
@@ -349,7 +349,7 @@ export interface QueryOptions {
   exclude?: string[];
 
   /** Additional database-specific options */
-  extras?: Record<string, any>;
+  extras?: Record<string, unknown>;
 }
 
 /**
@@ -375,10 +375,10 @@ export interface CustomQuery {
   query: string | object;
 
   /** Query parameters */
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
 
   /** Query options */
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 }
 
 /**
@@ -394,7 +394,7 @@ export interface TransactionOperation {
   entityType?: string;
 
   /** Operation data */
-  data?: any;
+  data?: unknown;
 
   /** Custom query for complex operations */
   customQuery?: CustomQuery;
@@ -416,10 +416,10 @@ export interface DatabaseMetadata {
   features: string[];
 
   /** Schema information */
-  schema?: Record<string, any>;
+  schema?: Record<string, unknown>;
 
   /** Configuration */
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 /**
@@ -435,7 +435,7 @@ export interface HealthStatus {
   score: number;
 
   /** Health details */
-  details: Record<string, any>;
+  details: Record<string, unknown>;
 
   /** Last check timestamp */
   lastCheck: Date;
@@ -472,7 +472,7 @@ export interface PerformanceMetrics {
   };
 
   /** Additional database-specific metrics */
-  custom?: Record<string, any>;
+  custom?: Record<string, unknown>;
 }
 
 /**
@@ -483,7 +483,7 @@ export interface PerformanceMetrics {
 export interface GraphNode {
   id: string | number;
   labels: string[];
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 export interface GraphRelationship {
@@ -491,7 +491,7 @@ export interface GraphRelationship {
   type: string;
   fromNodeId: string | number;
   toNodeId: string | number;
-  properties: Record<string, any>;
+  properties: Record<string, unknown>;
 }
 
 export interface GraphTraversalResult {
@@ -509,7 +509,7 @@ export interface GraphPath {
 export interface GraphQueryResult {
   nodes: GraphNode[];
   relationships: GraphRelationship[];
-  results: any[];
+  results: unknown[];
   executionTime: number;
 }
 
@@ -528,7 +528,7 @@ export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
   metric?: 'cosine' | 'euclidean' | 'dot';
-  filter?: Record<string, any>;
+  filter?: Record<string, unknown>;
 }
 
 export interface VectorSearchResult<T> {
@@ -548,7 +548,7 @@ export interface VectorIndexConfig {
   dimension: number;
   metric: 'cosine' | 'euclidean' | 'dot';
   type?: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
 }
 
 export interface VectorStats {
@@ -609,7 +609,7 @@ export interface CoordinationChange<T> {
   entityId: string | number;
   entity?: T;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface CoordinationEvent<T> {
@@ -617,7 +617,7 @@ export interface CoordinationEvent<T> {
   data: T;
   timestamp: Date;
   source: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface CoordinationStats {

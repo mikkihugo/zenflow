@@ -309,7 +309,7 @@ export function performGapAnalysis(): GapAnalysisResult {
   const allOurAgents = Object.values(OUR_AGENT_CATEGORIES).flat();
 
   const missingCapabilities = allTheirAgents.filter(
-    (agent) => !allOurAgents.includes(agent as AgentType),
+    (agent) => !allOurAgents.includes(agent as AgentType)
   );
 
   // Identify our unique advantages
@@ -342,7 +342,7 @@ export function performGapAnalysis(): GapAnalysisResult {
     clauseFlowTotal: claudeFlowAgentCount,
     ourAdvantage: ourAgentCount - claudeFlowAgentCount,
     advantageRatio: Number.parseFloat(
-      (ourAgentCount / claudeFlowAgentCount).toFixed(2),
+      (ourAgentCount / claudeFlowAgentCount).toFixed(2)
     ),
     categoryComparison,
     missingCapabilities,

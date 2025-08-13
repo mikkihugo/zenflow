@@ -143,13 +143,13 @@ export class CollectiveTools {
       try {
         // Use a simplified approach to avoid complex DI setup
         logger.debug(
-          'CollectiveTools: Using simplified data access without full DAL factory',
+          'CollectiveTools: Using simplified data access without full DAL factory'
         );
         this.dalFactory = null; // Will use alternative data access methods
       } catch (error) {
         logger.warn(
           'Failed to initialize DAL Factory, using direct system calls:',
-          error,
+          error
         );
         return null;
       }
@@ -162,7 +162,7 @@ export class CollectiveTools {
    *
    * @param _params
    */
-  async collectiveStatus(_params: any = {}): Promise<any> {
+  async collectiveStatus(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting real swarm system status');
 
@@ -204,7 +204,7 @@ export class CollectiveTools {
       };
 
       logger.info(
-        `Real swarm status: ${status.totalSwarms} swarms, ${status.totalAgents} agents`,
+        `Real swarm status: ${status.totalSwarms} swarms, ${status.totalAgents} agents`
       );
       return status;
     } catch (error) {
@@ -218,7 +218,7 @@ export class CollectiveTools {
    *
    * @param params
    */
-  async collectiveQuery(params: any = {}): Promise<any> {
+  async collectiveQuery(params: unknown = {}): Promise<unknown> {
     try {
       const { query = '', domain = 'all', confidence = 0.7 } = params;
       logger.info(`Querying swarm knowledge: ${query}`, { domain, confidence });
@@ -237,7 +237,7 @@ export class CollectiveTools {
         activeSwarms,
         query,
         domain,
-        confidence,
+        confidence
       );
 
       // Aggregate all search results
@@ -267,7 +267,7 @@ export class CollectiveTools {
       };
 
       logger.info(
-        `Swarm query completed: ${results?.results.length} results from ${activeSwarms.length} swarms`,
+        `Swarm query completed: ${results?.results.length} results from ${activeSwarms.length} swarms`
       );
       return results;
     } catch (error) {
@@ -281,7 +281,7 @@ export class CollectiveTools {
    *
    * @param params
    */
-  async collectiveContribute(params: any = {}): Promise<any> {
+  async collectiveContribute(params: unknown = {}): Promise<unknown> {
     try {
       const { type = 'general', subject, content, confidence = 0.8 } = params;
       logger.info(`Contributing to Hive knowledge: ${subject}`, {
@@ -314,7 +314,7 @@ export class CollectiveTools {
    *
    * @param _params
    */
-  async collectiveAgents(_params: any = {}): Promise<any> {
+  async collectiveAgents(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting real Hive agent data from system');
 
@@ -371,7 +371,7 @@ export class CollectiveTools {
       };
 
       logger.info(
-        `Real agent data retrieved: ${totalAgents} total agents from ${agents.sources.systemProcesses} processes and ${agents.sources.mcpConnections} MCP connections`,
+        `Real agent data retrieved: ${totalAgents} total agents from ${agents.sources.systemProcesses} processes and ${agents.sources.mcpConnections} MCP connections`
       );
       return agents;
     } catch (error) {
@@ -385,7 +385,7 @@ export class CollectiveTools {
    *
    * @param params
    */
-  async collectiveTasks(params: any = {}): Promise<any> {
+  async collectiveTasks(params: unknown = {}): Promise<unknown> {
     try {
       const { status = 'all' } = params;
       logger.info(`Getting real swarm tasks: ${status}`);
@@ -427,7 +427,7 @@ export class CollectiveTools {
       };
 
       logger.info(
-        `Real swarm tasks: ${tasks.total} total across ${activeSwarms.length} swarms`,
+        `Real swarm tasks: ${tasks.total} total across ${activeSwarms.length} swarms`
       );
       return tasks;
     } catch (error) {
@@ -441,7 +441,7 @@ export class CollectiveTools {
    *
    * @param _params
    */
-  async collectiveKnowledge(_params: any = {}): Promise<any> {
+  async collectiveKnowledge(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting Hive knowledge overview');
 
@@ -484,7 +484,7 @@ export class CollectiveTools {
    *
    * @param params
    */
-  async hiveSync(params: any = {}): Promise<any> {
+  async hiveSync(params: unknown = {}): Promise<unknown> {
     try {
       const { sources = ['all'] } = params;
       logger.info('Synchronizing Hive with external systems', { sources });
@@ -534,7 +534,7 @@ export class CollectiveTools {
    *
    * @param _params
    */
-  async hiveHealth(_params: any = {}): Promise<any> {
+  async hiveHealth(_params: unknown = {}): Promise<unknown> {
     try {
       logger.info('Getting Hive health metrics');
 
@@ -598,7 +598,7 @@ export class CollectiveTools {
 
       // Look for Node.js processes that might be agents
       const { stdout } = await execAsync(
-        'ps aux | grep -E "(node|tsx|npx)" | grep -v grep || true',
+        'ps aux | grep -E "(node|tsx|npx)" | grep -v grep || true'
       );
       const processes = stdout
         .trim()
@@ -618,7 +618,7 @@ export class CollectiveTools {
           (p) =>
             p.command.includes('claude') ||
             p.command.includes('mcp') ||
-            p.command.includes('swarm'),
+            p.command.includes('swarm')
         );
 
       return processes;
@@ -636,7 +636,7 @@ export class CollectiveTools {
       // Check for active MCP server processes
       const execAsync = promisify(exec);
       const { stdout } = await execAsync(
-        'lsof -i -P -n | grep LISTEN | grep -E "(3000|4000|8000)" || true',
+        'lsof -i -P -n | grep LISTEN | grep -E "(3000|4000|8000)" || true'
       );
 
       const connections = stdout
@@ -683,7 +683,7 @@ export class CollectiveTools {
    * @param dal
    * @param _dal
    */
-  private async getActiveTaskQueue(_dal: DALFactory | null): Promise<any> {
+  private async getActiveTaskQueue(_dal: DALFactory | null): Promise<unknown> {
     try {
       // This would query real task data from database
       const now = Date.now();
@@ -713,7 +713,7 @@ export class CollectiveTools {
   /**
    * Get system performance metrics.
    */
-  private async getSystemPerformanceMetrics(): Promise<any> {
+  private async getSystemPerformanceMetrics(): Promise<unknown> {
     try {
       const loadavg = os.loadavg();
       const totalmem = os.totalmem();
@@ -749,7 +749,7 @@ export class CollectiveTools {
       // Look for swarm processes
       const execAsync = promisify(exec);
       const { stdout } = await execAsync(
-        'ps aux | grep -E "swarm|claude.*mcp" | grep -v grep || true',
+        'ps aux | grep -E "swarm|claude.*mcp" | grep -v grep || true'
       );
 
       const swarmProcesses = stdout
@@ -784,7 +784,7 @@ export class CollectiveTools {
    * @param dal
    * @param _dal
    */
-  private async getSwarmHealthMetrics(_dal: DALFactory | null): Promise<any> {
+  private async getSwarmHealthMetrics(_dal: DALFactory | null): Promise<unknown> {
     try {
       const systemMetrics = await this.getSystemPerformanceMetrics();
 
@@ -814,7 +814,7 @@ export class CollectiveTools {
    */
   private async searchLocalKnowledgeBase(
     _query: string,
-    _domain: string,
+    _domain: string
   ): Promise<any[]> {
     try {
       // This would search local files, caches, databases
@@ -834,7 +834,7 @@ export class CollectiveTools {
    */
   private async searchSwarmMemory(
     _query: string,
-    _dal: DALFactory | null,
+    _dal: DALFactory | null
   ): Promise<any[]> {
     try {
       // This would search swarm memory stores
@@ -857,10 +857,10 @@ export class CollectiveTools {
    * @param _confidence
    */
   private async coordinateSwarmSearch(
-    _swarms: any[],
+    _swarms: unknown[],
     _query: string,
     _domain: string,
-    _confidence: number,
+    _confidence: number
   ): Promise<any[]> {
     try {
       // This would coordinate distributed search across active swarms

@@ -17,8 +17,8 @@ export interface ExecutionData {
   agentId: string;
   taskType: string;
   action: string;
-  parameters: any;
-  result: any;
+  parameters: unknown;
+  result: unknown;
   duration: number;
   resourceUsage: ResourceMetrics;
   timestamp: number;
@@ -37,7 +37,7 @@ export interface PatternAnalysis {
 export interface PatternCluster {
   id: string;
   type: PatternType;
-  centroid: any;
+  centroid: unknown;
   members: ExecutionData[];
   confidence: number;
   stability: number;
@@ -165,7 +165,7 @@ export interface MLModelRegistry {
 
 export interface NeuralNetworkPredictor {
   predict(data: ExecutionData[]): Promise<Pattern[]>;
-  train(data: ExecutionData[], labels: any[]): Promise<TrainingResult>;
+  train(data: ExecutionData[], labels: unknown[]): Promise<TrainingResult>;
   evaluate(testData: ExecutionData[]): Promise<EvaluationMetrics>;
   getModelInfo(): ModelInfo;
 }
@@ -176,14 +176,14 @@ export interface ReinforcementLearningEngine {
     state: string,
     action: string,
     reward: number,
-    nextState: string,
+    nextState: string
   ): void;
   getQValue(state: string, action: string): number;
   getPolicy(): Map<string, string>;
 }
 
 export interface EnsembleModels {
-  addModel(model: any, weight: number): void;
+  addModel(model: unknown, weight: number): void;
   predict(data: ExecutionData[]): Promise<EnsemblePrediction>;
   getModelWeights(): Map<string, number>;
   updateWeights(performance: PerformanceMetrics[]): void;
@@ -191,7 +191,7 @@ export interface EnsembleModels {
 
 export interface OnlineLearningSystem {
   processStream(data: ExecutionData): Promise<void>;
-  getCurrentModel(): any;
+  getCurrentModel(): unknown;
   getAccuracy(): number;
   adaptToDistribution(newData: ExecutionData[]): Promise<void>;
 }
@@ -251,7 +251,7 @@ export type LearningType =
 export interface Pattern {
   id: string;
   type: PatternType;
-  data: any;
+  data: unknown;
   confidence: number;
   frequency: number;
   context: Record<string, unknown>;
@@ -303,7 +303,7 @@ export interface Message {
   from: string;
   to: string;
   type: string;
-  payload: any;
+  payload: unknown;
   timestamp: number;
   priority: 'low' | 'medium' | 'high' | 'urgent';
   latency?: number;
@@ -345,7 +345,7 @@ export interface FailurePattern {
   frequency: number;
   severity: 'low' | 'medium' | 'high' | 'critical';
   context: string[];
-  preconditions: any[];
+  preconditions: unknown[];
   impacts: string[];
   recoveryTime: number;
   prevention: PreventionStrategy[];
@@ -434,7 +434,7 @@ export interface PerformanceImprovement {
 export interface KnowledgeUpdate {
   domain: string;
   type: 'new' | 'updated' | 'refined' | 'deprecated';
-  knowledge: any;
+  knowledge: unknown;
   confidence: number;
   source: string;
   timestamp: number;
@@ -459,7 +459,7 @@ export interface OptimizationAction {
   type: string;
   description: string;
   target: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   expectedImpact: number;
   effort: number;
   risk: number;
@@ -574,7 +574,7 @@ export interface ModelInfo {
 }
 
 export interface EnsemblePrediction {
-  prediction: any;
+  prediction: unknown;
   confidence: number;
   modelContributions: Map<string, number>;
   uncertainty: number;
@@ -649,7 +649,7 @@ export interface LearningProgress {
 
 export interface TaskConstraint {
   type: string;
-  value: any;
+  value: unknown;
   flexibility: number;
   priority: number;
 }
@@ -726,7 +726,7 @@ export interface SystemContext {
 export interface SystemConstraint {
   type: string;
   description: string;
-  limit: any;
+  limit: unknown;
   priority: number;
 }
 

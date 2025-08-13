@@ -80,7 +80,7 @@ Examples
         default: 'table',
       },
     },
-  },
+  }
 );
 
 /**
@@ -92,8 +92,8 @@ Examples
  */
 async function callMcpTool(
   toolName: string,
-  params: any = {},
-): Promise<{ success: boolean; data?: any; error?: string }> {
+  params: unknown = {}
+): Promise<{ success: boolean; data?: unknown; error?: string }> {
   return new Promise((resolve) => {
     const mcpProcess = spawn(
       'npx',
@@ -101,7 +101,7 @@ async function callMcpTool(
       {
         stdio: ['pipe', 'pipe', 'pipe'],
         cwd: process.cwd(),
-      },
+      }
     );
 
     let stdout = '';
@@ -209,7 +209,7 @@ async function callMcpTool(
  * @param format
  * @example
  */
-function _formatOutput(data: any, format: string): string {
+function _formatOutput(data: unknown, format: string): string {
   switch (format) {
     case 'json':
       return JSON.stringify(data, null, 2);
@@ -220,7 +220,7 @@ function _formatOutput(data: any, format: string): string {
         return Object.entries(data)
           .map(
             ([key, value]) =>
-              `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`,
+              `${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`
           )
           .join('\n');
       }
@@ -247,7 +247,7 @@ export async function executeSwarmCommand(): Promise<void> {
   try {
     logger.info(`Executing swarm command: ${command}`, { options });
 
-    let result: any;
+    let result: unknown;
 
     switch (command) {
       case 'status':

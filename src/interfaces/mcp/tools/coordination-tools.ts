@@ -34,7 +34,7 @@ const coordinationTools: MCPTool[] = [
         memoryPersistence: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const {
         topology = 'hierarchical',
         maxAgents = 8,
@@ -65,7 +65,7 @@ const coordinationTools: MCPTool[] = [
               id: `coord_${i + 1}`,
               role: 'coordinator',
               status: 'active',
-            }),
+            })
           ),
         },
       };
@@ -109,7 +109,7 @@ const coordinationTools: MCPTool[] = [
       },
       required: ['type'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { type, name, capabilities = [], config = {} } = params;
 
       const agentId = `agent_${type}_${Date.now()}`;
@@ -168,7 +168,7 @@ const coordinationTools: MCPTool[] = [
       },
       required: ['task'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const {
         task,
         strategy = 'adaptive',

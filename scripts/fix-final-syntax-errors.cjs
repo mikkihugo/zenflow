@@ -11,7 +11,9 @@ const { execSync } = require('child_process');
 console.log('🔧 Fixing final TypeScript syntax errors...\n');
 
 // Get remaining errors
-const buildOutput = execSync('npm run build 2>&1 || true', { encoding: 'utf8' });
+const buildOutput = execSync('npm run build 2>&1 || true', {
+  encoding: 'utf8',
+});
 const errorLines = buildOutput
   .split('\n')
   .filter((line) => line.includes(') error TS'))
@@ -69,13 +71,22 @@ for (const [filePath, errors] of errorsByFile) {
       switch (error.code) {
         case 'TS1003': // Identifier expected
           // Fix stray periods in type annotations
-          if (error.message.includes('Identifier expected') && line.includes('.')) {
+          if (
+            error.message.includes('Identifier expected') &&
+            line.includes('.')
+          ) {
             // Pattern: SomeType. -> SomeType
             fixedLine = line.replace(/([A-Za-z_][A-Za-z0-9_]*)\.\s*$/, '$1');
             // Pattern: options?. -> options?
-            fixedLine = fixedLine.replace(/([A-Za-z_][A-Za-z0-9_]*)\?\.\s*$/, '$1?');
+            fixedLine = fixedLine.replace(
+              /([A-Za-z_][A-Za-z0-9_]*)\?\.\s*$/,
+              '$1?'
+            );
             // Pattern: VectorSearchOptions. -> VectorSearchOptions
-            fixedLine = fixedLine.replace(/([A-Za-z_][A-Za-z0-9_]*)\.\s*\)/, '$1)');
+            fixedLine = fixedLine.replace(
+              /([A-Za-z_][A-Za-z0-9_]*)\.\s*\)/,
+              '$1)'
+            );
           }
           break;
 
@@ -124,7 +135,8 @@ for (const [filePath, errors] of errorsByFile) {
         case 'TS1002': // Unterminated string literal
           // Fix unterminated strings
           if (!line.match(/['"][^'"]*$/)) {
-            const lastQuote = line.lastIndexOf('"') > line.lastIndexOf("'") ? '"' : "'";
+            const lastQuote =
+              line.lastIndexOf('"') > line.lastIndexOf("'") ? '"' : "'";
             if (line.endsWith(lastQuote) === false) {
               fixedLine = line + lastQuote;
             }
@@ -149,7 +161,9 @@ for (const [filePath, errors] of errorsByFile) {
         modified = true;
         fixedCount++;
       } else {
-        console.log(`  ⚠️ Could not auto-fix ${error.code} at line ${error.line}: ${error.message}`);
+        console.log(
+          `  ⚠️ Could not auto-fix ${error.code} at line ${error.line}: ${error.message}`
+        );
       }
     }
 
@@ -170,12 +184,16 @@ console.log(`🎉 Fixed ${fixedCount} syntax errors\n`);
 
 // Verify improvements
 try {
-  const newBuildOutput = execSync('npm run build 2>&1 || true', { encoding: 'utf8' });
+  const newBuildOutput = execSync('npm run build 2>&1 || true', {
+    encoding: 'utf8',
+  });
   const remainingErrors = newBuildOutput
     .split('\n')
     .filter((line) => line.includes(') error TS')).length;
 
-  console.log(`📊 TypeScript errors: Before: ${errorLines.length}, After: ${remainingErrors}`);
+  console.log(
+    `📊 TypeScript errors: Before: ${errorLines.length}, After: ${remainingErrors}`
+  );
   if (remainingErrors < errorLines.length) {
     console.log(
       `🚀 Reduced errors by ${errorLines.length - remainingErrors} (${Math.round(((errorLines.length - remainingErrors) / errorLines.length) * 100)}% improvement)`

@@ -39,7 +39,7 @@ const memoryNeuralTools: MCPTool[] = [
       },
       required: ['action'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { action, key, value, namespace = 'default' } = params;
 
       switch (action) {
@@ -117,7 +117,7 @@ const memoryNeuralTools: MCPTool[] = [
         includeMetrics: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { detailed = false, includeMetrics = true } = params;
 
       return {
@@ -177,7 +177,7 @@ const memoryNeuralTools: MCPTool[] = [
       },
       required: ['operation'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { operation, data, async = true } = params;
 
       const trainingId = `training_${Date.now()}`;

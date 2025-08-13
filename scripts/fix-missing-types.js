@@ -249,7 +249,7 @@ class MissingTypesGenerator {
 
     // Add exports
     const exportableTypes = typeNames.filter(
-      (name) => !SINGLETON_INSTANCES.includes(name),
+      (name) => !SINGLETON_INSTANCES.includes(name)
     );
     if (exportableTypes.length > 0) {
       content += `// Convenience exports\n`;

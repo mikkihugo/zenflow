@@ -95,7 +95,7 @@ async function runDiagnosticTests(logger: LoggerInterface): Promise<void> {
 
 async function generateReport(
   args: string[],
-  logger: LoggerInterface,
+  logger: LoggerInterface
 ): Promise<void> {
   const outputPath = args
     .find((arg) => arg.startsWith('--output='))
@@ -130,15 +130,15 @@ async function generateReport(
 
 async function startMonitoring(
   args: string[],
-  logger: LoggerInterface,
+  logger: LoggerInterface
 ): Promise<void> {
   const duration = Number.parseInt(
     args.find((arg) => arg.startsWith('--duration='))?.split('=')[1] || '60',
-    10,
+    10
   );
   const interval = Number.parseInt(
     args.find((arg) => arg.startsWith('--interval='))?.split('=')[1] || '1000',
-    10,
+    10
   );
 
   logger.info('Starting system monitoring...', { duration, interval });
@@ -177,7 +177,7 @@ async function startMonitoring(
 
 async function analyzeLogs(
   args: string[],
-  logger: LoggerInterface,
+  logger: LoggerInterface
 ): Promise<void> {
   const logDir =
     args.find((arg) => arg.startsWith('--dir='))?.split('=')[1] || './logs';
@@ -235,7 +235,7 @@ function showLoggingConfig(logger: LoggerInterface): void {
   logger.info('Logging configuration displayed successfully');
 }
 
-function formatReportAsMarkdown(report: any): string {
+function formatReportAsMarkdown(report: unknown): string {
   const lines = [
     '# ruv-swarm Diagnostic Report',
     '',
@@ -252,7 +252,7 @@ function formatReportAsMarkdown(report: any): string {
   if (report.connection.patterns.recommendations.length > 0) {
     lines.push('### Recommendations');
     lines.push('');
-    report.connection.patterns.recommendations.forEach((rec: any) => {
+    report.connection.patterns.recommendations.forEach((rec: unknown) => {
       lines.push(`- **${rec.severity.toUpperCase()}**: ${rec.issue}`);
       lines.push(`  - ${rec.suggestion}`);
     });

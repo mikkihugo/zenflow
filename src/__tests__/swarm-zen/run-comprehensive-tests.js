@@ -87,11 +87,11 @@ class TestRunner {
     const nodeVersion = process.version;
     const majorVersion = Number.parseInt(
       nodeVersion.split('.')[0].substring(1),
-      10,
+      10
     );
     if (majorVersion < 14) {
       console.error(
-        chalk.red(`❌ Node.js ${nodeVersion} is too old. Required: >= 14.0.0`),
+        chalk.red(`❌ Node.js ${nodeVersion} is too old. Required: >= 14.0.0`)
       );
       process.exit(1);
     }
@@ -190,14 +190,14 @@ class TestRunner {
 
     await fs.writeFile(
       path.join(reportDir, `test-report-${Date.now()}.json`),
-      JSON.stringify(testReport, null, 2),
+      JSON.stringify(testReport, null, 2)
     );
 
     // Coverage report
     try {
       const coverageFile = path.join(
         process.cwd(),
-        'coverage/coverage-summary.json',
+        'coverage/coverage-summary.json'
       );
       const coverageData = JSON.parse(await fs.readFile(coverageFile, 'utf-8'));
 
@@ -217,7 +217,7 @@ class TestRunner {
     const perfReport = await this.generatePerformanceReport();
     await fs.writeFile(
       path.join(reportDir, 'performance-summary.json'),
-      JSON.stringify(perfReport, null, 2),
+      JSON.stringify(perfReport, null, 2)
     );
   }
 
@@ -250,7 +250,7 @@ class TestRunner {
       timestamp: new Date().toISOString(),
       metrics,
       meetsTargets: Object.values(metrics).every(
-        (m) => m.actual === null || m.actual <= m.target,
+        (m) => m.actual === null || m.actual <= m.target
       ),
     };
   }

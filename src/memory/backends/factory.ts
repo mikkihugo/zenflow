@@ -10,7 +10,7 @@
 
 import type { BackendInterface } from '../core/memory-system.ts';
 import type { MemoryConfig } from '../providers/memory-providers.ts';
-import { BaseMemoryBackend, type BackendCapabilities } from './base-backend.ts';
+import { type BackendCapabilities, BaseMemoryBackend } from './base-backend.ts';
 
 // Additional types needed for factory
 export type MemoryBackendType = 'memory' | 'file' | 'sqlite' | 'jsonb';
@@ -62,7 +62,7 @@ export class MemoryBackendFactory {
   public async createBackend(
     type: MemoryBackendType,
     config: Partial<MemoryConfig> = {},
-    instanceId?: string,
+    instanceId?: string
   ): Promise<BaseMemoryBackend & BackendInterface> {
     const fullConfig = this.mergeConfig(config);
     const id = instanceId || `${type}-${Date.now()}`;
@@ -137,7 +137,7 @@ export class MemoryBackendFactory {
    */
   public async closeAllBackends(): Promise<void> {
     const closePromises = Array.from(this.backends.values()).map((backend) =>
-      backend.close(),
+      backend.close()
     );
     await Promise.all(closePromises);
     this.backends.clear();
@@ -149,7 +149,7 @@ export class MemoryBackendFactory {
    * @param type
    */
   public async getBackendCapabilities(
-    type: MemoryBackendType,
+    type: MemoryBackendType
   ): Promise<BackendCapabilities> {
     const BackendClass = await this.getBackendClass(type);
     const tempBackend = new BackendClass(this.defaultConfig);
@@ -164,7 +164,7 @@ export class MemoryBackendFactory {
    */
   public registerBackend(
     type: MemoryBackendType,
-    loader: () => Promise<typeof BaseMemoryBackend>,
+    loader: () => Promise<typeof BaseMemoryBackend>
   ): void {
     backendRegistry.set(type, loader);
   }
@@ -191,7 +191,7 @@ export class MemoryBackendFactory {
    * @param config
    */
   public async createAutoBackend(
-    config: Partial<MemoryConfig> = {},
+    config: Partial<MemoryConfig> = {}
   ): Promise<BaseMemoryBackend> {
     const type = this.detectOptimalBackend(config);
     return this.createBackend(type, config);
@@ -205,7 +205,7 @@ export class MemoryBackendFactory {
    */
   public static async createBackend(
     type: MemoryBackendType,
-    config: Partial<MemoryConfig> = {},
+    config: Partial<MemoryConfig> = {}
   ): Promise<BaseMemoryBackend> {
     return MemoryBackendFactory.getInstance().createBackend(type, config);
   }
@@ -213,8 +213,8 @@ export class MemoryBackendFactory {
   /**
    * Health check all active backends.
    */
-  public async healthCheckAll(): Promise<Record<string, any>> {
-    const results: Record<string, any> = {};
+  public async healthCheckAll(): Promise<Record<string, unknown>> {
+    const results: Record<string, unknown> = {};
 
     for (const [id, backend] of this.backends.entries()) {
       try {
@@ -242,7 +242,7 @@ export class MemoryBackendFactory {
   }
 
   private async getBackendClass(
-    type: MemoryBackendType,
+    type: MemoryBackendType
   ): Promise<typeof BaseMemoryBackend> {
     const loader = backendRegistry.get(type);
     if (!loader) {
@@ -253,7 +253,7 @@ export class MemoryBackendFactory {
       return await loader();
     } catch (error) {
       throw new Error(
-        `Failed to load backend '${type}': ${(error as Error).message}`,
+        `Failed to load backend '${type}': ${(error as Error).message}`
       );
     }
   }
@@ -267,7 +267,7 @@ export class MemoryBackendFactory {
   }
 
   private detectOptimalBackend(
-    config: Partial<MemoryConfig>,
+    config: Partial<MemoryConfig>
   ): MemoryBackendType {
     // Auto-detect optimal backend based on requirements
     if (config?.persistent) {
@@ -295,8 +295,8 @@ export class MemoryBackendFactory {
 
       override async store(
         key: string,
-        value: any,
-        namespace?: string,
+        value: unknown,
+        namespace?: string
       ): Promise<void> {
         this.validateKey(key);
         const finalKey = namespace ? `${namespace}:${key}` : key;
@@ -304,7 +304,7 @@ export class MemoryBackendFactory {
         this.updateStats('write', this.calculateSize(value));
       }
 
-      override async set(key: string, value: any): Promise<void> {
+      override async set(key: string, value: unknown): Promise<void> {
         return this.store(key, value);
       }
 
@@ -327,7 +327,7 @@ export class MemoryBackendFactory {
           this.dataStore.delete(key);
           this.updateStats(
             'delete',
-            entry ? this.calculateSize(entry.value) : 0,
+            entry ? this.calculateSize(entry.value) : 0
           );
         }
         return existed;
@@ -335,7 +335,7 @@ export class MemoryBackendFactory {
 
       override async list(pattern?: string): Promise<string[]> {
         return Array.from(this.dataStore.keys()).filter((key) =>
-          this.matchesPattern(key, pattern),
+          this.matchesPattern(key, pattern)
         );
       }
 
@@ -391,13 +391,13 @@ export class MemoryBackendFactory {
 
       override async store(
         _key: string,
-        _value: any,
-        _namespace?: string,
+        _value: unknown,
+        _namespace?: string
       ): Promise<void> {
         throw new Error('FileBackend not implemented');
       }
 
-      override async set(key: string, value: any): Promise<void> {
+      override async set(key: string, value: unknown): Promise<void> {
         return this.store(key, value);
       }
 
@@ -459,13 +459,13 @@ export class MemoryBackendFactory {
 
       override async store(
         _key: string,
-        _value: any,
-        _namespace?: string,
+        _value: unknown,
+        _namespace?: string
       ): Promise<void> {
         throw new Error('SQLiteBackend not implemented');
       }
 
-      override async set(key: string, value: any): Promise<void> {
+      override async set(key: string, value: unknown): Promise<void> {
         return this.store(key, value);
       }
 
@@ -473,7 +473,7 @@ export class MemoryBackendFactory {
         return this.retrieve<T>(key);
       }
 
-      override async retrieve(): Promise<any> {
+      override async retrieve(): Promise<unknown> {
         throw new Error('SQLiteBackend not implemented');
       }
 
@@ -527,13 +527,13 @@ export class MemoryBackendFactory {
 
       override async store(
         _key: string,
-        _value: any,
-        _namespace?: string,
+        _value: unknown,
+        _namespace?: string
       ): Promise<void> {
         throw new Error('JSONBBackend not implemented');
       }
 
-      override async set(key: string, value: any): Promise<void> {
+      override async set(key: string, value: unknown): Promise<void> {
         return this.store(key, value);
       }
 
@@ -541,7 +541,7 @@ export class MemoryBackendFactory {
         return this.retrieve<T>(key);
       }
 
-      override async retrieve(): Promise<any> {
+      override async retrieve(): Promise<unknown> {
         throw new Error('JSONBBackend not implemented');
       }
 

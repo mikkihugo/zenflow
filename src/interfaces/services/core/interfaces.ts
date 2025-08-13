@@ -160,7 +160,7 @@ export interface ServiceConfig {
   timeout?: number;
 
   /** Service-specific configuration */
-  options?: Record<string, any>;
+  options?: Record<string, unknown>;
 
   /** Authentication configuration */
   auth?: ServiceAuthConfig;
@@ -178,7 +178,7 @@ export interface ServiceConfig {
   dependencies?: ServiceDependencyConfig[];
 
   /** Custom metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -215,7 +215,7 @@ export interface ServiceStatus {
       lastCheck: Date;
     };
   };
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -250,7 +250,7 @@ export interface ServiceMetrics {
 export interface ServiceOperationOptions {
   timeout?: number;
   retries?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   trackMetrics?: boolean;
 }
 
@@ -334,7 +334,7 @@ export interface ServiceEvent {
  *     this.emit('started');
  *   }
  *
- *   async execute<T>(operation: string, params?: any): Promise<ServiceOperationResponse<T>> {
+ *   async execute<T>(operation: string, params?: unknown): Promise<ServiceOperationResponse<T>> {
  *     // Handle service-specific operations
  *     const startTime = Date.now();
  *
@@ -470,8 +470,8 @@ export interface IService {
    */
   execute<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<ServiceOperationResponse<T>>;
 
   /**
@@ -615,7 +615,7 @@ export interface IServiceFactory<
 
   // Configuration validation
   validateConfig(config: TConfig): Promise<boolean>;
-  getConfigSchema(type: string): Record<string, any> | undefined;
+  getConfigSchema(type: string): Record<string, unknown> | undefined;
 }
 
 /**
@@ -627,10 +627,10 @@ export interface IServiceRegistry {
   // Factory registration
   registerFactory<T extends ServiceConfig>(
     type: string,
-    factory: IServiceFactory<T>,
+    factory: IServiceFactory<T>
   ): void;
   getFactory<T extends ServiceConfig>(
-    type: string,
+    type: string
   ): IServiceFactory<T> | undefined;
   listFactoryTypes(): string[];
   unregisterFactory(type: string): void;
@@ -668,7 +668,7 @@ export interface IServiceRegistry {
       | 'service-registered'
       | 'service-unregistered'
       | 'service-status-changed',
-    handler: (serviceName: string, service?: IService) => void,
+    handler: (serviceName: string, service?: IService) => void
   ): void;
   off(event: string, handler?: Function): void;
 }
@@ -687,9 +687,9 @@ export interface IServiceConfigValidator {
 
   validateType(type: string, config: ServiceConfig): Promise<boolean>;
 
-  getSchema(type: string): Record<string, any> | undefined;
+  getSchema(type: string): Record<string, unknown> | undefined;
 
-  registerSchema(type: string, schema: Record<string, any>): void;
+  registerSchema(type: string, schema: Record<string, unknown>): void;
 }
 
 /**
@@ -702,7 +702,7 @@ export class ServiceError extends Error {
     message: string,
     public readonly code: string,
     public readonly serviceName: string,
-    public readonly cause?: Error,
+    public readonly cause?: Error
   ) {
     super(message);
     this.name = 'ServiceError';
@@ -715,7 +715,7 @@ export class ServiceInitializationError extends ServiceError {
       `Service initialization failed: ${serviceName}`,
       'SERVICE_INIT_ERROR',
       serviceName,
-      cause,
+      cause
     );
     this.name = 'ServiceInitializationError';
   }
@@ -727,7 +727,7 @@ export class ServiceConfigurationError extends ServiceError {
       `Service configuration error: ${serviceName} - ${details}`,
       'SERVICE_CONFIG_ERROR',
       serviceName,
-      cause,
+      cause
     );
     this.name = 'ServiceConfigurationError';
   }
@@ -739,7 +739,7 @@ export class ServiceDependencyError extends ServiceError {
       `Service dependency error: ${serviceName} -> ${dependency}`,
       'SERVICE_DEPENDENCY_ERROR',
       serviceName,
-      cause,
+      cause
     );
     this.name = 'ServiceDependencyError';
   }
@@ -751,7 +751,7 @@ export class ServiceOperationError extends ServiceError {
       `Service operation failed: ${serviceName}.${operation}`,
       'SERVICE_OPERATION_ERROR',
       serviceName,
-      cause,
+      cause
     );
     this.name = 'ServiceOperationError';
   }
@@ -762,13 +762,13 @@ export class ServiceTimeoutError extends ServiceError {
     serviceName: string,
     operation: string,
     timeout: number,
-    cause?: Error,
+    cause?: Error
   ) {
     super(
       `Service operation timeout: ${serviceName}.${operation} (${timeout}ms)`,
       'SERVICE_TIMEOUT_ERROR',
       serviceName,
-      cause,
+      cause
     );
     this.name = 'ServiceTimeoutError';
   }
@@ -783,7 +783,7 @@ export interface ServiceCapability {
   name: string;
   version: string;
   description: string;
-  parameters?: Record<string, any>;
+  parameters?: Record<string, unknown>;
   dependencies?: string[];
 }
 

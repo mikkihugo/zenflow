@@ -92,7 +92,7 @@ export class SwarmService extends EventEmitter {
    */
   async spawnAgent(
     swarmId: string,
-    config: AgentConfig,
+    config: AgentConfig
   ): Promise<AgentSpawnResult> {
     logger.info('Spawning agent', {
       swarmId,
@@ -150,7 +150,7 @@ export class SwarmService extends EventEmitter {
    * Orchestrate a task across agents
    */
   async orchestrateTask(
-    config: TaskOrchestrationConfig,
+    config: TaskOrchestrationConfig
   ): Promise<TaskOrchestrationResult> {
     logger.info('Orchestrating task', {
       task: config.task.substring(0, 100) + '...',
@@ -172,7 +172,7 @@ export class SwarmService extends EventEmitter {
       const task = new TaskInstance(
         taskId,
         config,
-        availableAgents.map((a) => a.id),
+        availableAgents.map((a) => a.id)
       );
       this.tasks.set(taskId, task);
 
@@ -210,7 +210,7 @@ export class SwarmService extends EventEmitter {
         () => {
           this.completeTask(taskId);
         },
-        Math.random() * 5000 + 1000,
+        Math.random() * 5000 + 1000
       );
 
       this.emit('task:orchestrated', { taskId, config, result });
@@ -326,7 +326,7 @@ export class SwarmService extends EventEmitter {
       agents: this.agents.size,
       tasks: this.tasks.size,
       active_tasks: Array.from(this.tasks.values()).filter(
-        (t) => t.status === 'running',
+        (t) => t.status === 'running'
       ).length,
       memory_usage: process.memoryUsage(),
       uptime: process.uptime(),
@@ -365,7 +365,7 @@ class SwarmInstance {
   constructor(
     public id: string,
     public config: SwarmConfig,
-    public maxAgents: number = config.maxAgents || 10,
+    public maxAgents: number = config.maxAgents || 10
   ) {}
 
   addAgent(agentId: string): void {
@@ -389,7 +389,7 @@ class AgentInstance {
   constructor(
     public id: string,
     public swarmId: string,
-    public config: AgentConfig,
+    public config: AgentConfig
   ) {}
 }
 
@@ -402,7 +402,7 @@ class TaskInstance {
   constructor(
     public id: string,
     public config: TaskOrchestrationConfig,
-    public assignedAgents: string[],
+    public assignedAgents: string[]
   ) {}
 }
 

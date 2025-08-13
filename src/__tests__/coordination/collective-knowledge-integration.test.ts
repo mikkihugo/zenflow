@@ -225,7 +225,7 @@ class MockHiveFACT extends EventEmitter {
     const results = Array.from(this.facts.values()).filter((fact) =>
       query.query
         ? JSON.stringify(fact).toLowerCase().includes(query.query.toLowerCase())
-        : true,
+        : true
     );
     return results?.slice(0, query.limit || 10).map((fact, index) => ({
       id: `fact-entry-${index}`,
@@ -274,10 +274,10 @@ class MockHiveFACT extends EventEmitter {
   async getFact(
     type: string,
     subject: string,
-    swarmId?: string,
+    swarmId?: string
   ): Promise<UniversalFact | null> {
     const fact = Array.from(this.facts.values()).find(
-      (f) => f.type === type && f.subject.includes(subject),
+      (f) => f.type === type && f.subject.includes(subject)
     );
 
     if (fact && swarmId) {
@@ -365,7 +365,7 @@ class MockMemoryStore implements Partial<SessionMemoryStore> {
    * await store.store('session-1', 'user-data', { userId: 123 });
    * ```
    */
-  async store(key: string, type: string, data: any): Promise<void> {
+  async store(key: string, type: string, data: unknown): Promise<void> {
     this.storage.set(key, { type, data, timestamp: Date.now() });
   }
 
@@ -375,7 +375,7 @@ class MockMemoryStore implements Partial<SessionMemoryStore> {
    * @async
    * @method retrieve
    * @param {string} key - The key to retrieve data for
-   * @returns {Promise<any>} The stored data or null if not found
+   * @returns {Promise<unknown>} The stored data or null if not found
    *
    * @example
    * ```typescript
@@ -383,7 +383,7 @@ class MockMemoryStore implements Partial<SessionMemoryStore> {
    * expect(data).toEqual({ userId: 123 });
    * ```
    */
-  async retrieve(key: string): Promise<any> {
+  async retrieve(key: string): Promise<unknown> {
     const entry = this.storage.get(key);
     return entry ? entry.data : null;
   }
@@ -433,7 +433,7 @@ class MockHiveSwarmCoordinator extends EventEmitter {
    * @param {string} _swarmId - The requesting swarm ID (unused in mock)
    * @param {string} factType - Type of fact being requested
    * @param {string} subject - Subject matter of the requested fact
-   * @returns {Promise<any>} Mock fact response with formatted content
+   * @returns {Promise<unknown>} Mock fact response with formatted content
    *
    * @example
    * ```typescript
@@ -448,8 +448,8 @@ class MockHiveSwarmCoordinator extends EventEmitter {
   async requestUniversalFact(
     _swarmId: string,
     factType: string,
-    subject: string,
-  ): Promise<any> {
+    subject: string
+  ): Promise<unknown> {
     return { content: `Mock fact for ${factType}:${subject}` };
   }
 }
@@ -549,26 +549,26 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
     knowledgeBridge = new CollectiveKnowledgeBridge(
       hiveCoordinator as any,
-      memoryStore as any,
+      memoryStore as any
     );
     // Mock the HiveFACT access
     (knowledgeBridge as any).hiveFact = hiveFact;
 
     swarmKnowledge1 = new SwarmKnowledgeSync(
       { swarmId: 'test-swarm-1', cacheSize: 100 },
-      memoryStore as any,
+      memoryStore as any
     );
 
     swarmKnowledge2 = new SwarmKnowledgeSync(
       { swarmId: 'test-swarm-2', cacheSize: 100 },
-      memoryStore as any,
+      memoryStore as any
     );
 
     knowledgeAwareDiscovery = new KnowledgeAwareDiscovery(
       { swarmId: 'discovery-swarm' },
       hiveFact as any,
       swarmKnowledge1,
-      memoryStore as any,
+      memoryStore as any
     );
 
     await knowledgeBridge.initialize();
@@ -742,11 +742,11 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const result1 = await swarmKnowledge1.queryKnowledge(
         'authentication patterns',
-        'security',
+        'security'
       );
       const result2 = await swarmKnowledge1.queryKnowledge(
         'authentication patterns',
-        'security',
+        'security'
       );
 
       expect(result1).toBeDefined();
@@ -786,7 +786,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const success = await swarmKnowledge1.contributeKnowledge(
         mockLearning,
-        'agent-1',
+        'agent-1'
       );
       expect(success).toBe(true);
 
@@ -861,7 +861,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       try {
         const result = await swarmKnowledge1.queryKnowledge(
           'authentication patterns',
-          'authentication',
+          'authentication'
         );
         expect(result).toBeDefined();
         expect(result?.fallback).toBe(true);
@@ -905,7 +905,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       const knowledgeAwareDomains =
         await knowledgeAwareDiscovery.applyKnowledgeInsights(
           mockOriginalDomains as any,
-          mockContext,
+          mockContext
         );
 
       expect(knowledgeAwareDomains).toHaveLength(2);
@@ -913,18 +913,18 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       knowledgeAwareDomains.forEach((domain) => {
         expect(domain.knowledgeInsights).toBeDefined();
         expect(domain.knowledgeInsights.knowledgeScore).toBeGreaterThanOrEqual(
-          0,
+          0
         );
         expect(domain.knowledgeInsights.appliedPatterns).toBeInstanceOf(Array);
         expect(domain.knowledgeInsights.recommendedTopology).toBeDefined();
         expect(domain.knowledgeInsights.recommendedAgents).toBeInstanceOf(
-          Array,
+          Array
         );
       });
 
       // Check if confidence was improved with knowledge
       const authDomain = knowledgeAwareDomains.find(
-        (d) => d.name === 'authentication',
+        (d) => d.name === 'authentication'
       );
       expect(authDomain).toBeDefined();
       // Confidence might be improved or remain the same depending on available knowledge
@@ -989,14 +989,14 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       const contribution1 = await swarmKnowledge1.contributeKnowledge(
         mockLearning1,
-        'agent-1',
+        'agent-1'
       );
       expect(contribution1).toBe(true);
 
       // Step 3: Query knowledge from another swarm
       const knowledge = await swarmKnowledge2.queryKnowledge(
         'authentication patterns',
-        'authentication',
+        'authentication'
       );
       expect(knowledge).toBeDefined();
 
@@ -1024,7 +1024,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       const knowledgeAwareDomains =
         await knowledgeAwareDiscovery.applyKnowledgeInsights(
           mockDomains as any,
-          mockContext,
+          mockContext
         );
 
       expect(knowledgeAwareDomains).toHaveLength(1);
@@ -1052,7 +1052,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
         swarmKnowledge2.queryKnowledge('database optimization', 'backend'),
         swarmKnowledge1.queryKnowledge(
           'authentication best practices',
-          'security',
+          'security'
         ),
         swarmKnowledge2.queryKnowledge('API design patterns', 'backend'),
       ];
@@ -1075,7 +1075,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       // Create multiple concurrent requests
       const requests = Array.from({ length: numberOfRequests }, (_, i) =>
-        swarmKnowledge1.queryKnowledge(`test query ${i}`, 'performance-test'),
+        swarmKnowledge1.queryKnowledge(`test query ${i}`, 'performance-test')
       );
 
       await Promise.allSettled(requests);
@@ -1095,7 +1095,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 // Helper function to setup request/response handling between bridge and swarm
 function setupBridgeRequestHandler(
   bridge: CollectiveKnowledgeBridge,
-  swarm: SwarmKnowledgeSync,
+  swarm: SwarmKnowledgeSync
 ): void {
   // Handle requests from swarm to bridge
   swarm.on('knowledge:request', async (request: KnowledgeRequest) => {

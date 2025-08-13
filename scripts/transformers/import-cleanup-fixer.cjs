@@ -107,7 +107,9 @@ module.exports = function transformer(file, api) {
   });
 
   // Handle special cases for React JSX
-  const hasJSX = source.find(j.JSXElement).length > 0 || source.find(j.JSXFragment).length > 0;
+  const hasJSX =
+    source.find(j.JSXElement).length > 0 ||
+    source.find(j.JSXFragment).length > 0;
   if (hasJSX) {
     // Check if React is imported but not explicitly used
     // In modern React with JSX Transform, React might not be needed
@@ -117,7 +119,9 @@ module.exports = function transformer(file, api) {
 
     reactImports.forEach((path) => {
       const specifiers = path.value.specifiers || [];
-      const defaultImport = specifiers.find((s) => s.type === 'ImportDefaultSpecifier');
+      const defaultImport = specifiers.find(
+        (s) => s.type === 'ImportDefaultSpecifier'
+      );
 
       if (defaultImport && defaultImport.local.name === 'React') {
         // Check if React is explicitly used beyond JSX
@@ -147,7 +151,10 @@ module.exports = function transformer(file, api) {
   // Clean up any remaining empty import declarations
   source.find(j.ImportDeclaration).forEach((path) => {
     const specifiers = path.value.specifiers || [];
-    if (specifiers.length === 0 && !isSideEffectImport(path.value.source.value)) {
+    if (
+      specifiers.length === 0 &&
+      !isSideEffectImport(path.value.source.value)
+    ) {
       j(path).remove();
       hasChanges = true;
     }
@@ -209,20 +216,27 @@ function isObjectPropertyKey(path) {
   if (!parent) return false;
 
   const parentValue = parent.value;
-  return parentValue.type === 'Property' && parentValue.key === path.value && !parentValue.computed;
+  return (
+    parentValue.type === 'Property' &&
+    parentValue.key === path.value &&
+    !parentValue.computed
+  );
 }
 
 function isJSXAttributeName(path) {
   const parent = path.parent;
   if (!parent) return false;
 
-  return parent.value.type === 'JSXAttribute' && parent.value.name === path.value;
+  return (
+    parent.value.type === 'JSXAttribute' && parent.value.name === path.value
+  );
 }
 
 function getJSXElementName(nameNode) {
   if (nameNode.type === 'JSXIdentifier') {
     return nameNode.name;
-  } else if (nameNode.type === 'JSXMemberExpression') {
+  }
+  if (nameNode.type === 'JSXMemberExpression') {
     // For things like Component.SubComponent
     return getJSXElementName(nameNode.object);
   }

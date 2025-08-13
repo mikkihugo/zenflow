@@ -8,8 +8,8 @@
 
 export class CognitivePatternEvolution {
   private patterns: Map<string, any>;
-  private evolutionHistory: any[];
-  private options: any;
+  private evolutionHistory: unknown[];
+  private options: unknown;
 
   constructor(options = {}) {
     this.patterns = new Map();
@@ -33,7 +33,7 @@ export class CognitivePatternEvolution {
 
     // Select best performing patterns for this agent
     const agentPatterns = Array.from(this.patterns.values()).filter(
-      (p) => p.agentId === agentId,
+      (p) => p.agentId === agentId
     );
 
     const selected = this.selectPatterns(performanceData || agentPatterns);
@@ -123,7 +123,7 @@ export class CognitivePatternEvolution {
    * @param agentId
    * @param config
    */
-  async initializeAgent(agentId: string, config: any) {
+  async initializeAgent(agentId: string, config: unknown) {
     const agentPattern = {
       id: `agent_${agentId}`,
       agentId,
@@ -145,7 +145,7 @@ export class CognitivePatternEvolution {
    */
   async assessGrowth(agentId: string) {
     const agentPatterns = Array.from(this.patterns.values()).filter(
-      (p) => p.agentId === agentId,
+      (p) => p.agentId === agentId
     );
 
     if (agentPatterns.length === 0) {
@@ -157,7 +157,7 @@ export class CognitivePatternEvolution {
       growth: avgFitness,
       patterns: agentPatterns.length,
       latestGeneration: Math.max(
-        ...agentPatterns.map((p) => p.generation || 0),
+        ...agentPatterns.map((p) => p.generation || 0)
       ),
     };
   }
@@ -169,10 +169,10 @@ export class CognitivePatternEvolution {
    * @param session
    * @param _session
    */
-  async enableCrossAgentEvolution(agentIds: string[], _session: any) {
+  async enableCrossAgentEvolution(agentIds: string[], _session: unknown) {
     for (const agentId of agentIds) {
       const patterns = Array.from(this.patterns.values()).filter(
-        (p) => p.agentId === agentId,
+        (p) => p.agentId === agentId
       );
 
       // Share patterns across agents
@@ -200,7 +200,7 @@ export class CognitivePatternEvolution {
    *
    * @param gradients
    */
-  calculateAggregationWeights(gradients: any[]) {
+  calculateAggregationWeights(gradients: unknown[]) {
     return gradients.map((_, _index) => {
       // Simple equal weighting for now
       return 1.0 / gradients.length;
@@ -214,14 +214,14 @@ export class CognitivePatternEvolution {
    */
   async preserveHistory(agentId: string) {
     const agentPatterns = Array.from(this.patterns.values()).filter(
-      (p) => p.agentId === agentId,
+      (p) => p.agentId === agentId
     );
 
     return {
       agentId,
       patterns: agentPatterns,
       evolutionHistory: this.evolutionHistory.filter(
-        (h) => h.agentId === agentId,
+        (h) => h.agentId === agentId
       ),
       timestamp: new Date(),
     };
@@ -234,7 +234,7 @@ export class CognitivePatternEvolution {
    * @param _agentId
    * @param history
    */
-  async restoreHistory(_agentId: string, history: any) {
+  async restoreHistory(_agentId: string, history: unknown) {
     if (history?.patterns) {
       for (const pattern of history.patterns) {
         this.patterns.set(pattern.id, pattern);
@@ -265,7 +265,7 @@ export class CognitivePatternEvolution {
    * @param agentId
    * @param patterns
    */
-  async transferPatterns(agentId: string, patterns: any[]) {
+  async transferPatterns(agentId: string, patterns: unknown[]) {
     for (const pattern of patterns) {
       const transferredPattern = {
         ...pattern,
@@ -285,9 +285,9 @@ export class CognitivePatternEvolution {
    * @param agentId
    * @param patternUpdates
    */
-  async applyPatternUpdates(agentId: string, patternUpdates: any) {
+  async applyPatternUpdates(agentId: string, patternUpdates: unknown) {
     const agentPatterns = Array.from(this.patterns.values()).filter(
-      (p) => p.agentId === agentId,
+      (p) => p.agentId === agentId
     );
 
     for (const pattern of agentPatterns) {
@@ -307,7 +307,7 @@ export class CognitivePatternEvolution {
       totalPatterns: this.patterns.size,
       generations: this.evolutionHistory.length,
       averageFitness: this.calculateAverageFitness(
-        Array.from(this.patterns.values()),
+        Array.from(this.patterns.values())
       ),
       options: this.options,
     };

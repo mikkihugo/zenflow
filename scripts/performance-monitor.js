@@ -140,7 +140,7 @@ class PerformanceMonitor {
     this.metrics.memory.reads += Math.floor(Math.random() * 10);
     this.metrics.memory.writes += Math.floor(Math.random() * 5);
     this.metrics.memory.cacheHits = Math.floor(
-      this.metrics.memory.reads * 0.85,
+      this.metrics.memory.reads * 0.85
     );
     this.metrics.neural.predictions += Math.floor(Math.random() * 3);
     this.metrics.neural.trainings += Math.floor(Math.random() * 2);
@@ -155,7 +155,7 @@ class PerformanceMonitor {
       `{bold}Total Calls:{/bold} ${this.metrics.hooks.calls}\n` +
         `{bold}Avg Time:{/bold} ${this.metrics.hooks.avgTime}ms\n` +
         `{bold}Error Rate:{/bold} ${((this.metrics.hooks.errors / Math.max(1, this.metrics.hooks.calls)) * 100).toFixed(1)}%\n` +
-        `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`,
+        `{bold}Throughput:{/bold} ${(this.metrics.hooks.calls / 10).toFixed(1)}/s`
     );
 
     // Update memory metrics
@@ -163,14 +163,14 @@ class PerformanceMonitor {
       `{bold}Reads:{/bold} ${this.metrics.memory.reads}\n` +
         `{bold}Writes:{/bold} ${this.metrics.memory.writes}\n` +
         `{bold}Cache Hits:{/bold} ${this.metrics.memory.cacheHits}\n` +
-        `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`,
+        `{bold}Hit Rate:{/bold} ${((this.metrics.memory.cacheHits / Math.max(1, this.metrics.memory.reads)) * 100).toFixed(1)}%`
     );
 
     // Update neural metrics
     this.neuralBox.setContent(
       `{bold}Predictions:{/bold} ${this.metrics.neural.predictions}\n` +
         `{bold}Trainings:{/bold} ${this.metrics.neural.trainings}\n` +
-        `{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%`,
+        `{bold}Accuracy:{/bold} ${this.metrics.neural.accuracy}%`
     );
 
     // Update agent metrics
@@ -178,7 +178,7 @@ class PerformanceMonitor {
       `{bold}Active:{/bold} ${this.metrics.agents.active}\n` +
         `{bold}Pooled:{/bold} ${this.metrics.agents.pooled}\n` +
         `{bold}Total Spawns:{/bold} ${this.metrics.agents.spawns}\n` +
-        `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`,
+        `{bold}Pool Efficiency:{/bold} ${((this.metrics.agents.pooled / 15) * 100).toFixed(1)}%`
     );
 
     // Add log entries
@@ -192,7 +192,7 @@ class PerformanceMonitor {
         '{green-fg}✓{/green-fg} Parallel batch processed: 10 operations',
       ];
       this.logBox.log(
-        operations[Math.floor(Math.random() * operations.length)],
+        operations[Math.floor(Math.random() * operations.length)]
       );
     }
 
@@ -202,7 +202,7 @@ class PerformanceMonitor {
     // In real implementation, this would connect to Claude Zen metrics
     this.logBox.log('{green-fg}🔗{/green-fg} Connected to Claude Zen metrics');
     this.logBox.log(
-      '{blue-fg}📊{/blue-fg} Monitoring performance in real-time...',
+      '{blue-fg}📊{/blue-fg} Monitoring performance in real-time...'
     );
   }
   resetMetrics() {

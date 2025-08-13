@@ -552,7 +552,7 @@ export class PortfolioManager extends EventEmitter {
     portfolioOrchestrator: PortfolioOrchestrator,
     valueStreamMapper: ValueStreamMapper,
     piManager: ProgramIncrementManager,
-    config: Partial<PortfolioManagerConfig> = {},
+    config: Partial<PortfolioManagerConfig> = {}
   ) {
     super();
 
@@ -653,7 +653,7 @@ export class PortfolioManager extends EventEmitter {
     budgetCycle: BudgetCycle,
     totalBudget: number,
     strategicThemes: StrategicTheme[],
-    valueStreams: ValueStream[],
+    valueStreams: ValueStream[]
   ): Promise<PortfolioBudgetConfig> {
     this.logger.info('Planning portfolio budget allocation', {
       portfolioId,
@@ -666,42 +666,42 @@ export class PortfolioManager extends EventEmitter {
       portfolioId,
       budgetCycle,
       totalBudget,
-      strategicThemes,
+      strategicThemes
     );
 
     // Execute budget planning phases with gates
     const budgetAllocations = await this.executeBudgetPlanningPhases(
       planningWorkflow,
-      valueStreams,
+      valueStreams
     );
 
     // Create cost centers and funding sources
     const costCenters = await this.createCostCenters(
       portfolioId,
-      budgetAllocations,
+      budgetAllocations
     );
     const fundingSources = await this.createFundingSources(
       totalBudget,
-      budgetAllocations,
+      budgetAllocations
     );
 
     // Create budget reserves
     const reserves = await this.calculateBudgetReserves(
       totalBudget,
-      budgetAllocations,
+      budgetAllocations
     );
 
     // Setup budget tracking configuration
     const trackingConfig = await this.createBudgetTrackingConfig(
       portfolioId,
-      budgetCycle,
+      budgetCycle
     );
 
     // Create approval workflow
     const approvalWorkflow = await this.createBudgetApprovalWorkflow(
       portfolioId,
       totalBudget,
-      budgetAllocations,
+      budgetAllocations
     );
 
     const portfolioBudgetConfig: PortfolioBudgetConfig = {
@@ -718,13 +718,13 @@ export class PortfolioManager extends EventEmitter {
     // Store in state
     this.state.portfolioBudgets.set(portfolioId, portfolioBudgetConfig);
     budgetAllocations.forEach((allocation) =>
-      this.state.budgetAllocations.set(allocation.allocationId, allocation),
+      this.state.budgetAllocations.set(allocation.allocationId, allocation)
     );
     costCenters.forEach((center) =>
-      this.state.costCenters.set(center.costCenterId, center),
+      this.state.costCenters.set(center.costCenterId, center)
     );
     fundingSources.forEach((source) =>
-      this.state.fundingSources.set(source.sourceId, source),
+      this.state.fundingSources.set(source.sourceId, source)
     );
 
     this.logger.info('Portfolio budget planning completed', {
@@ -743,7 +743,7 @@ export class PortfolioManager extends EventEmitter {
   async allocateValueStreamFunding(
     portfolioId: string,
     valueStreamId: string,
-    fundingRequest: ValueStreamFundingRequest,
+    fundingRequest: ValueStreamFundingRequest
   ): Promise<BudgetAllocation> {
     this.logger.info('Allocating value stream funding', {
       portfolioId,
@@ -759,7 +759,7 @@ export class PortfolioManager extends EventEmitter {
     // Analyze funding request
     const fundingAnalysis = await this.analyzeValueStreamFundingRequest(
       fundingRequest,
-      portfolioBudget,
+      portfolioBudget
     );
 
     // Create AGUI gate for funding approval if above threshold
@@ -773,7 +773,7 @@ export class PortfolioManager extends EventEmitter {
     const strategicAlignment = await this.assessStrategicAlignment(
       valueStreamId,
       fundingRequest,
-      this.state.strategicThemes,
+      this.state.strategicThemes
     );
 
     // Create budget allocation
@@ -794,7 +794,7 @@ export class PortfolioManager extends EventEmitter {
       endDate: fundingRequest.endDate,
       fundingSource: await this.selectOptimalFundingSource(
         fundingRequest.requestedAmount,
-        fundingRequest.type,
+        fundingRequest.type
       ),
     };
 
@@ -818,7 +818,7 @@ export class PortfolioManager extends EventEmitter {
    * Track budget utilization and spend
    */
   async trackBudgetUtilization(
-    portfolioId: string,
+    portfolioId: string
   ): Promise<PortfolioBudgetUtilization> {
     const portfolioBudget = this.state.portfolioBudgets.get(portfolioId);
     if (!portfolioBudget) {
@@ -830,16 +830,16 @@ export class PortfolioManager extends EventEmitter {
     // Calculate overall utilization
     const totalAllocated = portfolioBudget.allocations.reduce(
       (sum, alloc) => sum + alloc.allocatedAmount,
-      0,
+      0
     );
     const totalSpent = portfolioBudget.allocations.reduce(
       (sum, alloc) => sum + alloc.spentAmount,
-      0,
+      0
     );
 
     // Calculate by category
     const utilizationByCategory = await this.calculateUtilizationByCategory(
-      portfolioBudget.allocations,
+      portfolioBudget.allocations
     );
 
     // Calculate burn rate and forecast
@@ -849,7 +849,7 @@ export class PortfolioManager extends EventEmitter {
     const budgetRisks = await this.identifyBudgetRisks(portfolioBudget);
     const budgetAlerts = await this.generateBudgetAlerts(
       portfolioBudget,
-      burnRateAnalysis,
+      burnRateAnalysis
     );
 
     const utilization: PortfolioBudgetUtilization = {
@@ -891,7 +891,7 @@ export class PortfolioManager extends EventEmitter {
    */
   async defineStrategicTheme(
     portfolioId: string,
-    themeDefinition: StrategicThemeDefinition,
+    themeDefinition: StrategicThemeDefinition
   ): Promise<StrategicTheme> {
     this.logger.info('Defining strategic theme', {
       portfolioId,
@@ -941,7 +941,7 @@ export class PortfolioManager extends EventEmitter {
    * Track strategic theme progress and alignment
    */
   async trackStrategicThemeProgress(
-    themeId: string,
+    themeId: string
   ): Promise<StrategicThemeTracking> {
     const theme = this.state.strategicThemes.get(themeId);
     if (!theme) {
@@ -973,7 +973,7 @@ export class PortfolioManager extends EventEmitter {
     // Identify risk indicators
     const riskIndicators = await this.identifyThemeRiskIndicators(
       theme,
-      progressMetrics,
+      progressMetrics
     );
 
     const themeTracking: StrategicThemeTracking = {
@@ -1006,7 +1006,7 @@ export class PortfolioManager extends EventEmitter {
    */
   async analyzeEpicInvestment(
     epicId: string,
-    epic: Epic,
+    epic: Epic
   ): Promise<EpicInvestmentAnalysis> {
     this.logger.info('Analyzing epic investment', {
       epicId,
@@ -1025,13 +1025,13 @@ export class PortfolioManager extends EventEmitter {
     // Calculate investment summary metrics
     const investmentSummary = await this.calculateInvestmentSummary(
       epic,
-      financialProjection,
+      financialProjection
     );
 
     // Assess investment risks
     const riskAssessment = await this.assessEpicInvestmentRisks(
       epic,
-      financialProjection,
+      financialProjection
     );
 
     // Generate comparison metrics
@@ -1040,14 +1040,14 @@ export class PortfolioManager extends EventEmitter {
     // Perform sensitivity analysis
     const sensitivityAnalysis = await this.performSensitivityAnalysis(
       epic,
-      financialProjection,
+      financialProjection
     );
 
     // Generate investment recommendation
     const recommendedAction = await this.generateInvestmentRecommendation(
       investmentSummary,
       riskAssessment,
-      comparisonMetrics,
+      comparisonMetrics
     );
 
     const analysis: EpicInvestmentAnalysis = {
@@ -1089,7 +1089,7 @@ export class PortfolioManager extends EventEmitter {
    * Compare and prioritize epic investments
    */
   async prioritizeEpicInvestments(
-    portfolioId: string,
+    portfolioId: string
   ): Promise<EpicInvestmentPrioritization> {
     this.logger.info('Prioritizing epic investments', { portfolioId });
 
@@ -1100,7 +1100,7 @@ export class PortfolioManager extends EventEmitter {
 
     // Get all epic analyses for the portfolio
     const epicAnalyses = Array.from(
-      this.state.epicInvestmentAnalyses.values(),
+      this.state.epicInvestmentAnalyses.values()
     ).filter((analysis) => {
       // Check if epic belongs to this portfolio (simplified logic)
       return true; // Would need proper portfolio-epic relationship
@@ -1111,13 +1111,13 @@ export class PortfolioManager extends EventEmitter {
       await this.definePrioritizationCriteria(portfolioId);
     const scoredEpics = await this.scoreEpicsAgainstCriteria(
       epicAnalyses,
-      prioritizationCriteria,
+      prioritizationCriteria
     );
 
     // Create portfolio optimization model
     const optimizationResult = await this.optimizeEpicPortfolio(
       scoredEpics,
-      this.state.portfolioBudgets.get(portfolioId),
+      this.state.portfolioBudgets.get(portfolioId)
     );
 
     // Generate final prioritization
@@ -1162,7 +1162,7 @@ export class PortfolioManager extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'portfolio-manager:state',
+        'portfolio-manager:state'
       );
       if (persistedState) {
         this.state = {
@@ -1172,7 +1172,7 @@ export class PortfolioManager extends EventEmitter {
           portfolioBudgets: new Map(persistedState.portfolioBudgets || []),
           strategicThemes: new Map(persistedState.strategicThemes || []),
           epicInvestmentAnalyses: new Map(
-            persistedState.epicInvestmentAnalyses || [],
+            persistedState.epicInvestmentAnalyses || []
           ),
           themeTracking: new Map(persistedState.themeTracking || []),
           budgetAllocations: new Map(persistedState.budgetAllocations || []),
@@ -1194,7 +1194,7 @@ export class PortfolioManager extends EventEmitter {
         portfolioBudgets: Array.from(this.state.portfolioBudgets.entries()),
         strategicThemes: Array.from(this.state.strategicThemes.entries()),
         epicInvestmentAnalyses: Array.from(
-          this.state.epicInvestmentAnalyses.entries(),
+          this.state.epicInvestmentAnalyses.entries()
         ),
         themeTracking: Array.from(this.state.themeTracking.entries()),
         budgetAllocations: Array.from(this.state.budgetAllocations.entries()),
@@ -1247,14 +1247,14 @@ export class PortfolioManager extends EventEmitter {
       'budget-threshold-exceeded',
       async (event) => {
         await this.handleBudgetThresholdExceeded(event.payload);
-      },
+      }
     );
 
     this.eventBus.registerHandler(
       'strategic-theme-milestone-reached',
       async (event) => {
         await this.handleThemeMilestoneReached(event.payload);
-      },
+      }
     );
   }
 
@@ -1264,7 +1264,7 @@ export class PortfolioManager extends EventEmitter {
     portfolioId: string,
     budgetCycle: BudgetCycle,
     totalBudget: number,
-    strategicThemes: StrategicTheme[],
+    strategicThemes: StrategicTheme[]
   ): Promise<unknown> {
     // Placeholder implementation
     return {};
@@ -1272,7 +1272,7 @@ export class PortfolioManager extends EventEmitter {
 
   private async executeBudgetPlanningPhases(
     workflow: unknown,
-    valueStreams: ValueStream[],
+    valueStreams: ValueStream[]
   ): Promise<BudgetAllocation[]> {
     // Placeholder implementation
     return [];
@@ -1281,90 +1281,90 @@ export class PortfolioManager extends EventEmitter {
   // Additional placeholder methods would continue...
   private async createCostCenters(
     portfolioId: string,
-    allocations: BudgetAllocation[],
+    allocations: BudgetAllocation[]
   ): Promise<CostCenter[]> {
     return [];
   }
   private async createFundingSources(
     totalBudget: number,
-    allocations: BudgetAllocation[],
+    allocations: BudgetAllocation[]
   ): Promise<FundingSource[]> {
     return [];
   }
   private async calculateBudgetReserves(
     totalBudget: number,
-    allocations: BudgetAllocation[],
+    allocations: BudgetAllocation[]
   ): Promise<BudgetReserve[]> {
     return [];
   }
   private async createBudgetTrackingConfig(
     portfolioId: string,
-    budgetCycle: BudgetCycle,
+    budgetCycle: BudgetCycle
   ): Promise<BudgetTrackingConfig> {
     return {} as BudgetTrackingConfig;
   }
   private async createBudgetApprovalWorkflow(
     portfolioId: string,
     totalBudget: number,
-    allocations: BudgetAllocation[],
+    allocations: BudgetAllocation[]
   ): Promise<BudgetApprovalWorkflow> {
     return {} as BudgetApprovalWorkflow;
   }
   private async analyzeValueStreamFundingRequest(
     request: ValueStreamFundingRequest,
-    budget: PortfolioBudgetConfig,
+    budget: PortfolioBudgetConfig
   ): Promise<unknown> {
     return {};
   }
   private async createFundingApprovalGate(
     request: unknown,
-    analysis: unknown,
+    analysis: unknown
   ): Promise<void> {}
   private async assessStrategicAlignment(
     valueStreamId: string,
     request: unknown,
-    themes: Map<string, StrategicTheme>,
+    themes: Map<string, StrategicTheme>
   ): Promise<StrategicAlignment> {
     return {} as StrategicAlignment;
   }
   private async selectOptimalFundingSource(
     amount: number,
-    type: string,
+    type: string
   ): Promise<FundingSource> {
     return {} as FundingSource;
   }
   private updatePortfolioBudgetWithAllocation(
     portfolioId: string,
-    allocation: BudgetAllocation,
+    allocation: BudgetAllocation
   ): void {}
   private async calculateUtilizationByCategory(
-    allocations: BudgetAllocation[],
+    allocations: BudgetAllocation[]
   ): Promise<unknown> {
     return {};
   }
   private async analyzeBurnRate(
-    budget: PortfolioBudgetConfig,
+    budget: PortfolioBudgetConfig
   ): Promise<unknown> {
     return { averageBurnRate: 0, projectedCompletion: new Date() };
   }
   private async identifyBudgetRisks(
-    budget: PortfolioBudgetConfig,
+    budget: PortfolioBudgetConfig
   ): Promise<any[]> {
     return [];
   }
   private async generateBudgetAlerts(
     budget: PortfolioBudgetConfig,
-    burnRate: unknown,
+    burnRate: unknown
   ): Promise<any[]> {
     return [];
   }
   private async calculateForecastAccuracy(
-    portfolioId: string,
+    portfolioId: string
   ): Promise<number> {
     return 0;
   }
   private async createBudgetThresholdAlert(
-    utilization: unknown,
+    utilization: unknown
   ): Promise<void> {}
   private async createThemeKPIs(definition: unknown): Promise<any[]> {
     return [];
@@ -1376,103 +1376,103 @@ export class PortfolioManager extends EventEmitter {
     return {};
   }
   private async setupThemeTracking(
-    theme: StrategicTheme,
+    theme: StrategicTheme
   ): Promise<StrategicThemeTracking> {
     return {} as StrategicThemeTracking;
   }
   private async createThemeApprovalGate(
     theme: StrategicTheme,
-    definition: unknown,
+    definition: unknown
   ): Promise<void> {}
   private async calculateThemeProgressMetrics(
-    theme: StrategicTheme,
+    theme: StrategicTheme
   ): Promise<ThemeProgressMetrics> {
     return {} as ThemeProgressMetrics;
   }
   private async calculateThemeBudgetUtilization(
-    theme: StrategicTheme,
+    theme: StrategicTheme
   ): Promise<ThemeBudgetUtilization> {
     return {} as ThemeBudgetUtilization;
   }
   private async assessEpicContributionsToTheme(
-    theme: StrategicTheme,
+    theme: StrategicTheme
   ): Promise<EpicContribution[]> {
     return [];
   }
   private async trackThemeKPIPerformance(
-    theme: StrategicTheme,
+    theme: StrategicTheme
   ): Promise<KPIPerformance[]> {
     return [];
   }
   private async updateThemeMilestoneTracking(
-    theme: StrategicTheme,
+    theme: StrategicTheme
   ): Promise<MilestoneTracking[]> {
     return [];
   }
   private async identifyThemeRiskIndicators(
     theme: StrategicTheme,
-    progress: ThemeProgressMetrics,
+    progress: ThemeProgressMetrics
   ): Promise<ThemeRiskIndicator[]> {
     return [];
   }
   private async createThemeProgressAlerts(
-    tracking: StrategicThemeTracking,
+    tracking: StrategicThemeTracking
   ): Promise<void> {}
   private async createEpicBusinessCase(epic: Epic): Promise<BusinessCase> {
     return {} as BusinessCase;
   }
   private async calculateEpicFinancialProjection(
-    epic: Epic,
+    epic: Epic
   ): Promise<FinancialProjection> {
     return {} as FinancialProjection;
   }
   private async calculateInvestmentSummary(
     epic: Epic,
-    projection: FinancialProjection,
+    projection: FinancialProjection
   ): Promise<InvestmentSummary> {
     return {} as InvestmentSummary;
   }
   private async assessEpicInvestmentRisks(
     epic: Epic,
-    projection: FinancialProjection,
+    projection: FinancialProjection
   ): Promise<InvestmentRiskAssessment> {
     return {} as InvestmentRiskAssessment;
   }
   private async generateEpicComparisonMetrics(
-    epic: Epic,
+    epic: Epic
   ): Promise<EpicComparisonMetrics> {
     return {} as EpicComparisonMetrics;
   }
   private async performSensitivityAnalysis(
     epic: Epic,
-    projection: FinancialProjection,
+    projection: FinancialProjection
   ): Promise<SensitivityAnalysis> {
     return {} as SensitivityAnalysis;
   }
   private async generateInvestmentRecommendation(
     summary: InvestmentSummary,
     risk: InvestmentRiskAssessment,
-    comparison: EpicComparisonMetrics,
+    comparison: EpicComparisonMetrics
   ): Promise<InvestmentRecommendation> {
     return {} as InvestmentRecommendation;
   }
   private async createEpicInvestmentApprovalGate(
-    analysis: EpicInvestmentAnalysis,
+    analysis: EpicInvestmentAnalysis
   ): Promise<void> {}
   private async definePrioritizationCriteria(
-    portfolioId: string,
+    portfolioId: string
   ): Promise<unknown> {
     return {};
   }
   private async scoreEpicsAgainstCriteria(
     analyses: EpicInvestmentAnalysis[],
-    criteria: unknown,
+    criteria: unknown
   ): Promise<any[]> {
     return [];
   }
   private async optimizeEpicPortfolio(
     scoredEpics: unknown[],
-    budget?: PortfolioBudgetConfig,
+    budget?: PortfolioBudgetConfig
   ): Promise<unknown> {
     return {
       recommendedEpics: [],
@@ -1482,7 +1482,7 @@ export class PortfolioManager extends EventEmitter {
     };
   }
   private async generateAlternativePortfolioScenarios(
-    optimization: unknown,
+    optimization: unknown
   ): Promise<any[]> {
     return [];
   }
@@ -1491,7 +1491,7 @@ export class PortfolioManager extends EventEmitter {
   private async performPortfolioHealthCheck(): Promise<void> {}
   private async handleEpicCompletion(epicId: string): Promise<void> {}
   private async handleBudgetThresholdExceeded(
-    payload: unknown,
+    payload: unknown
   ): Promise<void> {}
   private async handleThemeMilestoneReached(payload: unknown): Promise<void> {}
 }

@@ -38,7 +38,8 @@ class CopilotConfigGenerator {
 
       // Documents
       PRD_REFERENCE: this.config.documents?.prd_reference || '',
-      TECHNICAL_SPEC_REFERENCE: this.config.documents?.technical_spec_reference || '',
+      TECHNICAL_SPEC_REFERENCE:
+        this.config.documents?.technical_spec_reference || '',
 
       // Architecture
       ARCHITECTURE_PATTERN: this.config.architecture.pattern,
@@ -91,8 +92,10 @@ class CopilotConfigGenerator {
       DEV_SETUP_COMMANDS: ['npm run mcp:start'],
 
       // Custom instructions
-      ARCHITECTURAL_CONSTRAINTS: this.config.custom_instructions.architectural_constraints,
-      PERFORMANCE_REQUIREMENTS: this.config.custom_instructions.performance_requirements,
+      ARCHITECTURAL_CONSTRAINTS:
+        this.config.custom_instructions.architectural_constraints,
+      PERFORMANCE_REQUIREMENTS:
+        this.config.custom_instructions.performance_requirements,
     };
   }
 
@@ -487,7 +490,10 @@ body:
         - [ ] No breaking changes to existing systems`;
 
     const rendered = this.replaceTemplateVariables(template);
-    await fs.writeFile('.github/ISSUE_TEMPLATE/copilot-autonomous.yml', rendered);
+    await fs.writeFile(
+      '.github/ISSUE_TEMPLATE/copilot-autonomous.yml',
+      rendered
+    );
   }
 
   async generate() {

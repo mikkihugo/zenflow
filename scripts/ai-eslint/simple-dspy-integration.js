@@ -61,7 +61,7 @@ export class SimpleDSPyIntegration {
         console.log('   🤖 Using OpenAI with gpt-4o-mini');
       } else {
         throw new Error(
-          'No API key available. Set GITHUB_TOKEN (free) or OPENAI_API_KEY',
+          'No API key available. Set GITHUB_TOKEN (free) or OPENAI_API_KEY'
         );
       }
 
@@ -72,7 +72,7 @@ export class SimpleDSPyIntegration {
       await this.loadOptimizations();
 
       console.log(
-        '🧠 Simple DSPy Integration initialized with real methodology',
+        '🧠 Simple DSPy Integration initialized with real methodology'
       );
       this.isInitialized = true;
     } catch (error) {
@@ -143,7 +143,7 @@ Provide the fix as JSON:
       // Extract errors from prompt
       const errors = this.extractErrorsFromPrompt(prompt);
       console.log(
-        `   🔍 Processing ${errors.length} errors with DSPy methodology`,
+        `   🔍 Processing ${errors.length} errors with DSPy methodology`
       );
 
       // 🧠 Step 1: DSPy Error Analysis (with optimization)
@@ -153,10 +153,10 @@ Provide the fix as JSON:
       });
 
       console.log(
-        `   🎯 DSPy Confidence: ${((analysisResult.confidence || 0.7) * 100).toFixed(1)}%`,
+        `   🎯 DSPy Confidence: ${((analysisResult.confidence || 0.7) * 100).toFixed(1)}%`
       );
       console.log(
-        `   📝 DSPy Strategy: ${(analysisResult.strategy || '').substring(0, 60)}...`,
+        `   📝 DSPy Strategy: ${(analysisResult.strategy || '').substring(0, 60)}...`
       );
 
       // 🧠 Step 2: DSPy Code Generation (with optimization)
@@ -202,7 +202,7 @@ Provide the fix as JSON:
       this.updateAverageTime(duration);
 
       console.log(
-        `   ✅ DSPy fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`,
+        `   ✅ DSPy fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$${cost.toFixed(3)})`
       );
 
       // 🧠 Optimize prompts periodically
@@ -291,7 +291,7 @@ Provide the fix as JSON:
 
       const signature = this.signatures.get(signatureName);
       const successfulExamples = examples.filter(
-        (ex) => ex.performance.success,
+        (ex) => ex.performance.success
       );
 
       if (successfulExamples.length < 2) continue;
@@ -311,7 +311,7 @@ Example ${i + 1}:
 Input: ${JSON.stringify(ex.inputs).substring(0, 200)}...
 Output: ${JSON.stringify(ex.outputs).substring(0, 200)}...
 Performance: ${ex.performance.duration}ms, success: ${ex.performance.success}
-`,
+`
   )
   .join('\n')}
 
@@ -326,7 +326,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
         }
       } catch (error) {
         console.warn(
-          `   ⚠️ Failed to optimize ${signatureName}: ${error.message}`,
+          `   ⚠️ Failed to optimize ${signatureName}: ${error.message}`
         );
       }
     }
@@ -399,7 +399,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
       .filter((line) => line.trim().startsWith('import'))
       .slice(0, 5);
     const otherLines = lines.filter(
-      (line) => !line.trim().startsWith('import'),
+      (line) => !line.trim().startsWith('import')
     );
 
     let result = importLines.join('\n') + '\n\n';
@@ -474,7 +474,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
         this.optimizedPrompts = new Map(Object.entries(data.prompts || {}));
         this.examples = new Map(Object.entries(data.examples || {}));
         console.log(
-          `   📚 Loaded ${this.optimizedPrompts.size} optimized prompts`,
+          `   📚 Loaded ${this.optimizedPrompts.size} optimized prompts`
         );
       }
     } catch (error) {
@@ -494,7 +494,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
       };
       fs.writeFileSync(cacheFile, JSON.stringify(data, null, 2));
       console.log(
-        `   💾 Saved ${this.optimizedPrompts.size} DSPy optimizations`,
+        `   💾 Saved ${this.optimizedPrompts.size} DSPy optimizations`
       );
     } catch (error) {
       console.warn(`Failed to save DSPy optimizations: ${error.message}`);
@@ -510,7 +510,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
       optimizedPrompts: this.optimizedPrompts.size,
       trainingExamples: Array.from(this.examples.values()).reduce(
         (sum, examples) => sum + examples.length,
-        0,
+        0
       ),
       successfulFixes: this.successCount,
       optimizationCount: this.optimizationCount,
@@ -532,7 +532,7 @@ Create an optimized prompt that maintains the same JSON output format but improv
     console.log(`   🔄 Optimizations: ${stats.optimizationCount}`);
     console.log(`   💰 Total Cost: $${stats.totalCost.toFixed(3)}`);
     console.log(
-      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`,
+      `   ⚡ Avg Execution: ${(stats.avgExecutionTime / 1000).toFixed(1)}s`
     );
   }
 

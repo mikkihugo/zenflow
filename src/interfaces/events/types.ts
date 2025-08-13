@@ -312,8 +312,8 @@ export interface WorkflowEvent extends SystemEvent {
     stepNumber?: number;
     totalSteps?: number;
     executionTime?: number;
-    inputData?: any;
-    outputData?: any;
+    inputData?: unknown;
+    outputData?: unknown;
     errorMessage?: string;
     retryCount?: number;
     conditionResult?: boolean;
@@ -715,7 +715,7 @@ export const EventSources = {
  */
 export const UELTypeGuards = {
   isSystemLifecycleEvent: (
-    event: SystemEvent,
+    event: SystemEvent
   ): event is SystemLifecycleEvent => {
     return event.type.startsWith('system:');
   },

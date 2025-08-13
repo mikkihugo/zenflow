@@ -133,7 +133,7 @@ describe('Neural Network Edge Cases', () => {
         result.forEach((value) => {
           expect(value).toBeGreaterThanOrEqual(0);
           expect(
-            Number.isFinite(value) || value === Number.POSITIVE_INFINITY,
+            Number.isFinite(value) || value === Number.POSITIVE_INFINITY
           ).toBe(true);
         });
       }
@@ -223,7 +223,7 @@ describe('Neural Network Edge Cases', () => {
           // Track gradient magnitude
           const currentWeights = network.getWeights();
           const gradientMagnitude = Math.sqrt(
-            currentWeights.reduce((sum, w) => sum + w * w, 0),
+            currentWeights.reduce((sum, w) => sum + w * w, 0)
           );
 
           gradientHistory.push(gradientMagnitude);
@@ -345,7 +345,7 @@ describe('Neural Network Edge Cases', () => {
       ];
 
       await expect(network.train(inconsistentData)).rejects.toThrow(
-        /dimension|size/i,
+        /dimension|size/i
       );
     });
 
@@ -365,7 +365,7 @@ describe('Neural Network Edge Cases', () => {
       ];
 
       await expect(network.train(inconsistentData)).rejects.toThrow(
-        /dimension|size/i,
+        /dimension|size/i
       );
     });
 
@@ -399,7 +399,7 @@ describe('Neural Network Edge Cases', () => {
       };
 
       await expect(manager.create(config)).rejects.toThrow(
-        /activation|unknown/i,
+        /activation|unknown/i
       );
     });
 

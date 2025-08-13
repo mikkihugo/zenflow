@@ -34,7 +34,7 @@ interface CacheStrategy<T> {
   name: string;
   shouldEvict(
     entries: Map<string, CacheEntry<T>>,
-    maxSize: number,
+    maxSize: number
   ): string | null;
   onAccess(entry: CacheEntry<T>): void;
 }
@@ -45,7 +45,7 @@ class LRUStrategy<T> implements CacheStrategy<T> {
 
   shouldEvict(
     entries: Map<string, CacheEntry<T>>,
-    maxSize: number,
+    maxSize: number
   ): string | null {
     if (entries.size >= maxSize) {
       // At capacity - need to evict
@@ -78,7 +78,7 @@ class LFUStrategy<T> implements CacheStrategy<T> {
 
   shouldEvict(
     entries: Map<string, CacheEntry<T>>,
-    maxSize: number,
+    maxSize: number
   ): string | null {
     if (entries.size < maxSize) return null;
 
@@ -107,7 +107,7 @@ class TTLStrategy<T> implements CacheStrategy<T> {
 
   shouldEvict(
     entries: Map<string, CacheEntry<T>>,
-    maxSize: number,
+    maxSize: number
   ): string | null {
     const now = Date.now();
 
@@ -153,7 +153,7 @@ class PerformanceCache<T> extends EventEmitter {
   constructor(
     maxSize: number = 1000,
     strategy: CacheStrategy<T> = new LRUStrategy<T>(),
-    defaultTTL?: number,
+    defaultTTL?: number
   ) {
     super();
     this.maxSize = maxSize;
@@ -699,7 +699,7 @@ describe('Cache Performance Integration Tests', () => {
 
   describe('Event Handling and Monitoring', () => {
     let cache: PerformanceCache<string>;
-    let events: Array<{ type: string; data: any }>;
+    let events: Array<{ type: string; data: unknown }>;
 
     beforeEach(() => {
       cache = new PerformanceCache<string>(3, new LRUStrategy());
@@ -742,7 +742,7 @@ describe('Cache Performance Integration Tests', () => {
 
     it('should emit expiration events', async () => {
       const ttlCache = new PerformanceCache<string>(10, new TTLStrategy());
-      const expiredEvents: any[] = [];
+      const expiredEvents: unknown[] = [];
 
       ttlCache.on('expired', (data) => expiredEvents.push(data));
 
@@ -816,7 +816,7 @@ describe('Cache Performance Integration Tests', () => {
 
     it('should compare eviction behavior across strategies', async () => {
       const cacheSize = 5;
-      const results: Record<string, any> = {};
+      const results: Record<string, unknown> = {};
 
       for (const { name, strategy } of strategies) {
         const cache = new PerformanceCache<string>(cacheSize, strategy);

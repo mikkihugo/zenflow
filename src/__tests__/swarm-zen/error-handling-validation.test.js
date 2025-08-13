@@ -68,7 +68,7 @@ describe('Error Handling System', () => {
         'Invalid value',
         'testField',
         'badValue',
-        'string',
+        'string'
       );
 
       expect(error.name).toBe('ValidationError');
@@ -77,7 +77,7 @@ describe('Error Handling System', () => {
       expect(error.value).toBe('badValue');
       expect(error.expectedType).toBe('string');
       expect(error.getSuggestions()).toContain(
-        "Check the 'testField' parameter",
+        "Check the 'testField' parameter"
       );
     });
 
@@ -85,7 +85,7 @@ describe('Error Handling System', () => {
       const error = new SwarmError(
         'Swarm not found',
         'test-swarm-id',
-        'initialization',
+        'initialization'
       );
 
       expect(error.name).toBe('SwarmError');
@@ -93,7 +93,7 @@ describe('Error Handling System', () => {
       expect(error.swarmId).toBe('test-swarm-id');
       expect(error.operation).toBe('initialization');
       expect(error.getSuggestions()).toContain(
-        'Verify the swarm ID is correct',
+        'Verify the swarm ID is correct'
       );
     });
 
@@ -102,7 +102,7 @@ describe('Error Handling System', () => {
         'Agent not found',
         'test-agent-id',
         'researcher',
-        'spawn',
+        'spawn'
       );
 
       expect(error.name).toBe('AgentError');
@@ -117,7 +117,7 @@ describe('Error Handling System', () => {
         'Task timeout',
         'test-task-id',
         'analysis',
-        'execution',
+        'execution'
       );
 
       expect(error.name).toBe('TaskError');
@@ -126,7 +126,7 @@ describe('Error Handling System', () => {
       expect(error.taskType).toBe('analysis');
       expect(error.operation).toBe('execution');
       expect(error.getSuggestions()).toContain(
-        'Increase task timeout duration',
+        'Increase task timeout duration'
       );
     });
 
@@ -135,7 +135,7 @@ describe('Error Handling System', () => {
         'Training failed',
         'test-nn-id',
         'training',
-        'lstm',
+        'lstm'
       );
 
       expect(error.name).toBe('NeuralError');
@@ -149,7 +149,7 @@ describe('Error Handling System', () => {
       const error = new WasmError(
         'Module not loaded',
         'core',
-        'initialization',
+        'initialization'
       );
 
       expect(error.name).toBe('WasmError');
@@ -157,7 +157,7 @@ describe('Error Handling System', () => {
       expect(error.module).toBe('core');
       expect(error.operation).toBe('initialization');
       expect(error.getSuggestions()).toContain(
-        'Check WASM module availability',
+        'Check WASM module availability'
       );
     });
   });
@@ -171,7 +171,7 @@ describe('Error Handling System', () => {
           field: 'test',
           value: 'bad',
           expectedType: 'number',
-        },
+        }
       );
       expect(validationError).toBeInstanceOf(ValidationError);
 
@@ -253,7 +253,7 @@ describe('Validation System', () => {
 
       const result = ValidationUtils.validateParams(
         minimalParams,
-        'swarm_init',
+        'swarm_init'
       );
       expect(result.topology).toBe('mesh');
       expect(result.maxAgents).toBe(5);
@@ -303,7 +303,7 @@ describe('Validation System', () => {
 
       const result = ValidationUtils.validateParams(
         validParams,
-        'neural_train',
+        'neural_train'
       );
       expect(result.agentId).toBe('test-agent-123');
       expect(result.iterations).toBe(50);
@@ -344,7 +344,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
     test('should handle and log errors properly', () => {
       const originalError = new ValidationError(
         'Test validation error',
-        'testField',
+        'testField'
       );
 
       // Capture console output
@@ -354,7 +354,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
         originalError,
         'swarm_init',
         'test_operation',
-        {},
+        {}
       );
 
       expect(handledError).toBeInstanceOf(ValidationError);
@@ -462,7 +462,7 @@ describe('Enhanced MCP Tools Error Handling', () => {
       };
 
       await expect(mcpTools.swarm_init(invalidParams)).rejects.toThrow(
-        ValidationError,
+        ValidationError
       );
     });
 
@@ -480,12 +480,12 @@ describe('Enhanced MCP Tools Error Handling', () => {
       await mcpTools.swarm_init({});
 
       await expect(
-        mcpTools.agent_spawn({ type: 'researcher' }),
+        mcpTools.agent_spawn({ type: 'researcher' })
       ).rejects.toThrow();
 
       // Check that error was logged with proper context
       const agentError = mcpTools.errorLog.find(
-        (log) => log.tool === 'agent_spawn',
+        (log) => log.tool === 'agent_spawn'
       );
       expect(agentError).toBeDefined();
       expect(agentError.error.message).toContain('Neural network error');

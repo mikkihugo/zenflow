@@ -33,7 +33,7 @@ async function testExternalMCPServers(): Promise<void> {
     // Set up event listeners
     client.on('serverConnected', (data) => {
       logger.info(
-        `✅ Server connected: ${data?.server} (${data?.tools} tools)`,
+        `✅ Server connected: ${data?.server} (${data?.tools} tools)`
       );
     });
 
@@ -56,7 +56,7 @@ async function testExternalMCPServers(): Promise<void> {
         logger.info(`Successfully connected to ${result?.serverName}`);
       } else {
         logger.error(
-          `Failed to connect to ${result?.serverName}: ${result?.error}`,
+          `Failed to connect to ${result?.serverName}: ${result?.error}`
         );
       }
     }
@@ -110,7 +110,7 @@ async function testExternalMCPServers(): Promise<void> {
         const result = await client.executeTool(
           test.server,
           test.tool,
-          test.params,
+          test.params
         );
 
         if (result?.success) {
@@ -121,7 +121,7 @@ async function testExternalMCPServers(): Promise<void> {
 
     const _totalTools = Object.values(availableTools).reduce(
       (sum, tools) => sum + tools.length,
-      0,
+      0
     );
 
     // Cleanup

@@ -42,7 +42,7 @@ export type WorkflowEngineConfig = BaseWorkflowEngineConfig & {
   defaultTimeout?: number;
   enableMetrics?: boolean;
   enablePersistence?: boolean;
-  storageBackend?: { type: string; config: any };
+  storageBackend?: { type: string; config: unknown };
 };
 
 // Extended workflow context for document-driven workflows
@@ -53,7 +53,7 @@ export interface WorkflowContext {
   sessionId: string;
   documents: Record<string, DocumentContent>;
   currentDocument?: DocumentContent;
-  variables: Record<string, any>;
+  variables: Record<string, unknown>;
   environment: {
     type: string;
     nodeVersion: string;
@@ -74,7 +74,7 @@ export interface WorkflowContext {
     canExecuteSteps: string[];
     canAccessResources: string[];
   };
-  [key: string]: any; // Allow additional dynamic properties
+  [key: string]: unknown; // Allow additional dynamic properties
 }
 
 // Extended workflow state with additional properties needed by workflow-engine.ts
@@ -99,7 +99,7 @@ export interface WorkflowState {
   completedSteps: Array<{
     index: number;
     step: WorkflowStep;
-    result: any;
+    result: unknown;
     duration: number;
     timestamp: string;
   }>;
@@ -150,14 +150,14 @@ export interface DocumentContent {
 // Step execution result type
 export interface StepExecutionResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   warnings?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Additional workflow data type
-export type WorkflowData = Record<string, any>;
+export type WorkflowData = Record<string, unknown>;
 
 // Document types for workflow processing
 export type DocumentType =

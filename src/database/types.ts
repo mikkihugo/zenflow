@@ -52,7 +52,7 @@ export interface DatabaseConnection {
   query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]>;
   execute(sql: string, params?: unknown[]): Promise<{ rowsAffected: number }>;
   transaction<T>(
-    callback: (conn: DatabaseConnection) => Promise<T>,
+    callback: (conn: DatabaseConnection) => Promise<T>
   ): Promise<T>;
 }
 
@@ -209,7 +209,7 @@ export class DatabaseError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly details?: Record<string, unknown>,
+    public readonly details?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'DatabaseError';
@@ -219,7 +219,7 @@ export class DatabaseError extends Error {
 export class MigrationError extends DatabaseError {
   constructor(
     message: string,
-    public readonly migrationVersion?: string,
+    public readonly migrationVersion?: string
   ) {
     super(message, 'MIGRATION_ERROR');
     this.name = 'MigrationError';
@@ -229,7 +229,7 @@ export class MigrationError extends DatabaseError {
 export class ConnectionError extends DatabaseError {
   constructor(
     message: string,
-    public readonly connectionConfig?: Partial<DatabaseConfig>,
+    public readonly connectionConfig?: Partial<DatabaseConfig>
   ) {
     super(message, 'CONNECTION_ERROR');
     this.name = 'ConnectionError';
@@ -240,7 +240,7 @@ export class QueryError extends DatabaseError {
   constructor(
     message: string,
     public readonly query?: string,
-    public readonly parameters?: unknown[],
+    public readonly parameters?: unknown[]
   ) {
     super(message, 'QUERY_ERROR');
     this.name = 'QueryError';

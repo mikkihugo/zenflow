@@ -55,7 +55,7 @@ export class GenericService extends BaseService {
           if (typeof handler === 'function') {
             this.registerOperation(name, handler);
           }
-        },
+        }
       );
     }
 
@@ -68,7 +68,7 @@ export class GenericService extends BaseService {
     }
 
     this.logger.info(
-      `Generic service ${this.name} initialized with ${this.operations.size} operations`,
+      `Generic service ${this.name} initialized with ${this.operations.size} operations`
     );
   }
 
@@ -130,7 +130,7 @@ export class GenericService extends BaseService {
     } catch (error) {
       this.logger.error(
         `Health check failed for generic service ${this.name}:`,
-        error,
+        error
       );
       return false;
     }
@@ -138,19 +138,19 @@ export class GenericService extends BaseService {
 
   protected async executeOperation<T = any>(
     operation: string,
-    params?: any,
-    options?: ServiceOperationOptions,
+    params?: unknown,
+    options?: ServiceOperationOptions
   ): Promise<T> {
     const handler = this.operations.get(operation);
 
     if (!handler) {
       throw new Error(
-        `Operation '${operation}' not found in service ${this.name}`,
+        `Operation '${operation}' not found in service ${this.name}`
       );
     }
 
     this.logger.debug(
-      `Executing operation '${operation}' on service ${this.name}`,
+      `Executing operation '${operation}' on service ${this.name}`
     );
 
     try {
@@ -159,7 +159,7 @@ export class GenericService extends BaseService {
     } catch (error) {
       this.logger.error(
         `Operation '${operation}' failed on service ${this.name}:`,
-        error,
+        error
       );
       throw error;
     }
@@ -177,12 +177,12 @@ export class GenericService extends BaseService {
    */
   registerOperation(
     name: string,
-    handler: (params?: any, options?: ServiceOperationOptions) => Promise<any>,
+    handler: (params?: unknown, options?: ServiceOperationOptions) => Promise<unknown>
   ): void {
     this.operations.set(name, handler);
     this.addCapability(name);
     this.logger.debug(
-      `Registered operation '${name}' for service ${this.name}`,
+      `Registered operation '${name}' for service ${this.name}`
     );
   }
 
@@ -195,7 +195,7 @@ export class GenericService extends BaseService {
     if (this.operations.delete(name)) {
       this.removeCapability(name);
       this.logger.debug(
-        `Unregistered operation '${name}' from service ${this.name}`,
+        `Unregistered operation '${name}' from service ${this.name}`
       );
     }
   }
@@ -232,9 +232,9 @@ export class GenericService extends BaseService {
    * @param operations
    */
   async executeSequence(
-    operations: Array<{ name: string; params?: any }>,
+    operations: Array<{ name: string; params?: unknown }>
   ): Promise<any[]> {
-    const results: any[] = [];
+    const results: unknown[] = [];
 
     for (const op of operations) {
       try {
@@ -243,7 +243,7 @@ export class GenericService extends BaseService {
       } catch (error) {
         this.logger.error(
           `Sequence execution failed at operation '${op.name}':`,
-          error,
+          error
         );
         throw error;
       }
@@ -258,7 +258,7 @@ export class GenericService extends BaseService {
    * @param operations
    */
   async executeParallel(
-    operations: Array<{ name: string; params?: any }>,
+    operations: Array<{ name: string; params?: unknown }>
   ): Promise<any[]> {
     const promises = operations.map((op) => this.execute(op.name, op.params));
 
@@ -278,8 +278,8 @@ export class GenericService extends BaseService {
    * @param strategy
    */
   async executeBatch(
-    operations: Array<{ name: string; params?: any }>,
-    strategy: 'sequence' | 'parallel' = 'sequence',
+    operations: Array<{ name: string; params?: unknown }>,
+    strategy: 'sequence' | 'parallel' = 'sequence'
   ): Promise<any[]> {
     if (strategy === 'parallel') {
       return await this.executeParallel(operations);

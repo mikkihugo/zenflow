@@ -15,7 +15,7 @@ const noTimeoutPath = path.join(
   __dirname,
   '..',
   'bin',
-  'ruv-swarm-no-timeout.js',
+  'ruv-swarm-no-timeout.js'
 );
 const originalPath = path.join(__dirname, '..', 'bin', 'ruv-swarm-secure.js');
 
@@ -118,7 +118,7 @@ for (const { name, pattern } of versionPatterns) {
 async function testCommand(command, _description) {
   try {
     const { stdout, stderr } = await execAsync(
-      `node ${noTimeoutPath} ${command}`,
+      `node ${noTimeoutPath} ${command}`
     );
     if (stderr && stderr.trim() !== '') {
       return false;

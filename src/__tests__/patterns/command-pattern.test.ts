@@ -90,14 +90,14 @@ describe('Command Pattern Implementation', () => {
 
         mockSwarmService.initializeSwarm.mockImplementation(() => {
           return new Promise((resolve) =>
-            setTimeout(() => resolve(expectedResult), 10),
+            setTimeout(() => resolve(expectedResult), 10)
           );
         });
 
         const command = CommandFactory.createSwarmInitCommand(
           swarmConfig,
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -112,7 +112,7 @@ describe('Command Pattern Implementation', () => {
             capabilities: swarmConfig.capabilities,
             resourceLimits: swarmConfig.resourceLimits,
             timeout: swarmConfig.timeout,
-          },
+          }
         );
       });
 
@@ -124,14 +124,14 @@ describe('Command Pattern Implementation', () => {
         };
 
         const error = new Error(
-          'Insufficient resources for hierarchical swarm',
+          'Insufficient resources for hierarchical swarm'
         );
         mockSwarmService.initializeSwarm.mockRejectedValue(error);
 
         const command = CommandFactory.createSwarmInitCommand(
           swarmConfig,
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -139,7 +139,7 @@ describe('Command Pattern Implementation', () => {
         expect(result?.success).toBe(false);
         expect(result?.error).toBeDefined();
         expect(result?.error?.message).toBe(
-          'Insufficient resources for hierarchical swarm',
+          'Insufficient resources for hierarchical swarm'
         );
         expect(result?.data).toBeUndefined();
       });
@@ -164,7 +164,7 @@ describe('Command Pattern Implementation', () => {
         const command = CommandFactory.createSwarmInitCommand(
           swarmConfig,
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
 
         // Execute command
@@ -194,7 +194,7 @@ describe('Command Pattern Implementation', () => {
         const command = CommandFactory.createSwarmInitCommand(
           swarmConfig,
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -231,7 +231,7 @@ describe('Command Pattern Implementation', () => {
           agentConfig,
           mockSwarmService as any,
           'swarm-test-123',
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -240,7 +240,7 @@ describe('Command Pattern Implementation', () => {
         expect(result?.data).toEqual(expectedResult);
         expect(mockSwarmService.spawnAgent).toHaveBeenCalledWith(
           'swarm-test-123',
-          agentConfig,
+          agentConfig
         );
       });
 
@@ -252,7 +252,7 @@ describe('Command Pattern Implementation', () => {
         };
 
         const error = new Error(
-          'Agent type "invalid-agent-type" not supported',
+          'Agent type "invalid-agent-type" not supported'
         );
         mockSwarmService.spawnAgent.mockRejectedValue(error);
 
@@ -260,21 +260,21 @@ describe('Command Pattern Implementation', () => {
           agentConfig,
           mockSwarmService as any,
           'swarm-test-456',
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
 
         expect(result?.success).toBe(false);
         expect(result?.error?.message).toBe(
-          'Agent type "invalid-agent-type" not supported',
+          'Agent type "invalid-agent-type" not supported'
         );
         expect(result?.error?.context).toEqual(
           expect.objectContaining({
             swarmId: 'swarm-test-456',
             agentConfig,
             sessionId: 'test-session-123',
-          }),
+          })
         );
       });
 
@@ -305,8 +305,8 @@ describe('Command Pattern Implementation', () => {
             { ...batchConfig, agentIndex: i },
             mockSwarmService as any,
             'batch-swarm-789',
-            commandContext,
-          ),
+            commandContext
+          )
         );
 
         const results = await Promise.all(commands.map((cmd) => cmd.execute()));
@@ -350,7 +350,7 @@ describe('Command Pattern Implementation', () => {
           taskDefinition,
           mockSwarmService as any,
           'pipeline-swarm-001',
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -362,7 +362,7 @@ describe('Command Pattern Implementation', () => {
             totalSteps: 3,
             estimatedDuration: 1100, // Sum of step estimates
             complexity: 'high',
-          }),
+          })
         );
       });
 
@@ -395,7 +395,7 @@ describe('Command Pattern Implementation', () => {
           taskWithDependencies,
           mockSwarmService as any,
           'dependency-swarm',
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -440,7 +440,7 @@ describe('Command Pattern Implementation', () => {
           performanceTask,
           mockSwarmService as any,
           'performance-swarm',
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -471,7 +471,7 @@ describe('Command Pattern Implementation', () => {
         const command = CommandFactory.createSwarmInitCommand(
           swarmConfig,
           mockSwarmService as any,
-          restrictedContext,
+          restrictedContext
         );
 
         const result = await command.execute();
@@ -503,7 +503,7 @@ describe('Command Pattern Implementation', () => {
         const command = CommandFactory.createSwarmInitCommand(
           resourceIntensiveConfig,
           mockSwarmService as any,
-          limitedContext,
+          limitedContext
         );
 
         const result = await command.execute();
@@ -527,7 +527,7 @@ describe('Command Pattern Implementation', () => {
           },
         };
 
-        mockSwarmService.initializeSwarm.mockImplementation((config: any) => {
+        mockSwarmService.initializeSwarm.mockImplementation((config: unknown) => {
           // Verify sanitization occurred
           expect(config?.metadata?.script).not.toContain('<script>');
           expect(config?.metadata?.command).not.toContain('rm -rf');
@@ -544,7 +544,7 @@ describe('Command Pattern Implementation', () => {
         const command = CommandFactory.createSwarmInitCommand(
           maliciousConfig,
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -557,7 +557,7 @@ describe('Command Pattern Implementation', () => {
               command: expect.not.stringContaining('rm -rf'),
               sql: expect.not.stringContaining('DROP TABLE'),
             }),
-          }),
+          })
         );
       });
     });
@@ -599,7 +599,7 @@ describe('Command Pattern Implementation', () => {
           optimizableTask,
           mockSwarmService as any,
           'optimization-swarm',
-          commandContext,
+          commandContext
         );
 
         const result = await command.execute();
@@ -619,13 +619,13 @@ describe('Command Pattern Implementation', () => {
 
         // Simulate slow service response
         mockSwarmService.initializeSwarm.mockImplementation(
-          () => new Promise((resolve) => setTimeout(resolve, 2000)), // 2 seconds delay
+          () => new Promise((resolve) => setTimeout(resolve, 2000)) // 2 seconds delay
         );
 
         const command = CommandFactory.createSwarmInitCommand(
           timeoutConfig,
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
 
         const startTime = Date.now();
@@ -691,7 +691,7 @@ describe('Command Pattern Implementation', () => {
       expect(result).toEqual(mockResult);
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Executing command:',
-        expect.objectContaining({ commandType: 'mock_command' }),
+        expect.objectContaining({ commandType: 'mock_command' })
       );
     });
 
@@ -728,7 +728,7 @@ describe('Command Pattern Implementation', () => {
       expect(result?.error?.message).toBe('Command execution failed');
       expect(mockLogger.error).toHaveBeenCalledWith(
         'Command execution failed:',
-        expect.objectContaining({ commandType: 'mock_command', error }),
+        expect.objectContaining({ commandType: 'mock_command', error })
       );
     });
 
@@ -769,7 +769,7 @@ describe('Command Pattern Implementation', () => {
       expect(mockCommand.undo).toHaveBeenCalledTimes(1);
       expect(mockLogger.info).toHaveBeenCalledWith(
         'Command undone:',
-        expect.objectContaining({ commandType: 'mock_command' }),
+        expect.objectContaining({ commandType: 'mock_command' })
       );
     });
 
@@ -810,7 +810,7 @@ describe('Command Pattern Implementation', () => {
       }));
 
       const results = await Promise.all(
-        commands.map((cmd) => commandQueue.execute(cmd as any)),
+        commands.map((cmd) => commandQueue.execute(cmd as any))
       );
 
       expect(results?.every((r) => r.success)).toBe(true);
@@ -859,7 +859,7 @@ describe('Command Pattern Implementation', () => {
       });
 
       await Promise.all(
-        commands.map((cmd) => commandQueue.execute(cmd as any)),
+        commands.map((cmd) => commandQueue.execute(cmd as any))
       );
 
       const metrics = commandQueue.getMetrics();
@@ -869,7 +869,7 @@ describe('Command Pattern Implementation', () => {
           totalExecuted: 3,
           totalFailed: 1,
           averageExecutionTime: expect.any(Number),
-        }),
+        })
       );
 
       expect(metrics.averageExecutionTime).toBeGreaterThan(0);
@@ -939,25 +939,27 @@ describe('Command Pattern Implementation', () => {
         CommandFactory.createSwarmInitCommand(
           { topology: 'mesh', agentCount: 1, capabilities: ['basic'] },
           mockSwarmService as any,
-          commandContext,
+          commandContext
         ),
         CommandFactory.createAgentSpawnCommand(
           { type: 'worker', capabilities: ['task-execution'] },
           mockSwarmService as any,
           'transaction-swarm-001',
-          commandContext,
+          commandContext
         ),
         CommandFactory.createTaskOrchestrationCommand(
           { description: 'setup-task', requirements: [], priority: 'medium' },
           mockSwarmService as any,
           'transaction-swarm-001',
-          commandContext,
+          commandContext
         ),
       ];
 
-      const results = await commandQueue.executeTransaction(commands) as any as any as any as any;
+      const results = (await commandQueue.executeTransaction(
+        commands
+      )) as any as any as any as any;
 
-      expect(results?.every((r: any) => r.success)).toBe(true);
+      expect(results?.every((r: unknown) => r.success)).toBe(true);
       expect(results).toHaveLength(3);
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(1);
@@ -989,20 +991,20 @@ describe('Command Pattern Implementation', () => {
 
       // Second command fails
       mockSwarmService.spawnAgent.mockRejectedValue(
-        new Error('Agent spawn failed'),
+        new Error('Agent spawn failed')
       );
 
       const mockSwarmCommand = CommandFactory.createSwarmInitCommand(
         { topology: 'hierarchical', agentCount: 1, capabilities: ['test'] },
         mockSwarmService as any,
-        commandContext,
+        commandContext
       );
 
       const mockAgentCommand = CommandFactory.createAgentSpawnCommand(
         { type: 'test-agent', capabilities: ['fail'] },
         mockSwarmService as any,
         'rollback-swarm-001',
-        commandContext,
+        commandContext
       );
 
       // Mock undo for swarm command
@@ -1021,16 +1023,18 @@ describe('Command Pattern Implementation', () => {
 
       const commands = [mockSwarmCommand, mockAgentCommand];
 
-      const results = await commandQueue.executeTransaction(commands) as any as any as any as any;
+      const results = (await commandQueue.executeTransaction(
+        commands
+      )) as any as any as any as any;
 
       // Transaction should fail
-      expect(results?.some((r: any) => !r.success)).toBe(true);
+      expect(results?.some((r: unknown) => !r.success)).toBe(true);
 
       // First command should have been undone
       expect(mockSwarmCommand.undo).toHaveBeenCalledTimes(1);
 
       expect(mockLogger.warn).toHaveBeenCalledWith(
-        'Transaction failed, rolling back completed commands',
+        'Transaction failed, rolling back completed commands'
       );
     });
 
@@ -1083,7 +1087,7 @@ describe('Command Pattern Implementation', () => {
         CommandFactory.createSwarmInitCommand(
           { topology: 'star', agentCount: 2, capabilities: ['coordination'] },
           mockSwarmService as any,
-          parentContext,
+          parentContext
         ),
       ];
 
@@ -1092,13 +1096,13 @@ describe('Command Pattern Implementation', () => {
           { type: 'coordinator', capabilities: ['management'] },
           mockSwarmService as any,
           'nested-swarm-001',
-          childContext,
+          childContext
         ),
         CommandFactory.createAgentSpawnCommand(
           { type: 'worker', capabilities: ['execution'] },
           mockSwarmService as any,
           'nested-swarm-001',
-          childContext,
+          childContext
         ),
       ];
 
@@ -1108,8 +1112,10 @@ describe('Command Pattern Implementation', () => {
       expect(parentResults?.every((r) => r.success)).toBe(true);
 
       // Execute child transaction
-      const childResults = await commandQueue.executeTransaction(childCommands) as any as any as any as any;
-      expect(childResults?.every((r: any) => r.success)).toBe(true);
+      const childResults = (await commandQueue.executeTransaction(
+        childCommands
+      )) as any as any as any as any;
+      expect(childResults?.every((r: unknown) => r.success)).toBe(true);
 
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(2);
@@ -1117,10 +1123,10 @@ describe('Command Pattern Implementation', () => {
       // Verify transaction isolation in history
       const history = commandQueue.getHistory();
       expect(
-        history.filter((h) => h.command.context.sessionId === 'nested-parent'),
+        history.filter((h) => h.command.context.sessionId === 'nested-parent')
       ).toHaveLength(1);
       expect(
-        history.filter((h) => h.command.context.sessionId === 'nested-child'),
+        history.filter((h) => h.command.context.sessionId === 'nested-child')
       ).toHaveLength(2);
     });
   });
@@ -1156,21 +1162,21 @@ describe('Command Pattern Implementation', () => {
       const swarmCommand = CommandFactory.createSwarmInitCommand(
         { topology: 'mesh', agentCount: 3 },
         mockSwarmService as any,
-        commandContext,
+        commandContext
       );
 
       const agentCommand = CommandFactory.createAgentSpawnCommand(
         { type: 'analyzer', capabilities: ['data-analysis'] },
         mockSwarmService as any,
         'test-swarm',
-        commandContext,
+        commandContext
       );
 
       const taskCommand = CommandFactory.createTaskOrchestrationCommand(
         { description: 'analysis-task', requirements: [], priority: 'medium' },
         mockSwarmService as any,
         'test-swarm',
-        commandContext,
+        commandContext
       );
 
       expect(swarmCommand.getCommandType()).toBe('swarm_init');
@@ -1184,7 +1190,7 @@ describe('Command Pattern Implementation', () => {
         CommandFactory.createSwarmInitCommand(
           { topology: 'invalid-topology' as any, agentCount: 1 },
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
       }).toThrow('Invalid topology');
 
@@ -1193,7 +1199,7 @@ describe('Command Pattern Implementation', () => {
         CommandFactory.createSwarmInitCommand(
           { topology: 'mesh', agentCount: -1 },
           mockSwarmService as any,
-          commandContext,
+          commandContext
         );
       }).toThrow('Agent count must be positive');
 
@@ -1203,7 +1209,7 @@ describe('Command Pattern Implementation', () => {
           { description: '', requirements: [], priority: 'low' },
           mockSwarmService as any,
           'test-swarm',
-          commandContext,
+          commandContext
         );
       }).toThrow('Task description is required');
     });
@@ -1212,7 +1218,7 @@ describe('Command Pattern Implementation', () => {
       const simpleCommand = CommandFactory.createSwarmInitCommand(
         { topology: 'star', agentCount: 1, capabilities: ['simple'] },
         mockSwarmService as any,
-        commandContext,
+        commandContext
       );
 
       const complexCommand = CommandFactory.createTaskOrchestrationCommand(
@@ -1223,7 +1229,7 @@ describe('Command Pattern Implementation', () => {
         },
         mockSwarmService as any,
         'complex-swarm',
-        commandContext,
+        commandContext
       );
 
       const simpleDuration = simpleCommand.getEstimatedDuration();

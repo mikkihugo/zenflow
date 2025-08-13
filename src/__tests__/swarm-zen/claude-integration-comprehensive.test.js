@@ -202,7 +202,7 @@ describe('Claude Integration - Complete Coverage', () => {
 
     test('should invoke Claude with prompts', async () => {
       execSync.mockReturnValue(
-        '{"response": "Claude response", "usage": {"tokens": 150}}',
+        '{"response": "Claude response", "usage": {"tokens": 150}}'
       );
 
       const { ClaudeIntegrationCore } = await import(
@@ -251,7 +251,7 @@ describe('Claude Integration - Complete Coverage', () => {
 
       const core = new ClaudeIntegrationCore();
       await expect(core.invokeClaudeWithPrompt('Test prompt')).rejects.toThrow(
-        'Claude API error',
+        'Claude API error'
       );
     });
   });
@@ -307,7 +307,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
       expect(result).toContain('claude.md');
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.stringContaining('claude.md'),
-        expect.stringContaining('Claude Code Configuration'),
+        expect.stringContaining('Claude Code Configuration')
       );
     });
 
@@ -340,7 +340,7 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
               const docsDir = path.join(
                 this.options.workingDir,
                 '.claude',
-                'commands',
+                'commands'
               );
               await fs.mkdir(docsDir, { recursive: true });
 
@@ -378,7 +378,7 @@ ${cmd.examples.join('\n')}
         expect.stringContaining('.claude/commands'),
         {
           recursive: true,
-        },
+        }
       );
     });
 
@@ -400,11 +400,11 @@ ${cmd.examples.join('\n')}
               return [
                 path.join(
                   this.options.workingDir,
-                  '.claude/commands/swarm_init.md',
+                  '.claude/commands/swarm_init.md'
                 ),
                 path.join(
                   this.options.workingDir,
-                  '.claude/commands/agent_spawn.md',
+                  '.claude/commands/agent_spawn.md'
                 ),
               ];
             }
@@ -501,7 +501,7 @@ npx ${this.options.packageName} @args
               for (const [platform, script] of Object.entries(scripts)) {
                 const filePath = path.join(
                   this.options.workingDir,
-                  script.name,
+                  script.name
                 );
                 await fs.writeFile(filePath, script.content);
                 createdFiles.push({
@@ -531,7 +531,7 @@ npx ${this.options.packageName} @args
 
       expect(fs.writeFile).toHaveBeenCalledWith(
         expect.stringContaining('test-swarm.sh'),
-        expect.stringContaining('#!/bin/bash'),
+        expect.stringContaining('#!/bin/bash')
       );
     });
 
@@ -598,7 +598,7 @@ if "%1"=="init" (
               for (const helper of helpers) {
                 const filePath = path.join(
                   this.options.workingDir,
-                  helper.name,
+                  helper.name
                 );
                 await fs.writeFile(filePath, helper.content);
                 createdFiles.push(filePath);
@@ -682,7 +682,7 @@ if "%1"=="init" (
 
       const remote = new RemoteWrapperGenerator();
       await expect(remote.createCrossPlatformWrappers()).rejects.toThrow(
-        'Disk full',
+        'Disk full'
       );
     });
   });
@@ -717,7 +717,7 @@ if "%1"=="init" (
       });
 
       const result = AdvancedCommands.validateMcpCommand(
-        'mcp__zen-swarm__swarm_init',
+        'mcp__zen-swarm__swarm_init'
       );
 
       expect(result.valid).toBe(true);
@@ -911,7 +911,7 @@ NODE_ENV=production
 
       const core = new ClaudeIntegrationCore();
       await expect(core.invokeClaudeWithPrompt('test')).rejects.toThrow(
-        'Network is unreachable',
+        'Network is unreachable'
       );
     });
   });
@@ -931,7 +931,7 @@ NODE_ENV=production
               // Simulate generating many command docs
               const commands = Array.from(
                 { length: 100 },
-                (_, i) => `command_${i}`,
+                (_, i) => `command_${i}`
               );
               const files = [];
 
@@ -939,7 +939,7 @@ NODE_ENV=production
                 const content = `# ${cmd}\n\nGenerated documentation for ${cmd}`;
                 const filePath = path.join(
                   this.options.workingDir,
-                  `.claude/commands/${cmd}.md`,
+                  `.claude/commands/${cmd}.md`
                 );
                 await fs.writeFile(filePath, content);
                 files.push(filePath);

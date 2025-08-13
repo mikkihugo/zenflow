@@ -222,12 +222,12 @@ export interface DSPyTask {
   id: string;
   type: string;
   description: string;
-  input: any;
+  input: unknown;
   requiredCapabilities: string[];
   complexity: number;
   priority: 'low' | 'medium' | 'high' | 'critical';
   assignedAgent?: string;
-  result?: any;
+  result?: unknown;
   startTime?: Date;
   endTime?: Date;
   success?: boolean;
@@ -399,8 +399,8 @@ export class DSPySwarmCoordinator {
   private learningHistory: Array<{
     taskId: string;
     agentId: string;
-    input: any;
-    output: any;
+    input: unknown;
+    output: unknown;
     success: boolean;
     timestamp: Date;
   }> = [];
@@ -472,13 +472,13 @@ export class DSPySwarmCoordinator {
           model: 'claude-3-5-sonnet-20241022',
           temperature: 0.1,
           maxTokens: 2000,
-        },
+        }
       );
 
       // Create coordination program
       this.coordinationProgram = await this.dspyWrapper.createProgram(
         'task_description: string, available_agents: array, swarm_state: object -> optimal_assignment: object, coordination_plan: array, expected_outcome: string',
-        'Intelligently coordinate DSPy agents for optimal task execution and learning',
+        'Intelligently coordinate DSPy agents for optimal task execution and learning'
       );
 
       // Initialize default agent types
@@ -656,7 +656,7 @@ export class DSPySwarmCoordinator {
 
     const program = await this.dspyWrapper.createProgram(
       config?.signature,
-      config?.description,
+      config?.description
     );
 
     const agent: DSPyAgent = {
@@ -753,7 +753,7 @@ export class DSPySwarmCoordinator {
 
     try {
       const availableAgents = Array.from(this.agents.values()).filter(
-        (a) => a.status === 'idle',
+        (a) => a.status === 'idle'
       );
 
       const coordinationResult = await this.dspyWrapper.execute(
@@ -771,7 +771,7 @@ export class DSPySwarmCoordinator {
             taskLoad: this.tasks.size,
             learningHistory: this.learningHistory.length,
           },
-        },
+        }
       );
 
       if (
@@ -791,7 +791,7 @@ export class DSPySwarmCoordinator {
             `DSPy coordination selected agent: ${selectedAgent?.name}`,
             {
               reasoning: optimalAssignment?.reasoning,
-            },
+            }
           );
           return selectedAgent;
         }
@@ -815,8 +815,8 @@ export class DSPySwarmCoordinator {
       (agent) =>
         agent.status === 'idle' &&
         task.requiredCapabilities.some((cap) =>
-          agent.capabilities.includes(cap),
-        ),
+          agent.capabilities.includes(cap)
+        )
     );
 
     if (suitableAgents.length === 0) return null;
@@ -824,7 +824,7 @@ export class DSPySwarmCoordinator {
     // Select agent with highest success rate
     return (
       suitableAgents.sort(
-        (a, b) => b.performance.successRate - a.performance.successRate,
+        (a, b) => b.performance.successRate - a.performance.successRate
       )[0] || null
     );
   }
@@ -837,8 +837,8 @@ export class DSPySwarmCoordinator {
    */
   private async executeWithAgent(
     task: DSPyTask,
-    agent: DSPyAgent,
-  ): Promise<any> {
+    agent: DSPyAgent
+  ): Promise<unknown> {
     if (!this.dspyWrapper) throw new Error('DSPy wrapper not initialized');
 
     agent.status = 'busy';
@@ -847,12 +847,12 @@ export class DSPySwarmCoordinator {
     try {
       const executionResult = await this.dspyWrapper.execute(
         agent.program,
-        task.input,
+        task.input
       );
 
       if (!executionResult?.success) {
         throw new Error(
-          `Agent execution failed: ${executionResult?.error?.message}`,
+          `Agent execution failed: ${executionResult?.error?.message}`
         );
       }
 
@@ -873,8 +873,8 @@ export class DSPySwarmCoordinator {
   private recordLearningExample(
     task: DSPyTask,
     agent: DSPyAgent,
-    result: any,
-    success: boolean,
+    result: unknown,
+    success: boolean
   ): void {
     const example = {
       taskId: task.id,
@@ -909,7 +909,7 @@ export class DSPySwarmCoordinator {
   private async updateAgentPerformance(
     agent: DSPyAgent,
     task: DSPyTask,
-    success: boolean,
+    success: boolean
   ): Promise<void> {
     const duration =
       (task.endTime?.getTime() || 0) - (task.startTime?.getTime() || 0);
@@ -976,7 +976,7 @@ export class DSPySwarmCoordinator {
           minExamples: Math.min(agentExamples.length, 5),
           evaluationMetric: 'accuracy',
           // timeout: 30000, // 30 seconds - timeout not part of DSPyOptimizationConfig
-        },
+        }
       );
 
       if (optimizationResult?.success && optimizationResult?.program) {
@@ -1076,14 +1076,14 @@ export class DSPySwarmCoordinator {
    */
   private calculateConnectionWeight(
     agent1: DSPyAgent,
-    agent2: DSPyAgent,
+    agent2: DSPyAgent
   ): number {
     // Base weight on performance similarity and complementary capabilities
     const performanceSimilarity =
       1 -
       Math.abs(agent1.performance.successRate - agent2.performance.successRate);
     const capabilityOverlap = agent1.capabilities.filter((cap) =>
-      agent2.capabilities.includes(cap),
+      agent2.capabilities.includes(cap)
     ).length;
     const capabilityComplement =
       agent1.capabilities.length +
@@ -1102,7 +1102,7 @@ export class DSPySwarmCoordinator {
       name: string;
       type: AgentType;
       status: string;
-      performance: any;
+      performance: unknown;
       lastOptimization: Date;
     }>;
     topology: DSPySwarmTopology;
@@ -1117,7 +1117,7 @@ export class DSPySwarmCoordinator {
   } {
     const agents = Array.from(this.agents.values());
     const completedTasks = Array.from(this.tasks.values()).filter(
-      (t) => t.success === true,
+      (t) => t.success === true
     ).length;
 
     return {
@@ -1131,7 +1131,7 @@ export class DSPySwarmCoordinator {
       })),
       topology: this.topology,
       activeTasks: Array.from(this.tasks.values()).filter(
-        (t) => t.success === undefined,
+        (t) => t.success === undefined
       ).length,
       completedTasks,
       learningExamples: this.learningHistory.length,

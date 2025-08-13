@@ -45,7 +45,7 @@ export interface SPARCEngine {
   executePhase(project: SPARCProject, phase: SPARCPhase): Promise<PhaseResult>;
   refineImplementation(
     project: SPARCProject,
-    feedback: RefinementFeedback,
+    feedback: RefinementFeedback
   ): Promise<RefinementResult>;
   generateArtifacts(project: SPARCProject): Promise<ArtifactSet>;
   validateCompletion(project: SPARCProject): Promise<CompletionValidation>;
@@ -92,7 +92,7 @@ export interface SPARCTemplate {
   }>;
 
   customizeSpecification(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): DetailedSpecification;
   customizePseudocode(projectSpec: ProjectSpecification): PseudocodeStructure;
   customizeArchitecture(projectSpec: ProjectSpecification): ArchitectureDesign;
@@ -190,13 +190,13 @@ export interface SpecificationEngine {
   gatherRequirements(context: ProjectContext): Promise<RequirementSet>;
   analyzeConstraints(requirements: RequirementSet): Promise<ConstraintAnalysis>;
   defineAcceptanceCriteria(
-    requirements: RequirementSet,
+    requirements: RequirementSet
   ): Promise<AcceptanceCriterion[]>;
   generateSpecificationDocument(
-    analysis: ConstraintAnalysis,
+    analysis: ConstraintAnalysis
   ): Promise<SpecificationDocument>;
   validateSpecificationCompleteness(
-    spec: SpecificationDocument,
+    spec: SpecificationDocument
   ): Promise<ValidationReport>;
 }
 
@@ -294,19 +294,19 @@ export interface SuccessMetric {
 // Pseudocode Phase Types
 export interface PseudocodeEngine {
   generateAlgorithmPseudocode(
-    spec: DetailedSpecification,
+    spec: DetailedSpecification
   ): Promise<AlgorithmPseudocode[]>;
   designDataStructures(
-    requirements: FunctionalRequirement[],
+    requirements: FunctionalRequirement[]
   ): Promise<DataStructureDesign[]>;
   mapControlFlows(
-    algorithms: AlgorithmPseudocode[],
+    algorithms: AlgorithmPseudocode[]
   ): Promise<ControlFlowDiagram[]>;
   optimizeAlgorithmComplexity(
-    pseudocode: AlgorithmPseudocode,
+    pseudocode: AlgorithmPseudocode
   ): Promise<OptimizationSuggestion[]>;
   validatePseudocodeLogic(
-    pseudocode: AlgorithmPseudocode[],
+    pseudocode: AlgorithmPseudocode[]
   ): Promise<LogicValidation>;
 }
 
@@ -438,17 +438,17 @@ export interface FlowEdge {
 export interface ArchitectureEngine {
   designSystemArchitecture(
     spec: DetailedSpecification,
-    pseudocode: AlgorithmPseudocode[],
+    pseudocode: AlgorithmPseudocode[]
   ): Promise<SystemArchitecture>;
   generateComponentDiagrams(
-    architecture: SystemArchitecture,
+    architecture: SystemArchitecture
   ): Promise<ComponentDiagram[]>;
   designDataFlow(components: Component[]): Promise<DataFlowDiagram>;
   planDeploymentArchitecture(
-    system: SystemArchitecture,
+    system: SystemArchitecture
   ): Promise<DeploymentPlan>;
   validateArchitecturalConsistency(
-    architecture: SystemArchitecture,
+    architecture: SystemArchitecture
   ): Promise<ArchitecturalValidation>;
 }
 
@@ -605,28 +605,28 @@ export interface TechnologyChoice {
 export interface RefinementEngine {
   analyzeImplementationGaps(
     architecture: SystemArchitecture,
-    currentImpl: Implementation,
+    currentImpl: Implementation
   ): Promise<GapAnalysis>;
   generateOptimizationSuggestions(
-    performance: PerformanceMetrics,
+    performance: PerformanceMetrics
   ): Promise<OptimizationPlan>;
   refineAlgorithms(
-    feedback: PerformanceFeedback,
+    feedback: PerformanceFeedback
   ): Promise<AlgorithmRefinement[]>;
   updateArchitecture(
-    refinements: ArchitecturalRefinement[],
+    refinements: ArchitecturalRefinement[]
   ): Promise<UpdatedArchitecture>;
   validateRefinementImpact(
-    changes: RefinementChange[],
+    changes: RefinementChange[]
   ): Promise<ImpactAssessment>;
 
   // Additional methods used by RefinementPhaseEngine
   applyRefinements(
     architecture: ArchitectureDesign,
-    feedback: RefinementFeedback,
+    feedback: RefinementFeedback
   ): Promise<RefinementResult>;
   validateRefinement(
-    refinement: RefinementResult,
+    refinement: RefinementResult
   ): Promise<RefinementValidation>;
 }
 
@@ -675,16 +675,16 @@ export interface ImplementationStep {
 export interface CompletionEngine {
   generateProductionCode(
     architecture: SystemArchitecture,
-    refinements: RefinementStrategy[],
+    refinements: RefinementStrategy[]
   ): Promise<CodeArtifacts>;
   createTestSuites(requirements: DetailedSpecification): Promise<TestSuite[]>;
   generateDocumentation(project: SPARCProject): Promise<DocumentationSet>;
   validateProductionReadiness(
-    implementation: Implementation,
+    implementation: Implementation
   ): Promise<ProductionReadinessReport>;
   deployToProduction(
     artifacts: CodeArtifacts,
-    config: DeploymentConfig,
+    config: DeploymentConfig
   ): Promise<DeploymentResult>;
 }
 
@@ -851,20 +851,20 @@ export interface PerformanceFeedback {
 // AI Integration Types
 export interface AISPARCAssistant {
   enhanceSpecification(
-    draft: Partial<DetailedSpecification>,
+    draft: Partial<DetailedSpecification>
   ): Promise<DetailedSpecification>;
   generateOptimalPseudocode(
-    spec: DetailedSpecification,
+    spec: DetailedSpecification
   ): Promise<AlgorithmPseudocode[]>;
   suggestArchitecturalPatterns(
-    requirements: RequirementSet,
+    requirements: RequirementSet
   ): Promise<PatternRecommendation[]>;
   optimizeRefinementStrategy(
     current: Implementation,
-    targets: PerformanceTarget[],
+    targets: PerformanceTarget[]
   ): Promise<RefinementPlan>;
   validateCompletionReadiness(
-    artifacts: ArtifactReference[],
+    artifacts: ArtifactReference[]
   ): Promise<ReadinessAssessment>;
 }
 

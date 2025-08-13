@@ -78,7 +78,7 @@ export class SessionValidator {
     // Swarm options validation
     if (state.swarmOptions) {
       const optionsErrors = SessionValidator.validateSwarmOptions(
-        state.swarmOptions,
+        state.swarmOptions
       );
       errors.push(...optionsErrors);
     } else {
@@ -215,7 +215,7 @@ export class SessionSerializer {
       metrics: {
         ...state.metrics,
         agentUtilization: Object.fromEntries(
-          state.metrics.agentUtilization.entries(),
+          state.metrics.agentUtilization.entries()
         ),
       },
     };
@@ -239,7 +239,7 @@ export class SessionSerializer {
       metrics: {
         ...data?.metrics,
         agentUtilization: new Map(
-          Object.entries(data?.metrics?.agentUtilization),
+          Object.entries(data?.metrics?.agentUtilization)
         ),
       },
     };
@@ -294,7 +294,7 @@ export class SessionSerializer {
       swarmState: SessionSerializer.deserializeSwarmState(data?.swarmState),
       swarmOptions: data?.swarmOptions,
       metadata: data?.metadata || {},
-      checkpoints: data?.checkpoints.map((cp: any) => ({
+      checkpoints: data?.checkpoints.map((cp: unknown) => ({
         id: cp.id,
         sessionId: cp.sessionId,
         timestamp: new Date(cp.timestamp),
@@ -334,9 +334,9 @@ export class SessionMigrator {
    * @param toVersion
    */
   static migrateSession(
-    session: any,
+    session: unknown,
     fromVersion: string,
-    toVersion: string,
+    toVersion: string
   ): SessionState {
     const migrations = SessionMigrator.getMigrationPath(fromVersion, toVersion);
 
@@ -356,9 +356,9 @@ export class SessionMigrator {
    */
   private static getMigrationPath(
     fromVersion: string,
-    toVersion: string,
-  ): Array<(session: any) => any> {
-    const migrations: Array<(session: any) => any> = [];
+    toVersion: string
+  ): Array<(session: unknown) => any> {
+    const migrations: Array<(session: unknown) => any> = [];
 
     // Example migrations (add as needed)
     if (fromVersion === '0.9.0' && toVersion === '1.0.0') {
@@ -373,7 +373,7 @@ export class SessionMigrator {
    *
    * @param session
    */
-  private static migrate_0_9_0_to_1_0_0(session: any): any {
+  private static migrate_0_9_0_to_1_0_0(session: unknown): unknown {
     // Add version field if missing
     if (!session.version) {
       session.version = '1.0.0';
@@ -386,7 +386,7 @@ export class SessionMigrator {
 
     // Migrate old checkpoint format
     if (session.checkpoints) {
-      session.checkpoints = session.checkpoints.map((cp: any) => {
+      session.checkpoints = session.checkpoints.map((cp: unknown) => {
         if (!cp.metadata) {
           cp.metadata = {};
         }
@@ -403,7 +403,7 @@ export class SessionMigrator {
    * @param session
    * @param targetVersion
    */
-  static needsMigration(session: any, targetVersion: string): boolean {
+  static needsMigration(session: unknown, targetVersion: string): boolean {
     return !session.version || session.version !== targetVersion;
   }
 }
@@ -421,8 +421,8 @@ export class SessionRecovery {
    * @param checkpoints
    */
   static async recoverSession(
-    corruptedSession: any,
-    checkpoints: SessionCheckpoint[],
+    corruptedSession: unknown,
+    checkpoints: SessionCheckpoint[]
   ): Promise<SessionState | null> {
     // Try to recover from the most recent valid checkpoint
     const sortedCheckpoints = checkpoints
@@ -472,7 +472,7 @@ export class SessionRecovery {
    * @param checkpoint
    */
   private static validateCheckpointIntegrity(
-    checkpoint: SessionCheckpoint,
+    checkpoint: SessionCheckpoint
   ): boolean {
     try {
       // Check basic structure
@@ -610,7 +610,7 @@ export class SessionStats {
    *
    * @param session
    */
-  static generateSummary(session: SessionState): Record<string, any> {
+  static generateSummary(session: SessionState): Record<string, unknown> {
     const metrics = session.swarmState.metrics;
     const healthScore = SessionStats.calculateHealthScore(session);
 
@@ -623,10 +623,10 @@ export class SessionStats {
       lastAccessedAt: session.lastAccessedAt,
       lastCheckpointAt: session.lastCheckpointAt,
       ageInDays: Math.floor(
-        (Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24),
+        (Date.now() - session.createdAt.getTime()) / (1000 * 60 * 60 * 24)
       ),
       daysSinceAccess: Math.floor(
-        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24),
+        (Date.now() - session.lastAccessedAt.getTime()) / (1000 * 60 * 60 * 24)
       ),
       agents: {
         total: session.swarmState.agents.size,
@@ -653,7 +653,7 @@ export class SessionStats {
             acc[id] = util;
             return acc;
           },
-          {} as Record<string, number>,
+          {} as Record<string, number>
         ),
       },
       version: session.version,

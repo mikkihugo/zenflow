@@ -1,11 +1,14 @@
 /**
  * Event Adapter Registry - Breaks Circular Dependencies
- * 
+ *
  * Central registry for event adapters to avoid circular imports
  * between factories.ts and individual adapter files.
  */
 
-import type { IEventManagerFactory, EventManagerType } from './core/interfaces.ts';
+import type {
+  EventManagerType,
+  IEventManagerFactory,
+} from './core/interfaces.ts';
 
 /**
  * Registry for event adapter factories.
@@ -59,7 +62,7 @@ export function registerDefaultAdapters(): void {
     return module.WorkflowEventFactory;
   });
 
-  // Register neural event factory  
+  // Register neural event factory
   adapterRegistry.register('neural', async () => {
     const module = await import('./adapters/neural-event-factory.ts');
     return module.NeuralEventFactory;

@@ -225,7 +225,7 @@ export const defaultRepoConfig: Omit<RepoConfig, 'repoPath' | 'repoName'> = {
  */
 export function createRepoConfig(
   repoPath: string,
-  overrides: Partial<RepoConfig> = {},
+  overrides: Partial<RepoConfig> = {}
 ): RepoConfig {
   const repoName = repoPath.split('/').pop() || 'unknown-repo';
 
@@ -247,7 +247,7 @@ export function createRepoConfig(
 
   console.log(`🔒 Ultra-safe startup: ${startupConfig.rationale}`);
   console.log(
-    `🎯 Initial streams: Portfolio=${optimizedConfig.maxParallelStreams.portfolio}, Program=${optimizedConfig.maxParallelStreams.program}, Swarm=${optimizedConfig.maxParallelStreams.swarm}`,
+    `🎯 Initial streams: Portfolio=${optimizedConfig.maxParallelStreams.portfolio}, Program=${optimizedConfig.maxParallelStreams.program}, Swarm=${optimizedConfig.maxParallelStreams.swarm}`
   );
   console.log('🚀 System will auto-scale based on performance metrics');
 
@@ -258,7 +258,7 @@ export function createRepoConfig(
   } else {
     console.warn(
       '⚠️ Repository configuration validation warnings:',
-      repoValidation.errors,
+      repoValidation.errors
     );
     // Continue with warnings but don't fail - configs might have acceptable issues
   }
@@ -328,7 +328,7 @@ export function validateRepoConfig(config: RepoConfig): {
     config.autoDiscovery.confidenceThreshold > 1.0
   ) {
     errors.push(
-      'Auto-discovery confidence threshold must be between 0.5 and 1.0',
+      'Auto-discovery confidence threshold must be between 0.5 and 1.0'
     );
   }
 
@@ -351,7 +351,7 @@ export function validateRepoConfig(config: RepoConfig): {
     config.maxParallelStreams.portfolio > maxSafePortfolio
   ) {
     errors.push(
-      `Portfolio parallel streams must be between 1 and ${maxSafePortfolio} for ${detectedMemoryGB}GB system`,
+      `Portfolio parallel streams must be between 1 and ${maxSafePortfolio} for ${detectedMemoryGB}GB system`
     );
   }
 
@@ -360,7 +360,7 @@ export function validateRepoConfig(config: RepoConfig): {
     config.maxParallelStreams.program > maxSafeProgram
   ) {
     errors.push(
-      `Program parallel streams must be between 1 and ${maxSafeProgram} for ${detectedMemoryGB}GB system`,
+      `Program parallel streams must be between 1 and ${maxSafeProgram} for ${detectedMemoryGB}GB system`
     );
   }
 
@@ -369,7 +369,7 @@ export function validateRepoConfig(config: RepoConfig): {
     config.maxParallelStreams.swarm > maxSafeSwarm
   ) {
     errors.push(
-      `Swarm parallel streams must be between 2 and ${maxSafeSwarm} for ${detectedMemoryGB}GB system`,
+      `Swarm parallel streams must be between 2 and ${maxSafeSwarm} for ${detectedMemoryGB}GB system`
     );
   }
 
@@ -427,47 +427,47 @@ export function logRepoConfigStatus(config: RepoConfig): void {
   logger.log('🚀 Repository Configuration:');
   logger.log(`   Repository: ${config.repoName} (${config.repoPath})`);
   logger.log(
-    `   Advanced Kanban Flow: ${config.enableAdvancedKanbanFlow ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   Advanced Kanban Flow: ${config.enableAdvancedKanbanFlow ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   ML Optimization: ${config.enableMLOptimization ? '✅ ENABLED' : '❌ DISABLED'} (Level: ${config.mlOptimizationLevel})`,
+    `   ML Optimization: ${config.enableMLOptimization ? '✅ ENABLED' : '❌ DISABLED'} (Level: ${config.mlOptimizationLevel})`
   );
   logger.log(
-    `   Bottleneck Detection: ${config.enableBottleneckDetection ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   Bottleneck Detection: ${config.enableBottleneckDetection ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   Predictive Analytics: ${config.enablePredictiveAnalytics ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   Predictive Analytics: ${config.enablePredictiveAnalytics ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   Real-Time Monitoring: ${config.enableRealTimeMonitoring ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   Real-Time Monitoring: ${config.enableRealTimeMonitoring ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   Resource Management: ${config.enableIntelligentResourceManagement ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   Resource Management: ${config.enableIntelligentResourceManagement ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   AGUI Gates: ${config.enableAGUIGates ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   AGUI Gates: ${config.enableAGUIGates ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   Cross-Level Optimization: ${config.enableCrossLevelOptimization ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   Cross-Level Optimization: ${config.enableCrossLevelOptimization ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   DSPy Neural Enhancement: ${config.dsyIntegration.enabled ? '✅ ENABLED' : '❌ DISABLED'}`,
+    `   DSPy Neural Enhancement: ${config.dsyIntegration.enabled ? '✅ ENABLED' : '❌ DISABLED'}`
   );
   logger.log(
-    `   Auto-Discovery: ${config.autoDiscovery.enabled ? '✅ ENABLED' : '❌ DISABLED'} (Confidence: ${config.autoDiscovery.confidenceThreshold})`,
+    `   Auto-Discovery: ${config.autoDiscovery.enabled ? '✅ ENABLED' : '❌ DISABLED'} (Confidence: ${config.autoDiscovery.confidenceThreshold})`
   );
   logger.log(
-    `   Knowledge Systems: FACT=${config.knowledgeSystems.factEnabled ? '✅' : '❌'}, RAG=${config.knowledgeSystems.ragEnabled ? '✅' : '❌'}, WASM=${config.knowledgeSystems.wasmAcceleration ? '✅' : '❌'}`,
+    `   Knowledge Systems: FACT=${config.knowledgeSystems.factEnabled ? '✅' : '❌'}, RAG=${config.knowledgeSystems.ragEnabled ? '✅' : '❌'}, WASM=${config.knowledgeSystems.wasmAcceleration ? '✅' : '❌'}`
   );
   logger.log(`   Flow Topology: ${config.flowTopology}`);
   logger.log(
-    `   Parallel Streams: Portfolio=${config.maxParallelStreams.portfolio}, Program=${config.maxParallelStreams.program}, Swarm=${config.maxParallelStreams.swarm}`,
+    `   Parallel Streams: Portfolio=${config.maxParallelStreams.portfolio}, Program=${config.maxParallelStreams.program}, Swarm=${config.maxParallelStreams.swarm}`
   );
   logger.log(
-    '✅ All advanced features enabled with adaptive 8GB base configuration!',
+    '✅ All advanced features enabled with adaptive 8GB base configuration!'
   );
   logger.log(
-    '🔄 System will auto-scale based on detected memory and performance!',
+    '🔄 System will auto-scale based on detected memory and performance!'
   );
 }
 

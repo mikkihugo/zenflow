@@ -52,10 +52,10 @@ export function createBatchSystem(options?: {
   const batchEngine = new BatchEngine(options?.['batchConfig']);
   const performanceMonitor = new BatchPerformanceMonitor();
   const fileBatchOperator = new FileBatchOperator(
-    options?.['maxConcurrentFiles'],
+    options?.['maxConcurrentFiles']
   );
   const swarmBatchCoordinator = new SwarmBatchCoordinator(
-    options?.['swarmConfig'],
+    options?.['swarmConfig']
   );
 
   return {
@@ -70,7 +70,7 @@ export function createBatchSystem(options?: {
      * @param operations
      */
     async executeBatchWorkflow(
-      operations: import('./batch-engine.ts').BatchOperation[],
+      operations: import('./batch-engine.ts').BatchOperation[]
     ) {
       // Execute batch operations
       const summary = await batchEngine.executeBatch(operations);
@@ -82,13 +82,13 @@ export function createBatchSystem(options?: {
       const sequentialMetrics = performanceMonitor.recordSequentialExecution(
         summary.totalOperations,
         sequentialTime,
-        summary.successfulOperations,
+        summary.successfulOperations
       );
 
       // Compare performance
       const comparison = performanceMonitor.comparePerformance(
         batchMetrics,
-        sequentialMetrics,
+        sequentialMetrics
       );
 
       return {

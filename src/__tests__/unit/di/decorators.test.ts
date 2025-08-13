@@ -110,7 +110,7 @@ describe('DI Decorators', () => {
       class TestService {
         constructor(
           @inject(loggerToken) private _logger: ILogger,
-          private config: any, // Not injected
+          private config: unknown, // Not injected
         ) {}
       }
 
@@ -134,7 +134,7 @@ describe('DI Decorators', () => {
         get<T>(key: string, defaultValue?: T): T {
           return this.data.get(key) || defaultValue;
         }
-        set(key: string, value: any): void {
+        set(key: string, value: unknown): void {
           this.data.set(key, value);
         }
         has(key: string): boolean {
@@ -194,7 +194,7 @@ describe('DI Decorators', () => {
       class DatabaseService {
         constructor(@inject(CORE_TOKENS.Logger) private _logger: ILogger) {}
 
-        query(sql: string): any[] {
+        query(sql: string): unknown[] {
           this.logger.debug('Executing query', { sql });
           return [];
         }
@@ -207,7 +207,7 @@ describe('DI Decorators', () => {
           private db: DatabaseService, // This would also be injected in real scenario
         ) {}
 
-        findUser(id: string): any {
+        findUser(id: string): unknown {
           this.logger.info('Finding user', { id });
           return this.db.query(`SELECT * FROM users WHERE id = '${id}'`);
         }
@@ -220,7 +220,7 @@ describe('DI Decorators', () => {
           private userRepo: UserRepository,
         ) {}
 
-        getUser(id: string): any {
+        getUser(id: string): unknown {
           this.logger.info('Getting user', { id });
           return this.userRepo.findUser(id);
         }

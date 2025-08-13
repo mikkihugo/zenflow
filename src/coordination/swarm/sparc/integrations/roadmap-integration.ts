@@ -10,7 +10,7 @@ import {
 } from '../types/sparc-types.ts';
 
 const logger = getLogger(
-  'coordination-swarm-sparc-integrations-roadmap-integration',
+  'coordination-swarm-sparc-integrations-roadmap-integration'
 );
 
 // Roadmap-specific type definitions
@@ -78,11 +78,11 @@ export interface SPARCRoadmapPlanning {
   generateFeaturesFromProject(project: SPARCProject): Promise<Feature[]>;
   addProjectToRoadmap(
     project: SPARCProject,
-    targetQuarter: string,
+    targetQuarter: string
   ): Promise<void>;
   generateDomainRoadmap(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string },
+    timeframe: { start: string; end: string }
   ): Promise<Roadmap>;
 }
 
@@ -196,7 +196,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
    */
   async addProjectToRoadmap(
     project: SPARCProject,
-    targetQuarter: string,
+    targetQuarter: string
   ): Promise<void> {
     try {
       // Load existing roadmap or create new one
@@ -256,7 +256,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
    */
   async generateDomainRoadmap(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string },
+    timeframe: { start: string; end: string }
   ): Promise<Roadmap> {
     const roadmap: Roadmap = {
       id: `${domain}-roadmap`,
@@ -313,7 +313,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
       await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
       await fs.writeFile(
         this.featuresFile,
-        JSON.stringify(featuresData, null, 2),
+        JSON.stringify(featuresData, null, 2)
       );
     } catch (error) {
       logger.warn('Could not save project artifacts:', error);
@@ -380,7 +380,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private getFeatureStatus(
     project: SPARCProject,
-    phase: string,
+    phase: string
   ): 'backlog' | 'planned' | 'in_progress' | 'completed' {
     if (project.progress?.completedPhases?.includes(phase as any)) {
       return 'completed';
@@ -396,7 +396,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   private determineRoadmapItemType(
-    project: SPARCProject,
+    project: SPARCProject
   ): 'epic' | 'feature' | 'initiative' {
     // For now, determine based on project domain and size
     const highComplexityDomains = ['neural-networks', 'swarm-coordination'];
@@ -420,7 +420,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
   }
 
   private mapBusinessValueToLevel(
-    project: SPARCProject,
+    project: SPARCProject
   ): 'high' | 'medium' | 'low' {
     const highValueDomains = [
       'swarm-coordination',
@@ -440,19 +440,19 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private calculateEndQuarter(
     startQuarter: string,
-    quartersAhead: number,
+    quartersAhead: number
   ): string {
     const parts = startQuarter.split('-Q');
     if (parts.length !== 2) {
       throw new Error(
-        `Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`,
+        `Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`
       );
     }
 
     const [year, quarter] = parts;
     if (!(year && quarter)) {
       throw new Error(
-        `Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`,
+        `Invalid quarter format: ${startQuarter}. Expected format: YYYY-QN`
       );
     }
 
@@ -470,7 +470,7 @@ export class SPARCRoadmapManager implements SPARCRoadmapPlanning {
 
   private generateDomainRoadmapItems(
     domain: ProjectDomain,
-    timeframe: { start: string; end: string },
+    timeframe: { start: string; end: string }
   ): RoadmapItem[] {
     // Generate domain-specific roadmap items based on strategic priorities
     const domainStrategies = {

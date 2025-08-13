@@ -23,7 +23,7 @@ const githubIntegrationTools: MCPTool[] = [
         includePrs: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { repository, includeIssues = true, includePrs = true } = params;
 
       return {
@@ -75,7 +75,7 @@ const githubIntegrationTools: MCPTool[] = [
       },
       required: ['title'],
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { title, body, labels = [], assignees = [] } = params;
 
       const issueNumber = Math.floor(Math.random() * 1000) + 1;
@@ -124,7 +124,7 @@ const githubIntegrationTools: MCPTool[] = [
         includeChecks: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { prNumber, state = 'open', includeChecks = true } = params;
 
       const prs = [

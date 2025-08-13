@@ -70,14 +70,14 @@ export interface Operation {
   readonly description: string;
   readonly filePath?: string;
   readonly command?: string;
-  readonly parameters: Record<string, any>;
-  readonly metadata: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
+  readonly metadata: Record<string, unknown>;
 }
 
 export interface ToolInfo {
   readonly name: string;
   readonly version: string;
-  readonly input: Record<string, any>;
+  readonly input: Record<string, unknown>;
   readonly expectedOutput?: string;
 }
 
@@ -91,14 +91,14 @@ export interface EnvironmentInfo {
 
 export interface UserInfo {
   readonly id: string;
-  readonly preferences: Record<string, any>;
+  readonly preferences: Record<string, unknown>;
   readonly permissions: string[];
 }
 
 export interface SessionInfo {
   readonly id: string;
   readonly startTime: Date;
-  readonly context: Record<string, any>;
+  readonly context: Record<string, unknown>;
   readonly history: OperationHistory[];
 }
 
@@ -113,7 +113,7 @@ export interface HookResult {
   readonly success: boolean;
   readonly allowed: boolean;
   readonly modified: boolean;
-  readonly data?: any;
+  readonly data?: unknown;
   readonly warnings: Warning[];
   readonly errors: HookError[];
   readonly suggestions: Suggestion[];
@@ -132,7 +132,7 @@ export interface HookError {
   readonly type: string;
   readonly message: string;
   readonly code?: string;
-  readonly context?: Record<string, any>;
+  readonly context?: Record<string, unknown>;
 }
 
 export interface Suggestion {
@@ -145,7 +145,7 @@ export interface Suggestion {
 export interface NextAction {
   readonly type: string;
   readonly description: string;
-  readonly parameters: Record<string, any>;
+  readonly parameters: Record<string, unknown>;
   readonly priority: number;
 }
 
@@ -224,8 +224,8 @@ export interface AgentInfo {
 }
 
 export interface AgentContext {
-  readonly memory: Record<string, any>;
-  readonly preferences: Record<string, any>;
+  readonly memory: Record<string, unknown>;
+  readonly preferences: Record<string, unknown>;
   readonly learningData: LearningData[];
   readonly performanceHistory: PerformanceHistory[];
 }
@@ -261,7 +261,7 @@ export interface PerformanceOptimizer {
 
 export interface OptimizedOperation {
   readonly originalOperation: Operation;
-  readonly optimizedParameters: Record<string, any>;
+  readonly optimizedParameters: Record<string, unknown>;
   readonly expectedImprovement: number;
   readonly optimizationStrategy: string;
   readonly estimatedSavings: ResourceSavings;
@@ -325,7 +325,7 @@ export interface OperationResult {
   readonly agent?: AgentInfo;
   readonly agentMetrics?: AgentPerformanceSnapshot;
   readonly error?: HookError;
-  readonly output?: any;
+  readonly output?: unknown;
   readonly resourceUsage: ResourceUsage;
 }
 
@@ -435,7 +435,7 @@ export interface PerformanceHistory {
   readonly duration: number;
   readonly success: boolean;
   readonly timestamp: Date;
-  readonly context: Record<string, any>;
+  readonly context: Record<string, unknown>;
 }
 
 // Hook System Manager Interface
@@ -444,7 +444,7 @@ export interface HookManager {
   unregisterHook(hookId: string): Promise<void>;
   executeHooks(
     trigger: HookTrigger,
-    context: HookContext,
+    context: HookContext
   ): Promise<HookResult[]>;
   getHooks(trigger?: HookTrigger): Promise<Hook[]>;
   enableHook(hookId: string): Promise<void>;

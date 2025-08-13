@@ -25,19 +25,19 @@ import {
 
 // Mock ExternalMCPClient for demonstration purposes
 class ExternalMCPClient {
-  async connectAll(): Promise<any> {
+  async connectAll(): Promise<unknown> {
     return {};
   }
 
-  getServerStatus(): Record<string, any> {
+  getServerStatus(): Record<string, unknown> {
     return {};
   }
 
   async executeTool(
     serverName: string,
     toolName: string,
-    parameters: any,
-  ): Promise<any> {
+    parameters: unknown
+  ): Promise<unknown> {
     return { success: true, result: null };
   }
 
@@ -94,7 +94,7 @@ export class MCPIntegrationManager {
         // Create UACL configuration from legacy server
         const uaclConfig = this.createUACLConfigFromLegacyServer(
           serverName,
-          serverStatus,
+          serverStatus
         );
 
         // Create UACL client
@@ -114,7 +114,7 @@ export class MCPIntegrationManager {
    */
   private createUACLConfigFromLegacyServer(
     serverName: string,
-    serverStatus: any,
+    serverStatus: unknown
   ): MCPClientConfig {
     // Determine protocol based on server type
     const _protocol = serverStatus.type === 'http' ? 'http' : 'stdio';
@@ -179,7 +179,7 @@ export class MCPIntegrationManager {
           result = await this.legacyClient.executeTool(
             serverName,
             toolName,
-            parameters,
+            parameters
           );
 
           this.eventEmitter.emit('tool-executed', {
@@ -213,7 +213,7 @@ export class MCPIntegrationManager {
 
     this.eventEmitter.on('tool-error', (data) => {
       logger.error(
-        `❌ Tool error: ${data?.toolName} on ${data?.serverName} (${data?.source}): ${data?.error}`,
+        `❌ Tool error: ${data?.toolName} on ${data?.serverName} (${data?.source}): ${data?.error}`
       );
     });
   }
@@ -228,8 +228,8 @@ export class MCPIntegrationManager {
   async executeToolWithFailover(
     serverName: string,
     toolName: string,
-    parameters: any,
-  ): Promise<any> {
+    parameters: unknown
+  ): Promise<unknown> {
     // Try UACL first (preferred)
     if (this.uaclClients.has(serverName)) {
       try {
@@ -243,7 +243,7 @@ export class MCPIntegrationManager {
         };
       } catch (_error) {
         logger.warn(
-          `⚠️  UACL execution failed for ${toolName}, falling back to legacy...`,
+          `⚠️  UACL execution failed for ${toolName}, falling back to legacy...`
         );
       }
     }
@@ -253,7 +253,7 @@ export class MCPIntegrationManager {
       const result = await this.legacyClient.executeTool(
         serverName,
         toolName,
-        parameters,
+        parameters
       );
       return {
         success: result?.success,
@@ -263,7 +263,7 @@ export class MCPIntegrationManager {
       };
     } catch (error) {
       throw new Error(
-        `Both UACL and Legacy execution failed: ${(error as Error).message}`,
+        `Both UACL and Legacy execution failed: ${(error as Error).message}`
       );
     }
   }
@@ -272,9 +272,9 @@ export class MCPIntegrationManager {
    * Get comprehensive system status.
    */
   async getSystemStatus(): Promise<{
-    legacy: any;
-    uacl: any;
-    comparison: any;
+    legacy: unknown;
+    uacl: unknown;
+    comparison: unknown;
   }> {
     // Legacy status
     const legacyStatus = this.legacyClient.getServerStatus();
@@ -291,16 +291,16 @@ export class MCPIntegrationManager {
         uacl: this.uaclClients.size,
       },
       healthyServers: {
-        legacy: Object.values(legacyStatus).filter((s: any) => s.connected)
+        legacy: Object.values(legacyStatus).filter((s: unknown) => s.connected)
           .length,
         uacl: Array.from(uaclHealth.values()).filter(
-          (h) => h.status === 'healthy',
+          (h) => h.status === 'healthy'
         ).length,
       },
       totalTools: {
         legacy: Object.values(legacyTools).reduce(
           (sum: number, tools: string[]) => sum + tools.length,
-          0,
+          0
         ),
         uacl: this.uaclClients.size * 2, // Estimate based on typical tool count
       },
@@ -327,8 +327,8 @@ export class MCPIntegrationManager {
   async performanceComparison(
     serverName: string,
     toolName: string,
-    parameters: any,
-    iterations = 5,
+    parameters: unknown,
+    iterations = 5
   ): Promise<{
     legacy: { averageTime: number; successRate: number };
     uacl: { averageTime: number; successRate: number };
@@ -423,7 +423,7 @@ export class MCPIntegrationManager {
 
             const uaclConfig = this.createUACLConfigFromLegacyServer(
               serverName,
-              legacyStatus,
+              legacyStatus
             );
             const uaclClient = await this.uaclFactory.create(uaclConfig);
 
@@ -442,7 +442,7 @@ export class MCPIntegrationManager {
 
             if (rollbackOnFailure) {
               for (const rolledBackServer of migratedServers.slice(
-                -batch.length,
+                -batch.length
               )) {
                 await this.uaclFactory.remove(rolledBackServer);
                 this.uaclClients.delete(rolledBackServer);
@@ -455,7 +455,7 @@ export class MCPIntegrationManager {
         // Delay between batches
         if (batchIndex < batches.length - 1) {
           await new Promise((resolve) =>
-            setTimeout(resolve, delayBetweenBatches),
+            setTimeout(resolve, delayBetweenBatches)
           );
         }
       }
@@ -486,11 +486,11 @@ export class MCPIntegrationManager {
   }
 
   // Event interface
-  on(event: string, handler: (...args: any[]) => void): void {
+  on(event: string, handler: (...args: unknown[]) => void): void {
     this.eventEmitter.on(event, handler);
   }
 
-  off(event: string, handler: (...args: any[]) => void): void {
+  off(event: string, handler: (...args: unknown[]) => void): void {
     this.eventEmitter.off(event, handler);
   }
 }
@@ -516,7 +516,7 @@ export async function demonstrateMCPIntegration(): Promise<void> {
       'research_analysis',
       {
         query: 'UACL architecture benefits',
-      },
+      }
     );
 
     // Performance comparison
@@ -524,7 +524,7 @@ export async function demonstrateMCPIntegration(): Promise<void> {
       'context7',
       'research_analysis',
       { query: 'performance test' },
-      3,
+      3
     );
 
     // Gradual migration example

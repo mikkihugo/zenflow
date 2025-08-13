@@ -80,7 +80,7 @@ export interface ClientResult<T = any> {
     /** Whether result came from cache */
     cached?: boolean;
     /** Additional operation-specific metadata */
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -158,7 +158,7 @@ export interface IClientAdapter extends EventEmitter {
   readonly isInitialized: boolean;
   
   initialize(): Promise<void>;
-  execute<T = any>(operation: string, params?: any): Promise<ClientResult<T>>;
+  execute<T = any>(operation: string, params?: unknown): Promise<ClientResult<T>>;
   healthCheck(): Promise<ClientHealth>;
   getMetrics(): Promise<ClientMetrics>;
   shutdown(): Promise<void>;
@@ -212,7 +212,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClientA
   /**
    * Execute a client operation (abstract - must be implemented by subclasses)
    */
-  abstract execute<T = any>(operation: string, params?: any): Promise<ClientResult<T>>;
+  abstract execute<T = any>(operation: string, params?: unknown): Promise<ClientResult<T>>;
 
   /**
    * Check client health.
@@ -275,7 +275,7 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClientA
     operationId: string,
     success: boolean,
     data?: T,
-    error?: { code: string; message: string; details?: any },
+    error?: { code: string; message: string; details?: unknown },
     metadata: Record<string, unknown> = {}
   ): ClientResult<T> {
     return {

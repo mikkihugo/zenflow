@@ -23,13 +23,18 @@ class ZenMonitor {
 
   async checkTypeScriptErrors() {
     try {
-      const { stdout, stderr } = await execAsync('npx tsc --noEmit --skipLibCheck', {
-        cwd: process.cwd(),
-        timeout: 60000, // 1 minute timeout
-      });
+      const { stdout, stderr } = await execAsync(
+        'npx tsc --noEmit --skipLibCheck',
+        {
+          cwd: process.cwd(),
+          timeout: 60000, // 1 minute timeout
+        }
+      );
 
       // Parse error count from tsc output
-      const errorLines = stderr.split('\n').filter((line) => line.includes('error TS'));
+      const errorLines = stderr
+        .split('\n')
+        .filter((line) => line.includes('error TS'));
       return errorLines.length;
     } catch (error) {
       // tsc exits with error code when there are compilation errors
@@ -113,7 +118,7 @@ class ZenMonitor {
         this.stuckCount++;
         if (this.stuckCount >= 3) {
           // console.log(
-          
+
           // console.log(`💡 Try running: npm run fix:zen:eslint or npm run fix:zen:warnings`);
           break;
         }

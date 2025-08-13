@@ -252,7 +252,7 @@ class PerformanceValidator {
           swarm.spawn({
             type: i % 5 === 0 ? 'coordinator' : 'coder',
             name: `agent-${i}`,
-          }),
+          })
         );
       }
 
@@ -264,7 +264,7 @@ class PerformanceValidator {
         agent.execute({
           task: `Task ${i}: Calculate fibonacci(20)`,
           timeout: 15000,
-        }),
+        })
       );
 
       await Promise.all(taskPromises);
@@ -363,7 +363,7 @@ class PerformanceValidator {
 
       // Test Rust integration
       const cargoTest = await this.runCommand(
-        'cargo test --manifest-path /workspaces/ruv-FANN/daa-repository/Cargo.toml',
+        'cargo test --manifest-path /workspaces/ruv-FANN/daa-repository/Cargo.toml'
       );
 
       // Test MCP integration
@@ -454,7 +454,7 @@ class PerformanceValidator {
       '/workspaces/ruv-FANN/ruv-swarm/npm/test/validation-report.json';
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
     Object.entries(this.testResults.performance).forEach(
-      ([_key, _value]) => {},
+      ([_key, _value]) => {}
     );
 
     if (report.recommendations.length > 0) {
@@ -480,7 +480,7 @@ class PerformanceValidator {
     }
 
     const tasks = agents.map((agent) =>
-      agent.execute({ task: 'Calculate: sum(1..1000)', timeout: 10000 }),
+      agent.execute({ task: 'Calculate: sum(1..1000)', timeout: 10000 })
     );
 
     if (config.strategy === 'parallel') {
@@ -566,27 +566,27 @@ class PerformanceValidator {
         switch (test.test) {
           case 'SIMD Performance':
             recommendations.push(
-              'Enable SIMD optimizations and verify WASM module compilation',
+              'Enable SIMD optimizations and verify WASM module compilation'
             );
             break;
           case 'Speed Optimizations':
             recommendations.push(
-              'Review parallel execution strategy and agent coordination',
+              'Review parallel execution strategy and agent coordination'
             );
             break;
           case 'Load Testing':
             recommendations.push(
-              'Optimize memory usage and consider agent pooling',
+              'Optimize memory usage and consider agent pooling'
             );
             break;
           case 'Memory Efficiency':
             recommendations.push(
-              'Implement memory pooling and garbage collection tuning',
+              'Implement memory pooling and garbage collection tuning'
             );
             break;
           case 'DAA Integration':
             recommendations.push(
-              'Verify DAA repository setup and MCP server configuration',
+              'Verify DAA repository setup and MCP server configuration'
             );
             break;
         }

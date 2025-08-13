@@ -76,7 +76,7 @@ async function generateWithSync(): Promise<void> {
   try {
     await generator.generateAll();
     console.log(
-      '✅ Initial generation completed with sync monitoring enabled!',
+      '✅ Initial generation completed with sync monitoring enabled!'
     );
     console.log('   Monitoring API for changes...');
 
@@ -203,13 +203,13 @@ async function demonstrateIntegration(): Promise<void> {
       } catch (error) {
         console.log(
           `   ℹ️  Tool execution example (expected to fail without proper args):`,
-          error instanceof Error ? error.message : String(error),
+          error instanceof Error ? error.message : String(error)
         );
       }
     }
   } catch (error) {
     console.log(
-      `   ℹ️  Integration files not found (run generator first): ${error}`,
+      `   ℹ️  Integration files not found (run generator first): ${error}`
     );
   }
 }

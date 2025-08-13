@@ -128,7 +128,7 @@ describe('CoordinationEventAdapter', () => {
       const listener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['coordination:swarm'],
-        listener,
+        listener
       );
 
       expect(subscriptionId).toMatch(/coord-sub-/);
@@ -139,7 +139,7 @@ describe('CoordinationEventAdapter', () => {
       const listener = vi.fn();
       const subscriptionId = adapter.subscribe(
         ['coordination:swarm'],
-        listener,
+        listener
       );
 
       const result = adapter.unsubscribe(subscriptionId);
@@ -210,7 +210,7 @@ describe('CoordinationEventAdapter', () => {
           event,
           success: true,
           duration: expect.any(Number),
-        }),
+        })
       );
     });
 
@@ -336,7 +336,7 @@ describe('CoordinationEventAdapter', () => {
         expect.objectContaining({
           ...event,
           metadata: { transformed: true },
-        }),
+        })
       );
 
       expect(adapter.removeTransform(transformId)).toBe(true);
@@ -570,7 +570,7 @@ describe('CoordinationEventAdapter', () => {
       expect(sortedEvents).toHaveLength(3);
       // Events should be sorted by timestamp descending
       expect(sortedEvents[0]?.timestamp?.getTime()).toBeGreaterThan(
-        sortedEvents[1]?.timestamp?.getTime(),
+        sortedEvents[1]?.timestamp?.getTime()
       );
     });
   });
@@ -601,7 +601,7 @@ describe('CoordinationEventAdapter', () => {
           type: 'coordination:swarm',
           operation: 'init',
           targetId: 'test-swarm',
-        }),
+        })
       );
     });
 
@@ -612,7 +612,7 @@ describe('CoordinationEventAdapter', () => {
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()).toHaveLength(1);
       expect(adapter.getSubscriptions()[0]?.eventTypes).toContain(
-        'coordination:swarm',
+        'coordination:swarm'
       );
     });
 
@@ -622,7 +622,7 @@ describe('CoordinationEventAdapter', () => {
 
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()[0]?.eventTypes).toContain(
-        'coordination:agent',
+        'coordination:agent'
       );
     });
 
@@ -632,7 +632,7 @@ describe('CoordinationEventAdapter', () => {
 
       expect(subscriptionId).toMatch(/coord-sub-/);
       expect(adapter.getSubscriptions()[0]?.eventTypes).toContain(
-        'coordination:task',
+        'coordination:task'
       );
     });
   });
@@ -661,7 +661,7 @@ describe('CoordinationEventAdapter', () => {
 
       expect(adapter.config.swarmOptimization?.enabled).toBe(false);
       expect(adapter.config.swarmOptimization?.optimizationInterval).toBe(
-        120000,
+        120000
       );
     });
   });
@@ -731,7 +731,7 @@ describe('CoordinationEventAdapter Factory Functions', () => {
             autoScaling: false,
             loadBalancing: false,
           },
-        },
+        }
       );
 
       const adapter = createCoordinationEventAdapter(config);
@@ -755,7 +755,7 @@ describe('CoordinationEventAdapter Factory Functions', () => {
             trackAgentCommunication: false,
             trackSwarmHealth: false,
           },
-        },
+        }
       );
 
       expect(config?.name).toBe('default-test');
@@ -774,7 +774,7 @@ describe('CoordinationEventHelpers', () => {
         'mesh',
         {
           agentCount: 5,
-        },
+        }
       );
 
       expect(event).toMatchObject({
@@ -798,7 +798,7 @@ describe('CoordinationEventHelpers', () => {
         'test-swarm',
         {
           capabilities: ['research'],
-        },
+        }
       );
 
       expect(event).toMatchObject({
@@ -820,7 +820,7 @@ describe('CoordinationEventHelpers', () => {
       const event = CoordinationEventHelpers.createTaskDistributionEvent(
         'test-task',
         ['agent-1', 'agent-2'],
-        { taskType: 'analysis' },
+        { taskType: 'analysis' }
       );
 
       expect(event).toMatchObject({
@@ -842,7 +842,7 @@ describe('CoordinationEventHelpers', () => {
       const event = CoordinationEventHelpers.createTopologyChangeEvent(
         'test-swarm',
         'hierarchical',
-        { nodeCount: 8 },
+        { nodeCount: 8 }
       );
 
       expect(event).toMatchObject({
@@ -866,7 +866,7 @@ describe('CoordinationEventHelpers', () => {
         'swarm-coordinator',
         'test-swarm',
         error,
-        { context: 'initialization' },
+        { context: 'initialization' }
       );
 
       expect(event).toMatchObject({

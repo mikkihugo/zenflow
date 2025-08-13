@@ -99,7 +99,7 @@ class TransformerModel extends NeuralModel {
 
   createPositionalEncoding() {
     const encoding = new Float32Array(
-      this.config.maxSequenceLength * this.config.dimensions,
+      this.config.maxSequenceLength * this.config.dimensions
     );
 
     for (let pos = 0; pos < this.config.maxSequenceLength; pos++) {
@@ -126,12 +126,12 @@ class TransformerModel extends NeuralModel {
     // Validate input dimensions
     if (batchSize <= 0 || sequenceLength <= 0) {
       throw new Error(
-        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`,
+        `Invalid input dimensions: batch=${batchSize}, sequence=${sequenceLength}`
       );
     }
     if (sequenceLength > this.config.maxSequenceLength) {
       throw new Error(
-        `Sequence length ${sequenceLength} exceeds maximum ${this.config.maxSequenceLength}`,
+        `Sequence length ${sequenceLength} exceeds maximum ${this.config.maxSequenceLength}`
       );
     }
 
@@ -184,7 +184,7 @@ class TransformerModel extends NeuralModel {
 
     // Scaled dot-product attention for each head
     const attentionScores = new Float32Array(
-      batchSize * this.config.heads * sequenceLength * sequenceLength,
+      batchSize * this.config.heads * sequenceLength * sequenceLength
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -231,14 +231,14 @@ class TransformerModel extends NeuralModel {
       attentionWeights,
       VHeads,
       batchSize,
-      sequenceLength,
+      sequenceLength
     );
 
     // Concatenate heads and project
     const concatenated = this.concatenateHeads(
       attendedValues,
       batchSize,
-      sequenceLength,
+      sequenceLength
     );
     const output = this.matmul(concatenated, weights.output);
 
@@ -333,14 +333,14 @@ class TransformerModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Adaptive learning rate with warmup
         const currentLR = this.getAdaptiveLearningRate(
           learningRate,
           globalStep,
-          warmupSteps,
+          warmupSteps
         );
 
         // Forward pass
@@ -368,7 +368,7 @@ class TransformerModel extends NeuralModel {
         learningRate: this.getAdaptiveLearningRate(
           learningRate,
           globalStep,
-          warmupSteps,
+          warmupSteps
         ),
       });
     }
@@ -393,7 +393,7 @@ class TransformerModel extends NeuralModel {
   tokenEmbedding(tokenIndices) {
     // Simplified token embedding - in practice would use learned embeddings
     const embedded = new Float32Array(
-      tokenIndices.shape[0] * tokenIndices.shape[1] * this.config.dimensions,
+      tokenIndices.shape[0] * tokenIndices.shape[1] * this.config.dimensions
     );
 
     for (let b = 0; b < tokenIndices.shape[0]; b++) {
@@ -473,7 +473,7 @@ class TransformerModel extends NeuralModel {
   concatenateHeads(tensor, batchSize, sequenceLength) {
     // Reshape from [batch, heads, sequence, head_dimension] to [batch, sequence, dimensions]
     const concatenated = new Float32Array(
-      batchSize * sequenceLength * this.config.dimensions,
+      batchSize * sequenceLength * this.config.dimensions
     );
 
     for (let b = 0; b < batchSize; b++) {
@@ -533,7 +533,7 @@ class TransformerModel extends NeuralModel {
 
   applyAttentionWeights(weights, values, batchSize, sequenceLength) {
     const output = new Float32Array(
-      batchSize * this.config.heads * sequenceLength * this.headDimension,
+      batchSize * this.config.heads * sequenceLength * this.headDimension
     );
 
     for (let b = 0; b < batchSize; b++) {

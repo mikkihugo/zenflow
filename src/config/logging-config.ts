@@ -23,8 +23,8 @@ export interface LoggingConfig {
 }
 
 export interface Logger extends ILogger {
-  success?(message: string, meta?: any): void;
-  progress?(message: string, meta?: any): void;
+  success?(message: string, meta?: unknown): void;
+  progress?(message: string, meta?: unknown): void;
 }
 
 class LoggingConfigurationManager {
@@ -116,18 +116,18 @@ class LoggingConfigurationManager {
 
       // Enhance with additional methods compatible with existing interfaces
       const enhancedLogger: Logger = {
-        debug: (message: string, meta?: any) => coreLogger.debug(message, meta),
-        info: (message: string, meta?: any) => coreLogger.info(message, meta),
-        warn: (message: string, meta?: any) => coreLogger.warn(message, meta),
-        error: (message: string, meta?: any) => coreLogger.error(message, meta),
+        debug: (message: string, meta?: unknown) => coreLogger.debug(message, meta),
+        info: (message: string, meta?: unknown) => coreLogger.info(message, meta),
+        warn: (message: string, meta?: unknown) => coreLogger.warn(message, meta),
+        error: (message: string, meta?: unknown) => coreLogger.error(message, meta),
       };
 
       // Add success and progress methods
-      enhancedLogger.success = (message: string, meta?: any) => {
+      enhancedLogger.success = (message: string, meta?: unknown) => {
         coreLogger.info(`✅ ${message}`, meta);
       };
 
-      enhancedLogger.progress = (message: string, meta?: any) => {
+      enhancedLogger.progress = (message: string, meta?: unknown) => {
         coreLogger.info(`🔄 ${message}`, meta);
       };
 
@@ -137,7 +137,7 @@ class LoggingConfigurationManager {
       if (originalLevel !== undefined) {
         process.env['LOG_LEVEL'] = originalLevel;
       } else {
-        delete process.env['LOG_LEVEL'];
+        process.env['LOG_LEVEL'] = undefined;
       }
     }
   }
@@ -152,17 +152,17 @@ class LoggingConfigurationManager {
     const logger = this.getLogger(component);
 
     return {
-      debug: (message: string, meta?: any) => logger.debug(message, meta),
+      debug: (message: string, meta?: unknown) => logger.debug(message, meta),
       // For console.log replacement, use info level
-      info: (message: string, meta?: any) => logger.info(message, meta),
-      warn: (message: string, meta?: any) => logger.warn(message, meta),
-      error: (message: string, meta?: any) => logger.error(message, meta),
+      info: (message: string, meta?: unknown) => logger.info(message, meta),
+      warn: (message: string, meta?: unknown) => logger.warn(message, meta),
+      error: (message: string, meta?: unknown) => logger.error(message, meta),
       success:
         logger.success ||
-        ((message: string, meta?: any) => logger.info(message, meta)),
+        ((message: string, meta?: unknown) => logger.info(message, meta)),
       progress:
         logger.progress ||
-        ((message: string, meta?: any) => logger.info(message, meta)),
+        ((message: string, meta?: unknown) => logger.info(message, meta)),
     };
   }
 
@@ -176,7 +176,7 @@ class LoggingConfigurationManager {
         Object.keys(this.config.components).map((key) => [
           key,
           LoggingLevel.DEBUG,
-        ]),
+        ])
       ),
     });
   }
@@ -191,7 +191,7 @@ class LoggingConfigurationManager {
         Object.keys(this.config.components).map((key) => [
           key,
           LoggingLevel.INFO,
-        ]),
+        ])
       ),
     });
   }
@@ -206,7 +206,7 @@ class LoggingConfigurationManager {
         Object.keys(this.config.components).map((key) => [
           key,
           LoggingLevel.ERROR,
-        ]),
+        ])
       ),
     });
   }
@@ -254,7 +254,7 @@ export const logger = {
 };
 
 // Simple in-memory log storage for TUI display
-const logEntries: any[] = [];
+const logEntries: unknown[] = [];
 
 /**
  * Add log entry for TUI display
@@ -263,7 +263,7 @@ export function addLogEntry(entry: {
   level: 'debug' | 'info' | 'warn' | 'error' | 'trace';
   component: string;
   message: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }) {
   logEntries.push({
     id: `log-${Date.now()}-${Math.random()}`,

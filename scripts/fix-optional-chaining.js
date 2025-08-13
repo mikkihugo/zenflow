@@ -101,7 +101,7 @@ class OptionalChainingFixer {
           // Only fix if object is initialized in same function/block
           const objPattern = new RegExp(
             `(const|let|var)\\s+${objName}\\s*=\\s*\\{`,
-            'i',
+            'i'
           );
           return objPattern.test(content);
         },
@@ -143,9 +143,9 @@ class OptionalChainingFixer {
           }
           return fix.replacement.replace(
             /\$(\d+)/g,
-            (_, num) => groups[Number.parseInt(num) - 1],
+            (_, num) => groups[Number.parseInt(num) - 1]
           );
-        },
+        }
       );
     });
 
@@ -164,7 +164,7 @@ class OptionalChainingFixer {
         condition: (match, arrayName) => {
           // Check if array is initialized or is a known array type
           const arrayInitPattern = new RegExp(
-            `(const|let|var)\\s+${arrayName}\\s*=\\s*\\[`,
+            `(const|let|var)\\s+${arrayName}\\s*=\\s*\\[`
           );
           const arrayTypePattern = new RegExp(`${arrayName}:\\s*\\w+\\[\\]`);
           return (
@@ -188,7 +188,7 @@ class OptionalChainingFixer {
         condition: (match, varName) => {
           // Check if variable is typed as string or initialized as string
           const stringPattern = new RegExp(
-            `${varName}:\\s*string|${varName}\\s*=\\s*['"']`,
+            `${varName}:\\s*string|${varName}\\s*=\\s*['"']`
           );
           return stringPattern.test(content);
         },
@@ -217,9 +217,9 @@ class OptionalChainingFixer {
           }
           return fix.replacement.replace(
             /\$(\d+)/g,
-            (_, num) => groups[Number.parseInt(num) - 1],
+            (_, num) => groups[Number.parseInt(num) - 1]
           );
-        },
+        }
       );
     });
 
@@ -244,7 +244,7 @@ class OptionalChainingFixer {
             'data',
           ];
           return guaranteedArrays.some((name) =>
-            arrayName.toLowerCase().includes(name.toLowerCase()),
+            arrayName.toLowerCase().includes(name.toLowerCase())
           );
         },
       },
@@ -272,9 +272,9 @@ class OptionalChainingFixer {
           }
           return fix.replacement.replace(
             /\$(\d+)/g,
-            (_, num) => groups[Number.parseInt(num) - 1],
+            (_, num) => groups[Number.parseInt(num) - 1]
           );
-        },
+        }
       );
     });
 

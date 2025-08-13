@@ -107,7 +107,7 @@ export function isDefined<T>(value: T | null | undefined): value is T {
  */
 export function assertDefined<T>(
   value: T | null | undefined,
-  message?: string,
+  message?: string
 ): asserts value is T {
   if (!isDefined(value)) {
     throw new Error(message || 'Value is null or undefined');
@@ -123,7 +123,7 @@ export function assertDefined<T>(
  */
 export function hasProperty<K extends string>(
   obj: unknown,
-  prop: K,
+  prop: K
 ): obj is Record<K, unknown> {
   return isObject(obj) && prop in obj;
 }

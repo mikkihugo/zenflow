@@ -42,7 +42,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
       retentionPeriod?: number; // milliseconds
       alertThresholds?: AlertConfig[];
       samplingInterval?: number;
-    } = {},
+    } = {}
   ) {
     super();
 
@@ -148,7 +148,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   async measureAsync<T>(
     name: string,
     fn: () => Promise<T>,
-    tags?: Record<string, string>,
+    tags?: Record<string, string>
   ): Promise<T> {
     const start = performance.now();
     try {
@@ -198,7 +198,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
   /**
    * Get current system performance snapshot.
    */
-  getSystemSnapshot(): Record<string, any> {
+  getSystemSnapshot(): Record<string, unknown> {
     const mem = memoryUsage();
     const cpu = cpuUsage();
 
@@ -229,7 +229,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         isActive: this.isMonitoring,
         metricsCount: Array.from(this.metrics.values()).reduce(
           (sum, arr) => sum + arr.length,
-          0,
+          0
         ),
         uniqueMetrics: this.metrics.size,
       },
@@ -310,7 +310,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
 
   private checkMetricAlerts(metric: PerformanceMetric): void {
     const relevantAlerts = this.alerts.filter(
-      (alert) => alert.enabled && alert.metric === metric.name,
+      (alert) => alert.enabled && alert.metric === metric.name
     );
 
     for (const alert of relevantAlerts) {
@@ -362,7 +362,7 @@ export class RealTimePerformanceMonitor extends EventEmitter {
         threshold: 1000, // 1 second
         comparison: 'gt',
         enabled: true,
-      },
+      }
     );
   }
 }
@@ -381,13 +381,13 @@ if (process.env['NODE_ENV'] === 'production') {
 
 // Performance monitoring decorators and utilities
 export function monitored(metricName?: string) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       return globalMonitor.measure(name, () =>
-        originalMethod.apply(this, args),
+        originalMethod.apply(this, args)
       );
     };
 
@@ -396,13 +396,13 @@ export function monitored(metricName?: string) {
 }
 
 export function monitoredAsync(metricName?: string) {
-  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       return globalMonitor.measureAsync(name, () =>
-        originalMethod.apply(this, args),
+        originalMethod.apply(this, args)
       );
     };
 

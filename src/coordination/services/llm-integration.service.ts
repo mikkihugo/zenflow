@@ -342,7 +342,7 @@ export class LLMIntegrationService {
         if (this.config.debug) {
           console.log(
             '⚠️ Copilot provider initialization failed:',
-            error.message,
+            error.message
           );
         }
       }
@@ -361,7 +361,7 @@ export class LLMIntegrationService {
 
       if (this.config.debug) {
         console.log(
-          '✅ Gemini handler initialized (Flash model for regular tasks)',
+          '✅ Gemini handler initialized (Flash model for regular tasks)'
         );
       }
     } catch (error) {
@@ -450,7 +450,7 @@ export class LLMIntegrationService {
           ? [
               this.config.preferredProvider,
               ...optimalProviders.filter(
-                (p) => p !== this.config.preferredProvider,
+                (p) => p !== this.config.preferredProvider
               ),
             ]
           : optimalProviders;
@@ -508,7 +508,7 @@ export class LLMIntegrationService {
           if (this.config.debug) {
             console.log(
               `⚠️ ${provider} failed, trying next provider:`,
-              error.message,
+              error.message
             );
           }
           // Continue to next provider
@@ -518,7 +518,7 @@ export class LLMIntegrationService {
       // Fallback to legacy provider selection if smart routing fails
       if (this.config.debug) {
         console.log(
-          '🔄 Smart routing exhausted, falling back to legacy selection',
+          '🔄 Smart routing exhausted, falling back to legacy selection'
         );
       }
 
@@ -535,7 +535,7 @@ export class LLMIntegrationService {
           if (this.config.debug) {
             console.log(
               'Claude Code unavailable, falling back to Gemini:',
-              error,
+              error
             );
           }
           // Fall through to Gemini
@@ -556,14 +556,14 @@ export class LLMIntegrationService {
             if (this.config.debug) {
               console.log(
                 'GitHub Models API unavailable, falling back to next provider:',
-                error,
+                error
               );
             }
             // Fall through to next provider
           }
         } else if (this.config.debug) {
           console.log(
-            `GitHub Models API in cooldown for ${this.getCooldownRemaining('github-models')} minutes`,
+            `GitHub Models API in cooldown for ${this.getCooldownRemaining('github-models')} minutes`
           );
         }
       }
@@ -581,7 +581,7 @@ export class LLMIntegrationService {
           if (this.config.debug) {
             console.log(
               'GitHub Copilot API unavailable, falling back to Gemini:',
-              error,
+              error
             );
           }
           // Fall through to Gemini
@@ -622,7 +622,7 @@ export class LLMIntegrationService {
               if (this.config.debug) {
                 console.log(
                   'Copilot fallback failed, trying GPT-5:',
-                  copilotError,
+                  copilotError
                 );
               }
             }
@@ -631,7 +631,7 @@ export class LLMIntegrationService {
           // Finally try GitHub Models GPT-5
           if (this.isInCooldown('github-models')) {
             throw new Error(
-              `All providers in cooldown. Gemini: ${this.getCooldownRemaining('gemini')}min, GitHub Models: ${this.getCooldownRemaining('github-models')}min`,
+              `All providers in cooldown. Gemini: ${this.getCooldownRemaining('gemini')}min, GitHub Models: ${this.getCooldownRemaining('github-models')}min`
             );
           }
           try {
@@ -656,7 +656,7 @@ export class LLMIntegrationService {
           } catch (gpt5Error) {
             // If even GPT-5 fails, we're out of options
             throw new Error(
-              `All providers failed. Gemini: ${errorMessage}, GPT-5: ${gpt5Error}`,
+              `All providers failed. Gemini: ${errorMessage}, GPT-5: ${gpt5Error}`
             );
           }
         }
@@ -683,7 +683,7 @@ export class LLMIntegrationService {
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    */
   private async analyzeWithClaudeCode(
-    request: AnalysisRequest,
+    request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
     const prompt = `${this.buildPrompt(request)}
 
@@ -732,7 +732,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
         } catch {
           if (this.config.debug) {
             console.warn(
-              'Claude Code returned non-JSON response, falling back to text',
+              'Claude Code returned non-JSON response, falling back to text'
             );
           }
           parsedData = {
@@ -767,11 +767,11 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    */
   private async analyzeWithGitHubModelsAPI(
-    request: AnalysisRequest,
+    request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
     if (!this.config.githubToken) {
       throw new Error(
-        'GitHub token required for GitHub Models API access. Set GITHUB_TOKEN environment variable.',
+        'GitHub token required for GitHub Models API access. Set GITHUB_TOKEN environment variable.'
       );
     }
 
@@ -781,12 +781,12 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
 
     const client = ModelClient(
       'https://models.github.ai/inference',
-      new AzureKeyCredential(this.config.githubToken),
+      new AzureKeyCredential(this.config.githubToken)
     );
 
     try {
       // Build request body with optional structured output
-      const requestBody: any = {
+      const requestBody: unknown = {
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt },
@@ -806,7 +806,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
         console.log(
           'JSON schema available for task:',
           jsonSchema.name,
-          '- using prompt-based JSON instead',
+          '- using prompt-based JSON instead'
         );
       }
 
@@ -829,7 +829,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
 
       if (isUnexpected(response)) {
         throw new Error(
-          `GitHub Models API error: ${JSON.stringify(response.body.error)}`,
+          `GitHub Models API error: ${JSON.stringify(response.body.error)}`
         );
       }
 
@@ -855,7 +855,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
           } catch {
             if (this.config.debug) {
               console.warn(
-                'GitHub Models returned non-JSON response despite request',
+                'GitHub Models returned non-JSON response despite request'
               );
             }
             parsedData = {
@@ -913,11 +913,11 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
    * @throws {Error} If Copilot authentication or API call fails
    */
   private async analyzeWithCopilot(
-    request: AnalysisRequest,
+    request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
     if (!this.copilotProvider) {
       throw new Error(
-        'Copilot provider not initialized. Requires GitHub token.',
+        'Copilot provider not initialized. Requires GitHub token.'
       );
     }
 
@@ -950,7 +950,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       }
 
       // Parse JSON response if expected
-      let parsedData: any = content;
+      let parsedData: unknown = content;
       try {
         // Try to extract JSON if it's in a code block or mixed content
         const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)\s*```/) ||
@@ -992,13 +992,13 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       // Check for authentication or quota errors
       if (errorMessage.includes('401') || errorMessage.includes('403')) {
         throw new Error(
-          'Copilot authentication failed. Check GitHub token permissions.',
+          'Copilot authentication failed. Check GitHub token permissions.'
         );
       }
 
       if (errorMessage.includes('429') || errorMessage.includes('rate limit')) {
         throw new Error(
-          'Copilot rate limit exceeded. Enterprise account should have high limits.',
+          'Copilot rate limit exceeded. Enterprise account should have high limits.'
         );
       }
 
@@ -1019,7 +1019,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
    * @throws {Error} If still in cooldown period after rate limit
    */
   private async analyzeWithGemini(
-    request: AnalysisRequest,
+    request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
     // Check if we're in cooldown period
     const rateLimitKey = 'gemini';
@@ -1028,10 +1028,10 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
 
     if (lastRateLimit && Date.now() - lastRateLimit < cooldownPeriod) {
       const remainingTime = Math.ceil(
-        (cooldownPeriod - (Date.now() - lastRateLimit)) / (60 * 1000),
+        (cooldownPeriod - (Date.now() - lastRateLimit)) / (60 * 1000)
       );
       throw new Error(
-        `Gemini in rate limit cooldown. Try again in ${remainingTime} minutes.`,
+        `Gemini in rate limit cooldown. Try again in ${remainingTime} minutes.`
       );
     }
 
@@ -1118,12 +1118,12 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
 
         if (this.config.debug) {
           console.log(
-            `Gemini rate limit detected, setting ${cooldownPeriod / (60 * 1000)} minute cooldown`,
+            `Gemini rate limit detected, setting ${cooldownPeriod / (60 * 1000)} minute cooldown`
           );
         }
 
         throw new Error(
-          `Gemini quota exceeded. Cooldown active for ${cooldownPeriod / (60 * 1000)} minutes.`,
+          `Gemini quota exceeded. Cooldown active for ${cooldownPeriod / (60 * 1000)} minutes.`
         );
       }
 
@@ -1144,7 +1144,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
    * @throws {Error} If Gemini Direct API fails or rate limits hit
    */
   private async analyzeWithGeminiDirect(
-    request: AnalysisRequest,
+    request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
     if (!this.geminiHandler) {
       throw new Error('Gemini Direct handler not initialized');
@@ -1188,7 +1188,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
         console.log('\n✅ Gemini Direct streaming complete!');
         console.log(`  - Response length: ${fullResponse.length} characters`);
         console.log(
-          `  - Token usage: ${usage.inputTokens} in, ${usage.outputTokens} out`,
+          `  - Token usage: ${usage.inputTokens} in, ${usage.outputTokens} out`
         );
       }
 
@@ -1209,7 +1209,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
           } catch {
             if (this.config.debug) {
               console.warn(
-                'Gemini Direct returned non-JSON response despite request',
+                'Gemini Direct returned non-JSON response despite request'
               );
             }
             parsedData = {
@@ -1252,12 +1252,12 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
 
         if (this.config.debug) {
           console.log(
-            'Gemini Direct rate limit detected, setting 30 minute cooldown',
+            'Gemini Direct rate limit detected, setting 30 minute cooldown'
           );
         }
 
         throw new Error(
-          'Gemini Direct quota exceeded. Cooldown active for 30 minutes.',
+          'Gemini Direct quota exceeded. Cooldown active for 30 minutes.'
         );
       }
 
@@ -1267,7 +1267,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
         errorMessage.includes('API_KEY_INVALID')
       ) {
         throw new Error(
-          'Gemini Direct authentication failed. Check OAuth credentials or API key.',
+          'Gemini Direct authentication failed. Check OAuth credentials or API key.'
         );
       }
 
@@ -1286,7 +1286,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
    * @throws {Error} If Gemini Pro API fails
    */
   private async analyzeWithGeminiPro(
-    request: AnalysisRequest,
+    request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
     if (!this.geminiHandler) {
       throw new Error('Gemini handler not initialized');
@@ -1336,7 +1336,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
       if (this.config.debug) {
         console.log('\n✅ Gemini Pro complex reasoning complete!');
         console.log(
-          `  - Token usage: ${usage.inputTokens} in, ${usage.outputTokens} out`,
+          `  - Token usage: ${usage.inputTokens} in, ${usage.outputTokens} out`
         );
       }
 
@@ -1579,7 +1579,7 @@ RESPOND IN JSON FORMAT:
    */
   private async executeCommand(
     command: string,
-    args: string[],
+    args: string[]
   ): Promise<{
     stdout: string;
     stderr: string;

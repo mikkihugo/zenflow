@@ -44,7 +44,7 @@ async function testNeuralPresetsIntegration() {
           requiresPrecision: test.modelType === 'cnn',
           requiresCreativity: test.modelType === 'diffusion',
           complexity: 'high',
-        },
+        }
       );
 
       const presetInfo = neuralManager.getAgentPresetInfo(test.agentId);
@@ -60,7 +60,7 @@ async function testNeuralPresetsIntegration() {
     } catch (error) {
       console.error(
         `❌ Failed to create agent for ${test.preset}:`,
-        error.message,
+        error.message
       );
     }
   }
@@ -80,7 +80,7 @@ async function testNeuralPresetsIntegration() {
   for (const { useCase, requirements } of useCases) {
     const recommendations = neuralManager.getPresetRecommendations(
       useCase,
-      requirements,
+      requirements
     );
 
     recommendations.slice(0, 3).forEach((_rec, _idx) => {});
@@ -107,7 +107,7 @@ async function testNeuralPresetsIntegration() {
       neuralManager.cognitivePatternSelector.selectPatternsForPreset(
         'transformer',
         'bert_base',
-        scenario.config,
+        scenario.config
       );
     patterns.forEach((_pattern, _index) => {});
   }
@@ -140,7 +140,7 @@ async function testNeuralPresetsIntegration() {
         'gpt_small',
         {
           enableMetaLearning: true,
-        },
+        }
       );
 
       // Simulate training results
@@ -158,7 +158,7 @@ async function testNeuralPresetsIntegration() {
           epochs: 5,
           enableCognitiveEvolution: true,
           enableMetaLearning: true,
-        },
+        }
       );
 
       // Get adaptation recommendations

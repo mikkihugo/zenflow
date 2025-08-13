@@ -23,7 +23,7 @@ global.fetch = vi.fn();
 
 describe('MCPClientAdapter', () => {
   let adapter: MCPClientAdapter;
-  let mockProcess: any;
+  let mockProcess: unknown;
 
   beforeEach(() => {
     // Reset mocks
@@ -122,7 +122,7 @@ describe('MCPClientAdapter', () => {
             jsonrpc: '2.0',
             id: 1,
             result: { protocolVersion: '2024-11-05' },
-          })}\n`,
+          })}\n`
         );
       }, 10);
 
@@ -131,7 +131,7 @@ describe('MCPClientAdapter', () => {
       expect(adapter.isConnected()).toBe(true);
       expect(mockProcess.stdin.write).toHaveBeenCalledWith(
         expect.stringContaining('"method":"initialize"'),
-        expect.any(Function),
+        expect.any(Function)
       );
     });
 
@@ -172,7 +172,7 @@ describe('MCPClientAdapter', () => {
             result: {
               tools: [{ name: 'test-tool', description: 'A test tool' }],
             },
-          })}\n`,
+          })}\n`
         );
       }, 10);
 
@@ -191,14 +191,14 @@ describe('MCPClientAdapter', () => {
             result: {
               content: [{ type: 'text', text: 'Tool executed successfully' }],
             },
-          })}\n`,
+          })}\n`
         );
       }, 10);
 
       const result = await executionPromise;
       expect(result?.status).toBe(200);
       expect(result?.data?.content?.[0]?.text).toBe(
-        'Tool executed successfully',
+        'Tool executed successfully'
       );
     });
 
@@ -264,7 +264,7 @@ describe('MCPClientAdapter', () => {
           headers: expect.objectContaining({
             Authorization: 'Bearer test-token',
           }),
-        }),
+        })
       );
     });
 
@@ -343,7 +343,7 @@ describe('MCPClientAdapter', () => {
             jsonrpc: '2.0',
             id: expect.any(Number),
             result: {},
-          })}\n`,
+          })}\n`
         );
       }, 10);
 
@@ -597,7 +597,7 @@ describe('createMCPConfigFromLegacy', () => {
 
     const uaclConfig = createMCPConfigFromLegacy(
       'minimal-client',
-      legacyConfig,
+      legacyConfig
     );
 
     expect(uaclConfig).toMatchObject({

@@ -23,7 +23,7 @@ const monitoringTools: MCPTool[] = [
         includeMetrics: { type: 'boolean', default: true },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { swarmId, detailed = false, includeMetrics = true } = params;
 
       return {
@@ -98,7 +98,7 @@ const monitoringTools: MCPTool[] = [
         includeHistory: { type: 'boolean', default: false },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { agentId, timeRange = '1h', includeHistory = false } = params;
 
       return {
@@ -172,7 +172,7 @@ const monitoringTools: MCPTool[] = [
         includeDetails: { type: 'boolean', default: false },
       },
     },
-    handler: async (params: any) => {
+    handler: async (params: unknown) => {
       const { taskId, status, includeDetails = false } = params;
 
       const tasks = [

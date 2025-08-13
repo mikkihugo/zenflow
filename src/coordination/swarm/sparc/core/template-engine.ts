@@ -120,7 +120,7 @@ export class TemplateEngine {
    */
   getAllTemplates(): SPARCTemplate[] {
     return Array.from(this.templateRegistry.values()).map(
-      (entry) => entry.template,
+      (entry) => entry.template
     );
   }
 
@@ -170,7 +170,7 @@ export class TemplateEngine {
     for (const template of domainTemplates) {
       const compatibility = this.validateTemplateCompatibility(
         template,
-        projectSpec,
+        projectSpec
       );
 
       if (compatibility.compatible && compatibility.score > bestScore) {
@@ -190,7 +190,7 @@ export class TemplateEngine {
    */
   validateTemplateCompatibility(
     template: SPARCTemplate,
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): TemplateValidationResult {
     const warnings: string[] = [];
     const recommendations: string[] = [];
@@ -199,7 +199,7 @@ export class TemplateEngine {
     // Check domain compatibility
     if (template.domain !== projectSpec.domain) {
       warnings.push(
-        `Template domain (${template.domain}) doesn't match project domain (${projectSpec.domain})`,
+        `Template domain (${template.domain}) doesn't match project domain (${projectSpec.domain})`
       );
       score -= 0.3;
     }
@@ -210,7 +210,7 @@ export class TemplateEngine {
 
     if (templateComplexity === 'high' && projectComplexity === 'simple') {
       warnings.push(
-        'Template complexity may be higher than needed for simple project',
+        'Template complexity may be higher than needed for simple project'
       );
       recommendations.push('Consider simplifying template components');
       score -= 0.2;
@@ -229,14 +229,14 @@ export class TemplateEngine {
 
     const coverageScore = this.calculateRequirementCoverage(
       templateRequirements,
-      projectRequirements,
+      projectRequirements
     );
     score = score * 0.7 + coverageScore * 0.3; // Weight the scores
 
     if (coverageScore < 0.7) {
       warnings.push('Template may not cover all project requirements');
       recommendations.push(
-        'Review and customize template to match specific requirements',
+        'Review and customize template to match specific requirements'
       );
     }
 
@@ -258,7 +258,7 @@ export class TemplateEngine {
    */
   async applyTemplate(
     template: SPARCTemplate,
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): Promise<TemplateApplicationResult> {
     // Update usage statistics
     const entry = this.templateRegistry.get(template.id);
@@ -293,13 +293,13 @@ export class TemplateEngine {
     // Generate customization report
     const customizations = this.generateCustomizationReport(
       template,
-      projectSpec,
+      projectSpec
     );
 
     // Validate the applied template
     const validation = this.validateTemplateCompatibility(
       template,
-      projectSpec,
+      projectSpec
     );
 
     return {
@@ -320,7 +320,7 @@ export class TemplateEngine {
    */
   async createCustomTemplate(
     projectSpec: ProjectSpecification,
-    baseTemplateId?: string,
+    baseTemplateId?: string
   ): Promise<SPARCTemplate> {
     let baseTemplate: SPARCTemplate | null = null;
     if (baseTemplateId) {
@@ -409,14 +409,14 @@ export class TemplateEngine {
 
     // Calculate domain coverage
     for (const [domain, templateIds] of Array.from(
-      this.domainMappings.entries(),
+      this.domainMappings.entries()
     )) {
       stats.domainCoverage[domain] = templateIds.length;
     }
 
     // Get most used templates
     const entriesByUsage = Array.from(this.templateRegistry.entries()).sort(
-      (a, b) => b[1]?.metadata?.usageCount - a[1]?.metadata?.usageCount,
+      (a, b) => b[1]?.metadata?.usageCount - a[1]?.metadata?.usageCount
     );
     stats.mostUsed = entriesByUsage.slice(0, 5).map(([id, _]) => id);
 
@@ -426,7 +426,7 @@ export class TemplateEngine {
       .sort(
         (a, b) =>
           b[1]?.metadata?.lastUsed!.getTime() -
-          a[1]?.metadata?.lastUsed!.getTime(),
+          a[1]?.metadata?.lastUsed!.getTime()
       );
     stats.recentlyUsed = entriesByRecent.slice(0, 5).map(([id, _]) => id);
 
@@ -441,9 +441,7 @@ export class TemplateEngine {
     // Extract from functional requirements
     if (template.specification.functionalRequirements) {
       requirements.push(
-        ...template.specification.functionalRequirements.map(
-          (req) => req.title,
-        ),
+        ...template.specification.functionalRequirements.map((req) => req.title)
       );
     }
 
@@ -457,7 +455,7 @@ export class TemplateEngine {
 
   private calculateRequirementCoverage(
     templateRequirements: string[],
-    projectRequirements: string[],
+    projectRequirements: string[]
   ): number {
     if (projectRequirements.length === 0) {
       return 1.0; // Perfect score if no specific requirements
@@ -468,7 +466,7 @@ export class TemplateEngine {
       const found = templateRequirements.some(
         (templateReq) =>
           templateReq.toLowerCase().includes(projectReq.toLowerCase()) ||
-          projectReq.toLowerCase().includes(templateReq.toLowerCase()),
+          projectReq.toLowerCase().includes(templateReq.toLowerCase())
       );
       if (found) matches++;
     }
@@ -478,25 +476,25 @@ export class TemplateEngine {
 
   private generateCustomizationReport(
     template: SPARCTemplate,
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): string[] {
     const customizations: string[] = [];
 
     if (template.domain !== projectSpec.domain) {
       customizations.push(
-        `Adapted from ${template.domain} to ${projectSpec.domain} domain`,
+        `Adapted from ${template.domain} to ${projectSpec.domain} domain`
       );
     }
 
     if (projectSpec.constraints && projectSpec.constraints.length > 0) {
       customizations.push(
-        `Added ${projectSpec.constraints.length} project-specific constraints`,
+        `Added ${projectSpec.constraints.length} project-specific constraints`
       );
     }
 
     if (projectSpec.requirements && projectSpec.requirements.length > 0) {
       customizations.push(
-        `Integrated ${projectSpec.requirements.length} custom requirements`,
+        `Integrated ${projectSpec.requirements.length} custom requirements`
       );
     }
 
@@ -523,7 +521,7 @@ export class TemplateEngine {
   }
 
   private createMinimalSpecification(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): DetailedSpecification {
     return {
       id: nanoid(),
@@ -558,7 +556,7 @@ export class TemplateEngine {
   }
 
   private createMinimalPseudocode(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): PseudocodeStructure {
     return {
       id: nanoid(),
@@ -579,7 +577,7 @@ export class TemplateEngine {
   }
 
   private createMinimalArchitecture(
-    _projectSpec: ProjectSpecification,
+    _projectSpec: ProjectSpecification
   ): ArchitectureDesign {
     return {
       id: nanoid(),

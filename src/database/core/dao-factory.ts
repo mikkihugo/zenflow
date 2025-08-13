@@ -86,7 +86,7 @@ export interface DatabaseConfig {
   password?: string;
   ssl?: boolean;
   connectionString?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -133,7 +133,7 @@ export async function createDao<T>(
     logger?:
       | Console
       | { debug: Function; info: Function; warn: Function; error: Function };
-  } = {},
+  } = {}
 ): Promise<IDao<T>> {
   // Set defaults based on entity type
   const tableName = options?.tableName || getDefaultTableName(entityType);
@@ -196,12 +196,12 @@ class ConcreteDao<T> extends BaseDao<T> {
     super(adapter, logger, tableName);
   }
 
-  protected mapRowToEntity(row: any): T {
+  protected mapRowToEntity(row: unknown): T {
     return row as T;
   }
 
-  protected mapEntityToRow(entity: Partial<T>): Record<string, any> {
-    return entity as Record<string, any>;
+  protected mapEntityToRow(entity: Partial<T>): Record<string, unknown> {
+    return entity as Record<string, unknown>;
   }
 }
 
@@ -247,7 +247,7 @@ export async function createMultiDatabaseSetup<T>(
     logger?:
       | Console
       | { debug: Function; info: Function; warn: Function; error: Function };
-  } = {},
+  } = {}
 ): Promise<IMultiDatabaseDao<T>> {
   const primaryDao = await createDao<T>(
     entityType,
@@ -255,15 +255,15 @@ export async function createMultiDatabaseSetup<T>(
     primaryDatabase.config,
     {
       logger: options?.logger,
-    },
+    }
   );
 
   const fallbackDaos = await Promise.all(
     fallbackDatabases.map((db) =>
       createDao<T>(entityType, db.databaseType, db.config, {
         logger: options?.logger,
-      }),
-    ),
+      })
+    )
   );
 
   // Return a multi-database DAO wrapper
@@ -438,7 +438,7 @@ function getDefaultTableName(entityType: EntityType): string {
 function createMemoryDao<T>(
   adapter: DatabaseAdapter,
   logger: ILogger,
-  tableName: string,
+  tableName: string
 ): IDao<T> {
   // Create a specialized memory DAO implementation
   class MemoryDaoImpl extends MemoryDao<T> {
@@ -452,7 +452,7 @@ function createMemoryDao<T>(
 function createCoordinationDao<T>(
   adapter: DatabaseAdapter,
   logger: ILogger,
-  tableName: string,
+  tableName: string
 ): IDao<T> {
   // Create a specialized coordination DAO implementation
   class CoordinationDaoImpl extends CoordinationDao<T> {
@@ -466,7 +466,7 @@ function createCoordinationDao<T>(
 function createGraphDao<T>(
   adapter: DatabaseAdapter,
   logger: ILogger,
-  tableName: string,
+  tableName: string
 ): IDao<T> {
   // Create a specialized graph DAO implementation
   class GraphDaoImpl extends GraphDao<T> {

@@ -29,7 +29,7 @@ class BaseValidator {
       throw new ValidationError(
         `Validation failed for ${fieldName}: ${error.message}`,
         fieldName,
-        value,
+        value
       );
     }
   }
@@ -41,7 +41,7 @@ class BaseValidator {
         `${fieldName} is required`,
         fieldName,
         value,
-        schema.type,
+        schema.type
       );
     }
 
@@ -56,7 +56,7 @@ class BaseValidator {
         `${fieldName} must be of type ${schema.type}`,
         fieldName,
         value,
-        schema.type,
+        schema.type
       );
     }
 
@@ -67,7 +67,7 @@ class BaseValidator {
           `${fieldName} must be at least ${schema.min}`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
       if (schema.max !== undefined && value > schema.max) {
@@ -75,7 +75,7 @@ class BaseValidator {
           `${fieldName} must be at most ${schema.max}`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
       if (schema.integer && !Number.isInteger(value)) {
@@ -83,7 +83,7 @@ class BaseValidator {
           `${fieldName} must be an integer`,
           fieldName,
           value,
-          'integer',
+          'integer'
         );
       }
     }
@@ -96,7 +96,7 @@ class BaseValidator {
           `${fieldName} must be at least ${schema.minLength} characters/items long`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
       if (schema.maxLength !== undefined && length > schema.maxLength) {
@@ -104,7 +104,7 @@ class BaseValidator {
           `${fieldName} must be at most ${schema.maxLength} characters/items long`,
           fieldName,
           value,
-          schema.type,
+          schema.type
         );
       }
     }
@@ -115,7 +115,7 @@ class BaseValidator {
         `${fieldName} must be one of: ${schema.enum.join(', ')}`,
         fieldName,
         value,
-        `enum(${schema.enum.join('|')})`,
+        `enum(${schema.enum.join('|')})`
       );
     }
 
@@ -127,7 +127,7 @@ class BaseValidator {
           `${fieldName} does not match the required pattern`,
           fieldName,
           value,
-          'string(pattern)',
+          'string(pattern)'
         );
       }
     }
@@ -139,14 +139,14 @@ class BaseValidator {
           value[propName] = BaseValidator.validateValue(
             value[propName],
             propSchema,
-            `${fieldName}.${propName}`,
+            `${fieldName}.${propName}`
           );
         } else if ((propSchema as any).required) {
           throw new ValidationError(
             `${fieldName}.${propName} is required`,
             `${fieldName}.${propName}`,
             undefined,
-            (propSchema as any).type,
+            (propSchema as any).type
           );
         }
       }
@@ -158,7 +158,7 @@ class BaseValidator {
         value[i] = BaseValidator.validateValue(
           value[i],
           schema.items,
-          `${fieldName}[${i}]`,
+          `${fieldName}[${i}]`
         );
       }
     }
@@ -814,7 +814,7 @@ class ValidationUtils {
         `No validation schema found for tool: ${toolName}`,
         'toolName',
         toolName,
-        'string',
+        'string'
       );
     }
 
@@ -832,7 +832,7 @@ class ValidationUtils {
         validatedParams[fieldName] = BaseValidator.validate(
           value,
           fieldSchema,
-          fieldName,
+          fieldName
         );
       } catch (error) {
         // Add tool context to error
@@ -848,12 +848,12 @@ class ValidationUtils {
     const allowedFields = Object.keys(schema);
     const providedFields = Object.keys(params);
     const unexpectedFields = providedFields.filter(
-      (field) => !allowedFields.includes(field),
+      (field) => !allowedFields.includes(field)
     );
 
     if (unexpectedFields.length > 0) {
       logger.warn(
-        `Unexpected parameters for ${toolName}: ${unexpectedFields.join(', ')}`,
+        `Unexpected parameters for ${toolName}: ${unexpectedFields.join(', ')}`
       );
       // Note: We don't throw here to maintain backward compatibility
     }

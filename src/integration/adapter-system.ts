@@ -16,8 +16,8 @@ export interface ProtocolMessage {
   source: string;
   destination?: string;
   type: string;
-  payload: any;
-  metadata?: Record<string, any>;
+  payload: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ProtocolResponse {
@@ -25,9 +25,9 @@ export interface ProtocolResponse {
   requestId: string;
   timestamp: Date;
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ConnectionConfig {
@@ -61,11 +61,11 @@ export interface ProtocolAdapter {
   send(message: ProtocolMessage): Promise<ProtocolResponse>;
   subscribe(
     eventType: string,
-    handler: (message: ProtocolMessage) => void,
+    handler: (message: ProtocolMessage) => void
   ): void;
   unsubscribe(
     eventType: string,
-    handler?: (message: ProtocolMessage) => void,
+    handler?: (message: ProtocolMessage) => void
   ): void;
   isConnected(): boolean;
   getProtocolName(): string;
@@ -77,8 +77,8 @@ export interface ProtocolAdapter {
 export class MCPAdapter implements ProtocolAdapter {
   private connected = false;
   private protocol: 'http' | 'stdio';
-  private httpClient?: any;
-  private stdioProcess?: any;
+  private httpClient?: unknown;
+  private stdioProcess?: unknown;
   private eventHandlers: Map<string, ((message: ProtocolMessage) => void)[]> =
     new Map();
 
@@ -101,7 +101,7 @@ export class MCPAdapter implements ProtocolAdapter {
       this.connected = true;
     } catch (error) {
       throw new Error(
-        `Failed to connect via ${this.protocol}: ${(error as Error).message}`,
+        `Failed to connect via ${this.protocol}: ${(error as Error).message}`
       );
     }
   }
@@ -133,7 +133,7 @@ export class MCPAdapter implements ProtocolAdapter {
     const startTime = Date.now();
 
     try {
-      let response: any;
+      let response: unknown;
 
       if (this.protocol === 'http') {
         response = await this.sendHTTP(message);
@@ -169,7 +169,7 @@ export class MCPAdapter implements ProtocolAdapter {
 
   subscribe(
     eventType: string,
-    handler: (message: ProtocolMessage) => void,
+    handler: (message: ProtocolMessage) => void
   ): void {
     const handlers = this.eventHandlers.get(eventType) || [];
     handlers.push(handler);
@@ -178,7 +178,7 @@ export class MCPAdapter implements ProtocolAdapter {
 
   unsubscribe(
     eventType: string,
-    handler?: (message: ProtocolMessage) => void,
+    handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
       this.eventHandlers.delete(eventType);
@@ -277,12 +277,12 @@ export class MCPAdapter implements ProtocolAdapter {
     });
   }
 
-  private async sendHTTP(message: ProtocolMessage): Promise<any> {
+  private async sendHTTP(message: ProtocolMessage): Promise<unknown> {
     const endpoint = this.mapMessageTypeToEndpoint(message.type);
     return this.makeHTTPRequest(endpoint, 'POST', message.payload);
   }
 
-  private async sendStdio(message: ProtocolMessage): Promise<any> {
+  private async sendStdio(message: ProtocolMessage): Promise<unknown> {
     return new Promise((resolve, reject) => {
       const jsonRpcMessage = {
         jsonrpc: '2.0',
@@ -298,7 +298,7 @@ export class MCPAdapter implements ProtocolAdapter {
         reject(new Error('Stdio request timeout'));
       }, 30000);
 
-      const responseHandler = (data: any) => {
+      const responseHandler = (data: unknown) => {
         if (data.id === message.id) {
           clearTimeout(timeout);
           if (data?.error) {
@@ -317,8 +317,8 @@ export class MCPAdapter implements ProtocolAdapter {
   private async makeHTTPRequest(
     _endpoint: string,
     _method: string,
-    body?: any,
-  ): Promise<any> {
+    body?: unknown
+  ): Promise<unknown> {
     // HTTP request implementation placeholder
     return { success: true, data: body };
   }
@@ -449,7 +449,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
       }, 30000);
 
       // Set up response handler
-      const responseHandler = (response: any) => {
+      const responseHandler = (response: unknown) => {
         if (response.requestId === message.id) {
           clearTimeout(timeout);
           resolve({
@@ -472,7 +472,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
         JSON.stringify({
           ...message,
           expectResponse: true,
-        }),
+        })
       );
 
       // This would be properly implemented with response tracking
@@ -484,7 +484,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
   subscribe(
     eventType: string,
-    handler: (message: ProtocolMessage) => void,
+    handler: (message: ProtocolMessage) => void
   ): void {
     const handlers = this.eventHandlers.get(eventType) || [];
     handlers.push(handler);
@@ -493,7 +493,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
 
   unsubscribe(
     eventType: string,
-    handler?: (message: ProtocolMessage) => void,
+    handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
       this.eventHandlers.delete(eventType);
@@ -569,7 +569,7 @@ export class WebSocketAdapter implements ProtocolAdapter {
         () => {
           this.reconnectAttempts++;
         },
-        this.reconnectDelay * 2 ** this.reconnectAttempts,
+        this.reconnectDelay * 2 ** this.reconnectAttempts
       );
     }
   }
@@ -611,7 +611,7 @@ export class RESTAdapter implements ProtocolAdapter {
       this.connected = true;
     } catch (error) {
       throw new Error(
-        `REST API connection failed: ${(error as Error).message}`,
+        `REST API connection failed: ${(error as Error).message}`
       );
     }
   }
@@ -633,7 +633,7 @@ export class RESTAdapter implements ProtocolAdapter {
       const response = await this.makeRequest(
         endpoint,
         'POST',
-        message.payload,
+        message.payload
       );
       const data = await response?.json();
 
@@ -669,7 +669,7 @@ export class RESTAdapter implements ProtocolAdapter {
 
   subscribe(
     eventType: string,
-    handler: (message: ProtocolMessage) => void,
+    handler: (message: ProtocolMessage) => void
   ): void {
     // REST doesn't support real-time subscriptions, but we can simulate with polling
     const handlers = this.eventHandlers.get(eventType) || [];
@@ -679,7 +679,7 @@ export class RESTAdapter implements ProtocolAdapter {
 
   unsubscribe(
     eventType: string,
-    handler?: (message: ProtocolMessage) => void,
+    handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
       this.eventHandlers.delete(eventType);
@@ -737,7 +737,7 @@ export class RESTAdapter implements ProtocolAdapter {
       case 'basic':
         if (auth.credentials?.username && auth.credentials?.password) {
           const encoded = btoa(
-            `${auth.credentials.username}:${auth.credentials.password}`,
+            `${auth.credentials.username}:${auth.credentials.password}`
           );
           this.authHeaders['Authorization'] = `Basic ${encoded}`;
         }
@@ -748,7 +748,7 @@ export class RESTAdapter implements ProtocolAdapter {
   private async makeRequest(
     endpoint: string,
     method: string,
-    body?: any,
+    body?: unknown
   ): Promise<Response> {
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
@@ -784,7 +784,7 @@ export class RESTAdapter implements ProtocolAdapter {
 // Legacy System Adapter (for older protocols)
 export class LegacySystemAdapter implements ProtocolAdapter {
   private connected = false;
-  private connection?: any;
+  private connection?: unknown;
   private eventHandlers: Map<string, ((message: ProtocolMessage) => void)[]> =
     new Map();
 
@@ -810,7 +810,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
       this.connected = true;
     } catch (error) {
       throw new Error(
-        `Legacy system connection failed: ${(error as Error).message}`,
+        `Legacy system connection failed: ${(error as Error).message}`
       );
     }
   }
@@ -865,7 +865,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
 
   subscribe(
     eventType: string,
-    handler: (message: ProtocolMessage) => void,
+    handler: (message: ProtocolMessage) => void
   ): void {
     const handlers = this.eventHandlers.get(eventType) || [];
     handlers.push(handler);
@@ -874,7 +874,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
 
   unsubscribe(
     eventType: string,
-    handler?: (message: ProtocolMessage) => void,
+    handler?: (message: ProtocolMessage) => void
   ): void {
     if (!handler) {
       this.eventHandlers.delete(eventType);
@@ -929,7 +929,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     this.connection = { type: 'tcp', host: config?.host, port: config?.port };
   }
 
-  private transformToLegacyFormat(message: ProtocolMessage): any {
+  private transformToLegacyFormat(message: ProtocolMessage): unknown {
     // Transform modern message format to legacy system format
     return {
       action: message.type,
@@ -939,7 +939,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     };
   }
 
-  private transformFromLegacyFormat(response: any): any {
+  private transformFromLegacyFormat(response: unknown): unknown {
     // Transform legacy response to modern format
     return {
       result: response?.result || response?.data,
@@ -948,7 +948,7 @@ export class LegacySystemAdapter implements ProtocolAdapter {
     };
   }
 
-  private async sendLegacyMessage(_message: any): Promise<any> {
+  private async sendLegacyMessage(_message: unknown): Promise<unknown> {
     // Send message using legacy protocol
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -978,7 +978,7 @@ export class AdapterFactory {
 
   static registerAdapter(
     protocol: string,
-    adapterFactory: () => ProtocolAdapter,
+    adapterFactory: () => ProtocolAdapter
   ): void {
     AdapterFactory.adapterRegistry.set(protocol.toLowerCase(), adapterFactory);
   }
@@ -1008,7 +1008,7 @@ export class ProtocolManager extends EventEmitter {
   async addProtocol(
     name: string,
     protocol: string,
-    config: ConnectionConfig,
+    config: ConnectionConfig
   ): Promise<void> {
     if (this.adapters.has(name)) {
       throw new Error(`Protocol ${name} already exists`);
@@ -1038,7 +1038,7 @@ export class ProtocolManager extends EventEmitter {
 
   async sendMessage(
     message: ProtocolMessage,
-    protocolName?: string,
+    protocolName?: string
   ): Promise<ProtocolResponse> {
     const targetProtocol = protocolName || this.routeMessage(message);
     const adapter = this.adapters.get(targetProtocol);
@@ -1056,7 +1056,7 @@ export class ProtocolManager extends EventEmitter {
 
   async broadcast(
     message: ProtocolMessage,
-    excludeProtocols?: string[],
+    excludeProtocols?: string[]
   ): Promise<ProtocolResponse[]> {
     const results: ProtocolResponse[] = [];
     const exclude = new Set(excludeProtocols || []);
@@ -1128,7 +1128,7 @@ export class ProtocolManager extends EventEmitter {
           this.emit('protocol:health', { name, healthy: false, error });
           return { name, healthy: false };
         }
-      },
+      }
     );
 
     await Promise.all(healthChecks);
@@ -1141,7 +1141,7 @@ export class ProtocolManager extends EventEmitter {
     const disconnections = Array.from(this.adapters.values()).map((adapter) =>
       adapter
         .disconnect()
-        .catch((error) => logger.error('Error disconnecting adapter:', error)),
+        .catch((error) => logger.error('Error disconnecting adapter:', error))
     );
 
     await Promise.all(disconnections);

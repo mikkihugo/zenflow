@@ -111,7 +111,7 @@ describe('Comprehensive Performance Benchmarks', () => {
       const forecastingLoadTime = performance.now() - forecastingStart;
 
       expect(coreLoadTime).toBeLessThan(
-        PERFORMANCE_TARGETS.initialization.standard,
+        PERFORMANCE_TARGETS.initialization.standard
       );
       expect(forecastingLoadTime).toBeLessThan(100);
 
@@ -157,8 +157,8 @@ describe('Comprehensive Performance Benchmarks', () => {
           Array(batchSize)
             .fill(null)
             .map((_, i) =>
-              swarm.spawn({ type: ['researcher', 'coder', 'analyst'][i % 3] }),
-            ),
+              swarm.spawn({ type: ['researcher', 'coder', 'analyst'][i % 3] })
+            )
         );
         const time = performance.now() - start;
 
@@ -174,7 +174,7 @@ describe('Comprehensive Performance Benchmarks', () => {
       results.forEach((_r) => {});
 
       expect(results[0].totalTime).toBeLessThan(
-        PERFORMANCE_TARGETS.agentCreation.batch,
+        PERFORMANCE_TARGETS.agentCreation.batch
       );
     });
 
@@ -187,7 +187,7 @@ describe('Comprehensive Performance Benchmarks', () => {
       const agents = await Promise.all(
         Array(10)
           .fill(null)
-          .map(() => swarm.spawn({ type: 'researcher' })),
+          .map(() => swarm.spawn({ type: 'researcher' }))
       );
 
       const messageCount = 1000;
@@ -205,7 +205,7 @@ describe('Comprehensive Performance Benchmarks', () => {
       const duration = performance.now() - start;
       const throughput = messageCount / (duration / 1000);
       expect(throughput).toBeGreaterThan(
-        PERFORMANCE_TARGETS.throughput.messages,
+        PERFORMANCE_TARGETS.throughput.messages
       );
     });
   });
@@ -362,7 +362,7 @@ describe('Comprehensive Performance Benchmarks', () => {
           size,
           b,
           size,
-          size,
+          size
         );
         const time = performance.now() - start;
 
@@ -478,7 +478,7 @@ describe('Comprehensive Performance Benchmarks', () => {
               { units: 50, activation: 'relu' },
               { units: 10, activation: 'softmax' },
             ],
-          }),
+          })
         );
       }
 
@@ -489,10 +489,10 @@ describe('Comprehensive Performance Benchmarks', () => {
         1024;
 
       expect(agentMemoryOverhead).toBeLessThan(
-        PERFORMANCE_TARGETS.memoryOverhead.perAgent,
+        PERFORMANCE_TARGETS.memoryOverhead.perAgent
       );
       expect(networkMemoryOverhead).toBeLessThan(
-        PERFORMANCE_TARGETS.memoryOverhead.perNetwork,
+        PERFORMANCE_TARGETS.memoryOverhead.perNetwork
       );
     });
   });
@@ -513,7 +513,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         await Promise.all(
           Array(size)
             .fill(null)
-            .map(() => swarm.spawn({ type: 'analyst' })),
+            .map(() => swarm.spawn({ type: 'analyst' }))
         );
 
         // Create tasks
@@ -561,7 +561,7 @@ describe('Comprehensive Performance Benchmarks', () => {
         const _agents = await Promise.all(
           Array(10)
             .fill(null)
-            .map(() => swarm.spawn({ type: 'researcher' })),
+            .map(() => swarm.spawn({ type: 'researcher' }))
         );
 
         // Measure broadcast performance

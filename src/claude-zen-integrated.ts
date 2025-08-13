@@ -96,7 +96,7 @@ export class ClaudeZenIntegrated {
             timestamp: new Date().toISOString(),
             version: '2.0.0-alpha.73',
           });
-        },
+        }
       );
 
       // API status endpoint
@@ -109,14 +109,14 @@ export class ClaudeZenIntegrated {
             daemon: this.options.daemon,
             uptime: process.uptime(),
           });
-        },
+        }
       );
 
       // Start server
       this.server = app.listen(this.options.port, () => {
         logger.info(`✅ HTTP server started on port ${this.options.port}`);
         logger.info(
-          `🌐 Health check: http://localhost:${this.options.port}/health`,
+          `🌐 Health check: http://localhost:${this.options.port}/health`
         );
       });
 

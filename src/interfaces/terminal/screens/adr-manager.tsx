@@ -8,8 +8,7 @@
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
-import React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Header,
   InteractiveFooter,
@@ -19,7 +18,13 @@ import {
 import { getVersion } from '../utils/version-utils.js';
 
 // ADR Types based on existing system
-export type ADRStatus = 'draft' | 'proposed' | 'discussion' | 'accepted' | 'rejected' | 'superseded';
+export type ADRStatus =
+  | 'draft'
+  | 'proposed'
+  | 'discussion'
+  | 'accepted'
+  | 'rejected'
+  | 'superseded';
 
 export interface ADRRecord {
   id: string;
@@ -53,14 +58,20 @@ interface ADRManagerProps {
 
 type ViewMode = 'list' | 'detail' | 'comment' | 'action';
 
-export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerProps) {
+export default function ADRManager({
+  swarmStatus,
+  onBack,
+  onExit,
+}: ADRManagerProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [selectedADR, setSelectedADR] = useState<ADRRecord | null>(null);
   const [adrs, setAdrs] = useState<ADRRecord[]>([]);
   const [filteredAdrs, setFilteredAdrs] = useState<ADRRecord[]>([]);
   const [statusFilter, setStatusFilter] = useState<ADRStatus | 'all'>('all');
   const [commentText, setCommentText] = useState('');
-  const [actionType, setActionType] = useState<'approve' | 'reject' | 'request_changes' | 'comment'>('comment');
+  const [actionType, setActionType] = useState<
+    'approve' | 'reject' | 'request_changes' | 'comment'
+  >('comment');
   const [loading, setLoading] = useState(true);
 
   // Mock ADR data for demonstration
@@ -71,9 +82,12 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         number: 1,
         title: 'Use TypeScript for all new components',
         status: 'accepted',
-        context: 'We need better type safety and developer experience in our React components.',
-        decision: 'All new React components must be written in TypeScript with strict typing.',
-        consequences: 'Better type safety, improved IDE support, but slightly longer development time initially.',
+        context:
+          'We need better type safety and developer experience in our React components.',
+        decision:
+          'All new React components must be written in TypeScript with strict typing.',
+        consequences:
+          'Better type safety, improved IDE support, but slightly longer development time initially.',
         author: 'Tech Lead',
         created_date: new Date('2024-01-15'),
         updated_date: new Date('2024-01-20'),
@@ -90,7 +104,8 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
           {
             id: 'c2',
             author: 'Senior Dev',
-            content: 'Agreed, but we need to ensure proper training for the team.',
+            content:
+              'Agreed, but we need to ensure proper training for the team.',
             action: 'approve',
             timestamp: new Date('2024-01-19'),
           },
@@ -101,9 +116,12 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         number: 2,
         title: 'Implement React Query for data fetching',
         status: 'proposed',
-        context: 'Current data fetching is inconsistent across the application with manual state management.',
-        decision: 'Adopt React Query (TanStack Query) for all server state management.',
-        consequences: 'Improved caching, better UX with loading states, but additional learning curve.',
+        context:
+          'Current data fetching is inconsistent across the application with manual state management.',
+        decision:
+          'Adopt React Query (TanStack Query) for all server state management.',
+        consequences:
+          'Improved caching, better UX with loading states, but additional learning curve.',
         author: 'Frontend Architect',
         created_date: new Date('2024-02-01'),
         updated_date: new Date('2024-02-03'),
@@ -113,7 +131,8 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
           {
             id: 'c3',
             author: 'Backend Dev',
-            content: 'This looks good, but we need to ensure our APIs are properly optimized for caching.',
+            content:
+              'This looks good, but we need to ensure our APIs are properly optimized for caching.',
             action: 'request_changes',
             timestamp: new Date('2024-02-02'),
           },
@@ -124,26 +143,36 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         number: 3,
         title: 'Database migration to PostgreSQL',
         status: 'discussion',
-        context: 'Current SQLite database is reaching performance limits with increased user base.',
-        decision: 'Migrate primary database from SQLite to PostgreSQL for better scalability.',
-        consequences: 'Better performance and scalability, but requires migration planning and potential downtime.',
+        context:
+          'Current SQLite database is reaching performance limits with increased user base.',
+        decision:
+          'Migrate primary database from SQLite to PostgreSQL for better scalability.',
+        consequences:
+          'Better performance and scalability, but requires migration planning and potential downtime.',
         author: 'Database Admin',
         created_date: new Date('2024-02-10'),
         updated_date: new Date('2024-02-12'),
-        stakeholders: ['Backend Team', 'DevOps', 'Database Admin', 'Product Manager'],
+        stakeholders: [
+          'Backend Team',
+          'DevOps',
+          'Database Admin',
+          'Product Manager',
+        ],
         urgency: 'critical',
         comments: [
           {
             id: 'c4',
             author: 'DevOps Engineer',
-            content: 'We need to plan for zero-downtime migration. Consider using read replicas.',
+            content:
+              'We need to plan for zero-downtime migration. Consider using read replicas.',
             action: 'comment',
             timestamp: new Date('2024-02-11'),
           },
           {
             id: 'c5',
             author: 'Senior Backend Dev',
-            content: 'PostgreSQL is a good choice. We should also consider connection pooling.',
+            content:
+              'PostgreSQL is a good choice. We should also consider connection pooling.',
             action: 'approve',
             timestamp: new Date('2024-02-12'),
           },
@@ -155,8 +184,10 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         title: 'Adopt Tailwind CSS for styling',
         status: 'rejected',
         context: 'Current CSS architecture is becoming difficult to maintain.',
-        decision: 'Replace custom CSS with Tailwind CSS utility-first approach.',
-        consequences: 'Faster development, consistent design system, but larger bundle size.',
+        decision:
+          'Replace custom CSS with Tailwind CSS utility-first approach.',
+        consequences:
+          'Faster development, consistent design system, but larger bundle size.',
         author: 'UI/UX Designer',
         created_date: new Date('2024-01-25'),
         updated_date: new Date('2024-01-30'),
@@ -166,14 +197,16 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
           {
             id: 'c6',
             author: 'Performance Engineer',
-            content: 'Bundle size impact is significant. We should stick with CSS modules.',
+            content:
+              'Bundle size impact is significant. We should stick with CSS modules.',
             action: 'reject',
             timestamp: new Date('2024-01-28'),
           },
           {
             id: 'c7',
             author: 'Frontend Lead',
-            content: 'Agreed with performance concerns. CSS modules are working well.',
+            content:
+              'Agreed with performance concerns. CSS modules are working well.',
             action: 'reject',
             timestamp: new Date('2024-01-29'),
           },
@@ -184,13 +217,20 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         number: 5,
         title: 'Implement microservices architecture',
         status: 'draft',
-        context: 'Monolithic architecture is becoming harder to scale and deploy independently.',
+        context:
+          'Monolithic architecture is becoming harder to scale and deploy independently.',
         decision: 'Break down monolith into domain-specific microservices.',
-        consequences: 'Better scalability and team autonomy, but increased operational complexity.',
+        consequences:
+          'Better scalability and team autonomy, but increased operational complexity.',
         author: 'Solutions Architect',
         created_date: new Date('2024-02-15'),
         updated_date: new Date('2024-02-15'),
-        stakeholders: ['Architecture Team', 'Backend Team', 'DevOps', 'Product Manager'],
+        stakeholders: [
+          'Architecture Team',
+          'Backend Team',
+          'DevOps',
+          'Product Manager',
+        ],
         urgency: 'high',
         comments: [],
       },
@@ -206,12 +246,16 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
     if (statusFilter === 'all') {
       setFilteredAdrs(adrs);
     } else {
-      setFilteredAdrs(adrs.filter(adr => adr.status === statusFilter));
+      setFilteredAdrs(adrs.filter((adr) => adr.status === statusFilter));
     }
   }, [adrs, statusFilter]);
 
   const handleBack = useCallback(() => {
-    if (viewMode === 'detail' || viewMode === 'comment' || viewMode === 'action') {
+    if (
+      viewMode === 'detail' ||
+      viewMode === 'comment' ||
+      viewMode === 'action'
+    ) {
       setViewMode('list');
       setSelectedADR(null);
       setCommentText('');
@@ -232,7 +276,14 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
     if (viewMode === 'list') {
       if (input === 'f' || input === 'F') {
         // Cycle through status filters
-        const filters: (ADRStatus | 'all')[] = ['all', 'draft', 'proposed', 'discussion', 'accepted', 'rejected'];
+        const filters: (ADRStatus | 'all')[] = [
+          'all',
+          'draft',
+          'proposed',
+          'discussion',
+          'accepted',
+          'rejected',
+        ];
         const currentIndex = filters.indexOf(statusFilter);
         const nextIndex = (currentIndex + 1) % filters.length;
         setStatusFilter(filters[nextIndex]);
@@ -252,23 +303,35 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
 
   const getStatusColor = (status: ADRStatus): string => {
     switch (status) {
-      case 'draft': return 'gray';
-      case 'proposed': return 'yellow';
-      case 'discussion': return 'blue';
-      case 'accepted': return 'green';
-      case 'rejected': return 'red';
-      case 'superseded': return 'magenta';
-      default: return 'white';
+      case 'draft':
+        return 'gray';
+      case 'proposed':
+        return 'yellow';
+      case 'discussion':
+        return 'blue';
+      case 'accepted':
+        return 'green';
+      case 'rejected':
+        return 'red';
+      case 'superseded':
+        return 'magenta';
+      default:
+        return 'white';
     }
   };
 
   const getUrgencyColor = (urgency: string): string => {
     switch (urgency) {
-      case 'critical': return 'red';
-      case 'high': return 'yellow';
-      case 'medium': return 'blue';
-      case 'low': return 'gray';
-      default: return 'white';
+      case 'critical':
+        return 'red';
+      case 'high':
+        return 'yellow';
+      case 'medium':
+        return 'blue';
+      case 'low':
+        return 'gray';
+      default:
+        return 'white';
     }
   };
 
@@ -300,7 +363,9 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
       updatedADR.status = 'rejected';
     }
 
-    setAdrs(prev => prev.map(adr => adr.id === selectedADR.id ? updatedADR : adr));
+    setAdrs((prev) =>
+      prev.map((adr) => (adr.id === selectedADR.id ? updatedADR : adr))
+    );
     setSelectedADR(updatedADR);
     setCommentText('');
     setViewMode('detail');
@@ -324,7 +389,7 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
 
   // List view
   if (viewMode === 'list') {
-    const listItems = filteredAdrs.map(adr => ({
+    const listItems = filteredAdrs.map((adr) => ({
       label: `ADR-${adr.number.toString().padStart(3, '0')}: ${adr.title}`,
       value: adr.id,
       adr,
@@ -340,7 +405,9 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         />
 
         <Box paddingX={2} paddingY={1}>
-          <Text bold color="cyan">Filter: </Text>
+          <Text bold color="cyan">
+            Filter:{' '}
+          </Text>
           <Text color="white">
             {statusFilter === 'all' ? 'All ADRs' : statusFilter.toUpperCase()}
           </Text>
@@ -349,8 +416,14 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
 
         <Box flexGrow={1} paddingX={2}>
           {listItems.length === 0 ? (
-            <Box flexDirection="column" alignItems="center" justifyContent="center">
-              <Text color="yellow">No ADRs found for filter: {statusFilter}</Text>
+            <Box
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Text color="yellow">
+                No ADRs found for filter: {statusFilter}
+              </Text>
               <Text color="gray">Press F to change filter</Text>
             </Box>
           ) : (
@@ -358,21 +431,35 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
               items={listItems}
               onSelect={(item) => handleADRSelect(item.adr)}
               itemComponent={({ isSelected, label, value }) => {
-                const adr = listItems.find(i => i.value === value)?.adr;
+                const adr = listItems.find((i) => i.value === value)?.adr;
                 if (!adr) return null;
 
                 return (
                   <Box flexDirection="column">
                     <Box>
-                      <Text color={isSelected ? 'cyan' : 'white'} bold={isSelected}>
-                        {isSelected ? '▶ ' : '  '}{label}
+                      <Text
+                        color={isSelected ? 'cyan' : 'white'}
+                        bold={isSelected}
+                      >
+                        {isSelected ? '▶ ' : '  '}
+                        {label}
                       </Text>
                     </Box>
                     <Box marginLeft={isSelected ? 2 : 4}>
-                      <StatusBadge status={adr.status as any} text={adr.status.toUpperCase()} variant="minimal" />
-                      <Text color={getUrgencyColor(adr.urgency)}> [{adr.urgency.toUpperCase()}]</Text>
+                      <StatusBadge
+                        status={adr.status as any}
+                        text={adr.status.toUpperCase()}
+                        variant="minimal"
+                      />
+                      <Text color={getUrgencyColor(adr.urgency)}>
+                        {' '}
+                        [{adr.urgency.toUpperCase()}]
+                      </Text>
                       <Text color="gray"> by {adr.author}</Text>
-                      <Text color="gray"> • {adr.comments.length} comments</Text>
+                      <Text color="gray">
+                        {' '}
+                        • {adr.comments.length} comments
+                      </Text>
                     </Box>
                   </Box>
                 );
@@ -405,45 +492,83 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
 
         <Box flexGrow={1} paddingX={2} flexDirection="column">
           <Box paddingY={1}>
-            <StatusBadge status={selectedADR.status as any} text={selectedADR.status.toUpperCase()} />
-            <Text color={getUrgencyColor(selectedADR.urgency)}> [{selectedADR.urgency.toUpperCase()}]</Text>
+            <StatusBadge
+              status={selectedADR.status as any}
+              text={selectedADR.status.toUpperCase()}
+            />
+            <Text color={getUrgencyColor(selectedADR.urgency)}>
+              {' '}
+              [{selectedADR.urgency.toUpperCase()}]
+            </Text>
             <Text color="gray"> by {selectedADR.author}</Text>
-            <Text color="gray"> • Created: {selectedADR.created_date.toDateString()}</Text>
+            <Text color="gray">
+              {' '}
+              • Created: {selectedADR.created_date.toDateString()}
+            </Text>
           </Box>
 
           <Box flexDirection="column" marginY={1}>
-            <Text bold color="cyan">Context:</Text>
+            <Text bold color="cyan">
+              Context:
+            </Text>
             <Text>{selectedADR.context}</Text>
           </Box>
 
           <Box flexDirection="column" marginY={1}>
-            <Text bold color="cyan">Decision:</Text>
+            <Text bold color="cyan">
+              Decision:
+            </Text>
             <Text>{selectedADR.decision}</Text>
           </Box>
 
           <Box flexDirection="column" marginY={1}>
-            <Text bold color="cyan">Consequences:</Text>
+            <Text bold color="cyan">
+              Consequences:
+            </Text>
             <Text>{selectedADR.consequences}</Text>
           </Box>
 
           <Box flexDirection="column" marginY={1}>
-            <Text bold color="cyan">Stakeholders:</Text>
+            <Text bold color="cyan">
+              Stakeholders:
+            </Text>
             <Text>{selectedADR.stakeholders.join(', ')}</Text>
           </Box>
 
           {selectedADR.comments.length > 0 && (
             <Box flexDirection="column" marginY={1}>
-              <Text bold color="cyan">Comments ({selectedADR.comments.length}):</Text>
-              {selectedADR.comments.map(comment => (
-                <Box key={comment.id} marginY={1} paddingLeft={2} flexDirection="column">
+              <Text bold color="cyan">
+                Comments ({selectedADR.comments.length}):
+              </Text>
+              {selectedADR.comments.map((comment) => (
+                <Box
+                  key={comment.id}
+                  marginY={1}
+                  paddingLeft={2}
+                  flexDirection="column"
+                >
                   <Box>
-                    <Text bold color="white">{comment.author}</Text>
+                    <Text bold color="white">
+                      {comment.author}
+                    </Text>
                     {comment.action && (
-                      <Text color={comment.action === 'approve' ? 'green' : comment.action === 'reject' ? 'red' : 'yellow'}>
-                        {' '}[{comment.action.replace('_', ' ').toUpperCase()}]
+                      <Text
+                        color={
+                          comment.action === 'approve'
+                            ? 'green'
+                            : comment.action === 'reject'
+                              ? 'red'
+                              : 'yellow'
+                        }
+                      >
+                        {' '}
+                        [{comment.action.replace('_', ' ').toUpperCase()}]
                       </Text>
                     )}
-                    <Text color="gray"> • {comment.timestamp.toLocaleString()}</Text>
+                    <Text color="gray">
+                      {' '}
+                      • {comment.timestamp.toLocaleString()}
+                    </Text>
                   </Box>
                   <Text>{comment.content}</Text>
                 </Box>
@@ -475,11 +600,19 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         />
 
         <Box flexGrow={1} paddingX={2} paddingY={2} flexDirection="column">
-          <Text bold color="cyan">Comment on: {selectedADR.title}</Text>
+          <Text bold color="cyan">
+            Comment on: {selectedADR.title}
+          </Text>
           <Box marginY={1} />
-          
+
           <Text>Enter your comment:</Text>
-          <Box borderStyle="single" borderColor="gray" paddingX={1} paddingY={1} marginY={1}>
+          <Box
+            borderStyle="single"
+            borderColor="gray"
+            paddingX={1}
+            paddingY={1}
+            marginY={1}
+          >
             <TextInput
               value={commentText}
               onChange={setCommentText}
@@ -513,7 +646,9 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
         />
 
         <Box flexGrow={1} paddingX={2} paddingY={2}>
-          <Text bold color="cyan">Choose an action for: {selectedADR.title}</Text>
+          <Text bold color="cyan">
+            Choose an action for: {selectedADR.title}
+          </Text>
           <Box marginY={1} />
 
           <SelectInput
@@ -524,7 +659,8 @@ export default function ADRManager({ swarmStatus, onBack, onExit }: ADRManagerPr
             }}
             itemComponent={({ isSelected, label }) => (
               <Text color={isSelected ? 'cyan' : 'white'} bold={isSelected}>
-                {isSelected ? '▶ ' : '  '}{label}
+                {isSelected ? '▶ ' : '  '}
+                {label}
               </Text>
             )}
           />

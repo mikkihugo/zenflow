@@ -18,14 +18,14 @@ export interface NeuralPreset {
   batchSize: number;
   useCase: string[];
   dropout?: number;
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
   model?: string;
   description?: string;
   performance?: {
     accuracy?: number;
     latency?: number;
     memoryUsage?: number;
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -84,7 +84,7 @@ export const NEURAL_PRESETS: NeuralPresetMap = {
  */
 export function getPreset(
   category: string,
-  presetName?: string,
+  presetName?: string
 ): NeuralPreset | undefined {
   if (presetName) {
     // Two-argument version - look by category and preset name
@@ -93,7 +93,7 @@ export function getPreset(
       (preset) =>
         preset.type === category &&
         (preset.id === presetName ||
-          preset.name.toLowerCase().includes(presetName.toLowerCase())),
+          preset.name.toLowerCase().includes(presetName.toLowerCase()))
     );
   }
   // Single-argument version (legacy) - category is actually presetId
@@ -144,12 +144,12 @@ export function getCategoryPresets(category: string): NeuralPreset[] {
 export function validatePresetConfig(config: Partial<NeuralPreset>): boolean {
   const required: Array<keyof NeuralPreset> = ['id', 'architecture', 'layers'];
   const missing = required.filter(
-    (field) => !(field in config) || (config as any)[field] == null,
+    (field) => !(field in config) || (config as any)[field] == null
   );
 
   if (missing.length > 0) {
     throw new Error(
-      `Invalid preset configuration. Missing: ${missing.join(', ')}`,
+      `Invalid preset configuration. Missing: ${missing.join(', ')}`
     );
   }
 

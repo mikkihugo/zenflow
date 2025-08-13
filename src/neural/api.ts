@@ -69,7 +69,7 @@ export interface NeuralModel {
   presetName?: string;
   architecture: string;
   cognitivePatterns: string[];
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   status: 'initializing' | 'training' | 'ready' | 'error' | 'optimizing';
   performance: {
     expectedAccuracy: string;
@@ -103,8 +103,8 @@ export interface TrainingRequest {
     regularization?: number;
   };
   callbacks?: {
-    onEpochEnd?: (epoch: number, metrics: any) => void;
-    onTrainingEnd?: (metrics: any) => void;
+    onEpochEnd?: (epoch: number, metrics: unknown) => void;
+    onTrainingEnd?: (metrics: unknown) => void;
   };
 }
 
@@ -153,7 +153,7 @@ export interface ModelCreationOptions {
   presetType: string;
   presetName: string;
   cognitivePatterns?: string[];
-  customConfig?: Record<string, any>;
+  customConfig?: Record<string, unknown>;
   taskContext?: {
     requiresCreativity?: boolean;
     requiresPrecision?: boolean;
@@ -235,12 +235,12 @@ export class NeuralDomainAPI {
 
   constructor(
     private logger: ILogger,
-    private config: IConfig,
+    private config: IConfig
   ) {
     this.patternSelector = new CognitivePatternSelector();
     this.adaptationEngine = new NeuralAdaptationEngine();
     this.logger.info(
-      'NeuralDomainAPI initialized with 27+ neural architectures',
+      'NeuralDomainAPI initialized with 27+ neural architectures'
     );
   }
 
@@ -259,7 +259,7 @@ export class NeuralDomainAPI {
       await this.adaptationEngine.initializeAdaptation(
         'system',
         'system',
-        'base',
+        'base'
       );
 
       this.initialized = true;
@@ -276,13 +276,13 @@ export class NeuralDomainAPI {
   async createModelFromPreset(
     modelType: string,
     presetName: string,
-    options: Omit<ModelCreationOptions, 'presetType' | 'presetName'>,
+    options: Omit<ModelCreationOptions, 'presetType' | 'presetName'>
   ): Promise<NeuralModel> {
     this.ensureInitialized();
 
     try {
       this.logger.info(
-        `Creating model from preset: ${modelType}/${presetName}`,
+        `Creating model from preset: ${modelType}/${presetName}`
       );
 
       const preset =
@@ -301,7 +301,7 @@ export class NeuralDomainAPI {
         this.patternSelector.selectPatternsForPreset(
           modelType,
           presetName,
-          options.taskContext,
+          options.taskContext
         );
 
       const modelId = this.generateModelId(modelType, presetName);
@@ -332,19 +332,19 @@ export class NeuralDomainAPI {
       await this.adaptationEngine.initializeAdaptation(
         modelId,
         modelType,
-        presetName,
+        presetName
       );
 
       this.models.set(modelId, model);
       this.logger.info(
-        `Model created successfully: ${modelId} (${cognitivePatterns.join(', ')})`,
+        `Model created successfully: ${modelId} (${cognitivePatterns.join(', ')})`
       );
 
       return model;
     } catch (error) {
       this.logger.error(
         `Failed to create model from preset: ${modelType}/${presetName}`,
-        error,
+        error
       );
       throw error;
     }
@@ -354,7 +354,7 @@ export class NeuralDomainAPI {
    * Create a custom neural model with manual configuration.
    */
   async createModel(
-    model: Omit<NeuralModel, 'id' | 'status' | 'metadata'>,
+    model: Omit<NeuralModel, 'id' | 'status' | 'metadata'>
   ): Promise<NeuralModel> {
     this.ensureInitialized();
 
@@ -414,7 +414,7 @@ export class NeuralDomainAPI {
       }
       if (filter.cognitivePattern) {
         models = models.filter((m) =>
-          m.cognitivePatterns.includes(filter.cognitivePattern),
+          m.cognitivePatterns.includes(filter.cognitivePattern)
         );
       }
     }
@@ -460,7 +460,7 @@ export class NeuralDomainAPI {
       };
 
       this.logger.info(
-        `Training completed: ${request.modelId} (${metrics.accuracy.toFixed(2)}% accuracy)`,
+        `Training completed: ${request.modelId} (${metrics.accuracy.toFixed(2)}% accuracy)`
       );
       return metrics;
     } catch (error) {
@@ -478,7 +478,7 @@ export class NeuralDomainAPI {
    */
   async trainAdaptive(
     modelId: string,
-    request: TrainingRequest,
+    request: TrainingRequest
   ): Promise<NeuralMetrics> {
     try {
       const model = this.models.get(modelId);
@@ -527,7 +527,7 @@ export class NeuralDomainAPI {
     } catch (error) {
       this.logger.error(
         `Adaptive training failed for model: ${modelId}`,
-        error,
+        error
       );
       throw error;
     }
@@ -545,7 +545,7 @@ export class NeuralDomainAPI {
    * Make predictions with confidence scores and explanations.
    */
   async predictWithConfidence(
-    request: PredictionRequest,
+    request: PredictionRequest
   ): Promise<PredictionResult> {
     this.ensureInitialized();
 
@@ -557,7 +557,7 @@ export class NeuralDomainAPI {
 
       if (model.status !== 'ready') {
         throw new Error(
-          `Model not ready for prediction: ${request.modelId} (status: ${model.status})`,
+          `Model not ready for prediction: ${request.modelId} (status: ${model.status})`
         );
       }
 
@@ -581,7 +581,7 @@ export class NeuralDomainAPI {
     } catch (error) {
       this.logger.error(
         `Prediction failed for model: ${request.modelId}`,
-        error,
+        error
       );
       throw error;
     }
@@ -635,7 +635,7 @@ export class NeuralDomainAPI {
         loss: 0.1 * (1 - baseAccuracy), // Simulated loss
         epochs: model.metadata.trainingEpochs,
         trainingTime: Number.parseFloat(
-          model.performance.trainingTime.replace(/[^0-9.]/g, ''),
+          model.performance.trainingTime.replace(/[^0-9.]/g, '')
         ),
         cognitivePatterns: model.cognitivePatterns,
         adaptationInsights,
@@ -655,7 +655,7 @@ export class NeuralDomainAPI {
     Object.entries(COMPLETE_NEURAL_PRESETS).forEach(
       ([modelType, typePresets]) => {
         presets[modelType] = Object.keys(typePresets);
-      },
+      }
     );
 
     return presets;
@@ -664,14 +664,14 @@ export class NeuralDomainAPI {
   /**
    * Get preset recommendations for a specific use case.
    */
-  getPresetRecommendations(useCase: string, requirements: any = {}): any[] {
+  getPresetRecommendations(useCase: string, requirements: unknown = {}): unknown[] {
     return this.patternSelector.getPresetRecommendations(useCase, requirements);
   }
 
   /**
    * Get cognitive pattern insights and effectiveness.
    */
-  async getCognitivePatternInsights(): Promise<any> {
+  async getCognitivePatternInsights(): Promise<unknown> {
     return this.adaptationEngine.exportAdaptationInsights();
   }
 
@@ -683,7 +683,7 @@ export class NeuralDomainAPI {
     options?: {
       strategy?: 'accuracy' | 'speed' | 'memory';
       maxIterations?: number;
-    },
+    }
   ): Promise<NeuralMetrics> {
     try {
       const model = this.models.get(modelId);
@@ -692,7 +692,7 @@ export class NeuralDomainAPI {
       }
 
       this.logger.info(
-        `Optimizing model: ${modelId} (strategy: ${options?.strategy || 'accuracy'})`,
+        `Optimizing model: ${modelId} (strategy: ${options?.strategy || 'accuracy'})`
       );
       model.status = 'optimizing';
 
@@ -704,7 +704,7 @@ export class NeuralDomainAPI {
       const optimizationResult = await this.applyOptimizations(
         model,
         recommendations,
-        options,
+        options
       );
 
       model.status = 'ready';
@@ -729,7 +729,7 @@ export class NeuralDomainAPI {
   private ensureInitialized(): void {
     if (!this.initialized) {
       throw new Error(
-        'Neural Domain API not initialized. Call initialize() first.',
+        'Neural Domain API not initialized. Call initialize() first.'
       );
     }
   }
@@ -750,24 +750,24 @@ export class NeuralDomainAPI {
 
   private async simulateTraining(
     model: NeuralModel,
-    request: TrainingRequest,
-  ): Promise<any> {
+    request: TrainingRequest
+  ): Promise<unknown> {
     // Simulate training with cognitive patterns influence
     const baseAccuracy =
       Number.parseFloat(model.performance.expectedAccuracy.replace('%', '')) /
       100;
     const patternBonus = this.calculateCognitivePatternBonus(
       model.cognitivePatterns,
-      'training',
+      'training'
     );
     const dataQualityFactor = this.assessDataQuality(
       request.data,
-      request.labels,
+      request.labels
     );
 
     const finalAccuracy = Math.min(
       0.99,
-      baseAccuracy + patternBonus + dataQualityFactor,
+      baseAccuracy + patternBonus + dataQualityFactor
     );
     const loss = Math.max(0.001, 0.5 * (1 - finalAccuracy));
 
@@ -808,8 +808,8 @@ export class NeuralDomainAPI {
 
   private async simulatePrediction(
     model: NeuralModel,
-    request: PredictionRequest,
-  ): Promise<any> {
+    request: PredictionRequest
+  ): Promise<unknown> {
     const input = Array.isArray(request.input[0])
       ? (request.input as number[][])
       : [request.input as number[]];
@@ -846,12 +846,12 @@ export class NeuralDomainAPI {
       // Apply cognitive pattern influence
       const patternInfluence = this.calculateCognitivePatternBonus(
         model.cognitivePatterns,
-        'inference',
+        'inference'
       );
       const basePrediction = Math.random() * 0.8 + 0.1; // 0.1 to 0.9
       const finalPrediction = Math.min(
         0.99,
-        Math.max(0.01, basePrediction + patternInfluence),
+        Math.max(0.01, basePrediction + patternInfluence)
       );
 
       predictions.push(finalPrediction);
@@ -865,7 +865,7 @@ export class NeuralDomainAPI {
     const baseConfidence = 0.7 + Math.random() * 0.25;
     const patternBonus = this.calculateCognitivePatternBonus(
       model.cognitivePatterns,
-      'confidence',
+      'confidence'
     );
     return Math.min(0.99, baseConfidence + patternBonus);
   }
@@ -873,7 +873,7 @@ export class NeuralDomainAPI {
   private generateExplanation(
     model: NeuralModel,
     input: number[],
-    prediction: number[],
+    prediction: number[]
   ): string {
     const topPattern = model.cognitivePatterns[0];
     const architecture = model.architecture;
@@ -893,7 +893,7 @@ export class NeuralDomainAPI {
 
   private calculateCognitivePatternBonus(
     patterns: string[],
-    context: string,
+    context: string
   ): number {
     // Calculate performance bonus based on cognitive patterns and context
     const patternBonuses = {
@@ -967,7 +967,7 @@ export class NeuralDomainAPI {
     return maxCount > 0 ? minCount / maxCount : 0;
   }
 
-  private async getAdaptationInsights(modelId: string): Promise<any> {
+  private async getAdaptationInsights(modelId: string): Promise<unknown> {
     try {
       const recommendations =
         await this.adaptationEngine.getAdaptationRecommendations(modelId);
@@ -993,8 +993,8 @@ export class NeuralDomainAPI {
 
   private async applyOptimizations(
     model: NeuralModel,
-    recommendations: any,
-    options?: any,
+    recommendations: unknown,
+    options?: unknown
   ): Promise<NeuralMetrics> {
     // Apply optimizations based on strategy and recommendations
     const strategy = options?.strategy || 'accuracy';
@@ -1014,7 +1014,7 @@ export class NeuralDomainAPI {
         // Optimize for accuracy using best patterns
         const topPatterns = recommendations.patterns
           .slice(0, 2)
-          .map((p: any) => p.pattern);
+          .map((p: unknown) => p.pattern);
         model.cognitivePatterns = [
           ...new Set([...topPatterns, ...model.cognitivePatterns]),
         ];
@@ -1024,15 +1024,15 @@ export class NeuralDomainAPI {
       const improvementFactor = 1 + 0.02 * (i + 1); // Incremental improvement
       bestMetrics.accuracy = Math.min(
         0.99,
-        bestMetrics.accuracy * improvementFactor,
+        bestMetrics.accuracy * improvementFactor
       );
       bestMetrics.loss = Math.max(
         0.001,
-        bestMetrics.loss * (2 - improvementFactor),
+        bestMetrics.loss * (2 - improvementFactor)
       );
 
       this.logger.debug(
-        `Optimization iteration ${i + 1}: accuracy = ${bestMetrics.accuracy.toFixed(4)}`,
+        `Optimization iteration ${i + 1}: accuracy = ${bestMetrics.accuracy.toFixed(4)}`
       );
     }
 

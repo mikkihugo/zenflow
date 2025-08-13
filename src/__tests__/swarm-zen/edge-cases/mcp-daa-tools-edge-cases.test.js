@@ -179,7 +179,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle concurrent initialization calls', async () => {
       const promises = Array.from({ length: 5 }, () =>
-        daaTools.ensureInitialized(),
+        daaTools.ensureInitialized()
       );
 
       await Promise.all(promises);
@@ -209,7 +209,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       expect(mockMcpTools.recordToolMetrics).toHaveBeenCalledWith(
         'daa_init',
         expect.any(Number),
-        'success',
+        'success'
       );
     });
 
@@ -233,18 +233,18 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle initialization errors gracefully', async () => {
       mockDaaService.initialize.mockRejectedValueOnce(
-        new Error('Service unavailable'),
+        new Error('Service unavailable')
       );
 
       await expect(daaTools.daa_init({})).rejects.toThrow(
-        'Service unavailable',
+        'Service unavailable'
       );
 
       expect(mockMcpTools.recordToolMetrics).toHaveBeenCalledWith(
         'daa_init',
         expect.any(Number),
         'error',
-        'Service unavailable',
+        'Service unavailable'
       );
     });
 
@@ -303,14 +303,14 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const params = { capabilities: ['test'] };
 
       await expect(daaTools.daa_agent_create(params)).rejects.toThrow(
-        'Agent ID is required',
+        'Agent ID is required'
       );
 
       expect(mockMcpTools.recordToolMetrics).toHaveBeenCalledWith(
         'daa_agent_create',
         expect.any(Number),
         'error',
-        'Agent ID is required',
+        'Agent ID is required'
       );
     });
 
@@ -346,11 +346,11 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle agent creation service errors', async () => {
       mockDaaService.createAgent.mockRejectedValueOnce(
-        new Error('Agent creation failed'),
+        new Error('Agent creation failed')
       );
 
       await expect(
-        daaTools.daa_agent_create({ id: 'fail-agent' }),
+        daaTools.daa_agent_create({ id: 'fail-agent' })
       ).rejects.toThrow('Agent creation failed');
     });
   });
@@ -394,17 +394,17 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle missing agent ID error', async () => {
       await expect(daaTools.daa_agent_adapt({})).rejects.toThrow(
-        'Agent ID is required',
+        'Agent ID is required'
       );
     });
 
     it('should handle adaptation service failures', async () => {
       mockDaaService.adaptAgent.mockRejectedValueOnce(
-        new Error('Adaptation failed'),
+        new Error('Adaptation failed')
       );
 
       await expect(
-        daaTools.daa_agent_adapt({ agentId: 'fail-adapt' }),
+        daaTools.daa_agent_adapt({ agentId: 'fail-adapt' })
       ).rejects.toThrow('Adaptation failed');
     });
 
@@ -448,15 +448,15 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle missing required parameters', async () => {
       await expect(daaTools.daa_workflow_create({})).rejects.toThrow(
-        'Workflow ID and name are required',
+        'Workflow ID and name are required'
       );
 
       await expect(
-        daaTools.daa_workflow_create({ id: 'test' }),
+        daaTools.daa_workflow_create({ id: 'test' })
       ).rejects.toThrow('Workflow ID and name are required');
 
       await expect(
-        daaTools.daa_workflow_create({ name: 'test' }),
+        daaTools.daa_workflow_create({ name: 'test' })
       ).rejects.toThrow('Workflow ID and name are required');
     });
 
@@ -486,14 +486,14 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle workflow creation service errors', async () => {
       mockDaaService.createWorkflow.mockRejectedValueOnce(
-        new Error('Workflow creation failed'),
+        new Error('Workflow creation failed')
       );
 
       await expect(
         daaTools.daa_workflow_create({
           id: 'fail-workflow',
           name: 'Failing Workflow',
-        }),
+        })
       ).rejects.toThrow('Workflow creation failed');
     });
   });
@@ -522,7 +522,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle missing workflow ID', async () => {
       await expect(daaTools.daa_workflow_execute({})).rejects.toThrow(
-        'Workflow ID is required',
+        'Workflow ID is required'
       );
     });
 
@@ -537,13 +537,13 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle execution service failures', async () => {
       mockDaaService.executeWorkflow.mockRejectedValueOnce(
-        new Error('Execution failed'),
+        new Error('Execution failed')
       );
 
       await expect(
         daaTools.daa_workflow_execute({
           workflowId: 'fail-execute',
-        }),
+        })
       ).rejects.toThrow('Execution failed');
     });
 
@@ -587,19 +587,19 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle missing required parameters', async () => {
       await expect(daaTools.daa_knowledge_share({})).rejects.toThrow(
-        'Source and target agent IDs are required',
+        'Source and target agent IDs are required'
       );
 
       await expect(
         daaTools.daa_knowledge_share({
           sourceAgentId: 'teacher',
-        }),
+        })
       ).rejects.toThrow('Source and target agent IDs are required');
 
       await expect(
         daaTools.daa_knowledge_share({
           targetAgentIds: ['student'],
-        }),
+        })
       ).rejects.toThrow('Source and target agent IDs are required');
     });
 
@@ -610,20 +610,20 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       };
 
       await expect(daaTools.daa_knowledge_share(params)).rejects.toThrow(
-        'Source and target agent IDs are required',
+        'Source and target agent IDs are required'
       );
     });
 
     it('should handle knowledge sharing service failures', async () => {
       mockDaaService.shareKnowledge.mockRejectedValueOnce(
-        new Error('Knowledge sharing failed'),
+        new Error('Knowledge sharing failed')
       );
 
       await expect(
         daaTools.daa_knowledge_share({
           sourceAgentId: 'fail-teacher',
           targetAgentIds: ['student'],
-        }),
+        })
       ).rejects.toThrow('Knowledge sharing failed');
     });
 
@@ -683,23 +683,23 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle learning status service failures', async () => {
       mockDaaService.getAgentLearningStatus.mockRejectedValueOnce(
-        new Error('Status unavailable'),
+        new Error('Status unavailable')
       );
 
       await expect(
         daaTools.daa_learning_status({
           agentId: 'fail-agent',
-        }),
+        })
       ).rejects.toThrow('Status unavailable');
     });
 
     it('should handle system learning status service failures', async () => {
       mockDaaService.getSystemLearningStatus.mockRejectedValueOnce(
-        new Error('System status unavailable'),
+        new Error('System status unavailable')
       );
 
       await expect(daaTools.daa_learning_status({})).rejects.toThrow(
-        'System status unavailable',
+        'System status unavailable'
       );
     });
   });
@@ -751,7 +751,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const params = { pattern: 'divergent', analyze: false };
 
       await expect(daaTools.daa_cognitive_pattern(params)).rejects.toThrow(
-        'Agent ID and pattern are required for pattern change',
+        'Agent ID and pattern are required for pattern change'
       );
     });
 
@@ -759,33 +759,33 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const params = { agentId: 'test-agent', analyze: false };
 
       await expect(daaTools.daa_cognitive_pattern(params)).rejects.toThrow(
-        'Agent ID and pattern are required for pattern change',
+        'Agent ID and pattern are required for pattern change'
       );
     });
 
     it('should handle analysis service failures', async () => {
       mockDaaService.analyzeCognitivePatterns.mockRejectedValueOnce(
-        new Error('Analysis failed'),
+        new Error('Analysis failed')
       );
 
       await expect(
         daaTools.daa_cognitive_pattern({
           agentId: 'fail-agent',
           analyze: true,
-        }),
+        })
       ).rejects.toThrow('Analysis failed');
     });
 
     it('should handle pattern setting service failures', async () => {
       mockDaaService.setCognitivePattern.mockRejectedValueOnce(
-        new Error('Pattern change failed'),
+        new Error('Pattern change failed')
       );
 
       await expect(
         daaTools.daa_cognitive_pattern({
           agentId: 'fail-agent',
           pattern: 'adaptive',
-        }),
+        })
       ).rejects.toThrow('Pattern change failed');
     });
   });
@@ -855,14 +855,14 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle meta-learning service failures', async () => {
       mockDaaService.performMetaLearning.mockRejectedValueOnce(
-        new Error('Meta-learning failed'),
+        new Error('Meta-learning failed')
       );
 
       await expect(
         daaTools.daa_meta_learning({
           sourceDomain: 'fail-source',
           targetDomain: 'fail-target',
-        }),
+        })
       ).rejects.toThrow('Meta-learning failed');
     });
   });
@@ -921,13 +921,13 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
 
     it('should handle performance metrics service failures', async () => {
       mockDaaService.getPerformanceMetrics.mockRejectedValueOnce(
-        new Error('Metrics unavailable'),
+        new Error('Metrics unavailable')
       );
 
       await expect(
         daaTools.daa_performance_metrics({
           category: 'fail',
-        }),
+        })
       ).rejects.toThrow('Metrics unavailable');
     });
   });
@@ -970,12 +970,12 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const definitions = daaTools.getToolDefinitions();
 
       const agentCreateDef = definitions.find(
-        (def) => def.name === 'daa_agent_create',
+        (def) => def.name === 'daa_agent_create'
       );
       expect(agentCreateDef.inputSchema.required).toEqual(['id']);
 
       const workflowCreateDef = definitions.find(
-        (def) => def.name === 'daa_workflow_create',
+        (def) => def.name === 'daa_workflow_create'
       );
       expect(workflowCreateDef.inputSchema.required).toEqual(['id', 'name']);
     });
@@ -1083,7 +1083,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
           id: `concurrent-agent-${i}`,
           capabilities: [`concurrent-${i}`],
           cognitivePattern: 'adaptive',
-        }),
+        })
       );
 
       const agents = await Promise.all(agentPromises);
@@ -1095,7 +1095,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
           agentId: agent.agent_id,
           feedback: 'Concurrent adaptation test',
           performanceScore: Math.random(),
-        }),
+        })
       );
 
       const adaptResults = await Promise.all(adaptPromises);
@@ -1114,7 +1114,7 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
           if (i === 2) {
             // Mock a failure
             mockDaaService.createAgent.mockRejectedValueOnce(
-              new Error('Agent creation failed'),
+              new Error('Agent creation failed')
             );
           }
 
@@ -1130,10 +1130,10 @@ describe('MCP DAA Tools Edge Cases and E2E Tests', () => {
       const results = await Promise.allSettled(agentPromises);
 
       const successful = results.filter(
-        (r) => r.status === 'fulfilled' && !r.value.failed,
+        (r) => r.status === 'fulfilled' && !r.value.failed
       );
       const failed = results.filter(
-        (r) => r.status === 'rejected' || r.value?.failed,
+        (r) => r.status === 'rejected' || r.value?.failed
       );
 
       expect(successful.length).toBeGreaterThan(0);

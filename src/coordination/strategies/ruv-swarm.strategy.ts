@@ -17,7 +17,7 @@ export class ZenSwarmStrategy implements SwarmStrategy {
     this.swarm = new ZenSwarm();
   }
 
-  async createAgent(config: any): Promise<SwarmAgent> {
+  async createAgent(config: unknown): Promise<SwarmAgent> {
     const agentId = this.swarm.addAgent(config);
     return {
       id: agentId,
@@ -33,13 +33,13 @@ export class ZenSwarmStrategy implements SwarmStrategy {
     this.swarm.removeAgent(agentId);
   }
 
-  async sendMessage(_agentId: string, _message: any): Promise<void> {
+  async sendMessage(_agentId: string, _message: unknown): Promise<void> {
     // ZenSwarm does not have a direct sendMessage method.
     // This would need to be implemented or mapped to an existing method.
     logger.warn('sendMessage is not implemented in ZenSwarmStrategy');
   }
 
-  async assignTaskToAgent(_agentId: string, task: any): Promise<void> {
+  async assignTaskToAgent(_agentId: string, task: unknown): Promise<void> {
     // This is a simplified mapping. A real implementation would be more robust.
     const swarmTask = { ...task, id: `task-${Date.now()}` };
     await this.swarm.submitTask(swarmTask);

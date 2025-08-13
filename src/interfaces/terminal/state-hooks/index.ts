@@ -34,7 +34,7 @@ export const StateHookUtils = {
    * @param func
    * @param delay
    */
-  debounce: <T extends (...args: any[]) => any>(func: T, delay: number): T => {
+  debounce: <T extends (...args: unknown[]) => any>(func: T, delay: number): T => {
     let timeoutId: NodeJS.Timeout;
 
     return ((...args: Parameters<T>) => {
@@ -49,7 +49,7 @@ export const StateHookUtils = {
    * @param func
    * @param delay
    */
-  throttle: <T extends (...args: any[]) => any>(func: T, delay: number): T => {
+  throttle: <T extends (...args: unknown[]) => any>(func: T, delay: number): T => {
     let lastCall = 0;
 
     return ((...args: Parameters<T>) => {

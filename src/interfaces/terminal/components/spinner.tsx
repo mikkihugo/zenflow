@@ -9,7 +9,7 @@
  */
 
 import { Box, Text } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 
 export interface SpinnerProps {
@@ -138,22 +138,14 @@ export const SpinnerPresets = {
 
 // Convenience components for common use cases
 export const LoadingSpinner: React.FC<{ text?: string }> = ({ text }) => (
-  <Spinner
-    {...SpinnerPresets.loading}
-    text={text ?? undefined}
-  />
+  <Spinner {...SpinnerPresets.loading} text={text ?? undefined} />
 );
 
 export const SwarmSpinner: React.FC<{
   text?: string;
   type?: 'swarm' | 'neural' | 'coordination' | 'processing';
 }> = ({ text, type = 'swarm' }) => (
-  <Spinner
-    type={type}
-    text={text ?? undefined}
-    color="cyan"
-    speed={120}
-  />
+  <Spinner type={type} text={text ?? undefined} color="cyan" speed={120} />
 );
 
 export default Spinner;

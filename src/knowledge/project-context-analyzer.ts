@@ -114,12 +114,12 @@ interface KnowledgeGatheringMission {
   requiredInfo: string[];
   assignedDomain?: string;
   status: 'pending' | 'assigned' | 'in-progress' | 'completed' | 'failed';
-  results?: any;
+  results?: unknown;
 }
 
 interface ProjectAnalyzerConfig {
   projectRoot: string;
-  swarmConfig?: any; // KnowledgeSwarm config type
+  swarmConfig?: unknown; // KnowledgeSwarm config type
   analysisDepth: 'shallow' | 'medium' | 'deep';
   autoUpdate: boolean;
   cacheDuration: number; // hours
@@ -345,7 +345,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       try {
         const dirPath = path.join(context.rootPath, pattern);
         const { stdout } = await execAsync(
-          `ls -d ${dirPath} 2>/dev/null || true`,
+          `ls -d ${dirPath} 2>/dev/null || true`
         );
         if (stdout.trim()) {
           matchedPatterns++;
@@ -364,7 +364,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
           try {
             const dirPath = path.join(context.rootPath, pattern);
             const { stdout } = await execAsync(
-              `ls -d ${dirPath} 2>/dev/null || true`,
+              `ls -d ${dirPath} 2>/dev/null || true`
             );
             return stdout.trim() !== '';
           } catch {
@@ -381,7 +381,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param context
    */
   private async analyzeMonorepoStructure(
-    context: ProjectContext,
+    context: ProjectContext
   ): Promise<void> {
     if (context.monorepo.type === 'none') return;
 
@@ -389,7 +389,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       switch (context.monorepo.type) {
         case 'lerna': {
           const lernaConfig = JSON.parse(
-            await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8'),
+            await readFile(path.join(context.rootPath, 'lerna.json'), 'utf-8')
           );
           context.monorepo.version = lernaConfig?.version;
           context.monorepo.packages = lernaConfig?.packages || ['packages/*'];
@@ -398,7 +398,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
         case 'nx': {
           const nxConfig = JSON.parse(
-            await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8'),
+            await readFile(path.join(context.rootPath, 'nx.json'), 'utf-8')
           );
           // NX has a more complex structure, we'd need to analyze workspace.json too
           context.monorepo.version = nxConfig?.version;
@@ -408,11 +408,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
         case 'pnpm': {
           const pnpmWorkspace = await readFile(
             path.join(context.rootPath, 'pnpm-workspace.yaml'),
-            'utf-8',
+            'utf-8'
           );
           // Parse YAML to get packages - simplified for now
           const packagesMatch = pnpmWorkspace.match(
-            /packages:\s*\n((?:\s+-\s+.*\n?)*)/,
+            /packages:\s*\n((?:\s+-\s+.*\n?)*)/
           );
           if (packagesMatch) {
             context.monorepo.packages =
@@ -426,11 +426,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
         case 'rush': {
           const rushConfig = JSON.parse(
-            await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8'),
+            await readFile(path.join(context.rootPath, 'rush.json'), 'utf-8')
           );
           context.monorepo.version = rushConfig?.rushVersion;
           context.monorepo.packages =
-            rushConfig?.projects?.map((p: any) => p.projectFolder) || [];
+            rushConfig?.projects?.map((p: unknown) => p.projectFolder) || [];
           break;
         }
 
@@ -462,7 +462,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       const workspaceContent = await this.parseBazelWorkspace(context.rootPath);
 
       // Try Bazel query first for accurate dependency graph, fallback to BUILD parsing
-      let targets: any[] = [];
+      let targets: unknown[] = [];
       let dependencies: Record<string, Record<string, number>> = {};
 
       try {
@@ -477,14 +477,14 @@ export class ProjectContextAnalyzer extends EventEmitter {
       } catch (queryError) {
         logger.warn(
           'Bazel query failed, falling back to BUILD file parsing:',
-          queryError,
+          queryError
         );
 
         // Fallback: Discover all BUILD files and parse targets manually
         targets = await this.discoverBazelTargets(context.rootPath);
         dependencies = await this.analyzeBazelDependencies(
           context.rootPath,
-          targets,
+          targets
         );
       }
 
@@ -531,7 +531,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       logger.error('Failed to analyze Bazel workspace:', error);
       // Fallback to basic package discovery
       context.monorepo.packages = await this.discoverBazelPackagesBasic(
-        context.rootPath,
+        context.rootPath
       );
     }
   }
@@ -585,7 +585,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     try {
       const moduleContent = await readFile(
         path.join(rootPath, 'MODULE.bazel'),
-        'utf-8',
+        'utf-8'
       );
       result.bzlmodEnabled = true;
       result.moduleInfo = this.parseModuleBazel(moduleContent);
@@ -598,7 +598,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Extract language/toolchain info from module dependencies
       this.extractLanguagesFromModuleDeps(
         result.moduleInfo.dependencies,
-        result,
+        result
       );
     } catch {
       // MODULE.bazel not found, continue with legacy WORKSPACE parsing
@@ -652,7 +652,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     // Extract workspace name
     const workspaceMatch = workspaceContent.match(
-      /workspace\s*\(\s*name\s*=\s*"([^"]+)"/,
+      /workspace\s*\(\s*name\s*=\s*"([^"]+)"/
     );
     result.workspaceName = workspaceMatch?.[1];
 
@@ -766,7 +766,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     try {
       // Use find command to locate all BUILD files
       const { stdout } = await execAsync(
-        `find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`,
+        `find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`
       );
       const buildFiles = stdout.trim().split('\n').filter(Boolean);
 
@@ -791,7 +791,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private parseBazelBuildFile(
     content: string,
-    packagePath: string,
+    packagePath: string
   ): Array<{
     package: string;
     name: string;
@@ -832,7 +832,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
         const target = this.parseTargetAttributes(
           ruleBlock,
           ruleType,
-          packagePath,
+          packagePath
         );
 
         if (target.name) {
@@ -877,7 +877,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
   private parseTargetAttributes(
     ruleBlock: string,
     ruleType: string,
-    packagePath: string,
+    packagePath: string
   ): {
     package: string;
     name: string;
@@ -948,7 +948,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param targets
    */
   private extractBazelPackages(
-    targets: Array<{ package: string; name: string; type: string }>,
+    targets: Array<{ package: string; name: string; type: string }>
   ): string[] {
     const packages = new Set<string>();
 
@@ -974,7 +974,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       name: string;
       type: string;
       deps?: string[];
-    }>,
+    }>
   ): Promise<Record<string, Record<string, number>>> {
     const dependencies: Record<string, Record<string, number>> = {};
 
@@ -1007,11 +1007,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param rootPath
    */
   private async discoverBazelPackagesBasic(
-    rootPath: string,
+    rootPath: string
   ): Promise<string[]> {
     try {
       const { stdout } = await execAsync(
-        `find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`,
+        `find "${rootPath}" -name "BUILD" -o -name "BUILD.bazel" 2>/dev/null`
       );
       const buildFiles = stdout.trim().split('\n').filter(Boolean);
 
@@ -1053,13 +1053,13 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Get all targets in the workspace
       const { stdout: targetsOutput } = await execAsync(
         'bazel query "//..." --output=build 2>/dev/null',
-        { cwd: rootPath, timeout: 30000 }, // 30 second timeout
+        { cwd: rootPath, timeout: 30000 } // 30 second timeout
       );
 
       // Get dependency information
       const { stdout: depsOutput } = await execAsync(
         'bazel query "deps(//...)" --output=graph 2>/dev/null',
-        { cwd: rootPath, timeout: 30000 }, // 30 second timeout
+        { cwd: rootPath, timeout: 30000 } // 30 second timeout
       );
 
       // Parse targets from build output
@@ -1130,7 +1130,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param graphOutput
    */
   private parseBazelQueryDependencies(
-    graphOutput: string,
+    graphOutput: string
   ): Record<string, Record<string, number>> {
     const dependencies: Record<string, Record<string, number>> = {};
 
@@ -1209,7 +1209,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     try {
       // Find all .bzl files
       const { stdout } = await execAsync(
-        `find "${rootPath}" -name "*.bzl" 2>/dev/null`,
+        `find "${rootPath}" -name "*.bzl" 2>/dev/null`
       );
       const bzlFiles = stdout.trim().split('\n').filter(Boolean);
       result.bzlFiles = bzlFiles.map((file) => path.relative(rootPath, file));
@@ -1226,7 +1226,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
             const ruleName = match[1];
             const ruleBlock = this.extractStarlarkFunctionBlock(
               content,
-              match.index || 0,
+              match.index || 0
             );
             const parameters = this.extractStarlarkParameters(ruleBlock);
 
@@ -1244,7 +1244,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
             const macroName = match[1];
             const macroBlock = this.extractStarlarkFunctionBlock(
               content,
-              match.index || 0,
+              match.index || 0
             );
             const parameters = this.extractStarlarkParameters(macroBlock);
             const usedRules = this.extractUsedRules(macroBlock);
@@ -1281,7 +1281,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private extractStarlarkFunctionBlock(
     content: string,
-    startIndex: number,
+    startIndex: number
   ): string {
     const lines = content.substring(startIndex).split('\n');
     const result: string[] = [];
@@ -1341,7 +1341,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Filter out common Python functions and focus on likely Bazel rules
       if (
         !['def', 'if', 'for', 'len', 'str', 'int', 'print', 'fail'].includes(
-          ruleName,
+          ruleName
         )
       ) {
         rules.add(ruleName);
@@ -1376,7 +1376,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     // Extract module name
     const moduleMatch = moduleContent.match(
-      /module\s*\(\s*name\s*=\s*"([^"]+)"(?:\s*,\s*version\s*=\s*"([^"]+)")?/,
+      /module\s*\(\s*name\s*=\s*"([^"]+)"(?:\s*,\s*version\s*=\s*"([^"]+)")?/
     );
     if (moduleMatch) {
       result.name = moduleMatch[1] || '';
@@ -1387,7 +1387,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     // Extract bazel_dep dependencies
     const depMatches = moduleContent.matchAll(
-      /bazel_dep\s*\(\s*name\s*=\s*"([^"]+)"\s*,\s*version\s*=\s*"([^"]+)"(?:\s*,\s*repo_name\s*=\s*"([^"]+)")?/g,
+      /bazel_dep\s*\(\s*name\s*=\s*"([^"]+)"\s*,\s*version\s*=\s*"([^"]+)"(?:\s*,\s*repo_name\s*=\s*"([^"]+)")?/g
     );
     for (const match of depMatches) {
       const dep: { name: string; version: string; repo_name?: string } = {
@@ -1413,7 +1413,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private extractLanguagesFromModuleDeps(
     dependencies: Array<{ name: string; version: string; repo_name?: string }>,
-    result: { languages: string[]; toolchains: string[] },
+    result: { languages: string[]; toolchains: string[] }
   ): void {
     const moduleLanguageMap: Record<string, string> = {
       rules_java: 'java',
@@ -1503,7 +1503,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     // Mission 4: Security vulnerability research
     const vulnDeps = this.projectContext.dependencies.filter(
-      (d) => d.hasVulnerabilities,
+      (d) => d.hasVulnerabilities
     );
     if (vulnDeps.length > 0) {
       const mission = this.createSecurityMission(vulnDeps);
@@ -1526,7 +1526,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param priority
    */
   async executeMissions(
-    priority?: 'critical' | 'high' | 'medium' | 'low',
+    priority?: 'critical' | 'high' | 'medium' | 'low'
   ): Promise<void> {
     const missions = Array.from(this.knowledgeMissions.values())
       .filter((m) => m.status === 'pending')
@@ -1534,11 +1534,11 @@ export class ProjectContextAnalyzer extends EventEmitter {
       .sort(
         (a, b) =>
           this.getPriorityWeight(b.priority) -
-          this.getPriorityWeight(a.priority),
+          this.getPriorityWeight(a.priority)
       );
 
     const executionPromises = missions.map((mission) =>
-      this.executeMission(mission),
+      this.executeMission(mission)
     );
 
     try {
@@ -1562,7 +1562,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param mission
    */
   private async executeMission(
-    mission: KnowledgeGatheringMission,
+    mission: KnowledgeGatheringMission
   ): Promise<void> {
     mission.status = 'in-progress';
     this.knowledgeMissions.set(mission.id, mission);
@@ -1574,13 +1574,13 @@ export class ProjectContextAnalyzer extends EventEmitter {
         case 'dependency':
           result = await this.knowledgeSwarm.getTechnologyDocs(
             mission.target,
-            mission.version,
+            mission.version
           );
           break;
         case 'framework':
           result = await this.knowledgeSwarm.getTechnologyDocs(
             mission.target,
-            mission.version,
+            mission.version
           );
           break;
         case 'api':
@@ -1589,18 +1589,18 @@ export class ProjectContextAnalyzer extends EventEmitter {
         case 'security':
           result = await this.knowledgeSwarm.getSecurityGuidance(
             mission.target,
-            mission.context.join(', '),
+            mission.context.join(', ')
           );
           break;
         case 'performance':
           result = await this.knowledgeSwarm.getPerformanceOptimization(
-            mission.context.join(', '),
+            mission.context.join(', ')
           );
           break;
         case 'best-practices':
           result = await this.knowledgeSwarm.researchProblem(
             `Best practices for ${mission.target}`,
-            mission.context,
+            mission.context
           );
           break;
         default:
@@ -1632,7 +1632,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // First, check if we have relevant cached knowledge
       const relevantKnowledge = await this.searchCachedKnowledge(
         query,
-        context,
+        context
       );
 
       if (relevantKnowledge.length > 0) {
@@ -1664,7 +1664,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Runtime dependencies
       if (packageJson.dependencies) {
         for (const [name, version] of Object.entries(
-          packageJson.dependencies,
+          packageJson.dependencies
         )) {
           context.dependencies.push({
             name,
@@ -1678,7 +1678,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Dev dependencies
       if (packageJson.devDependencies) {
         for (const [name, version] of Object.entries(
-          packageJson.devDependencies,
+          packageJson.devDependencies
         )) {
           context.devDependencies.push({
             name,
@@ -1692,7 +1692,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Log dependency analysis errors for debugging
       logger.warn(
         'Error analyzing dependencies:',
-        error instanceof Error ? error.message : error,
+        error instanceof Error ? error.message : error
       );
     }
 
@@ -1727,7 +1727,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
     for (const dep of allDeps) {
       for (const [frameworkName, { pattern, usage }] of Object.entries(
-        frameworkPatterns,
+        frameworkPatterns
       )) {
         if (pattern.test(dep.name)) {
           context.frameworks.push({
@@ -1752,7 +1752,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       // Use basic file counting - could be enhanced with more sophisticated analysis
       const { stdout } = await execAsync(
         `find "${context.rootPath}" -name "*.ts" -o -name "*.js" -o -name "*.tsx" -o -name "*.jsx" | wc -l`,
-        { cwd: context.rootPath },
+        { cwd: context.rootPath }
       );
       const jstsFiles = Number.parseInt(stdout.trim());
 
@@ -1766,7 +1766,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     } catch (error) {
       logger.warn(
         'Error analyzing languages:',
-        error instanceof Error ? error.message : error,
+        error instanceof Error ? error.message : error
       );
     }
   }
@@ -1784,7 +1784,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
 
         // Basic Cargo.toml parsing (simplified)
         const dependencySection = cargoContent.match(
-          /\[dependencies\]([\s\S]*?)(?=\[|$)/,
+          /\[dependencies\]([\s\S]*?)(?=\[|$)/
         );
         if (dependencySection) {
           const deps =
@@ -1805,7 +1805,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     } catch (error) {
       logger.warn(
         'Error analyzing Cargo.toml:',
-        error instanceof Error ? error.message : error,
+        error instanceof Error ? error.message : error
       );
     }
   }
@@ -1842,7 +1842,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
     } catch (error) {
       logger.warn(
         'Error analyzing requirements.txt:',
-        error instanceof Error ? error.message : error,
+        error instanceof Error ? error.message : error
       );
     }
   }
@@ -1860,7 +1860,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
       (dep) =>
         dep.name.includes('api') ||
         dep.name.includes('client') ||
-        dep.name.includes('sdk'),
+        dep.name.includes('sdk')
     );
 
     for (const dep of apiDeps) {
@@ -1917,7 +1917,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param dep
    */
   private createDependencyMission(
-    dep: DependencyInfo,
+    dep: DependencyInfo
   ): KnowledgeGatheringMission {
     return {
       id: `dep-${dep.name}-${Date.now()}`,
@@ -1943,7 +1943,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param framework
    */
   private createFrameworkMission(
-    framework: DetectedFramework,
+    framework: DetectedFramework
   ): KnowledgeGatheringMission {
     const priority = framework.usage === 'primary' ? 'high' : 'medium';
 
@@ -1999,7 +1999,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    * @param vulnDeps
    */
   private createSecurityMission(
-    vulnDeps: DependencyInfo[],
+    vulnDeps: DependencyInfo[]
   ): KnowledgeGatheringMission {
     return {
       id: `security-${Date.now()}`,
@@ -2075,7 +2075,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private createAdHocMission(
     query: string,
-    context?: string[],
+    context?: string[]
   ): KnowledgeGatheringMission {
     return {
       id: `adhoc-${Date.now()}`,
@@ -2106,10 +2106,10 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private async searchCachedKnowledge(
     query: string,
-    context?: string[],
+    context?: string[]
   ): Promise<any[]> {
     try {
-      const results: any[] = [];
+      const results: unknown[] = [];
       const queryLower = query.toLowerCase();
 
       // Search context cache for relevant knowledge
@@ -2122,8 +2122,8 @@ export class ProjectContextAnalyzer extends EventEmitter {
         if (context && cached.context) {
           const hasMatchingContext = context.some((ctx) =>
             cached.context.some((c: string) =>
-              c.toLowerCase().includes(ctx.toLowerCase()),
-            ),
+              c.toLowerCase().includes(ctx.toLowerCase())
+            )
           );
           if (hasMatchingContext) {
             results.push(cached);
@@ -2143,7 +2143,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    *
    * @param knowledge
    */
-  private formatCachedKnowledge(knowledge: any[]): string {
+  private formatCachedKnowledge(knowledge: unknown[]): string {
     let formatted = '# Cached Knowledge Results\\n\\n';
 
     knowledge.forEach((item, index) => {
@@ -2166,7 +2166,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
    */
   private async storeKnowledgeInCache(
     mission: KnowledgeGatheringMission,
-    result: any,
+    result: unknown
   ): Promise<void> {
     try {
       const cacheKey = `mission-${mission.id}`;
@@ -2213,7 +2213,7 @@ export class ProjectContextAnalyzer extends EventEmitter {
           logger.error('Context monitoring failed:', error);
         }
       },
-      60 * 60 * 1000,
+      60 * 60 * 1000
     ); // 1 hour
   }
 

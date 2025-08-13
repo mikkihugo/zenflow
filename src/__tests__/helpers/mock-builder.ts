@@ -30,7 +30,7 @@ export class MockBuilder {
    */
   create<T>(
     type: new (...args: unknown[]) => T,
-    config: MockConfiguration = this.globalConfig,
+    config: MockConfiguration = this.globalConfig
   ): T {
     const mockObj: MockObject = {};
     const prototype = type.prototype;
@@ -58,7 +58,7 @@ export class MockBuilder {
    */
   createPartial<T>(
     overrides: Partial<T>,
-    config: MockConfiguration = this.globalConfig,
+    config: MockConfiguration = this.globalConfig
   ): T {
     const mockObj: MockObject = {};
 
@@ -112,7 +112,7 @@ export class MockBuilder {
           delete() {}
           query() {}
           close() {}
-        },
+        }
       ),
 
       // Neural Engine mock
@@ -123,7 +123,7 @@ export class MockBuilder {
           trainModel() {}
           predict() {}
           optimize() {}
-        },
+        }
       ),
 
       // Swarm Orchestrator mock
@@ -135,7 +135,7 @@ export class MockBuilder {
           getAgentStatus() {}
           terminateAgent() {}
           getSwarmStatus() {}
-        },
+        }
       ),
 
       // MCP Server mock
@@ -145,7 +145,7 @@ export class MockBuilder {
           handleMessage() {}
           registerTool() {}
           shutdown() {}
-        },
+        }
       ),
 
       // Database mock
@@ -155,7 +155,7 @@ export class MockBuilder {
           disconnect() {}
           query() {}
           transaction() {}
-        },
+        }
       ),
 
       // File System mock
@@ -166,7 +166,7 @@ export class MockBuilder {
           mkdir() {}
           exists() {}
           stat() {}
-        },
+        }
       ),
     };
   }
@@ -203,7 +203,7 @@ export class MockBuilder {
         const interactions = (mock as any).__interactions || [];
         const patternFound = this.matchInteractionPattern(
           interactions,
-          pattern,
+          pattern
         );
         expect(patternFound).toBe(true);
         return expectations;
@@ -214,7 +214,7 @@ export class MockBuilder {
         const interactions = (mock as any).__interactions || [];
         const expected = (mock as any).__expectedInteractions || [];
         const unexpected = interactions.filter(
-          (i: unknown) => !expected.includes(i.method),
+          (i: unknown) => !expected.includes(i.method)
         );
         expect(unexpected).toHaveLength(0);
         return expectations;
@@ -266,7 +266,7 @@ export class MockBuilder {
 
   private createMethodMock(
     methodName: string,
-    config: MockConfiguration,
+    config: MockConfiguration
   ): vi.Mock {
     const mock = vi.fn();
 
@@ -309,7 +309,7 @@ export class MockBuilder {
 
   private matchInteractionPattern(
     interactions: unknown[],
-    pattern: string,
+    pattern: string
   ): boolean {
     // Simple pattern matching for interaction sequences
     // Pattern format: "method1 -> method2 -> method3"

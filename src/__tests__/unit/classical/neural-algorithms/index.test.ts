@@ -172,7 +172,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       // Total algorithm count should be substantial
       const totalAlgorithms = Object.values(algorithmsToTest).reduce(
         (sum, algorithms) => sum + algorithms.length,
-        0,
+        0
       );
       expect(totalAlgorithms).toBeGreaterThanOrEqual(18);
     });
@@ -228,7 +228,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
 
       // Validate baseline structure
       for (const [operation, baseline] of Object.entries(
-        performanceBaselines,
+        performanceBaselines
       )) {
         expect(baseline).toBeDefined();
         expect(typeof baseline).toBe('object');
@@ -324,7 +324,7 @@ describe('Neural Algorithms - Classical TDD Test Suite', () => {
       expect(Object.keys(classicalTddAdvantages)).toHaveLength(7);
 
       for (const [advantage, description] of Object.entries(
-        classicalTddAdvantages,
+        classicalTddAdvantages
       )) {
         expect(description).toBeTruthy();
         expect(description.length).toBeGreaterThan(30);

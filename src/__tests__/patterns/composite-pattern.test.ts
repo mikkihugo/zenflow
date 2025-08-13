@@ -8,7 +8,7 @@ import { AgentFactory } from '../../coordination/agents/composite-system.ts';
 // Mock task executor for testing
 const createMockTaskExecutor = (
   delay: number = 50,
-  shouldSucceed: boolean = true,
+  shouldSucceed: boolean = true
 ) =>
   vi.fn().mockImplementation(async (task: TaskDefinition) => {
     await new Promise((resolve) => setTimeout(resolve, delay));
@@ -40,14 +40,14 @@ describe('Composite Pattern Implementation', () => {
           '1.0.0',
           'Process and transform data',
           { maxConcurrency: 2, timeout: 30000 },
-          { cpu: 0.5, memory: 512, network: 100, storage: 100 },
+          { cpu: 0.5, memory: 512, network: 100, storage: 100 }
         ),
         AgentFactory.createCapability(
           'text-analysis',
           '1.0.0',
           'Analyze and extract insights from text',
           { accuracy: 0.9, language: 'en' },
-          { cpu: 0.3, memory: 256, network: 50, storage: 50 },
+          { cpu: 0.3, memory: 256, network: 50, storage: 50 }
         ),
       ];
 
@@ -60,7 +60,7 @@ describe('Composite Pattern Implementation', () => {
           memory: 4096,
           network: 1000,
           storage: 1000,
-        },
+        }
       );
     });
 
@@ -121,7 +121,7 @@ describe('Composite Pattern Implementation', () => {
         expect(canHandle).toBe(false);
 
         await expect(agent.executeTask(incompatibleTask)).rejects.toThrow(
-          'Agent cannot handle task',
+          'Agent cannot handle task'
         );
       });
 
@@ -170,11 +170,11 @@ describe('Composite Pattern Implementation', () => {
 
         const startTime = Date.now();
         const results = await Promise.all(
-          tasks.map((task) => agent.executeTask(task)),
+          tasks.map((task) => agent.executeTask(task))
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
         expect(totalTime).toBeLessThan(600); // Should be < 3 * 200ms due to concurrency
         expect(totalTime).toBeGreaterThan(400); // Should be > 2 * 200ms due to queue limit
 
@@ -245,14 +245,14 @@ describe('Composite Pattern Implementation', () => {
               '1.0.0',
               'Process data',
               {},
-              { cpu: 0.3, memory: 256, network: 50, storage: 50 },
+              { cpu: 0.3, memory: 256, network: 50, storage: 50 }
             ),
             AgentFactory.createCapability(
               `specialized-${i}`,
               '1.0.0',
               `Specialized capability ${i}`,
               {},
-              { cpu: 0.2, memory: 128, network: 25, storage: 25 },
+              { cpu: 0.2, memory: 128, network: 25, storage: 25 }
             ),
           ];
 
@@ -260,14 +260,14 @@ describe('Composite Pattern Implementation', () => {
             `group-agent-${i}`,
             `Group Agent ${i}`,
             agentCapabilities,
-            { cpu: 1.0, memory: 1024, network: 200, storage: 200 },
+            { cpu: 1.0, memory: 1024, network: 200, storage: 200 }
           );
         });
 
         agentGroup = AgentFactory.createAgentGroup(
           'test-group',
           'Test Agent Group',
-          agents,
+          agents
         );
 
         // Initialize all agents
@@ -300,13 +300,13 @@ describe('Composite Pattern Implementation', () => {
         }));
 
         const results = await Promise.all(
-          tasks.map((task) => agentGroup.executeTask(task)),
+          tasks.map((task) => agentGroup.executeTask(task))
         );
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
 
         // Verify distribution - each agent should have handled some tasks
-        const agentExecutions = new Set(results?.map((r: any) => r.agentId));
+        const agentExecutions = new Set(results?.map((r: unknown) => r.agentId));
         expect(agentExecutions.size).toBeGreaterThan(1); // Multiple agents used
 
         const groupStatus = agentGroup.getStatus();
@@ -325,7 +325,7 @@ describe('Composite Pattern Implementation', () => {
           const testGroup = AgentFactory.createAgentGroup(
             `test-${strategy}`,
             `Test ${strategy}`,
-            agents,
+            agents
           );
 
           await testGroup.initialize({
@@ -348,9 +348,9 @@ describe('Composite Pattern Implementation', () => {
           }));
 
           const results = await Promise.all(
-            tasks.map((task) => testGroup.executeTask(task)),
+            tasks.map((task) => testGroup.executeTask(task))
           );
-          expect(results?.every((r: any) => r.success)).toBe(true);
+          expect(results?.every((r: unknown) => r.success)).toBe(true);
 
           await testGroup.shutdown();
         }
@@ -378,18 +378,18 @@ describe('Composite Pattern Implementation', () => {
         }));
 
         const results = await Promise.all(
-          tasks.map((task) => agentGroup.executeTask(task)),
+          tasks.map((task) => agentGroup.executeTask(task))
         );
 
         // Some tasks should succeed (handled by working agents)
-        const successfulTasks = results?.filter((r: any) => r.success);
-        const failedTasks = results?.filter((r: any) => !r.success);
+        const successfulTasks = results?.filter((r: unknown) => r.success);
+        const failedTasks = results?.filter((r: unknown) => !r.success);
 
         expect(successfulTasks.length).toBeGreaterThan(0);
         expect(failedTasks.length).toBeGreaterThan(0);
 
         // Failed tasks should have error information
-        failedTasks.forEach((result: any) => {
+        failedTasks.forEach((result: unknown) => {
           expect(result?.error).toBeDefined();
           expect(result?.error?.message).toContain('failed');
         });
@@ -400,18 +400,18 @@ describe('Composite Pattern Implementation', () => {
 
         // Should include common capabilities
         expect(
-          groupCapabilities.some((cap: any) => cap.name === 'data-processing'),
+          groupCapabilities.some((cap: unknown) => cap.name === 'data-processing')
         ).toBe(true);
 
         // Should include specialized capabilities from all members
         expect(
-          groupCapabilities.some((cap: any) => cap.name === 'specialized-0'),
+          groupCapabilities.some((cap: unknown) => cap.name === 'specialized-0')
         ).toBe(true);
         expect(
-          groupCapabilities.some((cap: any) => cap.name === 'specialized-1'),
+          groupCapabilities.some((cap: unknown) => cap.name === 'specialized-1')
         ).toBe(true);
         expect(
-          groupCapabilities.some((cap: any) => cap.name === 'specialized-2'),
+          groupCapabilities.some((cap: unknown) => cap.name === 'specialized-2')
         ).toBe(true);
 
         expect(groupCapabilities.length).toBeGreaterThan(3); // At least 4 capabilities
@@ -441,14 +441,14 @@ describe('Composite Pattern Implementation', () => {
               '1.0.0',
               'Basic processing',
               {},
-              { cpu: 0.2, memory: 128, network: 25, storage: 25 },
+              { cpu: 0.2, memory: 128, network: 25, storage: 25 }
             ),
             AgentFactory.createCapability(
               `tier-${Math.floor(i / 2)}`,
               '1.0.0',
               `Tier ${Math.floor(i / 2)} capability`,
               {},
-              { cpu: 0.1, memory: 64, network: 12, storage: 12 },
+              { cpu: 0.1, memory: 64, network: 12, storage: 12 }
             ),
           ];
 
@@ -461,7 +461,7 @@ describe('Composite Pattern Implementation', () => {
               memory: 512,
               network: 100,
               storage: 100,
-            },
+            }
           );
         });
 
@@ -472,7 +472,7 @@ describe('Composite Pattern Implementation', () => {
           const subGroup = AgentFactory.createAgentGroup(
             `sub-group-${i}`,
             `Sub Group ${i}`,
-            groupAgents,
+            groupAgents
           );
           subGroups.push(subGroup);
         }
@@ -482,7 +482,7 @@ describe('Composite Pattern Implementation', () => {
           'hierarchical-test',
           'Hierarchical Test Group',
           subGroups,
-          2, // Max depth
+          2 // Max depth
         );
 
         // Initialize all components
@@ -546,15 +546,15 @@ describe('Composite Pattern Implementation', () => {
         ];
 
         const results = await Promise.all(
-          tasks.map((task) => hierarchicalGroup.executeTask(task)),
+          tasks.map((task) => hierarchicalGroup.executeTask(task))
         );
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
 
         // Verify tasks were routed to appropriate tier agents
         results?.forEach((result, index) => {
           const expectedTier = Math.floor(
-            Number.parseInt(result?.agentId?.split('-')[2]) / 2,
+            Number.parseInt(result?.agentId?.split('-')[2]) / 2
           );
           expect(expectedTier).toBe(index); // tier-0 -> agents 0-1, tier-1 -> agents 2-3, etc.
         });
@@ -595,20 +595,20 @@ describe('Composite Pattern Implementation', () => {
         }));
 
         const results = await Promise.all(
-          tasks.map((task) => hierarchicalGroup.executeTask(task)),
+          tasks.map((task) => hierarchicalGroup.executeTask(task))
         );
 
         // Some tasks should succeed (handled by working sub-groups)
-        const successfulTasks = results?.filter((r: any) => r.success);
+        const successfulTasks = results?.filter((r: unknown) => r.success);
         expect(successfulTasks.length).toBeGreaterThan(0);
 
         // Failed tasks should be redistributed to working sub-groups
         const workingSubGroups = subGroups.slice(1); // Groups 1 and 2 should work
         const expectedSuccessfulTasks = Math.floor(
-          tasks.length * (workingSubGroups.length / subGroups.length),
+          tasks.length * (workingSubGroups.length / subGroups.length)
         );
         expect(successfulTasks.length).toBeGreaterThanOrEqual(
-          expectedSuccessfulTasks,
+          expectedSuccessfulTasks
         );
       });
 
@@ -626,7 +626,7 @@ describe('Composite Pattern Implementation', () => {
               resources: { cpu: 0.05, memory: 16, network: 2, storage: 2 },
             },
             metadata: { source: 'optimization-test', timestamp: new Date() },
-          }),
+          })
         );
 
         const complexTasks: TaskDefinition[] = Array.from(
@@ -641,22 +641,22 @@ describe('Composite Pattern Implementation', () => {
               resources: { cpu: 0.2, memory: 64, network: 10, storage: 10 },
             },
             metadata: { source: 'optimization-test', timestamp: new Date() },
-          }),
+          })
         );
 
         const allTasks = [...simpleTasks, ...complexTasks];
         const startTime = Date.now();
         const results = await Promise.all(
-          allTasks.map((task) => hierarchicalGroup.executeTask(task)),
+          allTasks.map((task) => hierarchicalGroup.executeTask(task))
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
         expect(totalTime).toBeLessThan(300); // Should be efficient due to parallel processing
 
         // Verify load distribution
         const agentUsage = new Map<string, number>();
-        results?.forEach((result: any) => {
+        results?.forEach((result: unknown) => {
           const count = agentUsage.get(result?.agentId) || 0;
           agentUsage.set(result?.agentId, count + 1);
         });
@@ -679,7 +679,7 @@ describe('Composite Pattern Implementation', () => {
               '1.0.0',
               'Bulk data processing',
               { maxThroughput: 10 },
-              { cpu: 0.1, memory: 64, network: 10, storage: 10 },
+              { cpu: 0.1, memory: 64, network: 10, storage: 10 }
             ),
           ];
 
@@ -692,14 +692,14 @@ describe('Composite Pattern Implementation', () => {
               memory: 128,
               network: 20,
               storage: 20,
-            },
+            }
           );
         });
 
         const bulkGroup = AgentFactory.createAgentGroup(
           'bulk-processing-group',
           'Bulk Processing Group',
-          agents,
+          agents
         );
 
         // Initialize agents with fast task executor
@@ -729,16 +729,16 @@ describe('Composite Pattern Implementation', () => {
               resources: { cpu: 0.01, memory: 8, network: 1, storage: 1 },
             },
             metadata: { source: 'bulk-test', timestamp: new Date() },
-          }),
+          })
         );
 
         const startTime = Date.now();
         const results = await Promise.all(
-          tasks.map((task) => bulkGroup.executeTask(task)),
+          tasks.map((task) => bulkGroup.executeTask(task))
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r: any) => r.success)).toBe(true);
+        expect(results?.every((r: unknown) => r.success)).toBe(true);
         expect(results).toHaveLength(taskCount);
 
         // Should process very quickly due to parallelization
@@ -749,7 +749,7 @@ describe('Composite Pattern Implementation', () => {
 
         // Verify load distribution
         const agentUsage = new Map<string, number>();
-        results?.forEach((result: any) => {
+        results?.forEach((result: unknown) => {
           const count = agentUsage.get(result?.agentId) || 0;
           agentUsage.set(result?.agentId, count + 1);
         });
@@ -767,7 +767,7 @@ describe('Composite Pattern Implementation', () => {
         // Create deep hierarchy
         const createHierarchy = async (
           depth: number,
-          prefix: string,
+          prefix: string
         ): Promise<AgentComponent[]> => {
           if (depth === 0) {
             // Create leaf agents
@@ -778,7 +778,7 @@ describe('Composite Pattern Implementation', () => {
                   '1.0.0',
                   'Memory efficiency test',
                   {},
-                  { cpu: 0.05, memory: 32, network: 5, storage: 5 },
+                  { cpu: 0.05, memory: 32, network: 5, storage: 5 }
                 ),
               ];
 
@@ -786,7 +786,7 @@ describe('Composite Pattern Implementation', () => {
                 `${prefix}-leaf-${i}`,
                 `Leaf Agent ${i}`,
                 capabilities,
-                { cpu: 0.1, memory: 64, network: 10, storage: 10 },
+                { cpu: 0.1, memory: 64, network: 10, storage: 10 }
               );
             });
           }
@@ -798,7 +798,7 @@ describe('Composite Pattern Implementation', () => {
               `${prefix}-group-${i}`,
               `Group ${prefix}-${i}`,
               children,
-              maxDepth,
+              maxDepth
             );
             subGroups.push(subGroup);
           }
@@ -810,7 +810,7 @@ describe('Composite Pattern Implementation', () => {
           'memory-test-root',
           'Memory Test Root',
           hierarchy,
-          maxDepth + 1,
+          maxDepth + 1
         );
 
         // Initialize hierarchy
@@ -916,7 +916,7 @@ describe('Composite Pattern Implementation', () => {
             '2.0.0',
             'Test capability for factory',
             { param1: 'value1' },
-            { cpu: 0.5, memory: 256, network: 50, storage: 50 },
+            { cpu: 0.5, memory: 256, network: 50, storage: 50 }
           ),
         ];
 
@@ -924,7 +924,7 @@ describe('Composite Pattern Implementation', () => {
           'factory-test-agent',
           'Factory Test Agent',
           capabilities,
-          { cpu: 1.0, memory: 512, network: 100, storage: 100 },
+          { cpu: 1.0, memory: 512, network: 100, storage: 100 }
         );
 
         expect(agent.getId()).toBe('factory-test-agent');
@@ -940,7 +940,7 @@ describe('Composite Pattern Implementation', () => {
         const group = AgentFactory.createAgentGroup(
           'factory-test-group',
           'Factory Test Group',
-          members,
+          members
         );
 
         expect(group.getId()).toBe('factory-test-group');
@@ -957,7 +957,7 @@ describe('Composite Pattern Implementation', () => {
           'hierarchy-test',
           'Hierarchy Test',
           members,
-          maxDepth,
+          maxDepth
         );
 
         expect(hierarchicalGroup.getId()).toBe('hierarchy-test');
@@ -971,7 +971,7 @@ describe('Composite Pattern Implementation', () => {
           '1.0.0',
           'Capability with validation',
           { required: true, timeout: 30000 },
-          { cpu: 1.0, memory: 1024, network: 200, storage: 200 },
+          { cpu: 1.0, memory: 1024, network: 200, storage: 200 }
         );
 
         expect(capability.name).toBe('validated-capability');
@@ -1039,8 +1039,8 @@ describe('Composite Pattern Implementation', () => {
           metadata: { source: 'compatibility-test', timestamp: new Date() },
         };
 
-        mockAgent.canHandleTask.mockImplementation((task: any) =>
-          task.requirements.capabilities.includes('existing-capability'),
+        mockAgent.canHandleTask.mockImplementation((task: unknown) =>
+          task.requirements.capabilities.includes('existing-capability')
         );
 
         expect(mockAgent.canHandleTask(compatibleTask)).toBe(true);
@@ -1075,10 +1075,10 @@ describe('Composite Pattern Implementation', () => {
         ];
 
         mockAgent.getCapabilities.mockReturnValue(
-          agentCapabilities as AgentCapability[],
+          agentCapabilities as AgentCapability[]
         );
         mockGroup.getCapabilities.mockReturnValue(
-          groupCapabilities as AgentCapability[],
+          groupCapabilities as AgentCapability[]
         );
 
         const agentCaps = mockAgent.getCapabilities();
@@ -1086,12 +1086,12 @@ describe('Composite Pattern Implementation', () => {
 
         expect(agentCaps).toHaveLength(2);
         expect(groupCaps).toHaveLength(2);
-        expect(agentCaps.some((cap: any) => cap.name === 'agent-capability')).toBe(
-          true,
-        );
-        expect(groupCaps.some((cap: any) => cap.name === 'group-capability')).toBe(
-          true,
-        );
+        expect(
+          agentCaps.some((cap: unknown) => cap.name === 'agent-capability')
+        ).toBe(true);
+        expect(
+          groupCaps.some((cap: unknown) => cap.name === 'group-capability')
+        ).toBe(true);
       });
 
       it('should handle component lifecycle correctly', async () => {
@@ -1138,7 +1138,7 @@ describe('Composite Pattern Implementation', () => {
         strategies.forEach((strategy) => {
           mockGroup.setLoadBalancingStrategy(strategy);
           expect(mockGroup.setLoadBalancingStrategy).toHaveBeenCalledWith(
-            strategy,
+            strategy
           );
         });
 
@@ -1267,13 +1267,13 @@ describe('Composite Pattern Implementation', () => {
           memory: 512,
           network: 100,
           storage: 100,
-        },
+        }
       );
 
       const group1 = AgentFactory.createAgentGroup(
         'circular-group-1',
         'Circular Group 1',
-        [agent1],
+        [agent1]
       );
 
       // Attempting to add group1 to itself should be prevented
@@ -1292,10 +1292,10 @@ describe('Composite Pattern Implementation', () => {
             '1.0.0',
             'Limited processing',
             {},
-            { cpu: 0.1, memory: 64, network: 10, storage: 10 },
+            { cpu: 0.1, memory: 64, network: 10, storage: 10 }
           ),
         ],
-        { cpu: 0.2, memory: 128, network: 20, storage: 20 },
+        { cpu: 0.2, memory: 128, network: 20, storage: 20 }
       );
 
       await limitedAgent.initialize({
@@ -1316,13 +1316,13 @@ describe('Composite Pattern Implementation', () => {
             resources: { cpu: 0.1, memory: 64, network: 10, storage: 10 },
           },
           metadata: { source: 'resource-test', timestamp: new Date() },
-        }),
+        })
       );
 
       // Submit tasks simultaneously - should queue due to resource limits
       const startTime = Date.now();
       const results = await Promise.all(
-        resourceIntensiveTasks.map((task) => limitedAgent.executeTask(task)),
+        resourceIntensiveTasks.map((task) => limitedAgent.executeTask(task))
       );
       const totalTime = Date.now() - startTime;
 
@@ -1343,10 +1343,10 @@ describe('Composite Pattern Implementation', () => {
             '1.0.0',
             'Validation test',
             {},
-            { cpu: 0.1, memory: 64, network: 10, storage: 10 },
+            { cpu: 0.1, memory: 64, network: 10, storage: 10 }
           ),
         ],
-        { cpu: 1.0, memory: 512, network: 100, storage: 100 },
+        { cpu: 1.0, memory: 512, network: 100, storage: 100 }
       );
 
       await agent.initialize({
@@ -1390,17 +1390,17 @@ describe('Composite Pattern Implementation', () => {
               '1.0.0',
               'Shutdown test',
               {},
-              { cpu: 0.1, memory: 64, network: 10, storage: 10 },
+              { cpu: 0.1, memory: 64, network: 10, storage: 10 }
             ),
           ],
-          { cpu: 0.5, memory: 256, network: 50, storage: 50 },
-        ),
+          { cpu: 0.5, memory: 256, network: 50, storage: 50 }
+        )
       );
 
       const group = AgentFactory.createAgentGroup(
         'concurrent-shutdown-group',
         'Concurrent Shutdown Group',
-        agents,
+        agents
       );
 
       for (const agent of agents) {

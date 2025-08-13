@@ -9,7 +9,7 @@
 import { getLogger } from '../../../../config/logging-config.ts';
 
 const logger = getLogger(
-  'coordination-swarm-sparc-tests-database-driven-architecture-enginetest',
+  'coordination-swarm-sparc-tests-database-driven-architecture-enginetest'
 );
 
 /**
@@ -67,7 +67,7 @@ class MockDatabaseAdapter {
         if (sql.includes('WHERE') && params.length > 0) {
           // Simple mock for WHERE queries
           const record = table.find(
-            (r) => r.architecture_id === params?.[0] || r.id === params?.[0],
+            (r) => r.architecture_id === params?.[0] || r.id === params?.[0]
           );
           return { rows: record ? [record] : [] };
         }
@@ -96,7 +96,7 @@ class MockDatabaseAdapter {
     return { rows: [] };
   }
 
-  private createMockRecord(params: unknown[]): any {
+  private createMockRecord(params: unknown[]): unknown {
     return {
       id: params?.[0] || nanoid(),
       architecture_id: params?.[1] || nanoid(),
@@ -135,7 +135,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
   const mockDb = new MockDatabaseAdapter();
   const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(
     mockDb,
-    mockLogger,
+    mockLogger
   );
 
   try {
@@ -382,7 +382,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       await architectureEngine.designArchitecture(testPseudocode);
     const validation =
       await architectureEngine.validateArchitecturalConsistency(
-        architecture.systemArchitecture,
+        architecture.systemArchitecture
       );
     if (architecture.id) {
       const _retrievedArchitecture =

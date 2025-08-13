@@ -1164,7 +1164,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
   },
 
   customizeSpecification(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): DetailedSpecification {
     const customized = { ...this.specification };
     // Enhanced: Add project name and description to specification

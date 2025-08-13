@@ -211,7 +211,7 @@ export class IntegrationTestSetup {
 
   private async createSqliteDatabaseHelper(): Promise<DatabaseTestHelper> {
     const dbPath = join(await this.createTempDir('db'), 'test.db');
-    let db: any = null;
+    let db: unknown = null;
 
     return {
       async setup() {
@@ -234,7 +234,7 @@ export class IntegrationTestSetup {
               (err: unknown) => {
                 if (err) reject(err);
                 else resolve();
-              },
+              }
             );
           });
         } catch (_error) {
@@ -260,7 +260,7 @@ export class IntegrationTestSetup {
         if (!db) return;
 
         const stmt = db.prepare(
-          'INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)',
+          'INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)'
         );
 
         for (const [index, item] of data?.entries()) {
@@ -296,7 +296,7 @@ export class IntegrationTestSetup {
     // This would require a PostgreSQL connection
     // For now, return a mock implementation
     console.warn(
-      'PostgreSQL integration not implemented, using memory database',
+      'PostgreSQL integration not implemented, using memory database'
     );
     return this.createMemoryDatabaseHelper();
   }
@@ -396,7 +396,7 @@ export class IntegrationTestSetup {
         mockResponses?.clear();
       },
 
-      mockRequest(path: string, response: any): void {
+      mockRequest(path: string, response: unknown): void {
         mockResponses?.set(path, response);
       },
 
@@ -411,13 +411,13 @@ export class IntegrationTestSetup {
   }
 
   private async createLocalhostNetworkHelper(): Promise<NetworkTestHelper> {
-    let server: any = null;
+    let server: unknown = null;
     const requests: unknown[] = [];
     const routes = new Map<string, any>();
 
     return {
       async startMockServer(
-        port: number = this.getRandomPort(),
+        port: number = this.getRandomPort()
       ): Promise<void> {
         try {
           const http = await import('node:http');
@@ -462,7 +462,7 @@ export class IntegrationTestSetup {
         }
       },
 
-      mockRequest(path: string, response: any): void {
+      mockRequest(path: string, response: unknown): void {
         routes.set(path, response);
       },
 
@@ -489,7 +489,7 @@ export class IntegrationTestSetup {
 
   private async stopServices(): Promise<void> {
     await Promise.allSettled(
-      this.processes.map((process) => this.stopProcess(process)),
+      this.processes.map((process) => this.stopProcess(process))
     );
     this.processes = [];
   }
@@ -518,7 +518,7 @@ export class IntegrationTestSetup {
   private async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = join(
       tmpdir(),
-      `claude-zen-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`,
+      `claude-zen-flow-${prefix}-${Date.now()}-${Math.random().toString(36)}`
     );
     await fs.mkdir(tempPath, { recursive: true });
     this.tempDirs.push(tempPath);
@@ -563,7 +563,7 @@ export async function setupTestEnvironment(config?: IntegrationTestConfig) {
 
 export async function createTestWorkspace(
   testName: string,
-  config?: IntegrationTestConfig,
+  config?: IntegrationTestConfig
 ) {
   const setup = new IntegrationTestSetup(config);
   return setup.createIsolatedEnvironment(testName);

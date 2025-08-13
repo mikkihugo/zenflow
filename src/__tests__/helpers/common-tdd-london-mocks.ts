@@ -22,7 +22,7 @@ export class MockCoordinationService {
     (
       agentIds: string[],
       topology: string,
-      task?: string,
+      task?: string
     ) => Promise<CoordinationResult>
   > = vi.fn();
 
@@ -55,12 +55,12 @@ export class MockCoordinationService {
   expectCoordinationCalled(
     agentIds: string[],
     topology: string,
-    task?: string,
+    task?: string
   ) {
     expect(this.coordinateAgents).toHaveBeenCalledWith(
       agentIds,
       topology,
-      task,
+      task
     );
     return this;
   }
@@ -108,7 +108,7 @@ export class MockMemoryStoreService {
     this.initialize.mockResolvedValue(undefined);
   }
 
-  expectStoreCalled(key: string, value?: any) {
+  expectStoreCalled(key: string, value?: unknown) {
     if (value !== undefined) {
       expect(this.store).toHaveBeenCalledWith(key, value);
     } else {
@@ -128,8 +128,8 @@ export class MockMemoryStoreService {
   }
 
   setupRetrieveValue(key: string, value: unknown) {
-    this.retrieve.mockImplementationOnce((k: any) =>
-      k === key ? Promise.resolve(value) : Promise.resolve(null),
+    this.retrieve.mockImplementationOnce((k: unknown) =>
+      k === key ? Promise.resolve(value) : Promise.resolve(null)
     );
     return this;
   }
@@ -166,13 +166,13 @@ export class MockLoggerService {
       expect(this.error).toHaveBeenCalledWith(
         message,
         error,
-        expect.anything(),
+        expect.anything()
       );
     } else {
       expect(this.error).toHaveBeenCalledWith(
         message,
         expect.any(Error),
-        expect.anything(),
+        expect.anything()
       );
     }
     return this;
@@ -227,7 +227,7 @@ export class MockSwarmService {
   expectAgentSpawned(config?: unknown) {
     if (config) {
       expect(this.spawnAgent).toHaveBeenCalledWith(
-        expect.objectContaining(config),
+        expect.objectContaining(config)
       );
     } else {
       expect(this.spawnAgent).toHaveBeenCalled();
@@ -237,14 +237,14 @@ export class MockSwarmService {
 
   expectTaskOrchestrated(task: unknown) {
     expect(this.orchestrateTask).toHaveBeenCalledWith(
-      expect.objectContaining(task),
+      expect.objectContaining(task)
     );
     return this;
   }
 
   setupSwarmFailure(method: keyof MockSwarmService, error: string) {
     (this[method] as vi.MockedFunction<unknown>).mockRejectedValueOnce(
-      new Error(error),
+      new Error(error)
     );
     return this;
   }
@@ -275,7 +275,7 @@ export class MockDatabaseService {
   constructor() {
     this.query.mockResolvedValue([]);
     this.execute.mockResolvedValue({ affectedRows: 1 });
-    this.transaction.mockImplementation(async (fn: any) => fn(this));
+    this.transaction.mockImplementation(async (fn: unknown) => fn(this));
     this.connect.mockResolvedValue(undefined);
     this.disconnect.mockResolvedValue(undefined);
   }
@@ -295,8 +295,8 @@ export class MockDatabaseService {
   }
 
   setupQueryResult(sql: string, result: unknown[]) {
-    this.query.mockImplementationOnce((querySql: any) =>
-      querySql.includes(sql) ? Promise.resolve(result) : Promise.resolve([]),
+    this.query.mockImplementationOnce((querySql: unknown) =>
+      querySql.includes(sql) ? Promise.resolve(result) : Promise.resolve([])
     );
     return this;
   }
@@ -333,7 +333,7 @@ export class MockMCPServerService {
   expectMessageHandled(message?: unknown) {
     if (message) {
       expect(this.handleMessage).toHaveBeenCalledWith(
-        expect.objectContaining(message),
+        expect.objectContaining(message)
       );
     } else {
       expect(this.handleMessage).toHaveBeenCalled();
@@ -343,7 +343,7 @@ export class MockMCPServerService {
 
   expectToolRegistered(tool: unknown) {
     expect(this.registerTool).toHaveBeenCalledWith(
-      expect.objectContaining(tool),
+      expect.objectContaining(tool)
     );
     return this;
   }
@@ -400,7 +400,7 @@ export function createCommonMocks() {
  * Helper to clear all mocks in a collection
  */
 export function clearAllCommonMocks(
-  mocks: ReturnType<typeof createCommonMocks>,
+  mocks: ReturnType<typeof createCommonMocks>
 ) {
   Object.values(mocks).forEach((mock) => mock.clearAllMocks());
 }

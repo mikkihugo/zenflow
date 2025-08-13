@@ -35,7 +35,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       },
       undefined,
       undefined,
-      gatesManager,
+      gatesManager
     );
 
     // Create mock memory system
@@ -73,7 +73,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
       mockDocumentManager as any,
       eventBus,
       undefined, // aguiAdapter
-      {}, // config
+      {} // config
     );
 
     await gatesManager.initialize();
@@ -123,7 +123,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
               autoApproval: false,
             },
           },
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -151,7 +151,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
             await workflowEngine.resumeWorkflowAfterGate(
               workflowId,
               gateStatus.pausedForGate.gateId,
-              true,
+              true
             );
           }
         } else if (
@@ -196,7 +196,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
               autoApproval: false,
             },
           },
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -216,7 +216,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         await workflowEngine.resumeWorkflowAfterGate(
           workflowId,
           gateStatus.pausedForGate.gateId,
-          false,
+          false
         );
 
         await new Promise((resolve) => setTimeout(resolve, 100));
@@ -271,7 +271,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
               autoApproval: true,
             },
           },
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -294,7 +294,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
           await workflowEngine.resumeWorkflowAfterGate(
             workflowId,
             gateStatus.pausedForGate.gateId,
-            true,
+            true
           );
         } else if (
           ['completed', 'failed'].includes(workflowStatus?.status || '')
@@ -402,7 +402,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
               autoApproval: false,
             },
           },
-        },
+        }
       );
 
       expect(result.success).toBe(true);
@@ -427,14 +427,14 @@ describe('ProductWorkflowEngine Gates Integration', () => {
         if (gateStatus.pausedForGate) {
           gateCount++;
           logger.info(
-            `Processing gate ${gateCount}: ${gateStatus.pausedForGate.gateId}`,
+            `Processing gate ${gateCount}: ${gateStatus.pausedForGate.gateId}`
           );
 
           // Approve gates (simulate stakeholder approval)
           await workflowEngine.resumeWorkflowAfterGate(
             workflowId,
             gateStatus.pausedForGate.gateId,
-            true,
+            true
           );
         } else if (
           ['completed', 'failed'].includes(workflowStatus?.status || '')
@@ -463,7 +463,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
 
       // All processed gates should be approved
       const approvedGates = finalGateStatus.gateResults.filter(
-        (g) => g.approved,
+        (g) => g.approved
       );
       expect(approvedGates.length).toBe(finalGateStatus.gateResults.length);
     });
@@ -502,7 +502,7 @@ describe('ProductWorkflowEngine Gates Integration', () => {
               autoApproval: true,
             },
           },
-        },
+        }
       );
 
       expect(result.success).toBe(true);

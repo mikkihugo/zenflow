@@ -3,7 +3,7 @@ import { createMock } from 'ts-auto-mock'; // optional; if unavailable, replace 
 // Import the actual auth middleware when available. Keep path aligned with your project layout.
 import { authMiddleware } from '../../../../../interfaces/api/http/middleware/auth.ts';
 
-type NextFunction = (err?: any) => void;
+type NextFunction = (err?: unknown) => void;
 
 // Minimal Request/Response mocks if express types are in use; otherwise adapt to your HTTP adapter
 type Req = IncomingMessage & {
@@ -14,7 +14,7 @@ type Res = ServerResponse & {
   statusCode?: number;
   locals?: Record<string, unknown>;
   json?: (body: unknown) => void;
-  end?: (chunk?: any) => void;
+  end?: (chunk?: unknown) => void;
 };
 
 const makeReq = (headers: Record<string, string | undefined> = {}): Req => {
@@ -38,7 +38,7 @@ const makeNext = (): NextFunction => vi.fn();
 // Helper to run the middleware synchronously if it supports callback-next semantics
 const runMiddleware = async (
   req: Req,
-  res: Res,
+  res: Res
 ): Promise<{ next: jest.Mock; res: Res }> => {
   const next = makeNext();
   // @ts-ignore next signature depends on impl; adapt if using (err?) => void
@@ -108,7 +108,7 @@ describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
         // user object can exist but must not contain tokens
         const userStr = JSON.stringify(req.user);
         expect(userStr).not.toMatch(
-          /VALID\.TOKEN|EXPIRED\.TOKEN|key_valid_123|key_invalid/i,
+          /VALID\.TOKEN|EXPIRED\.TOKEN|key_valid_123|key_invalid/i
         );
       }
     } else {
@@ -148,7 +148,7 @@ describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
 
     // Normalization is allowed (e.g., lower-case copy), but original keys should remain readable
     expect(
-      req.headers.authorization ?? req.headers['Authorization'],
+      req.headers.authorization ?? req.headers['Authorization']
     ).toBeDefined();
     expect(req.headers['x-api-key'] ?? req.headers['X-API-KEY']).toBeDefined();
   });

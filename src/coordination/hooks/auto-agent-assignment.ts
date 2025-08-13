@@ -47,7 +47,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   async assignOptimalAgent(
-    context: OperationContext,
+    context: OperationContext
   ): Promise<AgentAssignment> {
     // 1. Analyze operation requirements
     const analysis = await this.analyzeOperation(context);
@@ -60,13 +60,13 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     // 4. Select optimal agent
     const selectedAgent = scoredAgents.reduce((best, current) =>
-      current?.score > best.score ? current : best,
+      current?.score > best.score ? current : best
     );
 
     // 5. Estimate performance for the assignment
     const performanceEstimate = await this.estimatePerformance(
       selectedAgent?.agent,
-      context,
+      context
     );
 
     return {
@@ -89,7 +89,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   async updateAgentWorkload(
     agent: AgentInfo,
-    operation: Operation,
+    operation: Operation
   ): Promise<void> {
     const currentWorkload = this.workloadTracker.get(agent.id) || 0;
     const estimatedDuration = await this.estimateOperationDuration(operation);
@@ -99,7 +99,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     // Update agent's current workload
     await this.persistWorkloadUpdate(
       agent.id,
-      currentWorkload + estimatedDuration,
+      currentWorkload + estimatedDuration
     );
   }
 
@@ -117,7 +117,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     const threshold = 0.2; // 20% deviation threshold
 
     const unbalanced = workloads.filter(
-      (wl) => Math.abs(wl.utilization - averageUtilization) > threshold,
+      (wl) => Math.abs(wl.utilization - averageUtilization) > threshold
     );
 
     const recommendations: WorkloadRecommendation[] = [];
@@ -146,13 +146,13 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
       recommendations,
       projectedEfficiency: this.calculateProjectedEfficiency(
         workloads,
-        recommendations,
+        recommendations
       ),
     };
   }
 
   private async analyzeOperation(
-    context: OperationContext,
+    context: OperationContext
   ): Promise<OperationAnalysis> {
     const fileType = context.filePath
       ? this.detectFileType(context.filePath)
@@ -221,7 +221,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   private async assessComplexity(
-    context: OperationContext,
+    context: OperationContext
   ): Promise<ComplexityLevel> {
     let score = 0;
 
@@ -250,7 +250,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private inferRequiredSkills(
     fileType: FileType,
-    operationType: OperationType,
+    operationType: OperationType
   ): string[] {
     const skills: Set<string> = new Set();
 
@@ -311,7 +311,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   private async getCandidateAgents(
-    analysis: OperationAnalysis,
+    analysis: OperationAnalysis
   ): Promise<AgentInfo[]> {
     const candidates: AgentInfo[] = [];
 
@@ -320,7 +320,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     // Get agents based on operation type
     const operationAgents = this.getAgentsByOperationType(
-      analysis.operationType,
+      analysis.operationType
     );
 
     // Combine and deduplicate
@@ -370,7 +370,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async scoreAgents(
     candidates: AgentInfo[],
-    analysis: OperationAnalysis,
+    analysis: OperationAnalysis
   ): Promise<ScoredAgent[]> {
     const scoredAgents: ScoredAgent[] = [];
 
@@ -391,7 +391,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async calculateAgentScore(
     agent: AgentInfo,
-    analysis: OperationAnalysis,
+    analysis: OperationAnalysis
   ): Promise<AgentScore> {
     const breakdown: ScoreBreakdown = {
       skillMatch: 0,
@@ -405,7 +405,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     // Skill matching (40% weight)
     const skillMatchRatio = this.calculateSkillMatch(
       agent.capabilities,
-      analysis.requiredSkills,
+      analysis.requiredSkills
     );
     breakdown.skillMatch = skillMatchRatio * 40;
 
@@ -421,7 +421,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     // Specialization bonus (5% weight)
     const specializationMatch = agent.specialties.some((specialty) =>
-      analysis.requiredSkills.includes(specialty),
+      analysis.requiredSkills.includes(specialty)
     );
     breakdown.specialization = specializationMatch ? 5 : 0;
 
@@ -431,7 +431,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
     const total = Object.values(breakdown).reduce(
       (sum, score) => sum + score,
-      0,
+      0
     );
 
     return { total, breakdown };
@@ -439,14 +439,14 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private calculateSkillMatch(
     agentCapabilities: string[],
-    requiredSkills: string[],
+    requiredSkills: string[]
   ): number {
     if (requiredSkills.length === 0) return 1;
 
     const matches = requiredSkills.filter((skill) =>
       agentCapabilities.some((cap) =>
-        cap.toLowerCase().includes(skill.toLowerCase()),
-      ),
+        cap.toLowerCase().includes(skill.toLowerCase())
+      )
     );
 
     return matches.length / requiredSkills.length;
@@ -455,19 +455,19 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   private generateReasoning(
     agent: AgentInfo,
     analysis: OperationAnalysis,
-    score: AgentScore,
+    score: AgentScore
   ): string {
     const reasons: string[] = [];
 
     if (score.breakdown.skillMatch > 20) {
       reasons.push(
-        `Strong skill match for ${analysis.fileType} and ${analysis.operationType}`,
+        `Strong skill match for ${analysis.fileType} and ${analysis.operationType}`
       );
     }
 
     if (score.breakdown.performance > 20) {
       reasons.push(
-        `Excellent performance history (${(agent.performance.successRate * 100).toFixed(1)}% success rate)`,
+        `Excellent performance history (${(agent.performance.successRate * 100).toFixed(1)}% success rate)`
       );
     }
 
@@ -488,7 +488,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async getHistoricalPerformanceScore(
     agentId: string,
-    analysis: OperationAnalysis,
+    analysis: OperationAnalysis
   ): Promise<number> {
     // Mock implementation - would query actual performance database
     const historicalData = await this.loadPerformanceHistory(agentId);
@@ -496,7 +496,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
     const relevantHistory = historicalData?.filter(
       (record) =>
         record.context['fileType'] === analysis['fileType'] ||
-        record.context['operationType'] === analysis['operationType'],
+        record.context['operationType'] === analysis['operationType']
     );
 
     if (relevantHistory.length === 0) return 0.5; // Neutral score
@@ -509,7 +509,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async estimatePerformance(
     agent: AgentInfo,
-    context: OperationContext,
+    context: OperationContext
   ): Promise<PerformanceEstimate> {
     // Base estimate on historical performance
     const baseTime = context.estimatedDuration;
@@ -537,7 +537,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private meetsRequirements(
     agent: AgentInfo,
-    analysis: OperationAnalysis,
+    analysis: OperationAnalysis
   ): boolean {
     // Check if agent can handle the complexity
     if (
@@ -562,7 +562,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private calculateProjectedEfficiency(
     workloads: unknown[],
-    recommendations: WorkloadRecommendation[],
+    recommendations: WorkloadRecommendation[]
   ): number {
     // Mock implementation - would calculate efficiency improvement
     const currentEfficiency =
@@ -577,13 +577,13 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   // Mock implementations for data persistence (would integrate with actual storage)
   private async loadAgentMemory(
-    _agentId: string,
+    _agentId: string
   ): Promise<Record<string, unknown>> {
     return {}; // Mock implementation
   }
 
   private async loadAgentPreferences(
-    _agentId: string,
+    _agentId: string
   ): Promise<Record<string, unknown>> {
     return {}; // Mock implementation
   }
@@ -593,13 +593,13 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   }
 
   private async loadPerformanceHistory(
-    _agentId: string,
+    _agentId: string
   ): Promise<PerformanceHistory[]> {
     return []; // Mock implementation
   }
 
   private async estimateOperationDuration(
-    _operation: Operation,
+    _operation: Operation
   ): Promise<number> {
     // Mock implementation - would use ML models for estimation
     return 300; // 5 minutes default
@@ -607,7 +607,7 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
 
   private async persistWorkloadUpdate(
     _agentId: string,
-    _newWorkload: number,
+    _newWorkload: number
   ): Promise<void> {
     // Mock implementation
   }

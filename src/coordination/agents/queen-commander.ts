@@ -173,7 +173,7 @@ export class QueenCommander extends EventEmitter {
     config: Partial<QueenCommanderConfig>,
     logger: ILogger,
     eventBus: IEventBus,
-    memory: MemoryCoordinator,
+    memory: MemoryCoordinator
   ) {
     super();
     this.logger = logger;
@@ -910,7 +910,7 @@ export class QueenCommander extends EventEmitter {
 
     // Gracefully shutdown all agents
     const shutdownPromises = Array.from(this.agents.keys()).map((agentId) =>
-      this.stopAgent(agentId, 'shutdown'),
+      this.stopAgent(agentId, 'shutdown')
     );
 
     await Promise.all(shutdownPromises);
@@ -926,7 +926,7 @@ export class QueenCommander extends EventEmitter {
       name?: string;
       config?: Partial<AgentConfig>;
       environment?: Partial<AgentEnvironment>;
-    } = {},
+    } = {}
   ): Promise<string> {
     if (this.agents.size >= this.config.maxAgents) {
       throw new Error('Maximum agent limit reached');
@@ -1037,7 +1037,7 @@ export class QueenCommander extends EventEmitter {
 
     if (agent.status !== 'initializing' && agent.status !== 'offline') {
       throw new Error(
-        `Agent ${agentId} cannot be started from status ${agent.status}`,
+        `Agent ${agentId} cannot be started from status ${agent.status}`
       );
     }
 
@@ -1078,7 +1078,7 @@ export class QueenCommander extends EventEmitter {
 
   async stopAgent(
     agentId: string,
-    reason: string = 'user_request',
+    reason: string = 'user_request'
   ): Promise<void> {
     const agent = this.agents.get(agentId);
     if (!agent) {
@@ -1127,7 +1127,7 @@ export class QueenCommander extends EventEmitter {
 
   async restartAgent(
     agentId: string,
-    reason: string = 'restart_requested',
+    reason: string = 'restart_requested'
   ): Promise<void> {
     this.logger.info('Restarting agent', { agentId, reason });
 
@@ -1179,7 +1179,7 @@ export class QueenCommander extends EventEmitter {
       autoScale?: boolean;
       scaleUpThreshold?: number;
       scaleDownThreshold?: number;
-    },
+    }
   ): Promise<string> {
     const template = this.templates.get(templateName);
     if (!template) {
@@ -1232,7 +1232,7 @@ export class QueenCommander extends EventEmitter {
 
     if (targetSize < pool.minSize || targetSize > pool.maxSize) {
       throw new Error(
-        `Target size ${targetSize} outside pool limits [${pool.minSize}, ${pool.maxSize}]`,
+        `Target size ${targetSize} outside pool limits [${pool.minSize}, ${pool.maxSize}]`
       );
     }
 
@@ -1254,7 +1254,7 @@ export class QueenCommander extends EventEmitter {
       for (const agentId of agentsToRemove) {
         await this.removeAgent(agentId);
         pool.availableAgents = pool.availableAgents.filter(
-          (a: any) => a !== agentId,
+          (a: unknown) => a !== agentId
         );
       }
     }
@@ -1297,7 +1297,7 @@ export class QueenCommander extends EventEmitter {
 
   private async performHealthChecks(): Promise<void> {
     const healthPromises = Array.from(this.agents.keys()).map((agentId) =>
-      this.checkAgentHealth(agentId),
+      this.checkAgentHealth(agentId)
     );
 
     await Promise.allSettled(healthPromises);
@@ -1386,7 +1386,7 @@ export class QueenCommander extends EventEmitter {
     const avgTime =
       recent.reduce(
         (sum, entry) => sum + entry.metrics.averageExecutionTime,
-        0,
+        0
       ) / recent.length;
 
     // Normalize based on expected performance (simplified)
@@ -1537,7 +1537,7 @@ export class QueenCommander extends EventEmitter {
 
   private async waitForAgentReady(
     agentId: string,
-    timeout: number,
+    timeout: number
   ): Promise<void> {
     return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
@@ -1559,7 +1559,7 @@ export class QueenCommander extends EventEmitter {
 
   private async waitForProcessExit(
     agentId: string,
-    timeout: number,
+    timeout: number
   ): Promise<void> {
     return new Promise((resolve) => {
       const process = this.processes.get(agentId);
@@ -1683,7 +1683,7 @@ export class QueenCommander extends EventEmitter {
 
   private updateResourceUsage(
     agentId: string,
-    usage: { cpu: number; memory: number; disk: number },
+    usage: { cpu: number; memory: number; disk: number }
   ): void {
     this.resourceUsage.set(agentId, usage);
   }
@@ -1747,15 +1747,15 @@ export class QueenCommander extends EventEmitter {
     // Remove from pools
     for (const pool of Array.from(this.pools.values())) {
       pool.availableAgents = pool.availableAgents.filter(
-        (a: any) => a.id !== agentId,
+        (a: unknown) => a.id !== agentId
       );
-      pool.busyAgents = pool.busyAgents.filter((a: any) => a.id !== agentId);
+      pool.busyAgents = pool.busyAgents.filter((a: unknown) => a.id !== agentId);
       pool.currentSize = pool.availableAgents.length + pool.busyAgents.length;
     }
 
     // Remove from clusters
     for (const cluster of Array.from(this.clusters.values())) {
-      cluster.agents = cluster.agents.filter((a: any) => a.id !== agentId);
+      cluster.agents = cluster.agents.filter((a: unknown) => a.id !== agentId);
     }
   }
 
@@ -1799,13 +1799,13 @@ export class QueenCommander extends EventEmitter {
 
   getAgentsByType(type: AgentType): AgentState[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.type === type,
+      (agent) => agent.type === type
     );
   }
 
   getAgentsByStatus(status: AgentStatus): AgentState[] {
     return Array.from(this.agents.values()).filter(
-      (agent) => agent.status === status,
+      (agent) => agent.status === status
     );
   }
 
@@ -1856,7 +1856,7 @@ export class QueenCommander extends EventEmitter {
     return {
       totalAgents: agents.length,
       activeAgents: agents.filter(
-        (a) => a.status === 'idle' || a.status === 'busy',
+        (a) => a.status === 'idle' || a.status === 'busy'
       ).length,
       healthyAgents,
       pools: this.pools.size,

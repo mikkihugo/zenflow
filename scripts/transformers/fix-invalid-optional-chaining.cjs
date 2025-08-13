@@ -15,7 +15,8 @@ module.exports = function transformer(fileInfo, api) {
       // Check if left side is an optional member expression
       return (
         path.value.left.type === 'OptionalMemberExpression' ||
-        (path.value.left.type === 'MemberExpression' && path.value.left.optional === true)
+        (path.value.left.type === 'MemberExpression' &&
+          path.value.left.optional === true)
       );
     })
     .forEach((path) => {
@@ -23,7 +24,11 @@ module.exports = function transformer(fileInfo, api) {
 
       // Convert optional member expression to regular member expression
       if (left.type === 'OptionalMemberExpression') {
-        const regularMemberExpr = j.memberExpression(left.object, left.property, left.computed);
+        const regularMemberExpr = j.memberExpression(
+          left.object,
+          left.property,
+          left.computed
+        );
         path.value.left = regularMemberExpr;
         transformCount++;
       } else if (left.type === 'MemberExpression' && left.optional === true) {

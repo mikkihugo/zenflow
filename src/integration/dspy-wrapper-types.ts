@@ -72,7 +72,7 @@ export interface DSPyProgram {
   created: Date;
   lastUsed?: Date;
   performance: DSPyProgramPerformance;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -81,8 +81,8 @@ export interface DSPyProgram {
  * @example
  */
 export interface DSPyExample {
-  input: Record<string, any>;
-  output: Record<string, any>;
+  input: Record<string, unknown>;
+  output: Record<string, unknown>;
   success?: boolean;
   confidence?: number;
   timestamp?: Date;
@@ -115,7 +115,7 @@ export interface DSPyProgramPerformance {
  */
 export interface DSPyExecutionResult {
   // Dynamic fields based on program signature
-  [key: string]: any;
+  [key: string]: unknown;
 
   // Standard metadata fields
   confidence?: number;
@@ -171,7 +171,7 @@ export interface DSPyConfig {
 
   // Custom LM Driver
   customLMDriver?: 'claude' | 'openai' | 'dummy' | 'custom';
-  lmDriverConfig?: Record<string, any>;
+  lmDriverConfig?: Record<string, unknown>;
 }
 
 /**
@@ -278,7 +278,7 @@ export class DSPyWrapperError extends Error {
     message: string,
     public code: DSPyErrorCode,
     public override cause?: Error,
-    public metadata?: Record<string, any>,
+    public metadata?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'DSPyWrapperError';
@@ -320,7 +320,7 @@ export interface DSPyFactoryOptions extends DSPyConfig {
  */
 export interface LMDriverFactory {
   type: 'claude' | 'openai' | 'dummy' | 'custom';
-  config: Record<string, any>;
+  config: Record<string, unknown>;
   fallbackDriver?: LMDriverFactory;
 }
 
@@ -388,7 +388,7 @@ export interface DSPyPipeline {
     condition?: (previousResults: DSPyExecutionResult[]) => boolean;
   }>;
   composition: DSPyCompositionOptions;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -443,10 +443,10 @@ export interface ClaudeZenDSPyIntegration {
 export interface DSPySystemIntegration {
   // Logging Integration
   logger?: {
-    debug: (message: string, metadata?: any) => void;
-    info: (message: string, metadata?: any) => void;
-    warn: (message: string, metadata?: any) => void;
-    error: (message: string, metadata?: any) => void;
+    debug: (message: string, metadata?: unknown) => void;
+    info: (message: string, metadata?: unknown) => void;
+    warn: (message: string, metadata?: unknown) => void;
+    error: (message: string, metadata?: unknown) => void;
   };
 
   // Metrics Integration
@@ -454,10 +454,10 @@ export interface DSPySystemIntegration {
     recordExecution: (
       programId: string,
       latency: number,
-      success: boolean,
+      success: boolean
     ) => void;
     recordOptimization: (programId: string, improvement: number) => void;
-    recordError: (error: Error, context: Record<string, any>) => void;
+    recordError: (error: Error, context: Record<string, unknown>) => void;
   };
 
   // Storage Integration

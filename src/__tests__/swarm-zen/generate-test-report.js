@@ -69,7 +69,7 @@ class TestReportGenerator {
         this.reportData.testSuites[dir] = {
           files: files.length,
           fileList: files.map((f) =>
-            path.relative(path.join(__dirname, '..'), f),
+            path.relative(path.join(__dirname, '..'), f)
           ),
         };
       }
@@ -105,7 +105,7 @@ class TestReportGenerator {
           cwd: path.join(__dirname, '..'),
           encoding: 'utf8',
           stdio: 'pipe',
-        },
+        }
       );
 
       // Parse test results
@@ -113,8 +113,8 @@ class TestReportGenerator {
         const results = JSON.parse(
           fs.readFileSync(
             path.join(__dirname, '..', 'test-results.json'),
-            'utf8',
-          ),
+            'utf8'
+          )
         );
         this.parseTestResults(results);
       }
@@ -140,7 +140,7 @@ class TestReportGenerator {
       __dirname,
       '..',
       'coverage',
-      'coverage-summary.json',
+      'coverage-summary.json'
     );
 
     if (fs.existsSync(coveragePath)) {

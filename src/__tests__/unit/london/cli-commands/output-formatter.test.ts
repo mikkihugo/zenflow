@@ -313,7 +313,7 @@ describe('OutputFormatter - TDD London', () => {
 
     it('should handle circular references gracefully', () => {
       // Arrange
-      const circularData: any = { prop: 'value' };
+      const circularData: unknown = { prop: 'value' };
       circularData?.self = circularData;
 
       const safeJsonRenderer: FormatRenderer = {

@@ -186,7 +186,7 @@ export const batchExecuteTool = {
     },
     required: ['operations'],
   },
-  async handler(params: any): Promise<MCPToolResult> {
+  async handler(params: unknown): Promise<MCPToolResult> {
     try {
       const startTime = Date.now();
       const results: Array<{
@@ -210,11 +210,11 @@ export const batchExecuteTool = {
       const speedImprovement = sequentialTime / executionTime;
       const tokenReduction = Math.min(
         85,
-        Math.max(15, (operationCount - 1) * 12),
+        Math.max(15, (operationCount - 1) * 12)
       ); // Token savings from batching
 
       const successfulOps = results?.filter(
-        (r) => r.status === 'completed',
+        (r) => r.status === 'completed'
       ).length;
       const failedOps = results.length - successfulOps;
 
@@ -318,7 +318,7 @@ export const batchPerformanceTool = {
     },
     required: ['action'],
   },
-  async handler(params: any): Promise<MCPToolResult> {
+  async handler(params: unknown): Promise<MCPToolResult> {
     try {
       switch (params?.action) {
         case 'summary':
@@ -483,7 +483,7 @@ export const projectInitBatchTool = {
     },
     required: ['projectName', 'basePath'],
   },
-  async handler(params: any): Promise<MCPToolResult> {
+  async handler(params: unknown): Promise<MCPToolResult> {
     try {
       const startTime = Date.now();
 
@@ -609,7 +609,7 @@ This project initialization demonstrates batch operation efficiency - completing
  * });
  * ```
  */
-async function executeOperation(operation: any): Promise<any> {
+async function executeOperation(operation: unknown): Promise<unknown> {
   // Simulate operation execution with some delay
   await new Promise((resolve) => setTimeout(resolve, Math.random() * 100 + 50));
 

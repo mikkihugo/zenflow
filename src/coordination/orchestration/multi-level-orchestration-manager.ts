@@ -310,7 +310,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     parallelWorkflowManager: ParallelWorkflowManager,
     workflowGatesManager: WorkflowGatesManager,
     productWorkflowEngine: ProductWorkflowEngine,
-    config: Partial<MultiLevelOrchestrationConfig> = {},
+    config: Partial<MultiLevelOrchestrationConfig> = {}
   ) {
     super();
 
@@ -383,13 +383,13 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
       await this.integrateWithProductWorkflow();
 
       this.logger.info(
-        'Multi-Level Orchestration Manager initialized successfully',
+        'Multi-Level Orchestration Manager initialized successfully'
       );
       this.emit('initialized');
     } catch (error) {
       this.logger.error(
         'Failed to initialize multi-level orchestration manager',
-        { error },
+        { error }
       );
       throw error;
     }
@@ -423,7 +423,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
    */
   async transitionPortfolioToProgram(
     portfolioItemId: string,
-    transitionContext: PortfolioProgramTransitionContext,
+    transitionContext: PortfolioProgramTransitionContext
   ): Promise<string[]> {
     this.logger.info('Starting Portfolio to Program transition', {
       portfolioItemId,
@@ -433,7 +433,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     const transition = await this.createActiveTransition(
       'portfolio-to-program',
       portfolioItemId,
-      transitionContext,
+      transitionContext
     );
 
     try {
@@ -443,20 +443,20 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
       // Execute handoff protocol
       const programItems = await this.executePortfolioProgramHandoff(
         portfolioItemId,
-        transitionContext,
+        transitionContext
       );
 
       // Update cross-level mappings
       await this.updateCrossLevelMappings(
         portfolioItemId,
         programItems.map((p) => p.id),
-        [],
+        []
       );
 
       // Complete transition
       await this.completeTransition(
         transition.id,
-        programItems.map((p) => p.id),
+        programItems.map((p) => p.id)
       );
 
       this.logger.info('Portfolio to Program transition completed', {
@@ -476,7 +476,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
    */
   async transitionProgramToSwarmExecution(
     programItemId: string,
-    transitionContext: ProgramSwarmTransitionContext,
+    transitionContext: ProgramSwarmTransitionContext
   ): Promise<string[]> {
     this.logger.info('Starting Program to Swarm Execution transition', {
       programItemId,
@@ -486,7 +486,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     const transition = await this.createActiveTransition(
       'program-to-swarm',
       programItemId,
-      transitionContext,
+      transitionContext
     );
 
     try {
@@ -496,20 +496,20 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
       // Execute handoff protocol
       const swarmItems = await this.executeProgramSwarmHandoff(
         programItemId,
-        transitionContext,
+        transitionContext
       );
 
       // Update cross-level mappings
       await this.updateCrossLevelMappings(
         await this.getPortfolioIdForProgram(programItemId),
         [programItemId],
-        swarmItems.map((s) => s.id),
+        swarmItems.map((s) => s.id)
       );
 
       // Complete transition
       await this.completeTransition(
         transition.id,
-        swarmItems.map((s) => s.id),
+        swarmItems.map((s) => s.id)
       );
 
       this.logger.info('Program to Swarm Execution transition completed', {
@@ -529,7 +529,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
    */
   async executeTransitionRollback(
     transitionId: string,
-    reason: string,
+    reason: string
   ): Promise<void> {
     const transition = this.state.activeTransitions.get(transitionId);
     if (!transition) {
@@ -582,7 +582,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     if (!this.config.enableCrosslevelDependencyResolution) return;
 
     const unresolvedDependencies = this.state.crossLevelDependencies.filter(
-      (dep) => dep.status === 'pending' || dep.status === 'blocked',
+      (dep) => dep.status === 'pending' || dep.status === 'blocked'
     );
 
     for (const dependency of unresolvedDependencies) {
@@ -614,7 +614,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     toLevel: OrchestrationLevel,
     toItemId: string,
     type: 'blocks' | 'enables' | 'informs',
-    impact: number = 0.5,
+    impact: number = 0.5
   ): Promise<string> {
     const dependency: CrossLevelDependency = {
       id: `dep-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -680,12 +680,12 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
       const inconsistencies = await this.detectStateInconsistencies(
         portfolioState,
         programState,
-        swarmState,
+        swarmState
       );
 
       // Resolve auto-resolvable inconsistencies
       const autoResolved = await this.resolveStateInconsistencies(
-        inconsistencies.filter((inc: any) => inc.autoResolvable),
+        inconsistencies.filter((inc: unknown) => inc.autoResolvable)
       );
 
       // Update workflow synchronization state
@@ -694,7 +694,9 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
         programState,
         swarmState,
         crossLevelMappings: await this.generateCrossLevelMappings(),
-        inconsistencies: inconsistencies.filter((inc: any) => !inc.autoResolvable),
+        inconsistencies: inconsistencies.filter(
+          (inc: unknown) => !inc.autoResolvable
+        ),
         lastSyncAt: new Date(),
       };
 
@@ -802,7 +804,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
 
     if (loadMetrics.balanceScore < 0.7) {
       const recommendations = loadMetrics.rebalanceRecommendations
-        .filter((rec: any) => rec.expectedImprovement > 0.1)
+        .filter((rec: unknown) => rec.expectedImprovement > 0.1)
         .sort((a, b) => b.expectedImprovement - a.expectedImprovement);
 
       for (const recommendation of recommendations.slice(0, 3)) {
@@ -942,7 +944,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
   private async loadPersistedState(): Promise<void> {
     try {
       const persistedState = await this.memory.retrieve(
-        'multi-level-orchestration:state',
+        'multi-level-orchestration:state'
       );
       if (persistedState) {
         this.state = {
@@ -952,10 +954,10 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
           workflowSync: {
             ...persistedState.workflowSync,
             portfolioState: new Map(
-              persistedState.workflowSync?.portfolioState || [],
+              persistedState.workflowSync?.portfolioState || []
             ),
             programState: new Map(
-              persistedState.workflowSync?.programState || [],
+              persistedState.workflowSync?.programState || []
             ),
             swarmState: new Map(persistedState.workflowSync?.swarmState || []),
           },
@@ -975,10 +977,10 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
         workflowSync: {
           ...this.state.workflowSync,
           portfolioState: Array.from(
-            this.state.workflowSync.portfolioState.entries(),
+            this.state.workflowSync.portfolioState.entries()
           ),
           programState: Array.from(
-            this.state.workflowSync.programState.entries(),
+            this.state.workflowSync.programState.entries()
           ),
           swarmState: Array.from(this.state.workflowSync.swarmState.entries()),
         },
@@ -986,7 +988,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
 
       await this.memory.store(
         'multi-level-orchestration:state',
-        stateToSerialize,
+        stateToSerialize
       );
     } catch (error) {
       this.logger.error('Failed to persist state', { error });
@@ -997,33 +999,33 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
     this.dependencyResolutionTimer = setInterval(
       () =>
         this.resolveCrossLevelDependencies().catch((err) =>
-          this.logger.error('Dependency resolution failed', { err }),
+          this.logger.error('Dependency resolution failed', { err })
         ),
-      this.config.dependencyResolutionInterval,
+      this.config.dependencyResolutionInterval
     );
 
     this.flowControlTimer = setInterval(
       () =>
         this.implementFlowControl().catch((err) =>
-          this.logger.error('Flow control failed', { err }),
+          this.logger.error('Flow control failed', { err })
         ),
-      this.config.flowControlInterval,
+      this.config.flowControlInterval
     );
 
     this.loadBalancingTimer = setInterval(
       () =>
         this.balanceLoadAcrossLevels().catch((err) =>
-          this.logger.error('Load balancing failed', { err }),
+          this.logger.error('Load balancing failed', { err })
         ),
-      this.config.loadBalancingInterval,
+      this.config.loadBalancingInterval
     );
 
     this.stateManagementTimer = setInterval(
       () =>
         this.synchronizeWorkflowState().catch((err) =>
-          this.logger.error('State synchronization failed', { err }),
+          this.logger.error('State synchronization failed', { err })
         ),
-      this.config.stateManagementInterval,
+      this.config.stateManagementInterval
     );
   }
 
@@ -1056,37 +1058,37 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
   private async createActiveTransition(
     type: string,
     sourceId: string,
-    context: unknown,
+    context: unknown
   ): Promise<ActiveTransition> {
     return {} as ActiveTransition;
   }
   private async validateTransitionCriteria(
-    transition: ActiveTransition,
+    transition: ActiveTransition
   ): Promise<void> {}
   private async executePortfolioProgramHandoff(
     portfolioId: string,
-    context: unknown,
+    context: unknown
   ): Promise<ProgramItem[]> {
     return [];
   }
   private async executeProgramSwarmHandoff(
     programId: string,
-    context: unknown,
+    context: unknown
   ): Promise<SwarmExecutionItem[]> {
     return [];
   }
   private async updateCrossLevelMappings(
     portfolioId: string,
     programIds: string[],
-    swarmIds: string[],
+    swarmIds: string[]
   ): Promise<void> {}
   private async completeTransition(
     transitionId: string,
-    targetIds: string[],
+    targetIds: string[]
   ): Promise<void> {}
   private async handleTransitionError(
     transitionId: string,
-    error: unknown,
+    error: unknown
   ): Promise<void> {}
 
   // Additional placeholder methods would continue...

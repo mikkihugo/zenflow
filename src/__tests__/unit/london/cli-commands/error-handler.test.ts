@@ -55,7 +55,7 @@ interface ErrorMetrics {
 
 type ErrorHandlerFunction = (
   error: Error,
-  context?: ErrorContext,
+  context?: ErrorContext
 ) => Promise<ErrorResult> | ErrorResult;
 
 interface RecoveryStrategy {
@@ -137,7 +137,7 @@ class MockErrorHandler implements ErrorHandler {
   addRecoveryStrategy(strategy: RecoveryStrategy): void {
     // Insert strategy in priority order
     const index = this.recoveryStrategies.findIndex(
-      (s) => s.priority < strategy.priority,
+      (s) => s.priority < strategy.priority
     );
     if (index === -1) {
       this.recoveryStrategies.push(strategy);
@@ -172,7 +172,7 @@ class MockErrorHandler implements ErrorHandler {
 class ValidationError extends Error {
   constructor(
     message: string,
-    public field?: string,
+    public field?: string
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -182,7 +182,7 @@ class ValidationError extends Error {
 class NetworkError extends Error {
   constructor(
     message: string,
-    public statusCode?: number,
+    public statusCode?: number
   ) {
     super(message);
     this.name = 'NetworkError';
@@ -321,7 +321,7 @@ describe('ErrorHandler - TDD London', () => {
 
       // Assert - verify handler registration
       expect(errorHandler.getHandler('ValidationError')).toBe(
-        validationHandler,
+        validationHandler
       );
     });
 
@@ -338,7 +338,7 @@ describe('ErrorHandler - TDD London', () => {
 
       // Assert - verify multiple handler registration
       expect(errorHandler.getHandler('ValidationError')).toBe(
-        validationHandler,
+        validationHandler
       );
       expect(errorHandler.getHandler('NetworkError')).toBe(networkHandler);
       expect(errorHandler.getHandler('Error')).toBe(genericHandler);
@@ -451,7 +451,7 @@ describe('ErrorHandler - TDD London', () => {
       // Arrange
       const validationError = new ValidationError(
         'Required field missing',
-        'email',
+        'email'
       );
       const context: ErrorContext = {
         command: 'create-user',
@@ -591,7 +591,7 @@ describe('ErrorHandler - TDD London', () => {
       const lowResult = await errorHandler.handle(lowSeverityError, lowContext);
       const highResult = await errorHandler.handle(
         highSeverityError,
-        highContext,
+        highContext
       );
 
       // Assert - verify severity-based logging behavior
@@ -671,11 +671,11 @@ describe('ErrorHandler - TDD London', () => {
       expect(mockHandleFunction).toHaveBeenCalledTimes(2);
       expect(mockHandleFunction).toHaveBeenCalledWith(
         permissionError,
-        adminContext,
+        adminContext
       );
       expect(mockHandleFunction).toHaveBeenCalledWith(
         permissionError,
-        userContext,
+        userContext
       );
     });
   });

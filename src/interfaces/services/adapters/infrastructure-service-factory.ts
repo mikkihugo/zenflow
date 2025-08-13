@@ -219,7 +219,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
    */
   async createService(
     name?: string,
-    options: CreateServiceOptions = {},
+    options: CreateServiceOptions = {}
   ): Promise<InfrastructureServiceAdapter> {
     this.logger.info('Creating new infrastructure service', { name, options });
 
@@ -230,7 +230,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     // Check service limits
     if (this.serviceRegistry.size >= (this.config.limits?.maxServices || 100)) {
       throw new Error(
-        `Maximum service limit reached: ${this.config.limits?.maxServices}`,
+        `Maximum service limit reached: ${this.config.limits?.maxServices}`
       );
     }
 
@@ -246,7 +246,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       // Merge configurations
       const serviceConfig = this.createServiceConfig(
         serviceName,
-        options?.config,
+        options?.config
       );
 
       // Create the service adapter
@@ -281,7 +281,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
       this.emit('service-created', { serviceName, service, options });
       this.logger.info(
-        `Infrastructure service created successfully: ${serviceName}`,
+        `Infrastructure service created successfully: ${serviceName}`
       );
 
       return service;
@@ -390,7 +390,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     } catch (error) {
       this.logger.error(
         `Failed to remove infrastructure service ${name}:`,
-        error,
+        error
       );
       this.emit('service-removal-failed', { serviceName: name, error });
       throw error;
@@ -454,12 +454,12 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
       this.emit('service-restarted', { serviceName: name });
       this.logger.info(
-        `Infrastructure service restarted successfully: ${name}`,
+        `Infrastructure service restarted successfully: ${name}`
       );
     } catch (error) {
       this.logger.error(
         `Failed to restart infrastructure service ${name}:`,
-        error,
+        error
       );
       this.emit('service-restart-failed', { serviceName: name, error });
       throw error;
@@ -519,7 +519,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
    *
    * @param name
    */
-  async getServiceStatus(name?: string): Promise<any> {
+  async getServiceStatus(name?: string): Promise<unknown> {
     if (name) {
       const entry = this.serviceRegistry.get(name);
       if (!entry) {
@@ -537,7 +537,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
     }
 
     // Return status for all services
-    const allStatus: Record<string, any> = {};
+    const allStatus: Record<string, unknown> = {};
     for (const [serviceName, entry] of this.serviceRegistry.entries()) {
       try {
         allStatus[serviceName] = await entry.service.getStatus();
@@ -575,7 +575,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
             this.restartService(name).catch((error) => {
               this.logger.error(
                 `Failed to auto-restart service ${name}:`,
-                error,
+                error
               );
             });
           }
@@ -610,7 +610,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
         shutdownPromises.push(
           entry.service.destroy().catch((error) => {
             this.logger.error(`Failed to shutdown service ${name}:`, error);
-          }),
+          })
         );
       }
 
@@ -665,7 +665,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   private createServiceConfig(
     name: string,
-    overrides?: Partial<InfrastructureServiceAdapterConfig>,
+    overrides?: Partial<InfrastructureServiceAdapterConfig>
   ): InfrastructureServiceAdapterConfig {
     const baseConfig = createDefaultInfrastructureServiceAdapterConfig(name);
 
@@ -687,7 +687,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
   private async registerService(
     name: string,
     service: InfrastructureServiceAdapter,
-    options: CreateServiceOptions,
+    options: CreateServiceOptions
   ): Promise<void> {
     const metadata = {
       created: new Date(),
@@ -713,7 +713,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
 
   private setupServiceEventHandlers(
     service: InfrastructureServiceAdapter,
-    serviceName: string,
+    serviceName: string
   ): void {
     // Forward service events if cross-service events are enabled
     if (this.config.eventCoordination?.crossServiceEvents) {
@@ -779,7 +779,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
           // Auto-restart if configured
           if (this.config.healthMonitoring?.autoRestart) {
             this.logger.warn(
-              `Auto-restarting unhealthy service: ${serviceName}`,
+              `Auto-restarting unhealthy service: ${serviceName}`
             );
             await this.restartService(serviceName);
           }
@@ -787,7 +787,7 @@ export class InfrastructureServiceFactory extends EventEmitter {
       } catch (error) {
         this.logger.error(
           `Health check failed for service ${serviceName}:`,
-          error,
+          error
         );
         this.emit('service-health-check-failed', { serviceName, error });
       }
@@ -872,11 +872,11 @@ let globalInfrastructureServiceFactory:
  * @example
  */
 export function getInfrastructureServiceFactory(
-  config?: InfrastructureServiceFactoryConfig,
+  config?: InfrastructureServiceFactoryConfig
 ): InfrastructureServiceFactory {
   if (!globalInfrastructureServiceFactory) {
     globalInfrastructureServiceFactory = new InfrastructureServiceFactory(
-      config,
+      config
     );
   }
   return globalInfrastructureServiceFactory;
@@ -889,7 +889,7 @@ export function getInfrastructureServiceFactory(
  * @example
  */
 export function createInfrastructureServiceFactory(
-  config?: InfrastructureServiceFactoryConfig,
+  config?: InfrastructureServiceFactoryConfig
 ): InfrastructureServiceFactory {
   return new InfrastructureServiceFactory(config);
 }
@@ -903,7 +903,7 @@ export function createInfrastructureServiceFactory(
  */
 export async function createInfrastructureService(
   name?: string,
-  options?: CreateServiceOptions,
+  options?: CreateServiceOptions
 ): Promise<InfrastructureServiceAdapter> {
   const factory = getInfrastructureServiceFactory();
   return await factory.createService(name, options);

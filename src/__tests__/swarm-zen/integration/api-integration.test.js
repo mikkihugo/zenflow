@@ -150,7 +150,7 @@ describe('API Integration Tests', () => {
       // Create neural agent wrapper
       const neuralAgent = NeuralAgentFactory.createNeuralAgent(
         agent,
-        'researcher',
+        'researcher'
       );
       assert(neuralAgent);
 
@@ -188,13 +188,13 @@ describe('API Integration Tests', () => {
       ruvSwarm.persistence.storeAgentMemory(
         agent.id,
         'analysis_memory',
-        memoryData,
+        memoryData
       );
 
       // Retrieve memory
       const retrieved = ruvSwarm.persistence.getAgentMemory(
         agent.id,
-        'analysis_memory',
+        'analysis_memory'
       );
 
       assert(retrieved);
@@ -205,12 +205,12 @@ describe('API Integration Tests', () => {
       ruvSwarm.persistence.storeAgentMemory(
         agent.id,
         'analysis_memory',
-        memoryData,
+        memoryData
       );
 
       const updated = ruvSwarm.persistence.getAgentMemory(
         agent.id,
-        'analysis_memory',
+        'analysis_memory'
       );
 
       assert.strictEqual(updated.value.performance_history.length, 4);
@@ -245,8 +245,8 @@ describe('API Integration Tests', () => {
           swarm.orchestrate({
             description: `Task for ${swarm.id}`,
             priority: 'medium',
-          }),
-        ),
+          })
+        )
       );
 
       assert.strictEqual(tasks.length, 3);
@@ -318,7 +318,7 @@ describe('API Integration Tests', () => {
           'agent',
           agent.id,
           metric.name,
-          metric.value,
+          metric.value
         );
       }
 
@@ -330,7 +330,7 @@ describe('API Integration Tests', () => {
       const memoryMetrics = ruvSwarm.persistence.getMetrics(
         'agent',
         agent.id,
-        'memory_usage',
+        'memory_usage'
       );
       assert.strictEqual(memoryMetrics.length, 1);
       assert.strictEqual(memoryMetrics[0].metric_value, 45.5);

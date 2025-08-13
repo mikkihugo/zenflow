@@ -4,7 +4,7 @@ import type { ConversationSession, ConversationStatus } from '../types.ts';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;
-  let mockBackend: any;
+  let mockBackend: unknown;
 
   const sampleAgents: AgentId[] = [
     { id: 'agent-1', swarmId: 'swarm-1', type: 'coder', instance: 0 },
@@ -16,7 +16,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     const storage = new Map<string, any>();
 
     mockBackend = {
-      save: vi.fn().mockImplementation(async (key: string, value: any) => {
+      save: vi.fn().mockImplementation(async (key: string, value: unknown) => {
         storage.set(key, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
       }),
       get: vi.fn().mockImplementation(async (key: string) => {
@@ -111,7 +111,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       expect(retrieved?.context.goal).toBe(conversation.context.goal);
       expect(retrieved?.context.domain).toBe(conversation.context.domain);
       expect(retrieved?.context.constraints).toEqual(
-        conversation.context.constraints,
+        conversation.context.constraints
       );
 
       // Verify messages are preserved with exact content
@@ -303,7 +303,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       const firstPageIds = firstPage.map((c) => c.id);
       const secondPageIds = secondPage.map((c) => c.id);
       const intersection = firstPageIds.filter((id) =>
-        secondPageIds.includes(id),
+        secondPageIds.includes(id)
       );
       expect(intersection).toHaveLength(0);
     });
@@ -462,29 +462,29 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       expect(updatedConversation).not.toBeNull();
       expect(updatedConversation?.status).toBe('completed');
       expect(updatedConversation?.endTime).toEqual(
-        new Date('2024-01-01T11:00:00Z'),
+        new Date('2024-01-01T11:00:00Z')
       );
       expect(updatedConversation?.messages).toHaveLength(2);
       expect(updatedConversation?.metrics.messageCount).toBe(2);
       expect(updatedConversation?.metrics.participationByAgent['agent-2']).toBe(
-        1,
+        1
       );
 
       // Verify original data is preserved
       expect(updatedConversation?.title).toBe('Original Title');
       expect(updatedConversation?.context.goal).toBe('Original goal');
       expect(updatedConversation!.messages[0]!.content.text).toBe(
-        'Original message',
+        'Original message'
       );
       expect(updatedConversation!.messages[1]!.content.text).toBe(
-        'New message after update',
+        'New message after update'
       );
     });
 
     it('should throw error when updating non-existent conversation', async () => {
       // Act & Assert
       await expect(
-        memory.updateConversation('non-existent', { status: 'completed' }),
+        memory.updateConversation('non-existent', { status: 'completed' })
       ).rejects.toThrow('Conversation non-existent not found');
     });
   });
@@ -535,7 +535,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         agentId: 'agent-1',
       });
       const deletedConvExists = agent1Conversations.some(
-        (c) => c.id === 'conv-delete-test',
+        (c) => c.id === 'conv-delete-test'
       );
       expect(deletedConvExists).toBe(false);
     });
@@ -543,7 +543,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     it('should handle deletion of non-existent conversation gracefully', async () => {
       // Act & Assert - Should not throw
       await expect(
-        memory.deleteConversation('non-existent'),
+        memory.deleteConversation('non-existent')
       ).resolves.toBeUndefined();
     });
   });
@@ -601,10 +601,10 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       expect(retrieved2?.title).toBe(conversation.title); // Unchanged
 
       expect(searchResults?.some((c) => c.id === 'conv-consistency-test')).toBe(
-        true,
+        true
       );
       const foundConv = searchResults?.find(
-        (c) => c.id === 'conv-consistency-test',
+        (c) => c.id === 'conv-consistency-test'
       );
       expect(foundConv?.status).toBe('paused');
       expect(foundConv?.metrics.messageCount).toBe(5);

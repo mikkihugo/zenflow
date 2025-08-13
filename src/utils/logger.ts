@@ -11,21 +11,21 @@ import { config } from '../config/index.js';
 
 // Local Logger interface - matches ILogger from core/logger for compatibility
 export interface ILogger {
-  debug(message: string, meta?: any): void;
-  info(message: string, meta?: any): void;
-  warn(message: string, meta?: any): void;
-  error(message: string, meta?: any): void;
+  debug(message: string, meta?: unknown): void;
+  info(message: string, meta?: unknown): void;
+  warn(message: string, meta?: unknown): void;
+  error(message: string, meta?: unknown): void;
 }
 
 // Helper function to sanitize log meta data
-function sanitizeLogMeta(meta: any): any {
+function sanitizeLogMeta(meta: unknown): unknown {
   if (typeof meta === 'string') {
     // Remove newlines and carriage returns
     return meta.replace(/[\n\r]/g, '');
   }
   if (typeof meta === 'object' && meta !== null) {
     // Recursively sanitize all string properties
-    const sanitized: any = Array.isArray(meta) ? [] : {};
+    const sanitized: unknown = Array.isArray(meta) ? [] : {};
     for (const key in meta) {
       if (Object.hasOwn(meta, key)) {
         const value = meta[key];
@@ -63,7 +63,7 @@ const getLogLevel = (): LogLevel => {
         : configLevel;
     return (
       (Object.values(LogLevel).find(
-        (l) => l.toUpperCase() === level,
+        (l) => l.toUpperCase() === level
       ) as LogLevel) || LogLevel.INFO
     );
   } catch (error) {
@@ -74,7 +74,7 @@ const getLogLevel = (): LogLevel => {
 
 const shouldLog = (
   messageLevel: LogLevel,
-  configuredLevel: LogLevel = getLogLevel(),
+  configuredLevel: LogLevel = getLogLevel()
 ): boolean => {
   const levels = {
     [LogLevel.DEBUG]: 0,
@@ -92,7 +92,7 @@ class Logger implements ILogger {
     this.logLevel = getLogLevel();
   }
 
-  private formatMessage(level: string, message: string, meta?: any): string {
+  private formatMessage(level: string, message: string, meta?: unknown): string {
     const timestamp = new Date().toISOString();
     const cleanMeta = sanitizeLogMeta(meta);
     const metaStr =
@@ -102,25 +102,25 @@ class Logger implements ILogger {
     return `[${timestamp}] ${level.toUpperCase()} [${this.prefix || 'claude-zen'}]: ${message}${metaStr}`;
   }
 
-  debug(message: string, meta?: any): void {
+  debug(message: string, meta?: unknown): void {
     if (shouldLog(LogLevel.DEBUG, this.logLevel)) {
       logger.debug(this.formatMessage('DEBUG', message, meta));
     }
   }
 
-  info(message: string, meta?: any): void {
+  info(message: string, meta?: unknown): void {
     if (shouldLog(LogLevel.INFO, this.logLevel)) {
       logger.info(this.formatMessage('INFO', message, meta));
     }
   }
 
-  warn(message: string, meta?: any): void {
+  warn(message: string, meta?: unknown): void {
     if (shouldLog(LogLevel.WARN, this.logLevel)) {
       logger.warn(this.formatMessage('WARN', message, meta));
     }
   }
 
-  error(message: string, meta?: any): void {
+  error(message: string, meta?: unknown): void {
     if (shouldLog(LogLevel.ERROR, this.logLevel)) {
       logger.error(this.formatMessage('ERROR', message, meta));
     }

@@ -59,7 +59,7 @@ export interface TaskConfig {
   /** Task dependencies */
   dependencies: string[];
   /** Additional metadata */
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface TaskRequest {
@@ -68,7 +68,7 @@ export interface TaskRequest {
   /** Task description */
   description: string;
   /** Task parameters */
-  parameters?: any;
+  parameters?: unknown;
   /** Timeout in milliseconds */
   timeout?: number;
 }
@@ -79,7 +79,7 @@ export interface TaskResponse {
   /** Execution status */
   status: 'completed' | 'failed' | 'timeout';
   /** Task result */
-  result: any;
+  result: unknown;
   /** Execution time in seconds */
   executionTime: number;
   /** Error message if failed */
@@ -103,7 +103,7 @@ export interface AgentResult {
   /** Agent type */
   agentType: string;
   /** Agent output */
-  output: any;
+  output: unknown;
   /** Execution time in seconds */
   executionTime: number;
 }
@@ -308,7 +308,7 @@ export declare class PerformanceTimer {
 export declare function consoleLog(message: string): void;
 export declare function consoleError(message: string): void;
 export declare function consoleWarn(message: string): void;
-export declare function formatJsError(error: any): string;
+export declare function formatJsError(error: unknown): string;
 
 // Export DAA service types and interfaces
 export * from './daa-service.js';

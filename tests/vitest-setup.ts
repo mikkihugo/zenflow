@@ -34,9 +34,9 @@ expect.extend({
           typeof arg === 'object' &&
           arg !== null &&
           Object.keys(expected).every(
-            (key) => key in arg && arg[key] === expected[key],
-          ),
-      ),
+            (key) => key in arg && arg[key] === expected[key]
+          )
+      )
     );
 
     return {
@@ -97,7 +97,7 @@ globalThis.testUtils = {
     const os = await import('node:os');
 
     const tempDir = await fs.mkdtemp(
-      path.join(os.tmpdir(), 'claude-zen-test-'),
+      path.join(os.tmpdir(), 'claude-zen-test-')
     );
     return tempDir;
   },

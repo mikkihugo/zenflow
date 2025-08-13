@@ -22,7 +22,7 @@ try {
   daaService = await import('../src/daa-service.js');
 } catch (_error) {
   console.warn(
-    'Warning: DAA service module not found, using mock implementation',
+    'Warning: DAA service module not found, using mock implementation'
   );
   daaService = {
     default: {
@@ -102,7 +102,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         result.success === true,
-        'DAA service should initialize successfully',
+        'DAA service should initialize successfully'
       );
       this.results.coverage.initialization++;
     });
@@ -117,10 +117,10 @@ class DAAFunctionalityTestSuite {
         });
         assert(
           result.success === true,
-          'DAA service should initialize with disk persistence',
+          'DAA service should initialize with disk persistence'
         );
         this.results.coverage.initialization++;
-      },
+      }
     );
 
     await this.runTest(
@@ -133,10 +133,10 @@ class DAAFunctionalityTestSuite {
         });
         assert(
           result.success === true,
-          'DAA service should initialize without learning',
+          'DAA service should initialize without learning'
         );
         this.results.coverage.initialization++;
-      },
+      }
     );
   }
 
@@ -173,11 +173,11 @@ class DAAFunctionalityTestSuite {
           });
           assert(
             result.success === true,
-            `Should create agent with ${pattern} pattern`,
+            `Should create agent with ${pattern} pattern`
           );
         }
         this.results.coverage.agentManagement++;
-      },
+      }
     );
 
     await this.runTest('Agent Adaptation - Performance feedback', async () => {
@@ -205,10 +205,10 @@ class DAAFunctionalityTestSuite {
         });
         assert(
           result.success === true,
-          'Should adapt agent for low performance',
+          'Should adapt agent for low performance'
         );
         this.results.coverage.agentManagement++;
-      },
+      }
     );
   }
 
@@ -258,10 +258,10 @@ class DAAFunctionalityTestSuite {
         });
         assert(
           result.success === true,
-          'Should execute workflow with specific agents',
+          'Should execute workflow with specific agents'
         );
         this.results.coverage.workflow++;
-      },
+      }
     );
 
     await this.runTest(
@@ -273,10 +273,10 @@ class DAAFunctionalityTestSuite {
         });
         assert(
           result.success === true,
-          'Should execute workflow with auto agent assignment',
+          'Should execute workflow with auto agent assignment'
         );
         this.results.coverage.workflow++;
-      },
+      }
     );
   }
 
@@ -309,14 +309,14 @@ class DAAFunctionalityTestSuite {
         });
         assert(
           result.success === true,
-          'Should return detailed learning status',
+          'Should return detailed learning status'
         );
         assert(
           result.learning !== undefined,
-          'Should include learning information',
+          'Should include learning information'
         );
         this.results.coverage.learning++;
-      },
+      }
     );
 
     await this.runTest('Learning Status - All agents summary', async () => {
@@ -325,7 +325,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         result.success === true,
-        'Should return learning status for all agents',
+        'Should return learning status for all agents'
       );
       this.results.coverage.learning++;
     });
@@ -339,7 +339,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         result.success === true,
-        'Should enable meta-learning between domains',
+        'Should enable meta-learning between domains'
       );
       this.results.coverage.learning++;
     });
@@ -357,10 +357,10 @@ class DAAFunctionalityTestSuite {
         assert(result.success === true, 'Should analyze cognitive patterns');
         assert(
           result.pattern !== undefined,
-          'Should return pattern information',
+          'Should return pattern information'
         );
         this.results.coverage.cognition++;
-      },
+      }
     );
 
     await this.runTest(
@@ -373,7 +373,7 @@ class DAAFunctionalityTestSuite {
         });
         assert(result.success === true, 'Should change cognitive pattern');
         this.results.coverage.cognition++;
-      },
+      }
     );
 
     await this.runTest(
@@ -396,7 +396,7 @@ class DAAFunctionalityTestSuite {
           assert(result.success === true, `Should analyze ${pattern} pattern`);
         }
         this.results.coverage.cognition++;
-      },
+      }
     );
   }
 
@@ -477,7 +477,7 @@ class DAAFunctionalityTestSuite {
         } catch (_error) {
           this.results.coverage.errorHandling++;
         }
-      },
+      }
     );
 
     await this.runTest('Error Handling - Empty knowledge sharing', async () => {
@@ -504,7 +504,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         createResult.success === true,
-        'Should create agent for persistence test',
+        'Should create agent for persistence test'
       );
 
       // Adapt the agent
@@ -522,7 +522,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         statusResult.success === true,
-        'Should retrieve persisted agent status',
+        'Should retrieve persisted agent status'
       );
       this.results.coverage.integration++;
     });
@@ -540,7 +540,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         shareResult.success === true,
-        'Should share knowledge between agents',
+        'Should share knowledge between agents'
       );
 
       // Verify knowledge was received
@@ -550,7 +550,7 @@ class DAAFunctionalityTestSuite {
       });
       assert(
         statusResult.success === true,
-        'Should show updated learning status',
+        'Should show updated learning status'
       );
       this.results.coverage.integration++;
     });
@@ -594,7 +594,7 @@ class DAAFunctionalityTestSuite {
     ).toFixed(1);
     const totalCoverage = Object.values(this.results.coverage).reduce(
       (a, b) => a + b,
-      0,
+      0
     );
 
     const report = {
@@ -633,7 +633,7 @@ class DAAFunctionalityTestSuite {
 
     if (coverage.initialization < 3) {
       recommendations.push(
-        'Add more initialization tests for different configurations',
+        'Add more initialization tests for different configurations'
       );
     }
 
@@ -663,13 +663,13 @@ class DAAFunctionalityTestSuite {
 
     if (coverage.integration < 3) {
       recommendations.push(
-        'Enhance integration testing between DAA components',
+        'Enhance integration testing between DAA components'
       );
     }
 
     if (recommendations.length === 0) {
       recommendations.push(
-        'Excellent DAA test coverage! Consider adding stress tests.',
+        'Excellent DAA test coverage! Consider adding stress tests.'
       );
     }
 
@@ -697,7 +697,7 @@ class DAAFunctionalityTestSuite {
     // Save report to file
     const reportPath = path.join(
       __dirname,
-      '../test-reports/daa-functionality-test-report.json',
+      '../test-reports/daa-functionality-test-report.json'
     );
     fs.mkdirSync(path.dirname(reportPath), { recursive: true });
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));

@@ -6,7 +6,7 @@
  */
 
 import { Box, Text, useInput } from 'ink';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import LLMStatsService, {
   type LLMAnalytics,
@@ -45,7 +45,7 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
   const [analytics, setAnalytics] = useState<LLMAnalytics | null>(null);
   const [systemHealth, setSystemHealth] = useState<LLMSystemHealth | null>(
-    null,
+    null
   );
   const [selectedProvider, setSelectedProvider] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -120,7 +120,7 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
 
     if (key.downArrow && viewMode === 'providers' && analytics) {
       setSelectedProvider((prev) =>
-        Math.min(analytics.providerStats.length - 1, prev + 1),
+        Math.min(analytics.providerStats.length - 1, prev + 1)
       );
     }
 
@@ -174,60 +174,34 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
     return (
       <Box flexDirection="column">
         {/* System Summary */}
-        <Box
-          paddingX={2}
-          paddingY={1}
-          borderStyle="single"
-          borderColor="cyan"
-        >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="cyan"
-              bold
-            >
+        <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="cyan">
+          <Box flexDirection="column" width="100%">
+            <Text color="cyan" bold>
               📊 System Overview
             </Text>
-            <Box
-              marginTop={1}
-              flexDirection="row"
-            >
+            <Box marginTop={1} flexDirection="row">
               <Box width="50%">
                 <Text>
                   📞 Total Calls:{' '}
-                  <Text
-                    color="white"
-                    bold
-                  >
+                  <Text color="white" bold>
                     {formatNumber(analytics.summary.totalCalls)}
                   </Text>
                 </Text>
                 <Text>
                   ✅ Success Rate:{' '}
-                  <Text
-                    color="green"
-                    bold
-                  >
+                  <Text color="green" bold>
                     {formatPercentage(analytics.summary.successRate)}
                   </Text>
                 </Text>
                 <Text>
                   ⚡ Avg Response:{' '}
-                  <Text
-                    color="yellow"
-                    bold
-                  >
+                  <Text color="yellow" bold>
                     {formatDuration(analytics.summary.averageResponseTime)}
                   </Text>
                 </Text>
                 <Text>
                   🪙 Tokens Used:{' '}
-                  <Text
-                    color="blue"
-                    bold
-                  >
+                  <Text color="blue" bold>
                     {formatNumber(analytics.summary.totalTokensUsed)}
                   </Text>
                 </Text>
@@ -235,37 +209,25 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
               <Box width="50%">
                 <Text>
                   🏥 System Health:{' '}
-                  <Text
-                    color={getHealthColor(systemHealth.overallHealth)}
-                    bold
-                  >
+                  <Text color={getHealthColor(systemHealth.overallHealth)} bold>
                     {systemHealth.overallHealth.toUpperCase()}
                   </Text>
                 </Text>
                 <Text>
                   📊 Health Score:{' '}
-                  <Text
-                    color={getHealthColor(systemHealth.overallHealth)}
-                    bold
-                  >
+                  <Text color={getHealthColor(systemHealth.overallHealth)} bold>
                     {systemHealth.healthScore}/100
                   </Text>
                 </Text>
                 <Text>
                   🔌 Active Providers:{' '}
-                  <Text
-                    color="cyan"
-                    bold
-                  >
+                  <Text color="cyan" bold>
                     {systemHealth.activeProviders}
                   </Text>
                 </Text>
                 <Text>
                   💰 Est. Savings:{' '}
-                  <Text
-                    color="green"
-                    bold
-                  >
+                  <Text color="green" bold>
                     ${analytics.summary.costSavings.toFixed(2)}
                   </Text>
                 </Text>
@@ -282,14 +244,8 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="green"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="green"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="green" bold>
               🏆 Top Performing Providers
             </Text>
             <Box marginTop={1}>
@@ -324,14 +280,8 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
             borderStyle="single"
             borderColor="red"
           >
-            <Box
-              flexDirection="column"
-              width="100%"
-            >
-              <Text
-                color="red"
-                bold
-              >
+            <Box flexDirection="column" width="100%">
+              <Text color="red" bold>
                 🚨 System Alerts
               </Text>
               <Box marginTop={1}>
@@ -360,20 +310,9 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
     return (
       <Box flexDirection="column">
         {/* Provider List */}
-        <Box
-          paddingX={2}
-          paddingY={1}
-          borderStyle="single"
-          borderColor="blue"
-        >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="blue"
-              bold
-            >
+        <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="blue">
+          <Box flexDirection="column" width="100%">
+            <Text color="blue" bold>
               🔌 Providers ({analytics.providerStats.length})
             </Text>
             <Box marginTop={1}>
@@ -418,63 +357,39 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="cyan"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="cyan"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="cyan" bold>
               📋 {provider.displayName} Details
             </Text>
-            <Box
-              marginTop={1}
-              flexDirection="row"
-            >
+            <Box marginTop={1} flexDirection="row">
               <Box width="50%">
                 <Text>
                   📞 Total Calls:{' '}
-                  <Text
-                    color="white"
-                    bold
-                  >
+                  <Text color="white" bold>
                     {formatNumber(provider.totalCalls)}
                   </Text>
                 </Text>
                 <Text>
                   ✅ Success Rate:{' '}
-                  <Text
-                    color="green"
-                    bold
-                  >
+                  <Text color="green" bold>
                     {formatPercentage(provider.successRate)}
                   </Text>
                 </Text>
                 <Text>
                   ⚡ Avg Response:{' '}
-                  <Text
-                    color="yellow"
-                    bold
-                  >
+                  <Text color="yellow" bold>
                     {formatDuration(provider.averageResponseTime)}
                   </Text>
                 </Text>
                 <Text>
                   📏 Avg Context:{' '}
-                  <Text
-                    color="blue"
-                    bold
-                  >
+                  <Text color="blue" bold>
                     {formatNumber(provider.averageContextLength)} chars
                   </Text>
                 </Text>
                 <Text>
                   🪙 Tokens Used:{' '}
-                  <Text
-                    color="purple"
-                    bold
-                  >
+                  <Text color="purple" bold>
                     {formatNumber(provider.totalTokensUsed)}
                   </Text>
                 </Text>
@@ -482,28 +397,19 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
               <Box width="50%">
                 <Text>
                   💰 Cost Efficiency:{' '}
-                  <Text
-                    color="green"
-                    bold
-                  >
+                  <Text color="green" bold>
                     {provider.costEfficiency}/100
                   </Text>
                 </Text>
                 <Text>
                   🎯 Reliability:{' '}
-                  <Text
-                    color="cyan"
-                    bold
-                  >
+                  <Text color="cyan" bold>
                     {provider.reliability}/100
                   </Text>
                 </Text>
                 <Text>
                   ⚠️ Rate Limit Hits:{' '}
-                  <Text
-                    color="red"
-                    bold
-                  >
+                  <Text color="red" bold>
                     {provider.rateLimitHits}
                   </Text>
                 </Text>
@@ -561,54 +467,33 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="yellow"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="yellow"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="yellow" bold>
               🗺️ Routing Efficiency
             </Text>
-            <Box
-              marginTop={1}
-              flexDirection="row"
-            >
+            <Box marginTop={1} flexDirection="row">
               <Box width="50%">
                 <Text>
                   📊 Total Decisions:{' '}
-                  <Text
-                    color="white"
-                    bold
-                  >
+                  <Text color="white" bold>
                     {formatNumber(routing.totalRoutingDecisions)}
                   </Text>
                 </Text>
                 <Text>
                   🎯 Optimal Rate:{' '}
-                  <Text
-                    color="green"
-                    bold
-                  >
+                  <Text color="green" bold>
                     {formatPercentage(routing.optimalRoutingRate)}
                   </Text>
                 </Text>
                 <Text>
                   🔄 Fallback Rate:{' '}
-                  <Text
-                    color="yellow"
-                    bold
-                  >
+                  <Text color="yellow" bold>
                     {formatPercentage(routing.fallbackRate)}
                   </Text>
                 </Text>
                 <Text>
                   📈 Efficiency:{' '}
-                  <Text
-                    color="cyan"
-                    bold
-                  >
+                  <Text color="cyan" bold>
                     {routing.routingEfficiency.toFixed(1)}%
                   </Text>
                 </Text>
@@ -616,19 +501,13 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
               <Box width="50%">
                 <Text>
                   🔢 Avg Fallbacks:{' '}
-                  <Text
-                    color="orange"
-                    bold
-                  >
+                  <Text color="orange" bold>
                     {routing.averageFallbackSteps.toFixed(1)}
                   </Text>
                 </Text>
                 <Text>
                   📋 Patterns Found:{' '}
-                  <Text
-                    color="blue"
-                    bold
-                  >
+                  <Text color="blue" bold>
                     {routing.commonRoutingPatterns.length}
                   </Text>
                 </Text>
@@ -645,14 +524,8 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="magenta"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="magenta"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="magenta" bold>
               🔀 Common Routing Patterns
             </Text>
             <Box marginTop={1}>
@@ -683,24 +556,15 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="green"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="green"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="green" bold>
               📋 Task-Specific Routing
             </Text>
             <Box marginTop={1}>
               {Object.entries(routing.taskTypeRouting)
                 .slice(0, 4)
                 .map(([task, config]) => (
-                  <Box
-                    key={task}
-                    flexDirection="column"
-                  >
+                  <Box key={task} flexDirection="column">
                     <Text color="yellow">{task}</Text>
                     <Text color="gray">
                       {' '}
@@ -728,54 +592,33 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor={getHealthColor(systemHealth.overallHealth)}
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color={getHealthColor(systemHealth.overallHealth)}
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color={getHealthColor(systemHealth.overallHealth)} bold>
               🏥 System Health: {systemHealth.overallHealth.toUpperCase()}
             </Text>
-            <Box
-              marginTop={1}
-              flexDirection="row"
-            >
+            <Box marginTop={1} flexDirection="row">
               <Box width="50%">
                 <Text>
                   📊 Health Score:{' '}
-                  <Text
-                    color={getHealthColor(systemHealth.overallHealth)}
-                    bold
-                  >
+                  <Text color={getHealthColor(systemHealth.overallHealth)} bold>
                     {systemHealth.healthScore}/100
                   </Text>
                 </Text>
                 <Text>
                   🔌 Active Providers:{' '}
-                  <Text
-                    color="green"
-                    bold
-                  >
+                  <Text color="green" bold>
                     {systemHealth.activeProviders}
                   </Text>
                 </Text>
                 <Text>
                   ❄️ In Cooldown:{' '}
-                  <Text
-                    color="blue"
-                    bold
-                  >
+                  <Text color="blue" bold>
                     {systemHealth.providersInCooldown}
                   </Text>
                 </Text>
                 <Text>
                   📈 Throughput:{' '}
-                  <Text
-                    color="cyan"
-                    bold
-                  >
+                  <Text color="cyan" bold>
                     {systemHealth.systemThroughput.toFixed(1)}/min
                   </Text>
                 </Text>
@@ -783,28 +626,19 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
               <Box width="50%">
                 <Text>
                   ⚡ Avg Latency:{' '}
-                  <Text
-                    color="yellow"
-                    bold
-                  >
+                  <Text color="yellow" bold>
                     {formatDuration(systemHealth.averageLatency)}
                   </Text>
                 </Text>
                 <Text>
                   ❌ Error Rate:{' '}
-                  <Text
-                    color="red"
-                    bold
-                  >
+                  <Text color="red" bold>
                     {formatPercentage(systemHealth.errorRate)}
                   </Text>
                 </Text>
                 <Text>
                   💻 Resource Usage:{' '}
-                  <Text
-                    color="purple"
-                    bold
-                  >
+                  <Text color="purple" bold>
                     {systemHealth.resourceUtilization}%
                   </Text>
                 </Text>
@@ -822,22 +656,13 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
             borderStyle="single"
             borderColor="red"
           >
-            <Box
-              flexDirection="column"
-              width="100%"
-            >
-              <Text
-                color="red"
-                bold
-              >
+            <Box flexDirection="column" width="100%">
+              <Text color="red" bold>
                 🚨 Active Alerts ({systemHealth.alerts.length})
               </Text>
               <Box marginTop={1}>
                 {systemHealth.alerts.map((alert, index) => (
-                  <Box
-                    key={index}
-                    flexDirection="column"
-                  >
+                  <Box key={index} flexDirection="column">
                     <Text color={alert.level === 'critical' ? 'red' : 'yellow'}>
                       {alert.level === 'critical' ? '🔴' : '⚠️'} {alert.message}
                     </Text>
@@ -861,22 +686,13 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
             borderStyle="single"
             borderColor="blue"
           >
-            <Box
-              flexDirection="column"
-              width="100%"
-            >
-              <Text
-                color="blue"
-                bold
-              >
+            <Box flexDirection="column" width="100%">
+              <Text color="blue" bold>
                 💡 Recommendations
               </Text>
               <Box marginTop={1}>
                 {systemHealth.recommendations.map((rec, index) => (
-                  <Text
-                    key={index}
-                    color="gray"
-                  >
+                  <Text key={index} color="gray">
                     • {rec}
                   </Text>
                 ))}
@@ -902,32 +718,20 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="purple"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="purple"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="purple" bold>
               🔍 Key Insights
             </Text>
             <Box marginTop={1}>
               <Text>
                 🏆 Top Performer:{' '}
-                <Text
-                  color="green"
-                  bold
-                >
+                <Text color="green" bold>
                   {insights.topPerformingProvider}
                 </Text>
               </Text>
               <Text>
                 💰 Most Efficient:{' '}
-                <Text
-                  color="blue"
-                  bold
-                >
+                <Text color="blue" bold>
                   {insights.mostEfficientProvider}
                 </Text>
               </Text>
@@ -951,22 +755,13 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
             borderStyle="single"
             borderColor="red"
           >
-            <Box
-              flexDirection="column"
-              width="100%"
-            >
-              <Text
-                color="red"
-                bold
-              >
+            <Box flexDirection="column" width="100%">
+              <Text color="red" bold>
                 🚧 Identified Bottlenecks
               </Text>
               <Box marginTop={1}>
                 {insights.bottlenecks.map((bottleneck, index) => (
-                  <Text
-                    key={index}
-                    color="yellow"
-                  >
+                  <Text key={index} color="yellow">
                     • {bottleneck}
                   </Text>
                 ))}
@@ -984,22 +779,13 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
             borderStyle="single"
             borderColor="green"
           >
-            <Box
-              flexDirection="column"
-              width="100%"
-            >
-              <Text
-                color="green"
-                bold
-              >
+            <Box flexDirection="column" width="100%">
+              <Text color="green" bold>
                 ⚡ Optimization Opportunities
               </Text>
               <Box marginTop={1}>
                 {insights.optimizationOpportunities.map((opp, index) => (
-                  <Text
-                    key={index}
-                    color="gray"
-                  >
+                  <Text key={index} color="gray">
                     • {opp}
                   </Text>
                 ))}
@@ -1016,14 +802,8 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
           borderStyle="single"
           borderColor="cyan"
         >
-          <Box
-            flexDirection="column"
-            width="100%"
-          >
-            <Text
-              color="cyan"
-              bold
-            >
+          <Box flexDirection="column" width="100%">
+            <Text color="cyan" bold>
               📈 Performance Summary
             </Text>
             <Box marginTop={1}>
@@ -1054,11 +834,7 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
   const renderContent = () => {
     if (isLoading) {
       return (
-        <Box
-          justifyContent="center"
-          alignItems="center"
-          height={10}
-        >
+        <Box justifyContent="center" alignItems="center" height={10}>
           <Text color="cyan">Loading LLM statistics...</Text>
         </Box>
       );
@@ -1066,15 +842,8 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
 
     if (error) {
       return (
-        <Box
-          justifyContent="center"
-          alignItems="center"
-          height={10}
-        >
-          <Box
-            flexDirection="column"
-            alignItems="center"
-          >
+        <Box justifyContent="center" alignItems="center" height={10}>
+          <Box flexDirection="column" alignItems="center">
             <Text color="red">❌ {error}</Text>
             <Text color="gray">Press 'R' to retry</Text>
           </Box>
@@ -1099,10 +868,7 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       {/* Header */}
       <Header
         title="LLM Statistics Dashboard"
@@ -1113,16 +879,8 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
       />
 
       {/* Tab Navigation */}
-      <Box
-        paddingX={2}
-        paddingY={1}
-        borderStyle="single"
-        borderColor="blue"
-      >
-        <Box
-          flexDirection="row"
-          justifyContent="space-between"
-        >
+      <Box paddingX={2} paddingY={1} borderStyle="single" borderColor="blue">
+        <Box flexDirection="row" justifyContent="space-between">
           <Text color={viewMode === 'overview' ? 'blue' : 'gray'}>
             1. Overview
           </Text>
@@ -1138,19 +896,12 @@ export const LLMStatistics: React.FC<LLMStatisticsProps> = ({
       </Box>
 
       {/* Content */}
-      <Box
-        flexGrow={1}
-        paddingX={1}
-        paddingY={1}
-      >
+      <Box flexGrow={1} paddingX={1} paddingY={1}>
         {renderContent()}
       </Box>
 
       {/* Footer */}
-      <Box
-        paddingY={1}
-        paddingX={2}
-      >
+      <Box paddingY={1} paddingX={2}>
         <InteractiveFooter
           currentScreen="LLM Statistics"
           availableScreens={[

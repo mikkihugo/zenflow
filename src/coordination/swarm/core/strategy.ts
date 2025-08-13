@@ -79,7 +79,7 @@ export type SwarmTopology = 'mesh' | 'hierarchical' | 'ring' | 'star';
 export interface CoordinationStrategy<T extends Agent = Agent> {
   coordinate(
     agents: T[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationResult>;
   getMetrics(): StrategyMetrics;
   getTopologyType(): SwarmTopology;
@@ -99,7 +99,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
 
   async coordinate(
     agents: Agent[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationResult> {
     const _startTime = Date.now();
 
@@ -111,7 +111,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
     const connections = this.establishMeshConnections(agents);
     const performance = await this.calculateMeshPerformance(
       agents,
-      connections,
+      connections
     );
     const latency = this.measureLatency(connections, context);
 
@@ -142,7 +142,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
 
   async optimize(
     _agents: Agent[],
-    history: CoordinationHistory[],
+    history: CoordinationHistory[]
   ): Promise<void> {
     // Analyze historical performance and adjust metrics
     const avgLatency =
@@ -153,7 +153,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
     if (avgLatency > 0) {
       this.metrics.latency = Math.min(
         this.metrics.latency * 0.9,
-        avgLatency * 1.1,
+        avgLatency * 1.1
       );
     }
   }
@@ -172,11 +172,11 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
 
   private async calculateMeshPerformance(
     agents: Agent[],
-    connections: ConnectionMap,
+    connections: ConnectionMap
   ): Promise<PerformanceMetrics> {
     const connectionCount = Object.values(connections).reduce(
       (sum, conns) => sum + conns.length,
-      0,
+      0
     );
 
     return {
@@ -194,7 +194,7 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
 
   private measureLatency(
     connections: ConnectionMap,
-    context: CoordinationContext,
+    context: CoordinationContext
   ): number {
     const baseLatency = 50;
     const networkFactor = (1 - context.resources.network) * 100;
@@ -205,19 +205,19 @@ export class MeshStrategy implements CoordinationStrategy<Agent> {
 
   private generateRecommendations(
     agents: Agent[],
-    performance: PerformanceMetrics,
+    performance: PerformanceMetrics
   ): string[] {
     const recommendations: string[] = [];
 
     if (agents.length > 20) {
       recommendations.push(
-        'Consider hierarchical topology for better scalability',
+        'Consider hierarchical topology for better scalability'
       );
     }
 
     if (performance.resourceUtilization.network > 0.8) {
       recommendations.push(
-        'Network utilization high - consider connection pooling',
+        'Network utilization high - consider connection pooling'
       );
     }
 
@@ -237,7 +237,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
   async coordinate(
     agents: Agent[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationResult> {
     if (!this.validateContext(context)) {
       throw new Error('Invalid coordination context for hierarchical strategy');
@@ -255,7 +255,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
       success: true,
       recommendations: this.generateHierarchicalRecommendations(
         agents,
-        hierarchy,
+        hierarchy
       ),
     };
   }
@@ -277,11 +277,11 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
   async optimize(
     agents: Agent[],
-    history: CoordinationHistory[],
+    history: CoordinationHistory[]
   ): Promise<void> {
     // Optimize based on leadership effectiveness
     const leadershipChanges = history.filter((h) =>
-      h.action.includes('leader'),
+      h.action.includes('leader')
     );
     if (leadershipChanges.length > agents.length * 0.1) {
       this.metrics.reliability *= 0.95; // Frequent leadership changes reduce reliability
@@ -290,7 +290,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
   private async buildHierarchy(
     agents: Agent[],
-    _context: CoordinationContext,
+    _context: CoordinationContext
   ): Promise<LeadershipInfo> {
     // Simple hierarchy builder - can be enhanced with agent capabilities
     const leaders: string[] = [];
@@ -298,7 +298,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
     // Select leaders based on agent capabilities and resource availability
     const sortedAgents = agents.sort(
-      (a, b) => b.capabilities.length - a.capabilities.length,
+      (a, b) => b.capabilities.length - a.capabilities.length
     );
     const leaderCount = Math.max(1, Math.floor(agents.length / 5));
 
@@ -317,7 +317,7 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
   private optimizeHierarchy(
     hierarchy: LeadershipInfo,
-    agents: Agent[],
+    agents: Agent[]
   ): PerformanceMetrics {
     return {
       executionTime: Date.now(),
@@ -340,19 +340,19 @@ export class HierarchicalStrategy implements CoordinationStrategy<Agent> {
 
   private generateHierarchicalRecommendations(
     agents: Agent[],
-    hierarchy: LeadershipInfo,
+    hierarchy: LeadershipInfo
   ): string[] {
     const recommendations: string[] = [];
 
     if (hierarchy.leaders.length / agents.length > 0.3) {
       recommendations.push(
-        'Too many leaders - consider fewer leadership levels',
+        'Too many leaders - consider fewer leadership levels'
       );
     }
 
     if (hierarchy.maxDepth > 3) {
       recommendations.push(
-        'Deep hierarchy detected - consider flatter structure',
+        'Deep hierarchy detected - consider flatter structure'
       );
     }
 
@@ -372,7 +372,7 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
 
   async coordinate(
     agents: Agent[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationResult> {
     if (!this.validateContext(context)) {
       throw new Error('Invalid coordination context for ring strategy');
@@ -409,7 +409,7 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
 
   async optimize(
     agents: Agent[],
-    history: CoordinationHistory[],
+    history: CoordinationHistory[]
   ): Promise<void> {
     // Optimize based on ring failures
     const failures = history.filter((h) => h.result === 'failure').length;
@@ -459,12 +459,12 @@ export class RingStrategy implements CoordinationStrategy<Agent> {
 
     if (agents.length > 15) {
       recommendations.push(
-        'Large ring detected - consider hierarchical or mesh topology',
+        'Large ring detected - consider hierarchical or mesh topology'
       );
     }
 
     recommendations.push(
-      'Implement ring failure detection and recovery mechanisms',
+      'Implement ring failure detection and recovery mechanisms'
     );
 
     return recommendations;
@@ -483,7 +483,7 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 
   async coordinate(
     agents: Agent[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationResult> {
     if (!this.validateContext(context)) {
       throw new Error('Invalid coordination context for star strategy');
@@ -526,11 +526,11 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 
   async optimize(
     _agents: Agent[],
-    history: CoordinationHistory[],
+    history: CoordinationHistory[]
   ): Promise<void> {
     // Optimize based on hub performance
     const hubFailures = history.filter(
-      (h) => h.result === 'failure' && h.action.includes('hub'),
+      (h) => h.result === 'failure' && h.action.includes('hub')
     ).length;
     if (hubFailures > 0) {
       this.metrics.reliability *= 0.85; // Hub failures significantly impact reliability
@@ -540,7 +540,7 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
   private selectHub(agents: Agent[]): Agent {
     // Select agent with most capabilities as hub
     return agents.reduce((best, current) =>
-      current?.capabilities.length > best.capabilities.length ? current : best,
+      current?.capabilities.length > best.capabilities.length ? current : best
     );
   }
 
@@ -564,7 +564,7 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
 
   private calculateStarPerformance(
     agents: Agent[],
-    _hub: Agent,
+    _hub: Agent
   ): PerformanceMetrics {
     return {
       executionTime: Date.now(),
@@ -587,12 +587,12 @@ export class StarStrategy implements CoordinationStrategy<Agent> {
     const recommendations: string[] = [];
 
     recommendations.push(
-      `Hub agent ${hub.id} is critical - implement failover mechanisms`,
+      `Hub agent ${hub.id} is critical - implement failover mechanisms`
     );
 
     if (agents.length > 25) {
       recommendations.push(
-        'Large star topology - consider hierarchical structure',
+        'Large star topology - consider hierarchical structure'
       );
     }
 
@@ -618,7 +618,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
 
   async executeCoordination(
     agents: T[],
-    contextData?: Partial<CoordinationContext>,
+    contextData?: Partial<CoordinationContext>
   ): Promise<CoordinationResult> {
     const context = this.buildContext(agents, contextData);
     const startTime = Date.now();
@@ -670,7 +670,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
   // Auto-select optimal strategy based on context and agent characteristics
   async autoSelectStrategy(
     agents: T[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): Promise<CoordinationStrategy<T>> {
     const strategies = [
       new MeshStrategy(),
@@ -687,7 +687,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
 
     // Select highest scoring strategy
     const best = scores.reduce((best, current) =>
-      current?.score > best.score ? current : best,
+      current?.score > best.score ? current : best
     );
 
     return best.strategy;
@@ -695,7 +695,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
 
   private buildContext(
     agents: T[],
-    contextData?: Partial<CoordinationContext>,
+    contextData?: Partial<CoordinationContext>
   ): CoordinationContext {
     return {
       swarmId: `swarm-${Date.now()}`,
@@ -726,7 +726,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
     agents: T[],
     action: string,
     result: 'success' | 'failure',
-    metrics?: Partial<StrategyMetrics>,
+    metrics?: Partial<StrategyMetrics>
   ): void {
     this.history.push({
       timestamp: new Date(),
@@ -745,7 +745,7 @@ export class SwarmCoordinator<T extends Agent = Agent> extends EventEmitter {
   private scoreStrategy(
     strategy: CoordinationStrategy<T>,
     agents: T[],
-    context: CoordinationContext,
+    context: CoordinationContext
   ): number {
     const metrics = strategy.getMetrics();
     let score = 0;

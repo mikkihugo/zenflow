@@ -53,7 +53,7 @@ class ResNetModel extends NeuralModel {
       // Determine block dimensions
       const outputDim = Math.min(
         currentDimensions * 2,
-        this.config.hiddenDimensions,
+        this.config.hiddenDimensions
       );
 
       // Create layers within block
@@ -120,7 +120,7 @@ class ResNetModel extends NeuralModel {
     let x = this.linearTransform(
       input,
       this.inputProjection.weight,
-      this.inputProjection.bias,
+      this.inputProjection.bias
     );
     x = this.applyActivation(x);
 
@@ -138,7 +138,7 @@ class ResNetModel extends NeuralModel {
     const output = this.linearTransform(
       x,
       this.outputLayer.weight,
-      this.outputLayer.bias,
+      this.outputLayer.bias
     );
 
     return output;
@@ -157,7 +157,7 @@ class ResNetModel extends NeuralModel {
       identity = this.linearTransform(
         input,
         skipConnection.weight,
-        skipConnection.bias,
+        skipConnection.bias
       );
     }
 
@@ -391,7 +391,7 @@ class ResNetModel extends NeuralModel {
       for (let i = 0; i < shuffled.length; i += batchSize) {
         const batch = shuffled.slice(
           i,
-          Math.min(i + batchSize, shuffled.length),
+          Math.min(i + batchSize, shuffled.length)
         );
 
         // Forward pass

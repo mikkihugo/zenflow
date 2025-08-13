@@ -66,7 +66,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   constructor(
     mcpMetrics: MCPPerformanceMetrics,
     enhancedMemory: EnhancedMemory,
-    config: DashboardConfig = {},
+    config: DashboardConfig = {}
   ) {
     super();
 
@@ -117,7 +117,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
         {
           database: './data/dashboard-metrics',
           options: { vectorSize: 384, metricType: 'cosine' },
-        },
+        }
       );
 
       // Vector DAO removed since createDAO doesn't exist in interfaces
@@ -157,11 +157,11 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
   async getSystemStatus(): Promise<{
     health: SystemHealth;
     metrics: {
-      mcp: any;
-      memory: any;
-      database: any;
-      neural: any;
-      clients: any; // Added UACL client metrics.
+      mcp: unknown;
+      memory: unknown;
+      database: unknown;
+      neural: unknown;
+      clients: unknown; // Added UACL client metrics.
     };
     performance: {
       uptime: number;
@@ -182,7 +182,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       mcpMetrics,
       memoryStats,
       dbStats,
-      clientMetrics,
+      clientMetrics
     );
 
     return {
@@ -212,10 +212,10 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
    * @param clientMetrics
    */
   private assessSystemHealth(
-    mcpMetrics: any,
-    memoryStats: any,
-    dbStats: any,
-    clientMetrics?: any,
+    mcpMetrics: unknown,
+    memoryStats: unknown,
+    dbStats: unknown,
+    clientMetrics?: unknown
   ): SystemHealth {
     const alerts: SystemHealth['alerts'] = [];
 
@@ -225,7 +225,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const mcpHealth = this.assessComponentHealth(
       mcpMetrics.requests.averageLatency,
       mcpErrorRate,
-      'mcp',
+      'mcp'
     );
 
     if (mcpHealth !== 'healthy') {
@@ -242,7 +242,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       0, // No latency for memory
       0, // No error rate for memory
       'memory',
-      memoryStats.totalSize,
+      memoryStats.totalSize
     );
 
     if (memoryHealth !== 'healthy') {
@@ -258,7 +258,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     const dbHealth = this.assessComponentHealth(
       dbStats.averageSearchTime,
       0, // No error rate available
-      'database',
+      'database'
     );
 
     if (dbHealth !== 'healthy' && dbStats.totalVectors > 0) {
@@ -325,7 +325,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
     latency: number,
     errorRate: number,
     component: string,
-    memoryUsage?: number,
+    memoryUsage?: number
   ): 'healthy' | 'warning' | 'critical' {
     if (component === 'memory' && memoryUsage) {
       if (memoryUsage > this.config.alertThresholds.memoryUsage! * 2) {
@@ -423,7 +423,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
    *
    * @param status
    */
-  private displayConsoleStatus(status: any): void {
+  private displayConsoleStatus(status: unknown): void {
     // Overall health.
     const _healthEmoji =
       status.health.overall === 'healthy'
@@ -434,7 +434,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
 
     // Alerts
     if (status.health.alerts.length > 0) {
-      status.health.alerts.forEach((alert: any) => {
+      status.health.alerts.forEach((alert: unknown) => {
         const _alertEmoji =
           alert.level === 'error'
             ? '❌'
@@ -502,8 +502,8 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
    * @param alerts
    */
   private assessClientHealth(
-    clientMetrics: any,
-    alerts: SystemHealth['alerts'],
+    clientMetrics: unknown,
+    alerts: SystemHealth['alerts']
   ): 'healthy' | 'warning' | 'critical' {
     if (!clientMetrics || clientMetrics.total === 0) {
       return 'healthy'; // No clients configured is considered healthy
@@ -575,7 +575,7 @@ export class UnifiedPerformanceDashboard extends EventEmitter {
       summary: {
         totalComponents: 4,
         healthyComponents: Object.values(status.health.components).filter(
-          (h) => h === 'healthy',
+          (h) => h === 'healthy'
         ).length,
         totalAlerts: status.health.alerts.length,
         uptime: status.performance.uptime,

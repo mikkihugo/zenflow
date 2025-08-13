@@ -61,7 +61,7 @@ async function verifyDatabaseDrivenArchitecture() {
   try {
     const mockDb = new VerificationDatabaseAdapter();
     const architectureEngine = new DatabaseDrivenArchitecturePhaseEngine(
-      mockDb,
+      mockDb
     );
 
     await architectureEngine.initialize();
@@ -208,7 +208,7 @@ async function verifyDatabaseDrivenArchitecture() {
       await architectureEngine.designArchitecture(samplePseudocode);
     const validation =
       await architectureEngine.validateArchitecturalConsistency(
-        architecture.systemArchitecture,
+        architecture.systemArchitecture
       );
     try {
       const _retrievedArchitecture =

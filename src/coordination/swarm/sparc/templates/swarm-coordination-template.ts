@@ -364,7 +364,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
   },
 
   customizeSpecification(
-    projectSpec: ProjectSpecification,
+    projectSpec: ProjectSpecification
   ): DetailedSpecification {
     const customized = { ...this.specification };
     customized.domain = projectSpec.domain;
@@ -432,7 +432,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
     if (projectSpec.domain !== 'swarm-coordination') {
       warnings.push('Project domain does not match template domain');
       recommendations.push(
-        'Consider using a swarm-coordination specific template',
+        'Consider using a swarm-coordination specific template'
       );
     }
 

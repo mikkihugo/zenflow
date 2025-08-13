@@ -23,7 +23,7 @@ export interface MemoryRequest {
   /** Key for the memory entry */
   key: string;
   /** Value to store (optional for retrieval/delete operations) */
-  value?: any;
+  value?: unknown;
   /** Additional options for the operation */
   options?: {
     /** Time-to-live in milliseconds */
@@ -31,7 +31,7 @@ export interface MemoryRequest {
     /** Enable compression for this entry */
     compress?: boolean;
     /** Metadata to store with the entry */
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
   };
 }
 
@@ -44,7 +44,7 @@ export interface MemoryResponse {
   /** Whether the operation was successful */
   success: boolean;
   /** Response data (varies by operation) */
-  data?: any;
+  data?: unknown;
   /** Error message if operation failed */
   error?: string;
   /** Operation metadata and statistics */
@@ -73,7 +73,7 @@ export interface MemoryBatchRequest {
     /** Key for the operation */
     key: string;
     /** Value for store operations */
-    value?: any;
+    value?: unknown;
     /** Options for the operation */
     options?: MemoryRequest['options'];
   }>;
@@ -628,7 +628,7 @@ export class MemoryController {
    * @param value
    * @param options
    */
-  private processValueForStorage(value: any, options?: MemoryRequest['options']): any {
+  private processValueForStorage(value: unknown, options?: MemoryRequest['options']): unknown {
     const processed = {
       value,
       metadata: {
@@ -654,7 +654,7 @@ export class MemoryController {
    *
    * @param rawValue
    */
-  private processValueFromStorage(rawValue: any): any {
+  private processValueFromStorage(rawValue: unknown): unknown {
     if (!rawValue || typeof rawValue !== 'object') {
       return { value: rawValue, metadata: {} };
     }

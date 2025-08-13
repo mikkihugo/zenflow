@@ -134,7 +134,7 @@ export abstract class BaseEventManager implements IEventManager {
     this.processingStrategy = config.processing?.strategy || 'immediate';
 
     this.logger.debug(
-      `BaseEventManager initialized: ${this.name} (${this.type})`,
+      `BaseEventManager initialized: ${this.name} (${this.type})`
     );
   }
 
@@ -218,7 +218,7 @@ export abstract class BaseEventManager implements IEventManager {
       priority?: EventPriority;
       timeout?: number;
       retries?: number;
-    },
+    }
   ): Promise<void> {
     if (!this.isRunning) {
       this.logger.warn(`Event manager not running, queuing event: ${event.id}`);
@@ -298,7 +298,7 @@ export abstract class BaseEventManager implements IEventManager {
     options?: {
       filter?: EventFilter;
       once?: boolean;
-    },
+    }
   ): string {
     const subscriptionId = this.generateSubscriptionId();
     const types = Array.isArray(eventTypes) ? eventTypes : [eventTypes];
@@ -316,7 +316,7 @@ export abstract class BaseEventManager implements IEventManager {
     this.metrics.subscriptionCount++;
 
     this.logger.debug(
-      `Subscription created: ${subscriptionId} for types ${types.join(', ')}`,
+      `Subscription created: ${subscriptionId} for types ${types.join(', ')}`
     );
     return subscriptionId;
   }
@@ -443,7 +443,7 @@ export abstract class BaseEventManager implements IEventManager {
     try {
       // Process batch in parallel
       await Promise.allSettled(
-        batch.map((event) => this.notifySubscribers(event)),
+        batch.map((event) => this.notifySubscribers(event))
       );
     } catch (error) {
       this.logger.error('Batch processing failed:', error);
@@ -507,7 +507,7 @@ export abstract class BaseEventManager implements IEventManager {
       // Check event type match
       if (
         !subscription.eventTypes.some((type) =>
-          this.eventTypeMatches(event.type, type),
+          this.eventTypeMatches(event.type, type)
         )
       ) {
         continue;
@@ -529,7 +529,7 @@ export abstract class BaseEventManager implements IEventManager {
 
   protected eventTypeMatches(
     eventType: string,
-    subscriptionType: string,
+    subscriptionType: string
   ): boolean {
     // Support wildcard matching
     if (subscriptionType.includes('*')) {
@@ -542,7 +542,7 @@ export abstract class BaseEventManager implements IEventManager {
 
   protected eventMatchesFilter(
     event: SystemEvent,
-    filter: EventFilter,
+    filter: EventFilter
   ): boolean {
     // Type filtering
     if (filter.types && !filter.types.includes(event.type)) {
@@ -586,7 +586,7 @@ export abstract class BaseEventManager implements IEventManager {
 
   protected wrapOnceListener(
     listener: (event: SystemEvent) => void | Promise<void>,
-    subscriptionId: string,
+    subscriptionId: string
   ): (event: SystemEvent) => void | Promise<void> {
     return async (event: SystemEvent) => {
       try {
@@ -620,13 +620,13 @@ export abstract class BaseEventManager implements IEventManager {
         if (status.status !== 'healthy') {
           this.logger.warn(
             `Event manager health check failed: ${this.name}`,
-            status,
+            status
           );
         }
       } catch (error) {
         this.logger.error(
           `Health check error for manager ${this.name}:`,
-          error,
+          error
         );
       }
     }, interval);

@@ -130,7 +130,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleCreateProject(
     args: string[],
-    options: any,
+    options: unknown
   ): Promise<CommandResult> {
     const projectName = args[0] || 'new-project';
     const projectType = options?.type || 'full-stack';
@@ -188,7 +188,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleOptimizeProject(
     args: string[],
-    _options: any,
+    _options: unknown
   ): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
     const startTime = Date.now();
@@ -222,7 +222,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleProjectStatus(
     args: string[],
-    _options: any,
+    _options: unknown
   ): Promise<CommandResult> {
     const projectPath = args[0] || process.cwd();
 
@@ -258,7 +258,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleSwarmCommand(
     args: string[],
-    options: any,
+    options: unknown
   ): Promise<CommandResult> {
     const action = args[0];
 
@@ -300,7 +300,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleGenerateCommand(
     args: string[],
-    options: any,
+    options: unknown
   ): Promise<CommandResult> {
     const subCommand = args[0];
 
@@ -339,7 +339,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handleTestCommand(
     _args: string[],
-    _options: any,
+    _options: unknown
   ): Promise<CommandResult> {
     return {
       success: true,
@@ -361,7 +361,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    */
   private async handlePerformanceCommand(
     _args: string[],
-    _options: any,
+    _options: unknown
   ): Promise<CommandResult> {
     return {
       success: true,
@@ -379,7 +379,7 @@ export class CliCommandAdapter implements CommandExecutorContract {
    *
    * @param domainsStr
    */
-  private parseDomains(domainsStr: string): any[] {
+  private parseDomains(domainsStr: string): unknown[] {
     if (!domainsStr) return ['neural', 'swarm'];
     return domainsStr.split(',').map((d) => d.trim());
   }

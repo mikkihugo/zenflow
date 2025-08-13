@@ -48,14 +48,14 @@ async function main() {
         continue: true,
         error: errorMessage,
         stack: process.env['DEBUG'] ? errorStack : undefined,
-      }),
+      })
     );
     process.exit(1); // Non-blocking error
   }
 }
 
-function parseArgs(args: string[]): any {
-  const options: any = {};
+function parseArgs(args: string[]): unknown {
+  const options: unknown = {};
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];

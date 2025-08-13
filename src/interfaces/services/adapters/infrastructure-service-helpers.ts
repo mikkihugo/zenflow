@@ -48,7 +48,7 @@ export async function quickCreateInfrastructureService(
     enableResourceTracking?: boolean;
     enableHealthMonitoring?: boolean;
     autoStart?: boolean;
-  } = {},
+  } = {}
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Quick creating infrastructure service', { name, options });
 
@@ -99,7 +99,7 @@ export async function createFacadeOnlyInfrastructureService(
     mockServices?: boolean;
     enableBatchOperations?: boolean;
     systemStatusInterval?: number;
-  } = {},
+  } = {}
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Creating facade-only infrastructure service', {
     name,
@@ -145,7 +145,7 @@ export async function createPatternIntegrationOnlyService(
     configProfile?: 'default' | 'production' | 'development';
     maxAgents?: number;
     enableAutoOptimization?: boolean;
-  } = {},
+  } = {}
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Creating pattern integration only service', {
     name,
@@ -194,7 +194,7 @@ export async function createProductionInfrastructureService(
     enableCircuitBreaker?: boolean;
     enablePredictiveMonitoring?: boolean;
     configEncryption?: boolean;
-  } = {},
+  } = {}
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Creating production infrastructure service', {
     name,
@@ -271,9 +271,9 @@ export async function createProductionInfrastructureService(
  */
 export async function initializeProjectWithRetries(
   service: InfrastructureServiceAdapter,
-  projectConfig: any,
-  maxRetries: number = 3,
-): Promise<any> {
+  projectConfig: unknown,
+  maxRetries: number = 3
+): Promise<unknown> {
   logger.debug('Initializing project with retries', {
     projectConfig,
     maxRetries,
@@ -330,8 +330,8 @@ export async function processDocumentEnhanced(
     priority?: 'low' | 'medium' | 'high' | 'critical';
     timeout?: number;
     swarmId?: string;
-  } = {},
-): Promise<any> {
+  } = {}
+): Promise<unknown> {
   logger.debug('Processing document with enhanced options', {
     documentPath,
     options,
@@ -349,7 +349,7 @@ export async function processDocumentEnhanced(
         documentPath,
         options,
       },
-      operationOptions,
+      operationOptions
     );
 
     if (result?.success) {
@@ -376,12 +376,12 @@ export async function processDocumentEnhanced(
  */
 export async function executeBatchWithProgress(
   service: InfrastructureServiceAdapter,
-  operations: Array<{ type: string; params: any }>,
+  operations: Array<{ type: string; params: unknown }>,
   onProgress?: (
     completed: number,
     total: number,
-    currentOperation: string,
-  ) => void,
+    currentOperation: string
+  ) => void
 ): Promise<any[]> {
   logger.debug('Executing batch operations with progress tracking', {
     operationCount: operations.length,
@@ -402,7 +402,7 @@ export async function executeBatchWithProgress(
       { operations },
       {
         timeout: operations.length * 30000, // 30 seconds per operation
-      },
+      }
     );
 
     if (result?.success) {
@@ -428,8 +428,8 @@ export async function executeBatchWithProgress(
  */
 export async function getSystemStatusCached(
   service: InfrastructureServiceAdapter,
-  cacheTTL: number = 30000, // 30 seconds
-): Promise<any> {
+  cacheTTL: number = 30000 // 30 seconds
+): Promise<unknown> {
   const _cacheKey = `system-status-${service.name}`;
 
   // This would use a proper cache in a real implementation
@@ -442,7 +442,7 @@ export async function getSystemStatusCached(
       {},
       {
         timeout: 15000, // 15 second timeout for status check
-      },
+      }
     );
 
     if (result?.success) {
@@ -478,8 +478,8 @@ export async function initializeOptimizedSwarm(
     agentCount?: number;
     capabilities?: string[];
     enableAutoOptimization?: boolean;
-  },
-): Promise<any> {
+  }
+): Promise<unknown> {
   logger.debug('Initializing optimized swarm', { swarmConfig });
 
   const optimizedConfig = {
@@ -532,8 +532,8 @@ export async function coordinateSwarmWithMonitoring(
   service: InfrastructureServiceAdapter,
   swarmId: string,
   operation: string,
-  monitoringCallback?: (metrics: any) => void,
-): Promise<any> {
+  monitoringCallback?: (metrics: unknown) => void
+): Promise<unknown> {
   logger.debug('Coordinating swarm with monitoring', { swarmId, operation });
 
   try {
@@ -564,7 +564,7 @@ export async function coordinateSwarmWithMonitoring(
       },
       {
         timeout: 120000, // 2 minute timeout for coordination
-      },
+      }
     );
 
     if (result?.success) {
@@ -593,10 +593,10 @@ export async function coordinateSwarmWithMonitoring(
  * @example
  */
 export async function optimizeResourcesComprehensive(
-  service: InfrastructureServiceAdapter,
+  service: InfrastructureServiceAdapter
 ): Promise<{
   optimizations: string[];
-  resourcesSaved: any;
+  resourcesSaved: unknown;
   recommendations: string[];
 }> {
   logger.debug('Performing comprehensive resource optimization');
@@ -666,7 +666,7 @@ export async function monitorResourcesWithAlerts(
     type: string;
     value: number;
     threshold: number;
-  }) => void,
+  }) => void
 ): Promise<NodeJS.Timeout> {
   logger.debug('Starting resource monitoring with alerts', { thresholds });
 
@@ -718,7 +718,7 @@ export async function monitorResourcesWithAlerts(
 export async function updateConfigurationSafely(
   service: InfrastructureServiceAdapter,
   newConfig: Partial<InfrastructureServiceAdapterConfig>,
-  validateFirst: boolean = true,
+  validateFirst: boolean = true
 ): Promise<{ success: boolean; rollbackAvailable: boolean; version?: string }> {
   logger.debug('Updating configuration safely', { validateFirst });
 
@@ -771,7 +771,7 @@ export async function updateConfigurationSafely(
  */
 export async function rollbackConfiguration(
   service: InfrastructureServiceAdapter,
-  version?: string,
+  version?: string
 ): Promise<{ success: boolean; rolledBackTo: string }> {
   logger.debug('Rolling back configuration', { version });
 
@@ -823,7 +823,7 @@ export async function rollbackConfiguration(
  * @example
  */
 export async function performComprehensiveHealthCheck(
-  service: InfrastructureServiceAdapter,
+  service: InfrastructureServiceAdapter
 ): Promise<{
   overall: boolean;
   details: {
@@ -833,7 +833,7 @@ export async function performComprehensiveHealthCheck(
     performance: boolean;
   };
   recommendations: string[];
-  metrics: any;
+  metrics: unknown;
 }> {
   logger.debug('Performing comprehensive health check');
 
@@ -856,7 +856,7 @@ export async function performComprehensiveHealthCheck(
       dependencies: true, // Simplified
       resources: stats.resourceTracking?.currentUtilization
         ? Object.values(stats.resourceTracking.currentUtilization).every(
-            (v: any) => v < 0.9,
+            (v: unknown) => v < 0.9
           )
         : true,
       performance: report.summary?.successRate > 95,
@@ -913,7 +913,7 @@ export async function performComprehensiveHealthCheck(
 export async function createInfrastructureServiceWithBestPractices(
   name: string,
   environment: 'development' | 'staging' | 'production' = 'development',
-  customOptions?: CreateServiceOptions,
+  customOptions?: CreateServiceOptions
 ): Promise<InfrastructureServiceAdapter> {
   logger.debug('Creating infrastructure service with best practices', {
     name,
@@ -990,7 +990,7 @@ export async function createInfrastructureServiceWithBestPractices(
 export async function waitForServiceReady(
   service: InfrastructureServiceAdapter,
   timeout: number = 30000,
-  checkInterval: number = 1000,
+  checkInterval: number = 1000
 ): Promise<boolean> {
   logger.debug('Waiting for service to be ready', { timeout, checkInterval });
 
@@ -1033,13 +1033,13 @@ export async function waitForServiceReady(
 export async function executeWithRetries<T>(
   service: InfrastructureServiceAdapter,
   operation: string,
-  params?: any,
+  params?: unknown,
   options: {
     maxRetries?: number;
     baseDelay?: number;
     maxDelay?: number;
     timeout?: number;
-  } = {},
+  } = {}
 ): Promise<T> {
   const {
     maxRetries = 3,
@@ -1097,8 +1097,8 @@ export async function executeWithRetries<T>(
  */
 export async function batchExecuteWithConcurrency<T>(
   service: InfrastructureServiceAdapter,
-  operations: Array<{ operation: string; params?: any }>,
-  maxConcurrency: number = 5,
+  operations: Array<{ operation: string; params?: unknown }>,
+  maxConcurrency: number = 5
 ): Promise<Array<{ success: boolean; data?: T; error?: Error }>> {
   logger.debug('Batch executing operations with concurrency control', {
     operationCount: operations.length,

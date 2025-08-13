@@ -87,7 +87,7 @@ export interface CacheStats {
 export interface StoreOptions {
   ttl?: number;
   compress?: boolean;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 // Memory backend interfaces
@@ -305,7 +305,7 @@ export class MemoryError extends Error {
   constructor(
     message: string,
     public readonly code?: string,
-    public readonly details?: Record<string, unknown>,
+    public readonly details?: Record<string, unknown>
   ) {
     super(message);
     this.name = 'MemoryError';
@@ -315,7 +315,7 @@ export class MemoryError extends Error {
 export class MemoryConnectionError extends MemoryError {
   constructor(
     message: string,
-    public readonly backend: string,
+    public readonly backend: string
   ) {
     super(message, 'MEMORY_CONNECTION_ERROR');
     this.name = 'MemoryConnectionError';
@@ -326,7 +326,7 @@ export class MemoryStorageError extends MemoryError {
   constructor(
     message: string,
     public readonly key?: string,
-    public readonly operation?: string,
+    public readonly operation?: string
   ) {
     super(message, 'MEMORY_STORAGE_ERROR');
     this.name = 'MemoryStorageError';
@@ -337,7 +337,7 @@ export class MemoryCapacityError extends MemoryError {
   constructor(
     message: string,
     public readonly currentSize: number,
-    public readonly maxSize: number,
+    public readonly maxSize: number
   ) {
     super(message, 'MEMORY_CAPACITY_ERROR');
     this.name = 'MemoryCapacityError';
@@ -368,10 +368,10 @@ export interface IMemoryStore {
 export interface MemorySystemFactory {
   createMemoryStore(config: MemoryConfig): Promise<IMemoryStore>;
   createSessionStore(
-    options: SessionMemoryStoreOptions,
+    options: SessionMemoryStoreOptions
   ): Promise<SessionMemoryStore>;
   createVectorStore(
-    config: MemoryConfig & { vectorDimensions: number },
+    config: MemoryConfig & { vectorDimensions: number }
   ): Promise<VectorMemoryStore>;
 }
 
@@ -380,7 +380,7 @@ export interface SessionMemoryStore extends IMemoryStore {
   getSession(sessionId: string): Promise<SessionState | null>;
   updateSession(
     sessionId: string,
-    updates: Partial<SessionState['data']>,
+    updates: Partial<SessionState['data']>
   ): Promise<void>;
   deleteSession(sessionId: string): Promise<boolean>;
   listSessions(options?: {
@@ -392,7 +392,7 @@ export interface SessionMemoryStore extends IMemoryStore {
 export interface VectorMemoryStore {
   storeVector(data: VectorData): Promise<void>;
   searchVectors(
-    options: VectorSearchOptions,
+    options: VectorSearchOptions
   ): Promise<readonly VectorSearchResult[]>;
   deleteVector(id: string): Promise<boolean>;
   updateVector(id: string, updates: Partial<VectorData>): Promise<void>;

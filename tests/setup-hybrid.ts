@@ -152,7 +152,7 @@ function setupClassicalTDD() {
   expectNearlyEqual = (
     actual: number,
     expected: number,
-    tolerance: number = 1e-10,
+    tolerance: number = 1e-10
   ) => {
     expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
   };
@@ -170,7 +170,7 @@ function setupHybridTDD() {
   // Hybrid-specific utilities
   testWithApproach = (
     approach: 'london' | 'classical',
-    testFn: () => void | Promise<void>,
+    testFn: () => void | Promise<void>
   ) => {
     if (approach === 'london') {
       // Use mocks for external dependencies
@@ -237,7 +237,7 @@ function cleanupClassicalResources() {
  */
 (globalThis as any).expectPerformanceWithinThreshold = (
   operation: 'coordination' | 'neural' | 'memory',
-  actualTime: number,
+  actualTime: number
 ) => {
   const threshold =
     HYBRID_CONFIG.performanceThresholds[
@@ -274,7 +274,7 @@ function cleanupClassicalResources() {
     | 'pseudocode'
     | 'architecture'
     | 'refinement'
-    | 'completion',
+    | 'completion'
 ) => {
   return {
     phase,
@@ -366,7 +366,7 @@ declare global {
       // London TDD utilities
       createInteractionSpy(name: string): vi.Mock;
       createCoordinationMock<T>(
-        defaults?: Partial<T>,
+        defaults?: Partial<T>
       ): (overrides?: Partial<T>) => T;
 
       // Classical TDD utilities
@@ -381,20 +381,20 @@ declare global {
       expectNearlyEqual(
         actual: number,
         expected: number,
-        tolerance?: number,
+        tolerance?: number
       ): void;
 
       // Hybrid utilities
       testWithApproach(
         approach: 'london' | 'classical',
-        testFn: () => void | Promise<void>,
+        testFn: () => void | Promise<void>
       ): void | Promise<void>;
       createMemoryTestScenario(
-        type: 'sqlite' | 'lancedb' | 'json',
+        type: 'sqlite' | 'lancedb' | 'json'
       ): MemoryTestScenario;
       expectPerformanceWithinThreshold(
         operation: 'coordination' | 'neural' | 'memory',
-        actualTime: number,
+        actualTime: number
       ): void;
 
       // DI testing utilities
@@ -407,7 +407,7 @@ declare global {
           | 'pseudocode'
           | 'architecture'
           | 'refinement'
-          | 'completion',
+          | 'completion'
       ): SPARCTestScenario;
 
       // Global GC

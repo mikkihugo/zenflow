@@ -84,7 +84,7 @@ export interface AgentRegistry {
   updateAgentStatus(agentId: string, status: AgentStatus): Promise<void>;
   updateAgentPerformance(
     agentId: string,
-    performance: Partial<AgentPerformance>,
+    performance: Partial<AgentPerformance>
   ): Promise<void>;
 }
 

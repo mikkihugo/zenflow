@@ -279,7 +279,7 @@ export class TestClass {
         workersGenerated: results.taskDistribution.size,
         totalTasks: Array.from(results.taskDistribution.values()).reduce(
           (sum, tasks) => sum + tasks.length,
-          0,
+          0
         ),
       });
 
@@ -385,7 +385,7 @@ export class TestClass {
         mockErrors.totalErrors++;
         mockErrors.errorTypes.set(
           error.type,
-          (mockErrors.errorTypes.get(error.type) || 0) + 1,
+          (mockErrors.errorTypes.get(error.type) || 0) + 1
         );
       }
     }
@@ -553,16 +553,16 @@ export class TestClass {
     // Add recommendations
     if (report.summary.failed > 0) {
       report.recommendations.push(
-        'Some tests failed - review error logs and fix issues',
+        'Some tests failed - review error logs and fix issues'
       );
     }
 
     if (report.summary.passed === report.summary.totalTests) {
       report.recommendations.push(
-        'All tests passed - system ready for deployment',
+        'All tests passed - system ready for deployment'
       );
       report.recommendations.push(
-        'Consider running on actual codebase for production validation',
+        'Consider running on actual codebase for production validation'
       );
     }
 

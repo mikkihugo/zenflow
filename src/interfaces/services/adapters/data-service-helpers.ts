@@ -173,7 +173,7 @@ export class DataServiceHelper {
    * @param useCache
    */
   async getSystemStatus(
-    useCache = true,
+    useCache = true
   ): Promise<DataOperationResult<SystemStatusData>> {
     const startTime = Date.now();
 
@@ -181,7 +181,7 @@ export class DataServiceHelper {
       const response = await this.adapter.execute<SystemStatusData>(
         'system-status',
         {},
-        { trackMetrics: true },
+        { trackMetrics: true }
       );
 
       return {
@@ -336,7 +336,7 @@ export class DataServiceHelper {
       return this.createErrorResult<SwarmData[]>(
         'get-swarms',
         startTime,
-        error as Error,
+        error as Error
       );
     }
   }
@@ -371,7 +371,7 @@ export class DataServiceHelper {
 
       const response = await this.adapter.execute<SwarmData>(
         'create-swarm',
-        config,
+        config
       );
 
       return {
@@ -476,7 +476,7 @@ export class DataServiceHelper {
    * @param options
    */
   async getTasks(
-    options?: EnhancedSearchOptions,
+    options?: EnhancedSearchOptions
   ): Promise<DataOperationResult<TaskData[]>> {
     const startTime = Date.now();
 
@@ -508,7 +508,7 @@ export class DataServiceHelper {
         tasks = this.sortData(
           tasks,
           options?.sort?.field,
-          options?.sort?.direction,
+          options?.sort?.direction
         );
       }
 
@@ -527,7 +527,7 @@ export class DataServiceHelper {
       return this.createErrorResult<TaskData[]>(
         'get-tasks',
         startTime,
-        error as Error,
+        error as Error
       );
     }
   }
@@ -566,7 +566,7 @@ export class DataServiceHelper {
 
       const response = await this.adapter.execute<TaskData>(
         'create-task',
-        config,
+        config
       );
 
       return {
@@ -603,7 +603,7 @@ export class DataServiceHelper {
       projectId?: string;
       limit?: number;
       includeContent?: boolean;
-    },
+    }
   ): Promise<
     DataOperationResult<{
       documents: T[];
@@ -661,7 +661,7 @@ export class DataServiceHelper {
       documentId?: string;
       document?: Record<string, unknown>;
       updates?: Record<string, unknown>;
-    }>,
+    }>
   ): Promise<
     DataOperationResult<{
       successful: number;
@@ -695,7 +695,7 @@ export class DataServiceHelper {
           } catch (error) {
             return { success: false, error: (error as Error).message };
           }
-        }),
+        })
       );
 
       const processedResults = results.map((result) => {
@@ -736,7 +736,7 @@ export class DataServiceHelper {
    * @param config
    */
   async executeBatch(
-    config: BatchOperationConfig,
+    config: BatchOperationConfig
   ): Promise<DataOperationResult<unknown[]>> {
     const startTime = Date.now();
     const concurrency = config?.concurrency || 5;
@@ -754,7 +754,7 @@ export class DataServiceHelper {
             const response = await this.adapter.execute(
               op.operation,
               op.params,
-              op.options,
+              op.options
             );
             return { index: i + index, result: response };
           } catch (error) {
@@ -793,7 +793,7 @@ export class DataServiceHelper {
       return this.createErrorResult<unknown[]>(
         'batch-operations',
         startTime,
-        error as Error,
+        error as Error
       );
     }
   }
@@ -819,8 +819,8 @@ export class DataServiceHelper {
               step.config['predicate'] as (
                 value: T,
                 index: number,
-                array: T[],
-              ) => boolean,
+                array: T[]
+              ) => boolean
             );
           }
           break;
@@ -830,8 +830,8 @@ export class DataServiceHelper {
               step.config['mapper'] as (
                 value: T,
                 index: number,
-                array: T[],
-              ) => T,
+                array: T[]
+              ) => T
             );
           }
           break;
@@ -843,7 +843,7 @@ export class DataServiceHelper {
             result = this.sortData(
               result,
               step.config['field'],
-              step.config['direction'] as 'asc' | 'desc',
+              step.config['direction'] as 'asc' | 'desc'
             );
           }
           break;
@@ -851,7 +851,7 @@ export class DataServiceHelper {
           if (typeof step.config['field'] === 'string') {
             result = this.groupData(
               result as Record<string, unknown>[],
-              step.config['field'],
+              step.config['field']
             ) as T[];
           }
           break;
@@ -863,8 +863,8 @@ export class DataServiceHelper {
             result = result?.filter((item) =>
               this.validateItem(
                 item,
-                step.config['schema'] as Record<string, unknown>,
-              ),
+                step.config['schema'] as Record<string, unknown>
+              )
             );
           }
           break;
@@ -884,7 +884,7 @@ export class DataServiceHelper {
    */
   aggregateData(
     data: unknown[],
-    options: DataAggregationOptions,
+    options: DataAggregationOptions
   ): Record<string, unknown> {
     let processedResult = data as Record<string, unknown>[];
 
@@ -895,7 +895,7 @@ export class DataServiceHelper {
         : [options?.groupBy];
       processedResult = this.groupByMultipleFields(
         processedResult,
-        groupFields,
+        groupFields
       );
     }
 
@@ -903,7 +903,7 @@ export class DataServiceHelper {
     if (options?.aggregations) {
       processedResult = this.applyAggregations(
         processedResult,
-        options?.aggregations,
+        options?.aggregations
       );
     }
 
@@ -911,7 +911,7 @@ export class DataServiceHelper {
     if (options?.having) {
       processedResult = this.applyFilters(
         processedResult,
-        options?.having,
+        options?.having
       ) as Record<string, unknown>[];
     }
 
@@ -926,7 +926,7 @@ export class DataServiceHelper {
    */
   exportData(
     data: Record<string, unknown>[],
-    format: 'json' | 'csv' | 'xml' = 'json',
+    format: 'json' | 'csv' | 'xml' = 'json'
   ): string {
     switch (format) {
       case 'json':
@@ -945,7 +945,7 @@ export class DataServiceHelper {
   // ============================================
 
   private validateSwarmConfig(
-    config: Record<string, unknown>,
+    config: Record<string, unknown>
   ): DataValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -981,7 +981,7 @@ export class DataServiceHelper {
   }
 
   private validateTaskConfig(
-    config: Record<string, unknown>,
+    config: Record<string, unknown>
   ): DataValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -1015,7 +1015,7 @@ export class DataServiceHelper {
 
   private validateItem(
     item: unknown,
-    _schema: Record<string, unknown>,
+    _schema: Record<string, unknown>
   ): boolean {
     // Simple validation - in production, use a proper schema validator like Joi or Yup
     try {
@@ -1042,7 +1042,7 @@ export class DataServiceHelper {
   private createErrorResult<T = unknown>(
     operation: string,
     startTime: number,
-    error: Error,
+    error: Error
   ): DataOperationResult<T> {
     return {
       success: false,
@@ -1059,7 +1059,7 @@ export class DataServiceHelper {
 
   private applyFilters(
     data: unknown[],
-    filters: Record<string, unknown>,
+    filters: Record<string, unknown>
   ): unknown[] {
     return data.filter((item) => {
       return Object.entries(filters).every(([key, value]) => {
@@ -1093,16 +1093,16 @@ export class DataServiceHelper {
       (task) =>
         task.title.toLowerCase().includes(lowercaseQuery) ||
         task.assignedAgents.some((agent) =>
-          agent.toLowerCase().includes(lowercaseQuery),
-        ),
+          agent.toLowerCase().includes(lowercaseQuery)
+        )
     );
   }
 
   private sortData(
-    data: any[],
+    data: unknown[],
     field: string,
-    direction: 'asc' | 'desc',
-  ): any[] {
+    direction: 'asc' | 'desc'
+  ): unknown[] {
     return [...data].sort((a, b) => {
       const aVal = a[field];
       const bVal = b[field];
@@ -1115,7 +1115,7 @@ export class DataServiceHelper {
 
   private groupData(
     data: Record<string, unknown>[],
-    field: string,
+    field: string
   ): Array<Record<string, unknown>> {
     const groups = data.reduce(
       (acc, item) => {
@@ -1124,7 +1124,7 @@ export class DataServiceHelper {
         (acc[key] as Record<string, unknown>[]).push(item);
         return acc;
       },
-      {} as Record<string, Record<string, unknown>[]>,
+      {} as Record<string, Record<string, unknown>[]>
     );
 
     return Object.entries(groups).map(([key, items]) => ({
@@ -1136,7 +1136,7 @@ export class DataServiceHelper {
 
   private groupByMultipleFields(
     data: Record<string, unknown>[],
-    fields: string[],
+    fields: string[]
   ): Array<Record<string, unknown>> {
     const groups = data.reduce(
       (acc, item) => {
@@ -1145,7 +1145,7 @@ export class DataServiceHelper {
         (acc[key] as Record<string, unknown>[]).push(item);
         return acc;
       },
-      {} as Record<string, Record<string, unknown>[]>,
+      {} as Record<string, Record<string, unknown>[]>
     );
 
     return Object.entries(groups).map(([key, items]) => {
@@ -1164,7 +1164,7 @@ export class DataServiceHelper {
 
   private applyAggregations(
     data: Array<Record<string, unknown>>,
-    aggregations: Array<{ field: string; operation: string; alias?: string }>,
+    aggregations: Array<{ field: string; operation: string; alias?: string }>
   ): Array<Record<string, unknown>> {
     return data.map((group) => {
       const aggregated = { ...group };
@@ -1183,7 +1183,7 @@ export class DataServiceHelper {
           case 'sum':
             aggregated[alias] = values.reduce(
               (sum: number, val: number) => sum + val,
-              0,
+              0
             );
             break;
           case 'avg':
@@ -1208,7 +1208,7 @@ export class DataServiceHelper {
 
   private calculateDistribution(
     data: Record<string, unknown>[],
-    field: string,
+    field: string
   ): Record<string, number> {
     return data.reduce(
       (acc: Record<string, number>, item) => {
@@ -1216,7 +1216,7 @@ export class DataServiceHelper {
         acc[value] = (acc[value] || 0) + 1;
         return acc;
       },
-      {} as Record<string, number>,
+      {} as Record<string, number>
     );
   }
 
@@ -1239,7 +1239,7 @@ export class DataServiceHelper {
             }
             return String(value || '');
           })
-          .join(','),
+          .join(',')
       ),
     ];
 
@@ -1267,7 +1267,7 @@ export class DataServiceHelper {
  * @example
  */
 export function createDataServiceHelper(
-  adapter: DataServiceAdapter,
+  adapter: DataServiceAdapter
 ): DataServiceHelper {
   return new DataServiceHelper(adapter);
 }
@@ -1284,7 +1284,7 @@ export const DataServiceUtils = {
    */
   validateConfiguration(
     config: Record<string, unknown>,
-    schema: { required?: string[] },
+    schema: { required?: string[] }
   ): DataValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
@@ -1316,7 +1316,7 @@ export const DataServiceUtils = {
   generateCacheKey(
     operation: string,
     params: Record<string, unknown> = {},
-    prefix = 'data:',
+    prefix = 'data:'
   ): string {
     const paramString =
       Object.keys(params).length > 0 ? JSON.stringify(params) : '';
@@ -1365,7 +1365,7 @@ export const DataServiceUtils = {
           if (!target[key]) target[key] = {};
           this.deepMerge(
             target[key] as Record<string, unknown>,
-            source[key] as Record<string, unknown>,
+            source[key] as Record<string, unknown>
           );
         } else {
           target[key] = source[key];
@@ -1397,7 +1397,7 @@ export const DataServiceUtils = {
 
       // Remove old requests outside the window
       const validRequests = keyRequests.filter(
-        (timestamp) => timestamp > windowStart,
+        (timestamp) => timestamp > windowStart
       );
       requests.set(key, validRequests);
 

@@ -120,7 +120,7 @@ export interface QueryError {
   error: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
     stack?: string;
   };
   executionTime: number;
@@ -151,7 +151,7 @@ export interface QueryError {
  * @see {@link DatabaseResult} Union type definition
  */
 export function isQuerySuccess<T = any>(
-  result: DatabaseResult<T>,
+  result: DatabaseResult<T>
 ): result is QuerySuccess<T> {
   return result?.success === true && 'data' in result;
 }
@@ -189,7 +189,7 @@ export interface MemorySuccess<T = any> {
   key: string;
   timestamp: Date;
   ttl?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -224,7 +224,7 @@ export interface MemoryError {
  * @example
  */
 export function isMemorySuccess<T = any>(
-  result: MemoryResult<T>,
+  result: MemoryResult<T>
 ): result is MemorySuccess<T> {
   return result?.found === true && 'data' in result;
 }
@@ -236,7 +236,7 @@ export function isMemorySuccess<T = any>(
  * @example
  */
 export function isMemoryNotFound(
-  result: MemoryResult,
+  result: MemoryResult
 ): result is MemoryNotFound {
   return result?.found === false && 'reason' in result;
 }
@@ -301,7 +301,7 @@ export interface NeuralError {
     code: string;
     message: string;
     operation: 'training' | 'inference' | 'initialization';
-    details?: any;
+    details?: unknown;
   };
 }
 
@@ -312,7 +312,7 @@ export interface NeuralError {
  * @example
  */
 export function isTrainingResult(
-  result: NeuralResult,
+  result: NeuralResult
 ): result is TrainingResult {
   return result?.type === 'training' && result?.success === true;
 }
@@ -324,7 +324,7 @@ export function isTrainingResult(
  * @example
  */
 export function isInferenceResult(
-  result: NeuralResult,
+  result: NeuralResult
 ): result is InferenceResult {
   return result?.type === 'inference' && result?.success === true;
 }
@@ -373,7 +373,7 @@ export interface APIError {
   error: {
     code: string;
     message: string;
-    details?: any;
+    details?: unknown;
     stack?: string;
   };
   metadata?: {
@@ -390,7 +390,7 @@ export interface APIError {
  * @example
  */
 export function isAPISuccess<T = any>(
-  result: APIResult<T>,
+  result: APIResult<T>
 ): result is APISuccess<T> {
   return result?.success === true && 'data' in result;
 }
@@ -448,7 +448,7 @@ export interface WasmError {
  * @example
  */
 export function isWasmSuccess<T = any>(
-  result: WasmResult<T>,
+  result: WasmResult<T>
 ): result is WasmSuccess<T> {
   return result?.wasmSuccess === true && 'result' in result;
 }
@@ -498,7 +498,7 @@ export interface CoordinationError {
     code: string;
     message: string;
     failedAgents?: string[];
-    partialResults?: any;
+    partialResults?: unknown;
   };
   duration: number;
 }
@@ -510,7 +510,7 @@ export interface CoordinationError {
  * @example
  */
 export function isCoordinationSuccess<T = any>(
-  result: CoordinationResult<T>,
+  result: CoordinationResult<T>
 ): result is CoordinationSuccess<T> {
   return result?.coordinated === true && 'result' in result;
 }
@@ -522,7 +522,7 @@ export function isCoordinationSuccess<T = any>(
  * @example
  */
 export function isCoordinationError(
-  result: CoordinationResult,
+  result: CoordinationResult
 ): result is CoordinationError {
   return result?.coordinated === false && 'error' in result;
 }
@@ -563,7 +563,7 @@ export interface Failure<E = Error> {
  * @example
  */
 export function isSuccess<T, E = Error>(
-  result: Result<T, E>,
+  result: Result<T, E>
 ): result is Success<T> {
   return result?.ok === true && 'value' in result;
 }
@@ -575,7 +575,7 @@ export function isSuccess<T, E = Error>(
  * @example
  */
 export function isFailure<T, E = Error>(
-  result: Result<T, E>,
+  result: Result<T, E>
 ): result is Failure<E> {
   return result?.ok === false && 'error' in result;
 }
@@ -632,7 +632,7 @@ export function extractErrorMessage(
     | NeuralResult
     | APIResult
     | WasmResult
-    | CoordinationResult,
+    | CoordinationResult
 ): string | null {
   if ('success' in result && !result?.success && 'error' in result) {
     return result?.error?.message;
@@ -663,7 +663,7 @@ export function extractErrorMessage(
  */
 export function hasProperty<T, K extends PropertyKey>(
   obj: T,
-  prop: K,
+  prop: K
 ): obj is T & Record<K, unknown> {
   return (
     obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj
@@ -713,7 +713,7 @@ export function hasProperty<T, K extends PropertyKey>(
  */
 export function safePropertyAccess<T, K extends keyof T>(
   obj: T | null | undefined,
-  prop: K,
+  prop: K
 ): T[K] | undefined {
   if (
     obj !== null &&
@@ -736,7 +736,7 @@ export function safePropertyAccess<T, K extends keyof T>(
  * @param obj
  * @example
  */
-export function isNeuralNetworkConfig(obj: any): obj is {
+export function isNeuralNetworkConfig(obj: unknown): obj is {
   layers: number[];
   activationFunctions: string[];
   learningRate: number;
@@ -745,10 +745,10 @@ export function isNeuralNetworkConfig(obj: any): obj is {
     typeof obj === 'object' &&
     obj !== null &&
     Array.isArray(obj['layers']) &&
-    obj['layers']?.['every']((layer: any) => typeof layer === 'number') &&
+    obj['layers']?.['every']((layer: unknown) => typeof layer === 'number') &&
     Array.isArray(obj['activationFunctions']) &&
     obj['activationFunctions']?.['every'](
-      (fn: any) => typeof fn === 'string',
+      (fn: unknown) => typeof fn === 'string'
     ) &&
     typeof obj['learningRate'] === 'number'
   );
@@ -760,7 +760,7 @@ export function isNeuralNetworkConfig(obj: any): obj is {
  * @param value
  * @example
  */
-export function isActivationFunction(value: any): value is string {
+export function isActivationFunction(value: unknown): value is string {
   const validFunctions = [
     'sigmoid',
     'tanh',
@@ -782,8 +782,8 @@ export function isActivationFunction(value: any): value is string {
  * @example
  */
 export function isObjectArrayWithProps<T>(
-  arr: any,
-  requiredProps: string[],
+  arr: unknown,
+  requiredProps: string[]
 ): arr is T[] {
   if (!Array.isArray(arr)) {
     return false;
@@ -804,7 +804,7 @@ export function isObjectArrayWithProps<T>(
  * @param value
  * @example
  */
-export function isNonEmptyString(value: any): value is string {
+export function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.length > 0;
 }
 
@@ -815,7 +815,7 @@ export function isNonEmptyString(value: any): value is string {
  * @param value
  * @example
  */
-export function isValidNumber(value: any): value is number {
+export function isValidNumber(value: unknown): value is number {
   return (
     typeof value === 'number' && !Number.isNaN(value) && Number.isFinite(value)
   );
@@ -827,6 +827,6 @@ export function isValidNumber(value: any): value is number {
  * @param value
  * @example
  */
-export function isPositiveNumber(value: any): value is number {
+export function isPositiveNumber(value: unknown): value is number {
   return isValidNumber(value) && value > 0;
 }

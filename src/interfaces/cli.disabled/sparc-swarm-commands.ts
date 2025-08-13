@@ -21,7 +21,7 @@ const logger = getLogger('SPARCSwarmCLI');
 
 // Mock classes for compilation - these would be replaced with actual implementations
 class DatabaseSPARCBridge {
-  constructor(databaseSystem: any, documentService: any, sparcSwarm: any) {}
+  constructor(databaseSystem: unknown, documentService: unknown, sparcSwarm: unknown) {}
   async initialize(): Promise<void> {}
   async assignFeatureToSparcs(feature: FeatureDocumentEntity): Promise<string> {
     return 'mock-id';
@@ -29,16 +29,16 @@ class DatabaseSPARCBridge {
   async assignTaskToSparcs(task: TaskDocumentEntity): Promise<string> {
     return 'mock-id';
   }
-  getStatus(): any {
+  getStatus(): unknown {
     return {};
   }
-  async getWorkStatus(): Promise<any> {
+  async getWorkStatus(): Promise<unknown> {
     return {};
   }
 }
 
 class SPARCSwarmCoordinator {
-  getSPARCMetrics(): any {
+  getSPARCMetrics(): unknown {
     return { phaseMetrics: {} };
   }
   getActiveSPARCTasks(): Array<{
@@ -49,14 +49,14 @@ class SPARCSwarmCoordinator {
 }
 
 class DatabaseDrivenSystem {
-  constructor(documentService: any, workflowEngine: any) {}
+  constructor(documentService: unknown, workflowEngine: unknown) {}
 }
 
 class WorkflowEngine {}
 
 class DocumentService {
   async initialize(): Promise<void> {}
-  async getDocumentById(id: string): Promise<any> {
+  async getDocumentById(id: string): Promise<unknown> {
     return null;
   }
 }
@@ -64,14 +64,14 @@ class DocumentService {
 export function createSPARCSwarmCommands(): Command {
   const sparcSwarmCmd = new Command('sparc-swarm');
   sparcSwarmCmd.description(
-    'SPARC methodology with swarm coordination for database-driven features/tasks',
+    'SPARC methodology with swarm coordination for database-driven features/tasks'
   );
 
   // Initialize SPARC-Swarm integration
   sparcSwarmCmd
     .command('init')
     .description(
-      'Initialize SPARC-Swarm integration with database-driven system',
+      'Initialize SPARC-Swarm integration with database-driven system'
     )
     .option('--project-id <id>', 'Project ID to initialize for')
     .option('--swarm-size <size>', 'Number of agents in swarm', '10')
@@ -84,13 +84,13 @@ export function createSPARCSwarmCommands(): Command {
         const workflowEngine = new WorkflowEngine();
         const databaseSystem = new DatabaseDrivenSystem(
           documentService,
-          workflowEngine,
+          workflowEngine
         );
         const sparcSwarm = new SPARCSwarmCoordinator();
         const bridge = new DatabaseSPARCBridge(
           databaseSystem,
           documentService,
-          sparcSwarm,
+          sparcSwarm
         );
 
         await bridge.initialize();
@@ -110,12 +110,12 @@ export function createSPARCSwarmCommands(): Command {
     .requiredOption('--feature-id <id>', 'Feature document ID from database')
     .option(
       '--priority <level>',
-      'Override priority (low|medium|high|critical)',
+      'Override priority (low|medium|high|critical)'
     )
     .action(async (options) => {
       try {
         logger.info(
-          `🎯 Assigning feature ${options?.featureId} to SPARC swarm`,
+          `🎯 Assigning feature ${options?.featureId} to SPARC swarm`
         );
 
         // Initialize systems
@@ -126,7 +126,7 @@ export function createSPARCSwarmCommands(): Command {
         await documentService.initialize();
 
         const feature = await documentService.getDocumentById(
-          options?.featureId,
+          options?.featureId
         );
         if (!feature || feature.type !== 'feature') {
           throw new Error(`Feature not found: ${options?.featureId}`);
@@ -139,7 +139,7 @@ export function createSPARCSwarmCommands(): Command {
 
         // Assign to SPARC swarm
         const _assignmentId = await bridge.assignFeatureToSparcs(
-          feature as FeatureDocumentEntity,
+          feature as FeatureDocumentEntity
         );
       } catch (error) {
         logger.error('❌ Failed to assign feature to SPARC swarm:', error);
@@ -154,7 +154,7 @@ export function createSPARCSwarmCommands(): Command {
     .requiredOption('--task-id <id>', 'Task document ID from database')
     .option(
       '--priority <level>',
-      'Override priority (low|medium|high|critical)',
+      'Override priority (low|medium|high|critical)'
     )
     .action(async (options) => {
       try {
@@ -179,7 +179,7 @@ export function createSPARCSwarmCommands(): Command {
 
         // Assign to SPARC swarm
         const _assignmentId = await bridge.assignTaskToSparcs(
-          task as TaskDocumentEntity,
+          task as TaskDocumentEntity
         );
       } catch (error) {
         logger.error('❌ Failed to assign task to SPARC swarm:', error);
@@ -220,7 +220,7 @@ export function createSPARCSwarmCommands(): Command {
                         : progressData.status === 'failed'
                           ? '❌'
                           : '⏳';
-                },
+                }
               );
             }
           });
@@ -271,7 +271,7 @@ export function createSPARCSwarmCommands(): Command {
     .option(
       '--output <path>',
       'Output file for generated pseudocode',
-      'pseudocode-output.json',
+      'pseudocode-output.json'
     )
     .option('--format <type>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
@@ -330,7 +330,7 @@ export function createSPARCSwarmCommands(): Command {
         // Read pseudocode file
         const pseudocodeContent = await fs.readFile(
           options?.pseudocodeFile,
-          'utf8',
+          'utf8'
         );
         const pseudocodeStructure = JSON.parse(pseudocodeContent);
 
@@ -343,7 +343,7 @@ export function createSPARCSwarmCommands(): Command {
 
         if (validation.optimizationSuggestions.length > 0) {
           validation.optimizationSuggestions.forEach(
-            (_suggestion, _index) => {},
+            (_suggestion, _index) => {}
           );
         }
 
@@ -366,7 +366,7 @@ export function createSPARCSwarmCommands(): Command {
     .requiredOption('--spec-file <path>', 'Path to specification JSON file')
     .option(
       '--domain <type>',
-      'Override domain (swarm-coordination|neural-networks|memory-systems|general)',
+      'Override domain (swarm-coordination|neural-networks|memory-systems|general)'
     )
     .action(async (options) => {
       try {
@@ -407,7 +407,7 @@ export function createSPARCSwarmCommands(): Command {
     .option(
       '--complexity <level>',
       'Task complexity (simple|moderate|complex)',
-      'moderate',
+      'moderate'
     )
     .action(async (options) => {
       try {
@@ -537,13 +537,13 @@ async function initializeSystems(): Promise<{
   const workflowEngine = new WorkflowEngine();
   const databaseSystem = new DatabaseDrivenSystem(
     documentService,
-    workflowEngine,
+    workflowEngine
   );
   const sparcSwarm = new SPARCSwarmCoordinator();
   const bridge = new DatabaseSPARCBridge(
     databaseSystem,
     documentService,
-    sparcSwarm,
+    sparcSwarm
   );
 
   await bridge.initialize();
@@ -553,7 +553,7 @@ async function initializeSystems(): Promise<{
 
 // Helper function to format pseudocode as markdown
 async function formatPseudocodeAsMarkdown(
-  pseudocodeStructure: any,
+  pseudocodeStructure: unknown
 ): Promise<string> {
   let markdown = `# SPARC Pseudocode Generation Results\n\n`;
   markdown += `**Generated on:** ${new Date().toISOString()}\n`;
@@ -561,24 +561,24 @@ async function formatPseudocodeAsMarkdown(
 
   // Algorithms section
   markdown += `## 🔧 Algorithms (${pseudocodeStructure.algorithms.length})\n\n`;
-  pseudocodeStructure.algorithms.forEach((alg: any, index: number) => {
+  pseudocodeStructure.algorithms.forEach((alg: unknown, index: number) => {
     markdown += `### ${index + 1}. ${alg.name}\n\n`;
     markdown += `**Purpose:** ${alg.purpose}\n\n`;
 
     markdown += `**Inputs:**\n`;
-    alg.inputs.forEach((input: any) => {
+    alg.inputs.forEach((input: unknown) => {
       markdown += `- \`${input.name}\` (${input.type}): ${input.description}\n`;
     });
     markdown += `\n`;
 
     markdown += `**Outputs:**\n`;
-    alg.outputs.forEach((output: any) => {
+    alg.outputs.forEach((output: unknown) => {
       markdown += `- \`${output.name}\` (${output.type}): ${output.description}\n`;
     });
     markdown += `\n`;
 
     markdown += `**Steps:**\n`;
-    alg.steps.forEach((step: any) => {
+    alg.steps.forEach((step: unknown) => {
       markdown += `${step.stepNumber}. ${step.description}\n`;
       markdown += `   \`${step.pseudocode}\`\n`;
     });
@@ -588,7 +588,7 @@ async function formatPseudocodeAsMarkdown(
 
     if (alg.optimizations.length > 0) {
       markdown += `**Optimizations:**\n`;
-      alg.optimizations.forEach((opt: any) => {
+      alg.optimizations.forEach((opt: unknown) => {
         markdown += `- **${opt.type}**: ${opt.description} (Impact: ${opt.impact}, Effort: ${opt.effort})\n`;
       });
       markdown += `\n`;
@@ -600,13 +600,13 @@ async function formatPseudocodeAsMarkdown(
   // Data Structures section
   if (pseudocodeStructure.dataStructures.length > 0) {
     markdown += `## 🏗️ Data Structures (${pseudocodeStructure.dataStructures.length})\n\n`;
-    pseudocodeStructure.dataStructures.forEach((ds: any, index: number) => {
+    pseudocodeStructure.dataStructures.forEach((ds: unknown, index: number) => {
       markdown += `### ${index + 1}. ${ds.name}\n\n`;
       markdown += `**Type:** ${ds.type}\n\n`;
 
       if (ds.properties.length > 0) {
         markdown += `**Properties:**\n`;
-        ds.properties.forEach((prop: any) => {
+        ds.properties.forEach((prop: unknown) => {
           markdown += `- \`${prop.name}\` (${prop.type}, ${prop.visibility}): ${prop.description}\n`;
         });
         markdown += `\n`;
@@ -614,7 +614,7 @@ async function formatPseudocodeAsMarkdown(
 
       if (ds.methods.length > 0) {
         markdown += `**Methods:**\n`;
-        ds.methods.forEach((method: any) => {
+        ds.methods.forEach((method: unknown) => {
           markdown += `- \`${method.name}()\` → ${method.returnType} (${method.visibility}): ${method.description}\n`;
         });
         markdown += `\n`;
@@ -645,7 +645,7 @@ async function formatPseudocodeAsMarkdown(
   // Optimizations section
   if (pseudocodeStructure.optimizations.length > 0) {
     markdown += `## 💡 Optimization Opportunities (${pseudocodeStructure.optimizations.length})\n\n`;
-    pseudocodeStructure.optimizations.forEach((opt: any, index: number) => {
+    pseudocodeStructure.optimizations.forEach((opt: unknown, index: number) => {
       markdown += `${index + 1}. **${opt.type.toUpperCase()}**: ${opt.description}\n`;
       markdown += `   - Impact: ${opt.impact}\n`;
       markdown += `   - Effort: ${opt.effort}\n`;
@@ -664,7 +664,7 @@ export function addArchitectureCommands(program: Command): void {
   const architectureCmd = program
     .command('architecture')
     .description(
-      'SPARC Architecture Phase - Generate system architecture from pseudocode',
+      'SPARC Architecture Phase - Generate system architecture from pseudocode'
     );
 
   // Generate architecture from pseudocode
@@ -674,11 +674,11 @@ export function addArchitectureCommands(program: Command): void {
     .requiredOption('--pseudocode-file <path>', 'Path to pseudocode JSON file')
     .option(
       '--spec-file <path>',
-      'Path to specification JSON file for additional context',
+      'Path to specification JSON file for additional context'
     )
     .option(
       '--output <path>',
-      'Output file path for architecture (default: architecture.json)',
+      'Output file path for architecture (default: architecture.json)'
     )
     .option('--format <format>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
@@ -693,7 +693,7 @@ export function addArchitectureCommands(program: Command): void {
         // Read pseudocode file
         const pseudocodeContent = await fs.readFile(
           options?.pseudocodeFile,
-          'utf8',
+          'utf8'
         );
         let pseudocodeData = JSON.parse(pseudocodeContent);
 
@@ -722,7 +722,7 @@ export function addArchitectureCommands(program: Command): void {
         if (specification) {
           const systemArchitecture = await engine.designSystemArchitecture(
             specification,
-            pseudocodeData?.algorithms,
+            pseudocodeData?.algorithms
           );
           architecture = {
             systemArchitecture,
@@ -734,7 +734,7 @@ export function addArchitectureCommands(program: Command): void {
           };
         } else {
           architecture = await (engine as any).designArchitecture(
-            pseudocodeData,
+            pseudocodeData
           );
         }
 
@@ -748,7 +748,7 @@ export function addArchitectureCommands(program: Command): void {
           await fs.writeFile(
             outputPath,
             JSON.stringify(architecture, null, 2),
-            'utf8',
+            'utf8'
           );
         }
       } catch (error) {
@@ -763,7 +763,7 @@ export function addArchitectureCommands(program: Command): void {
     .description('Validate architecture design for consistency and quality')
     .requiredOption(
       '--architecture-file <path>',
-      'Path to architecture JSON file',
+      'Path to architecture JSON file'
     )
     .option('--detailed', 'Show detailed validation results')
     .action(async (options) => {
@@ -778,7 +778,7 @@ export function addArchitectureCommands(program: Command): void {
         // Read architecture file
         const archContent = await fs.readFile(
           options?.architectureFile,
-          'utf8',
+          'utf8'
         );
         const architecture = JSON.parse(archContent);
 
@@ -813,11 +813,11 @@ export function addArchitectureCommands(program: Command): void {
     .description('Generate implementation plan from architecture')
     .requiredOption(
       '--architecture-file <path>',
-      'Path to architecture JSON file',
+      'Path to architecture JSON file'
     )
     .option(
       '--output <path>',
-      'Output file path for implementation plan (default: implementation-plan.json)',
+      'Output file path for implementation plan (default: implementation-plan.json)'
     )
     .option('--format <format>', 'Output format (json|markdown)', 'json')
     .action(async (options) => {
@@ -832,7 +832,7 @@ export function addArchitectureCommands(program: Command): void {
         // Read architecture file
         const archContent = await fs.readFile(
           options?.architectureFile,
-          'utf8',
+          'utf8'
         );
         const architecture = JSON.parse(archContent);
 
@@ -851,7 +851,7 @@ export function addArchitectureCommands(program: Command): void {
           await fs.writeFile(
             outputPath,
             JSON.stringify(implementationPlan, null, 2),
-            'utf8',
+            'utf8'
           );
         }
       } catch (error) {
@@ -861,14 +861,14 @@ export function addArchitectureCommands(program: Command): void {
     });
 }
 
-function generateArchitectureMarkdown(architecture: any): string {
+function generateArchitectureMarkdown(architecture: unknown): string {
   let markdown = `# System Architecture\n\n`;
   markdown += `Generated on: ${new Date().toISOString()}\n\n`;
 
   // Components section
   if (architecture.components && architecture.components.length > 0) {
     markdown += `## 🏗️ System Components (${architecture.components.length})\n\n`;
-    architecture.components.forEach((component: any, index: number) => {
+    architecture.components.forEach((component: unknown, index: number) => {
       markdown += `### ${index + 1}. ${component.name}\n\n`;
       markdown += `**Type:** ${component.type}\n\n`;
       markdown += `**Responsibilities:**\n`;
@@ -900,7 +900,7 @@ function generateArchitectureMarkdown(architecture: any): string {
   ) {
     markdown += `## 🎯 Architecture Patterns (${architecture.systemArchitecture.architecturalPatterns.length})\n\n`;
     architecture.systemArchitecture.architecturalPatterns.forEach(
-      (pattern: any, index: number) => {
+      (pattern: unknown, index: number) => {
         markdown += `### ${index + 1}. ${pattern.name}\n\n`;
         markdown += `${pattern.description}\n\n`;
 
@@ -915,7 +915,7 @@ function generateArchitectureMarkdown(architecture: any): string {
           markdown += `- ${tradeoff}\n`;
         });
         markdown += `\n---\n\n`;
-      },
+      }
     );
   }
 
@@ -926,7 +926,7 @@ function generateArchitectureMarkdown(architecture: any): string {
   ) {
     markdown += `## 📊 Quality Attributes (${architecture.systemArchitecture.qualityAttributes.length})\n\n`;
     architecture.systemArchitecture.qualityAttributes.forEach(
-      (qa: any, index: number) => {
+      (qa: unknown, index: number) => {
         markdown += `### ${index + 1}. ${qa.name}\n\n`;
         markdown += `**Target:** ${qa.target}\n\n`;
         markdown += `**Priority:** ${qa.priority}\n\n`;
@@ -941,14 +941,14 @@ function generateArchitectureMarkdown(architecture: any): string {
         }
 
         markdown += `---\n\n`;
-      },
+      }
     );
   }
 
   return markdown;
 }
 
-function generateImplementationPlanMarkdown(plan: any): string {
+function generateImplementationPlanMarkdown(plan: unknown): string {
   let markdown = `# Implementation Plan\n\n`;
   markdown += `Generated on: ${new Date().toISOString()}\n\n`;
 
@@ -956,13 +956,13 @@ function generateImplementationPlanMarkdown(plan: any): string {
   markdown += `## 📋 Overview\n\n`;
   markdown += `- **Total Duration:** ${plan.timeline.totalDuration}\n`;
   markdown += `- **Phases:** ${plan.phases.length}\n`;
-  markdown += `- **Total Tasks:** ${plan.phases.reduce((sum: number, phase: any) => sum + phase.tasks.length, 0)}\n`;
+  markdown += `- **Total Tasks:** ${plan.phases.reduce((sum: number, phase: unknown) => sum + phase.tasks.length, 0)}\n`;
   markdown += `- **Risk Level:** ${plan.riskAssessment.overallRisk}\n\n`;
 
   // Phases
   if (plan.phases && plan.phases.length > 0) {
     markdown += `## 🎯 Implementation Phases\n\n`;
-    plan.phases.forEach((phase: any, index: number) => {
+    plan.phases.forEach((phase: unknown, index: number) => {
       markdown += `### Phase ${index + 1}: ${phase.name}\n\n`;
       markdown += `**Duration:** ${phase.duration}\n\n`;
       markdown += `**Description:** ${phase.description}\n\n`;
@@ -973,7 +973,7 @@ function generateImplementationPlanMarkdown(plan: any): string {
 
       if (phase.tasks && phase.tasks.length > 0) {
         markdown += `**Tasks (${phase.tasks.length}):**\n\n`;
-        phase.tasks.forEach((task: any, taskIndex: number) => {
+        phase.tasks.forEach((task: unknown, taskIndex: number) => {
           markdown += `${taskIndex + 1}. **${task.name}** (${task.priority})\n`;
           markdown += `   - Type: ${task.type}\n`;
           markdown += `   - Effort: ${task.estimatedEffort}\n`;
@@ -994,7 +994,7 @@ function generateImplementationPlanMarkdown(plan: any): string {
   // Resource Requirements
   if (plan.resourceRequirements && plan.resourceRequirements.length > 0) {
     markdown += `## 👥 Resource Requirements\n\n`;
-    plan.resourceRequirements.forEach((resource: any, index: number) => {
+    plan.resourceRequirements.forEach((resource: unknown, index: number) => {
       markdown += `${index + 1}. **${resource.type}**: ${resource.quantity} × ${resource.description} for ${resource.duration}\n`;
     });
     markdown += `\n`;
@@ -1007,7 +1007,7 @@ function generateImplementationPlanMarkdown(plan: any): string {
 
     if (plan.riskAssessment.risks && plan.riskAssessment.risks.length > 0) {
       markdown += `**Identified Risks:**\n`;
-      plan.riskAssessment.risks.forEach((risk: any, index: number) => {
+      plan.riskAssessment.risks.forEach((risk: unknown, index: number) => {
         markdown += `${index + 1}. **${risk.description}**\n`;
         markdown += `   - Probability: ${risk.probability}\n`;
         markdown += `   - Impact: ${risk.impact}\n`;
@@ -1023,7 +1023,7 @@ function generateImplementationPlanMarkdown(plan: any): string {
       plan.riskAssessment.mitigationPlans.forEach(
         (mitigation: string, index: number) => {
           markdown += `${index + 1}. ${mitigation}\n`;
-        },
+        }
       );
       markdown += `\n`;
     }

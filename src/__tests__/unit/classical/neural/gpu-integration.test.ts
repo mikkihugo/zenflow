@@ -117,7 +117,7 @@ class MockGPUComputeManager {
   async computeMatrixMultiplyGPU(
     a: number[][],
     b: number[][],
-    useWebGL: boolean = true,
+    useWebGL: boolean = true
   ): Promise<number[][]> {
     if (useWebGL && this.webglAvailable) {
       return this.webglMatrixMultiply(a, b);
@@ -130,7 +130,7 @@ class MockGPUComputeManager {
 
   private async webglMatrixMultiply(
     a: number[][],
-    b: number[][],
+    b: number[][]
   ): Promise<number[][]> {
     // Simulate WebGL matrix multiplication
     await new Promise((resolve) => setTimeout(resolve, 5)); // Faster than CPU
@@ -139,7 +139,7 @@ class MockGPUComputeManager {
 
   private async cudaMatrixMultiply(
     a: number[][],
-    b: number[][],
+    b: number[][]
   ): Promise<number[][]> {
     // Simulate CUDA matrix multiplication
     await new Promise((resolve) => setTimeout(resolve, 2)); // Even faster
@@ -207,7 +207,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const webglResult = await gpuManager.computeMatrixMultiplyGPU(
         matrixA,
         matrixB,
-        true,
+        true
       );
 
       // CPU computation for verification
@@ -221,7 +221,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       for (let i = 0; i < webglResult.length; i++) {
         for (let j = 0; j < webglResult?.[i].length; j++) {
           expect(
-            Math.abs(webglResult?.[i]?.[j] - cpuResult?.[i]?.[j]),
+            Math.abs(webglResult?.[i]?.[j] - cpuResult?.[i]?.[j])
           ).toBeLessThan(1e-6);
         }
       }
@@ -238,7 +238,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         async () => {
           const result = computeCPUMatrixMultiply(largeMatrixA, largeMatrixB);
           expect(result).toHaveLength(200);
-        },
+        }
       );
 
       // Benchmark WebGL computation
@@ -248,16 +248,16 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           const result = await gpuManager.computeMatrixMultiplyGPU(
             largeMatrixA,
             largeMatrixB,
-            true,
+            true
           );
           expect(result).toHaveLength(200);
-        },
+        }
       );
 
       const results = await benchmarkSuite.runAll();
       const _comparison = benchmarkSuite.compare(
         'cpu-matrix-multiply',
-        'webgl-matrix-multiply',
+        'webgl-matrix-multiply'
       );
 
       // WebGL should show performance improvement
@@ -300,7 +300,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const result = await gpuManager.computeMatrixMultiplyGPU(
         matrixA,
         matrixB,
-        true,
+        true
       );
       expect(result).toHaveLength(50);
       expect(result?.[0]).toHaveLength(50);
@@ -361,7 +361,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const cudaResult = await gpuManager.computeMatrixMultiplyGPU(
         matrixA,
         matrixB,
-        false,
+        false
       );
 
       // CPU verification
@@ -374,7 +374,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       for (let i = 0; i < cudaResult.length; i++) {
         for (let j = 0; j < cudaResult?.[i].length; j++) {
           expect(
-            Math.abs(cudaResult?.[i]?.[j] - cpuResult?.[i]?.[j]),
+            Math.abs(cudaResult?.[i]?.[j] - cpuResult?.[i]?.[j])
           ).toBeLessThan(1e-6);
         }
       }
@@ -418,14 +418,14 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       await mockCUDAContext.copyToDevice(deviceHandle, testData);
       expect(mockCUDAContext.copyToDevice).toHaveBeenCalledWith(
         deviceHandle,
-        testData,
+        testData
       );
 
       // Simulate kernel execution
       await mockCUDAContext.launchKernel(
         'test_kernel',
         deviceHandle,
-        testData.length,
+        testData.length
       );
       await mockCUDAContext.synchronize();
 
@@ -434,7 +434,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       await mockCUDAContext.copyFromDevice(resultData, deviceHandle);
       expect(mockCUDAContext.copyFromDevice).toHaveBeenCalledWith(
         resultData,
-        deviceHandle,
+        deviceHandle
       );
 
       // Free device memory
@@ -458,7 +458,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         fail('Expected GPU operation to fail when GPU unavailable');
       } catch (error) {
         expect((error as Error).message).toContain(
-          'No GPU acceleration available',
+          'No GPU acceleration available'
         );
       }
 
@@ -491,7 +491,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           const webglResult = await gpuManager.computeMatrixMultiplyGPU(
             a,
             b,
-            true,
+            true
           );
           results?.push({ webgl: true, success: true, result: webglResult });
         } catch (_webglError) {
@@ -510,13 +510,13 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         expect(result?.success).toBe(true);
         expect(result?.result).toHaveLength(testMatrices[i]?.a.length);
         expect(result?.result?.[0]).toHaveLength(
-          testMatrices[i]?.b?.[0].length,
+          testMatrices[i]?.b?.[0].length
         );
       });
 
       // Should prefer WebGL when available
       const webglSuccesses = results?.filter(
-        (r) => r.webgl && r.success,
+        (r) => r.webgl && r.success
       ).length;
       expect(webglSuccesses).toBeGreaterThan(0);
     });
@@ -529,7 +529,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       // Get reference result from CPU
       const cpuReference = computeCPUMatrixMultiply(
         referenceMatrix,
-        multiplierMatrix,
+        multiplierMatrix
       );
 
       // Test WebGL result (when available)
@@ -537,14 +537,14 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const webglResult = await gpuManager.computeMatrixMultiplyGPU(
         referenceMatrix,
         multiplierMatrix,
-        true,
+        true
       );
 
       // Compare WebGL vs CPU accuracy
       for (let i = 0; i < cpuReference.length; i++) {
         for (let j = 0; j < cpuReference[i].length; j++) {
           expect(
-            Math.abs(webglResult?.[i]?.[j] - cpuReference[i]?.[j]),
+            Math.abs(webglResult?.[i]?.[j] - cpuReference[i]?.[j])
           ).toBeLessThan(1e-10);
         }
       }
@@ -555,14 +555,14 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const cudaResult = await gpuManager.computeMatrixMultiplyGPU(
         referenceMatrix,
         multiplierMatrix,
-        false,
+        false
       );
 
       // Compare CUDA vs CPU accuracy
       for (let i = 0; i < cpuReference.length; i++) {
         for (let j = 0; j < cpuReference[i].length; j++) {
           expect(
-            Math.abs(cudaResult?.[i]?.[j] - cpuReference[i]?.[j]),
+            Math.abs(cudaResult?.[i]?.[j] - cpuReference[i]?.[j])
           ).toBeLessThan(1e-10);
         }
       }
@@ -623,7 +623,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         const webglResult = await gpuManager.computeMatrixMultiplyGPU(
           matrixA,
           matrixB,
-          true,
+          true
         );
         const webglTime = performance.now() - webglStart;
 
@@ -634,7 +634,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         const cudaResult = await gpuManager.computeMatrixMultiplyGPU(
           matrixA,
           matrixB,
-          false,
+          false
         );
         const cudaTime = performance.now() - cudaStart;
 
@@ -694,7 +694,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         const gpuResult = await gpuManager.computeMatrixMultiplyGPU(
           matrixA,
           matrixB,
-          true,
+          true
         );
         const gpuTime = performance.now() - gpuStart;
 
@@ -741,7 +741,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           const result = await gpuManager.computeMatrixMultiplyGPU(
             matrixA,
             matrixB,
-            true,
+            true
           );
           const duration = performance.now() - start;
 
@@ -781,7 +781,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       const networkTopology = [100, 200, 100, 10];
       const trainingData = NeuralTestDataGenerator?.generateLinearData(
         500,
-        0.1,
+        0.1
       );
 
       // CPU neural network training
@@ -804,7 +804,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         {
           epochs: 50,
           learningRate: 0.01,
-        },
+        }
       );
       const gpuTrainingTime = performance.now() - gpuTrainingStart;
 
@@ -812,7 +812,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
       expect(cpuResult?.finalError).toBeLessThan(1.0);
       expect(gpuResult?.finalError).toBeLessThan(1.0);
       expect(
-        Math.abs(cpuResult?.finalError - gpuResult?.finalError),
+        Math.abs(cpuResult?.finalError - gpuResult?.finalError)
       ).toBeLessThan(0.5);
 
       // GPU should be faster for large networks
@@ -843,13 +843,13 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
           .map(() =>
             Array(networkTopology[0])
               .fill(0)
-              .map(() => Math.random()),
+              .map(() => Math.random())
           );
 
         // CPU batch inference
         const cpuStart = performance.now();
         const cpuResults = inputBatch.map((input) =>
-          neuralForwardPassCPU(network, input),
+          neuralForwardPassCPU(network, input)
         );
         const cpuTime = performance.now() - cpuStart;
 
@@ -858,7 +858,7 @@ describe('GPU Integration Testing Suite - Classical TDD', () => {
         const gpuResults = await neuralBatchInferenceGPU(
           network,
           inputBatch,
-          gpuManager,
+          gpuManager
         );
         const gpuTime = performance.now() - gpuStart;
 
@@ -922,7 +922,7 @@ function computeCPUMatrixMultiply(a: number[][], b: number[][]): number[][] {
   return result;
 }
 
-function createTestNeuralNetwork(topology: number[]): any {
+function createTestNeuralNetwork(topology: number[]): unknown {
   const weights: number[][][] = [];
   const biases: number[][] = [];
 
@@ -946,7 +946,7 @@ function createTestNeuralNetwork(topology: number[]): any {
   return { topology, weights, biases };
 }
 
-function neuralForwardPassCPU(network: any, input: number[]): number[] {
+function neuralForwardPassCPU(network: unknown, input: number[]): number[] {
   let activations = [...input];
 
   for (let layer = 0; layer < network.weights.length; layer++) {
@@ -966,7 +966,7 @@ function neuralForwardPassCPU(network: any, input: number[]): number[] {
   return activations;
 }
 
-function trainNeuralNetworkCPU(network: any, data: any[], config: any): any {
+function trainNeuralNetworkCPU(network: unknown, data: unknown[], config: unknown): unknown {
   let finalError = Number.POSITIVE_INFINITY;
 
   for (let epoch = 0; epoch < config?.epochs; epoch++) {
@@ -977,7 +977,7 @@ function trainNeuralNetworkCPU(network: any, data: any[], config: any): any {
       const error =
         output.reduce(
           (sum, pred, idx) => sum + (pred - sample.output[idx]) ** 2,
-          0,
+          0
         ) / output.length;
       epochError += error;
 
@@ -992,11 +992,11 @@ function trainNeuralNetworkCPU(network: any, data: any[], config: any): any {
 }
 
 async function trainNeuralNetworkGPU(
-  network: any,
-  data: any[],
+  network: unknown,
+  data: unknown[],
   _gpuManager: MockGPUComputeManager,
-  config: any,
-): Promise<any> {
+  config: unknown
+): Promise<unknown> {
   // Simulate GPU-accelerated training
   let finalError = Number.POSITIVE_INFINITY;
 
@@ -1011,8 +1011,8 @@ async function trainNeuralNetworkGPU(
       // Simulate GPU forward pass for batch
       const batchOutputs = await Promise.all(
         batch.map((sample) =>
-          Promise.resolve(neuralForwardPassCPU(network, sample.input)),
-        ),
+          Promise.resolve(neuralForwardPassCPU(network, sample.input))
+        )
       );
 
       batch.forEach((sample, idx) => {
@@ -1020,7 +1020,7 @@ async function trainNeuralNetworkGPU(
         const error =
           output.reduce(
             (sum, pred, j) => sum + (pred - sample.output[j]) ** 2,
-            0,
+            0
           ) / output.length;
         epochError += error;
 
@@ -1036,27 +1036,27 @@ async function trainNeuralNetworkGPU(
 }
 
 async function neuralBatchInferenceGPU(
-  network: any,
+  network: unknown,
   inputBatch: number[][],
-  _gpuManager: MockGPUComputeManager,
+  _gpuManager: MockGPUComputeManager
 ): Promise<number[][]> {
   // Simulate GPU batch inference
   return Promise.all(
     inputBatch.map((input) =>
-      Promise.resolve(neuralForwardPassCPU(network, input)),
-    ),
+      Promise.resolve(neuralForwardPassCPU(network, input))
+    )
   );
 }
 
 function updateNetworkWeights(
-  network: any,
-  sample: any,
+  network: unknown,
+  sample: unknown,
   output: number[],
-  learningRate: number,
+  learningRate: number
 ): void {
   // Simplified gradient descent weight update
   const error = sample.output.map(
-    (target: number, idx: number) => target - output[idx],
+    (target: number, idx: number) => target - output[idx]
   );
 
   // Update output layer weights (simplified)

@@ -80,7 +80,7 @@ export class WorkflowGateSystemIntegration {
     // Initialize gate request processor
     this.gateProcessor = new WorkflowGateRequestProcessor(
       this.eventBus,
-      this.aguiInterface,
+      this.aguiInterface
     );
 
     // Initialize gates manager
@@ -129,7 +129,7 @@ export class WorkflowGateSystemIntegration {
       });
     });
 
-    this.gatesManager.on('gate-triggered', ({ gate, trigger }: any) => {
+    this.gatesManager.on('gate-triggered', ({ gate, trigger }: unknown) => {
       logger.info('Gate triggered', {
         gateId: gate.id,
         triggerId: trigger.id,
@@ -139,7 +139,7 @@ export class WorkflowGateSystemIntegration {
 
     this.gatesManager.on(
       'gate-ready-for-review',
-      ({ gate, queueItem }: any) => {
+      ({ gate, queueItem }: unknown) => {
         logger.info('Gate ready for review', {
           gateId: gate.id,
           priority: queueItem.priority,
@@ -153,19 +153,19 @@ export class WorkflowGateSystemIntegration {
             error,
           });
         });
-      },
+      }
     );
 
     this.gatesManager.on(
       'gate-resolved',
-      ({ gateId, decision, resolvedBy }: any) => {
+      ({ gateId, decision, resolvedBy }: unknown) => {
         logger.info('Gate resolved', { gateId, decision, resolvedBy });
         this.emitIntegrationEvent('gate-resolved', {
           gateId,
           decision,
           resolvedBy,
         });
-      },
+      }
     );
   }
 
@@ -188,7 +188,7 @@ export class WorkflowGateSystemIntegration {
             decision,
             result.decisionMaker || 'system',
             `Processed through AGUI: ${result.escalationLevel}`,
-            { gateResult: result },
+            { gateResult: result }
           );
         } else {
           logger.error('Gate processing failed', {
@@ -206,7 +206,7 @@ export class WorkflowGateSystemIntegration {
   }
 
   private async createWorkflowGateRequest(
-    gate: WorkflowHumanGate,
+    gate: WorkflowHumanGate
   ): Promise<WorkflowGateRequest> {
     return createApprovalGate(
       gate.workflowContext.gateWorkflowId,
@@ -215,19 +215,19 @@ export class WorkflowGateSystemIntegration {
       gate.workflowContext.stakeholderGroups,
       {
         businessImpact: this.mapImpactToLevel(
-          gate.workflowContext.impactAssessment.businessImpact,
+          gate.workflowContext.impactAssessment.businessImpact
         ),
         priority: this.mapGatePriorityToValidationPriority(gate.priority),
-      },
+      }
     );
   }
 
-  private emitIntegrationEvent(event: string, data?: any): void {
+  private emitIntegrationEvent(event: string, data?: unknown): void {
     this.eventBus
       .emitEvent(
         createEvent(`integration.${event}`, Domain.WORKFLOWS, {
           payload: { event, data, timestamp: new Date() },
-        }),
+        })
       )
       .catch((error) => {
         logger.error('Failed to emit integration event', { event, error });
@@ -381,7 +381,7 @@ export class WorkflowGateSystemIntegration {
       'prd-approval',
       workflowContext,
       gateData,
-      options,
+      options
     );
 
     logger.info('PRD approval gate created', { gateId: gate.id });
@@ -498,7 +498,7 @@ export class WorkflowGateSystemIntegration {
           'Technical review of the proposed architecture for social features, including scalability, security, and integration considerations.',
         priority: WorkflowGatePriority.CRITICAL,
         approvers: ['lead-architect', 'senior-engineer', 'security-architect'],
-      },
+      }
     );
 
     // Simulate architecture completion event
@@ -606,7 +606,7 @@ export class WorkflowGateSystemIntegration {
           'Comprehensive security review of social features including vulnerability assessment, compliance verification, and threat modeling.',
         priority: WorkflowGatePriority.CRITICAL,
         approvers: ['security-lead', 'compliance-officer'],
-      },
+      }
     );
 
     // Performance Gate
@@ -681,7 +681,7 @@ export class WorkflowGateSystemIntegration {
           'Performance validation of social features including load testing, latency analysis, and scalability assessment.',
         priority: WorkflowGatePriority.HIGH,
         approvers: ['performance-engineer', 'devops-lead'],
-      },
+      }
     );
 
     // Simulate quality checks completion
@@ -810,7 +810,7 @@ export class WorkflowGateSystemIntegration {
           'Business validation of social features performance including user feedback analysis, usage metrics review, and competitive positioning assessment.',
         priority: WorkflowGatePriority.HIGH,
         approvers: ['product-director', 'business-stakeholder'],
-      },
+      }
     );
 
     await this.simulateWorkflowEvent('metrics-threshold-reached', {
@@ -918,7 +918,7 @@ export class WorkflowGateSystemIntegration {
           'Comprehensive ethical review of AI-powered social features including bias detection, privacy preservation, and algorithmic fairness assessment.',
         priority: WorkflowGatePriority.CRITICAL,
         approvers: ['ethics-officer', 'ai-safety-lead', 'legal-counsel'],
-      },
+      }
     );
 
     await this.simulateWorkflowEvent('ethical-review-triggered', {
@@ -1003,7 +1003,7 @@ export class WorkflowGateSystemIntegration {
   // UTILITY METHODS
   // --------------------------------------------------------------------------
 
-  private async simulateWorkflowEvent(event: string, data: any): Promise<void> {
+  private async simulateWorkflowEvent(event: string, data: unknown): Promise<void> {
     logger.debug('Simulating workflow event', { event, data });
 
     // Emit event through event bus
@@ -1015,7 +1015,7 @@ export class WorkflowGateSystemIntegration {
           timestamp: new Date(),
           source: 'workflow-integration-simulation',
         },
-      }),
+      })
     );
   }
 
@@ -1076,7 +1076,7 @@ export class WorkflowGateSystemIntegration {
   }
 
   private mapImpactToLevel(
-    impact: number,
+    impact: number
   ): 'low' | 'medium' | 'high' | 'critical' {
     if (impact >= 0.9) return 'critical';
     if (impact >= 0.7) return 'high';
@@ -1085,7 +1085,7 @@ export class WorkflowGateSystemIntegration {
   }
 
   private mapGatePriorityToValidationPriority(
-    priority: WorkflowGatePriority,
+    priority: WorkflowGatePriority
   ): 'critical' | 'high' | 'medium' | 'low' {
     switch (priority) {
       case WorkflowGatePriority.EMERGENCY:
@@ -1128,7 +1128,7 @@ export async function runWorkflowGateSystemDemo(): Promise<void> {
     await monitoringPromise;
 
     logger.info(
-      '🎉 Workflow Gate System Integration Demo completed successfully!',
+      '🎉 Workflow Gate System Integration Demo completed successfully!'
     );
   } catch (error) {
     logger.error('💥 Workflow Gate System Integration Demo failed', { error });

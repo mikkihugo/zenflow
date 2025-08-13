@@ -80,13 +80,13 @@ export class BatchEngine {
    * @param operations
    */
   async executeBatch(
-    operations: BatchOperation[],
+    operations: BatchOperation[]
   ): Promise<ExtendedBatchExecutionSummary> {
     const startTime = Date.now();
 
     if (this.config.trackPerformance) {
       logger.info(
-        `Starting batch execution of ${operations.length} operations`,
+        `Starting batch execution of ${operations.length} operations`
       );
     }
 
@@ -110,7 +110,7 @@ export class BatchEngine {
     const summary = this.calculatePerformanceSummary(
       totalExecutionTime,
       operations.length,
-      startTime,
+      startTime
     );
 
     if (this.config.trackPerformance) {
@@ -135,7 +135,7 @@ export class BatchEngine {
       // Start operations up to max concurrency limit
       const operationsToStart = Math.min(
         readyOperations.length,
-        this.config.maxConcurrency - this.activeOperations.size,
+        this.config.maxConcurrency - this.activeOperations.size
       );
 
       const promises: Promise<void>[] = [];
@@ -156,7 +156,7 @@ export class BatchEngine {
       } else if (this.activeOperations.size === 0) {
         // No operations can be started and none are running - likely circular dependency
         throw new Error(
-          'Circular dependency detected or no operations can be executed',
+          'Circular dependency detected or no operations can be executed'
         );
       } else {
         // Wait for any active operation to complete
@@ -240,7 +240,7 @@ export class BatchEngine {
     return new Promise((resolve, reject) => {
       const timeoutHandle = setTimeout(() => {
         reject(
-          new Error(`Operation ${operation.id} timed out after ${timeout}ms`),
+          new Error(`Operation ${operation.id} timed out after ${timeout}ms`)
         );
       }, timeout);
 
@@ -302,12 +302,12 @@ export class BatchEngine {
    * @param operation
    */
   private async executeFileOperation(
-    operation: BatchOperation,
+    operation: BatchOperation
   ): Promise<unknown> {
     // Will be delegated to FileBatchOperator
     logger.debug(
       `Executing file operation: ${operation.operation}`,
-      operation.params,
+      operation.params
     );
 
     // Placeholder implementation
@@ -326,12 +326,12 @@ export class BatchEngine {
    * @param operation
    */
   private async executeSwarmOperation(
-    operation: BatchOperation,
+    operation: BatchOperation
   ): Promise<unknown> {
     // Will be delegated to SwarmBatchCoordinator
     logger.debug(
       `Executing swarm operation: ${operation.operation}`,
-      operation.params,
+      operation.params
     );
 
     // Placeholder implementation
@@ -350,11 +350,11 @@ export class BatchEngine {
    * @param operation
    */
   private async executeAgentOperation(
-    operation: BatchOperation,
+    operation: BatchOperation
   ): Promise<unknown> {
     logger.debug(
       `Executing agent operation: ${operation.operation}`,
-      operation.params,
+      operation.params
     );
 
     // Placeholder implementation
@@ -376,7 +376,7 @@ export class BatchEngine {
   private calculatePerformanceSummary(
     totalExecutionTime: number,
     totalOperations: number,
-    startTime: number,
+    startTime: number
   ): ExtendedBatchExecutionSummary {
     const results = Array.from(this.results.values());
     const successfulOperations = results?.filter((r) => r.success).length;
@@ -390,7 +390,7 @@ export class BatchEngine {
     // Calculate theoretical sequential execution time
     const sequentialTime = results?.reduce(
       (sum, r) => sum + r.executionTime,
-      0,
+      0
     );
 
     // Calculate speed improvement (claude-zen claims 2.8-4.4x)
@@ -474,7 +474,7 @@ export function createBatchOperation(
   params: Record<string, unknown>,
   options?: Partial<
     Pick<BatchOperation, 'priority' | 'dependencies' | 'timeout'>
-  >,
+  >
 ): BatchOperation {
   const batchOp: BatchOperation = {
     id,
@@ -506,7 +506,7 @@ export function createToolBatch(
     name: string;
     params: Record<string, unknown>;
     dependencies?: string[];
-  }>,
+  }>
 ): BatchOperation[] {
   return tools.map((tool, index) => {
     const options: Partial<
@@ -522,7 +522,7 @@ export function createToolBatch(
       'tool',
       tool.name,
       tool.params,
-      options,
+      options
     );
   });
 }

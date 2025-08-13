@@ -106,7 +106,7 @@ export interface OrchestratorConfig {
  * @property {string} description - Human-readable description of the task
  * @property {number} priority - Task priority (lower numbers = higher priority)
  * @property {any} input - Task-specific input data and parameters
- * @property {Record<string, any>} metadata - Additional context and tracking information
+ * @property {Record<string, unknown>} metadata - Additional context and tracking information
  *
  * @example
  * ```typescript
@@ -133,8 +133,8 @@ export interface Task {
   type: string;
   description: string;
   priority: number;
-  input?: any;
-  metadata?: Record<string, any>;
+  input?: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -166,7 +166,7 @@ export interface Task {
  */
 export interface TaskResult {
   success: boolean;
-  output?: any;
+  output?: unknown;
   duration: number;
   error?: Error;
 }
@@ -265,12 +265,12 @@ export class Orchestrator extends EventEmitter {
 
   constructor(
     config: OrchestratorConfig,
-    private terminalManager?: any,
-    private memoryManager?: any,
-    private coordinationManager?: any,
-    private mcpServer?: any,
+    private terminalManager?: unknown,
+    private memoryManager?: unknown,
+    private coordinationManager?: unknown,
+    private mcpServer?: unknown,
     private eventBus?: IEventBus,
-    private logger?: ILogger,
+    private logger?: ILogger
   ) {
     super();
 
@@ -535,7 +535,7 @@ export class Orchestrator extends EventEmitter {
     if (this.eventBus) {
       this.eventBus.on('system:shutdown', () => {
         this.stop().catch((error) =>
-          this.logger?.error('Error during shutdown', { error }),
+          this.logger?.error('Error during shutdown', { error })
         );
       });
     }
@@ -569,12 +569,12 @@ export class Orchestrator extends EventEmitter {
 
     if (this.activeTasks.size > 0) {
       this.logger?.warn(
-        `${this.activeTasks.size} tasks still active after timeout`,
+        `${this.activeTasks.size} tasks still active after timeout`
       );
     }
   }
 
-  private async performTask(task: Task): Promise<any> {
+  private async performTask(task: Task): Promise<unknown> {
     // This is a placeholder implementation
     // In a real system, this would delegate to appropriate subsystems
     // based on task.type and use the injected managers

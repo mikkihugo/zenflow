@@ -128,7 +128,7 @@ describe('Error Recovery and Resilience Integration', () => {
 
       // Workers under failed mid-level should be reassigned
       const reassignedWorkers = recoveryEvents.filter(
-        (e) => e.type === 'reassignment',
+        (e) => e.type === 'reassignment'
       );
       expect(reassignedWorkers).to.have.lengthOf.at.least(2);
     });
@@ -180,7 +180,7 @@ describe('Error Recovery and Resilience Integration', () => {
       // Verify circuit breaker behavior
       const failures = results.filter((r) => !r.success);
       const circuitOpenErrors = failures.filter((f) =>
-        f.error.includes('Circuit breaker open'),
+        f.error.includes('Circuit breaker open')
       );
 
       expect(failures).to.have.lengthOf.at.least(3);
@@ -262,7 +262,7 @@ describe('Error Recovery and Resilience Integration', () => {
           swarm.orchestrateTask({
             task: `Task ${i}`,
             persistent: true,
-          }),
+          })
         );
       }
 
@@ -469,7 +469,7 @@ describe('Error Recovery and Resilience Integration', () => {
             type: 'update',
             priority: i < 50 ? 'low' : 'high',
             data: `Message ${i}`,
-          }),
+          })
         );
       }
 
@@ -484,7 +484,7 @@ describe('Error Recovery and Resilience Integration', () => {
       // High priority messages should be preserved
       const remainingMessages = await swarm.getQueuedMessages();
       const highPriorityCount = remainingMessages.filter(
-        (m) => m.priority === 'high',
+        (m) => m.priority === 'high'
       ).length;
       expect(highPriorityCount).to.be.greaterThan(50);
     });
@@ -515,7 +515,7 @@ describe('Error Recovery and Resilience Integration', () => {
             await swarm.spawnAgent({
               type: 'coder',
               ephemeral: true,
-            }),
+            })
           );
         }
 
@@ -524,7 +524,7 @@ describe('Error Recovery and Resilience Integration', () => {
           swarm.executeAgentTask(agent.id, {
             task: 'Memory intensive operation',
             data: Buffer.alloc(1024 * 1024), // 1MB per task
-          }),
+          })
         );
 
         await Promise.all(tasks);
@@ -578,7 +578,7 @@ describe('Error Recovery and Resilience Integration', () => {
             task: `High load task ${i}`,
             priority: i < 10 ? 'high' : 'normal',
             estimatedLoad: 1,
-          }),
+          })
         );
       }
 
@@ -599,7 +599,7 @@ describe('Error Recovery and Resilience Integration', () => {
       // High priority tasks should complete
       const highPriorityResults = results.slice(0, 10);
       const highPriorityCompleted = highPriorityResults.filter(
-        (r) => r.status === 'fulfilled',
+        (r) => r.status === 'fulfilled'
       ).length;
       expect(highPriorityCompleted).to.be.at.least(8);
 

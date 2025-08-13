@@ -57,7 +57,7 @@ export class ConfigValidator {
    */
   private validateStructure(
     config: SystemConfiguration,
-    errors: string[],
+    errors: string[]
   ): void {
     const requiredSections = [
       'core',
@@ -118,7 +118,7 @@ export class ConfigValidator {
   private validateRules(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[],
+    warnings: string[]
   ): void {
     for (const [path, rule] of Object.entries(VALIDATION_RULES)) {
       const value = this.getNestedValue(config as any, path);
@@ -154,7 +154,7 @@ export class ConfigValidator {
       if ('enum' in rule && rule.enum && Array.isArray(rule.enum)) {
         if (!rule.enum.includes(value as never)) {
           errors.push(
-            `${path} must be one of: ${rule.enum.join(', ')}, got ${value}`,
+            `${path} must be one of: ${rule.enum.join(', ')}, got ${value}`
           );
         }
       }
@@ -181,7 +181,7 @@ export class ConfigValidator {
   private validateDependencies(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[],
+    warnings: string[]
   ): void {
     // Web interface dependencies
     if (
@@ -226,7 +226,7 @@ export class ConfigValidator {
       !config?.core?.performance?.enableMetrics
     ) {
       warnings.push(
-        'Profiling enabled without metrics - limited functionality',
+        'Profiling enabled without metrics - limited functionality'
       );
     }
   }
@@ -241,7 +241,7 @@ export class ConfigValidator {
   private validateConstraints(
     config: SystemConfiguration,
     errors: string[],
-    warnings: string[],
+    warnings: string[]
   ): void {
     // Port conflicts
     const ports = [
@@ -252,7 +252,7 @@ export class ConfigValidator {
     const uniquePorts = new Set(ports);
     if (ports.length !== uniquePorts.size) {
       errors.push(
-        'Port conflicts detected - multiple services cannot use the same port',
+        'Port conflicts detected - multiple services cannot use the same port'
       );
     }
 
@@ -305,7 +305,7 @@ export class ConfigValidator {
     for (const dir of directories) {
       if (dir.includes('..')) {
         warnings.push(
-          `Directory path contains '..' - potential security risk: ${dir}`,
+          `Directory path contains '..' - potential security risk: ${dir}`
         );
       }
     }
@@ -318,7 +318,7 @@ export class ConfigValidator {
    * @param path
    */
   private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-    return path.split('.').reduce((current: any, key) => current?.[key], obj);
+    return path.split('.').reduce((current: unknown, key) => current?.[key], obj);
   }
 
   /**
@@ -329,14 +329,14 @@ export class ConfigValidator {
    */
   validateSection(
     _config: SystemConfiguration,
-    section: string,
+    section: string
   ): ConfigValidationResult {
     const errors: string[] = [];
     const warnings: string[] = [];
 
     // Get rules for this section
     const sectionRules = Object.entries(VALIDATION_RULES).filter(([path]) =>
-      path.startsWith(`${section}.`),
+      path.startsWith(`${section}.`)
     );
 
     for (const [_path, _rule] of sectionRules) {
@@ -399,7 +399,7 @@ export class ConfigValidator {
 
     if (config?.core?.logger?.level === 'debug') {
       performanceWarnings.push(
-        'Debug logging enabled - may impact performance',
+        'Debug logging enabled - may impact performance'
       );
     }
 

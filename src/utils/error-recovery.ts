@@ -120,7 +120,7 @@ export interface RecoveryStrategy {
  *
  * @property {'restart' | 'rollback' | 'failover' | 'scale' | 'notify' | 'repair'} type - Type of recovery action
  * @property {string} target - Target component, service, or resource for the action
- * @property {Record<string, any>} parameters - Action-specific parameters and configuration
+ * @property {Record<string, unknown>} parameters - Action-specific parameters and configuration
  * @property {number} timeout - Maximum time to wait for action completion (ms)
  * @property {boolean} required - Whether action failure should fail the entire recovery
  *
@@ -154,7 +154,7 @@ export interface RecoveryStrategy {
 export interface RecoveryAction {
   type: 'restart' | 'rollback' | 'failover' | 'scale' | 'notify' | 'repair';
   target: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   timeout: number;
   required: boolean;
 }
@@ -172,7 +172,7 @@ export interface RecoveryAction {
  * @property {string} operation - Specific operation that failed
  * @property {string} errorType - Classification of the error type
  * @property {'low' | 'medium' | 'high' | 'critical'} severity - Error severity level
- * @property {Record<string, any>} metadata - Additional error context and data
+ * @property {Record<string, unknown>} metadata - Additional error context and data
  * @property {Date} timestamp - When the error occurred
  * @property {number} retryCount - Number of recovery attempts so far
  *
@@ -201,7 +201,7 @@ export interface RecoveryContext {
   operation: string;
   errorType: string;
   severity: 'low' | 'medium' | 'high' | 'critical';
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   timestamp: Date;
   retryCount: number;
 }
@@ -301,18 +301,18 @@ export class ErrorRecoverySystem extends EventEmitter {
    */
   getStrategiesForError(
     errorType: string,
-    component: string,
+    component: string
   ): RecoveryStrategy[] {
     return Array.from(this.strategies.values())
       .filter((strategy) =>
         strategy.conditions.some((condition) =>
-          this.matchesCondition(condition, errorType, component),
-        ),
+          this.matchesCondition(condition, errorType, component)
+        )
       )
       .sort(
         (a, b) =>
           this.getSeverityWeight(a.severity) -
-          this.getSeverityWeight(b.severity),
+          this.getSeverityWeight(b.severity)
       );
   }
 
@@ -324,7 +324,7 @@ export class ErrorRecoverySystem extends EventEmitter {
    */
   getRecoveryHistory(
     component?: string,
-    since?: Date,
+    since?: Date
   ): Array<RecoveryResult & RecoveryContext> {
     let history = this.recoveryHistory;
 
@@ -337,7 +337,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     }
 
     return history.sort(
-      (a, b) => b.timestamp.getTime() - a.timestamp.getTime(),
+      (a, b) => b.timestamp.getTime() - a.timestamp.getTime()
     );
   }
 
@@ -355,7 +355,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     const successful = this.recoveryHistory.filter((r) => r.success).length;
     const totalDuration = this.recoveryHistory.reduce(
       (sum, r) => sum + r.duration,
-      0,
+      0
     );
 
     const strategiesUsed: Record<string, number> = {};
@@ -378,11 +378,11 @@ export class ErrorRecoverySystem extends EventEmitter {
   }
 
   private selectRecoveryStrategy(
-    context: RecoveryContext,
+    context: RecoveryContext
   ): RecoveryStrategy | null {
     const candidates = this.getStrategiesForError(
       context.errorType,
-      context.component,
+      context.component
     );
 
     // Filter by severity and retry count
@@ -399,7 +399,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRecoveryStrategy(
     strategy: RecoveryStrategy,
-    context: RecoveryContext,
+    context: RecoveryContext
   ): Promise<{
     success: boolean;
     actionsExecuted: string[];
@@ -439,7 +439,7 @@ export class ErrorRecoverySystem extends EventEmitter {
       const delay = this.calculateBackoffDelay(
         strategy.backoffStrategy,
         context.retryCount,
-        strategy.timeout,
+        strategy.timeout
       );
       nextRetryAt = new Date(Date.now() + delay);
     }
@@ -454,7 +454,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRecoveryAction(
     action: RecoveryAction,
-    context: RecoveryContext,
+    context: RecoveryContext
   ): Promise<void> {
     this.emit('action:starting', { action, context });
 
@@ -486,7 +486,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRestartAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock restart implementation
     await new Promise((resolve) => setTimeout(resolve, 100));
@@ -494,7 +494,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRollbackAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock rollback implementation
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -502,7 +502,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeFailoverAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock failover implementation
     await new Promise((resolve) => setTimeout(resolve, 500));
@@ -510,7 +510,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeScaleAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock scaling implementation
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -518,7 +518,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeNotifyAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock notification implementation
     await new Promise((resolve) => setTimeout(resolve, 50));
@@ -526,7 +526,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRepairAction(
     _action: RecoveryAction,
-    _context: RecoveryContext,
+    _context: RecoveryContext
   ): Promise<void> {
     // Mock repair implementation
     await new Promise((resolve) => setTimeout(resolve, 300));
@@ -535,7 +535,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   private matchesCondition(
     condition: string,
     errorType: string,
-    component: string,
+    component: string
   ): boolean {
     const regex = new RegExp(condition, 'i');
     return regex.test(errorType) || regex.test(component);
@@ -559,7 +559,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   private calculateBackoffDelay(
     strategy: string,
     retryCount: number,
-    baseTimeout: number,
+    baseTimeout: number
   ): number {
     switch (strategy) {
       case 'linear':
@@ -573,7 +573,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private recordRecovery(
     context: RecoveryContext,
-    result: RecoveryResult,
+    result: RecoveryResult
   ): void {
     this.recoveryHistory.push({
       ...context,

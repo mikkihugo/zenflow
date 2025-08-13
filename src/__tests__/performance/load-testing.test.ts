@@ -15,8 +15,8 @@ const logger = createLogger('performance-test');
 
 describe('Performance and Load Testing Suite', () => {
   let testStartTime: number;
-  let memoryOptimizer: any;
-  const performanceResults: any[] = [];
+  let memoryOptimizer: unknown;
+  const performanceResults: unknown[] = [];
 
   beforeAll(async () => {
     testStartTime = Date.now();
@@ -40,7 +40,7 @@ describe('Performance and Load Testing Suite', () => {
       const startTime = Date.now();
 
       logger.info(
-        `🔄 Testing ${concurrentRequests} concurrent workflow initializations...`,
+        `🔄 Testing ${concurrentRequests} concurrent workflow initializations...`
       );
 
       const promises = Array.from({ length: concurrentRequests }, (_, i) =>
@@ -49,7 +49,7 @@ describe('Performance and Load Testing Suite', () => {
           topology: 'hierarchical',
           mlLevel: 'enterprise',
           conservative: false,
-        }),
+        })
       );
 
       const results = await Promise.allSettled(promises);
@@ -57,10 +57,10 @@ describe('Performance and Load Testing Suite', () => {
 
       // Validate results
       const successfulResults = results.filter(
-        (r) => r.status === 'fulfilled' && !r.value.isError,
+        (r) => r.status === 'fulfilled' && !r.value.isError
       );
       expect(successfulResults.length).toBeGreaterThanOrEqual(
-        concurrentRequests * 0.8,
+        concurrentRequests * 0.8
       ); // 80% success rate minimum
 
       // Performance assertions
@@ -77,7 +77,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       logger.info(
-        `✅ Concurrent initialization: ${duration}ms total, ${avgLatency.toFixed(0)}ms avg latency`,
+        `✅ Concurrent initialization: ${duration}ms total, ${avgLatency.toFixed(0)}ms avg latency`
       );
     }, 15000);
 
@@ -86,7 +86,7 @@ describe('Performance and Load Testing Suite', () => {
       const startTime = Date.now();
 
       logger.info(
-        `📊 Testing ${requestCount} high-frequency monitoring requests...`,
+        `📊 Testing ${requestCount} high-frequency monitoring requests...`
       );
 
       // Fire monitoring requests rapidly
@@ -94,17 +94,17 @@ describe('Performance and Load Testing Suite', () => {
         handleWorkflowToolCall('workflow_monitor', {
           detailed: false,
           includeRecommendations: true,
-        }),
+        })
       );
 
       const results = await Promise.allSettled(promises);
       const duration = Date.now() - startTime;
 
       const successfulResults = results.filter(
-        (r) => r.status === 'fulfilled' && !r.value.isError,
+        (r) => r.status === 'fulfilled' && !r.value.isError
       );
       expect(successfulResults.length).toBeGreaterThanOrEqual(
-        requestCount * 0.9,
+        requestCount * 0.9
       ); // 90% success rate
 
       const throughput = requestCount / (duration / 1000); // requests per second
@@ -119,7 +119,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       logger.info(
-        `✅ High-frequency monitoring: ${throughput.toFixed(2)} RPS, ${duration}ms total`,
+        `✅ High-frequency monitoring: ${throughput.toFixed(2)} RPS, ${duration}ms total`
       );
     }, 20000);
 
@@ -145,7 +145,9 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       expect(stressResult.isError).toBe(false);
-      const stressData = JSON.parse(stressResult.content[0].text) as any as any as any as any;
+      const stressData = JSON.parse(
+        stressResult.content[0].text
+      ) as any as any as any as any;
       expect(stressData.success).toBe(true);
 
       // System should still provide recommendations under stress
@@ -165,7 +167,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       logger.info(
-        `✅ Stress testing completed: System remained operational under extreme load`,
+        `✅ Stress testing completed: System remained operational under extreme load`
       );
     }, 45000);
   });
@@ -176,7 +178,7 @@ describe('Performance and Load Testing Suite', () => {
       const startTime = Date.now();
 
       logger.info(
-        `🎯 Testing ${monitoringCycles} rapid Kanban Flow monitoring cycles...`,
+        `🎯 Testing ${monitoringCycles} rapid Kanban Flow monitoring cycles...`
       );
 
       // Mock console to capture output
@@ -192,7 +194,7 @@ describe('Performance and Load Testing Suite', () => {
         process.argv = ['node', 'kanban', 'monitor'];
 
         const promises = Array.from({ length: monitoringCycles }, () =>
-          handleKanbanCommand(['monitor']),
+          handleKanbanCommand(['monitor'])
         );
 
         await Promise.allSettled(promises);
@@ -200,7 +202,7 @@ describe('Performance and Load Testing Suite', () => {
 
         // Verify component status was checked multiple times
         const componentChecks = consoleLogs.filter(
-          (log) => log.includes('Flow Manager') || log.includes('✅ ACTIVE'),
+          (log) => log.includes('Flow Manager') || log.includes('✅ ACTIVE')
         ).length;
 
         expect(componentChecks).toBeGreaterThan(monitoringCycles * 0.5); // At least half should show components
@@ -217,7 +219,7 @@ describe('Performance and Load Testing Suite', () => {
         });
 
         logger.info(
-          `✅ Kanban monitoring: ${cycleTime.toFixed(0)}ms avg cycle time`,
+          `✅ Kanban monitoring: ${cycleTime.toFixed(0)}ms avg cycle time`
         );
       } finally {
         console.log = originalLog;
@@ -226,7 +228,7 @@ describe('Performance and Load Testing Suite', () => {
 
     test('should handle comprehensive component testing under load', async () => {
       logger.info(
-        '🧪 Running comprehensive Kanban Flow component testing under load...',
+        '🧪 Running comprehensive Kanban Flow component testing under load...'
       );
 
       const testStartTime = Date.now();
@@ -245,7 +247,7 @@ describe('Performance and Load Testing Suite', () => {
         // Run multiple test cycles to simulate load
         const testCycles = 5;
         const promises = Array.from({ length: testCycles }, () =>
-          handleKanbanCommand(['test', '--all']),
+          handleKanbanCommand(['test', '--all'])
         );
 
         await Promise.allSettled(promises);
@@ -262,7 +264,7 @@ describe('Performance and Load Testing Suite', () => {
 
         const componentTestCounts = componentsToTest.map(
           (component) =>
-            consoleLogs.filter((log) => log.includes(component)).length,
+            consoleLogs.filter((log) => log.includes(component)).length
         );
 
         // Each component should have been tested in each cycle
@@ -279,7 +281,7 @@ describe('Performance and Load Testing Suite', () => {
         });
 
         logger.info(
-          `✅ Component load testing: ${testCycles} cycles in ${duration}ms`,
+          `✅ Component load testing: ${testCycles} cycles in ${duration}ms`
         );
       } finally {
         console.log = originalLog;
@@ -290,7 +292,7 @@ describe('Performance and Load Testing Suite', () => {
   describe('Memory and Resource Management Performance', () => {
     test('should optimize memory allocation under varying load patterns', async () => {
       logger.info(
-        '🧠 Testing memory optimization under varying load patterns...',
+        '🧠 Testing memory optimization under varying load patterns...'
       );
 
       const loadPatterns = [
@@ -300,7 +302,7 @@ describe('Performance and Load Testing Suite', () => {
         { memoryUtilization: 0.4, cpuUtilization: 0.3, throughput: 25 },
       ];
 
-      const optimizationResults: any[] = [];
+      const optimizationResults: unknown[] = [];
 
       for (let i = 0; i < loadPatterns.length; i++) {
         const pattern = loadPatterns[i];
@@ -335,7 +337,7 @@ describe('Performance and Load Testing Suite', () => {
 
       // Verify optimization is working across patterns
       const optimizablePatterns = optimizationResults.filter(
-        (r) => r.canOptimize,
+        (r) => r.canOptimize
       );
       if (optimizablePatterns.length > 0) {
         const avgGains =
@@ -355,7 +357,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       logger.info(
-        `✅ Memory optimization: Tested ${loadPatterns.length} load patterns successfully`,
+        `✅ Memory optimization: Tested ${loadPatterns.length} load patterns successfully`
       );
     }, 25000);
 
@@ -396,11 +398,11 @@ describe('Performance and Load Testing Suite', () => {
       const totalScalingDuration = Date.now() - scalingStartTime;
 
       const successfulScaling = scalingResults.filter(
-        (r) => r.status === 'fulfilled' && r.value.result,
+        (r) => r.status === 'fulfilled' && r.value.result
       );
 
       expect(successfulScaling.length).toBeGreaterThanOrEqual(
-        scalingOperations.length * 0.75,
+        scalingOperations.length * 0.75
       ); // 75% success rate
 
       performanceResults.push({
@@ -415,7 +417,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       logger.info(
-        `✅ Scaling operations: ${successfulScaling.length}/${scalingOperations.length} successful in ${totalScalingDuration}ms`,
+        `✅ Scaling operations: ${successfulScaling.length}/${scalingOperations.length} successful in ${totalScalingDuration}ms`
       );
     }, 30000);
   });
@@ -423,7 +425,7 @@ describe('Performance and Load Testing Suite', () => {
   describe('End-to-End Performance Validation', () => {
     test('should maintain performance SLAs under mixed workload', async () => {
       logger.info(
-        '🎯 Running end-to-end performance validation with mixed workload...',
+        '🎯 Running end-to-end performance validation with mixed workload...'
       );
 
       const e2eStartTime = Date.now();
@@ -454,7 +456,7 @@ describe('Performance and Load Testing Suite', () => {
 
       // Execute mixed operations multiple times
       const iterations = 3;
-      const allResults: any[] = [];
+      const allResults: unknown[] = [];
 
       for (let i = 0; i < iterations; i++) {
         const iterationStartTime = Date.now();
@@ -481,7 +483,7 @@ describe('Performance and Load Testing Suite', () => {
                 iteration: i + 1,
               };
             }
-          },
+          }
         );
 
         const iterationResults = await Promise.all(iterationPromises);
@@ -504,8 +506,8 @@ describe('Performance and Load Testing Suite', () => {
         allResults.reduce((sum, iter) => sum + iter.duration, 0) /
         allResults.length;
       const totalSuccessfulOps = allResults.reduce(
-        (sum, iter) => sum + iter.results.filter((r: any) => r.success).length,
-        0,
+        (sum, iter) => sum + iter.results.filter((r: unknown) => r.success).length,
+        0
       );
       const totalOperations = iterations * mixedOperations.length;
       const overallSuccessRate = (totalSuccessfulOps / totalOperations) * 100;
@@ -526,7 +528,7 @@ describe('Performance and Load Testing Suite', () => {
       });
 
       logger.info(
-        `✅ E2E Performance: ${overallSuccessRate.toFixed(1)}% success rate, ${avgIterationTime.toFixed(0)}ms avg iteration`,
+        `✅ E2E Performance: ${overallSuccessRate.toFixed(1)}% success rate, ${avgIterationTime.toFixed(0)}ms avg iteration`
       );
     }, 75000);
   });
@@ -535,7 +537,7 @@ describe('Performance and Load Testing Suite', () => {
 /**
  * Calculate performance summary from test results
  */
-function calculatePerformanceSummary(results: any[]) {
+function calculatePerformanceSummary(results: unknown[]) {
   const summary = {
     totalTests: results.length,
     averageDuration: 0,
@@ -551,7 +553,7 @@ function calculatePerformanceSummary(results: any[]) {
     .filter((d) => typeof d === 'number');
   if (durationsMs.length > 0) {
     summary.averageDuration = Math.round(
-      durationsMs.reduce((sum, d) => sum + d, 0) / durationsMs.length,
+      durationsMs.reduce((sum, d) => sum + d, 0) / durationsMs.length
     );
   }
 
@@ -569,7 +571,7 @@ function calculatePerformanceSummary(results: any[]) {
   const throughputResults = results.filter((r) => r.throughput);
   if (throughputResults.length > 0) {
     const throughputs = throughputResults.map((r) =>
-      Number.parseFloat(r.throughput),
+      Number.parseFloat(r.throughput)
     );
     summary.performanceMetrics.maxThroughput =
       Math.max(...throughputs).toFixed(2) + ' RPS';
@@ -578,7 +580,7 @@ function calculatePerformanceSummary(results: any[]) {
   const concurrencyResults = results.filter((r) => r.concurrency);
   if (concurrencyResults.length > 0) {
     const maxConcurrency = Math.max(
-      ...concurrencyResults.map((r) => r.concurrency),
+      ...concurrencyResults.map((r) => r.concurrency)
     );
     summary.performanceMetrics.maxConcurrency = maxConcurrency;
   }

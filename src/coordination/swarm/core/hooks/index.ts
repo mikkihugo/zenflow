@@ -58,7 +58,7 @@ class ZenSwarmHooks {
     } catch (error) {
       logger.warn(
         '⚠️ Failed to initialize persistence layer:',
-        (error as Error).message,
+        (error as Error).message
       );
       logger.warn('⚠️ Operating in memory-only mode');
       this.persistence = null;
@@ -268,7 +268,7 @@ class ZenSwarmHooks {
     if (autoSpawnAgents) {
       const requiredAgents = this.determineRequiredAgents(
         description,
-        complexity,
+        complexity
       );
       for (const agentType of requiredAgents) {
         await this.ensureAgent(agentType);
@@ -333,7 +333,7 @@ class ZenSwarmHooks {
   async postTaskHook(args: unknown) {
     const { taskId, analyzePerformance, updateCoordination } = args;
 
-    const performance: any = {
+    const performance: unknown = {
       taskId,
       completionTime:
         Date.now() -
@@ -454,7 +454,7 @@ class ZenSwarmHooks {
       agentId,
     } = args;
 
-    const notification: any = {
+    const notification: unknown = {
       message,
       level: level || 'info',
       type: type || 'general',
@@ -553,7 +553,7 @@ class ZenSwarmHooks {
       await fs.mkdir(configDir, { recursive: true });
       await fs.writeFile(
         path.join(configDir, 'swarm-config.json'),
-        JSON.stringify(swarmConfig, null, 2),
+        JSON.stringify(swarmConfig, null, 2)
       );
     }
 
@@ -597,7 +597,7 @@ class ZenSwarmHooks {
       const rosterPath = path.join(
         process.cwd(),
         '.ruv-swarm',
-        'agent-roster.json',
+        'agent-roster.json'
       );
       const roster = Array.from(this.sessionData.agents.values());
       await fs.writeFile(rosterPath, JSON.stringify(roster, null, 2));
@@ -695,7 +695,7 @@ class ZenSwarmHooks {
       const weightsDir = path.join(
         process.cwd(),
         '.ruv-swarm',
-        'neural-weights',
+        'neural-weights'
       );
       await fs.mkdir(weightsDir, { recursive: true });
 
@@ -708,7 +708,7 @@ class ZenSwarmHooks {
 
       await fs.writeFile(
         path.join(weightsDir, `weights-${Date.now()}.json`),
-        JSON.stringify(weightData, null, 2),
+        JSON.stringify(weightData, null, 2)
       );
 
       result.saved = true;
@@ -784,11 +784,13 @@ class ZenSwarmHooks {
    * Get count of modified files.
    */
   getModifiedFilesCount(): number {
-    const fileOps = this.sessionData.operations.filter((op: any) =>
-      ['edit', 'write', 'create'].includes(op.type),
+    const fileOps = this.sessionData.operations.filter((op: unknown) =>
+      ['edit', 'write', 'create'].includes(op.type)
     );
 
-    const uniqueFiles = new Set(fileOps.map((op: any) => op.file).filter(Boolean));
+    const uniqueFiles = new Set(
+      fileOps.map((op: unknown) => op.file).filter(Boolean)
+    );
     return uniqueFiles.size;
   }
 
@@ -796,12 +798,12 @@ class ZenSwarmHooks {
    * Get list of modified files.
    */
   getModifiedFilesList(): string {
-    const fileOps = this.sessionData.operations.filter((op: any) =>
-      ['edit', 'write', 'create'].includes(op.type),
+    const fileOps = this.sessionData.operations.filter((op: unknown) =>
+      ['edit', 'write', 'create'].includes(op.type)
     );
 
     const fileMap = new Map();
-    fileOps.forEach((op: any) => {
+    fileOps.forEach((op: unknown) => {
       if (op.file) {
         if (!fileMap.has(op.file)) {
           fileMap.set(op.file, []);
@@ -901,7 +903,7 @@ class ZenSwarmHooks {
     await fs.mkdir(sessionDir, { recursive: true });
 
     const timestamp = new Date().toISOString().replace(/:/g, '-');
-    const results: any = {};
+    const results: unknown = {};
 
     // Generate summary
     if (generateSummary) {
@@ -1012,8 +1014,8 @@ class ZenSwarmHooks {
   }
 
   async autoFormatFile(
-    filePath: string,
-  ): Promise<{ success: boolean; reason?: string; details?: any }> {
+    filePath: string
+  ): Promise<{ success: boolean; reason?: string; details?: unknown }> {
     const ext = path.extname(filePath);
     const formatters = {
       '.js': 'prettier --write',
@@ -1090,7 +1092,7 @@ class ZenSwarmHooks {
     return { safe: true };
   }
 
-  estimateCommandResources(command: string): any {
+  estimateCommandResources(command: string): unknown {
     const resourceMap = {
       'npm test': {
         duration: 30000,
@@ -1135,7 +1137,7 @@ ${this.sessionData.operations
   .slice(-10)
   .map(
     (op: unknown) =>
-      `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`,
+      `- ${new Date(op.timestamp).toLocaleTimeString()}: ${op.type} on ${op.file} (${op.agent})`
   )
   .join('\n')}
 
@@ -1144,7 +1146,7 @@ ${this.sessionData.learnings
   .slice(-5)
   .map(
     (l: unknown) =>
-      `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`,
+      `- Pattern "${l.pattern}" improved by ${(l.improvement * 100).toFixed(1)}% (confidence: ${l.confidence})`
   )
   .join('\n')}
 
@@ -1155,7 +1157,7 @@ ${this.sessionData.learnings
 `;
   }
 
-  captureSwarmState(): any {
+  captureSwarmState(): unknown {
     return {
       session_id: `sess-${Date.now()}`,
       agents: Object.fromEntries(this.sessionData.agents),
@@ -1166,7 +1168,7 @@ ${this.sessionData.learnings
     };
   }
 
-  calculateSessionMetrics(): any {
+  calculateSessionMetrics(): unknown {
     const duration = Date.now() - this.sessionData.startTime;
     return {
       performance: {
@@ -1186,7 +1188,7 @@ ${this.sessionData.learnings
         average_improvement: (
           this.sessionData.learnings.reduce(
             (acc, l) => acc + l.improvement,
-            0,
+            0
           ) / this.sessionData.learnings.length
         ).toFixed(3),
         confidence_average: (
@@ -1202,8 +1204,8 @@ ${this.sessionData.learnings
               acc.set(agent.type, (acc.get(agent.type) || 0) + 1);
               return acc;
             },
-            new Map(),
-          ) as any,
+            new Map()
+          ) as any
         ),
       },
     };
@@ -1225,7 +1227,7 @@ ${this.sessionData.learnings
 
   // Additional helper methods for optimization
 
-  analyzeTaskComplexity(description: string): any {
+  analyzeTaskComplexity(description: string): unknown {
     const keywords = {
       simple: ['fix', 'update', 'change', 'modify', 'rename'],
       medium: ['implement', 'create', 'add', 'integrate', 'refactor'],
@@ -1359,9 +1361,9 @@ ${this.sessionData.learnings
     relatedFiles.forEach((related) => {
       if (
         !graph.edges.find(
-          (e: any) =>
+          (e: unknown) =>
             (e.from === nodeId && e.to === related) ||
-            (e.from === related && e.to === nodeId),
+            (e.from === related && e.to === nodeId)
         )
       ) {
         graph.edges.push({
@@ -1374,11 +1376,11 @@ ${this.sessionData.learnings
     });
   }
 
-  calculateEfficiency(performance: unknown): any {
+  calculateEfficiency(performance: unknown): unknown {
     const baselineTime = 60000; // 1 minute baseline
     const efficiencyScore = Math.max(
       0,
-      Math.min(1, baselineTime / performance.completionTime),
+      Math.min(1, baselineTime / performance.completionTime)
     );
 
     // Adjust for agent utilization
@@ -1450,7 +1452,7 @@ ${this.sessionData.learnings
   }
 
   suggestImprovements(
-    performance,
+    performance
   ): Array<{ area: string; suggestion: string; expectedImprovement: string }> {
     const improvements: Array<{
       area: string;
@@ -1524,21 +1526,21 @@ ${this.sessionData.learnings
     // Extract file type patterns
     const fileTypes = query.match(/\.(js|ts|py|go|rs|md|json|yaml)\b/gi);
     if (fileTypes) {
-      patterns.push(...fileTypes.map((ft: any) => `filetype:${ft}`));
+      patterns.push(...fileTypes.map((ft: unknown) => `filetype:${ft}`));
     }
 
     // Extract function/class patterns
     const codePatterns = query.match(
-      /\b(function|class|interface|struct|impl)\s+\w+/gi,
+      /\b(function|class|interface|struct|impl)\s+\w+/gi
     );
     if (codePatterns) {
-      patterns.push(...codePatterns.map((cp: any) => `code:${cp}`));
+      patterns.push(...codePatterns.map((cp: unknown) => `code:${cp}`));
     }
 
     // Extract scope patterns
     const scopePatterns = query.match(/\b(src|test|lib|bin|docs?)\//gi);
     if (scopePatterns) {
-      patterns.push(...scopePatterns.map((sp: any) => `scope:${sp}`));
+      patterns.push(...scopePatterns.map((sp: unknown) => `scope:${sp}`));
     }
 
     return patterns;
@@ -1548,11 +1550,11 @@ ${this.sessionData.learnings
     const kbPath = path.join(
       process.cwd(),
       '.ruv-swarm',
-      'knowledge-base.json',
+      'knowledge-base.json'
     );
 
     // Load existing knowledge base
-    let kb: any = { searches: [], patterns: {}, insights: [] };
+    let kb: unknown = { searches: [], patterns: {}, insights: [] };
     try {
       if (
         await fs
@@ -1581,7 +1583,7 @@ ${this.sessionData.learnings
       if (!kb.patterns) {
         kb.patterns = {};
       }
-      data?.patterns.forEach((pattern: any) => {
+      data?.patterns.forEach((pattern: unknown) => {
         kb.patterns[pattern] = (kb.patterns[pattern] || 0) + 1;
       });
     }
@@ -1654,7 +1656,7 @@ ${this.sessionData.learnings
     return {
       agents: this.sessionData.agents,
       activeTasks: this.sessionData.operations.filter(
-        (op: any) => Date.now() - op.timestamp < 300000, // Last 5 minutes
+        (op: unknown) => Date.now() - op.timestamp < 300000 // Last 5 minutes
       ).length,
       health: 'operational',
     };
@@ -1666,7 +1668,7 @@ ${this.sessionData.learnings
     const telemetryPath = path.join(
       process.cwd(),
       '.ruv-swarm',
-      'telemetry.jsonl',
+      'telemetry.jsonl'
     );
 
     const telemetryEvent = {
@@ -1681,7 +1683,7 @@ ${this.sessionData.learnings
     fs.appendFile(telemetryPath, `${JSON.stringify(telemetryEvent)}\n`).catch(
       () => {
         /* intentionally empty */
-      },
+      }
     );
   }
 
@@ -1735,7 +1737,7 @@ ${this.sessionData.learnings
     return patterns[type] || ['adaptive-learning'];
   }
 
-  generateMockWeights(): any {
+  generateMockWeights(): unknown {
     // Generate mock neural network weights for demonstration
     return {
       layers: [
@@ -1764,7 +1766,7 @@ ${this.sessionData.learnings
     };
   }
 
-  optimizeAgentAllocation(_taskId: string): any {
+  optimizeAgentAllocation(_taskId: string): unknown {
     // Simple load balancing algorithm
     const agents = Array.from(this.sessionData.agents.values());
     const allocation = {};
@@ -1773,7 +1775,7 @@ ${this.sessionData.learnings
       // Allocate based on agent type and current load
       const load = this.sessionData.operations.filter(
         (op: unknown) =>
-          op.agent === agent.id && Date.now() - op.timestamp < 60000,
+          op.agent === agent.id && Date.now() - op.timestamp < 60000
       ).length;
 
       allocation[agent.id] = {
@@ -1788,7 +1790,7 @@ ${this.sessionData.learnings
     return allocation;
   }
 
-  calculateParallelization(_taskId: string): any {
+  calculateParallelization(_taskId: string): unknown {
     // Determine parallelization factor based on task and resources
     const agentCount = this.sessionData.agents.size;
     const complexity = this.sessionData.taskComplexity || { score: 2 };
@@ -1822,14 +1824,14 @@ ${this.sessionData.learnings
     const recentOps = this.sessionData.operations.slice(-10);
     const agentCounts = {};
 
-    recentOps.forEach((op: any) => {
+    recentOps.forEach((op: unknown) => {
       if (op.agent) {
         agentCounts[op.agent] = (agentCounts[op.agent] || 0) + 1;
       }
     });
 
     const sorted = Object.entries(agentCounts).sort(
-      (a, b) => Number(b[1]) - Number(a[1]),
+      (a, b) => Number(b[1]) - Number(a[1])
     );
     return sorted.length > 0 && sorted[0] ? sorted[0]?.[0] : 'coordinator';
   }
@@ -1869,7 +1871,7 @@ ${this.sessionData.learnings
   async storeNotificationInDatabase(notification: unknown): Promise<void> {
     if (!this.persistence) {
       logger.warn(
-        '⚠️ No persistence layer - notification stored in memory only',
+        '⚠️ No persistence layer - notification stored in memory only'
       );
       return;
     }
@@ -1890,7 +1892,7 @@ ${this.sessionData.learnings
     } catch (error) {
       logger.error(
         '❌ Failed to store notification in database:',
-        error.message,
+        error.message
       );
     }
   }
@@ -1903,7 +1905,7 @@ ${this.sessionData.learnings
    */
   async getNotificationsFromDatabase(
     agentId: string | null = null,
-    type: string | null = null,
+    type: string | null = null
   ): Promise<any[]> {
     if (!this.persistence) {
       return [];
@@ -1921,7 +1923,7 @@ ${this.sessionData.learnings
     } catch (error) {
       logger.error(
         '❌ Failed to retrieve notifications from database:',
-        error.message,
+        error.message
       );
       return [];
     }
@@ -1947,7 +1949,7 @@ ${this.sessionData.learnings
             learnings,
             completedAt: Date.now(),
             source: 'agent-completion',
-          },
+          }
         );
 
         // Update agent status in database
@@ -1994,7 +1996,7 @@ ${this.sessionData.learnings
    */
   async getSharedMemory(
     key: string,
-    agentId: string | null = null,
+    agentId: string | null = null
   ): Promise<unknown> {
     // Check runtime memory first
     const runtimeValue = this.sessionData[key];
@@ -2005,7 +2007,7 @@ ${this.sessionData.learnings
         const targetAgentId = agentId || 'shared-memory';
         const memory = await this.persistence.getAgentMemory(
           targetAgentId,
-          key,
+          key
         );
 
         if (memory) {
@@ -2029,7 +2031,7 @@ ${this.sessionData.learnings
   async setSharedMemory(
     key: string,
     value: unknown,
-    agentId: string | null = null,
+    agentId: string | null = null
   ): Promise<void> {
     // Store in runtime memory
     this.sessionData[key] = value;

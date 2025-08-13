@@ -9,7 +9,7 @@ import { access, readdir, stat } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import React from 'react';
+import type React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   WorkspaceCollectiveSystem,
@@ -140,7 +140,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         return new Set(['.git', 'node_modules', '.DS_Store', '*.log']);
       }
     },
-    [],
+    []
   );
 
   // Check if path should be ignored based on .gitignore patterns
@@ -167,14 +167,14 @@ export const Workspace: React.FC<WorkspaceProps> = ({
 
       return false;
     },
-    [],
+    []
   );
 
   // Get or create workspace-specific COLLECTIVE system (isolated per workspace)
   const getWorkspaceCollective = useCallback(
     async (
       workspaceId: string,
-      workspacePath: string,
+      workspacePath: string
     ): Promise<WorkspaceCollectiveSystem> => {
       if (!workspaceCollectiveSystems.has(workspaceId)) {
         const collectiveSystem = new WorkspaceCollectiveSystem(
@@ -184,7 +184,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             autoRefresh: true,
             refreshInterval: 60000, // 1 minute
             enableDeepAnalysis: true,
-          },
+          }
         );
 
         await collectiveSystem.initialize();
@@ -193,14 +193,14 @@ export const Workspace: React.FC<WorkspaceProps> = ({
 
       return workspaceCollectiveSystems.get(workspaceId)!;
     },
-    [workspaceCollectiveSystems],
+    [workspaceCollectiveSystems]
   );
 
   // Analyze directory to get project statistics
   const analyzeProject = useCallback(
     async (
       projectPath: string,
-      projectName: string,
+      projectName: string
     ): Promise<WorkspaceProject | null> => {
       try {
         // Check if directory exists
@@ -222,7 +222,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         // Helper function to analyze directory recursively with .gitignore support (no depth limits)
         const scanDirectory = async (
           dirPath: string,
-          depth = 0,
+          depth = 0
         ): Promise<void> => {
           // No depth limit - scan everything that's not ignored
 
@@ -480,17 +480,17 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             // Fallback to basic analysis
             projectVision = await analyzeProjectVision(
               projectPath,
-              stats.documents,
+              stats.documents
             );
           }
         } catch (visionError) {
           console.warn(
             'Could not use StrategicVisionService, falling back to basic analysis:',
-            visionError,
+            visionError
           );
           projectVision = await analyzeProjectVision(
             projectPath,
-            stats.documents,
+            stats.documents
           );
         }
 
@@ -506,7 +506,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         try {
           const workspaceCollective = await getWorkspaceCollective(
             projectName,
-            projectPath,
+            projectPath
           );
           workspaceFacts = await workspaceCollective.getStats();
           environmentSummary = await workspaceCollective.getWorkspaceSummary();
@@ -523,12 +523,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({
               configFiles: stats.configFiles,
               lastAnalyzed: new Date().toISOString(),
             },
-            { source: 'workspace-analyzer', confidence: 1.0 },
+            { source: 'workspace-analyzer', confidence: 1.0 }
           );
         } catch (factError) {
           console.warn(
             `Failed to initialize workspace collective for ${projectName}:`,
-            factError,
+            factError
           );
         }
 
@@ -554,14 +554,14 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         return null;
       }
     },
-    [],
+    []
   );
 
   // Analyze project vision from documentation using domain discovery and document systems
   const analyzeProjectVision = useCallback(
     async (
       projectPath: string,
-      documentCount: number,
+      documentCount: number
     ): Promise<ProjectVision> => {
       try {
         // Default/fallback vision data
@@ -705,15 +705,15 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                 // Extract TODO comments and strategic annotations
                 const todoMatches =
                   content.match(
-                    /\/\/\s*TODO[:\s]*(.*)|\/\*\s*TODO[:\s]*(.*?)\*\//gi,
+                    /\/\/\s*TODO[:\s]*(.*)|\/\*\s*TODO[:\s]*(.*?)\*\//gi
                   ) || [];
                 const strategyMatches =
                   content.match(
-                    /\/\/\s*STRATEGY[:\s]*(.*)|\/\*\s*STRATEGY[:\s]*(.*?)\*\//gi,
+                    /\/\/\s*STRATEGY[:\s]*(.*)|\/\*\s*STRATEGY[:\s]*(.*?)\*\//gi
                   ) || [];
                 const visionMatches =
                   content.match(
-                    /\/\/\s*VISION[:\s]*(.*)|\/\*\s*VISION[:\s]*(.*?)\*\//gi,
+                    /\/\/\s*VISION[:\s]*(.*)|\/\*\s*VISION[:\s]*(.*?)\*\//gi
                   ) || [];
 
                 todoContent += todoMatches.join('\n') + '\n';
@@ -741,14 +741,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         // Extract strategic goals from headings, bullet points, and TODO items
         const goalMatches =
           visionContent.match(
-            /(?:goal|objective|target|todo)[s]?:?\s*(.+)/gi,
+            /(?:goal|objective|target|todo)[s]?:?\s*(.+)/gi
           ) || [];
         const strategicGoals = goalMatches
           .slice(0, 8)
           .map((match) =>
-            match
-              .replace(/(?:goal|objective|target|todo)[s]?:?\s*/i, '')
-              .trim(),
+            match.replace(/(?:goal|objective|target|todo)[s]?:?\s*/i, '').trim()
           );
 
         // Enhanced business value calculation with domain-specific keywords
@@ -767,7 +765,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         const businessScore = Math.min(
           1.0,
           businessKeywords.filter((kw) => lowerContent.includes(kw)).length /
-            businessKeywords.length,
+            businessKeywords.length
         );
 
         // Enhanced technical impact calculation
@@ -784,13 +782,13 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         const techScore = Math.min(
           1.0,
           techKeywords.filter((kw) => lowerContent.includes(kw)).length /
-            techKeywords.length,
+            techKeywords.length
         );
 
         // Extract stakeholders with enhanced patterns
         const stakeholderMatches =
           visionContent.match(
-            /(?:stakeholder|user|client|customer|team|developer)[s]?:?\s*(.+)/gi,
+            /(?:stakeholder|user|client|customer|team|developer)[s]?:?\s*(.+)/gi
           ) || [];
         const stakeholders = stakeholderMatches
           .slice(0, 5)
@@ -798,15 +796,15 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             match
               .replace(
                 /(?:stakeholder|user|client|customer|team|developer)[s]?:?\s*/i,
-                '',
+                ''
               )
-              .trim(),
+              .trim()
           );
 
         // Extract risks and challenges from TODO items and documentation
         const riskMatches =
           (visionContent + todoContent).match(
-            /(?:risk|challenge|concern|issue|problem|blocker)[s]?:?\s*(.+)/gi,
+            /(?:risk|challenge|concern|issue|problem|blocker)[s]?:?\s*(.+)/gi
           ) || [];
         const risks = riskMatches
           .slice(0, 5)
@@ -814,15 +812,15 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             match
               .replace(
                 /(?:risk|challenge|concern|issue|problem|blocker)[s]?:?\s*/i,
-                '',
+                ''
               )
-              .trim(),
+              .trim()
           );
 
         // Extract key metrics from content
         const metricMatches =
           visionContent.match(
-            /(?:metric|kpi|measure|target|benchmark)[s]?:?\s*(.+)/gi,
+            /(?:metric|kpi|measure|target|benchmark)[s]?:?\s*(.+)/gi
           ) || [];
         const keyMetrics =
           metricMatches.length > 0
@@ -832,9 +830,9 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                   match
                     .replace(
                       /(?:metric|kpi|measure|target|benchmark)[s]?:?\s*/i,
-                      '',
+                      ''
                     )
-                    .trim(),
+                    .trim()
                 )
             : [
                 'Performance',
@@ -904,7 +902,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         };
       }
     },
-    [],
+    []
   );
 
   // Get workflow gates status from the existing gate system
@@ -920,7 +918,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
           // Get actual gate data from the sophisticated gate system
           const gateData =
             await workflowGateModule.WorkflowGateRequest.getProjectGates?.(
-              projectName,
+              projectName
             ).catch(() => null);
 
           if (gateData) {
@@ -956,7 +954,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
           try {
             const fullPath = join(
               '/home/mhugo/code/claude-code-zen',
-              workflowPath,
+              workflowPath
             );
             await access(fullPath);
             const files = await readdir(fullPath);
@@ -989,7 +987,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         };
       }
     },
-    [],
+    []
   );
 
   // Load real workspace projects data
@@ -1007,12 +1005,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({
       ];
 
       const projectPromises = projectPaths.map(({ name, path }) =>
-        analyzeProject(path, name),
+        analyzeProject(path, name)
       );
 
       const results = await Promise.all(projectPromises);
       const validProjects = results.filter(
-        (project): project is WorkspaceProject => project !== null,
+        (project): project is WorkspaceProject => project !== null
       );
 
       setProjects(validProjects);
@@ -1036,12 +1034,12 @@ export const Workspace: React.FC<WorkspaceProps> = ({
     ];
 
     const projectPromises = projectPaths.map(({ name, path }) =>
-      analyzeProject(path, name),
+      analyzeProject(path, name)
     );
 
     const results = await Promise.all(projectPromises);
     const validProjects = results.filter(
-      (project): project is WorkspaceProject => project !== null,
+      (project): project is WorkspaceProject => project !== null
     );
 
     setProjects(validProjects);
@@ -1155,13 +1153,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
     };
 
     const { status, text } = statusMap[project.status];
-    return (
-      <StatusBadge
-        status={status as any}
-        text={text}
-        variant="minimal"
-      />
-    );
+    return <StatusBadge status={status as any} text={text} variant="minimal" />;
   };
 
   const formatFileSize = (bytes: number): string => {
@@ -1190,10 +1182,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
   };
 
   const renderProjectsTable = () => (
-    <Box
-      flexDirection="column"
-      marginBottom={2}
-    >
+    <Box flexDirection="column" marginBottom={2}>
       <Text bold>📋 Workspace Projects:</Text>
       <Box marginBottom={1} />
 
@@ -1206,18 +1195,9 @@ export const Workspace: React.FC<WorkspaceProps> = ({
           borderColor="gray"
           padding={1}
         >
-          <Box
-            justifyContent="space-between"
-            marginBottom={1}
-          >
-            <Box
-              flexDirection="column"
-              width="60%"
-            >
-              <Text
-                bold
-                color="cyan"
-              >
+          <Box justifyContent="space-between" marginBottom={1}>
+            <Box flexDirection="column" width="60%">
+              <Text bold color="cyan">
                 {project.name}
               </Text>
               <Text dimColor>{project.path}</Text>
@@ -1228,73 +1208,42 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             <Box alignItems="center">{getProjectStatusBadge(project)}</Box>
           </Box>
 
-          <Box
-            flexDirection="row"
-            justifyContent="space-between"
-            marginTop={1}
-          >
-            <Box
-              flexDirection="column"
-              width="20%"
-            >
+          <Box flexDirection="row" justifyContent="space-between" marginTop={1}>
+            <Box flexDirection="column" width="20%">
               <Text color="yellow">📄 Total Files:</Text>
               <Text bold>{project.totalFiles}</Text>
             </Box>
-            <Box
-              flexDirection="column"
-              width="20%"
-            >
+            <Box flexDirection="column" width="20%">
               <Text color="blue">🔧 Code Files:</Text>
               <Text bold>{project.codeFiles}</Text>
             </Box>
-            <Box
-              flexDirection="column"
-              width="20%"
-            >
+            <Box flexDirection="column" width="20%">
               <Text color="green">📝 Documents:</Text>
               <Text bold>{project.documents}</Text>
             </Box>
-            <Box
-              flexDirection="column"
-              width="20%"
-            >
+            <Box flexDirection="column" width="20%">
               <Text color="red">🧪 Tests:</Text>
               <Text bold>{project.testFiles}</Text>
             </Box>
-            <Box
-              flexDirection="column"
-              width="20%"
-            >
+            <Box flexDirection="column" width="20%">
               <Text color="cyan">📊 Progress:</Text>
               <Text bold>{project.completionRate}%</Text>
             </Box>
           </Box>
 
-          <Box
-            marginTop={1}
-            flexDirection="column"
-          >
+          <Box marginTop={1} flexDirection="column">
             <Text color="gray">
               💾 Size: {formatFileSize(project.size)} • ⚙️ Config:{' '}
               {project.configFiles} files
             </Text>
 
             {/* Strategic Vision Data */}
-            <Box
-              flexDirection="row"
-              marginTop={1}
-            >
+            <Box flexDirection="row" marginTop={1}>
               <Box width="50%">
-                <Text
-                  color="magenta"
-                  bold
-                >
+                <Text color="magenta" bold>
                   🎯 Vision:
                 </Text>
-                <Text
-                  color="white"
-                  wrap="wrap"
-                >
+                <Text color="white" wrap="wrap">
                   {project.projectVision.missionStatement.substring(0, 60)}
                   {project.projectVision.missionStatement.length > 60
                     ? '...'
@@ -1308,14 +1257,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                 </Text>
               </Box>
 
-              <Box
-                width="50%"
-                marginLeft={2}
-              >
-                <Text
-                  color="cyan"
-                  bold
-                >
+              <Box width="50%" marginLeft={2}>
+                <Text color="cyan" bold>
                   🚪 Workflow Gates:
                 </Text>
                 <Text color="green">
@@ -1333,14 +1276,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({
 
             {/* Strategic Goals with Task Integration */}
             {project.projectVision.strategicGoals.length > 0 && (
-              <Box
-                marginTop={1}
-                flexDirection="column"
-              >
-                <Text
-                  color="blue"
-                  bold
-                >
+              <Box marginTop={1} flexDirection="column">
+                <Text color="blue" bold>
                   📋 Goals:{' '}
                 </Text>
                 <Text color="white">
@@ -1349,10 +1286,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                     ? ' • ...'
                     : ''}
                 </Text>
-                <Box
-                  flexDirection="row"
-                  marginTop={1}
-                >
+                <Box flexDirection="row" marginTop={1}>
                   <Text color="gray">
                     📄 {project.documents} docs • 🔧 {project.codeFiles} code
                     files • ✅ Tasks: Auto-generated from strategic goals
@@ -1370,10 +1304,7 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                 borderColor="cyan"
                 padding={1}
               >
-                <Text
-                  color="cyan"
-                  bold
-                >
+                <Text color="cyan" bold>
                   🧠 Collective Facts (This Workspace Only):
                 </Text>
                 <Box
@@ -1435,25 +1366,14 @@ export const Workspace: React.FC<WorkspaceProps> = ({
 
                 {/* Version-specific FACT integration */}
                 {project.environmentSummary.toolsWithDocs && (
-                  <Box
-                    marginTop={1}
-                    flexDirection="column"
-                  >
+                  <Box marginTop={1} flexDirection="column">
                     <Text color="cyan">📚 FACT Documentation Available:</Text>
-                    <Box
-                      flexDirection="row"
-                      flexWrap="wrap"
-                      marginTop={1}
-                    >
+                    <Box flexDirection="row" flexWrap="wrap" marginTop={1}>
                       {project.environmentSummary.toolsWithDocs
                         .filter((tool) => tool.hasDocumentation)
                         .slice(0, 6) // Limit display to first 6 tools with docs
                         .map((tool, index) => (
-                          <Box
-                            key={index}
-                            marginRight={2}
-                            marginBottom={1}
-                          >
+                          <Box key={index} marginRight={2} marginBottom={1}>
                             <Text color="green">
                               ✓ {tool.name}
                               {tool.version ? `@${tool.version}` : ''}
@@ -1461,20 +1381,16 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                           </Box>
                         ))}
                     </Box>
-                    <Text
-                      color="gray"
-                      dimColor
-                      marginTop={1}
-                    >
+                    <Text color="gray" dimColor marginTop={1}>
                       {
                         project.environmentSummary.toolsWithDocs.filter(
-                          (t) => t.hasDocumentation,
+                          (t) => t.hasDocumentation
                         ).length
                       }{' '}
                       tools with version-specific docs,{' '}
                       {
                         project.environmentSummary.toolsWithDocs.filter(
-                          (t) => !t.hasDocumentation,
+                          (t) => !t.hasDocumentation
                         ).length
                       }{' '}
                       without
@@ -1494,13 +1410,10 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                       • 💾 Cache:{' '}
                       {Math.round(project.workspaceFacts.cacheHitRate * 100)}%
                     </Text>
-                    <Text
-                      color="gray"
-                      dimColor
-                    >
+                    <Text color="gray" dimColor>
                       Updated:{' '}
                       {new Date(
-                        project.workspaceFacts.lastUpdated,
+                        project.workspaceFacts.lastUpdated
                       ).toLocaleTimeString()}
                     </Text>
                   </Box>
@@ -1514,52 +1427,30 @@ export const Workspace: React.FC<WorkspaceProps> = ({
   );
 
   const renderWorkspaceStats = () => (
-    <Box
-      flexDirection="column"
-      marginBottom={2}
-    >
+    <Box flexDirection="column" marginBottom={2}>
       <Text bold>📊 Workspace Statistics:</Text>
       <Box marginBottom={1} />
 
-      <Box
-        flexDirection="row"
-        justifyContent="space-between"
-        marginBottom={1}
-      >
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+      <Box flexDirection="row" justifyContent="space-between" marginBottom={1}>
+        <Box flexDirection="column" width="20%">
           <Text color="cyan">Total Projects:</Text>
           <Text bold>{projects.length}</Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="green">Active Projects:</Text>
           <Text bold>
             {projects.filter((p) => p.status === 'active').length}
           </Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="yellow">Total Files:</Text>
           <Text bold>{projects.reduce((sum, p) => sum + p.totalFiles, 0)}</Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="blue">Code Files:</Text>
           <Text bold>{projects.reduce((sum, p) => sum + p.codeFiles, 0)}</Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="purple">Total Size:</Text>
           <Text bold>
             {formatFileSize(projects.reduce((sum, p) => sum + p.size, 0))}
@@ -1567,50 +1458,32 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         </Box>
       </Box>
 
-      <Box
-        flexDirection="row"
-        justifyContent="space-between"
-      >
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+      <Box flexDirection="row" justifyContent="space-between">
+        <Box flexDirection="column" width="20%">
           <Text color="green">Documents:</Text>
           <Text bold>{projects.reduce((sum, p) => sum + p.documents, 0)}</Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="red">Test Files:</Text>
           <Text bold>{projects.reduce((sum, p) => sum + p.testFiles, 0)}</Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="orange">Config Files:</Text>
           <Text bold>
             {projects.reduce((sum, p) => sum + p.configFiles, 0)}
           </Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="cyan">Avg Progress:</Text>
           <Text bold>
             {Math.round(
               projects.reduce((sum, p) => sum + p.completionRate, 0) /
-                projects.length,
+                projects.length
             )}
             %
           </Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="20%"
-        >
+        <Box flexDirection="column" width="20%">
           <Text color="magenta">Avg Vision:</Text>
           <Text bold>
             {Math.round(
@@ -1620,8 +1493,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({
                   (p.projectVision.businessValue +
                     p.projectVision.technicalImpact) *
                     50,
-                0,
-              ) / projects.length,
+                0
+              ) / projects.length
             )}
             %
           </Text>
@@ -1637,14 +1510,8 @@ export const Workspace: React.FC<WorkspaceProps> = ({
         borderColor="magenta"
         padding={1}
       >
-        <Box
-          flexDirection="column"
-          width="25%"
-        >
-          <Text
-            color="magenta"
-            bold
-          >
+        <Box flexDirection="column" width="25%">
+          <Text color="magenta" bold>
             🎯 Strategic Vision:
           </Text>
           <Text color="yellow">
@@ -1652,36 +1519,27 @@ export const Workspace: React.FC<WorkspaceProps> = ({
             {projects.reduce((sum, p) => sum + p.workflowGates.totalGates, 0)}
           </Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="25%"
-        >
+        <Box flexDirection="column" width="25%">
           <Text color="green">✅ Approved Gates:</Text>
           <Text bold>
             {projects.reduce(
               (sum, p) => sum + p.workflowGates.approvedGates,
-              0,
+              0
             )}
           </Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="25%"
-        >
+        <Box flexDirection="column" width="25%">
           <Text color="yellow">🕒 Pending Gates:</Text>
           <Text bold>
             {projects.reduce((sum, p) => sum + p.workflowGates.pendingGates, 0)}
           </Text>
         </Box>
-        <Box
-          flexDirection="column"
-          width="25%"
-        >
+        <Box flexDirection="column" width="25%">
           <Text color="red">🚨 Critical Issues:</Text>
           <Text bold>
             {projects.reduce(
               (sum, p) => sum + p.workflowGates.criticalGates.length,
-              0,
+              0
             )}
           </Text>
         </Box>
@@ -1691,20 +1549,9 @@ export const Workspace: React.FC<WorkspaceProps> = ({
 
   if (isLoading) {
     return (
-      <Box
-        flexDirection="column"
-        height="100%"
-      >
-        <Header
-          title="Workspace"
-          swarmStatus={swarmStatus}
-          showBorder={true}
-        />
-        <Box
-          flexGrow={1}
-          justifyContent="center"
-          alignItems="center"
-        >
+      <Box flexDirection="column" height="100%">
+        <Header title="Workspace" swarmStatus={swarmStatus} showBorder={true} />
+        <Box flexGrow={1} justifyContent="center" alignItems="center">
           <LoadingSpinner text="Loading workspace projects..." />
         </Box>
       </Box>
@@ -1712,24 +1559,15 @@ export const Workspace: React.FC<WorkspaceProps> = ({
   }
 
   return (
-    <Box
-      flexDirection="column"
-      height="100%"
-    >
+    <Box flexDirection="column" height="100%">
       <Header
         title="Document-Driven Development Workspace"
         swarmStatus={swarmStatus}
         showBorder={true}
       />
 
-      <Box
-        flexGrow={1}
-        paddingX={2}
-      >
-        <Box
-          flexDirection="column"
-          width="100%"
-        >
+      <Box flexGrow={1} paddingX={2}>
+        <Box flexDirection="column" width="100%">
           {renderWorkspaceStats()}
           {renderProjectsTable()}
 
