@@ -6,7 +6,7 @@ import { EventEmitter } from 'node:events';
 import type { ILogger } from '../core/interfaces/base-interfaces.ts';
 import type { IDatabase } from '../di/tokens/core-tokens.ts';
 import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens.ts';
-import { ZenSwarmStrategy } from './strategies/ruv-swarm.strategy.ts';
+import { ZenSwarmStrategy } from './strategies/zen-swarm.strategy.ts';
 import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types.ts';
 
 export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
