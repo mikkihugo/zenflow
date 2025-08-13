@@ -1,0 +1,59 @@
+[package]
+name = "zen-swarm-persistence"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Persistence layer with SQLite and ORM for Zen-Swarm"
+
+[dependencies]
+# Core dependencies
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+parking_lot = { workspace = true }
+futures = { workspace = true }
+
+# Database - migrated to libSQL for better maintenance and SQLite compatibility
+libsql = { version = "0.9.20", features = ["core", "serde"] }
+r2d2 = { workspace = true }
+# sqlx = { version = "0.8.2", features = ["runtime-tokio", "sqlite", "migrate"], optional = true }
+
+# Time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# UUID generation
+uuid = { workspace = true }
+
+# Random number generation
+fastrand = "2.0"
+
+# WASM support
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = { workspace = true }
+js-sys = { workspace = true }
+web-sys = { workspace = true, features = ["Window", "Storage", "console"] }
+wasm-bindgen-futures = "0.4"
+rexie = "0.6"  # IndexedDB wrapper
+
+# Development dependencies
+[dev-dependencies]
+criterion = { workspace = true }
+proptest = { workspace = true }
+tempfile = "3.12"
+tokio-test = "0.4"
+num_cpus = "1.16"
+
+[features]
+default = ["libsql-backend"]
+libsql-backend = []
+# sqlx-backend = ["sqlx"]
+wasm = []
+migrations = []
+proptest = []

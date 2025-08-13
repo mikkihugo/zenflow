@@ -1,0 +1,60 @@
+[package]
+name = "zen-swarm-v8-runtime"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "V8 JavaScript/TypeScript runtime for zen-orchestrator AI plugins"
+
+[dependencies]
+# Core dependencies
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+parking_lot = { workspace = true }
+futures = { workspace = true }
+
+# JavaScript/TypeScript execution via external processes
+# Supporting both Bun (preferred) and Deno (fallback)
+# This approach avoids complex Rust-JS embedding issues
+
+# Module system
+url = { version = "2.5" }
+path-clean = "1.0"
+
+# Time and UUID
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { workspace = true }
+
+# Memory and caching
+lru = "0.12"
+
+[dev-dependencies]
+criterion = { workspace = true }
+tempfile = "3.12"
+tokio-test = "0.4"
+
+[features]
+default = ["typescript", "modules"]
+typescript = []  # TypeScript support via external Bun/Deno processes
+modules = []
+debugging = []
+profiling = []
+
+[[example]]
+name = "basic_plugin"
+path = "examples/basic_plugin.rs"
+
+[[example]]
+name = "typescript_plugin"  
+path = "examples/typescript_plugin.rs"
+
+[[example]]
+name = "ai_reasoning_plugin"
+path = "examples/ai_reasoning_plugin.rs"

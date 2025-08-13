@@ -1,0 +1,68 @@
+[package]
+name = "zen-swarm-enhanced"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+description = "Enhanced orchestrator with vector DB, RAG engine, and TypeScript plugin support"
+
+[dependencies]
+# Core zen-swarm components
+zen-swarm-core = { path = "../zen-swarm-core" }
+zen-swarm-persistence = { path = "../zen-swarm-persistence" }
+zen-swarm-mcp = { path = "../zen-swarm-mcp" }
+
+# NEW: Enhanced capabilities (optional for features) - RE-ENABLED
+zen-swarm-vector = { path = "../zen-swarm-vector", optional = true }
+zen-swarm-v8-runtime = { path = "../zen-swarm-v8-runtime", optional = true }
+
+# Core dependencies
+async-trait = { workspace = true }
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+parking_lot = { workspace = true }
+futures = { workspace = true }
+
+# Persistence and storage
+libsql = { version = "0.9.20", features = ["core", "serde"] }
+uuid = { workspace = true }
+chrono = { version = "0.4", features = ["serde"] }
+
+# Networking and MCP
+axum = { workspace = true }
+tower = { workspace = true }
+tokio-tungstenite = { workspace = true }
+
+# Metrics and monitoring
+prometheus = { version = "0.13", optional = true }
+metrics = { version = "0.24", optional = true }
+
+[dev-dependencies]
+criterion = { workspace = true }
+tokio-test = "0.4"
+tempfile = "3.12"
+
+[features]
+default = ["vector-db", "ai-plugins", "prometheus-metrics"]
+vector-db = ["zen-swarm-vector"]  # Re-enabled with latest LanceDB
+ai-plugins = ["zen-swarm-v8-runtime"]
+prometheus-metrics = ["prometheus"]
+custom-metrics = ["metrics"]
+
+[[example]]
+name = "enhanced_orchestrator"
+path = "examples/enhanced_orchestrator.rs"
+
+[[example]]
+name = "rag_workflow"
+path = "examples/rag_workflow.rs"
+
+[[example]]
+name = "typescript_ai_plugin"
+path = "examples/typescript_ai_plugin.rs"
