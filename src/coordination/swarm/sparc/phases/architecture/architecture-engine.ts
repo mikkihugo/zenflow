@@ -1259,7 +1259,8 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     for (const component of architecture.components) {
       for (const dependency of component.dependencies) {
         const dependentComponent = architecture.components.find(
-          (c: unknown) => c.name === dependency || c.interfaces.includes(dependency)
+          (c: unknown) =>
+            c.name === dependency || c.interfaces.includes(dependency)
         );
 
         validationResults.push({

@@ -465,7 +465,10 @@ describe('Advanced Neural Training Algorithms (Classical TDD)', () => {
   });
 
   // Helper function for test error calculation
-  function calculateTestError(network: NeuralNetwork, testData: unknown[]): number {
+  function calculateTestError(
+    network: NeuralNetwork,
+    testData: unknown[]
+  ): number {
     let totalError = 0;
 
     for (const sample of testData) {

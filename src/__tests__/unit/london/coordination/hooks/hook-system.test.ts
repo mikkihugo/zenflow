@@ -2,9 +2,9 @@ import { DefaultEnhancedHookManager } from '../../../../../coordination/hooks/in
 
 describe('Enhanced Hook System - London TDD', () => {
   let hookManager: DefaultEnhancedHookManager;
-  let mockSafetyValidator: jest.Mocked<BashSafetyValidator>;
-  let mockAgentAssignor: jest.Mocked<IntelligentAgentAssignor>;
-  let mockPerformanceTracker: jest.Mocked<HookPerformanceTracker>;
+  let mockSafetyValidator: vi.Mocked<BashSafetyValidator>;
+  let mockAgentAssignor: vi.Mocked<IntelligentAgentAssignor>;
+  let mockPerformanceTracker: vi.Mocked<HookPerformanceTracker>;
 
   beforeEach(() => {
     // Mock dependencies
@@ -78,7 +78,9 @@ describe('Enhanced Hook System - London TDD', () => {
 
         // Assert
         const hooks = await hookManager.getHooks('PreToolUse');
-        const targetHook = hooks.find((h: unknown) => h.id === 'lifecycle-hook');
+        const targetHook = hooks.find(
+          (h: unknown) => h.id === 'lifecycle-hook'
+        );
         expect(targetHook?.enabled).toBe(true);
       });
 
@@ -313,7 +315,9 @@ describe('Enhanced Hook System - London TDD', () => {
         const results = await hookManager.executeHooks('PreToolUse', context);
 
         // Assert
-        const contextResult = results?.find((r: unknown) => r.data?.loadedContext);
+        const contextResult = results?.find(
+          (r: unknown) => r.data?.loadedContext
+        );
         expect(contextResult).toBeDefined();
         expect(contextResult?.data.loadedContext).toBeDefined();
       });

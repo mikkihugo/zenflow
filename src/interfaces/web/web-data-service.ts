@@ -212,7 +212,10 @@ export class WebDataService {
    * @param command
    * @param args
    */
-  async executeCommand(command: string, args: unknown[]): Promise<CommandResult> {
+  async executeCommand(
+    command: string,
+    args: unknown[]
+  ): Promise<CommandResult> {
     this.logger.info(`Executing command: ${command} with args:`, args);
 
     // Mock command execution

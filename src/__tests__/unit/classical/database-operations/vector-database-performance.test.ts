@@ -250,7 +250,9 @@ describe('Vector Database Performance (Classical TDD)', () => {
       expect(approxTime).toBeLessThan(exactTime * 0.5);
 
       // Approximate results should be reasonably similar to exact
-      const topExact = exactResults?.slice(0, 5).map((r: unknown) => r.metadata.id);
+      const topExact = exactResults
+        ?.slice(0, 5)
+        .map((r: unknown) => r.metadata.id);
       const topApprox = approxResults
         ?.slice(0, 5)
         .map((r: unknown) => r.metadata.id);

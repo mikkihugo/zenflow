@@ -540,7 +540,11 @@ class DSPyBaseError extends Error {
   public readonly context: Record<string, unknown> | undefined;
   public readonly timestamp: Date;
 
-  constructor(message: string, code: string, context?: Record<string, unknown>) {
+  constructor(
+    message: string,
+    code: string,
+    context?: Record<string, unknown>
+  ) {
     super(message);
     this.name = this.constructor.name;
     this.code = code;
@@ -777,7 +781,9 @@ function createValidationError(
  * @param input
  * @example
  */
-function sanitizeInput(input: Record<string, unknown>): Record<string, unknown> {
+function sanitizeInput(
+  input: Record<string, unknown>
+): Record<string, unknown> {
   const sanitized: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(input)) {

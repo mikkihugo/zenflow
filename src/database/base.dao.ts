@@ -62,7 +62,9 @@ export abstract class BaseDao<T> implements IRepository<T> {
    * Abstract methods that must be implemented by subclasses.
    */
   protected abstract mapRowToEntity(row: unknown): T;
-  protected abstract mapEntityToRow(entity: Partial<T>): Record<string, unknown>;
+  protected abstract mapEntityToRow(
+    entity: Partial<T>
+  ): Record<string, unknown>;
 
   /**
    * Find entity by ID.

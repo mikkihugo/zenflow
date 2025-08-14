@@ -465,7 +465,10 @@ export class DSPyEnhancedMCPTools {
     }
   }
 
-  private createErrorResponse(message: string, error?: unknown): MCPToolResponse {
+  private createErrorResponse(
+    message: string,
+    error?: unknown
+  ): MCPToolResponse {
     return {
       success: false,
       result: { error: message, details: error?.message },

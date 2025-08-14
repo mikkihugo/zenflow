@@ -612,7 +612,10 @@ export class PerformanceOptimizer
     return 1 / (1 + variance); // Higher score for lower variance
   }
 
-  private identifyAllocationConstraints(tasks: Task[], agents: Agent[]): unknown[] {
+  private identifyAllocationConstraints(
+    tasks: Task[],
+    agents: Agent[]
+  ): unknown[] {
     const constraints: unknown[] = [];
 
     // Resource constraints

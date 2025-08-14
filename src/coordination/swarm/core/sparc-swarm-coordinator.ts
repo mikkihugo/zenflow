@@ -738,7 +738,10 @@ export class SPARCSwarmCoordinator extends SwarmCoordinator {
    * @param agentId
    * @param task
    */
-  private async assignTaskToAgent(agentId: string, task: unknown): Promise<void> {
+  private async assignTaskToAgent(
+    agentId: string,
+    task: unknown
+  ): Promise<void> {
     // This is a placeholder implementation
     // In a real implementation, this would use the agent communication system
     logger.debug(`Assigning task ${task.id} to agent ${agentId}`);

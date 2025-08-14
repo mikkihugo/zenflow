@@ -1328,7 +1328,10 @@ function detectConvergenceAbsolute(
   return lossHistory[lossHistory.length - 1] <= targetLoss;
 }
 
-function createEarlyStoppingMonitor(patience: number, minDelta: number): unknown {
+function createEarlyStoppingMonitor(
+  patience: number,
+  minDelta: number
+): unknown {
   let bestLoss = Number.POSITIVE_INFINITY;
   let patienceCounter = 0;
   let bestEpoch = 0;

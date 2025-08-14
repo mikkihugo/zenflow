@@ -527,19 +527,21 @@ describe('Command Pattern Implementation', () => {
           },
         };
 
-        mockSwarmService.initializeSwarm.mockImplementation((config: unknown) => {
-          // Verify sanitization occurred
-          expect(config?.metadata?.script).not.toContain('<script>');
-          expect(config?.metadata?.command).not.toContain('rm -rf');
-          expect(config?.metadata?.sql).not.toContain('DROP TABLE');
+        mockSwarmService.initializeSwarm.mockImplementation(
+          (config: unknown) => {
+            // Verify sanitization occurred
+            expect(config?.metadata?.script).not.toContain('<script>');
+            expect(config?.metadata?.command).not.toContain('rm -rf');
+            expect(config?.metadata?.sql).not.toContain('DROP TABLE');
 
-          return Promise.resolve({
-            swarmId: 'secure-swarm-001',
-            topology: 'mesh',
-            agentCount: 5,
-            status: 'initialized',
-          });
-        });
+            return Promise.resolve({
+              swarmId: 'secure-swarm-001',
+              topology: 'mesh',
+              agentCount: 5,
+              status: 'initialized',
+            });
+          }
+        );
 
         const command = CommandFactory.createSwarmInitCommand(
           maliciousConfig,

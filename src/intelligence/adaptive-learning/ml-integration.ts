@@ -357,7 +357,10 @@ export class NeuralNetworkPredictor
    * @param data
    * @param labels
    */
-  async train(data: ExecutionData[], labels: unknown[]): Promise<TrainingResult> {
+  async train(
+    data: ExecutionData[],
+    labels: unknown[]
+  ): Promise<TrainingResult> {
     if (this.isTraining) {
       throw new Error('Model is already training');
     }

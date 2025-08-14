@@ -465,7 +465,9 @@ export async function handleMonitorWorkflow(
 /**
  * Handle system info tool call
  */
-export async function handleGetSystemInfo(args: unknown): Promise<CallToolResult> {
+export async function handleGetSystemInfo(
+  args: unknown
+): Promise<CallToolResult> {
   try {
     logger.info('🖥️ MCP: Getting System Information');
 
@@ -546,7 +548,9 @@ export async function handleGetSystemInfo(args: unknown): Promise<CallToolResult
 /**
  * Handle workflow scaling tool call
  */
-export async function handleScaleWorkflow(args: unknown): Promise<CallToolResult> {
+export async function handleScaleWorkflow(
+  args: unknown
+): Promise<CallToolResult> {
   try {
     logger.info(`📈 MCP: Scaling Workflow ${args.direction.toUpperCase()}`);
 
@@ -653,7 +657,9 @@ export async function handleScaleWorkflow(args: unknown): Promise<CallToolResult
 /**
  * Handle workflow testing tool call
  */
-export async function handleTestWorkflow(args: unknown): Promise<CallToolResult> {
+export async function handleTestWorkflow(
+  args: unknown
+): Promise<CallToolResult> {
   try {
     logger.info(`🧪 MCP: Running Workflow ${args.testType.toUpperCase()} Test`);
 

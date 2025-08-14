@@ -530,7 +530,9 @@ describe('MCP Error Handling Integration', () => {
     );
     expect(typeResult?.valid).toBe(false);
     expect(
-      typeResult?.errors?.some((e: unknown) => e.includes('expected type string'))
+      typeResult?.errors?.some((e: unknown) =>
+        e.includes('expected type string')
+      )
     ).toBe(true);
 
     // Test parameter constraints

@@ -27,7 +27,7 @@ expect.extend({
     };
   },
 
-  toHaveBeenCalledWithObjectContaining(received: jest.Mock, expected: unknown) {
+  toHaveBeenCalledWithObjectContaining(received: vi.Mock, expected: unknown) {
     const pass = received.mock.calls.some((call: unknown[]) =>
       call.some(
         (arg) =>

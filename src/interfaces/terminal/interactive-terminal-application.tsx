@@ -211,8 +211,8 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
               taskData?.filter((t: unknown) => t.status === 'in_progress')
                 ?.length || 0,
             tasksCompleted:
-              taskData?.filter((t: unknown) => t.status === 'completed')?.length ||
-              0,
+              taskData?.filter((t: unknown) => t.status === 'completed')
+                ?.length || 0,
             totalTasks: taskData?.length || 0,
             performance: metricsData?.performance || {
               throughput: 0,

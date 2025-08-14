@@ -367,7 +367,10 @@ export class CoordinationService extends BaseService implements IService {
     return Array.from(this.activeWorkflows.values());
   }
 
-  private async coordinate(task: unknown, agentIds: string[]): Promise<unknown> {
+  private async coordinate(
+    task: unknown,
+    agentIds: string[]
+  ): Promise<unknown> {
     if (!(task && agentIds) || agentIds.length === 0) {
       throw new Error('Task and agent IDs are required for coordination');
     }

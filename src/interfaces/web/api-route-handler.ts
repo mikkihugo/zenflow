@@ -412,7 +412,10 @@ export class ApiRouteHandler {
    * @param command
    * @param args
    */
-  private async executeCommand(command: string, args: string[]): Promise<unknown> {
+  private async executeCommand(
+    command: string,
+    args: string[]
+  ): Promise<unknown> {
     this.logger.info(`Executing command: ${command}`, { args });
 
     // Mock command execution for demo purposes

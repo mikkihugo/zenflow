@@ -2,9 +2,9 @@ import { BaseCommand } from '../../../../cli/core/base-command';
 
 // Concrete implementation for testing
 class TestCommand extends BaseCommand {
-  private mockRun: jest.Mock;
+  private mockRun: vi.Mock;
 
-  constructor(config: CommandConfig, mockRun?: jest.Mock) {
+  constructor(config: CommandConfig, mockRun?: vi.Mock) {
     super(config);
     this.mockRun =
       mockRun ||
@@ -47,7 +47,7 @@ class TestCommand extends BaseCommand {
 describe('BaseCommand - TDD London', () => {
   let command: TestCommand;
   let mockContext: CommandContext;
-  let mockEventHandler: jest.Mock;
+  let mockEventHandler: vi.Mock;
 
   beforeEach(() => {
     const config: CommandConfig = {
@@ -277,7 +277,7 @@ describe('BaseCommand - TDD London', () => {
   });
 
   describe('hook behavior', () => {
-    let mockHooks: jest.Mocked<CommandHooks>;
+    let mockHooks: vi.Mocked<CommandHooks>;
 
     beforeEach(() => {
       mockHooks = {

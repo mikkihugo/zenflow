@@ -72,7 +72,7 @@ function setupErrorHandling() {
 
 function setupJestConfiguration() {
   // Set reasonable timeout for integration tests
-  jest.setTimeout(30000);
+  // Vitest timeout configured in vitest.config.ts - vi.setTimeout(30000);
   // Configure global test utilities if needed
   if (typeof globalThis !== 'undefined') {
     // Add any global test utilities here

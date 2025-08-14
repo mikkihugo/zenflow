@@ -291,7 +291,9 @@ describe('MonitoringEventAdapter', () => {
       // Verify subscriptions are active
       const activeSubscriptions = adapter.getSubscriptions();
       expect(activeSubscriptions).toHaveLength(4);
-      expect(activeSubscriptions.every((sub: unknown) => sub.active)).toBe(true);
+      expect(activeSubscriptions.every((sub: unknown) => sub.active)).toBe(
+        true
+      );
     });
 
     it('should apply filters correctly to monitoring events', async () => {

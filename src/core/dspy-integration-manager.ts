@@ -331,7 +331,11 @@ export class DSPyIntegrationManager {
    * @param taskType
    * @param context
    */
-  async analyzeCode(code: string, taskType: string = 'general', context?: unknown) {
+  async analyzeCode(
+    code: string,
+    taskType: string = 'general',
+    context?: unknown
+  ) {
     const startTime = Date.now();
 
     try {
@@ -489,7 +493,10 @@ export class DSPyIntegrationManager {
    * @param taskRequirements
    * @param availableAgents
    */
-  async selectOptimalAgents(taskRequirements: unknown, availableAgents: unknown[]) {
+  async selectOptimalAgents(
+    taskRequirements: unknown,
+    availableAgents: unknown[]
+  ) {
     const startTime = Date.now();
 
     try {
@@ -603,7 +610,11 @@ export class DSPyIntegrationManager {
    * @param parameters
    * @param context
    */
-  async executeMCPTool(toolName: string, parameters: unknown, context?: unknown) {
+  async executeMCPTool(
+    toolName: string,
+    parameters: unknown,
+    context?: unknown
+  ) {
     const startTime = Date.now();
 
     try {

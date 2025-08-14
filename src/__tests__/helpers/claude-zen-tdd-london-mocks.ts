@@ -128,18 +128,21 @@ export class MockQueensService {
     vi.fn();
 
   // Code Queen methods
-  codeGenerate: vi.MockedFunction<(spec: unknown) => Promise<CodeResult>> = vi.fn();
+  codeGenerate: vi.MockedFunction<(spec: unknown) => Promise<CodeResult>> =
+    vi.fn();
   codeRefactor: vi.MockedFunction<(code: string) => Promise<string>> = vi.fn();
   codeOptimize: vi.MockedFunction<
     (code: string) => Promise<OptimizationResult>
   > = vi.fn();
 
   // Debug Queen methods
-  debugDiagnose: vi.MockedFunction<(issue: unknown) => Promise<DiagnosisResult>> =
-    vi.fn();
+  debugDiagnose: vi.MockedFunction<
+    (issue: unknown) => Promise<DiagnosisResult>
+  > = vi.fn();
   debugFix: vi.MockedFunction<(issue: unknown) => Promise<FixResult>> = vi.fn();
-  debugValidate: vi.MockedFunction<(fix: unknown) => Promise<ValidationResult>> =
-    vi.fn();
+  debugValidate: vi.MockedFunction<
+    (fix: unknown) => Promise<ValidationResult>
+  > = vi.fn();
 
   constructor() {
     // Initialize nested Queen structures
@@ -286,7 +289,11 @@ export class MockQueensService {
   }
 
   // Workflow testing helpers
-  expectFullArchitectWorkflow(requirements: unknown, spec: unknown, teams: string[]) {
+  expectFullArchitectWorkflow(
+    requirements: unknown,
+    spec: unknown,
+    teams: string[]
+  ) {
     this.expectArchitectAnalyzeCalled(requirements);
     this.expectArchitectDesignCalled(spec);
     this.expectArchitectCoordinationCalled(teams);

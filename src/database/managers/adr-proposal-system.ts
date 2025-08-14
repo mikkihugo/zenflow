@@ -455,7 +455,10 @@ export class ADRProposalSystem {
    * @param content
    * @param decision
    */
-  private updateContentWithDecision(content: string, decision: unknown): string {
+  private updateContentWithDecision(
+    content: string,
+    decision: unknown
+  ): string {
     // Replace PROPOSED status with final decision
     let updatedContent = content.replace(
       /## Status\n\*\*PROPOSED\*\*/,

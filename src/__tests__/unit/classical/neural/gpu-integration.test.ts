@@ -966,7 +966,11 @@ function neuralForwardPassCPU(network: unknown, input: number[]): number[] {
   return activations;
 }
 
-function trainNeuralNetworkCPU(network: unknown, data: unknown[], config: unknown): unknown {
+function trainNeuralNetworkCPU(
+  network: unknown,
+  data: unknown[],
+  config: unknown
+): unknown {
   let finalError = Number.POSITIVE_INFINITY;
 
   for (let epoch = 0; epoch < config?.epochs; epoch++) {

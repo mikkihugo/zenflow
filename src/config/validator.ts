@@ -318,7 +318,9 @@ export class ConfigValidator {
    * @param path
    */
   private getNestedValue(obj: Record<string, unknown>, path: string): unknown {
-    return path.split('.').reduce((current: unknown, key) => current?.[key], obj);
+    return path
+      .split('.')
+      .reduce((current: unknown, key) => current?.[key], obj);
   }
 
   /**

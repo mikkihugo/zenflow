@@ -269,7 +269,9 @@ export class IntelligenceFactory {
    *
    * @param config
    */
-  static async getAdaptiveLearningSystem(config: unknown = {}): Promise<unknown> {
+  static async getAdaptiveLearningSystem(
+    config: unknown = {}
+  ): Promise<unknown> {
     const key = `adaptive_learning_${JSON.stringify(config)}`;
 
     if (!IntelligenceFactory.systems.has(key)) {

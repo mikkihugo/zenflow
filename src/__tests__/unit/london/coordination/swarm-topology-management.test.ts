@@ -3,9 +3,9 @@ import { CoordinationTestHelpers } from '../../../helpers/coordination-test-help
 
 describe('Swarm Topology Management (London TDD)', () => {
   let topologyManager: SwarmTopologyManager;
-  let mockMessageBroker: jest.Mocked<MessageBroker>;
-  let mockTopologyOptimizer: jest.Mocked<TopologyOptimizer>;
-  let mockAgents: jest.Mocked<Agent>[];
+  let mockMessageBroker: vi.Mocked<MessageBroker>;
+  let mockTopologyOptimizer: vi.Mocked<TopologyOptimizer>;
+  let mockAgents: vi.Mocked<Agent>[];
   let testHelpers: CoordinationTestHelpers;
 
   beforeEach(() => {
@@ -17,7 +17,7 @@ describe('Swarm Topology Management (London TDD)', () => {
       unsubscribe: vi.fn(),
       getConnectionHealth: vi.fn(),
       optimizeRouting: vi.fn(),
-    } as jest.Mocked<MessageBroker>;
+    } as vi.Mocked<MessageBroker>;
 
     mockTopologyOptimizer = {
       analyzeCurrentTopology: vi.fn(),
@@ -25,7 +25,7 @@ describe('Swarm Topology Management (London TDD)', () => {
       calculateOptimalConnections: vi.fn(),
       assessPerformanceMetrics: vi.fn(),
       generateTopologyReport: vi.fn(),
-    } as jest.Mocked<TopologyOptimizer>;
+    } as vi.Mocked<TopologyOptimizer>;
 
     mockAgents = Array.from(
       { length: 5 },
@@ -41,7 +41,7 @@ describe('Swarm Topology Management (London TDD)', () => {
           receiveMessage: vi.fn(),
           getMetrics: vi.fn(),
           updateStatus: vi.fn(),
-        }) as jest.Mocked<Agent>
+        }) as vi.Mocked<Agent>
     );
 
     testHelpers = new CoordinationTestHelpers();

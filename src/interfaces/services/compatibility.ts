@@ -47,7 +47,10 @@ export interface CompatibilityConfig {
   >;
 
   /** Configuration transformations */
-  configTransformations: Record<string, (oldConfig: unknown) => AnyServiceConfig>;
+  configTransformations: Record<
+    string,
+    (oldConfig: unknown) => AnyServiceConfig
+  >;
 }
 
 /**
@@ -110,7 +113,10 @@ export class USLCompatibilityLayer {
    * @param options
    * @deprecated Use serviceManager.createWebDataService() instead.
    */
-  async createWebDataService(name: string, options?: unknown): Promise<IService> {
+  async createWebDataService(
+    name: string,
+    options?: unknown
+  ): Promise<IService> {
     this.logLegacyUsage(
       'createWebDataService',
       'serviceManager.createWebDataService()'

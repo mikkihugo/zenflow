@@ -828,7 +828,9 @@ export class MemorySystem extends EventEmitter {
    * @param pattern - Search pattern.
    * @returns Record of matching workflows.
    */
-  async searchWorkflows(pattern: string = '*'): Promise<Record<string, unknown>> {
+  async searchWorkflows(
+    pattern: string = '*'
+  ): Promise<Record<string, unknown>> {
     return this.search(pattern, 'workflows');
   }
 }

@@ -381,7 +381,11 @@ if (process.env['NODE_ENV'] === 'production') {
 
 // Performance monitoring decorators and utilities
 export function monitored(metricName?: string) {
-  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 
@@ -396,7 +400,11 @@ export function monitored(metricName?: string) {
 }
 
 export function monitoredAsync(metricName?: string) {
-  return (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) => {
+  return (
+    target: unknown,
+    propertyKey: string,
+    descriptor: PropertyDescriptor
+  ) => {
     const originalMethod = descriptor.value;
     const name = metricName || `${target.constructor.name}.${propertyKey}`;
 

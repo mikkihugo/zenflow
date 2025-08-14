@@ -1230,7 +1230,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return false;
   }
 
-  private evaluateGreaterThan(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateGreaterThan(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     const numField = this.toNumber(fieldValue);
     const numExpected = this.toNumber(expectedValue);
 
@@ -1252,7 +1255,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     );
   }
 
-  private evaluateLessThan(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateLessThan(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     const numField = this.toNumber(fieldValue);
     const numExpected = this.toNumber(expectedValue);
 
@@ -1274,7 +1280,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     );
   }
 
-  private evaluateContains(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateContains(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     if (Array.isArray(fieldValue)) {
       return fieldValue.includes(expectedValue);
     }
@@ -1288,19 +1297,28 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       .includes(String(expectedValue).toLowerCase());
   }
 
-  private evaluateStartsWith(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateStartsWith(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     return String(fieldValue)
       .toLowerCase()
       .startsWith(String(expectedValue).toLowerCase());
   }
 
-  private evaluateEndsWith(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateEndsWith(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     return String(fieldValue)
       .toLowerCase()
       .endsWith(String(expectedValue).toLowerCase());
   }
 
-  private evaluateMatches(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateMatches(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     try {
       const regex = new RegExp(String(expectedValue), 'i'); // Case insensitive by default
       return regex.test(String(fieldValue));
@@ -1335,7 +1353,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return expectedValue.includes(fieldValue);
   }
 
-  private evaluateBetween(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateBetween(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     if (!Array.isArray(expectedValue) || expectedValue.length !== 2) {
       logger.warn('Expected array of length 2 for "between" operator');
       return false;
@@ -1357,7 +1378,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return actualType === String(expectedValue).toLowerCase();
   }
 
-  private evaluateLengthEquals(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateLengthEquals(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     const length = this.getLength(fieldValue);
     return length !== null && length === this.toNumber(expectedValue);
   }
@@ -1371,7 +1395,10 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return length !== null && expected !== null && length > expected;
   }
 
-  private evaluateLengthLessThan(fieldValue: unknown, expectedValue: unknown): boolean {
+  private evaluateLengthLessThan(
+    fieldValue: unknown,
+    expectedValue: unknown
+  ): boolean {
     const length = this.getLength(fieldValue);
     const expected = this.toNumber(expectedValue);
     return length !== null && expected !== null && length < expected;

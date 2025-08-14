@@ -506,7 +506,8 @@ describe('Performance and Load Testing Suite', () => {
         allResults.reduce((sum, iter) => sum + iter.duration, 0) /
         allResults.length;
       const totalSuccessfulOps = allResults.reduce(
-        (sum, iter) => sum + iter.results.filter((r: unknown) => r.success).length,
+        (sum, iter) =>
+          sum + iter.results.filter((r: unknown) => r.success).length,
         0
       );
       const totalOperations = iterations * mixedOperations.length;

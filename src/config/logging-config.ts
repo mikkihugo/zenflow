@@ -116,10 +116,14 @@ class LoggingConfigurationManager {
 
       // Enhance with additional methods compatible with existing interfaces
       const enhancedLogger: Logger = {
-        debug: (message: string, meta?: unknown) => coreLogger.debug(message, meta),
-        info: (message: string, meta?: unknown) => coreLogger.info(message, meta),
-        warn: (message: string, meta?: unknown) => coreLogger.warn(message, meta),
-        error: (message: string, meta?: unknown) => coreLogger.error(message, meta),
+        debug: (message: string, meta?: unknown) =>
+          coreLogger.debug(message, meta),
+        info: (message: string, meta?: unknown) =>
+          coreLogger.info(message, meta),
+        warn: (message: string, meta?: unknown) =>
+          coreLogger.warn(message, meta),
+        error: (message: string, meta?: unknown) =>
+          coreLogger.error(message, meta),
       };
 
       // Add success and progress methods

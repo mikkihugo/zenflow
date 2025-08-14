@@ -17,14 +17,14 @@ vi.mock(
 
 describe('Domain Splitting Orchestration - London TDD', () => {
   let orchestrator: DomainSplittingOrchestrator;
-  let mockAnalyzer: jest.Mocked<DomainAnalysisEngine>;
-  let mockSplitter: jest.Mocked<SafeDomainSplitter>;
-  let mockValidator: jest.Mocked<DependencyValidator>;
+  let mockAnalyzer: vi.Mocked<DomainAnalysisEngine>;
+  let mockSplitter: vi.Mocked<SafeDomainSplitter>;
+  let mockValidator: vi.Mocked<DependencyValidator>;
 
   beforeEach(() => {
     // Create mock instances
     mockAnalyzer =
-      new DomainAnalysisEngine() as jest.Mocked<DomainAnalysisEngine>;
+      new DomainAnalysisEngine() as vi.Mocked<DomainAnalysisEngine>;
     mockSplitter = new SafeDomainSplitter();
     mockValidator = new DependencyValidator();
 

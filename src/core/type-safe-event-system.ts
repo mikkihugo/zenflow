@@ -1822,7 +1822,10 @@ export class TypeSafeEventBus extends EventEmitter implements IEventBus {
   /**
    * Legacy off method for IEventBus compatibility
    */
-  off(eventName: string | symbol, listener: (...args: unknown[]) => void): this {
+  off(
+    eventName: string | symbol,
+    listener: (...args: unknown[]) => void
+  ): this {
     super.off(eventName, listener);
     return this;
   }

@@ -227,7 +227,7 @@ describe('Strategy Pattern Implementation', () => {
   // London TDD - Test strategy coordination and interactions
   describe('Strategy Coordination (London TDD)', () => {
     let swarmCoordinator: SwarmCoordinator;
-    let mockStrategy: jest.Mocked<any>;
+    let mockStrategy: vi.Mocked<any>;
 
     beforeEach(() => {
       mockStrategy = {

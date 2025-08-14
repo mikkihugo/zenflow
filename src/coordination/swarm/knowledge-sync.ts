@@ -548,7 +548,10 @@ export class SwarmKnowledgeSync extends EventEmitter {
     // Would be implemented with proper metrics collection
   }
 
-  private getFallbackKnowledge(_query: string, domain?: string): unknown | null {
+  private getFallbackKnowledge(
+    _query: string,
+    domain?: string
+  ): unknown | null {
     // Try to find similar knowledge in learning history
     const relevantLearning = this.learningHistory.find(
       (learning) =>

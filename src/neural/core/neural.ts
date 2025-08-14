@@ -568,14 +568,18 @@ class NeuralCLI {
                       ?.lastTrained
                   )
               ) {
-                (modelDetails as Record<string, unknown>)[modelType].lastTrained =
-                  data?.timestamp;
-                (modelDetails as Record<string, unknown>)[modelType].lastAccuracy =
-                  data?.finalAccuracy;
-                (modelDetails as Record<string, unknown>)[modelType].iterations =
-                  data?.iterations;
-                (modelDetails as Record<string, unknown>)[modelType].learningRate =
-                  data?.learningRate;
+                (modelDetails as Record<string, unknown>)[
+                  modelType
+                ].lastTrained = data?.timestamp;
+                (modelDetails as Record<string, unknown>)[
+                  modelType
+                ].lastAccuracy = data?.finalAccuracy;
+                (modelDetails as Record<string, unknown>)[
+                  modelType
+                ].iterations = data?.iterations;
+                (modelDetails as Record<string, unknown>)[
+                  modelType
+                ].learningRate = data?.learningRate;
               }
 
               // Update totals
@@ -606,8 +610,9 @@ class NeuralCLI {
             if (!(modelDetails as Record<string, unknown>)[modelType]) {
               (modelDetails as Record<string, unknown>)[modelType] = {};
             }
-            (modelDetails as Record<string, unknown>)[modelType].hasSavedWeights =
-              true;
+            (modelDetails as Record<string, unknown>)[
+              modelType
+            ].hasSavedWeights = true;
           }
         }
       }
@@ -635,7 +640,8 @@ class NeuralCLI {
         totalSessions > 0
           ? {
               loadedModels: Object.keys(modelDetails).filter(
-                (m) => (modelDetails as Record<string, unknown>)[m]?.hasSavedWeights
+                (m) =>
+                  (modelDetails as Record<string, unknown>)[m]?.hasSavedWeights
               ).length,
               sessionStart: new Date().toLocaleString(),
               memorySize: `${(Math.random() * 50 + 10).toFixed(1)} MB`,

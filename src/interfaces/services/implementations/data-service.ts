@@ -268,7 +268,10 @@ export class DataService extends BaseService implements IService {
    * @param key
    * @param useCache
    */
-  private async getData(key: string, useCache: boolean = true): Promise<unknown> {
+  private async getData(
+    key: string,
+    useCache: boolean = true
+  ): Promise<unknown> {
     if (!key) {
       throw new Error('Data key is required');
     }
@@ -491,7 +494,10 @@ export class DataService extends BaseService implements IService {
     return await this.webDataService.getDocuments();
   }
 
-  private async executeCommand(command: string, args: unknown[]): Promise<unknown> {
+  private async executeCommand(
+    command: string,
+    args: unknown[]
+  ): Promise<unknown> {
     if (!this.webDataService) {
       throw new Error('Web data service not available');
     }

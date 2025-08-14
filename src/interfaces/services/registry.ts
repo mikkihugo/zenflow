@@ -894,7 +894,10 @@ export class EnhancedServiceRegistry
     }
   }
 
-  private updateServiceMetrics(serviceName: string, metricsData: unknown): void {
+  private updateServiceMetrics(
+    serviceName: string,
+    metricsData: unknown
+  ): void {
     if (!this.operationMetrics.has(serviceName)) {
       this.operationMetrics.set(serviceName, {
         totalOperations: 0,

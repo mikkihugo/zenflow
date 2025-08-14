@@ -311,7 +311,8 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         timestamp: Date.now(),
         confidence: this.calculateAverageConfidence(searchResults ?? []),
         cacheHit:
-          searchResults?.some((r: unknown) => (r.accessCount ?? 0) > 1) ?? false,
+          searchResults?.some((r: unknown) => (r.accessCount ?? 0) > 1) ??
+          false,
       },
     };
   }

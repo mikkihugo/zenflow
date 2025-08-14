@@ -48,7 +48,11 @@ export interface SystemHooks {
   // Swarm coordination hooks
   onSwarmAgentSpawn?: (agentId: string, type: string) => void;
   onSwarmAgentTerminate?: (agentId: string, reason: string) => void;
-  onSwarmConsensus?: (proposal: unknown, duration: number, result: boolean) => void;
+  onSwarmConsensus?: (
+    proposal: unknown,
+    duration: number,
+    result: boolean
+  ) => void;
   onSwarmTaskAssign?: (taskId: string, agentId: string) => void;
   onSwarmTaskComplete?: (
     taskId: string,

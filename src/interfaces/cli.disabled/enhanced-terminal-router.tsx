@@ -125,7 +125,10 @@ export const TerminalApp: React.FC<TerminalAppProps> = ({
     initializeEnhancedCLI();
   }, []);
 
-  const executeAdvancedCommand = async (cmdArgs: string[], options: unknown) => {
+  const executeAdvancedCommand = async (
+    cmdArgs: string[],
+    options: unknown
+  ) => {
     if (cmdArgs.length === 0) {
       setState((prev) => ({
         ...prev,

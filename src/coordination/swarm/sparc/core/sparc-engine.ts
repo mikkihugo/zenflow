@@ -768,8 +768,9 @@ export class SPARCEngineCore implements SPARCEngine {
         const specification = await phaseEngine.gatherRequirements({
           domain: project.domain,
           constraints:
-            project.specification.constraints?.map((c: unknown) => c.description) ||
-            [],
+            project.specification.constraints?.map(
+              (c: unknown) => c.description
+            ) || [],
           requirements: [],
           complexity: 'moderate',
         });

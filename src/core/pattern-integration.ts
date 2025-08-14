@@ -501,7 +501,10 @@ export class IntegratedPatternSystem extends EventEmitter {
     );
   }
 
-  private async initializeFacade(logger: unknown, metrics: unknown): Promise<void> {
+  private async initializeFacade(
+    logger: unknown,
+    metrics: unknown
+  ): Promise<void> {
     // Create real services connected to actual systems
     const realNeuralService: INeuralService =
       await this.createRealNeuralService();

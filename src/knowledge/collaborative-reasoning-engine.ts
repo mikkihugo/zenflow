@@ -1567,7 +1567,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
     return _processes?.map((p) => ({ ...p, resolved: false })) || [];
   }
 
-  private async mediateRemainingConflicts(_processes: unknown[]): Promise<any[]> {
+  private async mediateRemainingConflicts(
+    _processes: unknown[]
+  ): Promise<any[]> {
     // TODO: Implement conflict mediation
     return _processes?.map((p) => ({ ...p, resolved: true })) || [];
   }
@@ -1577,7 +1579,9 @@ export class CollaborativeReasoningEngine extends EventEmitter {
     return _results;
   }
 
-  private async calculateConsensusQuality(_results: unknown[]): Promise<number> {
+  private async calculateConsensusQuality(
+    _results: unknown[]
+  ): Promise<number> {
     // TODO: Implement consensus quality calculation
     return 0.8;
   }

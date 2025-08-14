@@ -227,7 +227,11 @@ interface Persistence {
     averageResponseTime: number;
   };
   isHealthy(): boolean;
-  logEvent(entityId: string, eventType: string, eventData: unknown): Promise<void>;
+  logEvent(
+    entityId: string,
+    eventType: string,
+    eventData: unknown
+  ): Promise<void>;
   getSwarmEvents(swarmId: string, limit: number): unknown[]; // Placeholder, refine if needed
   getTask(taskId: string): unknown; // Placeholder, refine if needed
   db?: {
@@ -1311,7 +1315,10 @@ class EnhancedMCPTools {
       this.logger.info('Initializing swarm', { params });
 
       // Validate and sanitize input parameters
-      const validatedParams: unknown = this.validateToolParams(params, toolName);
+      const validatedParams: unknown = this.validateToolParams(
+        params,
+        toolName
+      );
       this.logger.debug('Parameters validated', { validatedParams });
 
       // Add operation context
@@ -1512,7 +1519,10 @@ class EnhancedMCPTools {
       this.logger.info('Spawning agent', { params });
 
       // Validate and sanitize input parameters
-      const validatedParams: unknown = this.validateToolParams(params, toolName);
+      const validatedParams: unknown = this.validateToolParams(
+        params,
+        toolName
+      );
       this.logger.debug('Agent parameters validated', { validatedParams });
 
       // Add operation context
@@ -1703,7 +1713,10 @@ class EnhancedMCPTools {
 
     try {
       // Validate and sanitize input parameters
-      const validatedParams: unknown = this.validateToolParams(params, toolName);
+      const validatedParams: unknown = this.validateToolParams(
+        params,
+        toolName
+      );
 
       // Add operation context
       this.errorContext.set('operation', 'task_orchestration');

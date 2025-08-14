@@ -48,9 +48,9 @@ export class HybridTestUtility {
    *
    * @param dependencies
    */
-  createDomainMocks(dependencies: string[]): Record<string, jest.Mock> {
+  createDomainMocks(dependencies: string[]): Record<string, vi.Mock> {
     const approach = this.getRecommendedApproach();
-    const mocks: Record<string, jest.Mock> = {};
+    const mocks: Record<string, vi.Mock> = {};
 
     for (const dep of dependencies) {
       if (this.shouldMock(dep, approach)) {
@@ -77,7 +77,7 @@ export class HybridTestUtility {
   private createMockForDependency(
     dependency: string,
     approach: 'london' | 'classical'
-  ): jest.Mock {
+  ): vi.Mock {
     const mock = vi.fn();
 
     if (approach === 'london') {
@@ -145,7 +145,7 @@ export class LondonAssertions {
    * @param {...any} args
    */
   verifyInteractionPattern(
-    mock: jest.Mock,
+    mock: vi.Mock,
     pattern: 'called' | 'not-called' | 'called-with' | 'called-times',
     ...args: unknown[]
   ) {
@@ -196,7 +196,7 @@ export class LondonAssertions {
    * @param expectedPattern
    */
   verifyCoordinationPattern(
-    mock: jest.Mock,
+    mock: vi.Mock,
     expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe'
   ) {
     const calls = mock.mock.calls;
@@ -374,7 +374,7 @@ export class TestScenarioBuilder {
     this.scenarios.push({
       name,
       approach: 'london',
-      setup: () => jest.clearAllMocks(),
+      setup: () => vi.clearAllMocks(),
       test,
       assertions: () => {}, // Assertions within test
     });
@@ -385,7 +385,7 @@ export class TestScenarioBuilder {
     this.scenarios.push({
       name,
       approach: 'classical',
-      setup: () => jest.restoreAllMocks(),
+      setup: () => vi.restoreAllMocks(),
       test,
       assertions: () => {}, // Assertions within test
     });

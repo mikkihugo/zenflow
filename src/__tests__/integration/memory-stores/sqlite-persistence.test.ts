@@ -15,12 +15,12 @@ import { Database } from 'sqlite3';
 // Mock SQLite connection interface
 interface MockSQLiteConnection {
   isOpen: boolean;
-  query: jest.Mock;
-  run: jest.Mock;
-  close: jest.Mock;
-  beginTransaction: jest.Mock;
-  commit: jest.Mock;
-  rollback: jest.Mock;
+  query: vi.Mock;
+  run: vi.Mock;
+  close: vi.Mock;
+  beginTransaction: vi.Mock;
+  commit: vi.Mock;
+  rollback: vi.Mock;
 }
 
 // SQLite Store Implementation to test
@@ -64,7 +64,11 @@ class SQLiteMemoryStore {
     }
   }
 
-  async store(sessionId: string, data: unknown, metadata?: unknown): Promise<void> {
+  async store(
+    sessionId: string,
+    data: unknown,
+    metadata?: unknown
+  ): Promise<void> {
     if (!this.isInitialized) throw new Error('Database not initialized');
 
     const now = Date.now();

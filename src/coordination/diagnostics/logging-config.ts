@@ -48,7 +48,11 @@ class DiagnosticsLogger implements LoggerInterface {
     return messageLevel >= currentLevel;
   }
 
-  private formatMessage(level: string, message: string, meta?: unknown): string {
+  private formatMessage(
+    level: string,
+    message: string,
+    meta?: unknown
+  ): string {
     const timestamp = new Date().toISOString();
     const metaStr = meta ? ` ${JSON.stringify(meta)}` : '';
     return `[${timestamp}] [${this.name}] ${level.toUpperCase()}: ${message}${metaStr}`;

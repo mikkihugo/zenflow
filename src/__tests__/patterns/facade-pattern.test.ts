@@ -948,12 +948,14 @@ describe('Facade Pattern Implementation', () => {
           query: 'SELECT status FROM swarms WHERE active = true',
         }));
 
-        mockServices.databaseService.query.mockImplementation((_query: unknown) => {
-          return Promise.resolve([
-            { swarmId: 'batch-swarm-0', status: 'active' },
-            { swarmId: 'batch-swarm-1', status: 'active' },
-          ]);
-        });
+        mockServices.databaseService.query.mockImplementation(
+          (_query: unknown) => {
+            return Promise.resolve([
+              { swarmId: 'batch-swarm-0', status: 'active' },
+              { swarmId: 'batch-swarm-1', status: 'active' },
+            ]);
+          }
+        );
 
         const results = await Promise.all(
           requests.map((req) => facade.queryDatabase(req.query, []))

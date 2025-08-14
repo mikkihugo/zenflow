@@ -6,7 +6,7 @@
  * Focus: Communication, protocols, boundaries, coordination
  */
 
-import 'jest-extended';
+// Vitest setup for London TDD
 // Explicit import for ESM environment to ensure jest global is bound
 import { vi } from 'vitest';
 

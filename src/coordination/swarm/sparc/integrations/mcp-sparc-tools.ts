@@ -1072,7 +1072,10 @@ export class SPARCMCPTools {
    * @param toolName
    * @param args
    */
-  public async handleToolCall(toolName: string, args: unknown): Promise<unknown> {
+  public async handleToolCall(
+    toolName: string,
+    args: unknown
+  ): Promise<unknown> {
     try {
       switch (toolName) {
         case 'sparc_create_project':

@@ -594,7 +594,9 @@ class NeuralNetworkManager {
 
     // Check if this is a new neural model type
     const template = config?.template || 'deep_analyzer';
-    const templateConfig = (this.templates as Record<string, unknown>)[template];
+    const templateConfig = (this.templates as Record<string, unknown>)[
+      template
+    ];
 
     if (templateConfig?.modelType) {
       // Create new neural model with enhanced capabilities
@@ -665,7 +667,9 @@ class NeuralNetworkManager {
     template: string,
     customConfig: Record<string, unknown> = {}
   ) {
-    const templateConfig = (this.templates as Record<string, unknown>)[template];
+    const templateConfig = (this.templates as Record<string, unknown>)[
+      template
+    ];
 
     if (!(templateConfig && templateConfig?.modelType)) {
       throw new Error(`Invalid template: ${template}`);
@@ -1323,8 +1327,11 @@ class NeuralNetworkManager {
       customConfig?: unknown;
     }>
   ) {
-    const results: Array<{ agentId: string; success: boolean; agent: unknown }> =
-      [];
+    const results: Array<{
+      agentId: string;
+      success: boolean;
+      agent: unknown;
+    }> = [];
     const errors: Array<{ agentId: string; error: string }> = [];
 
     for (const config of agentConfigs) {
@@ -1634,7 +1641,10 @@ class NeuralNetworkManager {
    * @param {Object} knowledgeA - Knowledge from agent A.
    * @param {Object} knowledgeB - Knowledge from agent B.
    */
-  calculateSpecializationSimilarity(knowledgeA: unknown, knowledgeB: unknown): number {
+  calculateSpecializationSimilarity(
+    knowledgeA: unknown,
+    knowledgeB: unknown
+  ): number {
     const specsA = new Set(
       knowledgeA.specializations.map((s: { domain: string }) => s.domain)
     );
@@ -1798,7 +1808,11 @@ class NeuralNetworkManager {
     student: unknown,
     teacherKnowledge: unknown,
     options: { temperature: number; alpha: number }
-  ): Promise<{ improvement: number; beforeMetrics: unknown; afterMetrics: unknown }> {
+  ): Promise<{
+    improvement: number;
+    beforeMetrics: unknown;
+    afterMetrics: unknown;
+  }> {
     const { temperature, alpha } = options;
 
     // Simulate knowledge transfer (in practice, would involve actual training)

@@ -39,16 +39,16 @@ const makeNext = (): NextFunction => vi.fn();
 const runMiddleware = async (
   req: Req,
   res: Res
-): Promise<{ next: jest.Mock; res: Res }> => {
+): Promise<{ next: vi.Mock; res: Res }> => {
   const next = makeNext();
   // @ts-ignore next signature depends on impl; adapt if using (err?) => void
   await authMiddleware(req as any, res as any, next);
-  return { next: next as jest.Mock, res };
+  return { next: next as vi.Mock, res };
 };
 
 describe('HTTP Auth Middleware - Allow/Deny Matrix', () => {
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.resetAllMocks();
   });
 
   // Table-driven scenarios

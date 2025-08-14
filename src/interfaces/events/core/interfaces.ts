@@ -1138,7 +1138,9 @@ export const EventTypeGuards = {
    * @param value - Value to check.
    * @returns True if value is a valid EventProcessingStrategy.
    */
-  isEventProcessingStrategy: (value: unknown): value is EventProcessingStrategy => {
+  isEventProcessingStrategy: (
+    value: unknown
+  ): value is EventProcessingStrategy => {
     return ['immediate', 'queued', 'batched', 'throttled'].includes(value);
   },
 

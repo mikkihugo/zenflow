@@ -326,7 +326,9 @@ export class ConversationMemoryFactory {
    *
    * @param config
    */
-  static async createWithSQLite(config: unknown = {}): Promise<ConversationMemory> {
+  static async createWithSQLite(
+    config: unknown = {}
+  ): Promise<ConversationMemory> {
     const { MemoryBackendFactory } = await import(
       '../../memory/backends/factory.ts'
     );
@@ -343,7 +345,9 @@ export class ConversationMemoryFactory {
    *
    * @param config
    */
-  static async createWithJSON(config: unknown = {}): Promise<ConversationMemory> {
+  static async createWithJSON(
+    config: unknown = {}
+  ): Promise<ConversationMemory> {
     const { MemoryBackendFactory } = await import(
       '../../memory/backends/factory.ts'
     );

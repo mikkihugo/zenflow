@@ -306,7 +306,9 @@ describe('Composite Pattern Implementation', () => {
         expect(results?.every((r: unknown) => r.success)).toBe(true);
 
         // Verify distribution - each agent should have handled some tasks
-        const agentExecutions = new Set(results?.map((r: unknown) => r.agentId));
+        const agentExecutions = new Set(
+          results?.map((r: unknown) => r.agentId)
+        );
         expect(agentExecutions.size).toBeGreaterThan(1); // Multiple agents used
 
         const groupStatus = agentGroup.getStatus();
@@ -400,7 +402,9 @@ describe('Composite Pattern Implementation', () => {
 
         // Should include common capabilities
         expect(
-          groupCapabilities.some((cap: unknown) => cap.name === 'data-processing')
+          groupCapabilities.some(
+            (cap: unknown) => cap.name === 'data-processing'
+          )
         ).toBe(true);
 
         // Should include specialized capabilities from all members

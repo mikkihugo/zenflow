@@ -44,7 +44,7 @@ import {
 } from './utils.ts';
 
 export * from '../../../neural/core/neural-network-manager.ts';
-export * from '../../../neural/wasm/wasm-loader2.ts';
+export * from '../../../neural/wasm/wasm-enhanced-loader.ts';
 // Enhanced exports with neural capabilities
 export * from '../../agents/agent.ts';
 export * from '../mcp/mcp-daa-tools.ts';

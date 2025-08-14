@@ -5,7 +5,7 @@
  * Focus: Component boundaries, system integration, protocol compliance
  */
 
-import 'jest-extended';
+import { vi } from 'vitest';
 
 // Integration test setup with hybrid approach
 beforeEach(async () => {
@@ -73,16 +73,16 @@ async function initializeTestStorage() {
 
 function setupNetworkMocking() {
   // Mock HTTP requests for external services
-  global.mockFetch = jest.fn();
+  global.mockFetch = vi.fn();
   global.originalFetch = global.fetch;
   global.fetch = global.mockFetch;
 
   // Setup WebSocket mocking
-  global.mockWebSocket = jest.fn();
+  global.mockWebSocket = vi.fn();
   global.originalWebSocket = global.WebSocket;
 
   // Mock process spawning for subprocess testing
-  global.mockSpawn = jest.fn();
+  global.mockSpawn = vi.fn();
 }
 
 function resetNetworkMocks() {
@@ -92,7 +92,7 @@ function resetNetworkMocks() {
   if (global.originalWebSocket) {
     global.WebSocket = global.originalWebSocket;
   }
-  jest.clearAllMocks();
+  vi.clearAllMocks();
 }
 
 async function cleanupIntegrationState() {
@@ -338,15 +338,15 @@ global.simulateSwarmWorkflow = async (swarm: MockSwarm, tasks: unknown[]) => {
  */
 interface MockMCPClient {
   /** Send message to MCP server */
-  send: jest.Mock;
+  send: vi.Mock;
   /** Connect to MCP server */
-  connect: jest.Mock;
+  connect: vi.Mock;
   /** Disconnect from MCP server */
-  disconnect: jest.Mock;
+  disconnect: vi.Mock;
   /** List available tools */
-  listTools: jest.Mock;
+  listTools: vi.Mock;
   /** Call a specific tool */
-  callTool: jest.Mock;
+  callTool: vi.Mock;
 }
 
 /**
@@ -373,11 +373,11 @@ interface MCPMessage {
  */
 global.createMockMCPClient = (): MockMCPClient => {
   return {
-    send: jest.fn().mockResolvedValue({ success: true }),
-    connect: jest.fn().mockResolvedValue(true),
-    disconnect: jest.fn().mockResolvedValue(true),
-    listTools: jest.fn().mockResolvedValue([]),
-    callTool: jest.fn().mockResolvedValue({ result: 'mock' }),
+    send: vi.fn().mockResolvedValue({ success: true }),
+    connect: vi.fn().mockResolvedValue(true),
+    disconnect: vi.fn().mockResolvedValue(true),
+    listTools: vi.fn().mockResolvedValue([]),
+    callTool: vi.fn().mockResolvedValue({ result: 'mock' }),
   };
 };
 
@@ -396,7 +396,7 @@ global.validateMCPProtocol = (message: MCPMessage) => {
 };
 
 // Extended timeout for integration tests
-jest.setTimeout(120000);
+// Vitest timeout is configured in vitest.config.ts
 
 /**
  * Database configuration interface
@@ -454,11 +454,11 @@ declare global {
   var testFixtures: {
     [key: string]: unknown;
   };
-  var mockFetch: jest.Mock;
+  var mockFetch: vi.Mock;
   var originalFetch: typeof fetch;
-  var mockWebSocket: jest.Mock;
+  var mockWebSocket: vi.Mock;
   var originalWebSocket: typeof WebSocket;
-  var mockSpawn: jest.Mock;
+  var mockSpawn: vi.Mock;
 
   function createTestServer(
     port: number,

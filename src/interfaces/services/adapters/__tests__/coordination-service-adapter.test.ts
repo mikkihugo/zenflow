@@ -109,23 +109,23 @@ const createMockSessionEnabledSwarm = () => ({
 });
 
 // Mock external dependencies
-jest.mock('../../../coordination/swarm/core/daa-service', () => ({
+vi.mock('../../../coordination/swarm/core/daa-service', () => ({
   DaaService: vi.fn().mockImplementation(() => createMockDaaService()),
 }));
 
-jest.mock('../../../coordination/swarm/core/swarm-coordinator', () => ({
+vi.mock('../../../coordination/swarm/core/swarm-coordinator', () => ({
   SwarmCoordinator: vi
     .fn()
     .mockImplementation(() => createMockSwarmCoordinator()),
 }));
 
-jest.mock('../../../coordination/swarm/core/session-integration', () => ({
+vi.mock('../../../coordination/swarm/core/session-integration', () => ({
   SessionEnabledSwarm: vi
     .fn()
     .mockImplementation(() => createMockSessionEnabledSwarm()),
 }));
 
-jest.mock('../../../utils/logger', () => ({
+vi.mock('../../../utils/logger', () => ({
   createLogger: vi.fn().mockImplementation(() => createMockLogger()),
 }));
 
@@ -147,7 +147,7 @@ describe('CoordinationServiceAdapter', () => {
     adapter = new CoordinationServiceAdapter(config);
 
     // Clear all mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(async () => {

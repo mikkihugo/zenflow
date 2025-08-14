@@ -177,7 +177,10 @@ export class GenericService extends BaseService {
    */
   registerOperation(
     name: string,
-    handler: (params?: unknown, options?: ServiceOperationOptions) => Promise<unknown>
+    handler: (
+      params?: unknown,
+      options?: ServiceOperationOptions
+    ) => Promise<unknown>
   ): void {
     this.operations.set(name, handler);
     this.addCapability(name);

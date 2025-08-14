@@ -435,7 +435,11 @@ class NeuralAgent extends EventEmitter {
   private cognitiveState: CognitiveState;
   private memoryUsage: MemoryUsage;
 
-  constructor(agent: unknown, agentType: string, memoryOptimizer: unknown = null) {
+  constructor(
+    agent: unknown,
+    agentType: string,
+    memoryOptimizer: unknown = null
+  ) {
     super();
     this.agent = agent;
     this.agentType = agentType;

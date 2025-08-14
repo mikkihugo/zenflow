@@ -21,7 +21,7 @@ import {
 } from '../knowledge-client-adapter.ts';
 
 // Mock the FACT integration
-jest.mock('../../../../knowledge/knowledge-client', () => {
+vi.mock('../../../../knowledge/knowledge-client', () => {
   const mockFACTIntegration = {
     initialize: vi.fn().mockResolvedValue(undefined),
     shutdown: vi.fn().mockResolvedValue(undefined),
@@ -47,7 +47,7 @@ describe('KnowledgeClientAdapter', () => {
   let knowledgeClient: KnowledgeClientAdapter;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     knowledgeConfig = {
       protocol: 'custom' as ProtocolType,
@@ -731,7 +731,7 @@ describe('KnowledgeClientAdapter', () => {
 });
 
 describe('KnowledgeHelpers', () => {
-  let mockClient: jest.Mocked<KnowledgeClientAdapter>;
+  let mockClient: vi.Mocked<KnowledgeClientAdapter>;
 
   beforeEach(() => {
     mockClient = {

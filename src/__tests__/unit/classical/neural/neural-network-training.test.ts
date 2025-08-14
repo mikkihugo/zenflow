@@ -483,7 +483,11 @@ function predict(network: unknown, input: number[]): number[] {
   return activations;
 }
 
-function trainNetwork(network: unknown, trainingData: unknown[], config: unknown) {
+function trainNetwork(
+  network: unknown,
+  trainingData: unknown[],
+  config: unknown
+) {
   const errors: number[] = [];
   let converged = false;
 

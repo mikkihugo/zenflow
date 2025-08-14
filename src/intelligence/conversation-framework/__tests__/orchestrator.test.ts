@@ -16,7 +16,7 @@ import type {
 
 describe('ConversationOrchestratorImpl - London TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
-  let mockMemory: jest.Mocked<ConversationMemory>;
+  let mockMemory: vi.Mocked<ConversationMemory>;
 
   const sampleAgents: AgentId[] = [
     { id: 'agent-1', swarmId: 'swarm-1', type: 'coder', instance: 0 },

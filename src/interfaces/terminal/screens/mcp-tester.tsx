@@ -64,9 +64,9 @@ export const MCPTester: React.FC<MCPTesterProps> = ({
   >('tools');
   const [selectedTool, setSelectedTool] = useState<MCPTool | null>(null);
   const [selectedToolIndex, setSelectedToolIndex] = useState<number>(0);
-  const [parameterValues, setParameterValues] = useState<Record<string, unknown>>(
-    {}
-  );
+  const [parameterValues, setParameterValues] = useState<
+    Record<string, unknown>
+  >({});
   const [currentParamIndex, setCurrentParamIndex] = useState<number>(0);
   const [parameterInput, setParameterInput] = useState<string>('');
   const [isExecuting, setIsExecuting] = useState<boolean>(false);

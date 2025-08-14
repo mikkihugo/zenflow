@@ -326,17 +326,19 @@ export function createSPARCIntegrationTools(
               pseudocodeId: pseudocodeStructure.id,
               specificationId: specification.id,
               domain: specification.domain,
-              algorithms: pseudocodeStructure.algorithms.map((alg: unknown) => ({
-                name: alg.name,
-                purpose: alg.purpose,
-                inputs: alg.inputs,
-                outputs: alg.outputs,
-                steps: alg.steps,
-                complexity: alg.complexity,
-                optimizations: options?.includeOptimizations
-                  ? alg.optimizations
-                  : [],
-              })),
+              algorithms: pseudocodeStructure.algorithms.map(
+                (alg: unknown) => ({
+                  name: alg.name,
+                  purpose: alg.purpose,
+                  inputs: alg.inputs,
+                  outputs: alg.outputs,
+                  steps: alg.steps,
+                  complexity: alg.complexity,
+                  optimizations: options?.includeOptimizations
+                    ? alg.optimizations
+                    : [],
+                })
+              ),
               dataStructures: pseudocodeStructure.dataStructures,
               controlFlows: pseudocodeStructure.controlFlows,
               optimizations: options?.includeOptimizations

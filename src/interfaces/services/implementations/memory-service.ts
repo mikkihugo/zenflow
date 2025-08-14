@@ -214,7 +214,11 @@ export class MemoryService extends BaseService implements IService {
     return this.deserialize(value, meta.serialization);
   }
 
-  private async set(key: string, value: unknown, ttl?: number): Promise<boolean> {
+  private async set(
+    key: string,
+    value: unknown,
+    ttl?: number
+  ): Promise<boolean> {
     if (!key) {
       throw new Error('Key is required');
     }

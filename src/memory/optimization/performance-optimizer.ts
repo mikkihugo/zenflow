@@ -239,7 +239,9 @@ export class PerformanceOptimizer extends EventEmitter {
    *
    * @param action
    */
-  private async performOptimization(action: OptimizationAction): Promise<unknown> {
+  private async performOptimization(
+    action: OptimizationAction
+  ): Promise<unknown> {
     switch (action.type) {
       case 'cache_adjust':
         return await this.adjustCache();

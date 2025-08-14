@@ -879,7 +879,10 @@ export class PatternRecognitionEngine
     return uniqueAgents.size / Math.max(traces.length, 1);
   }
 
-  private calculateComplexity(pattern: unknown, _traces: ExecutionTrace[]): number {
+  private calculateComplexity(
+    pattern: unknown,
+    _traces: ExecutionTrace[]
+  ): number {
     // Simple complexity metric based on parameter count and variance
     const paramCount = Object.keys(pattern).length;
     const variance = pattern.durationVariance || 0;

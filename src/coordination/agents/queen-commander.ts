@@ -1749,7 +1749,9 @@ export class QueenCommander extends EventEmitter {
       pool.availableAgents = pool.availableAgents.filter(
         (a: unknown) => a.id !== agentId
       );
-      pool.busyAgents = pool.busyAgents.filter((a: unknown) => a.id !== agentId);
+      pool.busyAgents = pool.busyAgents.filter(
+        (a: unknown) => a.id !== agentId
+      );
       pool.currentSize = pool.availableAgents.length + pool.busyAgents.length;
     }
 

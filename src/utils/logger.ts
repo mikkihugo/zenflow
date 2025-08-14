@@ -92,7 +92,11 @@ class Logger implements ILogger {
     this.logLevel = getLogLevel();
   }
 
-  private formatMessage(level: string, message: string, meta?: unknown): string {
+  private formatMessage(
+    level: string,
+    message: string,
+    meta?: unknown
+  ): string {
     const timestamp = new Date().toISOString();
     const cleanMeta = sanitizeLogMeta(meta);
     const metaStr =

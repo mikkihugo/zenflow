@@ -21,7 +21,11 @@ const logger = getLogger('SPARCSwarmCLI');
 
 // Mock classes for compilation - these would be replaced with actual implementations
 class DatabaseSPARCBridge {
-  constructor(databaseSystem: unknown, documentService: unknown, sparcSwarm: unknown) {}
+  constructor(
+    databaseSystem: unknown,
+    documentService: unknown,
+    sparcSwarm: unknown
+  ) {}
   async initialize(): Promise<void> {}
   async assignFeatureToSparcs(feature: FeatureDocumentEntity): Promise<string> {
     return 'mock-id';

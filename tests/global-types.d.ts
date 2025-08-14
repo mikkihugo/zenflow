@@ -1,16 +1,16 @@
 // Global test utilities interface (auto-generated)
 declare global {
   // London TDD utilities
-  function createInteractionSpy(name: string): jest.Mock;
+  function createInteractionSpy(name: string): vi.Mock;
   function verifyInteractions(
-    spy: jest.Mock,
+    spy: vi.Mock,
     expectedCalls: ExpectedCall[]
   ): void;
   function createMockFactory<T>(
     defaults?: Partial<T>
   ): (overrides?: Partial<T>) => T;
-  function waitForInteraction(spy: jest.Mock, timeout?: number): Promise<void>;
-  function simulateProtocolHandshake(mockProtocol: jest.Mock): void;
+  function waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
+  function simulateProtocolHandshake(mockProtocol: vi.Mock): void;
 
   // Classical TDD utilities
   const testStartTime: number;

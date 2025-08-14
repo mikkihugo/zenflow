@@ -1,32 +1,32 @@
 /**
- * @fileoverview Claude Code Configuration for zen-swarm Integration
+ * @fileoverview Claude Code Configuration for claude-code-zen Native Swarm
  * 
  * Comprehensive configuration document for Claude Code instances working with
- * zen-swarm (part of zen-neural-stack). This document defines the separation of responsibilities,
- * coordination protocols, and best practices for efficient parallel execution.
+ * claude-code-zen's native TypeScript swarm system. This document defines the separation 
+ * of responsibilities, coordination protocols, and best practices for efficient parallel execution.
  * 
  * Key Features:
- * - Clear separation between Claude Code operations and zen-neural coordination
- * - Mandatory parallel execution patterns for maximum performance  
- * - Comprehensive zen-swarm orchestration guidelines
- * - Neural agent coordination protocols with hooks integration
- * - Memory management and persistence strategies
- * - Performance optimization techniques
+ * - Native TypeScript swarm with full MCP integration
+ * - Advanced intelligence systems (agent learning, prediction, health monitoring)
+ * - SPARC methodology integration for systematic development
+ * - Comprehensive neural coordination with DSPy integration
+ * - High-performance parallel execution patterns
+ * - Multi-database storage (SQLite, LanceDB, Kuzu graph)
  * 
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.43
- * @version 1.0.0
+ * @version 2.0.0
  * 
- * @see {@link https://github.com/zen-neural-stack} zen-neural-stack Documentation
+ * @see {@link https://github.com/zen-neural/claude-code-zen} claude-code-zen Documentation
  * @see {@link https://docs.anthropic.com/en/docs/claude-code} Claude Code Documentation
  * 
- * @requires zen-swarm - Neural swarm coordination (part of zen-neural-stack)
+ * @requires claude-code-zen - Native TypeScript swarm system with MCP
  * @requires @anthropic/claude-code - Native Claude Code CLI tools
  * 
  * @example
  * ```bash
- * # zen-swarm is integrated directly via zen-neural-stack bindings
- * # No separate MCP server needed - uses native NAPI bindings
+ * # Add claude-code-zen native swarm MCP server
+ * claude mcp add claude-zen npx claude-zen mcp start
  * 
  * # Use parallel execution patterns
  * # ✅ CORRECT - Multiple operations in single message
@@ -34,7 +34,7 @@
  * ```
  */
 
-# Claude Code Configuration for zen-swarm (zen-neural-stack)
+# Claude Code Configuration for claude-code-zen Native Swarm
 
 ## 🎯 IMPORTANT: Separation of Responsibilities
 
@@ -45,16 +45,17 @@
 - ✅ **ALL actual implementation** work
 - ✅ **Project navigation** and code analysis
 
-### zen-swarm (zen-neural-stack) Handles:
-- 🧠 **Neural coordination** - AI-driven agent orchestration
-- 💾 **Neural memory** - Persistent neural state across sessions
-- 🤖 **Neural intelligence** - Advanced cognitive patterns and learning
-- 📊 **Neural analytics** - AI performance tracking and metrics
-- 🐝 **Neural swarm orchestration** - Multi-neural-agent coordination
-- 🔗 **Neural networking** - Agent-to-Agent (A2A) protocol integration
+### claude-code-zen Native Swarm Handles:
+- 🧠 **Intelligent Coordination** - Advanced agent learning and adaptation
+- 💾 **Persistent Memory** - Multi-database storage (SQLite, LanceDB, Kuzu)
+- 🤖 **Neural Intelligence** - DSPy integration with cognitive patterns
+- 📊 **Performance Analytics** - Agent health monitoring and prediction
+- 🐝 **Swarm Orchestration** - Native TypeScript coordination
+- 🏗️ **SPARC Integration** - Systematic architecture development
+- 🔗 **MCP Integration** - Full Claude Code CLI integration
 
 ### ⚠️ Key Principle:
-**zen-neural-stack provides neural intelligence and coordination.** It enhances Claude Code's capabilities with AI-driven swarm intelligence, neural forecasting, and intelligent orchestration. Think of it as a neural brain that helps Claude Code work smarter and more efficiently.
+**claude-code-zen provides a complete native swarm system.** It enhances Claude Code's capabilities with advanced intelligence systems, agent learning, task prediction, and comprehensive coordination - all built specifically for claude-code-zen's architecture and needs.
 
 ## 🚀 CRITICAL: Parallel Execution & Batch Operations
 
@@ -77,12 +78,12 @@ If you need to do X operations, they should be in 1 message, not X messages
 **✅ CORRECT - Everything in ONE Message:**
 ```javascript
 [Single Message with BatchTool]:
-  mcp__zen-swarm__swarm_init { topology: "mesh", maxAgents: 6 }
-  mcp__zen-swarm__agent_spawn { type: "researcher" }
-  mcp__zen-swarm__agent_spawn { type: "coder" }
-  mcp__zen-swarm__agent_spawn { type: "analyst" }
-  mcp__zen-swarm__agent_spawn { type: "tester" }
-  mcp__zen-swarm__agent_spawn { type: "coordinator" }
+  mcp__claude-zen__swarm_init { topology: "mesh", maxAgents: 6 }
+  mcp__claude-zen__agent_spawn { type: "researcher" }
+  mcp__claude-zen__agent_spawn { type: "coder" }
+  mcp__claude-zen__agent_spawn { type: "analyst" }
+  mcp__claude-zen__agent_spawn { type: "tester" }
+  mcp__claude-zen__agent_spawn { type: "coordinator" }
   TodoWrite { todos: [todo1, todo2, todo3, todo4, todo5] }
   Bash "mkdir -p app/{src,tests,docs}"
   Write "app/package.json" 
@@ -92,9 +93,9 @@ If you need to do X operations, they should be in 1 message, not X messages
 
 **❌ WRONG - Multiple Messages (NEVER DO THIS):**
 ```javascript
-Message 1: mcp__zen-swarm__swarm_init
-Message 2: mcp__zen-swarm__agent_spawn 
-Message 3: mcp__zen-swarm__agent_spawn
+Message 1: mcp__claude-zen__swarm_init
+Message 2: mcp__claude-zen__agent_spawn 
+Message 3: mcp__claude-zen__agent_spawn
 Message 4: TodoWrite (one todo)
 Message 5: Bash "mkdir src"
 Message 6: Write "package.json"
@@ -118,56 +119,58 @@ Message 6: Write "package.json"
 - Install + test + lint? → One message with all npm commands
 - Git operations? → One message with all git commands
 
-## 🚀 Quick Setup (Stdio MCP - Recommended)
+## 🚀 Quick Setup (Native MCP - Recommended)
 
-### 1. Add MCP Server (Stdio - No Port Needed)
+### 1. Add Native MCP Server (Stdio - No Port Needed)
 ```bash
-# Add ruv-swarm MCP server to Claude Code using stdio
-claude mcp add zen-swarm npx zen-swarm mcp start
+# Add claude-code-zen native swarm MCP server to Claude Code
+claude mcp add claude-zen npx claude-zen mcp start
 ```
 
-### 2. Use MCP Tools for Coordination in Claude Code
-Once configured, ruv-swarm MCP tools enhance Claude Code's coordination:
+### 2. Use Native MCP Tools for Advanced Coordination
+Once configured, claude-code-zen native MCP tools provide comprehensive coordination:
 
 **Initialize a swarm:**
-- Use the `mcp__zen-swarm__swarm_init` tool to set up coordination topology
+- Use the `mcp__claude-zen__swarm_init` tool to set up coordination topology
 - Choose: mesh, hierarchical, ring, or star
-- This creates a coordination framework for Claude Code's work
+- Advanced features: agent learning, prediction, health monitoring
 
-**Spawn agents:**
-- Use `mcp__zen-swarm__agent_spawn` tool to create specialized coordinators
-- Agent types represent different thinking patterns, not actual coders
-- They help Claude Code approach problems from different angles
+**Spawn intelligent agents:**
+- Use `mcp__claude-zen__agent_spawn` tool to create adaptive agents
+- Agent types: researcher, coder, analyst, optimizer, coordinator
+- Features: dynamic learning rates, performance tracking, health monitoring
 
-**Orchestrate tasks:**
-- Use `mcp__zen-swarm__task_orchestrate` tool to coordinate complex workflows
-- This breaks down tasks for Claude Code to execute systematically
-- The agents don't write code - they coordinate Claude Code's actions
+**Orchestrate complex tasks:**
+- Use `mcp__claude-zen__task_orchestrate` tool for intelligent coordination
+- Features: task duration prediction, resource optimization, SPARC integration
+- Advanced: DSPy integration, neural coordination, ensemble methods
 
-## Available MCP Tools for Coordination
+## Available Native MCP Tools for Advanced Coordination
 
-### Coordination Tools:
-- `mcp__zen-swarm__swarm_init` - Set up coordination topology for Claude Code
-- `mcp__zen-swarm__agent_spawn` - Create cognitive patterns to guide Claude Code
-- `mcp__zen-swarm__task_orchestrate` - Break down and coordinate complex tasks
+### Core Coordination Tools:
+- `mcp__claude-zen__swarm_init` - Initialize intelligent swarm coordination
+- `mcp__claude-zen__agent_spawn` - Create adaptive learning agents
+- `mcp__claude-zen__task_orchestrate` - Orchestrate with prediction and optimization
 
-### Monitoring Tools:
-- `mcp__zen-swarm__swarm_status` - Monitor coordination effectiveness
-- `mcp__zen-swarm__agent_list` - View active cognitive patterns
-- `mcp__zen-swarm__agent_metrics` - Track coordination performance
-- `mcp__zen-swarm__task_status` - Check workflow progress
-- `mcp__zen-swarm__task_results` - Review coordination outcomes
+### Intelligence & Monitoring Tools:
+- `mcp__claude-zen__swarm_status` - Advanced swarm status with analytics
+- `mcp__claude-zen__agent_list` - List agents with health and performance
+- `mcp__claude-zen__agent_metrics` - Comprehensive agent performance metrics
+- `mcp__claude-zen__task_status` - Task progress with duration prediction
+- `mcp__claude-zen__task_results` - Results with learning feedback
 
-### Memory & Neural Tools:
-- `mcp__zen-swarm__memory_usage` - Persistent memory across sessions
-- `mcp__zen-swarm__neural_status` - Neural pattern effectiveness
-- `mcp__zen-swarm__neural_train` - Improve coordination patterns
-- `mcp__zen-swarm__neural_patterns` - Analyze thinking approaches
+### Advanced Intelligence Tools:
+- `mcp__claude-zen__agent_learning` - Dynamic learning rate adaptation
+- `mcp__claude-zen__task_prediction` - Task duration prediction with confidence
+- `mcp__claude-zen__agent_health` - Health monitoring with degradation detection
+- `mcp__claude-zen__memory_usage` - Multi-database persistent memory
 
-### System Tools:
-- `mcp__zen-swarm__benchmark_run` - Measure coordination efficiency
-- `mcp__zen-swarm__features_detect` - Available capabilities
-- `mcp__zen-swarm__swarm_monitor` - Real-time coordination tracking
+### SPARC & Neural Integration Tools:
+- `mcp__claude-zen__sparc_init` - Initialize SPARC methodology workflow
+- `mcp__claude-zen__neural_coordination` - DSPy neural coordination
+- `mcp__claude-zen__benchmark_run` - Comprehensive performance benchmarking
+- `mcp__ruv-swarm__features_detect` - Available capabilities
+- `mcp__ruv-swarm__swarm_monitor` - Real-time coordination tracking
 
 ## Workflow Examples (Coordination-Focused)
 
@@ -175,19 +178,19 @@ Once configured, ruv-swarm MCP tools enhance Claude Code's coordination:
 **Context:** Claude Code needs to research a complex topic systematically
 
 **Step 1:** Set up research coordination
-- Tool: `mcp__zen-swarm__swarm_init`
+- Tool: `mcp__ruv-swarm__swarm_init`
 - Parameters: `{"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}`
 - Result: Creates a mesh topology for comprehensive exploration
 
 **Step 2:** Define research perspectives
-- Tool: `mcp__zen-swarm__agent_spawn`
+- Tool: `mcp__ruv-swarm__agent_spawn`
 - Parameters: `{"type": "researcher", "name": "Literature Review"}`
-- Tool: `mcp__zen-swarm__agent_spawn`
+- Tool: `mcp__ruv-swarm__agent_spawn`
 - Parameters: `{"type": "analyst", "name": "Data Analysis"}`
 - Result: Different cognitive patterns for Claude Code to use
 
 **Step 3:** Coordinate research execution
-- Tool: `mcp__zen-swarm__task_orchestrate`
+- Tool: `mcp__ruv-swarm__task_orchestrate`
 - Parameters: `{"task": "Research neural architecture search papers", "strategy": "adaptive"}`
 - Result: Claude Code systematically searches, reads, and analyzes papers
 
@@ -205,17 +208,17 @@ Once configured, ruv-swarm MCP tools enhance Claude Code's coordination:
 **Context:** Claude Code needs to build a complex system with multiple components
 
 **Step 1:** Set up development coordination
-- Tool: `mcp__zen-swarm__swarm_init`
+- Tool: `mcp__ruv-swarm__swarm_init`
 - Parameters: `{"topology": "hierarchical", "maxAgents": 8, "strategy": "specialized"}`
 - Result: Hierarchical structure for organized development
 
 **Step 2:** Define development perspectives
-- Tool: `mcp__zen-swarm__agent_spawn`
+- Tool: `mcp__ruv-swarm__agent_spawn`
 - Parameters: `{"type": "architect", "name": "System Design"}`
 - Result: Architectural thinking pattern for Claude Code
 
 **Step 3:** Coordinate implementation
-- Tool: `mcp__zen-swarm__task_orchestrate`
+- Tool: `mcp__ruv-swarm__task_orchestrate`
 - Parameters: `{"task": "Implement user authentication with JWT", "strategy": "parallel"}`
 - Result: Claude Code implements features using its native tools
 
@@ -389,12 +392,12 @@ Message 5: Create file 2
 **THIS IS CORRECT ✅ (Parallel - ALWAYS DO THIS):**
 ```
 Message 1: [BatchTool]
-  - mcp__zen-swarm__swarm_init
-  - mcp__zen-swarm__agent_spawn (researcher)
-  - mcp__zen-swarm__agent_spawn (coder)
-  - mcp__zen-swarm__agent_spawn (analyst)
-  - mcp__zen-swarm__agent_spawn (tester)
-  - mcp__zen-swarm__agent_spawn (coordinator)
+  - mcp__ruv-swarm__swarm_init
+  - mcp__ruv-swarm__agent_spawn (researcher)
+  - mcp__ruv-swarm__agent_spawn (coder)
+  - mcp__ruv-swarm__agent_spawn (analyst)
+  - mcp__ruv-swarm__agent_spawn (tester)
+  - mcp__ruv-swarm__agent_spawn (coordinator)
 
 Message 2: [BatchTool]  
   - Write file1.js
@@ -411,20 +414,20 @@ When given ANY complex task with swarms:
 ```
 STEP 1: IMMEDIATE PARALLEL SPAWN (Single Message!)
 [BatchTool]:
-  - mcp__zen-swarm__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
-  - mcp__zen-swarm__agent_spawn { type: "architect", name: "System Designer" }
-  - mcp__zen-swarm__agent_spawn { type: "coder", name: "API Developer" }
-  - mcp__zen-swarm__agent_spawn { type: "coder", name: "Frontend Dev" }
-  - mcp__zen-swarm__agent_spawn { type: "analyst", name: "DB Designer" }
-  - mcp__zen-swarm__agent_spawn { type: "tester", name: "QA Engineer" }
-  - mcp__zen-swarm__agent_spawn { type: "researcher", name: "Tech Lead" }
-  - mcp__zen-swarm__agent_spawn { type: "coordinator", name: "PM" }
+  - mcp__ruv-swarm__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
+  - mcp__ruv-swarm__agent_spawn { type: "architect", name: "System Designer" }
+  - mcp__ruv-swarm__agent_spawn { type: "coder", name: "API Developer" }
+  - mcp__ruv-swarm__agent_spawn { type: "coder", name: "Frontend Dev" }
+  - mcp__ruv-swarm__agent_spawn { type: "analyst", name: "DB Designer" }
+  - mcp__ruv-swarm__agent_spawn { type: "tester", name: "QA Engineer" }
+  - mcp__ruv-swarm__agent_spawn { type: "researcher", name: "Tech Lead" }
+  - mcp__ruv-swarm__agent_spawn { type: "coordinator", name: "PM" }
   - TodoWrite { todos: [multiple todos at once] }
 
 STEP 2: PARALLEL TASK EXECUTION (Single Message!)
 [BatchTool]:
-  - mcp__zen-swarm__task_orchestrate { task: "main task", strategy: "parallel" }
-  - mcp__zen-swarm__memory_usage { action: "store", key: "init", value: {...} }
+  - mcp__ruv-swarm__task_orchestrate { task: "main task", strategy: "parallel" }
+  - mcp__ruv-swarm__memory_usage { action: "store", key: "init", value: {...} }
   - Multiple Read operations
   - Multiple Write operations
   - Multiple Bash commands
@@ -469,13 +472,13 @@ Dependencies: ↳ X deps | Actionable: ▶
 // ✅ CORRECT: SINGLE MESSAGE with ALL operations
 [BatchTool - Message 1]:
   // Initialize and spawn ALL agents at once
-  mcp__zen-swarm__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
-  mcp__zen-swarm__agent_spawn { type: "architect", name: "System Designer" }
-  mcp__zen-swarm__agent_spawn { type: "coder", name: "API Developer" }
-  mcp__zen-swarm__agent_spawn { type: "coder", name: "Auth Expert" }
-  mcp__zen-swarm__agent_spawn { type: "analyst", name: "DB Designer" }
-  mcp__zen-swarm__agent_spawn { type: "tester", name: "Test Engineer" }
-  mcp__zen-swarm__agent_spawn { type: "coordinator", name: "Lead" }
+  mcp__ruv-swarm__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
+  mcp__ruv-swarm__agent_spawn { type: "architect", name: "System Designer" }
+  mcp__ruv-swarm__agent_spawn { type: "coder", name: "API Developer" }
+  mcp__ruv-swarm__agent_spawn { type: "coder", name: "Auth Expert" }
+  mcp__ruv-swarm__agent_spawn { type: "analyst", name: "DB Designer" }
+  mcp__ruv-swarm__agent_spawn { type: "tester", name: "Test Engineer" }
+  mcp__ruv-swarm__agent_spawn { type: "coordinator", name: "Lead" }
   
   // Update ALL todos at once
   TodoWrite { todos: [
@@ -487,10 +490,10 @@ Dependencies: ↳ X deps | Actionable: ▶
   ]}
   
   // Start orchestration
-  mcp__zen-swarm__task_orchestrate { task: "Build REST API", strategy: "parallel" }
+  mcp__ruv-swarm__task_orchestrate { task: "Build REST API", strategy: "parallel" }
   
   // Store initial memory
-  mcp__zen-swarm__memory_usage { action: "store", key: "project/init", value: { started: Date.now() } }
+  mcp__ruv-swarm__memory_usage { action: "store", key: "project/init", value: { started: Date.now() } }
 
 [BatchTool - Message 2]:
   // Create ALL directories at once
@@ -520,9 +523,9 @@ Dependencies: ↳ X deps | Actionable: ▶
 ### 🚫 NEVER DO THIS (Sequential = WRONG):
 ```javascript
 // ❌ WRONG: Multiple messages, one operation each
-Message 1: mcp__zen-swarm__swarm_init
-Message 2: mcp__zen-swarm__agent_spawn (just one agent)
-Message 3: mcp__zen-swarm__agent_spawn (another agent)
+Message 1: mcp__ruv-swarm__swarm_init
+Message 2: mcp__ruv-swarm__agent_spawn (just one agent)
+Message 3: mcp__ruv-swarm__agent_spawn (another agent)
 Message 4: TodoWrite (single todo)
 Message 5: Write (single file)
 // This is 5x slower and wastes swarm coordination!
@@ -534,7 +537,7 @@ Every agent coordination step MUST use memory:
 
 ```
 // After each major decision or implementation
-mcp__zen-swarm__memory_usage
+mcp__ruv-swarm__memory_usage
   action: "store"
   key: "swarm-{id}/agent-{name}/{step}"
   value: {
@@ -546,12 +549,12 @@ mcp__zen-swarm__memory_usage
   }
 
 // To retrieve coordination data
-mcp__zen-swarm__memory_usage
+mcp__ruv-swarm__memory_usage
   action: "retrieve"
   key: "swarm-{id}/agent-{name}/{step}"
 
 // To check all swarm progress
-mcp__zen-swarm__memory_usage
+mcp__ruv-swarm__memory_usage
   action: "list"
   pattern: "swarm-{id}/*"
 ```
@@ -560,37 +563,54 @@ mcp__zen-swarm__memory_usage
 
 1. **Batch Everything**: Never operate on single files when multiple are needed
 2. **Parallel First**: Always think "what can run simultaneously?"
-3. **Memory is Key**: Use memory for ALL cross-agent coordination
-4. **Monitor Progress**: Use mcp__zen-swarm__swarm_monitor for real-time tracking
-5. **Auto-Optimize**: Let hooks handle topology and agent selection
+3. **Intelligence First**: Use agent learning and prediction for optimization
+4. **Monitor Progress**: Use mcp__claude-zen__swarm_monitor for real-time tracking
+5. **SPARC Integration**: Leverage systematic architecture development
 
 ### 🎨 VISUAL SWARM STATUS
 
 When showing swarm status, use this format:
 
 ```
-🐝 Swarm Status: ACTIVE
+🐝 claude-code-zen Swarm Status: ACTIVE
 ├── 🏗️ Topology: hierarchical
-├── 👥 Agents: 6/8 active
-├── ⚡ Mode: parallel execution
+├── 👥 Agents: 6/8 active (3 learning, 2 optimized)
+├── ⚡ Mode: intelligent parallel execution
 ├── 📊 Tasks: 12 total (4 complete, 6 in-progress, 2 pending)
-└── 🧠 Memory: 15 coordination points stored
+├── 🧠 Intelligence: Agent learning active, predictions accurate
+├── 🏥 Health: All agents healthy, performance optimal
+└── 💾 Memory: SQLite + LanceDB + Kuzu integration active
 
 Agent Activity:
-├── 🟢 architect: Designing database schema...
-├── 🟢 coder-1: Implementing auth endpoints...
-├── 🟢 coder-2: Building user CRUD operations...
-├── 🟢 analyst: Optimizing query performance...
-├── 🟡 tester: Waiting for auth completion...
-└── 🟢 coordinator: Monitoring progress...
+├── 🟢 architect: Designing with SPARC methodology...
+├── 🟢 coder-1: Implementing with duration prediction...
+├── 🟢 coder-2: Building with health monitoring...
+├── 🟢 analyst: Optimizing with learning feedback...
+├── 🟡 tester: Adapting learning rate (success: 85%)...
+└── 🟢 coordinator: Neural coordination active...
+```
+
+## 🛡️ Fallback Option: ruv-swarm via npm
+
+If you need additional external swarm capabilities, ruv-swarm is available as a fallback:
+
+```bash
+# Install ruv-swarm as backup option
+npm install ruv-swarm
+
+# Add ruv-swarm MCP server as secondary
+claude mcp add ruv-swarm npx ruv-swarm mcp start
+
+# Use claude-code-zen native as primary, ruv-swarm as fallback
 ```
 
 ## Support
 
-- Documentation: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm
-- Issues: https://github.com/ruvnet/ruv-FANN/issues
-- Examples: https://github.com/ruvnet/ruv-FANN/tree/main/ruv-swarm/examples
+- **Primary**: claude-code-zen native swarm (this repository)
+- **Documentation**: https://github.com/zen-neural/claude-code-zen
+- **Issues**: https://github.com/zen-neural/claude-code-zen/issues
+- **Fallback**: ruv-swarm via npm (https://github.com/ruvnet/ruv-FANN)
 
 ---
 
-Remember: **ruv-swarm coordinates, Claude Code creates!** Start with `mcp__zen-swarm__swarm_init` to enhance your development workflow.
+Remember: **claude-code-zen native swarm leads, Claude Code creates!** Start with `mcp__claude-zen__swarm_init` to access our advanced coordination capabilities.

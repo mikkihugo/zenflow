@@ -167,7 +167,11 @@ class HighPerformanceMockHiveFACT extends EventEmitter {
     return results;
   }
 
-  async getFact(type: string, subject: string, swarmId?: string): Promise<unknown> {
+  async getFact(
+    type: string,
+    subject: string,
+    swarmId?: string
+  ): Promise<unknown> {
     this.requestCount++;
 
     // Simulate lookup time

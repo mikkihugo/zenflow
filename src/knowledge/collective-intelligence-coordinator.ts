@@ -1322,7 +1322,9 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
     };
   }
 
-  private async detectEmergentIntelligence(knowledgeGraph: unknown): Promise<unknown> {
+  private async detectEmergentIntelligence(
+    knowledgeGraph: unknown
+  ): Promise<unknown> {
     // TODO: Implement emergent intelligence detection
     this.logger.info('Detecting emergent intelligence', { knowledgeGraph });
     return {
@@ -1347,13 +1349,19 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
     return { preferences: [], consensus: 0.8 };
   }
 
-  private async reachConsensus(preferences: unknown, config: unknown): Promise<unknown> {
+  private async reachConsensus(
+    preferences: unknown,
+    config: unknown
+  ): Promise<unknown> {
     // TODO: Implement consensus reaching
     this.logger.info('Reaching consensus', { preferences, config });
     return { consensusScore: 0.85, decision: 'consensus-decision' };
   }
 
-  private async optimizeDecision(consensus: unknown, criteria: unknown): Promise<unknown> {
+  private async optimizeDecision(
+    consensus: unknown,
+    criteria: unknown
+  ): Promise<unknown> {
     // TODO: Implement decision optimization
     this.logger.info('Optimizing decision', { consensus, criteria });
     return consensus;
@@ -1404,7 +1412,9 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
     this.logger.info('Initiating work stealing coordination');
   }
 
-  private async setupProgressMonitoring(assignments: unknown[]): Promise<unknown> {
+  private async setupProgressMonitoring(
+    assignments: unknown[]
+  ): Promise<unknown> {
     // TODO: Implement progress monitoring
     this.logger.info('Setting up progress monitoring', { assignments });
     return { monitoringId: 'monitor-1' };
@@ -1416,7 +1426,9 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
     return 0.8;
   }
 
-  private async estimateCompletionTime(assignments: unknown[]): Promise<number> {
+  private async estimateCompletionTime(
+    assignments: unknown[]
+  ): Promise<number> {
     // TODO: Implement completion time estimation
     this.logger.info('Estimating completion time', { assignments });
     return 3600; // 1 hour placeholder

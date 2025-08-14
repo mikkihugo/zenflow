@@ -1156,7 +1156,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
 }
 
 class IntelligentCache extends EventEmitter {
-  private cache: LRUCache<string, CacheEntry<any>>;
+  private cache: LRUCache<string, CacheEntry<unknown>>;
   private deduplicationCache = new Map<string, DeduplicationEntry>();
   private stats: CacheMetrics;
   private prefetchStrategy: 'none' | 'lru' | 'predictive' = 'none';
@@ -1267,7 +1267,7 @@ class IntelligentCache extends EventEmitter {
 
   async resize(newSize: number): Promise<void> {
     // LRUCache doesn't have resize, so create new cache with new size
-    const oldEntries: [string, CacheEntry<any>][] = Array.from(
+    const oldEntries: [string, CacheEntry<unknown>][] = Array.from(
       this.cache.entries()
     );
     this.cache = new LRUCache({
@@ -1351,7 +1351,7 @@ class IntelligentCache extends EventEmitter {
     return this.cache.size * 1024; // Rough estimate: 1KB per entry
   }
 
-  private handleEviction(_key: string, _value: CacheEntry<any>): void {
+  private handleEviction(_key: string, _value: CacheEntry<unknown>): void {
     this.stats.evictionRate = Math.min(1, this.stats.evictionRate + 0.001);
   }
 

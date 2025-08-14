@@ -57,7 +57,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
   public formatter: OutputFormatter;
   public errorHandler: ErrorHandler;
 
-  private mockExecute: jest.Mock;
+  private mockExecute: vi.Mock;
   private initialized = false;
 
   constructor(
@@ -65,7 +65,7 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     parser: ArgumentParser,
     formatter: OutputFormatter,
     errorHandler: ErrorHandler,
-    mockExecute?: jest.Mock
+    mockExecute?: vi.Mock
   ) {
     super();
     this.registry = registry;
@@ -123,18 +123,18 @@ class MockCLICommandSystem extends EventEmitter implements CLICommandSystem {
     return this.initialized;
   }
 
-  setExecuteFunction(fn: jest.Mock): void {
+  setExecuteFunction(fn: vi.Mock): void {
     this.mockExecute = fn;
   }
 }
 
 describe('CLI Commands Integration - TDD London', () => {
-  let mockRegistry: jest.Mocked<CommandRegistry>;
-  let mockParser: jest.Mocked<ArgumentParser>;
-  let mockFormatter: jest.Mocked<OutputFormatter>;
-  let mockErrorHandler: jest.Mocked<ErrorHandler>;
+  let mockRegistry: vi.Mocked<CommandRegistry>;
+  let mockParser: vi.Mocked<ArgumentParser>;
+  let mockFormatter: vi.Mocked<OutputFormatter>;
+  let mockErrorHandler: vi.Mocked<ErrorHandler>;
   let cliSystem: MockCLICommandSystem;
-  let mockExecute: jest.Mock;
+  let mockExecute: vi.Mock;
 
   beforeEach(() => {
     // Create mock components

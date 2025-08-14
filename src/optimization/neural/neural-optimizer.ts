@@ -555,7 +555,10 @@ export class NeuralNetworkOptimizer implements NeuralOptimizer {
    * @param before
    * @param after
    */
-  private calculateTrainingImprovement(before: unknown, after: unknown): number {
+  private calculateTrainingImprovement(
+    before: unknown,
+    after: unknown
+  ): number {
     const latencyImprovement = Math.max(
       0,
       (before.latency - after.latency) / before.latency

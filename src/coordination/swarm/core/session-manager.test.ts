@@ -70,8 +70,9 @@ class MockCoordinationDao implements SessionCoordinationDao {
   > = vi.fn();
   exists: vi.MockedFunction<(id: string | number) => Promise<boolean>> =
     vi.fn();
-  executeCustomQuery: vi.MockedFunction<(query: CustomQuery) => Promise<unknown>> =
-    vi.fn();
+  executeCustomQuery: vi.MockedFunction<
+    (query: CustomQuery) => Promise<unknown>
+  > = vi.fn();
   acquireLock: vi.MockedFunction<
     (resourceId: string, lockTimeout?: number) => Promise<CoordinationLock>
   > = vi.fn();

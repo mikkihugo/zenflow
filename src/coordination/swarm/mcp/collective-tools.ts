@@ -784,7 +784,9 @@ export class CollectiveTools {
    * @param dal
    * @param _dal
    */
-  private async getSwarmHealthMetrics(_dal: DALFactory | null): Promise<unknown> {
+  private async getSwarmHealthMetrics(
+    _dal: DALFactory | null
+  ): Promise<unknown> {
     try {
       const systemMetrics = await this.getSystemPerformanceMetrics();
 

@@ -1178,7 +1178,9 @@ export class DatabaseDrivenArchitecturePhaseEngine
         name: `${algorithm.name}Processor`,
         type: 'processor',
         description: algorithm.purpose,
-        responsibilities: algorithm.steps.map((step: unknown) => step.description),
+        responsibilities: algorithm.steps.map(
+          (step: unknown) => step.description
+        ),
         interfaces: [`I${algorithm.name}Processor`],
         dependencies: this.extractDependenciesFromAlgorithm(algorithm),
       });

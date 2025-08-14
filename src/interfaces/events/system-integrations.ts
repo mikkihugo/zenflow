@@ -782,7 +782,10 @@ export class UELEnhancedObserverSystem extends EventEmitter {
   ): void {
     const originalEmit = observer.emit.bind(observer);
 
-    observer.emit = (eventName: string | symbol, ...args: unknown[]): boolean => {
+    observer.emit = (
+      eventName: string | symbol,
+      ...args: unknown[]
+    ): boolean => {
       const result = originalEmit(eventName, ...args);
 
       // Emit to UEL system
@@ -895,7 +898,10 @@ export class SystemIntegrationFactory {
    * @param eventManager
    * @param logger
    */
-  async initialize(eventManager: EventManager, logger?: unknown): Promise<void> {
+  async initialize(
+    eventManager: EventManager,
+    logger?: unknown
+  ): Promise<void> {
     this.eventManager = eventManager;
     this.logger = logger;
   }
@@ -1137,7 +1143,10 @@ export const UELSystemIntegration = {
   analyzeSystemEventEmitterUsage,
 
   // Initialize system integration
-  async initialize(eventManager: EventManager, logger?: unknown): Promise<void> {
+  async initialize(
+    eventManager: EventManager,
+    logger?: unknown
+  ): Promise<void> {
     await SystemIntegrationFactory.getInstance().initialize(
       eventManager,
       logger

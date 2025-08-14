@@ -664,7 +664,10 @@ export class NeuralDomainAPI {
   /**
    * Get preset recommendations for a specific use case.
    */
-  getPresetRecommendations(useCase: string, requirements: unknown = {}): unknown[] {
+  getPresetRecommendations(
+    useCase: string,
+    requirements: unknown = {}
+  ): unknown[] {
     return this.patternSelector.getPresetRecommendations(useCase, requirements);
   }
 

@@ -500,7 +500,10 @@ export class AdvancedCLIEngine
   }
 
   // Command handlers
-  private async handleProjectCreate(args: unknown[], options: unknown): Promise<unknown> {
+  private async handleProjectCreate(
+    args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     const projectConfig: ProjectConfig = {
       name: args[0] || 'new-project',
       type: options?.type || 'full-stack',
@@ -522,7 +525,10 @@ export class AdvancedCLIEngine
     return await this.optimizeProjectStructure({ path: projectPath });
   }
 
-  private async handleProjectStatus(args: unknown[], _options: unknown): Promise<unknown> {
+  private async handleProjectStatus(
+    args: unknown[],
+    _options: unknown
+  ): Promise<unknown> {
     const projectPath = args[0] || process.cwd();
     return {
       path: projectPath,
@@ -540,12 +546,18 @@ export class AdvancedCLIEngine
     };
   }
 
-  private async handleSwarmMonitor(args: unknown[], _options: unknown): Promise<unknown> {
+  private async handleSwarmMonitor(
+    args: unknown[],
+    _options: unknown
+  ): Promise<unknown> {
     const swarmId = args[0] || 'default';
     return await this.monitorSwarmExecution(swarmId);
   }
 
-  private async handleSwarmSpawn(_args: unknown[], options: unknown): Promise<unknown> {
+  private async handleSwarmSpawn(
+    _args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     const topology = options?.topology || 'mesh';
     const agentCount = options?.agents || 5;
 
@@ -558,7 +570,10 @@ export class AdvancedCLIEngine
     };
   }
 
-  private async handleSwarmCoordinate(args: unknown[], options: unknown): Promise<unknown> {
+  private async handleSwarmCoordinate(
+    args: unknown[],
+    options: unknown
+  ): Promise<unknown> {
     const task = args[0] || options?.task;
     const strategy = options?.strategy || 'parallel';
 

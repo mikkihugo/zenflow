@@ -4,9 +4,9 @@ import { MockBuilder } from '../../../helpers/mock-builder.ts';
 
 describe('Advanced Swarm Orchestration (London TDD)', () => {
   let swarmOrchestrator: SwarmOrchestrator;
-  let mockAgentManager: jest.Mocked<AgentManager>;
-  let mockTaskDistributionEngine: jest.Mocked<TaskDistributionEngine>;
-  let mockLoadBalancingManager: jest.Mocked<LoadBalancingManager>;
+  let mockAgentManager: vi.Mocked<AgentManager>;
+  let mockTaskDistributionEngine: vi.Mocked<TaskDistributionEngine>;
+  let mockLoadBalancingManager: vi.Mocked<LoadBalancingManager>;
   let testHelpers: CoordinationTestHelpers;
   let mockBuilder: MockBuilder;
 

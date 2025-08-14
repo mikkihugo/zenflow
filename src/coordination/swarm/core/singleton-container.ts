@@ -82,7 +82,9 @@ class SingletonContainer {
     }
 
     // Resolve dependencies
-    const dependencies = config?.dependencies?.map((dep: unknown) => this.get(dep));
+    const dependencies = config?.dependencies?.map((dep: unknown) =>
+      this.get(dep)
+    );
 
     try {
       // Create instance using factory

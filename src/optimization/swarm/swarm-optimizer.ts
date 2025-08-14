@@ -611,7 +611,9 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   private async measureP95Latency(_protocols: Protocol[]): Promise<number> {
     return Math.random() * 20 + 15;
   }
-  private async optimizeProtocolStack(_protocols: Protocol[]): Promise<unknown> {
+  private async optimizeProtocolStack(
+    _protocols: Protocol[]
+  ): Promise<unknown> {
     return { improvement: 0.3 };
   }
   private async implementConnectionPooling(
@@ -653,7 +655,9 @@ export class SwarmCoordinationOptimizer implements SwarmOptimizer {
   ): Promise<number> {
     return Math.random();
   }
-  private async analyzeMessagePatterns(_topology: SwarmTopology): Promise<unknown> {
+  private async analyzeMessagePatterns(
+    _topology: SwarmTopology
+  ): Promise<unknown> {
     return {};
   }
   private selectCompressionAlgorithm(_stats: unknown): string {

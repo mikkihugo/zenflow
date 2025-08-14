@@ -78,7 +78,10 @@ class BiomeAIFixer {
       fs.unlinkSync(tempFile); // Clean up the temp file
       return this.parseJsonOutput(result);
     } catch (error) {
-      console.error('Failed to read or parse Biome output file:', error.message);
+      console.error(
+        'Failed to read or parse Biome output file:',
+        error.message
+      );
       return null;
     }
   }
@@ -90,7 +93,7 @@ class BiomeAIFixer {
     let totalErrors = 0;
     let totalWarnings = 0;
 
-    diagnostics.forEach(diagnostic => {
+    diagnostics.forEach((diagnostic) => {
       if (diagnostic.category) {
         const ruleName = diagnostic.category.split('/').pop();
         if (!errorCounts[ruleName]) {
@@ -121,7 +124,7 @@ class BiomeAIFixer {
 
     const categories = {};
 
-    biomeOutput.diagnostics.forEach(diagnostic => {
+    biomeOutput.diagnostics.forEach((diagnostic) => {
       if (diagnostic.category) {
         const ruleName = diagnostic.category.split('/').pop();
         if (!categories[ruleName]) {
@@ -397,7 +400,7 @@ class BiomeAIFixer {
       'src/utils',
       'src/workflows',
       'scripts',
-      'tests'
+      'tests',
     ];
     let totalInitialErrors = 0;
     let totalFinalErrors = 0;
@@ -409,13 +412,17 @@ class BiomeAIFixer {
       // Get initial error count
       const initialAnalysis = await this.runBiomeLinting(directory);
       if (!initialAnalysis) {
-        console.error(`❌ Failed to run initial Biome analysis for ${directory}`);
+        console.error(
+          `❌ Failed to run initial Biome analysis for ${directory}`
+        );
         continue;
       }
 
       const initialErrors = initialAnalysis.diagnostics?.length || 0;
       totalInitialErrors += initialErrors;
-      console.log(`📊 Initial analysis for ${directory}: ${initialErrors} total issues\n`);
+      console.log(
+        `📊 Initial analysis for ${directory}: ${initialErrors} total issues\n`
+      );
 
       // Categorize errors
       const errorCategories = this.categorizeErrors(initialAnalysis);
@@ -458,7 +465,10 @@ class BiomeAIFixer {
     }
 
     const improvement = totalInitialErrors - totalFinalErrors;
-    const improvementPercent = totalInitialErrors > 0 ? Math.round((improvement / totalInitialErrors) * 100) : 0;
+    const improvementPercent =
+      totalInitialErrors > 0
+        ? Math.round((improvement / totalInitialErrors) * 100)
+        : 0;
 
     console.log('\n📈 Final Fix Results:');
     console.log(`  Initial errors: ${totalInitialErrors}`);

@@ -185,14 +185,14 @@ class PerformanceCLI {
       // 7. Performance Score
       let score = 100;
       score -=
-        analysis.bottlenecks.filter((b: unknown) => b.severity === 'high').length *
-        20;
+        analysis.bottlenecks.filter((b: unknown) => b.severity === 'high')
+          .length * 20;
       score -=
         analysis.bottlenecks.filter((b: unknown) => b.severity === 'medium')
           .length * 10;
       score -=
-        analysis.bottlenecks.filter((b: unknown) => b.severity === 'low').length *
-        5;
+        analysis.bottlenecks.filter((b: unknown) => b.severity === 'low')
+          .length * 5;
       score = Math.max(0, score);
 
       analysis.overallScore = score;

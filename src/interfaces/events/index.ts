@@ -992,14 +992,34 @@ export const UELHelpers = {
    */
   createEventBuilder(): {
     system: (operation: string, status: string, details?: unknown) => any;
-    coordination: (operation: string, targetId: string, details?: unknown) => any;
-    communication: (operation: string, protocol: string, details?: unknown) => any;
-    monitoring: (operation: string, component: string, details?: unknown) => any;
-    interface: (operation: string, interfaceType: string, details?: unknown) => any;
+    coordination: (
+      operation: string,
+      targetId: string,
+      details?: unknown
+    ) => any;
+    communication: (
+      operation: string,
+      protocol: string,
+      details?: unknown
+    ) => any;
+    monitoring: (
+      operation: string,
+      component: string,
+      details?: unknown
+    ) => any;
+    interface: (
+      operation: string,
+      interfaceType: string,
+      details?: unknown
+    ) => any;
   } {
     return {
       // TODO: Fix event type casting - these need proper type definitions instead of 'as any'
-      system: (operation: string, status: string, details?: unknown): unknown => ({
+      system: (
+        operation: string,
+        status: string,
+        details?: unknown
+      ): unknown => ({
         id: `system-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`,
         timestamp: new Date(),
         source: 'uel-system',

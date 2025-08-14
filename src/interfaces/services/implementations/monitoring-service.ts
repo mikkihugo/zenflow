@@ -256,7 +256,11 @@ export class MonitoringService extends BaseService implements IService {
     return allMetrics;
   }
 
-  private recordMetric(name: string, value: unknown, timestamp?: number): boolean {
+  private recordMetric(
+    name: string,
+    value: unknown,
+    timestamp?: number
+  ): boolean {
     if (!name) {
       throw new Error('Metric name is required');
     }
@@ -346,7 +350,10 @@ export class MonitoringService extends BaseService implements IService {
     return alerts;
   }
 
-  private async triggerAlert(alertId: string, data?: unknown): Promise<unknown> {
+  private async triggerAlert(
+    alertId: string,
+    data?: unknown
+  ): Promise<unknown> {
     const alert = this.alerts.get(alertId);
     if (!alert) {
       throw new Error(`Alert not found: ${alertId}`);
@@ -573,7 +580,10 @@ export class MonitoringService extends BaseService implements IService {
     }
   }
 
-  private async sendAlertNotifications(alert: unknown, data?: unknown): Promise<any[]> {
+  private async sendAlertNotifications(
+    alert: unknown,
+    data?: unknown
+  ): Promise<any[]> {
     const notifications: unknown[] = [];
 
     for (const channel of alert.channels) {

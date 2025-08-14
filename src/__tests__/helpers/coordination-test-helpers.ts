@@ -57,8 +57,8 @@ export class CoordinationTestBuilder {
    */
   createMockSwarm(): {
     agents: Map<string, MockAgent>;
-    coordinator: jest.Mock;
-    messageRouter: jest.Mock;
+    coordinator: vi.Mock;
+    messageRouter: vi.Mock;
     topology?: unknown;
   } {
     // Create agents
@@ -480,7 +480,10 @@ export class SwarmBehaviorSimulator {
    * @param swarm
    * @param partitionAgents
    */
-  static simulateNetworkPartition(swarm: unknown, partitionAgents: string[]): void {
+  static simulateNetworkPartition(
+    swarm: unknown,
+    partitionAgents: string[]
+  ): void {
     // Remove connections for partitioned agents
     partitionAgents.forEach((agentId) => {
       const agent = swarm.agents.get(agentId);

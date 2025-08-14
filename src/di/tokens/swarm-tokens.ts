@@ -29,7 +29,10 @@ export interface IAgentRegistry {
 export interface IMessageBroker {
   publish(topic: string, message: unknown): Promise<void>;
   subscribe(topic: string, handler: (message: unknown) => void): Promise<void>;
-  unsubscribe(topic: string, handler: (message: unknown) => void): Promise<void>;
+  unsubscribe(
+    topic: string,
+    handler: (message: unknown) => void
+  ): Promise<void>;
   broadcast(message: unknown): Promise<void>;
 }
 

@@ -179,7 +179,10 @@ export class DatabaseService extends BaseService implements IService {
   // Database Service Specific Methods
   // ============================================
 
-  private async executeQuery(sql: string, parameters?: unknown[]): Promise<unknown> {
+  private async executeQuery(
+    sql: string,
+    parameters?: unknown[]
+  ): Promise<unknown> {
     if (!sql) {
       throw new Error('SQL query is required');
     }
@@ -255,7 +258,10 @@ export class DatabaseService extends BaseService implements IService {
     return this.connections.get(name);
   }
 
-  private async createConnection(name: string, config: unknown): Promise<unknown> {
+  private async createConnection(
+    name: string,
+    config: unknown
+  ): Promise<unknown> {
     this.logger.info(`Creating database connection: ${name}`);
 
     const connection = {
@@ -446,7 +452,10 @@ export class DatabaseService extends BaseService implements IService {
     }
   }
 
-  private async simulateQuery(sql: string, _parameters?: unknown[]): Promise<unknown> {
+  private async simulateQuery(
+    sql: string,
+    _parameters?: unknown[]
+  ): Promise<unknown> {
     // Simulate query execution time
     const queryTime = Math.random() * 50 + 10; // 10-60ms
     await new Promise((resolve) => setTimeout(resolve, queryTime));

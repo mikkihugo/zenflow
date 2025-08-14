@@ -1003,7 +1003,10 @@ export class WorkflowGateSystemIntegration {
   // UTILITY METHODS
   // --------------------------------------------------------------------------
 
-  private async simulateWorkflowEvent(event: string, data: unknown): Promise<void> {
+  private async simulateWorkflowEvent(
+    event: string,
+    data: unknown
+  ): Promise<void> {
     logger.debug('Simulating workflow event', { event, data });
 
     // Emit event through event bus

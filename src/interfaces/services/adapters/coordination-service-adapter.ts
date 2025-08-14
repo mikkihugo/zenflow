@@ -1441,7 +1441,10 @@ export class CoordinationServiceAdapter implements IService {
     return result;
   }
 
-  private async adaptAgent(agentId: string, adaptation: unknown): Promise<unknown> {
+  private async adaptAgent(
+    agentId: string,
+    adaptation: unknown
+  ): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }
@@ -1472,7 +1475,10 @@ export class CoordinationServiceAdapter implements IService {
     return await this.daaService.createWorkflow(workflow);
   }
 
-  private async executeWorkflow(workflowId: string, params: unknown): Promise<unknown> {
+  private async executeWorkflow(
+    workflowId: string,
+    params: unknown
+  ): Promise<unknown> {
     if (!this.daaService) {
       throw new Error('DaaService not available');
     }

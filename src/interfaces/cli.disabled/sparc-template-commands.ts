@@ -180,19 +180,21 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
 
   // Functional Requirements
   markdown += `## Functional Requirements (${specification.functionalRequirements.length})\n\n`;
-  specification.functionalRequirements.forEach((req: unknown, index: number) => {
-    markdown += `### ${index + 1}. ${req.title}\n`;
-    markdown += `**Priority:** ${req.priority}\n`;
-    markdown += `**Description:** ${req.description}\n\n`;
+  specification.functionalRequirements.forEach(
+    (req: unknown, index: number) => {
+      markdown += `### ${index + 1}. ${req.title}\n`;
+      markdown += `**Priority:** ${req.priority}\n`;
+      markdown += `**Description:** ${req.description}\n\n`;
 
-    if (req.testCriteria && req.testCriteria.length > 0) {
-      markdown += `**Test Criteria:**\n`;
-      req.testCriteria.forEach((criteria: string) => {
-        markdown += `- ${criteria}\n`;
-      });
-      markdown += `\n`;
+      if (req.testCriteria && req.testCriteria.length > 0) {
+        markdown += `**Test Criteria:**\n`;
+        req.testCriteria.forEach((criteria: string) => {
+          markdown += `- ${criteria}\n`;
+        });
+        markdown += `\n`;
+      }
     }
-  });
+  );
 
   // Non-Functional Requirements
   if (
@@ -232,11 +234,13 @@ function formatSpecificationAsMarkdown(specification: unknown): string {
     markdown += `**Overall Risk Level:** ${specification.riskAssessment.overallRisk}\n\n`;
 
     markdown += `### Identified Risks\n`;
-    specification.riskAssessment.risks.forEach((risk: unknown, index: number) => {
-      markdown += `${index + 1}. **${risk.category}**: ${risk.description}\n`;
-      markdown += `   - Probability: ${risk.probability}\n`;
-      markdown += `   - Impact: ${risk.impact}\n\n`;
-    });
+    specification.riskAssessment.risks.forEach(
+      (risk: unknown, index: number) => {
+        markdown += `${index + 1}. **${risk.category}**: ${risk.description}\n`;
+        markdown += `   - Probability: ${risk.probability}\n`;
+        markdown += `   - Impact: ${risk.impact}\n\n`;
+      }
+    );
   }
 
   // Success Metrics

@@ -82,7 +82,7 @@ export interface AssertionOptions {
 
 // Mock object types
 export interface MockObject {
-  [key: string]: jest.Mock | MockObject;
+  [key: string]: vi.Mock | MockObject;
 }
 
 export interface MockBuilder {

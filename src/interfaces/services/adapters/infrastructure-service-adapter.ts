@@ -1554,7 +1554,10 @@ export class InfrastructureServiceAdapter implements IService {
     return await this.facade.getSystemStatus();
   }
 
-  private async executeWorkflow(workflowId: string, inputs: unknown): Promise<unknown> {
+  private async executeWorkflow(
+    workflowId: string,
+    inputs: unknown
+  ): Promise<unknown> {
     if (!this.facade) {
       throw new Error('Facade not available');
     }
@@ -1636,7 +1639,10 @@ export class InfrastructureServiceAdapter implements IService {
     return await swarmCoordinator.executeCoordination(agents, context);
   }
 
-  private async spawnAgent(swarmId: string, agentConfig: unknown): Promise<unknown> {
+  private async spawnAgent(
+    swarmId: string,
+    agentConfig: unknown
+  ): Promise<unknown> {
     if (!this.patternSystem) {
       throw new Error('Pattern system not available');
     }
@@ -2369,7 +2375,10 @@ export class InfrastructureServiceAdapter implements IService {
     }
   }
 
-  private createConfigurationVersion(config: unknown, description?: string): void {
+  private createConfigurationVersion(
+    config: unknown,
+    description?: string
+  ): void {
     const version = `${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
     const configVersion: ConfigurationVersion = {
       version,

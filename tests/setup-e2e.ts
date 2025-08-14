@@ -524,7 +524,7 @@ global.measureE2EPerformance = async (
 };
 
 // Extended timeout for E2E tests
-jest.setTimeout(300000); // 5 minutes
+// Vitest timeout configured in vitest.config.ts - vi.setTimeout(300000); // 5 minutes
 
 /**
  * E2E service configuration

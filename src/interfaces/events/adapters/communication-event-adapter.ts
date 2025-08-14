@@ -2284,7 +2284,10 @@ export class CommunicationEventAdapter implements IEventManager {
     return transformedEvent;
   }
 
-  private getEventSortValue(event: CommunicationEvent, sortBy: string): unknown {
+  private getEventSortValue(
+    event: CommunicationEvent,
+    sortBy: string
+  ): unknown {
     switch (sortBy) {
       case 'timestamp':
         return event.timestamp.getTime();

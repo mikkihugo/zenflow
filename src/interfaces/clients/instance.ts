@@ -115,8 +115,11 @@ export const UACLHelpers = {
   async performHealthCheck(): Promise<
     Array<{ component: string; status: string; details?: unknown }>
   > {
-    const results: Array<{ component: string; status: string; details?: unknown }> =
-      [];
+    const results: Array<{
+      component: string;
+      status: string;
+      details?: unknown;
+    }> = [];
 
     // Check UACL initialization
     results.push({

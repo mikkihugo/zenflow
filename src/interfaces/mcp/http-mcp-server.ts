@@ -686,7 +686,11 @@ export class HTTPMCPServer {
           sessionId = randomUUID();
           // Placeholder for transport initialization when SDK is available
           transport = {
-            handleRequest: async (req: unknown, res: unknown, body?: unknown) => {
+            handleRequest: async (
+              req: unknown,
+              res: unknown,
+              body?: unknown
+            ) => {
               res.json({ error: 'MCP SDK not available' });
             },
             close: async () => {},

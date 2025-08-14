@@ -577,7 +577,9 @@ class DSPyProgramWrapper implements DSPyProgram {
     };
   }
 
-  async forward(input: Record<string, unknown>): Promise<Record<string, unknown>> {
+  async forward(
+    input: Record<string, unknown>
+  ): Promise<Record<string, unknown>> {
     if (this.rawProgram.forward) {
       return await this.rawProgram.forward(input);
     }

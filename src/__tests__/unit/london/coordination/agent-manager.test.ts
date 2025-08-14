@@ -8,7 +8,7 @@ import { createCoordinationTestSuite } from '../../../helpers/index.js';
 
 describe('Simple Agent Manager - London TDD', () => {
   let mockAgentManager: unknown;
-  let mockEventEmitter: jest.Mock;
+  let mockEventEmitter: vi.Mock;
 
   beforeEach(() => {
     // Create interaction-focused mocks (London TDD)

@@ -936,7 +936,9 @@ function calculateAverageGradientMagnitude(gradients: unknown): number {
   const flatGradients = gradients.weights.flat(2);
   if (flatGradients.length === 0) return 0;
 
-  const validGradients = flatGradients.filter((g: unknown) => Number.isFinite(g));
+  const validGradients = flatGradients.filter((g: unknown) =>
+    Number.isFinite(g)
+  );
   if (validGradients.length === 0) return 0;
 
   return (
@@ -1301,7 +1303,10 @@ function computeQuickPropStep(
   return Math.max(-maxChange, Math.min(maxChange, quickpropUpdate));
 }
 
-function computeStandardUpdates(gradients: unknown, learningRate: number): unknown {
+function computeStandardUpdates(
+  gradients: unknown,
+  learningRate: number
+): unknown {
   const updates = {
     weights: [] as number[][][],
     biases: [] as number[][],

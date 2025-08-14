@@ -97,7 +97,10 @@ export class WebSocketManager {
    * @param socket
    * @param channel
    */
-  private async sendChannelData(socket: unknown, channel: string): Promise<void> {
+  private async sendChannelData(
+    socket: unknown,
+    channel: string
+  ): Promise<void> {
     try {
       switch (channel) {
         case 'system': {

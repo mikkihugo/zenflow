@@ -285,7 +285,10 @@ export class RustFactBridge extends EventEmitter {
     return beamTools.includes(toolName.toLowerCase());
   }
 
-  private mergeFACTAndGitHubKnowledge(factResult: unknown, githubResult: unknown): unknown {
+  private mergeFACTAndGitHubKnowledge(
+    factResult: unknown,
+    githubResult: unknown
+  ): unknown {
     return {
       ...factResult,
       snippets: [

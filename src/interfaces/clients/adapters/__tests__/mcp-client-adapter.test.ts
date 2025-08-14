@@ -14,7 +14,7 @@ import {
 } from '../mcp-client-adapter.ts';
 
 // Mock child_process for testing
-jest.mock('node:child_process', () => ({
+vi.mock('node:child_process', () => ({
   spawn: vi.fn(),
 }));
 
@@ -27,7 +27,7 @@ describe('MCPClientAdapter', () => {
 
   beforeEach(() => {
     // Reset mocks
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Mock process
     mockProcess = new EventEmitter();
@@ -43,7 +43,7 @@ describe('MCPClientAdapter', () => {
     mockProcess.killed = false;
 
     const { spawn } = require('node:child_process');
-    (spawn as jest.Mock).mockReturnValue(mockProcess);
+    (spawn as vi.Mock).mockReturnValue(mockProcess);
   });
 
   describe('UACL Interface Compliance', () => {
@@ -248,7 +248,7 @@ describe('MCPClientAdapter', () => {
     });
 
     it('should connect via HTTP protocol', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         status: 200,
         statusText: 'OK',
@@ -270,7 +270,7 @@ describe('MCPClientAdapter', () => {
 
     it('should execute tools via HTTP', async () => {
       // Mock connection
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         status: 200,
         statusText: 'OK',
@@ -279,7 +279,7 @@ describe('MCPClientAdapter', () => {
       await adapter.connect();
 
       // Mock tool discovery
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           result: {
@@ -292,7 +292,7 @@ describe('MCPClientAdapter', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       // Mock tool execution
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => ({
           result: {
@@ -308,7 +308,7 @@ describe('MCPClientAdapter', () => {
     });
 
     it('should handle HTTP errors', async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: false,
         status: 500,
         statusText: 'Internal Server Error',

@@ -214,7 +214,9 @@ export interface IAgentMemoryDao<T> extends ICoordinationDao<T> {
   ): Promise<{ key: string; value: unknown } | null>;
 
   /** Get all memory for an agent */
-  getAllMemory(agentId: string): Promise<Array<{ key: string; value: unknown }>>;
+  getAllMemory(
+    agentId: string
+  ): Promise<Array<{ key: string; value: unknown }>>;
 
   /** Update agent status */
   updateAgentStatus(agentId: string, status: string): Promise<void>;
