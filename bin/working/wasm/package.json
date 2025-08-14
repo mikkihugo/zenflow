@@ -1,0 +1,26 @@
+{
+  "name": "zen-swarm-neural",
+  "version": "0.1.6",
+  "description": "zen-swarm neural networks with CUDA-Rust transpiler and WASM acceleration",
+  "type": "module",
+  "main": "zen_swarm_neural.js",
+  "types": "zen_swarm_neural.d.ts",
+  "files": [
+    "zen_swarm_neural.js",
+    "zen_swarm_neural.d.ts",
+    "zen_swarm_neural_bg.wasm",
+    "zen_swarm_neural_bg.wasm.d.ts"
+  ],
+  "repository": "https://github.com/vibecast/cuda-rust-wasm",
+  "keywords": [
+    "cuda",
+    "gpu",
+    "webgpu",
+    "wasm",
+    "transpiler",
+    "zen-swarm",
+    "neural"
+  ],
+  "license": "MIT OR Apache-2.0",
+  "sideEffects": false
+}

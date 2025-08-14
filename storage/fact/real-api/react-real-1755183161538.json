@@ -1,0 +1,12 @@
+{
+  "name": "react",
+  "version": "19.1.1",
+  "description": "React is a JavaScript library for building user interfaces.",
+  "license": "MIT",
+  "keywords": [
+    "react"
+  ],
+  "realData": true,
+  "fetchedAt": "2025-08-14T14:52:41.536Z",
+  "statusCode": 200
+}

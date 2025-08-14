@@ -1,0 +1,25 @@
+{
+  "name": "forwarded",
+  "version": "0.2.0",
+  "description": "Parse HTTP X-Forwarded-For header...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "nyc",
+    "mocha",
+    "eslint",
+    "benchmark",
+    "deep-equal",
+    "beautify-benchmark",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 11,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:43.903Z",
+  "depth": 2
+}

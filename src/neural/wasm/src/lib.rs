@@ -7,29 +7,38 @@
 // Allow unsafe code for low-level memory operations
 #![allow(unsafe_code)]
 
+#[cfg(feature = "webgpu-only")]
 pub mod backend;
 pub mod error;
+#[cfg(not(feature = "cpu-only"))]
 pub mod kernel;
+#[cfg(not(feature = "cpu-only"))]
 pub mod memory;
 pub mod parser;
+#[cfg(not(feature = "cpu-only"))]
 pub mod prelude;
+#[cfg(not(feature = "cpu-only"))]
 pub mod profiling;
+#[cfg(feature = "webgpu-only")]
 pub mod runtime;
 pub mod transpiler;
 pub mod utils;
 
-// Neural integration module for ruv-FANN
+// Neural integration module for ruv-FANN (disabled for CPU-only builds)
+#[cfg(all(not(feature = "minimal"), not(feature = "cpu-only")))]
 pub mod neural_integration;
 
 // Re-export main types
 pub use error::{CudaRustError, Result};
 pub use parser::CudaParser;
+#[cfg(feature = "webgpu-only")]
 pub use runtime::Runtime;
 pub use transpiler::{CudaTranspiler, Transpiler};
 
 // The kernel_function macro is automatically available globally through #[macro_export]
 
-// Re-export neural integration types
+// Re-export neural integration types (disabled for CPU-only builds)
+#[cfg(all(not(feature = "minimal"), not(feature = "cpu-only")))]
 pub use neural_integration::{
   get_capabilities as get_neural_capabilities,
   initialize as init_neural_integration,
@@ -79,6 +88,7 @@ impl Default for CudaRust {
 }
 
 /// Initialize the CUDA-Rust runtime
+#[cfg(feature = "webgpu-only")]
 pub fn init() -> Result<Runtime> {
   Runtime::new()
 }

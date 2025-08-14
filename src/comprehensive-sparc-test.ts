@@ -7,6 +7,11 @@ import type {
   Priority,
   RiskLevel,
 } from './coordination/swarm/sparc/types/sparc-types.js';
+import type { 
+  TestResult, 
+  CommandResult, 
+  BaseApiResponse 
+} from './types/api-response.js';
 
 const logger = getLogger('comprehensive-sparc-test');
 
@@ -32,13 +37,13 @@ async function runComprehensiveTest() {
   };
 
   try {
-    const coreTest = await testCoreEngine();
+    const coreTest: TestResult = await testCoreEngine();
     results.coreEngine = coreTest.success;
-    const cliTest = await testCLIIntegration();
+    const cliTest: TestResult = await testCLIIntegration();
     results.cliIntegration = cliTest.success;
-    const mcpTest = await testMCPIntegration();
+    const mcpTest: TestResult = await testMCPIntegration();
     results.mcpIntegration = mcpTest.success;
-    const e2eTest = await testEndToEndFlow();
+    const e2eTest: TestResult = await testEndToEndFlow();
     results.endToEndFlow = e2eTest.success;
 
     // Overall assessment
@@ -120,7 +125,7 @@ async function testCoreEngine() {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    } as TestResult;
   }
 }
 
@@ -167,12 +172,12 @@ async function testCLIIntegration() {
     const generateCommand = `cd ${process.cwd()} && npx tsx src/sparc-pseudocode-cli.ts generate --spec-file /tmp/cli-test-spec.json --output /tmp/cli-test-output.json`;
     const validateCommand = `cd ${process.cwd()} && npx tsx src/sparc-pseudocode-cli.ts validate --pseudocode-file /tmp/cli-test-output.json`;
 
-    const generateResult = await execAsync(generateCommand);
-    const validateResult = await execAsync(validateCommand);
+    const generateResult = await execAsync(generateCommand) as CommandResult;
+    const validateResult = await execAsync(validateCommand) as CommandResult;
 
     const success: boolean =
-      generateResult?.stdout?.includes('✅ Pseudocode generation completed') &&
-      validateResult?.stdout?.includes('✅ APPROVED');
+      (generateResult?.stdout?.includes('✅ Pseudocode generation completed') ?? false) &&
+      (validateResult?.stdout?.includes('✅ APPROVED') ?? false);
 
     return {
       success,
@@ -180,12 +185,12 @@ async function testCLIIntegration() {
         generateOutput: generateResult?.stdout?.includes('Generated'),
         validateOutput: validateResult?.stdout?.includes('APPROVED'),
       },
-    };
+    } as TestResult;
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    } as TestResult;
   }
 }
 
@@ -239,30 +244,30 @@ async function testMCPIntegration() {
 
     const generateResult = await pseudocodeGenerationTool.handler({
       specification: testSpec,
-    });
+    }) as BaseApiResponse;
 
     if (!generateResult?.success) {
-      return { success: false, error: 'MCP generation failed' };
+      return { success: false, error: 'MCP generation failed' } as TestResult;
     }
 
     const validateResult = await validationTool.handler({
       pseudocodeStructure: {
-        id: generateResult?.data?.pseudocodeId,
-        algorithms: generateResult?.data?.algorithms,
-        dataStructures: generateResult?.data?.dataStructures,
-        controlFlows: generateResult?.data?.controlFlows,
+        id: (generateResult?.data as any)?.pseudocodeId,
+        algorithms: (generateResult?.data as any)?.algorithms,
+        dataStructures: (generateResult?.data as any)?.dataStructures,
+        controlFlows: (generateResult?.data as any)?.controlFlows,
       },
-    });
+    }) as BaseApiResponse;
 
     const algorithmsResult = await algorithmsOnlyTool.handler({
       specification: testSpec,
-    });
+    }) as BaseApiResponse;
 
     const success: boolean =
       generateResult?.success &&
       validateResult?.success &&
       algorithmsResult?.success &&
-      validateResult?.data?.validation?.approved;
+      (validateResult?.data as any)?.validation?.approved;
 
     return {
       success,
@@ -270,14 +275,14 @@ async function testMCPIntegration() {
         generation: generateResult?.success,
         validation: validateResult?.success,
         algorithmsOnly: algorithmsResult?.success,
-        approved: validateResult?.data?.validation?.approved,
+        approved: (validateResult?.data as any)?.validation?.approved,
       },
-    };
+    } as TestResult;
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    } as TestResult;
   }
 }
 
@@ -376,12 +381,12 @@ async function testEndToEndFlow() {
         validationScore: validation.overallScore,
         approved: validationPassed,
       },
-    };
+    } as TestResult;
   } catch (error) {
     return {
       success: false,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    } as TestResult;
   }
 }
 

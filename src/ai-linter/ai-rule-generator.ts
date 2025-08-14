@@ -87,6 +87,32 @@ export interface RuleEvolutionConfig {
 }
 
 /**
+ * Codebase statistics for statistical rule generation
+ */
+export interface CodebaseStatistics {
+  /** Average complexity across the codebase */
+  averageComplexity: number;
+
+  /** Type annotation coverage percentage (0-1) */
+  typeAnnotationCoverage: number;
+
+  /** Duplicated code percentage (0-1) */
+  duplicatedCodePercentage: number;
+
+  /** Test coverage percentage (0-1) */
+  testCoverage: number;
+
+  /** Lines of code */
+  linesOfCode: number;
+
+  /** Number of functions/methods */
+  functionCount: number;
+
+  /** Number of files analyzed */
+  fileCount: number;
+}
+
+/**
  * Rule generation context
  */
 export interface RuleGenerationContext {
@@ -202,7 +228,7 @@ export class AIRuleGenerator {
   private readonly generatedRules: Map<string, BiomeRule> = new Map();
   private readonly ruleEffectiveness: Map<string, RuleEffectiveness> =
     new Map();
-  private readonly evolutionTimer?: NodeJS.Timeout;
+  private evolutionTimer?: NodeJS.Timeout;
 
   constructor(logger: ILogger, config: AIRuleGeneratorConfig) {
     this.logger = logger;
@@ -322,7 +348,7 @@ export class AIRuleGenerator {
     // Group patterns by type
     const patternGroups = this.groupPatternsByType(allPatterns);
 
-    for (const [patternType, patterns] of patternGroups) {
+    for (const [patternType, patterns] of Array.from(patternGroups.entries())) {
       if (patterns.length < 3) continue; // Need multiple instances to create a rule
 
       // Use Claude to analyze pattern and generate rule
@@ -427,7 +453,7 @@ export class AIRuleGenerator {
     const { teamPreferences } = context;
 
     // Analyze team feedback to improve existing rules
-    for (const [ruleName, feedback] of teamPreferences.ruleFeedback) {
+    for (const [ruleName, feedback] of Array.from(teamPreferences.ruleFeedback.entries())) {
       if (feedback.rating < 3 && feedback.falsePositives > 5) {
         // Generate improved version of poorly-rated rule
         const improvedRule = await this.improveRule(
@@ -442,7 +468,7 @@ export class AIRuleGenerator {
     }
 
     // Generate rules from team suggestions
-    for (const feedback of teamPreferences.ruleFeedback.values()) {
+    for (const feedback of Array.from(teamPreferences.ruleFeedback.values())) {
       for (const improvement of feedback.improvements) {
         const rule = await this.generateRuleFromSuggestion(
           improvement,
@@ -466,7 +492,7 @@ export class AIRuleGenerator {
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
-    for (const [ruleName, effectiveness] of this.ruleEffectiveness) {
+    for (const [ruleName, effectiveness] of Array.from(this.ruleEffectiveness.entries())) {
       if (
         effectiveness.effectivenessScore <
         this.config.evolution.retirementThreshold
@@ -542,13 +568,20 @@ export class AIRuleGenerator {
 
   private calculateCodebaseStatistics(
     analysisResults: AIAnalysisResult[]
-  ): unknown {
+  ): CodebaseStatistics {
     // Placeholder implementation - would calculate real statistics
+    // In a real implementation, this would analyze the actual code patterns
+    const fileCount = analysisResults.length;
+    const totalPatterns = analysisResults.reduce((sum, result) => sum + result.patterns.length, 0);
+    
     return {
       averageComplexity: 12.5,
       typeAnnotationCoverage: 0.65,
       duplicatedCodePercentage: 0.08,
       testCoverage: 0.78,
+      linesOfCode: fileCount * 150, // Estimated
+      functionCount: totalPatterns * 0.3, // Estimated
+      fileCount,
     };
   }
 

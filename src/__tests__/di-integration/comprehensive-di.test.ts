@@ -8,7 +8,7 @@ import {
   SingletonProvider,
   SWARM_TOKENS,
   TransientProvider,
-} from '../../src/di/index';
+} from '../../di/index.ts';
 
 describe('DI System Comprehensive Integration', () => {
   let container: DIContainer;
@@ -97,19 +97,19 @@ describe('DI System Comprehensive Integration', () => {
       const LOGGER_TOKEN = createToken<ITestLogger>('TestLogger');
       const mockLogger = { log: vi.fn() };
 
-      @injectable
+      // @injectable
       class TestService {
-        constructor(@inject(LOGGER_TOKEN) private _logger: ITestLogger) {}
+        constructor(/* @inject(LOGGER_TOKEN) */ private _logger: ITestLogger) {}
 
         doSomething() {
-          this.logger.log('doing something');
+          this._logger.log('doing something');
         }
       }
 
       container.register(LOGGER_TOKEN, new SingletonProvider(() => mockLogger));
       container.register(
         createToken<TestService>('TestService'),
-        new SingletonProvider((c: unknown) => new TestService(c.resolve(LOGGER_TOKEN)))
+        new SingletonProvider((c: unknown) => new TestService((c as any).resolve(LOGGER_TOKEN)))
       );
 
       // Act
@@ -237,8 +237,8 @@ describe('DI System Comprehensive Integration', () => {
       const TOKEN_A = createToken<unknown>('ServiceA');
       const TOKEN_B = createToken<unknown>('ServiceB');
 
-      container.register(TOKEN_A, new SingletonProvider((c: unknown) => ({ dep: c.resolve(TOKEN_B) })));
-      container.register(TOKEN_B, new SingletonProvider((c: unknown) => ({ dep: c.resolve(TOKEN_A) })));
+      container.register(TOKEN_A, new SingletonProvider((c: unknown) => ({ dep: (c as any).resolve(TOKEN_B) })));
+      container.register(TOKEN_B, new SingletonProvider((c: unknown) => ({ dep: (c as any).resolve(TOKEN_A) })));
 
       // Act & Assert
       expect(() => container.resolve(TOKEN_A)).toThrow(/circular/i);

@@ -38,9 +38,10 @@ import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
 import { spawn } from 'child_process';
 import path from 'path';
 import { promisify } from 'util';
+import { getLogger } from '../../config/logging-config';
 import { v4 as uuidv4 } from 'uuid';
-// import { CopilotApiProvider } from './providers/copilot-api-provider.js';
-// import { GeminiHandler } from './providers/gemini-handler.js';
+import { CopilotApiProvider } from './providers/copilot-api-provider.js';
+import { GeminiHandler } from './providers/gemini-handler.js';
 import {
   getOptimalProvider,
   LLM_PROVIDER_CONFIG,
@@ -157,6 +158,20 @@ export interface AnalysisResult {
  *
  * @class LLMIntegrationService
  */
+// Safe logger that won't break execution if undefined
+let logger;
+try {
+  logger = getLogger('coordination-services-llm-integration-service');
+} catch (e) {
+  // Fallback logger to prevent execution failures
+  logger = {
+    info: (...args) => console.log('[INFO]', ...args),
+    error: (...args) => console.error('[ERROR]', ...args),
+    warn: (...args) => console.warn('[WARN]', ...args),
+    debug: (...args) => console.debug('[DEBUG]', ...args)
+  };
+}
+
 export class LLMIntegrationService {
   private config: LLMIntegrationConfig;
   private sessionId: string;
@@ -443,10 +458,13 @@ export class LLMIntegrationService {
         console.log(`  - Preferred provider: ${this.config.preferredProvider}`);
       }
 
-      // Try optimal providers in order, respecting user preference if it's optimal
-      const providersToTry =
-        this.config.preferredProvider &&
-        optimalProviders.includes(this.config.preferredProvider)
+      // FORCE only Claude Code for swarm operations - no fallbacks!
+      
+      const providersToTry = this.config.preferredProvider === 'claude-code' && 
+        request.context?.swarmContext
+        ? ['claude-code'] // ONLY Claude Code for swarms
+        : this.config.preferredProvider &&
+          optimalProviders.includes(this.config.preferredProvider)
           ? [
               this.config.preferredProvider,
               ...optimalProviders.filter(
@@ -685,6 +703,7 @@ export class LLMIntegrationService {
   private async analyzeWithClaudeCode(
     request: AnalysisRequest
   ): Promise<Partial<AnalysisResult>> {
+    
     const prompt = `${this.buildPrompt(request)}
 
 IMPORTANT: Respond with valid JSON format only. Do not include markdown code blocks or explanations outside the JSON.`;

@@ -1,0 +1,15 @@
+{
+  "name": "wrappy",
+  "version": "1.0.2",
+  "description": "Callback wrapping utility...",
+  "license": "ISC",
+  "dependencies": [],
+  "devDependencies": [
+    "tap"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 1,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:41.288Z",
+  "depth": 2
+}

@@ -24,7 +24,7 @@ import { DocumentDrivenSystem } from '../../../../core/document-driven-system.ts
 import { MemorySystem } from '../../../../core/memory-system.ts';
 // Real implementations - no more mocks!
 import { CoordinationAPI } from '../../../api.ts';
-import { ProductProductWorkflowEngine } from '../../../orchestration/product-workflow-engine.ts';
+import { ProductWorkflowEngine } from '../../../orchestration/product-workflow-engine.ts';
 
 const TaskAPI = CoordinationAPI.tasks;
 

@@ -149,7 +149,7 @@ describe('DomainBoundaryValidator', () => {
       const customSchema: TypeSchema<string> = {
         type: 'string',
         required: true,
-        validator: (value: string) => value.length > 5,
+        validator: (value: unknown) => typeof value === 'string' && value.length > 5,
       };
 
       expect(validator.validateInput('longstring', customSchema)).toBe(
@@ -165,7 +165,7 @@ describe('DomainBoundaryValidator', () => {
       const transformSchema: TypeSchema<string> = {
         type: 'string',
         required: true,
-        transform: (value: string) => value.toUpperCase(),
+        transform: (value: unknown) => typeof value === 'string' ? value.toUpperCase() : String(value).toUpperCase(),
       };
 
       expect(validator.validateInput('hello', transformSchema)).toBe('HELLO');
@@ -500,7 +500,7 @@ describe('DomainBoundaryValidator', () => {
 
       try {
         validator.validateInput(42, schema);
-        fail('Expected DomainValidationError to be thrown');
+        throw new Error('Expected DomainValidationError to be thrown');
       } catch (error) {
         expect(error).toBeInstanceOf(DomainValidationError);
         const domainError = error as DomainValidationError;
@@ -553,7 +553,7 @@ describe('DomainBoundaryValidator', () => {
 
       try {
         validator.validateInput(invalidData, nestedSchema);
-        fail('Expected DomainValidationError to be thrown');
+        throw new Error('Expected DomainValidationError to be thrown');
       } catch (error) {
         expect(error).toBeInstanceOf(DomainValidationError);
         const domainError = error as DomainValidationError;
@@ -819,7 +819,7 @@ describe('DomainBoundaryValidator', () => {
 
     test('handles circular references gracefully', () => {
       const circularObj: unknown = { name: 'test' };
-      circularObj.self = circularObj;
+      (circularObj as any).self = circularObj;
 
       const schema: TypeSchema = {
         type: 'object',

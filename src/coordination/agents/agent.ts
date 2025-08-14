@@ -2,7 +2,7 @@
  * @file Coordination system: agent.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-agents-agent');
 
@@ -10,9 +10,10 @@ const logger = getLogger('coordination-agents-agent');
  * Agent implementation and wrappers.
  */
 
-import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils.ts';
+import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
 import type {
   Agent,
+  AgentCapabilities,
   AgentConfig,
   AgentMetrics,
   AgentState,
@@ -27,6 +28,7 @@ import type {
 export class BaseAgent implements Agent {
   id: string;
   type: AgentType;
+  capabilities: AgentCapabilities;
   metrics: AgentMetrics;
   config: AgentConfig;
   state: AgentState;
@@ -61,61 +63,60 @@ export class BaseAgent implements Agent {
     // Initialize metrics
     this.metrics = {
       tasksCompleted: 0,
-      tasksFailed: 0,
-      tasksInProgress: 0,
-      averageExecutionTime: 0,
-      successRate: 0,
-      cpuUsage: 0,
-      memoryUsage: 0,
-      diskUsage: 0,
-      networkUsage: 0,
-      codeQuality: 0,
-      testCoverage: 0,
-      bugRate: 0,
-      userSatisfaction: 0,
-      totalUptime: 0,
+      averageResponseTime: 0,
+      errorRate: 0,
+      uptime: 0,
       lastActivity: new Date(),
-      responseTime: 0,
+      tasksFailed: 0,
+      averageExecutionTime: 0,
+      tasksInProgress: 0,
+      successRate: 0,
       resourceUsage: {
-        cpu: 0,
         memory: 0,
+        cpu: 0,
         disk: 0,
-        network: 0,
       },
     };
 
+    // Initialize capabilities
+    this.capabilities = {
+      codeGeneration: true,
+      codeReview: true,
+      testing: true,
+      documentation: true,
+      research: true,
+      analysis: true,
+      webSearch: false,
+      apiIntegration: true,
+      fileSystem: true,
+      terminalAccess: true,
+      languages: ['typescript', 'javascript', 'python'],
+      frameworks: ['node', 'react', 'express'],
+      domains: ['web', 'api', 'testing'],
+      tools: ['git', 'npm', 'vitest'],
+      maxConcurrentTasks: 3,
+      maxMemoryUsage: 512,
+      maxExecutionTime: 30000,
+      reliability: 0.95,
+      speed: 0.8,
+      quality: 0.9,
+    };
+
     this.state = {
-      id: this.id as any, // Temporarily cast to any for AgentId compatibility
+      status: 'idle',
+      currentTask: null,
+      lastUpdate: new Date(),
+      health: 'healthy',
+      lastHeartbeat: new Date(),
+      metrics: this.metrics,
       name: config?.name || `Agent-${this.id}`,
       type: config?.type,
-      status: 'idle',
-      capabilities: {
-        codeGeneration: true,
-        codeReview: true,
-        testing: true,
-        documentation: true,
-        research: true,
-        analysis: true,
-        webSearch: false,
-        apiIntegration: true,
-        fileSystem: true,
-        terminalAccess: false,
-        languages: ['javascript', 'typescript', 'python'],
-        frameworks: ['node.js', 'react', 'express'],
-        domains: ['web-development', 'api-development'],
-        tools: ['git', 'npm', 'docker'],
-        maxConcurrentTasks: 5,
-        maxMemoryUsage: 1024,
-        maxExecutionTime: 30000,
-        reliability: 0.95,
-        speed: 0.8,
-        quality: 0.9,
-        ...config?.capabilities,
+      id: {
+        id: this.id,
+        swarmId: config?.swarmId,
+        type: config?.type,
+        instance: 1,
       },
-      metrics: this.metrics,
-      workload: 0,
-      health: 1.0,
-      config: this.config,
       environment: {
         runtime: 'node',
         version: process.version,
@@ -127,13 +128,10 @@ export class BaseAgent implements Agent {
         availableTools: [],
         toolConfigs: {},
       },
-      endpoints: [],
-      lastHeartbeat: new Date(),
-      taskHistory: [],
+      config: this.config,
+      workload: 0,
       errorHistory: [],
-      childAgents: [],
-      collaborators: [],
-      currentTask: null,
+      capabilities: this.capabilities,
       load: 0,
     };
 
@@ -190,32 +188,20 @@ export class BaseAgent implements Agent {
     success: boolean,
     executionTime: number
   ): void {
-    // Initialize performance if it doesn't exist
-    if (!this.state.performance) {
-      this.state.performance = {
-        tasksCompleted: 0,
-        tasksFailed: 0,
-        averageExecutionTime: 0,
-        successRate: 0,
-      };
-    }
-
-    const performance = this.state.performance;
-
     if (success) {
-      performance.tasksCompleted++;
+      this.metrics.tasksCompleted++;
     } else {
-      performance.tasksFailed++;
+      this.metrics.tasksFailed = (this.metrics.tasksFailed || 0) + 1;
     }
 
-    const totalTasks = performance.tasksCompleted + performance.tasksFailed;
-    performance.successRate =
-      totalTasks > 0 ? performance.tasksCompleted / totalTasks : 0;
+    const totalTasks = this.metrics.tasksCompleted + (this.metrics.tasksFailed || 0);
+    this.metrics.successRate =
+      totalTasks > 0 ? this.metrics.tasksCompleted / totalTasks : 0;
 
     // Update average execution time
-    const totalTime =
-      performance.averageExecutionTime * (totalTasks - 1) + executionTime;
-    performance.averageExecutionTime = totalTime / totalTasks;
+    const currentAverage = this.metrics.averageExecutionTime || 0;
+    const totalTime = currentAverage * (totalTasks - 1) + executionTime;
+    this.metrics.averageExecutionTime = totalTime / totalTasks;
   }
 
   private async handleTaskAssignment(message: Message): Promise<void> {
@@ -229,13 +215,12 @@ export class BaseAgent implements Agent {
       // Send result back to the swarm coordinator
       await this.communicate({
         id: `result-${Date.now()}`,
+        type: 'result',
+        payload: result,
+        timestamp: new Date(),
         fromAgentId: this.id,
         toAgentId: message.fromAgentId,
         swarmId: message.swarmId,
-        type: 'result',
-        content: result,
-        timestamp: new Date(),
-        requiresResponse: false,
       });
 
       this.state.status = 'idle';
@@ -251,11 +236,9 @@ export class BaseAgent implements Agent {
 
   private async handleKnowledgeShare(message: Message): Promise<void> {
     // Store shared knowledge in memory
-    if (this.config.memory) {
-      this.config.memory.shortTerm.set(
-        `knowledge_${message.id}`,
-        message.payload
-      );
+    if (this.config.memory && typeof this.config?.memory === 'object' && 'shortTerm' in this.config.memory) {
+      const memory = this.config.memory as { shortTerm: Map<string, unknown> };
+      memory.shortTerm.set(`knowledge_${message.id}`, message.payload);
     }
   }
 
@@ -286,10 +269,11 @@ export class BaseAgent implements Agent {
 
     try {
       // Basic task execution - can be overridden by specialized agents
-      const result = {
+      const result: ExecutionResult = {
         success: true,
         data: { message: `Task ${task.id} completed by ${this.type} agent` },
         executionTime: Date.now() - startTime,
+        timestamp: new Date(),
         agentId: this.id,
         metadata: {
           agentType: this.type,
@@ -298,16 +282,17 @@ export class BaseAgent implements Agent {
       };
 
       this.metrics.tasksCompleted++;
-      this.updatePerformanceMetrics(true, result?.executionTime);
+      this.updatePerformanceMetrics(true, result.executionTime || 0);
       return result;
     } catch (error) {
-      this.metrics.tasksFailed++;
+      this.metrics.tasksFailed = (this.metrics.tasksFailed || 0) + 1;
       this.updatePerformanceMetrics(false, Date.now() - startTime);
 
       return {
         success: false,
         data: { error: error instanceof Error ? error.message : String(error) },
         executionTime: Date.now() - startTime,
+        timestamp: new Date(),
         agentId: this.id,
         metadata: {
           agentType: this.type,
@@ -483,7 +468,7 @@ export class AgentPool {
 
   addAgent(agent: Agent): void {
     this.agents.set(agent.id, agent);
-    if (agent.state.status === 'idle') {
+    if (agent.state?.status === 'idle') {
       this.availableAgents.add(agent.id);
     }
   }
@@ -504,7 +489,7 @@ export class AgentPool {
       const agent = this.agents.get(agentId);
       if (!agent) continue;
 
-      if (!preferredType || agent.config.type === preferredType) {
+      if (!preferredType || agent.config?.type === preferredType) {
         selectedAgent = agent;
         break;
       }
@@ -526,27 +511,32 @@ export class AgentPool {
 
   releaseAgent(agentId: string): void {
     const agent = this.agents.get(agentId);
-    if (agent && agent.state.status === 'idle') {
+    if (agent && agent.state?.status === 'idle') {
       this.availableAgents.add(agentId);
     }
   }
 
   getAllAgents(): Agent[] {
-    return Array.from(this.agents.values());
+    const agentList: Agent[] = [];
+    for (const agent of this.agents.values()) {
+      agentList.push(agent);
+    }
+    return agentList;
   }
 
   getAgentsByType(type: string): Agent[] {
-    return this.getAllAgents().filter((agent) => agent.config.type === type);
+    return this.getAllAgents().filter((agent) => agent.config?.type === type);
   }
 
   getAgentsByStatus(status: AgentStatus): Agent[] {
-    return this.getAllAgents().filter((agent) => agent.state.status === status);
+    return this.getAllAgents().filter((agent) => agent.state?.status === status);
   }
 
   async shutdown(): Promise<void> {
     // Shutdown all agents
-    for (const agent of this.agents.values()) {
-      if (typeof agent.shutdown === 'function') {
+    const agentList = this.getAllAgents();
+    for (const agent of agentList) {
+      if (typeof agent?.shutdown === 'function') {
         await agent.shutdown();
       }
     }

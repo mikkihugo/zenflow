@@ -102,8 +102,8 @@ class IntegrationTestRunner {
 
     // Set test environment variables
     process.env['NODE_ENV'] = 'test';
-    process.env['RUV_SWARM_TEST_MODE'] = 'true';
-    process.env['RUV_SWARM_LOG_LEVEL'] = this.config.verbose
+    process.env['ZEN_SWARM_TEST_MODE'] = 'true';
+    process.env['ZEN_SWARM_LOG_LEVEL'] = this.config.verbose
       ? 'debug'
       : 'error';
   }

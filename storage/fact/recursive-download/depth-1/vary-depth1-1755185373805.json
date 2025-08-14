@@ -1,0 +1,26 @@
+{
+  "name": "vary",
+  "version": "1.1.2",
+  "description": "Manipulate the HTTP Vary header...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "mocha",
+    "eslint",
+    "istanbul",
+    "benchmark",
+    "supertest",
+    "beautify-benchmark",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-markdown",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 12,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:33.804Z",
+  "depth": 1
+}

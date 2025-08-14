@@ -1,0 +1,1 @@
+{"version":3,"file":"wasm-enhanced-loader.js","sourceRoot":"","sources":["../../../../src/neural/wasm/wasm-enhanced-loader.ts"],"names":[],"mappings":"AA2BA,MAAM,OAAO,kBAAkB;IACrB,WAAW,GAAG,KAAK,CAAC;IAE5B,KAAK,CAAC,UAAU;QACd,IAAI,IAAI,CAAC,WAAW;YAAE,OAAO;QAG7B,IAAI,CAAC,WAAW,GAAG,IAAI,CAAC;IAC1B,CAAC;IAED,aAAa;QACX,OAAO,IAAI,CAAC,WAAW,CAAC;IAC1B,CAAC;CACF;AAED,eAAe,kBAAkB,CAAC"}

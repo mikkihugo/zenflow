@@ -122,7 +122,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     // Mock the processWorkflowGate method
     mockProcessWorkflowGate = vi.fn();
-    aguiAdapter.processWorkflowGate = mockProcessWorkflowGate;
+    (aguiAdapter as any).processWorkflowGate = mockProcessWorkflowGate;
 
     // Create engine with mocked dependencies
     engine = new ProductWorkflowEngine(
@@ -175,7 +175,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
   describe('Gate Execution During Workflow', () => {
     beforeEach(() => {
       // Mock AGUI adapter to approve gates by default
-      mockProcessWorkflowGate.mockResolvedValue('approved');
+      (mockProcessWorkflowGate as any).mockResolvedValue('approved');
     });
 
     it('should execute gate before vision analysis', async () => {
@@ -197,7 +197,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       expect(mockProcessWorkflowGate).toHaveBeenCalled();
 
       // Verify gate request structure
-      const gateCall = mockProcessWorkflowGate.mock.calls[0];
+      const gateCall = (mockProcessWorkflowGate as any).mock.calls[0];
       const gateRequest: WorkflowGateRequest = gateCall[0];
 
       expect(gateRequest.workflowContext.stepName).toBe('vision-analysis');
@@ -207,7 +207,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should pause workflow when gate is pending', async () => {
       // Mock AGUI adapter to simulate pending gate (not resolving immediately)
-      mockProcessWorkflowGate.mockImplementation(
+      (mockProcessWorkflowGate as any).mockImplementation(
         () =>
           new Promise((resolve) => setTimeout(() => resolve('approved'), 1000))
       );
@@ -232,7 +232,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should handle gate rejection', async () => {
       // Mock AGUI adapter to reject gate
-      mockProcessWorkflowGate.mockResolvedValue('rejected');
+      (mockProcessWorkflowGate as any).mockResolvedValue('rejected');
 
       const workflowResult = await engine.startProductWorkflow(
         'complete-product-flow'
@@ -278,7 +278,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
     it('should cancel gates', async () => {
       // Mock a pending gate scenario
-      mockProcessWorkflowGate.mockImplementation(
+      (mockProcessWorkflowGate as any).mockImplementation(
         () =>
           new Promise((resolve) => setTimeout(() => resolve('approved'), 2000))
       );
@@ -301,7 +301,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
   describe('Gate Decision Routing', () => {
     it('should handle approval decision', async () => {
-      mockProcessWorkflowGate.mockResolvedValue('approved');
+      (mockProcessWorkflowGate as any).mockResolvedValue('approved');
 
       const result = await engine.executeWorkflowGate(
         'test-step',
@@ -320,7 +320,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
     });
 
     it('should handle rejection decision', async () => {
-      mockProcessWorkflowGate.mockResolvedValue('rejected');
+      (mockProcessWorkflowGate as any).mockResolvedValue('rejected');
 
       const result = await engine.executeWorkflowGate(
         'test-step',
@@ -358,7 +358,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
       ];
 
       for (const testCase of testCases) {
-        mockProcessWorkflowGate.mockResolvedValue('approved');
+        (mockProcessWorkflowGate as any).mockResolvedValue('approved');
 
         const result = await engine.executeWorkflowGate(
           'test-step',
@@ -374,8 +374,8 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
         // The gate request should have been created with the appropriate approval level
         expect(mockProcessWorkflowGate).toHaveBeenCalled();
         const gateRequest =
-          mockProcessWorkflowGate.mock.calls[
-            mockProcessWorkflowGate.mock.calls.length - 1
+          (mockProcessWorkflowGate as any).mock.calls[
+            (mockProcessWorkflowGate as any).mock.calls.length - 1
           ][0];
         expect(gateRequest.requiredApprovalLevel).toBe(testCase.expectedLevel);
       }
@@ -422,7 +422,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
   describe('Error Handling', () => {
     it('should handle AGUI adapter errors gracefully', async () => {
-      mockProcessWorkflowGate.mockRejectedValue(
+      (mockProcessWorkflowGate as any).mockRejectedValue(
         new Error('AGUI adapter error')
       );
 
@@ -500,7 +500,7 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
   describe('Decision Logging and Audit Trail', () => {
     it('should log workflow decisions', async () => {
-      mockProcessWorkflowGate.mockResolvedValue(
+      (mockProcessWorkflowGate as any).mockResolvedValue(
         'approved with rationale: looks good'
       );
 

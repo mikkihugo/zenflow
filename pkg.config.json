@@ -1,0 +1,28 @@
+{
+  "pkg": {
+    "targets": [
+      "node22-linux-x64",
+      "node22-macos-x64", 
+      "node22-win-x64"
+    ],
+    "outputPath": "bin",
+    "scripts": [
+      "dist/**/*.js"
+    ],
+    "assets": [
+      "src/**/*.sql",
+      "src/**/*.json",
+      "src/**/*.yaml",
+      "src/**/*.yml",
+      "src/**/*.md",
+      "src/**/*.txt",
+      "src/**/*.wasm",
+      "src/**/*.d.ts"
+    ],
+    "options": [
+      "--no-bytecode",
+      "--public-packages=*",
+      "--public"
+    ]
+  }
+}

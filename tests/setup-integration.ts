@@ -29,9 +29,9 @@ afterEach(async () => {
 
 async function setupIntegrationEnvironment() {
   // Set test environment variables
-  process.env.NODE_ENV = 'test';
-  process.env.CLAUDE_ZEN_TEST_MODE = 'integration';
-  process.env.CLAUDE_ZEN_LOG_LEVEL = 'error'; // Reduce noise in tests
+  process.env['NODE_ENV'] = 'test';
+  process.env['CLAUDE_ZEN_TEST_MODE'] = 'integration';
+  process.env['CLAUDE_ZEN_LOG_LEVEL'] = 'error'; // Reduce noise in tests
 
   // Initialize test-specific configurations
   global.testConfig = {
@@ -109,7 +109,7 @@ async function cleanupIntegrationState() {
   global.testFixtures = {};
 
   // Clean environment variables
-  process.env.CLAUDE_ZEN_TEST_MODE = undefined;
+  process.env['CLAUDE_ZEN_TEST_MODE'] = undefined;
 }
 
 /**

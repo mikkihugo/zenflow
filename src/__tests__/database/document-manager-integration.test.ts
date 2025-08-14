@@ -49,7 +49,7 @@ describe('DocumentManager Integration Tests', () => {
       description: 'Integration test project',
       domain: 'testing',
       complexity: 'simple',
-    });
+    } as any);
   });
 
   afterEach(async () => {
@@ -72,12 +72,17 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'high',
           keywords: ['authentication', 'security', 'users'],
           metadata: {},
-          problem_statement: 'Users need secure authentication',
-          requirements: ['Login', 'Registration', 'Password reset'],
-          acceptance_criteria: ['Secure login flow', 'Password validation'],
-          stakeholders: ['PM', 'Engineering', 'Security'],
           dependencies: [],
-          success_metrics: ['User adoption', 'Security compliance'],
+          version: '1.0.0',
+          tags: ['authentication', 'security'],
+          completion_percentage: 0,
+          related_documents: [],
+          functional_requirements: [],
+          non_functional_requirements: [],
+          user_stories: [],
+          related_adrs: [],
+          generated_epics: [],
+          searchable_content: 'User Authentication PRD Detailed PRD for user authentication system PRD for auth system',
         },
         {
           autoGenerateRelationships: true,
@@ -97,11 +102,30 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'high',
           keywords: ['authentication', 'implementation'],
           metadata: {},
-          user_stories: ['As a user, I want to login'],
-          definition_of_done: ['All auth features complete'],
-          estimated_effort: 40,
+          dependencies: [],
+          version: '1.0.0',
+          tags: ['authentication', 'epic'],
+          completion_percentage: 0,
+          related_documents: [],
+          business_value: 'Enable secure user access to the platform',
+          user_impact: 'Users can securely access their accounts',
+          effort_estimation: {
+            story_points: 13,
+            time_estimate_weeks: 3,
+            complexity: 'medium'
+          },
+          timeline: {
+            start_date: new Date(),
+            estimated_completion: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000)
+          },
+          feature_ids: [],
+          features_completed: 0,
+          features_total: 0,
+          searchable_content: 'Authentication Epic Epic for implementing authentication features Auth implementation epic',
+          // definition_of_done: ['All auth features complete'],
+          // estimated_effort: 40,
           business_value: 'High',
-          technical_complexity: 'Medium',
+          // technical_complexity: 'Medium',
         },
         {
           autoGenerateRelationships: true,
@@ -202,7 +226,7 @@ describe('DocumentManager Integration Tests', () => {
       );
 
       expect(semanticRel).toBeDefined();
-      expect(semanticRel?.metadata['generation_method']).toBe(
+      expect(semanticRel?.metadata && (semanticRel.metadata as any)['generation_method']).toBe(
         'keyword_analysis'
       );
       expect(semanticRel?.strength).toBeGreaterThan(0.3);
@@ -221,7 +245,7 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'medium',
           keywords: ['payments', 'billing'],
           metadata: {},
-        },
+        } as any,
         {
           autoGenerateRelationships: true,
         }
@@ -273,7 +297,7 @@ describe('DocumentManager Integration Tests', () => {
             priority: 'high',
             keywords: ['authentication', 'security', 'jwt', 'oauth', 'mfa'],
             metadata: {},
-          },
+          } as any,
           { generateSearchIndex: true }
         ),
 
@@ -290,7 +314,7 @@ describe('DocumentManager Integration Tests', () => {
             priority: 'medium',
             keywords: ['password', 'recovery', 'email', 'security'],
             metadata: {},
-          },
+          } as any,
           { generateSearchIndex: true }
         ),
 
@@ -307,7 +331,7 @@ describe('DocumentManager Integration Tests', () => {
             priority: 'low',
             keywords: ['database', 'migration', 'authentication'],
             metadata: {},
-          },
+          } as any,
           { generateSearchIndex: true }
         ),
       ]);
@@ -488,12 +512,12 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'high',
           keywords: ['ecommerce', 'platform', 'shopping'],
           metadata: {},
-          problem_statement: 'Need e-commerce platform',
-          requirements: ['Product catalog', 'Shopping cart', 'Payments'],
-          acceptance_criteria: ['Complete checkout flow'],
-          stakeholders: ['PM', 'Engineering', 'Marketing'],
+          // problem_statement: 'Need e-commerce platform',
+          // requirements: ['Product catalog', 'Shopping cart', 'Payments'],
+          // acceptance_criteria: ['Complete checkout flow'],
+          // stakeholders: ['PM', 'Engineering', 'Marketing'],
           dependencies: [],
-          success_metrics: ['Revenue', 'User engagement'],
+          // success_metrics: ['Revenue', 'User engagement'],
         },
         {
           startWorkflow: 'prd_workflow',
@@ -538,14 +562,14 @@ describe('DocumentManager Integration Tests', () => {
             priority: 'medium',
             keywords: ['registration', 'users', 'email'],
             metadata: {},
-            functional_requirements: ['Email validation', 'Password strength'],
-            technical_requirements: ['Database schema', 'Email service'],
-            user_stories: ['As a user, I want to register'],
-            acceptance_criteria: ['Successful registration flow'],
-            testing_plan: 'Unit and integration tests',
-            estimated_effort: 8,
-            complexity_score: 6,
-            risk_assessment: 'Low',
+            // functional_requirements: ['Email validation', 'Password strength'],
+            // technical_requirements: ['Database schema', 'Email service'],
+            // user_stories: ['As a user, I want to register'],
+            // acceptance_criteria: ['Successful registration flow'],
+            // testing_plan: 'Unit and integration tests',
+            // estimated_effort: 8,
+            // complexity_score: 6,
+            // risk_assessment: 'Low', // Not part of FeatureDocumentEntity interface
           },
           {
             startWorkflow: 'feature_workflow',
@@ -588,7 +612,7 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'medium',
           keywords: ['test'],
           metadata: {},
-        },
+        } as any,
         {
           startWorkflow: 'prd_workflow',
         }
@@ -628,12 +652,12 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'high',
           keywords: ['test', 'artifacts'],
           metadata: {},
-          problem_statement: 'Test problem',
-          requirements: ['Test requirement'],
-          acceptance_criteria: ['Test criteria'],
-          stakeholders: ['Test stakeholder'],
+          // problem_statement: 'Test problem',
+          // requirements: ['Test requirement'],
+          // acceptance_criteria: ['Test criteria'],
+          // stakeholders: ['Test stakeholder'],
           dependencies: [],
-          success_metrics: ['Test metric'],
+          // success_metrics: ['Test metric'],
         },
         {
           startWorkflow: 'prd_workflow',
@@ -652,13 +676,13 @@ describe('DocumentManager Integration Tests', () => {
         includeWorkflowState: true,
       });
       const workflow = (workflowState as any)
-        .workflowState as DocumentWorkflowStateEntity;
+        .workflowState as any;
 
       expect(workflow['generated_artifacts']).toBeDefined();
       expect(workflow['generated_artifacts'].length).toBeGreaterThan(0);
       expect(
         workflow['generated_artifacts']?.some((artifact: unknown) =>
-          artifact.includes('summary_report')
+          (artifact as any).includes('summary_report')
         )
       ).toBe(true);
     });
@@ -679,7 +703,7 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'high',
           keywords: ['vision', 'strategy', 'platform'],
           metadata: {},
-        },
+        } as any,
         {
           startWorkflow: 'vision_workflow',
           generateSearchIndex: true,
@@ -700,12 +724,12 @@ describe('DocumentManager Integration Tests', () => {
           priority: 'high',
           keywords: ['platform', 'features', 'core'],
           metadata: {},
-          problem_statement: 'Need core platform features',
-          requirements: ['User management', 'Data processing'],
-          acceptance_criteria: ['Scalable architecture'],
-          stakeholders: ['Engineering', 'Product'],
+          // problem_statement: 'Need core platform features',
+          // requirements: ['User management', 'Data processing'],
+          // acceptance_criteria: ['Scalable architecture'],
+          // stakeholders: ['Engineering', 'Product'],
           dependencies: [],
-          success_metrics: ['Performance', 'Scalability'],
+          // success_metrics: ['Performance', 'Scalability'],
         },
         {
           autoGenerateRelationships: true,
@@ -746,14 +770,14 @@ describe('DocumentManager Integration Tests', () => {
             priority: 'high',
             keywords: ['user', 'management', 'platform'],
             metadata: {},
-            functional_requirements: ['CRUD operations'],
-            technical_requirements: ['Database design'],
-            user_stories: ['Manage users'],
-            acceptance_criteria: ['Complete user lifecycle'],
-            testing_plan: 'Comprehensive testing',
-            estimated_effort: 20,
-            complexity_score: 8,
-            risk_assessment: 'Medium',
+            // functional_requirements: ['CRUD operations'],
+            // technical_requirements: ['Database design'],
+            // user_stories: ['Manage users'],
+            // acceptance_criteria: ['Complete user lifecycle'],
+            // testing_plan: 'Comprehensive testing',
+            // estimated_effort: 20,
+            // complexity_score: 8,
+            // risk_assessment: 'Medium', // Not part of FeatureDocumentEntity interface
           },
           {
             autoGenerateRelationships: true,
@@ -820,14 +844,14 @@ describe('DocumentManager Integration Tests', () => {
               security_critical: true,
               requires_security_review: true,
             },
-            functional_requirements: ['Security validation'],
-            technical_requirements: ['Encryption', 'Audit logs'],
-            user_stories: ['Secure operations'],
-            acceptance_criteria: ['Security compliance'],
-            testing_plan: 'Security testing',
-            estimated_effort: 15,
-            complexity_score: 9,
-            risk_assessment: 'High',
+            // functional_requirements: ['Security validation'],
+            // technical_requirements: ['Encryption', 'Audit logs'],
+            // user_stories: ['Secure operations'],
+            // acceptance_criteria: ['Security compliance'],
+            // testing_plan: 'Security testing',
+            // estimated_effort: 15,
+            // complexity_score: 9,
+            // risk_assessment: 'High', // Not part of FeatureDocumentEntity interface
           },
           {
             startWorkflow: 'feature_workflow',
@@ -848,7 +872,7 @@ describe('DocumentManager Integration Tests', () => {
         includeWorkflowState: true,
       });
       const workflow = (workflowState as any)
-        .workflowState as DocumentWorkflowStateEntity;
+        .workflowState as any;
 
       expect(workflow['current_stage']).toBe('approved');
 

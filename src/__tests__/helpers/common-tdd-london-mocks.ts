@@ -1,5 +1,4 @@
 /**
-/// <reference types="./global-types" />
  * Common TDD London Mock Classes
  *
  * Ready-to-use mock classes following TDD London pattern for the most
@@ -7,7 +6,7 @@
  * with 225+ mock patterns that need conversion.
  */
 
-import { vi } from 'vitest';
+import { vi, type MockedFunction } from 'vitest';
 
 // ============================================================================
 // Most Common Mock Patterns (from scanner results)
@@ -18,7 +17,7 @@ import { vi } from 'vitest';
  * Replaces: mockCoordination = { coordinateAgents: vi.fn()... }
  */
 export class MockCoordinationService {
-  coordinateAgents: vi.MockedFunction<
+  coordinateAgents: MockedFunction<
     (
       agentIds: string[],
       topology: string,
@@ -26,11 +25,11 @@ export class MockCoordinationService {
     ) => Promise<CoordinationResult>
   > = vi.fn();
 
-  releaseCoordination: vi.MockedFunction<
+  releaseCoordination: MockedFunction<
     (coordinationId: string) => Promise<void>
   > = vi.fn();
 
-  getCoordinationStatus: vi.MockedFunction<
+  getCoordinationStatus: MockedFunction<
     (coordinationId: string) => Promise<CoordinationStatus>
   > = vi.fn();
 
@@ -91,13 +90,13 @@ export class MockCoordinationService {
  * Replaces: mockMemoryStore = { store: vi.fn(), retrieve: vi.fn()... }
  */
 export class MockMemoryStoreService {
-  store: vi.MockedFunction<(key: string, value: unknown) => Promise<void>> =
+  store: MockedFunction<(key: string, value: unknown) => Promise<void>> =
     vi.fn();
-  retrieve: vi.MockedFunction<(key: string) => Promise<unknown>> = vi.fn();
-  delete: vi.MockedFunction<(key: string) => Promise<boolean>> = vi.fn();
-  query: vi.MockedFunction<(pattern: string) => Promise<any[]>> = vi.fn();
-  close: vi.MockedFunction<() => Promise<void>> = vi.fn();
-  initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  retrieve: MockedFunction<(key: string) => Promise<unknown>> = vi.fn();
+  delete: MockedFunction<(key: string) => Promise<boolean>> = vi.fn();
+  query: MockedFunction<(pattern: string) => Promise<any[]>> = vi.fn();
+  close: MockedFunction<() => Promise<void>> = vi.fn();
+  initialize: MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
     this.store.mockResolvedValue(undefined);
@@ -145,12 +144,12 @@ export class MockMemoryStoreService {
  * Replaces: mockLogger = { info: vi.fn(), error: vi.fn()... }
  */
 export class MockLoggerService {
-  info: vi.MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
-  error: vi.MockedFunction<
+  info: MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
+  error: MockedFunction<
     (message: string, error?: Error, meta?: unknown) => void
   > = vi.fn();
-  warn: vi.MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
-  debug: vi.MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
+  warn: MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
+  debug: MockedFunction<(message: string, meta?: unknown) => void> = vi.fn();
 
   constructor() {
     // No return values needed for logger methods
@@ -199,12 +198,12 @@ export class MockLoggerService {
  * Replaces: mockSwarm = { initialize: vi.fn(), spawnAgent: vi.fn()... }
  */
 export class MockSwarmService {
-  initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
-  spawnAgent: vi.MockedFunction<(config: unknown) => Promise<string>> = vi.fn();
-  terminateAgent: vi.MockedFunction<(agentId: string) => Promise<void>> =
+  initialize: MockedFunction<() => Promise<void>> = vi.fn();
+  spawnAgent: MockedFunction<(config: unknown) => Promise<string>> = vi.fn();
+  terminateAgent: MockedFunction<(agentId: string) => Promise<void>> =
     vi.fn();
-  getSwarmStatus: vi.MockedFunction<() => Promise<SwarmStatus>> = vi.fn();
-  orchestrateTask: vi.MockedFunction<(task: unknown) => Promise<unknown>> =
+  getSwarmStatus: MockedFunction<() => Promise<SwarmStatus>> = vi.fn();
+  orchestrateTask: MockedFunction<(task: unknown) => Promise<unknown>> =
     vi.fn();
 
   constructor() {
@@ -243,7 +242,7 @@ export class MockSwarmService {
   }
 
   setupSwarmFailure(method: keyof MockSwarmService, error: string) {
-    (this[method] as vi.MockedFunction<unknown>).mockRejectedValueOnce(
+    (this[method] as MockedFunction<unknown>).mockRejectedValueOnce(
       new Error(error)
     );
     return this;
@@ -260,17 +259,17 @@ export class MockSwarmService {
  * Replaces: mockDatabase = { query: vi.fn(), transaction: vi.fn()... }
  */
 export class MockDatabaseService {
-  query: vi.MockedFunction<
+  query: MockedFunction<
     (sql: string, params?: unknown[]) => Promise<any[]>
   > = vi.fn();
-  execute: vi.MockedFunction<
+  execute: MockedFunction<
     (sql: string, params?: unknown[]) => Promise<{ affectedRows: number }>
   > = vi.fn();
-  transaction: vi.MockedFunction<
+  transaction: MockedFunction<
     (fn: (tx: unknown) => Promise<unknown>) => Promise<unknown>
   > = vi.fn();
-  connect: vi.MockedFunction<() => Promise<void>> = vi.fn();
-  disconnect: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  connect: MockedFunction<() => Promise<void>> = vi.fn();
+  disconnect: MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
     this.query.mockResolvedValue([]);
@@ -312,11 +311,11 @@ export class MockDatabaseService {
  * Replaces: mockMcpServer = { initialize: vi.fn(), handleMessage: vi.fn()... }
  */
 export class MockMCPServerService {
-  initialize: vi.MockedFunction<() => Promise<void>> = vi.fn();
-  handleMessage: vi.MockedFunction<(message: unknown) => Promise<unknown>> =
+  initialize: MockedFunction<() => Promise<void>> = vi.fn();
+  handleMessage: MockedFunction<(message: unknown) => Promise<unknown>> =
     vi.fn();
-  registerTool: vi.MockedFunction<(tool: unknown) => Promise<void>> = vi.fn();
-  shutdown: vi.MockedFunction<() => Promise<void>> = vi.fn();
+  registerTool: MockedFunction<(tool: unknown) => Promise<void>> = vi.fn();
+  shutdown: MockedFunction<() => Promise<void>> = vi.fn();
 
   constructor() {
     this.initialize.mockResolvedValue(undefined);

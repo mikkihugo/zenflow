@@ -2,6 +2,7 @@
 
 pub use crate::error::{CudaRustError, Result};
 pub use crate::memory::{DeviceBuffer, HostBuffer};
+#[cfg(feature = "webgpu-only")]
 pub use crate::runtime::{
   launch_kernel, BackendType, Block, Device, Dim3, Grid, KernelFunction,
   LaunchConfig, Runtime, Stream, ThreadContext,

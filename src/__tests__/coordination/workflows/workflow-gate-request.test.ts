@@ -49,7 +49,7 @@ class MockAGUIInterface implements AGUIInterface {
   }
 
   async askQuestion(question: unknown): Promise<string> {
-    const response = this.mockResponses.get(question.id) || 'approve';
+    const response = this.mockResponses.get((question as any).id) || 'approve';
     this.callHistory.push({ question, response });
 
     // Simulate processing delay
@@ -384,7 +384,7 @@ describe('WorkflowGateRequest System', () => {
       expect(gateRequest.workflowContext.stepName).toBe('approval-step');
       expect(gateRequest.gateType).toBe('approval');
       expect(gateRequest.question).toBe('Deploy to production?');
-      expect(gateRequest.context.version).toBe('2.1.0');
+      expect((gateRequest.context as any).version).toBe('2.1.0');
       expect(gateRequest.workflowContext.businessImpact).toBe('high');
     });
 
@@ -551,14 +551,14 @@ describe('WorkflowGateRequest System', () => {
       await processor.processWorkflowGate(gateRequest);
 
       // Check for expected events
-      const eventTypes = eventEmissions.map((e) => e.type);
+      const eventTypes = eventEmissions.map((e) => (e as any).type);
       expect(eventTypes).toContain('agui.gate.opened');
       expect(eventTypes).toContain('human.validation.requested');
       expect(eventTypes).toContain('agui.gate.closed');
 
       // Verify domain consistency
       const interfaceEvents = eventEmissions.filter(
-        (e) => e.domain === Domain.INTERFACES
+        (e) => (e as any).domain === Domain.INTERFACES
       );
       expect(interfaceEvents.length).toBeGreaterThan(0);
     });
@@ -725,8 +725,8 @@ describe('WorkflowGateRequest System', () => {
 
       expect(checkpointGate.gateType).toBe('checkpoint');
       expect(checkpointGate.workflowContext.businessImpact).toBe('medium');
-      expect(checkpointGate.context.coverage).toBe(85);
-      expect(checkpointGate.context.tests_passed).toBe(true);
+      expect((checkpointGate.context as any).coverage).toBe(85);
+      expect((checkpointGate.context as any).tests_passed).toBe(true);
       // Should have auto-approval conditions
       // expect(checkpointGate.conditionalLogic?.autoApprovalConditions).toBeDefined();
     });
@@ -852,14 +852,14 @@ describe('WorkflowGateRequest System', () => {
       expect(eventHistory.length).toBeGreaterThan(0);
 
       const validationRequested = eventHistory.find(
-        (e) => e.type === 'validation_requested'
+        (e) => (e as any).type === 'validation_requested'
       );
       expect(validationRequested).toBeDefined();
-      expect(validationRequested.requestId).toBe(`gate-${gateRequest.id}`);
+      expect((validationRequested as any).requestId).toBe(`gate-${gateRequest.id}`);
 
-      const gateOpened = eventHistory.find((e) => e.type === 'gate_opened');
+      const gateOpened = eventHistory.find((e) => (e as any).type === 'gate_opened');
       expect(gateOpened).toBeDefined();
-      expect(gateOpened.gateId).toBe(gateRequest.id);
+      expect((gateOpened as any).gateId).toBe(gateRequest.id);
     });
 
     it('should integrate with domain boundary validation', async () => {

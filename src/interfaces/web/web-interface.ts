@@ -163,6 +163,9 @@ export class WebInterface {
     // Add session management middleware
     app.use(this.sessionManager.middleware());
 
+    // Setup HTTP MCP Server on /mcp endpoint
+    await this.setupHTTPMCPServer(app);
+
     // Auto-convert MCP tools to API endpoints on startup
     await this.autoConvertMCPTools(app);
 
@@ -199,6 +202,40 @@ export class WebInterface {
         'Shared services setup failed, continuing without:',
         error instanceof Error ? error.message : String(error)
       );
+    }
+  }
+
+  /**
+   * Setup HTTP MCP Server on /mcp endpoint (not stdio).
+   * 
+   * @param app Express app instance
+   */
+  private async setupHTTPMCPServer(app: any): Promise<void> {
+    try {
+      this.logger.info('🔌 Setting up HTTP MCP server on /mcp endpoint...');
+
+      // Import HTTP MCP server (not stdio)
+      const { HTTPMCPServer } = await import('../mcp/http-mcp-server.js');
+      
+      // Create HTTP MCP server instance
+      const mcpServer = new HTTPMCPServer({
+        port: this.config.port, // Same port as web server
+        host: this.config.host || 'localhost',
+        timeout: 30000,
+        logLevel: 'info'
+      });
+
+      // Mount HTTP MCP routes on /mcp path
+      app.use('/mcp', mcpServer.getRouter());
+
+      this.logger.info('✅ HTTP MCP server mounted on /mcp endpoint');
+      this.logger.info(`📡 MCP available at: http://localhost:${this.config.port}/mcp`);
+      this.logger.info('🔗 Claude Desktop can connect to this HTTP MCP endpoint');
+      
+    } catch (error) {
+      this.logger.error('Failed to setup HTTP MCP server:', error);
+      // Continue without MCP - non-critical for web interface
+      this.logger.warn('⚠️ Continuing without HTTP MCP server');
     }
   }
 

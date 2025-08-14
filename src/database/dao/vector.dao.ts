@@ -76,7 +76,7 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
           score: match?.score,
           document: this.mapVectorDocumentToEntity(match),
           vector: match?.vector,
-        }));
+        })) || [];
 
       this.logger.debug(
         `Similarity search completed: ${results.length} results`

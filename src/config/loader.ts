@@ -4,19 +4,19 @@
  * Handles loading configuration from multiple sources with proper priority.
  */
 
-import { getLogger } from './logging-config.ts';
+import { getLogger } from './logging-config.js';
 
 const logger = getLogger('ConfigLoader');
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults.ts';
+import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults.js';
 import type {
   ConfigurationSource,
   ConfigValidationResult,
   SystemConfiguration,
-} from './types.ts';
-import { ConfigValidator } from './validator.ts';
+} from './types.js';
+import { ConfigValidator } from './validator.js';
 
 /**
  * Configuration loader with multi-source support.
@@ -108,7 +108,7 @@ export class ConfigurationLoader {
 
       if (filePath.endsWith('.json')) {
         data = JSON.parse(content);
-      } else if (filePath.endsWith('.js') || filePath.endsWith('.ts')) {
+      } else if (filePath.endsWith('.js') || filePath.endsWith('.js')) {
         // Dynamic import for JS/TS config files
         const module = await import(resolvedPath);
         data = module.default || module;
@@ -241,17 +241,17 @@ export class ConfigurationLoader {
    * @param source
    */
   private deepMerge(target: unknown, source: unknown): unknown {
-    const result = { ...target };
+    const result = { ...(target as any) };
 
-    for (const key in source) {
+    for (const key in (source as any)) {
       if (
-        source[key] &&
-        typeof source[key] === 'object' &&
-        !Array.isArray(source[key])
+        (source as any)[key] &&
+        typeof (source as any)[key] === 'object' &&
+        !Array.isArray((source as any)[key])
       ) {
-        result[key] = this.deepMerge(result?.[key] || {}, source[key]);
+        result[key] = this.deepMerge((result as any)?.[key] || {}, (source as any)[key]);
       } else {
-        result[key] = source[key];
+        result[key] = (source as any)[key];
       }
     }
 
@@ -271,17 +271,17 @@ export class ConfigurationLoader {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
-        current[part] = {};
+      if (part && (!(part in (current as any)) || typeof (current as any)?.[part] !== 'object')) {
+        (current as any)[part] = {};
       }
       if (part) {
-        current = current?.[part];
+        current = (current as any)?.[part];
       }
     }
 
     const lastPart = parts[parts.length - 1];
     if (lastPart) {
-      current[lastPart] = value;
+      (current as any)[lastPart] = value;
     }
   }
 

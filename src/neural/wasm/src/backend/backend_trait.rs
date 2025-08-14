@@ -23,6 +23,51 @@ pub struct BackendCapabilities {
 }
 
 /// Common interface for all backends
+#[cfg(target_arch = "wasm32")]
+#[async_trait(?Send)]
+pub trait BackendTrait {
+  /// Get backend name
+  fn name(&self) -> &str;
+
+  /// Get backend capabilities
+  fn capabilities(&self) -> &BackendCapabilities;
+
+  /// Initialize the backend
+  async fn initialize(&mut self) -> Result<()>;
+
+  /// Compile a kernel
+  async fn compile_kernel(&self, source: &str) -> Result<Vec<u8>>;
+
+  /// Launch a kernel
+  async fn launch_kernel(
+    &self,
+    kernel: &[u8],
+    grid: (u32, u32, u32),
+    block: (u32, u32, u32),
+    args: &[*const u8],
+  ) -> Result<()>;
+
+  /// Allocate device memory
+  fn allocate_memory(&self, size: usize) -> Result<*mut u8>;
+
+  /// Free device memory
+  fn free_memory(&self, ptr: *mut u8) -> Result<()>;
+
+  /// Copy memory
+  fn copy_memory(
+    &self,
+    dst: *mut u8,
+    src: *const u8,
+    size: usize,
+    kind: MemcpyKind,
+  ) -> Result<()>;
+
+  /// Synchronize device
+  fn synchronize(&self) -> Result<()>;
+}
+
+/// Common interface for all backends (non-WASM)
+#[cfg(not(target_arch = "wasm32"))]
 #[async_trait]
 pub trait BackendTrait: Send + Sync {
   /// Get backend name

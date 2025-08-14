@@ -622,7 +622,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
       expect(response?.success).toBe(true);
       expect(response?.data).toBeDefined();
-      expect(response?.data?.results).toBeInstanceOf(Array);
+      expect((response?.data as any)?.results).toBeInstanceOf(Array);
       expect(response?.metadata?.source).toBe('hive-fact');
       expect(response?.metadata?.confidence).toBeGreaterThan(0);
     });
@@ -687,7 +687,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       const response = await knowledgeBridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.status).toBe('queued-for-processing');
+      expect((response?.data as any)?.status).toBe('queued-for-processing');
       expect(response?.metadata?.source).toBe('swarm-contribution');
     });
 
@@ -704,8 +704,8 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
       const response = await knowledgeBridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.subscribed).toBe(true);
-      expect(response?.data?.domain).toBe('frontend');
+      expect((response?.data as any)?.subscribed).toBe(true);
+      expect((response?.data as any)?.domain).toBe('frontend');
     });
 
     test('should handle request errors gracefully', async () => {
@@ -864,7 +864,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
           'authentication'
         );
         expect(result).toBeDefined();
-        expect(result?.fallback).toBe(true);
+        expect((result as any)?.fallback).toBe(true);
       } catch (error) {
         // Query should fail but might not have fallback
         expect(error).toBeInstanceOf(Error);

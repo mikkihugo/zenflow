@@ -35,12 +35,12 @@ rustc-hash = "1.1"
 console_error_panic_hook = { version = "0.1", optional = true }
 web-sys = { version = "0.3", features = [
   "console",
-  "Performance",
   "Window",
-  "Document",
-  "Worker",
-  "MessageEvent",
-  "ErrorEvent",
+  "Request",
+  "RequestInit",
+  "RequestMode", 
+  "Response",
+  "Headers",
 ] }
 
 # Async support for WASM

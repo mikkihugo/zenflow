@@ -4,21 +4,21 @@
  * Central configuration management with hot-reloading, validation, and event system.
  */
 
-import { getLogger } from './logging-config.ts';
+import { getLogger } from './logging-config.js';
 
 const logger = getLogger('src-config-manager');
 
 import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_CONFIG } from './defaults.ts';
-import { ConfigurationLoader } from './loader.ts';
+import { DEFAULT_CONFIG } from './defaults.js';
+import { ConfigurationLoader } from './loader.js';
 import type {
   ConfigChangeEvent,
   ConfigValidationResult,
   SystemConfiguration,
-} from './types.ts';
-import { ConfigValidator } from './validator.ts';
+} from './types.js';
+import { ConfigValidator } from './validator.js';
 
 /**
  * Unified Configuration Manager.
@@ -145,7 +145,7 @@ export class ConfigurationManager extends EventEmitter {
   get<T = any>(path: string): T | undefined {
     return path
       .split('.')
-      .reduce((current: unknown, key) => current?.[key], this.config);
+      .reduce((current: unknown, key) => (current as any)?.[key], this.config) as T | undefined;
   }
 
   /**
@@ -353,17 +353,17 @@ export class ConfigurationManager extends EventEmitter {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in current) || typeof current?.[part] !== 'object')) {
-        current[part] = {};
+      if (part && (!(part in (current as any)) || typeof (current as any)?.[part] !== 'object')) {
+        (current as any)[part] = {};
       }
       if (part) {
-        current = current?.[part];
+        current = (current as any)?.[part];
       }
     }
 
     const lastPart = parts[parts.length - 1];
     if (lastPart) {
-      current[lastPart] = value;
+      (current as any)[lastPart] = value;
     }
   }
 
@@ -378,7 +378,7 @@ export class ConfigurationManager extends EventEmitter {
     const spaces = '  '.repeat(indent);
     let yaml = '';
 
-    for (const [key, value] of Object.entries(obj)) {
+    for (const [key, value] of Object.entries(obj as any)) {
       if (
         typeof value === 'object' &&
         value !== null &&

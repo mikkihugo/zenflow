@@ -88,6 +88,7 @@ github = ["octocrab", "url", "regex", "base64", "network"]
 github-graphql = ["github", "graphql_client", "serde_derive"]
 beam = ["toml", "regex"]
 auto = ["futures", "notify", "walkdir", "regex"]
+orchestration = ["auto", "notify", "walkdir", "futures"]
 storage = ["sled", "dirs", "async-trait", "regex"]
 mnesia = ["async-trait"]  # Future: Add rustler when available
 full = ["cli", "progress", "color", "network", "github", "beam", "auto", "storage"]

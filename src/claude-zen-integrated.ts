@@ -2,7 +2,9 @@
  * @file Claude-zen-integrated implementation.
  */
 
-import { getLogger } from './config/logging-config.ts';
+import { getLogger } from './config/logging-config.js';
+import type { ServerInstance, BaseError } from './types/event-emitter.js';
+import { hasErrorCode } from './types/event-emitter.js';
 
 const logger = getLogger('claude-zen-integrated');
 /**
@@ -26,7 +28,7 @@ interface IntegratedOptions {
  */
 export class ClaudeZenIntegrated {
   private options: IntegratedOptions;
-  private server?: { close: (callback?: (err?: Error) => void) => void }; // HTTP server instance.
+  private server?: ServerInstance; // HTTP server instance with proper typing
   constructor(options: IntegratedOptions = {}) {
     this.options = {
       port: 3000,
@@ -120,9 +122,9 @@ export class ClaudeZenIntegrated {
         );
       });
 
-      this.server.on('error', (err: unknown) => {
+      this.server.on('error', (err: BaseError) => {
         logger.error(`❌ Server error:`, err);
-        if (err.code === 'EADDRINUSE') {
+        if (hasErrorCode(err) && err.code === 'EADDRINUSE') {
           logger.error(`Port ${this.options.port} is already in use`);
         }
         throw err;

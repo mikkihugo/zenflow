@@ -85,8 +85,12 @@ export interface DiscoveredDomain {
   description: string;
   /** Confidence score (0-1) of domain identification */
   confidence: number;
+  /** Discovery source */
+  source: string;
   /** Associated document paths */
   documents: string[];
+  /** Relevant documents for this domain */
+  relevantDocuments: string[];
   /** Associated code file paths */
   codeFiles: string[];
   /** Extracted concepts from documents */
@@ -1066,7 +1070,9 @@ export class DomainDiscoveryBridge extends EventEmitter {
       name: domainId,
       description,
       confidence: 0.5, // Base confidence, will be updated
+      source: 'auto-discovery',
       documents: [],
+      relevantDocuments: [],
       codeFiles: category,
       concepts: [],
       category: domainId,

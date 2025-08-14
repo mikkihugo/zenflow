@@ -405,9 +405,9 @@ describe('WorkflowGatesManager', () => {
       );
 
       const resolvedEvent = await eventPromise;
-      expect(resolvedEvent.gateId).toBe(gate.id);
-      expect(resolvedEvent.decision).toBe('approved');
-      expect(resolvedEvent.resolvedBy).toBe('test-user');
+      expect((resolvedEvent as any).gateId).toBe(gate.id);
+      expect((resolvedEvent as any).decision).toBe('approved');
+      expect((resolvedEvent as any).resolvedBy).toBe('test-user');
     });
 
     it('should resolve gate with rejection', async () => {
@@ -423,7 +423,7 @@ describe('WorkflowGatesManager', () => {
       );
 
       const resolvedEvent = await eventPromise;
-      expect(resolvedEvent.decision).toBe('rejected');
+      expect((resolvedEvent as any).decision).toBe('rejected');
     });
 
     it('should cancel gate', async () => {
@@ -434,9 +434,9 @@ describe('WorkflowGatesManager', () => {
       await gatesManager.cancelGate(gate.id, 'Test cancellation', 'test-user');
 
       const cancelledEvent = await eventPromise;
-      expect(cancelledEvent.gateId).toBe(gate.id);
-      expect(cancelledEvent.reason).toBe('Test cancellation');
-      expect(cancelledEvent.cancelledBy).toBe('test-user');
+      expect((cancelledEvent as any).gateId).toBe(gate.id);
+      expect((cancelledEvent as any).reason).toBe('Test cancellation');
+      expect((cancelledEvent as any).cancelledBy).toBe('test-user');
     });
 
     it('should throw error when updating non-existent gate', async () => {
@@ -489,7 +489,7 @@ describe('WorkflowGatesManager', () => {
       );
 
       const triggeredEvent = await eventPromise;
-      expect(triggeredEvent.trigger.id).toBe(trigger.id);
+      expect((triggeredEvent as any).trigger.id).toBe(trigger.id);
     });
 
     it('should not trigger gates when conditions are not met', async () => {
@@ -626,8 +626,8 @@ describe('WorkflowGatesManager', () => {
 
       // Wait for queue processing
       const readyEvent = await readyPromise;
-      expect(readyEvent.gate).toBeDefined();
-      expect(readyEvent.queueItem).toBeDefined();
+      expect((readyEvent as any).gate).toBeDefined();
+      expect((readyEvent as any).queueItem).toBeDefined();
     });
   });
 
@@ -814,7 +814,7 @@ describe('GatePersistenceManager', () => {
       const execCalls = mockDatabase.exec.mock.calls;
       expect(
         execCalls.some((call: unknown) =>
-          call[0].includes('CREATE TABLE IF NOT EXISTS workflow_gates')
+          (call as any)[0].includes('CREATE TABLE IF NOT EXISTS workflow_gates')
         )
       ).toBe(true);
     });
@@ -1031,7 +1031,7 @@ describe('GatePersistenceManager', () => {
 
       expect(queuedGates).toHaveLength(1);
       expect(queuedGates[0]?.gate.id).toBe('test-gate-001');
-      expect(queuedGates[0]?.queueItem.id).toBe(1);
+      expect((queuedGates[0] as any)?.queueItem.id).toBe(1);
     });
 
     it('should mark queue item as processed', async () => {

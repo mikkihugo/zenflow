@@ -13,14 +13,14 @@
 //! ## Example
 //!
 //! ```rust
-//! use fact::{FactEngine, Template};
+//! use fact_tools::Fact;
 //!
 //! # async fn example() -> Result<(), Box<dyn std::error::Error>> {
-//! // Create a new FACT engine
-//! let mut engine = FactEngine::new();
+//! // Create a new FACT instance
+//! let fact = Fact::new();
 //!
 //! // Process with a template
-//! let result = engine.process(
+//! let result = fact.process(
 //!     "analysis-basic",
 //!     serde_json::json!({
 //!         "data": [1, 2, 3, 4, 5],
@@ -39,15 +39,42 @@ use std::sync::Arc;
 use std::time::Duration;
 use thiserror::Error;
 
+pub mod auto_orchestrator;
 pub mod cache;
 pub mod engine;
 pub mod processor;
 pub mod templates;
 
+// Only export GitHub module when feature is enabled
+#[cfg(feature = "github")]
+pub mod github;
+
+// Only export GraphQL module when feature is enabled
+#[cfg(feature = "github-graphql")]
+pub mod graphql;
+
+// Storage modules
+pub mod storage;
+
 pub use cache::{Cache, CacheStats};
 pub use engine::{FactEngine, ProcessingOptions};
 pub use processor::QueryProcessor;
 pub use templates::{Template, TemplateRegistry};
+
+// Conditional exports
+#[cfg(feature = "github")]
+pub use github::{GitHubAnalyzer, RepoAnalysis, RepoInfo};
+
+#[cfg(feature = "github-graphql")]
+pub use graphql::{GitHubGraphQLClient, SimpleVersionAnalysis};
+
+// Auto orchestrator - use correct export name
+#[cfg(feature = "auto")]
+pub use auto_orchestrator::AutoFactOrchestrator;
+
+// Storage - conditional on feature
+#[cfg(feature = "storage")]
+pub use storage::sled_storage::SledStorage;
 
 /// Result type for FACT operations
 pub type Result<T> = std::result::Result<T, FactError>;

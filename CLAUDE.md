@@ -124,24 +124,27 @@ Message 6: Write "package.json"
 ### 1. Add Native MCP Server (Stdio - No Port Needed)
 ```bash
 # Add claude-code-zen native swarm MCP server to Claude Code
-claude mcp add claude-zen npx claude-zen mcp start
+cd /home/mhugo/code/claude-code-zen && claude mcp add claude-zen ./bin/claude-zen-mcp-direct.sh
+
+# This script bypasses TypeScript compilation issues by running built JS directly
+# If MCP fails, check logs and ensure the server starts without database errors
 ```
 
 ### 2. Use Native MCP Tools for Advanced Coordination
 Once configured, claude-code-zen native MCP tools provide comprehensive coordination:
 
 **Initialize a swarm:**
-- Use the `mcp__claude-zen__swarm_init` tool to set up coordination topology
+- Use the `mcp__zen-swarm__swarm_init` tool to set up coordination topology
 - Choose: mesh, hierarchical, ring, or star
 - Advanced features: agent learning, prediction, health monitoring
 
 **Spawn intelligent agents:**
-- Use `mcp__claude-zen__agent_spawn` tool to create adaptive agents
+- Use `mcp__zen-swarm__agent_spawn` tool to create adaptive agents
 - Agent types: researcher, coder, analyst, optimizer, coordinator
 - Features: dynamic learning rates, performance tracking, health monitoring
 
 **Orchestrate complex tasks:**
-- Use `mcp__claude-zen__task_orchestrate` tool for intelligent coordination
+- Use `mcp__zen-swarm__task_orchestrate` tool for intelligent coordination
 - Features: task duration prediction, resource optimization, SPARC integration
 - Advanced: DSPy integration, neural coordination, ensemble methods
 
@@ -169,8 +172,8 @@ Once configured, claude-code-zen native MCP tools provide comprehensive coordina
 - `mcp__claude-zen__sparc_init` - Initialize SPARC methodology workflow
 - `mcp__claude-zen__neural_coordination` - DSPy neural coordination
 - `mcp__claude-zen__benchmark_run` - Comprehensive performance benchmarking
-- `mcp__ruv-swarm__features_detect` - Available capabilities
-- `mcp__ruv-swarm__swarm_monitor` - Real-time coordination tracking
+- `mcp__claude-zen__features_detect` - Available capabilities
+- `mcp__claude-zen__swarm_monitor` - Real-time coordination tracking
 
 ## Workflow Examples (Coordination-Focused)
 
@@ -178,58 +181,52 @@ Once configured, claude-code-zen native MCP tools provide comprehensive coordina
 **Context:** Claude Code needs to research a complex topic systematically
 
 **Step 1:** Set up research coordination
-- Tool: `mcp__ruv-swarm__swarm_init`
+- Tool: `mcp__claude-zen__swarm_init`
 - Parameters: `{"topology": "mesh", "maxAgents": 5, "strategy": "balanced"}`
 - Result: Creates a mesh topology for comprehensive exploration
 
 **Step 2:** Define research perspectives
-- Tool: `mcp__ruv-swarm__agent_spawn`
+- Tool: `mcp__claude-zen__agent_spawn`
 - Parameters: `{"type": "researcher", "name": "Literature Review"}`
-- Tool: `mcp__ruv-swarm__agent_spawn`
+- Tool: `mcp__claude-zen__agent_spawn`
 - Parameters: `{"type": "analyst", "name": "Data Analysis"}`
 - Result: Different cognitive patterns for Claude Code to use
 
 **Step 3:** Coordinate research execution
-- Tool: `mcp__ruv-swarm__task_orchestrate`
+- Tool: `mcp__claude-zen__task_orchestrate`
 - Parameters: `{"task": "Research neural architecture search papers", "strategy": "adaptive"}`
 - Result: Claude Code systematically searches, reads, and analyzes papers
 
 **What Actually Happens:**
 1. The swarm sets up a coordination framework
-2. Each agent MUST use ruv-swarm hooks for coordination:
-   - `npx ruv-swarm hook pre-task` before starting
-   - `npx ruv-swarm hook post-edit` after each file operation
-   - `npx ruv-swarm hook notification` to share decisions
+2. Each agent coordinates through the zen-swarm native system
 3. Claude Code uses its native Read, WebSearch, and Task tools
-4. The swarm coordinates through shared memory and hooks
+4. The swarm coordinates through shared memory and native coordination
 5. Results are synthesized by Claude Code with full coordination history
 
 ### Development Coordination Example
 **Context:** Claude Code needs to build a complex system with multiple components
 
 **Step 1:** Set up development coordination
-- Tool: `mcp__ruv-swarm__swarm_init`
+- Tool: `mcp__claude-zen__swarm_init`
 - Parameters: `{"topology": "hierarchical", "maxAgents": 8, "strategy": "specialized"}`
 - Result: Hierarchical structure for organized development
 
 **Step 2:** Define development perspectives
-- Tool: `mcp__ruv-swarm__agent_spawn`
+- Tool: `mcp__claude-zen__agent_spawn`
 - Parameters: `{"type": "architect", "name": "System Design"}`
 - Result: Architectural thinking pattern for Claude Code
 
 **Step 3:** Coordinate implementation
-- Tool: `mcp__ruv-swarm__task_orchestrate`
+- Tool: `mcp__claude-zen__task_orchestrate`
 - Parameters: `{"task": "Implement user authentication with JWT", "strategy": "parallel"}`
 - Result: Claude Code implements features using its native tools
 
 **What Actually Happens:**
 1. The swarm creates a development coordination plan
-2. Each agent coordinates using mandatory hooks:
-   - Pre-task hooks for context loading
-   - Post-edit hooks for progress tracking
-   - Memory storage for cross-agent coordination
+2. Each agent coordinates using the zen-swarm native system
 3. Claude Code uses Write, Edit, Bash tools for implementation
-4. Agents share progress through ruv-swarm memory
+4. Agents share progress through zen-swarm memory
 5. All code is written by Claude Code with full coordination
 
 ## Best Practices for Coordination

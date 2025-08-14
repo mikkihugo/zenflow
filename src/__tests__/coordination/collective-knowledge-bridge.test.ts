@@ -130,7 +130,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.results).toHaveLength(1);
+      expect((response?.data as any)?.results).toHaveLength(1);
       expect(response?.metadata?.source).toBe('hive-fact');
       expect(mockHiveFACT.searchFacts).toHaveBeenCalledWith({
         query: 'authentication patterns',
@@ -214,14 +214,14 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.results?.[0]).toHaveProperty('swarmContext');
-      expect(response?.data?.results?.[0]?.swarmContext).toHaveProperty(
+      expect((response?.data as any)?.results?.[0]).toHaveProperty('swarmContext');
+      expect((response?.data as any)?.results?.[0]?.swarmContext).toHaveProperty(
         'relevanceScore'
       );
-      expect(response?.data?.results?.[0]?.swarmContext).toHaveProperty(
+      expect((response?.data as any)?.results?.[0]?.swarmContext).toHaveProperty(
         'usageHistory'
       );
-      expect(response?.data?.results?.[0]?.swarmContext?.usageHistory).toBe(
+      expect((response?.data as any)?.results?.[0]?.swarmContext?.usageHistory).toBe(
         'previously-used'
       );
     });
@@ -257,7 +257,7 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.status).toBe('queued-for-processing');
+      expect((response?.data as any)?.status).toBe('queued-for-processing');
       expect(response?.metadata?.source).toBe('swarm-contribution');
       expect(mockMemoryStore.store).toHaveBeenCalledWith(
         expect.stringContaining('hive-bridge/contributions/swarm-1/'),
@@ -302,8 +302,8 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.status).toBe('update-queued');
-      expect(response?.data?.factId).toBe('fact-1');
+      expect((response?.data as any)?.status).toBe('update-queued');
+      expect((response?.data as any)?.factId).toBe('fact-1');
     });
 
     test('should reject update without fact ID', async () => {
@@ -337,8 +337,8 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect(response?.data?.subscribed).toBe(true);
-      expect(response?.data?.domain).toBe('machine-learning');
+      expect((response?.data as any)?.subscribed).toBe(true);
+      expect((response?.data as any)?.domain).toBe('machine-learning');
     });
 
     test('should reject subscription without domain', async () => {

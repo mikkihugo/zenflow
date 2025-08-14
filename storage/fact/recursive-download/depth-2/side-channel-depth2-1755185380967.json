@@ -1,0 +1,35 @@
+{
+  "name": "side-channel",
+  "version": "1.1.0",
+  "description": "Store information about any JS value in a side channel. Uses WeakMap if available....",
+  "license": "MIT",
+  "dependencies": [
+    "es-errors",
+    "object-inspect",
+    "side-channel-list",
+    "side-channel-map",
+    "side-channel-weakmap"
+  ],
+  "devDependencies": [
+    "@arethetypeswrong/cli",
+    "@ljharb/eslint-config",
+    "@ljharb/tsconfig",
+    "@types/object-inspect",
+    "@types/tape",
+    "auto-changelog",
+    "eclint",
+    "encoding",
+    "eslint",
+    "in-publish",
+    "npmignore",
+    "nyc",
+    "safe-publish-latest",
+    "tape",
+    "typescript"
+  ],
+  "dependencyCount": 5,
+  "devDependencyCount": 15,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:40.967Z",
+  "depth": 2
+}

@@ -30,7 +30,9 @@ const createTestDomain = (
   name: 'test-domain',
   description: 'Test domain for unit testing',
   confidence: 0.5,
+  source: 'test-helper',
   documents: [],
+  relevantDocuments: [],
   codeFiles: ['test.ts'],
   concepts: ['testing'],
   category: 'test',
@@ -45,7 +47,7 @@ describe('ProgressiveConfidenceBuilder', () => {
   let mockDiscoveryBridge: Mocked<DomainDiscoveryBridge>;
   let mockMemoryStore: Mocked<SessionMemoryStore>;
   let mockAgui: Mocked<AGUIInterface>;
-  let mockHiveFact: unknown;
+  let mockHiveFact: any;
 
   beforeEach(() => {
     // Create mocks
@@ -132,14 +134,14 @@ describe('ProgressiveConfidenceBuilder', () => {
         },
       ]);
 
-      const result = (await builder.buildConfidence(
+      const result = await builder.buildConfidence(
         context
-      )) as any as any as any;
+      );
 
-      expect(result?.domains.size).toBe(1);
-      expect(result?.domains?.has('auth')).toBe(true);
-      expect(result?.confidence?.overall).toBeGreaterThan(0);
-      expect(result?.learningHistory.length).toBeGreaterThan(0);
+      expect((result as any)?.domains.size).toBe(1);
+      expect((result as any)?.domains?.has('auth')).toBe(true);
+      expect((result as any)?.confidence?.overall).toBeGreaterThan(0);
+      expect((result as any)?.learningHistory.length).toBeGreaterThan(0);
     });
 
     it('should emit progress events during iterations', async () => {
@@ -256,7 +258,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       expect(askedQuestions.length).toBeGreaterThan(0);
       expect(askedQuestions[0]).toHaveProperty('type');
       expect(askedQuestions[0]).toHaveProperty('question');
-      expect(askedQuestions[0]?.question).toContain('unclear-domain');
+      expect((askedQuestions[0] as any)?.question).toContain('unclear-domain');
     });
 
     it('should update confidence based on validation responses', async () => {
@@ -442,8 +444,8 @@ describe('ProgressiveConfidenceBuilder', () => {
       // Check that confidence improved over iterations
       if (progressEvents.length >= 2) {
         expect(
-          progressEvents[progressEvents.length - 1]?.confidence
-        ).toBeGreaterThan(progressEvents[0]?.confidence);
+          (progressEvents[progressEvents.length - 1] as any)?.confidence
+        ).toBeGreaterThan((progressEvents[0] as any)?.confidence);
       }
     });
   });
@@ -521,7 +523,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Should have triggered checkpoint questions
       expect(checkpointQuestions.length).toBeGreaterThan(0);
-      expect(checkpointQuestions.some((q) => q.priority === 'critical')).toBe(
+      expect(checkpointQuestions.some((q) => (q as any).priority === 'critical')).toBe(
         true
       );
     });
@@ -675,7 +677,7 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Should have asked additional questions for under-validated domains
       expect(additionalQuestions.length).toBeGreaterThan(0);
-      expect(additionalQuestions[0]?.priority).toBe('high');
+      expect((additionalQuestions[0] as any)?.priority).toBe('high');
     });
   });
 
@@ -708,7 +710,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       await builder.buildConfidence(context);
 
       // Check that confidence changed based on responses
-      const confidenceChanges = progressEvents.map((e) => e.confidence);
+      const confidenceChanges = progressEvents.map((e) => (e as any).confidence);
       expect(
         confidenceChanges.some(
           (c, i) => i > 0 && c !== confidenceChanges[i - 1]
@@ -747,7 +749,7 @@ describe('ProgressiveConfidenceBuilder', () => {
       await builder.buildConfidence(context);
 
       expect(finalQuestions.length).toBe(1);
-      expect(finalQuestions[0]?.question).toContain('Approve and proceed');
+      expect((finalQuestions[0] as any)?.question).toContain('Approve and proceed');
     });
 
     it('should allow continuing iterations if requested', async () => {

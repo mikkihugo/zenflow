@@ -112,7 +112,7 @@ impl Device {
     // TODO: Query actual GPU properties
     Ok(DeviceProperties {
       name: "NVIDIA GPU (Simulated)".to_string(),
-      total_memory: 8 * 1024 * 1024 * 1024, // 8GB
+      total_memory: 8_usize.saturating_mul(1024).saturating_mul(1024).saturating_mul(1024), // 8GB
       max_threads_per_block: 1024,
       max_blocks_per_grid: 65535,
       warp_size: 32,
@@ -124,7 +124,7 @@ impl Device {
   fn get_webgpu_properties() -> Result<DeviceProperties> {
     Ok(DeviceProperties {
       name: "WebGPU Device".to_string(),
-      total_memory: 2 * 1024 * 1024 * 1024, // 2GB
+      total_memory: 2_usize.saturating_mul(1024).saturating_mul(1024).saturating_mul(1024), // 2GB
       max_threads_per_block: 256,
       max_blocks_per_grid: 65535,
       warp_size: 32,
@@ -136,7 +136,7 @@ impl Device {
   fn get_cpu_properties() -> DeviceProperties {
     DeviceProperties {
       name: "CPU Device".to_string(),
-      total_memory: 16 * 1024 * 1024 * 1024, // 16GB
+      total_memory: 16_usize.saturating_mul(1024).saturating_mul(1024).saturating_mul(1024), // 16GB
       max_threads_per_block: 1024,
       max_blocks_per_grid: 65535,
       warp_size: 1, // No warps on CPU

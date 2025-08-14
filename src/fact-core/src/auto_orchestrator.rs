@@ -571,7 +571,9 @@ impl AutoFactOrchestrator {
 
             // Add to recent hits and cleanup old entries
             versioned_dep.recent_hits.push(now);
-            self.cleanup_old_recent_hits(&mut versioned_dep.recent_hits);
+            // Cleanup old recent hits inline to avoid borrowing issues
+            let cutoff = chrono::Utc::now() - chrono::Duration::days(30);
+            versioned_dep.recent_hits.retain(|&hit_time| hit_time > cutoff);
 
             debug!(
               "📊 Versioned hit: {}@{} (total: {}, recent: {})",
@@ -599,7 +601,9 @@ impl AutoFactOrchestrator {
 
           // Add to recent hits and cleanup old entries
           main_entry.recent_hits.push(now);
-          self.cleanup_old_recent_hits(&mut main_entry.recent_hits);
+          // Cleanup old recent hits inline to avoid borrowing issues
+          let cutoff = chrono::Utc::now() - chrono::Duration::days(30);
+          main_entry.recent_hits.retain(|&hit_time| hit_time > cutoff);
 
           debug!(
             "📊 Main hit: {} (total: {}, recent: {})",
@@ -1086,6 +1090,7 @@ impl AutoFactOrchestrator {
       dependencies,
       last_scanned: SystemTime::now(),
       version: None,
+      last_active: chrono::Utc::now(),
     }))
   }
 
@@ -1093,7 +1098,7 @@ impl AutoFactOrchestrator {
   async fn parse_elixir_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Regex patterns for different dependency formats
@@ -1105,23 +1110,59 @@ impl AutoFactOrchestrator {
 
     // Parse Hex dependencies
     for caps in hex_pattern.captures_iter(content) {
-      deps.push(Dependency {
+      let now = chrono::Utc::now();
+      deps.push(VersionedDependency {
+
         name: caps[1].to_string(),
+
         version: caps[2].to_string(),
-        source: DependencySource::Hex,
+
         ecosystem: "beam".to_string(),
+
+        source: Some("hex".to_string()),
+
+        first_seen: now,
+
+        last_seen: now,
+
+        last_hit: now,
+
+        hit_count: 0,
+
+        recent_hits: vec![],
+
+        used_by_projects: vec![],
+
       });
     }
 
     // Parse GitHub dependencies
     for caps in github_pattern.captures_iter(content) {
-      deps.push(Dependency {
+      let now = chrono::Utc::now();
+      deps.push(VersionedDependency {
+
         name: caps[1].to_string(),
+
         version: caps
           .get(3)
           .map_or("latest".to_string(), |m| m.as_str().to_string()),
-        source: DependencySource::GitHub { repo: caps[2].to_string() },
+
         ecosystem: "beam".to_string(),
+
+        source: Some(format!("github:{}", caps[2].to_string())),
+
+        first_seen: now,
+
+        last_seen: now,
+
+        last_hit: now,
+
+        hit_count: 0,
+
+        recent_hits: vec![],
+
+        used_by_projects: vec![],
+
       });
     }
 
@@ -1132,7 +1173,7 @@ impl AutoFactOrchestrator {
   async fn parse_gleam_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple TOML parsing for Gleam dependencies
@@ -1159,11 +1200,29 @@ impl AutoFactOrchestrator {
           let name = name.trim().trim_matches('"');
           let version = version.trim().trim_matches('"');
 
-          deps.push(Dependency {
+          let now = chrono::Utc::now();
+          deps.push(VersionedDependency {
+
             name: name.to_string(),
+
             version: version.to_string(),
-            source: DependencySource::Hex, // Gleam uses Hex
+
             ecosystem: "beam".to_string(),
+
+            source: Some("hex".to_string()), // Gleam uses Hex,
+
+            first_seen: now,
+
+            last_seen: now,
+
+            last_hit: now,
+
+            hit_count: 0,
+
+            recent_hits: vec![],
+
+            used_by_projects: vec![],
+
           });
         }
       }
@@ -1176,7 +1235,7 @@ impl AutoFactOrchestrator {
   async fn parse_rust_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Parse [dependencies] section
@@ -1199,11 +1258,29 @@ impl AutoFactOrchestrator {
               "latest".to_string()
             };
 
-            deps.push(Dependency {
+            let now = chrono::Utc::now();
+            deps.push(VersionedDependency {
+
               name: name.to_string(),
-              version,
-              source: DependencySource::Crates,
+
+              version: version,
+
               ecosystem: "rust".to_string(),
+
+              source: Some("crates.io".to_string()),
+
+              first_seen: now,
+
+              last_seen: now,
+
+              last_hit: now,
+
+              hit_count: 0,
+
+              recent_hits: vec![],
+
+              used_by_projects: vec![],
+
             });
           }
         }
@@ -1217,7 +1294,7 @@ impl AutoFactOrchestrator {
   async fn parse_nodejs_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     if let Ok(json) = serde_json::from_str::<serde_json::Value>(content) {
@@ -1227,11 +1304,29 @@ impl AutoFactOrchestrator {
       {
         for (name, version) in dependencies {
           if let Some(version_str) = version.as_str() {
-            deps.push(Dependency {
+            let now = chrono::Utc::now();
+            deps.push(VersionedDependency {
+
               name: name.clone(),
+
               version: version_str.to_string(),
-              source: DependencySource::Npm,
+
               ecosystem: "nodejs".to_string(),
+
+              source: Some("npm".to_string()),
+
+              first_seen: now,
+
+              last_seen: now,
+
+              last_hit: now,
+
+              hit_count: 0,
+
+              recent_hits: vec![],
+
+              used_by_projects: vec![],
+
             });
           }
         }
@@ -1243,11 +1338,29 @@ impl AutoFactOrchestrator {
       {
         for (name, version) in dev_dependencies {
           if let Some(version_str) = version.as_str() {
-            deps.push(Dependency {
+            let now = chrono::Utc::now();
+            deps.push(VersionedDependency {
+
               name: name.clone(),
+
               version: version_str.to_string(),
-              source: DependencySource::Npm,
+
               ecosystem: "nodejs".to_string(),
+
+              source: Some("npm".to_string()),
+
+              first_seen: now,
+
+              last_seen: now,
+
+              last_hit: now,
+
+              hit_count: 0,
+
+              recent_hits: vec![],
+
+              used_by_projects: vec![],
+
             });
           }
         }
@@ -1261,19 +1374,37 @@ impl AutoFactOrchestrator {
   async fn parse_erlang_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple pattern matching for Erlang rebar.config dependencies
     let dep_pattern = regex::Regex::new(r#"\{(\w+),\s*"([^"]+)"\}"#).unwrap();
 
     for caps in dep_pattern.captures_iter(content) {
-      deps.push(Dependency {
-        name: caps[1].to_string(),
-        version: caps[2].to_string(),
-        source: DependencySource::Hex, // Erlang also uses Hex
-        ecosystem: "beam".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: caps[2].to_string(),
+
+          ecosystem: "beam".to_string(),
+
+          source: Some("hex".to_string()), // Erlang also uses Hex,
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1283,7 +1414,7 @@ impl AutoFactOrchestrator {
   async fn parse_python_requirements(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     for line in content.lines() {
@@ -1294,25 +1425,79 @@ impl AutoFactOrchestrator {
 
       // Parse requirements like "package==version" or "package>=version"
       if let Some((name, version)) = trimmed.split_once("==") {
-        deps.push(Dependency {
+        let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
           name: name.trim().to_string(),
+
           version: version.trim().to_string(),
-          source: DependencySource::PyPI,
+
           ecosystem: "python".to_string(),
+
+          source: Some("pypi".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
         });
       } else if let Some((name, version)) = trimmed.split_once(">=") {
-        deps.push(Dependency {
+        let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
           name: name.trim().to_string(),
+
           version: format!(">={}", version.trim()),
-          source: DependencySource::PyPI,
+
           ecosystem: "python".to_string(),
+
+          source: Some("pypi".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
         });
       } else {
-        deps.push(Dependency {
+        let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
           name: trimmed.to_string(),
+
           version: "latest".to_string(),
-          source: DependencySource::PyPI,
+
           ecosystem: "python".to_string(),
+
+          source: Some("pypi".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
         });
       }
     }
@@ -1321,7 +1506,7 @@ impl AutoFactOrchestrator {
   }
 
   /// Parse Python setup.py dependencies (basic extraction)
-  async fn parse_python_setup(&self, content: &str) -> Result<Vec<Dependency>> {
+  async fn parse_python_setup(&self, content: &str) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Look for install_requires patterns
@@ -1336,12 +1521,30 @@ impl AutoFactOrchestrator {
             regex::Regex::new(r#"['"]([\w-]+)(?:[><=!~]+[^'"]*)?['"]"#)
               .unwrap();
           for caps in package_pattern.captures_iter(deps_str) {
-            deps.push(Dependency {
-              name: caps[1].to_string(),
-              version: "latest".to_string(),
-              source: DependencySource::PyPI,
-              ecosystem: "python".to_string(),
-            });
+            let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: "latest".to_string(),
+
+          ecosystem: "python".to_string(),
+
+          source: Some("pypi".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
           }
         }
       }
@@ -1354,7 +1557,7 @@ impl AutoFactOrchestrator {
   async fn parse_python_pyproject(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple TOML parsing for dependencies section
@@ -1383,12 +1586,30 @@ impl AutoFactOrchestrator {
           let name = name.trim().trim_matches('"');
           let version = version.trim().trim_matches('"');
 
-          deps.push(Dependency {
-            name: name.to_string(),
-            version: version.to_string(),
-            source: DependencySource::PyPI,
-            ecosystem: "python".to_string(),
-          });
+          let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.to_string(),
+
+          version: version.to_string(),
+
+          ecosystem: "python".to_string(),
+
+          source: Some("pypi".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
         }
       }
     }
@@ -1400,7 +1621,7 @@ impl AutoFactOrchestrator {
   async fn parse_python_pipfile(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple TOML parsing for [packages] section
@@ -1427,12 +1648,30 @@ impl AutoFactOrchestrator {
           let name = name.trim().trim_matches('"');
           let version = version.trim().trim_matches('"');
 
-          deps.push(Dependency {
-            name: name.to_string(),
-            version: version.to_string(),
-            source: DependencySource::PyPI,
-            ecosystem: "python".to_string(),
-          });
+          let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.to_string(),
+
+          version: version.to_string(),
+
+          ecosystem: "python".to_string(),
+
+          source: Some("pypi".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
         }
       }
     }
@@ -1444,7 +1683,7 @@ impl AutoFactOrchestrator {
   async fn parse_go_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
     let mut in_require = false;
 
@@ -1464,12 +1703,30 @@ impl AutoFactOrchestrator {
       if in_require && !trimmed.is_empty() && !trimmed.starts_with("//") {
         let parts: Vec<&str> = trimmed.split_whitespace().collect();
         if parts.len() >= 2 {
-          deps.push(Dependency {
-            name: parts[0].to_string(),
-            version: parts[1].to_string(),
-            source: DependencySource::Go,
-            ecosystem: "go".to_string(),
-          });
+          let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: parts[0].to_string(),
+
+          version: parts[1].to_string(),
+
+          ecosystem: "go".to_string(),
+
+          source: Some("go".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
         }
       }
     }
@@ -1481,7 +1738,7 @@ impl AutoFactOrchestrator {
   async fn parse_maven_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple XML parsing for <dependency> tags
@@ -1491,12 +1748,30 @@ impl AutoFactOrchestrator {
 
     for caps in dep_pattern.captures_iter(content) {
       let name = format!("{}:{}", caps[1].trim(), caps[2].trim());
-      deps.push(Dependency {
-        name,
-        version: caps[3].trim().to_string(),
-        source: DependencySource::Maven,
-        ecosystem: "java".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name,
+
+          version: caps[3].trim().to_string(),
+
+          ecosystem: "java".to_string(),
+
+          source: Some("maven".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1506,7 +1781,7 @@ impl AutoFactOrchestrator {
   async fn parse_gradle_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple pattern for Gradle dependencies like implementation 'group:artifact:version'
@@ -1517,12 +1792,30 @@ impl AutoFactOrchestrator {
 
     for caps in dep_pattern.captures_iter(content) {
       let name = format!("{}:{}", caps[1].trim(), caps[2].trim());
-      deps.push(Dependency {
-        name,
-        version: caps[3].trim().to_string(),
-        source: DependencySource::Maven,
-        ecosystem: "java".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name,
+
+          version: caps[3].trim().to_string(),
+
+          ecosystem: "java".to_string(),
+
+          source: Some("maven".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1532,7 +1825,7 @@ impl AutoFactOrchestrator {
   async fn parse_clojure_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple pattern for Clojure dependencies like [group/artifact "version"]
@@ -1540,12 +1833,30 @@ impl AutoFactOrchestrator {
       regex::Regex::new(r#"\[([^\s\]]+)\s+"([^"]+)"\]"#).unwrap();
 
     for caps in dep_pattern.captures_iter(content) {
-      deps.push(Dependency {
-        name: caps[1].to_string(),
-        version: caps[2].to_string(),
-        source: DependencySource::Maven, // Clojure uses Maven repos
-        ecosystem: "clojure".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: caps[2].to_string(),
+
+          ecosystem: "clojure".to_string(),
+
+          source: Some("maven".to_string()), // Clojure uses Maven repos,
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1555,7 +1866,7 @@ impl AutoFactOrchestrator {
   async fn parse_ruby_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Parse gem declarations like gem 'name', 'version'
@@ -1569,12 +1880,30 @@ impl AutoFactOrchestrator {
         .get(2)
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "latest".to_string());
-      deps.push(Dependency {
-        name: caps[1].to_string(),
-        version,
-        source: DependencySource::RubyGems,
-        ecosystem: "ruby".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: version,
+
+          ecosystem: "ruby".to_string(),
+
+          source: Some("rubygems".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1584,7 +1913,7 @@ impl AutoFactOrchestrator {
   async fn parse_php_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     if let Ok(json) = serde_json::from_str::<serde_json::Value>(content) {
@@ -1597,12 +1926,30 @@ impl AutoFactOrchestrator {
             if name != "php" {
               // Skip PHP version constraint
               if let Some(version_str) = version.as_str() {
-                deps.push(Dependency {
-                  name: name.clone(),
-                  version: version_str.to_string(),
-                  source: DependencySource::Packagist,
-                  ecosystem: "php".to_string(),
-                });
+                let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.clone(),
+
+          version: version_str.to_string(),
+
+          ecosystem: "php".to_string(),
+
+          source: Some("packagist".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
               }
             }
           }
@@ -1617,7 +1964,7 @@ impl AutoFactOrchestrator {
   async fn parse_dotnet_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Parse PackageReference elements
@@ -1627,12 +1974,30 @@ impl AutoFactOrchestrator {
     .unwrap();
 
     for caps in package_pattern.captures_iter(content) {
-      deps.push(Dependency {
-        name: caps[1].to_string(),
-        version: caps[2].to_string(),
-        source: DependencySource::NuGet,
-        ecosystem: "dotnet".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: caps[2].to_string(),
+
+          ecosystem: "dotnet".to_string(),
+
+          source: Some("nuget".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1642,7 +2007,7 @@ impl AutoFactOrchestrator {
   async fn parse_swift_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Simple pattern for Swift Package Manager dependencies
@@ -1653,12 +2018,30 @@ impl AutoFactOrchestrator {
 
     for caps in dep_pattern.captures_iter(content) {
       let name = caps[1].split('/').last().unwrap_or(&caps[1]).to_string();
-      deps.push(Dependency {
-        name,
-        version: caps[2].to_string(),
-        source: DependencySource::SwiftPM,
-        ecosystem: "swift".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name,
+
+          version: caps[2].to_string(),
+
+          ecosystem: "swift".to_string(),
+
+          source: Some("swiftpm".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1668,7 +2051,7 @@ impl AutoFactOrchestrator {
   async fn parse_cocoapods_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Parse pod declarations
@@ -1682,12 +2065,30 @@ impl AutoFactOrchestrator {
         .get(2)
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "latest".to_string());
-      deps.push(Dependency {
-        name: caps[1].to_string(),
-        version,
-        source: DependencySource::CocoaPods,
-        ecosystem: "swift".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: version,
+
+          ecosystem: "swift".to_string(),
+
+          source: Some("cocoapods".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1697,7 +2098,7 @@ impl AutoFactOrchestrator {
   async fn parse_dart_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     let lines: Vec<&str> = content.lines().collect();
@@ -1722,12 +2123,30 @@ impl AutoFactOrchestrator {
           let version = version.trim().trim_matches('"').trim_matches('\'');
 
           if !name.is_empty() && !version.is_empty() {
-            deps.push(Dependency {
-              name: name.to_string(),
-              version: version.to_string(),
-              source: DependencySource::Pub,
-              ecosystem: "dart".to_string(),
-            });
+            let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.to_string(),
+
+          version: version.to_string(),
+
+          ecosystem: "dart".to_string(),
+
+          source: Some("pub".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
           }
         }
       }
@@ -1740,7 +2159,7 @@ impl AutoFactOrchestrator {
   async fn parse_haskell_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Look for build-depends sections
@@ -1774,17 +2193,35 @@ impl AutoFactOrchestrator {
   async fn parse_haskell_deps_line(
     &self,
     line: &str,
-    deps: &mut Vec<Dependency>,
+    deps: &mut Vec<VersionedDependency>,
   ) {
     for dep_spec in line.split(',') {
       let dep_spec = dep_spec.trim();
       if !dep_spec.is_empty() && dep_spec != "base" {
         let name = dep_spec.split_whitespace().next().unwrap_or(dep_spec);
-        deps.push(Dependency {
+        let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
           name: name.to_string(),
+
           version: "latest".to_string(),
-          source: DependencySource::Hackage,
+
           ecosystem: "haskell".to_string(),
+
+          source: Some("hackage".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
         });
       }
     }
@@ -1794,7 +2231,7 @@ impl AutoFactOrchestrator {
   async fn parse_haskell_stack_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     let lines: Vec<&str> = content.lines().collect();
@@ -1816,12 +2253,30 @@ impl AutoFactOrchestrator {
       if in_extra_deps && trimmed.starts_with('-') {
         let dep = trimmed.trim_start_matches('-').trim();
         if let Some((name, version)) = dep.split_once('-') {
-          deps.push(Dependency {
-            name: name.to_string(),
-            version: version.to_string(),
-            source: DependencySource::Hackage,
-            ecosystem: "haskell".to_string(),
-          });
+          let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.to_string(),
+
+          version: version.to_string(),
+
+          ecosystem: "haskell".to_string(),
+
+          source: Some("hackage".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
         }
       }
     }
@@ -1833,7 +2288,7 @@ impl AutoFactOrchestrator {
   async fn parse_perl_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Parse requires statements
@@ -1847,12 +2302,30 @@ impl AutoFactOrchestrator {
         .get(2)
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "latest".to_string());
-      deps.push(Dependency {
-        name: caps[1].to_string(),
-        version,
-        source: DependencySource::CPAN,
-        ecosystem: "perl".to_string(),
-      });
+      let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: caps[1].to_string(),
+
+          version: version,
+
+          ecosystem: "perl".to_string(),
+
+          source: Some("cpan".to_string()),
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
     }
 
     Ok(deps)
@@ -1862,7 +2335,7 @@ impl AutoFactOrchestrator {
   async fn parse_r_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     let lines: Vec<&str> = content.lines().collect();
@@ -1900,18 +2373,36 @@ impl AutoFactOrchestrator {
     Ok(deps)
   }
 
-  async fn parse_r_deps_line(&self, line: &str, deps: &mut Vec<Dependency>) {
+  async fn parse_r_deps_line(&self, line: &str, deps: &mut Vec<VersionedDependency>) {
     for dep_spec in line.split(',') {
       let dep_spec = dep_spec.trim();
       if !dep_spec.is_empty() && dep_spec != "R" {
         let name = dep_spec.split_whitespace().next().unwrap_or(dep_spec);
         if !name.is_empty() {
-          deps.push(Dependency {
-            name: name.to_string(),
-            version: "latest".to_string(),
-            source: DependencySource::Maven, // R uses CRAN, but we don't have that enum variant
-            ecosystem: "r".to_string(),
-          });
+          let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.to_string(),
+
+          version: "latest".to_string(),
+
+          ecosystem: "r".to_string(),
+
+          source: Some("maven".to_string()), // R uses CRAN, but we don't have that enum variant,
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
         }
       }
     }
@@ -1921,7 +2412,7 @@ impl AutoFactOrchestrator {
   async fn parse_julia_dependencies(
     &self,
     content: &str,
-  ) -> Result<Vec<Dependency>> {
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     let lines: Vec<&str> = content.lines().collect();
@@ -1942,12 +2433,30 @@ impl AutoFactOrchestrator {
       if in_deps_section && trimmed.contains('=') && !trimmed.starts_with('#') {
         if let Some((name, _uuid)) = trimmed.split_once('=') {
           let name = name.trim().trim_matches('"');
-          deps.push(Dependency {
-            name: name.to_string(),
-            version: "latest".to_string(),
-            source: DependencySource::Maven, // Julia has its own registry, but we don't have that enum
-            ecosystem: "julia".to_string(),
-          });
+          let now = chrono::Utc::now();
+        deps.push(VersionedDependency {
+
+          name: name.to_string(),
+
+          version: "latest".to_string(),
+
+          ecosystem: "julia".to_string(),
+
+          source: Some("maven".to_string()), // Julia has its own registry, but we don't have that enum,
+
+          first_seen: now,
+
+          last_seen: now,
+
+          last_hit: now,
+
+          hit_count: 0,
+
+          recent_hits: vec![],
+
+          used_by_projects: vec![],
+
+        });
         }
       }
     }
@@ -2224,14 +2733,14 @@ mod tests {
   #[tokio::test]
   async fn test_auto_orchestrator_creation() {
     let config = AutoConfig::default();
-    let orchestrator = AutoOrchestrator::new(config).await.unwrap();
+    let orchestrator = AutoFactOrchestrator::new(config).await.unwrap();
     assert!(!orchestrator.is_running);
   }
 
   #[tokio::test]
   async fn test_dependency_parsing() {
     let config = AutoConfig::default();
-    let orchestrator = AutoOrchestrator::new(config).await.unwrap();
+    let orchestrator = AutoFactOrchestrator::new(config).await.unwrap();
 
     let mix_content = r#"
         defmodule MyApp.MixProject do

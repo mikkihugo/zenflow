@@ -9,8 +9,12 @@
     "outDir": "./dist",
     "declaration": false,
     "declarationMap": false,
-    "sourceMap": false,
-    "removeComments": true
+    "sourceMap": true,
+    "removeComments": true,
+    "noImplicitAny": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "strict": false
   },
   "exclude": [
     "node_modules",

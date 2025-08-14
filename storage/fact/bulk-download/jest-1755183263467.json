@@ -1,0 +1,17 @@
+{
+  "name": "jest",
+  "version": "30.0.5",
+  "description": "Delightful JavaScript Testing....",
+  "license": "MIT",
+  "dependencies": [
+    "@jest/core",
+    "@jest/types",
+    "import-local",
+    "jest-cli"
+  ],
+  "devDependencies": [],
+  "dependencyCount": 4,
+  "weeklyDownloads": null,
+  "realData": true,
+  "fetchedAt": "2025-08-14T14:54:23.466Z"
+}

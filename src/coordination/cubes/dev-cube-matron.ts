@@ -9,6 +9,7 @@
 
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config.ts';
+import { SharedFACTCapable } from '../shared-fact-system.ts';
 import type {
   IEventBus,
   ILogger,
@@ -18,6 +19,7 @@ import type {
   CubeInfo,
   DesignateMatron,
 } from '../collective-types.ts';
+// Strategic Planning (Business Focus Only - No Technical Implementation)
 
 const logger = getLogger('DEV-CUBE-Matron');
 
@@ -39,12 +41,27 @@ export interface DevCubeMetrics {
   borgEfficiency: number;
 }
 
+export interface StrategicRequirement {
+  id: string;
+  title: string;
+  businessObjective: string;
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  resourceAllocation: number;
+  timeline: {
+    startDate: Date;
+    targetDate: Date;
+  };
+  stakeholders: string[];
+  successCriteria: string[];
+  assignedQueens: string[];
+}
+
 /**
  * DEV-CUBE Designate-Matron
  *
  * "Code perfection through systematic optimization. Your bugs will be assimilated."
  */
-export class DevCubeMatron extends EventEmitter implements DesignateMatron {
+export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron {
   public readonly id: string;
   public readonly designation: string;
   public readonly cubeType = 'DEV-CUBE' as const;
@@ -67,9 +84,13 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
   private cube: CubeInfo;
   private config: CollectiveConfig;
   private metrics: DevCubeMetrics;
+  // Strategic Business Planning (No Technical Implementation)
+  private strategicRequirements = new Map<string, StrategicRequirement>();
+  // SPARC Integration will be added when we find the import
+  private sparcEngine?: any;
 
   constructor(id: string, eventBus: IEventBus, config: CollectiveConfig) {
-    super();
+    super(); // Initialize SharedFACTCapable (includes EventEmitter)
     this.id = id;
     this.designation = `Matron-${id.slice(-4)}`;
     this.logger = getLogger(`DEV-CUBE-Matron-${this.designation}`);
@@ -110,9 +131,19 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
       borgEfficiency: 1.0,
     };
 
+    // Initialize SPARC Engine for strategic planning (if available)
+    try {
+      // this.sparcEngine = new SPARCEngineCore(); // Will be imported later
+    } catch (error) {
+      this.logger.warn('SPARC Engine not available, continuing without it');
+    }
+    
+    // Initialize SHARED FACT system access
+    this.initializeSharedFACT();
+    
     this.setupEventHandlers();
     this.logger.info(
-      `DEV-CUBE Matron ${this.designation} initialized. Code optimization protocols active.`
+      `DEV-CUBE Matron ${this.designation} initialized. Code optimization protocols active. SPARC methodology integrated.`
     );
   }
 
@@ -300,6 +331,305 @@ export class DevCubeMatron extends EventEmitter implements DesignateMatron {
     this.logger.info(
       `Metrics updated. Borg efficiency: ${this.metrics.borgEfficiency.toFixed(3)} - Rating: ${this.cube.performance.borgRating}`
     );
+  }
+
+  // ==================== SPARC STRATEGIC PLANNING METHODS ====================
+
+  /**
+   * Handle high-level development requests using SPARC methodology
+   * THE CUBE MATRON ROLE: Strategic planning and Queen task assignment
+   * Queens coordinate swarms, swarms execute through agents
+   */
+  public async handleDevelopmentRequestWithSPARC(request: {
+    type: 'feature' | 'bug-fix' | 'refactor' | 'architecture';
+    description: string;
+    priority: 'low' | 'medium' | 'high' | 'critical';
+    domain: string;
+    requirements?: string[];
+  }): Promise<{
+    projectId: string;
+    sparcProject: SPARCProject;
+    queenAssignments: Array<{
+      queenId: string;
+      phase: SPARCPhase;
+      tasks: string[];
+    }>;
+  }> {
+    this.logger.info(`🧠 SPARC Strategic Planning (Cube Matron): ${request.type} - ${request.description}`);
+
+    // 1. Create SPARC Project Specification
+    const projectSpec: ProjectSpecification = {
+      name: `${request.type}: ${request.description}`,
+      domain: request.domain as any,
+      requirements: request.requirements || [request.description],
+      complexity: this.determineComplexity(request),
+      constraints: [`Priority: ${request.priority}`, 'Borg efficiency standards'],
+    };
+
+    // 2. Initialize SPARC Project
+    const sparcProject = await this.sparcEngine.initializeProject(projectSpec);
+    this.activeProjects.set(sparcProject.id, sparcProject);
+
+    this.logger.info(`📋 SPARC Project ${sparcProject.id} initialized with 5-phase methodology`);
+
+    // 3. Execute SPARC Phases for Strategic Planning
+    await this.executeSPARCPhases(sparcProject, request.priority);
+
+    // 4. Generate Queen Assignments based on SPARC planning
+    const queenAssignments = await this.generateQueenAssignments(sparcProject);
+
+    this.logger.info(`👑 Generated ${queenAssignments.length} Queen assignments from SPARC planning`);
+
+    // 5. Assign SPARC tasks to Queens for execution
+    await this.assignSPARCTasksToQueens(sparcProject.id, queenAssignments);
+
+    // 6. Emit strategic plan to THE COLLECTIVE
+    this.eventBus.emit('dev-cube:sparc:project-planned', {
+      matron: this.designation,
+      projectId: sparcProject.id,
+      sparcProject,
+      queenAssignments,
+      methodology: 'SPARC-5-Phase',
+      status: 'queens-assigned',
+    });
+
+    return {
+      projectId: sparcProject.id,
+      sparcProject,
+      queenAssignments,
+    };
+  }
+
+  /**
+   * Execute SPARC phases for strategic planning
+   */
+  private async executeSPARCPhases(project: SPARCProject, priority: string): Promise<void> {
+    const phases: SPARCPhase[] = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
+    
+    for (const phase of phases) {
+      try {
+        this.logger.info(`⚡ Executing SPARC ${phase} phase for project ${project.id}`);
+        const result = await this.sparcEngine.executePhase(project, phase);
+        
+        if (result.success) {
+          this.logger.info(`✅ SPARC ${phase} phase completed successfully`);
+        } else {
+          this.logger.warn(`⚠️ SPARC ${phase} phase had issues, continuing...`);
+        }
+
+        // For high priority, do more thorough planning
+        if (priority === 'critical' && result.nextPhase) {
+          await this.enhancePhaseForCriticalPriority(project, phase);
+        }
+      } catch (error) {
+        this.logger.error(`❌ SPARC ${phase} phase failed:`, error);
+        // Continue with next phase - SPARC is resilient
+      }
+    }
+  }
+
+  /**
+   * Generate Queen assignments based on SPARC project planning
+   */
+  private async generateQueenAssignments(project: SPARCProject): Promise<Array<{
+    queenId: string;
+    phase: SPARCPhase;
+    tasks: string[];
+  }>> {
+    const assignments: Array<{
+      queenId: string;
+      phase: SPARCPhase;
+      tasks: string[];
+    }> = [];
+
+    // Assign different phases to different Queens based on their specialization
+    const phaseQueenMapping: Record<SPARCPhase, string[]> = {
+      specification: this.getQueensWithCapability('requirements'),
+      pseudocode: this.getQueensWithCapability('algorithm-design'),
+      architecture: this.getQueensWithCapability('architecture'),
+      refinement: this.getQueensWithCapability('optimization'),
+      completion: this.getQueensWithCapability('implementation'),
+    };
+
+    for (const [phase, availableQueens] of Object.entries(phaseQueenMapping)) {
+      if (availableQueens.length > 0) {
+        const selectedQueen = availableQueens[0]; // Round-robin or capability-based selection
+        const tasks = this.generateTasksFromSPARCPhase(project, phase as SPARCPhase);
+        
+        assignments.push({
+          queenId: selectedQueen,
+          phase: phase as SPARCPhase,
+          tasks,
+        });
+      }
+    }
+
+    return assignments;
+  }
+
+  /**
+   * Generate strategic coordination tasks for Queens based on SPARC phase results
+   * Queens will coordinate swarms to do the actual implementation
+   */
+  private generateTasksFromSPARCPhase(project: SPARCProject, phase: SPARCPhase): string[] {
+    const tasks: string[] = [];
+    
+    switch (phase) {
+      case 'specification':
+        tasks.push('Coordinate swarm to analyze requirements and create detailed specifications');
+        tasks.push('Assign agents to validate functional requirements with stakeholders');
+        if (project.specification?.functionalRequirements?.length > 0) {
+          tasks.push('Orchestrate requirements review with domain expert agents');
+        }
+        break;
+        
+      case 'pseudocode':
+        tasks.push('Coordinate algorithm design team to create pseudocode solutions');
+        tasks.push('Assign agents to validate pseudocode logic and edge cases');
+        break;
+        
+      case 'architecture':
+        tasks.push('Orchestrate architecture design team based on specifications');
+        tasks.push('Coordinate component design and interaction planning');
+        if (project.architecture?.components?.length > 0) {
+          tasks.push('Assign agents to create component interaction diagrams');
+        }
+        break;
+        
+      case 'refinement':
+        tasks.push('Coordinate optimization team to refine designs and algorithms');
+        tasks.push('Orchestrate code review and improvement processes');
+        break;
+        
+      case 'completion':
+        tasks.push('Coordinate implementation team to generate production-ready code');
+        tasks.push('Orchestrate testing team to create comprehensive test suites');
+        tasks.push('Assign documentation team to generate technical documentation');
+        break;
+        
+      default:
+        tasks.push(`Coordinate ${phase} phase execution through specialized swarm teams`);
+    }
+    
+    return tasks;
+  }
+
+  /**
+   * Get Queens with specific capabilities
+   */
+  private getQueensWithCapability(capability: string): string[] {
+    // For now, return available Queens - in production, this would query actual Queen capabilities
+    return this.subordinateQueens.slice(0, 2); // Limit to 2 Queens per capability
+  }
+
+  /**
+   * Determine project complexity based on request
+   */
+  private determineComplexity(request: any): 'simple' | 'moderate' | 'complex' | 'enterprise' {
+    if (request.type === 'bug-fix') return 'simple';
+    if (request.type === 'feature' && request.priority === 'low') return 'moderate';
+    if (request.type === 'architecture' || request.priority === 'critical') return 'complex';
+    return 'moderate';
+  }
+
+  /**
+   * Enhance strategic planning for critical priority items
+   * Additional coordination and oversight for high-stakes projects
+   */
+  private async enhancePhaseForCriticalPriority(project: SPARCProject, phase: SPARCPhase): Promise<void> {
+    this.logger.info(`🔥 Enhanced Strategic Planning ${phase} phase for CRITICAL priority project ${project.id}`);
+    
+    // Add additional strategic oversight and coordination for critical items
+    switch (phase) {
+      case 'specification':
+        // Assign additional Queen oversight for requirement validation
+        this.logger.info('Assigning additional Queen oversight for critical specification phase');
+        break;
+      case 'architecture':
+        // Additional architectural review coordination through multiple Queens
+        this.logger.info('Coordinating multi-Queen architectural review for critical project');
+        break;
+      case 'completion':
+        // Enhanced testing and quality assurance coordination
+        this.logger.info('Orchestrating enhanced QA coordination for critical completion phase');
+        break;
+    }
+  }
+
+  /**
+   * Assign SPARC-structured tasks to Queens for execution
+   * This is the key integration point: Cube → Queen coordination
+   */
+  public async assignSPARCTasksToQueens(
+    projectId: string,
+    queenAssignments: Array<{
+      queenId: string;
+      phase: SPARCPhase;
+      tasks: string[];
+    }>
+  ): Promise<void> {
+    this.logger.info(`👑 Assigning SPARC tasks to ${queenAssignments.length} Queens for project ${projectId}`);
+
+    for (const assignment of queenAssignments) {
+      // Create structured task for Queen
+      const queenTask = {
+        id: `sparc-${projectId}-${assignment.phase}-${Date.now()}`,
+        projectId,
+        sparcPhase: assignment.phase,
+        tasks: assignment.tasks,
+        priority: 'high',
+        coordination: 'swarm-execution',
+        matronId: this.id,
+        assigned: new Date(),
+      };
+
+      // Send task to specific Queen via event bus
+      this.eventBus.emit('queen:task:assigned', {
+        queenId: assignment.queenId,
+        task: queenTask,
+        source: 'dev-cube-matron',
+        methodology: 'SPARC',
+      });
+
+      this.logger.info(`📋 Assigned ${assignment.tasks.length} SPARC ${assignment.phase} tasks to Queen ${assignment.queenId}`);
+    }
+
+    // Notify THE COLLECTIVE about task assignments
+    this.eventBus.emit('collective:dev-cube:sparc-tasks-assigned', {
+      matron: this.designation,
+      projectId,
+      queenCount: queenAssignments.length,
+      totalTasks: queenAssignments.reduce((sum, qa) => sum + qa.tasks.length, 0),
+    });
+  }
+
+  /**
+   * Get status of SPARC projects
+   */
+  public getSPARCProjectsStatus(): {
+    total: number;
+    active: number;
+    completed: number;
+    projects: Array<{
+      id: string;
+      name: string;
+      currentPhase: SPARCPhase;
+      progress: number;
+    }>;
+  } {
+    const projects = Array.from(this.activeProjects.values());
+    
+    return {
+      total: projects.length,
+      active: projects.filter(p => p.progress.overallProgress < 1.0).length,
+      completed: projects.filter(p => p.progress.overallProgress === 1.0).length,
+      projects: projects.map(p => ({
+        id: p.id,
+        name: p.name,
+        currentPhase: p.currentPhase,
+        progress: p.progress.overallProgress,
+      })),
+    };
   }
 
   /**

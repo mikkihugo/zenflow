@@ -2,12 +2,12 @@
  * @file Wasm-binding-interface implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config.js';
 import type {
   NeuralConfig,
   NeuralNetworkInterface,
   WasmNeuralBinding,
-} from '../core/interfaces/base-interfaces.ts';
+} from '../core/interfaces/base-interfaces.js';
 
 const logger = getLogger('WasmBinding');
 
@@ -38,7 +38,7 @@ class WasmBindingProvider implements WasmBindingInterface {
     if (!this.wasmModule) {
       try {
         // Use public API instead of direct neural/wasm import
-        const { createNeuralWASM } = await import('../neural/public-api.ts');
+        const { createNeuralWASM } = await import('../neural/public-api.js');
         this.wasmModule = await createNeuralWASM();
       } catch (error) {
         logger.warn(

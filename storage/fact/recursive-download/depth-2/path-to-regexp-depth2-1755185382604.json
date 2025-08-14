@@ -1,0 +1,22 @@
+{
+  "name": "path-to-regexp",
+  "version": "8.2.0",
+  "description": "Express style path to RegExp utility...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "recheck",
+    "size-limit",
+    "typescript",
+    "@types/node",
+    "@types/semver",
+    "@vitest/coverage-v8",
+    "@borderless/ts-scripts",
+    "@size-limit/preset-small-lib"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 8,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:42.604Z",
+  "depth": 2
+}

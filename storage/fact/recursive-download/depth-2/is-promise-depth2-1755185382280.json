@@ -1,0 +1,13 @@
+{
+  "name": "is-promise",
+  "version": "4.0.0",
+  "description": "Test whether an object looks like a promises-a+ promise...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [],
+  "dependencyCount": 0,
+  "devDependencyCount": 0,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:42.279Z",
+  "depth": 2
+}

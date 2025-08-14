@@ -1,0 +1,25 @@
+{
+  "name": "parseurl",
+  "version": "1.3.3",
+  "description": "parse a url with memoization...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "mocha",
+    "eslint",
+    "istanbul",
+    "benchmark",
+    "fast-url-parser",
+    "beautify-benchmark",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 11,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:36.076Z",
+  "depth": 1
+}

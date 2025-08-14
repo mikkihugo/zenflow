@@ -415,11 +415,17 @@ export class DALFactory {
     );
 
     try {
+      // Merge config with registered entity configuration
+      const entityConfig = config.entityType ? this.getEntityConfig(config.entityType) : null;
+      const enrichedConfig = entityConfig 
+        ? { ...entityConfig, ...config } // Entity config as base, with config overrides
+        : config;
+
       // Get or create database adapter
-      const adapter = await this.getOrCreateAdapter(config);
+      const adapter = await this.getOrCreateAdapter(enrichedConfig);
 
       // Create repository based on database type
-      const repository = await this.createRepositoryInstance<T>(config, adapter);
+      const repository = await this.createRepositoryInstance<T>(enrichedConfig, adapter);
 
       // Cache the repository
       this.repositoryCache.set(cacheKey, repository);
@@ -506,14 +512,20 @@ export class DALFactory {
     );
 
     try {
+      // Merge config with registered entity configuration
+      const entityConfig = config.entityType ? this.getEntityConfig(config.entityType) : null;
+      const enrichedConfig = entityConfig 
+        ? { ...entityConfig, ...config } // Entity config as base, with config overrides
+        : config;
+
       // Get repository first
-      const repository = await this.createRepository<T>(config);
+      const repository = await this.createRepository<T>(enrichedConfig);
 
       // Get or create database adapter
-      const adapter = await this.getOrCreateAdapter(config);
+      const adapter = await this.getOrCreateAdapter(enrichedConfig);
 
       // Create DAO instance
-      const dao = await this.createDAOInstance<T>(config, repository, adapter);
+      const dao = await this.createDAOInstance<T>(enrichedConfig, repository, adapter);
 
       // Cache the DAO
       this.daoCache.set(cacheKey, dao);

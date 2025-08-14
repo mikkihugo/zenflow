@@ -163,7 +163,7 @@ class RegressionTestingPipeline {
 
       // Set environment variables
       process.env['NODE_ENV'] = 'test';
-      process.env['RUV_SWARM_TEST_MODE'] = 'regression';
+      process.env['ZEN_SWARM_TEST_MODE'] = 'regression';
 
       setupResult.data = {
         nodeVersion,

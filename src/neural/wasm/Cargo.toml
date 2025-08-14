@@ -1,9 +1,9 @@
 [package]
-name = "cuda-rust-wasm"
+name = "zen-swarm-neural"
 version = "0.1.6"
 edition = "2021"
-authors = ["CUDA-Rust Team"]
-description = "CUDA to Rust transpiler with WebGPU/WASM support"
+authors = ["zen-swarm Team"]
+description = "zen-swarm neural networks with CUDA-Rust transpiler and WASM acceleration"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/vibecast/cuda-rust-wasm"
 keywords = ["cuda", "gpu", "webgpu", "wasm", "transpiler"]
@@ -32,11 +32,11 @@ futures = "0.3"
 # Serialization
 serde = { version = "1.0", features = ["derive"], optional = true }
 serde_json = { version = "1.0", optional = true }
-bincode = { version = "2.0", optional = true }
+bincode = { version = "1.3", optional = true }
 
 # GPU backends
-wgpu = { version = "0.19", features = ["webgl", "webgpu"] }
-bytemuck = { version = "1.14", features = ["derive"] }
+wgpu = { version = "0.19", features = ["webgl", "webgpu"], optional = true }
+bytemuck = { version = "1.14", features = ["derive"], optional = true }
 
 # Memory management
 parking_lot = "0.12"  # Faster mutex implementation
@@ -48,38 +48,31 @@ env_logger = "0.11"
 tracing = "0.1"
 tracing-subscriber = "0.3"
 rand = "0.8"
+getrandom = { version = "0.2", features = ["js"], optional = true }
 num-traits = "0.2.19"
 pollster = "0.4.0"
 async-trait = "0.1.88"
 
-# WebAssembly support
+# WebAssembly support - minimal
 [target.'cfg(target_arch = "wasm32")'.dependencies]
 wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+console_error_panic_hook = "0.1"
+wasm-logger = "0.2"
+
+# Conditional web-sys for minimal vs full builds
 web-sys = { version = "0.3", features = [
     "console",
     "Window",
-    "Document",
-    "Element",
-    "HtmlCanvasElement",
-    "WebGl2RenderingContext",
-    "GpuDevice",
-    "GpuQueue",
-    "GpuBuffer",
-    "GpuTexture",
-    "GpuShaderModule",
-    "GpuComputePipeline",
-    "GpuBindGroup",
-    "GpuBindGroupLayout",
-    "GpuCommandEncoder",
-    "GpuComputePassEncoder",
+    "Performance",
 ] }
-js-sys = "0.3"
-console_error_panic_hook = "0.1"
+
+# Only include WebGPU features for webgpu-only builds
+wasm-bindgen-futures = { version = "0.4", optional = true }
 # Override tokio for WASM to exclude net features
 tokio = { version = "1.35", features = ["rt", "sync", "time"], default-features = false }
 wgpu = { version = "0.19", features = ["webgl"] }
-getrandom = { version = "0.3", features = ["wasm_js"] }
+getrandom = { version = "0.2", features = ["js"] }
 
 # Native GPU support
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -114,12 +107,15 @@ cc = "1.0"  # C/C++ compilation
 pkg-config = "0.3"  # System dependency detection
 
 [features]
-default = ["native-gpu", "serde"]
+default = ["cpu-only", "serde"]
 native-gpu = ["cuda-sys", "opencl3"]
 vulkan = ["vulkano"]
 cuda-backend = ["cuda-sys"]
 opencl-backend = ["opencl3"]
-webgpu-only = []
+webgpu-only = ["wgpu", "bytemuck", "wasm-bindgen-futures", "webgpu-web-sys"]
+minimal = []
+cpu-only = []
+webgpu-web-sys = ["web-sys/Document", "web-sys/Element", "web-sys/HtmlCanvasElement", "web-sys/WebGl2RenderingContext", "web-sys/GpuDevice", "web-sys/GpuQueue", "web-sys/GpuBuffer", "web-sys/GpuTexture", "web-sys/GpuShaderModule", "web-sys/GpuComputePipeline", "web-sys/GpuBindGroup", "web-sys/GpuBindGroupLayout", "web-sys/GpuCommandEncoder", "web-sys/GpuComputePassEncoder"]
 debug-transpiler = []
 native-bindings = ["bindgen"]
 wasm-simd = []

@@ -13,7 +13,7 @@ export {
   IDatabase,
   IEventBus,
   ILogger,
-} from '../../di/tokens/core-tokens.ts';
+} from '../../di/tokens/core-tokens.js';
 
 /**
  * Base database adapter interface that all database implementations must follow.

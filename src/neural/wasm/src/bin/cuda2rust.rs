@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use cuda_rust_wasm::transpiler::CudaTranspiler;
+use zen_swarm_neural::transpiler::CudaTranspiler;
 use std::fs;
 use std::path::PathBuf;
 

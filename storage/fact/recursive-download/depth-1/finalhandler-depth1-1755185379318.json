@@ -1,0 +1,31 @@
+{
+  "name": "finalhandler",
+  "version": "2.1.0",
+  "description": "Node.js final http responder...",
+  "license": "MIT",
+  "dependencies": [
+    "debug",
+    "parseurl",
+    "statuses",
+    "encodeurl",
+    "escape-html",
+    "on-finished"
+  ],
+  "devDependencies": [
+    "nyc",
+    "mocha",
+    "eslint",
+    "supertest",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-markdown",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 6,
+  "devDependencyCount": 10,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:39.318Z",
+  "depth": 1
+}

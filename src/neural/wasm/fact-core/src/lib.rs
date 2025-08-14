@@ -9,9 +9,11 @@ use std::collections::HashMap;
 // Re-export for library usage
 pub use crate::cache::FastCache;
 pub use crate::processor::QueryProcessor;
+pub use crate::external::{ExternalFactFetcher, ExternalFactResult, ExternalFactType};
 
 mod cache;
 mod processor;
+mod external;
 #[cfg(feature = "optimizations")]
 mod optimizations;
 
@@ -88,6 +90,78 @@ impl Fact {
                 r#"{"optimized": true, "mode": "standard"}"#.to_string()
             }
         }
+    }
+
+    /// Fetch external NPM package facts
+    #[wasm_bindgen]
+    pub async fn fetch_npm_facts(&mut self, package_name: &str) -> String {
+        let fetcher = ExternalFactFetcher::new();
+        let result = fetcher.fetch_npm_package(package_name).await;
+        
+        // Cache the result if successful
+        if !result.contains("error") {
+            let cache_key = format!("npm:{}", package_name);
+            self.cache.put(cache_key, result.clone());
+        }
+        
+        result
+    }
+
+    /// Fetch external GitHub repository facts
+    #[wasm_bindgen]
+    pub async fn fetch_github_facts(&mut self, owner: &str, repo: &str) -> String {
+        let fetcher = ExternalFactFetcher::new();
+        let result = fetcher.fetch_github_repo(owner, repo).await;
+        
+        // Cache the result if successful
+        if !result.contains("error") {
+            let cache_key = format!("github:{}/{}", owner, repo);
+            self.cache.put(cache_key, result.clone());
+        }
+        
+        result
+    }
+
+    /// Fetch external security advisory facts
+    #[wasm_bindgen]
+    pub async fn fetch_security_facts(&mut self, cve_id: &str) -> String {
+        let fetcher = ExternalFactFetcher::new();
+        let result = fetcher.fetch_security_advisory(cve_id).await;
+        
+        // Cache the result if successful
+        if !result.contains("error") {
+            let cache_key = format!("cve:{}", cve_id);
+            self.cache.put(cache_key, result.clone());
+        }
+        
+        result
+    }
+
+    /// Auto-detect and fetch external facts from task description
+    #[wasm_bindgen]
+    pub async fn detect_and_fetch_facts(&mut self, task_description: &str) -> String {
+        let fetcher = ExternalFactFetcher::new();
+        let result = fetcher.auto_detect_facts(task_description).await;
+        
+        // Cache the detection result
+        let cache_key = format!("detect:{}", task_description);
+        self.cache.put(cache_key, result.clone());
+        
+        result
+    }
+
+    /// Check if external fact is cached
+    #[wasm_bindgen]
+    pub fn is_fact_cached(&mut self, fact_type: &str, identifier: &str) -> bool {
+        let cache_key = format!("{}:{}", fact_type, identifier);
+        self.cache.get(&cache_key).is_some()
+    }
+
+    /// Get cached external fact
+    #[wasm_bindgen]
+    pub fn get_cached_fact(&mut self, fact_type: &str, identifier: &str) -> Option<String> {
+        let cache_key = format!("{}:{}", fact_type, identifier);
+        self.cache.get(&cache_key)
     }
 }
 

@@ -1,0 +1,26 @@
+{
+  "name": "statuses",
+  "version": "2.0.2",
+  "description": "HTTP status utility...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "csv-parse",
+    "eslint",
+    "eslint-config-standard",
+    "eslint-plugin-import",
+    "eslint-plugin-markdown",
+    "eslint-plugin-node",
+    "eslint-plugin-promise",
+    "eslint-plugin-standard",
+    "mocha",
+    "nyc",
+    "raw-body",
+    "stream-to-array"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 12,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:36.399Z",
+  "depth": 1
+}

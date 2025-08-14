@@ -33,9 +33,9 @@ const config = {
     '.jsx': 'jsx',
   },
 
-  // External dependencies (don't bundle node_modules - better for TS linking)
+  // External dependencies (only native/binary - bundle everything else for FULL system)
   external: [
-    // Native/binary dependencies
+    // Only native/binary dependencies that cannot be bundled
     'better-sqlite3',
     'kuzu',
     '@lancedb/lancedb',
@@ -43,14 +43,12 @@ const config = {
     'sharp',
     'fsevents',
     
-    // Terminal/UI dependencies
-    'term.js',
-    'pty.js', 
-    'blessed',
-    'terminal-kit',
-    'ink',
-    'react',
+    // Native modules that must stay external
+    'pty.js',
   ],
+
+  // Bundle everything else for complete system
+  // This will create a FULL bundle with all features
 
   // Advanced optimizations
   define: {
@@ -71,11 +69,17 @@ const config = {
     {
       name: 'node-externals',
       setup(build) {
-        // External all node_modules for better TS linking
+        // Only external native/binary modules - bundle everything else
         build.onResolve({ filter: /^[^.\/]/ }, (args) => {
           // Skip if it's already in explicit external list
           if (args.path.startsWith('.') || args.path.startsWith('/')) return;
-          return { path: args.path, external: true };
+          // Only externalize specific native modules that can't be bundled
+          const nativeModules = ['better-sqlite3', 'kuzu', '@lancedb/lancedb', 'canvas', 'sharp', 'fsevents', 'pty.js'];
+          if (nativeModules.includes(args.path) || nativeModules.some(mod => args.path.startsWith(mod))) {
+            return { path: args.path, external: true };
+          }
+          // Bundle everything else
+          return;
         });
         
         // Handle terminal-kit README files that contain XML-like syntax

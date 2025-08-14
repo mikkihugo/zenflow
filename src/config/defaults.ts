@@ -2,7 +2,7 @@
  * @file Defaults implementation.
  */
 
-import type { SystemConfiguration } from './types.ts';
+import type { SystemConfiguration } from './types.js';
 
 /**
  * Default system configuration.
@@ -117,16 +117,7 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
   // External services and API keys
   services: {
     anthropic: {
-      apiKey:
-        process.env['ANTHROPIC_API_KEY'] ||
-        (() => {
-          if (process.env['NODE_ENV'] === 'production') {
-            throw new Error(
-              'ANTHROPIC_API_KEY environment variable is required in production'
-            );
-          }
-          return null; // Allow null in development
-        })(),
+      apiKey: process.env['ANTHROPIC_API_KEY'] || null, // Optional - not used by default
       baseUrl: process.env['ANTHROPIC_BASE_URL'] || 'https://api.anthropic.com',
       timeout: 30000,
       maxRetries: 3,
@@ -536,17 +527,16 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
     'CLAUDE_MAX_AGENTS',
   ],
   validation: {
-    NODE_ENV: (value: string) =>
-      ['production', 'development', 'test'].includes(value),
-    ANTHROPIC_API_KEY: (value: string) =>
-      process.env['NODE_ENV'] === 'production'
-        ? !!value && value.length > 10
-        : true,
-    CLAUDE_WEB_PORT: (value: string) => {
+    NODE_ENV: (value: unknown) =>
+      typeof value === 'string' && ['production', 'development', 'test'].includes(value),
+    ANTHROPIC_API_KEY: (value: unknown) => true, // Optional - not required
+    CLAUDE_WEB_PORT: (value: unknown) => {
+      if (typeof value !== 'string') return false;
       const port = Number.parseInt(value, 10);
       return !isNaN(port) && port >= 3000 && port <= 65535;
     },
-    CLAUDE_MCP_PORT: (value: string) => {
+    CLAUDE_MCP_PORT: (value: unknown) => {
+      if (typeof value !== 'string') return false;
       const port = Number.parseInt(value, 10);
       return !isNaN(port) && port >= 3000 && port <= 65535;
     },

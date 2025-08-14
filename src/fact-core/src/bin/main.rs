@@ -619,7 +619,7 @@ async fn auto_command(
   directories: Option<String>,
   github_enabled: bool,
 ) -> Result<()> {
-  use fact_tools::auto_orchestrator::{AutoConfig, AutoOrchestrator};
+  use fact_tools::auto_orchestrator::{AutoConfig, AutoFactOrchestrator};
   use std::path::PathBuf;
 
   let mut config = AutoConfig::default();
@@ -634,7 +634,7 @@ async fn auto_command(
 
   if start {
     info!("🤖 Starting automatic FACT orchestration");
-    let mut orchestrator = AutoOrchestrator::new(config).await?;
+    let mut orchestrator = AutoFactOrchestrator::new(config).await?;
 
     match orchestrator.start().await {
       Ok(()) => {

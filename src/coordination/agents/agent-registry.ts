@@ -9,6 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
+import { SharedFACTCapable } from '../shared-fact-system.ts';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
 import type {
   AgentCapabilities,
@@ -38,6 +39,28 @@ export interface RegisteredAgent {
   lastSeen: Date;
   loadFactor: number;
   health: number;
+  // FACT Integration: Personal agent knowledge that persists across swarms
+  personalFACT?: {
+    domainExpertise: Record<string, {
+      level: number;           // 0.0-1.0 expertise level
+      patterns: string[];      // Learned patterns
+      successRate: number;     // Success rate in this domain
+      lastUpdated: Date;
+    }>;
+    learnedPatterns: Array<{
+      pattern: string;
+      domain: string;
+      effectiveness: number;
+      usageCount: number;
+    }>;
+    taskMemories: Array<{
+      taskType: string;
+      solution: string;
+      success: boolean;
+      context: any;
+      timestamp: Date;
+    }>;
+  };
 }
 
 export interface AgentSelectionCriteria {
@@ -272,7 +295,7 @@ export class AgentRegistry extends EventEmitter {
       // Success rate filter
       if (
         query.minSuccessRate !== undefined &&
-        agent.metrics.successRate < query.minSuccessRate
+        (agent.metrics.successRate ?? 0) < query.minSuccessRate
       ) {
         return false;
       }
@@ -323,7 +346,7 @@ export class AgentRegistry extends EventEmitter {
         case 'load':
           return a.loadFactor - b.loadFactor;
         case 'performance':
-          return b.metrics.successRate - a.metrics.successRate;
+          return (b.metrics.successRate ?? 0) - (a.metrics.successRate ?? 0);
         case 'health':
           return b.health - a.health;
         case 'availability':
@@ -401,7 +424,7 @@ export class AgentRegistry extends EventEmitter {
       averageHealth:
         agents.reduce((sum, a) => sum + a.health, 0) / agents.length || 0,
       averageSuccessRate:
-        agents.reduce((sum, a) => sum + a.metrics.successRate, 0) /
+        agents.reduce((sum, a) => sum + (a.metrics.successRate ?? 0), 0) /
           agents.length || 0,
     };
   }
@@ -464,23 +487,15 @@ export class AgentRegistry extends EventEmitter {
       tasksFailed: 0,
       averageExecutionTime: 0,
       successRate: 1.0,
-      cpuUsage: 0,
-      memoryUsage: 0,
-      diskUsage: 0,
-      networkUsage: 0,
-      codeQuality: 1.0,
-      testCoverage: 0,
-      bugRate: 0,
-      userSatisfaction: 1.0,
-      totalUptime: 0,
+      averageResponseTime: 0,
+      errorRate: 0,
+      uptime: 0,
       lastActivity: new Date(),
-      responseTime: 0,
       tasksInProgress: 0,
       resourceUsage: {
         memory: 0,
         cpu: 0,
         disk: 0,
-        network: 0,
       },
     };
   }
@@ -513,7 +528,7 @@ export class AgentRegistry extends EventEmitter {
     if (status === 'terminated') health = 0;
 
     // Success rate factor
-    health *= metrics.successRate;
+    health *= (metrics.successRate ?? 0);
 
     // Resource usage penalty
     const resourcePenalty = Math.max(
@@ -534,7 +549,7 @@ export class AgentRegistry extends EventEmitter {
   ): number {
     // Balanced scoring for agent selection
     const availabilityScore = (1 - agent.loadFactor) * 0.3;
-    const performanceScore = agent.metrics.successRate * 0.4;
+    const performanceScore = (agent.metrics.successRate ?? 0) * 0.4;
     const healthScore = agent.health * 0.3;
 
     let contextScore = 0;
@@ -605,36 +620,36 @@ export class AgentRegistry extends EventEmitter {
     return {
       // Frontend files
       tsx: [
-        'frontend-dev',
+        'coder',
         'ui-designer',
         'ux-designer',
         'accessibility-specialist',
       ],
-      jsx: ['frontend-dev', 'ui-designer', 'ux-designer'],
-      css: ['ui-designer', 'frontend-dev'],
-      scss: ['ui-designer', 'frontend-dev'],
-      html: ['frontend-dev', 'ui-designer', 'accessibility-specialist'],
+      jsx: ['coder', 'ui-designer', 'ux-designer'],
+      css: ['ui-designer', 'coder'],
+      scss: ['ui-designer', 'coder'],
+      html: ['coder', 'ui-designer', 'accessibility-specialist'],
 
       // Backend files
-      js: ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
-      ts: ['fullstack-dev', 'dev-backend-api', 'frontend-dev'],
-      py: ['dev-backend-api', 'ai-ml-specialist', 'data-ml-model'],
-      java: ['dev-backend-api', 'system-architect'],
-      go: ['dev-backend-api', 'performance-analyzer'],
+      js: ['coder', 'analyst', 'coder'],
+      ts: ['coder', 'analyst', 'coder'],
+      py: ['coder', 'researcher', 'analyst'],
+      java: ['coder', 'architect'],
+      go: ['coder', 'optimizer'],
 
       // Database files
-      sql: ['database-architect', 'data-ml-model', 'etl-specialist'],
-      mongodb: ['database-architect', 'data-ml-model'],
+      sql: ['architect', 'analyst', 'data'],
+      mongodb: ['architect', 'analyst'],
 
       // DevOps files
-      yaml: ['ops-cicd-github', 'infrastructure-ops'],
-      yml: ['ops-cicd-github', 'infrastructure-ops'],
-      dockerfile: ['infrastructure-ops', 'deployment-ops'],
-      tf: ['infrastructure-ops', 'cloud-architect'],
+      yaml: ['coordinator', 'optimizer'],
+      yml: ['coordinator', 'optimizer'],
+      dockerfile: ['ops', 'ops'],
+      tf: ['ops', 'architect'],
 
       // Documentation
-      md: ['technical-writer', 'readme-writer', 'user-guide-writer'],
-      rst: ['technical-writer', 'user-guide-writer'],
+      md: ['researcher', 'analyst', 'researcher'],
+      rst: ['researcher', 'analyst'],
 
       // Performance files
       wasm: [
@@ -642,8 +657,8 @@ export class AgentRegistry extends EventEmitter {
         'bottleneck-analyzer',
         'latency-optimizer',
       ],
-      c: ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
-      cpp: ['performance-analyzer', 'embedded-specialist', 'latency-optimizer'],
+      c: ['optimizer', 'researcher', 'optimizer'],
+      cpp: ['optimizer', 'researcher', 'optimizer'],
       rs: ['performance-analyzer', 'memory-optimizer', 'latency-optimizer'],
     };
   }
@@ -656,9 +671,9 @@ export class AgentRegistry extends EventEmitter {
         'memory-optimizer',
         'latency-optimizer',
         'bottleneck-analyzer',
-        'performance-benchmarker',
-        'load-balancer',
-        'topology-optimizer',
+        'optimizer',
+        'optimizer',
+        'optimizer',
       ],
       migration: [
         'legacy-analyzer',
@@ -680,14 +695,14 @@ export class AgentRegistry extends EventEmitter {
         'ux-designer',
         'ui-designer',
         'accessibility-specialist',
-        'frontend-dev',
+        'coder',
         'user-guide-writer',
       ],
       development: [
         'coder',
         'developer',
         'fullstack-dev',
-        'frontend-dev',
+        'coder',
         'dev-backend-api',
         'api-dev',
       ],
@@ -697,7 +712,7 @@ export class AgentRegistry extends EventEmitter {
         'performance-analyzer',
         'security-analyzer',
         'refactoring-analyzer',
-        'data-ml-model',
+        'analyst',
       ],
     };
   }

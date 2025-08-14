@@ -1,0 +1,21 @@
+{
+  "name": "react",
+  "fullName": "facebook/react",
+  "description": "The library for web and native user interfaces.",
+  "language": "JavaScript",
+  "stars": 238109,
+  "forks": 49115,
+  "openIssues": 1023,
+  "license": "MIT License",
+  "topics": [
+    "declarative",
+    "frontend",
+    "javascript",
+    "library",
+    "react",
+    "ui"
+  ],
+  "realData": true,
+  "fetchedAt": "2025-08-14T14:52:41.761Z",
+  "statusCode": 200
+}

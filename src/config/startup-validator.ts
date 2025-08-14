@@ -5,14 +5,14 @@
  * Fails fast if configuration is invalid for deployment.
  */
 
-import { getLogger } from './logging-config.ts';
+import { getLogger } from './logging-config.js';
 
 const logger = getLogger('src-config-startup-validator');
 
 import * as process from 'node:process';
-import { configHealthChecker } from './health-checker.ts';
-import { configManager } from './manager.ts';
-import type { ValidationResult } from './types.ts';
+import { configHealthChecker } from './health-checker.js';
+import { configManager } from './manager.js';
+import type { ValidationResult } from './types.js';
 
 /**
  * Startup validation options.
@@ -305,9 +305,7 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
 
   // Required environment variables
   const requiredVars = ['NODE_ENV'];
-  if (isProduction) {
-    requiredVars.push('ANTHROPIC_API_KEY');
-  }
+  // Note: ANTHROPIC_API_KEY is optional - only needed for FACT integration
 
   for (const envVar of requiredVars) {
     if (!process.env[envVar]) {
@@ -326,12 +324,12 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
     );
   }
 
-  // Validate API key format (basic check)
+  // Validate API key format (basic check - only warn if provided)
   if (
     process.env['ANTHROPIC_API_KEY'] &&
     process.env['ANTHROPIC_API_KEY'].length < 10
   ) {
-    errors.push('ANTHROPIC_API_KEY appears to be too short or invalid');
+    warnings.push('ANTHROPIC_API_KEY appears to be too short or invalid (only needed for FACT integration)');
   }
 
   // Check for common production misconfigurations

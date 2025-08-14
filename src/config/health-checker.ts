@@ -6,14 +6,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { logRepoConfigStatus } from './default-repo-config.ts';
-import { configManager } from './manager.ts';
+import { logRepoConfigStatus } from './default-repo-config.js';
+import { configManager } from './manager.js';
 import type {
   ConfigHealthReport,
   SystemConfiguration,
   ValidationResult,
-} from './types.ts';
-import { ConfigValidator } from './validator.ts';
+} from './types.js';
+import { ConfigValidator } from './validator.js';
 
 /**
  * Configuration health checker with monitoring capabilities.
@@ -165,8 +165,8 @@ export class ConfigHealthChecker extends EventEmitter {
     // Environment-specific recommendations
     if (this.environment === 'production') {
       if (!process.env['ANTHROPIC_API_KEY']) {
-        blockers.push(
-          'ANTHROPIC_API_KEY environment variable required in production'
+        recommendations.push(
+          'ANTHROPIC_API_KEY not set - only needed for optional FACT integration'
         );
       }
 
@@ -376,9 +376,9 @@ export class ConfigHealthChecker extends EventEmitter {
       this.lastHealthReport = currentReport;
 
       // Log detailed repo config status for diagnostics (wired up!)
-      if (currentReport?.configuration) {
+      if ((currentReport as any)?.configuration) {
         try {
-          logRepoConfigStatus(currentReport.configuration as any);
+          logRepoConfigStatus((currentReport as any).configuration as any);
         } catch (error) {
           // Silently continue if logging fails - don't break health checks
           console.debug('Config status logging failed:', error);
@@ -480,13 +480,13 @@ export function createConfigHealthEndpoint() {
             ? 200
             : 503;
 
-      res.status(statusCode).json({
+      (res as any).status(statusCode).json({
         success: healthReport.status !== 'critical',
         health: healthReport,
         timestamp: new Date().toISOString(),
       });
     } catch (error) {
-      res.status(500).json({
+      (res as any).status(500).json({
         success: false,
         error: 'Health check failed',
         message: error instanceof Error ? error.message : 'Unknown error',
@@ -516,7 +516,7 @@ export function createDeploymentReadinessEndpoint() {
           ? 200
           : 503;
 
-      res.status(statusCode).json({
+      (res as any).status(statusCode).json({
         success:
           deploymentCheck.deploymentReady && portCheck.conflicts.length === 0,
         deployment: {
@@ -533,7 +533,7 @@ export function createDeploymentReadinessEndpoint() {
         environment: process.env['NODE_ENV'] || 'development',
       });
     } catch (error) {
-      res.status(500).json({
+      (res as any).status(500).json({
         success: false,
         error: 'Deployment readiness check failed',
         message: error instanceof Error ? error.message : 'Unknown error',

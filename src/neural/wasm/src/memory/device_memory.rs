@@ -1,5 +1,6 @@
 //! Device memory allocation and management
 
+#[cfg(feature = "webgpu-only")]
 use crate::runtime::{BackendType, Device};
 use crate::{runtime_error, Result};
 use std::alloc::{alloc, dealloc, Layout};

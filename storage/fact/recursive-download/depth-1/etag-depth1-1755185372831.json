@@ -1,0 +1,27 @@
+{
+  "name": "etag",
+  "version": "1.8.1",
+  "description": "Create simple HTTP ETags...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "mocha",
+    "eslint",
+    "istanbul",
+    "benchmark",
+    "seedrandom",
+    "safe-buffer",
+    "beautify-benchmark",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-markdown",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 13,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:32.831Z",
+  "depth": 1
+}

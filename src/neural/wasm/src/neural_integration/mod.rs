@@ -100,7 +100,22 @@ pub enum Precision {
   Float64,
 }
 
-/// Trait for GPU backend implementations
+/// Trait for GPU backend implementations (WASM)
+#[cfg(target_arch = "wasm32")]
+pub trait GpuBackendTrait {
+  fn initialize(&self) -> NeuralResult<()>;
+  fn is_available(&self) -> bool;
+  fn get_device_info(&self) -> DeviceInfo;
+  fn create_buffer(&self, size: usize) -> NeuralResult<BufferHandle>;
+  fn execute_kernel(
+    &self,
+    kernel: &CompiledKernel,
+    inputs: &[BufferHandle],
+  ) -> NeuralResult<BufferHandle>;
+}
+
+/// Trait for GPU backend implementations (Native)
+#[cfg(not(target_arch = "wasm32"))]
 pub trait GpuBackendTrait: Send + Sync {
   fn initialize(&self) -> NeuralResult<()>;
   fn is_available(&self) -> bool;
@@ -113,7 +128,18 @@ pub trait GpuBackendTrait: Send + Sync {
   ) -> NeuralResult<BufferHandle>;
 }
 
-/// Trait for memory management
+/// Trait for memory management (WASM)
+#[cfg(target_arch = "wasm32")]
+pub trait MemoryManagerTrait {
+  fn allocate(&self, size: usize) -> NeuralResult<MemoryHandle>;
+  fn deallocate(&self, handle: MemoryHandle) -> NeuralResult<()>;
+  fn transfer_to_gpu(&self, data: &[f32]) -> NeuralResult<BufferHandle>;
+  fn transfer_from_gpu(&self, buffer: BufferHandle) -> NeuralResult<Vec<f32>>;
+  fn get_memory_stats(&self) -> MemoryStats;
+}
+
+/// Trait for memory management (Native)
+#[cfg(not(target_arch = "wasm32"))]
 pub trait MemoryManagerTrait: Send + Sync {
   fn allocate(&self, size: usize) -> NeuralResult<MemoryHandle>;
   fn deallocate(&self, handle: MemoryHandle) -> NeuralResult<()>;
@@ -122,7 +148,20 @@ pub trait MemoryManagerTrait: Send + Sync {
   fn get_memory_stats(&self) -> MemoryStats;
 }
 
-/// Trait for performance monitoring
+/// Trait for performance monitoring (WASM)
+#[cfg(target_arch = "wasm32")]
+pub trait PerformanceMonitorTrait {
+  fn start_operation(&self, name: &str) -> OperationHandle;
+  fn end_operation(
+    &self,
+    handle: OperationHandle,
+  ) -> NeuralResult<OperationStats>;
+  fn get_performance_summary(&self) -> PerformanceStats;
+  fn detect_degradation(&self) -> Option<PerformanceDegradation>;
+}
+
+/// Trait for performance monitoring (Native)
+#[cfg(not(target_arch = "wasm32"))]
 pub trait PerformanceMonitorTrait: Send + Sync {
   fn start_operation(&self, name: &str) -> OperationHandle;
   fn end_operation(

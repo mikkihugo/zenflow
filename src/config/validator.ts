@@ -4,12 +4,12 @@
  * Validates configuration against schema and provides detailed error reporting.
  */
 
-import { VALIDATION_RULES } from './defaults.ts';
+import { VALIDATION_RULES } from './defaults.js';
 import type {
   ConfigValidationResult,
   SystemConfiguration,
   ValidationResult,
-} from './types.ts';
+} from './types.js';
 
 /**
  * Configuration validator.

@@ -32,6 +32,20 @@ const { values: args } = parseArgs({
       type: 'boolean',
       short: 'h',
     },
+    queen: {
+      type: 'boolean',
+    },
+    commander: {
+      type: 'boolean',
+    },
+    agents: {
+      type: 'string',
+      default: '5',
+    },
+    topology: {
+      type: 'string',
+      default: 'mesh',
+    },
   },
   allowPositionals: true,
 });
@@ -50,13 +64,18 @@ Modes:
   
 Options:
   --port      Port for web server (default: 3000)
+  --queen     Enable Queen Commander mode (spawn Claude CLI agents)
+  --commander Alias for --queen
+  --agents    Number of agents to spawn (default: 5)
+  --topology  Swarm topology: mesh, hierarchical, ring, star (default: mesh)
   --help      Show this help
 
 Examples:
-  claude-zen web                # Web interface only
-  claude-zen tui                # Terminal interface only
-  claude-zen                    # Full system: Web + AI + TUI + MCP + Safety
-  claude-zen swarm              # Stdio swarm server only
+  claude-zen web                          # Web interface only
+  claude-zen tui                          # Terminal interface only
+  claude-zen                              # Full system: Web + AI + TUI + MCP + Safety
+  claude-zen swarm                        # Stdio swarm server only
+  claude-zen swarm --queen --agents 5     # Queen Commander with 5 Claude CLI agents
 `);
   process.exit(0);
 }
@@ -154,11 +173,23 @@ async function main() {
       }
 
       case 'swarm': {
-        // Swarm mode: Stdio MCP swarm server only (no web, no TUI)
-        logger.info('🐝 Starting stdio MCP swarm server...');
+        // Swarm mode: Queen Commander with spawned agent processes
+        logger.info('🐝 Starting Queen Commander swarm mode...');
 
-        // TODO: Implement swarm stdio server
-        logger.info('🐝 Swarm server mode - stdio MCP interface');
+        // Check for queen mode flag
+        const isQueenMode = args.queen || args.commander;
+        
+        if (isQueenMode) {
+          // Queen Commander mode - spawn and coordinate multiple Claude CLI agents
+          const { launchQueenCommander } = await import('./coordination/queen-launcher.js');
+          await launchQueenCommander(container, logger);
+        } else {
+          // Standard stdio MCP server mode
+          logger.info('🐝 Starting stdio MCP swarm server...');
+          const { stdioMCPServer } = await import('./interfaces/mcp-stdio/swarm-server.js');
+          await stdioMCPServer.start();
+          logger.info('✅ stdio MCP swarm server running');
+        }
 
         // Keep process alive for stdio communication
         process.stdin.resume();

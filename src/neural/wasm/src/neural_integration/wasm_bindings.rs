@@ -686,26 +686,6 @@ impl WasmSystemCapabilities {
   }
 }
 
-/// Initialize the neural integration system for WASM
-#[cfg(target_arch = "wasm32")]
-#[wasm_bindgen(start)]
-pub fn init_wasm() {
-  console_error_panic_hook::set_once();
-
-  // Set up logging
-  wasm_logger::init(wasm_logger::Config::default());
-
-  // Initialize neural integration
-  if let Err(e) = crate::neural_integration::initialize() {
-    console::error_1(
-      &format!("Failed to initialize neural integration: {}", e).into(),
-    );
-  }
-
-  console::log_1(
-    &"CUDA-WASM Neural Integration initialized successfully".into(),
-  );
-}
 
 /// TypeScript definitions (as comments for reference)
 /*

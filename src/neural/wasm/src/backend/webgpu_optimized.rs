@@ -7,7 +7,9 @@
 //! - Performance profiling and monitoring
 
 use crate::error::{CudaRustError, Result};
+#[cfg(not(feature = "cpu-only"))]
 use crate::memory::{allocate, deallocate, MemoryPool};
+#[cfg(not(feature = "cpu-only"))]
 use crate::profiling::{time_operation, CounterType};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};

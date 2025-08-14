@@ -1,0 +1,24 @@
+{
+  "name": "range-parser",
+  "version": "1.2.1",
+  "description": "Range header field string parser...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "nyc",
+    "mocha",
+    "eslint",
+    "deep-equal",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-markdown",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 10,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:39.640Z",
+  "depth": 1
+}

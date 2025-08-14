@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "name": "claude-zen-binary",
+  "version": "1.0.0",
+  "main": "claude-zen.js"
+}

@@ -1,6 +1,7 @@
 //! Kernel execution profiling
 
 use crate::error::CudaRustError;
+#[cfg(feature = "webgpu-only")]
 use crate::runtime::{Block, Grid, LaunchConfig};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};

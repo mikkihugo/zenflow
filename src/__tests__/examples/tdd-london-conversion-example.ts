@@ -5,7 +5,7 @@
  * to proper TDD London interaction testing pattern.
  */
 
-import { vi } from 'vitest';
+import { vi, type MockedFunction } from 'vitest';
 
 // ============================================================================
 // ❌ BEFORE: Basic Object Mock Pattern (from integration-features-coverage.test.js)
@@ -56,10 +56,10 @@ function OLD_PATTERN_example() {
  * Focuses on method calls and collaboration patterns
  */
 class MockMemoryPool {
-  allocate: vi.MockedFunction<
+  allocate: MockedFunction<
     (type: string, size: number) => MemoryAllocation
   > = vi.fn();
-  deallocate: vi.MockedFunction<(id: number) => boolean> = vi.fn();
+  deallocate: MockedFunction<(id: number) => boolean> = vi.fn();
 
   constructor() {
     this.allocate.mockReturnValue({
@@ -96,7 +96,7 @@ class MockMemoryPool {
 }
 
 class MockCoordinationService {
-  coordinateAgents: vi.MockedFunction<
+  coordinateAgents: MockedFunction<
     (
       agentIds: string[],
       topology: string,

@@ -1,0 +1,29 @@
+{
+  "name": "proxy-addr",
+  "version": "2.0.7",
+  "description": "Determine address of proxied request...",
+  "license": "MIT",
+  "dependencies": [
+    "forwarded",
+    "ipaddr.js"
+  ],
+  "devDependencies": [
+    "nyc",
+    "mocha",
+    "eslint",
+    "benchmark",
+    "deep-equal",
+    "beautify-benchmark",
+    "eslint-plugin-node",
+    "eslint-plugin-import",
+    "eslint-plugin-promise",
+    "eslint-config-standard",
+    "eslint-plugin-markdown",
+    "eslint-plugin-standard"
+  ],
+  "dependencyCount": 2,
+  "devDependencyCount": 12,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:37.378Z",
+  "depth": 1
+}

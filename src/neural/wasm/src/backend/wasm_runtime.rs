@@ -40,7 +40,7 @@ impl WasmRuntime {
   }
 }
 
-#[async_trait]
+#[async_trait(?Send)]
 impl BackendTrait for WasmRuntime {
   fn name(&self) -> &str {
     &self.capabilities.name

@@ -68,7 +68,7 @@ export const BindingsUtils = {
       case 'wasm': {
         // Load WASM bindings through proper abstraction (fixed isolation violation)
         // Instead of direct import, use dynamic loading with proper interface
-        const wasmModule = await import('./wasm-binding-interface.ts');
+        const wasmModule = await import('./wasm-binding-interface.js');
         return wasmModule.default;
       }
       default:

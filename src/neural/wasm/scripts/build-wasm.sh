@@ -63,7 +63,6 @@ HAS_TWIGGY=$(check_optional_tool twiggy && echo "true" || echo "false")
 # Set up build environment
 echo -e "${BLUE}🔧 Configuring build environment...${NC}"
 export RUSTFLAGS="-C target-feature=+bulk-memory,+mutable-globals"
-export CARGO_TARGET_WASM32_UNKNOWN_UNKNOWN_LINKER="wasm-ld"
 
 if [ "$ENABLE_SIMD" = "true" ]; then
     echo -e "${BLUE}🧮 Enabling WASM SIMD...${NC}"
@@ -123,8 +122,8 @@ wasm-pack build $WASM_PACK_ARGS
 
 # Multi-stage WASM optimization
 echo -e "${BLUE}⚡ Optimizing WASM binary with multiple passes...${NC}"
-WASM_FILE="pkg/cuda_rust_wasm_bg.wasm"
-OPTIMIZED_FILE="pkg/cuda_rust_wasm_bg_optimized.wasm"
+WASM_FILE="pkg/zen_swarm_neural_bg.wasm"
+OPTIMIZED_FILE="pkg/zen_swarm_neural_bg_optimized.wasm"
 
 # Get original size
 ORIGINAL_SIZE=$(stat -f%z "$WASM_FILE" 2>/dev/null || stat -c%s "$WASM_FILE" 2>/dev/null || echo "0")

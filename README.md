@@ -1,13 +1,43 @@
-# Zen Code
+# Claude Code Zen 🚀
 
-[![Version](https://img.shields.io/npm/v/zen-code)](https://www.npmjs.com/package/zen-code)
+[![Version](https://img.shields.io/npm/v/@zen-ai/claude-code-zen)](https://www.npmjs.com/package/@zen-ai/claude-code-zen)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Next-Generation Unified AI Development Platform** featuring **Advanced Kanban Flow** with intelligent multi-level parallel execution, ML-powered optimization, and comprehensive testing frameworks. A complete AI development ecosystem that transforms linear workflows into adaptive, enterprise-scale systems.
+**Full-Featured AI Swarm Orchestration Platform (8.3MB Complete Bundle)**
 
-## 🎯 Philosophy: Biome-First Development
+Claude Code Zen is a comprehensive AI orchestration platform that combines neural networks, swarm intelligence, MCP integration, and web interfaces into a single, powerful system.
 
-Zen Code has adopted a **Biome-first approach** to code quality, moving away from ESLint to embrace a simpler, faster, and more consistent toolchain following Google's standards.
+## ✨ Features
+
+- **🧠 WASM Neural Networks**: High-performance neural acceleration with Rust-compiled WASM
+- **🐝 Swarm Orchestration**: Multi-agent coordination with intelligent task distribution
+- **🔗 MCP Integration**: Model Context Protocol servers for Claude Desktop integration
+- **🌐 Web Interface**: Modern dashboard with real-time monitoring
+- **🖥️ Terminal UI**: Rich command-line interface with interactive screens
+- **⚡ Full Bundle**: Complete 8.3MB system with all features included
+- **🛡️ AI Safety**: Built-in deception detection and safety monitoring
+- **📊 Performance Analytics**: Real-time metrics and benchmarking
+
+## 🚀 Quick Start
+
+### NPM Installation
+
+```bash
+# Install globally
+npm install -g @zen-ai/claude-code-zen
+
+# Run full system
+claude-zen
+
+# Web interface only
+claude-zen web --port 3000
+
+# Terminal interface only  
+claude-zen tui
+
+# MCP server only (stdio for Claude Code CLI)
+zenswarm-mcp-server
+```
 
 ### Why Biome Over ESLint?
 
@@ -924,7 +954,7 @@ claude-zen workflow test --performance --stress-test --duration=120
 - **🧠 ML-Powered Flow Intelligence**: Real-time optimization with 12,623+ lines of production code (NEW!)
 - **⚡ Enterprise-Scale Performance**: 1M+ concurrent requests with automated resource management (NEW!)
 - **🔬 Production-Grade Testing**: 20+ validation frameworks with comprehensive resilience testing (NEW!)
-- **📊 Advanced Domain Services**: Multi-domain architecture with 200+ MCP tools
+- **📊 Advanced Domain Services**: Multi-domain architecture with 17 core MCP tools
 - **🎯 Product Flow Integration**: Systematic business-to-code transformation workflow
 - **🧪 FACT + RAG Systems**: Enhanced knowledge gathering and augmented generation
 - **🏗️ Enterprise Features**: Dependency injection, load balancing, fault tolerance, optimization
@@ -934,6 +964,68 @@ claude-zen workflow test --performance --stress-test --duration=120
 ### **🏆 Advanced Kanban Flow Achievement**
 
 **BREAKTHROUGH:** Successfully transformed linear AI workflows into intelligent multi-level parallel systems with ML-powered optimization, achieving 100x concurrency improvements and enterprise-scale reliability.
+
+## 🔗 Claude Code CLI Integration
+
+### **Option 1: MCP Integration (Simple Swarms)**
+
+**Add zen-swarm to your Claude Code CLI session:**
+
+```bash
+# Install globally first
+npm install -g @zen-ai/claude-code-zen
+
+# Add zen-swarm MCP server to Claude Code CLI
+claude mcp add zenswarm-mcp-server zenswarm-mcp-server
+
+# Now in any Claude Code session, you have access to:
+# - mcp__zenswarm-mcp-server__swarm_init        # Initialize swarms  
+# - mcp__zenswarm-mcp-server__agent_spawn       # Create AI agents
+# - mcp__zenswarm-mcp-server__task_orchestrate  # Coordinate tasks
+# - mcp__zenswarm-mcp-server__neural_status     # Neural networks
+# - mcp__zenswarm-mcp-server__neural_train      # Train neural models
+# - mcp__zenswarm-mcp-server__memory_usage      # System monitoring
+# Plus 15+ additional coordination tools for full swarm orchestration
+```
+
+### **Automatic Workspace Integration**
+
+**The system automatically activates THE COLLECTIVE when you work on projects:**
+
+```bash
+# 1. Install the MCP server
+claude mcp add zenswarm-mcp-server zenswarm-mcp-server
+
+# 2. Add any repo as workspace (THE COLLECTIVE auto-activates)
+# No manual commands needed - system detects .claude-zen/ or large codebases
+# and automatically:
+# ✅ Discovers domains and services in your codebase
+# ✅ Initializes .claude-zen/collective/ structure
+# ✅ Spawns DEV-CUBE and OPS-CUBE matrons
+# ✅ Creates Queen Commander processes as needed
+# ✅ Coordinates through THE COLLECTIVE registry
+# ✅ Applies SPARC + FACT + RAG methodologies
+
+# 3. Work normally in Claude Code - swarm intelligence is automatic
+```
+
+**Automatic Architecture Activation:**
+- **🔍 Workspace Detection**: Monitors for complex codebases and .claude-zen directories
+- **🧠 THE COLLECTIVE**: Auto-spawns central coordination hub when needed
+- **📦 CUBES**: Auto-discovers domains → spawns DEV-CUBE, OPS-CUBE, SECURITY-CUBE matrons
+- **👑 QUEENS**: Auto-spawns Claude CLI processes based on workload
+- **🤖 Agent Registry**: Automatic discovery and coordination - zero configuration
+- **📊 SPARC + FACT**: Systematic analysis applied automatically to complex tasks
+
+**Zero-Configuration Intelligence:**
+- **Simple tasks**: Uses basic MCP coordination 
+- **Complex codebases**: Automatically activates THE COLLECTIVE
+- **Heavy workloads**: Auto-spawns Queen Commander processes
+- **Domain-specific work**: Auto-routes to appropriate CUBE matrons
+- WASM-accelerated neural networks for analysis
+- Adaptive cognitive patterns that improve over time
+
+---
 
 Special thanks to @ruvnet for pioneering AI-driven development workflows, swarm coordination patterns, and the FACT methodology that forms the foundation of this enhanced system with Advanced Kanban Flow capabilities.
 

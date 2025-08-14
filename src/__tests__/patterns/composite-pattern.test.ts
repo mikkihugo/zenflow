@@ -3,7 +3,19 @@
  * Hybrid TDD approach: London TDD for hierarchy management, Classical TDD for task execution algorithms
  */
 
-import { AgentFactory } from '../../coordination/agents/composite-system.ts';
+import { 
+  AgentFactory, 
+  type Agent,
+  type AgentGroup,
+  type AgentCapability,
+  type TaskDefinition,
+  type TaskResult,
+  type AgentStatus,
+  type CompositeStatus,
+  type HierarchicalAgentGroup,
+  type LoadBalancingStrategy,
+  type CompositeMetrics
+} from '../../coordination/agents/composite-system.ts';
 
 // Mock task executor for testing
 const createMockTaskExecutor = (
@@ -174,7 +186,8 @@ describe('Composite Pattern Implementation', () => {
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r: unknown) => r.success)).toBe(true);
+        expect(results).toBeDefined();
+        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
         expect(totalTime).toBeLessThan(600); // Should be < 3 * 200ms due to concurrency
         expect(totalTime).toBeGreaterThan(400); // Should be > 2 * 200ms due to queue limit
 
@@ -303,11 +316,13 @@ describe('Composite Pattern Implementation', () => {
           tasks.map((task) => agentGroup.executeTask(task))
         );
 
-        expect(results?.every((r: unknown) => r.success)).toBe(true);
+        expect(results).toBeDefined();
+        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
 
         // Verify distribution - each agent should have handled some tasks
+        expect(results).toBeDefined();
         const agentExecutions = new Set(
-          results?.map((r: unknown) => r.agentId)
+          results?.map((r: TaskResult) => r.agentId)
         );
         expect(agentExecutions.size).toBeGreaterThan(1); // Multiple agents used
 
@@ -352,7 +367,8 @@ describe('Composite Pattern Implementation', () => {
           const results = await Promise.all(
             tasks.map((task) => testGroup.executeTask(task))
           );
-          expect(results?.every((r: unknown) => r.success)).toBe(true);
+          expect(results).toBeDefined();
+        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
 
           await testGroup.shutdown();
         }
@@ -384,14 +400,15 @@ describe('Composite Pattern Implementation', () => {
         );
 
         // Some tasks should succeed (handled by working agents)
-        const successfulTasks = results?.filter((r: unknown) => r.success);
-        const failedTasks = results?.filter((r: unknown) => !r.success);
+        expect(results).toBeDefined();
+        const successfulTasks = results?.filter((r: TaskResult) => r.success);
+        const failedTasks = results?.filter((r: TaskResult) => !r.success);
 
         expect(successfulTasks.length).toBeGreaterThan(0);
         expect(failedTasks.length).toBeGreaterThan(0);
 
         // Failed tasks should have error information
-        failedTasks.forEach((result: unknown) => {
+        failedTasks.forEach((result: TaskResult) => {
           expect(result?.error).toBeDefined();
           expect(result?.error?.message).toContain('failed');
         });
@@ -553,7 +570,8 @@ describe('Composite Pattern Implementation', () => {
           tasks.map((task) => hierarchicalGroup.executeTask(task))
         );
 
-        expect(results?.every((r: unknown) => r.success)).toBe(true);
+        expect(results).toBeDefined();
+        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
 
         // Verify tasks were routed to appropriate tier agents
         results?.forEach((result, index) => {
@@ -603,7 +621,8 @@ describe('Composite Pattern Implementation', () => {
         );
 
         // Some tasks should succeed (handled by working sub-groups)
-        const successfulTasks = results?.filter((r: unknown) => r.success);
+        expect(results).toBeDefined();
+        const successfulTasks = results?.filter((r: TaskResult) => r.success);
         expect(successfulTasks.length).toBeGreaterThan(0);
 
         // Failed tasks should be redistributed to working sub-groups
@@ -655,12 +674,13 @@ describe('Composite Pattern Implementation', () => {
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r: unknown) => r.success)).toBe(true);
+        expect(results).toBeDefined();
+        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
         expect(totalTime).toBeLessThan(300); // Should be efficient due to parallel processing
 
         // Verify load distribution
         const agentUsage = new Map<string, number>();
-        results?.forEach((result: unknown) => {
+        results?.forEach((result: TaskResult) => {
           const count = agentUsage.get(result?.agentId) || 0;
           agentUsage.set(result?.agentId, count + 1);
         });
@@ -742,7 +762,8 @@ describe('Composite Pattern Implementation', () => {
         );
         const totalTime = Date.now() - startTime;
 
-        expect(results?.every((r: unknown) => r.success)).toBe(true);
+        expect(results).toBeDefined();
+        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
         expect(results).toHaveLength(taskCount);
 
         // Should process very quickly due to parallelization
@@ -753,7 +774,7 @@ describe('Composite Pattern Implementation', () => {
 
         // Verify load distribution
         const agentUsage = new Map<string, number>();
-        results?.forEach((result: unknown) => {
+        results?.forEach((result: TaskResult) => {
           const count = agentUsage.get(result?.agentId) || 0;
           agentUsage.set(result?.agentId, count + 1);
         });
@@ -1330,7 +1351,8 @@ describe('Composite Pattern Implementation', () => {
       );
       const totalTime = Date.now() - startTime;
 
-      expect(results?.every((r) => r.success)).toBe(true);
+      expect(results).toBeDefined();
+      expect(results?.every((r: TaskResult) => r.success)).toBe(true);
       expect(totalTime).toBeGreaterThan(4000); // Should take at least 4 seconds due to queuing
 
       const status = limitedAgent.getStatus();

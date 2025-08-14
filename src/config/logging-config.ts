@@ -4,7 +4,7 @@
  */
 
 import { getLogger as getLogTapeLogger } from '@logtape/logtape';
-import type { ILogger } from '../core/bootstrap-logger.ts';
+import type { ILogger } from '../core/bootstrap-logger.js';
 
 export enum LoggingLevel {
   DEBUG = 'debug',
@@ -117,22 +117,22 @@ class LoggingConfigurationManager {
       // Enhance with additional methods compatible with existing interfaces
       const enhancedLogger: Logger = {
         debug: (message: string, meta?: unknown) =>
-          coreLogger.debug(message, meta),
+          coreLogger.debug(message, meta as any),
         info: (message: string, meta?: unknown) =>
-          coreLogger.info(message, meta),
+          coreLogger.info(message, meta as any),
         warn: (message: string, meta?: unknown) =>
-          coreLogger.warn(message, meta),
+          coreLogger.warn(message, meta as any),
         error: (message: string, meta?: unknown) =>
-          coreLogger.error(message, meta),
+          coreLogger.error(message, meta as any),
       };
 
       // Add success and progress methods
       enhancedLogger.success = (message: string, meta?: unknown) => {
-        coreLogger.info(`✅ ${message}`, meta);
+        coreLogger.info(`✅ ${message}`, meta as any);
       };
 
       enhancedLogger.progress = (message: string, meta?: unknown) => {
-        coreLogger.info(`🔄 ${message}`, meta);
+        coreLogger.info(`🔄 ${message}`, meta as any);
       };
 
       return enhancedLogger;

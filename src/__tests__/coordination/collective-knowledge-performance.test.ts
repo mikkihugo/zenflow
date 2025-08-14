@@ -160,9 +160,9 @@ class HighPerformanceMockHiveFACT extends EventEmitter {
 
     const results = Array.from(this.facts.values())
       .filter((fact) =>
-        fact.subject.toLowerCase().includes(query.query.toLowerCase())
+        fact.subject.toLowerCase().includes((query as any).query.toLowerCase())
       )
-      .slice(0, query.limit || 10);
+      .slice(0, (query as any).limit || 10);
 
     return results;
   }
@@ -300,12 +300,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
         const stats = metrics.getStats('single-query');
         expect(stats).not.toBeNull();
         expect(stats?.avg).toBeLessThan(
-          PERFORMANCE_CONFIG?.EXPECTED_RESPONSE_TIME
+          PERFORMANCE_CONFIG.EXPECTED_RESPONSE_TIME
         );
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
 
     test(
@@ -347,12 +347,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
   });
 
   describe('Concurrent Request Handling', () => {
-    test.each(PERFORMANCE_CONFIG?.CONCURRENT_REQUESTS)(
+    test.each(PERFORMANCE_CONFIG.CONCURRENT_REQUESTS)(
       'should handle %d concurrent requests efficiently',
       async (requestCount) => {
         const swarms = Array.from(
@@ -411,10 +411,10 @@ describe('Hive Knowledge System - Performance Tests', () => {
         );
 
         // Analyze results
-        const successful = results?.filter(
+        const successful = results.filter(
           (r) => r.status === 'fulfilled'
         ).length;
-        const _failed = results?.filter((r) => r.status === 'rejected').length;
+        const _failed = results.filter((r) => r.status === 'rejected').length;
 
         const concurrentStats = metrics.getStats(`concurrent-${requestCount}`);
         expect(concurrentStats).not.toBeNull();
@@ -424,12 +424,12 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         // Overall time should be reasonable
         expect(concurrentStats?.avg).toBeLessThan(
-          PERFORMANCE_CONFIG?.EXPECTED_RESPONSE_TIME * 2
+          PERFORMANCE_CONFIG.EXPECTED_RESPONSE_TIME * 2
         );
 
         await Promise.all(swarms.map((s) => s.shutdown()));
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
   });
 
@@ -463,7 +463,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         // Memory increase should be reasonable
         expect(memoryIncrease).toBeLessThan(
-          PERFORMANCE_CONFIG?.MEMORY_THRESHOLD
+          PERFORMANCE_CONFIG.MEMORY_THRESHOLD
         );
 
         // Cache should respect size limits
@@ -472,7 +472,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
 
     test(
@@ -510,7 +510,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
         expect(operationCount).toBeGreaterThan(0); // Some operations occurred
         expect(operationCount).toBeLessThan(10000); // But not excessive
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
   });
 
@@ -534,7 +534,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         let requestCount = 0;
         const startTime = Date.now();
-        const duration = PERFORMANCE_CONFIG?.LOAD_TEST_DURATION;
+        const duration = PERFORMANCE_CONFIG.LOAD_TEST_DURATION;
 
         const loadTest = async () => {
           const endTime = startTime + duration;
@@ -568,7 +568,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await Promise.all(swarms.map((s) => s.shutdown()));
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
   });
 
@@ -627,10 +627,10 @@ describe('Hive Knowledge System - Performance Tests', () => {
         const results = await Promise.allSettled(stressOperations);
 
         // Analyze system health
-        const successful = results?.filter(
+        const successful = results.filter(
           (r) => r.status === 'fulfilled'
         ).length;
-        const _failed = results?.filter((r) => r.status === 'rejected').length;
+        const _failed = results.filter((r) => r.status === 'rejected').length;
         const successRate = successful / results.length;
 
         // Should maintain reasonable success rate under stress
@@ -646,7 +646,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT * 2
+      PERFORMANCE_CONFIG.TIMEOUT * 2
     );
   });
 
@@ -713,7 +713,7 @@ describe('Hive Knowledge System - Performance Tests', () => {
 
         await swarm.shutdown();
       },
-      PERFORMANCE_CONFIG?.TIMEOUT
+      PERFORMANCE_CONFIG.TIMEOUT
     );
   });
 });
@@ -725,12 +725,12 @@ function setupPerformanceRequestHandler(
 ): void {
   swarm.on('knowledge:request', async (request: unknown) => {
     try {
-      const response = await bridge.processKnowledgeRequest(request);
+      const response = await bridge.processKnowledgeRequest(request as any);
       swarm.emit('knowledge:response', response);
     } catch (error) {
       const errorResponse = {
-        requestId: request.requestId,
-        swarmId: request.swarmId,
+        requestId: (request as any).requestId,
+        swarmId: (request as any).swarmId,
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
         metadata: {

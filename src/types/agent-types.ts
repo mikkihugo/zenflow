@@ -28,6 +28,8 @@ export type AgentType =
   | 'legacy-analyzer'
   | 'modernization-agent'
   | 'migration-coordinator'
+  | 'migration-plan'
+  | 'system-architect'
   // SPARC methodology agents
   | 'quality-gate-agent'
   | 'validation-specialist'
@@ -35,6 +37,23 @@ export type AgentType =
   | 'ux-designer'
   | 'ui-designer'
   | 'accessibility-specialist'
+  | 'user-guide-writer'
+  // Testing agents
+  | 'unit-tester'
+  | 'integration-tester'
+  | 'e2e-tester'
+  | 'performance-tester'
+  | 'tdd-london-swarm'
+  | 'production-validator'
+  // Development agents
+  | 'developer'
+  | 'fullstack-dev'
+  | 'dev-backend-api'
+  | 'api-dev'
+  // Analysis agents
+  | 'analyze-code-quality'
+  | 'security-analyzer'
+  | 'refactoring-analyzer'
   // Additional specialized agents
   | 'database-architect'
   | 'devops-engineer'

@@ -1,0 +1,27 @@
+{
+  "name": "depd",
+  "version": "2.0.0",
+  "description": "Deprecate all the things...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "benchmark",
+    "beautify-benchmark",
+    "eslint",
+    "eslint-config-standard",
+    "eslint-plugin-import",
+    "eslint-plugin-markdown",
+    "eslint-plugin-node",
+    "eslint-plugin-promise",
+    "eslint-plugin-standard",
+    "istanbul",
+    "mocha",
+    "safe-buffer",
+    "uid-safe"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 13,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:41.946Z",
+  "depth": 2
+}

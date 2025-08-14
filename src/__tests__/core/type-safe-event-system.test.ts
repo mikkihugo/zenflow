@@ -669,8 +669,8 @@ describe('TypeSafeEventBus', () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(validationResults).toHaveLength(2);
-      expect(validationResults[0].requestId).toBe('val-req-1');
-      expect(validationResults[1].approved).toBe(true);
+      expect((validationResults[0] as any).requestId).toBe('val-req-1');
+      expect((validationResults[1] as any).approved).toBe(true);
     });
 
     test('should handle AGUI gate operations', async () => {
@@ -735,10 +735,10 @@ describe('TypeSafeEventBus', () => {
       await new Promise((resolve) => setTimeout(resolve, 50));
 
       expect(gateOperations).toHaveLength(2);
-      expect(gateOperations[0].operation).toBe('opened');
-      expect(gateOperations[0].requiresApproval).toBe(true);
-      expect(gateOperations[1].operation).toBe('closed');
-      expect(gateOperations[1].approved).toBe(true);
+      expect((gateOperations[0] as any).operation).toBe('opened');
+      expect((gateOperations[0] as any).requiresApproval).toBe(true);
+      expect((gateOperations[1] as any).operation).toBe('closed');
+      expect((gateOperations[1] as any).approved).toBe(true);
     });
   });
 
@@ -930,7 +930,7 @@ describe('Event System Edge Cases', () => {
     );
 
     expect(routingResults).toHaveLength(2);
-    expect(routingResults.some((r) => r.domain === 'coordination')).toBe(true);
-    expect(routingResults.some((r) => r.domain === 'workflows')).toBe(true);
+    expect(routingResults.some((r) => (r as any).domain === 'coordination')).toBe(true);
+    expect(routingResults.some((r) => (r as any).domain === 'workflows')).toBe(true);
   });
 });

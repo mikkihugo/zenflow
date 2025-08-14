@@ -1,0 +1,45 @@
+#!/usr/bin/env node
+
+/**
+ * Claude Code Zen - Simple Launch (Non-bundled)
+ * Uses plain dist files instead of problematic NCC bundle
+ */
+
+const { join } = require('path');
+const { spawn } = require('child_process');
+const { existsSync } = require('fs');
+
+const binDir = __dirname;
+const simpleDir = join(binDir, 'simple');
+const mainScript = join(simpleDir, 'claude-zen.js');
+
+// Pass all arguments to the main script
+const args = process.argv.slice(2);
+
+// Ensure simple directory exists
+if (!existsSync(simpleDir)) {
+  console.error('❌ Simple bundle directory not found. Please run: npm run build:prod');
+  process.exit(1);
+}
+
+// Set environment variables for WASM modules
+process.env.CLAUDE_ZEN_BUNDLE_MODE = 'true';
+process.env.CLAUDE_ZEN_WASM_PATH = simpleDir;
+
+console.log('🚀 Starting Claude Code Zen (Simple Bundle)...');
+
+// Launch the main application
+const child = spawn('node', [mainScript, ...args], {
+  stdio: 'inherit',
+  cwd: process.cwd(),
+  env: { ...process.env }
+});
+
+child.on('exit', (code) => {
+  process.exit(code || 0);
+});
+
+child.on('error', (error) => {
+  console.error('❌ Failed to start Claude Code Zen:', error.message);
+  process.exit(1);
+});

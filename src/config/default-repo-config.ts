@@ -5,16 +5,16 @@
  * to ensure all ML and intelligent features are enabled by default.
  */
 
-import type { ClaudeZenCoreConfig } from '../core/init.ts';
+import type { ClaudeZenCoreConfig } from '../core/init.js';
 import {
   calculateOptimalStreams,
   memory8GBConfig,
-} from './memory-optimization.ts';
+} from './memory-optimization.js';
 import {
   getStartupConfig,
   logSystemInfo,
   validateConfigForSystem,
-} from './system-info.ts';
+} from './system-info.js';
 
 export interface RepoConfig extends ClaudeZenCoreConfig {
   // Repository-specific settings
@@ -107,7 +107,7 @@ export const defaultRepoConfig: Omit<RepoConfig, 'repoPath' | 'repoName'> = {
   },
 
   // Memory allocation strategy starting from 8GB base (auto-detects and scales)
-  memoryAllocation: memory8GBConfig,
+  // memoryAllocation: memory8GBConfig,
   mlOptimizationLevel: 'enterprise',
 
   // Repository features

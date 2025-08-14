@@ -1,0 +1,16 @@
+{
+  "name": "cookie-signature",
+  "version": "1.2.2",
+  "description": "Sign and unsign cookies...",
+  "license": "MIT",
+  "dependencies": [],
+  "devDependencies": [
+    "mocha",
+    "should"
+  ],
+  "dependencyCount": 0,
+  "devDependencyCount": 2,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:40.291Z",
+  "depth": 1
+}

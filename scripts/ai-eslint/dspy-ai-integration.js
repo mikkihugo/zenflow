@@ -18,6 +18,20 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Proper logging function instead of console.log
+const logger = {
+  info: (message) => {
+    if (process.env.NODE_ENV !== 'test') {
+      process.stdout.write(`${message}\n`);
+    }
+  },
+  error: (message, error) => {
+    if (process.env.NODE_ENV !== 'test') {
+      process.stderr.write(`${message}${error ? `: ${error}` : ''}\n`);
+    }
+  }
+};
+
 // Import DSPy system (will be dynamically imported)
 let DSPyIntegrationManager = null;
 
@@ -55,13 +69,13 @@ export class DSPyAIIntegration {
         apiKey: process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY,
       });
 
-      console.log('🧠 DSPy AI Integration initialized');
+      logger.info('🧠 DSPy AI Integration initialized');
       this.isInitialized = true;
 
       // Load existing patterns if available
       await this.loadPatternCache();
     } catch (error) {
-      console.error('Failed to initialize DSPy:', error.message);
+      logger.error('Failed to initialize DSPy', error.message);
       throw new Error(`DSPy initialization failed: ${error.message}`);
     }
   }
@@ -75,7 +89,7 @@ export class DSPyAIIntegration {
     }
 
     const startTime = Date.now();
-    console.log(`🧠 DSPy FIX: ${path.basename(filePath)}`);
+    logger.info(`🧠 DSPy FIX: ${path.basename(filePath)}`);
 
     try {
       // Read file content
@@ -83,12 +97,12 @@ export class DSPyAIIntegration {
 
       // Extract errors from prompt
       const errors = this.extractErrorsFromPrompt(prompt);
-      console.log(`   🔍 Analyzing ${errors.length} errors`);
+      logger.info(`   🔍 Analyzing ${errors.length} errors`);
 
       // Check if we have a cached pattern for this error type
       const patternKey = this.generatePatternKey(errors, filePath);
       if (this.patternCache.has(patternKey)) {
-        console.log(`   ⚡ PATTERN MATCH: Using learned fix`);
+        logger.info(`   ⚡ PATTERN MATCH: Using learned fix`);
         return await this.applyLearnedPattern(
           filePath,
           patternKey,
@@ -103,10 +117,10 @@ export class DSPyAIIntegration {
         filePath
       );
 
-      console.log(
+      logger.info(
         `   🎯 Confidence: ${(diagnosis.confidence * 100).toFixed(1)}%`
       );
-      console.log(
+      logger.info(
         `   📝 Diagnosis: ${diagnosis.diagnosis.substring(0, 100)}...`
       );
 
@@ -130,7 +144,7 @@ export class DSPyAIIntegration {
         this.cachePattern(patternKey, fixes, diagnosis);
       }
 
-      console.log(
+      logger.info(
         `   ✅ Fixed in ${(duration / 1000).toFixed(1)}s (cost: ~$0.05)`
       );
 
@@ -142,7 +156,7 @@ export class DSPyAIIntegration {
         confidence: diagnosis.confidence,
       };
     } catch (error) {
-      console.error(`   ❌ DSPy error: ${error.message}`);
+      logger.error(`   ❌ DSPy error`, error.message);
 
       // Fallback: Return indication that we should use Claude
       return {
@@ -214,7 +228,7 @@ export class DSPyAIIntegration {
       fs.writeFileSync(filePath, fixedContent);
 
       const duration = Date.now() - startTime;
-      console.log(`   ⚡ Pattern applied in ${duration}ms (cost: $0.01)`);
+      logger.info(`   ⚡ Pattern applied in ${duration}ms (cost: $0.01)`);
 
       return {
         success: true,
@@ -224,7 +238,7 @@ export class DSPyAIIntegration {
         confidence: pattern.confidence,
       };
     } catch (error) {
-      console.log(
+      logger.error(
         `   ⚠️ Pattern failed: ${error.message}, falling back to DSPy`
       );
       this.patternCache.delete(patternKey); // Remove broken pattern
@@ -299,9 +313,9 @@ export class DSPyAIIntegration {
       );
 
       this.successHistory.push(trainingExample);
-      console.log(`   🧠 LEARNED: DSPy trained from successful fix`);
+      logger.info(`   🧠 LEARNED: DSPy trained from successful fix`);
     } catch (error) {
-      console.warn(`   ⚠️ Training failed: ${error.message}`);
+      logger.error(`   ⚠️ Training failed`, error.message);
     }
   }
 
@@ -342,10 +356,10 @@ export class DSPyAIIntegration {
       if (fs.existsSync(cacheFile)) {
         const data = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
         this.patternCache = new Map(Object.entries(data));
-        console.log(`   📚 Loaded ${this.patternCache.size} learned patterns`);
+        logger.info(`   📚 Loaded ${this.patternCache.size} learned patterns`);
       }
     } catch (error) {
-      console.warn(`Failed to load pattern cache: ${error.message}`);
+      logger.error(`Failed to load pattern cache`, error.message);
     }
   }
 
@@ -357,9 +371,9 @@ export class DSPyAIIntegration {
       const cacheFile = path.join(__dirname, '.dspy-patterns.json');
       const data = Object.fromEntries(this.patternCache);
       fs.writeFileSync(cacheFile, JSON.stringify(data, null, 2));
-      console.log(`   💾 Saved ${this.patternCache.size} patterns to cache`);
+      logger.info(`   💾 Saved ${this.patternCache.size} patterns to cache`);
     } catch (error) {
-      console.warn(`Failed to save pattern cache: ${error.message}`);
+      logger.error(`Failed to save pattern cache`, error.message);
     }
   }
 

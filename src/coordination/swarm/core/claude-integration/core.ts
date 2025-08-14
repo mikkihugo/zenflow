@@ -150,10 +150,11 @@ class ClaudeIntegrationCore {
     const claudeCommand = `claude "${prompt.trim()}"${permissions}`;
 
     try {
+      // Simple execution without detailed logging for now
       execSync(claudeCommand, { stdio: 'inherit', cwd: this.workingDir });
       return { success: true, message: 'Claude invocation completed' };
-    } catch (error) {
-      throw new Error(`Claude invocation failed: ${(error as Error).message}`);
+    } catch (error: any) {
+      throw new Error(`Claude invocation failed: ${error.message}`);
     }
   }
 }

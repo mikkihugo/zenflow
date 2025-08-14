@@ -1,0 +1,37 @@
+{
+  "name": "send",
+  "version": "1.2.0",
+  "description": "Better streaming static file server with Range and conditional-GET support...",
+  "license": "MIT",
+  "dependencies": [
+    "debug",
+    "encodeurl",
+    "escape-html",
+    "etag",
+    "fresh",
+    "http-errors",
+    "mime-types",
+    "ms",
+    "on-finished",
+    "range-parser",
+    "statuses"
+  ],
+  "devDependencies": [
+    "after",
+    "eslint",
+    "eslint-config-standard",
+    "eslint-plugin-import",
+    "eslint-plugin-markdown",
+    "eslint-plugin-node",
+    "eslint-plugin-promise",
+    "eslint-plugin-standard",
+    "mocha",
+    "nyc",
+    "supertest"
+  ],
+  "dependencyCount": 11,
+  "devDependencyCount": 11,
+  "realData": true,
+  "fetchedAt": "2025-08-14T15:29:33.484Z",
+  "depth": 1
+}

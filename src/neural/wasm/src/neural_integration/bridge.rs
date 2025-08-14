@@ -15,6 +15,15 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex, RwLock};
 
 /// WebGPU backend implementation for neural operations
+#[cfg(target_arch = "wasm32")]
+pub struct WebGpuBackend {
+  device: Option<wgpu::Device>,
+  queue: Option<wgpu::Queue>,
+  adapter_info: Option<wgpu::AdapterInfo>,
+  config: BridgeConfig,
+}
+
+#[cfg(not(target_arch = "wasm32"))]
 pub struct WebGpuBackend {
   device: Option<wgpu::Device>,
   queue: Option<wgpu::Queue>,
@@ -78,7 +87,29 @@ impl BufferPool {
 }
 
 impl WebGpuBackend {
-  /// Create a new WebGPU backend
+  /// Create a new WebGPU backend (WASM)
+  #[cfg(target_arch = "wasm32")]
+  pub fn new(config: &BridgeConfig) -> NeuralResult<Self> {
+    let mut backend = Self {
+      device: None,
+      queue: None,
+      adapter_info: None,
+      config: config.clone(),
+    };
+
+    // Initialize WebGPU if possible
+    if let Err(e) = backend.init_webgpu() {
+      log::warn!("WebGPU initialization failed: {e}");
+      if !config.auto_fallback {
+        return Err(e);
+      }
+    }
+
+    Ok(backend)
+  }
+
+  /// Create a new WebGPU backend (Native)
+  #[cfg(not(target_arch = "wasm32"))]
   pub fn new(config: &BridgeConfig) -> NeuralResult<Self> {
     let runtime = Arc::new(Runtime::new().map_err(|e| {
       NeuralIntegrationError::GpuInitError(format!(
@@ -168,7 +199,32 @@ impl WebGpuBackend {
     Ok(())
   }
 
-  /// Compile a CUDA kernel to WGSL
+  /// Compile a CUDA kernel to WGSL (WASM)
+  #[cfg(target_arch = "wasm32")]
+  fn compile_kernel(
+    &self,
+    cuda_source: &str,
+    name: &str,
+  ) -> NeuralResult<CompiledKernel> {
+    // Transpile CUDA to WGSL using our transpiler
+    let wgsl_source = self.transpile_cuda_to_wgsl(cuda_source)?;
+
+    let kernel = CompiledKernel {
+      name: name.to_string(),
+      wgsl_source,
+      entry_point: "main".to_string(),
+      workgroup_size: [64, 1, 1], // Default workgroup size
+      bind_group_layout: vec![
+        BindingType::Buffer { read_only: true }, // Input buffer
+        BindingType::Buffer { read_only: false }, // Output buffer
+      ],
+    };
+
+    Ok(kernel)
+  }
+
+  /// Compile a CUDA kernel to WGSL (Native)
+  #[cfg(not(target_arch = "wasm32"))]
   fn compile_kernel(
     &self,
     cuda_source: &str,
@@ -222,6 +278,217 @@ impl WebGpuBackend {
   }
 }
 
+/// WASM implementation of GpuBackendTrait
+#[cfg(target_arch = "wasm32")]
+impl GpuBackendTrait for WebGpuBackend {
+  fn initialize(&self) -> NeuralResult<()> {
+    if self.device.is_some() && self.queue.is_some() {
+      Ok(())
+    } else {
+      Err(NeuralIntegrationError::GpuInitError(
+        "Device not initialized".to_string(),
+      ))
+    }
+  }
+
+  fn is_available(&self) -> bool {
+    self.device.is_some() && self.queue.is_some()
+  }
+
+  fn get_device_info(&self) -> DeviceInfo {
+    if let Some(ref info) = self.adapter_info {
+      DeviceInfo {
+        name: info.name.clone(),
+        vendor: format!("{:?}", info.vendor),
+        device_type: format!("{:?}", info.device_type),
+        memory_size: 0,   // WebGPU doesn't expose this directly
+        compute_units: 0, // WebGPU doesn't expose this directly
+        max_workgroup_size: 256, // Common default
+        supports_f16: false, // Conservative default
+        supports_f64: false, // WebGPU doesn't support f64 in shaders
+      }
+    } else {
+      DeviceInfo {
+        name: "Unknown".to_string(),
+        vendor: "Unknown".to_string(),
+        device_type: "Unknown".to_string(),
+        memory_size: 0,
+        compute_units: 0,
+        max_workgroup_size: 64,
+        supports_f16: false,
+        supports_f64: false,
+      }
+    }
+  }
+
+  fn create_buffer(&self, size: usize) -> NeuralResult<BufferHandle> {
+    let device = self.device.as_ref().ok_or_else(|| {
+      NeuralIntegrationError::GpuInitError("Device not initialized".to_string())
+    })?;
+
+    // For WASM, create buffer directly without pooling for simplicity
+    let buffer = device.create_buffer(&wgpu::BufferDescriptor {
+      label: Some("Neural operation buffer"),
+      size: size as u64,
+      usage: wgpu::BufferUsages::STORAGE
+        | wgpu::BufferUsages::COPY_SRC
+        | wgpu::BufferUsages::COPY_DST,
+      mapped_at_creation: false,
+    });
+
+    // Create a simple handle (in real implementation, we'd need proper management)
+    let handle = BufferHandle(size as u64);
+    Ok(handle)
+  }
+
+  fn execute_kernel(
+    &self,
+    kernel: &CompiledKernel,
+    inputs: &[BufferHandle],
+  ) -> NeuralResult<BufferHandle> {
+    let device = self.device.as_ref().ok_or_else(|| {
+      NeuralIntegrationError::GpuInitError("Device not initialized".to_string())
+    })?;
+
+    let queue = self.queue.as_ref().ok_or_else(|| {
+      NeuralIntegrationError::GpuInitError("Queue not initialized".to_string())
+    })?;
+
+    // Create compute shader
+    let shader_module =
+      device.create_shader_module(wgpu::ShaderModuleDescriptor {
+        label: Some(&format!("{} shader", kernel.name)),
+        source: wgpu::ShaderSource::Wgsl(kernel.wgsl_source.as_str().into()),
+      });
+
+    // Create bind group layout
+    let bind_group_layout =
+      device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+        label: Some(&format!("{} bind group layout", kernel.name)),
+        entries: &kernel
+          .bind_group_layout
+          .iter()
+          .enumerate()
+          .map(|(i, binding_type)| wgpu::BindGroupLayoutEntry {
+            binding: i as u32,
+            visibility: wgpu::ShaderStages::COMPUTE,
+            ty: match binding_type {
+              BindingType::Buffer { read_only } => wgpu::BindingType::Buffer {
+                ty: wgpu::BufferBindingType::Storage {
+                  read_only: *read_only,
+                },
+                has_dynamic_offset: false,
+                min_binding_size: None,
+              },
+              BindingType::UniformBuffer => wgpu::BindingType::Buffer {
+                ty: wgpu::BufferBindingType::Uniform,
+                has_dynamic_offset: false,
+                min_binding_size: None,
+              },
+              BindingType::StorageTexture => {
+                wgpu::BindingType::StorageTexture {
+                  access: wgpu::StorageTextureAccess::WriteOnly,
+                  format: wgpu::TextureFormat::Rgba8Unorm,
+                  view_dimension: wgpu::TextureViewDimension::D2,
+                }
+              }
+            },
+            count: None,
+          })
+          .collect::<Vec<_>>(),
+      });
+
+    // Create compute pipeline
+    let compute_pipeline_layout =
+      device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+        label: Some(&format!("{} pipeline layout", kernel.name)),
+        bind_group_layouts: &[&bind_group_layout],
+        push_constant_ranges: &[],
+      });
+
+    let compute_pipeline =
+      device.create_compute_pipeline(&wgpu::ComputePipelineDescriptor {
+        label: Some(&format!("{} pipeline", kernel.name)),
+        layout: Some(&compute_pipeline_layout),
+        module: &shader_module,
+        entry_point: &kernel.entry_point,
+      });
+
+    // For WASM, create placeholder input buffers 
+    // In a real implementation, we'd track buffers properly
+    let input_buffers: Vec<wgpu::Buffer> = inputs
+      .iter()
+      .map(|handle| {
+        device.create_buffer(&wgpu::BufferDescriptor {
+          label: Some(&format!("Input buffer {}", handle.0)),
+          size: handle.0.max(1024), // Use handle value as size hint, minimum 1KB
+          usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC | wgpu::BufferUsages::COPY_DST,
+          mapped_at_creation: false,
+        })
+      })
+      .collect();
+
+    // Create output buffer (same size as first input for simplicity)
+    let output_buffer = device.create_buffer(&wgpu::BufferDescriptor {
+      label: Some("Output buffer"),
+      size: input_buffers[0].size(),
+      usage: wgpu::BufferUsages::STORAGE | wgpu::BufferUsages::COPY_SRC,
+      mapped_at_creation: false,
+    });
+
+    // Create bind group
+    let mut bind_group_entries = Vec::new();
+    for (i, buffer) in input_buffers.iter().enumerate() {
+      bind_group_entries.push(wgpu::BindGroupEntry {
+        binding: i as u32,
+        resource: buffer.as_entire_binding(),
+      });
+    }
+    bind_group_entries.push(wgpu::BindGroupEntry {
+      binding: input_buffers.len() as u32,
+      resource: output_buffer.as_entire_binding(),
+    });
+
+    let bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+      label: Some(&format!("{} bind group", kernel.name)),
+      layout: &bind_group_layout,
+      entries: &bind_group_entries,
+    });
+
+    // Execute the compute pass
+    let mut encoder =
+      device.create_command_encoder(&wgpu::CommandEncoderDescriptor {
+        label: Some(&format!("{} encoder", kernel.name)),
+      });
+
+    {
+      let mut compute_pass =
+        encoder.begin_compute_pass(&wgpu::ComputePassDescriptor {
+          label: Some(&format!("{} pass", kernel.name)),
+          timestamp_writes: None,
+        });
+
+      compute_pass.set_pipeline(&compute_pipeline);
+      compute_pass.set_bind_group(0, &bind_group, &[]);
+
+      // Dispatch with appropriate workgroup count
+      let workgroup_count =
+        (input_buffers[0].size() as u32 / 4) / kernel.workgroup_size[0] + 1;
+      compute_pass.dispatch_workgroups(workgroup_count, 1, 1);
+    }
+
+    queue.submit(std::iter::once(encoder.finish()));
+
+    // Return handle to output buffer
+    // For WASM, create a simple handle based on buffer size
+    let handle = BufferHandle(output_buffer.size());
+
+    Ok(handle)
+  }
+}
+
+/// Native implementation of GpuBackendTrait
+#[cfg(not(target_arch = "wasm32"))]
 impl GpuBackendTrait for WebGpuBackend {
   fn initialize(&self) -> NeuralResult<()> {
     if self.device.is_some() && self.queue.is_some() {
