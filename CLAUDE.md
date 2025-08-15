@@ -59,13 +59,15 @@
 
 ## 🚀 CRITICAL: Parallel Execution & Batch Operations
 
-### 🚨 MANDATORY RULE #1: BATCH EVERYTHING
+### 🚨 MANDATORY RULE #1: PARALLEL TOOL CALLS
 
-**When using swarms, you MUST use BatchTool for ALL operations:**
+**When using SwarmCommander, you MUST use multiple tool calls in ONE message:**
 
 1. **NEVER** send multiple messages for related operations
-2. **ALWAYS** combine multiple tool calls in ONE message
+2. **ALWAYS** combine multiple MCP tool calls in ONE message
 3. **PARALLEL** execution is MANDATORY, not optional
+
+**Example:** Instead of 3 separate messages, use 1 message with 3 tool calls
 
 ### ⚡ THE GOLDEN RULE OF SWARMS
 
@@ -148,12 +150,23 @@ Once configured, claude-code-zen native MCP tools provide comprehensive coordina
 - Features: task duration prediction, resource optimization, SPARC integration
 - Advanced: DSPy integration, neural coordination, ensemble methods
 
-## Available Native MCP Tools for Advanced Coordination
+## 🛠️ Available SwarmCommander MCP Tools
 
-### Core Coordination Tools:
-- `mcp__claude-zen__swarm_init` - Initialize intelligent swarm coordination
-- `mcp__claude-zen__agent_spawn` - Create adaptive learning agents
-- `mcp__claude-zen__task_orchestrate` - Orchestrate with prediction and optimization
+### **Primary Status & Coordination Tool:**
+- `mcp__claude-zen__swarm_status` - **START HERE!** Get comprehensive swarm status with SwarmCommander integration
+  - Parameters: `swarmId` (optional), `includeMetrics` (default: true), `verbose` (default: false)
+  - Returns: Full SwarmCommander status with SPARC phases, neural learning, agent health
+  - Use this to check swarm state and get overview of all capabilities
+
+### **Core Orchestration Tools:**
+- `mcp__claude-zen__swarm_init` - Initialize SwarmCommander with SPARC methodology
+  - Required: `topology` ("mesh", "hierarchical", "ring", "star")  
+  - Optional: `maxAgents`, `strategy`, `sparcEnabled`, `learningEnabled`
+- `mcp__claude-zen__agent_spawn` - Create specialized coordinated agents
+  - Required: `swarmId`, `type` ("researcher", "coder", "analyst", "optimizer", "coordinator", "tester")
+- `mcp__claude-zen__task_orchestrate` - Execute tasks with SPARC methodology
+  - Required: `task` (description)
+  - Recommended: `strategy: "sparc-guided"` for systematic development
 
 ### Intelligence & Monitoring Tools:
 - `mcp__claude-zen__swarm_status` - Advanced swarm status with analytics
@@ -174,6 +187,43 @@ Once configured, claude-code-zen native MCP tools provide comprehensive coordina
 - `mcp__claude-zen__benchmark_run` - Comprehensive performance benchmarking
 - `mcp__claude-zen__features_detect` - Available capabilities
 - `mcp__claude-zen__swarm_monitor` - Real-time coordination tracking
+
+## 🚀 **Quick Start Guide for Claude Code**
+
+### **Step 1: Check Available Tools**
+```bash
+# First, understand what SwarmCommander tools are available
+mcp__claude-zen__swarm_status {}
+```
+
+### **Step 2: Initialize SwarmCommander (if needed)**
+```bash
+# Initialize a new swarm with SPARC methodology
+mcp__claude-zen__swarm_init {
+  "topology": "hierarchical", 
+  "maxAgents": 6,
+  "sparcEnabled": true,
+  "learningEnabled": true
+}
+```
+
+### **Step 3: Spawn Agents for Different Tasks**
+```bash
+# Create specialized agents (use multiple tool calls in ONE message)
+mcp__claude-zen__agent_spawn { "swarmId": "swarm-123", "type": "researcher" }
+mcp__claude-zen__agent_spawn { "swarmId": "swarm-123", "type": "coder" }
+mcp__claude-zen__agent_spawn { "swarmId": "swarm-123", "type": "analyst" }
+```
+
+### **Step 4: Orchestrate Tasks with SPARC**
+```bash
+# Execute complex tasks using SPARC methodology
+mcp__claude-zen__task_orchestrate {
+  "task": "Build a React component with TypeScript and tests",
+  "strategy": "sparc-guided",
+  "sparcPhase": "specification"
+}
+```
 
 ## Workflow Examples (Coordination-Focused)
 
@@ -610,4 +660,28 @@ claude mcp add ruv-swarm npx ruv-swarm mcp start
 
 ---
 
-Remember: **claude-code-zen native swarm leads, Claude Code creates!** Start with `mcp__claude-zen__swarm_init` to access our advanced coordination capabilities.
+## 🔧 **Troubleshooting for Claude Code**
+
+### **"Tool not found" errors:**
+1. Check MCP connection: Run `/mcp` to see available tools
+2. Verify tool name: Use exact names like `mcp__claude-zen__swarm_status`
+3. Check parameters: Required parameters must be provided
+
+### **Swarm coordination not working:**
+1. **Start with status**: Always use `mcp__claude-zen__swarm_status` first
+2. **Initialize if needed**: Use `mcp__claude-zen__swarm_init` to create new swarm
+3. **Check swarm ID**: Many tools require a valid `swarmId` parameter
+
+### **Performance issues:**
+1. **Use parallel tool calls**: Combine multiple MCP tools in one message
+2. **Don't chain sequentially**: Avoid message-per-tool pattern
+3. **Batch file operations**: Use multiple Read/Write/Edit calls together
+
+### **When tools fail:**
+1. **Escalate to Queen**: Use `mcp__claude-zen__queen_escalation` for complex issues
+2. **Get expert advice**: Use `mcp__claude-zen__matron_advisory` for domain expertise
+3. **Check neural status**: Use `mcp__claude-zen__neural_learning_status` for learning issues
+
+---
+
+Remember: **SwarmCommander IS the swarm system!** Start with `mcp__claude-zen__swarm_status` to see what's available and get oriented.
