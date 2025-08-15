@@ -2044,35 +2044,73 @@ Output: All packages processed with security priorities`,
               `,
 
               'tools-reference': `
-🛠️ SWARMCOMMANDER TOOLS REFERENCE
+🛠️ COMPLETE SWARMCOMMANDER TOOLS REFERENCE (26 Tools)
 
 PRIMARY TOOL (Start here):
 • swarm_status - Get comprehensive swarm status with SPARC & neural learning
   Parameters: swarmId (optional), includeMetrics (true), verbose (false)
 
-CORE ORCHESTRATION:
+CORE ORCHESTRATION (4 tools):
 • swarm_init - Initialize SwarmCommander with SPARC methodology
   Required: topology ("mesh"|"hierarchical"|"ring"|"star")
-  Optional: maxAgents, strategy, sparcEnabled, learningEnabled
-
 • agent_spawn - Create specialized coordinated agents  
   Required: swarmId, type ("researcher"|"coder"|"analyst"|"optimizer"|"coordinator"|"tester")
-
 • task_orchestrate - Execute tasks with SPARC methodology
-  Required: task (description)
-  Recommended: strategy: "sparc-guided"
+  Required: task (description), Recommended: strategy: "sparc-guided"
+• task_status - Check progress of running tasks
+  Parameters: taskId (optional), detailed (false)
 
-ADVANCED COORDINATION:
+ADVANCED COORDINATION (4 tools):
 • queen_escalation - Strategic issue resolution for complex problems
-• matron_advisory - Domain expertise consultation
+  Required: swarmId, issueType, Optional: severity, requestedResolution
+• matron_advisory - Domain expertise consultation  
+  Required: domain ("development"|"operations"|"security"|"performance"|"architecture")
 • sparc_phase_execute - Execute specific SPARC phases
-• neural_learning_status - Neural learning metrics and performance
+  Required: swarmId, phase ("specification"|"pseudocode"|"architecture"|"refinement"|"completion")
+• task_results - Retrieve results from completed tasks
+  Required: taskId, Optional: format ("summary"|"detailed"|"raw")
 
-FACT SYSTEM:
+AGENT MANAGEMENT (3 tools):
+• agent_list - List all active agents in swarm
+  Parameters: filter ("all"|"active"|"idle"|"busy")
+• agent_metrics - Get performance metrics for agents
+  Parameters: agentId (optional), metric ("all"|"cpu"|"memory"|"tasks"|"performance")  
+• swarm_monitor - Monitor swarm activity in real-time
+  Parameters: duration (10s), interval (1s)
+
+NEURAL & LEARNING (4 tools):
+• neural_learning_status - Neural learning status and performance metrics
+  Parameters: swarmId (optional), includeAgentHistory (false), includePatterns (true)
+• neural_status - Get neural agent status and performance
+  Parameters: agentId (optional)
+• neural_train - Train neural agents with sample tasks
+  Parameters: agentId (optional), iterations (10)
+• neural_patterns - Get cognitive pattern information
+  Parameters: pattern ("all"|"convergent"|"divergent"|"lateral"|"systems"|"critical"|"abstract")
+
+SYSTEM & PERFORMANCE (4 tools):
+• memory_usage - Get current memory usage statistics
+  Parameters: detail ("summary"|"detailed"|"by-agent")
+• benchmark_run - Execute performance benchmarks
+  Parameters: type ("all"|"wasm"|"swarm"|"agent"|"task"), iterations (10)
+• features_detect - Detect runtime features and capabilities
+  Parameters: category ("all"|"wasm"|"simd"|"memory"|"platform")
+• instructions - Get comprehensive usage instructions (this tool!)
+  Parameters: topic ("quick-start"|"tools-reference"|"troubleshooting"|"examples"|"all")
+
+FACT SYSTEM (6 tools):
 • fact_npm - Individual NPM package information
-• fact_github - GitHub repository facts  
-• fact_bulk_dependencies - Process entire package.json files
-• fact_detect - Auto-detect external knowledge needs
+  Required: packageName, Optional: version
+• fact_github - GitHub repository facts
+  Required: owner, repo  
+• fact_search - Search facts by query and type
+  Required: query, Optional: type, limit (10)
+• fact_list - List all available FACT system capabilities
+  Parameters: category ("all"|"npm-packages"|"github-repos"|"api-docs"|"security-advisories")
+• fact_detect - Auto-detect external knowledge needs from task descriptions
+  Required: taskDescription
+• fact_bulk_dependencies - Process entire package.json files efficiently
+  Required: packageJson, Optional: config, executeImmediate (true)
               `,
 
               'troubleshooting': `
