@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { CompositeMetrics } from '../core/metrics-collector.ts';
+import type { CompositeMetrics } from '../core/metrics-collector';
 
 export interface AnomalyDetection {
   timestamp: number;

@@ -6,18 +6,18 @@
  * and provides comprehensive project coordination.
  */
 
-import { createLogger } from '../../core/logger.ts';
+import { createLogger } from '../../core/logger';
 import type {
   BaseDocumentEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../../database/entities/document-entities.ts';
-import { DocumentManager } from '../../database/managers/document-manager.ts';
-import type { DocumentType } from '../../workflows/types.ts';
+} from '../../database/entities/document-entities';
+import { DocumentManager } from "../services/document/document-service"
+import type { DocumentType } from '../../workflows/types';
 import {
   type StrategicVisionAnalysis,
   StrategicVisionService,
-} from './strategic-vision-service.ts';
+} from './strategic-vision-service';
 
 const logger = createLogger('coordination-services-document-task-vision');
 

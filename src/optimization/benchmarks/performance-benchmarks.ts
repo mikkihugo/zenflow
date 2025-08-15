@@ -12,13 +12,13 @@ import type {
   PerformanceMetrics,
   SwarmOptimizer,
   WasmOptimizer,
-} from '../interfaces/optimization-interfaces.ts';
+} from '../interfaces/optimization-interfaces';
 import {
   DATA_PERFORMANCE_TARGETS,
   NEURAL_PERFORMANCE_TARGETS,
   SWARM_PERFORMANCE_TARGETS,
   WASM_PERFORMANCE_TARGETS,
-} from '../interfaces/optimization-interfaces.ts';
+} from '../interfaces/optimization-interfaces';
 
 export interface BenchmarkResult {
   domain: string;

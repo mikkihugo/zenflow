@@ -46,9 +46,9 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import type { AgentId, AgentMetrics, AgentStatus } from '../types.ts';
-import type { AgentLearningSystem } from './agent-learning-system.ts';
+import { getLogger } from '../../config/logging-config';
+import type { AgentId, AgentMetrics, AgentStatus } from '../types';
+import type { AgentLearningSystem } from './agent-learning-system';
 
 const logger = getLogger('coordination-intelligence-agent-health-monitor');
 

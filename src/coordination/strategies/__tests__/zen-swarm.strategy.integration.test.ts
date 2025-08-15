@@ -24,11 +24,11 @@ import {
   vi,
   beforeAll,
 } from 'vitest';
-import { ZenSwarmStrategy } from '../zen-swarm.strategy.ts';
-import { AgentLearningSystem } from '../../intelligence/agent-learning-system.ts';
-import { TaskPredictor } from '../../intelligence/task-predictor.ts';
-import { AgentHealthMonitor } from '../../intelligence/agent-health-monitor.ts';
-import type { SwarmAgent } from '../../../types/shared-types.ts';
+import { ZenSwarmStrategy } from '../zen-swarm.strategy';
+import { AgentLearningSystem } from '../../intelligence/agent-learning-system';
+import { TaskPredictor } from '../../intelligence/task-predictor';
+import { AgentHealthMonitor } from '../../intelligence/agent-health-monitor';
+import type { SwarmAgent } from '../../../types/shared-types';
 
 // Mock the logging system
 vi.mock('../../../config/logging-config.ts', () => ({

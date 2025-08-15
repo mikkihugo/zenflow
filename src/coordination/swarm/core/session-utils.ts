@@ -2,7 +2,7 @@
  * @file Coordination system: session-utils.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-session-utils');
 
@@ -18,8 +18,8 @@ import type {
   SessionCheckpoint,
   SessionState,
   SessionStatus,
-} from './session-manager.ts';
-import type { SwarmOptions, SwarmState } from './types.ts';
+} from './session-manager';
+import type { SwarmOptions, SwarmState } from './types';
 
 /**
  * Session validation utilities.

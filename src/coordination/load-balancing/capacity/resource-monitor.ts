@@ -6,7 +6,7 @@
  * @file Coordination system: resource-monitor
  */
 
-import type { LoadMetrics } from '../types.ts';
+import type { LoadMetrics } from '../types';
 
 export class ResourceMonitor implements ResourceMonitor {
   private monitoringAgents: Set<string> = new Set();

@@ -7,12 +7,12 @@
  * use the SAME CollectiveFACTSystem instance.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   validateUniversalFACTAccess,
   getUniversalFACTAccess,
-} from './shared-fact-access.ts';
-import { getDSPySharedFACTSystem } from './shared-fact-integration.ts';
+} from './shared-fact-access';
+import { getDSPySharedFACTSystem } from './shared-fact-integration';
 
 const logger = getLogger('Hierarchy-FACT-Validation');
 

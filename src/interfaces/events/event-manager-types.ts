@@ -16,7 +16,7 @@ import type {
   NeuralEvent,
   SystemEvent,
   WorkflowEvent,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 
 /**
  * Workflow Event Manager Interface.

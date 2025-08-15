@@ -14,21 +14,21 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { MemorySystem } from '../../core/memory-system.ts';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system.ts';
-import type { Agent } from '../agents/agent.ts';
-import type { CollectiveCubeCoordinator } from '../collective-cube-sync.ts';
+} from '../../core/type-safe-event-system';
+import type { Agent } from '../agents/agent';
+import type { CollectiveCubeCoordinator } from '../collective-cube-sync';
 import type { SPARCEngineCore } from '../swarm/sparc/index.js';
 import type {
   SPARCPhase,
   SPARCProject,
-} from '../swarm/sparc/types/sparc-types.ts';
+} from '../swarm/sparc/types/sparc-types';
 import type {
   AutomationConfig,
   ComplexityLevel,
@@ -46,9 +46,9 @@ import type {
   SwarmTimeline,
   TestingWindow,
   WorkflowStream,
-} from './multi-level-types.ts';
-import type { WorkflowGatesManager } from './workflow-gates.ts';
-import { WorkflowHumanGateType } from './workflow-gates.ts';
+} from './multi-level-types';
+import type { WorkflowGatesManager } from './workflow-gates';
+import { WorkflowHumanGateType } from './workflow-gates';
 
 // ============================================================================
 // SWARM EXECUTION ORCHESTRATOR CONFIGURATION

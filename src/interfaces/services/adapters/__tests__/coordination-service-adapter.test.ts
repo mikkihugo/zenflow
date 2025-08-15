@@ -5,12 +5,12 @@
  * the hybrid TDD approach (70% London + 30% Classical).
  */
 
-import { ServicePriority, ServiceType } from '../../types.ts';
+import { ServicePriority, ServiceType } from '../../types';
 import {
   CoordinationServiceAdapter,
   createCoordinationServiceAdapter,
   createDefaultCoordinationServiceAdapterConfig,
-} from '../coordination-service-adapter.ts';
+} from '../coordination-service-adapter';
 
 // Test helpers and mocks
 const createMockLogger = () => ({

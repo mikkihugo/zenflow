@@ -42,20 +42,16 @@
  * ```
  */
 
-import { AzureKeyCredential } from '@azure/core-auth';
-import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
+// Azure imports removed as they're not needed for this implementation
+// import { AzureKeyCredential } from '@azure/core-auth';
+// import ModelClient, { isUnexpected } from '@azure-rest/ai-inference';
 import { spawn } from 'child_process';
 import path from 'path';
 import { promisify } from 'util';
 import { getLogger } from '../../config/logging-config';
+import { LLM_PROVIDER_CONFIG } from '../../config/llm-providers.config';
 import { v4 as uuidv4 } from 'uuid';
-import { CopilotApiProvider } from './providers/copilot-api-provider.js';
-import { GeminiHandler } from './providers/gemini-handler.js';
-import {
-  getOptimalProvider,
-  LLM_PROVIDER_CONFIG,
-  ROUTING_STRATEGY,
-} from '../../config/llm-providers.config.js';
+// Legacy providers removed - using Claude Code SDK only
 // Enhanced Claude Code SDK integration
 import {
   selectOptimalModel,
@@ -76,14 +72,8 @@ const execAsync = promisify(spawn);
 export interface LLMIntegrationConfig {
   /** Project root path for file operations */
   projectPath: string;
-  /** Preferred LLM provider ('claude-code' | 'gemini' | 'gemini-direct' | 'gemini-pro' | 'github-models' | 'copilot') */
-  preferredProvider?:
-    | 'claude-code'
-    | 'gemini'
-    | 'gemini-direct'
-    | 'gemini-pro'
-    | 'github-models'
-    | 'copilot';
+  /** LLM provider - only Claude Code SDK supported */
+  preferredProvider?: 'claude-code';
   /** Enable debug logging */
   debug?: boolean;
   /** Session ID for conversation continuity */
@@ -137,7 +127,7 @@ export interface AnalysisRequest {
   };
   /** Custom prompt text */
   prompt?: string;
-  /** Whether analysis requires file write operations */
+  /** Whether analysis requires file write operations (default: false for security) */
   requiresFileOperations?: boolean;
   /** Output file path if writing results */
   outputPath?: string;
@@ -233,10 +223,7 @@ export interface AnalysisResult {
  * file operations.
  *
  * **Available Providers:**
- * - **Claude Code**: Best for codebase-aware tasks, uses existing session context (with --output-format json)
- * - **GitHub Models API**: Primary choice - Azure AI inference REST API, GPT-5 fully free, reliable JSON responses
- * - **Gemini CLI**: Fallback option with comprehensive file inclusion (with rate limit tracking)
- * - **GitHub Copilot**: Direct API integration for GitHub Copilot models (uses GitHub token automatically)
+ * - **Claude Code SDK**: Only provider - comprehensive codebase-aware tasks with optimal model strategy
  *
  * **Security Note**: This service uses permission bypass flags which should only
  * be used in controlled environments. Always review generated files before use.
@@ -261,8 +248,7 @@ export class LLMIntegrationService {
   private config: LLMIntegrationConfig;
   private sessionId: string;
   private rateLimitTracker: Map<string, number> = new Map(); // Track rate limit timestamps
-  private copilotProvider: CopilotApiProvider | null = null;
-  private geminiHandler: GeminiHandler | null = null;
+  // Legacy providers removed - Claude Code SDK only
   // Enhanced with Claude Code SDK integration
   private statsService: LLMStatsService | null = null;
   private enhancedLogger: unknown;
@@ -464,48 +450,9 @@ export class LLMIntegrationService {
       );
     }
 
-    // Initialize Copilot provider if GitHub token is available
-    if (this.config.githubToken) {
-      try {
-        this.copilotProvider = new CopilotApiProvider({
-          githubToken: this.config.githubToken,
-          accountType: 'enterprise', // User specified enterprise account
-          verbose: this.config.debug,
-        });
-      } catch (error) {
-        if (this.config.debug) {
-          console.log(
-            '⚠️ Copilot provider initialization failed:',
-            error.message
-          );
-        }
-      }
-    }
+    // Legacy Copilot provider removed - Claude Code SDK only
 
-    // Initialize Gemini Direct handler (Flash model - main workhorse)
-    try {
-      this.geminiHandler = new GeminiHandler({
-        modelId: this.config.model?.includes('gemini')
-          ? this.config.model
-          : 'gemini-2.5-flash',
-        temperature: this.config.temperature,
-        maxTokens: this.config.maxTokens,
-        enableJson: false, // We handle JSON parsing ourselves
-      });
-
-      if (this.config.debug || this.config.enhancedLogging) {
-        this.enhancedLogger.info(
-          '✅ Gemini handler initialized (Flash model for regular tasks)'
-        );
-      }
-    } catch (error) {
-      if (this.config.debug || this.config.enhancedLogging) {
-        this.enhancedLogger.warn(
-          '⚠️ Gemini handler initialization failed:',
-          error.message
-        );
-      }
-    }
+    // Legacy Gemini handler removed - Claude Code SDK only
 
     if (this.config.enhancedLogging) {
       this.enhancedLogger.info(
@@ -1259,6 +1206,10 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
     const userPrompt = this.buildPrompt(request);
     const model = this.config.model || 'openai/gpt-5';
 
+    // GitHub Models API disabled - Azure dependencies removed
+    throw new Error('GitHub Models API not available - Azure dependencies removed');
+
+    /* 
     const client = ModelClient(
       'https://models.github.ai/inference',
       new AzureKeyCredential(this.config.githubToken)
@@ -1307,7 +1258,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
         body: requestBody,
       });
 
-      if (isUnexpected(response)) {
+      // if (isUnexpected(response)) {
         throw new Error(
           `GitHub Models API error: ${JSON.stringify(response.body.error)}`
         );
@@ -1379,6 +1330,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
 
       throw error;
     }
+    */
   }
 
   /**

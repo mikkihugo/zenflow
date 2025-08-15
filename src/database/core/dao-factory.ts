@@ -8,12 +8,12 @@
 import type {
   DatabaseAdapter,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
+} from '../../core/interfaces/base-interfaces';
 import type {
   DatabaseTypes,
   EntityTypes as EntityTypesEnum,
   IDao,
-} from '../interfaces.ts';
+} from '../interfaces';
 
 /**
  * Multi-database DAO interface for cross-database operations.
@@ -35,10 +35,10 @@ export interface IMultiDatabaseDao<T> {
   count(filter?: Partial<T>): Promise<number>;
 }
 
-import { BaseDao } from '../base.dao.ts';
-import { CoordinationDao } from '../dao/coordination.dao.ts';
-import { GraphDao } from '../dao/graph.dao.ts';
-import { MemoryDao } from '../dao/memory.dao.ts';
+import { BaseDao } from '../base.dao';
+import { CoordinationDao } from '../dao/coordination.dao';
+import { GraphDao } from '../dao/graph.dao';
+import { MemoryDao } from '../dao/memory.dao';
 
 /**
  * Entity type constant mapping for type safety.

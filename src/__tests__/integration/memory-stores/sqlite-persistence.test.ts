@@ -10,7 +10,7 @@ import { constants } from 'node:fs';
 import { access, unlink } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { Database } from 'sqlite3';
+import Database from 'better-sqlite3';
 
 // Mock SQLite connection interface
 interface MockSQLiteConnection {
@@ -25,7 +25,7 @@ interface MockSQLiteConnection {
 
 // SQLite Store Implementation to test
 class SQLiteMemoryStore {
-  private db: Database | null = null;
+  private db: Database.Database | null = null;
   private dbPath: string;
   private isInitialized = false;
 
@@ -34,16 +34,14 @@ class SQLiteMemoryStore {
   }
 
   async initialize(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.db = new Database(this.dbPath, (err: unknown) => {
-        if (err) {
-          reject(err);
-          return;
-        }
-        this.isInitialized = true;
-        this.createTables().then(resolve).catch(reject);
-      });
-    });
+    try {
+      // better-sqlite3 uses synchronous constructor
+      this.db = new Database(this.dbPath);
+      this.isInitialized = true;
+      await this.createTables();
+    } catch (err) {
+      throw new Error(`Failed to initialize SQLite database: ${err}`);
+    }
   }
 
   private async createTables(): Promise<void> {

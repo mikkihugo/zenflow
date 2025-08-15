@@ -10,10 +10,10 @@ export type {
   IMemoryStore,
   MemoryStats,
   StoreOptions,
-} from '../core/interfaces/base-interfaces.ts';
+} from '../core/interfaces/base-interfaces';
 
 // Re-export memory backend types
-export type { BackendInterface, JSONValue } from './core/memory-system.ts';
+export type { BackendInterface, JSONValue } from './core/memory-system';
 
 // Memory configuration types
 export interface MemoryConfig {
@@ -81,13 +81,6 @@ export interface CacheStats {
   readonly totalSize: number;
   readonly entryCount: number;
   readonly averageAccessTime: number;
-}
-
-// Store options interface
-export interface StoreOptions {
-  ttl?: number;
-  compress?: boolean;
-  metadata?: Record<string, unknown>;
 }
 
 // Memory backend interfaces
@@ -351,17 +344,6 @@ export interface MemoryBackendFactory {
   create(type: MemoryBackendType, config: MemoryConfig): MemoryBackend;
   isSupported(type: MemoryBackendType): boolean;
   getAvailableBackends(): readonly MemoryBackendType[];
-}
-
-// Base memory store interface
-export interface IMemoryStore {
-  store(key: string, value: unknown, options?: StoreOptions): Promise<void>;
-  retrieve(key: string): Promise<unknown>;
-  delete(key: string): Promise<boolean>;
-  clear(): Promise<void>;
-  size(): Promise<number>;
-  health(): Promise<boolean>;
-  stats(): Promise<MemoryBackendStats>;
 }
 
 // Memory system factory type (for DI)

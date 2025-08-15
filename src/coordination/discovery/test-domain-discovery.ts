@@ -20,15 +20,15 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import { WorkflowEngine } from '../../workflows/workflow-engine.ts';
+import { getLogger } from '../../config/logging-config';
+import { WorkflowEngine } from '../../workflows/workflow-engine';
 import { DocumentProcessor } from '../../core/document-processor';
-import { EventBus } from '../core/event-bus.ts';
+import { EventBus } from '../core/event-bus';
 import { MemorySystem } from '../../core/memory-system';
 import { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../../tools/domain-splitting/analyzers/domain-analyzer';
-import { DomainDiscoveryBridge } from './domain-discovery-bridge.ts';
+import { DomainDiscoveryBridge } from './domain-discovery-bridge';
 
 const logger = getLogger('DomainDiscoveryTest');
 

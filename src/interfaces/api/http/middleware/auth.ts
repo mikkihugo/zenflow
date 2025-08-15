@@ -4,7 +4,7 @@
  */
 
 import type { NextFunction, Request, Response } from 'express';
-import { LogLevel, log } from './logging.ts';
+import { LogLevel, log } from './logging';
 
 /**
  * User information interface (for future use)

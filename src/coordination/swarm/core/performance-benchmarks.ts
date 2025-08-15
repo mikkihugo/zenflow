@@ -2,7 +2,7 @@
  * @file Coordination system: performance-benchmarks.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-performance-benchmarks');
 
@@ -13,9 +13,9 @@ const logger = getLogger('coordination-swarm-core-performance-benchmarks');
  * WASM loading, memory management, and Claude Code Flow coordination.
  */
 
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat.ts';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat';
 // import { getClaudeFlow } from './claude-flow-enhanced';
-import { ZenSwarm } from './base-swarm.ts';
+import { ZenSwarm } from './base-swarm';
 
 interface Recommendation {
   category: string;

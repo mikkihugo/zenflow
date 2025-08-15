@@ -2,7 +2,7 @@
  * @file Sqlite-backend implementation.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('knowledge-storage-backends-sqlite-backend');
 
@@ -18,15 +18,15 @@ import path from 'node:path';
 import type {
   DatabaseAdapter,
   DatabaseConfig,
-} from '../../database/providers/database-providers.ts';
+} from '../../database/providers/database-providers';
 // Use DAL instead of direct database access
-import { DatabaseProviderFactory } from '../../database/providers/database-providers.ts';
+import { DatabaseProviderFactory } from '../../database/providers/database-providers';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
   FACTStorageBackend,
   FACTStorageStats,
-} from '../storage-interface.ts';
+} from '../storage-interface';
 
 interface SQLiteBackendConfig {
   dbPath: string;

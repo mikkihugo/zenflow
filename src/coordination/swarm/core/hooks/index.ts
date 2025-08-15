@@ -2,7 +2,7 @@
  * @file Claude Code Hooks Implementation for ruv-swarm - provides automated coordination, formatting, and learning capabilities.
  */
 
-import { getLogger } from '../../../../config/logging-config.ts';
+import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-hooks-index');
 

@@ -13,17 +13,17 @@
 import {
   initializeSwarmStorage,
   registerSwarmProviders,
-} from '../coordination/swarm/storage/swarm-providers.ts';
+} from '../coordination/swarm/storage/swarm-providers';
 // Database domain
-import { DALFactory } from '../database/factory.ts';
-import { DatabaseProviderFactory } from '../database/providers/database-providers.ts';
-import { DIContainer } from '../di/container/di-container.ts';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.ts';
+import { DALFactory } from '../database/factory';
+import { DatabaseProviderFactory } from '../database/providers/database-providers';
+import { DIContainer } from '../di/container/di-container';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 // Memory domain
 import {
   initializeMemorySystem,
   registerMemoryProviders,
-} from '../memory/memory-integration.ts';
+} from '../memory/memory-integration';
 
 /**
  * Complete system integration example.

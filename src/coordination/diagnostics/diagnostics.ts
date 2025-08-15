@@ -9,7 +9,7 @@
 import { existsSync, mkdirSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { performance } from 'node:perf_hooks';
-import { type LoggerInterface, loggingConfig } from './logging-config.ts';
+import { type LoggerInterface, loggingConfig } from './logging-config';
 
 export interface ConnectionEvent {
   connectionId: string;

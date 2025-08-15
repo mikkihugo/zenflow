@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
 // Quick type aliases to resolve missing type errors
 export type BootstrappingConfig = any;

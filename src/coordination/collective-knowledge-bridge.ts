@@ -9,13 +9,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
-import type { SessionMemoryStore } from '../memory/index.ts';
+import { getLogger } from '../config/logging-config';
+import type { SessionMemoryStore } from '../memory/index';
 import {
   getCollectiveFACT,
   type CollectiveFACTSystem,
   type UniversalFact,
-} from './collective-fact-integration.ts';
+} from './collective-fact-integration';
 import type { CollectiveSwarmCoordinator } from './swarm-synchronization';
 
 interface SwarmContext {

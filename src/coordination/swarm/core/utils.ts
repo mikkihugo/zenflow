@@ -10,7 +10,7 @@ import type {
   CognitiveProfile,
   SwarmTopology,
   TaskPriority,
-} from './types.ts';
+} from './types';
 
 /**
  * Generate a unique ID for agents, tasks, and messages.

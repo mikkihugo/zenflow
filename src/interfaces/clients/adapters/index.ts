@@ -9,8 +9,8 @@
  * @file Adapters module exports.
  */
 
-export * from './mcp-client-adapter.ts';
+export * from './mcp-client-adapter';
 // Demonstrations and examples
 export * from './mcp-client-demo';
 // Integration and migration utilities
-export * from './mcp-integration-example.ts';
+export * from './mcp-integration-example';

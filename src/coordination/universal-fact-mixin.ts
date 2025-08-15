@@ -6,12 +6,12 @@
  * can access the shared FACT system using consistent patterns.
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import type { CollectiveFACTSystem } from './collective-fact-integration.ts';
+import { getLogger } from '../config/logging-config';
+import type { CollectiveFACTSystem } from './collective-fact-integration';
 import {
   getUniversalFACTAccess,
   type UniversalFACTAccess,
-} from './shared-fact-access.ts';
+} from './shared-fact-access';
 
 const logger = getLogger('Universal-FACT-Mixin');
 
@@ -53,7 +53,7 @@ export function withUniversalFACT<T extends new (...args: unknown[]) => object>(
 ) {
   return function <U extends T>(BaseClass: U) {
     return class extends BaseClass implements UniversalFACTCapabilities {
-      private _sharedFactSystem: CollectiveFACTSystem | null = null;
+      protected _sharedFactSystem: CollectiveFACTSystem | null = null;
 
       /**
        * Get shared FACT system access.
@@ -261,7 +261,7 @@ export function hasUniversalFACTCapabilities(
  * Can be extended by any hierarchy level class.
  */
 export abstract class UniversalFACTBase implements UniversalFACTCapabilities {
-  private _sharedFactSystem: CollectiveFACTSystem | null = null;
+  protected _sharedFactSystem: CollectiveFACTSystem | null = null;
   protected abstract hierarchyLevel:
     | 'Cube'
     | 'Matron'

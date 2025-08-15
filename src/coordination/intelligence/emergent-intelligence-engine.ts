@@ -33,22 +33,22 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
-import type { AgentId, SwarmId } from '../types.ts';
+import { getLogger } from '../../config/logging-config';
+import type { AgentId, SwarmId } from '../types';
 import type {
   PredictiveAnalyticsEngine,
   EmergentBehaviorPrediction,
-} from './predictive-analytics-engine.ts';
+} from './predictive-analytics-engine';
 import type {
   Tier3NeuralLearning,
   DeepPattern,
   SystemPrediction,
-} from '../learning/tier3-neural-learning.ts';
-import type { CollectiveIntelligenceCoordinator } from '../../knowledge/collective-intelligence-coordinator.ts';
-import type { MetaLearningFramework } from '../../neural/core/meta-learning-framework.ts';
-import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager.ts';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration.ts';
-import type { Pattern } from '../../intelligence/adaptive-learning/types.ts';
+} from '../learning/tier3-neural-learning';
+import type { CollectiveIntelligenceCoordinator } from '../../knowledge/collective-intelligence-coordinator';
+import type { MetaLearningFramework } from '../../neural/core/meta-learning-framework';
+import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager';
+import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
+import type { Pattern } from '../../intelligence/adaptive-learning/types';
 
 const logger = getLogger(
   'coordination-intelligence-emergent-intelligence-engine'

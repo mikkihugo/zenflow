@@ -7,8 +7,8 @@
  * - Classical TDD (30%): Test actual computation and data transformation.
  */
 
-import type { ProtocolType } from '../../../../types/protocol-types.ts';
-import { ProtocolTypes } from '../../types.ts';
+import type { ProtocolType } from '../../../../types/protocol-types';
+import { ProtocolTypes } from '../../types';
 import {
   createCustomKnowledgeClient,
   createFACTClient,
@@ -18,7 +18,7 @@ import {
   KnowledgeHelpers,
   type KnowledgeRequest,
   type KnowledgeResponse,
-} from '../knowledge-client-adapter.ts';
+} from '../knowledge-client-adapter';
 
 // Mock the FACT integration
 vi.mock('../../../../knowledge/knowledge-client', () => {

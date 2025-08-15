@@ -2,7 +2,7 @@
  * @file Sparc processing engine.
  */
 
-import { getLogger } from '../../../../config/logging-config.ts';
+import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
 
@@ -20,23 +20,23 @@ const logger = getLogger('coordination-swarm-sparc-core-sparc-engine');
  */
 
 import { nanoid } from 'nanoid';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system.ts';
-import { MemorySystem } from '../../../../core/memory-system.ts';
+import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
+import { MemorySystem } from '../../../../core/memory-system';
 // Real implementations - no more mocks!
-import { CoordinationAPI } from '../../../api.ts';
+import { CoordinationAPI } from '../../../api';
 // CIRCULAR DEPENDENCY FIX: Remove direct import of ProductWorkflowEngine
 // Use dependency injection pattern instead
 
 const TaskAPI = CoordinationAPI.tasks;
 
-import { TaskCoordinator } from '../../../task-coordinator.ts';
-import { ProjectManagementIntegration } from '../integrations/project-management-integration.ts';
-import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration.ts';
-import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine.ts';
-import { CompletionPhaseEngine } from '../phases/completion/completion-engine.ts';
-import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine.ts';
-import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine.ts';
-import { SpecificationPhaseEngine } from '../phases/specification/specification-engine.ts';
+import { TaskCoordinator } from '../../../task-coordinator';
+import { ProjectManagementIntegration } from '../integrations/project-management-integration';
+import { SPARCSwarmCoordinator } from '../integrations/swarm-coordination-integration';
+import { ArchitecturePhaseEngine } from '../phases/architecture/architecture-engine';
+import { CompletionPhaseEngine } from '../phases/completion/completion-engine';
+import { PseudocodePhaseEngine } from '../phases/pseudocode/pseudocode-engine';
+import { RefinementPhaseEngine } from '../phases/refinement/refinement-engine';
+import { SpecificationPhaseEngine } from '../phases/specification/specification-engine';
 import type {
   ArchitectureDesign,
   ArtifactReference,
@@ -56,7 +56,7 @@ import type {
   SPARCEngine,
   SPARCPhase,
   SPARCProject,
-} from '../types/sparc-types.ts';
+} from '../types/sparc-types';
 
 export class SPARCEngineCore implements SPARCEngine {
   private readonly phaseDefinitions: Map<SPARCPhase, PhaseDefinition>;

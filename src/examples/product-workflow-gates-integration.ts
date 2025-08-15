@@ -11,15 +11,15 @@
  * with strategic decision gates for human oversight and approval.
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine.ts';
-import type { MemorySystem } from '../core/memory-system.ts';
+import { getLogger } from '../config/logging-config';
+import { ProductWorkflowEngine } from '../coordination/orchestration/product-workflow-engine';
+import type { MemorySystem } from '../core/memory-system';
 import {
   createTypeSafeEventBus,
   type TypeSafeEventBus,
-} from '../core/type-safe-event-system.ts';
-import type { DocumentManager } from '../database/managers/document-manager.ts';
-import { WorkflowAGUIAdapter } from '../interfaces/agui/workflow-agui-adapter.ts';
+} from '../core/type-safe-event-system';
+import type { DocumentManager } from "../services/document/document-service"
+import { WorkflowAGUIAdapter } from '../interfaces/agui/workflow-agui-adapter';
 
 const logger = getLogger('product-workflow-gates-integration');
 

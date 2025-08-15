@@ -6,7 +6,7 @@
  * @file Singleton-provider implementation.
  */
 
-import type { Provider } from '../types/di-types.ts';
+import type { Provider } from '../types/di-types';
 
 export class SingletonProvider<T> implements Provider<T> {
   readonly type = 'singleton' as const;

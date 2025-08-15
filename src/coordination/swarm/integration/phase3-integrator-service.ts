@@ -25,29 +25,29 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator';
 
 // Import integration components
 import {
   Phase3DataBridge,
   type Phase3DataBridgeConfig,
   type AggregatedLearningMetrics,
-} from './phase3-data-bridge.ts';
+} from './phase3-data-bridge';
 import {
   SwarmEnsembleIntegrator,
   type SwarmEnsembleIntegratorConfig,
-} from './swarm-ensemble-integrator.ts';
+} from './swarm-ensemble-integrator';
 
 // Import system types
-import type { Phase3EnsembleLearning } from '../learning/phase-3-ensemble.ts';
-import type { NeuralEnsembleCoordinator } from '../learning/neural-ensemble-coordinator.ts';
-import type { SwarmService } from '../../../services/coordination/swarm-service.ts';
-import type { LearningMetrics } from '../../interfaces/terminal/screens/phase3-learning-monitor.tsx';
+import type { Phase3EnsembleLearning } from '../learning/phase-3-ensemble';
+import type { NeuralEnsembleCoordinator } from '../learning/neural-ensemble-coordinator';
+import type { SwarmService } from '../../../services/coordination/swarm-service';
+import { getLogger } from '../../../utils/logger';
 
 const logger = getLogger(
   'coordination-swarm-integration-phase3-integrator-service'

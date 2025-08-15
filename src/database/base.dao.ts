@@ -13,14 +13,14 @@ import type {
   DatabaseMetadata,
   SortCriteria,
   TransactionOperation,
-} from '../database/interfaces.ts';
+} from '../database/interfaces';
 import type { HealthStatus } from '../types/health-types';
 import type { PerformanceMetrics } from '../types/performance-types';
 import type {
   IDataAccessObject,
   IRepository,
   QueryOptions,
-} from './interfaces.ts';
+} from './interfaces';
 
 // Create a simple logger interface to avoid import issues
 interface ILogger {

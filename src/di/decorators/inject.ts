@@ -7,8 +7,8 @@
  */
 
 import 'reflect-metadata';
-import type { DIToken } from '../types/di-types.ts';
-import { getInjectionTokens, setInjectionTokens } from './injectable.ts';
+import type { DIToken } from '../types/di-types';
+import { getInjectionTokens, setInjectionTokens } from './injectable';
 
 /**
  * Inject decorator for marking constructor parameters for injection.

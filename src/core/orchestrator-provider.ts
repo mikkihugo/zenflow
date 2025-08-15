@@ -2,14 +2,14 @@
  * @file Orchestrator-provider implementation.
  */
 
-import { config } from '../config/index.ts';
-import { getLogger } from '../config/logging-config.ts';
-import { HTTPMCPServer as MCPServer } from '../interfaces/mcp/index.ts';
-import { TerminalManager } from '../interfaces/terminal/index.ts';
-import { MemoryManager } from '../memory/index.ts';
-import type { CoordinationProvider } from '../types/shared-types.ts';
-import { EventBus } from './event-bus.ts';
-import { Orchestrator } from './orchestrator.ts';
+import { config } from '../config/index';
+import { getLogger } from '../config/logging-config';
+import { HTTPMCPServer as MCPServer } from '../interfaces/mcp/index';
+import { TerminalManager } from '../interfaces/terminal/index';
+import { MemoryManager } from '../memory/index';
+import type { CoordinationProvider } from '../types/shared-types';
+import { EventBus } from './event-bus';
+import { Orchestrator } from './orchestrator';
 
 let orchestratorInstance: Orchestrator | null = null;
 let coordinationProvider: CoordinationProvider | null = null;

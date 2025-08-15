@@ -10,15 +10,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config.ts';
-import { getLogger } from '../../../config/logging-config.ts';
-import type { ServiceLifecycleStatus } from '../core/interfaces.ts';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
+import type { ServiceLifecycleStatus } from '../core/interfaces';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
   type InfrastructureServiceAdapter,
   type InfrastructureServiceAdapterConfig,
-} from './infrastructure-service-adapter.ts';
+} from './infrastructure-service-adapter';
 
 /**
  * Infrastructure service factory configuration.
@@ -919,4 +919,4 @@ export type {
 };
 
 // Re-export service type from adapter
-export type { ServiceEventType } from '../core/interfaces.ts';
+export type { ServiceEventType } from '../core/interfaces';

@@ -19,8 +19,8 @@ export type {
   Task,
 } from '../coordination/schemas';
 // Import domain-specific schemas
-export * from './common.ts';
-export * from './neural.ts';
+export * from './common';
+export * from './neural';
 
 /**
  * Complete OpenAPI 3.0 Schema Definition
@@ -399,7 +399,7 @@ export const RestAPISchema = {
         },
       },
 
-      // Coordination schemas (imported from coordination/schemas.ts)
+      // Coordination schemas (import.*from.*)
       Agent: {
         type: 'object',
         required: [

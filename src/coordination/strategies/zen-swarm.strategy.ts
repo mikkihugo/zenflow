@@ -15,13 +15,13 @@
  * @version 1.0.0
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import type { SwarmAgent } from '../../types/shared-types.ts';
-import type { SwarmStrategy } from '../types.ts';
+import { getLogger } from '../../config/logging-config';
+import type { SwarmAgent } from '../../types/shared-types';
+import type { SwarmStrategy } from '../types';
 import { ZenOrchestratorIntegration } from '../../zen-orchestrator-integration.js';
-import { AgentLearningSystem } from '../intelligence/agent-learning-system.ts';
-import { TaskPredictor } from '../intelligence/task-predictor.ts';
-import { AgentHealthMonitor } from '../intelligence/agent-health-monitor.ts';
+import { AgentLearningSystem } from '../intelligence/agent-learning-system';
+import { TaskPredictor } from '../intelligence/task-predictor';
+import { AgentHealthMonitor } from '../intelligence/agent-health-monitor';
 
 const logger = getLogger('coordination-strategies-zen-swarm-strategy');
 

@@ -83,7 +83,7 @@
  */
 
 import { GNNModel } from '../../neural/models/presets/gnn.js';
-import { WASMNeuralAccelerator } from '../../neural/wasm/wasm-neural-accelerator.ts';
+import { WASMNeuralAccelerator } from '../../neural/wasm/wasm-neural-accelerator';
 import {
   LLMIntegrationService,
   type LLMIntegrationConfig,
@@ -100,7 +100,7 @@ import type {
   DependencyGraph,
   Domain,
   DomainRelationshipMap,
-} from './types.ts';
+} from './types';
 
 /**
  * Neural Domain Mapper class implementing GNN-based domain relationship analysis.

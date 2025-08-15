@@ -15,7 +15,7 @@ import {
   SystemError,
   TimeoutError,
   WASMMemoryError,
-} from './errors.ts';
+} from './errors';
 
 const logger = getLogger('SystemResilience');
 

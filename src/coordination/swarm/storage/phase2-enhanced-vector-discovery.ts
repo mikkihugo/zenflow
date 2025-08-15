@@ -11,10 +11,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IVectorRepository, VectorSearchOptions } from '../../../database/interfaces.ts';
-import type { SwarmDatabaseManager, SuccessfulPattern, SwarmRepositories } from './swarm-database-manager.ts';
-import { inject, injectable } from '../../../di/decorators/injectable.ts';
-import { CORE_TOKENS, DATABASE_TOKENS, type ILogger } from '../../../di/tokens/core-tokens.ts';
+import type { IVectorRepository, VectorSearchOptions } from '../../../database/interfaces';
+import type { SwarmDatabaseManager, SuccessfulPattern, SwarmRepositories } from './swarm-database-manager';
+import { inject, injectable } from '../../../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS, type ILogger } from '../../../di/tokens/core-tokens';
 
 /**
  * Enhanced Pattern Embedding Configuration

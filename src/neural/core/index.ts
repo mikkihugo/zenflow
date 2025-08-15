@@ -482,7 +482,7 @@ export type {
    * ```
    */
   TrainingResult,
-} from './network.ts';
+} from './network';
 // =============================================================================
 // CLASS AND FUNCTION EXPORTS - Core Neural Network Implementations
 // =============================================================================
@@ -882,7 +882,7 @@ export {
    * ```
    */
   TRAINING_ALGORITHMS,
-} from './network.ts';
+} from './network';
 // =============================================================================
 // ADVANCED NEURAL CORE EXPORTS - Enterprise AI Training & Management
 // =============================================================================
@@ -1338,7 +1338,7 @@ export {
    * ```
    */
   type WeightsExport,
-} from './neural-core.ts';
+} from './neural-core';
 // =============================================================================
 // JAVASCRIPT NEURAL NETWORK EXPORTS - Pure JS Implementations
 // =============================================================================
@@ -1352,7 +1352,7 @@ export {
  *
  * @since 1.0.0-alpha.1
  */
-export * from './neural-network.ts';
+export * from './neural-network';
 
 /**
  * Pure JavaScript neural network implementation class.
@@ -1391,7 +1391,7 @@ export * from './neural-network.ts';
  * console.log(`JS training completed: ${result.finalError} error`);
  * ```
  */
-export { NeuralNetwork as NeuralNetworkJS } from './neural-network.ts';
+export { NeuralNetwork as NeuralNetworkJS } from './neural-network';
 
 // =============================================================================
 // NEURAL NETWORK MANAGER EXPORTS - Agent Lifecycle Management
@@ -1445,7 +1445,7 @@ export { NeuralNetwork as NeuralNetworkJS } from './neural-network.ts';
  * console.log('Multi-agent solution:', solution);
  * ```
  */
-export { NeuralNetworkManager } from './neural-network-manager.ts';
+export { NeuralNetworkManager } from './neural-network-manager';
 
 // =============================================================================
 // CORE UTILITIES - Neural Network Helper Functions & Constants

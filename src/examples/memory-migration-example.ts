@@ -2,7 +2,7 @@
  * @file Memory-migration-example implementation.
  */
 
-import type { SessionMemoryStore } from '../memory/index.ts';
+import type { SessionMemoryStore } from '../memory/index';
 import {
   extractErrorMessage,
   isMemoryError,
@@ -12,7 +12,7 @@ import {
   type MemoryNotFound,
   type MemoryResult,
   type MemorySuccess,
-} from '../utils/type-guards.ts';
+} from '../utils/type-guards';
 
 // ============================================
 // BEFORE: Unsafe Memory Operations

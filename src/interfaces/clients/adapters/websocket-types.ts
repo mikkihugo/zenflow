@@ -13,7 +13,7 @@ import type {
   ClientResponse,
   RequestOptions,
   RetryConfig,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 /**
  * WebSocket connection states.

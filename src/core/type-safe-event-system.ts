@@ -24,7 +24,7 @@ import type {
   WorkflowContext,
   WorkflowDefinition,
   WorkflowEvent,
-} from '../workflows/types.ts';
+} from '../workflows/types';
 import {
   ContractViolationError,
   Domain,
@@ -36,7 +36,7 @@ import {
   type Result,
   type TypeSchema,
   validateCrossDomain,
-} from './domain-boundary-validator.ts';
+} from './domain-boundary-validator';
 import type { IEventBus } from './interfaces/base-interfaces';
 
 // ============================================================================

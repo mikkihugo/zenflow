@@ -11,7 +11,7 @@
  * management for communication events across Claude-Zen.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger(
   'interfaces-events-adapters-communication-event-adapter'
@@ -25,11 +25,11 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 // Production logger integration
-import { getLogger } from '../../../config/logging-config.ts';
-import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
+import { getLogger } from '../../../config/logging-config';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
 // Import communication system classes to wrap their EventEmitter usage
-import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter.ts';
-import type { HTTPMCPServer } from '../../mcp/http-mcp-server.ts';
+import type { WebSocketClientAdapter } from '../../clients/adapters/websocket-client-adapter';
+import type { HTTPMCPServer } from '../../mcp/http-mcp-server';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -45,10 +45,10 @@ import type {
   EventTransform,
   IEventManager,
   SystemEvent,
-} from '../core/interfaces.ts';
-import { EventManagerTypes } from '../core/interfaces.ts';
-import type { CommunicationEvent } from '../types.ts';
-import { EventPriorityMap } from '../types.ts';
+} from '../core/interfaces';
+import { EventManagerTypes } from '../core/interfaces';
+import type { CommunicationEvent } from '../types';
+import { EventPriorityMap } from '../types';
 
 // Production MCP client and server management
 interface MCPServerConfig {

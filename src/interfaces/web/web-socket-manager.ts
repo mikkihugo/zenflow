@@ -1,3 +1,4 @@
+import { getVersion } from '../../config/version';
 /**
  * WebSocket Manager - Real-time communication system.
  *
@@ -9,9 +10,9 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '../../config/logging-config.ts';
-import type { WebConfig } from './web-config.ts';
-import type { WebDataService } from './web-data-service.ts';
+import { getLogger } from '../../config/logging-config';
+import type { WebConfig } from './web-config';
+import type { WebDataService } from './web-data-service';
 
 export interface BroadcastData {
   event: string;
@@ -52,7 +53,7 @@ export class WebSocketManager {
       socket.emit('connected', {
         sessionId: socket.handshake.headers['x-session-id'] || socket.id,
         timestamp: new Date().toISOString(),
-        serverVersion: '2.0.0-alpha.73',
+        serverVersion: getVersion(),
       });
 
       // Handle client subscription events

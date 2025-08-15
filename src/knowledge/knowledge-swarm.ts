@@ -2,7 +2,7 @@
  * @file Knowledge-swarm implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('KnowledgeSwarm');
 
@@ -18,17 +18,17 @@ const logger = getLogger('KnowledgeSwarm');
  */
 
 import { EventEmitter } from 'node:events';
-import { createDao, DatabaseTypes, EntityTypes } from '../database/index.ts';
-import type { IRepository } from '../database/interfaces.ts';
+import { createDao, DatabaseTypes, EntityTypes } from '../database/index';
+import type { IRepository } from '../database/interfaces';
 // Import UACL for unified client management
-import { ClientType, uacl } from '../interfaces/clients/index.ts';
-import type { ClientInstance } from '../interfaces/clients/registry.ts';
+import { ClientType, uacl } from '../interfaces/clients/index';
+import type { ClientInstance } from '../interfaces/clients/registry';
 import type {
   FACTResult,
   KnowledgeClientConfig,
   KnowledgeResult,
-} from './knowledge-client.ts';
-import { FACTIntegration } from './knowledge-client.ts';
+} from './knowledge-client';
+import { FACTIntegration } from './knowledge-client';
 
 export interface KnowledgeSwarmConfig extends KnowledgeClientConfig {
   swarmSize: number;

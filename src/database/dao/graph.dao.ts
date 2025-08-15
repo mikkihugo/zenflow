@@ -68,7 +68,7 @@
  * @file Database layer: graph.dao - Kuzu graph database operations
  */
 
-import { BaseDao } from '../base.dao.ts';
+import { BaseDao } from '../base.dao';
 import type {
   CustomQuery,
   GraphNode,
@@ -76,8 +76,8 @@ import type {
   GraphRelationship,
   GraphTraversalResult,
   IGraphRepository,
-} from '../interfaces.ts';
-import type { GraphDatabaseAdapter } from '../providers/database-providers.ts';
+} from '../interfaces';
+import type { GraphDatabaseAdapter } from '../providers/database-providers';
 
 /**
  * Graph Database Repository implementation specialized for Kuzu graph database.

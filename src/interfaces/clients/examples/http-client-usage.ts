@@ -16,7 +16,7 @@ import {
   isAuthenticationError,
   isClientError,
   isConnectionError,
-} from '../index.ts';
+} from '../index';
 
 // ===== BASIC USAGE =====
 

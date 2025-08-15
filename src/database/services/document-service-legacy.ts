@@ -24,9 +24,9 @@ import type {
   ProjectEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../entities/document-entities.ts';
-import { createDao } from '../index.ts';
-import type { DatabaseQuery, IRepository } from '../interfaces.ts';
+} from '../entities/document-entities';
+import { createDao } from '../index';
+import type { DatabaseQuery, IRepository } from '../interfaces';
 import type { DocumentType } from '../types/workflow-types';
 
 export interface DocumentCreateOptions {

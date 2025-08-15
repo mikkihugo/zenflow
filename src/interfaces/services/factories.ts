@@ -36,7 +36,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger, type Logger } from '../../config/logging-config.ts';
+import { getLogger, type Logger } from '../../config/logging-config';
 import type {
   IService,
   IServiceCapabilityRegistry,
@@ -50,12 +50,12 @@ import type {
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceInitializationError,
   ServiceOperationError,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 import {
   type CoordinationServiceConfig,
   type DatabaseServiceConfig,
@@ -67,7 +67,7 @@ import {
   ServicePriority,
   ServiceType,
   type WebServiceConfig,
-} from './types.ts';
+} from './types';
 
 /**
  * Configuration for the USL Factory system.

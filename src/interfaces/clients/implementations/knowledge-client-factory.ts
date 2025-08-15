@@ -9,4 +9,4 @@
  * @file Interface implementation: knowledge-client-factory.
  */
 
-export { KnowledgeClientFactory } from '../adapters/knowledge-client-adapter.ts';
+export { KnowledgeClientFactory } from '../adapters/knowledge-client-adapter';

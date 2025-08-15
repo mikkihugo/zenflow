@@ -8,14 +8,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../core/interfaces/base-interfaces.ts';
+import type { ILogger } from '../../core/interfaces/base-interfaces';
 import type {
   EventManagerType,
   IEventManager,
   SystemEvent,
-} from './core/interfaces.ts';
-import { EventManagerTypes } from './core/interfaces.ts';
-import type { EventManager } from './manager.ts';
+} from './core/interfaces';
+import { EventManagerTypes } from './core/interfaces';
+import type { EventManager } from './manager';
 
 /**
  * Enhanced EventEmitter that provides UEL integration while maintaining compatibility.

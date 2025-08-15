@@ -16,18 +16,18 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { MemorySystem } from '../../core/memory-system.ts';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system.ts';
-import type { MultiLevelOrchestrationManager } from '../orchestration/multi-level-orchestration-manager.ts';
-import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator.ts';
-import type { ProgramOrchestrator } from '../orchestration/program-orchestrator.ts';
-import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator.ts';
+} from '../../core/type-safe-event-system';
+import type { MultiLevelOrchestrationManager } from '../orchestration/multi-level-orchestration-manager';
+import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
+import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
+import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
 
 // ============================================================================
 // ADVANCED FLOW MANAGER CONFIGURATION

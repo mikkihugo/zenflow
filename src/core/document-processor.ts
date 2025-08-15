@@ -24,10 +24,10 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
-import { getLogger } from '../config/logging-config.ts';
-import type { BaseDocumentEntity } from '../database/entities/product-entities.ts';
-import type { WorkflowCoordinationContext } from '../workflows/workflow-coordination-types.ts';
-import type { MemorySystem } from './memory-system.ts';
+import { getLogger } from '../config/logging-config';
+import type { BaseDocumentEntity } from '../database/entities/product-entities';
+import type { WorkflowCoordinationContext } from '../workflows/workflow-coordination-types';
+import type { MemorySystem } from './memory-system';
 
 const logger = getLogger('DocumentProcessor');
 

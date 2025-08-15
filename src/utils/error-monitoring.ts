@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { ILogger } from '../core/interfaces/base-interfaces';
 
 export interface ErrorContext {
   component: string;

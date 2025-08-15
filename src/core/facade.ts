@@ -105,15 +105,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ISystemEventManager } from '../interfaces/events/factories.ts';
-import type { MCPCommandQueue } from '../interfaces/mcp/command-system.ts';
+import type { ISystemEventManager } from '../interfaces/events/factories';
+import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 import type {
   EventMap as AllSystemEvents,
   SwarmTopology,
-} from '../types/event-types.ts';
+} from '../types/event-types';
 
 // Re-export types for convenience
-export type { SwarmTopology } from '../types/event-types.ts';
+export type { SwarmTopology } from '../types/event-types';
 
 // Define missing CoordinationResult interface
 export interface CoordinationResult {

@@ -9,7 +9,7 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 export interface WebSession {
   id: string;

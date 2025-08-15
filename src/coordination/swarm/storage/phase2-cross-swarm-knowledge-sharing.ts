@@ -11,10 +11,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { SwarmDatabaseManager, SuccessfulPattern, SwarmRepositories } from './swarm-database-manager.ts';
-import type { EnhancedVectorPatternDiscovery, CrossSwarmPatternResult, PatternCluster } from './phase2-enhanced-vector-discovery.ts';
-import { inject, injectable } from '../../../di/decorators/injectable.ts';
-import { CORE_TOKENS, type ILogger } from '../../../di/tokens/core-tokens.ts';
+import type { SwarmDatabaseManager, SuccessfulPattern, SwarmRepositories } from './swarm-database-manager';
+import type { EnhancedVectorPatternDiscovery, CrossSwarmPatternResult, PatternCluster } from './phase2-enhanced-vector-discovery';
+import { inject, injectable } from '../../../di/decorators/injectable';
+import { CORE_TOKENS, type ILogger } from '../../../di/tokens/core-tokens';
 
 /**
  * Knowledge Transfer Request

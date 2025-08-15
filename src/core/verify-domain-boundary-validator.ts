@@ -11,7 +11,7 @@ import {
   DomainBoundaryValidator,
   getDomainValidator,
   type TypeSchema,
-} from './domain-boundary-validator.ts';
+} from './domain-boundary-validator';
 
 // Simple test data structures that don't require external dependencies
 interface TestAgent {

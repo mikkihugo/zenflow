@@ -11,7 +11,7 @@ import type {
   QueueConfig,
   WorkflowState,
   WorkflowStep,
-} from '../types.ts';
+} from '../types';
 
 // Resource management interfaces
 export interface ResourceCapability {

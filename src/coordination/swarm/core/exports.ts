@@ -5,25 +5,25 @@
  * This file should only contain re-exports, no implementations.
  */
 
-export * from './base-swarm.ts';
-export * from './daa-service.ts';
-export * from './logger.ts';
-export { PerformanceCLI as PerformanceTracker } from './performance.ts';
+export * from './base-swarm';
+export * from './daa-service';
+export * from './logger';
+export { PerformanceCLI as PerformanceTracker } from './performance';
 // Re-export performance components separately to break cycles
-export { PerformanceBenchmarks } from './performance-benchmarks.ts';
-export * from './recovery-integration.ts';
-export * from './schemas.ts';
-export * from './session-integration.ts';
-export * from './session-manager.ts';
-export * from './session-utils.ts';
-export * from './singleton-container.ts';
+export { PerformanceBenchmarks } from './performance-benchmarks';
+export * from './recovery-integration';
+export * from './schemas';
+export * from './session-integration';
+export * from './session-manager';
+export * from './session-utils';
+export * from './singleton-container';
 // Re-export core components (non-circular)
-export * from './swarm-coordinator.ts';
-export * from './topology-manager.ts';
+export * from './swarm-coordinator';
+export * from './topology-manager';
 
 // Re-export types and utilities
-export * from './types.ts';
-export * from './utils.ts';
+export * from './types';
+export * from './utils';
 
 // Note: performance-benchmarks and performance are exported by name
 // to avoid circular dependencies with index.ts imports

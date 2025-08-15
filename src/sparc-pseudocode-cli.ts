@@ -10,7 +10,7 @@
 
 import { readFile, writeFile } from 'node:fs/promises';
 import { Command } from 'commander';
-import { getLogger } from './config/logging-config.ts';
+import { getLogger } from './config/logging-config';
 
 const logger = getLogger('sparc-pseudocode-cli');
 

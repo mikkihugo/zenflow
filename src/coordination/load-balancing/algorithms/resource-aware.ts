@@ -6,14 +6,14 @@
  * @file Coordination system: resource-aware
  */
 
-import type { LoadBalancingAlgorithm } from '../interfaces.ts';
+import type { LoadBalancingAlgorithm } from '../interfaces';
 import type {
   Agent,
   LoadMetrics,
   ResourceConstraint,
   RoutingResult,
   Task,
-} from '../types.ts';
+} from '../types';
 
 interface ResourceProfile {
   agentId: string;

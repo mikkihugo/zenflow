@@ -1,4 +1,4 @@
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-event-adapter');
 
@@ -75,13 +75,13 @@ import type {
   EventTransform,
   IEventManager,
   SystemEvent,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   type EventManagerType,
   EventManagerTypes,
-} from '../core/interfaces.ts';
-import type { MonitoringEvent } from '../types.ts';
-import { EventPriorityMap } from '../types.ts';
+} from '../core/interfaces';
+import type { MonitoringEvent } from '../types';
+import { EventPriorityMap } from '../types';
 
 // Note: Additional monitoring imports would be here in production
 

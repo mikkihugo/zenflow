@@ -12,8 +12,8 @@
  */
 
 import { type ChildProcess, spawn } from 'node:child_process';
-import { getLogger } from './config/logging-config.ts';
-import { launchTerminalBrowser } from './interfaces/web/terminal-browser/terminal-browser.ts';
+import { getLogger } from './config/logging-config';
+import { launchTerminalBrowser } from './interfaces/web/terminal-browser/terminal-browser';
 
 const logger = getLogger('WebTerminalLauncher');
 

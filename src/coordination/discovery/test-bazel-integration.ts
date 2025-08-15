@@ -15,9 +15,9 @@ import { exec } from 'node:child_process';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { getLogger } from '../../config/logging-config.ts';
-import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer.ts';
-import { NeuralDomainMapper } from './neural-domain-mapper.ts';
+import { getLogger } from '../../config/logging-config';
+import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
+import { NeuralDomainMapper } from './neural-domain-mapper';
 
 const execAsync = promisify(exec);
 const logger = getLogger('BazelIntegrationTest');

@@ -36,15 +36,15 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import type { AgentId, AgentMetrics } from '../types.ts';
+import { getLogger } from '../../config/logging-config';
+import type { AgentId, AgentMetrics } from '../types';
 import type {
   LearningProgress,
   PerformanceMetrics,
   Pattern,
   ExecutionData,
   PerformanceImprovement,
-} from '../../intelligence/adaptive-learning/types.ts';
+} from '../../intelligence/adaptive-learning/types';
 
 const logger = getLogger('coordination-intelligence-agent-learning-system');
 

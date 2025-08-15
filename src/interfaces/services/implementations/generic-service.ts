@@ -11,8 +11,8 @@
 import type {
   ServiceConfig,
   ServiceOperationOptions,
-} from '../core/interfaces.ts';
-import { BaseService } from './base-service.ts';
+} from '../core/interfaces';
+import { BaseService } from './base-service';
 
 /**
  * Generic service that provides basic functionality.

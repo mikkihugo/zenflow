@@ -6,8 +6,8 @@
  * @file Coordination system: adaptive-learning
  */
 
-import type { LoadBalancingAlgorithm } from '../interfaces.ts';
-import type { Agent, LoadMetrics, RoutingResult, Task } from '../types.ts';
+import type { LoadBalancingAlgorithm } from '../interfaces';
+import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 
 interface AdaptiveStrategy {
   name: string;

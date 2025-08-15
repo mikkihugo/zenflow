@@ -8,9 +8,9 @@
  * @file Memory management: factory.
  */
 
-import type { BackendInterface } from '../core/memory-system.ts';
-import type { MemoryConfig } from '../providers/memory-providers.ts';
-import { type BackendCapabilities, BaseMemoryBackend } from './base-backend.ts';
+import type { BackendInterface } from '../core/memory-system';
+import type { MemoryConfig } from '../providers/memory-providers';
+import { type BackendCapabilities, BaseMemoryBackend } from './base-backend';
 
 // Additional types needed for factory
 export type MemoryBackendType = 'memory' | 'file' | 'sqlite' | 'jsonb';

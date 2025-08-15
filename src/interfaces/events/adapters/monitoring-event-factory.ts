@@ -14,7 +14,7 @@ import {
   createMonitoringEventAdapter,
   type MonitoringEventAdapter,
   type MonitoringEventAdapterConfig,
-} from './monitoring-event-adapter.ts';
+} from './monitoring-event-adapter';
 
 /**
  * Monitoring event manager factory class.
@@ -779,6 +779,6 @@ export {
   createMonitoringEventAdapter,
   MonitoringEventAdapter,
   MonitoringEventAdapterConfig,
-} from './monitoring-event-adapter.ts';
+} from './monitoring-event-adapter';
 
 export default MonitoringEventFactory;

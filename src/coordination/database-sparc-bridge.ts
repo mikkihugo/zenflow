@@ -14,18 +14,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
-import type { DatabaseDrivenSystem } from '../core/database-driven-system.ts';
-import { generateId } from '../core/helpers.ts';
+import { getLogger } from '../config/logging-config';
+import type { DatabaseDrivenSystem } from '../core/database-driven-system';
+import { generateId } from '../core/helpers';
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../database/entities/product-entities.ts';
-import type { DocumentManager } from '../database/managers/document-manager.ts';
+} from '../database/entities/product-entities';
+import type { DocumentManager } from "../services/document/document-service"
 import type {
   SPARCSwarmCoordinator,
   SPARCTask,
-} from './swarm/core/sparc-swarm-coordinator.ts';
+} from './swarm/core/sparc-swarm-coordinator';
 
 const logger = getLogger('DatabaseSPARCBridge');
 

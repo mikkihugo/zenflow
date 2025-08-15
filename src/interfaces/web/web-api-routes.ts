@@ -9,10 +9,11 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { getLogger } from '../../config/logging-config.ts';
-import type { WebConfig } from './web-config.ts';
-import type { WebDataService } from './web-data-service.ts';
-import type { WebSessionManager } from './web-session-manager.ts';
+import { getLogger } from '../../config/logging-config';
+import { getVersion } from '../../config/version';
+import type { WebConfig } from './web-config';
+import type { WebDataService } from './web-data-service';
+import type { WebSessionManager } from './web-session-manager';
 
 export class WebApiRoutes {
   private logger = getLogger('WebAPI');
@@ -48,6 +49,8 @@ export class WebApiRoutes {
     app.get(`${api}/swarms`, this.handleGetSwarms.bind(this));
     app.post(`${api}/swarms`, this.handleCreateSwarm.bind(this));
 
+    // MCP removed - Web-only interface
+
     // Task management endpoints
     app.get(`${api}/tasks`, this.handleGetTasks.bind(this));
     app.post(`${api}/tasks`, this.handleCreateTask.bind(this));
@@ -75,7 +78,7 @@ export class WebApiRoutes {
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      version: '2.0.0-alpha.73',
+      version: getVersion(),
       uptime: process.uptime(),
     });
   }
@@ -240,5 +243,108 @@ export class WebApiRoutes {
     } else {
       res.status(404).json({ error: 'Session not found' });
     }
+  }
+
+  /**
+   * Handle MCP requests from Claude Desktop.
+   */
+  private async handleMcpRequest(req: Request, res: Response): Promise<void> {
+    try {
+      this.logger.debug('MCP request received:', req.body);
+
+      // Handle MCP protocol requests
+      const { method, params } = req.body;
+      
+      if (method === 'tools/call') {
+        const { name, arguments: args } = params;
+        
+        // Import SwarmService and tools
+        const { SwarmService } = await import('../../services/coordination/swarm-service.ts');
+        const { createSimpleSwarmTools } = await import('../mcp/simple-swarm-tools.ts');
+        const { createDocumentWorkflowTools } = await import('../mcp/document-workflow-tools.ts');
+        
+        const swarmService = new SwarmService();
+        const allTools = [
+          ...createSimpleSwarmTools(swarmService),
+          ...createDocumentWorkflowTools(swarmService)
+        ];
+        
+        // Find the requested tool
+        const tool = allTools.find(t => t.name.replace('mcp__claude-zen__', '') === name);
+        
+        if (!tool) {
+          return res.status(404).json({
+            error: { message: `Tool not found: ${name}` }
+          });
+        }
+        
+        // Execute the tool
+        const result = await tool.handler(args);
+        
+        res.json({
+          content: result.content,
+          isError: result.isError || false
+        });
+        
+      } else {
+        res.status(400).json({ 
+          error: { message: `Unknown MCP method: ${method}` }
+        });
+      }
+      
+    } catch (error) {
+      this.logger.error('MCP request failed:', error);
+      res.status(500).json({
+        error: { message: error instanceof Error ? error.message : 'Internal server error' }
+      });
+    }
+  }
+
+  /**
+   * Get available MCP tools list.
+   */
+  private async handleMcpTools(req: Request, res: Response): Promise<void> {
+    try {
+      // Import tools
+      const { SwarmService } = await import('../../services/coordination/swarm-service.ts');
+      const { createSimpleSwarmTools } = await import('../mcp/simple-swarm-tools.ts');
+      const { createDocumentWorkflowTools } = await import('../mcp/document-workflow-tools.ts');
+      
+      const swarmService = new SwarmService();
+      const allTools = [
+        ...createSimpleSwarmTools(swarmService),
+        ...createDocumentWorkflowTools(swarmService)
+      ];
+      
+      const tools = allTools.map(tool => ({
+        name: tool.name.replace('mcp__claude-zen__', ''),
+        description: tool.description,
+        inputSchema: tool.inputSchema
+      }));
+      
+      res.json({
+        tools,
+        server: {
+          name: 'claude-code-zen',
+          version: '2.0.0'
+        }
+      });
+      
+    } catch (error) {
+      this.logger.error('MCP tools list failed:', error);
+      res.status(500).json({
+        error: { message: 'Failed to get tools list' }
+      });
+    }
+  }
+
+  /**
+   * Handle MCP CORS preflight requests.
+   */
+  private handleMcpOptions(req: Request, res: Response): void {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.sendStatus(200);
   }
 }

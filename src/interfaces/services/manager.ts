@@ -68,53 +68,53 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { CoordinationServiceAdapterConfig } from './adapters/coordination-service-adapter.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { CoordinationServiceAdapterConfig } from './adapters/coordination-service-adapter';
 import {
   type CoordinationServiceFactory,
   coordinationServiceFactory,
-} from './adapters/coordination-service-factory.ts';
-import type { DataServiceAdapterConfig } from './adapters/data-service-adapter.ts';
+} from './adapters/coordination-service-factory';
+import type { DataServiceAdapterConfig } from './adapters/data-service-adapter';
 // Import all service adapter factories
 import {
   type DataServiceFactory,
   type DataServiceFactoryConfig,
   globalDataServiceFactory,
-} from './adapters/data-service-factory.ts';
-import type { InfrastructureServiceAdapterConfig } from './adapters/infrastructure-service-adapter.ts';
+} from './adapters/data-service-factory';
+import type { InfrastructureServiceAdapterConfig } from './adapters/infrastructure-service-adapter';
 import {
   type CreateServiceOptions,
   getInfrastructureServiceFactory,
   type InfrastructureServiceFactory,
-} from './adapters/infrastructure-service-factory.ts';
-import type { IntegrationServiceAdapterConfig } from './adapters/integration-service-adapter.ts';
+} from './adapters/infrastructure-service-factory';
+import type { IntegrationServiceAdapterConfig } from './adapters/integration-service-adapter';
 import {
   type IntegrationServiceFactory,
   integrationServiceFactory,
-} from './adapters/integration-service-factory.ts';
+} from './adapters/integration-service-factory';
 import type {
   IService,
   IServiceFactory,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 import {
   type ServiceConfig,
   ServiceDependencyError,
   ServiceInitializationError,
   ServiceOperationError,
-} from './core/interfaces.ts';
-import { USLFactory, type USLFactoryConfig } from './factories.ts';
+} from './core/interfaces';
+import { USLFactory, type USLFactoryConfig } from './factories';
 import {
   EnhancedServiceRegistry,
   type ServiceRegistryConfig,
-} from './registry.ts';
+} from './registry';
 import {
   type AnyServiceConfig,
   ServicePriority,
   ServiceType,
-} from './types.ts';
+} from './types';
 
 /**
  * Service Manager Configuration.

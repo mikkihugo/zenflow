@@ -14,13 +14,13 @@ export type {
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-} from '../types/workflow-types.ts';
+} from '../types/workflow-types';
 export type {
   SystemConfig as CoreSystemConfig,
   SystemStatus,
-} from './core-system.ts';
+} from './core-system';
 // Main system coordinator
-export { System as CoreSystem } from './core-system.ts';
+export { System as CoreSystem } from './core-system';
 export type {
   Document,
   DocumentMetadata,
@@ -28,43 +28,43 @@ export type {
   DocumentStats,
   DocumentType,
   DocumentWorkspace,
-} from './document-processor.ts';
-export { DocumentProcessor } from './document-processor.ts';
+} from './document-processor';
+export { DocumentProcessor } from './document-processor';
 export type {
   DocumentationManagerConfig,
   DocumentationStats,
-} from './documentation-manager.ts';
-export { DocumentationManager } from './documentation-manager.ts';
+} from './documentation-manager';
+export { DocumentationManager } from './documentation-manager';
 export type {
   ExporterDefinition,
   ExportOptions,
   ExportResult,
-} from './export-manager.ts';
+} from './export-manager';
 // Management systems
-export { ExportSystem as ExportManager } from './export-manager.ts';
+export { ExportSystem as ExportManager } from './export-manager';
 export type {
   InterfaceManagerConfig,
   InterfaceMode,
   InterfaceStats,
-} from './interface-manager.ts';
-export { InterfaceManager } from './interface-manager.ts';
+} from './interface-manager';
+export { InterfaceManager } from './interface-manager';
 export type {
   BackendStats,
   BackendType,
   JSONValue,
   MemoryConfig,
   StorageResult,
-} from './memory-system.ts';
-export { MemorySystem } from './memory-system.ts';
+} from './memory-system';
+export { MemorySystem } from './memory-system';
 // Core processing engines
-export { WorkflowEngine } from '../workflows/workflow-engine.ts';
+export { WorkflowEngine } from '../workflows/workflow-engine';
 
 // ==================== LEGACY COMPATIBILITY ====================
 
-export { ApplicationCoordinator } from './application-coordinator.ts'; // Legacy - use CoreSystem
+export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
-export { DocumentDrivenSystem } from './document-driven-system.ts'; // Legacy - use DocumentProcessor
-// export { MemoryCoordinator } from './memory-coordinator.ts'; // Module not found - use MemorySystem
+export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
+// export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use MemorySystem
 
 // ==================== SHARED UTILITIES ====================
 
@@ -73,9 +73,9 @@ export { DocumentDrivenSystem } from './document-driven-system.ts'; // Legacy - 
 export type {
   CrossReference as DocumentLink,
   DocumentationIndex as DocumentIndex,
-} from './documentation-linker.ts';
+} from './documentation-linker';
 // Legacy unified systems (still exported but deprecated)
-export { DocumentationIndex as DocumentationLinker } from './documentation-linker.ts';
+export { DocumentationIndex as DocumentationLinker } from './documentation-linker';
 // Error handling
 export {
   BaseClaudeZenError,
@@ -86,25 +86,25 @@ export {
   SwarmError,
   SystemError,
   WASMError,
-} from './errors.ts';
+} from './errors';
 // Core utilities
-export { EventBus } from './event-bus.ts';
+export { EventBus } from './event-bus';
 // ExportManager already exported above as UnifiedExportSystem
 // Export utilities (legacy)
 export type {
   ExportConfig,
   ExportResult as LegacyExportResult,
-} from './exporters.ts';
-export { ExportSystem, ExportUtils } from './exporters.ts';
-export * from './helpers.ts';
-export { InterfaceModeDetector } from './interface-mode-detector.ts';
-export type { ILogger, LoggerConfig, LogLevel } from './logger.ts';
+} from './exporters';
+export { ExportSystem, ExportUtils } from './exporters';
+export * from './helpers';
+export { InterfaceModeDetector } from './interface-mode-detector';
+export type { ILogger, LoggerConfig, LogLevel } from './logger';
 // Logging system
-export { createLogger, Logger } from './logger.ts';
+export { createLogger, Logger } from './logger';
 export type { LogMeta } from './logger-old';
-export { Orchestrator } from './orchestrator.ts';
-export * from './orchestrator-provider.ts';
+export { Orchestrator } from './orchestrator';
+export * from './orchestrator-provider';
 // External systems
-export { ProductFlowSystem } from './product-flow-system.ts';
-export * from './type-guards.ts';
-export * from './types.ts';
+export { ProductFlowSystem } from './product-flow-system';
+export * from './type-guards';
+export * from './types';

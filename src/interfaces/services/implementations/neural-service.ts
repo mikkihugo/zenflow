@@ -8,9 +8,9 @@
  * @file Neural service implementation.
  */
 
-import type { IService } from '../core/interfaces.ts';
-import type { NeuralServiceConfig, ServiceOperationOptions } from '../types.ts';
-import { BaseService } from './base-service.ts';
+import type { IService } from '../core/interfaces';
+import type { NeuralServiceConfig, ServiceOperationOptions } from '../types';
+import { BaseService } from './base-service';
 
 /**
  * Neural service implementation.

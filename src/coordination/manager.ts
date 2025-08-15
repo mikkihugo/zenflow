@@ -8,8 +8,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../di/index.ts';
-import { CORE_TOKENS, inject, injectable } from '../di/index.ts';
+import type { IEventBus, ILogger } from '../di/index';
+import { CORE_TOKENS, inject, injectable } from '../di/index';
 
 export interface CoordinationConfig {
   maxAgents: number;

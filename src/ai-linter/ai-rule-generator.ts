@@ -17,20 +17,20 @@
  * @version 1.0.0
  */
 
-import type { ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { ILogger } from '../core/interfaces/base-interfaces';
 import type {
   AIAnalysisResult,
   ClaudeInsights,
   CodePattern,
   LinterContext,
   LintingCategory,
-} from './types/ai-linter-types.ts';
+} from './types/ai-linter-types';
 import type {
   AIRuleTemplate,
   BiomeConfiguration,
   BiomeRule,
   RuleEffectiveness,
-} from './types/biome-types.ts';
+} from './types/biome-types';
 
 /**
  * Configuration for AI rule generation

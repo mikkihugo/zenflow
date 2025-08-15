@@ -5,13 +5,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
-import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.ts';
-import type { SessionMemoryStore } from '../../memory/memory.ts';
+import { getLogger } from '../../config/logging-config';
+import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
+import type { SessionMemoryStore } from '../../memory/memory';
 import {
   type CollectiveFACTSystem,
   getCollectiveFACT,
-} from '../collective-fact-integration.ts';
+} from '../collective-fact-integration';
 
 // Break circular dependency - use interface instead
 interface DomainDiscoveryBridgeLike {

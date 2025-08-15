@@ -3,7 +3,7 @@
  * Provides type-safe event handling with priority management and error recovery.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-events-observer-system');
 

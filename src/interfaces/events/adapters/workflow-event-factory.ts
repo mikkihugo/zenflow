@@ -64,17 +64,17 @@
 import type {
   IConfig,
   ILogger,
-} from '../../../core/interfaces/base-interfaces.ts';
-import { BaseEventManager } from '../core/base-event-manager.ts';
+} from '../../../core/interfaces/base-interfaces';
+import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   IEventManager,
   IEventManagerFactory,
-} from '../core/interfaces.ts';
-import type { IWorkflowEventManager } from '../event-manager-types.ts';
-import type { WorkflowEvent } from '../types.ts';
+} from '../core/interfaces';
+import type { IWorkflowEventManager } from '../event-manager-types';
+import type { WorkflowEvent } from '../types';
 
 /**
  * Workflow Event Manager implementation for workflow orchestration.

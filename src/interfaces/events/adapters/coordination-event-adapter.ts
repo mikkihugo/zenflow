@@ -15,12 +15,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config.ts';
-import type { AgentManager } from '../../../coordination/agents/agent-manager.ts';
-import type { ProductWorkflowEngine as Orchestrator } from '../../../coordination/orchestration/product-workflow-engine.ts';
+import { getLogger } from '../../../config/logging-config';
+import type { AgentManager } from '../../../coordination/agents/agent-manager';
+import type { ProductWorkflowEngine as Orchestrator } from '../../../coordination/orchestration/product-workflow-engine';
 // Import coordination system classes to wrap their EventEmitter usage
-import type { SPARCSwarmCoordinator as SwarmCoordinator } from '../../../coordination/swarm/core/sparc-swarm-coordinator.ts';
-import type { Logger } from '../../../core/logger.ts';
+import type { SPARCSwarmCoordinator as SwarmCoordinator } from '../../../coordination/swarm/core/sparc-swarm-coordinator';
+import type { Logger } from '../../../core/logger';
 import type {
   EventBatch,
   EventEmissionOptions,
@@ -35,14 +35,14 @@ import type {
   EventSubscription,
   EventTransform,
   IEventManager,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   EventEmissionError,
   EventManagerTypes,
   EventTimeoutError,
-} from '../core/interfaces.ts';
-import type { CoordinationEvent } from '../types.ts';
-import { EventPriorityMap } from '../types.ts';
+} from '../core/interfaces';
+import type { CoordinationEvent } from '../types';
+import { EventPriorityMap } from '../types';
 
 /**
  * Coordination event adapter configuration extending UEL EventManagerConfig.

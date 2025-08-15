@@ -2,7 +2,7 @@
  * @file Knowledge-client implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-knowledge-knowledge-client');
 

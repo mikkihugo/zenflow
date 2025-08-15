@@ -2,7 +2,7 @@
  * @file Interface implementation: http-client-factory.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-factories-http-client-factory');
 
@@ -13,14 +13,14 @@ const logger = getLogger('interfaces-clients-factories-http-client-factory');
  * With UACL (Unified API Client Layer) patterns.
  */
 
-import { HTTPClientAdapter } from '../adapters/http-client-adapter.ts';
-import type { HTTPClientConfig } from '../adapters/http-types.ts';
+import { HTTPClientAdapter } from '../adapters/http-client-adapter';
+import type { HTTPClientConfig } from '../adapters/http-types';
 import type {
   ClientMetrics,
   ClientStatus,
   IClient,
   IClientFactory,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 /**
  * HTTP Client Factory implementing UACL IClientFactory interface.

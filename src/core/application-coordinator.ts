@@ -16,14 +16,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
-import { MemoryManager } from '../memory/index.ts';
-import { DocumentDrivenSystem } from './document-driven-system.ts';
-import { DocumentationLinker } from './documentation-linker.ts';
-import { ExportSystem as ExportManager } from './export-manager.ts';
-import { InterfaceLauncher } from './interface-launcher.ts';
-import { MemorySystem } from './memory-system.ts';
-import { WorkflowEngine } from '../workflows/workflow-engine.ts';
+import { getLogger } from '../config/logging-config';
+import { MemoryManager } from '../memory/index';
+import { DocumentDrivenSystem } from './document-driven-system';
+import { DocumentationLinker } from './documentation-linker';
+import { ExportSystem as ExportManager } from './export-manager';
+import { InterfaceLauncher } from './interface-launcher';
+import { MemorySystem } from './memory-system';
+import { WorkflowEngine } from '../workflows/workflow-engine';
 
 const logger = getLogger('ApplicationCoordinator');
 

@@ -2,7 +2,7 @@
  * @file Coordination system: session-example.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-session-example');
 
@@ -17,9 +17,9 @@ const logger = getLogger('coordination-swarm-core-session-example');
 import {
   SessionEnabledSwarm,
   SessionRecoveryService,
-} from './session-integration.ts';
-import { SessionManager } from './session-manager.ts';
-import { SessionStats, SessionValidator } from './session-utils.ts';
+} from './session-integration';
+import { SessionManager } from './session-manager';
+import { SessionStats, SessionValidator } from './session-utils';
 
 /**
  * Example 1: Basic Session Usage.

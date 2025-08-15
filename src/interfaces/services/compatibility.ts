@@ -9,14 +9,14 @@
  * @file Interface implementation: compatibility.
  */
 
-import { getLogger, type Logger } from '../../config/logging-config.ts';
-import type { IService } from './core/interfaces.ts';
-import { ServiceManager } from './manager.ts';
+import { getLogger, type Logger } from '../../config/logging-config';
+import type { IService } from './core/interfaces';
+import { ServiceManager } from './manager';
 import {
   type AnyServiceConfig,
   ServicePriority,
   ServiceType,
-} from './types.ts';
+} from './types';
 
 // Legacy service patterns that need compatibility support
 export interface LegacyServicePattern {

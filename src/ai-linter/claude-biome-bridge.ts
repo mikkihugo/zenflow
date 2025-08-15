@@ -15,15 +15,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 import type {
   AIAnalysisResult,
   CodePattern,
   LinterContext,
   ClaudeInsights,
   SwarmAnalysisResult,
-} from './types/ai-linter-types.ts';
-import type { BiomeConfiguration, BiomeRule } from './types/biome-types.ts';
+} from './types/ai-linter-types';
+import type { BiomeConfiguration, BiomeRule } from './types/biome-types';
 
 /**
  * Main Claude-Biome bridge that orchestrates AI-native linting

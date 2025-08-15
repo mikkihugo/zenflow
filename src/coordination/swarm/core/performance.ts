@@ -2,7 +2,7 @@
  * @file Coordination system: performance.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-performance');
 
@@ -12,7 +12,7 @@ const logger = getLogger('coordination-swarm-core-performance');
  */
 
 import { promises as fs } from 'node:fs';
-import { ZenSwarm } from './base-swarm.ts';
+import { ZenSwarm } from './base-swarm';
 
 interface PerformanceSuggestion {
   category: string;

@@ -5,24 +5,24 @@
  * scenarios including approval flows, escalation handling, and error recovery.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   WorkflowGatesManager,
   WorkflowHumanGateType,
-} from '../coordination/orchestration/workflow-gates.ts';
+} from '../coordination/orchestration/workflow-gates';
 import {
   createApprovalGate,
   WorkflowGateRequestProcessor,
-} from '../coordination/workflows/workflow-gate-request.ts';
-import { Domain } from '../core/domain-boundary-validator.ts';
+} from '../coordination/workflows/workflow-gate-request';
+import { Domain } from '../core/domain-boundary-validator';
 import {
   createEvent,
   TypeSafeEventBus,
-} from '../core/type-safe-event-system.ts';
+} from '../core/type-safe-event-system';
 import {
   type WorkflowDefinition,
   WorkflowEngine,
-} from '../workflows/workflow-engine.ts';
+} from '../workflows/workflow-engine';
 
 const logger = getLogger('workflow-gate-examples');
 

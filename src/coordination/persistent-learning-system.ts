@@ -9,9 +9,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 // TODO: LEGACY - Remove old agent terminology, replace with DroneType
-import type { AgentType } from '../types/agent-types.ts';
+import type { AgentType } from '../types/agent-types';
 
 export interface DroneKnowledge {
   // TODO: LEGACY - Rename agentType to droneType when DroneType interface is available

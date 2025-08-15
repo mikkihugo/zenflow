@@ -2,7 +2,7 @@
  * @file Interface implementation: monitoring-usage-example.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-events-adapters-monitoring-usage-example');
 
@@ -18,8 +18,8 @@ import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   MonitoringEventHelpers,
-} from './monitoring-event-adapter.ts';
-import { MonitoringEventRegistry } from './monitoring-event-factory.ts';
+} from './monitoring-event-adapter';
+import { MonitoringEventRegistry } from './monitoring-event-factory';
 
 /**
  * Example 1: Basic Monitoring Event Adapter Setup.

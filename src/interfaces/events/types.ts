@@ -8,7 +8,7 @@
  * @file TypeScript type definitions for interfaces.
  */
 
-import type { EventPriority, SystemEvent } from './core/interfaces.ts';
+import type { EventPriority, SystemEvent } from './core/interfaces';
 
 /**
  * System Events - Core system lifecycle and health.

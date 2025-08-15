@@ -13,27 +13,27 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config.ts';
-import { getLogger } from '../../../config/logging-config.ts';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IService,
   IServiceFactory,
   ServiceMetrics,
   ServiceStatus,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceError,
   ServiceInitializationError,
   ServiceOperationError,
-} from '../core/interfaces.ts';
-import { ServiceType } from '../types.ts';
+} from '../core/interfaces';
+import { ServiceType } from '../types';
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,
   type DataServiceAdapter,
   type DataServiceAdapterConfig,
-} from './data-service-adapter.ts';
+} from './data-service-adapter';
 
 /**
  * Data service factory configuration.

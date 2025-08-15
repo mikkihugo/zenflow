@@ -7,16 +7,16 @@
  * @file Validation Framework Implementation.
  */
 
-import type { ILogger } from '../../core/interfaces/base-interfaces.ts';
+import type { ILogger } from '../../core/interfaces/base-interfaces';
 import type {
   EventManagerConfig,
   EventManagerType,
   SystemEvent,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 
-import { EventManagerTypes, EventTypeGuards } from './core/interfaces.ts';
-import type { EventManager } from './manager.ts';
-import type { EventRegistry } from './registry.ts';
+import { EventManagerTypes, EventTypeGuards } from './core/interfaces';
+import type { EventManager } from './manager';
+import type { EventRegistry } from './registry';
 
 /**
  * Validation result interface.

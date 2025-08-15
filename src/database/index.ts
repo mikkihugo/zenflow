@@ -9,7 +9,7 @@
  */
 
 // Export all database types (Single Source of Truth)
-export * from './types.ts';
+export * from './types';
 
 /**
  * @deprecated Legacy export structure - use domain types instead
@@ -49,22 +49,22 @@ export * from './types.ts';
  */
 
 // Base implementations
-export { BaseDao, BaseManager } from './base.dao.ts';
-export { CoordinationDao } from './dao/coordination.dao.ts';
-export { GraphDao } from './dao/graph.dao.ts';
-export { MemoryDao } from './dao/memory.dao.ts';
+export { BaseDao, BaseManager } from './base.dao';
+export { CoordinationDao } from './dao/coordination.dao';
+export { GraphDao } from './dao/graph.dao';
+export { MemoryDao } from './dao/memory.dao';
 // DAO implementations
-export { RelationalDao } from './dao/relational.dao.ts';
-export { VectorDao } from './dao/vector.dao.ts';
+export { RelationalDao } from './dao/relational.dao';
+export { VectorDao } from './dao/vector.dao';
 // Factory and configuration
 export {
   DALFactory,
   type EntityTypeRegistry,
   MultiDatabaseDAO,
-} from './factory.ts';
+} from './factory';
 
 // Import interfaces for use in functions below
-import type { IDao, IManager } from './interfaces.ts';
+import type { IDao, IManager } from './interfaces';
 
 // Core interfaces
 export type {
@@ -112,15 +112,15 @@ export type {
   VectorSearchOptions,
   VectorSearchResult,
   VectorStats,
-} from './interfaces.ts';
+} from './interfaces';
 
 // Export enums from interfaces
 export {
   DatabaseTypes as DatabaseTypesEnum,
   EntityTypes as EntityTypesEnum,
-} from './interfaces.ts';
-// Manager implementations
-export { DocumentManager } from './managers/document-manager.ts';
+} from './interfaces';
+// Note: Managers moved to src/services/ for better architectural separation
+// Import DocumentManager from '../services/document/document-service' instead
 
 // Re-export database provider types for convenience
 export type {
@@ -132,7 +132,7 @@ export type {
   VectorData,
   VectorDatabaseAdapter,
   VectorResult,
-} from './providers/database-providers.ts';
+} from './providers/database-providers';
 
 /**
  * Convenience functions for quick DAL setup.
@@ -191,7 +191,7 @@ export type {
  * ```
  */
 // Re-export from dao-factory to break circular dependency
-export { createDao } from './core/dao-factory.ts';
+export { createDao } from './core/dao-factory';
 
 /**
  * Create a Manager instance for high-level entity operations.
@@ -552,7 +552,7 @@ function getDefaultConfig(databaseType: string): unknown {
  * ```
  */
 // Re-export EntityTypes from dao-factory to break circular dependency
-export { EntityTypeValues as EntityTypes } from './core/dao-factory.ts';
+export { EntityTypeValues as EntityTypes } from './core/dao-factory';
 
 /**
  * Supported Database Type Constants.
@@ -751,4 +751,4 @@ export const QuickSetup = {
 };
 
 // Default export is the factory
-export { DALFactory as default } from './factory.ts';
+export { DALFactory as default } from './factory';

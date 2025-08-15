@@ -7,9 +7,9 @@
  * @file Event Manager Implementation following UACL/USL patterns.
  */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces.ts';
-import { inject, injectable } from '../../di/decorators/injectable.ts';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens.ts';
+import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerStatus,
@@ -17,8 +17,8 @@ import type {
   IEventManager,
   IEventManagerFactory,
   SystemEvent,
-} from './core/interfaces.ts';
-import { EventManagerPresets, EventManagerTypes } from './core/interfaces.ts';
+} from './core/interfaces';
+import { EventManagerPresets, EventManagerTypes } from './core/interfaces';
 import type {
   ICommunicationEventManager,
   ICoordinationEventManager,
@@ -29,9 +29,9 @@ import type {
   INeuralEventManager,
   ISystemEventManager,
   IWorkflowEventManager,
-} from './factories.ts';
-import { EventRegistry } from './registry.ts';
-import { DefaultEventManagerConfigs, EventCategories } from './types.ts';
+} from './factories';
+import { EventRegistry } from './registry';
+import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
  * Configuration options for creating new event managers.

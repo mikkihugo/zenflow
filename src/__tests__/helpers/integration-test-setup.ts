@@ -19,6 +19,13 @@ type BetterSQLiteStatement = {
   finalize(): void;
 };
 
+// node-sqlite3 database interface
+type SQLiteDatabase = {
+  run(sql: string, callback?: (err: Error | null) => void): void;
+  prepare(sql: string): { run(...params: any[]): void; finalize(): void };
+  close(): void;
+};
+
 // Simple base entity interface for testing
 interface BaseDocumentEntity {
   id: string;
@@ -88,7 +95,7 @@ export interface DatabaseTestHelper {
  */
 export interface FileSystemTestHelper {
   /** Create a temporary directory for testing */
-  createTempDir(): Promise<string>;
+  createTempDir(prefix?: string): Promise<string>;
   /** Create a file with specified content */
   createFile(path: string, content: string): Promise<void>;
   /** Clean up filesystem resources */
@@ -185,20 +192,7 @@ interface PostgresConnection {
   connect(): Promise<void>;
 }
 
-/**
- * SQLite database interface for type safety (legacy sqlite3)
- */
-interface SQLiteDatabase {
-  exec(sql: string, callback: (err: Error | null) => void): void;
-  run(sql: string, ...params: any[]): void;
-  prepare(sql: string): SQLiteStatement;
-  close(callback?: () => void): void;
-}
-
-interface SQLiteStatement {
-  run(...params: any[]): void;
-  finalize(): void;
-}
+// BetterSQLiteDatabase type already defined above - removed duplicate interface
 
 /**
  * HTTP Server interface for network testing
@@ -433,28 +427,24 @@ export class IntegrationTestSetup {
           `);
         } catch (_betterSqliteError) {
           try {
-            // Fall back to sqlite3
-            const sqlite3 = await import('sqlite3');
-            db = new sqlite3.Database(dbPath) as SQLiteDatabase;
-            isBetterSqlite = false;
+            // Use better-sqlite3 as fallback
+            const BetterDatabase = (await import('better-sqlite3')).default;
+            db = new BetterDatabase(dbPath) as SQLiteDatabase;
+            isBetterSqlite = true;
 
-            // Create basic tables with sqlite3
-            await new Promise<void>((resolve, reject) => {
-              (db as SQLiteDatabase).exec(
+            // Create basic tables with better-sqlite3
+            try {
+              (db as BetterSQLiteDatabase).exec(
                 `
                 CREATE TABLE IF NOT EXISTS test_data (
                   id INTEGER PRIMARY KEY AUTOINCREMENT,
                   key TEXT UNIQUE,
                   value TEXT,
                   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-                );
-              `,
-                (err: Error | null) => {
-                  if (err) reject(err);
-                  else resolve();
-                }
-              );
-            });
+                );`);
+            } catch (error) {
+              console.warn('Failed to create tables:', error);
+            }
           } catch (_sqliteError) {
             console.warn('No SQLite libraries available, falling back to memory database');
             return this.createMemoryDatabaseHelper().setup();
@@ -464,13 +454,7 @@ export class IntegrationTestSetup {
 
       async cleanup() {
         if (db) {
-          if (isBetterSqlite) {
-            (db as BetterSQLiteDatabase).close();
-          } else {
-            await new Promise<void>((resolve) => {
-              (db as SQLiteDatabase).close(() => resolve());
-            });
-          }
+          (db as BetterSQLiteDatabase).close();
         }
         try {
           await fs.unlink(dbPath);

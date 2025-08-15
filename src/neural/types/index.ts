@@ -20,9 +20,9 @@ export type {
   DSPyProgram,
   DSPyProgramMetadata,
   DSPyWrapper,
-} from './dspy-types.ts';
+} from './dspy-types';
 // Re-export everything from dspy-types for convenience
-export * from './dspy-types.ts';
+export * from './dspy-types';
 export {
   createValidationError,
   DEFAULT_DSPY_CONFIG,
@@ -40,7 +40,7 @@ export {
   sanitizeInput,
   validateDSPyConfig,
   validateSignature,
-} from './dspy-types.ts';
+} from './dspy-types';
 // WASM types
 export type {
   ActivationFunction,
@@ -61,5 +61,5 @@ export type {
   WASMPredictionInput,
   WASMPredictionOutput,
   WASMTrainingData,
-} from './wasm-types.ts';
-export * from './wasm-types.ts';
+} from './wasm-types';
+export * from './wasm-types';

@@ -21,8 +21,8 @@ import type {
   ProductProjectEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../database/entities/product-entities.ts';
-import type { DocumentManager } from '../database/managers/document-manager';
+} from '../database/entities/product-entities';
+import type { DocumentManager } from "../services/document/document-service"
 import type { DocumentType } from '../types/workflow-types';
 import type { WorkflowEngine } from './workflow-engine';
 

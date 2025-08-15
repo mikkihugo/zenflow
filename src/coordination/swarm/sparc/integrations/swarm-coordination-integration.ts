@@ -2,7 +2,7 @@
  * @file Coordination system: swarm-coordination-integration.
  */
 
-import { getLogger } from '../../../../config/logging-config.ts';
+import { getLogger } from '../../../../config/logging-config';
 
 const logger = getLogger(
   'coordination-swarm-sparc-integrations-swarm-coordination-integration'
@@ -15,13 +15,13 @@ const logger = getLogger(
  * Enables distributed SPARC development using existing agent types and coordination protocols.
  */
 
-import { CoordinationAPI } from '../../../api.ts';
+import { CoordinationAPI } from '../../../api';
 
 const TaskAPI = CoordinationAPI.tasks;
 
-import type { AgentType } from '../../../../types/agent-types.ts';
-import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator.ts';
-import type { SPARCPhase, SPARCProject } from '../types/sparc-types.ts';
+import type { AgentType } from '../../../../types/agent-types';
+import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
+import type { SPARCPhase, SPARCProject } from '../types/sparc-types';
 
 // SPARC-specific agent types from existing 147+ agent types
 export const SPARC_AGENT_TYPES: AgentType[] = [

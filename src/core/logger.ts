@@ -8,11 +8,11 @@ import {
   type LogLevel as BootstrapLogLevel,
   createBootstrapLogger,
   type ILogger,
-} from './bootstrap-logger.ts';
+} from './bootstrap-logger';
 
-export type { ILogger } from './bootstrap-logger.ts';
+export type { ILogger } from './bootstrap-logger';
 // Re-export for compatibility
-export { LogLevel } from './bootstrap-logger.ts';
+export { LogLevel } from './bootstrap-logger';
 
 export interface LoggerConfig {
   prefix?: string;

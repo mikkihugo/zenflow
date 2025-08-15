@@ -5,7 +5,7 @@
  * in the Claude-Zen ecosystem.
  */
 
-import type { ServiceConfig } from './core/interfaces.ts';
+import type { ServiceConfig } from './core/interfaces';
 
 /**
  * Service type enumeration for all supported service categories.

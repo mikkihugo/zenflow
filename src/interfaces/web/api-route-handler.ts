@@ -1,3 +1,4 @@
+import { getVersion } from '../../config/version';
 /**
  * API Route Handler - RESTful API endpoints.
  *
@@ -9,8 +10,8 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { getLogger } from '../../config/logging-config.ts';
-import type { WebSocketCoordinator } from './web-socket-coordinator.ts';
+import { getLogger } from '../../config/logging-config';
+import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {
   prefix: string;
@@ -94,7 +95,7 @@ export class ApiRouteHandler {
     res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
-      version: '2.0.0-alpha.73',
+      version: getVersion(),
       uptime: process.uptime(),
     });
   }
@@ -271,7 +272,7 @@ export class ApiRouteHandler {
   private async getSystemStatus(): Promise<SystemStatus> {
     return {
       status: 'healthy',
-      version: '2.0.0-alpha.73',
+      version: getVersion(),
       uptime: process.uptime() * 1000,
       components: {
         mcp: { status: 'ready', port: 3000 },

@@ -6,8 +6,8 @@
  * @file Coordination system: task-agent-matcher
  */
 
-import type { CapacityManager } from '../interfaces.ts';
-import type { Agent, Task } from '../types.ts';
+import type { CapacityManager } from '../interfaces';
+import type { Agent, Task } from '../types';
 
 interface MatchingScore {
   agent: Agent;

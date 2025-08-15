@@ -9,9 +9,9 @@
  * @file Interface implementation: factories.
  */
 
-import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces.ts';
-import { inject, injectable } from '../../di/decorators/injectable.ts';
-import { CORE_TOKENS } from '../../di/tokens/core-tokens.ts';
+import type { IConfig, ILogger } from '../../core/interfaces/base-interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -21,7 +21,7 @@ import type {
   IEventManagerFactory,
   IEventManagerRegistry,
   SystemEvent,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 
 // Re-export event manager types for backward compatibility
 export type {
@@ -33,9 +33,9 @@ export type {
   INeuralEventManager, 
   ISystemEventManager,
   IWorkflowEventManager
-} from './event-manager-types.ts';
+} from './event-manager-types';
 
-import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces.ts';
+import { EventManagerPresets, EventManagerTypes, EventTypeGuards } from './core/interfaces';
 import type {
   CommunicationEvent,
   CoordinationEvent,
@@ -46,8 +46,8 @@ import type {
   NeuralEvent,
   SystemLifecycleEvent,
   WorkflowEvent,
-} from './types.ts';
-import { DefaultEventManagerConfigs, EventCategories } from './types.ts';
+} from './types';
+import { DefaultEventManagerConfigs, EventCategories } from './types';
 
 /**
  * Configuration for event manager creation through factories.

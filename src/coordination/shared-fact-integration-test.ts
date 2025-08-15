@@ -4,16 +4,16 @@
  * Tests universal ADR access, shared knowledge storage, and cross-level coordination
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   getSharedCollectiveFACT,
   UniversalFACTHelpers,
   removeLevelSpecificFACTStorage,
-} from './shared-fact-system.ts';
-import { SwarmCommander } from './agents/swarm-commander.ts';
-import type { SwarmCommanderConfig } from './agents/swarm-commander.ts';
-import type { IEventBus } from '../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../memory/core/memory-coordinator.ts';
+} from './shared-fact-system';
+import { SwarmCommander } from './agents/swarm-commander';
+import type { SwarmCommanderConfig } from './agents/swarm-commander';
+import type { IEventBus } from '../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../memory/core/memory-coordinator';
 
 const logger = getLogger('SharedFACTIntegrationTest');
 

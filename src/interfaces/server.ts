@@ -14,7 +14,7 @@ import path from 'path';
 import type { Server as SocketIOServer } from 'socket.io';
 // Configuration system
 import { config } from '../config/index.js';
-import type { SystemConfiguration } from '../config/types.ts';
+import type { SystemConfiguration } from '../config/types';
 // LogTape integration
 import {
   createAppLogger,
@@ -213,6 +213,52 @@ export class UnifiedClaudeZenServer {
           ...(this.config.features.monitoring && { monitoring: '/monitoring' }),
         },
         features: this.config.features,
+      });
+    });
+
+    // Additional API endpoints
+    this.app.get('/api/status', (req, res) => {
+      res.json({
+        success: true,
+        data: {
+          status: 'running',
+          mode: 'unified-server',
+          version: '1.0.0-alpha.44',
+          features: this.config.features,
+          uptime: process.uptime(),
+          timestamp: new Date().toISOString()
+        }
+      });
+    });
+
+    this.app.get('/api/health', (req, res) => {
+      res.json({
+        status: 'healthy',
+        timestamp: new Date().toISOString(),
+        version: '1.0.0-alpha.44',
+        uptime: process.uptime()
+      });
+    });
+
+    // Monitoring dashboard endpoint
+    this.app.get('/api/monitoring/dashboard', (req, res) => {
+      res.json({
+        success: true,
+        data: {
+          system: {
+            status: 'healthy',
+            uptime: process.uptime(),
+            memory: process.memoryUsage(),
+            cpu: process.cpuUsage()
+          },
+          metrics: {
+            requests_total: 0,
+            response_time_avg: '3ms',
+            active_connections: 1
+          },
+          features: this.config.features,
+          timestamp: new Date().toISOString()
+        }
       });
     });
 

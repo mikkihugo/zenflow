@@ -11,7 +11,7 @@ import type {
   ClientMetrics, 
   IClient, 
   IClientFactory 
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
 
@@ -22,7 +22,7 @@ const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
  * Following UACL architecture for consistent client management across the system.
  */
 
-// ClientConfig is now imported from '../core/interfaces.ts'
+// ClientConfig is now imported from '../core/interfaces'
 
 /**
  * Represents the result of a client operation.
@@ -145,7 +145,7 @@ export interface ClientComponentHealth {
   details?: unknown;
 }
 
-// ClientMetrics is now imported from '../core/interfaces.ts'
+// ClientMetrics is now imported from '../core/interfaces'
 
 /**
  * Adapter-specific client interface that bridges between core IClient and implementation needs.

@@ -2,7 +2,7 @@
  * @file Monitoring module exports.
  */
 
-import { getLogger } from '../core/logger.ts';
+import { getLogger } from '../core/logger';
 
 const logger = getLogger('src-monitoring-index');
 
@@ -17,7 +17,7 @@ export {
   PerformanceAnalyzer,
   PerformanceInsights,
   TrendAnalysis,
-} from './analytics/performance-analyzer.ts';
+} from './analytics/performance-analyzer';
 export {
   CompositeMetrics,
   FactMetrics,
@@ -26,30 +26,30 @@ export {
   RagMetrics,
   SwarmMetrics,
   SystemMetrics,
-} from './core/metrics-collector.ts';
+} from './core/metrics-collector';
 export {
   DashboardConfig,
   DashboardData,
   DashboardServer,
-} from './dashboard/dashboard-server.ts';
+} from './dashboard/dashboard-server';
 export {
   IntegrationConfig,
   SystemHooks,
   SystemIntegration,
-} from './integrations/system-integration.ts';
+} from './integrations/system-integration';
 export {
   OptimizationAction,
   OptimizationEngine,
   OptimizationResult,
   OptimizationStrategy,
-} from './optimization/optimization-engine.ts';
-export * from './performance/real-time-monitor.ts';
+} from './optimization/optimization-engine';
+export * from './performance/real-time-monitor';
 
 import { getConfig } from '../../config';
 import {
   type IntegrationConfig,
   SystemIntegration,
-} from './integrations/system-integration.ts';
+} from './integrations/system-integration';
 
 /**
  * Main monitoring system factory.

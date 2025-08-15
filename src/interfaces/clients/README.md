@@ -281,19 +281,18 @@ await uacl.initialize({
 
 ## 🎯 Integration Examples
 
-### Database Tools Integration
+### Database Integration
 
 ```typescript
-// Database tools automatically use UACL for MCP client management
-import { databaseInit } from '@/database/mcp/database-tools';
+// Database operations handled through DAL factory
+import { DALFactory } from '@/database';
 
-// This internally creates UACL-managed MCP clients
-await databaseInit({
-  engines: ['postgresql', 'redis'],
-  coordination: {
-    healthCheckInterval: 30000,
-    defaultTimeout: 30000
-  }
+// Create database connections through DAL
+const dalFactory = new DALFactory();
+const userDao = await dalFactory.createDAO({
+  databaseType: 'postgresql',
+  entityType: 'User',
+  databaseConfig: { host: 'localhost', database: 'app' }
 });
 ```
 

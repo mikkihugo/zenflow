@@ -11,7 +11,7 @@
 import { EventEmitter } from 'node:events';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('UnifiedExport');
 

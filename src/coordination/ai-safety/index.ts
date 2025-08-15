@@ -9,16 +9,16 @@
 export type {
   AIInteractionData,
   DeceptionAlert,
-} from './ai-deception-detector.ts';
+} from './ai-deception-detector.js';
 export {
   AIDeceptionDetector,
   analyzeAIResponse,
   createAIDeceptionDetector,
-} from './ai-deception-detector.ts';
+} from './ai-deception-detector.js';
 export {
   AISafetyOrchestrator,
   createAISafetyOrchestrator,
-} from './safety-orchestrator.ts';
+} from './safety-orchestrator.js';
 
 /**
  * Quick setup function for AI safety monitoring.
@@ -27,7 +27,7 @@ export {
  */
 export async function initializeAISafety() {
   const { createAISafetyOrchestrator } = await import(
-    './safety-orchestrator.ts'
+    './safety-orchestrator.js'
   );
   const orchestrator = createAISafetyOrchestrator();
 

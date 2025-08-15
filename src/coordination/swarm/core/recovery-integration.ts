@@ -17,13 +17,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import HealthMonitor from '../../diagnostics/health-monitor.ts';
-import ChaosEngineering from '../chaos-engineering/chaos-engineering.ts';
-import ConnectionStateManager from '../connection-management/connection-state-manager.ts';
-import { ErrorFactory } from './errors.ts';
-import { Logger } from './logger.ts';
-import MonitoringDashboard from './monitoring-dashboard.ts';
-import RecoveryWorkflows from './recovery-workflows.ts';
+import HealthMonitor from '../../diagnostics/health-monitor';
+import ChaosEngineering from '../chaos-engineering/chaos-engineering';
+import ConnectionStateManager from '../connection-management/connection-state-manager';
+import { ErrorFactory } from './errors';
+import { Logger } from './logger';
+import MonitoringDashboard from './monitoring-dashboard';
+import RecoveryWorkflows from './recovery-workflows';
 
 export class RecoveryIntegration extends EventEmitter {
   // Public properties

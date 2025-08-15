@@ -9,7 +9,7 @@ import type {
   ClientStatus,
   IClient,
   RequestOptions,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 import type {
   WebSocketClientConfig,
@@ -17,7 +17,7 @@ import type {
   WebSocketMessage,
   WebSocketMetrics,
   WebSocketRequestOptions,
-} from './websocket-types.ts';
+} from './websocket-types';
 
 // WebSocket ready state type
 type WebSocketReadyState = 0 | 1 | 2 | 3;

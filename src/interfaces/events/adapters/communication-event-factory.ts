@@ -12,18 +12,18 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config.ts';
-import { getLogger } from '../../../config/logging-config.ts';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type {
   EventManagerMetrics,
   EventManagerStatus,
   IEventManagerFactory,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   CommunicationEventAdapter,
   type CommunicationEventAdapterConfig,
   createDefaultCommunicationEventAdapterConfig,
-} from './communication-event-adapter.ts';
+} from './communication-event-adapter';
 
 /**
  * Communication Event Manager Factory.

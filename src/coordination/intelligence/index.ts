@@ -51,7 +51,7 @@ export {
   type TaskPredictionConfig,
   type TaskCompletionRecord,
   createTaskPredictor,
-} from './task-predictor.ts';
+} from './task-predictor';
 
 export {
   AgentLearningSystem,
@@ -59,7 +59,7 @@ export {
   type AgentLearningState,
   type LearningMode,
   createAgentLearningSystem,
-} from './agent-learning-system.ts';
+} from './agent-learning-system';
 
 export {
   AgentHealthMonitor,
@@ -72,7 +72,7 @@ export {
   type SystemHealthSummary,
   createAgentHealthMonitor,
   DEFAULT_HEALTH_MONITOR_CONFIG,
-} from './agent-health-monitor.ts';
+} from './agent-health-monitor';
 
 // TIER 3 Advanced Intelligence System
 export {
@@ -89,16 +89,16 @@ export {
   DEFAULT_PREDICTIVE_ANALYTICS_CONFIG,
   isHighConfidencePrediction,
   formatPredictionDuration,
-} from './predictive-analytics-engine.ts';
+} from './predictive-analytics-engine';
 
 // ===============================
 // Integration Types
 // ===============================
 
-import type { AgentId, SwarmId } from '../types.ts';
-import type { Tier3NeuralLearning } from '../learning/tier3-neural-learning.ts';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration.ts';
-import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager.ts';
+import type { AgentId, SwarmId } from '../types';
+import type { Tier3NeuralLearning } from '../learning/tier3-neural-learning';
+import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
+import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager';
 
 /**
  * Complete intelligence system configuration

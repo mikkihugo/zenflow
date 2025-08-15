@@ -6,9 +6,9 @@
  * @file Topology management system.
  */
 
-export * from '../../protocols/topology/topology-manager.ts';
+export * from '../../protocols/topology/topology-manager';
 // Additional re-export for direct access
 export {
   TopologyManager as default,
   TopologyManager,
-} from '../../protocols/topology/topology-manager.ts';
+} from '../../protocols/topology/topology-manager';

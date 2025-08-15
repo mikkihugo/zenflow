@@ -2,7 +2,7 @@
  * @file Session-based memory storage with pluggable backends.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('Memory');
 
@@ -11,9 +11,9 @@ import type {
   IMemoryStore,
   MemoryStats,
   StoreOptions,
-} from '../core/interfaces/base-interfaces.ts';
-import { MemoryBackendFactory as BackendFactory } from './backends/factory.ts';
-import type { BackendInterface, JSONValue } from './core/memory-system.ts';
+} from '../core/interfaces/base-interfaces';
+import { MemoryBackendFactory as BackendFactory } from './backends/factory';
+import type { BackendInterface, JSONValue } from './core/memory-system';
 
 interface BackendConfig {
   type: 'sqlite' | 'json' | 'lancedb' | 'memory';

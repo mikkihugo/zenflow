@@ -19,7 +19,7 @@ import type {
   WorkflowGateResult,
 } from './workflow-base-types.js';
 import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
-import type { DocumentManager } from '../database/managers/document-manager.js';
+import type { DocumentManager } from "../services/document/document-service"
 import type { MemorySystemFactory } from '../memory/index.js';
 import type {
   DocumentContent,

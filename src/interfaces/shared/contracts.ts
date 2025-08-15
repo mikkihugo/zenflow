@@ -9,8 +9,8 @@
  */
 
 import type { InterfaceConfig } from '../../config/index.js';
-import type { CommandResult, ExecutionContext } from './command-interfaces.ts';
-import type { ComponentStatus } from './types.ts';
+import type { CommandResult, ExecutionContext } from './command-interfaces';
+import type { ComponentStatus } from './types';
 
 // Define types that are used in contracts but don't exist elsewhere
 export interface CommandContext extends ExecutionContext {

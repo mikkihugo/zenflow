@@ -17,9 +17,9 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { getLogger } from '../../config/logging-config.ts';
-import type { MemorySystem } from '../../core/memory-system.ts';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -27,12 +27,12 @@ import type {
   PRDDocumentEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../../database/entities/product-entities.ts';
-import type { DocumentManager } from '../../database/managers/document-manager.ts';
+} from '../../database/entities/product-entities';
+import type { DocumentManager } from "../services/document/document-service"
 import {
   WorkflowAGUIAdapter,
   type WorkflowAGUIConfig,
-} from '../../interfaces/agui/workflow-agui-adapter.ts';
+} from '../../interfaces/agui/workflow-agui-adapter';
 import type {
   StepExecutionResult,
   WorkflowContext,
@@ -40,26 +40,26 @@ import type {
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-} from '../../workflows/types.ts';
-import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine.ts';
+} from '../../workflows/types';
+import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
 import type {
   ProjectSpecification,
   SPARCPhase,
   SPARCProject,
-} from '../swarm/sparc/types/sparc-types.ts';
+} from '../swarm/sparc/types/sparc-types';
 import type {
   GateEscalationLevel,
   WorkflowContext as GateWorkflowContext,
   WorkflowGateRequest,
   WorkflowGateResult,
-} from '../workflows/workflow-gate-request.ts';
+} from '../workflows/workflow-gate-request';
 import type {
   WorkflowGateContext,
   WorkflowGateData,
   WorkflowGatePriority,
   WorkflowHumanGate,
   WorkflowHumanGateType,
-} from './workflow-gates.ts';
+} from './workflow-gates';
 
 // Define missing types locally
 type WorkflowStatus =
@@ -120,7 +120,7 @@ interface WorkflowStepState {
 }
 
 // Import WorkflowStep from workflow-types
-import type { WorkflowStep } from '../../workflows/types.ts';
+import type { WorkflowStep } from '../../workflows/types';
 
 const logger = getLogger('ProductWorkflow');
 

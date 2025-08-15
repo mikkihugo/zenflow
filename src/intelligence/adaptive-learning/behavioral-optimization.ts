@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ExecutionPattern } from './pattern-recognition-engine.ts';
+import type { ExecutionPattern } from './pattern-recognition-engine';
 
 export interface AgentBehavior {
   agentId: string;

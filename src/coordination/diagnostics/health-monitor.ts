@@ -2,7 +2,7 @@
  * @file Coordination system: health-monitor.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-diagnostics-health-monitor');
 

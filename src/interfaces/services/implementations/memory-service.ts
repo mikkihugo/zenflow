@@ -8,9 +8,9 @@
  * @file Memory service implementation.
  */
 
-import type { IService } from '../core/interfaces.ts';
-import type { MemoryServiceConfig, ServiceOperationOptions } from '../types.ts';
-import { BaseService } from './base-service.ts';
+import type { IService } from '../core/interfaces';
+import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';
+import { BaseService } from './base-service';
 
 /**
  * Memory service implementation.

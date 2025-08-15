@@ -4,36 +4,36 @@
  */
 
 // Import the actual classes for use in factory functions
-import { BatchEngine } from './batch-engine.ts';
-import { FileBatchOperator } from './file-batch.ts';
-import { BatchPerformanceMonitor } from './performance-monitor.ts';
-import { SwarmBatchCoordinator } from './swarm-batch.ts';
+import { BatchEngine } from './batch-engine';
+import { FileBatchOperator } from './file-batch';
+import { BatchPerformanceMonitor } from './performance-monitor';
+import { SwarmBatchCoordinator } from './swarm-batch';
 
 export type {
   BatchExecutionConfig,
   BatchOperation,
   BatchResult,
   ExtendedBatchExecutionSummary,
-} from './batch-engine.ts';
+} from './batch-engine';
 export {
   BatchEngine,
   createBatchOperation,
   createToolBatch,
-} from './batch-engine.ts';
-export type { FileOperation, FileOperationResult } from './file-batch.ts';
-export { FileBatchOperator } from './file-batch.ts';
+} from './batch-engine';
+export type { FileOperation, FileOperationResult } from './file-batch';
+export { FileBatchOperator } from './file-batch';
 export type {
   PerformanceComparison,
   PerformanceMetrics,
   PerformanceTrend,
-} from './performance-monitor.ts';
-export { BatchPerformanceMonitor } from './performance-monitor.ts';
+} from './performance-monitor';
+export { BatchPerformanceMonitor } from './performance-monitor';
 export type {
   SwarmBatchConfig,
   SwarmOperation,
   SwarmOperationResult,
-} from './swarm-batch.ts';
-export { SwarmBatchCoordinator } from './swarm-batch.ts';
+} from './swarm-batch';
+export { SwarmBatchCoordinator } from './swarm-batch';
 
 /**
  * Factory function to create a complete batch system with all components.

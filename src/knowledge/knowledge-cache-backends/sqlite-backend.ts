@@ -15,7 +15,7 @@ import type {
   FACTStorageBackend,
   FACTStorageConfig,
   FACTStorageStats,
-} from '../types/fact-types.ts';
+} from '../types/fact-types';
 
 /**
  * SQLite-based FACT storage backend.

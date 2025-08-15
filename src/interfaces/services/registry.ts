@@ -10,7 +10,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger, type Logger } from '../../config/logging-config.ts';
+import { getLogger, type Logger } from '../../config/logging-config';
 import type {
   IService,
   IServiceFactory,
@@ -21,8 +21,8 @@ import type {
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces.ts';
-import { ServiceOperationError } from './core/interfaces.ts';
+} from './core/interfaces';
+import { ServiceOperationError } from './core/interfaces';
 
 export interface ServiceRegistryConfig {
   /** Health monitoring configuration */

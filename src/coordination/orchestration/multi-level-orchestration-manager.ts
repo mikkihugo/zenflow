@@ -15,14 +15,14 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { MemorySystem } from '../../core/memory-system.ts';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system.ts';
+} from '../../core/type-safe-event-system';
 import type {
   CrossLevelDependency,
   FlowMetrics,
@@ -34,13 +34,13 @@ import type {
   SystemPerformanceMetrics,
   WIPLimits,
   WorkflowStream,
-} from './multi-level-types.ts';
-import type { ParallelWorkflowManager } from './parallel-workflow-manager.ts';
-import type { PortfolioOrchestrator } from './portfolio-orchestrator.ts';
-import type { ProductWorkflowEngine } from './product-workflow-engine.ts';
-import type { ProgramOrchestrator } from './program-orchestrator.ts';
-import type { SwarmExecutionOrchestrator } from './swarm-execution-orchestrator.ts';
-import type { WorkflowGatesManager } from './workflow-gates.ts';
+} from './multi-level-types';
+import type { ParallelWorkflowManager } from './parallel-workflow-manager';
+import type { PortfolioOrchestrator } from './portfolio-orchestrator';
+import type { ProductWorkflowEngine } from './product-workflow-engine';
+import type { ProgramOrchestrator } from './program-orchestrator';
+import type { SwarmExecutionOrchestrator } from './swarm-execution-orchestrator';
+import type { WorkflowGatesManager } from './workflow-gates';
 
 // ============================================================================
 // MULTI-LEVEL ORCHESTRATION CONFIGURATION

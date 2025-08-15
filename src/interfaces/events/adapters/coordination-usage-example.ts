@@ -2,7 +2,7 @@
  * @file Interface implementation: coordination-usage-example.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger(
   'interfaces-events-adapters-coordination-usage-example'
@@ -19,7 +19,7 @@ import {
   CoordinationEventAdapter,
   type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
-} from './coordination-event-adapter.ts';
+} from './coordination-event-adapter';
 
 /**
  * Example 1: Basic Coordination Event Management.

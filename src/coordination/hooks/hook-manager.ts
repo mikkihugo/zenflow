@@ -6,9 +6,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
-import type { HookSystem } from './hook-system-core.ts';
-import { DefaultHookSystem } from './hook-system-core.ts';
+import { getLogger } from '../../config/logging-config';
+import type { HookSystem } from './hook-system-core';
+import { DefaultHookSystem } from './hook-system-core';
 
 const logger = getLogger('HookManager');
 

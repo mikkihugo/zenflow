@@ -6,7 +6,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine.ts';
+import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 
 // Simple mock database
 class MockDB {

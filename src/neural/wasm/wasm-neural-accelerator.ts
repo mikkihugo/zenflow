@@ -2,7 +2,7 @@
  * @file Neural network: wasm-neural-accelerator.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('neural-wasm-wasm-neural-accelerator');
 
@@ -25,7 +25,7 @@ import type {
   WASMPredictionInput,
   WASMPredictionOutput,
   WASMTrainingData,
-} from '../types/wasm-types.ts';
+} from '../types/wasm-types';
 
 /**
  * WASM-powered neural network accelerator.

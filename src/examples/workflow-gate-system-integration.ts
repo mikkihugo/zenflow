@@ -13,7 +13,7 @@
  * product development workflow with realistic scenarios.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   type ArchitecturalGateData,
   type BusinessGateData,
@@ -34,23 +34,23 @@ import {
   type WorkflowHumanGate,
   WorkflowHumanGateStatus,
   WorkflowHumanGateType,
-} from '../coordination/orchestration/workflow-gates.ts';
+} from '../coordination/orchestration/workflow-gates';
 import {
   createApprovalGate,
   type WorkflowGateRequest,
   WorkflowGateRequestProcessor,
   type WorkflowGateResult,
-} from '../coordination/workflows/workflow-gate-request.ts';
+} from '../coordination/workflows/workflow-gate-request';
 import {
   createEvent,
   createTypeSafeEventBus,
   Domain,
   type TypeSafeEventBus,
-} from '../core/type-safe-event-system.ts';
+} from '../core/type-safe-event-system';
 import {
   type AGUIInterface,
   createAGUI,
-} from '../interfaces/agui/agui-adapter.ts';
+} from '../interfaces/agui/agui-adapter';
 
 const logger = getLogger('workflow-gate-system-integration');
 

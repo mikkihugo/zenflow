@@ -2,7 +2,7 @@
  * @file Coordination system: base-swarm.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-base-swarm');
 
@@ -16,14 +16,14 @@ const logger = getLogger('coordination-swarm-core-base-swarm');
 import { EventEmitter } from 'node:events';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
 import { WasmModuleLoader } from '../../../wasm-loader.cjs';
-import { AgentPool, type BaseAgent } from '../../agents/agent.ts';
-import { getContainer } from './singleton-container.ts';
+import { AgentPool, type BaseAgent } from '../../agents/agent';
+import { getContainer } from './singleton-container';
 import type {
   SwarmEventEmitter,
   SwarmLifecycleState,
   SwarmOptions,
-} from './types.ts';
-import { generateId, validateSwarmOptions } from './utils.ts';
+} from './types';
+import { generateId, validateSwarmOptions } from './utils';
 
 // Extended options for internal use
 interface ExtendedSwarmOptions extends SwarmOptions {

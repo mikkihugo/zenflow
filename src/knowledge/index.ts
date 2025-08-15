@@ -14,8 +14,8 @@ export type {
   DistributedReasoningResult,
   Problem,
   ProblemDecomposition,
-} from './collaborative-reasoning-engine.ts';
-export { CollaborativeReasoningEngine } from './collaborative-reasoning-engine.ts';
+} from './collaborative-reasoning-engine';
+export { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
 // Collective Intelligence Types
 export type {
   AgentContribution,
@@ -25,9 +25,9 @@ export type {
   KnowledgeExchangeProtocol,
   KnowledgePacket,
   WorkDistributionResult,
-} from './collective-intelligence-coordinator.ts';
+} from './collective-intelligence-coordinator';
 // Core Collective Intelligence Systems
-export { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator.ts';
+export { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator';
 // Type Definitions - Main Configuration Types
 // Type Definitions - Result Types
 // Type Definitions - Request Types
@@ -48,13 +48,13 @@ export type {
   KnowledgeQuery,
   RAGIntegrationConfig,
   SystemStatus,
-} from './cross-agent-knowledge-integration.ts';
+} from './cross-agent-knowledge-integration';
 // Main Integration System
 export {
   CrossAgentKnowledgeIntegration,
   createCrossAgentKnowledgeIntegration,
   getDefaultConfig as getDefaultKnowledgeConfig,
-} from './cross-agent-knowledge-integration.ts';
+} from './cross-agent-knowledge-integration';
 // Distributed Learning Types
 export type {
   CollectiveExperienceAggregation,
@@ -62,8 +62,8 @@ export type {
   KnowledgeTransferResult,
   ModelSnapshot,
   ModelSynchronizationResult,
-} from './distributed-learning-system.ts';
-export { DistributedLearningSystem } from './distributed-learning-system.ts';
+} from './distributed-learning-system';
+export { DistributedLearningSystem } from './distributed-learning-system';
 // Intelligence Coordination Types
 export type {
   CrossDomainTransferResult as IntelligenceTransferResult,
@@ -71,10 +71,10 @@ export type {
   ExpertiseProfile,
   RoutingResult,
   SpecializationEmergenceResult,
-} from './intelligence-coordination-system.ts';
-export { IntelligenceCoordinationSystem } from './intelligence-coordination-system.ts';
-export { KnowledgeClient } from './knowledge-client.ts';
-// export { KnowledgeProcessor } from './knowledge-processor.ts';
+} from './intelligence-coordination-system';
+export { IntelligenceCoordinationSystem } from './intelligence-coordination-system';
+export { KnowledgeClient } from './knowledge-client';
+// export { KnowledgeProcessor } from './knowledge-processor';
 // Quality Management Types
 export type {
   ContributionRecord,
@@ -83,18 +83,18 @@ export type {
   ReputationScore,
   ReviewResult,
   ValidationResult,
-} from './knowledge-quality-management.ts';
-export { KnowledgeQualityManagementSystem } from './knowledge-quality-management.ts';
-// export { KnowledgeStorage } from './knowledge-storage.ts';
+} from './knowledge-quality-management';
+export { KnowledgeQualityManagementSystem } from './knowledge-quality-management';
+// export { KnowledgeStorage } from './knowledge-storage';
 // Existing Knowledge System Types
 export type {
   KnowledgeSwarmConfig,
   SwarmAgent,
   SwarmQuery,
   SwarmResult,
-} from './knowledge-swarm.ts';
+} from './knowledge-swarm';
 // Existing Knowledge Systems (for integration)
-export { KnowledgeSwarm } from './knowledge-swarm.ts';
+export { KnowledgeSwarm } from './knowledge-swarm';
 // Performance Optimization Types
 export type {
   CacheOptimizationResult,
@@ -102,12 +102,12 @@ export type {
   KnowledgeSharingOptimization,
   KnowledgeSharingRequest,
   OptimizedKnowledgeResponse,
-} from './performance-optimization-system.ts';
-export { PerformanceOptimizationSystem } from './performance-optimization-system.ts';
-export { ProjectContextAnalyzer } from './project-context-analyzer.ts';
+} from './performance-optimization-system';
+export { PerformanceOptimizationSystem } from './performance-optimization-system';
+export { ProjectContextAnalyzer } from './project-context-analyzer';
 // Storage Backends
-export { SQLiteBackend } from './storage-backends/sqlite-backend.ts';
-// export { StorageInterface } from './storage-interface.ts';
+export { SQLiteBackend } from './storage-backends/sqlite-backend';
+// export { StorageInterface } from './storage-interface';
 
 /**
  * Factory Functions for Easy System Creation.

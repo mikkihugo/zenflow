@@ -4,6 +4,6 @@
  */
 
 // Export everything else as well
-export * from './shared-types.ts';
+export * from './shared-types';
 // Re-export common entities
-export { Task, TaskStatus, TaskType } from './shared-types.ts';
+export { Task, TaskStatus, TaskType } from './shared-types';

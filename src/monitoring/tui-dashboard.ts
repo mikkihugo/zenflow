@@ -20,9 +20,9 @@ import blessed from 'blessed';
 import contrib from 'blessed-contrib';
 import chalk from 'chalk';
 import { EventEmitter } from 'node:events';
-import { Phase3EnsembleLearning } from '../coordination/swarm/learning/phase-3-ensemble.ts';
-import { NeuralEnsembleCoordinator } from '../coordination/swarm/learning/neural-ensemble-coordinator.ts';
-import { getLogger } from '../config/logging-config.ts';
+import { Phase3EnsembleLearning } from '../coordination/swarm/learning/phase-3-ensemble';
+import { NeuralEnsembleCoordinator } from '../coordination/swarm/learning/neural-ensemble-coordinator';
+import { getLogger } from '../config/logging-config';
 
 interface DashboardMetrics {
   accuracy: number;

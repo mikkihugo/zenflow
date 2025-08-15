@@ -9,13 +9,13 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
-import type { ArchitectureDesign } from '../../../types/shared-types.ts';
+import { getLogger } from '../../../config/logging-config';
+import type { ArchitectureDesign } from '../../../types/shared-types';
 import type { APIResult } from '../../types/shared-types';
 import type {
   IntegrationServiceAdapter,
   IntegrationServiceAdapterConfig,
-} from './integration-service-adapter.ts';
+} from './integration-service-adapter';
 
 /**
  * Integration operation result type.

@@ -3,17 +3,17 @@
  * Comprehensive MCP tools for advanced memory system coordination and management.
  */
 
-import type { BaseMemoryBackend } from '../backends/base-backend.ts';
-import { MemoryBackendFactory } from '../backends/factory.ts';
+import type { BaseMemoryBackend } from '../backends/base-backend';
+import { MemoryBackendFactory } from '../backends/factory';
 import {
   type MemoryCoordinationConfig,
   MemoryCoordinator,
-} from '../core/memory-coordinator.ts';
+} from '../core/memory-coordinator';
 import {
   type OptimizationConfig,
   PerformanceOptimizer,
-} from '../optimization/performance-optimizer.ts';
-import type { MemoryBackend } from '../providers/memory-providers.ts';
+} from '../optimization/performance-optimizer';
+import type { MemoryBackend } from '../providers/memory-providers';
 
 // Global memory system instances
 let memoryCoordinator: MemoryCoordinator | null = null;

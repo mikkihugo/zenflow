@@ -10,7 +10,7 @@ import { EventEmitter } from 'node:events';
 import type {
   OptimizationResult,
   PerformanceMetrics,
-} from '../interfaces/optimization-interfaces.ts';
+} from '../interfaces/optimization-interfaces';
 
 export interface OptimizationAlert {
   id: string;

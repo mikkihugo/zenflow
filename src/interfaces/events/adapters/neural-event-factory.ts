@@ -64,17 +64,17 @@
 import type {
   IConfig,
   ILogger,
-} from '../../../core/interfaces/base-interfaces.ts';
-import { BaseEventManager } from '../core/base-event-manager.ts';
+} from '../../../core/interfaces/base-interfaces';
+import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   IEventManager,
   IEventManagerFactory,
-} from '../core/interfaces.ts';
-import type { INeuralEventManager } from '../event-manager-types.ts';
-import type { NeuralEvent } from '../types.ts';
+} from '../core/interfaces';
+import type { INeuralEventManager } from '../event-manager-types';
+import type { NeuralEvent } from '../types';
 
 /**
  * Neural Event Manager implementation for AI/ML operations.

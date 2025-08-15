@@ -12,9 +12,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config.ts';
+import type { Logger } from '../../../config/logging-config';
 // Import logger (using relative path)
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 // Import types (will be set as any for now to fix type resolution issues)
 // import type { ApplicationCoordinator } from '../core/application-coordinator';
 // import type { CoreSystem } from '../core/core-system';
@@ -32,14 +32,14 @@ import type {
   EventTransform,
   IEventManager,
   SystemEvent,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   EventEmissionError,
   EventManagerTypes,
   EventTimeoutError,
-} from '../core/interfaces.ts';
-import type { SystemLifecycleEvent } from '../types.ts';
-import { EventPriorityMap } from '../types.ts';
+} from '../core/interfaces';
+import type { SystemLifecycleEvent } from '../types';
+import { EventPriorityMap } from '../types';
 
 /**
  * System event adapter configuration extending UEL EventManagerConfig.

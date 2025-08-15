@@ -1,3 +1,4 @@
+import { getVersion } from '../../config/version';
 /**
  * Web Data Service - Business logic and data management.
  *
@@ -8,7 +9,7 @@
  * @file Web-data service implementation.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 export interface SystemStatusData {
   system: string;
@@ -70,7 +71,7 @@ export class WebDataService {
 
     return {
       system: 'healthy',
-      version: '2.0.0-alpha.73',
+      version: getVersion(),
       swarms: { active: 2, total: 5 },
       tasks: { pending: 3, active: 1, completed: 12 },
       resources: {

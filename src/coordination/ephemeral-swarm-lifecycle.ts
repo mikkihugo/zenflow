@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { AgentType } from '../types/agent-types.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { AgentType } from '../types/agent-types';
 
 export interface SwarmRequest {
   id: string;

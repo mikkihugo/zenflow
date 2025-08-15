@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 import type {
   ApprovalRecord,
   EscalationChain,
@@ -24,13 +24,13 @@ import type {
   WorkflowContext,
   WorkflowGateRequest,
   WorkflowGateResult,
-} from '../../coordination/workflows/workflow-gate-request.ts';
+} from '../../coordination/workflows/workflow-gate-request';
 import {
   Domain,
   type DomainBoundaryValidator,
   getDomainValidator,
   type Result,
-} from '../../core/domain-boundary-validator.ts';
+} from '../../core/domain-boundary-validator';
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
@@ -40,13 +40,13 @@ import {
   type HumanValidationCompletedEvent,
   type HumanValidationRequestedEvent,
   type TypeSafeEventBus,
-} from '../../core/type-safe-event-system.ts';
+} from '../../core/type-safe-event-system';
 import {
   AGUIInterface,
   type EventHandlerConfig,
   TerminalAGUI,
   type ValidationQuestion,
-} from './agui-adapter.ts';
+} from './agui-adapter';
 
 const logger = getLogger('workflow-agui-adapter');
 

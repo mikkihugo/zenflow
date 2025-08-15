@@ -10,8 +10,8 @@
  * a higher-level abstraction over the core adapter functionality.
  */
 
-import { getLogger, type Logger } from '../../../config/logging-config.ts';
-import type { DataServiceAdapter } from './data-service-adapter.ts';
+import { getLogger, type Logger } from '../../../config/logging-config';
+import type { DataServiceAdapter } from './data-service-adapter';
 
 // Mock types for missing imports
 export interface BaseDocumentEntity {

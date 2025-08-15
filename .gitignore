@@ -48,6 +48,7 @@ Cargo.lock
 # Environment and config
 .env
 .env.*
+.mcp.json
 node_modules
 
 # IDE and system files

@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-client-factory.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger(
   'interfaces-clients-adapters-websocket-client-factory'
@@ -21,18 +21,18 @@ import type {
   ClientStatus,
   IClient,
   IClientFactory,
-} from '../core/interfaces.ts';
-import { EnhancedWebSocketClient } from './enhanced-websocket-client.ts';
+} from '../core/interfaces';
+import { EnhancedWebSocketClient } from './enhanced-websocket-client';
 import {
   createWebSocketClient,
   WebSocketClientAdapter,
-} from './websocket-client-adapter.ts';
+} from './websocket-client-adapter';
 
 import type {
   WebSocketClientConfig,
   WebSocketConnectionInfo,
   WebSocketMetrics,
-} from './websocket-types.ts';
+} from './websocket-types';
 
 /**
  * WebSocket Client Factory implementing UACL IClientFactory interface.

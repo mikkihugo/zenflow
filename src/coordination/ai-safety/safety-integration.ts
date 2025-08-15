@@ -8,11 +8,12 @@
 import type {
   AIInteractionData,
   DeceptionAlert,
-} from './ai-deception-detector.ts';
+} from './ai-deception-detector';
 import {
   type AISafetyOrchestrator,
+  type SafetyMetrics,
   createAISafetyOrchestrator,
-} from './safety-orchestrator.ts';
+} from './safety-orchestrator';
 
 /**
  * Global safety orchestrator instance.
@@ -96,7 +97,7 @@ export async function monitorAIInteraction(
  *
  * @example
  */
-export function getSafetyMetrics() {
+export function getSafetyMetrics(): SafetyMetrics | null {
   if (!globalSafetyOrchestrator) {
     return null;
   }

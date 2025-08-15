@@ -12,44 +12,45 @@ export {
   type ApiConfig,
   ApiRouteHandler,
   type SystemStatus,
-} from './api-route-handler.ts';
+} from './api-route-handler';
 export {
   type DaemonConfig,
   DaemonProcessManager,
   type ProcessInfo,
-} from './daemon-process-manager.ts';
+} from './daemon-process-manager';
 // Performance dashboard (renamed from unified-performance-dashboard.ts)
-export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './system-metrics-dashboard.ts';
-// Main web server (renamed from web-interface.ts)
-export { type WebConfig, WebInterfaceServer } from './web-interface-server.ts';
+export { UnifiedPerformanceDashboard as SystemMetricsDashboard } from './system-metrics-dashboard';
+// Main web server (using working web-interface.ts)
+export { type WebConfig, WebInterface } from './web-interface';
 // Focused modules (newly created)
 export {
   type WebSession,
   type WebSocketConfig,
   WebSocketCoordinator,
-} from './web-socket-coordinator.ts';
+} from './web-socket-coordinator';
 
 // Import the types for internal use
-import type { WebConfig } from './web-interface-server.ts';
-import { WebInterfaceServer } from './web-interface-server.ts';
+import type { WebConfig } from './web-interface';
+import { WebInterface } from './web-interface';
 
 // Re-export convenience functions
 export const createWebServer = (config?: WebConfig) => {
-  return new WebInterfaceServer(config);
+  return new WebInterface(config);
 };
 
 export const startWebServer = async (config?: WebConfig) => {
-  const server = new WebInterfaceServer(config);
-  await server.start();
+  const server = new WebInterface(config);
+  await server.run();
   return server;
 };
 
 // Version and constants
-export const WEB_INTERFACE_VERSION = '2.0.0-alpha.73';
+import { getVersion } from '../../config/version';
+export const WEB_INTERFACE_VERSION = getVersion();
 export const DEFAULT_WEB_PORT = 3000; // Changed from 3456 to 3000
 export const DEFAULT_API_PREFIX = '/api';
 export const DEFAULT_WEB_ENDPOINT = '/web';
 export const DEFAULT_MCP_ENDPOINT = '/mcp';
 
 // Default web interface for backwards compatibility
-export default WebInterfaceServer;
+export default WebInterface;

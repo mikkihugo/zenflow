@@ -8,12 +8,12 @@
  * @file Coordination service implementation.
  */
 
-import type { IService } from '../core/interfaces.ts';
+import type { IService } from '../core/interfaces';
 import type {
   CoordinationServiceConfig,
   ServiceOperationOptions,
-} from '../types.ts';
-import { BaseService } from './base-service.ts';
+} from '../types';
+import { BaseService } from './base-service';
 
 /**
  * Coordination service implementation.

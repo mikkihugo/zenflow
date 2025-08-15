@@ -8,16 +8,16 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
+} from '../../core/interfaces/base-interfaces';
 import type {
   CollectiveConfig,
   CubeInfo,
   DesignateMatron,
-} from '../collective-types.ts';
+} from '../collective-types';
 
 const logger = getLogger('OPS-CUBE-Matron');
 

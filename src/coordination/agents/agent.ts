@@ -23,7 +23,7 @@ import type {
   Message,
   MessageType,
   Task,
-} from '../types.ts';
+} from '../types';
 
 export class BaseAgent implements Agent {
   id: string;

@@ -60,17 +60,17 @@
 import type {
   IConfig,
   ILogger,
-} from '../../../core/interfaces/base-interfaces.ts';
-import { BaseEventManager } from '../core/base-event-manager.ts';
+} from '../../../core/interfaces/base-interfaces';
+import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   IEventManager,
   IEventManagerFactory,
-} from '../core/interfaces.ts';
-import type { IInterfaceEventManager } from '../event-manager-types.ts';
-import type { InterfaceEvent } from '../types.ts';
+} from '../core/interfaces';
+import type { IInterfaceEventManager } from '../event-manager-types';
+import type { InterfaceEvent } from '../types';
 
 /**
  * Interface Event Manager implementation for UI and interaction events.

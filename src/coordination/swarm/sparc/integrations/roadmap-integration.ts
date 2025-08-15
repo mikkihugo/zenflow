@@ -2,12 +2,12 @@
  * @file Coordination system: roadmap-integration.
  */
 
-import { getLogger } from '../../../../config/logging-config.ts';
+import { getLogger } from '../../../../config/logging-config';
 import {
   Priority,
   type ProjectDomain,
   type SPARCProject,
-} from '../types/sparc-types.ts';
+} from '../types/sparc-types';
 
 const logger = getLogger(
   'coordination-swarm-sparc-integrations-roadmap-integration'

@@ -52,7 +52,7 @@
  * @since 1.0.0
  */
 
-import type { IConfig, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
 import {
   COMPLETE_NEURAL_PRESETS,
   CognitivePatternSelector,

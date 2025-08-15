@@ -37,7 +37,7 @@
 
 import { EventEmitter } from 'node:events';
 import { basename } from 'node:path';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 // Break circular dependency - use interface instead of direct import
 interface DocumentProcessorLike {
@@ -57,17 +57,17 @@ export interface Document {
 
 type DocumentType = Document['type'];
 
-import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system.ts';
+import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import type {
   MonorepoInfo,
   ProjectContextAnalyzer,
-} from '../../knowledge/project-context-analyzer.ts';
+} from '../../knowledge/project-context-analyzer';
 import type {
   DomainAnalysis,
   DomainAnalysisEngine,
-} from '../../tools/domain-splitting/analyzers/domain-analyzer.ts';
-import { NeuralDomainMapper } from './neural-domain-mapper.ts';
-import type { DependencyGraph, Domain } from './types.ts';
+} from '../../tools/domain-splitting/analyzers/domain-analyzer';
+import { NeuralDomainMapper } from './neural-domain-mapper';
+import type { DependencyGraph, Domain } from './types';
 
 const logger = getLogger('DomainDiscoveryBridge');
 

@@ -65,17 +65,17 @@
 import type {
   IConfig,
   ILogger,
-} from '../../../core/interfaces/base-interfaces.ts';
-import { BaseEventManager } from '../core/base-event-manager.ts';
+} from '../../../core/interfaces/base-interfaces';
+import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   IEventManager,
   IEventManagerFactory,
-} from '../core/interfaces.ts';
-import type { IDatabaseEventManager } from '../event-manager-types.ts';
-import type { DatabaseEvent } from '../types.ts';
+} from '../core/interfaces';
+import type { IDatabaseEventManager } from '../event-manager-types';
+import type { DatabaseEvent } from '../types';
 
 /**
  * Database Event Manager implementation for database operations.

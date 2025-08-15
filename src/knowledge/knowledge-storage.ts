@@ -2,7 +2,7 @@
  * @file Knowledge-storage implementation.
  */
 
-import { Logger } from '../core/logger.ts';
+import { Logger } from '../core/logger';
 
 const logger = new Logger('src-knowledge-knowledge-storage');
 
@@ -26,7 +26,7 @@ const logger = new Logger('src-knowledge-knowledge-storage');
 
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import SQLiteBackend from './knowledge-cache-backends/sqlite-backend.ts';
+import SQLiteBackend from './knowledge-cache-backends/sqlite-backend';
 
 // Type definitions
 export interface FACTStorageConfig {

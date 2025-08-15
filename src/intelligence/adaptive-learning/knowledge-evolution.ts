@@ -9,9 +9,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { AgentBehavior } from './behavioral-optimization.ts';
-import type { ExecutionPattern } from './pattern-recognition-engine.ts';
-import type { PatternCluster } from './types.ts';
+import type { AgentBehavior } from './behavioral-optimization';
+import type { ExecutionPattern } from './pattern-recognition-engine';
+import type { PatternCluster } from './types';
 
 export interface KnowledgeBase {
   id: string;

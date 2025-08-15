@@ -14,26 +14,26 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { CollaborativeReasoningConfig } from './collaborative-reasoning-engine.ts';
-import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine.ts';
-import type { CollectiveIntelligenceConfig } from './collective-intelligence-coordinator.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { CollaborativeReasoningConfig } from './collaborative-reasoning-engine';
+import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
+import type { CollectiveIntelligenceConfig } from './collective-intelligence-coordinator';
 // Import all cross-agent knowledge systems
-import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator.ts';
+import { CollectiveIntelligenceCoordinator } from './collective-intelligence-coordinator';
 import type {
   DistributedLearningConfig,
   ErrorHandlingConfig,
-} from './distributed-learning-system.ts';
-import { DistributedLearningSystem } from './distributed-learning-system.ts';
-import type { IntelligenceCoordinationConfig } from './intelligence-coordination-system.ts';
-import { IntelligenceCoordinationSystem } from './intelligence-coordination-system.ts';
-import type { KnowledgeQualityConfig } from './knowledge-quality-management.ts';
-import { KnowledgeQualityManagementSystem } from './knowledge-quality-management.ts';
+} from './distributed-learning-system';
+import { DistributedLearningSystem } from './distributed-learning-system';
+import type { IntelligenceCoordinationConfig } from './intelligence-coordination-system';
+import { IntelligenceCoordinationSystem } from './intelligence-coordination-system';
+import type { KnowledgeQualityConfig } from './knowledge-quality-management';
+import { KnowledgeQualityManagementSystem } from './knowledge-quality-management';
 import type {
   MonitoringConfig,
   PerformanceOptimizationConfig,
-} from './performance-optimization-system.ts';
-import { PerformanceOptimizationSystem } from './performance-optimization-system.ts';
+} from './performance-optimization-system';
+import { PerformanceOptimizationSystem } from './performance-optimization-system';
 
 /**
  * Main Integration Configuration.

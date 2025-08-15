@@ -9,12 +9,12 @@
  * @file Interface implementation: validation.
  */
 
-import { getLogger, type Logger } from '../../config/logging-config.ts';
-import { USLCompatibilityLayer } from './compatibility.ts';
-import type { IService, ServiceLifecycleStatus } from './core/interfaces.ts';
-import type { ServiceManager } from './manager.ts';
-import type { EnhancedServiceRegistry } from './registry.ts';
-import { ServiceType } from './types.ts';
+import { getLogger, type Logger } from '../../config/logging-config';
+import { USLCompatibilityLayer } from './compatibility';
+import type { IService, ServiceLifecycleStatus } from './core/interfaces';
+import type { ServiceManager } from './manager';
+import type { EnhancedServiceRegistry } from './registry';
+import { ServiceType } from './types';
 
 interface ServicePerformanceData {
   performance: {

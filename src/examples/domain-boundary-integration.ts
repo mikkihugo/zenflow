@@ -7,14 +7,14 @@
  * These examples demonstrate real-world usage patterns for Phase 0 foundation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 import type {
   Agent,
   ExecutionPlan,
   PhaseAssignment,
   Task,
-} from '../coordination/types.ts';
+} from '../coordination/types';
 import {
   CommonSchemas,
   type ContractRule,
@@ -25,12 +25,12 @@ import {
   getDomainValidator,
   type TypeSchema,
   validateCrossDomain,
-} from '../core/domain-boundary-validator.ts';
+} from '../core/domain-boundary-validator';
 import type {
   WorkflowDefinition,
   WorkflowEvent,
   WorkflowExecution,
-} from '../workflows/types.ts';
+} from '../workflows/types';
 
 const logger = getLogger('domain-boundary-examples');
 

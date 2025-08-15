@@ -10,8 +10,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { gunzipSync, gzipSync } from 'node:zlib';
-import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus.ts';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
 
 // Core communication types
 export interface Message {

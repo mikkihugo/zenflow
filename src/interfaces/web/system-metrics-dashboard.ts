@@ -2,7 +2,7 @@
  * @file Interface implementation: system-metrics-dashboard.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-web-system-metrics-dashboard');
 
@@ -16,16 +16,16 @@ import {
   createRepository,
   DatabaseTypes,
   EntityTypes,
-} from '../../database/index.ts';
-import type { IRepository } from '../../database/interfaces.ts';
+} from '../../database/index';
+import type { IRepository } from '../../database/interfaces';
 // Import UACL for unified client management
-import { UACLHelpers, uacl } from '../clients/index.ts';
+import { UACLHelpers, uacl } from '../clients/index';
 
 // MCP performance metrics - using generic type since module doesn't exist
 // import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 type MCPPerformanceMetrics = any;
 
-import type EnhancedMemory from '../../memory/memory.ts';
+import type EnhancedMemory from '../../memory/memory';
 
 interface DashboardConfig {
   refreshInterval?: number;

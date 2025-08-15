@@ -28,7 +28,7 @@ import { readdir, readFile, stat } from 'fs/promises';
 import { extname, join, relative } from 'path';
 import { getLogger } from '../config/logging-config.js';
 import type { WorkflowGateRequest } from './workflow-base-types.js';
-import { DocumentManager } from '../database/managers/document-manager.js';
+import { DocumentManager } from "../services/document/document-service"
 
 const logger = getLogger('IntelligentDocImport');
 

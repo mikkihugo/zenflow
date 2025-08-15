@@ -665,4 +665,4 @@ export interface ClientResponse<T = any> {
 }
 
 // Re-export types from types.ts for convenience
-export type { ClientStatus, ProtocolType } from '../types.ts';
+export type { ClientStatus, ProtocolType } from '../types';

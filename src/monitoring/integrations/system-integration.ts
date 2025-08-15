@@ -10,16 +10,16 @@ import { EventEmitter } from 'node:events';
 import {
   PerformanceAnalyzer,
   type PerformanceInsights,
-} from '../analytics/performance-analyzer.ts';
+} from '../analytics/performance-analyzer';
 import {
   type CompositeMetrics,
   MetricsCollector,
-} from '../core/metrics-collector.ts';
-import { DashboardServer } from '../dashboard/dashboard-server.ts';
+} from '../core/metrics-collector';
+import { DashboardServer } from '../dashboard/dashboard-server';
 import {
   OptimizationEngine,
   type OptimizationResult,
-} from '../optimization/optimization-engine.ts';
+} from '../optimization/optimization-engine';
 
 export interface IntegrationConfig {
   metricsInterval: number;

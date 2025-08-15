@@ -1,87 +1,26 @@
 #!/usr/bin/env node
 /**
- * @file Unified Claude Code Zen entry point - handles all modes.
+ * @file Claude Code Zen - Unified Web Dashboard Entry Point
+ * 
+ * Simple, clean entry point for the web-only interface.
+ * All TUI and MCP complexity removed for maximum simplicity.
  */
 
-import { parseArgs } from 'node:util';
 import { configure } from '@logtape/logtape';
-import { getLogger } from './config/logging-config.js';
-import {
-  createClaudeZenDIContainer,
-  initializeDIServices,
-  shutdownDIContainer,
-} from './core/di-container.js';
-import { ProcessLifecycleManager } from './core/process-lifecycle.js';
-import type { DIContainer } from './di/index.js';
+import { getLogger } from './config/logging-config';
+import { ProcessLifecycleManager } from './core/process-lifecycle';
+import type { DIContainer } from './di/index';
+import { createClaudeZenDIContainer, initializeDIServices, shutdownDIContainer } from './core/di-container';
+import { WebDashboardServer } from './interfaces/web/web-dashboard-server';
 
 // Logger will be initialized after LogTape configuration
 let logger: any;
 
-// Parse command line arguments
-const { values: args } = parseArgs({
-  options: {
-    mode: {
-      type: 'string',
-      default: 'web',
-    },
-    port: {
-      type: 'string',
-      default: '3000',
-    },
-    help: {
-      type: 'boolean',
-      short: 'h',
-    },
-    queen: {
-      type: 'boolean',
-    },
-    commander: {
-      type: 'boolean',
-    },
-    agents: {
-      type: 'string',
-      default: '5',
-    },
-    topology: {
-      type: 'string',
-      default: 'mesh',
-    },
-  },
-  allowPositionals: true,
-});
-
-if (args.help) {
-  console.log(`
-Claude Code Zen - Unified AI Orchestration Platform
-
-Usage: claude-zen [mode] [options]
-
-Modes:
-  web         Web interface only on port 3000 (no TUI)
-  tui         Terminal interface only (no web)
-  swarm       Stdio MCP swarm server only (no port, no web)
-  (default)   Full system: Web + AI + TUI + HTTP MCP + Safety
-  
-Options:
-  --port      Port for web server (default: 3000)
-  --queen     Enable Queen Commander mode (spawn Claude CLI agents)
-  --commander Alias for --queen
-  --agents    Number of agents to spawn (default: 5)
-  --topology  Swarm topology: mesh, hierarchical, ring, star (default: mesh)
-  --help      Show this help
-
-Examples:
-  claude-zen web                          # Web interface only
-  claude-zen tui                          # Terminal interface only
-  claude-zen                              # Full system: Web + AI + TUI + MCP + Safety
-  claude-zen swarm                        # Stdio swarm server only
-  claude-zen swarm --queen --agents 5     # Queen Commander with 5 Claude CLI agents
-`);
-  process.exit(0);
-}
-
-// Determine mode from positional args (more reliable than mode option)
-const mode = process.argv[2] || args.mode || 'web';
+// Simple web-only configuration - no command line complexity
+const config = {
+  port: 3000,
+  host: 'localhost'
+};
 
 async function checkIfRunning(): Promise<boolean> {
   try {
@@ -103,24 +42,21 @@ async function main() {
 
   logger = getLogger('Main');
 
-  // Check if another instance is already running (except for swarm mode)
-  if (mode !== 'swarm') {
-    const isRunning = await checkIfRunning();
+  // Check if another instance is already running
+  const isRunning = await checkIfRunning();
 
-    if (isRunning) {
-      logger.info(
-        '📡 Claude-zen is already running - attaching TUI interface...'
-      );
-      // Always launch TUI that connects to existing web server
-      const { main } = await import('./interfaces/terminal/main.ts');
-      await main();
-      return;
-    }
+  if (isRunning) {
+    logger.info(
+      '📡 Claude-zen is already running - redirecting to existing web dashboard...'
+    );
+    logger.info('🌐 Access your dashboard at: http://localhost:3000');
+    process.exit(0);
   }
 
-  logger.info(`🚀 Starting Claude Code Zen in ${mode} mode`);
+  logger.info('🚀 Starting Claude Code Zen Web Dashboard');
 
   // Initialize DI container for all modes
+  logger.info('📦 Creating DI container...');
   const container = createClaudeZenDIContainer();
   await initializeDIServices(container);
 
@@ -137,97 +73,25 @@ async function main() {
   });
 
   try {
-    switch (mode) {
-      case 'web': {
-        // Web mode: Web interface only (no TUI)
-        logger.info('🚀 Starting web interface...');
-        logger.info(
-          '🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring'
-        );
+    // Simple web-only startup - no mode complexity
+    logger.info('🚀 Starting Claude Code Zen Web Dashboard...');
+    logger.info('🌐 Unified web interface with AI orchestration and swarm management');
 
-        // Start web server with full DI container
-        const { WebInterface } = await import(
-          './interfaces/web/web-interface.js'
-        );
-        const webApp = new WebInterface({
-          port: Number.parseInt(args.port || '3000'),
-          container,
-        });
+    // Start web server with basic dashboard
+    // WebDashboardServer imported statically at top
+    const webApp = new WebDashboardServer({
+      port: config.port,
+      host: config.host,
+    });
 
-        await webApp.run();
-        logger.info(
-          `✅ Web interface running at http://localhost:${args.port || '3000'}`
-        );
-
-        // Keep process alive
-        await new Promise(() => {});
-        break;
-      }
-
-      case 'tui': {
-        // TUI mode: Terminal interface only (no web)
-        logger.info('🖥️ Starting TUI interface...');
-        const { main } = await import('./interfaces/terminal/main.js');
-        await main();
-        break;
-      }
-
-      case 'swarm': {
-        // Swarm mode: Queen Commander with spawned agent processes
-        logger.info('🐝 Starting Queen Commander swarm mode...');
-
-        // Check for queen mode flag
-        const isQueenMode = args.queen || args.commander;
-
-        if (isQueenMode) {
-          // Queen Commander mode - spawn and coordinate multiple Claude CLI agents
-          const { launchQueenCommander } = await import(
-            './coordination/queen-launcher.js'
-          );
-          await launchQueenCommander(container, logger);
-        } else {
-          // Standard stdio MCP server mode
-          logger.info('🐝 Starting stdio MCP swarm server...');
-          const { stdioMCPServer } = await import(
-            './interfaces/mcp-stdio/swarm-server.js'
-          );
-          await stdioMCPServer.start();
-          logger.info('✅ stdio MCP swarm server running');
-        }
-
-        // Keep process alive for stdio communication
-        process.stdin.resume();
-        break;
-      }
-
-      default: {
-        // Default mode: Full system (Web + AI + TUI + MCP + Safety)
-        logger.info('🚀 Starting full claude-zen system...');
-        logger.info(
-          '🌐 Web interface + AI orchestration + HTTP MCP + Safety monitoring'
-        );
-
-        // Start web server with full DI container
-        const { WebInterface } = await import(
-          './interfaces/web/web-interface.js'
-        );
-        const webApp = new WebInterface({
-          port: Number.parseInt(args.port || '3000'),
-          container,
-        });
-
-        await webApp.run();
-        logger.info(
-          `✅ Full system running - Web interface: http://localhost:${args.port || '3000'}`
-        );
-
-        // Also start TUI interface
-        logger.info('🖥️ Launching TUI interface...');
-        const { main } = await import('./interfaces/terminal/main.js');
-        await main();
-        break;
-      }
-    }
+    await webApp.start();
+    
+    logger.info(`✅ Web Dashboard running at http://localhost:${config.port}`);
+    logger.info(`🌐 Access your dashboard: http://localhost:${config.port}`);
+    logger.info(`📊 Features: System Status • Swarm Management • Performance Monitor • Live Logs • Settings`);
+    
+    // Keep process alive
+    await new Promise(() => {});
   } catch (error) {
     logger.error('💥 Application error:', error);
     process.exit(1);

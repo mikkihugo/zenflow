@@ -21,8 +21,8 @@
  * - Circuit breaker pattern for fault tolerance
  * @example
  * ```typescript.
- * import { HTTPClientAdapter } from './http-client-adapter.ts';
- * import type { HTTPClientConfig } from './http-types.ts';
+ * import { HTTPClientAdapter } from './http-client-adapter';
+ * import type { HTTPClientConfig } from './http-types';
  *
  * // Basic HTTP client
  * const basicClient = new HTTPClientAdapter({
@@ -96,18 +96,18 @@ import type {
   ClientStatus,
   IClient,
   RequestOptions,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   AuthenticationError,
   ConnectionError,
   RetryExhaustedError,
   TimeoutError,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import type {
   HTTPClientCapabilities,
   HTTPClientConfig,
   OAuthCredentials,
-} from './http-types.ts';
+} from './http-types';
 
 /**
  * HTTP Client Adapter implementing UACL IClient interface.

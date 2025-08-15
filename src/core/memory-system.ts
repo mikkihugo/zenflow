@@ -21,7 +21,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('MemorySystem');
 
@@ -280,9 +280,94 @@ class JSONBackend implements BackendInterface {
 }
 
 /**
- * SQLite backend implementation.
- *
- * @example
+ * **SQLite Memory Backend** - High-performance embedded database backend for memory operations.
+ * 
+ * This backend provides enterprise-grade memory storage using SQLite's embedded database engine
+ * for applications requiring persistent, fast, and reliable memory operations. It uses direct
+ * SQLite access for maximum performance in memory-critical system components.
+ * 
+ * **Performance Architecture**: Utilizes direct SQLite database access (bypassing DAO layer)
+ * for optimal performance in memory-intensive operations. This is a legitimate architectural
+ * choice for core memory system components that require maximum speed.
+ * 
+ * **Key Features:**
+ * - **WAL Mode**: Write-Ahead Logging for concurrent read access during write operations
+ * - **Auto Vacuum**: Incremental vacuum mode for automatic database space management  
+ * - **Namespace Support**: Logical separation of memory data by namespace
+ * - **Type Safety**: Automatic serialization/deserialization of JSON-compatible types
+ * - **Pattern Matching**: Efficient search capabilities with wildcard pattern support
+ * - **Memory Optimization**: Configurable size limits and automatic space management
+ * 
+ * **Database Configuration**:
+ * - Journal Mode: WAL (Write-Ahead Logging) for better concurrency
+ * - Auto Vacuum: INCREMENTAL for space management without blocking
+ * - File Location: `{config.path}/memory.db`
+ * - Schema: Single table with namespace:key indexing for fast lookups
+ * 
+ * **Thread Safety**: SQLite provides built-in thread safety with WAL mode enabling
+ * concurrent readers during write operations, making this backend suitable for
+ * high-concurrency memory access patterns.
+ * 
+ * @example Basic Memory Operations
+ * ```typescript
+ * const backend = new SQLiteBackend({ 
+ *   backend: 'sqlite',
+ *   path: './data/memory',
+ *   maxSize: 100 * 1024 * 1024 // 100MB limit
+ * });
+ * 
+ * await backend.initialize();
+ * 
+ * // Store structured data with namespace
+ * await backend.store('user:123', { 
+ *   name: 'John Doe', 
+ *   email: 'john@example.com',
+ *   preferences: { theme: 'dark', notifications: true }
+ * }, 'user-profiles');
+ * 
+ * // Retrieve with type safety
+ * const userData = await backend.retrieve('user:123', 'user-profiles');
+ * console.log(`Welcome ${userData.name}!`);
+ * ```
+ * 
+ * @example Advanced Search and Pattern Matching
+ * ```typescript
+ * // Search with patterns
+ * const allUsers = await backend.search('user:*', 'user-profiles');
+ * const activeUsers = await backend.search('*active*', 'user-sessions');
+ * 
+ * // Get statistics
+ * const stats = await backend.getStats();
+ * console.log(`Memory usage: ${stats.size} bytes, ${stats.entries} entries`);
+ * 
+ * // Namespace management
+ * const namespaces = await backend.listNamespaces();
+ * console.log(`Active namespaces: ${namespaces.join(', ')}`);
+ * ```
+ * 
+ * @example Performance Monitoring
+ * ```typescript
+ * // Monitor storage size and enforce limits
+ * const stats = await backend.getStats();
+ * if (stats.size > maxSize * 0.9) {
+ *   console.warn('Memory storage approaching size limit');
+ *   // Implement cleanup logic
+ * }
+ * 
+ * // Access metadata for optimization
+ * console.log(`Entries: ${stats.entries}, Namespaces: ${stats.namespaces}`);
+ * console.log(`Last modified: ${new Date(stats.lastModified).toISOString()}`);
+ * ```
+ * 
+ * @class SQLiteBackend
+ * @implements {BackendInterface}
+ * 
+ * @since 1.0.0
+ * @version 2.0.0
+ * 
+ * @see {@link BackendInterface} Memory backend interface
+ * @see {@link MemoryConfig} Configuration options
+ * @see {@link JSONValue} Supported data types
  */
 class SQLiteBackend implements BackendInterface {
   private db?: unknown;

@@ -8,15 +8,15 @@
  * @file Coordination system: sparc-swarm-integration-example.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import { DatabaseDrivenSystem } from '../../core/database-driven-system.ts';
-import { WorkflowEngine } from '../../workflows/workflow-engine.ts';
-import type { FeatureDocumentEntity } from '../../database/entities/product-entities.ts';
-import { DocumentManager } from '../../database/managers/document-manager.ts';
-import type { DocumentType } from '../../workflows/types.ts';
-import { DatabaseSPARCBridge } from '../database-sparc-bridge.ts';
-import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator.ts';
-import { TaskCoordinator } from '../task-coordinator.ts';
+import { getLogger } from '../../config/logging-config';
+import { DatabaseDrivenSystem } from '../../core/database-driven-system';
+import { WorkflowEngine } from '../../workflows/workflow-engine';
+import type { FeatureDocumentEntity } from '../../database/entities/product-entities';
+import { DocumentManager } from "../services/document/document-service"
+import type { DocumentType } from '../../workflows/types';
+import { DatabaseSPARCBridge } from '../database-sparc-bridge';
+import { SPARCSwarmCoordinator } from '../swarm/core/sparc-swarm-coordinator';
+import { TaskCoordinator } from '../task-coordinator';
 
 const logger = getLogger('SPARCSwarmIntegrationExample');
 

@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { ComponentHealth } from '../types/shared-types.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { ComponentHealth } from '../types/shared-types';
 
 // Performance metrics interface (replacing missing module)
 export interface PerformanceMetrics {

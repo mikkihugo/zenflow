@@ -9,9 +9,9 @@
  * @since 2025-08-14
  */
 
-import { SwarmDatabaseManager } from './swarm-database-manager.ts';
-import type { DALFactory } from '../../../database/factory.ts';
-import type { ILogger } from '../../../di/tokens/core-tokens.ts';
+import { SwarmDatabaseManager } from './swarm-database-manager';
+import type { DALFactory } from '../../../database/factory';
+import type { ILogger } from '../../../di/tokens/core-tokens';
 
 // Mock implementations for testing
 class MockLogger implements ILogger {

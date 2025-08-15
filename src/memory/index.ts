@@ -9,27 +9,27 @@
  */
 
 // Export all memory types (Single Source of Truth)
-export * from './types.ts';
+export * from './types';
 
 // Import specific types for internal use
-import type { MemoryStats } from './types.ts';
+import type { MemoryStats } from './types';
 
 /**
  * @deprecated Legacy export structure - use domain types instead
  * @file Memory module legacy exports.
  */
 
-export * from './backends/base-backend.ts';
-export * from './backends/factory.ts';
+export * from './backends/base-backend';
+export * from './backends/factory';
 export {
   MemoryBackendFactory as BackendFactory,
   memoryBackendFactory,
-} from './backends/factory.ts';
+} from './backends/factory';
 
 // Import types directly for use in factory method
-import type { MemoryCoordinationConfig } from './core/memory-coordinator.ts';
-import type { MonitoringConfig } from './monitoring/memory-monitor.ts';
-import type { OptimizationConfig } from './optimization/performance-optimizer.ts';
+import type { MemoryCoordinationConfig } from './core/memory-coordinator';
+import type { MonitoringConfig } from './monitoring/memory-monitor';
+import type { OptimizationConfig } from './optimization/performance-optimizer';
 
 // Advanced coordination and optimization
 export {
@@ -37,7 +37,7 @@ export {
   type MemoryCoordinationConfig,
   MemoryCoordinator,
   type MemoryNode,
-} from './core/memory-coordinator.ts';
+} from './core/memory-coordinator';
 // Error handling and recovery
 export {
   MemoryBackendError,
@@ -48,13 +48,13 @@ export {
   MemoryErrorCode,
   type MemoryErrorContext,
   MemoryPerformanceError,
-} from './error-handling/memory-errors.ts';
+} from './error-handling/memory-errors';
 export {
   type RecoveryContext,
   type RecoveryResult,
   type RecoveryStrategy,
   RecoveryStrategyManager,
-} from './error-handling/recovery-strategies.ts';
+} from './error-handling/recovery-strategies';
 
 // MCP Tools
 export {
@@ -64,21 +64,21 @@ export {
   memoryMonitorTool,
   memoryOptimizeTool,
   memoryTools,
-} from './mcp/memory-tools.ts';
-export { MemoryManager, SessionMemoryStore } from './memory.ts';
+} from './mcp/memory-tools';
+export { MemoryManager, SessionMemoryStore } from './memory';
 // Monitoring and analytics
 export {
   type MemoryAlert,
   type MemoryMetrics,
   MemoryMonitor,
   type MonitoringConfig,
-} from './monitoring/memory-monitor.ts';
+} from './monitoring/memory-monitor';
 export {
   type OptimizationAction,
   type OptimizationConfig,
   type PerformanceMetrics,
   PerformanceOptimizer,
-} from './optimization/performance-optimizer.ts';
+} from './optimization/performance-optimizer';
 
 // Memory system factory for easy initialization
 export class MemorySystemFactory {

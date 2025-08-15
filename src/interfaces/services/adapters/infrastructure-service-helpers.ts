@@ -9,18 +9,18 @@
  * @file Interface implementation: infrastructure-service-helpers.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
-import type { ServiceOperationOptions } from '../core/interfaces.ts';
+import { getLogger } from '../../../config/logging-config';
+import type { ServiceOperationOptions } from '../core/interfaces';
 import type {
   InfrastructureServiceAdapter,
   InfrastructureServiceAdapterConfig,
-} from './infrastructure-service-adapter.ts';
+} from './infrastructure-service-adapter';
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,
-} from './infrastructure-service-adapter.ts';
-import type { CreateServiceOptions } from './infrastructure-service-factory.ts';
-import { getInfrastructureServiceFactory } from './infrastructure-service-factory.ts';
+} from './infrastructure-service-adapter';
+import type { CreateServiceOptions } from './infrastructure-service-factory';
+import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
 
 const logger = getLogger('InfrastructureServiceHelpers');
 

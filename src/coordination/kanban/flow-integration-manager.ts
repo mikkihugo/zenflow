@@ -12,11 +12,11 @@ import type {
   WorkflowState,
   WorkflowStep,
 } from '../types.js';
-import { BottleneckDetectionEngine } from './bottleneck-detector.ts';
+import { BottleneckDetectionEngine } from './bottleneck-detector';
 // Import all Kanban flow components
-import { AdvancedFlowManager } from './flow-manager.ts';
-import { AdvancedMetricsTracker } from './metrics-tracker.ts';
-import { DynamicResourceManager } from './resource-manager.ts';
+import { AdvancedFlowManager } from './flow-manager';
+import { AdvancedMetricsTracker } from './metrics-tracker';
+import { DynamicResourceManager } from './resource-manager';
 
 // Integration interfaces
 export interface FlowIntegrationConfig {

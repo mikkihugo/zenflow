@@ -8,32 +8,32 @@
  * @file Di module exports.
  */
 
-import { DIContainer } from './container/di-container.ts';
-import { DIScope } from './container/di-scope.ts';
-import { FactoryProvider } from './providers/factory-provider.ts';
-import { ScopedProvider } from './providers/scoped-provider.ts';
-import { SingletonProvider } from './providers/singleton-provider.ts';
-import { TransientProvider } from './providers/transient-provider.ts';
+import { DIContainer } from './container/di-container';
+import { DIScope } from './container/di-scope';
+import { FactoryProvider } from './providers/factory-provider';
+import { ScopedProvider } from './providers/scoped-provider';
+import { SingletonProvider } from './providers/singleton-provider';
+import { TransientProvider } from './providers/transient-provider';
 
 // Re-export for external use
-export { DIContainer } from './container/di-container.ts';
-export { DIScope } from './container/di-scope.ts';
+export { DIContainer } from './container/di-container';
+export { DIScope } from './container/di-scope';
 export {
   getInjectionToken,
   hasInjectionToken,
   inject,
-} from './decorators/inject.ts';
+} from './decorators/inject';
 // Decorators
 export {
   getInjectionMetadata,
   injectable,
   isInjectable,
-} from './decorators/injectable.ts';
-export { FactoryProvider } from './providers/factory-provider.ts';
-export { ScopedProvider } from './providers/scoped-provider.ts';
+} from './decorators/injectable';
+export { FactoryProvider } from './providers/factory-provider';
+export { ScopedProvider } from './providers/scoped-provider';
 // Provider implementations
-export { SingletonProvider } from './providers/singleton-provider.ts';
-export { TransientProvider } from './providers/transient-provider.ts';
+export { SingletonProvider } from './providers/singleton-provider';
+export { TransientProvider } from './providers/transient-provider';
 // Re-export interfaces for convenience
 export type {
   IConfig,
@@ -41,25 +41,25 @@ export type {
   IEventBus,
   IHttpClient,
   ILogger,
-} from './tokens/core-tokens.ts';
+} from './tokens/core-tokens';
 // Core system tokens
-export { CORE_TOKENS } from './tokens/core-tokens.ts';
+export { CORE_TOKENS } from './tokens/core-tokens';
 export type {
   IDataLoader,
   IMetricsCollector,
   IModelStorage,
   INeuralNetworkTrainer,
   IOptimizationEngine,
-} from './tokens/neural-tokens.ts';
-export { NEURAL_TOKENS } from './tokens/neural-tokens.ts';
+} from './tokens/neural-tokens';
+export { NEURAL_TOKENS } from './tokens/neural-tokens';
 export type {
   IAgentRegistry,
   ILoadBalancer,
   IMessageBroker,
   ISwarmCoordinator,
   ITopologyManager,
-} from './tokens/swarm-tokens.ts';
-export { SWARM_TOKENS } from './tokens/swarm-tokens.ts';
+} from './tokens/swarm-tokens';
+export { SWARM_TOKENS } from './tokens/swarm-tokens';
 // Token utilities
 export {
   createToken,
@@ -67,9 +67,9 @@ export {
   getTokenName,
   isDIToken,
   tokensEqual,
-} from './tokens/token-factory.ts';
+} from './tokens/token-factory';
 // Core types and interfaces
-export * from './types/di-types.ts';
+export * from './types/di-types';
 
 /**
  * Global DI container instance (singleton pattern for convenience).

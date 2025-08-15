@@ -8,13 +8,13 @@
  * @file error-monitoring implementation
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   type BaseClaudeZenError,
   type ErrorContext,
   type ErrorMetrics,
   getErrorSeverity,
-} from './errors.ts';
+} from './errors';
 
 const logger = getLogger('ErrorMonitoring');
 

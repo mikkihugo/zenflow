@@ -15,8 +15,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { WASMPerformanceMetrics } from '../neural/types/wasm-types.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { WASMPerformanceMetrics } from '../neural/types/wasm-types';
 
 // Use WASM performance metrics as base performance type
 export type PerformanceMetrics = WASMPerformanceMetrics;

@@ -18,17 +18,17 @@ import Database from 'better-sqlite3';
 import { EventEmitter } from 'events';
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import { Domain } from '../../core/domain-boundary-validator.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import { Domain } from '../../core/domain-boundary-validator';
 import {
   type BaseEvent,
   createCorrelationId,
   createEvent,
   EventPriority,
   type TypeSafeEventBus,
-} from '../../core/type-safe-event-system.ts';
-import type { WorkflowContext as BaseWorkflowContext } from '../../workflows/types.ts';
+} from '../../core/type-safe-event-system';
+import type { WorkflowContext as BaseWorkflowContext } from '../../workflows/types';
 import {
   createApprovalGate,
   createCheckpointGate,
@@ -37,7 +37,7 @@ import {
   WorkflowContext,
   type WorkflowGateRequest,
   WorkflowGateResult,
-} from '../workflows/workflow-gate-request.ts';
+} from '../workflows/workflow-gate-request';
 
 const logger = getLogger('workflow-gates');
 
@@ -1299,7 +1299,80 @@ export interface GatePersistenceMetrics {
 // ============================================================================
 
 /**
- * Workflow Gates Manager - Main orchestration class for gate lifecycle
+ * **Workflow Gates Manager** - High-performance orchestration system for human-in-the-loop workflow gates.
+ * 
+ * This class provides enterprise-grade workflow gate management with direct SQLite persistence
+ * for optimal performance in critical decision-making workflows. It orchestrates the complete
+ * lifecycle of workflow gates including creation, persistence, evaluation, and resolution tracking.
+ * 
+ * **Performance Architecture**: Uses direct SQLite access (bypassing DAO layer) for
+ * performance-critical workflow state management and gate persistence operations.
+ * 
+ * **Key Capabilities:**
+ * - **Gate Lifecycle Management**: Complete CRUD operations for workflow gates
+ * - **Event-Driven Triggers**: Automatic gate creation based on workflow events
+ * - **Priority Queue Processing**: Intelligent gate prioritization and processing
+ * - **Persistence & Recovery**: SQLite-backed gate state with automatic recovery
+ * - **Real-time Monitoring**: Comprehensive metrics and gate analytics
+ * - **Escalation Management**: Automatic escalation based on timeout and criticality
+ * 
+ * **Database Architecture**: 
+ * - Direct SQLite usage for maximum performance (legitimate bypass of DAO layer)
+ * - WAL mode for concurrent read access during gate evaluation
+ * - Optimized schemas for fast gate lookup and status queries
+ * - Transaction support for atomic gate state changes
+ * 
+ * **Thread Safety**: This class is thread-safe for concurrent gate operations
+ * using SQLite's built-in concurrency mechanisms and proper transaction handling.
+ * 
+ * @example Basic Gate Management
+ * ```typescript
+ * const gateManager = new WorkflowGatesManager(eventBus, {
+ *   persistence: { dbPath: './workflow-gates.db' },
+ *   processing: { batchSize: 10, intervalMs: 1000 }
+ * });
+ * 
+ * await gateManager.initialize();
+ * 
+ * // Gates are automatically created based on events
+ * eventBus.emit('task-completed', { taskId: 'task123', requiresReview: true });
+ * 
+ * // Monitor pending gates
+ * const pendingGates = await gateManager.getPendingGates();
+ * console.log(`${pendingGates.length} gates require attention`);
+ * ```
+ * 
+ * @example Advanced Gate Resolution
+ * ```typescript
+ * // Resolve gates with detailed tracking
+ * const resolvedGate = await gateManager.resolveGate('gate-123', {
+ *   decision: 'approved',
+ *   resolver: 'john.doe',
+ *   comments: 'Architecture review completed - approved with minor suggestions',
+ *   attachments: ['review-notes.md']
+ * });
+ * 
+ * // Access gate metrics
+ * const metrics = await gateManager.getMetrics();
+ * console.log(`Average resolution time: ${metrics.averageResolutionTime}ms`);
+ * ```
+ * 
+ * @example Event-Driven Gate Creation
+ * ```typescript
+ * // Configure automatic gate triggers
+ * gateManager.configureTrigger('code-quality-check', {
+ *   gateType: 'quality',
+ *   condition: (event) => event.coverageScore < 0.8,
+ *   priority: 'high',
+ *   escalationTimeout: 3600000 // 1 hour
+ * });
+ * ```
+ * 
+ * @class WorkflowGatesManager
+ * @extends {EventEmitter}
+ * 
+ * @since 1.0.0
+ * @version 1.2.0
  */
 export class WorkflowGatesManager extends EventEmitter {
   private readonly logger: Logger;

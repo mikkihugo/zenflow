@@ -12,8 +12,8 @@ import { EventEmitter } from 'node:events';
 import type {
   DatabaseAdapter,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import { BaseDao } from '../base.dao.ts';
+} from '../../core/interfaces/base-interfaces';
+import { BaseDao } from '../base.dao';
 import type {
   CoordinationChange,
   CoordinationEvent,
@@ -21,7 +21,7 @@ import type {
   CoordinationStats,
   CustomQuery,
   ICoordinationRepository,
-} from '../interfaces.ts';
+} from '../interfaces';
 
 /**
  * Subscription information.

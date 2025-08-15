@@ -13,7 +13,7 @@
  */
 
 // Remove circular dependency - implement directly
-import { WasmMemoryOptimizer } from './wasm-memory-optimizer.ts';
+import { WasmMemoryOptimizer } from './wasm-memory-optimizer';
 
 export interface WasmGatewayMetrics {
   initialized: boolean;

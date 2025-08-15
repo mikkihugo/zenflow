@@ -13,7 +13,7 @@
  * @example Basic Factory Usage
  * ```typescript
  * import { DALFactory } from './database/factory';
- * import { DIContainer } from '../di/container/di-container.ts';
+ * import { DIContainer } from '../di/container/di-container';
  *
  * const container = new DIContainer();
  * const factory = container.resolve(DALFactory);
@@ -102,13 +102,13 @@ interface DatabaseProviderFactory {
   createAdapter(config: DatabaseConfig): Promise<DatabaseAdapter>;
 }
 
-import type { ICoordinationRepository, IMemoryRepository } from '../database/interfaces.ts';
+import type { ICoordinationRepository, IMemoryRepository } from '../database/interfaces';
 import type {
   IDataAccessObject,
   IGraphRepository,
   IRepository,
   IVectorRepository,
-} from './interfaces.ts';
+} from './interfaces';
 
 /**
  * Configuration interface for repository and DAO creation.
@@ -294,9 +294,9 @@ export interface EntityTypeRegistry {
  * @since 1.0.0
  * @example Basic Factory Setup
  * ```typescript
- * import { DALFactory } from './factory.ts';
- * import { DIContainer } from '../di/container/di-container.ts';
- * import { CORE_TOKENS } from '../di/tokens/core-tokens.ts';
+ * import { DALFactory } from './factory';
+ * import { DIContainer } from '../di/container/di-container';
+ * import { CORE_TOKENS } from '../di/tokens/core-tokens';
  *
  * const container = new DIContainer();
  * container.register(CORE_TOKENS.Logger, () => logger);

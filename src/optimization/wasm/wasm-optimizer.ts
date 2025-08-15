@@ -6,8 +6,8 @@
  * @file Wasm-optimizer implementation.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import type { WasmOptimizer } from '../interfaces/optimization-interfaces.ts';
+import { getLogger } from '../../config/logging-config';
+import type { WasmOptimizer } from '../interfaces/optimization-interfaces';
 
 export interface WasmOptimizationConfig {
   enableStreaming: boolean;

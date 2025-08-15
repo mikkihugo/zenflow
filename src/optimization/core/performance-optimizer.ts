@@ -14,7 +14,7 @@ import type {
   PerformanceMetrics,
   SwarmOptimizer,
   WasmOptimizer,
-} from '../interfaces/optimization-interfaces.ts';
+} from '../interfaces/optimization-interfaces';
 
 export interface PerformanceOptimizerConfig {
   enabled: boolean;

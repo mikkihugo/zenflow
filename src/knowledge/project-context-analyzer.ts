@@ -2,7 +2,7 @@
  * @file Project-context-analyzer implementation.
  */
 
-import { Logger } from '../core/logger.ts';
+import { Logger } from '../core/logger';
 
 const logger = new Logger('src-knowledge-project-context-analyzer');
 
@@ -28,7 +28,7 @@ import { EventEmitter } from 'node:events';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { KnowledgeSwarm } from './knowledge-swarm.ts';
+import { KnowledgeSwarm } from './knowledge-swarm';
 
 const execAsync = promisify(exec);
 

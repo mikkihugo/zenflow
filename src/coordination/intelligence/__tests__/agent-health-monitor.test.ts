@@ -34,11 +34,11 @@ import {
   type RecoveryAction,
   type HealthAlert,
   type SystemHealthSummary,
-} from '../agent-health-monitor.ts';
+} from '../agent-health-monitor';
 import {
   AgentLearningSystem,
   createAgentLearningSystem,
-} from '../agent-learning-system.ts';
+} from '../agent-learning-system';
 
 // Mock the logging system
 vi.mock('../../../config/logging-config.ts', () => ({

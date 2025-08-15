@@ -6,9 +6,9 @@
  */
 
 import { EventEmitter } from 'events';
-import { createAdaptiveOptimizer } from '../config/memory-optimization.ts';
-import { getSystemInfo } from '../config/system-info.ts';
-import { createLogger } from '../core/logger.ts';
+import { createAdaptiveOptimizer } from '../config/memory-optimization';
+import { getSystemInfo } from '../config/system-info';
+import { createLogger } from '../core/logger';
 
 const logger = createLogger('workflow-monitor');
 

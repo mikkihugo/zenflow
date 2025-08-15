@@ -11,7 +11,7 @@ const logger = getLogger('coordination-hooks-performance-tracker');
  * Tracks operation performance, collects metrics, and provides optimization suggestions.
  */
 
-import type { AgentType } from '../types.ts';
+import type { AgentType } from '../types';
 import type {
   AgentPerformanceSummary,
   Bottleneck,
@@ -33,7 +33,7 @@ import type {
   TimeFrame,
   TrendAnalysis,
   TrendData,
-} from './hook-system-core.ts';
+} from './hook-system-core';
 
 export class HookPerformanceTracker implements MetricsTracker {
   private readonly metricsStore: Map<string, OperationMetrics>;

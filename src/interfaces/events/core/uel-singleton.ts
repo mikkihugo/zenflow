@@ -4,12 +4,12 @@
  * Extracted UEL class to break circular dependency between index.ts and system-integrations.ts.
  */
 
-import type { CompatibilityFactory } from '../compatibility.ts';
-import type { UELFactory, UELRegistry } from '../factories.ts';
-import type { EventManager } from '../manager.ts';
-import type { EventRegistry } from '../registry.ts';
-import type { UELValidationFramework } from '../validation.ts';
-import type { EventManagerConfig } from './interfaces.ts';
+import type { CompatibilityFactory } from '../compatibility';
+import type { UELFactory, UELRegistry } from '../factories';
+import type { EventManager } from '../manager';
+import type { EventRegistry } from '../registry';
+import type { UELValidationFramework } from '../validation';
+import type { EventManagerConfig } from './interfaces';
 
 /**
  * UEL Main Interface - Primary entry point for the Unified Event Layer.

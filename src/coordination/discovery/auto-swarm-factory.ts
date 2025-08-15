@@ -10,11 +10,11 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
-import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.ts';
-import type { SessionMemoryStore } from '../../memory/memory.ts';
-import type { CollectiveCubeCoordinator } from '../collective-cube-sync.ts';
-import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator.ts';
+import { getLogger } from '../../config/logging-config';
+import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
+import type { SessionMemoryStore } from '../../memory/memory';
+import type { CollectiveCubeCoordinator } from '../collective-cube-sync';
+import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
 const logger = getLogger('AutoSwarmFactory');
 

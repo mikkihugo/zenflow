@@ -2,7 +2,7 @@
  * @file Core module exports.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-index');
 
@@ -21,10 +21,10 @@ const logger = getLogger('coordination-swarm-core-index');
 
 import type { SessionCoordinationDao } from '../../../database/index.js';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat.ts';
-import { AgentPool, createAgent } from '../../agents/agent.ts';
-import { executeTaskWithAgent } from './agent-adapter.ts';
-import { getContainer } from './singleton-container.ts';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat';
+import { AgentPool, createAgent } from '../../agents/agent';
+import { executeTaskWithAgent } from './agent-adapter';
+import { getContainer } from './singleton-container';
 import type {
   AgentConfig,
   Message,
@@ -35,39 +35,39 @@ import type {
   SwarmState,
   Task,
   TaskStatus,
-} from './types.ts';
+} from './types';
 import {
   formatMetrics,
   generateId,
   priorityToNumber,
   validateSwarmOptions,
-} from './utils.ts';
+} from './utils';
 
-export * from '../../../neural/core/neural-network-manager.ts';
-export * from '../../../neural/wasm/wasm-enhanced-loader.ts';
+export * from '../../../neural/core/neural-network-manager';
+export * from '../../../neural/wasm/wasm-enhanced-loader';
 // Enhanced exports with neural capabilities
-export * from '../../agents/agent.ts';
-export * from '../mcp/mcp-daa-tools.ts';
+export * from '../../agents/agent';
+export * from '../mcp/mcp-daa-tools';
 // Export the base implementation as BaseZenSwarm to avoid conflict
-export { ZenSwarm as BaseZenSwarm } from './base-swarm.ts';
-export * from './errors.ts';
+export { ZenSwarm as BaseZenSwarm } from './base-swarm';
+export * from './errors';
 export * from './hooks/index.js';
-export * from './logger.ts';
-export * from './logging-config.ts';
-export * from './monitoring-dashboard.ts';
-export * from './performance.ts';
-export * from './performance-benchmarks.ts';
-export * from './recovery-integration.ts';
-export * from './recovery-workflows.ts';
-export * from './schemas.ts';
-export * from './session-integration.ts';
-export * from './session-manager.ts';
-export * from './session-utils.ts';
-export * from './singleton-container.ts';
-export { TopologyManager } from './topology-manager.ts';
+export * from './logger';
+export * from './logging-config';
+export * from './monitoring-dashboard';
+export * from './performance';
+export * from './performance-benchmarks';
+export * from './recovery-integration';
+export * from './recovery-workflows';
+export * from './schemas';
+export * from './session-integration';
+export * from './session-manager';
+export * from './session-utils';
+export * from './singleton-container';
+export { TopologyManager } from './topology-manager';
 // Re-export all types and utilities
-export * from './types.ts';
-export * from './utils.ts';
+export * from './types';
+export * from './utils';
 
 /**
  * Enhanced Agent class with neural capabilities and cognitive patterns.

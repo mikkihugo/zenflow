@@ -8,7 +8,7 @@
 import type {
   EventManagerType,
   IEventManagerFactory,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 
 /**
  * Registry for event adapter factories.

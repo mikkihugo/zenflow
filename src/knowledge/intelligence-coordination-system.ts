@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { CoordinationEvent } from '../interfaces/events/types.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { CoordinationEvent } from '../interfaces/events/types';
 
 /**
  * Expertise Discovery Engine.

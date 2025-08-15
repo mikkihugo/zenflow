@@ -27,7 +27,7 @@ export type {
   UserStoryEntity,
   WorkflowRunEntity,
   WorkflowStepEntity,
-} from './entities/product-entities.ts';
+} from './entities/product-entities';
 
 // Re-export database configuration types
 export interface DatabaseConfig {

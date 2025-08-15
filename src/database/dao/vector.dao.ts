@@ -8,7 +8,7 @@
  * @file Database layer: vector.dao.
  */
 
-import { BaseDao } from '../base.dao.ts';
+import { BaseDao } from '../base.dao';
 import type {
   ClusteringOptions,
   ClusterResult,
@@ -20,8 +20,8 @@ import type {
   VectorSearchOptions,
   VectorSearchResult,
   VectorStats,
-} from '../interfaces.ts';
-import type { VectorDatabaseAdapter } from '../providers/database-providers.ts';
+} from '../interfaces';
+import type { VectorDatabaseAdapter } from '../providers/database-providers';
 
 /**
  * Vector database repository implementation for LanceDB.

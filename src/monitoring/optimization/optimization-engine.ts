@@ -11,8 +11,8 @@ import type {
   AnomalyDetection,
   BottleneckAnalysis,
   PerformanceInsights,
-} from '../analytics/performance-analyzer.ts';
-import type { CompositeMetrics } from '../core/metrics-collector.ts';
+} from '../analytics/performance-analyzer';
+import type { CompositeMetrics } from '../core/metrics-collector';
 
 export interface OptimizationAction {
   id: string;

@@ -34,12 +34,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 
 // Type imports for neural ensemble coordination
 import {
@@ -48,16 +48,16 @@ import {
   type SystemPrediction,
   type NeuralOptimization,
   type DeepLearningConfig,
-} from '../../learning/tier3-neural-learning.ts';
+} from '../../learning/tier3-neural-learning';
 import type {
   Phase3EnsembleLearning,
   EnsemblePredictionResult,
   EnsembleStrategy,
   EnsembleModelInstance,
   Phase3EnsembleConfig,
-} from './phase-3-ensemble.ts';
+} from './phase-3-ensemble';
 import type { NeuralService } from '../../../interfaces/services/implementations/neural-service';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration.ts';
+import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
 
 const logger = getLogger(
   'coordination-swarm-learning-neural-ensemble-coordinator'

@@ -13,13 +13,13 @@
  * - Error handling and recovery patterns
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import type { Agent, Task } from '../coordination/types.ts';
+import { getLogger } from '../config/logging-config';
+import type { Agent, Task } from '../coordination/types';
 import {
   Domain,
   type DomainBoundaryValidator,
   getDomainValidator,
-} from '../core/domain-boundary-validator.ts';
+} from '../core/domain-boundary-validator';
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
@@ -38,11 +38,11 @@ import {
   type TypeSafeEventBus,
   type WorkflowCompletedEvent,
   type WorkflowStartedEvent,
-} from '../core/type-safe-event-system.ts';
+} from '../core/type-safe-event-system';
 import type {
   WorkflowContext,
   WorkflowDefinition,
-} from '../workflows/types.ts';
+} from '../workflows/types';
 
 const logger = getLogger('event-integration-examples');
 

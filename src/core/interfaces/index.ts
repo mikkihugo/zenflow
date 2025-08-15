@@ -39,7 +39,7 @@
  *
  * @see {@link WasmBindingInterface}
  */
-export { WasmBindingInterface } from '../../bindings/wasm-binding-interface.ts';
+export { WasmBindingInterface } from '../../bindings/wasm-binding-interface';
 /**
  * Swarm coordination and agent management interfaces.
  *
@@ -69,7 +69,7 @@ export {
   TaskPriority,
   TaskStatus,
   WasmModule,
-} from '../../coordination/swarm/core/types.ts';
+} from '../../coordination/swarm/core/types';
 /**
  * Unified agent system interfaces and types.
  *
@@ -92,7 +92,7 @@ export {
   AgentType,
   ExecutionResult,
   Task,
-} from '../../coordination/types.ts';
+} from '../../coordination/types';
 /**
  * Database configuration and connection interfaces.
  *
@@ -101,7 +101,7 @@ export {
  *
  * @see {@link DatabaseConfig} - Multi-backend database configuration
  */
-export { DatabaseConfig } from '../../database/providers/database-providers.ts';
+export { DatabaseConfig } from '../../database/providers/database-providers';
 /**
  * Memory management and caching interfaces.
  *
@@ -113,7 +113,7 @@ export { DatabaseConfig } from '../../database/providers/database-providers.ts';
  * @see {@link SessionState} - User session state management
  * @see {@link StorageResult} - Unified storage operation results
  */
-export { CacheEntry, SessionState } from '../../memory/memory.ts';
+export { CacheEntry, SessionState } from '../../memory/memory';
 /**
  * Event system interfaces for pub/sub messaging.
  *
@@ -122,13 +122,13 @@ export { CacheEntry, SessionState } from '../../memory/memory.ts';
  *
  * @see {@link ../../types/event-types} - Complete event system types
  */
-export * from '../../types/event-types.ts';
+export * from '../../types/event-types';
 export {
   BackendInterface,
   BackendStats,
   JSONValue,
   StorageResult,
-} from '../memory-system.ts';
+} from '../memory-system';
 
 /**
  * Configuration interface for memory/storage backends.
@@ -171,4 +171,4 @@ export interface BackendConfig {
  *
  * @see {@link ./base-interfaces} - Fundamental interface definitions
  */
-export * from './base-interfaces.ts';
+export * from './base-interfaces';

@@ -5,18 +5,18 @@
  * Ensures zero breaking changes when transitioning to UACL architecture.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-clients-compatibility');
 
-import { getMCPServerURL } from '../../config/defaults.ts';
-import { FACTIntegration } from '../../knowledge/knowledge-client.ts';
-import { type APIClient, createAPIClient } from '../api/http/client.ts';
-import { WebSocketClient } from '../api/websocket/client.ts';
-import { ExternalMCPClient } from '../mcp/external-mcp-client.ts';
-import { uaclRegistry } from './core/client-registry.ts';
-import type { ClientInstance } from './registry.ts';
-import { ClientTypes } from './types.ts';
+import { getMCPServerURL } from '../../config/defaults';
+import { FACTIntegration } from '../../knowledge/knowledge-client';
+import { type APIClient, createAPIClient } from '../api/http/client';
+import { WebSocketClient } from '../api/websocket/client';
+import { ExternalMCPClient } from '../mcp/external-mcp-client';
+import { uaclRegistry } from './core/client-registry';
+import type { ClientInstance } from './registry';
+import { ClientTypes } from './types';
 
 /**
  * Legacy HTTP Client Factory (Backward Compatible).

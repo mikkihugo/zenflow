@@ -1,10 +1,108 @@
 /**
- * Queen Coordinator System for THE COLLECTIVE.
- * Manages strategic coordination between Cube Matrons and multiple Swarms.
- * Handles resource allocation, priority management, and multi-swarm orchestration.
- */
-/**
- * @file Queen coordination system - Strategic multi-swarm coordination.
+ * @fileoverview THE COLLECTIVE Queen Coordinator System
+ * 
+ * Strategic multi-swarm coordination system within THE COLLECTIVE hierarchy.
+ * Queen Coordinators operate at the strategic level, managing resource allocation,
+ * priority coordination, and multi-swarm orchestration between Cube Matrons
+ * and SwarmCommanders.
+ * 
+ * ## Hierarchy Position
+ * ```
+ * THE COLLECTIVE (Neural Hub)
+ *     ↓
+ * CUBES (Domain Specialists)
+ *     ↓
+ * CUBE MATRONS (Domain Leaders)
+ *     ↓
+ * QUEEN COORDINATORS (Strategic Multi-Swarm Coordination) ← THIS LEVEL
+ *     ↓
+ * SWARMCOMMANDERS (Tactical Coordination)
+ *     ↓
+ * AGENTS/DRONES (Execution)
+ * ```
+ * 
+ * ## Core Responsibilities
+ * 
+ * ### Strategic Coordination
+ * - **Multi-Swarm Management**: Coordinate multiple SwarmCommanders simultaneously
+ * - **Resource Allocation**: Optimize computational resources across swarms
+ * - **Priority Management**: Strategic task prioritization and routing
+ * - **Cross-Swarm Communication**: Enable knowledge sharing between swarms
+ * 
+ * ### Performance Monitoring
+ * - **Health Monitoring**: Track swarm and agent health across the coordination domain
+ * - **Metrics Collection**: Aggregate performance data from multiple sources
+ * - **Degradation Detection**: Early warning system for performance issues
+ * - **Recovery Coordination**: Orchestrate recovery from failures
+ * 
+ * ### Security and Governance
+ * - **Access Control**: Manage agent permissions and capabilities
+ * - **Resource Limits**: Enforce computational and operational boundaries
+ * - **Audit Trail**: Maintain logs of strategic decisions and actions
+ * - **Escalation Handling**: Interface with Cube Matrons for complex issues
+ * 
+ * ## Operational Model
+ * 
+ * Queen Coordinators operate in **coordination-only mode**:
+ * - **No Direct Implementation**: Queens coordinate but don't write code
+ * - **Read Access**: Can analyze codebases and project structures
+ * - **Strategic Analysis**: Focus on architecture and resource optimization
+ * - **Delegation**: Route implementation tasks to appropriate SwarmCommanders
+ * 
+ * ## Integration Points
+ * 
+ * - **Cube Matrons**: Report status and escalate complex issues
+ * - **SwarmCommanders**: Manage and coordinate multiple swarm instances
+ * - **Shared FACT System**: Access to "manuals of the internet" knowledge
+ * - **Neural Networks**: DSPy integration for strategic decision optimization
+ * - **Memory Coordination**: Persistent state across strategic sessions
+ * 
+ * @example
+ * ```typescript
+ * // Initialize Queen Coordinator
+ * const queenConfig: QueenCoordinatorConfig = {
+ *   id: 'queen-dev-strategic',
+ *   name: 'Development Strategic Coordinator',
+ *   maxQueens: 10,
+ *   resourceLimits: {
+ *     memory: 8192,
+ *     cpu: 8,
+ *     disk: 1024
+ *   },
+ *   queenDefaults: {
+ *     autonomyLevel: 8,
+ *     learningEnabled: true,
+ *     borgProtocol: true
+ *   }
+ * };
+ * 
+ * const queenCoordinator = new QueenCoordinator(queenConfig);
+ * await queenCoordinator.initialize();
+ * 
+ * // Strategic swarm coordination
+ * const swarmAllocation = await queenCoordinator.allocateSwarmResources({
+ *   requiredAgents: 50,
+ *   taskComplexity: 'high',
+ *   domain: 'full-stack-development',
+ *   priority: 'critical'
+ * });
+ * 
+ * // Monitor strategic performance
+ * const metrics = await queenCoordinator.getStrategicMetrics();
+ * console.log(`Coordinating ${metrics.activeSwarms} swarms with ${metrics.totalAgents} agents`);
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @since 2.0.0
+ * @version 2.0.0
+ * 
+ * @see {@link CubeMatron} For domain-level leadership
+ * @see {@link SwarmCommander} For tactical coordination
+ * @see {@link TheCollective} For top-level neural hub
+ * @see {@link SharedFACTSystem} For knowledge sharing
+ * 
+ * @module QueenCoordinator
+ * @namespace TheCollective.QueenCoordinator
  */
 
 import { type ChildProcess, spawn } from 'node:child_process';

@@ -5,7 +5,7 @@
  * Contains the main UACL class and client types without circular imports.
  */
 
-import type { ClientInstance, ClientType } from '../types.ts';
+import type { ClientInstance, ClientType } from '../types';
 
 /**
  * UACL Core Registry (extracted to break circular dependencies).

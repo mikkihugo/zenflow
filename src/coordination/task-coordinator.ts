@@ -5,14 +5,14 @@
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
-} from '../database/entities/product-entities.ts';
-import type { AgentType } from '../types/agent-types.ts';
-import type { DatabaseSPARCBridge } from './database-sparc-bridge.ts';
+} from '../database/entities/product-entities';
+import type { AgentType } from '../types/agent-types';
+import type { DatabaseSPARCBridge } from './database-sparc-bridge';
 import {
   generateSubAgentConfig,
   mapToClaudeSubAgent,
-} from './sub-agent-generator.ts';
-import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator.ts';
+} from './sub-agent-generator';
+import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator';
 
 export interface TaskConfig {
   description: string;

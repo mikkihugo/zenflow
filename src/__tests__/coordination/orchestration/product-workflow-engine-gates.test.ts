@@ -21,7 +21,7 @@ import {
   createTypeSafeEventBus,
   type TypeSafeEventBus,
 } from '../../../core/type-safe-event-system.ts';
-import type { DocumentManager } from '../../../database/managers/document-manager.ts';
+import type { DocumentManager } from "../../../services/document/document-service.ts"
 import { WorkflowAGUIAdapter } from '../../../interfaces/agui/workflow-agui-adapter.ts';
 
 // Mock implementations

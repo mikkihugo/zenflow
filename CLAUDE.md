@@ -26,7 +26,6 @@
  * @example
  * ```bash
  * # Add claude-code-zen native swarm MCP server
- * claude mcp add claude-zen npx claude-zen mcp start
  * 
  * # Use parallel execution patterns
  * # ✅ CORRECT - Multiple operations in single message
@@ -126,10 +125,7 @@ Message 6: Write "package.json"
 ### 1. Add Native MCP Server (Stdio - No Port Needed)
 ```bash
 # Add claude-code-zen native swarm MCP server to Claude Code
-cd /home/mhugo/code/claude-code-zen && claude mcp add claude-zen ./bin/claude-zen-mcp-direct.sh
-
-# This script bypasses TypeScript compilation issues by running built JS directly
-# If MCP fails, check logs and ensure the server starts without database errors
+# Native swarm coordination system - no external MCP server needed
 ```
 
 ### 2. Use Native MCP Tools for Advanced Coordination
@@ -646,7 +642,7 @@ If you need additional external swarm capabilities, ruv-swarm is available as a 
 npm install ruv-swarm
 
 # Add ruv-swarm MCP server as secondary
-claude mcp add ruv-swarm npx ruv-swarm mcp start
+# ruv-swarm fallback option available if needed
 
 # Use claude-code-zen native as primary, ruv-swarm as fallback
 ```

@@ -18,7 +18,7 @@ import type {
   EventPriority,
   EventProcessingStrategy,
   SystemEvent,
-} from '../interfaces/events/core/interfaces.ts';
+} from '../interfaces/events/core/interfaces';
 import type { EventPriorityMap } from '../interfaces/events/types';
 
 // Define missing types locally

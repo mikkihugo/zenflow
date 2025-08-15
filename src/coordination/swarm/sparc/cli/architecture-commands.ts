@@ -16,12 +16,12 @@ import chalk from 'chalk';
 import { Command } from 'commander';
 import { createDao, DatabaseTypes, EntityTypes } from '../../../database';
 import type { IDao } from '../../../database/interfaces';
-import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools.ts';
-import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine.ts';
+import { ArchitectureMCPToolsImpl } from '../mcp/architecture-tools';
+import { DatabaseDrivenArchitecturePhaseEngine } from '../phases/architecture/database-driven-architecture-engine';
 import type {
   ArchitectureDesign,
   PseudocodeStructure,
-} from '../types/sparc-types.ts';
+} from '../types/sparc-types';
 
 // Real database adapter for CLI using existing database infrastructure
 class CLIDatabaseAdapter {

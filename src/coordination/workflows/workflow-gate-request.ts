@@ -14,9 +14,9 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { ValidationQuestion } from '../../coordination/discovery/progressive-confidence-builder.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { ValidationQuestion } from '../../coordination/discovery/progressive-confidence-builder';
 import {
   Domain,
   type DomainBoundaryValidator,
@@ -24,7 +24,7 @@ import {
   type Result,
   type TypeSchema,
   validateCrossDomain,
-} from '../../core/domain-boundary-validator.ts';
+} from '../../core/domain-boundary-validator';
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
@@ -35,8 +35,8 @@ import {
   type HumanValidationCompletedEvent,
   type HumanValidationRequestedEvent,
   type TypeSafeEventBus,
-} from '../../core/type-safe-event-system.ts';
-import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.ts';
+} from '../../core/type-safe-event-system';
+import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 
 const logger = getLogger('workflow-gate-request');
 

@@ -8,22 +8,22 @@
 
 import { EventEmitter } from 'node:events';
 import { config, getMCPServerURL } from '../../../config/index.js';
-import { getLogger } from '../../../config/logging-config.ts';
-import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage.ts';
+import { getLogger } from '../../../config/logging-config';
+import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
-} from '../../../coordination/swarm/sparc/types/sparc-types.ts';
-import type { ILogger } from '../../../core/logger.ts';
-import type { ConnectionConfig } from '../../../integration/adapter-system.ts';
+} from '../../../coordination/swarm/sparc/types/sparc-types';
+import type { ILogger } from '../../../core/logger';
+import type { ConnectionConfig } from '../../../integration/adapter-system';
 import {
   MCPAdapter,
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
-} from '../../../integration/adapter-system.ts';
-import type { APIResult } from '../../../utils/type-guards.ts';
-import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client.ts';
+} from '../../../integration/adapter-system';
+import type { APIResult } from '../../../utils/type-guards';
+import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client';
 import type {
   IService,
   ServiceConfig,
@@ -36,9 +36,9 @@ import type {
   ServiceOperationResponse,
   ServiceRetryConfig,
   ServiceStatus,
-} from '../core/interfaces.ts';
-import type { IntegrationServiceConfig } from '../types.ts';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types.ts';
+} from '../core/interfaces';
+import type { IntegrationServiceConfig } from '../types';
+import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
 
 // ============================================
 // Service-Specific Error Classes

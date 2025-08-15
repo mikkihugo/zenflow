@@ -1,21 +1,134 @@
 /**
- * @file Shared FACT System Implementation
- * Universal access to CollectiveFACTSystem across all hierarchy levels
- *
- * This module ensures that ALL hierarchy levels (Cubes, Matrons, Queens, SwarmCommanders, Agents)
- * access the SAME CollectiveFACTSystem instance - implementing true "manuals of the internet" sharing.
- *
- * NO LEVEL-SPECIFIC STORAGE: All levels share the same knowledge base.
+ * @fileoverview Shared FACT System - Universal Knowledge Access for THE COLLECTIVE
+ * 
+ * Implementation of the shared FACT (Federated Agent Context Technology) system
+ * that provides universal knowledge access across all hierarchy levels within
+ * THE COLLECTIVE. This system acts as the "manuals of the internet" - a shared
+ * knowledge base accessible to all levels without access restrictions.
+ * 
+ * ## Knowledge Sharing Philosophy
+ * 
+ * The FACT system implements **true knowledge democracy**:
+ * - **Universal Access**: All hierarchy levels access the SAME knowledge base
+ * - **No Hierarchical Restrictions**: Agents and Queens have identical access
+ * - **Shared Intelligence**: Knowledge learned by one level benefits all levels
+ * - **Real-time Synchronization**: Updates propagate instantly across all levels
+ * 
+ * ## Architecture Overview
+ * 
+ * ```
+ * THE COLLECTIVE (Neural Hub) ───┬─── SHARED FACT SYSTEM
+ *     ↓                        │
+ * CUBES (Domain Specialists) ───┼─── Same Knowledge Base
+ *     ↓                        │
+ * CUBE MATRONS ───────────┼─── Universal Access
+ *     ↓                        │
+ * QUEEN COORDINATORS ───────┼─── Instant Updates
+ *     ↓                        │
+ * SWARMCOMMANDERS ────────┼─── Real-time Sync
+ *     ↓                        │
+ * AGENTS/DRONES ──────────┼─── Equal Access Rights
+ * ```
+ * 
+ * ## Knowledge Sources Integration
+ * 
+ * The FACT system aggregates knowledge from multiple sources:
+ * - **Context7**: Advanced context understanding
+ * - **DeepWiki**: Deep Wikipedia integration
+ * - **GitMCP**: Git repository insights
+ * - **Semgrep**: Code security patterns
+ * - **Rust FACT Core**: High-performance fact processing
+ * - **GitHub GraphQL**: Repository metadata and insights
+ * - **NPM Registry**: Package information and dependencies
+ * - **Security Advisories**: Vulnerability and security data
+ * 
+ * ## Performance Characteristics
+ * 
+ * - **Cache Size**: 100,000 entries shared across all levels
+ * - **Auto-Refresh**: 30-minute update cycles for fresh data
+ * - **Concurrent Access**: Thread-safe access for multiple hierarchy levels
+ * - **Memory Efficiency**: Single instance serves all coordination levels
+ * 
+ * ## Usage Patterns
+ * 
+ * ### For Strategic Levels (Queens, Matrons)
+ * ```typescript
+ * // Strategic analysis using shared knowledge
+ * const architecturalPatterns = await factSystem.searchFacts({
+ *   query: 'microservices architecture patterns',
+ *   type: 'architectural-guidance',
+ *   limit: 10
+ * });
+ * ```
+ * 
+ * ### For Tactical Levels (SwarmCommanders)
+ * ```typescript
+ * // Task coordination with knowledge context
+ * const implementationGuidance = await factSystem.searchFacts({
+ *   query: 'React TypeScript best practices',
+ *   type: 'implementation-guidance',
+ *   limit: 5
+ * });
+ * ```
+ * 
+ * ### For Execution Levels (Agents)
+ * ```typescript
+ * // Direct implementation support
+ * const codeExamples = await factSystem.searchFacts({
+ *   query: 'async/await error handling',
+ *   type: 'code-examples',
+ *   limit: 3
+ * });
+ * ```
+ * 
+ * ## Integration with Hierarchy Levels
+ * 
+ * All hierarchy levels that need FACT access extend `SharedFACTCapable`:
+ * - Automatic initialization on class instantiation
+ * - Consistent API across all hierarchy levels
+ * - Event-driven coordination for knowledge updates
+ * - Error handling and resilience patterns
+ * 
+ * @example
+ * ```typescript
+ * // Base usage for any hierarchy level
+ * export class MyHierarchyLevel extends SharedFACTCapable {
+ *   async initialize() {
+ *     await this.initializeSharedFACT();
+ *     
+ *     // Now can access shared knowledge
+ *     const knowledge = await this.searchSharedFacts({
+ *       query: 'my search query',
+ *       limit: 10
+ *     });
+ *   }
+ * }
+ * 
+ * // Direct access (for standalone usage)
+ * const factSystem = await getSharedCollectiveFACT();
+ * const results = await factSystem.searchFacts({ query: 'nodejs performance' });
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @since 2.0.0
+ * @version 2.0.0
+ * 
+ * @see {@link CollectiveFACTSystem} Core FACT system implementation
+ * @see {@link SharedFACTCapable} Base class for FACT-enabled hierarchy levels
+ * @see {@link TheCollective} Top-level coordination system
+ * 
+ * @module SharedFACTSystem
+ * @namespace TheCollective.FACT
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   CollectiveFACTSystem,
   getCollectiveFACT,
   initializeCollectiveFACT,
-} from './collective-fact-integration.ts';
-import type { CollectiveFACTConfig } from './collective-types.ts';
+} from './collective-fact-integration';
+import type { CollectiveFACTConfig } from './collective-types';
 
 const logger = getLogger('SharedFACTSystem');
 

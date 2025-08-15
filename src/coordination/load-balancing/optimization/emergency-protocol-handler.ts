@@ -14,7 +14,7 @@ const logger = getLogger(
  */
 
 import { EventEmitter } from 'node:events';
-import type { EmergencyHandler } from '../interfaces.ts';
+import type { EmergencyHandler } from '../interfaces';
 
 interface EmergencyProtocol {
   name: string;

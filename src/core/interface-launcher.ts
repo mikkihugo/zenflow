@@ -9,14 +9,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getWebDashboardURL } from '../config/defaults.ts';
-import { getLogger } from '../config/logging-config.ts';
-import type { WebConfig } from '../interfaces/web/web-config.ts';
+import { getWebDashboardURL } from '../config/defaults';
+import { getLogger } from '../config/logging-config';
+import type { WebConfig } from '../interfaces/web/web-config';
 import {
   type InterfaceMode,
   InterfaceModeDetector,
   type ModeDetectionOptions,
-} from './interface-mode-detector.ts';
+} from './interface-mode-detector';
 
 const logger = getLogger('InterfaceLauncher');
 
@@ -30,7 +30,7 @@ export interface LaunchOptions extends ModeDetectionOptions {
   };
 }
 
-// Remove local WebConfig interface since we import it from web-config.ts
+// Remove local WebConfig interface since we import.*from.*
 
 export interface LaunchResult {
   mode: InterfaceMode;

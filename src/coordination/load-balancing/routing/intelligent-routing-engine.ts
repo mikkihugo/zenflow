@@ -6,17 +6,17 @@
  * @file intelligent-routing processing engine
  */
 
-import type { CapacityManager, RoutingEngine } from '../interfaces.ts';
-import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer.ts';
+import type { CapacityManager, RoutingEngine } from '../interfaces';
+import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
 import type {
   Agent,
   NetworkTopology,
   QoSRequirement,
   RoutingResult,
   Task,
-} from '../types.ts';
-import { FailoverManager } from './failover-manager.ts';
-import { TaskAgentMatcher } from './task-agent-matcher.ts';
+} from '../types';
+import { FailoverManager } from './failover-manager';
+import { TaskAgentMatcher } from './task-agent-matcher';
 
 interface RoutingTable {
   agentId: string;

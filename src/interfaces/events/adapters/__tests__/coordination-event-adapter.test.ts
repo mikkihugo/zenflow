@@ -16,15 +16,15 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { EventManagerTypes } from '../../core/interfaces.ts';
-import type { CoordinationEvent } from '../../types.ts';
+import { EventManagerTypes } from '../../core/interfaces';
+import type { CoordinationEvent } from '../../types';
 import {
   CoordinationEventAdapter,
   type CoordinationEventAdapterConfig,
   CoordinationEventHelpers,
   createCoordinationEventAdapter,
   createDefaultCoordinationEventAdapterConfig,
-} from '../coordination-event-adapter.ts';
+} from '../coordination-event-adapter';
 
 describe('CoordinationEventAdapter', () => {
   let adapter: CoordinationEventAdapter;

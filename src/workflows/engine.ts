@@ -4,7 +4,7 @@
 
 import { getLogger } from '../config/logging-config.js';
 import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
-import type { DocumentManager } from '../database/managers/document-manager.js';
+import type { DocumentManager } from "../services/document/document-service";
 import type { MemorySystemFactory } from '../memory/index.js';
 
 const logger = getLogger('WorkflowEngine');

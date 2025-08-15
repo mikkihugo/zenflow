@@ -9,23 +9,23 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
-import { NeuralService } from '../../interfaces/services/implementations/neural-service.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+import { NeuralService } from '../../interfaces/services/implementations/neural-service';
 import type {
   CrossSwarmPattern,
   SwarmPerformanceProfile,
   ResourceOptimizationStrategy,
-} from '../agents/queen-coordinator.ts';
+} from '../agents/queen-coordinator';
 import type {
   AgentPerformanceHistory,
   PhaseEfficiencyMetrics,
   SuccessfulPattern,
-} from '../agents/swarm-commander.ts';
+} from '../agents/swarm-commander';
 
 export interface DeepLearningConfig {
   enabled: boolean;

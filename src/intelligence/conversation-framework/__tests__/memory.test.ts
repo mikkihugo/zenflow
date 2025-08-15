@@ -1,6 +1,6 @@
 import type { AgentId } from '../../../types/index.js';
-import { ConversationMemoryImpl } from '../memory.ts';
-import type { ConversationSession, ConversationStatus } from '../types.ts';
+import { ConversationMemoryImpl } from '../memory';
+import type { ConversationSession, ConversationStatus } from '../types';
 
 describe('ConversationMemoryImpl - Classical TDD', () => {
   let memory: ConversationMemoryImpl;

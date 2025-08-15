@@ -19,14 +19,14 @@ import type {
 import {
   SessionEnabledSwarm,
   SessionRecoveryService,
-} from './session-integration.ts';
-import { SessionManager, type SessionState } from './session-manager.ts';
+} from './session-integration';
+import { SessionManager, type SessionState } from './session-manager';
 import {
   SessionSerializer,
   SessionStats,
   SessionValidator,
-} from './session-utils.ts';
-import type { SwarmOptions, SwarmState } from './types.ts';
+} from './session-utils';
+import type { SwarmOptions, SwarmState } from './types';
 
 // TDD London Mock - Tests INTERACTIONS, not state
 class MockCoordinationDao implements SessionCoordinationDao {

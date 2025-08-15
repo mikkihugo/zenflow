@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { MemoryConfig } from '../providers/memory-providers.ts';
+import type { MemoryConfig } from '../providers/memory-providers';
 
 // Define BackendCapabilities here to avoid circular dependency
 export interface BackendCapabilities {

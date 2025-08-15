@@ -157,13 +157,12 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
           };
           
           // Properly typed fs.watch callback - receives eventType and filename
-          watcher = fs.watch(path, watchOptions, (eventType: string, filename: string | null) => {
+          watcher = fs.watch(path, (eventType: string, filename: string | null) => {
             callback(eventType, filename || undefined);
           });
         } catch (error) {
           console.warn(`File watching failed for ${path}:`, error);
-          // File watching not available - return no-op cleanup
-          return () => {};
+          // File watching not available - watcher remains null, cleanup will handle it
         }
       }
     };

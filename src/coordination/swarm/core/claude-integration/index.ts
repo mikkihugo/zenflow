@@ -2,7 +2,7 @@
  * @file Claude-integration module exports.
  */
 
-import { getLogger } from '../logging-config.ts';
+import { getLogger } from '../logging-config';
 
 const logger = getLogger('coordination-swarm-core-claude-integration-index');
 
@@ -11,9 +11,9 @@ const logger = getLogger('coordination-swarm-core-claude-integration-index');
  * Coordinates all integration modules for modular, remote-capable setup.
  */
 
-import { ClaudeIntegrationCore } from './core.ts';
-import { ClaudeDocsGenerator } from './docs.ts';
-import { RemoteWrapperGenerator } from './remote.ts';
+import { ClaudeIntegrationCore } from './core';
+import { ClaudeDocsGenerator } from './docs';
+import { RemoteWrapperGenerator } from './remote';
 
 interface ClaudeIntegrationOptions {
   autoSetup?: boolean;

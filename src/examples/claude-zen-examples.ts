@@ -8,7 +8,7 @@ import {
   // TODO: TypeScript error TS2305 - createClaudeZenPattern not exported from batch-tools (AI unsure of safe fix - human review needed)
   // createClaudeZenPattern,
   projectInitBatchTool,
-} from '../coordination/swarm/mcp/batch-tools.ts';
+} from '../coordination/swarm/mcp/batch-tools';
 
 /**
  * Example 1: Basic Claude-Zen Pattern.

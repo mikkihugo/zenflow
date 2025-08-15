@@ -9,7 +9,7 @@
  */
 
 // Export all neural types (Single Source of Truth)
-export * from './types.ts';
+export * from './types';
 
 /**
  * @deprecated Legacy export structure - use domain types instead
@@ -21,11 +21,11 @@ export type {
   ModelStatus,
   NeuralModel,
   NeuralModelType,
-} from '../types/shared-types.ts';
+} from '../types/shared-types';
 // Neural agents
-export { NeuralAgent } from './agents/index.ts';
+export { NeuralAgent } from './agents/index';
 // Neural coordination (exclude to avoid conflicts)
-// export * from './coordination/index.ts';
+// export * from './coordination/index';
 // Core neural components (specific exports to avoid conflicts)
 export {
   // Neural, // Not available in core/index
@@ -33,22 +33,22 @@ export {
   NeuralCoreCLI,
   NeuralNetwork as CoreNeuralNetwork,
   NeuralNetworkManager,
-} from './core/index.ts';
+} from './core/index';
 // DSPy wrapper implementation and factory functions
 export {
   createDefaultDSPyWrapper,
-  createDSPyWrapper,
-  DSPyWrapperImpl,
-  default as DSPyWrapper,
-  getSingletonDSPyWrapper,
-} from './dspy-wrapper.ts';
+  createDSPyEngine,
+  DSPyEngineImpl,
+  default as DSPyEngine,
+  getSingletonDSPyEngine,
+} from './dspy-engine';
 // Neural models and presets
-export { NEURAL_PRESETS as NeuralPresets } from './models/index.ts';
+export { NEURAL_PRESETS as NeuralPresets } from './models/index';
 // Neural Bridge (main interface)
-export { NeuralBridge, NeuralBridge as default } from './neural-bridge.ts';
+export { NeuralBridge, NeuralBridge as default } from './neural-bridge';
 // Public API for external access
-// export { createNeuralNetwork, initializeWASM } from './public-api.ts'; // TODO: Fix public-api exports
-export { createNeuralWASM } from './public-api.ts';
+// export { createNeuralNetwork, initializeWASM } from './public-api'; // TODO: Fix public-api exports
+export { createNeuralWASM } from './public-api';
 // DSPy types and functionality
 export type {
   DSPyConfig,
@@ -61,9 +61,9 @@ export type {
   DSPyProgram,
   DSPyProgramMetadata,
   DSPyWrapper as DSPyWrapperInterface,
-} from './types.ts';
+} from './types';
 // Types barrel export
-export * from './types.ts';
+export * from './types';
 export {
   createValidationError,
   DEFAULT_DSPY_CONFIG,
@@ -81,4 +81,4 @@ export {
   sanitizeInput,
   validateDSPyConfig,
   validateSignature,
-} from './types.ts';
+} from './types';

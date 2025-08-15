@@ -2,7 +2,7 @@
  * @file Coordination system: swarm-providers.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-storage-swarm-providers');
 
@@ -19,15 +19,15 @@ import {
   DATABASE_TOKENS,
   SWARM_TOKENS,
 } from '../di/tokens/core-tokens';
-import { type BackupConfig, SwarmBackupManager } from './backup-manager.ts';
+import { type BackupConfig, SwarmBackupManager } from './backup-manager';
 import {
   type SwarmDatabaseConfig,
   SwarmDatabaseManager,
-} from './swarm-database-manager.ts';
+} from './swarm-database-manager';
 import {
   type MaintenanceConfig,
   SwarmMaintenanceManager,
-} from './swarm-maintenance.ts';
+} from './swarm-maintenance';
 
 /**
  * Default swarm storage configuration.

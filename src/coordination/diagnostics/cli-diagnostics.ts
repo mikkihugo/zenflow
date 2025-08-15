@@ -10,8 +10,8 @@
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
-import { diagnostics } from './diagnostics.ts';
-import type { LogConfiguration, LoggerInterface } from './logging-config.ts';
+import { diagnostics } from './diagnostics';
+import type { LogConfiguration, LoggerInterface } from './logging-config';
 
 // Simple logger for CLI diagnostics
 const cliLoggingConfig = {

@@ -14,13 +14,13 @@
  * - Integration with existing domain types system
  */
 
-import type { Logger } from '../config/logging-config.ts';
-import { getLogger } from '../config/logging-config.ts';
-import type { Agent, Task } from '../coordination/types.ts';
+import type { Logger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config';
+import type { Agent, Task } from '../coordination/types';
 import type {
   WorkflowContext,
   WorkflowDefinition,
-} from '../workflows/types.ts';
+} from '../workflows/types';
 
 // ============================================================================
 // CORE TYPE SYSTEM - Foundation for all domain validation

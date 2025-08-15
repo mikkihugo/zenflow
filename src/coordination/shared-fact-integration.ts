@@ -9,9 +9,9 @@
  * - Pattern recognition across hierarchy levels
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import type { CollectiveFACTSystem } from './collective-fact-integration.ts';
-import { getUniversalFACTAccess } from './shared-fact-access.ts';
+import { getLogger } from '../config/logging-config';
+import type { CollectiveFACTSystem } from './collective-fact-integration';
+import { getUniversalFACTAccess } from './shared-fact-access';
 
 const logger = getLogger('Shared-FACT-DSPy-Integration');
 

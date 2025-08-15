@@ -14,8 +14,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { SystemHealth } from '../types/shared-types.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { SystemHealth } from '../types/shared-types';
 
 // Use SystemHealth instead of missing HealthStatus
 export type HealthStatus = SystemHealth;

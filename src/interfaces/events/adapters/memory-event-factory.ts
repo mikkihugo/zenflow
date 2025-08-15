@@ -64,17 +64,17 @@
 import type {
   IConfig,
   ILogger,
-} from '../../../core/interfaces/base-interfaces.ts';
-import { BaseEventManager } from '../core/base-event-manager.ts';
+} from '../../../core/interfaces/base-interfaces';
+import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
   EventManagerStatus,
   IEventManager,
   IEventManagerFactory,
-} from '../core/interfaces.ts';
-import type { IMemoryEventManager } from '../event-manager-types.ts';
-import type { MemoryEvent } from '../types.ts';
+} from '../core/interfaces';
+import type { IMemoryEventManager } from '../event-manager-types';
+import type { MemoryEvent } from '../types';
 
 /**
  * Memory Event Manager implementation for memory and caching operations.

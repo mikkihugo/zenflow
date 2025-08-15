@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import type { ILogger } from '../core/logger.js';
 import type { DIContainer } from '../di/index.js';
 import { QueenCommander } from './agents/queen-coordinator.js';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 export interface QueenCommanderLaunchConfig {
   maxQueens?: number;

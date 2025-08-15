@@ -2,7 +2,7 @@
  * @file Memory management: safe-memory-store
  */
 
-import { getLogger } from '../core/logger.ts';
+import { getLogger } from '../core/logger';
 
 const logger = getLogger('src-memory-safe-memory-store');
 
@@ -22,7 +22,7 @@ import {
   type MemoryNotFound,
   type MemoryResult,
   type MemorySuccess,
-} from '../utils/type-guards.ts';
+} from '../utils/type-guards';
 
 export interface SafeMemoryStoreOptions {
   namespace?: string;

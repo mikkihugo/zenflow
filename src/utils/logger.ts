@@ -3,7 +3,7 @@
  * Provides simple logging functionality for the application.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-utils-logger');
 

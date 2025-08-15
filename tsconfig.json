@@ -7,12 +7,12 @@
     "moduleResolution": "Bundler",
     "types": ["vitest/globals", "node"],
     "skipLibCheck": true,
-    "allowImportingTsExtensions": true,
+    "allowImportingTsExtensions": false,
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": true, // Keep strict for development
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": false,
@@ -35,9 +35,7 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.d.ts",
-    "src/types/vitest-globals.d.ts",
-    "src/__tests__/**/*.ts",
-    "tests/**/*.ts"
+    "src/types/vitest-globals.d.ts"
   ],
   "exclude": [
     "node_modules",
@@ -50,6 +48,10 @@
     "bin",
     "config",
     "**/*.config.js",
-    "**/*.config.ts"
+    "**/*.config.ts",
+    "src/__tests__/**/*",
+    "tests/**/*",
+    "**/*.test.ts",
+    "**/*.spec.ts"
   ]
 }

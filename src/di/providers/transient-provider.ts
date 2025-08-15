@@ -6,7 +6,7 @@
  * @file Transient-provider implementation.
  */
 
-import type { Provider } from '../types/di-types.ts';
+import type { Provider } from '../types/di-types';
 
 export class TransientProvider<T> implements Provider<T> {
   readonly type = 'transient' as const;

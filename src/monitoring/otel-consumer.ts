@@ -13,7 +13,7 @@
 import { EventEmitter } from 'node:events';
 import { createServer } from 'node:http';
 import { performance } from 'node:perf_hooks';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 interface OTelMetric {
   name: string;

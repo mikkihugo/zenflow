@@ -12,7 +12,7 @@
 import type {
   IConfig,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
+} from '../../core/interfaces/base-interfaces';
 import type {
   ClientConfig,
   ClientHealthStatus,
@@ -24,8 +24,8 @@ import type {
   IKnowledgeClient,
   IMcpClient,
   IWebSocketClient,
-} from './interfaces.ts';
-import type { ClientStatus, ClientType, ProtocolType } from './types.ts';
+} from './interfaces';
+import type { ClientStatus, ClientType, ProtocolType } from './types';
 import {
   ClientConfigs,
   ClientErrorCodes,
@@ -33,7 +33,7 @@ import {
   ProtocolToClientTypeMap,
   ProtocolTypes,
   TypeGuards,
-} from './types.ts';
+} from './types';
 
 /**
  * Configuration for client creation.

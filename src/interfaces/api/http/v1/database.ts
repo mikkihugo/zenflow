@@ -17,25 +17,25 @@ import {
 import {
   checkDatabaseContainerHealth,
   getDatabaseController,
-} from '../di/database-container.ts';
+} from '../di/database-container';
 import {
   authMiddleware,
   hasPermission,
   optionalAuthMiddleware,
-} from '../middleware/auth.ts';
+} from '../middleware/auth';
 import {
   asyncHandler,
   createInternalError,
   createValidationError,
-} from '../middleware/errors.ts';
-import { LogLevel, log, logPerformance } from '../middleware/logging.ts';
+} from '../middleware/errors';
+import { LogLevel, log, logPerformance } from '../middleware/logging';
 import {
   adminOperationsLimiter,
   heavyOperationsLimiter,
   lightOperationsLimiter,
   mediumOperationsLimiter,
   rateLimitInfoMiddleware,
-} from '../middleware/rate-limit.ts';
+} from '../middleware/rate-limit';
 
 // Type definitions for request/response interfaces
 interface QueryRequest {

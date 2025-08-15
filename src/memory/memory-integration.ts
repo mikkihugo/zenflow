@@ -2,7 +2,7 @@
  * @file Memory management: memory-integration.
  */
 
-import { getLogger } from '../core/logger.ts';
+import { getLogger } from '../core/logger';
 
 const logger = getLogger('src-memory-memory-integration');
 
@@ -13,16 +13,16 @@ const logger = getLogger('src-memory-memory-integration');
  * With proper DAL Factory integration.
  */
 
-import type { DALFactory } from '../database/factory.ts';
-import { DIContainer } from '../di/container/di-container.ts';
+import type { DALFactory } from '../database/factory';
+import { DIContainer } from '../di/container/di-container';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
   MEMORY_TOKENS,
-} from '../di/tokens/core-tokens.ts';
+} from '../di/tokens/core-tokens';
 import type { MemoryConfig } from '../memory/interfaces';
-import { MemoryController } from './controllers/memory-controller.ts';
-import { MemoryProviderFactory } from './providers/memory-providers.ts';
+import { MemoryController } from './controllers/memory-controller';
+import { MemoryProviderFactory } from './providers/memory-providers';
 
 /**
  * Default memory configurations for different use cases.

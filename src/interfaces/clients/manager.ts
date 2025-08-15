@@ -9,10 +9,10 @@
 
 import { EventEmitter } from 'node:events';
 // Import actual client implementations
-import { createAPIClient } from '../api/http/client.ts';
-import { WebSocketClient } from '../api/websocket/client.ts';
+import { createAPIClient } from '../api/http/client';
+import { WebSocketClient } from '../api/websocket/client';
 import { FACTIntegration } from '../knowledge/knowledge-client';
-import { ExternalMCPClient } from '../mcp/external-mcp-client.ts';
+import { ExternalMCPClient } from '../mcp/external-mcp-client';
 import {
   type ClientConfig,
   type ClientFactory,
@@ -23,7 +23,7 @@ import {
   type KnowledgeClientConfig,
   type MCPClientConfig,
   type WebSocketClientConfig,
-} from './registry.ts';
+} from './registry';
 
 /**
  * Manager configuration options.

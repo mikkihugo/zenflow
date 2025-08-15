@@ -25,7 +25,7 @@
  * @since 1.0.0
  */
 
-import type { ILogger } from '../../../core/interfaces/base-interfaces.ts';
+import type { ILogger } from '../../../core/interfaces/base-interfaces';
 import type {
   EventFilter,
   EventManagerConfig,
@@ -35,7 +35,7 @@ import type {
   EventProcessingStrategy,
   IEventManager,
   SystemEvent,
-} from './interfaces.ts';
+} from './interfaces';
 
 /**
  * Base Event Manager providing core event management functionality.

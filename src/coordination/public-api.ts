@@ -8,7 +8,7 @@
  * @file Coordination system: public-api.
  */
 
-import type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types.ts';
+import type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
 
 /**
  * Public interface for swarm coordination.
@@ -95,6 +95,6 @@ export async function createPublicSwarmCoordinator(
 }
 
 // Export types that external modules can use
-export type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types.ts';
+export type { SwarmConfig, SwarmLifecycleState } from './swarm/core/types';
 // Re-export SwarmLifecycleState as SwarmState for backward compatibility
 export type SwarmState = SwarmLifecycleState;

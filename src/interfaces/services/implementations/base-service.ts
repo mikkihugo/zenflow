@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config.ts';
-import { getLogger } from '../../../config/logging-config.ts';
+import type { Logger } from '../../../config/logging-config';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IService,
   ServiceConfig,
@@ -22,7 +22,7 @@ import type {
   ServiceOperationOptions,
   ServiceOperationResponse,
   ServiceStatus,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 import {
   ServiceConfigurationError,
   ServiceDependencyError,
@@ -30,7 +30,7 @@ import {
   ServiceInitializationError,
   ServiceOperationError,
   ServiceTimeoutError,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 /**
  * Abstract base service class with common functionality.

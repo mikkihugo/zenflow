@@ -17,9 +17,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { ErrorFactory } from './errors.ts';
-import { Logger } from './logger.ts';
-import { generateId } from './utils.ts';
+import { ErrorFactory } from './errors';
+import { Logger } from './logger';
+import { generateId } from './utils';
 
 interface WorkflowDefinition {
   id?: string;

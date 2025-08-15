@@ -8,17 +8,17 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
-import { SharedFACTCapable } from '../shared-fact-system.ts';
+import { getLogger } from '../../config/logging-config';
+import { SharedFACTCapable } from '../shared-fact-system';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
+} from '../../core/interfaces/base-interfaces';
 import type {
   CollectiveConfig,
   CubeInfo,
   DesignateMatron,
-} from '../collective-types.ts';
+} from '../collective-types';
 // Strategic Planning (Business Focus Only - No Technical Implementation)
 
 const logger = getLogger('DEV-CUBE-Matron');

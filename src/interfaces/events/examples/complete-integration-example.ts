@@ -13,7 +13,7 @@ import {
   UEL,
   UELHelpers,
   UELSystemIntegration,
-} from '../index.ts';
+} from '../index';
 
 /**
  * Example: Complete UEL System Integration.

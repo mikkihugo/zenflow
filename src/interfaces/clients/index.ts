@@ -44,12 +44,12 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import {
   globalClientManager as actualGlobalClientManager,
   type ClientManager,
   ClientManagerHelpers,
-} from './manager.ts';
+} from './manager';
 import {
   type ClientInstance,
   ClientType,
@@ -57,15 +57,15 @@ import {
   type KnowledgeClientConfig,
   type MCPClientConfig,
   type WebSocketClientConfig,
-} from './registry.ts';
+} from './registry';
 
 // Legacy FACT integration
-export { FACTIntegration } from '../../knowledge/knowledge-client.ts';
+export { FACTIntegration } from '../../knowledge/knowledge-client';
 // Re-export client implementations for convenience
-export { APIClient, createAPIClient } from '../api/http/client.ts';
+export { APIClient, createAPIClient } from '../api/http/client';
 // WebSocket clients - both legacy and UACL
-export { WebSocketClient } from '../api/websocket/client.ts'; // Legacy WebSocket client
-export { ExternalMCPClient } from '../mcp/external-mcp-client.ts';
+export { WebSocketClient } from '../api/websocket/client'; // Legacy WebSocket client
+export { ExternalMCPClient } from '../mcp/external-mcp-client';
 // UACL Knowledge Client Adapter
 export {
   createCustomKnowledgeClient,
@@ -76,8 +76,8 @@ export {
   KnowledgeHelpers,
   type KnowledgeRequest,
   type KnowledgeResponse,
-} from './adapters/knowledge-client-adapter.ts';
-export * from './adapters/websocket-index.ts'; // UACL WebSocket adapters
+} from './adapters/knowledge-client-adapter';
+export * from './adapters/websocket-index'; // UACL WebSocket adapters
 // Core interfaces for UACL compatibility
 export type {
   ClientConfig as CoreClientConfig,
@@ -87,7 +87,7 @@ export type {
   IClient,
   IClientFactory,
   RequestOptions as CoreRequestOptions,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 // Client manager types and interfaces
 export interface ClientManagerConfig {
   enableHealthChecks?: boolean;
@@ -126,7 +126,7 @@ export {
   type KnowledgeClientConfig,
   type MCPClientConfig,
   type WebSocketClientConfig,
-} from './registry.ts';
+} from './registry';
 
 /**
  * UACL Main Interface.
@@ -1240,7 +1240,7 @@ export const UACLHelpers = {
   },
 };
 
-export * from './compatibility.ts';
+export * from './compatibility';
 // UACL validation and compatibility
 export {
   printValidationReport,
@@ -1248,7 +1248,7 @@ export {
   type ValidationReport,
   type ValidationResult,
   validateUACL,
-} from './validation.ts';
+} from './validation';
 
 /**
  * Default export for convenience.

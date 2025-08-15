@@ -8,7 +8,7 @@
  * @file Database layer: memory.dao.
  */
 
-import { BaseDao } from '../base.dao.ts';
+import { BaseDao } from '../base.dao';
 import type {
   DatabaseAdapter,
   ILogger,
@@ -17,7 +17,7 @@ import type {
   CustomQuery,
   IMemoryRepository,
   MemoryStats,
-} from '../interfaces.ts';
+} from '../interfaces';
 
 /**
  * In-memory cache entry.

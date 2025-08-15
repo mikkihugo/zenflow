@@ -8,12 +8,12 @@
  * @file Database service implementation.
  */
 
-import type { IService } from '../core/interfaces.ts';
+import type { IService } from '../core/interfaces';
 import type {
   DatabaseServiceConfig,
   ServiceOperationOptions,
-} from '../types.ts';
-import { BaseService } from './base-service.ts';
+} from '../types';
+import { BaseService } from './base-service';
 
 /**
  * Database service implementation.

@@ -6,7 +6,7 @@
  * @file Coordination system: hook-system.
  */
 
-import type { AgentType } from '../types.ts';
+import type { AgentType } from '../types';
 
 // Hook Type Definitions
 export type HookType =

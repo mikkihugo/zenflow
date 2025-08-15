@@ -57,23 +57,23 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning.ts';
-import { LeastConnectionsAlgorithm } from './algorithms/least-connections.ts';
-import { MLPredictiveAlgorithm } from './algorithms/ml-predictive.ts';
-import { ResourceAwareAlgorithm } from './algorithms/resource-aware.ts';
-import { WeightedRoundRobinAlgorithm } from './algorithms/weighted-round-robin.ts';
-import { AgentCapacityManager } from './capacity/agent-capacity-manager.ts';
+import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
+import { LeastConnectionsAlgorithm } from './algorithms/least-connections';
+import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
+import { ResourceAwareAlgorithm } from './algorithms/resource-aware';
+import { WeightedRoundRobinAlgorithm } from './algorithms/weighted-round-robin';
+import { AgentCapacityManager } from './capacity/agent-capacity-manager';
 import type {
   AutoScaler,
   CapacityManager,
   EmergencyHandler,
   LoadBalancingObserver,
   RoutingEngine,
-} from './interfaces.ts';
-import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler.ts';
-import { HealthChecker } from './routing/health-checker.ts';
-import { IntelligentRoutingEngine } from './routing/intelligent-routing-engine.ts';
-import { AutoScalingStrategy } from './strategies/auto-scaling-strategy.ts';
+} from './interfaces';
+import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler';
+import { HealthChecker } from './routing/health-checker';
+import { IntelligentRoutingEngine } from './routing/intelligent-routing-engine';
+import { AutoScalingStrategy } from './strategies/auto-scaling-strategy';
 import {
   type Agent,
   AgentStatus,
@@ -82,7 +82,7 @@ import {
   type LoadMetrics,
   type RoutingResult,
   type Task,
-} from './types.ts';
+} from './types';
 
 export class LoadBalancingManager extends EventEmitter {
   private agents: Map<string, Agent> = new Map();

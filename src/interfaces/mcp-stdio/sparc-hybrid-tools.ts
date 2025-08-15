@@ -7,8 +7,8 @@
  */
 
 import { createLogger } from '../../core/logger.js';
-import { createProductionHybridSystem } from '../../database/managers/production-hybrid-factory.js';
-import type { ADRCreateOptions } from '../../database/managers/adr-manager-hybrid.js';
+import { createHybridSystem } from '../../services/factories/hybrid-service-factory.js';
+import type { ADRCreateOptions } from '../../services/document/adr-service.js';
 
 const logger = createLogger('sparc-hybrid-tools');
 
@@ -34,7 +34,7 @@ export class SparcHybridTools {
   private async initializeAsync(): Promise<void> {
     try {
       // Use production hybrid system for real data operations
-      const system = await createProductionHybridSystem({
+      const system = await createHybridSystem({
         dataDir: './data',
         enableVectorSearch: true,
         enableGraphRelationships: true,

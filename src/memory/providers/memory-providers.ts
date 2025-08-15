@@ -6,16 +6,16 @@
  * @description Enhanced memory providers with DI integration for Issue #63.
  */
 
-import type { DALFactory } from '../../database/factory.ts';
-import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces.ts';
-import { inject, injectable } from '../../di/decorators/injectable.ts';
+import type { DALFactory } from '../../database/factory';
+import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces';
+import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
   type IConfig,
   type ILogger,
   MEMORY_TOKENS,
-} from '../../di/tokens/core-tokens.ts';
+} from '../../di/tokens/core-tokens';
 
 /**
  * Interface for memory backend implementations.

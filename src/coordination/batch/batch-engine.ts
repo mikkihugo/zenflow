@@ -4,8 +4,8 @@
  * Achieves 2.8-4.4x speed improvements through concurrent execution.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import type { BatchExecutionSummary } from './performance-monitor.ts';
+import { getLogger } from '../../config/logging-config';
+import type { BatchExecutionSummary } from './performance-monitor';
 
 // TODO: Use dependency injection for logger
 // Should inject ILogger from DI container instead of creating directly

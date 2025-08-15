@@ -1,7 +1,86 @@
 /**
- * @file Agent types and interfaces for the coordination system
+ * @fileoverview THE COLLECTIVE Queen Coordinator Types
+ * 
+ * Comprehensive type definitions for THE COLLECTIVE hierarchical AI coordination system.
+ * This module defines the Queen Coordinator level - strategic multi-swarm coordination
+ * within the Borg-inspired architecture.
+ * 
+ * ## Hierarchy Overview
+ * ```
+ * THE COLLECTIVE (Neural Hub)
+ *     ↓
+ * CUBES (Domain Specialists: DEV-CUBE, OPS-CUBE, SECURITY-CUBE)
+ *     ↓
+ * CUBE MATRONS (Domain Leaders)
+ *     ↓
+ * QUEEN COORDINATORS (Strategic Multi-Swarm Coordination) ← THIS LEVEL
+ *     ↓
+ * SWARMCOMMANDERS (Tactical Coordination)
+ *     ↓
+ * AGENTS/DRONES (Execution)
+ * ```
+ * 
+ * ## Queen Coordinator Responsibilities
+ * - **Strategic Planning**: Cross-swarm resource allocation and coordination
+ * - **Multi-Swarm Orchestration**: Managing multiple SwarmCommanders simultaneously
+ * - **Resource Management**: Optimizing computational resources across swarms
+ * - **Performance Monitoring**: Advanced metrics and health monitoring
+ * - **Escalation Handling**: Complex issues requiring strategic intervention
+ * - **Inter-Swarm Communication**: Coordinating knowledge sharing between swarms
+ * 
+ * ## Security Model
+ * - **File Operations**: Read access for analysis, no direct file writing
+ * - **Coordination Only**: Strategic oversight without direct implementation
+ * - **Resource Limits**: Configurable limits to prevent resource exhaustion
+ * - **Borg Protocol**: Optional enhanced coordination protocol
+ * 
+ * ## Usage Examples
+ * ```typescript
+ * // Initialize Queen Coordinator
+ * const queenConfig: QueenConfig = {
+ *   id: 'queen-strategic-coordinator',
+ *   name: 'Strategic Multi-Swarm Queen',
+ *   capabilities: {
+ *     maxAgents: 100,
+ *     supportedTypes: ['researcher', 'coder', 'analyst'],
+ *     codeGeneration: false, // Queens coordinate, don't implement
+ *     research: true,
+ *     analysis: true
+ *   },
+ *   environment: {
+ *     platform: 'claude-code-zen',
+ *     version: '2.0.0',
+ *     runtime: 'claude'
+ *   }
+ * };
+ * 
+ * // Queen metrics monitoring
+ * const metrics: QueenMetrics = await queen.getMetrics();
+ * console.log(`Managing ${metrics.agentCount} agents across ${metrics.activeSwarms} swarms`);
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @since 2.0.0
+ * @version 2.0.0
+ * 
+ * @see {@link SwarmCommander} For tactical-level coordination
+ * @see {@link CubeMatron} For domain-level leadership
+ * @see {@link TheCollective} For top-level neural hub
+ * 
+ * @module QueenCoordinator
+ * @namespace TheCollective.QueenCoordinator
  */
 
+/**
+ * Base agent interface for THE COLLECTIVE coordination system.
+ * 
+ * Agents are the execution units in the hierarchy, managed by SwarmCommanders
+ * and ultimately coordinated by Queen Coordinators for strategic alignment.
+ * 
+ * @interface Agent
+ * @memberof TheCollective.QueenCoordinator
+ * @since 2.0.0
+ */
 export interface Agent {
   id: string;
   name: string;
@@ -13,6 +92,24 @@ export interface Agent {
   performance?: AgentPerformance;
 }
 
+/**
+ * Agent specialization types supported by THE COLLECTIVE.
+ * 
+ * These types define the specialized capabilities of agents within the hierarchy.
+ * Queen Coordinators use these types for strategic resource allocation and
+ * task distribution across multiple swarms.
+ * 
+ * @typedef {string} AgentType
+ * @memberof TheCollective.QueenCoordinator
+ * @since 2.0.0
+ * 
+ * @example
+ * ```typescript
+ * // Strategic allocation by Queens
+ * const researchSwarm = await queen.allocateAgents(['researcher', 'analyst']);
+ * const devSwarm = await queen.allocateAgents(['coder', 'tester', 'architect']);
+ * ```
+ */
 export type AgentType =
   | 'researcher'
   | 'coder'
@@ -24,6 +121,16 @@ export type AgentType =
   | 'specialist'
   | 'specialized';
 
+/**
+ * Agent operational status within THE COLLECTIVE.
+ * 
+ * Queen Coordinators monitor these statuses across all managed swarms
+ * for strategic resource planning and health monitoring.
+ * 
+ * @typedef {string} AgentStatus
+ * @memberof TheCollective.QueenCoordinator
+ * @since 2.0.0
+ */
 export type AgentStatus =
   | 'idle'
   | 'busy'
@@ -100,6 +207,36 @@ export interface AgentCoordinator {
   monitorAgents(): Promise<Agent[]>;
 }
 
+/**
+ * Queen Coordinator capabilities configuration.
+ * 
+ * Defines the strategic capabilities and resource limits for a Queen Coordinator.
+ * Queens operate at the strategic level, coordinating multiple swarms without
+ * direct implementation work.
+ * 
+ * ## Key Principles
+ * - **Strategic Focus**: Analysis and coordination, not implementation
+ * - **Resource Management**: Efficient allocation across multiple swarms
+ * - **Read-Only Operations**: File read access for analysis, no writing
+ * - **Scalable Coordination**: Support for large numbers of agents
+ * 
+ * @interface QueenCapabilities
+ * @memberof TheCollective.QueenCoordinator
+ * @since 2.0.0
+ * 
+ * @example
+ * ```typescript
+ * const capabilities: QueenCapabilities = {
+ *   maxAgents: 200,
+ *   supportedTypes: ['researcher', 'coder', 'analyst', 'tester'],
+ *   codeGeneration: false, // Queens don't write code
+ *   research: true,        // Strategic research and analysis
+ *   analysis: true,        // Cross-swarm performance analysis
+ *   fileSystem: true,      // Read access for codebase understanding
+ *   terminalAccess: false  // No direct terminal access
+ * };
+ * ```
+ */
 export interface QueenCapabilities {
   maxAgents?: number;
   supportedTypes?: AgentType[];
@@ -129,6 +266,51 @@ export interface QueenCapabilities {
   quality?: number;
 }
 
+/**
+ * Queen Coordinator configuration.
+ * 
+ * Complete configuration for initializing a Queen Coordinator within
+ * THE COLLECTIVE hierarchy. Queens manage strategic coordination across
+ * multiple SwarmCommanders and their agent teams.
+ * 
+ * ## Configuration Sections
+ * - **Identity**: Unique identification and naming
+ * - **Capabilities**: Strategic capabilities and resource limits
+ * - **Environment**: Runtime environment and resource constraints
+ * - **Autonomy**: Decision-making and learning configuration
+ * - **Security**: Access controls and operational limits
+ * 
+ * @interface QueenConfig
+ * @memberof TheCollective.QueenCoordinator
+ * @since 2.0.0
+ * 
+ * @example
+ * ```typescript
+ * const queenConfig: QueenConfig = {
+ *   id: 'queen-dev-coordinator',
+ *   name: 'Development Strategic Coordinator',
+ *   capabilities: {
+ *     maxAgents: 150,
+ *     supportedTypes: ['researcher', 'coder', 'architect', 'tester'],
+ *     codeGeneration: false,
+ *     analysis: true,
+ *     research: true
+ *   },
+ *   environment: {
+ *     platform: 'claude-code-zen',
+ *     runtime: 'claude',
+ *     resources: {
+ *       availableMemory: 8192,
+ *       availableCpu: 8,
+ *       availableDisk: 1024
+ *     }
+ *   },
+ *   autonomyLevel: 8, // High strategic autonomy
+ *   learningEnabled: true,
+ *   borgProtocol: true // Enhanced coordination
+ * };
+ * ```
+ */
 export interface QueenConfig {
   id: string;
   name: string;
@@ -186,6 +368,41 @@ export class QueenError extends Error {
   }
 }
 
+/**
+ * Queen Coordinator performance and operational metrics.
+ * 
+ * Comprehensive metrics for monitoring Queen Coordinator performance,
+ * resource utilization, and strategic coordination effectiveness across
+ * multiple swarms within THE COLLECTIVE.
+ * 
+ * ## Metrics Categories
+ * - **Agent Management**: Agent counts and distribution
+ * - **Task Coordination**: Task assignment and completion statistics
+ * - **Resource Utilization**: CPU, memory, and disk usage
+ * - **Performance**: Throughput, latency, and error rates
+ * - **Strategic Effectiveness**: Cross-swarm coordination success
+ * 
+ * @interface QueenMetrics
+ * @memberof TheCollective.QueenCoordinator
+ * @since 2.0.0
+ * 
+ * @example
+ * ```typescript
+ * const metrics: QueenMetrics = await queen.getMetrics();
+ * 
+ * console.log(`Strategic Coordination Status:
+ *   Agents: ${metrics.activeAgents}/${metrics.agentCount}
+ *   Tasks: ${metrics.tasksCompleted} completed (${metrics.performance.errorRate}% error rate)
+ *   Resource Usage: ${metrics.resourceUtilization.cpu}% CPU, ${metrics.resourceUtilization.memory}% Memory
+ *   Uptime: ${metrics.uptime}ms
+ * `);
+ * 
+ * // Alert if performance degrades
+ * if (metrics.performance.errorRate > 5) {
+ *   await queen.escalateToMatron('high-error-rate', metrics);
+ * }
+ * ```
+ */
 export interface QueenMetrics {
   agentCount: number;
   activeAgents: number;

@@ -2,7 +2,7 @@
  * @file Neural network: neural-core.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('neural-core-neural-core');
 
@@ -16,7 +16,7 @@ const logger = getLogger('neural-core-neural-core');
  *
  * @example
  * ```typescript
- * import { NeuralCore, PATTERN_MEMORY_CONFIG } from './neural-core.ts';
+ * import { NeuralCore, PATTERN_MEMORY_CONFIG } from './neural-core';
  *
  * // Initialize neural core with optimized configuration
  * const neuralCore = new NeuralCore({

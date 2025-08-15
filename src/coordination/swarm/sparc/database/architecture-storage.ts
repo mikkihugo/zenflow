@@ -13,7 +13,7 @@ import type {
   ArchitecturalValidation,
   ArchitectureDesign,
   Component,
-} from '../types/sparc-types.ts';
+} from '../types/sparc-types';
 
 // Database interfaces
 export interface ArchitectureRecord {
@@ -62,11 +62,112 @@ export interface ValidationRecord {
  *
  * @example
  */
+/**
+ * **SPARC Architecture Storage Service** - High-performance persistence layer for SPARC methodology data.
+ * 
+ * This service provides enterprise-grade storage and retrieval operations for SPARC (Specification,
+ * Planning, Architecture, Refinement, Construction) methodology artifacts. It uses database adapter
+ * abstraction to support multiple database backends while maintaining optimal performance for
+ * architecture-driven development workflows.
+ * 
+ * **Architectural Pattern**: Uses Database Adapter layer (proper architectural compliance) for
+ * multi-database support while maintaining type safety and performance optimization.
+ * 
+ * **Key Features:**
+ * - **Multi-Database Support**: Works with SQLite, PostgreSQL, Kuzu via adapter pattern
+ * - **SPARC Artifact Management**: Complete lifecycle for architecture designs and components
+ * - **Version Control**: Built-in versioning for architecture evolution tracking
+ * - **Component Relationships**: Detailed component dependency and interface tracking
+ * - **Validation Integration**: Comprehensive architectural validation result storage
+ * - **Performance Optimization**: Efficient schemas and indexing for large-scale architectures
+ * 
+ * **Database Schema**:
+ * - `sparc_architectures`: Main architecture designs with metadata and versioning
+ * - `sparc_architecture_components`: Detailed component specifications and relationships
+ * - `sparc_architecture_validations`: Architecture validation results and compliance data
+ * 
+ * **Thread Safety**: This service is thread-safe when used with appropriate database adapters
+ * that handle concurrent access and transaction management properly.
+ * 
+ * **Data Integrity**: Maintains referential integrity between architectures, components,
+ * and validations using database constraints and transactional operations.
+ * 
+ * @example Basic Architecture Storage
+ * ```typescript
+ * const storageService = new ArchitectureStorageService(sqliteAdapter);
+ * await storageService.initialize();
+ * 
+ * // Store complete architecture design
+ * await storageService.storeArchitecture({
+ *   architectureId: 'arch-123',
+ *   name: 'E-commerce Platform',
+ *   domain: 'retail',
+ *   design: {
+ *     layers: ['presentation', 'business', 'data'],
+ *     patterns: ['microservices', 'event-driven']
+ *   },
+ *   components: [
+ *     {
+ *       id: 'user-service',
+ *       type: 'microservice',
+ *       responsibilities: ['user management', 'authentication'],
+ *       interfaces: ['REST API', 'GraphQL'],
+ *       dependencies: ['auth-service', 'user-database']
+ *     }
+ *   ]
+ * });
+ * ```
+ * 
+ * @example Architecture Querying and Analytics
+ * ```typescript
+ * // Retrieve architecture with components
+ * const architecture = await storageService.getArchitectureById('arch-123');
+ * const components = await storageService.getComponentsByArchitecture('arch-123');
+ * 
+ * // Search architectures by domain
+ * const retailArchs = await storageService.searchArchitectures({ 
+ *   domain: 'retail',
+ *   tags: ['microservices'] 
+ * });
+ * 
+ * // Get architecture evolution history
+ * const versions = await storageService.getArchitectureVersions('arch-123');
+ * console.log(`Architecture has ${versions.length} versions`);
+ * ```
+ * 
+ * @example Component Dependency Analysis
+ * ```typescript
+ * // Analyze component relationships
+ * const dependencies = await storageService.getComponentDependencies('user-service');
+ * const dependents = await storageService.getComponentDependents('auth-service');
+ * 
+ * // Validate architectural integrity
+ * const validationResults = await storageService.getValidationResults('arch-123');
+ * const isValid = validationResults.every(result => result.status === 'passed');
+ * ```
+ * 
+ * @class ArchitectureStorageService
+ * 
+ * @since 1.0.0-alpha.43
+ * @version 2.1.0
+ * 
+ * @see {@link DatabaseAdapter} Database abstraction interface
+ * @see {@link ArchitectureDesign} SPARC architecture data models
+ * @see {@link Component} Component specification interface
+ */
 export class ArchitectureStorageService {
+  /** Table name for main architecture storage */
   private tableName = 'sparc_architectures';
+  /** Table name for component details and relationships */
   private componentsTableName = 'sparc_architecture_components';
+  /** Table name for architecture validation results */
   private validationsTableName = 'sparc_architecture_validations';
 
+  /**
+   * Creates a new SPARC Architecture Storage Service.
+   * 
+   * @param db - Database adapter instance (SQLite, PostgreSQL, Kuzu, etc.)
+   */
   constructor(
     private db: unknown // DatabaseAdapter - keeping flexible for multi-backend support
   ) {}

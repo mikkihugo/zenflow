@@ -12,7 +12,7 @@ import type {
   ConversationMCPTools,
   ConversationMemory,
   ConversationOrchestrator,
-} from './types.ts';
+} from './types';
 
 /**
  * Configuration for conversation framework creation.
@@ -43,13 +43,13 @@ export interface ConversationFrameworkSystem {
 export {
   ConversationMCPTools,
   ConversationMCPToolsFactory,
-} from './mcp-tools.ts';
+} from './mcp-tools';
 // Memory and persistence
-export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory.ts';
+export { ConversationMemoryFactory, ConversationMemoryImpl } from './memory';
 // Conversation orchestration
-export { ConversationOrchestratorImpl } from './orchestrator.ts';
+export { ConversationOrchestratorImpl } from './orchestrator';
 // Core types and interfaces
-export * from './types.ts';
+export * from './types';
 
 /**
  * Conversation Framework Factory.

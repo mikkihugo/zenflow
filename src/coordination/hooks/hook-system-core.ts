@@ -14,9 +14,9 @@ export type {
   AgentContext as ContextLoadingResult,
   OperationMetrics as PerformanceTrackingResult,
   ValidationResult as SafetyValidationResult,
-} from './hook-system.ts';
+} from './hook-system';
 // Re-export ALL types from hook-system for compatibility
-export * from './hook-system.ts';
+export * from './hook-system';
 
 // Hook system interfaces
 export interface HookSystem {

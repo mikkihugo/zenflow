@@ -7,12 +7,12 @@
  * (Cubes, Matrons, Queens, SwarmCommanders, Agents)
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import type {
   CollectiveFACTSystem,
   getCollectiveFACT,
   initializeCollectiveFACT,
-} from './collective-fact-integration.ts';
+} from './collective-fact-integration';
 
 const logger = getLogger('Shared-FACT-Access');
 

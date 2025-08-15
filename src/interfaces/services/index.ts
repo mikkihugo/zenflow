@@ -11,7 +11,7 @@
  * Main USL exports following the same successful patterns as DAL and UACL.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-services-index');
 
@@ -20,38 +20,38 @@ import {
   createDefaultIntegrationServiceAdapterConfig,
   globalDataServiceFactory,
 } from './adapters/index.js';
-import type { CompatibilityConfig } from './compatibility.ts';
-import { USLCompatibilityLayer } from './compatibility.ts';
+import type { CompatibilityConfig } from './compatibility';
+import { USLCompatibilityLayer } from './compatibility';
 import type {
   IService,
   ServiceCapability,
   ServiceMetrics,
   ServiceStatus,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 // Additional imports for missing types
-import { ServiceDependencyError } from './core/interfaces.ts';
+import { ServiceDependencyError } from './core/interfaces';
 // Import factory and service management globals
 import {
   globalServiceCapabilityRegistry,
   globalServiceRegistry,
   globalUSLFactory,
-} from './factories.ts';
-import type { ServiceManager, ServiceManagerConfig } from './manager.ts';
+} from './factories';
+import type { ServiceManager, ServiceManagerConfig } from './manager';
 import type {
   EnhancedServiceRegistry,
   ServiceRegistryConfig,
-} from './registry.ts';
+} from './registry';
 import {
   type AnyServiceConfig,
   ServiceConfigFactory,
   ServiceType,
-} from './types.ts';
+} from './types';
 import type {
   SystemHealthValidation,
   USLValidationFramework,
   ValidationConfig,
   ValidationResult,
-} from './validation.ts';
+} from './validation';
 
 // Data service adapters (enhanced implementations)
 // Integration service adapters (enhanced implementations)
@@ -88,7 +88,7 @@ export {
   initializeCompatibility,
   type LegacyServicePattern,
   MigrationUtils,
-} from './compatibility.ts';
+} from './compatibility';
 
 /**
  * Global compatibility layer instance with USL integration.
@@ -144,7 +144,7 @@ export {
   type ServiceRetryConfig,
   type ServiceStatus,
   ServiceTimeoutError,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 // Factory and registry implementations
 export {
   globalServiceCapabilityRegistry,
@@ -159,14 +159,14 @@ export {
   // Main factory class
   USLFactory,
   type USLFactoryConfig,
-} from './factories.ts';
-export type { CoordinationService } from './implementations/coordination-service.ts';
+} from './factories';
+export type { CoordinationService } from './implementations/coordination-service';
 // Service implementations (re-exported for convenience)
-export type { DataService } from './implementations/data-service.ts';
-export type { DatabaseService } from './implementations/database-service.ts';
-export type { MemoryService } from './implementations/memory-service.ts';
-export type { NeuralService } from './implementations/neural-service.ts';
-export type { WebService } from './implementations/web-service.ts';
+export type { DataService } from './implementations/data-service';
+export type { DatabaseService } from './implementations/database-service';
+export type { MemoryService } from './implementations/memory-service';
+export type { NeuralService } from './implementations/neural-service';
+export type { WebService } from './implementations/web-service';
 export {
   type BatchServiceCreationRequest,
   type ServiceCreationRequest,
@@ -174,7 +174,7 @@ export {
   ServiceManager,
   type ServiceManagerConfig,
   type ServiceManagerStatus,
-} from './manager.ts';
+} from './manager';
 // Enhanced Service Management (USL Integration Layer)
 export {
   // Enhanced Service Registry
@@ -182,7 +182,7 @@ export {
   type ServiceDependencyGraph,
   type ServiceDiscoveryInfo,
   type ServiceRegistryConfig,
-} from './registry.ts';
+} from './registry';
 // Service types and configurations
 export {
   type AnyServiceConfig,
@@ -213,7 +213,7 @@ export {
   ServiceType,
   type WebServiceConfig,
   type WorkflowServiceConfig,
-} from './types.ts';
+} from './types';
 export {
   type SystemHealthValidation,
   // Validation Framework
@@ -221,7 +221,7 @@ export {
   type ValidationConfig,
   type ValidationResult,
   type ValidationSectionResult,
-} from './validation.ts';
+} from './validation';
 
 /**
  * USL Main Interface.

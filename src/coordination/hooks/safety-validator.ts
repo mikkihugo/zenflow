@@ -6,7 +6,7 @@
  * @file Coordination system: safety-validator.
  */
 
-import type { SafetyValidator } from './hook-system-core.ts';
+import type { SafetyValidator } from './hook-system-core';
 
 // Type definitions
 export type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';

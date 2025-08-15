@@ -14,11 +14,11 @@
 
 export * from './binaries/wasm-bindings-loader.mjs';
 // Compatibility exports
-export * from './wasm-compat.ts';
+export * from './wasm-compat';
 // Export legacy loader only via named default (avoid duplicate symbol collisions)
-export { default as WasmLoader } from './wasm-loader.ts'; // TODO: remove after migration
-export * from './wasm-memory-optimizer.ts'; // TODO: remove after migration
-export { default as WasmMemoryOptimizer } from './wasm-memory-optimizer.ts';
+export { default as WasmLoader } from './wasm-loader'; // TODO: remove after migration
+export * from './wasm-memory-optimizer'; // TODO: remove after migration
+export { default as WasmMemoryOptimizer } from './wasm-memory-optimizer';
 export * from './wasm-types.js';
 
 // FACT WASM Core (cognitive processing - consolidated from src/wasm/)
@@ -26,9 +26,9 @@ export * from './wasm-types.js';
 // Note: FACT exports will be added when needed
 
 // Additional WASM components
-export * from './wasm-neural-accelerator.ts';
+export * from './wasm-neural-accelerator';
 // JS loaders are imported dynamically when needed to avoid circular dependencies
 
 // Gateway facade (single sanctioned external entry point)
-export * from './gateway.ts';
-export { default as NeuralWasmGateway } from './gateway.ts';
+export * from './gateway';
+export { default as NeuralWasmGateway } from './gateway';

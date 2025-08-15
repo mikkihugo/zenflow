@@ -2,7 +2,7 @@
  * @file Integration module exports.
  */
 
-import { getLogger } from '../core/logger.ts';
+import { getLogger } from '../core/logger';
 
 const logger = getLogger('src-integration-index');
 
@@ -13,8 +13,8 @@ const logger = getLogger('src-integration-index');
  */
 
 // Core integration components
-export * from './multi-system-coordinator.ts';
-export { MultiSystemCoordinator as default } from './multi-system-coordinator.ts';
+export * from './multi-system-coordinator';
+export { MultiSystemCoordinator as default } from './multi-system-coordinator';
 
 // Integration utilities
 export const IntegrationUtils = {

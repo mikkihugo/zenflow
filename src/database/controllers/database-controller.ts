@@ -6,10 +6,10 @@
  * @description Enhanced database controller with DI integration for Issue #63.
  */
 
-import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces.ts';
-import { inject } from '../../di/decorators/inject.ts';
-import { injectable } from '../../di/decorators/injectable.ts';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens.ts';
+import type { ConnectionStats, ILogger } from '../../core/interfaces/base-interfaces';
+import { inject } from '../../di/decorators/inject';
+import { injectable } from '../../di/decorators/injectable';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
 import type {
   DatabaseAdapter,
   DatabaseConfig,
@@ -18,7 +18,7 @@ import type {
   IndexConfig,
   VectorData,
   VectorDatabaseAdapter,
-} from '../providers/database-providers.ts';
+} from '../providers/database-providers';
 
 /**
  * Request interface for database query operations.

@@ -502,7 +502,7 @@ export class SwarmCommander extends EventEmitter {
    * Handle agent becoming available
    */
   private handleAgentAvailable(agentData: unknown): void {
-    const agentType = agentData.agentType as AgentType;
+    const agentType = (agentData as any).agentType as AgentType;
 
     if (!this.state.availableAgents.includes(agentType)) {
       this.state.availableAgents.push(agentType);
@@ -514,8 +514,8 @@ export class SwarmCommander extends EventEmitter {
    * Handle SPARC phase completion
    */
   private handlePhaseCompletion(phaseData: unknown): void {
-    this.logger.info(`Phase completed: ${phaseData.phase}`);
-    this.state.metrics.sparcEfficiency = phaseData.efficiency || 0.85;
+    this.logger.info(`Phase completed: ${(phaseData as any).phase}`);
+    this.state.metrics.sparcEfficiency = (phaseData as any).efficiency || 0.85;
   }
 
   /**
@@ -566,7 +566,7 @@ export class SwarmCommander extends EventEmitter {
     return new Promise((resolve) => {
       // Set up response handler
       const responseHandler = (response: unknown) => {
-        if (response.consultationId === consultationId) {
+        if ((response as any).consultationId === consultationId) {
           this.eventBus.off('matron:consultation:response', responseHandler);
           resolve(response);
         }
@@ -741,7 +741,7 @@ export class SwarmCommander extends EventEmitter {
       riskLevel,
       sparcPhase: this.state.currentPhase,
       contextData,
-    });
+    } as any);
   }
 
   /**
@@ -811,7 +811,7 @@ export class SwarmCommander extends EventEmitter {
 
       // Set up response handler
       const responseHandler = (response: unknown) => {
-        if (response.coordinationId === coordinationId) {
+        if ((response as any).coordinationId === coordinationId) {
           this.eventBus.off('queen:coordination:response', responseHandler);
           resolve(response);
         }
@@ -848,14 +848,14 @@ export class SwarmCommander extends EventEmitter {
     try {
       // Get cross-swarm patterns and dependencies
       const crossSwarmPatterns = await this.factSystem.searchFacts({
-        query: `multi swarm coordination ${request.description}`,
+        query: `multi swarm coordination ${(request as any).description}`,
         type: 'coordination-pattern',
         limit: 5,
       });
 
       // Get feature integration knowledge
       const integrationKnowledge = await this.factSystem.searchFacts({
-        query: `${request.requiredSwarms.join(' ')} integration patterns`,
+        query: `${(request as any).requiredSwarms.join(' ')} integration patterns`,
         type: 'integration-knowledge',
         limit: 8,
       });
@@ -864,7 +864,7 @@ export class SwarmCommander extends EventEmitter {
         crossSwarmPatterns,
         integrationKnowledge,
         currentSwarmState: this.getState(),
-        coordinationHistory: await this.memoryCoordinator.retrieve(
+        coordinationHistory: await (this.memoryCoordinator as any).retrieve(
           `queen_coordination_history_${this.swarmId}`
         ),
       };
@@ -922,7 +922,7 @@ export class SwarmCommander extends EventEmitter {
    */
   private async loadPersistentLearning(): Promise<void> {
     try {
-      const persistentData = await this.memoryCoordinator.retrieve(
+      const persistentData = await (this.memoryCoordinator as any).retrieve(
         `swarm_commander_learning_${this.swarmId}_${this.commanderType}`
       );
 
@@ -986,10 +986,10 @@ export class SwarmCommander extends EventEmitter {
         `swarm_commander_learning_${this.swarmId}_${this.commanderType}`,
         learningData,
         {
-          persistent: true,
+          ttl: undefined,
           importance: 0.9, // High importance for learning data
           tags: ['neural', 'learning', 'swarm', 'sparc'],
-        }
+        } as any
       );
 
       this.logger.debug('Saved persistent neural learning data');
@@ -1275,10 +1275,10 @@ export class SwarmCommander extends EventEmitter {
           timestamp: Date.now(),
         },
         {
-          persistent: true,
+          ttl: undefined,
           importance: 1.0,
           tags: ['shared-fact', 'universal-access', 'hierarchy-coordination'],
-        }
+        } as any
       );
 
       this.logger.debug(

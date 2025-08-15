@@ -9,18 +9,18 @@
  */
 
 // Export all optimization types (Single Source of Truth)
-export * from './types.ts';
+export * from './types';
 
 /**
  * @deprecated Legacy export structure - use domain types instead
  * @file Optimization module legacy exports.
  */
 
-export * from './benchmarks/performance-benchmarks.ts';
-export * from './core/performance-optimizer.ts';
-export * from './data/data-optimizer.ts';
-export * from './interfaces/optimization-interfaces.ts';
-export * from './monitoring/optimization-monitor.ts';
-export * from './neural/neural-optimizer.ts';
-export * from './swarm/swarm-optimizer.ts';
-export * from './wasm/wasm-optimizer.ts';
+export * from './benchmarks/performance-benchmarks';
+export * from './core/performance-optimizer';
+export * from './data/data-optimizer';
+export * from './interfaces/optimization-interfaces';
+export * from './monitoring/optimization-monitor';
+export * from './neural/neural-optimizer';
+export * from './swarm/swarm-optimizer';
+export * from './wasm/wasm-optimizer';

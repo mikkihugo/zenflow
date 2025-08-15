@@ -17,13 +17,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config.ts';
-import { SystemError } from '../../../core/errors.ts';
-import type { HealthMonitor } from '../../diagnostics/health-monitor.ts';
-import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager.ts';
-import { ConfigurationError, ValidationError } from '../core/errors.ts';
-import type { RecoveryWorkflows } from '../core/recovery-workflows.ts';
-import { generateId } from '../core/utils.ts';
+import { getLogger } from '../../../config/logging-config';
+import { SystemError } from '../../../core/errors';
+import type { HealthMonitor } from '../../diagnostics/health-monitor';
+import type { ConnectionStateManager as ConnectionManager } from '../connection-management/connection-state-manager';
+import { ConfigurationError, ValidationError } from '../core/errors';
+import type { RecoveryWorkflows } from '../core/recovery-workflows';
+import { generateId } from '../core/utils';
 
 // import { MCPToolsManager } from '../interfaces/mcp/tool-registry'; // xxx NEEDS_HUMAN: Unused import - verify if needed for future integration
 

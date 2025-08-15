@@ -5,8 +5,8 @@
  * without importing the full index.ts that also imports validation.ts
  */
 
-import { getLogger } from '../../config/logging-config.ts';
-import { ClientManager, type ClientManagerConfig } from './manager.ts';
+import { getLogger } from '../../config/logging-config';
+import { ClientManager, type ClientManagerConfig } from './manager';
 
 const logger = getLogger('interfaces-clients-instance');
 

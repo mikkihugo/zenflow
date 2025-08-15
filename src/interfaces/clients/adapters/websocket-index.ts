@@ -21,19 +21,19 @@ export type {
   IClient,
   IClientFactory,
   RequestOptions,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 // Enhanced WebSocket client with backward compatibility
 export {
   EnhancedWebSocketClient,
   WebSocketClient, // Legacy export
-} from './enhanced-websocket-client.ts';
+} from './enhanced-websocket-client';
 // Core WebSocket adapter
 export {
   createWebSocketClient,
   WebSocketClientAdapter,
   WebSocketClientFactory as WebSocketAdapterFactory,
-} from './websocket-client-adapter.ts';
+} from './websocket-client-adapter';
 // WebSocket client factory with advanced features
 export {
   createWebSocketClientFactory,
@@ -41,17 +41,17 @@ export {
   FailoverWebSocketClient,
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
-} from './websocket-client-factory.ts';
+} from './websocket-client-factory';
 
 // Import for internal use
 import {
   FailoverWebSocketClient,
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
-} from './websocket-client-factory.ts';
+} from './websocket-client-factory';
 
 // Import types for internal use
-import type { WebSocketClientConfig } from './websocket-types.ts';
+import type { WebSocketClientConfig } from './websocket-types';
 
 // WebSocket types and utilities
 export {
@@ -78,7 +78,7 @@ export {
   // Utilities and type guards
   WebSocketTypeGuards,
   WebSocketUtils,
-} from './websocket-types.ts';
+} from './websocket-types';
 
 /**
  * Convenience function to create a WebSocket client with automatic factory selection.

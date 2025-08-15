@@ -2,7 +2,7 @@
  * @file Session management system.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-core-session-manager');
 
@@ -32,8 +32,8 @@ import {
   DatabaseTypes,
   EntityTypes,
 } from '../../../database/index.js';
-import type { SwarmOptions, SwarmState } from './types.ts';
-import { generateId } from './utils.ts';
+import type { SwarmOptions, SwarmState } from './types';
+import { generateId } from './utils';
 
 export interface SessionState {
   id: string;

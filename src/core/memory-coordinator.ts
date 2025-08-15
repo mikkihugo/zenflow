@@ -9,13 +9,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import {
   createDao,
   type DatabaseTypes,
   EntityTypes,
-} from '../database/index.ts';
-import type { IRepository, IVectorRepository } from '../database/interfaces.ts';
+} from '../database/index';
+import type { IRepository, IVectorRepository } from '../database/interfaces';
 
 const logger = getLogger('UnifiedMemory');
 

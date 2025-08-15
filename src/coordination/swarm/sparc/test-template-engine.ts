@@ -3,7 +3,7 @@
  * @file Test-template processing engine.
  */
 
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('coordination-swarm-sparc-test-template-engine');
 
@@ -12,8 +12,8 @@ const logger = getLogger('coordination-swarm-sparc-test-template-engine');
  * Tests template integration functionality.
  */
 
-import { TemplateEngine } from './core/template-engine.ts';
-import type { ProjectSpecification } from './types/sparc-types.ts';
+import { TemplateEngine } from './core/template-engine';
+import type { ProjectSpecification } from './types/sparc-types';
 
 async function testTemplateEngine() {
   const templateEngine = new TemplateEngine();

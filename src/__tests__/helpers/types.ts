@@ -152,7 +152,7 @@ export interface DatabaseTestHelper {
 }
 
 export interface FileSystemTestHelper {
-  createTempDir(): Promise<string>;
+  createTempDir(prefix?: string): Promise<string>;
   createFile(path: string, content: string): Promise<void>;
   cleanup(): Promise<void>;
   mockFileSystem(): void;
@@ -162,7 +162,8 @@ export interface FileSystemTestHelper {
 export interface NetworkTestHelper {
   startMockServer(port?: number): Promise<void>;
   stopMockServer(): Promise<void>;
-  mockRequest(path: string, response: unknown): void;
+  mockRequest(method: string, path: string, response: unknown): void;
+  createHttpClient(baseUrl?: string): unknown;
   captureRequests(): unknown[];
   clearRequests(): void;
 }

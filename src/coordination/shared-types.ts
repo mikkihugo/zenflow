@@ -10,7 +10,7 @@ import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
   FACTStorageStats,
-} from '../knowledge/types/fact-types.ts';
+} from '../knowledge/types/fact-types';
 import type {
   CollectiveHealthMetrics,
   Task as CollectiveTask,
@@ -19,7 +19,7 @@ import type {
   GlobalAgentInfo,
   GlobalResourceMetrics,
   UniversalFact,
-} from './collective-types.ts';
+} from './collective-types';
 
 /**
  * THE COLLECTIVE FACT System Interface

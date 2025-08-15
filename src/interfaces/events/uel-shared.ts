@@ -5,7 +5,7 @@
  * to eliminate the circular import.
  */
 
-import type { EventManagerConfig } from './core/interfaces.ts';
+import type { EventManagerConfig } from './core/interfaces';
 
 /**
  * UEL Enhanced Event Bus Interface.

@@ -14,18 +14,18 @@ import { EventEmitter } from 'node:events';
 import {
   EventEmitterMigrationHelper,
   type UELCompatibleEventEmitter,
-} from './compatibility.ts';
+} from './compatibility';
 import type {
   EventManagerConfig,
   EventManagerType,
   IEventManager,
   SystemEvent,
-} from './core/interfaces.ts';
+} from './core/interfaces';
 
-import { EventManagerTypes } from './core/interfaces.ts';
+import { EventManagerTypes } from './core/interfaces';
 // Remove circular dependency - import UEL from specific source instead
-import type { EventManager } from './manager.ts';
-import type { MonitoringEvent, SystemLifecycleEvent } from './types.ts';
+import type { EventManager } from './manager';
+import type { MonitoringEvent, SystemLifecycleEvent } from './types';
 
 /**
  * Enhanced Event Bus with UEL integration.

@@ -10,13 +10,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import type {
   KnowledgeDistributionUpdate,
   KnowledgeRequest,
   KnowledgeResponse,
   SwarmContribution,
-} from '../collective-knowledge-bridge.ts';
+} from '../collective-knowledge-bridge';
 import type { SessionMemoryStore } from '../memory/memory';
 
 const logger = getLogger('Swarm-Knowledge-Sync');

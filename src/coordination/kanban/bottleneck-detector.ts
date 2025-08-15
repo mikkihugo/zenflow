@@ -15,16 +15,16 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { MemorySystem } from '../../core/memory-system.ts';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system.ts';
-import type { WorkflowGatesManager } from '../orchestration/workflow-gates.ts';
-import { WorkflowHumanGateType } from '../orchestration/workflow-gates.ts';
+} from '../../core/type-safe-event-system';
+import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
+import { WorkflowHumanGateType } from '../orchestration/workflow-gates';
 import type {
   AdvancedFlowManager,
   FlowMetrics,
@@ -32,7 +32,7 @@ import type {
   FlowState,
   FlowWorkItem,
   WIPLimits,
-} from './flow-manager.ts';
+} from './flow-manager';
 
 // ============================================================================
 // BOTTLENECK DETECTION ENGINE CONFIGURATION

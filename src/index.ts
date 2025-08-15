@@ -10,18 +10,18 @@
 // =============================================================================
 
 export * as Config from './config/index.js';
-export * as Core from './core/index.ts';
-export * as Types from './types/agent-types.ts';
-export * as Utils from './utils/index.ts';
+export * as Core from './core/index';
+export * as Types from './types/agent-types';
+export * as Utils from './utils/index';
 
 // =============================================================================
 // DOMAIN SYSTEMS (Consolidated)
 // =============================================================================
 
 // Coordination System - All swarm and orchestration functionality
-export * as Coordination from './coordination/index.ts';
+export * as Coordination from './coordination/index';
 // SPARC Methodology System - Systematic development workflow
-export * as SPARC from './coordination/swarm/sparc/index.ts';
+export * as SPARC from './coordination/swarm/sparc/index';
 
 /**
  * Database System - Complete data persistence and storage management.
@@ -43,7 +43,7 @@ export * as SPARC from './coordination/swarm/sparc/index.ts';
  * @see {@link ./database/index.ts} - Database implementation modules
  * @since 1.0.0-alpha.43
  */
-export * as Database from './database/index.ts';
+export * as Database from './database/index';
 
 /**
  * Memory System - Advanced memory management and persistence.
@@ -65,7 +65,7 @@ export * as Database from './database/index.ts';
  * @see {@link ./memory/index.ts} - Memory system implementation
  * @since 1.0.0-alpha.43
  */
-export * as Memory from './memory/index.ts';
+export * as Memory from './memory/index';
 
 /**
  * Neural System - AI/ML infrastructure and neural network management.
@@ -87,7 +87,7 @@ export * as Memory from './memory/index.ts';
  * @see {@link ./neural/index.ts} - Neural system implementation
  * @since 1.0.0-alpha.43
  */
-export * as Neural from './neural/index.ts';
+export * as Neural from './neural/index';
 
 /**
  * Optimization System - Performance optimization and resource management.
@@ -109,7 +109,7 @@ export * as Neural from './neural/index.ts';
  * @see {@link ./optimization/index.ts} - Optimization system implementation
  * @since 1.0.0-alpha.43
  */
-export * as Optimization from './optimization/index.ts';
+export * as Optimization from './optimization/index';
 
 /**
  * Workflow System - Advanced workflow execution and management engine.
@@ -131,7 +131,7 @@ export * as Optimization from './optimization/index.ts';
  * @see {@link ./workflows/index.ts} - Workflow system implementation
  * @since 1.0.0-alpha.43
  */
-export * as Workflows from './workflows/index.ts';
+export * as Workflows from './workflows/index';
 
 // =============================================================================
 // INTERFACE SYSTEMS
@@ -159,7 +159,7 @@ export * as Workflows from './workflows/index.ts';
  * @see {@link ./interfaces/index.ts} - Interface system implementations
  * @since 1.0.0-alpha.43
  */
-export * as Interfaces from './interfaces/index.ts';
+export * as Interfaces from './interfaces/index';
 
 // =============================================================================
 // SPECIALIZED SYSTEMS
@@ -184,7 +184,7 @@ export * as Interfaces from './interfaces/index.ts';
  * @see {@link ./bindings/index.ts} - Binding system implementation
  * @since 1.0.0-alpha.43
  */
-export * as Bindings from './bindings/index.ts';
+export * as Bindings from './bindings/index';
 
 /**
  * Integration System - External system integration and interoperability.
@@ -205,7 +205,7 @@ export * as Bindings from './bindings/index.ts';
  * @see {@link ./integration/index.ts} - Integration system implementation
  * @since 1.0.0-alpha.43
  */
-export * as Integration from './integration/index.ts';
+export * as Integration from './integration/index';
 
 // =============================================================================
 // SPECIALIZED COMPONENTS
@@ -246,11 +246,11 @@ export * as Integration from './integration/index.ts';
 // export {
 //   createSwarm,       // Not available in public-api
 //   SwarmOrchestrator, // Not available in public-api
-// } from './coordination/public-api.ts';
-export * from './coordination/public-api.ts';
+// } from './coordination/public-api';
+export * from './coordination/public-api';
 // Core MCP integration
-export * from './coordination/swarm/mcp/mcp-server.ts';
-export * from './coordination/swarm/mcp/mcp-tool-registry.ts';
+export * from './coordination/swarm/mcp/mcp-server';
+export * from './coordination/swarm/mcp/mcp-tool-registry';
 /**
  * Core MCP (Model Context Protocol) Type Definitions.
  *
@@ -286,10 +286,10 @@ export type {
   MCPTool,
   // Note: MCPServer and MCPToolCall not available in types module
   // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
-} from './coordination/swarm/mcp/types.ts';
+} from './coordination/swarm/mcp/types';
 
 // Utils and core services
-export * from './core/logger.ts';
+export * from './core/logger';
 
 // Terminal Interface (CLI and TUI unified)
 export * from './interfaces/terminal/index.js';
@@ -341,10 +341,10 @@ export {
    */
   NeuralAgent,
   // Note: createNeuralAgent, NeuralAgentConfig, NeuralAgentState not available
-} from './neural/agents/neural-agent.ts';
+} from './neural/agents/neural-agent';
 
 // Neural network integration
-export * from './neural/neural-bridge.ts';
+export * from './neural/neural-bridge';
 
 /**
  * Shared Type Definitions - Central type system for Claude Code Zen.
@@ -364,7 +364,7 @@ export * from './neural/neural-bridge.ts';
  * @see {@link ./types/index.ts} - Individual type definitions
  * @since 1.0.0-alpha.43
  */
-export * as SharedTypes from './types/index.ts';
+export * as SharedTypes from './types/index';
 
 /**
  * Claude-Zen Integrated System Configuration Interface.

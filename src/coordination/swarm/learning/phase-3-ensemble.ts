@@ -34,12 +34,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 
 // Type imports for ensemble coordination
 import type {
@@ -53,11 +53,11 @@ import type {
   MLModelRegistry,
   Pattern,
   ExecutionData,
-} from '../../intelligence/adaptive-learning/ml-integration.ts';
+} from '../../intelligence/adaptive-learning/ml-integration';
 import type {
   AgentPerformanceHistory,
   SuccessfulPattern,
-} from '../agents/swarm-commander.ts';
+} from '../agents/swarm-commander';
 import type {
   CrossSwarmPattern,
   SwarmPerformanceProfile,
@@ -66,7 +66,7 @@ import type {
   LearningResult,
   BestPractice,
   AntiPattern,
-} from '../../intelligence/adaptive-learning/types.ts';
+} from '../../intelligence/adaptive-learning/types';
 
 const logger = getLogger('coordination-swarm-learning-phase-3-ensemble');
 

@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
 // Basic utility types
 export interface DependencyMapper {

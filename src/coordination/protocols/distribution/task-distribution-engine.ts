@@ -8,8 +8,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../../core/logger.ts';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus.ts';
+import type { ILogger } from '../../../core/logger';
+import type { EventBusInterface as IEventBus } from '../../core/event-bus';
 
 // Core types for task distribution
 export interface TaskDefinition {

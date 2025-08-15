@@ -4,7 +4,7 @@
  */
 
 // Core logger - essential for all operations
-export { createLogger, Logger, LogLevel } from './logger.ts';
+export { createLogger, Logger, LogLevel } from './logger';
 
 // Essential config with Advanced Kanban Flow defaults
 export interface ClaudeZenCoreConfig {

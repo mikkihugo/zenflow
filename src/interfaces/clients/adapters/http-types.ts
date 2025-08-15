@@ -11,7 +11,7 @@ import type {
   AuthenticationConfig,
   ClientConfig,
   RetryConfig,
-} from '../core/interfaces.ts';
+} from '../core/interfaces';
 
 /**
  * HTTP-specific authentication configuration.

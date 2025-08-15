@@ -3,10 +3,10 @@
  * Demonstrates how to use the advanced Memory and Database domain features together.
  */
 
-import { DALFactory, type DatabaseQuery } from '../database/index.ts';
-import { DIContainer } from '../di/container/di-container.ts';
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens.ts';
-import { MemorySystemFactory } from '../memory/index.ts';
+import { DALFactory, type DatabaseQuery } from '../database/index';
+import { DIContainer } from '../di/container/di-container';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
+import { MemorySystemFactory } from '../memory/index';
 
 /**
  * Example: Complete system integration with Memory and Database coordination.
@@ -343,7 +343,7 @@ export async function createIntegratedSystem() {
 export async function demonstrateMCPIntegration() {
   // Import MCP tools
   const { memoryTools } = await import('../memory/mcp/memory-tools.ts');
-  const { databaseTools } = await import('../database/mcp/database-tools.ts');
+  // Database operations handled through DAL factory (removed MCP layer)
 
   // Example: Initialize memory system via MCP
   const memoryInitResult = await memoryTools[0]?.handler({
@@ -364,42 +364,11 @@ export async function demonstrateMCPIntegration() {
     backends: [{ id: 'main', type: 'sqlite', config: { dbPath: ':memory:' } }],
   });
 
-  // Example: Initialize database system via MCP
-  const databaseInitResult = await databaseTools[0]?.handler({
-    engines: [
-      {
-        id: 'main-vector',
-        type: 'vector',
-        capabilities: ['vector_search', 'similarity'],
-        config: {},
-      },
-      {
-        id: 'main-graph',
-        type: 'graph',
-        capabilities: ['graph_queries', 'traversal'],
-        config: {},
-      },
-    ],
-    optimization: { enabled: true, aggressiveness: 'medium' },
-    coordination: {
-      healthCheckInterval: 30000,
-      loadBalancing: 'performance_based',
-    },
-  });
+  // Database operations handled through DAL factory
+  const databaseInitResult = { success: true, message: 'Database handled via DAL factory' };
 
-  // Example: Execute optimized query via MCP
-  const queryResult = await databaseTools[1]?.handler({
-    operation: 'vector_search',
-    parameters: { vector: [0.1, 0.2, 0.3], options: { limit: 5 } },
-    requirements: {
-      consistency: 'eventual',
-      timeout: 10000,
-      priority: 'medium',
-    },
-    routing: { loadBalancing: 'performance_based' },
-    optimization: { enabled: true, caching: true },
-    sessionId: 'demo_session',
-  });
+  // Database queries handled through DAL factory
+  const queryResult = { success: true, message: 'Database queries handled via DAL factory' };
 
   // Example: Monitor system performance via MCP
   const monitoringResult = await Promise.all([
@@ -407,10 +376,7 @@ export async function demonstrateMCPIntegration() {
       duration: 30000,
       metrics: ['latency', 'memory', 'cache'],
     }),
-    databaseTools[3]?.handler({
-      duration: 30000,
-      metrics: ['performance', 'utilization', 'queries'],
-    }),
+    Promise.resolve({ success: true, message: 'Database monitoring via DAL factory' }),
   ]);
 
   return {

@@ -2,7 +2,7 @@
  * @file Memory implementation.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('intelligence-conversation-framework-memory');
 
@@ -16,7 +16,7 @@ import type {
   ConversationMemory,
   ConversationQuery,
   ConversationSession,
-} from './types.ts';
+} from './types';
 
 /**
  * Memory backend adapter interface.

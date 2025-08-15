@@ -5,12 +5,12 @@
  * Provides comprehensive analytics for multi-provider LLM integration system.
  */
 
-import { LLM_PROVIDER_CONFIG } from '../../config/llm-providers.config.ts';
-import { createLogger } from '../../core/logger.ts';
+import { LLM_PROVIDER_CONFIG } from '../../config/llm-providers.config';
+import { createLogger } from '../../core/logger';
 import type {
   AnalysisRequest,
   AnalysisResult,
-} from './llm-integration.service.ts';
+} from './llm-integration.service';
 
 const logger = createLogger('coordination-services-llm-stats');
 

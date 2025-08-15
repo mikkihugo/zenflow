@@ -5,8 +5,8 @@
  * All workflow types have been consolidated in /workflows/ for clean architecture.
  *
  * MIGRATION PATH:
- * - OLD: import {WorkflowStep} from '../types/workflow-types.ts';
- * - NEW: import {WorkflowStep} from '../workflows/types.ts';
+ * - OLD: import {WorkflowStep} from '../types/workflow-types';
+ * - NEW: import {WorkflowStep} from '../workflows/types';
  *
  * This compatibility layer will be removed in a future version.
  */
@@ -16,7 +16,7 @@ import type {
   WorkflowDefinition as BaseWorkflowDefinition,
   WorkflowEngineConfig as BaseWorkflowEngineConfig,
   WorkflowStep as BaseWorkflowStep,
-} from '../workflows/workflow-engine.ts';
+} from '../workflows/workflow-engine';
 
 // Re-export base types with aliases to avoid conflicts
 export type WorkflowStep = BaseWorkflowStep & {

@@ -11,8 +11,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
-import type { CollectiveFACTSystemInterface } from './shared-types.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { CollectiveFACTSystemInterface } from './shared-types';
 
 // Type alias for backward compatibility
 type CollectiveFACTSystem = CollectiveFACTSystemInterface;
@@ -24,7 +24,7 @@ import type {
   CubePerformanceMetrics,
   GlobalAgentInfo,
   GlobalResourceMetrics,
-} from './collective-types.ts';
+} from './collective-types';
 
 export interface CollectiveRegistry {
   // Global drone registry
@@ -45,7 +45,7 @@ export interface CollectiveRegistry {
 }
 
 // Import CollectiveFACT from integration module
-import { initializeCollectiveFACT } from './collective-fact-integration.ts';
+import { initializeCollectiveFACT } from './collective-fact-integration';
 
 /**
  * Central COLLECTIVE synchronization coordinator.

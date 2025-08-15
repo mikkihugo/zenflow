@@ -5,7 +5,7 @@
  * Provides automated scanning with human-in-the-loop decision making.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import {
   AutomatedDeadCodeManager,
   type DeadCodeDecision,

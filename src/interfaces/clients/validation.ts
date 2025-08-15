@@ -19,9 +19,9 @@ import {
   createCompatibleKnowledgeClient,
   createCompatibleMCPClient,
   createCompatibleWebSocketClient,
-} from './compatibility.ts';
-import { UACLHelpers, uacl } from './instance.ts';
-import { ClientType } from './types.ts';
+} from './compatibility';
+import { UACLHelpers, uacl } from './instance';
+import { ClientType } from './types';
 
 export interface ValidationResult {
   component: string;

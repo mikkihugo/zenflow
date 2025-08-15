@@ -25,7 +25,7 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../../database/entities/document-entities.ts';
-import { DocumentManager } from '../../database/managers/document-manager.ts';
+import { DocumentManager } from "../../services/document/document-service.ts"
 
 describe('DocumentManager Integration Tests', () => {
   let documentManager: DocumentManager;

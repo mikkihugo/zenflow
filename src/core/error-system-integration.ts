@@ -8,10 +8,10 @@
  * @file Error-system-integration implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler.ts';
-import { errorMonitor } from './error-monitoring.ts';
-import { errorRecoveryOrchestrator } from './error-recovery.ts';
+import { getLogger } from '../config/logging-config';
+import { mcpErrorHandler } from '../coordination/swarm/mcp/error-handler';
+import { errorMonitor } from './error-monitoring';
+import { errorRecoveryOrchestrator } from './error-recovery';
 import {
   BaseClaudeZenError,
   type ErrorContext,
@@ -21,8 +21,8 @@ import {
   SwarmError,
   SystemError,
   WASMError,
-} from './errors.ts';
-import { systemResilienceOrchestrator } from './system-resilience.ts';
+} from './errors';
+import { systemResilienceOrchestrator } from './system-resilience';
 
 const logger = getLogger('ErrorSystemIntegration');
 
@@ -653,8 +653,8 @@ export async function shutdownErrorHandling(): Promise<void> {
 // Export Everything
 // ===============================
 // IntegratedErrorHandler already exported above
-export * from './error-monitoring.ts';
-export * from './error-recovery.ts';
+export * from './error-monitoring';
+export * from './error-recovery';
 // Re-export all error types and utilities
-export * from './errors.ts';
-export * from './system-resilience.ts';
+export * from './errors';
+export * from './system-resilience';

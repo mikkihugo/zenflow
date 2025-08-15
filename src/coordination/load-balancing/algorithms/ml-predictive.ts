@@ -16,7 +16,7 @@ const logger = getLogger(
 import type {
   LoadBalancingAlgorithm,
   PredictionEngine,
-} from '../interfaces.ts';
+} from '../interfaces';
 import type {
   Agent,
   HistoricalData,
@@ -24,7 +24,7 @@ import type {
   PredictionModel,
   RoutingResult,
   Task,
-} from '../types.ts';
+} from '../types';
 
 interface MLFeatures {
   agentId: string;

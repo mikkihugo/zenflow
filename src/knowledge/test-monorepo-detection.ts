@@ -1,4 +1,4 @@
-#!/usr/bin/env nodeimport { getLogger } from '../core/logger.ts';
+#!/usr/bin/env nodeimport { getLogger } from '../core/logger';
 /**
  * @file Test suite for test-monorepo-detection.
  */
@@ -9,7 +9,7 @@ const logger = getLogger('src-knowledge-test-monorepo-detection');
  * Test script for monorepo detection in ProjectContextAnalyzer.
  */
 
-import { ProjectContextAnalyzer } from './project-context-analyzer.ts';
+import { ProjectContextAnalyzer } from './project-context-analyzer';
 
 async function testMonorepoDetection(projectPath: string) {
   const analyzer = new ProjectContextAnalyzer({

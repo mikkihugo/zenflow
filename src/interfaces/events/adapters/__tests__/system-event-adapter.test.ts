@@ -10,15 +10,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   EventManagerTypes,
   type SystemLifecycleEvent,
-} from '../../core/interfaces.ts';
+} from '../../core/interfaces';
 import {
   createDefaultSystemEventAdapterConfig,
   createSystemEventAdapter,
   type SystemEventAdapter,
   type SystemEventAdapterConfig,
   SystemEventHelpers,
-} from '../system-event-adapter.ts';
-import { SystemEventManagerFactory } from '../system-event-factory.ts';
+} from '../system-event-adapter';
+import { SystemEventManagerFactory } from '../system-event-factory';
 
 // Mock logger to avoid console output during tests
 vi.mock('../../../../utils/logger', () => ({

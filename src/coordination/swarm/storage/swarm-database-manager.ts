@@ -12,19 +12,19 @@
 
 import { EventEmitter } from 'node:events';
 import path from 'node:path';
-import type { DALFactory } from '../../../database/factory.ts';
+import type { DALFactory } from '../../../database/factory';
 import type {
   ICoordinationRepository,
   IGraphRepository,
   IVectorRepository,
-} from '../../../database/interfaces.ts';
-import { inject, injectable } from '../../../di/decorators/injectable.ts';
+} from '../../../database/interfaces';
+import { inject, injectable } from '../../../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
   type ILogger,
   SWARM_TOKENS,
-} from '../../../di/tokens/core-tokens.ts';
+} from '../../../di/tokens/core-tokens';
 
 export interface SwarmDatabaseConfig {
   // Central coordination database

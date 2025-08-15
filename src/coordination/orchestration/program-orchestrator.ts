@@ -14,14 +14,14 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config.ts';
-import { getLogger } from '../../config/logging-config.ts';
-import type { MemorySystem } from '../../core/memory-system.ts';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system.ts';
+import type { Logger } from '../../config/logging-config';
+import { getLogger } from '../../config/logging-config';
+import type { MemorySystem } from '../../core/memory-system';
+import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system.ts';
+} from '../../core/type-safe-event-system';
 import type {
   AIAssistanceLevel,
   AIRecommendation,
@@ -45,9 +45,9 @@ import type {
   ProgramTimeline,
   TechnicalSpecification,
   WorkflowStream,
-} from './multi-level-types.ts';
-import type { WorkflowGatesManager } from './workflow-gates.ts';
-import { WorkflowHumanGateType } from './workflow-gates.ts';
+} from './multi-level-types';
+import type { WorkflowGatesManager } from './workflow-gates';
+import { WorkflowHumanGateType } from './workflow-gates';
 
 // ============================================================================
 // PROGRAM ORCHESTRATOR CONFIGURATION

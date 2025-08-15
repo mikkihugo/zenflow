@@ -13,7 +13,7 @@ import type {
   QoSRequirement,
   RoutingResult,
   Task,
-} from './types.ts';
+} from './types';
 
 export interface LoadBalancingAlgorithm {
   name: string;

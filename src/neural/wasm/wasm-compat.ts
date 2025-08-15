@@ -13,7 +13,7 @@
  * @file Neural network: wasm-compat.
  */
 
-import { NeuralWasmGateway } from './gateway.ts';
+import { NeuralWasmGateway } from './gateway';
 
 export class WasmModuleLoaderCompat {
   async initialize(): Promise<void> {

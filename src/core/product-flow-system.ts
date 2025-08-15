@@ -13,7 +13,7 @@
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
 import { getLogger } from '../config/logging-config';
-import type { DocumentManager } from '../database/managers/document-manager';
+import type { DocumentManager } from "../services/document/document-service"
 
 const logger = getLogger('ProductFlowSystem');
 

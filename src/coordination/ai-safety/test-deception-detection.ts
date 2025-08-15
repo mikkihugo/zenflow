@@ -9,8 +9,8 @@
 import {
   analyzeAIResponse,
   createAIDeceptionDetector,
-} from './ai-deception-detector.ts';
-import { createAISafetyOrchestrator } from './safety-orchestrator.ts';
+} from './ai-deception-detector';
+import { createAISafetyOrchestrator } from './safety-orchestrator';
 
 async function testDeceptionDetection() {
   console.log('🧪 Testing AI Deception Detection System\n');

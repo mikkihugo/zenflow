@@ -10,22 +10,22 @@
  */
 
 import { vi } from 'vitest';
-import documentManager from '../../../../database/managers/document-manager.ts';
+import documentManager from "../services/document/document-service"
 
 type DocumentService = typeof documentManager;
 
-import { WebDataService } from '../../../web/web-data-service.ts';
-import { ServiceType } from '../../types.ts';
+import { WebDataService } from '../../../web/web-data-service';
+import { ServiceType } from '../../types';
 import {
   createDefaultDataServiceAdapterConfig,
   DataServiceAdapter,
   type DataServiceAdapterConfig,
-} from '../data-service-adapter.ts';
-import { DataServiceFactory } from '../data-service-factory.ts';
+} from '../data-service-adapter';
+import { DataServiceFactory } from '../data-service-factory';
 import {
   DataServiceHelper,
   DataServiceUtils,
-} from '../data-service-helpers.ts';
+} from '../data-service-helpers';
 
 // Mock external dependencies
 vi.mock('../../../web/web-data-service');

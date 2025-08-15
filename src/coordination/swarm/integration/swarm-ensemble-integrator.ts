@@ -27,24 +27,24 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../../config/logging-config.ts';
+import { getLogger } from '../../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator';
 
 // Import Phase 3 systems
-import type { Phase3EnsembleLearning } from '../learning/phase-3-ensemble.ts';
-import type { NeuralEnsembleCoordinator } from '../learning/neural-ensemble-coordinator.ts';
+import type { Phase3EnsembleLearning } from '../learning/phase-3-ensemble';
+import type { NeuralEnsembleCoordinator } from '../learning/neural-ensemble-coordinator';
 import {
   Phase3DataBridge,
   type Phase3DataBridgeConfig,
-} from './phase3-data-bridge.ts';
+} from './phase3-data-bridge';
 
 // Import swarm types
-import type { SwarmService } from '../../../services/coordination/swarm-service.ts';
-import type { AgentStatus, TaskStatus } from '../../../types/swarm-types.ts';
+import type { SwarmService } from '../../../services/coordination/swarm-service';
+import type { AgentStatus, TaskStatus } from '../../../types/swarm-types';
 
 const logger = getLogger(
   'coordination-swarm-integration-swarm-ensemble-integrator'

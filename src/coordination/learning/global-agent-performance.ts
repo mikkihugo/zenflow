@@ -10,14 +10,14 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
-import type { AgentType } from '../../types/agent-types.ts';
-import type { AgentPerformanceHistory } from '../agents/swarm-commander.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+import type { AgentType } from '../../types/agent-types';
+import type { AgentPerformanceHistory } from '../agents/swarm-commander';
 
 export interface GlobalAgentPerformanceConfig {
   enabled: boolean;

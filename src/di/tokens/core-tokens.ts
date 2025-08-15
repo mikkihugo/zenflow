@@ -6,8 +6,8 @@
  * @file Core-tokens implementation.
  */
 
-import { createToken } from './token-factory.ts';
-import type { SystemEvent } from '../../coordination/core/event-bus.ts';
+import { createToken } from './token-factory';
+import type { SystemEvent } from '../../coordination/core/event-bus';
 
 // Core infrastructure interfaces (to be implemented)
 export interface ILogger {

@@ -6,7 +6,7 @@
  * @file Neural-tokens implementation.
  */
 
-import { createToken } from './token-factory.ts';
+import { createToken } from './token-factory';
 
 // Neural network interfaces (to be implemented)
 export interface INeuralNetworkTrainer {

@@ -4,7 +4,7 @@
  * Interface-specific configuration utilities that integrate with the unified config system.
  */
 
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-shared-config');
 

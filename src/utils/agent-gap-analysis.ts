@@ -2,7 +2,7 @@
  * @file agent-gap-analysis implementation
  */
 
-import { getLogger } from './logger.ts';
+import { getLogger } from './logger';
 
 const logger = getLogger('agent-gap-analysis');
 

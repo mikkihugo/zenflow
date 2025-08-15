@@ -13,7 +13,7 @@ const logger = getLogger('coordination-swarm-core-claude-integration-docs');
 
 import { promises as fs } from 'node:fs';
 import * as path from 'node:path';
-import { AdvancedCommandsGenerator } from './advanced-commands.ts';
+import { AdvancedCommandsGenerator } from './advanced-commands';
 
 interface DocsGeneratorOptions {
   workingDir?: string;
