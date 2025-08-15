@@ -158,6 +158,10 @@ nginx*.conf
 # Python files (not used in Node.js project)
 requirements.txt
 *.py
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
 # Config file variants/duplicates
 .eslintrc.*.json
