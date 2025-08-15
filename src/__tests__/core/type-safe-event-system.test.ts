@@ -930,7 +930,11 @@ describe('Event System Edge Cases', () => {
     );
 
     expect(routingResults).toHaveLength(2);
-    expect(routingResults.some((r) => (r as any).domain === 'coordination')).toBe(true);
-    expect(routingResults.some((r) => (r as any).domain === 'workflows')).toBe(true);
+    expect(
+      routingResults.some((r) => (r as any).domain === 'coordination')
+    ).toBe(true);
+    expect(routingResults.some((r) => (r as any).domain === 'workflows')).toBe(
+      true
+    );
   });
 });

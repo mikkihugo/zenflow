@@ -9,25 +9,33 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { SharedFACTCapable } from '../shared-fact-system.ts';
-import type { IEventBus } from '../../core/event-bus.ts';
-import type { ILogger } from '../../core/logger.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
-import { generateId } from '../swarm/core/utils.ts';
+import { SharedFACTCapable } from '../shared-fact-system.js';
+import type { IEventBus } from '../../core/event-bus.js';
+import type { ILogger } from '../../core/logger.js';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.js';
 import type {
+  QueenCommanderConfig,
+  AgentMetrics,
+  AgentError,
+  QueenTemplate,
+  QueenCluster,
+  QueenPool,
+  QueenHealth,
+  QueenType,
   QueenCapabilities,
   QueenConfig,
   QueenEnvironment,
-  QueenError,
+  QueenState,
   QueenId,
   QueenMetrics,
-  QueenState,
-  QueenStatus,
-  QueenType,
-} from '../types/queen-types.ts';
+  QueenStatus
+} from '../types/queen-types.js';
+import { generateId } from '../swarm/core/utils.js';
+import type { SPARCPhase } from '../swarm/sparc/types/sparc-types.js';
 // Strategic Task Coordination (Business Focus Only)
 
-export interface QueenCoordinatorConfig {
+// QueenCoordinatorConfig imported from types
+interface LocalQueenCoordinatorConfig {
   maxQueens: number;
   defaultTimeout: number;
   heartbeatInterval: number;
@@ -52,7 +60,7 @@ export interface QueenCoordinatorConfig {
   };
 }
 
-export interface QueenTemplate {
+interface LocalQueenTemplate {
   name: string;
   type: QueenType;
   capabilities: QueenCapabilities;
@@ -62,7 +70,7 @@ export interface QueenTemplate {
   dependencies?: string[];
 }
 
-export interface QueenCluster {
+interface LocalQueenCluster {
   id: string;
   name: string;
   queens: QueenId[];
@@ -72,7 +80,7 @@ export interface QueenCluster {
   autoScale: boolean;
 }
 
-export interface QueenPool {
+interface LocalQueenPool {
   id: string;
   name: string;
   type: QueenType;
@@ -104,7 +112,7 @@ export interface ScalingRule {
   conditions?: string[];
 }
 
-export interface QueenHealth {
+interface LocalQueenHealth {
   queenId: string;
   overall: number; // 0-1 health score
   components: {
@@ -153,7 +161,11 @@ export interface QueenSPARCAssignment {
 // TIER 2: Coordination Learning Interfaces
 export interface CrossSwarmPattern {
   patternId: string;
-  patternType: 'resource-allocation' | 'task-distribution' | 'agent-collaboration' | 'bottleneck-resolution';
+  patternType:
+    | 'resource-allocation'
+    | 'task-distribution'
+    | 'agent-collaboration'
+    | 'bottleneck-resolution';
   sourceSwarms: string[];
   effectiveness: number; // 0-1 effectiveness score
   contexts: string[]; // Context where this pattern works well
@@ -269,18 +281,21 @@ export class QueenCommander extends EventEmitter {
     adaptiveResourceAllocation: true,
     learningHistorySize: 100,
   };
-  
+
   // Learning data structures
   private crossSwarmPatterns = new Map<string, CrossSwarmPattern>();
   private swarmPerformanceProfiles = new Map<string, SwarmPerformanceProfile>();
-  private resourceOptimizationStrategies = new Map<string, ResourceOptimizationStrategy>();
+  private resourceOptimizationStrategies = new Map<
+    string,
+    ResourceOptimizationStrategy
+  >();
   private coordinationLearningHistory: Array<{
     timestamp: Date;
     eventType: string;
-    data: any;
+    data: unknown;
     impact: number;
   }> = [];
-  
+
   // Learning intervals
   private coordinationLearningInterval?: NodeJS.Timeout;
 
@@ -304,8 +319,10 @@ export class QueenCommander extends EventEmitter {
     this.memory = memory;
 
     this.config = {
-      maxQueens: 50,
-      defaultTimeout: 30000,
+      id: 'queen-commander-1',
+      name: 'Primary Queen Commander',
+      maxConcurrentQueens: 50,
+      // defaultTimeout: 30000, // Property does not exist on QueenCommanderConfig
       heartbeatInterval: 10000,
       healthCheckInterval: 30000,
       autoRestart: true,
@@ -321,17 +338,22 @@ export class QueenCommander extends EventEmitter {
         borgProtocol: true,
       },
       environmentDefaults: {
-        runtime: 'deno',
+        runtime: 'deno' as const,
         workingDirectory: './agents',
         tempDirectory: './tmp',
         logDirectory: './logs',
+      },
+      clusterConfig: {
+        maxNodes: 10,
+        replicationFactor: 2,
+        balancingStrategy: 'least_loaded' as const,
       },
       ...config,
     };
 
     this.setupEventHandlers();
     this.initializeDefaultTemplates();
-    
+
     // Initialize TIER 2 coordination learning
     if (this.coordinationLearningConfig.enabled) {
       this.initializeCoordinationLearning();
@@ -381,25 +403,25 @@ export class QueenCommander extends EventEmitter {
     });
 
     // TIER 2: Coordination learning event handlers
-    this.eventBus.on('swarm:*:task:completed', (data: any) => {
+    this.eventBus.on('swarm:*:task:completed', (data: unknown) => {
       if (this.coordinationLearningConfig.enabled) {
         this.analyzeSwarmTaskCompletion(data);
       }
     });
-    
-    this.eventBus.on('learning:coordination:cycle', (data: any) => {
+
+    this.eventBus.on('learning:coordination:cycle', (data: unknown) => {
       if (this.coordinationLearningConfig.enabled) {
         this.performCoordinationLearningCycle(data);
       }
     });
-    
-    this.eventBus.on('swarm:performance:degraded', (data: any) => {
+
+    this.eventBus.on('swarm:performance:degraded', (data: unknown) => {
       if (this.coordinationLearningConfig.adaptiveResourceAllocation) {
         this.handleSwarmPerformanceDegradation(data);
       }
     });
-    
-    this.eventBus.on('queen:coordination:learning:request', (data: any) => {
+
+    this.eventBus.on('queen:coordination:learning:request', (data: unknown) => {
       this.handleLearningCoordinationRequest(data);
     });
   }
@@ -407,12 +429,13 @@ export class QueenCommander extends EventEmitter {
   private initializeDefaultTemplates(): void {
     // Research agent template
     this.templates.set('researcher', {
+      id: 'researcher-template',
       name: 'Research Agent',
-      type: 'researcher',
+      type: 'researcher' as QueenType,
       capabilities: {
         codeGeneration: false,
-        codeReview: false,
-        testing: false,
+        // codeReview: false, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: true,
         analysis: true,
@@ -432,7 +455,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.9,
       },
       config: {
-        autonomyLevel: 0.8,
+        // autonomyLevel: 0.8,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 20,
@@ -446,7 +469,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { verbose: true, detailed: true },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/researcher',
         tempDirectory: './tmp/researcher',
@@ -461,12 +484,13 @@ export class QueenCommander extends EventEmitter {
 
     // Developer agent template
     this.templates.set('coder', {
+      id: 'coder-template',
       name: 'Developer Agent',
-      type: 'coder',
+      type: 'coder' as QueenType,
       capabilities: {
         codeGeneration: true,
-        codeReview: true,
-        testing: true,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: true, // Property does not exist on QueenCapabilities
         documentation: true,
         research: false,
         analysis: true,
@@ -486,7 +510,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.95,
       },
       config: {
-        autonomyLevel: 0.6,
+        // autonomyLevel: 0.6,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 10,
@@ -505,7 +529,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { codeStyle: 'functional', testFramework: 'deno-test' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/developer',
         tempDirectory: './tmp/developer',
@@ -525,12 +549,13 @@ export class QueenCommander extends EventEmitter {
   private initializeSpecializedTemplates(): void {
     // Analyzer template
     this.templates.set('analyst', {
+      id: 'analyst-template',
       name: 'Analyzer Agent',
-      type: 'analyst',
+      type: 'analyst' as QueenType,
       capabilities: {
         codeGeneration: false,
-        codeReview: true,
-        testing: false,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: false,
         analysis: true,
@@ -550,7 +575,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.9,
       },
       config: {
-        autonomyLevel: 0.7,
+        // autonomyLevel: 0.7,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 15,
@@ -564,7 +589,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { outputFormat: 'detailed', includeCharts: true },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/analyzer',
         tempDirectory: './tmp/analyzer',
@@ -583,8 +608,8 @@ export class QueenCommander extends EventEmitter {
       type: 'requirements-engineer',
       capabilities: {
         codeGeneration: false,
-        codeReview: false,
-        testing: false,
+        // codeReview: false, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: true,
         analysis: true,
@@ -604,7 +629,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.95,
       },
       config: {
-        autonomyLevel: 0.8,
+        // autonomyLevel: 0.8,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 10,
@@ -618,7 +643,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { format: 'markdown', style: 'formal' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/requirements-engineer',
         tempDirectory: './tmp/requirements-engineer',
@@ -637,8 +662,8 @@ export class QueenCommander extends EventEmitter {
       type: 'design-architect',
       capabilities: {
         codeGeneration: false,
-        codeReview: true,
-        testing: false,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: true,
         analysis: true,
@@ -658,7 +683,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.95,
       },
       config: {
-        autonomyLevel: 0.7,
+        // autonomyLevel: 0.7,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 5,
@@ -672,7 +697,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { diagramFormat: 'mermaid', detailLevel: 'high' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/design-architect',
         tempDirectory: './tmp/design-architect',
@@ -691,8 +716,8 @@ export class QueenCommander extends EventEmitter {
       type: 'task-planner',
       capabilities: {
         codeGeneration: false,
-        codeReview: false,
-        testing: false,
+        // codeReview: false, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: false,
         analysis: true,
@@ -712,7 +737,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.9,
       },
       config: {
-        autonomyLevel: 0.8,
+        // autonomyLevel: 0.8,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 20,
@@ -730,7 +755,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { outputFormat: 'markdown-checkbox', granularity: 'fine' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/task-planner',
         tempDirectory: './tmp/task-planner',
@@ -749,8 +774,8 @@ export class QueenCommander extends EventEmitter {
       type: 'developer',
       capabilities: {
         codeGeneration: true,
-        codeReview: true,
-        testing: true,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: true, // Property does not exist on QueenCapabilities
         documentation: true,
         research: false,
         analysis: true,
@@ -770,7 +795,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.95,
       },
       config: {
-        autonomyLevel: 0.6,
+        // autonomyLevel: 0.6,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 10,
@@ -789,7 +814,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { codeStyle: 'functional', testFramework: 'deno-test' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/developer',
         tempDirectory: './tmp/developer',
@@ -808,8 +833,8 @@ export class QueenCommander extends EventEmitter {
       type: 'system-architect',
       capabilities: {
         codeGeneration: false,
-        codeReview: true,
-        testing: false,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: true,
         analysis: true,
@@ -838,7 +863,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.95,
       },
       config: {
-        autonomyLevel: 0.8,
+        // autonomyLevel: 0.8,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 5,
@@ -856,7 +881,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { scope: 'system-wide', focusArea: 'architecture' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/system-architect',
         tempDirectory: './tmp/system-architect',
@@ -875,8 +900,8 @@ export class QueenCommander extends EventEmitter {
       type: 'tester',
       capabilities: {
         codeGeneration: false,
-        codeReview: true,
-        testing: true,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: true, // Property does not exist on QueenCapabilities
         documentation: true,
         research: false,
         analysis: true,
@@ -896,7 +921,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.9,
       },
       config: {
-        autonomyLevel: 0.7,
+        // autonomyLevel: 0.7,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 15,
@@ -910,7 +935,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { testFramework: 'deno-test', coverage: 'comprehensive' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/tester',
         tempDirectory: './tmp/tester',
@@ -929,8 +954,8 @@ export class QueenCommander extends EventEmitter {
       type: 'reviewer',
       capabilities: {
         codeGeneration: false,
-        codeReview: true,
-        testing: false,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: false,
         analysis: true,
@@ -950,7 +975,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.95,
       },
       config: {
-        autonomyLevel: 0.8,
+        // autonomyLevel: 0.8,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 12,
@@ -968,7 +993,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { style: 'thorough', focus: 'quality-and-security' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/reviewer',
         tempDirectory: './tmp/reviewer',
@@ -987,8 +1012,8 @@ export class QueenCommander extends EventEmitter {
       type: 'steering-author',
       capabilities: {
         codeGeneration: false,
-        codeReview: true,
-        testing: false,
+        // codeReview: true, // Property does not exist on QueenCapabilities
+        // testing: false, // Property does not exist on QueenCapabilities
         documentation: true,
         research: true,
         analysis: true,
@@ -1008,7 +1033,7 @@ export class QueenCommander extends EventEmitter {
         quality: 0.98,
       },
       config: {
-        autonomyLevel: 0.7,
+        // autonomyLevel: 0.7,
         learningEnabled: true,
         adaptationEnabled: true,
         maxTasksPerHour: 5,
@@ -1026,7 +1051,7 @@ export class QueenCommander extends EventEmitter {
         preferences: { style: 'concise', tone: 'formal' },
       },
       environment: {
-        runtime: 'deno',
+        // runtime: 'deno',
         version: '1.40.0',
         workingDirectory: './agents/steering-author',
         tempDirectory: './tmp/steering-author',
@@ -1065,56 +1090,71 @@ export class QueenCommander extends EventEmitter {
    */
   private initializeCoordinationLearning(): void {
     this.logger.info('Initializing TIER 2 coordination learning system');
-    
+
     // Load persistent coordination learning data
     this.loadCoordinationLearningData();
-    
+
     // Start coordination learning cycle
-    this.coordinationLearningInterval = setInterval(() => {
-      this.performResourceOptimizationCycle();
-    }, this.coordinationLearningConfig.resourceOptimizationInterval * 60 * 1000);
-    
-    this.logger.info('TIER 2 coordination learning initialized - cross-swarm pattern discovery active');
+    this.coordinationLearningInterval = setInterval(
+      () => {
+        this.performResourceOptimizationCycle();
+      },
+      this.coordinationLearningConfig.resourceOptimizationInterval * 60 * 1000
+    );
+
+    this.logger.info(
+      'TIER 2 coordination learning initialized - cross-swarm pattern discovery active'
+    );
   }
 
   /**
    * Analyze completed swarm tasks for cross-swarm patterns
    */
-  private async analyzeSwarmTaskCompletion(taskData: any): Promise<void> {
+  private async analyzeSwarmTaskCompletion(taskData: unknown): Promise<void> {
     const swarmId = taskData.swarmId;
     const performance = taskData.metrics?.qualityScore || 0.8;
     const resourceUsage = taskData.metrics?.resourceUsage || {};
     const duration = taskData.duration || 0;
-    
+
     // Update swarm performance profile
     await this.updateSwarmPerformanceProfile(swarmId, taskData);
-    
+
     // Detect cross-swarm collaboration patterns
     if (taskData.collaboratedWith?.length > 0) {
       await this.detectCrossSwarmCollaborationPattern(taskData);
     }
-    
+
     // Analyze resource optimization opportunities
     if (this.coordinationLearningConfig.adaptiveResourceAllocation) {
       await this.analyzeResourceOptimizationOpportunity(taskData);
     }
-    
+
     // Record learning event
-    this.recordCoordinationLearningEvent('swarm_task_completion', taskData, performance);
-    
-    this.logger.debug(`Analyzed swarm task completion for coordination learning: ${swarmId}`, {
-      performance,
-      resourceUsage,
-      duration,
-    });
+    this.recordCoordinationLearningEvent(
+      'swarm_task_completion',
+      taskData,
+      performance
+    );
+
+    this.logger.debug(
+      `Analyzed swarm task completion for coordination learning: ${swarmId}`,
+      {
+        performance,
+        resourceUsage,
+        duration,
+      }
+    );
   }
 
   /**
    * Update swarm performance profile for better coordination decisions
    */
-  private async updateSwarmPerformanceProfile(swarmId: string, taskData: any): Promise<void> {
+  private async updateSwarmPerformanceProfile(
+    swarmId: string,
+    taskData: unknown
+  ): Promise<void> {
     let profile = this.swarmPerformanceProfiles.get(swarmId);
-    
+
     if (!profile) {
       profile = {
         swarmId,
@@ -1135,24 +1175,25 @@ export class QueenCommander extends EventEmitter {
     } else {
       // Update with weighted average for better learning
       const weight = 0.8;
-      profile.averagePerformance = (profile.averagePerformance * weight) + 
-        ((taskData.metrics?.qualityScore || 0.8) * (1 - weight));
-      
+      profile.averagePerformance =
+        profile.averagePerformance * weight +
+        (taskData.metrics?.qualityScore || 0.8) * (1 - weight);
+
       // Add new task type if not already present
       if (taskData.taskType && !profile.taskTypes.includes(taskData.taskType)) {
         profile.taskTypes.push(taskData.taskType);
       }
-      
+
       // Update resource allocation based on successful patterns
       if (taskData.metrics?.qualityScore > 0.9) {
-        profile.optimalResourceAllocation.cpu = 
-          (profile.optimalResourceAllocation.cpu * weight) + 
-          ((taskData.metrics.resourceUsage?.cpu || 0.5) * (1 - weight));
-        profile.optimalResourceAllocation.memory = 
-          (profile.optimalResourceAllocation.memory * weight) + 
-          ((taskData.metrics.resourceUsage?.memory || 0.5) * (1 - weight));
+        profile.optimalResourceAllocation.cpu =
+          profile.optimalResourceAllocation.cpu * weight +
+          (taskData.metrics.resourceUsage?.cpu || 0.5) * (1 - weight);
+        profile.optimalResourceAllocation.memory =
+          profile.optimalResourceAllocation.memory * weight +
+          (taskData.metrics.resourceUsage?.memory || 0.5) * (1 - weight);
       }
-      
+
       // Identify bottlenecks from poor performance
       if (taskData.metrics?.qualityScore < 0.7) {
         const bottleneck = this.identifyBottleneckFromTaskData(taskData);
@@ -1160,7 +1201,7 @@ export class QueenCommander extends EventEmitter {
           profile.bottlenecks.push(bottleneck);
         }
       }
-      
+
       // Identify strength areas from high performance
       if (taskData.metrics?.qualityScore > 0.9) {
         const strength = taskData.taskType || 'task_execution';
@@ -1168,12 +1209,12 @@ export class QueenCommander extends EventEmitter {
           profile.strengthAreas.push(strength);
         }
       }
-      
+
       profile.lastProfileUpdate = new Date();
     }
-    
+
     this.swarmPerformanceProfiles.set(swarmId, profile);
-    
+
     // Save to persistent memory for cross-session learning
     await this.saveCoordinationLearningData();
   }
@@ -1181,21 +1222,28 @@ export class QueenCommander extends EventEmitter {
   /**
    * Detect cross-swarm collaboration patterns
    */
-  private async detectCrossSwarmCollaborationPattern(taskData: any): Promise<void> {
+  private async detectCrossSwarmCollaborationPattern(
+    taskData: unknown
+  ): Promise<void> {
     const mainSwarmId = taskData.swarmId;
     const collaboratedSwarms = taskData.collaboratedWith || [];
     const performance = taskData.metrics?.qualityScore || 0.8;
-    
-    if (performance > this.coordinationLearningConfig.patternDiscoveryThreshold) {
+
+    if (
+      performance > this.coordinationLearningConfig.patternDiscoveryThreshold
+    ) {
       // This was a successful collaboration - learn from it
       const patternId = `collab_${mainSwarmId}_${collaboratedSwarms.join('_')}_${Date.now()}`;
-      
+
       const pattern: CrossSwarmPattern = {
         patternId,
         patternType: 'agent-collaboration',
         sourceSwarms: [mainSwarmId, ...collaboratedSwarms],
         effectiveness: performance,
-        contexts: [taskData.taskType || 'general', taskData.domain || 'development'],
+        contexts: [
+          taskData.taskType || 'general',
+          taskData.domain || 'development',
+        ],
         resourceOptimization: {
           cpuReduction: taskData.metrics?.resourceSavings?.cpu || 0,
           memoryReduction: taskData.metrics?.resourceSavings?.memory || 0,
@@ -1210,14 +1258,17 @@ export class QueenCommander extends EventEmitter {
         usageCount: 1,
         lastUsed: new Date(),
       };
-      
+
       this.crossSwarmPatterns.set(patternId, pattern);
-      
-      this.logger.info(`Discovered cross-swarm collaboration pattern: ${patternId}`, {
-        effectiveness: performance,
-        swarms: pattern.sourceSwarms.length,
-      });
-      
+
+      this.logger.info(
+        `Discovered cross-swarm collaboration pattern: ${patternId}`,
+        {
+          effectiveness: performance,
+          swarms: pattern.sourceSwarms.length,
+        }
+      );
+
       // Save learning data
       await this.saveCoordinationLearningData();
     }
@@ -1226,28 +1277,34 @@ export class QueenCommander extends EventEmitter {
   /**
    * Analyze resource optimization opportunities
    */
-  private async analyzeResourceOptimizationOpportunity(taskData: any): Promise<void> {
+  private async analyzeResourceOptimizationOpportunity(
+    taskData: unknown
+  ): Promise<void> {
     const swarmId = taskData.swarmId;
     const resourceUsage = taskData.metrics?.resourceUsage || {};
     const performance = taskData.metrics?.qualityScore || 0.8;
     const duration = taskData.duration || 0;
-    
+
     // Check if this task used resources efficiently
     const cpuEfficiency = performance / (resourceUsage.cpu || 0.5);
     const memoryEfficiency = performance / (resourceUsage.memory || 0.5);
     const timeEfficiency = performance / (duration / 1000 / 60); // performance per minute
-    
+
     // If efficiency is high, this could be a good optimization strategy
     if (cpuEfficiency > 1.5 && memoryEfficiency > 1.5 && timeEfficiency > 0.1) {
       const strategyId = `opt_${taskData.taskType}_${swarmId}_${Date.now()}`;
-      
+
       const strategy: ResourceOptimizationStrategy = {
         strategyId,
         name: `Optimized ${taskData.taskType} execution`,
         targetScenario: taskData.taskType || 'general',
         swarmConfiguration: {
-          optimalSwarmSizes: { [taskData.commanderType]: taskData.agentCount || 1 },
-          agentTypeDistribution: this.calculateAgentTypeDistribution(taskData.agentTypes || []),
+          optimalSwarmSizes: {
+            [taskData.commanderType]: taskData.agentCount || 1,
+          },
+          agentTypeDistribution: this.calculateAgentTypeDistribution(
+            taskData.agentTypes || []
+          ),
           taskPriorityWeights: { [taskData.priority || 'medium']: 1.0 },
         },
         expectedGains: {
@@ -1255,51 +1312,58 @@ export class QueenCommander extends EventEmitter {
           resourceSavings: (cpuEfficiency + memoryEfficiency) * 0.05,
           qualityImprovement: (performance - 0.8) * 0.1,
         },
-        validationResults: [{
-          timestamp: new Date(),
-          actualGains: {
-            throughput: timeEfficiency,
-            resources: cpuEfficiency,
-            quality: performance,
+        validationResults: [
+          {
+            timestamp: new Date(),
+            actualGains: {
+              throughput: timeEfficiency,
+              resources: cpuEfficiency,
+              quality: performance,
+            },
+            success: true,
           },
-          success: true,
-        }],
+        ],
       };
-      
+
       this.resourceOptimizationStrategies.set(strategyId, strategy);
-      
-      this.logger.info(`Discovered resource optimization strategy: ${strategyId}`, {
-        cpuEfficiency: cpuEfficiency.toFixed(2),
-        memoryEfficiency: memoryEfficiency.toFixed(2),
-        timeEfficiency: timeEfficiency.toFixed(2),
-      });
+
+      this.logger.info(
+        `Discovered resource optimization strategy: ${strategyId}`,
+        {
+          cpuEfficiency: cpuEfficiency.toFixed(2),
+          memoryEfficiency: memoryEfficiency.toFixed(2),
+          timeEfficiency: timeEfficiency.toFixed(2),
+        }
+      );
     }
   }
 
   /**
    * Perform periodic coordination learning cycle
    */
-  private async performCoordinationLearningCycle(data: any): Promise<void> {
+  private async performCoordinationLearningCycle(data: unknown): Promise<void> {
     this.logger.info('Performing TIER 2 coordination learning cycle');
-    
+
     // Analyze cross-swarm patterns for effectiveness
     await this.analyzePatternEffectiveness();
-    
+
     // Update resource optimization strategies
     await this.updateResourceOptimizationStrategies();
-    
+
     // Generate recommendations for swarm coordination
     const recommendations = await this.generateCoordinationRecommendations();
-    
+
     // Apply adaptive resource allocation if enabled
     if (this.coordinationLearningConfig.adaptiveResourceAllocation) {
       await this.applyAdaptiveResourceAllocation(recommendations);
     }
-    
+
     // Clean up old learning data
     this.cleanupLearningHistory();
-    
-    this.logger.info(`Coordination learning cycle completed - ${recommendations.length} recommendations generated`);
+
+    this.logger.info(
+      `Coordination learning cycle completed - ${recommendations.length} recommendations generated`
+    );
   }
 
   /**
@@ -1307,47 +1371,60 @@ export class QueenCommander extends EventEmitter {
    */
   private async performResourceOptimizationCycle(): Promise<void> {
     this.logger.info('Performing resource optimization cycle');
-    
+
     // Analyze current resource utilization across all swarms
     const resourceAnalysis = this.analyzeGlobalResourceUtilization();
-    
+
     // Find optimization opportunities
-    const optimizations = await this.findResourceOptimizationOpportunities(resourceAnalysis);
-    
+    const optimizations =
+      await this.findResourceOptimizationOpportunities(resourceAnalysis);
+
     // Apply validated optimizations
     for (const optimization of optimizations) {
       if (this.validateResourceOptimization(optimization)) {
         await this.applyResourceOptimization(optimization);
       }
     }
-    
-    this.logger.info(`Resource optimization cycle completed - ${optimizations.length} optimizations considered`);
+
+    this.logger.info(
+      `Resource optimization cycle completed - ${optimizations.length} optimizations considered`
+    );
   }
 
   /**
    * Handle swarm performance degradation with adaptive coordination
    */
-  private async handleSwarmPerformanceDegradation(data: any): Promise<void> {
+  private async handleSwarmPerformanceDegradation(
+    data: unknown
+  ): Promise<void> {
     const swarmId = data.swarmId;
     const degradationReason = data.reason;
-    
-    this.logger.warn(`Swarm performance degradation detected: ${swarmId} - ${degradationReason}`);
-    
+
+    this.logger.warn(
+      `Swarm performance degradation detected: ${swarmId} - ${degradationReason}`
+    );
+
     // Find applicable cross-swarm patterns that might help
-    const applicablePatterns = Array.from(this.crossSwarmPatterns.values())
-      .filter(pattern => 
-        pattern.patternType === 'bottleneck-resolution' && 
+    const applicablePatterns = Array.from(
+      this.crossSwarmPatterns.values()
+    ).filter(
+      (pattern) =>
+        pattern.patternType === 'bottleneck-resolution' &&
         pattern.effectiveness > 0.8
-      );
-    
+    );
+
     // Apply the most effective pattern
     if (applicablePatterns.length > 0) {
-      const bestPattern = applicablePatterns.sort((a, b) => b.effectiveness - a.effectiveness)[0];
+      const bestPattern = applicablePatterns.sort(
+        (a, b) => b.effectiveness - a.effectiveness
+      )[0];
       await this.applyCrossSwarmPattern(swarmId, bestPattern);
-      
-      this.logger.info(`Applied cross-swarm pattern to resolve performance degradation: ${bestPattern.patternId}`);
+
+      this.logger.info(
+        `Applied cross-swarm pattern to resolve performance degradation: ${bestPattern.patternId}`
+      );
     }
-    
+
     // Request Learning Orchestrator to consider learning mode change
     this.eventBus.emit('queen:coordinator:learning:request', {
       swarmId,
@@ -1361,12 +1438,16 @@ export class QueenCommander extends EventEmitter {
   /**
    * Handle learning coordination requests
    */
-  private async handleLearningCoordinationRequest(data: any): Promise<void> {
+  private async handleLearningCoordinationRequest(
+    data: unknown
+  ): Promise<void> {
     const requestType = data.requestType;
     const swarmIds = data.swarmIds || [];
-    
-    this.logger.info(`Handling learning coordination request: ${requestType} for ${swarmIds.length} swarms`);
-    
+
+    this.logger.info(
+      `Handling learning coordination request: ${requestType} for ${swarmIds.length} swarms`
+    );
+
     switch (requestType) {
       case 'pattern_sharing':
         await this.sharePatternsBetweenSwarms(swarmIds);
@@ -1378,20 +1459,24 @@ export class QueenCommander extends EventEmitter {
         await this.orchestrateCollaborativeLearning(swarmIds);
         break;
       default:
-        this.logger.warn(`Unknown learning coordination request type: ${requestType}`);
+        this.logger.warn(
+          `Unknown learning coordination request type: ${requestType}`
+        );
     }
   }
 
   /**
    * Generate coordination recommendations based on learned patterns
    */
-  private async generateCoordinationRecommendations(): Promise<Array<{
-    type: string;
-    swarmId: string;
-    recommendation: string;
-    expectedImprovement: number;
-    confidence: number;
-  }>> {
+  private async generateCoordinationRecommendations(): Promise<
+    Array<{
+      type: string;
+      swarmId: string;
+      recommendation: string;
+      expectedImprovement: number;
+      confidence: number;
+    }>
+  > {
     const recommendations: Array<{
       type: string;
       swarmId: string;
@@ -1399,41 +1484,52 @@ export class QueenCommander extends EventEmitter {
       expectedImprovement: number;
       confidence: number;
     }> = [];
-    
+
     // Analyze each swarm performance profile for improvement opportunities
     for (const [swarmId, profile] of this.swarmPerformanceProfiles.entries()) {
       if (profile.averagePerformance < 0.8) {
         // Find patterns that could help this swarm
-        const helpfulPatterns = Array.from(this.crossSwarmPatterns.values())
-          .filter(pattern => 
-            pattern.effectiveness > profile.averagePerformance && 
-            pattern.contexts.some(context => profile.taskTypes.includes(context))
-          );
-        
+        const helpfulPatterns = Array.from(
+          this.crossSwarmPatterns.values()
+        ).filter(
+          (pattern) =>
+            pattern.effectiveness > profile.averagePerformance &&
+            pattern.contexts.some((context) =>
+              profile.taskTypes.includes(context)
+            )
+        );
+
         if (helpfulPatterns.length > 0) {
-          const bestPattern = helpfulPatterns.sort((a, b) => b.effectiveness - a.effectiveness)[0];
-          
+          const bestPattern = helpfulPatterns.sort(
+            (a, b) => b.effectiveness - a.effectiveness
+          )[0];
+
           recommendations.push({
             type: 'pattern_application',
             swarmId,
             recommendation: `Apply cross-swarm pattern ${bestPattern.patternId} to improve performance`,
-            expectedImprovement: bestPattern.effectiveness - profile.averagePerformance,
+            expectedImprovement:
+              bestPattern.effectiveness - profile.averagePerformance,
             confidence: bestPattern.usageCount > 3 ? 0.9 : 0.7,
           });
         }
-        
+
         // Check for resource optimization opportunities
-        const applicableStrategies = Array.from(this.resourceOptimizationStrategies.values())
-          .filter(strategy => 
-            strategy.targetScenario === 'general' || 
+        const applicableStrategies = Array.from(
+          this.resourceOptimizationStrategies.values()
+        ).filter(
+          (strategy) =>
+            strategy.targetScenario === 'general' ||
             profile.taskTypes.includes(strategy.targetScenario)
-          );
-        
+        );
+
         if (applicableStrategies.length > 0) {
-          const bestStrategy = applicableStrategies.sort((a, b) => 
-            b.expectedGains.throughputIncrease - a.expectedGains.throughputIncrease
+          const bestStrategy = applicableStrategies.sort(
+            (a, b) =>
+              b.expectedGains.throughputIncrease -
+              a.expectedGains.throughputIncrease
           )[0];
-          
+
           recommendations.push({
             type: 'resource_optimization',
             swarmId,
@@ -1444,81 +1540,100 @@ export class QueenCommander extends EventEmitter {
         }
       }
     }
-    
+
     return recommendations;
   }
 
   // === TIER 2 UTILITY METHODS ===
 
-  private identifyBottleneckFromTaskData(taskData: any): string | null {
+  private identifyBottleneckFromTaskData(taskData: unknown): string | null {
     if (taskData.metrics?.resourceUsage?.cpu > 0.9) return 'cpu_bottleneck';
-    if (taskData.metrics?.resourceUsage?.memory > 0.9) return 'memory_bottleneck';
-    if (taskData.duration > taskData.estimatedDuration * 2) return 'time_bottleneck';
-    if (taskData.agentErrors?.length > 0) return 'agent_coordination_bottleneck';
+    if (taskData.metrics?.resourceUsage?.memory > 0.9)
+      return 'memory_bottleneck';
+    if (taskData.duration > taskData.estimatedDuration * 2)
+      return 'time_bottleneck';
+    if (taskData.agentErrors?.length > 0)
+      return 'agent_coordination_bottleneck';
     return null;
   }
 
-  private calculateAgentTypeDistribution(agentTypes: string[]): Record<string, number> {
+  private calculateAgentTypeDistribution(
+    agentTypes: string[]
+  ): Record<string, number> {
     const distribution: Record<string, number> = {};
     const total = agentTypes.length;
-    
+
     for (const agentType of agentTypes) {
-      distribution[agentType] = (distribution[agentType] || 0) + (1 / total);
+      distribution[agentType] = (distribution[agentType] || 0) + 1 / total;
     }
-    
+
     return distribution;
   }
 
   private analyzeGlobalResourceUtilization(): {
     totalCpu: number;
     totalMemory: number;
-    swarmUtilizations: Record<string, { cpu: number; memory: number; efficiency: number }>;
+    swarmUtilizations: Record<
+      string,
+      { cpu: number; memory: number; efficiency: number }
+    >;
   } {
     let totalCpu = 0;
     let totalMemory = 0;
-    const swarmUtilizations: Record<string, { cpu: number; memory: number; efficiency: number }> = {};
-    
+    const swarmUtilizations: Record<
+      string,
+      { cpu: number; memory: number; efficiency: number }
+    > = {};
+
     for (const [swarmId, profile] of this.swarmPerformanceProfiles.entries()) {
       const cpu = profile.optimalResourceAllocation.cpu;
       const memory = profile.optimalResourceAllocation.memory;
       const efficiency = profile.averagePerformance;
-      
+
       totalCpu += cpu;
       totalMemory += memory;
       swarmUtilizations[swarmId] = { cpu, memory, efficiency };
     }
-    
+
     return { totalCpu, totalMemory, swarmUtilizations };
   }
 
-  private async findResourceOptimizationOpportunities(resourceAnalysis: any): Promise<any[]> {
-    const opportunities: any[] = [];
-    
+  private async findResourceOptimizationOpportunities(
+    resourceAnalysis: unknown
+  ): Promise<any[]> {
+    const opportunities: unknown[] = [];
+
     // Find overutilized swarms that could benefit from load balancing
-    Object.entries(resourceAnalysis.swarmUtilizations).forEach(([swarmId, utilization]: [string, any]) => {
-      if (utilization.cpu > 0.8 || utilization.memory > 0.8) {
-        if (utilization.efficiency < 0.7) {
-          opportunities.push({
-            type: 'load_balancing',
-            swarmId,
-            suggestion: 'Redistribute load to underutilized swarms',
-            expectedGain: 0.2,
-          });
+    Object.entries(resourceAnalysis.swarmUtilizations).forEach(
+      ([swarmId, utilization]: [string, any]) => {
+        if (utilization.cpu > 0.8 || utilization.memory > 0.8) {
+          if (utilization.efficiency < 0.7) {
+            opportunities.push({
+              type: 'load_balancing',
+              swarmId,
+              suggestion: 'Redistribute load to underutilized swarms',
+              expectedGain: 0.2,
+            });
+          }
         }
       }
-    });
-    
+    );
+
     return opportunities;
   }
 
-  private validateResourceOptimization(optimization: any): boolean {
+  private validateResourceOptimization(optimization: unknown): boolean {
     // Simple validation - in production this would be more sophisticated
     return optimization.expectedGain > 0.1 && optimization.swarmId;
   }
 
-  private async applyResourceOptimization(optimization: any): Promise<void> {
-    this.logger.info(`Applying resource optimization: ${optimization.type} for swarm ${optimization.swarmId}`);
-    
+  private async applyResourceOptimization(
+    optimization: unknown
+  ): Promise<void> {
+    this.logger.info(
+      `Applying resource optimization: ${optimization.type} for swarm ${optimization.swarmId}`
+    );
+
     // Emit optimization event for swarm system to handle
     this.eventBus.emit('queen:resource:optimization', {
       swarmId: optimization.swarmId,
@@ -1541,10 +1656,15 @@ export class QueenCommander extends EventEmitter {
 
   private async updateResourceOptimizationStrategies(): Promise<void> {
     // Update strategies based on recent validation results
-    for (const [strategyId, strategy] of this.resourceOptimizationStrategies.entries()) {
+    for (const [
+      strategyId,
+      strategy,
+    ] of this.resourceOptimizationStrategies.entries()) {
       const recentResults = strategy.validationResults.slice(-5);
       if (recentResults.length > 0) {
-        const avgSuccess = recentResults.reduce((sum, r) => sum + (r.success ? 1 : 0), 0) / recentResults.length;
+        const avgSuccess =
+          recentResults.reduce((sum, r) => sum + (r.success ? 1 : 0), 0) /
+          recentResults.length;
         if (avgSuccess > 0.8) {
           // Strategy is working well, increase confidence
           strategy.expectedGains.throughputIncrease *= 1.1;
@@ -1553,8 +1673,10 @@ export class QueenCommander extends EventEmitter {
     }
   }
 
-  private async applyAdaptiveResourceAllocation(recommendations: any[]): Promise<void> {
-    for (const rec of recommendations.filter(r => r.confidence > 0.7)) {
+  private async applyAdaptiveResourceAllocation(
+    recommendations: unknown[]
+  ): Promise<void> {
+    for (const rec of recommendations.filter((r) => r.confidence > 0.7)) {
       this.eventBus.emit('queen:adaptive:resource:allocation', {
         swarmId: rec.swarmId,
         recommendation: rec,
@@ -1563,10 +1685,13 @@ export class QueenCommander extends EventEmitter {
     }
   }
 
-  private async applyCrossSwarmPattern(swarmId: string, pattern: CrossSwarmPattern): Promise<void> {
+  private async applyCrossSwarmPattern(
+    swarmId: string,
+    pattern: CrossSwarmPattern
+  ): Promise<void> {
     pattern.usageCount++;
     pattern.lastUsed = new Date();
-    
+
     this.eventBus.emit('queen:cross:swarm:pattern:applied', {
       swarmId,
       patternId: pattern.patternId,
@@ -1576,9 +1701,10 @@ export class QueenCommander extends EventEmitter {
   }
 
   private async sharePatternsBetweenSwarms(swarmIds: string[]): Promise<void> {
-    const applicablePatterns = Array.from(this.crossSwarmPatterns.values())
-      .filter(pattern => pattern.effectiveness > 0.8);
-    
+    const applicablePatterns = Array.from(
+      this.crossSwarmPatterns.values()
+    ).filter((pattern) => pattern.effectiveness > 0.8);
+
     for (const swarmId of swarmIds) {
       this.eventBus.emit(`swarm:${swarmId}:patterns:shared`, {
         patterns: applicablePatterns,
@@ -1587,10 +1713,12 @@ export class QueenCommander extends EventEmitter {
     }
   }
 
-  private async coordinateResourceRebalancing(swarmIds: string[]): Promise<void> {
+  private async coordinateResourceRebalancing(
+    swarmIds: string[]
+  ): Promise<void> {
     const totalResources = this.analyzeGlobalResourceUtilization();
     const averageUtilization = totalResources.totalCpu / swarmIds.length;
-    
+
     for (const swarmId of swarmIds) {
       const utilization = totalResources.swarmUtilizations[swarmId];
       if (utilization && utilization.cpu > averageUtilization * 1.2) {
@@ -1604,28 +1732,35 @@ export class QueenCommander extends EventEmitter {
     }
   }
 
-  private async orchestrateCollaborativeLearning(swarmIds: string[]): Promise<void> {
+  private async orchestrateCollaborativeLearning(
+    swarmIds: string[]
+  ): Promise<void> {
     // Create collaborative learning session between swarms
     this.eventBus.emit('queen:collaborative:learning:session', {
       participatingSwarms: swarmIds,
       sessionType: 'cross_swarm_pattern_sharing',
       patterns: Array.from(this.crossSwarmPatterns.values()),
-      profiles: Array.from(this.swarmPerformanceProfiles.values())
-        .filter(profile => swarmIds.includes(profile.swarmId)),
+      profiles: Array.from(this.swarmPerformanceProfiles.values()).filter(
+        (profile) => swarmIds.includes(profile.swarmId)
+      ),
     });
   }
 
   private cleanupLearningHistory(): void {
     // Keep only recent learning history
-    if (this.coordinationLearningHistory.length > this.coordinationLearningConfig.learningHistorySize) {
-      this.coordinationLearningHistory = this.coordinationLearningHistory
-        .slice(-this.coordinationLearningConfig.learningHistorySize);
+    if (
+      this.coordinationLearningHistory.length >
+      this.coordinationLearningConfig.learningHistorySize
+    ) {
+      this.coordinationLearningHistory = this.coordinationLearningHistory.slice(
+        -this.coordinationLearningConfig.learningHistorySize
+      );
     }
-    
+
     // Remove old patterns that haven't been used recently
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-    
+
     for (const [patternId, pattern] of this.crossSwarmPatterns.entries()) {
       if (pattern.lastUsed < oneMonthAgo && pattern.usageCount < 3) {
         this.crossSwarmPatterns.delete(patternId);
@@ -1633,7 +1768,11 @@ export class QueenCommander extends EventEmitter {
     }
   }
 
-  private recordCoordinationLearningEvent(eventType: string, data: any, impact: number): void {
+  private recordCoordinationLearningEvent(
+    eventType: string,
+    data: unknown,
+    impact: number
+  ): void {
     this.coordinationLearningHistory.push({
       timestamp: new Date(),
       eventType,
@@ -1649,28 +1788,45 @@ export class QueenCommander extends EventEmitter {
         sessionId: 'queen-coordinator-learning',
         target: 'coordination:learning:data',
       });
-      
+
       if (learningData) {
         // Restore learning data from memory
         if (learningData.crossSwarmPatterns) {
-          for (const [patternId, pattern] of Object.entries(learningData.crossSwarmPatterns)) {
-            this.crossSwarmPatterns.set(patternId, pattern as CrossSwarmPattern);
+          for (const [patternId, pattern] of Object.entries(
+            learningData.crossSwarmPatterns
+          )) {
+            this.crossSwarmPatterns.set(
+              patternId,
+              pattern as CrossSwarmPattern
+            );
           }
         }
-        
+
         if (learningData.swarmPerformanceProfiles) {
-          for (const [swarmId, profile] of Object.entries(learningData.swarmPerformanceProfiles)) {
-            this.swarmPerformanceProfiles.set(swarmId, profile as SwarmPerformanceProfile);
+          for (const [swarmId, profile] of Object.entries(
+            learningData.swarmPerformanceProfiles
+          )) {
+            this.swarmPerformanceProfiles.set(
+              swarmId,
+              profile as SwarmPerformanceProfile
+            );
           }
         }
-        
+
         if (learningData.resourceOptimizationStrategies) {
-          for (const [strategyId, strategy] of Object.entries(learningData.resourceOptimizationStrategies)) {
-            this.resourceOptimizationStrategies.set(strategyId, strategy as ResourceOptimizationStrategy);
+          for (const [strategyId, strategy] of Object.entries(
+            learningData.resourceOptimizationStrategies
+          )) {
+            this.resourceOptimizationStrategies.set(
+              strategyId,
+              strategy as ResourceOptimizationStrategy
+            );
           }
         }
-        
-        this.logger.info('Loaded TIER 2 coordination learning data from persistent memory');
+
+        this.logger.info(
+          'Loaded TIER 2 coordination learning data from persistent memory'
+        );
       }
     } catch (error) {
       this.logger.warn(`Failed to load coordination learning data: ${error}`);
@@ -1681,11 +1837,15 @@ export class QueenCommander extends EventEmitter {
     try {
       const learningData = {
         crossSwarmPatterns: Object.fromEntries(this.crossSwarmPatterns),
-        swarmPerformanceProfiles: Object.fromEntries(this.swarmPerformanceProfiles),
-        resourceOptimizationStrategies: Object.fromEntries(this.resourceOptimizationStrategies),
+        swarmPerformanceProfiles: Object.fromEntries(
+          this.swarmPerformanceProfiles
+        ),
+        resourceOptimizationStrategies: Object.fromEntries(
+          this.resourceOptimizationStrategies
+        ),
         lastSaved: new Date(),
       };
-      
+
       await this.memory.coordinate({
         type: 'write',
         sessionId: 'queen-coordinator-learning',
@@ -1697,8 +1857,10 @@ export class QueenCommander extends EventEmitter {
           partition: 'learning',
         },
       });
-      
-      this.logger.debug('Saved TIER 2 coordination learning data to persistent memory');
+
+      this.logger.debug(
+        'Saved TIER 2 coordination learning data to persistent memory'
+      );
     } catch (error) {
       this.logger.error(`Failed to save coordination learning data: ${error}`);
     }
@@ -1716,17 +1878,19 @@ export class QueenCommander extends EventEmitter {
     averagePatternEffectiveness: number;
   } {
     const patterns = Array.from(this.crossSwarmPatterns.values());
-    const averageEffectiveness = patterns.length > 0 
-      ? patterns.reduce((sum, p) => sum + p.effectiveness, 0) / patterns.length 
-      : 0;
-    
+    const averageEffectiveness =
+      patterns.length > 0
+        ? patterns.reduce((sum, p) => sum + p.effectiveness, 0) /
+          patterns.length
+        : 0;
+
     return {
       enabled: this.coordinationLearningConfig.enabled,
       crossSwarmPatterns: this.crossSwarmPatterns.size,
       swarmProfiles: this.swarmPerformanceProfiles.size,
       optimizationStrategies: this.resourceOptimizationStrategies.size,
       recentLearningEvents: this.coordinationLearningHistory.filter(
-        event => event.timestamp > new Date(Date.now() - 24 * 60 * 60 * 1000)
+        (event) => event.timestamp > new Date(Date.now() - 24 * 60 * 60 * 1000)
       ).length,
       averagePatternEffectiveness: averageEffectiveness,
     };
@@ -1738,10 +1902,11 @@ export class QueenCommander extends EventEmitter {
     // Stop monitoring
     if (this.healthInterval) clearInterval(this.healthInterval);
     if (this.heartbeatInterval) clearInterval(this.heartbeatInterval);
-    
+
     // Stop coordination learning
-    if (this.coordinationLearningInterval) clearInterval(this.coordinationLearningInterval);
-    
+    if (this.coordinationLearningInterval)
+      clearInterval(this.coordinationLearningInterval);
+
     // Save final coordination learning data
     if (this.coordinationLearningConfig.enabled) {
       await this.saveCoordinationLearningData();
@@ -1755,8 +1920,10 @@ export class QueenCommander extends EventEmitter {
     await Promise.all(shutdownPromises);
 
     this.emit('queen-coordinator:shutdown');
-    
-    this.logger.info('Queen coordinator shutdown complete - TIER 2 coordination learning preserved');
+
+    this.logger.info(
+      'Queen coordinator shutdown complete - TIER 2 coordination learning preserved'
+    );
   }
 
   // === AGENT LIFECYCLE ===
@@ -1797,13 +1964,13 @@ export class QueenCommander extends EventEmitter {
         swarmId,
         autonomyLevel:
           template.config.autonomyLevel ??
-          this.config.agentDefaults.autonomyLevel,
+          this.config.queenDefaults.autonomyLevel,
         learningEnabled:
           template.config.learningEnabled ??
-          this.config.agentDefaults.learningEnabled,
+          this.config.queenDefaults.learningEnabled,
         adaptationEnabled:
           template.config.adaptationEnabled ??
-          this.config.agentDefaults.adaptationEnabled,
+          this.config.queenDefaults.adaptationEnabled,
         maxTasksPerHour: template.config.maxTasksPerHour ?? 10,
         maxConcurrentTasks: template.config.maxConcurrentTasks ?? 3,
         timeoutThreshold: template.config.timeoutThreshold ?? 300000,
@@ -2344,38 +2511,52 @@ export class QueenCommander extends EventEmitter {
    * Handle SPARC task assignment from Cube Matron
    * Queen's role: Coordinate swarm execution of SPARC-structured tasks
    */
-  private async handleSPARCTaskAssignment(assignment: QueenSPARCAssignment): Promise<void> {
-    this.logger.info(`👑 Queen received SPARC task assignment: ${assignment.task.sparcPhase}`, {
-      queenId: assignment.queenId,
-      projectId: assignment.task.projectId,
-      phase: assignment.task.sparcPhase,
-      taskCount: assignment.task.tasks.length,
-      matronId: assignment.task.matronId,
-    });
+  private async handleSPARCTaskAssignment(
+    assignment: QueenSPARCAssignment
+  ): Promise<void> {
+    this.logger.info(
+      `👑 Queen received SPARC task assignment: ${assignment.task.sparcPhase}`,
+      {
+        queenId: assignment.queenId,
+        projectId: assignment.task.projectId,
+        phase: assignment.task.sparcPhase,
+        taskCount: assignment.task.tasks.length,
+        matronId: assignment.task.matronId,
+      }
+    );
 
     // Store the SPARC task
     this.sparcTasks.set(assignment.task.id, assignment.task);
 
     // Add to queen's assignments
-    const queenAssignments = this.queenSPARCAssignments.get(assignment.queenId) || [];
+    const queenAssignments =
+      this.queenSPARCAssignments.get(assignment.queenId) || [];
     queenAssignments.push(assignment);
     this.queenSPARCAssignments.set(assignment.queenId, queenAssignments);
 
     try {
       // Convert SPARC tasks to swarm assignments
-      const swarmAssignments = await this.createSwarmAssignments(assignment.task);
-      
+      const swarmAssignments = await this.createSwarmAssignments(
+        assignment.task
+      );
+
       // Update assignment with swarm details
       assignment.swarmAssignments = swarmAssignments;
 
       // Execute SPARC task through swarm coordination
-      await this.executeSparcTaskThroughSwarms(assignment.task, swarmAssignments);
+      await this.executeSparcTaskThroughSwarms(
+        assignment.task,
+        swarmAssignments
+      );
 
-      this.logger.info(`✅ Queen successfully orchestrated SPARC ${assignment.task.sparcPhase} phase`, {
-        queenId: assignment.queenId,
-        projectId: assignment.task.projectId,
-        swarmsAssigned: swarmAssignments.length,
-      });
+      this.logger.info(
+        `✅ Queen successfully orchestrated SPARC ${assignment.task.sparcPhase} phase`,
+        {
+          queenId: assignment.queenId,
+          projectId: assignment.task.projectId,
+          swarmsAssigned: swarmAssignments.length,
+        }
+      );
 
       // Notify THE COLLECTIVE of successful coordination
       this.eventBus.emit('queen:sparc:task-coordinated', {
@@ -2386,7 +2567,6 @@ export class QueenCommander extends EventEmitter {
         swarmAssignments,
         status: 'coordinated',
       });
-
     } catch (error) {
       this.logger.error(`❌ Queen failed to coordinate SPARC task`, {
         queenId: assignment.queenId,
@@ -2409,11 +2589,13 @@ export class QueenCommander extends EventEmitter {
    * Create swarm assignments from SPARC task
    * Convert strategic coordination tasks into specific swarm execution tasks
    */
-  private async createSwarmAssignments(sparcTask: SPARCTask): Promise<Array<{
-    swarmId: string;
-    tasks: string[];
-    agents: string[];
-  }>> {
+  private async createSwarmAssignments(sparcTask: SPARCTask): Promise<
+    Array<{
+      swarmId: string;
+      tasks: string[];
+      agents: string[];
+    }>
+  > {
     const swarmAssignments: Array<{
       swarmId: string;
       tasks: string[];
@@ -2421,27 +2603,36 @@ export class QueenCommander extends EventEmitter {
     }> = [];
 
     // Determine optimal swarm configuration for SPARC phase
-    const swarmConfigs = this.getOptimalSwarmConfigForPhase(sparcTask.sparcPhase, sparcTask.priority);
+    const swarmConfigs = this.getOptimalSwarmConfigForPhase(
+      sparcTask.sparcPhase,
+      sparcTask.priority
+    );
 
     for (const config of swarmConfigs) {
       // Find available agents for this swarm type
-      const availableAgents = this.findAvailableAgents(config.requiredCapabilities, config.agentCount);
-      
+      const availableAgents = this.findAvailableAgents(
+        config.requiredCapabilities,
+        config.agentCount
+      );
+
       if (availableAgents.length >= config.minAgents) {
         const swarmId = generateId('sparc-swarm');
-        
+
         swarmAssignments.push({
           swarmId,
           tasks: this.adaptTasksForSwarm(sparcTask.tasks, config.swarmType),
           agents: availableAgents.slice(0, config.agentCount),
         });
 
-        this.logger.info(`📊 Created swarm assignment for SPARC ${sparcTask.sparcPhase}`, {
-          swarmId,
-          swarmType: config.swarmType,
-          agentCount: availableAgents.length,
-          taskCount: sparcTask.tasks.length,
-        });
+        this.logger.info(
+          `📊 Created swarm assignment for SPARC ${sparcTask.sparcPhase}`,
+          {
+            swarmId,
+            swarmType: config.swarmType,
+            agentCount: availableAgents.length,
+            taskCount: sparcTask.tasks.length,
+          }
+        );
       } else {
         this.logger.warn(`⚠️ Insufficient agents for SPARC swarm`, {
           required: config.minAgents,
@@ -2465,25 +2656,32 @@ export class QueenCommander extends EventEmitter {
       agents: string[];
     }>
   ): Promise<void> {
-    this.logger.info(`🐝 Executing SPARC ${sparcTask.sparcPhase} through ${swarmAssignments.length} swarms`);
+    this.logger.info(
+      `🐝 Executing SPARC ${sparcTask.sparcPhase} through ${swarmAssignments.length} swarms`
+    );
 
     // Execute all swarm assignments in parallel for maximum efficiency
     const executionPromises = swarmAssignments.map(async (assignment) => {
       try {
         // Create swarm for this assignment
         await this.createAndExecuteSPARCSwarm(sparcTask, assignment);
-        
-        this.logger.info(`✅ Swarm ${assignment.swarmId} completed SPARC tasks`, {
-          swarmId: assignment.swarmId,
-          taskCount: assignment.tasks.length,
-          agentCount: assignment.agents.length,
-        });
-        
+
+        this.logger.info(
+          `✅ Swarm ${assignment.swarmId} completed SPARC tasks`,
+          {
+            swarmId: assignment.swarmId,
+            taskCount: assignment.tasks.length,
+            agentCount: assignment.agents.length,
+          }
+        );
       } catch (error) {
-        this.logger.error(`❌ Swarm ${assignment.swarmId} failed SPARC execution`, {
-          swarmId: assignment.swarmId,
-          error: error instanceof Error ? error.message : String(error),
-        });
+        this.logger.error(
+          `❌ Swarm ${assignment.swarmId} failed SPARC execution`,
+          {
+            swarmId: assignment.swarmId,
+            error: error instanceof Error ? error.message : String(error),
+          }
+        );
         throw error;
       }
     });
@@ -2491,17 +2689,23 @@ export class QueenCommander extends EventEmitter {
     // Wait for all swarms to complete
     await Promise.all(executionPromises);
 
-    this.logger.info(`🎯 All swarms completed SPARC ${sparcTask.sparcPhase} execution`, {
-      projectId: sparcTask.projectId,
-      phase: sparcTask.sparcPhase,
-      swarmCount: swarmAssignments.length,
-    });
+    this.logger.info(
+      `🎯 All swarms completed SPARC ${sparcTask.sparcPhase} execution`,
+      {
+        projectId: sparcTask.projectId,
+        phase: sparcTask.sparcPhase,
+        swarmCount: swarmAssignments.length,
+      }
+    );
   }
 
   /**
    * Get optimal swarm configuration for SPARC phase
    */
-  private getOptimalSwarmConfigForPhase(phase: SPARCPhase, priority: string): Array<{
+  private getOptimalSwarmConfigForPhase(
+    phase: SPARCPhase,
+    priority: string
+  ): Array<{
     swarmType: string;
     requiredCapabilities: string[];
     agentCount: number;
@@ -2579,14 +2783,18 @@ export class QueenCommander extends EventEmitter {
   /**
    * Find available agents with required capabilities
    */
-  private findAvailableAgents(requiredCapabilities: string[], maxCount: number): string[] {
+  private findAvailableAgents(
+    requiredCapabilities: string[],
+    maxCount: number
+  ): string[] {
     const availableAgents = Array.from(this.agents.values())
-      .filter(agent => 
-        agent.status === 'idle' && 
-        this.hasRequiredCapabilities(agent, requiredCapabilities)
+      .filter(
+        (agent) =>
+          agent.status === 'idle' &&
+          this.hasRequiredCapabilities(agent, requiredCapabilities)
       )
       .slice(0, maxCount)
-      .map(agent => agent.id.id);
+      .map((agent) => agent.id.id);
 
     return availableAgents;
   }
@@ -2594,17 +2802,25 @@ export class QueenCommander extends EventEmitter {
   /**
    * Check if agent has required capabilities
    */
-  private hasRequiredCapabilities(agent: any, requiredCapabilities: string[]): boolean {
-    return requiredCapabilities.some(capability => 
-      agent.capabilities && Object.keys(agent.capabilities).includes(capability)
+  private hasRequiredCapabilities(
+    agent: unknown,
+    requiredCapabilities: string[]
+  ): boolean {
+    return requiredCapabilities.some(
+      (capability) =>
+        agent.capabilities &&
+        Object.keys(agent.capabilities).includes(capability)
     );
   }
 
   /**
    * Adapt SPARC tasks for specific swarm type
    */
-  private adaptTasksForSwarm(sparcTasks: string[], swarmType: string): string[] {
-    return sparcTasks.map(task => `${swarmType}: ${task}`);
+  private adaptTasksForSwarm(
+    sparcTasks: string[],
+    swarmType: string
+  ): string[] {
+    return sparcTasks.map((task) => `${swarmType}: ${task}`);
   }
 
   /**
@@ -2636,7 +2852,7 @@ export class QueenCommander extends EventEmitter {
 
     // For now, simulate swarm execution
     // In a real implementation, this would interface with the actual swarm system
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     this.logger.info(`🎉 SPARC swarm execution completed`, {
       swarmId: assignment.swarmId,

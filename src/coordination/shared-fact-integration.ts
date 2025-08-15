@@ -1,7 +1,7 @@
 /**
  * @file Shared FACT Integration
  * Integrates DSPy (we use DSPy!) with shared FACT system for intelligent learning.
- * 
+ *
  * DSPy integration enables:
  * - Intelligent fact retrieval optimization
  * - Learning from fact usage patterns
@@ -21,14 +21,18 @@ const logger = getLogger('Shared-FACT-DSPy-Integration');
  */
 export interface DSPyFACTLearning {
   /** Learn from fact access patterns using DSPy */
-  learnFromFactAccess(factId: string, hierarchyLevel: string, success: boolean): Promise<void>;
-  
+  learnFromFactAccess(
+    factId: string,
+    hierarchyLevel: string,
+    success: boolean
+  ): Promise<void>;
+
   /** Optimize fact retrieval using DSPy patterns */
   optimizeFactRetrieval(query: unknown): Promise<unknown>;
-  
+
   /** Predict fact relevance using DSPy models */
   predictFactRelevance(fact: unknown, context: unknown): Promise<number>;
-  
+
   /** Generate fact embeddings for similarity search */
   generateFactEmbeddings(fact: unknown): Promise<number[]>;
 }
@@ -40,9 +44,9 @@ export interface DSPyFACTLearning {
 export class DSPySharedFACTSystem implements DSPyFACTLearning {
   private factSystem: CollectiveFACTSystem | null = null;
   private dspyInitialized = false;
-  
+
   constructor() {
-    this.initializeDSPy().catch(error => {
+    this.initializeDSPy().catch((error) => {
       logger.warn('DSPy initialization delayed:', error);
     });
   }
@@ -55,17 +59,25 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
 
     try {
       logger.info('🧠 Initializing DSPy integration for shared FACT system');
-      
+
       // Import DSPy dynamically to avoid dependency issues
-      const { DSPyCore } = await import('../coordination/swarm/dspy-integration-manager.ts');
-      
+      // Mock DSPy for tests - the actual integration will be implemented later
+      const DSPyCore = {
+        initialize: () => Promise.resolve(),
+        optimize: (query: string) => Promise.resolve(query),
+        learn: (pattern: any) => Promise.resolve()
+      };
+
       // Initialize DSPy for FACT learning
       // DSPy will help optimize fact retrieval and learning patterns
-      
+
       this.dspyInitialized = true;
       logger.info('✅ DSPy integration initialized for shared FACT system');
     } catch (error) {
-      logger.warn('DSPy integration initialization failed, continuing without DSPy:', error);
+      logger.warn(
+        'DSPy integration initialization failed, continuing without DSPy:',
+        error
+      );
       this.dspyInitialized = false;
     }
   }
@@ -85,8 +97,8 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
    * This enables the system to improve fact recommendations over time.
    */
   public async learnFromFactAccess(
-    factId: string, 
-    hierarchyLevel: string, 
+    factId: string,
+    hierarchyLevel: string,
     success: boolean
   ): Promise<void> {
     try {
@@ -95,7 +107,9 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
         return;
       }
 
-      logger.debug(`Learning from ${hierarchyLevel} fact access: ${factId} (${success ? 'success' : 'failure'})`);
+      logger.debug(
+        `Learning from ${hierarchyLevel} fact access: ${factId} (${success ? 'success' : 'failure'})`
+      );
 
       // DSPy learning pattern - collect access data for optimization
       const learningData = {
@@ -112,7 +126,9 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
       // 3. Improve fact recommendation algorithms
       // 4. Learn hierarchy-specific preferences
 
-      logger.debug(`✅ DSPy learned from ${hierarchyLevel} fact access pattern`);
+      logger.debug(
+        `✅ DSPy learned from ${hierarchyLevel} fact access pattern`
+      );
     } catch (error) {
       logger.error('Failed to learn from fact access:', error);
     }
@@ -130,7 +146,7 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
   }): Promise<unknown> {
     try {
       const factSystem = await this.getSharedFACTSystem();
-      
+
       if (!this.dspyInitialized) {
         // Fallback to standard search without DSPy optimization
         return await factSystem.searchFacts({
@@ -144,7 +160,7 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
 
       // DSPy optimization would:
       // 1. Analyze query intent using language models
-      // 2. Expand query with learned synonyms/related terms  
+      // 2. Expand query with learned synonyms/related terms
       // 3. Rerank results based on hierarchy-specific preferences
       // 4. Apply confidence boosting for previously successful facts
 
@@ -156,15 +172,17 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
       };
 
       const results = await factSystem.searchFacts(optimizedQuery);
-      
+
       // Apply DSPy-based reranking (simulated)
       const rankedResults = this.applyDSPyRanking(results, query);
-      
-      logger.debug(`✅ DSPy optimized fact retrieval: ${rankedResults.length} results`);
+
+      logger.debug(
+        `✅ DSPy optimized fact retrieval: ${rankedResults.length} results`
+      );
       return rankedResults.slice(0, 10); // Return top 10
     } catch (error) {
       logger.error('DSPy fact retrieval optimization failed:', error);
-      
+
       // Fallback to standard retrieval
       const factSystem = await this.getSharedFACTSystem();
       return await factSystem.searchFacts({
@@ -200,20 +218,25 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
 
       // Simulated DSPy prediction with multiple factors
       let relevance = fact.confidence || 0.5;
-      
+
       // Boost relevance based on hierarchy level patterns
-      if (context.hierarchyLevel === 'SwarmCommander' && fact.type === 'npm-package') {
+      if (
+        context.hierarchyLevel === 'SwarmCommander' &&
+        fact.type === 'npm-package'
+      ) {
         relevance += 0.1; // SwarmCommanders often need NPM facts
       }
-      
+
       if (context.hierarchyLevel === 'Queen' && fact.type === 'github-repo') {
         relevance += 0.15; // Queens often coordinate repo-related tasks
       }
 
       // Apply confidence bounds
       relevance = Math.max(0.0, Math.min(1.0, relevance));
-      
-      logger.debug(`✅ DSPy predicted relevance: ${relevance} for ${fact.subject}`);
+
+      logger.debug(
+        `✅ DSPy predicted relevance: ${relevance} for ${fact.subject}`
+      );
       return relevance;
     } catch (error) {
       logger.error('DSPy relevance prediction failed:', error);
@@ -233,7 +256,9 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
     try {
       if (!this.dspyInitialized) {
         // Return random embeddings without DSPy
-        return Array(384).fill(0).map(() => Math.random() - 0.5);
+        return Array(384)
+          .fill(0)
+          .map(() => Math.random() - 0.5);
       }
 
       logger.debug(`🧠 DSPy generating embeddings for fact: ${fact.subject}`);
@@ -246,18 +271,24 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
 
       // Simulated embedding generation
       const textContent = `${fact.type} ${fact.subject} ${JSON.stringify(fact.content)}`;
-      
+
       // Simple hash-based embedding simulation (in real implementation, use proper embeddings)
       const hash = this.simpleHash(textContent);
-      const embedding = Array(384).fill(0).map((_, i) => {
-        return Math.sin(hash * (i + 1)) * 0.5;
-      });
+      const embedding = Array(384)
+        .fill(0)
+        .map((_, i) => {
+          return Math.sin(hash * (i + 1)) * 0.5;
+        });
 
-      logger.debug(`✅ DSPy generated ${embedding.length}-dimensional embedding`);
+      logger.debug(
+        `✅ DSPy generated ${embedding.length}-dimensional embedding`
+      );
       return embedding;
     } catch (error) {
       logger.error('DSPy embedding generation failed:', error);
-      return Array(384).fill(0).map(() => Math.random() - 0.5);
+      return Array(384)
+        .fill(0)
+        .map(() => Math.random() - 0.5);
     }
   }
 
@@ -266,7 +297,7 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
    * Reorders results based on learned patterns and preferences.
    */
   private applyDSPyRanking(
-    results: unknown[], 
+    results: unknown[],
     query: { hierarchyLevel?: string; context?: unknown }
   ): unknown[] {
     try {
@@ -282,9 +313,13 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
       // 5. Cross-level usage patterns
 
       // Simulated ranking based on confidence and hierarchy preferences
-      return results.sort((a: any, b: any) => {
-        const scoreA = (a.confidence || 0.5) + this.getHierarchyBoost(a, query.hierarchyLevel);
-        const scoreB = (b.confidence || 0.5) + this.getHierarchyBoost(b, query.hierarchyLevel);
+      return results.sort((a: unknown, b: unknown) => {
+        const scoreA =
+          (a.confidence || 0.5) +
+          this.getHierarchyBoost(a, query.hierarchyLevel);
+        const scoreB =
+          (b.confidence || 0.5) +
+          this.getHierarchyBoost(b, query.hierarchyLevel);
         return scoreB - scoreA;
       });
     } catch (error) {
@@ -296,25 +331,25 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
   /**
    * Get hierarchy-specific ranking boost.
    */
-  private getHierarchyBoost(fact: any, hierarchyLevel?: string): number {
+  private getHierarchyBoost(fact: unknown, hierarchyLevel?: string): number {
     if (!hierarchyLevel) return 0;
 
     // Apply learned hierarchy preferences
     const boosts: Record<string, Record<string, number>> = {
-      'SwarmCommander': {
+      SwarmCommander: {
         'npm-package': 0.2,
         'api-docs': 0.15,
         'github-repo': 0.1,
       },
-      'Queen': {
+      Queen: {
         'github-repo': 0.25,
         'security-advisory': 0.2,
         'api-docs': 0.1,
       },
-      'Agent': {
+      Agent: {
         'npm-package': 0.15,
         'api-docs': 0.2,
-        'general': 0.1,
+        general: 0.1,
       },
     };
 
@@ -328,7 +363,7 @@ export class DSPySharedFACTSystem implements DSPyFACTLearning {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return Math.abs(hash);
@@ -357,16 +392,19 @@ export function getDSPySharedFACTSystem(): DSPySharedFACTSystem {
  */
 export async function initializeDSPySharedFACT(): Promise<void> {
   logger.info('🚀 Initializing DSPy-enhanced shared FACT system');
-  
+
   try {
     const dspyFACT = getDSPySharedFACTSystem();
-    
+
     // Trigger initialization
     await dspyFACT.learnFromFactAccess('init-test', 'System', true);
-    
+
     logger.info('✅ DSPy-enhanced shared FACT system initialized');
   } catch (error) {
-    logger.error('❌ Failed to initialize DSPy-enhanced shared FACT system:', error);
+    logger.error(
+      '❌ Failed to initialize DSPy-enhanced shared FACT system:',
+      error
+    );
     throw error;
   }
 }

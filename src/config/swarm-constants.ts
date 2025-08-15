@@ -1,9 +1,9 @@
 /**
  * @fileoverview Swarm Service Constants
- * 
+ *
  * Centralized constants for swarm operations, performance metrics,
  * and system configurations to eliminate magic numbers throughout the codebase.
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2025-08-14
@@ -14,23 +14,23 @@ export const PERFORMANCE_CONSTANTS = {
   // Swarm initialization
   SWARM_INIT_TIME_MS: 0.67,
   SWARM_MEMORY_BASE_MB: 48,
-  
+
   // Agent spawning
   AGENT_SPAWN_TIME_MS: 0.47,
   AGENT_MEMORY_OVERHEAD_MB: 5,
   AGENT_MEMORY_BASE_MB: 10,
   AGENT_MEMORY_PEAK_RANGE_MB: 100,
   AGENT_MEMORY_USED_RANGE_MB: 50,
-  
+
   // Task orchestration
   TASK_ORCHESTRATION_TIME_MS: 2.23,
   TASK_ESTIMATED_COMPLETION_MS: 30000,
-  
+
   // System metrics
   MAX_CPU_USAGE_PERCENT: 100,
   MEMORY_USAGE_DIVISOR: 1024 * 1024, // Convert bytes to MB
   BYTES_TO_GB_DIVISOR: 1024 * 1024 * 1024,
-  
+
   // Neural network defaults
   NEURAL_ACCURACY_DEFAULT: 0.92,
   NEURAL_EFFICIENCY_DEFAULT: 0.88,
@@ -38,7 +38,7 @@ export const PERFORMANCE_CONSTANTS = {
   NEURAL_TRAINING_PROGRESS_DEFAULT: 0.75,
   NEURAL_PROCESSING_SPEED_MS: 45,
   NEURAL_MEMORY_USAGE_MB: 12.4,
-  
+
   // Benchmark defaults
   BENCHMARK_WASM_TIME_MS: 2.3,
   BENCHMARK_WASM_THROUGHPUT: 450000,
@@ -59,28 +59,28 @@ export const SYSTEM_LIMITS = {
   MIN_AGENTS: 1,
   MAX_AGENTS: 100,
   DEFAULT_MAX_AGENTS: 5,
-  
+
   // Task limits
   MIN_TASK_DESCRIPTION_LENGTH: 10,
   MAX_TASK_AGENTS: 10,
   DEFAULT_TASK_AGENTS: 5,
-  
+
   // Monitoring limits
   MAX_MONITORING_DURATION_SECONDS: 10,
   DEFAULT_MONITORING_DURATION_SECONDS: 10,
   DEFAULT_MONITORING_INTERVAL_SECONDS: 1,
-  
+
   // Training limits
   MIN_TRAINING_ITERATIONS: 1,
   MAX_TRAINING_ITERATIONS: 100,
   DEFAULT_TRAINING_ITERATIONS: 10,
   TRAINING_TIME_PER_ITERATION_MS: 50,
-  
+
   // Memory management
   TASK_CLEANUP_HOURS: 24,
   AGENT_CLEANUP_HOURS: 48,
   MAX_CONCURRENT_TASKS: 50,
-  
+
   // Performance ranges
   PERFORMANCE_SCORE_MIN: 0.7,
   PERFORMANCE_SCORE_MAX: 1.0,
@@ -131,7 +131,7 @@ export const FEATURE_CONSTANTS = {
   SIMD_INSTRUCTION_SETS: [] as string[],
   SIMD_PERFORMANCE_BOOST: 0,
   MEMORY_MAX_HEAP_MB: 4096,
-  
+
   // Recommendations
   RECOMMENDATIONS: [
     'WASM modules are available for neural acceleration',
@@ -145,10 +145,10 @@ export const LLM_CONSTANTS = {
   CLAUDE_CLI_RATE_LIMIT_COOLDOWN: 0, // No cooldown, fail fast
   CLAUDE_CLI_TEMPERATURE: 0.1, // More deterministic
   CLAUDE_CLI_MAX_TOKENS: 200000, // Full Claude context
-  
+
   // Session management
   SESSION_ID_PREFIX: 'zen-swarm',
-  
+
   // Performance tracking
   MIN_EXECUTION_TIME_FOR_REAL_WORK: 1000, // 1 second
 } as const;
@@ -160,7 +160,7 @@ export const STATUS_CONSTANTS = {
     BUSY: 'busy',
     ACTIVE: 'active',
   },
-  
+
   TASK_STATUS: {
     PENDING: 'pending',
     RUNNING: 'running',
@@ -168,13 +168,13 @@ export const STATUS_CONSTANTS = {
     FAILED: 'failed',
     CANCELLED: 'cancelled',
   },
-  
+
   SWARM_STATUS: {
     ACTIVE: 'active',
     INACTIVE: 'inactive',
     INITIALIZING: 'initializing',
   },
-  
+
   PERFORMANCE_TREND: {
     STABLE: 'stable',
     IMPROVING: 'improving',
@@ -194,14 +194,20 @@ export const ERROR_MESSAGES = {
 } as const;
 
 // Type guards for better type safety
-export const isValidAgentStatus = (status: string): status is keyof typeof STATUS_CONSTANTS.AGENT_STATUS => {
+export const isValidAgentStatus = (
+  status: string
+): status is keyof typeof STATUS_CONSTANTS.AGENT_STATUS => {
   return Object.values(STATUS_CONSTANTS.AGENT_STATUS).includes(status as any);
 };
 
-export const isValidTaskStatus = (status: string): status is keyof typeof STATUS_CONSTANTS.TASK_STATUS => {
+export const isValidTaskStatus = (
+  status: string
+): status is keyof typeof STATUS_CONSTANTS.TASK_STATUS => {
   return Object.values(STATUS_CONSTANTS.TASK_STATUS).includes(status as any);
 };
 
-export const isValidCognitivePattern = (pattern: string): pattern is keyof typeof COGNITIVE_PATTERNS => {
+export const isValidCognitivePattern = (
+  pattern: string
+): pattern is keyof typeof COGNITIVE_PATTERNS => {
   return pattern in COGNITIVE_PATTERNS;
 };

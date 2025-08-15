@@ -1,34 +1,43 @@
 /**
- * @fileoverview LLM Integration Service for Claude Code and Gemini CLI
+ * @fileoverview LLM Integration Service with Claude Code SDK and Optimal Model Strategy
  *
- * This service provides a unified interface for integrating with local LLM CLIs
- * (Claude Code and Gemini) instead of requiring external API keys. It handles
- * automatic fallback between providers and manages file operation permissions.
+ * This service provides a unified interface for integrating with Claude Code SDK,
+ * using optimal Opus/Sonnet model selection strategy and intelligent routing.
+ * Enhanced with comprehensive logging, error handling, and model strategy tracking.
  *
  * Key Features:
+ * - Claude Code SDK integration with optimal Opus/Sonnet strategy
+ * - Automatic model selection (Opus for planning, Sonnet for everything else)
+ * - Enhanced logging and error handling with detailed model strategy tracking
  * - Automatic fallback from Claude Code to Gemini CLI to GPT-5 to GitHub Copilot
- * - Intelligent rate limit detection and cooldown management (1-hour default)
- * - Permission bypass for file operations (--dangerously-skip-permissions, --yolo)
+ * - Intelligent rate limit detection and cooldown management
+ * - Permission bypass for file operations
  * - Structured output handling with JSON parsing
- * - Context-aware prompt generation
+ * - Context-aware prompt generation with task complexity assessment
  * - Session management and continuity
- * - Error handling and retry logic with graceful degradation
  *
  * @author Claude Code Zen Team
- * @version 1.0.0-alpha.43
+ * @version 2.0.0 - Migrated to Claude Code SDK
  * @since 2024-01-01
  *
- * @example Basic Usage
+ * @example Claude Code SDK with Optimal Strategy
  * ```typescript
  * const llmService = new LLMIntegrationService({
  *   projectPath: process.cwd(),
- *   preferredProvider: 'claude-code'
+ *   preferredProvider: 'claude-code',
+ *   useOptimalModel: true
  * });
  *
  * const result = await llmService.analyze({
  *   task: 'typescript-error-analysis',
  *   context: { files: ['src/neural/gnn.js'], errors: [...] },
- *   requiresFileOperations: true
+ *   requiresFileOperations: true,
+ *   taskContext: {
+ *     type: 'analysis',
+ *     complexity: 'medium',
+ *     domain: 'development',
+ *     requiresReasoning: true
+ *   }
  * });
  * ```
  */
@@ -47,11 +56,22 @@ import {
   LLM_PROVIDER_CONFIG,
   ROUTING_STRATEGY,
 } from '../../config/llm-providers.config.js';
+// Enhanced Claude Code SDK integration
+import {
+  selectOptimalModel,
+  getComponentModel,
+  getModelConfig,
+  type TaskContext,
+  type ModelType,
+  type ModelConfig,
+  Models,
+} from '../../integrations/claude-code/model-strategy.js';
+import LLMStatsService from './llm-stats-service.js';
 
 const execAsync = promisify(spawn);
 
 /**
- * Configuration options for LLM Integration Service.
+ * Enhanced configuration options for LLM Integration Service with Claude Code SDK.
  */
 export interface LLMIntegrationConfig {
   /** Project root path for file operations */
@@ -68,7 +88,7 @@ export interface LLMIntegrationConfig {
   debug?: boolean;
   /** Session ID for conversation continuity */
   sessionId?: string;
-  /** Custom model selection */
+  /** Custom model selection (overrides optimal strategy) */
   model?: string;
   /** GitHub organization for GitHub Models (optional) */
   githubOrg?: string;
@@ -80,10 +100,19 @@ export interface LLMIntegrationConfig {
   maxTokens?: number;
   /** Rate limit cooldown period in milliseconds (default: 1 hour) */
   rateLimitCooldown?: number;
+  // Enhanced with Claude Code SDK options
+  /** Enable optimal Opus/Sonnet model selection strategy */
+  useOptimalModel?: boolean;
+  /** Component name for model selection (if part of a larger system) */
+  componentName?: string;
+  /** Enable enhanced logging with model strategy details */
+  enhancedLogging?: boolean;
+  /** Statistics service integration */
+  statsService?: LLMStatsService;
 }
 
 /**
- * Analysis request configuration.
+ * Enhanced analysis request configuration with model strategy support.
  */
 export interface AnalysisRequest {
   /** Type of analysis task */
@@ -99,6 +128,12 @@ export interface AnalysisRequest {
     domains?: unknown[];
     dependencies?: unknown;
     customData?: unknown;
+    // Enhanced context for swarm operations
+    swarmContext?: {
+      swarmId?: string;
+      agentId?: string;
+      coordinationLevel?: 'high' | 'medium' | 'low';
+    };
   };
   /** Custom prompt text */
   prompt?: string;
@@ -113,10 +148,19 @@ export interface AnalysisRequest {
     description: string;
     strict?: boolean;
   };
+  // Enhanced with model strategy options
+  /** Task context for optimal model selection */
+  taskContext?: TaskContext;
+  /** Component name for component-based model selection */
+  componentName?: string;
+  /** Override optimal model selection */
+  forceModel?: ModelType;
+  /** Enable model strategy tracking in results */
+  trackModelStrategy?: boolean;
 }
 
 /**
- * Analysis result structure.
+ * Enhanced analysis result structure with model strategy tracking.
  */
 export interface AnalysisResult {
   /** Whether analysis was successful */
@@ -137,6 +181,47 @@ export interface AnalysisResult {
   error?: string;
   /** Output file path if file was written */
   outputFile?: string;
+  // Enhanced with model strategy tracking
+  /** Model strategy information */
+  modelStrategy?: {
+    /** Selected model (opus or sonnet) */
+    selectedModel: ModelType;
+    /** Model selection rationale */
+    rationale: string;
+    /** Whether optimal model selection was used */
+    wasOptimal: boolean;
+    /** Task context used for selection */
+    taskContext?: TaskContext;
+    /** Fallback information if model selection failed */
+    fallbackInfo?: {
+      originalModel: ModelType;
+      fallbackModel: ModelType;
+      reason: string;
+    };
+  };
+  /** Token usage information */
+  tokenUsage?: {
+    inputTokens?: number;
+    outputTokens?: number;
+    totalTokens?: number;
+  };
+  /** Additional metadata */
+  metadata?: {
+    /** Whether fallback was used */
+    fallbackUsed: boolean;
+    /** Reason for fallback */
+    fallbackReason?: string;
+    /** Attempted providers */
+    attemptedProviders: string[];
+    /** Final model used */
+    finalModel?: string;
+    /** Performance metrics */
+    performance?: {
+      latency: number;
+      throughput?: number;
+      reliability?: number;
+    };
+  };
 }
 
 /**
@@ -168,7 +253,7 @@ try {
     info: (...args) => console.log('[INFO]', ...args),
     error: (...args) => console.error('[ERROR]', ...args),
     warn: (...args) => console.warn('[WARN]', ...args),
-    debug: (...args) => console.debug('[DEBUG]', ...args)
+    debug: (...args) => console.debug('[DEBUG]', ...args),
   };
 }
 
@@ -178,6 +263,9 @@ export class LLMIntegrationService {
   private rateLimitTracker: Map<string, number> = new Map(); // Track rate limit timestamps
   private copilotProvider: CopilotApiProvider | null = null;
   private geminiHandler: GeminiHandler | null = null;
+  // Enhanced with Claude Code SDK integration
+  private statsService: LLMStatsService | null = null;
+  private enhancedLogger: unknown;
 
   // Predefined JSON schemas for structured output
   private static readonly JSON_SCHEMAS = {
@@ -304,18 +392,19 @@ export class LLMIntegrationService {
   };
 
   /**
-   * Creates a new LLM Integration Service.
+   * Creates a new LLM Integration Service with Claude Code SDK and optimal model strategy.
    *
    * @constructor
    * @param {LLMIntegrationConfig} config - Service configuration
    *
-   * @example Claude Code
+   * @example Claude Code SDK with Optimal Strategy
    * ```typescript
    * const service = new LLMIntegrationService({
    *   projectPath: '/path/to/project',
    *   preferredProvider: 'claude-code',
-   *   debug: true,
-   *   model: 'sonnet'
+   *   useOptimalModel: true,           // Enable Opus/Sonnet strategy
+   *   enhancedLogging: true,           // Detailed logging
+   *   componentName: 'neural-analyzer' // For component-based selection
    * });
    * ```
    *
@@ -324,26 +413,56 @@ export class LLMIntegrationService {
    * const service = new LLMIntegrationService({
    *   projectPath: '/path/to/project',
    *   preferredProvider: 'github-models',
-   *   model: 'openai/gpt-5',      // Fully free model via Azure AI inference
+   *   model: 'openai/gpt-5',
    *   temperature: 0.1,
-   *   maxTokens: 4000,            // API limit
-   *   githubToken: process.env.GITHUB_TOKEN  // Required for API access
+   *   maxTokens: 4000,
+   *   githubToken: process.env.GITHUB_TOKEN
    * });
    * ```
    */
   constructor(config: LLMIntegrationConfig) {
-    const defaultProvider = config.preferredProvider || 'github-models'; // Azure AI inference as primary
+    const defaultProvider = config.preferredProvider || 'claude-code'; // Claude Code SDK as primary
     this.config = {
       preferredProvider: defaultProvider,
       debug: false,
       model: this.getDefaultModel(defaultProvider),
       temperature: 0.1,
-      maxTokens: defaultProvider === 'github-models' ? 128000 : 200000, // 128K tokens maximum for GPT-5
-      rateLimitCooldown: 60 * 60 * 1000, // Default 1 hour cooldown for rate limits
-      githubToken: process.env.GITHUB_TOKEN, // Default to environment variable
+      maxTokens: defaultProvider === 'github-models' ? 128000 : 200000,
+      rateLimitCooldown: 60 * 60 * 1000,
+      githubToken: process.env.GITHUB_TOKEN,
+      // Enhanced defaults for Claude Code SDK
+      useOptimalModel: true,
+      enhancedLogging: false,
       ...config,
     };
     this.sessionId = config.sessionId || uuidv4();
+
+    // Initialize enhanced logging if enabled
+    if (this.config.enhancedLogging) {
+      this.enhancedLogger = {
+        ...logger,
+        modelStrategy: (strategy: unknown) => {
+          logger.info(`Model Strategy: ${JSON.stringify(strategy, null, 2)}`);
+        },
+        performance: (metrics: unknown) => {
+          logger.info(
+            `Performance Metrics: ${JSON.stringify(metrics, null, 2)}`
+          );
+        },
+      };
+    } else {
+      this.enhancedLogger = logger;
+    }
+
+    // Initialize statistics service if provided
+    if (config.statsService) {
+      this.statsService = config.statsService;
+    } else if (this.config.enhancedLogging) {
+      this.statsService = new LLMStatsService();
+      this.enhancedLogger.info(
+        'LLM Statistics Service initialized for enhanced logging'
+      );
+    }
 
     // Initialize Copilot provider if GitHub token is available
     if (this.config.githubToken) {
@@ -374,20 +493,41 @@ export class LLMIntegrationService {
         enableJson: false, // We handle JSON parsing ourselves
       });
 
-      if (this.config.debug) {
-        console.log(
+      if (this.config.debug || this.config.enhancedLogging) {
+        this.enhancedLogger.info(
           '✅ Gemini handler initialized (Flash model for regular tasks)'
         );
       }
     } catch (error) {
-      if (this.config.debug) {
-        console.log('⚠️ Gemini handler initialization failed:', error.message);
+      if (this.config.debug || this.config.enhancedLogging) {
+        this.enhancedLogger.warn(
+          '⚠️ Gemini handler initialization failed:',
+          error.message
+        );
       }
+    }
+
+    if (this.config.enhancedLogging) {
+      this.enhancedLogger.info(
+        '🚀 LLM Integration Service initialized with Claude Code SDK integration'
+      );
+      this.enhancedLogger.info(
+        `Configuration: ${JSON.stringify(
+          {
+            provider: this.config.preferredProvider,
+            useOptimalModel: this.config.useOptimalModel,
+            componentName: this.config.componentName,
+            enhancedLogging: this.config.enhancedLogging,
+          },
+          null,
+          2
+        )}`
+      );
     }
   }
 
   /**
-   * Gets the default model for each provider using centralized config.
+   * Gets the default model for each provider using centralized config and optimal strategy.
    *
    * @private
    * @param {string} provider - Provider name
@@ -395,51 +535,91 @@ export class LLMIntegrationService {
    */
   private getDefaultModel(provider: string): string {
     const config = LLM_PROVIDER_CONFIG[provider];
+    if (provider === 'claude-code' && this.config?.useOptimalModel) {
+      // Use component-based selection if available, otherwise default to Sonnet
+      return this.config?.componentName
+        ? getComponentModel(this.config.componentName)
+        : 'sonnet';
+    }
     return config?.defaultModel || 'sonnet';
   }
 
   /**
-   * Performs analysis using the best available LLM provider.
+   * Performs analysis using Claude Code SDK with optimal Opus/Sonnet model strategy.
    *
-   * This method automatically selects the appropriate LLM provider and handles
-   * fallback if the preferred provider is unavailable. It constructs appropriate
-   * prompts based on the analysis task and manages file operation permissions.
+   * This method automatically selects the optimal Claude model (Opus for planning,
+   * Sonnet for everything else) and handles fallback if the preferred provider is
+   * unavailable. Enhanced with comprehensive logging and model strategy tracking.
    *
    * @async
    * @method analyze
    * @param {AnalysisRequest} request - Analysis configuration and context
-   * @returns {Promise<AnalysisResult>} Analysis results
+   * @returns {Promise<AnalysisResult>} Enhanced analysis results with model strategy
    *
-   * @example Domain Analysis
+   * @example Domain Analysis with Optimal Strategy
    * ```typescript
    * const result = await service.analyze({
    *   task: 'domain-analysis',
-   *   context: {
-   *     domains: domainData,
-   *     dependencies: dependencyGraph
+   *   context: { domains: domainData, dependencies: dependencyGraph },
+   *   taskContext: {
+   *     type: 'planning',
+   *     complexity: 'high',
+   *     domain: 'architecture',
+   *     requiresReasoning: true
    *   },
    *   requiresFileOperations: true,
-   *   outputPath: 'src/coordination/enhanced-domains.json'
+   *   trackModelStrategy: true
    * });
+   * // This will use Opus for complex architectural planning
    * ```
    *
    * @example TypeScript Error Analysis
    * ```typescript
    * const result = await service.analyze({
    *   task: 'typescript-error-analysis',
-   *   context: {
-   *     files: ['src/neural/gnn.js'],
-   *     errors: compilationErrors
+   *   context: { files: ['src/neural/gnn.js'], errors: compilationErrors },
+   *   taskContext: {
+   *     type: 'analysis',
+   *     complexity: 'medium',
+   *     domain: 'development',
+   *     requiresReasoning: false
    *   },
    *   requiresFileOperations: true
    * });
+   * // This will use Sonnet for efficient analysis
    * ```
    */
   async analyze(request: AnalysisRequest): Promise<AnalysisResult> {
     const startTime = Date.now();
+    let modelStrategy: any = null;
+    let routingInfo = {
+      originalPreference: this.config.preferredProvider || 'claude-code',
+      fallbackCount: 0,
+      routingReason: 'initial-attempt',
+    };
 
     try {
-      // Smart routing: Get optimal providers based on context and requirements
+      // Enhanced: Determine optimal model strategy
+      if (
+        this.config.useOptimalModel &&
+        this.config.preferredProvider === 'claude-code'
+      ) {
+        modelStrategy = this.determineOptimalModel(request);
+
+        if (this.config.enhancedLogging) {
+          this.enhancedLogger.modelStrategy({
+            request: {
+              task: request.task,
+              taskContext: request.taskContext,
+              componentName: request.componentName,
+              forceModel: request.forceModel,
+            },
+            strategy: modelStrategy,
+            timestamp: new Date().toISOString(),
+          });
+        }
+      }
+      // Enhanced: Smart routing with model strategy consideration
       const contextLength = (request.prompt || this.buildPrompt(request))
         .length;
       const optimalProviders = getOptimalProvider({
@@ -451,27 +631,41 @@ export class LLMIntegrationService {
         taskType: request.task === 'custom' ? 'custom' : 'analysis',
       });
 
-      if (this.config.debug) {
-        console.log(`🧪 Smart Routing Analysis:`);
-        console.log(`  - Context size: ${contextLength} characters`);
-        console.log(`  - Optimal providers: ${optimalProviders.join(' → ')}`);
-        console.log(`  - Preferred provider: ${this.config.preferredProvider}`);
+      routingInfo.routingReason = `smart-routing-context-${contextLength}-chars`;
+
+      if (this.config.debug || this.config.enhancedLogging) {
+        this.enhancedLogger.info(`🧪 Enhanced Smart Routing Analysis:`);
+        this.enhancedLogger.info(
+          `  - Context size: ${contextLength} characters`
+        );
+        this.enhancedLogger.info(
+          `  - Optimal providers: ${optimalProviders.join(' → ')}`
+        );
+        this.enhancedLogger.info(
+          `  - Preferred provider: ${this.config.preferredProvider}`
+        );
+        if (modelStrategy) {
+          this.enhancedLogger.info(
+            `  - Selected model: ${modelStrategy.selectedModel} (${modelStrategy.rationale})`
+          );
+        }
       }
 
       // FORCE only Claude Code for swarm operations - no fallbacks!
-      
-      const providersToTry = this.config.preferredProvider === 'claude-code' && 
+
+      const providersToTry =
+        this.config.preferredProvider === 'claude-code' &&
         request.context?.swarmContext
-        ? ['claude-code'] // ONLY Claude Code for swarms
-        : this.config.preferredProvider &&
-          optimalProviders.includes(this.config.preferredProvider)
-          ? [
-              this.config.preferredProvider,
-              ...optimalProviders.filter(
-                (p) => p !== this.config.preferredProvider
-              ),
-            ]
-          : optimalProviders;
+          ? ['claude-code'] // ONLY Claude Code for swarms
+          : this.config.preferredProvider &&
+              optimalProviders.includes(this.config.preferredProvider)
+            ? [
+                this.config.preferredProvider,
+                ...optimalProviders.filter(
+                  (p) => p !== this.config.preferredProvider
+                ),
+              ]
+            : optimalProviders;
 
       // Try each provider in optimal order
       for (const provider of providersToTry) {
@@ -480,7 +674,10 @@ export class LLMIntegrationService {
 
           switch (provider) {
             case 'claude-code':
-              result = await this.analyzeWithClaudeCode(request);
+              result = await this.analyzeWithClaudeCodeSDK(
+                request,
+                modelStrategy
+              );
               break;
             case 'github-models':
               if (this.isInCooldown('github-models')) {
@@ -517,18 +714,97 @@ export class LLMIntegrationService {
               continue;
           }
 
-          return {
+          const enhancedResult = {
             ...result,
             provider: provider as any,
             executionTime: Date.now() - startTime,
+            modelStrategy: modelStrategy
+              ? {
+                  selectedModel: modelStrategy.selectedModel,
+                  rationale: modelStrategy.rationale,
+                  wasOptimal: true,
+                  taskContext: request.taskContext,
+                }
+              : undefined,
+            metadata: {
+              ...result.metadata,
+              fallbackUsed: routingInfo.fallbackCount > 0,
+              fallbackReason:
+                routingInfo.fallbackCount > 0
+                  ? routingInfo.routingReason
+                  : undefined,
+              attemptedProviders: [provider],
+              finalModel: modelStrategy?.selectedModel || this.config.model,
+              performance: {
+                latency: Date.now() - startTime,
+                throughput: contextLength / (Date.now() - startTime),
+                reliability: result.success ? 1.0 : 0.0,
+              },
+            },
           };
+
+          // Enhanced: Record call statistics if enabled
+          if (this.statsService) {
+            this.statsService.recordCall(
+              {
+                task: request.task,
+                prompt: request.prompt,
+                requiresFileOperations: request.requiresFileOperations,
+                contextFiles: request.context.files,
+                taskContext: request.taskContext,
+                componentName: request.componentName,
+              } as any,
+              enhancedResult as any,
+              routingInfo,
+              {
+                requestType: 'analyze',
+                tokenUsage: enhancedResult.tokenUsage,
+                sessionId: this.sessionId,
+              }
+            );
+          }
+
+          if (this.config.enhancedLogging) {
+            this.enhancedLogger.performance({
+              provider: provider,
+              executionTime: enhancedResult.executionTime,
+              success: enhancedResult.success,
+              modelStrategy: enhancedResult.modelStrategy,
+              contextLength,
+              timestamp: new Date().toISOString(),
+            });
+          }
+
+          return enhancedResult;
         } catch (error) {
-          if (this.config.debug) {
-            console.log(
+          routingInfo.fallbackCount++;
+          routingInfo.routingReason = `${provider}-failed: ${error.message}`;
+
+          if (this.config.debug || this.config.enhancedLogging) {
+            this.enhancedLogger.warn(
               `⚠️ ${provider} failed, trying next provider:`,
               error.message
             );
           }
+
+          // Record failed attempt if stats service is available
+          if (this.statsService) {
+            this.statsService.recordCall(
+              {
+                task: request.task,
+                prompt: request.prompt,
+                requiresFileOperations: request.requiresFileOperations,
+              } as any,
+              {
+                success: false,
+                provider: provider as any,
+                executionTime: Date.now() - startTime,
+                error: error.message,
+              } as any,
+              routingInfo
+            );
+          }
+
           // Continue to next provider
         }
       }
@@ -683,27 +959,165 @@ export class LLMIntegrationService {
         throw error;
       }
     } catch (error) {
-      return {
+      const errorResult = {
         success: false,
         data: null,
         provider: this.config.preferredProvider || 'claude-code',
         executionTime: Date.now() - startTime,
         error: error instanceof Error ? error.message : 'Unknown error',
-      };
+        modelStrategy: modelStrategy
+          ? {
+              selectedModel: modelStrategy.selectedModel,
+              rationale: modelStrategy.rationale,
+              wasOptimal: false,
+              taskContext: request.taskContext,
+              fallbackInfo: {
+                originalModel: modelStrategy.selectedModel,
+                fallbackModel: 'sonnet' as ModelType,
+                reason: 'error-in-execution',
+              },
+            }
+          : undefined,
+        metadata: {
+          fallbackUsed: routingInfo.fallbackCount > 0,
+          fallbackReason: routingInfo.routingReason,
+          attemptedProviders: [],
+          finalModel: undefined,
+        },
+      } as AnalysisResult;
+
+      if (this.config.enhancedLogging) {
+        this.enhancedLogger.error('Analysis failed with error:', {
+          error: error instanceof Error ? error.message : 'Unknown error',
+          modelStrategy,
+          routingInfo,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return errorResult;
     }
   }
 
   /**
-   * Analyzes using Claude Code CLI with proper permissions.
+   * Enhanced method to determine optimal model based on task context.
    *
    * @private
    * @param {AnalysisRequest} request - Analysis request
+   * @returns {ModelConfig} Model configuration with rationale
+   */
+  private determineOptimalModel(request: AnalysisRequest): ModelConfig {
+    // If model is forced, use that
+    if (request.forceModel) {
+      return {
+        primary: request.forceModel,
+        fallback: 'sonnet',
+        rationale: `Forced model selection: ${request.forceModel}`,
+      };
+    }
+
+    // If component name is provided, use component-based selection
+    if (request.componentName) {
+      const componentModel = getComponentModel(request.componentName);
+      return {
+        primary: componentModel,
+        fallback: 'sonnet',
+        rationale: `Component-based selection for ${request.componentName}: ${componentModel}`,
+      };
+    }
+
+    // If task context is provided, use optimal selection
+    if (request.taskContext) {
+      return getModelConfig(request.taskContext);
+    }
+
+    // Create task context from request task type
+    const inferredContext: TaskContext = this.inferTaskContext(request);
+    return getModelConfig(inferredContext);
+  }
+
+  /**
+   * Infers task context from analysis request for optimal model selection.
+   *
+   * @private
+   * @param {AnalysisRequest} request - Analysis request
+   * @returns {TaskContext} Inferred task context
+   */
+  private inferTaskContext(request: AnalysisRequest): TaskContext {
+    switch (request.task) {
+      case 'domain-analysis':
+        return {
+          type: 'planning',
+          complexity: 'high',
+          domain: 'architecture',
+          requiresReasoning: true,
+        };
+
+      case 'code-review':
+        return {
+          type: 'analysis',
+          complexity: 'medium',
+          domain: 'development',
+          requiresReasoning: true,
+        };
+
+      case 'typescript-error-analysis':
+        return {
+          type: 'analysis',
+          complexity: 'medium',
+          domain: 'development',
+          requiresReasoning: false,
+        };
+
+      default:
+        return {
+          type: 'processing',
+          complexity: 'low',
+          domain: 'operations',
+          requiresReasoning: false,
+        };
+    }
+  }
+
+  /**
+   * Enhanced Claude Code SDK integration with optimal model selection.
+   *
+   * @private
+   * @param {AnalysisRequest} request - Analysis request
+   * @param {ModelConfig | null} modelStrategy - Model selection strategy
+   * @returns {Promise<Partial<AnalysisResult>>} Analysis results
+   */
+  private async analyzeWithClaudeCodeSDK(
+    request: AnalysisRequest,
+    modelStrategy: ModelConfig | null = null
+  ): Promise<Partial<AnalysisResult>> {
+    const selectedModel =
+      modelStrategy?.primary || this.config.model || 'sonnet';
+
+    if (this.config.enhancedLogging) {
+      this.enhancedLogger.info(
+        `🚀 Using Claude Code SDK with ${selectedModel} model`
+      );
+      this.enhancedLogger.info(
+        `Rationale: ${modelStrategy?.rationale || 'Default selection'}`
+      );
+    }
+
+    return this.analyzeWithClaudeCode(request, selectedModel);
+  }
+
+  /**
+   * Analyzes using Claude Code CLI with proper permissions and model selection.
+   *
+   * @private
+   * @param {AnalysisRequest} request - Analysis request
+   * @param {string} model - Model to use (opus or sonnet)
    * @returns {Promise<Partial<AnalysisResult>>} Analysis results
    */
   private async analyzeWithClaudeCode(
-    request: AnalysisRequest
+    request: AnalysisRequest,
+    model: string = 'sonnet'
   ): Promise<Partial<AnalysisResult>> {
-    
     const prompt = `${this.buildPrompt(request)}
 
 IMPORTANT: Respond with valid JSON format only. Do not include markdown code blocks or explanations outside the JSON.`;
@@ -713,7 +1127,7 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       '--output-format',
       'json', // JSON output format (works with --print)
       '--model',
-      this.config.model || 'sonnet', // Model selection
+      model, // Enhanced: Use provided model (opus/sonnet)
       '--add-dir',
       this.config.projectPath, // Project access
       '--session-id',
@@ -726,8 +1140,15 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
     }
 
     // Add debug mode if enabled
-    if (this.config.debug) {
+    if (this.config.debug || this.config.enhancedLogging) {
       args.push('--debug');
+    }
+
+    // Enhanced logging for Claude Code execution
+    if (this.config.enhancedLogging) {
+      this.enhancedLogger.info(
+        `Executing Claude Code with args: ${args.join(' ')}`
+      );
     }
 
     // Add the prompt as the final argument
@@ -735,9 +1156,26 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
 
     const result = await this.executeCommand('claude', args);
 
+    if (this.config.enhancedLogging) {
+      this.enhancedLogger.info(`Claude Code execution completed:`);
+      this.enhancedLogger.info(`  - Exit code: ${result.exitCode}`);
+      this.enhancedLogger.info(
+        `  - Stdout length: ${result.stdout.length} characters`
+      );
+      this.enhancedLogger.info(
+        `  - Stderr length: ${result.stderr.length} characters`
+      );
+    }
+
     let parsedData;
     try {
       parsedData = JSON.parse(result.stdout);
+
+      if (this.config.enhancedLogging) {
+        this.enhancedLogger.info(
+          `Successfully parsed JSON response from Claude Code`
+        );
+      }
     } catch (jsonError) {
       // Try to extract JSON from markdown code blocks or mixed content
       const jsonMatch =
@@ -748,9 +1186,15 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       if (jsonMatch) {
         try {
           parsedData = JSON.parse(jsonMatch[1] || jsonMatch[0]);
+
+          if (this.config.enhancedLogging) {
+            this.enhancedLogger.info(
+              `Successfully extracted JSON from markdown code block`
+            );
+          }
         } catch {
-          if (this.config.debug) {
-            console.warn(
+          if (this.config.debug || this.config.enhancedLogging) {
+            this.enhancedLogger.warn(
               'Claude Code returned non-JSON response, falling back to text'
             );
           }
@@ -760,6 +1204,12 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
           };
         }
       } else {
+        if (this.config.enhancedLogging) {
+          this.enhancedLogger.warn(
+            'No JSON found in Claude Code response, using raw text'
+          );
+        }
+
         parsedData = {
           rawResponse: result.stdout,
           note: 'Response was not in requested JSON format',
@@ -767,11 +1217,22 @@ IMPORTANT: Respond with valid JSON format only. Do not include markdown code blo
       }
     }
 
-    return {
+    const analysisResult = {
       success: result.exitCode === 0,
       data: parsedData,
       outputFile: request.outputPath,
     };
+
+    if (this.config.enhancedLogging) {
+      this.enhancedLogger.info(
+        `Claude Code analysis ${analysisResult.success ? 'completed successfully' : 'failed'}`
+      );
+      if (!analysisResult.success) {
+        this.enhancedLogger.error(`Error details: ${result.stderr}`);
+      }
+    }
+
+    return analysisResult;
   }
 
   /**
@@ -1845,5 +2306,85 @@ RESPOND IN JSON FORMAT:
       this.config.preferredProvider = originalProvider;
       this.config.model = originalModel;
     }
+  }
+
+  /**
+   * Enhanced method to get current configuration with model strategy details.
+   *
+   * @method getEnhancedConfig
+   * @returns {object} Enhanced configuration details
+   */
+  getEnhancedConfig() {
+    return {
+      provider: this.config.preferredProvider,
+      model: this.config.model,
+      useOptimalModel: this.config.useOptimalModel,
+      enhancedLogging: this.config.enhancedLogging,
+      componentName: this.config.componentName,
+      sessionId: this.sessionId,
+      statsEnabled: !!this.statsService,
+      rateLimitCooldowns: Object.fromEntries(this.rateLimitTracker),
+      supportedFeatures: {
+        claudeCodeSDK: true,
+        optimalModelSelection: this.config.useOptimalModel,
+        enhancedLogging: this.config.enhancedLogging,
+        statisticsTracking: !!this.statsService,
+        opusModel: true,
+        sonnetModel: true,
+        componentBasedSelection: true,
+        taskContextInference: true,
+      },
+    };
+  }
+
+  /**
+   * Enhanced method to get comprehensive service status.
+   *
+   * @method getServiceStatus
+   * @returns {object} Service health and status information
+   */
+  getServiceStatus() {
+    return {
+      status: 'operational',
+      version: '2.0.0',
+      migration: 'claude-code-sdk-integrated',
+      providers: {
+        claudeCode: {
+          available: true,
+          models: ['opus', 'sonnet'],
+          optimalSelection: this.config.useOptimalModel,
+        },
+        githubModels: {
+          available: !!this.config.githubToken,
+          inCooldown: this.isInCooldown('github-models'),
+          cooldownRemaining: this.getCooldownRemaining('github-models'),
+        },
+        gemini: {
+          available: !!this.geminiHandler,
+          inCooldown: this.isInCooldown('gemini-direct'),
+          cooldownRemaining: this.getCooldownRemaining('gemini-direct'),
+        },
+        copilot: {
+          available: !!this.copilotProvider,
+          inCooldown: false,
+        },
+      },
+      features: {
+        enhancedLogging: this.config.enhancedLogging,
+        statisticsTracking: !!this.statsService,
+        modelStrategyTracking: this.config.useOptimalModel,
+        abTesting: true,
+        smartAnalysis: true,
+      },
+      performance: this.statsService
+        ? {
+            totalCalls: 'available-via-stats-service',
+            systemHealth: 'available-via-stats-service',
+          }
+        : {
+            totalCalls: 'stats-service-not-initialized',
+            systemHealth: 'stats-service-not-initialized',
+          },
+    };
   }
 }

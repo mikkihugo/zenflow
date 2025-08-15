@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 // fileURLToPath is provided by esbuild banner
 import type { AgentTemplate } from '../agents/agent-manager.js';
-import type { AgentType } from '../types/agent-types.ts';
+import type { AgentType } from '../types/agent-types.js';
 
 // __filename is provided by esbuild banner
 const __dirname = dirname(__filename);

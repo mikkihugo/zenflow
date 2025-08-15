@@ -145,7 +145,10 @@ export class ConfigurationManager extends EventEmitter {
   get<T = any>(path: string): T | undefined {
     return path
       .split('.')
-      .reduce((current: unknown, key) => (current as any)?.[key], this.config) as T | undefined;
+      .reduce(
+        (current: unknown, key) => (current as any)?.[key],
+        this.config
+      ) as T | undefined;
   }
 
   /**
@@ -353,7 +356,11 @@ export class ConfigurationManager extends EventEmitter {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in (current as any)) || typeof (current as any)?.[part] !== 'object')) {
+      if (
+        part &&
+        (!(part in (current as any)) ||
+          typeof (current as any)?.[part] !== 'object')
+      ) {
         (current as any)[part] = {};
       }
       if (part) {

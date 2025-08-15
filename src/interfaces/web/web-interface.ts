@@ -207,7 +207,7 @@ export class WebInterface {
 
   /**
    * Setup HTTP MCP Server on /mcp endpoint (not stdio).
-   * 
+   *
    * @param app Express app instance
    */
   private async setupHTTPMCPServer(app: any): Promise<void> {
@@ -216,22 +216,25 @@ export class WebInterface {
 
       // Import HTTP MCP server (not stdio)
       const { HTTPMCPServer } = await import('../mcp/http-mcp-server.js');
-      
+
       // Create HTTP MCP server instance
       const mcpServer = new HTTPMCPServer({
         port: this.config.port, // Same port as web server
         host: this.config.host || 'localhost',
         timeout: 30000,
-        logLevel: 'info'
+        logLevel: 'info',
       });
 
       // Mount HTTP MCP routes on /mcp path
       app.use('/mcp', mcpServer.getRouter());
 
       this.logger.info('✅ HTTP MCP server mounted on /mcp endpoint');
-      this.logger.info(`📡 MCP available at: http://localhost:${this.config.port}/mcp`);
-      this.logger.info('🔗 Claude Desktop can connect to this HTTP MCP endpoint');
-      
+      this.logger.info(
+        `📡 MCP available at: http://localhost:${this.config.port}/mcp`
+      );
+      this.logger.info(
+        '🔗 Claude Desktop can connect to this HTTP MCP endpoint'
+      );
     } catch (error) {
       this.logger.error('Failed to setup HTTP MCP server:', error);
       // Continue without MCP - non-critical for web interface

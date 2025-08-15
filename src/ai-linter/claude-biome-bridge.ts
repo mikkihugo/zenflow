@@ -154,7 +154,10 @@ export class ClaudeBiomeBridge extends EventEmitter {
           functionName: 'detectFunction',
           complexityScore: pattern.data.complexity as number,
           complexityType: 'cognitive' as const,
-          suggestions: ['Break down into smaller functions', 'Extract reusable logic'],
+          suggestions: [
+            'Break down into smaller functions',
+            'Extract reusable logic',
+          ],
           location: pattern.location,
         })),
       type_safety_concerns: [],
@@ -253,7 +256,10 @@ export class ClaudeBiomeBridge extends EventEmitter {
         {
           agentId: 'security-analyst',
           agentType: 'security',
-          insights: ['No obvious vulnerabilities', 'Input validation looks good'],
+          insights: [
+            'No obvious vulnerabilities',
+            'Input validation looks good',
+          ],
           confidence: 0.92,
           processingTimeMs: 95,
         },

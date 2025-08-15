@@ -35,7 +35,10 @@ pub struct FileContent {
 
 impl SimpleGraphQLClient {
   pub fn new(token: Option<String>) -> Self {
-    Self { client: reqwest::Client::new(), token }
+    Self {
+      client: reqwest::Client::new(),
+      token,
+    }
   }
 
   /// Analyze version-specific repository with simplified approach
@@ -113,7 +116,10 @@ impl SimpleGraphQLClient {
       }
     }
 
-    Ok(SimpleVersionAnalysis { metadata, file_contents })
+    Ok(SimpleVersionAnalysis {
+      metadata,
+      file_contents,
+    })
   }
 
   async fn execute_query(&self, query: &str) -> Result<serde_json::Value> {

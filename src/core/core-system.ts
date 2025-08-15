@@ -130,13 +130,13 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
-import { DocumentProcessor } from './document-processor.ts';
-import { DocumentationManager } from './documentation-manager.ts';
-import { ExportSystem as ExportManager } from './export-manager.ts';
-import { InterfaceManager } from './interface-manager.ts';
-import { MemorySystem } from './memory-system.ts';
-import { WorkflowEngine } from './workflow-engine.ts';
+import { getLogger } from '../config/logging-config';
+import { DocumentProcessor } from './document-processor';
+import { DocumentationManager } from './documentation-manager';
+import { ExportSystem as ExportManager } from './export-manager';
+import { InterfaceManager } from './interface-manager';
+import { MemorySystem } from './memory-system';
+import { WorkflowEngine } from '../workflows/workflow-engine';
 
 /**
  * Export options interface for system state serialization.
@@ -440,6 +440,9 @@ export class System extends EventEmitter {
     super();
     this.config = config;
     this.startTime = Date.now();
+
+    // Fix EventEmitter memory leak warnings
+    this.setMaxListeners(20);
 
     // Initialize components with clear dependencies
     this.initializeComponents();

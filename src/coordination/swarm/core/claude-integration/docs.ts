@@ -79,8 +79,9 @@ class ClaudeDocsGenerator {
       interactive = true,
     } = options;
 
-    // Check if CLAUDE.md already exists
-    const filePath = path.join(this.workingDir, 'CLAUDE.md');
+    // PRIVACY PROTECTION: Do not access customer CLAUDE.md files
+    // Swarm systems should create their own isolated configuration files
+    const filePath = path.join(this.workingDir, 'CLAUDE-ZEN-SWARM.md');
     const fileExists = await this.fileExists(filePath);
 
     if (fileExists && !force && !merge && !backup) {
@@ -88,17 +89,19 @@ class ClaudeDocsGenerator {
         // Interactive prompt for action
         const action = await this.promptUserAction(filePath);
         if (action === 'cancel') {
-          throw new Error('CLAUDE.md generation cancelled by user');
+          throw new Error('CLAUDE-ZEN-SWARM.md generation cancelled by user');
         }
         if (action === 'overwrite') {
           await this.createBackup(filePath);
         } else if (action === 'merge') {
-          return await this.mergeClaudeMd(filePath);
+          throw new Error(
+            'PRIVACY PROTECTION: Merge is disabled for privacy protection'
+          );
         }
       } else {
         // Non-interactive mode - fail safely
         throw new Error(
-          'CLAUDE.md already exists. Use --force to overwrite, --backup to backup existing, or --merge to combine.'
+          'CLAUDE-ZEN-SWARM.md already exists. Use --force to overwrite or --backup to backup existing.'
         );
       }
     } else if (fileExists && force) {
@@ -682,7 +685,7 @@ Remember: **Claude Zen coordinates, Claude Code creates!** Start with \`mcp__cla
     // Clean up old backups (keep only last 5)
     await this.cleanupOldBackups(filePath);
 
-    return { file: 'CLAUDE.md', success: true, action: 'created' };
+    return { file: 'CLAUDE-ZEN-SWARM.md', success: true, action: 'created' };
   }
 
   /**
@@ -1296,32 +1299,12 @@ ${config?.details}
    * @param noBackup
    */
   async mergeClaudeMd(filePath: string, noBackup = false) {
-    try {
-      const existingContent = await fs.readFile(filePath, 'utf8');
-
-      // Create backup first (unless disabled)
-      if (noBackup) {
-      } else {
-        await this.createBackup(filePath);
-      }
-
-      // Generate new Claude Zen content
-      const claudeZenContent = this.getClaudeZenContent();
-
-      // Intelligent merging
-      const mergedContent = this.intelligentMerge(
-        existingContent,
-        claudeZenContent
-      );
-
-      // Write merged content
-      await fs.writeFile(filePath, mergedContent);
-
-      return { file: 'CLAUDE.md', success: true, action: 'merged' };
-    } catch (error) {
-      logger.error('❌ Failed to merge CLAUDE.md:', (error as Error).message);
-      throw error;
-    }
+    // PRIVACY PROTECTION: Do not access or merge customer CLAUDE.md files
+    // This violates customer privacy and Claude Code's intended architecture
+    throw new Error(
+      'PRIVACY PROTECTION: Swarm systems cannot access customer CLAUDE.md files. ' +
+        'Customer project configurations must remain private and isolated from swarm coordination.'
+    );
   }
 
   /**
@@ -1329,7 +1312,11 @@ ${config?.details}
    */
   getClaudeZenContent() {
     // Return the complete Claude Zen configuration content
-    const content = `# Claude Code Configuration for Claude Zen
+    // PRIVACY PROTECTION: This is swarm-specific config, isolated from customer CLAUDE.md
+    const content = `# Claude Code Zen Swarm Configuration (Isolated)
+
+## 🛡️ PRIVACY NOTICE: This is a swarm-specific configuration file
+## Customer CLAUDE.md files remain private and isolated from swarm systems
 
 ## 🎯 IMPORTANT: Separation of Responsibilities
 

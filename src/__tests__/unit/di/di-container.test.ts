@@ -278,7 +278,7 @@ describe('DI Container - Integration with Core Tokens', () => {
       private data = new Map();
 
       get<T>(key: string, defaultValue?: T): T {
-        return this.data.has(key) ? this.data.get(key) : defaultValue;
+        return this.data.has(key) ? this.data.get(key) : (defaultValue as T);
       }
 
       set(key: string, value: unknown): void {

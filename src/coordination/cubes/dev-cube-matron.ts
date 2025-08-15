@@ -61,7 +61,10 @@ export interface StrategicRequirement {
  *
  * "Code perfection through systematic optimization. Your bugs will be assimilated."
  */
-export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron {
+export class DevCubeMatron
+  extends SharedFACTCapable
+  implements DesignateMatron
+{
   public readonly id: string;
   public readonly designation: string;
   public readonly cubeType = 'DEV-CUBE' as const;
@@ -87,7 +90,7 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
   // Strategic Business Planning (No Technical Implementation)
   private strategicRequirements = new Map<string, StrategicRequirement>();
   // SPARC Integration will be added when we find the import
-  private sparcEngine?: any;
+  private sparcEngine?: unknown;
 
   constructor(id: string, eventBus: IEventBus, config: CollectiveConfig) {
     super(); // Initialize SharedFACTCapable (includes EventEmitter)
@@ -137,10 +140,10 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
     } catch (error) {
       this.logger.warn('SPARC Engine not available, continuing without it');
     }
-    
+
     // Initialize SHARED FACT system access
     this.initializeSharedFACT();
-    
+
     this.setupEventHandlers();
     this.logger.info(
       `DEV-CUBE Matron ${this.designation} initialized. Code optimization protocols active. SPARC methodology integrated.`
@@ -355,7 +358,9 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
       tasks: string[];
     }>;
   }> {
-    this.logger.info(`🧠 SPARC Strategic Planning (Cube Matron): ${request.type} - ${request.description}`);
+    this.logger.info(
+      `🧠 SPARC Strategic Planning (Cube Matron): ${request.type} - ${request.description}`
+    );
 
     // 1. Create SPARC Project Specification
     const projectSpec: ProjectSpecification = {
@@ -363,14 +368,19 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
       domain: request.domain as any,
       requirements: request.requirements || [request.description],
       complexity: this.determineComplexity(request),
-      constraints: [`Priority: ${request.priority}`, 'Borg efficiency standards'],
+      constraints: [
+        `Priority: ${request.priority}`,
+        'Borg efficiency standards',
+      ],
     };
 
     // 2. Initialize SPARC Project
     const sparcProject = await this.sparcEngine.initializeProject(projectSpec);
     this.activeProjects.set(sparcProject.id, sparcProject);
 
-    this.logger.info(`📋 SPARC Project ${sparcProject.id} initialized with 5-phase methodology`);
+    this.logger.info(
+      `📋 SPARC Project ${sparcProject.id} initialized with 5-phase methodology`
+    );
 
     // 3. Execute SPARC Phases for Strategic Planning
     await this.executeSPARCPhases(sparcProject, request.priority);
@@ -378,7 +388,9 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
     // 4. Generate Queen Assignments based on SPARC planning
     const queenAssignments = await this.generateQueenAssignments(sparcProject);
 
-    this.logger.info(`👑 Generated ${queenAssignments.length} Queen assignments from SPARC planning`);
+    this.logger.info(
+      `👑 Generated ${queenAssignments.length} Queen assignments from SPARC planning`
+    );
 
     // 5. Assign SPARC tasks to Queens for execution
     await this.assignSPARCTasksToQueens(sparcProject.id, queenAssignments);
@@ -403,14 +415,25 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
   /**
    * Execute SPARC phases for strategic planning
    */
-  private async executeSPARCPhases(project: SPARCProject, priority: string): Promise<void> {
-    const phases: SPARCPhase[] = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
-    
+  private async executeSPARCPhases(
+    project: SPARCProject,
+    priority: string
+  ): Promise<void> {
+    const phases: SPARCPhase[] = [
+      'specification',
+      'pseudocode',
+      'architecture',
+      'refinement',
+      'completion',
+    ];
+
     for (const phase of phases) {
       try {
-        this.logger.info(`⚡ Executing SPARC ${phase} phase for project ${project.id}`);
+        this.logger.info(
+          `⚡ Executing SPARC ${phase} phase for project ${project.id}`
+        );
         const result = await this.sparcEngine.executePhase(project, phase);
-        
+
         if (result.success) {
           this.logger.info(`✅ SPARC ${phase} phase completed successfully`);
         } else {
@@ -431,11 +454,13 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
   /**
    * Generate Queen assignments based on SPARC project planning
    */
-  private async generateQueenAssignments(project: SPARCProject): Promise<Array<{
-    queenId: string;
-    phase: SPARCPhase;
-    tasks: string[];
-  }>> {
+  private async generateQueenAssignments(project: SPARCProject): Promise<
+    Array<{
+      queenId: string;
+      phase: SPARCPhase;
+      tasks: string[];
+    }>
+  > {
     const assignments: Array<{
       queenId: string;
       phase: SPARCPhase;
@@ -454,8 +479,11 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
     for (const [phase, availableQueens] of Object.entries(phaseQueenMapping)) {
       if (availableQueens.length > 0) {
         const selectedQueen = availableQueens[0]; // Round-robin or capability-based selection
-        const tasks = this.generateTasksFromSPARCPhase(project, phase as SPARCPhase);
-        
+        const tasks = this.generateTasksFromSPARCPhase(
+          project,
+          phase as SPARCPhase
+        );
+
         assignments.push({
           queenId: selectedQueen,
           phase: phase as SPARCPhase,
@@ -471,46 +499,69 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
    * Generate strategic coordination tasks for Queens based on SPARC phase results
    * Queens will coordinate swarms to do the actual implementation
    */
-  private generateTasksFromSPARCPhase(project: SPARCProject, phase: SPARCPhase): string[] {
+  private generateTasksFromSPARCPhase(
+    project: SPARCProject,
+    phase: SPARCPhase
+  ): string[] {
     const tasks: string[] = [];
-    
+
     switch (phase) {
       case 'specification':
-        tasks.push('Coordinate swarm to analyze requirements and create detailed specifications');
-        tasks.push('Assign agents to validate functional requirements with stakeholders');
+        tasks.push(
+          'Coordinate swarm to analyze requirements and create detailed specifications'
+        );
+        tasks.push(
+          'Assign agents to validate functional requirements with stakeholders'
+        );
         if (project.specification?.functionalRequirements?.length > 0) {
-          tasks.push('Orchestrate requirements review with domain expert agents');
+          tasks.push(
+            'Orchestrate requirements review with domain expert agents'
+          );
         }
         break;
-        
+
       case 'pseudocode':
-        tasks.push('Coordinate algorithm design team to create pseudocode solutions');
+        tasks.push(
+          'Coordinate algorithm design team to create pseudocode solutions'
+        );
         tasks.push('Assign agents to validate pseudocode logic and edge cases');
         break;
-        
+
       case 'architecture':
-        tasks.push('Orchestrate architecture design team based on specifications');
+        tasks.push(
+          'Orchestrate architecture design team based on specifications'
+        );
         tasks.push('Coordinate component design and interaction planning');
         if (project.architecture?.components?.length > 0) {
           tasks.push('Assign agents to create component interaction diagrams');
         }
         break;
-        
+
       case 'refinement':
-        tasks.push('Coordinate optimization team to refine designs and algorithms');
+        tasks.push(
+          'Coordinate optimization team to refine designs and algorithms'
+        );
         tasks.push('Orchestrate code review and improvement processes');
         break;
-        
+
       case 'completion':
-        tasks.push('Coordinate implementation team to generate production-ready code');
-        tasks.push('Orchestrate testing team to create comprehensive test suites');
-        tasks.push('Assign documentation team to generate technical documentation');
+        tasks.push(
+          'Coordinate implementation team to generate production-ready code'
+        );
+        tasks.push(
+          'Orchestrate testing team to create comprehensive test suites'
+        );
+        tasks.push(
+          'Assign documentation team to generate technical documentation'
+        );
         break;
-        
+
       default:
-        tasks.push(`Coordinate ${phase} phase execution through specialized swarm teams`);
+        tasks.push(
+          `Coordinate ${phase} phase execution through specialized swarm teams`
+        );
     }
-    
+
     return tasks;
   }
 
@@ -525,10 +576,14 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
   /**
    * Determine project complexity based on request
    */
-  private determineComplexity(request: any): 'simple' | 'moderate' | 'complex' | 'enterprise' {
+  private determineComplexity(
+    request: unknown
+  ): 'simple' | 'moderate' | 'complex' | 'enterprise' {
     if (request.type === 'bug-fix') return 'simple';
-    if (request.type === 'feature' && request.priority === 'low') return 'moderate';
-    if (request.type === 'architecture' || request.priority === 'critical') return 'complex';
+    if (request.type === 'feature' && request.priority === 'low')
+      return 'moderate';
+    if (request.type === 'architecture' || request.priority === 'critical')
+      return 'complex';
     return 'moderate';
   }
 
@@ -536,22 +591,33 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
    * Enhance strategic planning for critical priority items
    * Additional coordination and oversight for high-stakes projects
    */
-  private async enhancePhaseForCriticalPriority(project: SPARCProject, phase: SPARCPhase): Promise<void> {
-    this.logger.info(`🔥 Enhanced Strategic Planning ${phase} phase for CRITICAL priority project ${project.id}`);
-    
+  private async enhancePhaseForCriticalPriority(
+    project: SPARCProject,
+    phase: SPARCPhase
+  ): Promise<void> {
+    this.logger.info(
+      `🔥 Enhanced Strategic Planning ${phase} phase for CRITICAL priority project ${project.id}`
+    );
+
     // Add additional strategic oversight and coordination for critical items
     switch (phase) {
       case 'specification':
         // Assign additional Queen oversight for requirement validation
-        this.logger.info('Assigning additional Queen oversight for critical specification phase');
+        this.logger.info(
+          'Assigning additional Queen oversight for critical specification phase'
+        );
         break;
       case 'architecture':
         // Additional architectural review coordination through multiple Queens
-        this.logger.info('Coordinating multi-Queen architectural review for critical project');
+        this.logger.info(
+          'Coordinating multi-Queen architectural review for critical project'
+        );
         break;
       case 'completion':
         // Enhanced testing and quality assurance coordination
-        this.logger.info('Orchestrating enhanced QA coordination for critical completion phase');
+        this.logger.info(
+          'Orchestrating enhanced QA coordination for critical completion phase'
+        );
         break;
     }
   }
@@ -568,7 +634,9 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
       tasks: string[];
     }>
   ): Promise<void> {
-    this.logger.info(`👑 Assigning SPARC tasks to ${queenAssignments.length} Queens for project ${projectId}`);
+    this.logger.info(
+      `👑 Assigning SPARC tasks to ${queenAssignments.length} Queens for project ${projectId}`
+    );
 
     for (const assignment of queenAssignments) {
       // Create structured task for Queen
@@ -591,7 +659,9 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
         methodology: 'SPARC',
       });
 
-      this.logger.info(`📋 Assigned ${assignment.tasks.length} SPARC ${assignment.phase} tasks to Queen ${assignment.queenId}`);
+      this.logger.info(
+        `📋 Assigned ${assignment.tasks.length} SPARC ${assignment.phase} tasks to Queen ${assignment.queenId}`
+      );
     }
 
     // Notify THE COLLECTIVE about task assignments
@@ -599,7 +669,10 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
       matron: this.designation,
       projectId,
       queenCount: queenAssignments.length,
-      totalTasks: queenAssignments.reduce((sum, qa) => sum + qa.tasks.length, 0),
+      totalTasks: queenAssignments.reduce(
+        (sum, qa) => sum + qa.tasks.length,
+        0
+      ),
     });
   }
 
@@ -618,12 +691,13 @@ export class DevCubeMatron extends SharedFACTCapable implements DesignateMatron 
     }>;
   } {
     const projects = Array.from(this.activeProjects.values());
-    
+
     return {
       total: projects.length,
-      active: projects.filter(p => p.progress.overallProgress < 1.0).length,
-      completed: projects.filter(p => p.progress.overallProgress === 1.0).length,
-      projects: projects.map(p => ({
+      active: projects.filter((p) => p.progress.overallProgress < 1.0).length,
+      completed: projects.filter((p) => p.progress.overallProgress === 1.0)
+        .length,
+      projects: projects.map((p) => ({
         id: p.id,
         name: p.name,
         currentPhase: p.currentPhase,

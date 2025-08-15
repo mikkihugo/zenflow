@@ -2,7 +2,7 @@
 
 /**
  * Debug Kuzu Query Signature
- * 
+ *
  * Figure out the exact signature Kuzu expects
  */
 
@@ -47,7 +47,6 @@ async function main() {
 
     connection.close();
     database.close();
-
   } catch (error) {
     console.error('❌ Debug failed:', error);
   }

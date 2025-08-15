@@ -200,8 +200,7 @@ export class MockLoggerService {
 export class MockSwarmService {
   initialize: MockedFunction<() => Promise<void>> = vi.fn();
   spawnAgent: MockedFunction<(config: unknown) => Promise<string>> = vi.fn();
-  terminateAgent: MockedFunction<(agentId: string) => Promise<void>> =
-    vi.fn();
+  terminateAgent: MockedFunction<(agentId: string) => Promise<void>> = vi.fn();
   getSwarmStatus: MockedFunction<() => Promise<SwarmStatus>> = vi.fn();
   orchestrateTask: MockedFunction<(task: unknown) => Promise<unknown>> =
     vi.fn();
@@ -259,9 +258,8 @@ export class MockSwarmService {
  * Replaces: mockDatabase = { query: vi.fn(), transaction: vi.fn()... }
  */
 export class MockDatabaseService {
-  query: MockedFunction<
-    (sql: string, params?: unknown[]) => Promise<any[]>
-  > = vi.fn();
+  query: MockedFunction<(sql: string, params?: unknown[]) => Promise<any[]>> =
+    vi.fn();
   execute: MockedFunction<
     (sql: string, params?: unknown[]) => Promise<{ affectedRows: number }>
   > = vi.fn();

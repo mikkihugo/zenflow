@@ -1,16 +1,25 @@
 /**
  * Real Database Provider Factory using actual database implementations
- * 
+ *
  * Updated to use real SQLite, LanceDB, and Kuzu adapters with no mocks
  */
 
 import { createLogger } from '../../core/logger.js';
-import { SQLiteAdapter, type SQLiteConfig } from '../adapters/sqlite-adapter.js';
-import { LanceDBAdapter, type LanceDBConfig } from '../adapters/lancedb-adapter.js';
+import {
+  SQLiteAdapter,
+  type SQLiteConfig,
+} from '../adapters/sqlite-adapter.js';
+import {
+  LanceDBAdapter,
+  type LanceDBConfig,
+} from '../adapters/lancedb-adapter.js';
 import { KuzuAdapter, type KuzuConfig } from '../adapters/kuzu-adapter.js';
 
 // Import real adapter types
-import type { VectorDocument, VectorSearchOptions } from '../adapters/lancedb-adapter.js';
+import type {
+  VectorDocument,
+  VectorSearchOptions,
+} from '../adapters/lancedb-adapter.js';
 import type { GraphNode, GraphRelationship } from '../adapters/kuzu-adapter.js';
 
 const logger = createLogger('database-providers');
@@ -32,18 +41,20 @@ export class DatabaseProviderFactory {
   }
 
   async createAdapter(config: DatabaseConfig): Promise<any> {
-    this.logger.info(`Creating REAL ${config.type} adapter for: ${config.database}`);
+    this.logger.info(
+      `Creating REAL ${config.type} adapter for: ${config.database}`
+    );
 
     switch (config.type) {
       case 'sqlite':
         return new SQLiteAdapter(config as SQLiteConfig);
-      
+
       case 'lancedb':
         return new LanceDBAdapter(config as LanceDBConfig);
-      
+
       case 'kuzu':
         return new KuzuAdapter(config as KuzuConfig);
-      
+
       default:
         throw new Error(`Unsupported database type: ${config.type}`);
     }

@@ -15,15 +15,15 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-engine.ts';
+} from './workflow-engine.js';
 // Primary exports from unified engine
 export {
   WorkflowEngine,
   WorkflowEngine as default,
-} from './workflow-engine.ts';
+} from './workflow-engine.js';
 
 // Import for factory use
-import { WorkflowEngine } from './workflow-engine.ts';
+import { WorkflowEngine } from './workflow-engine.js';
 
 // Workflow utilities
 export const WorkflowUtils = {

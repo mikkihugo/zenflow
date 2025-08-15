@@ -13,7 +13,7 @@ import { ProductWorkflowEngine } from '../../coordination/orchestration/product-
 import { SPARCEngineCore } from '../../coordination/swarm/sparc/core/sparc-engine.ts';
 import { MemorySystem } from '../../core/memory-system.ts';
 import { ProductFlowSystem } from '../../core/product-flow-system.ts';
-import { DatabaseCoordinator } from '../../database/core/database-coordinator';
+import { DatabaseCoordinator } from '../../database/controllers/database-controller';
 
 describe('Product Flow + SPARC Integration', () => {
   let productWorkflowEngine: ProductWorkflowEngine;

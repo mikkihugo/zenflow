@@ -8,7 +8,7 @@
  *
  * Key Features:
  * - Task Duration and Resource Prediction with confidence intervals
- * - Performance Optimization Forecasting with trend analysis  
+ * - Performance Optimization Forecasting with trend analysis
  * - Knowledge Transfer Success Prediction with compatibility scoring
  * - Emergent Behavior Prediction using complex pattern analysis
  * - Adaptive Learning Models with real-time updates
@@ -47,10 +47,10 @@
  *
  * // Multi-horizon task duration prediction
  * const taskPrediction = await analytics.predictTaskDurationMultiHorizon('agent-1', 'feature-development');
- * 
+ *
  * // Performance optimization forecasting
  * const performanceForecast = await analytics.forecastPerformanceOptimization('swarm-1');
- * 
+ *
  * // Emergent behavior prediction
  * const emergentPatterns = await analytics.predictEmergentBehavior();
  * ```
@@ -59,15 +59,32 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config.ts';
 import type { AgentId, SwarmId } from '../types.ts';
-import type { TaskPredictor, TaskPrediction, TaskCompletionRecord } from './task-predictor.ts';
-import type { AgentLearningSystem, AgentLearningState } from './agent-learning-system.ts';
-import type { AgentHealthMonitor, AgentHealth, HealthTrend } from './agent-health-monitor.ts';
-import type { Tier3NeuralLearning, DeepPattern, SystemPrediction } from '../learning/tier3-neural-learning.ts';
+import type {
+  TaskPredictor,
+  TaskPrediction,
+  TaskCompletionRecord,
+} from './task-predictor.ts';
+import type {
+  AgentLearningSystem,
+  AgentLearningState,
+} from './agent-learning-system.ts';
+import type {
+  AgentHealthMonitor,
+  AgentHealth,
+  HealthTrend,
+} from './agent-health-monitor.ts';
+import type {
+  Tier3NeuralLearning,
+  DeepPattern,
+  SystemPrediction,
+} from '../learning/tier3-neural-learning.ts';
 import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration.ts';
 import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager.ts';
 import type { Pattern } from '../../intelligence/adaptive-learning/types.ts';
 
-const logger = getLogger('coordination-intelligence-predictive-analytics-engine');
+const logger = getLogger(
+  'coordination-intelligence-predictive-analytics-engine'
+);
 
 /**
  * Forecast horizon types for multi-timeframe predictions
@@ -77,7 +94,7 @@ export type ForecastHorizon = 'short' | 'medium' | 'long' | 'extended';
 /**
  * Prediction algorithm types for analytics engine
  */
-export type PredictionAlgorithm = 
+export type PredictionAlgorithm =
   | 'neural_network'
   | 'ensemble'
   | 'time_series'
@@ -200,7 +217,7 @@ export interface PerformanceOptimizationForecast {
 }
 
 /**
- * Knowledge transfer success prediction result  
+ * Knowledge transfer success prediction result
  */
 export interface KnowledgeTransferPrediction {
   sourceSwarmId: SwarmId;
@@ -465,18 +482,27 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
 
   // Prediction caches
   private taskPredictionCache = new Map<string, MultiHorizonTaskPrediction>();
-  private performanceForecastCache = new Map<string, PerformanceOptimizationForecast>();
-  private knowledgeTransferCache = new Map<string, KnowledgeTransferPrediction>();
+  private performanceForecastCache = new Map<
+    string,
+    PerformanceOptimizationForecast
+  >();
+  private knowledgeTransferCache = new Map<
+    string,
+    KnowledgeTransferPrediction
+  >();
   private emergentBehaviorCache = new Map<string, EmergentBehaviorPrediction>();
 
   // Model performance tracking
   private modelAccuracy = new Map<string, number>();
-  private predictionHistory = new Map<string, Array<{ prediction: unknown; actual: unknown; timestamp: number }>>();
-  
+  private predictionHistory = new Map<
+    string,
+    Array<{ prediction: unknown; actual: unknown; timestamp: number }>
+  >();
+
   // Real-time processing
   private updateTimer?: NodeJS.Timeout;
   private realTimeQueue: Array<{ type: string; data: unknown }> = [];
-  
+
   // Analytics state
   private isInitialized = false;
   private lastFullUpdate = 0;
@@ -573,7 +599,10 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
 
       logger.info('✅ Predictive Analytics Engine initialized successfully');
     } catch (error) {
-      logger.error('❌ Failed to initialize Predictive Analytics Engine:', error);
+      logger.error(
+        '❌ Failed to initialize Predictive Analytics Engine:',
+        error
+      );
       throw error;
     }
   }
@@ -595,32 +624,44 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       throw new Error('Task duration prediction is disabled');
     }
 
-    logger.debug(`🔮 Predicting task duration (multi-horizon) for agent ${agentId}`, {
-      taskType,
-      contextFactors,
-      horizons: this.config.forecastHorizons,
-    });
+    logger.debug(
+      `🔮 Predicting task duration (multi-horizon) for agent ${agentId}`,
+      {
+        taskType,
+        contextFactors,
+        horizons: this.config.forecastHorizons,
+      }
+    );
 
     const cacheKey = `task-${agentId}-${taskType}-${JSON.stringify(contextFactors)}`;
-    
+
     // Check cache first
     if (this.config.caching.enabled) {
       const cached = this.taskPredictionCache.get(cacheKey);
-      if (cached && Date.now() - cached.metadata.lastUpdate < this.config.caching.ttl) {
-        logger.debug(`📋 Using cached multi-horizon prediction for agent ${agentId}`);
+      if (
+        cached &&
+        Date.now() - cached.metadata.lastUpdate < this.config.caching.ttl
+      ) {
+        logger.debug(
+          `📋 Using cached multi-horizon prediction for agent ${agentId}`
+        );
         return cached;
       }
     }
 
     try {
       // Get base prediction from task predictor
-      const basePrediction = this.taskPredictor 
-        ? await this.taskPredictor.predictTaskDuration(agentId, taskType, contextFactors)
+      const basePrediction = this.taskPredictor
+        ? await this.taskPredictor.predictTaskDuration(
+            agentId,
+            taskType,
+            contextFactors
+          )
         : null;
 
       // Generate predictions for each horizon
       const predictions = {} as MultiHorizonTaskPrediction['predictions'];
-      
+
       for (const horizon of this.config.forecastHorizons) {
         predictions[horizon] = await this.generateHorizonPrediction(
           agentId,
@@ -640,7 +681,10 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       );
 
       // Get historical accuracy
-      const historicalAccuracy = await this.getHistoricalAccuracy(agentId, taskType);
+      const historicalAccuracy = await this.getHistoricalAccuracy(
+        agentId,
+        taskType
+      );
 
       // Generate recommendations
       const recommendations = this.generateTaskDurationRecommendations(
@@ -668,16 +712,22 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
         this.cacheWithTTL(this.taskPredictionCache, cacheKey, result);
       }
 
-      logger.info(`🎯 Multi-horizon task prediction generated for agent ${agentId}`, {
-        taskType,
-        horizons: Object.keys(predictions).length,
-        ensembleConfidence: ensemblePrediction.confidence,
-        recommendations: recommendations.length,
-      });
+      logger.info(
+        `🎯 Multi-horizon task prediction generated for agent ${agentId}`,
+        {
+          taskType,
+          horizons: Object.keys(predictions).length,
+          ensembleConfidence: ensemblePrediction.confidence,
+          recommendations: recommendations.length,
+        }
+      );
 
       return result;
     } catch (error) {
-      logger.error(`❌ Failed to predict task duration (multi-horizon) for agent ${agentId}:`, error);
+      logger.error(
+        `❌ Failed to predict task duration (multi-horizon) for agent ${agentId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -697,24 +747,30 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       throw new Error('Performance forecasting is disabled');
     }
 
-    logger.debug(`📈 Forecasting performance optimization for swarm ${swarmId}`, {
-      timeHorizon,
-    });
+    logger.debug(
+      `📈 Forecasting performance optimization for swarm ${swarmId}`,
+      {
+        timeHorizon,
+      }
+    );
 
     const cacheKey = `performance-${swarmId}-${timeHorizon}`;
-    
+
     // Check cache first
     if (this.config.caching.enabled) {
       const cached = this.performanceForecastCache.get(cacheKey);
       if (cached) {
-        logger.debug(`📋 Using cached performance forecast for swarm ${swarmId}`);
+        logger.debug(
+          `📋 Using cached performance forecast for swarm ${swarmId}`
+        );
         return cached;
       }
     }
 
     try {
       // Get current performance snapshot
-      const currentPerformance = await this.getCurrentPerformanceSnapshot(swarmId);
+      const currentPerformance =
+        await this.getCurrentPerformanceSnapshot(swarmId);
 
       // Forecast future performance using multiple models
       const forecastedPerformance = await this.forecastPerformanceSnapshot(
@@ -724,20 +780,30 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       );
 
       // Identify optimization opportunities
-      const optimizationOpportunities = await this.identifyOptimizationOpportunities(
-        swarmId,
-        currentPerformance,
-        forecastedPerformance
-      );
+      const optimizationOpportunities =
+        await this.identifyOptimizationOpportunities(
+          swarmId,
+          currentPerformance,
+          forecastedPerformance
+        );
 
       // Analyze trends
-      const trendAnalysis = await this.analyzePerformanceTrends(swarmId, timeHorizon);
+      const trendAnalysis = await this.analyzePerformanceTrends(
+        swarmId,
+        timeHorizon
+      );
 
       // Predict bottlenecks
-      const bottleneckPrediction = await this.predictBottlenecks(swarmId, timeHorizon);
+      const bottleneckPrediction = await this.predictBottlenecks(
+        swarmId,
+        timeHorizon
+      );
 
       // Forecast resource needs
-      const resourceForecast = await this.forecastResourceNeeds(swarmId, timeHorizon);
+      const resourceForecast = await this.forecastResourceNeeds(
+        swarmId,
+        timeHorizon
+      );
 
       // Calculate confidence metrics
       const confidenceMetrics = this.calculateForecastConfidence(
@@ -763,16 +829,22 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
         this.cacheWithTTL(this.performanceForecastCache, cacheKey, result);
       }
 
-      logger.info(`📊 Performance optimization forecast generated for swarm ${swarmId}`, {
-        timeHorizon,
-        optimizationOpportunities: optimizationOpportunities.length,
-        trendDirection: trendAnalysis.direction,
-        overallConfidence: confidenceMetrics.overall,
-      });
+      logger.info(
+        `📊 Performance optimization forecast generated for swarm ${swarmId}`,
+        {
+          timeHorizon,
+          optimizationOpportunities: optimizationOpportunities.length,
+          trendDirection: trendAnalysis.direction,
+          overallConfidence: confidenceMetrics.overall,
+        }
+      );
 
       return result;
     } catch (error) {
-      logger.error(`❌ Failed to forecast performance optimization for swarm ${swarmId}:`, error);
+      logger.error(
+        `❌ Failed to forecast performance optimization for swarm ${swarmId}:`,
+        error
+      );
       throw error;
     }
   }
@@ -801,7 +873,7 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     });
 
     const cacheKey = `transfer-${sourceSwarmId}-${targetSwarmId}-${patterns.length}`;
-    
+
     // Check cache first
     if (this.config.caching.enabled) {
       const cached = this.knowledgeTransferCache.get(cacheKey);
@@ -891,7 +963,7 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     logger.debug(`🌊 Predicting emergent behavior patterns`);
 
     const cacheKey = `emergent-${Date.now().toString().slice(-6)}`;
-    
+
     try {
       // Detect emergent patterns using deep learning
       const emergentPatterns = await this.detectEmergentPatterns();
@@ -906,7 +978,8 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       const patternEvolutionPrediction = await this.predictPatternEvolution();
 
       // Generate system-wide optimizations
-      const systemWideOptimizations = await this.generateSystemWideOptimizations();
+      const systemWideOptimizations =
+        await this.generateSystemWideOptimizations();
 
       // Calculate confidence metrics
       const confidenceMetrics = this.calculateEmergentBehaviorConfidence(
@@ -964,18 +1037,20 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
 
     try {
       const updateId = `update_${Date.now()}`;
-      
+
       // Update models with new data
       const modelsUpdated = await this.performModelUpdates();
 
       // Measure performance improvements
-      const performanceImprovements = await this.measurePerformanceImprovements(modelsUpdated);
+      const performanceImprovements =
+        await this.measurePerformanceImprovements(modelsUpdated);
 
       // Process real-time adaptations
       const realTimeAdaptations = await this.processRealTimeAdaptations();
 
       // Calculate confidence intervals
-      const confidenceIntervals = await this.calculateModelConfidenceIntervals(modelsUpdated);
+      const confidenceIntervals =
+        await this.calculateModelConfidenceIntervals(modelsUpdated);
 
       // Assess predictive accuracy
       const predictiveAccuracy = await this.assessPredictiveAccuracy();
@@ -1010,8 +1085,11 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       this.emit('adaptiveLearningUpdated', {
         updateId,
         modelsUpdated: modelsUpdated.length,
-        overallImprovement: Object.values(performanceImprovements)
-          .reduce((sum, perf) => sum + perf.improvement, 0) / modelsUpdated.length,
+        overallImprovement:
+          Object.values(performanceImprovements).reduce(
+            (sum, perf) => sum + perf.improvement,
+            0
+          ) / modelsUpdated.length,
         timestamp: Date.now(),
       });
 
@@ -1041,12 +1119,18 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
 
     // Initialize neural network models
     if (this.mlRegistry?.neuralNetwork) {
-      this.predictiveModels.set('neural_network', this.mlRegistry.neuralNetwork);
+      this.predictiveModels.set(
+        'neural_network',
+        this.mlRegistry.neuralNetwork
+      );
     }
 
     // Initialize reinforcement learning
     if (this.mlRegistry?.reinforcementLearning) {
-      this.predictiveModels.set('reinforcement_learning', this.mlRegistry.reinforcementLearning);
+      this.predictiveModels.set(
+        'reinforcement_learning',
+        this.mlRegistry.reinforcementLearning
+      );
     }
 
     // Initialize ensemble models
@@ -1059,10 +1143,12 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
       predict: async (data: unknown) => {
         // Time series prediction implementation
         return { value: Math.random(), confidence: 0.8 };
-      }
+      },
     });
 
-    logger.info(`✅ Initialized ${this.predictiveModels.size} predictive models`);
+    logger.info(
+      `✅ Initialized ${this.predictiveModels.size} predictive models`
+    );
   }
 
   /**
@@ -1139,25 +1225,37 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
   private async generateEnsembleTaskPrediction(
     agentId: AgentId,
     taskType: string,
-    horizonPredictions: Array<MultiHorizonTaskPrediction['predictions'][ForecastHorizon]>,
+    horizonPredictions: Array<
+      MultiHorizonTaskPrediction['predictions'][ForecastHorizon]
+    >,
     contextFactors: Record<string, unknown>
   ): Promise<MultiHorizonTaskPrediction['ensemblePrediction']> {
     const weights = Object.values(this.config.ensembleWeights);
-    const predictions = horizonPredictions.map(p => p.duration);
-    const confidences = horizonPredictions.map(p => p.confidence);
+    const predictions = horizonPredictions.map((p) => p.duration);
+    const confidences = horizonPredictions.map((p) => p.confidence);
 
     // Weighted average duration
-    const weightedSum = predictions.reduce((sum, pred, i) => sum + pred * weights[i % weights.length], 0);
+    const weightedSum = predictions.reduce(
+      (sum, pred, i) => sum + pred * weights[i % weights.length],
+      0
+    );
     const totalWeight = weights.reduce((sum, w) => sum + w, 0);
     const duration = weightedSum / totalWeight;
 
     // Weighted confidence
-    const confidence = confidences.reduce((sum, conf, i) => sum + conf * weights[i % weights.length], 0) / totalWeight;
+    const confidence =
+      confidences.reduce(
+        (sum, conf, i) => sum + conf * weights[i % weights.length],
+        0
+      ) / totalWeight;
 
     // Calculate consensus (agreement between predictions)
-    const mean = predictions.reduce((sum, p) => sum + p, 0) / predictions.length;
-    const variance = predictions.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) / predictions.length;
-    const consensus = Math.max(0, 1 - (variance / (mean * mean)));
+    const mean =
+      predictions.reduce((sum, p) => sum + p, 0) / predictions.length;
+    const variance =
+      predictions.reduce((sum, p) => sum + Math.pow(p - mean, 2), 0) /
+      predictions.length;
+    const consensus = Math.max(0, 1 - variance / (mean * mean));
 
     // Calculate uncertainty
     const uncertainty = 1 - confidence;
@@ -1173,7 +1271,9 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
   /**
    * Get current performance snapshot for a swarm
    */
-  private async getCurrentPerformanceSnapshot(swarmId: SwarmId): Promise<PerformanceSnapshot> {
+  private async getCurrentPerformanceSnapshot(
+    swarmId: SwarmId
+  ): Promise<PerformanceSnapshot> {
     // This would integrate with actual swarm performance metrics
     // For now, providing a realistic simulation
     return {
@@ -1200,12 +1300,29 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
 
     return {
       timestamp: Date.now() + this.getHorizonDuration(timeHorizon),
-      throughput: currentPerformance.throughput * (1 + trend.throughput * horizonMultiplier),
-      latency: currentPerformance.latency * (1 + trend.latency * horizonMultiplier),
-      errorRate: Math.max(0, currentPerformance.errorRate * (1 + trend.errorRate * horizonMultiplier)),
-      resourceUtilization: Math.min(1, currentPerformance.resourceUtilization * (1 + trend.resourceUtilization * horizonMultiplier)),
-      efficiency: Math.min(1, currentPerformance.efficiency * (1 + trend.efficiency * horizonMultiplier)),
-      quality: Math.min(1, currentPerformance.quality * (1 + trend.quality * horizonMultiplier)),
+      throughput:
+        currentPerformance.throughput *
+        (1 + trend.throughput * horizonMultiplier),
+      latency:
+        currentPerformance.latency * (1 + trend.latency * horizonMultiplier),
+      errorRate: Math.max(
+        0,
+        currentPerformance.errorRate * (1 + trend.errorRate * horizonMultiplier)
+      ),
+      resourceUtilization: Math.min(
+        1,
+        currentPerformance.resourceUtilization *
+          (1 + trend.resourceUtilization * horizonMultiplier)
+      ),
+      efficiency: Math.min(
+        1,
+        currentPerformance.efficiency *
+          (1 + trend.efficiency * horizonMultiplier)
+      ),
+      quality: Math.min(
+        1,
+        currentPerformance.quality * (1 + trend.quality * horizonMultiplier)
+      ),
     };
   }
 
@@ -1218,16 +1335,18 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     // Use Tier 3 Neural Learning if available
     if (this.neuralLearning) {
       const deepLearningStatus = this.neuralLearning.getDeepLearningStatus();
-      
+
       // Simulate pattern detection based on deep learning data
       for (let i = 0; i < deepLearningStatus.deepPatterns; i++) {
         patterns.push({
           patternId: `emergent_pattern_${Date.now()}_${i}`,
-          type: ['coordination', 'performance', 'learning', 'adaptation'][i % 4] as EmergentPattern['type'],
+          type: ['coordination', 'performance', 'learning', 'adaptation'][
+            i % 4
+          ] as EmergentPattern['type'],
           complexity: 0.6 + Math.random() * 0.4,
           emergenceTime: Date.now() + Math.random() * 86400000, // Within 24 hours
           stability: 0.7 + Math.random() * 0.3,
-          propagationScope: [`swarm-${i}`, `swarm-${i+1}`],
+          propagationScope: [`swarm-${i}`, `swarm-${i + 1}`],
           characteristics: {
             patternStrength: 0.8 + Math.random() * 0.2,
             adaptability: 0.6 + Math.random() * 0.4,
@@ -1276,7 +1395,9 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     return adjustments[horizon];
   }
 
-  private selectBestAlgorithmForHorizon(horizon: ForecastHorizon): PredictionAlgorithm {
+  private selectBestAlgorithmForHorizon(
+    horizon: ForecastHorizon
+  ): PredictionAlgorithm {
     const algorithmMap = {
       short: 'neural_network',
       medium: 'ensemble',
@@ -1317,7 +1438,10 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     logger.debug('📊 Loading historical accuracy data');
   }
 
-  private async getHistoricalAccuracy(agentId: AgentId, taskType: string): Promise<{ shortTerm: number; mediumTerm: number; longTerm: number }> {
+  private async getHistoricalAccuracy(
+    agentId: AgentId,
+    taskType: string
+  ): Promise<{ shortTerm: number; mediumTerm: number; longTerm: number }> {
     return {
       shortTerm: 0.85,
       mediumTerm: 0.75,
@@ -1328,16 +1452,24 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
   private generateTaskDurationRecommendations(
     predictions: MultiHorizonTaskPrediction['predictions'],
     ensemblePrediction: MultiHorizonTaskPrediction['ensemblePrediction'],
-    historicalAccuracy: { shortTerm: number; mediumTerm: number; longTerm: number }
+    historicalAccuracy: {
+      shortTerm: number;
+      mediumTerm: number;
+      longTerm: number;
+    }
   ): string[] {
     const recommendations: string[] = [];
-    
+
     if (ensemblePrediction.confidence < this.config.confidenceThreshold) {
-      recommendations.push('Consider collecting more training data to improve prediction confidence');
+      recommendations.push(
+        'Consider collecting more training data to improve prediction confidence'
+      );
     }
-    
+
     if (historicalAccuracy.shortTerm > historicalAccuracy.longTerm + 0.2) {
-      recommendations.push('Focus on short-term predictions due to higher accuracy');
+      recommendations.push(
+        'Focus on short-term predictions due to higher accuracy'
+      );
     }
 
     return recommendations;
@@ -1364,7 +1496,10 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     ];
   }
 
-  private async analyzePerformanceTrends(swarmId: SwarmId, timeHorizon: ForecastHorizon): Promise<PerformanceOptimizationForecast['trendAnalysis']> {
+  private async analyzePerformanceTrends(
+    swarmId: SwarmId,
+    timeHorizon: ForecastHorizon
+  ): Promise<PerformanceOptimizationForecast['trendAnalysis']> {
     return {
       direction: 'improving',
       strength: 0.6,
@@ -1373,7 +1508,10 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     };
   }
 
-  private async predictBottlenecks(swarmId: SwarmId, timeHorizon: ForecastHorizon): Promise<PerformanceOptimizationForecast['bottleneckPrediction']> {
+  private async predictBottlenecks(
+    swarmId: SwarmId,
+    timeHorizon: ForecastHorizon
+  ): Promise<PerformanceOptimizationForecast['bottleneckPrediction']> {
     return {
       predictedBottlenecks: [
         {
@@ -1397,7 +1535,10 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     };
   }
 
-  private async forecastResourceNeeds(swarmId: SwarmId, timeHorizon: ForecastHorizon): Promise<PerformanceOptimizationForecast['resourceForecast']> {
+  private async forecastResourceNeeds(
+    swarmId: SwarmId,
+    timeHorizon: ForecastHorizon
+  ): Promise<PerformanceOptimizationForecast['resourceForecast']> {
     return {
       cpu: {
         current: 0.6,
@@ -1445,7 +1586,7 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     const byPattern = new Map<string, number>();
     const byComplexity = new Map<string, number>();
 
-    patterns.forEach(pattern => {
+    patterns.forEach((pattern) => {
       byPattern.set(pattern.id, 0.6 + Math.random() * 0.35);
     });
 
@@ -1514,12 +1655,15 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     return {
       performanceImprovement: 0.15,
       adaptationTime: 3600000, // 1 hour
-      successProbability: transferProbability.overall * compatibilityScore.overall,
+      successProbability:
+        transferProbability.overall * compatibilityScore.overall,
       confidence: 0.8,
     };
   }
 
-  private async predictSystemConvergence(): Promise<EmergentBehaviorPrediction['systemConvergencePrediction']> {
+  private async predictSystemConvergence(): Promise<
+    EmergentBehaviorPrediction['systemConvergencePrediction']
+  > {
     return {
       convergenceTime: 7200000, // 2 hours
       finalState: {
@@ -1534,7 +1678,9 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     };
   }
 
-  private async forecastLearningVelocity(): Promise<EmergentBehaviorPrediction['learningVelocityForecast']> {
+  private async forecastLearningVelocity(): Promise<
+    EmergentBehaviorPrediction['learningVelocityForecast']
+  > {
     return {
       currentVelocity: 0.6,
       forecastedVelocity: 0.8,
@@ -1543,14 +1689,13 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
         'Enhanced data quality',
         'Better resource allocation',
       ],
-      constraints: [
-        'Network bandwidth limits',
-        'Processing capacity',
-      ],
+      constraints: ['Network bandwidth limits', 'Processing capacity'],
     };
   }
 
-  private async predictPatternEvolution(): Promise<EmergentBehaviorPrediction['patternEvolutionPrediction']> {
+  private async predictPatternEvolution(): Promise<
+    EmergentBehaviorPrediction['patternEvolutionPrediction']
+  > {
     return {
       evolvingPatterns: [
         {
@@ -1579,7 +1724,9 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
     };
   }
 
-  private async generateSystemWideOptimizations(): Promise<SystemOptimization[]> {
+  private async generateSystemWideOptimizations(): Promise<
+    SystemOptimization[]
+  > {
     return [
       {
         optimizationId: `sys_opt_${Date.now()}`,
@@ -1606,21 +1753,80 @@ export class PredictiveAnalyticsEngine extends EventEmitter {
   }
 
   // Additional implementation methods...
-  private getDataPointsCount(): number { return 1000; }
-  private calculateModelComplexity(): number { return 0.7; }
-  private getPerformanceHorizonMultiplier(horizon: ForecastHorizon): number { return 1.0; }
-  private async getPerformanceTrend(swarmId: SwarmId): Promise<any> { return { throughput: 0.1, latency: -0.05, errorRate: -0.02, resourceUtilization: 0.05, efficiency: 0.08, quality: 0.06 }; }
-  private getHorizonDuration(horizon: ForecastHorizon): number { return 3600000; }
-  private async processRealTimeBatch(): Promise<void> { this.realTimeQueue.splice(0, this.config.realTimeUpdates.batchSize); }
-  private async performPeriodicUpdate(): Promise<void> { this.lastFullUpdate = Date.now(); }
-  private async performModelUpdates(): Promise<string[]> { return ['neural_network', 'ensemble']; }
-  private async measurePerformanceImprovements(models: string[]): Promise<AdaptiveLearningUpdate['performanceImprovements']> { return {}; }
-  private async processRealTimeAdaptations(): Promise<RealTimeAdaptation[]> { return []; }
-  private async calculateModelConfidenceIntervals(models: string[]): Promise<AdaptiveLearningUpdate['confidenceIntervals']> { return {}; }
-  private async assessPredictiveAccuracy(): Promise<AdaptiveLearningUpdate['predictiveAccuracy']> { return { shortTerm: 0.85, mediumTerm: 0.8, longTerm: 0.75, overall: 0.8 }; }
-  private async generateModelRecommendations(improvements: any, accuracy: any): Promise<ModelRecommendation[]> { return []; }
-  private async quantifyModelUncertainty(): Promise<UncertaintyMetrics> { return { epistemic: 0.2, aleatoric: 0.15, total: 0.25, sources: ['data_quality', 'model_complexity'], confidence: 0.8 }; }
-  private scheduleNextUpdate(improvements: any, uncertainty: UncertaintyMetrics): AdaptiveLearningUpdate['nextUpdateSchedule'] { return { scheduled: new Date(Date.now() + 3600000), reason: 'periodic_update', priority: 0.5 }; }
+  private getDataPointsCount(): number {
+    return 1000;
+  }
+  private calculateModelComplexity(): number {
+    return 0.7;
+  }
+  private getPerformanceHorizonMultiplier(horizon: ForecastHorizon): number {
+    return 1.0;
+  }
+  private async getPerformanceTrend(swarmId: SwarmId): Promise<unknown> {
+    return {
+      throughput: 0.1,
+      latency: -0.05,
+      errorRate: -0.02,
+      resourceUtilization: 0.05,
+      efficiency: 0.08,
+      quality: 0.06,
+    };
+  }
+  private getHorizonDuration(horizon: ForecastHorizon): number {
+    return 3600000;
+  }
+  private async processRealTimeBatch(): Promise<void> {
+    this.realTimeQueue.splice(0, this.config.realTimeUpdates.batchSize);
+  }
+  private async performPeriodicUpdate(): Promise<void> {
+    this.lastFullUpdate = Date.now();
+  }
+  private async performModelUpdates(): Promise<string[]> {
+    return ['neural_network', 'ensemble'];
+  }
+  private async measurePerformanceImprovements(
+    models: string[]
+  ): Promise<AdaptiveLearningUpdate['performanceImprovements']> {
+    return {};
+  }
+  private async processRealTimeAdaptations(): Promise<RealTimeAdaptation[]> {
+    return [];
+  }
+  private async calculateModelConfidenceIntervals(
+    models: string[]
+  ): Promise<AdaptiveLearningUpdate['confidenceIntervals']> {
+    return {};
+  }
+  private async assessPredictiveAccuracy(): Promise<
+    AdaptiveLearningUpdate['predictiveAccuracy']
+  > {
+    return { shortTerm: 0.85, mediumTerm: 0.8, longTerm: 0.75, overall: 0.8 };
+  }
+  private async generateModelRecommendations(
+    improvements: unknown,
+    accuracy: unknown
+  ): Promise<ModelRecommendation[]> {
+    return [];
+  }
+  private async quantifyModelUncertainty(): Promise<UncertaintyMetrics> {
+    return {
+      epistemic: 0.2,
+      aleatoric: 0.15,
+      total: 0.25,
+      sources: ['data_quality', 'model_complexity'],
+      confidence: 0.8,
+    };
+  }
+  private scheduleNextUpdate(
+    improvements: unknown,
+    uncertainty: UncertaintyMetrics
+  ): AdaptiveLearningUpdate['nextUpdateSchedule'] {
+    return {
+      scheduled: new Date(Date.now() + 3600000),
+      reason: 'periodic_update',
+      priority: 0.5,
+    };
+  }
 
   /**
    * Shutdown the predictive analytics engine

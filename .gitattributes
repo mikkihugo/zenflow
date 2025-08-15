@@ -1,1 +1,36 @@
+# Set the default behavior for all files to automatically handle line endings
+* text=auto eol=lf
+
+# Explicitly declare files that must have LF line endings
+*.sh eol=lf
+*.bash eol=lf
+*.js eol=lf
+*.ts eol=lf
+*.json eol=lf
+*.md eol=lf
+Makefile eol=lf
+# Explicitly declare binary file types
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.woff binary
+*.woff2 binary
+*.eot binary
+*.ttf binary
+*.otf binary
+*.wasm binary
+*.node binary
+# Rust files
+*.rs text eol=lf
+# Ensure proper diff behavior for code files (override node_modules conflicts)
+*.js text diff
+*.ts text diff
+*.rs text diff
+*.json text diff
+# Git files
+.gitignore text eol=lf
+.gitattributes text eol=lf
 *.tar.gz filter=lfs diff=lfs merge=lfs -text

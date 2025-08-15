@@ -75,7 +75,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
   // Start analysis on mount
   useEffect(() => {
     startAnalysis();
-  }, [startAnalysis]);
+  }, []); // Remove startAnalysis dependency to prevent infinite loop
 
   const startAnalysis = useCallback(async () => {
     try {
@@ -295,14 +295,7 @@ export const InteractiveDiscoveryTUI: React.FC<InteractiveDiscoveryProps> = ({
       onComplete?.(state);
       exit();
     }, 3000);
-  }, [
-    state.selectedDomains,
-    state.swarmConfigs,
-    onComplete,
-    exit,
-    deployDomain,
-    state,
-  ]);
+  }, []); // Remove dependencies to prevent infinite re-renders, dependencies will be captured via closure
 
   const deployDomain = async (domain: string): Promise<void> => {
     const config = state.swarmConfigs.get(domain);
@@ -482,7 +475,7 @@ const ReviewPhase: React.FC<{
       <Box flexDirection="column" marginBottom={1}>
         {state.domains.map((domain, index) => (
           <DomainCard
-            key={domain.name}
+            key={`domain-card-${domain.name}-${index}`}
             domain={domain}
             selected={state.selectedDomains.has(domain.name)}
             highlighted={index === selectedIndex}
@@ -572,9 +565,15 @@ const DeploymentPhase: React.FC<{ state: DiscoveryState }> = ({ state }) => (
     </Box>
 
     <Box flexDirection="column">
-      {Array.from(state.deploymentStatus.entries()).map(([domain, status]) => (
-        <DeploymentProgress key={domain} domain={domain} status={status} />
-      ))}
+      {Array.from(state.deploymentStatus.entries()).map(
+        ([domain, status], index) => (
+          <DeploymentProgress
+            key={`deployment-${domain}-${index}`}
+            domain={domain}
+            status={status}
+          />
+        )
+      )}
     </Box>
   </Box>
 );

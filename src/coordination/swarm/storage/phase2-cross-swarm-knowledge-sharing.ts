@@ -26,7 +26,7 @@ export interface KnowledgeTransferRequest {
   patternIds: string[];
   requestType: 'pattern_transfer' | 'cluster_sharing' | 'performance_insight';
   priority: 'low' | 'medium' | 'high' | 'critical';
-  contextRequirements: Record<string, any>;
+  contextRequirements: Record<string, unknown>;
   expectedBenefit: number;
   requestedAt: string;
   completedAt?: string;
@@ -734,7 +734,7 @@ export class CrossSwarmKnowledgeSharing extends EventEmitter {
     pattern: SuccessfulPattern,
     sourceSwarmId: string,
     targetSwarmId: string,
-    contextRequirements: Record<string, any>
+    contextRequirements: Record<string, unknown>
   ): Promise<TransferredPattern> {
     // Analyze pattern for adaptation needs
     const adaptationLevel = this.assessPatternAdaptationLevel(pattern, contextRequirements);
@@ -903,7 +903,7 @@ export class CrossSwarmKnowledgeSharing extends EventEmitter {
     return guidance;
   }
 
-  private assessPatternAdaptationLevel(pattern: SuccessfulPattern, contextRequirements: Record<string, any>): TransferredPattern['adaptationLevel'] {
+  private assessPatternAdaptationLevel(pattern: SuccessfulPattern, contextRequirements: Record<string, unknown>): TransferredPattern['adaptationLevel'] {
     // Simple heuristic - would be more sophisticated in practice
     if (Object.keys(contextRequirements).length === 0) return 'none';
     if (Object.keys(contextRequirements).length <= 2) return 'minimal';
@@ -913,7 +913,7 @@ export class CrossSwarmKnowledgeSharing extends EventEmitter {
 
   private async applyPatternAdaptations(
     pattern: SuccessfulPattern,
-    contextRequirements: Record<string, any>,
+    contextRequirements: Record<string, unknown>,
     adaptationChanges: string[]
   ): Promise<SuccessfulPattern> {
     const adapted = { ...pattern };
@@ -1015,7 +1015,7 @@ export class CrossSwarmKnowledgeSharing extends EventEmitter {
 
   private async updateKnowledgeNetworkFromAdoption(
     request: KnowledgeTransferRequest,
-    metrics: any
+    metrics: unknown
   ): Promise<void> {
     // Update network nodes based on successful/failed adoptions
     const targetNode = this.knowledgeNetwork.get(request.targetSwarmId);

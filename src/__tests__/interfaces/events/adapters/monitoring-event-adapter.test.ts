@@ -6,12 +6,12 @@
  * - Classical TDD (30%): For metrics calculations, performance analytics, data aggregation
  */
 
-import { EventManagerTypes } from '../../core/interfaces';
+import { EventManagerTypes } from '../../../../core/interfaces';
 import {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   MonitoringEventHelpers,
-} from '../monitoring-event-adapter';
+} from '../../../../interfaces/events/adapters/monitoring-event-adapter';
 
 describe('MonitoringEventAdapter', () => {
   let adapter: MonitoringEventAdapter;

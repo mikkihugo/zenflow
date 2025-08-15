@@ -2,7 +2,7 @@
 
 /**
  * Hybrid Database Initialization Script
- * 
+ *
  * Initializes the complete claude-code-zen hybrid database system:
  * - LanceDB for vector embeddings and semantic search
  * - Kuzu for graph relationships and document dependencies
@@ -13,7 +13,10 @@
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 import { createLogger } from '../src/core/logger.js';
-import { createHybridSystem, healthCheckHybridSystem } from '../src/database/managers/hybrid-factory.js';
+import {
+  createHybridSystem,
+  healthCheckHybridSystem,
+} from '../src/database/managers/hybrid-factory.js';
 
 const logger = createLogger('hybrid-db-init');
 
@@ -31,7 +34,7 @@ async function main() {
   try {
     // Setup database paths
     const paths = setupDatabasePaths();
-    
+
     // Create hybrid system using clean factory
     console.log('🏭 Creating hybrid database system...');
     const { dalFactory, hybridManager, adrManager } = await createHybridSystem({
@@ -39,12 +42,12 @@ async function main() {
       enableVectorSearch: true,
       enableGraphRelationships: true,
       vectorDimension: 384,
-      logLevel: 'info'
+      logLevel: 'info',
     });
-    
+
     // Test the system
     await testHybridSystem(adrManager);
-    
+
     console.log('✅ Hybrid database system initialization complete!');
     console.log('');
     console.log('🎯 Available Systems:');
@@ -59,7 +62,6 @@ async function main() {
     console.log(`  - SQLite: ${paths.sqlite}`);
     console.log(`  - LanceDB: ${paths.lancedb}`);
     console.log(`  - Kuzu: ${paths.kuzu}`);
-    
   } catch (error) {
     console.error('❌ Hybrid database initialization failed:', error);
     process.exit(1);
@@ -68,7 +70,7 @@ async function main() {
 
 function setupDatabasePaths(): DatabasePaths {
   const dataDir = process.argv[2] || join(process.cwd(), 'data');
-  
+
   if (!existsSync(dataDir)) {
     mkdirSync(dataDir, { recursive: true });
     console.log(`📁 Created data directory: ${dataDir}`);
@@ -78,7 +80,7 @@ function setupDatabasePaths(): DatabasePaths {
     dataDir,
     sqlite: join(dataDir, 'claude-zen.db'),
     lancedb: join(dataDir, 'claude-zen-vectors.lance'),
-    kuzu: join(dataDir, 'claude-zen-graph.kuzu')
+    kuzu: join(dataDir, 'claude-zen-graph.kuzu'),
   };
 
   console.log('📂 Database paths configured:', paths);
@@ -87,42 +89,48 @@ function setupDatabasePaths(): DatabasePaths {
 
 async function testHybridSystem(adrManager: any): Promise<void> {
   console.log('🧪 Testing hybrid system...');
-  
+
   try {
     // Test ADR creation
     const testADR = await adrManager.createADR({
       title: 'Use Hybrid Database Architecture',
-      context: 'We need a database system that supports both structured queries and semantic search for our document management system.',
-      decision: 'Implement a hybrid architecture combining SQLite for structured data, LanceDB for vector embeddings, and Kuzu for graph relationships.',
-      consequences: 'This approach provides the best of all worlds: ACID compliance, semantic search capabilities, and relationship modeling.',
+      context:
+        'We need a database system that supports both structured queries and semantic search for our document management system.',
+      decision:
+        'Implement a hybrid architecture combining SQLite for structured data, LanceDB for vector embeddings, and Kuzu for graph relationships.',
+      consequences:
+        'This approach provides the best of all worlds: ACID compliance, semantic search capabilities, and relationship modeling.',
       author: 'claude-zen-system',
       priority: 'high',
       stakeholders: ['architecture-team', 'developers'],
-      implementation_notes: 'Use the existing DAL factory system to manage connections and provide a unified interface.',
+      implementation_notes:
+        'Use the existing DAL factory system to manage connections and provide a unified interface.',
       success_criteria: [
         'Support for semantic search of documents',
         'Graph-based relationship queries',
         'ACID compliance for critical operations',
-        'Sub-second query performance'
-      ]
+        'Sub-second query performance',
+      ],
     });
-    
+
     console.log(`✅ Test ADR created: ${testADR.title}`);
-    
+
     // Test semantic search
-    const searchResults = await adrManager.semanticSearchADRs('hybrid database architecture', {
-      limit: 5,
-      include_related: true
-    });
-    
+    const searchResults = await adrManager.semanticSearchADRs(
+      'hybrid database architecture',
+      {
+        limit: 5,
+        include_related: true,
+      }
+    );
+
     console.log(`🔍 Semantic search found ${searchResults.length} results`);
-    
+
     // Test stats
     const stats = await adrManager.getADRStats();
     console.log(`📊 ADR Statistics: ${stats.total} total ADRs`);
-    
+
     console.log('✅ Hybrid system test completed successfully');
-    
   } catch (error) {
     console.warn('⚠️ System test had issues:', error);
     console.log('📝 This is expected in development environment');
@@ -144,7 +152,7 @@ export async function testHybridIntegration(): Promise<{
   return await healthCheckHybridSystem({
     dataDir: './data/test',
     enableVectorSearch: true,
-    enableGraphRelationships: true
+    enableGraphRelationships: true,
   });
 }
 

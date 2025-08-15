@@ -178,15 +178,19 @@ async function main() {
 
         // Check for queen mode flag
         const isQueenMode = args.queen || args.commander;
-        
+
         if (isQueenMode) {
           // Queen Commander mode - spawn and coordinate multiple Claude CLI agents
-          const { launchQueenCommander } = await import('./coordination/queen-launcher.js');
+          const { launchQueenCommander } = await import(
+            './coordination/queen-launcher.js'
+          );
           await launchQueenCommander(container, logger);
         } else {
           // Standard stdio MCP server mode
           logger.info('🐝 Starting stdio MCP swarm server...');
-          const { stdioMCPServer } = await import('./interfaces/mcp-stdio/swarm-server.js');
+          const { stdioMCPServer } = await import(
+            './interfaces/mcp-stdio/swarm-server.js'
+          );
           await stdioMCPServer.start();
           logger.info('✅ stdio MCP swarm server running');
         }

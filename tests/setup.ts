@@ -4,7 +4,7 @@ import 'jest-extended';
 // Global test timeout for complex operations
 import { vi } from 'vitest';
 
-vi.setTimeout(60000);
+// Global test timeout set via vitest config
 
 // Setup for both London and Classical TDD approaches
 beforeEach(() => {

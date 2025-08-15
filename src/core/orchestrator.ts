@@ -58,7 +58,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces.ts';
+import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
 
 /**
  * Configuration interface for orchestrator initialization.

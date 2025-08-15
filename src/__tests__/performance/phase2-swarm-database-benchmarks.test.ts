@@ -1,9 +1,9 @@
 /**
  * Phase 2 Swarm Database Performance Benchmarks
- * 
+ *
  * Comprehensive performance benchmarks for the Phase 2 swarm database system
  * to validate that all enhanced features meet performance requirements.
- * 
+ *
  * Benchmarks cover:
  * 1. Vector Pattern Discovery Performance
  * 2. Cross-Swarm Knowledge Transfer Efficiency
@@ -33,13 +33,13 @@ import { createLogger } from '../../core/logger';
 
 // Performance test configuration
 const PERFORMANCE_THRESHOLDS = {
-  patternStorageMs: 100,        // Pattern storage should complete within 100ms
-  similaritySearchMs: 200,      // Similarity search should complete within 200ms
-  clusteringMs: 5000,          // Pattern clustering should complete within 5s
-  knowledgeTransferMs: 3000,   // Knowledge transfer should complete within 3s
-  crossSwarmSearchMs: 1000,    // Cross-swarm search should complete within 1s
-  memoryUsageMB: 50,           // Memory usage should not exceed 50MB increase
-  concurrentOpsMs: 2000,       // Concurrent operations should complete within 2s
+  patternStorageMs: 100, // Pattern storage should complete within 100ms
+  similaritySearchMs: 200, // Similarity search should complete within 200ms
+  clusteringMs: 5000, // Pattern clustering should complete within 5s
+  knowledgeTransferMs: 3000, // Knowledge transfer should complete within 3s
+  crossSwarmSearchMs: 1000, // Cross-swarm search should complete within 1s
+  memoryUsageMB: 50, // Memory usage should not exceed 50MB increase
+  concurrentOpsMs: 2000, // Concurrent operations should complete within 2s
 };
 
 const mockLogger = createLogger('test-phase2-performance');
@@ -64,14 +64,14 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       createCoordinationRepository: async () => ({
         create: async (data: any) => {
           // Simulate fast database operation
-          await new Promise(resolve => setTimeout(resolve, 1));
+          await new Promise((resolve) => setTimeout(resolve, 1));
           return { ...data, id: data.id || nanoid() };
         },
         findById: async (id: string) => ({ id, found: true }),
         findAll: async () => [],
         findBy: async (criteria: any) => {
           // Simulate query with realistic response time
-          await new Promise(resolve => setTimeout(resolve, 2));
+          await new Promise((resolve) => setTimeout(resolve, 2));
           return [];
         },
         update: async (id: string, data: any) => ({ id, ...data }),
@@ -80,15 +80,24 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       }),
       createKuzuGraphRepository: async () => ({
         create: async (node: any) => {
-          await new Promise(resolve => setTimeout(resolve, 3));
+          await new Promise((resolve) => setTimeout(resolve, 3));
           return { ...node, created: true };
         },
-        createRelationship: async (from: string, to: string, type: string, props: any) => {
-          await new Promise(resolve => setTimeout(resolve, 2));
+        createRelationship: async (
+          from: string,
+          to: string,
+          type: string,
+          props: any
+        ) => {
+          await new Promise((resolve) => setTimeout(resolve, 2));
           return true;
         },
-        traverse: async (startId: string, pattern: string, maxDepth: number) => {
-          await new Promise(resolve => setTimeout(resolve, 5));
+        traverse: async (
+          startId: string,
+          pattern: string,
+          maxDepth: number
+        ) => {
+          await new Promise((resolve) => setTimeout(resolve, 5));
           return {
             nodes: [{ id: startId, labels: ['TestNode'], properties: {} }],
             relationships: [],
@@ -98,28 +107,35 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
         update: async (id: string, data: any) => ({ id, ...data }),
         delete: async (id: string) => true,
       }),
-      createLanceDBVectorRepository: async (entityType: string, dimension: number) => ({
+      createLanceDBVectorRepository: async (
+        entityType: string,
+        dimension: number
+      ) => ({
         addVectors: async (vectors: any[]) => {
           // Simulate vector storage time proportional to vector count
-          await new Promise(resolve => setTimeout(resolve, vectors.length * 0.5));
+          await new Promise((resolve) =>
+            setTimeout(resolve, vectors.length * 0.5)
+          );
           return true;
         },
         similaritySearch: async (queryVector: number[], options: any) => {
           // Simulate vector search time
-          await new Promise(resolve => setTimeout(resolve, 10 + (options.limit * 2)));
+          await new Promise((resolve) =>
+            setTimeout(resolve, 10 + options.limit * 2)
+          );
           const results = [];
           for (let i = 0; i < Math.min(options.limit, 10); i++) {
             results.push({
               id: `similar-${i}`,
               vector: queryVector,
-              metadata: { similarity: 0.9 - (i * 0.05) },
-              score: 0.9 - (i * 0.05),
+              metadata: { similarity: 0.9 - i * 0.05 },
+              score: 0.9 - i * 0.05,
             });
           }
           return results;
         },
         findBy: async (criteria: any) => {
-          await new Promise(resolve => setTimeout(resolve, 5));
+          await new Promise((resolve) => setTimeout(resolve, 5));
           return [];
         },
         createIndex: async () => true,
@@ -127,7 +143,11 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       registerEntityType: () => {},
     };
 
-    swarmDbManager = new SwarmDatabaseManager(testConfig, performanceDALFactory as any, mockLogger);
+    swarmDbManager = new SwarmDatabaseManager(
+      testConfig,
+      performanceDALFactory as any,
+      mockLogger
+    );
     await swarmDbManager.initialize();
 
     // Create multiple test swarms for concurrent testing
@@ -172,7 +192,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
           patternId: `perf-pattern-${i}`,
           description: `Performance test pattern ${i} with detailed description`,
           context: `performance testing, pattern ${i}, benchmark validation`,
-          successRate: 0.8 + (Math.random() * 0.2),
+          successRate: 0.8 + Math.random() * 0.2,
           usageCount: Math.floor(Math.random() * 100),
           lastUsed: new Date().toISOString(),
         });
@@ -180,7 +200,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
       // Benchmark pattern storage
       const startTime = Date.now();
-      
+
       for (const pattern of testPatterns) {
         const embedding = new Array(384).fill(0).map(() => Math.random());
         await swarmDbManager.storeSwarmEmbedding(testSwarmIds[0], {
@@ -199,8 +219,12 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       const averageTimePerPattern = totalTime / numPatterns;
 
       // Performance assertions
-      expect(averageTimePerPattern).toBeLessThan(PERFORMANCE_THRESHOLDS.patternStorageMs);
-      expect(totalTime).toBeLessThan(numPatterns * PERFORMANCE_THRESHOLDS.patternStorageMs);
+      expect(averageTimePerPattern).toBeLessThan(
+        PERFORMANCE_THRESHOLDS.patternStorageMs
+      );
+      expect(totalTime).toBeLessThan(
+        numPatterns * PERFORMANCE_THRESHOLDS.patternStorageMs
+      );
 
       console.log(`Pattern Storage Benchmark:
         Total patterns: ${numPatterns}
@@ -217,7 +241,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
       for (const limit of searchLimits) {
         const startTime = Date.now();
-        
+
         const searchResults = await swarmDbManager.findSimilarEmbeddings(
           testSwarmIds[0],
           queryVector,
@@ -226,27 +250,32 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
         const endTime = Date.now();
         const searchTime = endTime - startTime;
-        
+
         results.push({ limit, time: searchTime });
 
-        expect(searchTime).toBeLessThan(PERFORMANCE_THRESHOLDS.similaritySearchMs);
+        expect(searchTime).toBeLessThan(
+          PERFORMANCE_THRESHOLDS.similaritySearchMs
+        );
         expect(Array.isArray(searchResults)).toBe(true);
       }
 
       console.log(`Similarity Search Benchmark:
-        ${results.map(r => `Limit ${r.limit}: ${r.time}ms`).join('\n        ')}
+        ${results.map((r) => `Limit ${r.limit}: ${r.time}ms`).join('\n        ')}
         Threshold: ${PERFORMANCE_THRESHOLDS.similaritySearchMs}ms
-        Status: ${results.every(r => r.time < PERFORMANCE_THRESHOLDS.similaritySearchMs) ? '✅ PASS' : '❌ FAIL'}`);
+        Status: ${results.every((r) => r.time < PERFORMANCE_THRESHOLDS.similaritySearchMs) ? '✅ PASS' : '❌ FAIL'}`);
     });
 
     test('should benchmark pattern clustering performance', async () => {
       const startTime = Date.now();
-      
-      const clusters = await swarmDbManager.performPatternClustering(testSwarmIds[0], {
-        minClusterSize: 2,
-        maxClusters: 5,
-        similarityThreshold: 0.7,
-      });
+
+      const clusters = await swarmDbManager.performPatternClustering(
+        testSwarmIds[0],
+        {
+          minClusterSize: 2,
+          maxClusters: 5,
+          similarityThreshold: 0.7,
+        }
+      );
 
       const endTime = Date.now();
       const clusteringTime = endTime - startTime;
@@ -263,8 +292,11 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
     test('should benchmark enhanced pattern discovery pipeline', async () => {
       const startTime = Date.now();
-      
-      const discoveryResult = await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmIds[0]);
+
+      const discoveryResult =
+        await swarmDbManager.demonstrateEnhancedPatternDiscovery(
+          testSwarmIds[0]
+        );
 
       const endTime = Date.now();
       const discoveryTime = endTime - startTime;
@@ -303,7 +335,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
           },
         },
         sparcPhaseEfficiency: {
-          'implementation': {
+          implementation: {
             phase: 'implementation',
             averageTime: 3000,
             successRate: 0.91,
@@ -327,11 +359,15 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
         updatedAt: new Date().toISOString(),
       };
 
-      await swarmDbManager.storeTier1Learning(testSwarmIds[0], 'performance-commander', sourceLearning);
+      await swarmDbManager.storeTier1Learning(
+        testSwarmIds[0],
+        'performance-commander',
+        sourceLearning
+      );
 
       // Benchmark knowledge transfer
       const startTime = Date.now();
-      
+
       const transfer = await swarmDbManager.transferKnowledgeBetweenSwarms(
         testSwarmIds[0],
         testSwarmIds[1],
@@ -345,7 +381,9 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       const endTime = Date.now();
       const transferTime = endTime - startTime;
 
-      expect(transferTime).toBeLessThan(PERFORMANCE_THRESHOLDS.knowledgeTransferMs);
+      expect(transferTime).toBeLessThan(
+        PERFORMANCE_THRESHOLDS.knowledgeTransferMs
+      );
       expect(transfer).toBeDefined();
       expect(transfer.sourceSwarmId).toBe(testSwarmIds[0]);
       expect(transfer.targetSwarmId).toBe(testSwarmIds[1]);
@@ -371,11 +409,15 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       };
 
       // Mock active swarms for search
-      (swarmDbManager as any).getActiveSwarms = async () => 
-        testSwarmIds.map(id => ({ swarmId: id, path: `/test/${id}`, lastAccessed: new Date() }));
+      (swarmDbManager as any).getActiveSwarms = async () =>
+        testSwarmIds.map((id) => ({
+          swarmId: id,
+          path: `/test/${id}`,
+          lastAccessed: new Date(),
+        }));
 
       const startTime = Date.now();
-      
+
       const searchResults = await swarmDbManager.searchCrossSwarmPatterns(
         queryPattern,
         testSwarmIds[0],
@@ -390,7 +432,9 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       const endTime = Date.now();
       const searchTime = endTime - startTime;
 
-      expect(searchTime).toBeLessThan(PERFORMANCE_THRESHOLDS.crossSwarmSearchMs);
+      expect(searchTime).toBeLessThan(
+        PERFORMANCE_THRESHOLDS.crossSwarmSearchMs
+      );
       expect(Array.isArray(searchResults)).toBe(true);
 
       console.log(`Cross-Swarm Search Benchmark:
@@ -403,13 +447,14 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
     test('should benchmark performance comparison generation', async () => {
       const startTime = Date.now();
-      
-      const comparisons = await swarmDbManager.generateSwarmPerformanceComparison(testSwarmIds, {
-        includeMetrics: ['all'],
-        timeWindow: 30,
-        includeBenchmarks: true,
-        generateRecommendations: true,
-      });
+
+      const comparisons =
+        await swarmDbManager.generateSwarmPerformanceComparison(testSwarmIds, {
+          includeMetrics: ['all'],
+          timeWindow: 30,
+          includeBenchmarks: true,
+          generateRecommendations: true,
+        });
 
       const endTime = Date.now();
       const comparisonTime = endTime - startTime;
@@ -418,7 +463,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       expect(comparisons.length).toBe(testSwarmIds.length);
 
       // Validate ranking performance
-      const ranks = comparisons.map(c => c.rank);
+      const ranks = comparisons.map((c) => c.rank);
       expect(new Set(ranks).size).toBe(ranks.length);
 
       console.log(`Performance Comparison Benchmark:
@@ -431,15 +476,18 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
     test('should benchmark pattern adoption tracking', async () => {
       const trackedPatternId = 'perf-adoption-pattern';
-      
+
       const startTime = Date.now();
-      
-      const adoptionTracking = await swarmDbManager.trackPatternAdoption(trackedPatternId, {
-        includeSwarms: testSwarmIds,
-        timeWindow: 30,
-        detailedAnalysis: true,
-        predictFutureAdoption: true,
-      });
+
+      const adoptionTracking = await swarmDbManager.trackPatternAdoption(
+        trackedPatternId,
+        {
+          includeSwarms: testSwarmIds,
+          timeWindow: 30,
+          detailedAnalysis: true,
+          predictFutureAdoption: true,
+        }
+      );
 
       const endTime = Date.now();
       const trackingTime = endTime - startTime;
@@ -484,7 +532,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
               capabilities: ['benchmarking'],
             });
             break;
-          
+
           case 'task_storage':
             await swarmDbManager.storeSwarmTask(testSwarmIds[0], {
               id: `perf-task-${Date.now()}`,
@@ -492,7 +540,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
               description: 'Benchmarking task storage performance',
             });
             break;
-          
+
           case 'embedding_storage':
             await swarmDbManager.storeSwarmEmbedding(testSwarmIds[0], {
               id: `perf-embedding-${Date.now()}`,
@@ -500,11 +548,11 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
               metadata: { type: 'performance_test' },
             });
             break;
-          
+
           case 'graph_traversal':
             await swarmDbManager.getSwarmGraph(testSwarmIds[0], 'test-node', 2);
             break;
-          
+
           case 'vector_search':
             await swarmDbManager.findSimilarEmbeddings(
               testSwarmIds[0],
@@ -512,7 +560,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
               5
             );
             break;
-          
+
           case 'coordination_query':
             await swarmDbManager.getSwarmAnalytics(testSwarmIds[0]);
             break;
@@ -524,13 +572,13 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       }
 
       console.log(`Multi-Database Operations Benchmark:
-        ${results.map(r => `${r.operation}: ${r.time}ms`).join('\n        ')}
+        ${results.map((r) => `${r.operation}: ${r.time}ms`).join('\n        ')}
         Total time: ${results.reduce((sum, r) => sum + r.time, 0)}ms
         Average time: ${(results.reduce((sum, r) => sum + r.time, 0) / results.length).toFixed(2)}ms
         Status: ✅ COMPLETE`);
 
       // Verify all operations completed reasonably fast
-      results.forEach(result => {
+      results.forEach((result) => {
         expect(result.time).toBeLessThan(500); // Each operation should complete within 500ms
       });
     });
@@ -544,28 +592,34 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       // Create concurrent operations across different databases
       for (let i = 0; i < concurrentOpsCount; i++) {
         const swarmId = testSwarmIds[i % testSwarmIds.length];
-        
+
         if (i % 4 === 0) {
-          operations.push(swarmDbManager.storeSwarmAgent(swarmId, {
-            id: `concurrent-agent-${i}`,
-            name: `Concurrent Agent ${i}`,
-            type: 'concurrent_tester',
-            capabilities: ['concurrent_testing'],
-          }));
+          operations.push(
+            swarmDbManager.storeSwarmAgent(swarmId, {
+              id: `concurrent-agent-${i}`,
+              name: `Concurrent Agent ${i}`,
+              type: 'concurrent_tester',
+              capabilities: ['concurrent_testing'],
+            })
+          );
         } else if (i % 4 === 1) {
-          operations.push(swarmDbManager.storeSwarmEmbedding(swarmId, {
-            id: `concurrent-embedding-${i}`,
-            vector: new Array(384).fill(0).map(() => Math.random()),
-            metadata: { type: 'concurrent_test', index: i },
-          }));
+          operations.push(
+            swarmDbManager.storeSwarmEmbedding(swarmId, {
+              id: `concurrent-embedding-${i}`,
+              vector: new Array(384).fill(0).map(() => Math.random()),
+              metadata: { type: 'concurrent_test', index: i },
+            })
+          );
         } else if (i % 4 === 2) {
           operations.push(swarmDbManager.getSwarmAnalytics(swarmId));
         } else {
-          operations.push(swarmDbManager.findSimilarEmbeddings(
-            swarmId,
-            new Array(384).fill(0).map(() => Math.random()),
-            3
-          ));
+          operations.push(
+            swarmDbManager.findSimilarEmbeddings(
+              swarmId,
+              new Array(384).fill(0).map(() => Math.random()),
+              3
+            )
+          );
         }
       }
 
@@ -588,47 +642,50 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
   describe('Memory Usage and Resource Efficiency', () => {
     test('should benchmark memory usage during large-scale operations', async () => {
       const initialMemory = process.memoryUsage();
-      
+
       // Perform large-scale operations
       const largeScaleOps = [
         // Store many patterns
         ...(async () => {
           const patterns = [];
           for (let i = 0; i < 200; i++) {
-            patterns.push(swarmDbManager.storeSwarmEmbedding(testSwarmIds[0], {
-              id: `memory-test-pattern-${i}`,
-              vector: new Array(384).fill(0).map(() => Math.random()),
-              metadata: {
-                type: 'memory_test',
-                index: i,
-                description: `Memory test pattern ${i} with metadata`,
-              },
-            }));
+            patterns.push(
+              swarmDbManager.storeSwarmEmbedding(testSwarmIds[0], {
+                id: `memory-test-pattern-${i}`,
+                vector: new Array(384).fill(0).map(() => Math.random()),
+                metadata: {
+                  type: 'memory_test',
+                  index: i,
+                  description: `Memory test pattern ${i} with metadata`,
+                },
+              })
+            );
           }
           return patterns;
         })(),
-        
+
         // Perform clustering
         swarmDbManager.performPatternClustering(testSwarmIds[0], {
           minClusterSize: 5,
           maxClusters: 10,
           similarityThreshold: 0.6,
         }),
-        
+
         // Multiple similarity searches
-        ...(new Array(50).fill(0).map((_, i) => 
+        ...new Array(50).fill(0).map((_, i) =>
           swarmDbManager.findSimilarEmbeddings(
             testSwarmIds[0],
             new Array(384).fill(0).map(() => Math.random()),
             10
           )
-        )),
+        ),
       ].flat();
 
       await Promise.all(largeScaleOps);
 
       const finalMemory = process.memoryUsage();
-      const memoryIncrease = (finalMemory.heapUsed - initialMemory.heapUsed) / (1024 * 1024); // MB
+      const memoryIncrease =
+        (finalMemory.heapUsed - initialMemory.heapUsed) / (1024 * 1024); // MB
 
       expect(memoryIncrease).toBeLessThan(PERFORMANCE_THRESHOLDS.memoryUsageMB);
 
@@ -643,11 +700,11 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
     test('should benchmark resource cleanup efficiency', async () => {
       const cleanupSwarmId = `cleanup-perf-${nanoid()}`;
-      
+
       // Create swarm and populate with data
       const setupStart = Date.now();
       await swarmDbManager.createSwarmCluster(cleanupSwarmId);
-      
+
       // Add substantial data
       const dataOperations = [];
       for (let i = 0; i < 50; i++) {
@@ -665,7 +722,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
           })
         );
       }
-      
+
       await Promise.all(dataOperations);
       const setupEnd = Date.now();
       const setupTime = setupEnd - setupStart;
@@ -680,7 +737,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
         Setup time: ${setupTime}ms
         Cleanup time: ${cleanupTime}ms
         Data operations: ${dataOperations.length}
-        Cleanup efficiency: ${(dataOperations.length / cleanupTime * 1000).toFixed(2)} ops/sec
+        Cleanup efficiency: ${((dataOperations.length / cleanupTime) * 1000).toFixed(2)} ops/sec
         Status: ✅ COMPLETE`);
 
       // Cleanup should be faster than setup
@@ -695,7 +752,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
       for (const load of loadLevels) {
         const startTime = Date.now();
-        
+
         // Create operations proportional to load
         const operations = [];
         for (let i = 0; i < load; i++) {
@@ -718,11 +775,11 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       }
 
       console.log(`Scalability Benchmark:
-        ${results.map(r => `Load ${r.load}: ${r.time}ms (${r.throughput.toFixed(2)} ops/sec)`).join('\n        ')}
+        ${results.map((r) => `Load ${r.load}: ${r.time}ms (${r.throughput.toFixed(2)} ops/sec)`).join('\n        ')}
         Status: ✅ COMPLETE`);
 
       // Verify throughput doesn't degrade significantly with load
-      const throughputs = results.map(r => r.throughput);
+      const throughputs = results.map((r) => r.throughput);
       const maxThroughput = Math.max(...throughputs);
       const minThroughput = Math.min(...throughputs);
       const degradation = (maxThroughput - minThroughput) / maxThroughput;
@@ -732,39 +789,51 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
 
     test('should benchmark end-to-end workflow performance', async () => {
       const startTime = Date.now();
-      
+
       // Complete Phase 2 workflow
       const workflowSteps = [
         // 1. Store learning data
-        swarmDbManager.storeTier1Learning(testSwarmIds[0], 'workflow-commander', {
-          id: `workflow-learning-${nanoid()}`,
-          swarmId: testSwarmIds[0],
-          commanderType: 'workflow-commander',
-          agentPerformanceHistory: {},
-          sparcPhaseEfficiency: {},
-          implementationPatterns: [{
-            patternId: 'workflow-pattern',
-            description: 'End-to-end workflow pattern',
-            context: 'workflow, end-to-end, performance',
-            successRate: 0.92,
-            usageCount: 10,
-            lastUsed: new Date().toISOString(),
-          }],
-          taskCompletionPatterns: [],
-          realTimeFeedback: [],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        }),
-        
+        swarmDbManager.storeTier1Learning(
+          testSwarmIds[0],
+          'workflow-commander',
+          {
+            id: `workflow-learning-${nanoid()}`,
+            swarmId: testSwarmIds[0],
+            commanderType: 'workflow-commander',
+            agentPerformanceHistory: {},
+            sparcPhaseEfficiency: {},
+            implementationPatterns: [
+              {
+                patternId: 'workflow-pattern',
+                description: 'End-to-end workflow pattern',
+                context: 'workflow, end-to-end, performance',
+                successRate: 0.92,
+                usageCount: 10,
+                lastUsed: new Date().toISOString(),
+              },
+            ],
+            taskCompletionPatterns: [],
+            realTimeFeedback: [],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          }
+        ),
+
         // 2. Pattern discovery
         swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmIds[0]),
-        
+
         // 3. Knowledge transfer
-        swarmDbManager.transferKnowledgeBetweenSwarms(testSwarmIds[0], testSwarmIds[1]),
-        
+        swarmDbManager.transferKnowledgeBetweenSwarms(
+          testSwarmIds[0],
+          testSwarmIds[1]
+        ),
+
         // 4. Performance comparison
-        swarmDbManager.generateSwarmPerformanceComparison([testSwarmIds[0], testSwarmIds[1]]),
-        
+        swarmDbManager.generateSwarmPerformanceComparison([
+          testSwarmIds[0],
+          testSwarmIds[1],
+        ]),
+
         // 5. Pattern adoption tracking
         swarmDbManager.trackPatternAdoption('workflow-pattern'),
       ];
@@ -774,7 +843,7 @@ describe('Phase 2 Swarm Database Performance Benchmarks', () => {
       const workflowTime = endTime - startTime;
 
       expect(results).toHaveLength(5);
-      results.forEach(result => expect(result).toBeDefined());
+      results.forEach((result) => expect(result).toBeDefined());
 
       console.log(`End-to-End Workflow Benchmark:
         Total workflow time: ${workflowTime}ms

@@ -24,7 +24,8 @@ import { DocumentDrivenSystem } from '../../../../core/document-driven-system.ts
 import { MemorySystem } from '../../../../core/memory-system.ts';
 // Real implementations - no more mocks!
 import { CoordinationAPI } from '../../../api.ts';
-import { ProductWorkflowEngine } from '../../../orchestration/product-workflow-engine.ts';
+// CIRCULAR DEPENDENCY FIX: Remove direct import of ProductWorkflowEngine
+// Use dependency injection pattern instead
 
 const TaskAPI = CoordinationAPI.tasks;
 
@@ -65,7 +66,7 @@ export class SPARCEngineCore implements SPARCEngine {
 
   // Deep infrastructure integration - REAL implementations
   private readonly documentDrivenSystem: DocumentDrivenSystem;
-  private readonly workflowEngine: ProductWorkflowEngine;
+  private workflowEngine: unknown; // CIRCULAR DEPENDENCY FIX: Use dependency injection
   private readonly swarmCoordinator: SPARCSwarmCoordinator;
   private readonly memorySystem: MemorySystem;
   private readonly taskCoordinator: TaskCoordinator;
@@ -83,10 +84,19 @@ export class SPARCEngineCore implements SPARCEngine {
       backend: 'json',
       path: './data/sparc-engine-memory',
     });
-    this.workflowEngine = new ProductWorkflowEngine(this.memorySystem);
+    // CIRCULAR DEPENDENCY FIX: Initialize workflowEngine via dependency injection
+    this.workflowEngine = null; // Will be injected later to avoid circular dependency
     this.swarmCoordinator = new SPARCSwarmCoordinator();
     this.taskCoordinator = new TaskCoordinator();
     this.taskAPI = new TaskAPI();
+  }
+
+  /**
+   * Set the workflow engine to avoid circular dependency.
+   * CIRCULAR DEPENDENCY FIX: Use this method to inject ProductWorkflowEngine
+   */
+  setWorkflowEngine(workflowEngine: unknown) {
+    this.workflowEngine = workflowEngine;
   }
 
   /**

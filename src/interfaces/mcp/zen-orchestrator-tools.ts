@@ -11,7 +11,7 @@
 
 import type { Tool } from '@modelcontextprotocol/sdk/types.js';
 import { getLogger } from '../../config/logging-config.js';
-import { getZenOrchestratorIntegrationFull } from '../../zen-orchestrator-integration-full.js';
+import { getZenSwarmOrchestratorIntegration } from '../../zen-orchestrator-integration.js';
 
 const logger = getLogger('MCP-ZenOrchestratorFull');
 
@@ -207,7 +207,7 @@ export class ZenOrchestratorFullMCPHandlers {
    */
   static async handleFullStatus(args: unknown): Promise<unknown> {
     try {
-      const orchestrator = getZenOrchestratorIntegrationFull();
+      const orchestrator = getZenSwarmOrchestratorIntegration();
 
       if (!(await orchestrator.isReady())) {
         return {
@@ -261,7 +261,7 @@ export class ZenOrchestratorFullMCPHandlers {
    */
   static async handleExecuteNeuralService(args: unknown): Promise<unknown> {
     try {
-      const orchestrator = getZenOrchestratorIntegrationFull();
+      const orchestrator = getZenSwarmOrchestratorIntegration();
 
       if (!(await orchestrator.isReady())) {
         return {
@@ -325,7 +325,7 @@ export class ZenOrchestratorFullMCPHandlers {
    */
   static async handleSendA2AMessage(args: unknown): Promise<unknown> {
     try {
-      const orchestrator = getZenOrchestratorIntegrationFull();
+      const orchestrator = getZenSwarmOrchestratorIntegration();
 
       if (!(await orchestrator.isReady())) {
         return {
@@ -374,7 +374,7 @@ export class ZenOrchestratorFullMCPHandlers {
    */
   static async handleA2AServerStatus(args: unknown): Promise<unknown> {
     try {
-      const orchestrator = getZenOrchestratorIntegrationFull();
+      const orchestrator = getZenSwarmOrchestratorIntegration();
 
       if (!(await orchestrator.isReady())) {
         return {
@@ -406,7 +406,7 @@ export class ZenOrchestratorFullMCPHandlers {
    */
   static async handleListFullServices(args: unknown): Promise<unknown> {
     try {
-      const orchestrator = getZenOrchestratorIntegrationFull();
+      const orchestrator = getZenSwarmOrchestratorIntegration();
 
       if (!(await orchestrator.isReady())) {
         return {
@@ -473,7 +473,7 @@ export class ZenOrchestratorFullMCPHandlers {
    */
   static async handleGetMetrics(args: unknown): Promise<unknown> {
     try {
-      const orchestrator = getZenOrchestratorIntegrationFull();
+      const orchestrator = getZenSwarmOrchestratorIntegration();
 
       if (!(await orchestrator.isReady())) {
         return {

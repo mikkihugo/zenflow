@@ -8,8 +8,8 @@
  * @file System-resilience implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import { errorMonitor } from './error-monitoring.ts';
+import { getLogger } from '../config/logging-config';
+import { errorMonitor } from './error-monitoring';
 import {
   AgentError,
   SystemError,

@@ -12,8 +12,8 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { getLogger } from '../config/logging-config.ts';
-import type { DocumentManager } from '../core/workflow-engine.ts';
+import { getLogger } from '../config/logging-config';
+import type { DocumentManager } from '../database/managers/document-manager';
 
 const logger = getLogger('ProductFlowSystem');
 

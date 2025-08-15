@@ -5,8 +5,8 @@
  * Tests the real WASM loading implementation for swarm and persistence modules
  */
 
-import { WasmModuleLoader } from './src/neural/wasm/wasm-loader.ts';
-import { WasmEnhancedLoader } from './src/neural/wasm/wasm-enhanced-loader.ts';
+import { WasmModuleLoader } from './src/neural/wasm/wasm-loader.js';
+import { WasmEnhancedLoader } from './src/neural/wasm/wasm-enhanced-loader.js';
 
 async function testWasmIntegration() {
   console.log('🧪 Starting WASM Integration Test...\n');

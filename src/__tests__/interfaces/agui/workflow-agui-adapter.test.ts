@@ -13,20 +13,20 @@ import {
   createEmergencyGate,
   GateEscalationLevel,
   WorkflowGateRequest,
-} from '../../../coordination/workflows/workflow-gate-request.ts';
-import { Domain } from '../../../core/domain-boundary-validator.ts';
+} from '../../../coordination/workflows/workflow-gate-request.js';
+import { Domain } from '../../../core/domain-boundary-validator.js';
 import {
   createTypeSafeEventBus,
   EventPriority,
   type TypeSafeEventBus,
-} from '../../../core/type-safe-event-system.ts';
+} from '../../../core/type-safe-event-system.js';
 import {
   createTestWorkflowAGUIAdapter,
   createWorkflowAGUIAdapter,
   WorkflowAGUIAdapter,
   type WorkflowAGUIConfig,
   type WorkflowDecisionAudit,
-} from '../../../interfaces/agui/workflow-agui-adapter.ts';
+} from '../../../interfaces/agui/workflow-agui-adapter.js';
 
 // Mock readline to avoid terminal interaction in tests
 vi.mock('node:readline', () => ({

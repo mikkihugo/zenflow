@@ -3,14 +3,14 @@
  * This test adapts the London School TDD approach from the original test suite.
  */
 
-import { Orchestrator } from 'coordination/orchestrator';
-import { ZenSwarmStrategy } from 'coordination/strategies/ruv-swarm.strategy';
+import { Orchestrator } from '../../coordination/orchestrator';
+import { ZenSwarmStrategy } from '../../coordination/swarm/core/strategy';
 import { describe, expect, it } from 'vitest';
-import { SwarmDatabase } from '../../src/database/swarm-database';
+import { SwarmDatabase } from '../../database/controllers/database-controller';
 
 // Mock dependencies
-vi.mock('../../src/database/swarm-database');
-vi.mock('coordination/strategies/ruv-swarm.strategy');
+vi.mock('../../database/controllers/database-controller');
+vi.mock('../../coordination/swarm/core/strategy');
 
 const MockedSwarmDatabase = SwarmDatabase as vi.MockedClass<
   typeof SwarmDatabase

@@ -5,7 +5,11 @@
  */
 
 import { getLogger } from '../config/logging-config.ts';
-import { getSharedCollectiveFACT, UniversalFACTHelpers, removeLevelSpecificFACTStorage } from './shared-fact-system.ts';
+import {
+  getSharedCollectiveFACT,
+  UniversalFACTHelpers,
+  removeLevelSpecificFACTStorage,
+} from './shared-fact-system.ts';
 import { SwarmCommander } from './agents/swarm-commander.ts';
 import type { SwarmCommanderConfig } from './agents/swarm-commander.ts';
 import type { IEventBus } from '../core/interfaces/base-interfaces.ts';
@@ -23,16 +27,27 @@ export async function testUniversalFACTAccess(): Promise<void> {
     // Test 1: Initialize shared FACT system
     const sharedFact1 = await getSharedCollectiveFACT();
     const sharedFact2 = await getSharedCollectiveFACT();
-    
+
     // Verify same instance is returned
     if (sharedFact1 !== sharedFact2) {
-      throw new Error('❌ Different FACT instances returned - shared system failed');
+      throw new Error(
+        '❌ Different FACT instances returned - shared system failed'
+      );
     }
-    logger.info('✅ Test 1 passed: Same FACT instance returned for multiple calls');
+    logger.info(
+      '✅ Test 1 passed: Same FACT instance returned for multiple calls'
+    );
 
     // Test 2: SwarmCommander FACT access
-    const mockEventBus = { on: () => {}, emit: () => {}, off: () => {} } as IEventBus;
-    const mockMemory = { store: async () => {}, retrieve: async () => null } as MemoryCoordinator;
+    const mockEventBus = {
+      on: () => {},
+      emit: () => {},
+      off: () => {},
+    } as IEventBus;
+    const mockMemory = {
+      store: async () => {},
+      retrieve: async () => null,
+    } as MemoryCoordinator;
     const swarmConfig: SwarmCommanderConfig = {
       swarmId: 'test-swarm',
       commanderType: 'testing',
@@ -52,7 +67,7 @@ export async function testUniversalFACTAccess(): Promise<void> {
 
     // This should work with the new static method
     const swarmFact = await SwarmCommander.getSharedCollectiveFACT();
-    
+
     if (swarmFact !== sharedFact1) {
       throw new Error('❌ SwarmCommander uses different FACT instance');
     }
@@ -62,12 +77,18 @@ export async function testUniversalFACTAccess(): Promise<void> {
     await sharedFact1.storeFact({
       id: 'test-universal-adr-123',
       type: 'architecture-decision',
-      category: 'knowledge', 
+      category: 'knowledge',
       subject: 'Universal FACT Access Pattern',
       content: {
-        decision: 'All hierarchy levels must use the same CollectiveFACTSystem instance',
-        rationale: 'Ensures consistent knowledge sharing across Cubes, Matrons, Queens, SwarmCommanders, Agents',
-        implications: ['No level-specific storage', 'Universal ADR access', 'Shared learning'],
+        decision:
+          'All hierarchy levels must use the same CollectiveFACTSystem instance',
+        rationale:
+          'Ensures consistent knowledge sharing across Cubes, Matrons, Queens, SwarmCommanders, Agents',
+        implications: [
+          'No level-specific storage',
+          'Universal ADR access',
+          'Shared learning',
+        ],
         status: 'accepted',
       },
       source: 'integration-test',
@@ -84,12 +105,15 @@ export async function testUniversalFACTAccess(): Promise<void> {
     });
 
     // Test 4: Search shared ADRs
-    const adrResults = await UniversalFACTHelpers.getUniversalADRs('Universal FACT');
-    
+    const adrResults =
+      await UniversalFACTHelpers.getUniversalADRs('Universal FACT');
+
     if (adrResults.length === 0) {
       throw new Error('❌ Shared ADR not found by universal search');
     }
-    logger.info('✅ Test 3 & 4 passed: Shared knowledge stored and retrieved successfully');
+    logger.info(
+      '✅ Test 3 & 4 passed: Shared knowledge stored and retrieved successfully'
+    );
 
     // Test 5: NPM facts sharing
     try {
@@ -117,17 +141,17 @@ export async function testLevelSpecificStorageRemoval(): Promise<void> {
   try {
     // Clean up level-specific storage
     await removeLevelSpecificFACTStorage();
-    
+
     // Verify directories are removed
     const fs = await import('node:fs/promises');
     const path = await import('node:path');
-    
+
     const levelPaths = [
       '.claude-zen/fact/swarm-commander',
       '.claude-zen/fact/queen-coordinator',
       '.claude-zen/fact/dev-cube-matron',
     ];
-    
+
     for (const levelPath of levelPaths) {
       try {
         await fs.access(path.resolve(process.cwd(), levelPath));
@@ -137,7 +161,7 @@ export async function testLevelSpecificStorageRemoval(): Promise<void> {
         logger.info(`✅ Level-specific path removed: ${levelPath}`);
       }
     }
-    
+
     logger.info('🎉 Level-specific storage removal test completed!');
   } catch (error) {
     logger.error('❌ Level-specific storage removal test failed:', error);
@@ -153,7 +177,7 @@ export async function testSharedKnowledgeLearning(): Promise<void> {
 
   try {
     const sharedFact = await getSharedCollectiveFACT();
-    
+
     // Store learning from different hierarchy levels
     const learningData = [
       {
@@ -164,18 +188,20 @@ export async function testSharedKnowledgeLearning(): Promise<void> {
       },
       {
         level: 'DevCubeMatron',
-        knowledge: 'Code generation with Borg principles reduces defects by 60%',
+        knowledge:
+          'Code generation with Borg principles reduces defects by 60%',
         type: 'quality-learning',
         confidence: 0.92,
       },
       {
-        level: 'QueenCoordinator', 
-        knowledge: 'Multi-swarm coordination patterns optimize resource usage by 35%',
+        level: 'QueenCoordinator',
+        knowledge:
+          'Multi-swarm coordination patterns optimize resource usage by 35%',
         type: 'coordination-learning',
         confidence: 0.78,
       },
     ];
-    
+
     // Store learning from all levels
     for (const learning of learningData) {
       await sharedFact.storeFact({
@@ -200,19 +226,21 @@ export async function testSharedKnowledgeLearning(): Promise<void> {
         swarmAccess: new Set(),
       });
     }
-    
+
     // Search for shared learning
     const learningResults = await sharedFact.searchFacts({
       query: 'learning methodology improvement performance',
       type: 'performance-learning',
       limit: 10,
     });
-    
+
     if (learningResults.length === 0) {
       throw new Error('❌ Shared learning not found');
     }
-    
-    logger.info(`✅ Shared knowledge learning test passed: ${learningResults.length} learning insights stored and accessible`);
+
+    logger.info(
+      `✅ Shared knowledge learning test passed: ${learningResults.length} learning insights stored and accessible`
+    );
   } catch (error) {
     logger.error('❌ Shared knowledge learning test failed:', error);
     throw error;
@@ -224,14 +252,16 @@ export async function testSharedKnowledgeLearning(): Promise<void> {
  */
 export async function runSharedFACTIntegrationTests(): Promise<void> {
   logger.info('🚀 Starting shared FACT integration tests...');
-  
+
   try {
     await testUniversalFACTAccess();
     await testLevelSpecificStorageRemoval();
     await testSharedKnowledgeLearning();
-    
+
     logger.info('🎉 ALL SHARED FACT INTEGRATION TESTS PASSED!');
-    logger.info('✅ Shared FACT system successfully implemented across all hierarchy levels');
+    logger.info(
+      '✅ Shared FACT system successfully implemented across all hierarchy levels'
+    );
     logger.info('✅ Universal ADR access verified');
     logger.info('✅ Level-specific storage removed');
     logger.info('✅ Shared knowledge learning layer active');
@@ -244,7 +274,7 @@ export async function runSharedFACTIntegrationTests(): Promise<void> {
 // Export for use in other tests
 export default {
   testUniversalFACTAccess,
-  testLevelSpecificStorageRemoval, 
+  testLevelSpecificStorageRemoval,
   testSharedKnowledgeLearning,
   runSharedFACTIntegrationTests,
 };

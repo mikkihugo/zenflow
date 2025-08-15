@@ -1202,8 +1202,8 @@ export class IntelligentDocImport extends EventEmitter {
   }> {
     return this.workflowGates.map((gate) => ({
       gateId: gate.id,
-      status: gate.status || 'pending',
-      filePath: gate.context?.fileAnalysis?.filePath || 'unknown',
+      status: (gate as any).status || 'pending',
+      filePath: (gate.context as any)?.fileAnalysis?.filePath || 'unknown',
     }));
   }
 }

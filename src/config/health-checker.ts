@@ -241,7 +241,7 @@ export class ConfigHealthChecker extends EventEmitter {
     }
 
     // Identify conflicts
-    for (const [port, services] of portGroups.entries()) {
+    for (const [port, services] of Array.from(portGroups.entries())) {
       if (services.length > 1) {
         const isCritical = services.some((s) => s.critical);
         conflicts.push({

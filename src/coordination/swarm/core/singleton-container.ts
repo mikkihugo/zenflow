@@ -83,7 +83,7 @@ class SingletonContainer {
 
     // Resolve dependencies
     const dependencies = config?.dependencies?.map((dep: unknown) =>
-      this.get(dep)
+      this.get(dep as string)
     );
 
     try {

@@ -246,7 +246,7 @@ class LanceDBBackend implements BackendInterface {
 
   private extractTextContent(value: JSONValue): string {
     if (typeof value === 'object' && value && 'content' in value) {
-      return (value as any).content;
+      return value?.content;
     }
     if (typeof value === 'string') return value;
     return JSON.stringify(value);
@@ -275,7 +275,7 @@ class SQLiteBackend implements BackendInterface {
 
     await fs.mkdir(path.dirname(this.dbPath), { recursive: true });
 
-    this.db = new (Database as any)(this.dbPath);
+    this.db = new Database(this.dbPath);
 
     // Configure SQLite options
     if (this.config.sqlite?.walMode !== false) {

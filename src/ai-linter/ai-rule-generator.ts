@@ -453,7 +453,9 @@ export class AIRuleGenerator {
     const { teamPreferences } = context;
 
     // Analyze team feedback to improve existing rules
-    for (const [ruleName, feedback] of Array.from(teamPreferences.ruleFeedback.entries())) {
+    for (const [ruleName, feedback] of Array.from(
+      teamPreferences.ruleFeedback.entries()
+    )) {
       if (feedback.rating < 3 && feedback.falsePositives > 5) {
         // Generate improved version of poorly-rated rule
         const improvedRule = await this.improveRule(
@@ -492,7 +494,9 @@ export class AIRuleGenerator {
   ): Promise<BiomeRule[]> {
     const rules: BiomeRule[] = [];
 
-    for (const [ruleName, effectiveness] of Array.from(this.ruleEffectiveness.entries())) {
+    for (const [ruleName, effectiveness] of Array.from(
+      this.ruleEffectiveness.entries()
+    )) {
       if (
         effectiveness.effectivenessScore <
         this.config.evolution.retirementThreshold
@@ -572,8 +576,11 @@ export class AIRuleGenerator {
     // Placeholder implementation - would calculate real statistics
     // In a real implementation, this would analyze the actual code patterns
     const fileCount = analysisResults.length;
-    const totalPatterns = analysisResults.reduce((sum, result) => sum + result.patterns.length, 0);
-    
+    const totalPatterns = analysisResults.reduce(
+      (sum, result) => sum + result.patterns.length,
+      0
+    );
+
     return {
       averageComplexity: 12.5,
       typeAnnotationCoverage: 0.65,

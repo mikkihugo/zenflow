@@ -1761,7 +1761,7 @@ export class DatabaseController {
       if ('getConnectionStats' in this.adapter) {
         connectionStats = await (this.adapter as any).getConnectionStats();
       } else {
-        connectionStats = { total: 1, active: 1, idle: 0 };
+        connectionStats = { total: 1, active: 1, idle: 0 } as any;
       }
 
       // Find vector tables in schema

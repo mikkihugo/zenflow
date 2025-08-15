@@ -98,7 +98,12 @@ describe('Claude-Zen TDD London School Architecture', () => {
         // Arrange - Mock the entire Queen coordination workflow
         mockHiveMind.initialize.mockResolvedValue(undefined);
         mockHiveMind.spawnQueen.mockResolvedValue('queen-1');
-        mockHiveMind.coordinateQueens.mockResolvedValue({ success: true, coordinationId: 'coord-123', activeQueens: 3, taskId: 'task-456' });
+        mockHiveMind.coordinateQueens.mockResolvedValue({
+          success: true,
+          coordinationId: 'coord-123',
+          activeQueens: 3,
+          taskId: 'task-456',
+        });
 
         const complexTask = {
           type: 'full-stack-development',
@@ -136,10 +141,17 @@ describe('Claude-Zen TDD London School Architecture', () => {
         };
 
         // Act - Simulate neural-enhanced Queen decision
-        await mockNeuralFramework.initializeNetwork({ inputSize: 10, hiddenLayers: [5, 3], outputSize: 2 });
-        const prediction = await mockNeuralFramework.predict('network-123', [1, 2, 3, 4, 5]);
+        await mockNeuralFramework.initializeNetwork({
+          inputSize: 10,
+          hiddenLayers: [5, 3],
+          outputSize: 2,
+        });
+        const prediction = await mockNeuralFramework.predict(
+          'network-123',
+          [1, 2, 3, 4, 5]
+        );
 
-        // Use prediction in Queen coordination  
+        // Use prediction in Queen coordination
         mockQueens.architectQueen.design.mockResolvedValue({
           pattern: 'use-pattern-X',
           confidence: 0.92,
@@ -149,9 +161,11 @@ describe('Claude-Zen TDD London School Architecture', () => {
           await mockQueens.architectQueen.design(decisionContext);
 
         // Assert - Verify neural integration contract
-        expect(mockNeuralFramework.initializeNetwork).toHaveBeenCalledWith(
-          { inputSize: 10, hiddenLayers: [5, 3], outputSize: 2 }
-        );
+        expect(mockNeuralFramework.initializeNetwork).toHaveBeenCalledWith({
+          inputSize: 10,
+          hiddenLayers: [5, 3],
+          outputSize: 2,
+        });
         expect(mockNeuralFramework.predict).toHaveBeenCalledWith(
           'network-123',
           [1, 2, 3, 4, 5]
@@ -206,7 +220,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         mockHiveMind.getQueenStatus.mockResolvedValue({
           queenId: 'queen-arch-001',
           status: 'active',
-          capabilities: ['architect', 'design']
+          capabilities: ['architect', 'design'],
         });
 
         // Act - Test Queen lifecycle
@@ -231,7 +245,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         expect(status).toEqual({
           queenId: 'queen-arch-001',
           status: 'active',
-          capabilities: ['architect', 'design']
+          capabilities: ['architect', 'design'],
         });
       });
     });
@@ -256,7 +270,7 @@ describe('Claude-Zen TDD London School Architecture', () => {
         mockClaudeZenApi.handleTaskRequest.mockResolvedValue({
           success: true,
           data: { status: 'processing', queenId: 'arch-001' },
-          status: 200
+          status: 200,
         });
 
         mockMcpServer.handleToolCall.mockResolvedValue({

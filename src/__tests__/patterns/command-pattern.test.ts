@@ -17,6 +17,8 @@ interface MockSwarmService {
   spawnAgent: vi.Mock;
   orchestrateTask: vi.Mock;
   getSwarmStatus: vi.Mock;
+  isHealthy?: vi.Mock;
+  destroySwarm?: vi.Mock;
 }
 
 interface MockLogger {
@@ -39,7 +41,7 @@ describe('Command Pattern Implementation', () => {
         initializeSwarm: vi.fn(),
         spawnAgent: vi.fn(),
         orchestrateTask: vi.fn(),
-        getSwarmStatus: vi.fn(),
+        getSwarmStatus: vi.fn().mockResolvedValue({ healthy: true, status: 'active' }),
         isHealthy: vi.fn().mockReturnValue(true),
         destroySwarm: vi.fn(),
       };
@@ -895,7 +897,9 @@ describe('Command Pattern Implementation', () => {
         initializeSwarm: vi.fn(),
         spawnAgent: vi.fn(),
         orchestrateTask: vi.fn(),
-        getSwarmStatus: vi.fn(),
+        getSwarmStatus: vi.fn().mockResolvedValue({ healthy: true, status: 'active' }),
+        isHealthy: vi.fn().mockReturnValue(true),
+        destroySwarm: vi.fn(),
       };
 
       commandQueue = new MCPCommandQueue(mockLogger);
@@ -957,11 +961,9 @@ describe('Command Pattern Implementation', () => {
         ),
       ];
 
-      const results = (await commandQueue.executeTransaction(
-        commands
-      )) as any as any as any as any;
+      const results = await commandQueue.executeTransaction(commands);
 
-      expect(results?.every((r: unknown) => r.success)).toBe(true);
+      expect(results.every((r) => r.success)).toBe(true);
       expect(results).toHaveLength(3);
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(1);
@@ -1025,12 +1027,10 @@ describe('Command Pattern Implementation', () => {
 
       const commands = [mockSwarmCommand, mockAgentCommand];
 
-      const results = (await commandQueue.executeTransaction(
-        commands
-      )) as any as any as any as any;
+      const results = await commandQueue.executeTransaction(commands);
 
       // Transaction should fail
-      expect(results?.some((r: unknown) => !r.success)).toBe(true);
+      expect(results.some((r) => !r.success)).toBe(true);
 
       // First command should have been undone
       expect(mockSwarmCommand.undo).toHaveBeenCalledTimes(1);
@@ -1114,10 +1114,8 @@ describe('Command Pattern Implementation', () => {
       expect(parentResults?.every((r) => r.success)).toBe(true);
 
       // Execute child transaction
-      const childResults = (await commandQueue.executeTransaction(
-        childCommands
-      )) as any as any as any as any;
-      expect(childResults?.every((r: unknown) => r.success)).toBe(true);
+      const childResults = await commandQueue.executeTransaction(childCommands);
+      expect(childResults.every((r) => r.success)).toBe(true);
 
       expect(mockSwarmService.initializeSwarm).toHaveBeenCalledTimes(1);
       expect(mockSwarmService.spawnAgent).toHaveBeenCalledTimes(2);
@@ -1156,7 +1154,9 @@ describe('Command Pattern Implementation', () => {
         initializeSwarm: vi.fn(),
         spawnAgent: vi.fn(),
         orchestrateTask: vi.fn(),
-        getSwarmStatus: vi.fn(),
+        getSwarmStatus: vi.fn().mockResolvedValue({ healthy: true, status: 'active' }),
+        isHealthy: vi.fn().mockReturnValue(true),
+        destroySwarm: vi.fn(),
       };
     });
 
@@ -1186,34 +1186,37 @@ describe('Command Pattern Implementation', () => {
       expect(taskCommand.getCommandType()).toBe('task_orchestrate');
     });
 
-    it('should validate command factory inputs', () => {
-      // Test invalid topology
-      expect(() => {
-        CommandFactory.createSwarmInitCommand(
-          { topology: 'invalid-topology' as any, agentCount: 1 },
-          mockSwarmService as any,
-          commandContext
-        );
-      }).toThrow('Invalid topology');
+    it('should validate command factory inputs', async () => {
+      // Test invalid topology - validation should catch this
+      const invalidTopologyCommand = CommandFactory.createSwarmInitCommand(
+        { topology: 'invalid-topology' as any, agentCount: 1 },
+        mockSwarmService as any,
+        commandContext
+      );
+      const topologyValidation = await invalidTopologyCommand.validate();
+      expect(topologyValidation.valid).toBe(false);
+      expect(topologyValidation.errors).toContain('Invalid topology: invalid-topology');
 
-      // Test invalid agent count
-      expect(() => {
-        CommandFactory.createSwarmInitCommand(
-          { topology: 'mesh', agentCount: -1 },
-          mockSwarmService as any,
-          commandContext
-        );
-      }).toThrow('Agent count must be positive');
+      // Test invalid agent count - validation should catch this
+      const invalidCountCommand = CommandFactory.createSwarmInitCommand(
+        { topology: 'mesh', agentCount: -1 },
+        mockSwarmService as any,
+        commandContext
+      );
+      const countValidation = await invalidCountCommand.validate();
+      expect(countValidation.valid).toBe(false);
+      expect(countValidation.errors).toContain('Agent count must be greater than 0');
 
-      // Test missing required parameters
-      expect(() => {
-        CommandFactory.createTaskOrchestrationCommand(
-          { description: '', requirements: [], priority: 'low' },
-          mockSwarmService as any,
-          'test-swarm',
-          commandContext
-        );
-      }).toThrow('Task description is required');
+      // Test missing required parameters - validation should catch this  
+      const emptyTaskCommand = CommandFactory.createTaskOrchestrationCommand(
+        { description: '', requirements: [], priority: 'low' },
+        mockSwarmService as any,
+        'test-swarm',
+        commandContext
+      );
+      const taskValidation = await emptyTaskCommand.validate();
+      expect(taskValidation.valid).toBe(false);
+      expect(taskValidation.errors.some(error => error.includes('description'))).toBe(true);
     });
 
     it('should calculate command complexity correctly', () => {

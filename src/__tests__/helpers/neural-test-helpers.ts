@@ -510,9 +510,9 @@ export class NeuralMathHelpers {
     for (let i = 0; i < a.length; i++) {
       result[i] = [];
       for (let j = 0; j < b[0].length; j++) {
-        result?.[i][j] = 0;
+        result[i][j] = 0;
         for (let k = 0; k < b.length; k++) {
-          result?.[i][j] += a[i]?.[k] * b[k]?.[j];
+          result[i][j] += (a[i]?.[k] ?? 0) * (b[k]?.[j] ?? 0);
         }
       }
     }

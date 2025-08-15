@@ -56,9 +56,8 @@ function OLD_PATTERN_example() {
  * Focuses on method calls and collaboration patterns
  */
 class MockMemoryPool {
-  allocate: MockedFunction<
-    (type: string, size: number) => MemoryAllocation
-  > = vi.fn();
+  allocate: MockedFunction<(type: string, size: number) => MemoryAllocation> =
+    vi.fn();
   deallocate: MockedFunction<(id: number) => boolean> = vi.fn();
 
   constructor() {

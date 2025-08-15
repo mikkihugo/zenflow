@@ -15,9 +15,9 @@ import {
   test,
   vi,
 } from 'vitest';
-import { 
+import {
   createAdaptiveOptimizer,
-  type AdaptiveMemoryOptimizer
+  type AdaptiveMemoryOptimizer,
 } from '../../config/memory-optimization.ts';
 import { createLogger } from '../../core/logger.ts';
 import { handleKanbanCommand } from '../../interfaces/cli.disabled/commands/kanban.ts';
@@ -63,9 +63,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(initResult.isError).toBe(false);
-      const initData = JSON.parse(
-        (initResult as any).content[0].text
-      ) as any;
+      const initData = JSON.parse((initResult as any).content[0].text) as any;
       expect(initData.success).toBe(true);
       expect(initData.repository.topology).toBe('hierarchical');
       expect(initData.features.advancedKanbanFlow).toBe(true);
@@ -97,9 +95,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(testResult.isError).toBe(false);
-      const testData = JSON.parse(
-        (testResult as any).content[0].text
-      ) as any;
+      const testData = JSON.parse((testResult as any).content[0].text) as any;
       expect(testData.success).toBe(true);
       expect(testData.test.status).toBe('PASSED');
       expect(testData.components.flowManager).toBe('✅ PASSED');
@@ -120,9 +116,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(scaleResult.isError).toBe(false);
-      const scaleData = JSON.parse(
-        (scaleResult as any).content[0].text
-      ) as any;
+      const scaleData = JSON.parse((scaleResult as any).content[0].text) as any;
       expect(scaleData.success).toBe(true);
       expect(scaleData.operation.direction).toBe('up');
       expect(scaleData.operation.amount).toBe('25%');
@@ -253,9 +247,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
       });
 
       expect(sysInfoResult.isError).toBe(false);
-      const sysData = JSON.parse(
-        (sysInfoResult as any).content[0].text
-      ) as any;
+      const sysData = JSON.parse((sysInfoResult as any).content[0].text) as any;
       expect(sysData.success).toBe(true);
       expect(sysData.system.memory).toBeDefined();
       expect(sysData.recommendations).toBeDefined();
@@ -375,9 +367,7 @@ describe('End-to-End Multi-Level Workflow Integration', () => {
         }
 
         expect(result.isError).toBe(false);
-        const data = JSON.parse(
-          (result as any).content[0].text
-        ) as any;
+        const data = JSON.parse((result as any).content[0].text) as any;
         expect(data.success).toBe(true);
 
         logger.info(`✅ MCP tool ${tool} validated successfully`);

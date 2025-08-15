@@ -3,7 +3,7 @@
  * Integrates all design patterns with existing swarm coordination system.
  */
 
-import { Logger } from '../core/logger.ts';
+import { Logger } from '../core/logger';
 
 const logger = new Logger('src-core-pattern-integration');
 
@@ -13,7 +13,7 @@ import {
   AgentFactory,
   type HierarchicalAgentGroup,
   type TaskDefinition,
-} from '../coordination/agents/composite-system.ts';
+} from '../coordination/agents/composite-system';
 // Import all pattern implementations
 import {
   type CoordinationContext,
@@ -21,7 +21,7 @@ import {
   StrategyFactory,
   SwarmCoordinator,
   type SwarmTopology,
-} from '../coordination/swarm/core/strategy.ts';
+} from '../coordination/swarm/core/strategy';
 import {
   ClaudeZenFacade,
   type IDatabaseService,
@@ -30,7 +30,7 @@ import {
   type INeuralService,
   type ISwarmService,
   type IWorkflowService,
-} from '../core/facade.ts';
+} from '../core/facade';
 import {
   AdapterFactory,
   type ConnectionConfig,
@@ -38,18 +38,18 @@ import {
   ProtocolManager,
   RESTAdapter,
   WebSocketAdapter,
-} from '../integration/adapter-system.ts';
+} from '../integration/adapter-system';
 import {
   EventBuilder,
   LoggerObserver,
   MetricsObserver,
   SystemEventManager,
-} from '../interfaces/events/observer-system.ts';
+} from '../interfaces/events/observer-system';
 import {
   type CommandContext,
   CommandFactory,
   MCPCommandQueue,
-} from '../interfaces/mcp/command-system.ts';
+} from '../interfaces/mcp/command-system';
 
 // Integration configuration
 export interface IntegrationConfig {
@@ -198,9 +198,7 @@ export class IntegratedSwarmService implements ISwarmService {
       this.createCommandContext()
     );
 
-    const result = (await this.commandQueue.execute(
-      command
-    )) as any as any as any as any;
+    const result = await this.commandQueue.execute(command);
 
     if (result?.success && result?.data) {
       // Add agent to the swarm group
@@ -524,7 +522,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       realDatabaseService,
       realInterfaceService,
       realWorkflowService,
-      this.eventManager as any,
+      this.eventManager,
       this.commandQueue,
       logger,
       metrics
@@ -840,16 +838,14 @@ export class IntegratedPatternSystem extends EventEmitter {
   private async createRealMemoryService(): Promise<IMemoryService> {
     try {
       // Import memory coordinator with fallback
-      const memoryModule = await import('./memory-coordinator.ts').catch(
+      const memoryModule = await import('./memory-coordinator').catch(
         () => null
       );
       if (!memoryModule?.MemorySystem) {
         throw new Error('MemorySystem not available');
       }
       const { MemorySystem } = memoryModule;
-      const memoryCoordinator = new MemorySystem(
-        {}
-      ) as any as any as any as any;
+      const memoryCoordinator = new MemorySystem({});
       await memoryCoordinator.initialize();
 
       return {
@@ -861,14 +857,14 @@ export class IntegratedPatternSystem extends EventEmitter {
         },
         delete: async (key: string) => {
           const result = await memoryCoordinator.delete(key);
-          return (result as any)?.success;
+          return result?.success;
         },
         list: async () => {
           const stats = await memoryCoordinator.getStats();
           return Array.from({ length: stats.entries }, (_, i) => `key-${i}`);
         },
         clear: async () => {
-          await (memoryCoordinator as any).clear();
+          await memoryCoordinator.clear();
           return 0; // Would need to track count
         },
         getStats: async () => {
@@ -906,26 +902,26 @@ export class IntegratedPatternSystem extends EventEmitter {
    */
   private async createRealDatabaseService(): Promise<IDatabaseService> {
     try {
-      const { DALFactory } = await import('../database/factory.ts');
-      const { DIContainer } = await import('../di/container/di-container.ts');
-      const { DATABASE_TOKENS } = await import('../di/tokens/core-tokens.ts');
-      const { CORE_TOKENS } = await import('../di/tokens/core-tokens.ts');
+      const { DALFactory } = await import('../database/factory');
+      const { DIContainer } = await import('../di/container/di-container');
+      const { DATABASE_TOKENS } = await import('../di/tokens/core-tokens');
+      const { CORE_TOKENS } = await import('../di/tokens/core-tokens');
 
       const container = new DIContainer();
       // Register logger provider with proper typing
       container.register(CORE_TOKENS.Logger, {
         type: 'singleton',
-        create: () => console as any,
+        create: () => console,
       });
       // Register config provider with proper typing
       container.register(CORE_TOKENS.Config, {
         type: 'singleton',
-        create: () => ({}) as any,
+        create: () => ({}),
       });
       // Register DAL factory with proper arguments and typing
       container.register(DATABASE_TOKENS?.DALFactory, {
         type: 'singleton',
-        create: () => new (DALFactory as any)(container, logger, {} as any),
+        create: () => new DALFactory(container, logger, {}),
       });
 
       const _dalFactory = container.resolve(DATABASE_TOKENS?.DALFactory);

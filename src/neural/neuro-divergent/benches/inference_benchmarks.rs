@@ -6,8 +6,8 @@
 
 use chrono::{DateTime, TimeZone, Utc};
 use criterion::{
-  black_box, criterion_group, criterion_main, BenchmarkId, Criterion,
-  Throughput,
+  BenchmarkId, Criterion, Throughput, black_box, criterion_group,
+  criterion_main,
 };
 use neuro_divergent::data::{TimeSeriesDataFrame, TimeSeriesSchema};
 use neuro_divergent::models::*;

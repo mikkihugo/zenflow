@@ -3,13 +3,13 @@
  * Classical TDD approach - testing actual database operations and performance
  */
 
-import { LanceDBInterface } from '../../../../database/lancedb-interface';
-import { VectorStore } from '../../../../memory/backends/lancedb.backend';
-import { DatabaseTestHelper } from '../../../helpers/database-test-helper.ts';
-import { PerformanceMeasurement } from '../../../helpers/performance-measurement.ts';
+import { LanceDBAdapter } from '../../../../database/adapters/lancedb-adapter';
+import { VectorStore } from '../../../../memory/backends/lancedb-backend';
+import { DatabaseTestHelper } from '../../../helpers/database-test-helper';
+import { PerformanceMeasurement } from '../../../helpers/performance-measurement';
 
 describe('Vector Database Performance (Classical TDD)', () => {
-  let lancedb: LanceDBInterface;
+  let lancedb: LanceDBAdapter;
   let vectorStore: VectorStore;
   let performance: PerformanceMeasurement;
   let testHelper: DatabaseTestHelper;
@@ -26,7 +26,7 @@ describe('Vector Database Performance (Classical TDD)', () => {
   });
 
   beforeEach(async () => {
-    lancedb = new LanceDBInterface({
+    lancedb = new LanceDBAdapter({
       path: TEST_DB_PATH,
       vectorDimension: VECTOR_DIMENSION,
     });

@@ -1,14 +1,13 @@
 /**
-/// <reference types="./global-types" />
  * London TDD (Mockist) Test Setup
  *
  * @file Setup configuration for interaction-based testing
  * Focus: Communication, protocols, boundaries, coordination
  */
 
-// Vitest setup for London TDD
-// Explicit import for ESM environment to ensure jest global is bound
-import { vi } from 'vitest';
+// Import Vitest globals and utilities
+import { vi, expect, beforeEach, afterEach } from 'vitest';
+import './global-types';
 
 /**
  * Expected call structure for interaction verification
@@ -91,7 +90,7 @@ function setupDefaultMocks(): void {
  * @param name - Name for the spy function
  * @returns Jest mock function
  */
-createInteractionSpy = (name: string): vi.Mock => {
+globalThis.createInteractionSpy = (name: string): any => {
   return vi.fn().mockName(name);
 };
 
@@ -102,7 +101,7 @@ createInteractionSpy = (name: string): vi.Mock => {
  * @param spy - Jest mock to verify
  * @param expectedCalls - Array of expected call arguments
  */
-verifyInteractions = (spy: vi.Mock, expectedCalls: ExpectedCall[]): void => {
+globalThis.verifyInteractions = (spy: any, expectedCalls: ExpectedCall[]): void => {
   expect(spy).toHaveBeenCalledTimes(expectedCalls.length);
   expectedCalls.forEach((call, index) => {
     expect(spy).toHaveBeenNthCalledWith(index + 1, ...call.args);
@@ -116,7 +115,7 @@ verifyInteractions = (spy: vi.Mock, expectedCalls: ExpectedCall[]): void => {
  * @param defaults - Default values for the mock object
  * @returns Function that creates mock objects with overrides
  */
-createMockFactory = <T>(defaults: Partial<T> = {}) => {
+globalThis.createMockFactory = <T>(defaults: Partial<T> = {}) => {
   return (overrides: Partial<T> = {}): T =>
     ({
       ...defaults,
@@ -132,7 +131,7 @@ createMockFactory = <T>(defaults: Partial<T> = {}) => {
  * @param timeout - Maximum time to wait in milliseconds
  * @throws Error if interaction doesn't occur within timeout
  */
-waitForInteraction = async (spy: vi.Mock, timeout = 1000): Promise<void> => {
+globalThis.waitForInteraction = async (spy: any, timeout = 1000): Promise<void> => {
   const start = Date.now();
   while (spy.mock.calls.length === 0 && Date.now() - start < timeout) {
     await new Promise((resolve) => setTimeout(resolve, 10));
@@ -148,11 +147,11 @@ waitForInteraction = async (spy: vi.Mock, timeout = 1000): Promise<void> => {
  *
  * @param mockProtocol - Mock protocol function to configure
  */
-simulateProtocolHandshake = (mockProtocol: vi.Mock): void => {
+globalThis.simulateProtocolHandshake = (mockProtocol: any): void => {
   // Relax typing because jest v30 mockImplementation expects (...args: unknown[]) => unknown
   mockProtocol.mockImplementation(
     (message: unknown): Promise<ProtocolResponse> => {
-      if (message && message.type === 'handshake') {
+      if (message && (message as any).type === 'handshake') {
         return Promise.resolve({ type: 'handshake_ack', success: true });
       }
       return Promise.resolve({ type: 'response', data: 'mock_response' });
@@ -160,24 +159,4 @@ simulateProtocolHandshake = (mockProtocol: vi.Mock): void => {
   );
 };
 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      createInteractionSpy(name: string): vi.Mock;
-      verifyInteractions(spy: vi.Mock, expectedCalls: ExpectedCall[]): void;
-      createMockFactory<T>(
-        defaults?: Partial<T>
-      ): (overrides?: Partial<T>) => T;
-      waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
-      simulateProtocolHandshake(mockProtocol: vi.Mock): void;
-    }
-  }
-  // Modern typing for globalThis augmentation to avoid TS7017
-  interface GlobalThis {
-    createInteractionSpy(name: string): vi.Mock;
-    verifyInteractions(spy: vi.Mock, expectedCalls: ExpectedCall[]): void;
-    createMockFactory<T>(defaults?: Partial<T>): (overrides?: Partial<T>) => T;
-    waitForInteraction(spy: vi.Mock, timeout?: number): Promise<void>;
-    simulateProtocolHandshake(mockProtocol: vi.Mock): void;
-  }
-}
+// Types are now declared in global-types.ts

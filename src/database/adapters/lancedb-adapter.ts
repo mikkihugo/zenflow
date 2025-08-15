@@ -1,6 +1,6 @@
 /**
  * Real LanceDB Database Adapter
- * 
+ *
  * Real LanceDB adapter using @lancedb/lancedb library for production vector storage
  */
 
@@ -26,7 +26,7 @@ export interface VectorDocument {
   id: string;
   vector: number[];
   text: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
 }
@@ -34,7 +34,7 @@ export interface VectorDocument {
 export interface VectorSearchOptions {
   limit?: number;
   threshold?: number;
-  filter?: Record<string, any>;
+  filter?: Record<string, unknown>;
   includeMetadata?: boolean;
 }
 
@@ -63,9 +63,9 @@ export class LanceDBAdapter {
       // Create real LanceDB connection
       const uri = this.config.options?.uri || this.config.database;
       this.connection = await connect(uri);
-      
+
       this.connected = true;
-      
+
       logger.info(`✅ Connected to real LanceDB: ${uri}`);
     } catch (error) {
       logger.error(`❌ Failed to connect to LanceDB: ${error}`);
@@ -90,11 +90,11 @@ export class LanceDBAdapter {
     try {
       // Create table with schema
       const table = await this.connection.createTable(name, schema, {
-        mode: 'overwrite'
+        mode: 'overwrite',
       });
-      
+
       this.tables.set(name, table);
-      
+
       logger.info(`✅ Created LanceDB table: ${name}`);
     } catch (error) {
       logger.error(`❌ Failed to create table ${name}:`, error);
@@ -119,34 +119,39 @@ export class LanceDBAdapter {
     } catch (error) {
       // Table doesn't exist, create default vector documents table
       logger.warn(`Table ${name} not found, creating with default schema`);
-      
-      const defaultSchema: VectorDocument[] = [{
-        id: '0',
-        vector: new Array(this.config.options?.vectorSize || 384).fill(0),
-        text: '',
-        metadata: {},
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-      }];
-      
+
+      const defaultSchema: VectorDocument[] = [
+        {
+          id: '0',
+          vector: new Array(this.config.options?.vectorSize || 384).fill(0),
+          text: '',
+          metadata: {},
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ];
+
       await this.createTable(name, defaultSchema);
       return this.tables.get(name)!;
     }
   }
 
-  async insertVectors(tableName: string, documents: VectorDocument[]): Promise<void> {
+  async insertVectors(
+    tableName: string,
+    documents: VectorDocument[]
+  ): Promise<void> {
     const table = await this.getTable(tableName);
-    
+
     try {
       // Add timestamps if not present
-      const documentsWithTimestamps = documents.map(doc => ({
+      const documentsWithTimestamps = documents.map((doc) => ({
         ...doc,
         created_at: doc.created_at || new Date().toISOString(),
-        updated_at: doc.updated_at || new Date().toISOString()
+        updated_at: doc.updated_at || new Date().toISOString(),
       }));
-      
+
       await table.add(documentsWithTimestamps);
-      
+
       logger.debug(`✅ Inserted ${documents.length} vectors into ${tableName}`);
     } catch (error) {
       logger.error(`❌ Failed to insert vectors into ${tableName}:`, error);
@@ -160,20 +165,20 @@ export class LanceDBAdapter {
     options: VectorSearchOptions = {}
   ): Promise<Array<VectorDocument & { _distance?: number }>> {
     const table = await this.getTable(tableName);
-    
+
     try {
       let query = table.search(queryVector);
-      
+
       // Apply limit
       if (options.limit) {
         query = query.limit(options.limit);
       }
-      
+
       // Apply distance threshold
       if (options.threshold) {
         query = query.where(`_distance < ${options.threshold}`);
       }
-      
+
       // Apply metadata filters
       if (options.filter) {
         Object.entries(options.filter).forEach(([key, value]) => {
@@ -184,11 +189,13 @@ export class LanceDBAdapter {
           }
         });
       }
-      
+
       const results = await query.toArray();
-      
-      logger.debug(`✅ Found ${results.length} similar vectors in ${tableName}`);
-      
+
+      logger.debug(
+        `✅ Found ${results.length} similar vectors in ${tableName}`
+      );
+
       return results;
     } catch (error) {
       logger.error(`❌ Vector search failed in ${tableName}:`, error);
@@ -196,30 +203,38 @@ export class LanceDBAdapter {
     }
   }
 
-  async updateVector(tableName: string, id: string, updates: Partial<VectorDocument>): Promise<void> {
+  async updateVector(
+    tableName: string,
+    id: string,
+    updates: Partial<VectorDocument>
+  ): Promise<void> {
     const table = await this.getTable(tableName);
-    
+
     try {
       // LanceDB doesn't have direct update - need to delete and re-insert
       // This is a simplified implementation
-      const existing = await table.search([]).where(`id = '${id}'`).limit(1).toArray();
-      
+      const existing = await table
+        .search([])
+        .where(`id = '${id}'`)
+        .limit(1)
+        .toArray();
+
       if (existing.length === 0) {
         throw new Error(`Vector with id ${id} not found`);
       }
-      
+
       const updated = {
         ...existing[0],
         ...updates,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       };
-      
+
       // Delete old record
       await table.delete(`id = '${id}'`);
-      
+
       // Insert updated record
       await table.add([updated]);
-      
+
       logger.debug(`✅ Updated vector ${id} in ${tableName}`);
     } catch (error) {
       logger.error(`❌ Failed to update vector ${id} in ${tableName}:`, error);
@@ -229,20 +244,23 @@ export class LanceDBAdapter {
 
   async deleteVector(tableName: string, id: string): Promise<void> {
     const table = await this.getTable(tableName);
-    
+
     try {
       await table.delete(`id = '${id}'`);
-      
+
       logger.debug(`✅ Deleted vector ${id} from ${tableName}`);
     } catch (error) {
-      logger.error(`❌ Failed to delete vector ${id} from ${tableName}:`, error);
+      logger.error(
+        `❌ Failed to delete vector ${id} from ${tableName}:`,
+        error
+      );
       throw error;
     }
   }
 
   async countVectors(tableName: string): Promise<number> {
     const table = await this.getTable(tableName);
-    
+
     try {
       const count = await table.countRows();
       return count;
@@ -266,30 +284,30 @@ export class LanceDBAdapter {
   }
 
   // Compatibility methods for database adapter interface
-  async query(sql: string, params: any[] = []): Promise<any> {
+  async query(sql: string, params: unknown[] = []): Promise<unknown> {
     // LanceDB doesn't use SQL, so we interpret common queries
     try {
       if (sql.includes('SELECT') && sql.includes('FROM')) {
         // Parse table name from SQL (simplified)
         const tableMatch = sql.match(/FROM\s+(\w+)/i);
         const tableName = tableMatch ? tableMatch[1] : 'documents';
-        
+
         const table = await this.getTable(tableName);
         const results = await table.search([]).limit(100).toArray();
-        
+
         return {
           rows: results,
           rowCount: results.length,
           fields: [],
-          executionTime: 1
+          executionTime: 1,
         };
       }
-      
+
       return {
         rows: [],
         rowCount: 0,
         fields: [],
-        executionTime: 1
+        executionTime: 1,
       };
     } catch (error) {
       logger.error(`Query failed: ${error}`);
@@ -297,7 +315,7 @@ export class LanceDBAdapter {
     }
   }
 
-  async execute(sql: string, params: any[] = []): Promise<any> {
+  async execute(sql: string, params: unknown[] = []): Promise<unknown> {
     // LanceDB doesn't use SQL, so we interpret common operations
     try {
       if (sql.includes('INSERT INTO')) {
@@ -305,14 +323,14 @@ export class LanceDBAdapter {
         return {
           affectedRows: 1,
           insertId: Date.now().toString(),
-          executionTime: 1
+          executionTime: 1,
         };
       }
-      
+
       return {
         affectedRows: 0,
         insertId: null,
-        executionTime: 1
+        executionTime: 1,
       };
     } catch (error) {
       logger.error(`Execute failed: ${error}`);
@@ -320,14 +338,14 @@ export class LanceDBAdapter {
     }
   }
 
-  async transaction<T>(fn: (tx: any) => Promise<T>): Promise<T> {
+  async transaction<T>(fn: (tx: unknown) => Promise<T>): Promise<T> {
     // LanceDB doesn't support transactions in the traditional sense
     // Execute the function directly
     const tx = {
       query: this.query.bind(this),
-      execute: this.execute.bind(this)
+      execute: this.execute.bind(this),
     };
-    
+
     try {
       return await fn(tx);
     } catch (error) {
@@ -338,7 +356,7 @@ export class LanceDBAdapter {
 
   async health(): Promise<boolean> {
     if (!this.connected || !this.connection) return false;
-    
+
     try {
       // Test connection by listing tables
       await this.connection.tableNames();
@@ -348,12 +366,12 @@ export class LanceDBAdapter {
     }
   }
 
-  async getSchema(): Promise<any> {
+  async getSchema(): Promise<unknown> {
     try {
       const tableNames = await this.listTables();
-      return { 
-        tables: tableNames.map(name => ({ name, type: 'vector_table' })),
-        views: [] 
+      return {
+        tables: tableNames.map((name) => ({ name, type: 'vector_table' })),
+        views: [],
       };
     } catch (error) {
       logger.error('Failed to get schema:', error);
@@ -361,34 +379,37 @@ export class LanceDBAdapter {
     }
   }
 
-  async getConnectionStats(): Promise<any> {
+  async getConnectionStats(): Promise<unknown> {
     return {
       total: 1,
       active: this.connected ? 1 : 0,
       idle: this.connected ? 0 : 1,
-      utilization: this.connected ? 100 : 0
+      utilization: this.connected ? 100 : 0,
     };
   }
 
   // DAO compatibility methods
-  async vectorSearch(queryVector: number[], options: VectorSearchOptions = {}): Promise<any> {
+  async vectorSearch(
+    queryVector: number[],
+    options: VectorSearchOptions = {}
+  ): Promise<unknown> {
     // Default table name for DAO compatibility
     const tableName = 'document_embeddings';
-    
+
     try {
       const results = await this.searchVectors(tableName, queryVector, options);
-      
+
       return {
         rows: results,
         rowCount: results.length,
         executionTime: 1,
-        results: results.map(r => ({
+        results: results.map((r) => ({
           id: r.id,
           vector: r.vector,
           text: r.text,
           metadata: r.metadata,
-          distance: r._distance || 0
-        }))
+          distance: r._distance || 0,
+        })),
       };
     } catch (error) {
       logger.error(`❌ Vector search failed: ${error}`);
@@ -396,22 +417,25 @@ export class LanceDBAdapter {
         rows: [],
         rowCount: 0,
         executionTime: 1,
-        results: []
+        results: [],
       };
     }
   }
 
   // LanceDB specific utility methods
-  async createEmbeddingIndex(tableName: string, columnName: string = 'vector'): Promise<void> {
+  async createEmbeddingIndex(
+    tableName: string,
+    columnName: string = 'vector'
+  ): Promise<void> {
     const table = await this.getTable(tableName);
-    
+
     try {
       // Create vector index for faster similarity search
       await table.createIndex(columnName, {
         index_type: 'IVF_PQ',
-        metric_type: this.config.options?.metricType || 'cosine'
+        metric_type: this.config.options?.metricType || 'cosine',
       });
-      
+
       logger.info(`✅ Created embedding index on ${tableName}.${columnName}`);
     } catch (error) {
       logger.error(`❌ Failed to create embedding index:`, error);
@@ -419,20 +443,21 @@ export class LanceDBAdapter {
     }
   }
 
-  async getTableInfo(tableName: string): Promise<any> {
+  async getTableInfo(tableName: string): Promise<unknown> {
     const table = await this.getTable(tableName);
-    
+
     try {
       const count = await table.countRows();
       const schema = await table.schema();
-      
+
       return {
         name: tableName,
         row_count: count,
         schema: schema,
-        vector_columns: schema.fields.filter((field: any) => 
-          field.name === 'vector' || field.name.includes('embedding')
-        )
+        vector_columns: schema.fields.filter(
+          (field: unknown) =>
+            field.name === 'vector' || field.name.includes('embedding')
+        ),
       };
     } catch (error) {
       logger.error(`❌ Failed to get table info for ${tableName}:`, error);

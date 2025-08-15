@@ -3,7 +3,7 @@
  * Provides protocol adaptation and legacy system integration.
  */
 
-import { getLogger } from '../core/logger.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-integration-adapter-system');
 

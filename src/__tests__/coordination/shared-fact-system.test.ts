@@ -1,21 +1,27 @@
 /**
  * @file Shared FACT System Integration Tests
  * Tests that ALL hierarchy levels have proper shared FACT access.
- * 
+ *
  * CRITICAL VALIDATION:
  * Ensures FACT system is SHARED like "manuals of the internet" - same access for ALL levels
  * (Cubes, Matrons, Queens, SwarmCommanders, Agents)
  */
 
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { 
-  getUniversalFACTAccess, 
+import {
+  getUniversalFACTAccess,
   validateUniversalFACTAccess,
-  initializeUniversalFACTAccess 
-} from '../coordination/shared-fact-access.ts';
-import { hierarchyFACTValidator, quickValidateSharedFACT } from '../coordination/hierarchy-fact-validation.ts';
-import { getDSPySharedFACTSystem, initializeDSPySharedFACT } from '../coordination/shared-fact-integration.ts';
-import { EnhancedBaseAgent } from '../coordination/agents/enhanced-base-agent.ts';
+  initializeUniversalFACTAccess,
+} from '../../coordination/shared-fact-access.js';
+import {
+  hierarchyFACTValidator,
+  quickValidateSharedFACT,
+} from '../../coordination/hierarchy-fact-validation.js';
+import {
+  getDSPySharedFACTSystem,
+  initializeDSPySharedFACT,
+} from '../../coordination/shared-fact-integration.js';
+import { EnhancedBaseAgent } from '../../coordination/agents/enhanced-base-agent.js';
 
 describe('Shared FACT System Integration', () => {
   beforeAll(async () => {
@@ -26,11 +32,17 @@ describe('Shared FACT System Integration', () => {
 
   describe('Universal FACT Access', () => {
     it('should provide same FACT instance to all hierarchy levels', async () => {
-      const hierarchyLevels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'] as const;
-      
+      const hierarchyLevels = [
+        'Cube',
+        'Matron',
+        'Queen',
+        'SwarmCommander',
+        'Agent',
+      ] as const;
+
       // Get FACT system for each hierarchy level
       const factSystems = await Promise.all(
-        hierarchyLevels.map(level => getUniversalFACTAccess(level))
+        hierarchyLevels.map((level) => getUniversalFACTAccess(level))
       );
 
       // Verify all levels get the same instance
@@ -42,10 +54,10 @@ describe('Shared FACT System Integration', () => {
 
     it('should validate universal access across all levels', async () => {
       const validation = await validateUniversalFACTAccess();
-      
+
       expect(validation.success).toBe(true);
       expect(validation.accessLevels).toBeDefined();
-      
+
       // All levels should have access
       const levels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'];
       for (const level of levels) {
@@ -54,26 +66,38 @@ describe('Shared FACT System Integration', () => {
     });
 
     it('should allow all hierarchy levels to search facts', async () => {
-      const hierarchyLevels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'] as const;
-      
+      const hierarchyLevels = [
+        'Cube',
+        'Matron',
+        'Queen',
+        'SwarmCommander',
+        'Agent',
+      ] as const;
+
       for (const level of hierarchyLevels) {
         const factSystem = await getUniversalFACTAccess(level);
-        
+
         const searchResults = await factSystem.searchFacts({
           query: `test-${level.toLowerCase()}-search`,
           limit: 5,
         });
-        
+
         expect(Array.isArray(searchResults)).toBe(true);
       }
     });
 
     it('should allow all hierarchy levels to store facts', async () => {
-      const hierarchyLevels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'] as const;
-      
+      const hierarchyLevels = [
+        'Cube',
+        'Matron',
+        'Queen',
+        'SwarmCommander',
+        'Agent',
+      ] as const;
+
       for (const level of hierarchyLevels) {
         const factSystem = await getUniversalFACTAccess(level);
-        
+
         const testFact = {
           id: `test-${level.toLowerCase()}-${Date.now()}`,
           type: 'general' as const,
@@ -102,13 +126,14 @@ describe('Shared FACT System Integration', () => {
 
   describe('Hierarchy Validation', () => {
     it('should run comprehensive hierarchy validation successfully', async () => {
-      const validation = await hierarchyFACTValidator.validateCompleteHierarchy();
-      
+      const validation =
+        await hierarchyFACTValidator.validateCompleteHierarchy();
+
       expect(validation.success).toBe(true);
       expect(validation.universalAccessValidated).toBe(true);
       expect(validation.sharedFACTSystemActive).toBe(true);
       expect(validation.hierarchyLevels).toHaveLength(5);
-      
+
       // All hierarchy levels should pass validation
       for (const levelValidation of validation.hierarchyLevels) {
         expect(levelValidation.hasAccess).toBe(true);
@@ -120,19 +145,24 @@ describe('Shared FACT System Integration', () => {
 
     it('should pass quick health check', async () => {
       const healthCheck = await quickValidateSharedFACT();
-      
+
       expect(healthCheck.healthy).toBe(true);
       expect(healthCheck.issues).toHaveLength(0);
       expect(healthCheck.timestamp).toBeGreaterThan(0);
     });
 
     it('should have reasonable performance metrics', async () => {
-      const validation = await hierarchyFACTValidator.validateCompleteHierarchy();
-      
+      const validation =
+        await hierarchyFACTValidator.validateCompleteHierarchy();
+
       // Performance should be reasonable (less than 2 seconds per operation)
-      expect(validation.performanceMetrics.averageSearchTime).toBeLessThan(2000);
+      expect(validation.performanceMetrics.averageSearchTime).toBeLessThan(
+        2000
+      );
       expect(validation.performanceMetrics.averageStoreTime).toBeLessThan(2000);
-      expect(validation.performanceMetrics.totalValidationTime).toBeLessThan(10000);
+      expect(validation.performanceMetrics.totalValidationTime).toBeLessThan(
+        10000
+      );
     });
   });
 
@@ -144,7 +174,7 @@ describe('Shared FACT System Integration', () => {
 
     it('should support DSPy learning from fact access', async () => {
       const dspySystem = getDSPySharedFACTSystem();
-      
+
       // Should not throw error
       await expect(
         dspySystem.learnFromFactAccess('test-fact-id', 'SwarmCommander', true)
@@ -153,19 +183,19 @@ describe('Shared FACT System Integration', () => {
 
     it('should support DSPy fact retrieval optimization', async () => {
       const dspySystem = getDSPySharedFACTSystem();
-      
+
       const optimizedResults = await dspySystem.optimizeFactRetrieval({
         query: 'test optimization',
         hierarchyLevel: 'Agent',
         context: { test: true },
       });
-      
+
       expect(optimizedResults).toBeDefined();
     });
 
     it('should support DSPy relevance prediction', async () => {
       const dspySystem = getDSPySharedFACTSystem();
-      
+
       const relevance = await dspySystem.predictFactRelevance(
         {
           id: 'test-fact',
@@ -178,20 +208,20 @@ describe('Shared FACT System Integration', () => {
           queryType: 'package-info',
         }
       );
-      
+
       expect(relevance).toBeGreaterThanOrEqual(0);
       expect(relevance).toBeLessThanOrEqual(1);
     });
 
     it('should support DSPy fact embeddings generation', async () => {
       const dspySystem = getDSPySharedFACTSystem();
-      
+
       const embeddings = await dspySystem.generateFactEmbeddings({
         subject: 'test fact',
         content: { description: 'test fact content' },
         type: 'general',
       });
-      
+
       expect(Array.isArray(embeddings)).toBe(true);
       expect(embeddings.length).toBe(384); // Standard embedding dimension
     });
@@ -206,7 +236,7 @@ describe('Shared FACT System Integration', () => {
       });
 
       await agent.initialize();
-      
+
       // Agent should have FACT capabilities
       expect(typeof agent.getSharedFACTSystem).toBe('function');
       expect(typeof agent.searchSharedFacts).toBe('function');
@@ -221,11 +251,11 @@ describe('Shared FACT System Integration', () => {
       });
 
       await agent.initialize();
-      
+
       // Agent should be able to access FACT system
       const factSystem = await agent.getSharedFACTSystem();
       expect(factSystem).toBeDefined();
-      
+
       // Agent should be able to search facts
       const searchResults = await agent.searchSharedFacts({
         query: 'test agent search',
@@ -242,7 +272,7 @@ describe('Shared FACT System Integration', () => {
       });
 
       await agent.initialize();
-      
+
       // Agent should be able to store facts
       await expect(
         agent.storeSharedFact({
@@ -261,17 +291,17 @@ describe('Shared FACT System Integration', () => {
       const swarmCommanderFACT = await getUniversalFACTAccess('SwarmCommander');
       const agentFACT = await getUniversalFACTAccess('Agent');
       const queenFACT = await getUniversalFACTAccess('Queen');
-      
+
       // Store fact via SwarmCommander
       const testFact = {
         id: `cross-level-test-${Date.now()}`,
         type: 'general' as const,
         category: 'cross-level-test',
         subject: 'cross-level-knowledge',
-        content: { 
+        content: {
           message: 'This fact should be accessible to all hierarchy levels',
           storedBy: 'SwarmCommander',
-          timestamp: Date.now()
+          timestamp: Date.now(),
         },
         source: 'SwarmCommander-test',
         confidence: 0.95,
@@ -288,14 +318,14 @@ describe('Shared FACT System Integration', () => {
       };
 
       await swarmCommanderFACT.storeFact(testFact);
-      
+
       // Verify Agent can find the fact
       const agentResults = await agentFACT.searchFacts({
         query: 'cross-level-knowledge',
         limit: 5,
       });
       expect(agentResults.length).toBeGreaterThan(0);
-      
+
       // Verify Queen can find the fact
       const queenResults = await queenFACT.searchFacts({
         query: 'cross-level-knowledge',
@@ -310,7 +340,7 @@ describe('Shared FACT System Integration', () => {
     try {
       const factSystem = await getUniversalFACTAccess('Agent');
       // In a production system, we might clean up test facts here
-      
+
       console.log('✅ Shared FACT system tests completed successfully');
     } catch (error) {
       console.warn('Test cleanup failed:', error);

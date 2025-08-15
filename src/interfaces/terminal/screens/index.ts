@@ -43,6 +43,10 @@ export {
   default as PerformanceMonitor,
   type PerformanceMonitorProps,
 } from './performance-monitor.tsx';
+export {
+  default as LearningMonitor,
+  type LearningMonitorProps,
+} from './phase3-learning-monitor.tsx';
 export { default as Settings, type SettingsProps } from './settings.tsx';
 export { default as Status, type StatusProps } from './status.tsx';
 export * from './swarm-dashboard.tsx';
@@ -76,7 +80,8 @@ export type ScreenType =
   | 'llm-statistics'
   | 'document-ai'
   | 'adr-manager'
-  | 'nix-manager';
+  | 'nix-manager'
+  | 'learning-monitor';
 
 // Screen configuration interface
 export interface ScreenConfig {
@@ -144,6 +149,13 @@ export const defaultScreenConfigs: ScreenConfig[] = [
     id: 'status',
     title: 'System Status',
     description: 'System health and metrics',
+    showInMenu: true,
+  },
+  {
+    id: 'learning-monitor',
+    title: 'Learning Monitor',
+    description: 'Real-time ensemble learning monitoring',
+    requiresSwarm: false,
     showInMenu: true,
   },
 ];

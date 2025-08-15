@@ -131,18 +131,15 @@ export class MockQueensService {
   codeGenerate: MockedFunction<(spec: unknown) => Promise<CodeResult>> =
     vi.fn();
   codeRefactor: MockedFunction<(code: string) => Promise<string>> = vi.fn();
-  codeOptimize: MockedFunction<
-    (code: string) => Promise<OptimizationResult>
-  > = vi.fn();
+  codeOptimize: MockedFunction<(code: string) => Promise<OptimizationResult>> =
+    vi.fn();
 
   // Debug Queen methods
-  debugDiagnose: MockedFunction<
-    (issue: unknown) => Promise<DiagnosisResult>
-  > = vi.fn();
+  debugDiagnose: MockedFunction<(issue: unknown) => Promise<DiagnosisResult>> =
+    vi.fn();
   debugFix: MockedFunction<(issue: unknown) => Promise<FixResult>> = vi.fn();
-  debugValidate: MockedFunction<
-    (fix: unknown) => Promise<ValidationResult>
-  > = vi.fn();
+  debugValidate: MockedFunction<(fix: unknown) => Promise<ValidationResult>> =
+    vi.fn();
 
   constructor() {
     // Initialize nested Queen structures
@@ -426,12 +423,10 @@ export class MockNeuralFrameworkService {
  */
 export class MockClaudeZenApiService {
   startServer: MockedFunction<(port: number) => Promise<void>> = vi.fn();
-  registerQueenEndpoints: MockedFunction<
-    (queens: string[]) => Promise<void>
-  > = vi.fn();
-  handleRequest: MockedFunction<
-    (request: ApiRequest) => Promise<ApiResponse>
-  > = vi.fn();
+  registerQueenEndpoints: MockedFunction<(queens: string[]) => Promise<void>> =
+    vi.fn();
+  handleRequest: MockedFunction<(request: ApiRequest) => Promise<ApiResponse>> =
+    vi.fn();
   handleTaskRequest: MockedFunction<
     (request: ApiRequest) => Promise<ApiResponse>
   > = vi.fn();

@@ -5,8 +5,8 @@
 
 use chrono::{DateTime, TimeZone, Utc};
 use criterion::{
-  black_box, criterion_group, criterion_main, BenchmarkId, Criterion,
-  Throughput,
+  BenchmarkId, Criterion, Throughput, black_box, criterion_group,
+  criterion_main,
 };
 use ndarray::{Array1, Array2};
 use neuro_divergent::data::features::*;

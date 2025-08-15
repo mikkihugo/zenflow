@@ -7,6 +7,11 @@
  */
 import { getLogger } from '../../config/logging-config.ts';
 import { detectModeWithReason, launchTerminalInterface } from './index.ts';
+import {
+  detectTerminalEnvironment,
+  generateEnvironmentReport,
+  checkRawModeSupport,
+} from './utils/terminal-environment-detector.ts';
 
 const logger = getLogger('interfaces-terminal-main');
 
@@ -22,10 +27,55 @@ async function main() {
     const commands = args.filter((arg) => !arg.startsWith('-'));
     const flags = parseFlags(args);
 
+    // Enhanced terminal environment detection
+    const terminalDetection = detectTerminalEnvironment();
+    const rawModeCheck = checkRawModeSupport();
+
+    // Show environment report for verbose/debug mode
+    if (flags.verbose || flags.debug) {
+      console.log(generateEnvironmentReport());
+      console.log(''); // Empty line
+    }
+
+    // Check if TUI can be safely launched
+    if (!terminalDetection.supported) {
+      console.log('⚠️ TUI interface cannot be launched in current environment:');
+      terminalDetection.issues.forEach((issue) => console.log(`  • ${issue}`));
+
+      if (terminalDetection.recommendations.length > 0) {
+        console.log('\n💡 Recommendations:');
+        terminalDetection.recommendations.forEach((rec) =>
+          console.log(`  • ${rec}`)
+        );
+      }
+
+      if (terminalDetection.fallbackOptions.length > 0) {
+        console.log('\n🔄 Alternative options:');
+        terminalDetection.fallbackOptions.forEach((option) =>
+          console.log(`  • ${option}`)
+        );
+      }
+
+      // Exit gracefully instead of crashing
+      logger.warn('TUI not supported, exiting gracefully');
+      process.exit(1);
+    }
+
+    // Additional raw mode verification if needed
+    if (!rawModeCheck.supported && rawModeCheck.canTest) {
+      console.log(`⚠️ Raw mode verification failed: ${rawModeCheck.error}`);
+      console.log('Attempting to continue with limited functionality...');
+    }
+
     // Detect terminal mode with debugging
     const modeResult = detectModeWithReason(commands, flags);
 
     if (flags.verbose || flags.debug) {
+      logger.info('Terminal detection result:', {
+        supported: terminalDetection.supported,
+        issues: terminalDetection.issues,
+        rawModeSupported: rawModeCheck.supported,
+      });
     }
 
     // Launch the terminal interface using Ink (like Claude CLI does)
@@ -46,6 +96,18 @@ async function main() {
     });
   } catch (error) {
     logger.error('❌ Failed to launch terminal interface:', error);
+
+    // Enhanced error reporting
+    if (error instanceof Error) {
+      logger.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: flags.verbose
+          ? error.stack
+          : error.stack?.split('\n').slice(0, 3).join('\n'),
+      });
+    }
+
     process.exit(1);
   }
 }

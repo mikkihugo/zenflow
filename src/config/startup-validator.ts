@@ -329,7 +329,9 @@ async function validateEnvironmentVariables(isProduction: boolean): Promise<{
     process.env['ANTHROPIC_API_KEY'] &&
     process.env['ANTHROPIC_API_KEY'].length < 10
   ) {
-    warnings.push('ANTHROPIC_API_KEY appears to be too short or invalid (only needed for FACT integration)');
+    warnings.push(
+      'ANTHROPIC_API_KEY appears to be too short or invalid (only needed for FACT integration)'
+    );
   }
 
   // Check for common production misconfigurations

@@ -573,7 +573,9 @@ impl AutoFactOrchestrator {
             versioned_dep.recent_hits.push(now);
             // Cleanup old recent hits inline to avoid borrowing issues
             let cutoff = chrono::Utc::now() - chrono::Duration::days(30);
-            versioned_dep.recent_hits.retain(|&hit_time| hit_time > cutoff);
+            versioned_dep
+              .recent_hits
+              .retain(|&hit_time| hit_time > cutoff);
 
             debug!(
               "📊 Versioned hit: {}@{} (total: {}, recent: {})",
@@ -1112,7 +1114,6 @@ impl AutoFactOrchestrator {
     for caps in hex_pattern.captures_iter(content) {
       let now = chrono::Utc::now();
       deps.push(VersionedDependency {
-
         name: caps[1].to_string(),
 
         version: caps[2].to_string(),
@@ -1132,7 +1133,6 @@ impl AutoFactOrchestrator {
         recent_hits: vec![],
 
         used_by_projects: vec![],
-
       });
     }
 
@@ -1140,7 +1140,6 @@ impl AutoFactOrchestrator {
     for caps in github_pattern.captures_iter(content) {
       let now = chrono::Utc::now();
       deps.push(VersionedDependency {
-
         name: caps[1].to_string(),
 
         version: caps
@@ -1162,7 +1161,6 @@ impl AutoFactOrchestrator {
         recent_hits: vec![],
 
         used_by_projects: vec![],
-
       });
     }
 
@@ -1202,7 +1200,6 @@ impl AutoFactOrchestrator {
 
           let now = chrono::Utc::now();
           deps.push(VersionedDependency {
-
             name: name.to_string(),
 
             version: version.to_string(),
@@ -1222,7 +1219,6 @@ impl AutoFactOrchestrator {
             recent_hits: vec![],
 
             used_by_projects: vec![],
-
           });
         }
       }
@@ -1260,7 +1256,6 @@ impl AutoFactOrchestrator {
 
             let now = chrono::Utc::now();
             deps.push(VersionedDependency {
-
               name: name.to_string(),
 
               version: version,
@@ -1280,7 +1275,6 @@ impl AutoFactOrchestrator {
               recent_hits: vec![],
 
               used_by_projects: vec![],
-
             });
           }
         }
@@ -1306,7 +1300,6 @@ impl AutoFactOrchestrator {
           if let Some(version_str) = version.as_str() {
             let now = chrono::Utc::now();
             deps.push(VersionedDependency {
-
               name: name.clone(),
 
               version: version_str.to_string(),
@@ -1326,7 +1319,6 @@ impl AutoFactOrchestrator {
               recent_hits: vec![],
 
               used_by_projects: vec![],
-
             });
           }
         }
@@ -1340,7 +1332,6 @@ impl AutoFactOrchestrator {
           if let Some(version_str) = version.as_str() {
             let now = chrono::Utc::now();
             deps.push(VersionedDependency {
-
               name: name.clone(),
 
               version: version_str.to_string(),
@@ -1360,7 +1351,6 @@ impl AutoFactOrchestrator {
               recent_hits: vec![],
 
               used_by_projects: vec![],
-
             });
           }
         }
@@ -1382,29 +1372,27 @@ impl AutoFactOrchestrator {
 
     for caps in dep_pattern.captures_iter(content) {
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+        version: caps[2].to_string(),
 
-          version: caps[2].to_string(),
+        ecosystem: "beam".to_string(),
 
-          ecosystem: "beam".to_string(),
+        source: Some("hex".to_string()), // Erlang also uses Hex,
 
-          source: Some("hex".to_string()), // Erlang also uses Hex,
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -1427,7 +1415,6 @@ impl AutoFactOrchestrator {
       if let Some((name, version)) = trimmed.split_once("==") {
         let now = chrono::Utc::now();
         deps.push(VersionedDependency {
-
           name: name.trim().to_string(),
 
           version: version.trim().to_string(),
@@ -1447,12 +1434,10 @@ impl AutoFactOrchestrator {
           recent_hits: vec![],
 
           used_by_projects: vec![],
-
         });
       } else if let Some((name, version)) = trimmed.split_once(">=") {
         let now = chrono::Utc::now();
         deps.push(VersionedDependency {
-
           name: name.trim().to_string(),
 
           version: format!(">={}", version.trim()),
@@ -1472,12 +1457,10 @@ impl AutoFactOrchestrator {
           recent_hits: vec![],
 
           used_by_projects: vec![],
-
         });
       } else {
         let now = chrono::Utc::now();
         deps.push(VersionedDependency {
-
           name: trimmed.to_string(),
 
           version: "latest".to_string(),
@@ -1497,7 +1480,6 @@ impl AutoFactOrchestrator {
           recent_hits: vec![],
 
           used_by_projects: vec![],
-
         });
       }
     }
@@ -1506,7 +1488,10 @@ impl AutoFactOrchestrator {
   }
 
   /// Parse Python setup.py dependencies (basic extraction)
-  async fn parse_python_setup(&self, content: &str) -> Result<Vec<VersionedDependency>> {
+  async fn parse_python_setup(
+    &self,
+    content: &str,
+  ) -> Result<Vec<VersionedDependency>> {
     let mut deps = Vec::new();
 
     // Look for install_requires patterns
@@ -1522,29 +1507,27 @@ impl AutoFactOrchestrator {
               .unwrap();
           for caps in package_pattern.captures_iter(deps_str) {
             let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+            deps.push(VersionedDependency {
+              name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+              version: "latest".to_string(),
 
-          version: "latest".to_string(),
+              ecosystem: "python".to_string(),
 
-          ecosystem: "python".to_string(),
+              source: Some("pypi".to_string()),
 
-          source: Some("pypi".to_string()),
+              first_seen: now,
 
-          first_seen: now,
+              last_seen: now,
 
-          last_seen: now,
+              last_hit: now,
 
-          last_hit: now,
+              hit_count: 0,
 
-          hit_count: 0,
+              recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+              used_by_projects: vec![],
+            });
           }
         }
       }
@@ -1587,29 +1570,27 @@ impl AutoFactOrchestrator {
           let version = version.trim().trim_matches('"');
 
           let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+          deps.push(VersionedDependency {
+            name: name.to_string(),
 
-          name: name.to_string(),
+            version: version.to_string(),
 
-          version: version.to_string(),
+            ecosystem: "python".to_string(),
 
-          ecosystem: "python".to_string(),
+            source: Some("pypi".to_string()),
 
-          source: Some("pypi".to_string()),
+            first_seen: now,
 
-          first_seen: now,
+            last_seen: now,
 
-          last_seen: now,
+            last_hit: now,
 
-          last_hit: now,
+            hit_count: 0,
 
-          hit_count: 0,
+            recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+            used_by_projects: vec![],
+          });
         }
       }
     }
@@ -1649,29 +1630,27 @@ impl AutoFactOrchestrator {
           let version = version.trim().trim_matches('"');
 
           let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+          deps.push(VersionedDependency {
+            name: name.to_string(),
 
-          name: name.to_string(),
+            version: version.to_string(),
 
-          version: version.to_string(),
+            ecosystem: "python".to_string(),
 
-          ecosystem: "python".to_string(),
+            source: Some("pypi".to_string()),
 
-          source: Some("pypi".to_string()),
+            first_seen: now,
 
-          first_seen: now,
+            last_seen: now,
 
-          last_seen: now,
+            last_hit: now,
 
-          last_hit: now,
+            hit_count: 0,
 
-          hit_count: 0,
+            recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+            used_by_projects: vec![],
+          });
         }
       }
     }
@@ -1704,29 +1683,27 @@ impl AutoFactOrchestrator {
         let parts: Vec<&str> = trimmed.split_whitespace().collect();
         if parts.len() >= 2 {
           let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+          deps.push(VersionedDependency {
+            name: parts[0].to_string(),
 
-          name: parts[0].to_string(),
+            version: parts[1].to_string(),
 
-          version: parts[1].to_string(),
+            ecosystem: "go".to_string(),
 
-          ecosystem: "go".to_string(),
+            source: Some("go".to_string()),
 
-          source: Some("go".to_string()),
+            first_seen: now,
 
-          first_seen: now,
+            last_seen: now,
 
-          last_seen: now,
+            last_hit: now,
 
-          last_hit: now,
+            hit_count: 0,
 
-          hit_count: 0,
+            recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+            used_by_projects: vec![],
+          });
         }
       }
     }
@@ -1749,29 +1726,27 @@ impl AutoFactOrchestrator {
     for caps in dep_pattern.captures_iter(content) {
       let name = format!("{}:{}", caps[1].trim(), caps[2].trim());
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: name,
 
-          name: name,
+        version: caps[3].trim().to_string(),
 
-          version: caps[3].trim().to_string(),
+        ecosystem: "java".to_string(),
 
-          ecosystem: "java".to_string(),
+        source: Some("maven".to_string()),
 
-          source: Some("maven".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -1793,29 +1768,27 @@ impl AutoFactOrchestrator {
     for caps in dep_pattern.captures_iter(content) {
       let name = format!("{}:{}", caps[1].trim(), caps[2].trim());
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: name,
 
-          name: name,
+        version: caps[3].trim().to_string(),
 
-          version: caps[3].trim().to_string(),
+        ecosystem: "java".to_string(),
 
-          ecosystem: "java".to_string(),
+        source: Some("maven".to_string()),
 
-          source: Some("maven".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -1834,29 +1807,27 @@ impl AutoFactOrchestrator {
 
     for caps in dep_pattern.captures_iter(content) {
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+        version: caps[2].to_string(),
 
-          version: caps[2].to_string(),
+        ecosystem: "clojure".to_string(),
 
-          ecosystem: "clojure".to_string(),
+        source: Some("maven".to_string()), // Clojure uses Maven repos,
 
-          source: Some("maven".to_string()), // Clojure uses Maven repos,
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -1881,29 +1852,27 @@ impl AutoFactOrchestrator {
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "latest".to_string());
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+        version: version,
 
-          version: version,
+        ecosystem: "ruby".to_string(),
 
-          ecosystem: "ruby".to_string(),
+        source: Some("rubygems".to_string()),
 
-          source: Some("rubygems".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -1927,29 +1896,27 @@ impl AutoFactOrchestrator {
               // Skip PHP version constraint
               if let Some(version_str) = version.as_str() {
                 let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+                deps.push(VersionedDependency {
+                  name: name.clone(),
 
-          name: name.clone(),
+                  version: version_str.to_string(),
 
-          version: version_str.to_string(),
+                  ecosystem: "php".to_string(),
 
-          ecosystem: "php".to_string(),
+                  source: Some("packagist".to_string()),
 
-          source: Some("packagist".to_string()),
+                  first_seen: now,
 
-          first_seen: now,
+                  last_seen: now,
 
-          last_seen: now,
+                  last_hit: now,
 
-          last_hit: now,
+                  hit_count: 0,
 
-          hit_count: 0,
+                  recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+                  used_by_projects: vec![],
+                });
               }
             }
           }
@@ -1975,29 +1942,27 @@ impl AutoFactOrchestrator {
 
     for caps in package_pattern.captures_iter(content) {
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+        version: caps[2].to_string(),
 
-          version: caps[2].to_string(),
+        ecosystem: "dotnet".to_string(),
 
-          ecosystem: "dotnet".to_string(),
+        source: Some("nuget".to_string()),
 
-          source: Some("nuget".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -2019,29 +1984,27 @@ impl AutoFactOrchestrator {
     for caps in dep_pattern.captures_iter(content) {
       let name = caps[1].split('/').last().unwrap_or(&caps[1]).to_string();
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: name,
 
-          name: name,
+        version: caps[2].to_string(),
 
-          version: caps[2].to_string(),
+        ecosystem: "swift".to_string(),
 
-          ecosystem: "swift".to_string(),
+        source: Some("swiftpm".to_string()),
 
-          source: Some("swiftpm".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -2066,29 +2029,27 @@ impl AutoFactOrchestrator {
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "latest".to_string());
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+        version: version,
 
-          version: version,
+        ecosystem: "swift".to_string(),
 
-          ecosystem: "swift".to_string(),
+        source: Some("cocoapods".to_string()),
 
-          source: Some("cocoapods".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -2124,29 +2085,27 @@ impl AutoFactOrchestrator {
 
           if !name.is_empty() && !version.is_empty() {
             let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+            deps.push(VersionedDependency {
+              name: name.to_string(),
 
-          name: name.to_string(),
+              version: version.to_string(),
 
-          version: version.to_string(),
+              ecosystem: "dart".to_string(),
 
-          ecosystem: "dart".to_string(),
+              source: Some("pub".to_string()),
 
-          source: Some("pub".to_string()),
+              first_seen: now,
 
-          first_seen: now,
+              last_seen: now,
 
-          last_seen: now,
+              last_hit: now,
 
-          last_hit: now,
+              hit_count: 0,
 
-          hit_count: 0,
+              recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+              used_by_projects: vec![],
+            });
           }
         }
       }
@@ -2201,7 +2160,6 @@ impl AutoFactOrchestrator {
         let name = dep_spec.split_whitespace().next().unwrap_or(dep_spec);
         let now = chrono::Utc::now();
         deps.push(VersionedDependency {
-
           name: name.to_string(),
 
           version: "latest".to_string(),
@@ -2221,7 +2179,6 @@ impl AutoFactOrchestrator {
           recent_hits: vec![],
 
           used_by_projects: vec![],
-
         });
       }
     }
@@ -2254,29 +2211,27 @@ impl AutoFactOrchestrator {
         let dep = trimmed.trim_start_matches('-').trim();
         if let Some((name, version)) = dep.split_once('-') {
           let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+          deps.push(VersionedDependency {
+            name: name.to_string(),
 
-          name: name.to_string(),
+            version: version.to_string(),
 
-          version: version.to_string(),
+            ecosystem: "haskell".to_string(),
 
-          ecosystem: "haskell".to_string(),
+            source: Some("hackage".to_string()),
 
-          source: Some("hackage".to_string()),
+            first_seen: now,
 
-          first_seen: now,
+            last_seen: now,
 
-          last_seen: now,
+            last_hit: now,
 
-          last_hit: now,
+            hit_count: 0,
 
-          hit_count: 0,
+            recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+            used_by_projects: vec![],
+          });
         }
       }
     }
@@ -2303,29 +2258,27 @@ impl AutoFactOrchestrator {
         .map(|m| m.as_str().to_string())
         .unwrap_or_else(|| "latest".to_string());
       let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+      deps.push(VersionedDependency {
+        name: caps[1].to_string(),
 
-          name: caps[1].to_string(),
+        version: version,
 
-          version: version,
+        ecosystem: "perl".to_string(),
 
-          ecosystem: "perl".to_string(),
+        source: Some("cpan".to_string()),
 
-          source: Some("cpan".to_string()),
+        first_seen: now,
 
-          first_seen: now,
+        last_seen: now,
 
-          last_seen: now,
+        last_hit: now,
 
-          last_hit: now,
+        hit_count: 0,
 
-          hit_count: 0,
+        recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+        used_by_projects: vec![],
+      });
     }
 
     Ok(deps)
@@ -2373,36 +2326,38 @@ impl AutoFactOrchestrator {
     Ok(deps)
   }
 
-  async fn parse_r_deps_line(&self, line: &str, deps: &mut Vec<VersionedDependency>) {
+  async fn parse_r_deps_line(
+    &self,
+    line: &str,
+    deps: &mut Vec<VersionedDependency>,
+  ) {
     for dep_spec in line.split(',') {
       let dep_spec = dep_spec.trim();
       if !dep_spec.is_empty() && dep_spec != "R" {
         let name = dep_spec.split_whitespace().next().unwrap_or(dep_spec);
         if !name.is_empty() {
           let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+          deps.push(VersionedDependency {
+            name: name.to_string(),
 
-          name: name.to_string(),
+            version: "latest".to_string(),
 
-          version: "latest".to_string(),
+            ecosystem: "r".to_string(),
 
-          ecosystem: "r".to_string(),
+            source: Some("maven".to_string()), // R uses CRAN, but we don't have that enum variant,
 
-          source: Some("maven".to_string()), // R uses CRAN, but we don't have that enum variant,
+            first_seen: now,
 
-          first_seen: now,
+            last_seen: now,
 
-          last_seen: now,
+            last_hit: now,
 
-          last_hit: now,
+            hit_count: 0,
 
-          hit_count: 0,
+            recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+            used_by_projects: vec![],
+          });
         }
       }
     }
@@ -2434,29 +2389,27 @@ impl AutoFactOrchestrator {
         if let Some((name, _uuid)) = trimmed.split_once('=') {
           let name = name.trim().trim_matches('"');
           let now = chrono::Utc::now();
-        deps.push(VersionedDependency {
+          deps.push(VersionedDependency {
+            name: name.to_string(),
 
-          name: name.to_string(),
+            version: "latest".to_string(),
 
-          version: "latest".to_string(),
+            ecosystem: "julia".to_string(),
 
-          ecosystem: "julia".to_string(),
+            source: Some("maven".to_string()), // Julia has its own registry, but we don't have that enum,
 
-          source: Some("maven".to_string()), // Julia has its own registry, but we don't have that enum,
+            first_seen: now,
 
-          first_seen: now,
+            last_seen: now,
 
-          last_seen: now,
+            last_hit: now,
 
-          last_hit: now,
+            hit_count: 0,
 
-          hit_count: 0,
+            recent_hits: vec![],
 
-          recent_hits: vec![],
-
-          used_by_projects: vec![],
-
-        });
+            used_by_projects: vec![],
+          });
         }
       }
     }

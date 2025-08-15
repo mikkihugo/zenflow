@@ -6,8 +6,8 @@
  */
 
 import { execSync } from 'child_process';
-import { getLogger } from '../config/logging-config.js';
-import type { AGUIInterface } from '../interfaces/agui/agui-adapter.js';
+import { getLogger } from '../config/logging-config.ts';
+import type { AGUIInterface } from '../interfaces/agui/agui-adapter.ts';
 import type { ValidationQuestion } from '../types/shared-types.js';
 
 const logger = getLogger('automated-dead-code-manager');

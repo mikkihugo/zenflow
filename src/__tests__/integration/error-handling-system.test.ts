@@ -13,15 +13,15 @@ import {
   handleErrorGlobally,
   initializeErrorHandling,
   shutdownErrorHandling,
-} from '../../utils/error-system-integration';
+} from '../../core/error-system-integration';
 import {
   FACTError,
   NetworkError,
   RAGError,
   SwarmError,
   TimeoutError,
-} from '../../utils/errors';
-import { systemResilienceOrchestrator } from '../../utils/system-resilience';
+} from '../../core/errors';
+import { systemResilienceOrchestrator } from '../../utils/error-recovery';
 
 describe('Comprehensive Error Handling System Integration', () => {
   beforeAll(async () => {
@@ -170,7 +170,7 @@ describe('Comprehensive Error Handling System Integration', () => {
         const testBulkhead = systemResilienceOrchestrator.bulkheads;
         testBulkhead.set(
           'test',
-          new (await import('../../utils/system-resilience')).Bulkhead({
+          new (await import('../../utils/error-recovery')).Bulkhead({
             name: 'Test Bulkhead',
             maxConcurrentExecutions: 2,
             queueSize: 5,

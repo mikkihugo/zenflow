@@ -8,7 +8,7 @@
 import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 import { createAdaptiveOptimizer } from '../../config/memory-optimization.ts';
 import { createLogger } from '../../core/logger.ts';
-import { handleKanbanCommand } from '../../interfaces/cli/commands/kanban.ts';
+import { handleKanbanCommand } from '../../interfaces/cli.disabled/commands/kanban';
 import { handleWorkflowToolCall } from '../../interfaces/mcp/workflow-tools.ts';
 
 const logger = createLogger('performance-test');

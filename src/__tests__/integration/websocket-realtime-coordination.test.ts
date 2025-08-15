@@ -4,7 +4,7 @@
  */
 
 import { WebSocket } from 'ws';
-import { AgentManager } from '../../coordination/agents/agent-manager.ts';
+import { AgentManager } from '../../coordination/agents/agent-registry';
 import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator.ts';
 import { WebSocketManager } from '../../interfaces/web/web-socket-manager.ts';
 import { RealTimeMonitor } from '../../monitoring/performance/real-time-monitor.ts';

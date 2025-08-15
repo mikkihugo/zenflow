@@ -9,9 +9,12 @@
  * @file Interface implementation: interactive-terminal-application.
  */
 
+import { getLogger } from '../../config/logging-config.ts';
+
+const logger = getLogger('interactive-terminal-application');
+
 import { Box, Text, useInput } from 'ink';
-import type React from 'react';
-import { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ErrorMessage,
   Header,
@@ -19,11 +22,13 @@ import {
   SwarmSpinner,
   type SwarmStatus,
 } from './components/index/index.js';
+import { TUIErrorBoundary } from './components/error-boundary.js';
 import {
   ADRManager,
   CommandPalette,
   FileBrowser,
   Help,
+  LearningMonitor,
   LogsViewer,
   MainMenu,
   MCPServers,
@@ -275,6 +280,9 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
       case 'performance-monitor':
         navigateToScreen('performance-monitor');
         break;
+      case 'learning-monitor':
+        navigateToScreen('learning-monitor');
+        break;
       case 'file-browser':
         navigateToScreen('file-browser');
         break;
@@ -407,6 +415,15 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
       case 'performance-monitor':
         return (
           <PerformanceMonitor
+            swarmStatus={state.swarmStatus}
+            onBack={() => navigateToScreen('main-menu')}
+            onExit={() => onExit(0)}
+          />
+        );
+
+      case 'learning-monitor':
+        return (
+          <LearningMonitor
             swarmStatus={state.swarmStatus}
             onBack={() => navigateToScreen('main-menu')}
             onExit={() => onExit(0)}
@@ -588,9 +605,20 @@ export const InteractiveTerminalApplication: React.FC<TUIModeProps> = ({
   };
 
   return (
-    <Box flexDirection="column" height="100%">
-      {renderCurrentScreen()}
-    </Box>
+    <TUIErrorBoundary
+      showDetails={flags['verbose'] || flags['debug']}
+      onError={(error, errorInfo) => {
+        logger?.error('TUI Error Boundary caught error:', {
+          error: error.message,
+          stack: error.stack,
+          componentStack: errorInfo.componentStack,
+        });
+      }}
+    >
+      <Box flexDirection="column" height="100%">
+        {renderCurrentScreen()}
+      </Box>
+    </TUIErrorBoundary>
   );
 };
 

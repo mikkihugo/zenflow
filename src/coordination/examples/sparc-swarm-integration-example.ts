@@ -10,7 +10,7 @@
 
 import { getLogger } from '../../config/logging-config.ts';
 import { DatabaseDrivenSystem } from '../../core/database-driven-system.ts';
-import { WorkflowEngine } from '../../core/workflow-engine.ts';
+import { WorkflowEngine } from '../../workflows/workflow-engine.ts';
 import type { FeatureDocumentEntity } from '../../database/entities/product-entities.ts';
 import { DocumentManager } from '../../database/managers/document-manager.ts';
 import type { DocumentType } from '../../workflows/types.ts';

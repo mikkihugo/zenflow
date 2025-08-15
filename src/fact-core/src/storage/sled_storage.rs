@@ -34,11 +34,11 @@ impl SledStorage {
     info!("Opening FACT storage at: {:?}", db_path);
 
     let db = sled::Config::new()
-            .path(&db_path)
-            .compression_factor(if config.compression { 4 } else { 1 })
-            .cache_capacity((config.cache_size_mb * 1024 * 1024) as u64) // Convert MB to bytes
-            .open()
-            .context("Failed to open Sled database")?;
+      .path(&db_path)
+      .compression_factor(if config.compression { 4 } else { 1 })
+      .cache_capacity((config.cache_size_mb * 1024 * 1024) as u64) // Convert MB to bytes
+      .open()
+      .context("Failed to open Sled database")?;
 
     // Create indexes for efficient querying
     db.open_tree("ecosystem_index")

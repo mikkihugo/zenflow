@@ -2,7 +2,7 @@
 
 /**
  * Initialize Real Data Environment
- * 
+ *
  * Sets up the environment for real data operations:
  * - Creates data directories and files
  * - Initializes basic database structures
@@ -23,13 +23,13 @@ async function main() {
     // Setup data directories
     const dataDir = './data';
     setupDataDirectories(dataDir);
-    
+
     // Create initial database files
     setupInitialDatabaseFiles(dataDir);
-    
+
     // Create configuration files
     setupConfigurationFiles(dataDir);
-    
+
     console.log('✅ Real data environment setup complete!');
     console.log('');
     console.log('🎯 Environment Ready:');
@@ -40,7 +40,9 @@ async function main() {
     console.log('  - 🔧 Configuration: Production-ready settings');
     console.log('');
     console.log('🎯 Next Steps:');
-    console.log('  1. Start MCP server: npx tsx src/interfaces/mcp-stdio/swarm-server.ts');
+    console.log(
+      '  1. Start MCP server: npx tsx src/interfaces/mcp-stdio/swarm-server.ts'
+    );
     console.log('  2. Test ADR creation: Use adr_create tool');
     console.log('  3. Test semantic search: Use adr_semantic_search tool');
     console.log('  4. Create projects: Use sparc_project_init tool');
@@ -55,7 +57,6 @@ async function main() {
     console.log('  - sparc_workflow_status: Check workflow progress');
     console.log('  - decision_impact_analysis: Analyze decision impacts');
     console.log('  - generate_document_relationships: Create relationships');
-    
   } catch (error) {
     console.error('❌ Real data environment setup failed:', error);
     process.exit(1);
@@ -64,18 +65,18 @@ async function main() {
 
 function setupDataDirectories(dataDir: string): void {
   console.log('📁 Setting up data directories...');
-  
+
   const directories = [
     dataDir,
     join(dataDir, 'sqlite'),
-    join(dataDir, 'lancedb'), 
+    join(dataDir, 'lancedb'),
     join(dataDir, 'kuzu'),
     join(dataDir, 'backups'),
     join(dataDir, 'logs'),
-    join(dataDir, 'cache')
+    join(dataDir, 'cache'),
   ];
-  
-  directories.forEach(dir => {
+
+  directories.forEach((dir) => {
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
       console.log(`  ✅ Created: ${dir}`);
@@ -87,32 +88,32 @@ function setupDataDirectories(dataDir: string): void {
 
 function setupInitialDatabaseFiles(dataDir: string): void {
   console.log('🗄️ Setting up initial database files...');
-  
+
   // Create placeholder database files
   const dbFiles = [
     {
       path: join(dataDir, 'sqlite', 'claude-zen-production.db'),
       type: 'SQLite',
-      description: 'Structured document storage'
+      description: 'Structured document storage',
     },
     {
       path: join(dataDir, 'lancedb', 'claude-zen-vectors-production.lance'),
       type: 'LanceDB',
-      description: 'Vector embeddings and semantic search'
+      description: 'Vector embeddings and semantic search',
     },
     {
       path: join(dataDir, 'kuzu', 'claude-zen-graph-production.kuzu'),
       type: 'Kuzu',
-      description: 'Graph relationships and dependencies'
-    }
+      description: 'Graph relationships and dependencies',
+    },
   ];
-  
-  dbFiles.forEach(db => {
+
+  dbFiles.forEach((db) => {
     const dir = join(db.path, '..');
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }
-    
+
     // Create empty database file or directory structure
     if (!existsSync(db.path)) {
       if (db.type === 'SQLite') {
@@ -131,7 +132,7 @@ function setupInitialDatabaseFiles(dataDir: string): void {
 
 function setupConfigurationFiles(dataDir: string): void {
   console.log('⚙️ Setting up configuration files...');
-  
+
   // Create database configuration
   const dbConfig = {
     production: {
@@ -140,44 +141,44 @@ function setupConfigurationFiles(dataDir: string): void {
         options: {
           readonly: false,
           fileMustExist: false,
-          timeout: 5000
-        }
+          timeout: 5000,
+        },
       },
       lancedb: {
         path: join(dataDir, 'lancedb', 'claude-zen-vectors-production.lance'),
         options: {
           vectorSize: 384,
           metricType: 'cosine',
-          createIfNotExists: true
-        }
+          createIfNotExists: true,
+        },
       },
       kuzu: {
         path: join(dataDir, 'kuzu', 'claude-zen-graph-production.kuzu'),
         options: {
           bufferPoolSize: '1GB',
           maxNumThreads: 4,
-          createIfNotExists: true
-        }
-      }
+          createIfNotExists: true,
+        },
+      },
     },
     hybrid: {
       enableVectorSearch: true,
       enableGraphRelationships: true,
       vectorDimension: 384,
-      logLevel: 'info'
+      logLevel: 'info',
     },
     mcp: {
       serverName: 'claude-code-zen-stdio',
       version: '1.0.0-alpha.43',
       capabilities: ['tools'],
-      realDataMode: true
-    }
+      realDataMode: true,
+    },
   };
-  
+
   const configPath = join(dataDir, 'database-config.json');
   writeFileSync(configPath, JSON.stringify(dbConfig, null, 2));
   console.log(`  ✅ Created database config: ${configPath}`);
-  
+
   // Create ADR templates
   const adrTemplate = {
     template: {
@@ -188,21 +189,21 @@ function setupConfigurationFiles(dataDir: string): void {
         consequences: 'Expected consequences and implications',
         alternatives: 'Alternative approaches considered',
         implementation_notes: 'Implementation guidance',
-        success_criteria: 'Success criteria for this decision'
-      }
+        success_criteria: 'Success criteria for this decision',
+      },
     },
     defaults: {
       status: 'proposed',
       priority: 'medium',
       author: 'claude-zen-system',
-      stakeholders: ['architecture-team']
-    }
+      stakeholders: ['architecture-team'],
+    },
   };
-  
+
   const templatePath = join(dataDir, 'adr-template.json');
   writeFileSync(templatePath, JSON.stringify(adrTemplate, null, 2));
   console.log(`  ✅ Created ADR template: ${templatePath}`);
-  
+
   // Create README
   const readme = `# Claude-Code-Zen Real Data Environment
 
@@ -237,7 +238,7 @@ All SPARC hybrid tools work with this real data environment:
 - \`hybrid_document_search\` - Queries across all real databases
 - And more...
 `;
-  
+
   const readmePath = join(dataDir, 'README.md');
   writeFileSync(readmePath, readme);
   console.log(`  ✅ Created README: ${readmePath}`);

@@ -2,10 +2,10 @@
 
 /**
  * Production Hybrid Database Initialization
- * 
+ *
  * Initializes the real hybrid database system for production use:
  * - LanceDB for vector embeddings and semantic search
- * - Kuzu for graph relationships and document dependencies  
+ * - Kuzu for graph relationships and document dependencies
  * - SQLite for structured document storage
  * - Real database files and connections
  */
@@ -30,21 +30,25 @@ async function main() {
   try {
     // Setup production database paths
     const paths = setupProductionPaths();
-    
+
     // Create real hybrid system with production providers
     console.log('🏭 Creating production hybrid database system...');
     const system = await createProductionHybridSystem(paths);
-    
+
     // Test the production system with real data
     await testProductionSystem(system);
-    
-    console.log('✅ Production hybrid database system initialization complete!');
+
+    console.log(
+      '✅ Production hybrid database system initialization complete!'
+    );
     console.log('');
     console.log('🎯 Production Systems Ready:');
     console.log('  - 🗃️  SQLite: Real structured document storage');
     console.log('  - 🚀 LanceDB: Real vector embeddings and semantic search');
     console.log('  - 🕸️  Kuzu: Real graph relationships and dependencies');
-    console.log('  - 📋 ADR Manager: Production architecture decision management');
+    console.log(
+      '  - 📋 ADR Manager: Production architecture decision management'
+    );
     console.log('  - 🔍 Hybrid Search: Production semantic + graph search');
     console.log('  - 🤖 AGUI Integration: Real human validation workflows');
     console.log('  - 🔗 MCP Tools: External access through stdio server');
@@ -55,20 +59,28 @@ async function main() {
     console.log(`  - Kuzu: ${paths.kuzu}`);
     console.log('');
     console.log('🎯 Next Steps:');
-    console.log('  1. Start MCP server: npx tsx src/interfaces/mcp-stdio/swarm-server.ts');
-    console.log('  2. Use ADR tools: mcp__claude-zen__adr_create, mcp__claude-zen__adr_semantic_search');
+    console.log(
+      '  1. Start MCP server: npx tsx src/interfaces/mcp-stdio/swarm-server.ts'
+    );
+    console.log(
+      '  2. Use ADR tools: mcp__claude-zen__adr_create, mcp__claude-zen__adr_semantic_search'
+    );
     console.log('  3. Create projects: mcp__claude-zen__sparc_project_init');
-    console.log('  4. Search documents: mcp__claude-zen__hybrid_document_search');
-    
+    console.log(
+      '  4. Search documents: mcp__claude-zen__hybrid_document_search'
+    );
   } catch (error) {
-    console.error('❌ Production hybrid database initialization failed:', error);
+    console.error(
+      '❌ Production hybrid database initialization failed:',
+      error
+    );
     process.exit(1);
   }
 }
 
 function setupProductionPaths(): ProductionPaths {
   const dataDir = process.argv[2] || join(process.cwd(), 'data');
-  
+
   if (!existsSync(dataDir)) {
     mkdirSync(dataDir, { recursive: true });
     console.log(`📁 Created production data directory: ${dataDir}`);
@@ -78,36 +90,51 @@ function setupProductionPaths(): ProductionPaths {
     dataDir,
     sqlite: join(dataDir, 'claude-zen-production.db'),
     lancedb: join(dataDir, 'claude-zen-vectors-production.lance'),
-    kuzu: join(dataDir, 'claude-zen-graph-production.kuzu')
+    kuzu: join(dataDir, 'claude-zen-graph-production.kuzu'),
   };
 
   console.log('📂 Production database paths configured:', paths);
   return paths;
 }
 
-async function createProductionHybridSystem(paths: ProductionPaths): Promise<any> {
+async function createProductionHybridSystem(
+  paths: ProductionPaths
+): Promise<any> {
   // Import production DAL Factory and providers
   const { DALFactory } = await import('../src/database/factory.js');
-  const { HybridDocumentManager } = await import('../src/database/managers/hybrid-document-manager.js');
-  const { ADRManagerHybrid } = await import('../src/database/managers/adr-manager-hybrid.js');
-  
+  const { HybridDocumentManager } = await import(
+    '../src/database/managers/hybrid-document-manager.js'
+  );
+  const { ADRManagerHybrid } = await import(
+    '../src/database/managers/adr-manager-hybrid.js'
+  );
+
   // Create production logger and config
   const productionLogger = createLogger('production-dal-factory');
   const productionConfig = {
     get: (key: string) => {
       switch (key) {
-        case 'database.sqlite.path': return paths.sqlite;
-        case 'database.lancedb.path': return paths.lancedb;
-        case 'database.kuzu.path': return paths.kuzu;
-        default: return null;
+        case 'database.sqlite.path':
+          return paths.sqlite;
+        case 'database.lancedb.path':
+          return paths.lancedb;
+        case 'database.kuzu.path':
+          return paths.kuzu;
+        default:
+          return null;
       }
     },
-    set: () => {}
+    set: () => {},
   };
 
   // Create real database provider factory (will use actual database adapters)
-  const { DatabaseProviderFactory } = await import('../src/database/providers/database-providers.js');
-  const providerFactory = new DatabaseProviderFactory(productionLogger as any, productionConfig as any);
+  const { DatabaseProviderFactory } = await import(
+    '../src/database/providers/database-providers.js'
+  );
+  const providerFactory = new DatabaseProviderFactory(
+    productionLogger as any,
+    productionConfig as any
+  );
 
   // Create production DAL Factory
   const dalFactory = new DALFactory(
@@ -133,11 +160,14 @@ async function createProductionHybridSystem(paths: ProductionPaths): Promise<any
   return {
     dalFactory,
     hybridManager,
-    adrManager
+    adrManager,
   };
 }
 
-function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths): void {
+function registerProductionEntityTypes(
+  dalFactory: any,
+  paths: ProductionPaths
+): void {
   // Base Document Entity with production SQLite configuration
   dalFactory.registerEntityType('Document', {
     schema: {
@@ -150,7 +180,7 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
       author: { type: 'string' },
       project_id: { type: 'string' },
       created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' }
+      updated_at: { type: 'datetime', default: 'now' },
     },
     primaryKey: 'id',
     tableName: 'documents',
@@ -158,12 +188,12 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
     databaseConfig: {
       type: 'sqlite',
       database: paths.sqlite,
-      options: { 
+      options: {
         readonly: false,
         fileMustExist: false,
-        timeout: 5000
-      }
-    }
+        timeout: 5000,
+      },
+    },
   });
 
   // Document Embeddings for Real Vector Search
@@ -173,7 +203,7 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
       documentId: { type: 'string', required: true },
       documentType: { type: 'string', required: true },
       vector: { type: 'vector', required: true, dimension: 384 },
-      metadata: { type: 'json' }
+      metadata: { type: 'json' },
     },
     primaryKey: 'id',
     tableName: 'document_embeddings',
@@ -181,12 +211,12 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
     databaseConfig: {
       type: 'lancedb',
       database: paths.lancedb,
-      options: { 
-        vectorSize: 384, 
+      options: {
+        vectorSize: 384,
         metricType: 'cosine',
-        createIfNotExists: true
-      }
-    }
+        createIfNotExists: true,
+      },
+    },
   });
 
   // Document Graph Nodes for Real Graph Database
@@ -195,7 +225,7 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
       labels: { type: 'array' },
-      properties: { type: 'json' }
+      properties: { type: 'json' },
     },
     primaryKey: 'id',
     tableName: 'document_nodes',
@@ -203,12 +233,12 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
     databaseConfig: {
       type: 'kuzu',
       database: paths.kuzu,
-      options: { 
-        bufferPoolSize: '1GB', 
+      options: {
+        bufferPoolSize: '1GB',
         maxNumThreads: 4,
-        createIfNotExists: true
-      }
-    }
+        createIfNotExists: true,
+      },
+    },
   });
 
   // Document Relationships
@@ -220,7 +250,7 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
       relationship_type: { type: 'string', required: true },
       strength: { type: 'number' },
       created_at: { type: 'datetime', default: 'now' },
-      metadata: { type: 'json' }
+      metadata: { type: 'json' },
     },
     primaryKey: 'id',
     tableName: 'document_relationships',
@@ -228,8 +258,8 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
     databaseConfig: {
       type: 'sqlite',
       database: paths.sqlite,
-      options: { readonly: false }
-    }
+      options: { readonly: false },
+    },
   });
 
   // Projects
@@ -242,7 +272,7 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
       complexity: { type: 'string', default: 'moderate' },
       author: { type: 'string', required: true },
       created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' }
+      updated_at: { type: 'datetime', default: 'now' },
     },
     primaryKey: 'id',
     tableName: 'projects',
@@ -250,8 +280,8 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
     databaseConfig: {
       type: 'sqlite',
       database: paths.sqlite,
-      options: { readonly: false }
-    }
+      options: { readonly: false },
+    },
   });
 
   // Workflow States
@@ -263,7 +293,7 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
       current_stage: { type: 'string', required: true },
       stages_completed: { type: 'json' },
       created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' }
+      updated_at: { type: 'datetime', default: 'now' },
     },
     primaryKey: 'id',
     tableName: 'document_workflow_states',
@@ -271,8 +301,8 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
     databaseConfig: {
       type: 'sqlite',
       database: paths.sqlite,
-      options: { readonly: false }
-    }
+      options: { readonly: false },
+    },
   });
 
   console.log('✅ Production entity types registered');
@@ -280,48 +310,64 @@ function registerProductionEntityTypes(dalFactory: any, paths: ProductionPaths):
 
 async function testProductionSystem(system: any): Promise<void> {
   console.log('🧪 Testing production system with real data...');
-  
+
   try {
     // Test ADR creation with real database
     console.log('📋 Creating test ADR...');
     const testADR = await system.adrManager.createADR({
       title: 'Use Production Hybrid Database Architecture',
-      context: 'We need a production-ready database system that supports structured queries, semantic search, and graph relationships for our document management system.',
-      decision: 'Implement a hybrid architecture combining SQLite for structured data, LanceDB for vector embeddings, and Kuzu for graph relationships in production.',
-      consequences: 'This approach provides ACID compliance, semantic search capabilities, and relationship modeling with real data persistence.',
+      context:
+        'We need a production-ready database system that supports structured queries, semantic search, and graph relationships for our document management system.',
+      decision:
+        'Implement a hybrid architecture combining SQLite for structured data, LanceDB for vector embeddings, and Kuzu for graph relationships in production.',
+      consequences:
+        'This approach provides ACID compliance, semantic search capabilities, and relationship modeling with real data persistence.',
       author: 'claude-zen-production-system',
       priority: 'critical',
       stakeholders: ['production-team', 'developers', 'users'],
-      implementation_notes: 'Use production database adapters with real file persistence and connection pooling.',
+      implementation_notes:
+        'Use production database adapters with real file persistence and connection pooling.',
       success_criteria: [
         'Support for semantic search with real embeddings',
         'Graph-based relationship queries with persistent data',
         'ACID compliance for critical operations',
         'Sub-second query performance with real data',
-        'Persistent data across system restarts'
-      ]
+        'Persistent data across system restarts',
+      ],
     });
-    
-    console.log(`✅ Production ADR created: ID=${testADR.id}, Number=${testADR.decision_number}`);
-    
+
+    console.log(
+      `✅ Production ADR created: ID=${testADR.id}, Number=${testADR.decision_number}`
+    );
+
     // Test semantic search with real data
     console.log('🔍 Testing semantic search...');
-    const searchResults = await system.adrManager.semanticSearchADRs('production database architecture', {
-      limit: 5,
-      include_related: true
-    });
-    
-    console.log(`✅ Semantic search completed: Found ${searchResults.length} results`);
-    
+    const searchResults = await system.adrManager.semanticSearchADRs(
+      'production database architecture',
+      {
+        limit: 5,
+        include_related: true,
+      }
+    );
+
+    console.log(
+      `✅ Semantic search completed: Found ${searchResults.length} results`
+    );
+
     // Test stats with real data
     const stats = await system.adrManager.getADRStats();
-    console.log(`📊 Production ADR Statistics: ${stats.total} total ADRs, ${stats.active} active`);
-    
-    console.log('✅ Production system test completed successfully with real data');
-    
+    console.log(
+      `📊 Production ADR Statistics: ${stats.total} total ADRs, ${stats.active} active`
+    );
+
+    console.log(
+      '✅ Production system test completed successfully with real data'
+    );
   } catch (error) {
     console.warn('⚠️ Production system test had issues:', error);
-    console.log('📝 This may be expected if database adapters need additional setup');
+    console.log(
+      '📝 This may be expected if database adapters need additional setup'
+    );
   }
 }
 

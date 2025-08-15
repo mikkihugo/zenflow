@@ -4,7 +4,7 @@
  * Test MCP Module Status - Shows the current status of modules for MCP tools
  */
 
-import { WasmModuleLoader } from './src/neural/wasm/wasm-loader.ts';
+import { WasmModuleLoader } from './src/neural/wasm/wasm-loader.js';
 
 async function testMcpModuleStatus() {
   console.log('🔍 Testing MCP Module Status...\n');

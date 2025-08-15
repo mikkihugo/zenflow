@@ -17,8 +17,7 @@ import { getLogger } from './config/logging-config.js';
 const logger = getLogger('ZenSwarmOrchestrator');
 
 // Native binding interfaces (imported from compiled Rust)
-interface ZenSwarmOrchestrator {
-  new (config: OrchestratorConfig): ZenSwarmOrchestrator;
+interface ZenSwarmOrchestratorInstance {
   initialize(): Promise<boolean>;
   getStatus(): Promise<string>;
   sendA2AMessage(message: A2AProtocolMessage): Promise<ServiceResult>;
@@ -27,6 +26,10 @@ interface ZenSwarmOrchestrator {
   getA2AServerStatus(): Promise<string>;
   getMetrics(): Promise<string>;
   shutdown(): Promise<boolean>;
+}
+
+interface ZenSwarmOrchestratorConstructor {
+  new (config: OrchestratorConfig): ZenSwarmOrchestratorInstance;
 }
 
 interface OrchestratorConfig {
@@ -92,30 +95,195 @@ interface ResourceUsageInfo {
   neural_forward_passes?: number;
 }
 
-// Lazy loading of native binding
-let nativeBinding: {
-  ZenSwarmOrchestrator: typeof ZenSwarmOrchestrator;
-} | null = null;
+// Platform-specific binding resolution
+import { platform, arch } from 'os';
+import { resolve, join } from 'path';
+import { existsSync } from 'fs';
 
-async function loadNativeBinding() {
-  if (!nativeBinding) {
+// Interface for the native binding
+interface NativeZenSwarmOrchestrator {
+  ZenSwarmOrchestrator: ZenSwarmOrchestratorConstructor;
+}
+
+// Lazy loading of native binding with platform detection
+let nativeBinding: NativeZenSwarmOrchestrator | null = null;
+let fallbackMode = false;
+
+/**
+ * Reset binding state (for testing)
+ */
+export function resetBindingState(): void {
+  nativeBinding = null;
+  fallbackMode = false;
+}
+
+/**
+ * Get platform-specific binding filename
+ */
+function getPlatformBindingName(): string {
+  const platformMap: Record<string, string> = {
+    'linux': 'linux',
+    'darwin': 'darwin',
+    'win32': 'win32'
+  };
+  
+  const archMap: Record<string, string> = {
+    'x64': 'x64',
+    'arm64': 'arm64',
+    'ia32': 'x86'
+  };
+  
+  const platformName = platformMap[platform()] || 'linux';
+  const archName = archMap[arch()] || 'x64';
+  
+  return `zen-code-bindings.${platformName}-${archName}-gnu.node`;
+}
+
+/**
+ * Attempt to load native binding with multiple fallback strategies
+ */
+async function loadNativeBinding(): Promise<NativeZenSwarmOrchestrator> {
+  if (nativeBinding && !fallbackMode) {
+    return nativeBinding;
+  }
+
+  if (fallbackMode) {
+    return createFallbackBinding();
+  }
+
+  const bindingPaths = [
+    // Platform-specific binding
+    `../bindings/${getPlatformBindingName()}`,
+    // Fallback to linux x64 (most common)
+    '../bindings/zen-code-bindings.linux-x64-gnu.node',
+    // Alternative location
+    '../bindings/2/zen-code-bindings.linux-x64-gnu.node',
+    // Relative to current file
+    './bindings/zen-code-bindings.linux-x64-gnu.node'
+  ];
+
+  // Try each binding path
+  for (const bindingPath of bindingPaths) {
     try {
-      // Import the compiled native binding
-      nativeBinding = await import(
-        '../bindings/zen-code-bindings.linux-x64-gnu.node'
-      );
-      logger.info(
-        '✅ Native zen-swarm-orchestrator binding loaded successfully'
-      );
+      logger.info(`🔄 Attempting to load native binding: ${bindingPath}`);
+      
+      // Check if file exists first (for better error messages)
+      const resolvedPath = resolve(__dirname, bindingPath);
+      
+      // Dynamic import with proper error handling
+      nativeBinding = await import(bindingPath) as NativeZenSwarmOrchestrator;
+      
+      logger.info(`✅ Native zen-swarm-orchestrator binding loaded successfully from: ${bindingPath}`);
+      return nativeBinding;
     } catch (error) {
-      logger.error(
-        '❌ Failed to load zen-swarm-orchestrator native binding:',
-        error
-      );
-      throw new Error(`Failed to load native binding: ${error}`);
+      logger.warn(`⚠️ Failed to load binding from ${bindingPath}:`, error);
+      continue;
     }
   }
-  return nativeBinding;
+
+  // If all native bindings fail, enter fallback mode
+  fallbackMode = true;
+  logger.error('❌ All native binding attempts failed, entering fallback mode');
+  
+  // Create mock implementation for fallback
+  return createFallbackBinding();
+}
+
+/**
+ * Create a fallback implementation when native bindings are unavailable
+ */
+function createFallbackBinding(): NativeZenSwarmOrchestrator {
+  logger.warn('🔄 Creating fallback zen-swarm-orchestrator implementation');
+  
+  // Mock ZenSwarmOrchestrator class for fallback
+  class FallbackZenSwarmOrchestrator implements ZenSwarmOrchestratorInstance {
+    constructor(private config: OrchestratorConfig) {
+      logger.info('📦 Fallback ZenSwarmOrchestrator initialized with config:', {
+        enabled: config.enabled,
+        host: config.host,
+        port: config.port
+      });
+    }
+
+    async initialize(): Promise<boolean> {
+      logger.warn('⚠️ Fallback mode: initialize() - returning true');
+      return true;
+    }
+
+    async getStatus(): Promise<string> {
+      const status = {
+        mode: 'fallback',
+        initialized: true,
+        services_available: ['fallback-echo'],
+        a2a_server_running: false,
+        neural_services_enabled: false,
+        quantum_backend_available: false,
+        websocket_server_running: false,
+        last_heartbeat: Date.now()
+      };
+      return JSON.stringify(status);
+    }
+
+    async sendA2AMessage(message: A2AProtocolMessage): Promise<ServiceResult> {
+      logger.warn('⚠️ Fallback mode: sendA2AMessage() - returning mock response');
+      return {
+        success: false,
+        error: 'A2A protocol not available in fallback mode',
+        execution_time_ms: 1,
+        execution_path: 'fallback'
+      };
+    }
+
+    async executeNeuralService(task: NeuralTaskRequest): Promise<ServiceResult> {
+      logger.warn('⚠️ Fallback mode: executeNeuralService() - returning mock response');
+      
+      // Basic echo service for testing
+      if (task.task_type === 'echo' || task.task_type === 'neural-forward') {
+        return {
+          success: true,
+          result: JSON.stringify({ echo: task.input_data, mode: 'fallback' }),
+          execution_time_ms: 1,
+          execution_path: 'fallback-echo'
+        };
+      }
+      
+      return {
+        success: false,
+        error: `Neural service '${task.task_type}' not available in fallback mode`,
+        execution_time_ms: 1,
+        execution_path: 'fallback'
+      };
+    }
+
+    async listServices(): Promise<string[]> {
+      return ['fallback-echo', 'fallback-status'];
+    }
+
+    async getA2AServerStatus(): Promise<string> {
+      return JSON.stringify({ running: false, mode: 'fallback' });
+    }
+
+    async getMetrics(): Promise<string> {
+      const metrics = {
+        mode: 'fallback',
+        uptime_seconds: 0,
+        total_requests: 0,
+        successful_requests: 0,
+        failed_requests: 0,
+        average_response_time_ms: 1
+      };
+      return JSON.stringify(metrics);
+    }
+
+    async shutdown(): Promise<boolean> {
+      logger.info('📦 Fallback ZenSwarmOrchestrator shutdown');
+      return true;
+    }
+  }
+
+  return {
+    ZenSwarmOrchestrator: FallbackZenSwarmOrchestrator as ZenSwarmOrchestratorConstructor
+  };
 }
 
 /**
@@ -127,7 +295,7 @@ async function loadNativeBinding() {
  * - Bridge to zen-code's existing LLM and database infrastructure
  */
 export class ZenOrchestratorIntegration {
-  private zenSwarmOrchestrator: ZenSwarmOrchestrator | null = null;
+  private zenSwarmOrchestrator: ZenSwarmOrchestratorInstance | null = null;
   private isInitialized = false;
   private config: OrchestratorConfig;
 
@@ -185,17 +353,43 @@ export class ZenOrchestratorIntegration {
 
       const result = await this.zenSwarmOrchestrator.initialize();
       if (!result) {
-        throw new Error('zen-orchestrator initialization returned false');
+        if (fallbackMode) {
+          logger.warn('⚠️ zen-orchestrator fallback mode initialization completed');
+        } else {
+          throw new Error('zen-orchestrator initialization returned false');
+        }
       }
 
       this.isInitialized = true;
-      logger.info('✅ zen-orchestrator initialized successfully');
+      
+      if (fallbackMode) {
+        logger.warn('⚠️ zen-orchestrator initialized in FALLBACK MODE (limited functionality)');
+      } else {
+        logger.info('✅ zen-orchestrator initialized successfully with native bindings');
+      }
 
       // Log initialization status
       const status = await this.getStatus();
-      logger.info('📊 Initialization status:', JSON.parse(status.data || '{}'));
+      logger.info('📊 Initialization status:', status.data || {});
     } catch (error) {
       logger.error('❌ Failed to initialize zen-orchestrator:', error);
+      
+      // If not already in fallback mode, try to create a minimal fallback
+      if (!fallbackMode) {
+        logger.warn('🔄 Attempting to initialize minimal fallback mode...');
+        try {
+          fallbackMode = true;
+          const fallbackBinding = createFallbackBinding();
+          this.zenSwarmOrchestrator = new fallbackBinding.ZenSwarmOrchestrator(this.config);
+          await this.zenSwarmOrchestrator.initialize();
+          this.isInitialized = true;
+          logger.warn('⚠️ zen-orchestrator initialized in EMERGENCY FALLBACK MODE');
+          return;
+        } catch (fallbackError) {
+          logger.error('❌ Emergency fallback also failed:', fallbackError);
+        }
+      }
+      
       throw error;
     }
   }
@@ -205,6 +399,27 @@ export class ZenOrchestratorIntegration {
    */
   async isReady(): Promise<boolean> {
     return this.isInitialized && this.zenSwarmOrchestrator !== null;
+  }
+
+  /**
+   * Check if running in fallback mode
+   */
+  isFallbackMode(): boolean {
+    return fallbackMode;
+  }
+
+  /**
+   * Get binding information
+   */
+  getBindingInfo(): { mode: 'native' | 'fallback', platform?: string, arch?: string } {
+    if (fallbackMode) {
+      return { mode: 'fallback' };
+    }
+    return { 
+      mode: 'native', 
+      platform: platform(), 
+      arch: arch()
+    };
   }
 
   /**
@@ -221,6 +436,15 @@ export class ZenOrchestratorIntegration {
     try {
       const statusJson = await this.zenSwarmOrchestrator!.getStatus();
       const statusData = JSON.parse(statusJson);
+
+      // Add binding information to status
+      const bindingInfo = this.getBindingInfo();
+      statusData.binding = bindingInfo;
+      
+      if (fallbackMode) {
+        statusData.warnings = statusData.warnings || [];
+        statusData.warnings.push('Running in fallback mode - limited functionality available');
+      }
 
       return {
         success: true,
@@ -432,7 +656,14 @@ export class ZenOrchestratorIntegration {
 
     try {
       const statusJson = await this.zenSwarmOrchestrator!.getA2AServerStatus();
-      const statusData = JSON.parse(statusJson);
+      
+      // Handle both string (native) and object (fallback) responses
+      let statusData;
+      if (typeof statusJson === 'string') {
+        statusData = JSON.parse(statusJson);
+      } else {
+        statusData = statusJson;
+      }
 
       return {
         success: true,
@@ -464,7 +695,14 @@ export class ZenOrchestratorIntegration {
 
     try {
       const metricsJson = await this.zenSwarmOrchestrator!.getMetrics();
-      const metricsData = JSON.parse(metricsJson);
+      
+      // Handle both string (native) and object (fallback) responses
+      let metricsData;
+      if (typeof metricsJson === 'string') {
+        metricsData = JSON.parse(metricsJson);
+      } else {
+        metricsData = metricsJson;
+      }
 
       return {
         success: true,
@@ -550,4 +788,4 @@ export function resetZenSwarmOrchestratorIntegration(): void {
   zenSwarmOrchestratorInstance = null;
 }
 
-export { ZenOrchestratorIntegration };
+// ZenOrchestratorIntegration is already exported as a class above

@@ -1,6 +1,6 @@
 /**
  * Real SQLite Database Adapter
- * 
+ *
  * Real SQLite adapter using better-sqlite3 for structured document storage
  */
 
@@ -44,15 +44,17 @@ export class SQLiteAdapter {
       this.db = new Database(this.config.database, {
         readonly: this.config.options?.readonly || false,
         fileMustExist: this.config.options?.fileMustExist || false,
-        timeout: this.config.options?.timeout || 5000
+        timeout: this.config.options?.timeout || 5000,
       });
 
       // Initialize database with required tables
       this.initializeTables();
-      
+
       this.connected = true;
-      
-      logger.info(`✅ Connected to real SQLite database: ${this.config.database}`);
+
+      logger.info(
+        `✅ Connected to real SQLite database: ${this.config.database}`
+      );
     } catch (error) {
       logger.error(`❌ Failed to connect to SQLite database: ${error}`);
       throw error;
@@ -70,18 +72,18 @@ export class SQLiteAdapter {
   async query(sql: string, params: any[] = []): Promise<any> {
     if (!this.connected) await this.connect();
     if (!this.db) throw new Error('Database not connected');
-    
+
     logger.debug(`Executing SQL query: ${sql}`, { params });
-    
+
     try {
       const stmt = this.db.prepare(sql);
       const rows = stmt.all(...params);
-      
+
       return {
         rows: rows || [],
         rowCount: rows ? rows.length : 0,
         fields: [],
-        executionTime: 1
+        executionTime: 1,
       };
     } catch (error) {
       logger.error(`Query failed: ${error}`);
@@ -92,17 +94,17 @@ export class SQLiteAdapter {
   async execute(sql: string, params: any[] = []): Promise<any> {
     if (!this.connected) await this.connect();
     if (!this.db) throw new Error('Database not connected');
-    
+
     logger.debug(`Executing SQL command: ${sql}`, { params });
-    
+
     try {
       const stmt = this.db.prepare(sql);
       const result = stmt.run(...params);
-      
+
       return {
         affectedRows: result.changes || 0,
         insertId: result.lastInsertRowid || null,
-        executionTime: 1
+        executionTime: 1,
       };
     } catch (error) {
       logger.error(`Execute failed: ${error}`);
@@ -113,16 +115,16 @@ export class SQLiteAdapter {
   async transaction<T>(fn: (tx: any) => Promise<T>): Promise<T> {
     if (!this.connected) await this.connect();
     if (!this.db) throw new Error('Database not connected');
-    
+
     const transaction = this.db.transaction((callback: any) => {
       return callback();
     });
-    
+
     const tx = {
       query: this.query.bind(this),
-      execute: this.execute.bind(this)
+      execute: this.execute.bind(this),
     };
-    
+
     try {
       return await transaction(() => fn(tx));
     } catch (error) {
@@ -133,7 +135,7 @@ export class SQLiteAdapter {
 
   async health(): Promise<boolean> {
     if (!this.connected || !this.db) return false;
-    
+
     try {
       this.db.prepare('SELECT 1').get();
       return true;
@@ -144,16 +146,18 @@ export class SQLiteAdapter {
 
   async getSchema(): Promise<any> {
     if (!this.connected || !this.db) return { tables: [], views: [] };
-    
+
     try {
-      const tables = this.db.prepare(`
+      const tables = this.db
+        .prepare(`
         SELECT name FROM sqlite_master 
         WHERE type='table' AND name NOT LIKE 'sqlite_%'
-      `).all();
-      
-      return { 
+      `)
+        .all();
+
+      return {
         tables: tables.map((t: any) => t.name),
-        views: [] 
+        views: [],
       };
     } catch (error) {
       logger.error('Failed to get schema:', error);
@@ -166,13 +170,13 @@ export class SQLiteAdapter {
       total: 1,
       active: this.connected ? 1 : 0,
       idle: this.connected ? 0 : 1,
-      utilization: this.connected ? 100 : 0
+      utilization: this.connected ? 100 : 0,
     };
   }
 
   private initializeTables(): void {
     if (!this.db) return;
-    
+
     // Create documents table
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS documents (
@@ -206,7 +210,7 @@ export class SQLiteAdapter {
         sparc_integration TEXT
       )
     `);
-    
+
     // Create document_relationships table
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS document_relationships (
@@ -221,7 +225,7 @@ export class SQLiteAdapter {
         FOREIGN KEY (target_document_id) REFERENCES documents(id)
       )
     `);
-    
+
     // Create projects table
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS projects (
@@ -235,7 +239,7 @@ export class SQLiteAdapter {
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
-    
+
     // Create document_workflow_states table
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS document_workflow_states (
@@ -249,10 +253,10 @@ export class SQLiteAdapter {
         FOREIGN KEY (document_id) REFERENCES documents(id)
       )
     `);
-    
+
     // Run migrations to add missing columns to existing tables
     this.runMigrations();
-    
+
     logger.info('✅ SQLite tables initialized');
   }
 
@@ -261,17 +265,23 @@ export class SQLiteAdapter {
    */
   private runMigrations(): void {
     if (!this.db) return;
-    
+
     try {
       // Check if searchable_content column exists
-      const tableInfo = this.db.prepare("PRAGMA table_info(documents)").all();
-      const hasSearchableContent = tableInfo.some((col: any) => col.name === 'searchable_content');
-      
+      const tableInfo = this.db.prepare('PRAGMA table_info(documents)').all();
+      const hasSearchableContent = tableInfo.some(
+        (col: any) => col.name === 'searchable_content'
+      );
+
       if (!hasSearchableContent) {
-        logger.info('Adding missing searchable_content column to documents table');
-        this.db.prepare("ALTER TABLE documents ADD COLUMN searchable_content TEXT").run();
+        logger.info(
+          'Adding missing searchable_content column to documents table'
+        );
+        this.db
+          .prepare('ALTER TABLE documents ADD COLUMN searchable_content TEXT')
+          .run();
       }
-      
+
       // Check for other missing columns
       const columnChecks = [
         { name: 'keywords', type: 'TEXT' },
@@ -290,20 +300,26 @@ export class SQLiteAdapter {
         { name: 'task_document_ids', type: 'TEXT' },
         { name: 'overall_progress_percentage', type: 'INTEGER DEFAULT 0' },
         { name: 'phase', type: 'TEXT' },
-        { name: 'sparc_integration', type: 'TEXT' }
+        { name: 'sparc_integration', type: 'TEXT' },
       ];
-      
+
       for (const column of columnChecks) {
-        const hasColumn = tableInfo.some((col: any) => col.name === column.name);
+        const hasColumn = tableInfo.some(
+          (col: any) => col.name === column.name
+        );
         if (!hasColumn) {
-          logger.info(`Adding missing ${column.name} column to documents table`);
-          this.db.prepare(`ALTER TABLE documents ADD COLUMN ${column.name} ${column.type}`).run();
+          logger.info(
+            `Adding missing ${column.name} column to documents table`
+          );
+          this.db
+            .prepare(
+              `ALTER TABLE documents ADD COLUMN ${column.name} ${column.type}`
+            )
+            .run();
         }
       }
-      
     } catch (error) {
       logger.warn(`Migration warning (non-critical): ${error}`);
     }
   }
 }
-

@@ -8,7 +8,7 @@
 import { readdir, stat } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { Box, Text, useInput } from 'ink';
-import type React from 'react';
+import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Header,

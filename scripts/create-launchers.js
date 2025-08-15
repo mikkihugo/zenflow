@@ -110,10 +110,10 @@ const launchers = [
   { name: 'claude-zen.ps1', content: powershellLauncher, executable: true },
 ];
 
-launchers.forEach(launcher => {
+launchers.forEach((launcher) => {
   const filePath = path.join('bin', launcher.name);
   writeFileSync(filePath, launcher.content);
-  
+
   if (launcher.executable && process.platform !== 'win32') {
     try {
       chmodSync(filePath, '755');
@@ -133,19 +133,14 @@ const distributionPackage = {
   description: 'Claude Code Zen - Bundled Distribution',
   bin: {
     'claude-zen': 'claude-zen',
-    'claude-zen-cmd': 'claude-zen.cmd'
+    'claude-zen-cmd': 'claude-zen.cmd',
   },
-  files: [
-    'claude-zen',
-    'claude-zen.cmd', 
-    'claude-zen.ps1',
-    'bundle/'
-  ],
+  files: ['claude-zen', 'claude-zen.cmd', 'claude-zen.ps1', 'bundle/'],
   engines: {
-    node: '>=18.0.0'
+    node: '>=18.0.0',
   },
   keywords: ['ai', 'development', 'cli', 'bundle', 'swarm'],
-  license: 'MIT'
+  license: 'MIT',
 };
 
 writeFileSync('bin/package.json', JSON.stringify(distributionPackage, null, 2));

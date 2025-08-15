@@ -69,14 +69,15 @@ export class VectorDao<T> extends BaseDao<T> implements IVectorRepository<T> {
       );
 
       // Convert results to VectorSearchResult format
-      const results: VectorSearchResult<T>[] = vectorResult?.matches
-        ?.filter((match) => match?.score >= searchOptions?.threshold)
-        .map((match) => ({
-          id: match?.id,
-          score: match?.score,
-          document: this.mapVectorDocumentToEntity(match),
-          vector: match?.vector,
-        })) || [];
+      const results: VectorSearchResult<T>[] =
+        vectorResult?.matches
+          ?.filter((match) => match?.score >= searchOptions?.threshold)
+          .map((match) => ({
+            id: match?.id,
+            score: match?.score,
+            document: this.mapVectorDocumentToEntity(match),
+            vector: match?.vector,
+          })) || [];
 
       this.logger.debug(
         `Similarity search completed: ${results.length} results`

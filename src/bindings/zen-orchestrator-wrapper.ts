@@ -1,10 +1,10 @@
 /**
  * @fileoverview Zen Orchestrator Wrapper - Bindings Export Interface
- * 
- * This module provides type definitions and wrapper interfaces for the 
- * zen-orchestrator integration. It serves as the bridge between the bindings 
+ *
+ * This module provides type definitions and wrapper interfaces for the
+ * zen-orchestrator integration. It serves as the bridge between the bindings
  * module and the full zen-orchestrator integration.
- * 
+ *
  * @since 1.0.0-alpha.43
  */
 
@@ -104,7 +104,7 @@ export interface ZenOrchestratorConfig extends OrchestratorBindingConfig {
 
 /**
  * Zen Orchestrator Wrapper Class
- * 
+ *
  * Provides a simplified interface to the zen-orchestrator integration
  * specifically designed for use within the bindings module.
  */
@@ -131,7 +131,7 @@ export class ZenOrchestratorWrapper {
       quantum_backend: 'ibmq_qasm_simulator',
       debug_mode: false,
       log_level: 'info',
-      ...config
+      ...config,
     };
   }
 
@@ -141,10 +141,12 @@ export class ZenOrchestratorWrapper {
   async initialize(): Promise<void> {
     if (!this.integration) {
       // Lazy load the integration to avoid circular dependencies
-      const { getZenSwarmOrchestratorIntegration } = await import('../zen-orchestrator-integration.js');
+      const { getZenSwarmOrchestratorIntegration } = await import(
+        '../zen-orchestrator-integration.js'
+      );
       this.integration = getZenSwarmOrchestratorIntegration(this.config);
     }
-    
+
     if (this.integration && typeof this.integration.initialize === 'function') {
       await this.integration.initialize();
     }
@@ -160,7 +162,11 @@ export class ZenOrchestratorWrapper {
   /**
    * Get orchestrator status
    */
-  async getStatus(): Promise<{ success: boolean; data?: OrchestratorStatus; error?: string }> {
+  async getStatus(): Promise<{
+    success: boolean;
+    data?: OrchestratorStatus;
+    error?: string;
+  }> {
     if (!this.integration) {
       return { success: false, error: 'Integration not initialized' };
     }
@@ -171,10 +177,15 @@ export class ZenOrchestratorWrapper {
    * Send A2A message
    */
   async sendA2AMessage(
-    messageType: string, 
-    payload: any, 
+    messageType: string,
+    payload: any,
     targetSwarm?: string
-  ): Promise<{ success: boolean; data?: any; error?: string; executionTimeMs?: number }> {
+  ): Promise<{
+    success: boolean;
+    data?: any;
+    error?: string;
+    executionTimeMs?: number;
+  }> {
     if (!this.integration) {
       return { success: false, error: 'Integration not initialized' };
     }
@@ -185,8 +196,8 @@ export class ZenOrchestratorWrapper {
    * Execute neural service
    */
   async executeNeuralService<T = any>(
-    taskType: string, 
-    inputData: any, 
+    taskType: string,
+    inputData: any,
     config?: any
   ): Promise<TypedNeuralServiceResult<T>> {
     if (!this.integration) {
@@ -198,7 +209,11 @@ export class ZenOrchestratorWrapper {
   /**
    * List available services
    */
-  async listServices(): Promise<{ success: boolean; data?: string[]; error?: string }> {
+  async listServices(): Promise<{
+    success: boolean;
+    data?: string[];
+    error?: string;
+  }> {
     if (!this.integration) {
       return { success: false, error: 'Integration not initialized' };
     }
@@ -208,7 +223,11 @@ export class ZenOrchestratorWrapper {
   /**
    * Get comprehensive metrics
    */
-  async getMetrics(): Promise<{ success: boolean; data?: OrchestratorMetrics; error?: string }> {
+  async getMetrics(): Promise<{
+    success: boolean;
+    data?: OrchestratorMetrics;
+    error?: string;
+  }> {
     if (!this.integration) {
       return { success: false, error: 'Integration not initialized' };
     }

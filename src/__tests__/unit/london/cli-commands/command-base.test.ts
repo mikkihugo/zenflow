@@ -1,4 +1,4 @@
-import { BaseCommand } from '../../../../cli/core/base-command';
+import { BaseCommand } from '../../../../interfaces/cli/core/base-command';
 
 // Concrete implementation for testing
 class TestCommand extends BaseCommand {

@@ -2,7 +2,7 @@
 
 /**
  * Database Initialization Script
- * 
+ *
  * Standalone script to initialize the claude-code-zen database with all schemas.
  * Run this to set up the database before using ADR Manager, AGUI, or Vision services.
  */
@@ -15,11 +15,12 @@ async function main() {
   console.log('==========================================');
 
   try {
-    const databasePath = process.argv[2] || join(process.cwd(), 'data', 'claude-zen.db');
+    const databasePath =
+      process.argv[2] || join(process.cwd(), 'data', 'claude-zen.db');
     console.log(`📂 Database location: ${databasePath}`);
-    
+
     const initializer = await initializeDatabase(databasePath);
-    
+
     console.log('✅ Database initialization successful!');
     console.log('');
     console.log('🎯 Ready to use:');
@@ -28,9 +29,8 @@ async function main() {
     console.log('  - AGUI Workflow Validation');
     console.log('  - Document Management System');
     console.log('  - SPARC Integration');
-    
+
     initializer.close();
-    
   } catch (error) {
     console.error('❌ Database initialization failed:', error);
     process.exit(1);

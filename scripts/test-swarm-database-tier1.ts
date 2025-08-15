@@ -2,18 +2,18 @@
 
 /**
  * Test Swarm Database TIER 1 Learning Integration
- * 
+ *
  * Verify that swarm learning data can be stored and retrieved
  * using our 100% real database system
  */
 
 import { createLogger } from '../src/core/logger.js';
 import { SwarmDatabaseManager } from '../src/coordination/swarm/storage/swarm-database-manager.js';
-import type { 
+import type {
   SwarmCommanderLearning,
   AgentPerformanceHistory,
   PhaseEfficiencyMetrics,
-  SuccessfulPattern
+  SuccessfulPattern,
 } from '../src/coordination/swarm/storage/swarm-database-manager.js';
 
 const logger = createLogger('test-swarm-database-tier1');
@@ -23,11 +23,15 @@ async function main() {
   console.log('==================================================');
 
   try {
-    // Note: This is a simplified test - in practice, SwarmDatabaseManager 
+    // Note: This is a simplified test - in practice, SwarmDatabaseManager
     // would be properly initialized via DI container
-    console.log('📝 Note: This test demonstrates the intended integration patterns');
-    console.log('    Real initialization would use DI container with DAL Factory');
-    
+    console.log(
+      '📝 Note: This test demonstrates the intended integration patterns'
+    );
+    console.log(
+      '    Real initialization would use DI container with DAL Factory'
+    );
+
     // Create sample TIER 1 learning data
     const sampleLearningData: SwarmCommanderLearning = {
       id: `tier1_test_${Date.now()}`,
@@ -39,33 +43,36 @@ async function main() {
           taskSuccessRate: 0.92,
           averageCompletionTime: 2500,
           errorPatterns: ['timeout_errors', 'dependency_issues'],
-          optimizationSuggestions: ['reduce_task_complexity', 'parallel_execution'],
-          lastUpdated: new Date().toISOString()
+          optimizationSuggestions: [
+            'reduce_task_complexity',
+            'parallel_execution',
+          ],
+          lastUpdated: new Date().toISOString(),
         },
         'agent-002': {
-          agentId: 'agent-002', 
+          agentId: 'agent-002',
           taskSuccessRate: 0.88,
           averageCompletionTime: 3200,
           errorPatterns: ['syntax_errors', 'type_mismatches'],
           optimizationSuggestions: ['better_validation', 'type_checking'],
-          lastUpdated: new Date().toISOString()
-        }
+          lastUpdated: new Date().toISOString(),
+        },
       },
       sparcPhaseEfficiency: {
-        'specification': {
+        specification: {
           phase: 'specification',
           averageTime: 1200,
           successRate: 0.95,
           commonIssues: ['unclear_requirements', 'missing_constraints'],
-          optimizations: ['requirement_templates', 'validation_checklists']
+          optimizations: ['requirement_templates', 'validation_checklists'],
         },
-        'architecture': {
+        architecture: {
           phase: 'architecture',
           averageTime: 1800,
           successRate: 0.89,
           commonIssues: ['technology_choices', 'scalability_concerns'],
-          optimizations: ['architecture_patterns', 'performance_modeling']
-        }
+          optimizations: ['architecture_patterns', 'performance_modeling'],
+        },
       },
       implementationPatterns: [
         {
@@ -74,7 +81,7 @@ async function main() {
           context: 'High-complexity multi-file projects',
           successRate: 0.94,
           usageCount: 15,
-          lastUsed: new Date().toISOString()
+          lastUsed: new Date().toISOString(),
         },
         {
           patternId: 'pattern-002',
@@ -82,8 +89,8 @@ async function main() {
           context: 'Test-driven development workflows',
           successRate: 0.91,
           usageCount: 23,
-          lastUsed: new Date().toISOString()
-        }
+          lastUsed: new Date().toISOString(),
+        },
       ],
       taskCompletionPatterns: [
         {
@@ -91,15 +98,15 @@ async function main() {
           averageTime: 800,
           resourcesUsed: ['filesystem', 'template_engine'],
           dependencies: ['project_structure'],
-          successFactors: ['clear_specifications', 'valid_templates']
+          successFactors: ['clear_specifications', 'valid_templates'],
         },
         {
           taskType: 'code_refactoring',
           averageTime: 2400,
           resourcesUsed: ['ast_parser', 'linter', 'formatter'],
           dependencies: ['test_coverage'],
-          successFactors: ['comprehensive_tests', 'small_changes']
-        }
+          successFactors: ['comprehensive_tests', 'small_changes'],
+        },
       ],
       realTimeFeedback: [
         {
@@ -108,7 +115,8 @@ async function main() {
           eventType: 'success',
           context: 'Complex TypeScript refactoring completed',
           outcome: 'All tests pass, performance improved by 15%',
-          learningExtracted: 'Incremental changes reduce risk and improve outcomes'
+          learningExtracted:
+            'Incremental changes reduce risk and improve outcomes',
         },
         {
           eventId: 'event-002',
@@ -116,20 +124,31 @@ async function main() {
           eventType: 'optimization',
           context: 'Parallel task execution implemented',
           outcome: 'Task completion time reduced by 40%',
-          learningExtracted: 'Dependency analysis enables safe parallel execution'
-        }
+          learningExtracted:
+            'Dependency analysis enables safe parallel execution',
+        },
       ],
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
 
     console.log('\n✅ Sample TIER 1 Learning Data Created');
     console.log('=====================================');
-    console.log(`📊 Agent Performance Records: ${Object.keys(sampleLearningData.agentPerformanceHistory).length}`);
-    console.log(`📈 SPARC Phase Metrics: ${Object.keys(sampleLearningData.sparcPhaseEfficiency).length}`);
-    console.log(`🎯 Implementation Patterns: ${sampleLearningData.implementationPatterns.length}`);
-    console.log(`📋 Task Patterns: ${sampleLearningData.taskCompletionPatterns.length}`);
-    console.log(`⚡ Real-time Events: ${sampleLearningData.realTimeFeedback.length}`);
+    console.log(
+      `📊 Agent Performance Records: ${Object.keys(sampleLearningData.agentPerformanceHistory).length}`
+    );
+    console.log(
+      `📈 SPARC Phase Metrics: ${Object.keys(sampleLearningData.sparcPhaseEfficiency).length}`
+    );
+    console.log(
+      `🎯 Implementation Patterns: ${sampleLearningData.implementationPatterns.length}`
+    );
+    console.log(
+      `📋 Task Patterns: ${sampleLearningData.taskCompletionPatterns.length}`
+    );
+    console.log(
+      `⚡ Real-time Events: ${sampleLearningData.realTimeFeedback.length}`
+    );
 
     console.log('\n🗄️ Database Integration Points');
     console.log('=============================');
@@ -140,10 +159,14 @@ async function main() {
     console.log('\n📋 Integration Methods Available:');
     console.log('=================================');
     console.log('📝 storeTier1Learning() - Store complete learning data');
-    console.log('📊 getTier1Learning() - Retrieve learning data by swarm/commander');
+    console.log(
+      '📊 getTier1Learning() - Retrieve learning data by swarm/commander'
+    );
     console.log('🎯 storeAgentPerformance() - Store individual agent metrics');
     console.log('🔍 findSimilarLearningPatterns() - Vector similarity search');
-    console.log('📈 getAgentPerformanceHistory() - Cross-swarm performance tracking');
+    console.log(
+      '📈 getAgentPerformanceHistory() - Cross-swarm performance tracking'
+    );
     console.log('⚡ storeSPARCEfficiency() - SPARC phase optimization data');
 
     console.log('\n🚀 Expected Database Storage:');
@@ -162,8 +185,9 @@ async function main() {
     console.log('✅ Real database schema defined');
     console.log('');
     console.log('🚀 Ready for integration with SwarmDatabaseManager!');
-    console.log('   Next: Initialize via DI container and test with real databases');
-
+    console.log(
+      '   Next: Initialize via DI container and test with real databases'
+    );
   } catch (error) {
     console.error('❌ TIER 1 learning integration test failed:', error);
     process.exit(1);

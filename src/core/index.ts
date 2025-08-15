@@ -57,7 +57,7 @@ export type {
 } from './memory-system.ts';
 export { MemorySystem } from './memory-system.ts';
 // Core processing engines
-export { WorkflowEngine } from './workflow-engine.ts';
+export { WorkflowEngine } from '../workflows/workflow-engine.ts';
 
 // ==================== LEGACY COMPATIBILITY ====================
 

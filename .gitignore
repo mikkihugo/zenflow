@@ -18,6 +18,16 @@ logs/
 .bazel-graph/
 bazel-*/
 
+# Rust build artifacts
+target/
+*/target/
+src/bindings/target/
+
+# JavaScript build artifacts in src/
+src/**/*.js
+!src/**/*.config.js
+!src/**/esbuild*.js
+
 # Kuzu database files
 *.kuzu/
 *.kuzu-wal

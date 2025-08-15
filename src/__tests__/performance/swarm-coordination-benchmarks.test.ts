@@ -3,7 +3,7 @@
  * Comprehensive performance testing for swarm operations
  */
 
-import { AgentManager } from '../../coordination/agents/agent-manager.ts';
+import { AgentManager } from '../../coordination/agents/agent-registry';
 import { TaskOrchestrator } from '../../coordination/orchestrator.ts';
 import { SwarmCoordinator } from '../../coordination/swarm/core/swarm-coordinator.ts';
 import { CoordinationTestHelpers } from '../helpers/coordination-test-helpers.ts';

@@ -1,5 +1,5 @@
 import { DiscoveryPipeline } from '../../../coordination/discovery/pipeline'; // Assuming a DiscoveryPipeline class exists
-import { BaseCommand } from './base-command'; // Assuming a BaseCommand class exists
+import { BaseCommand } from '../../cli/core/base-command'; // CLI stub for compatibility
 
 export interface DiscoverOptions {
   autoSwarms: boolean;

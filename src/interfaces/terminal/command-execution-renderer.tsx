@@ -10,7 +10,7 @@
  */
 
 import { Box, Text, useApp } from 'ink';
-import type React from 'react';
+import React from 'react';
 import { useEffect, useState } from 'react';
 import AdvancedCLICommands from './advanced-cli-commands.js';
 import {

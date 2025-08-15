@@ -4,15 +4,15 @@ describe('Auto-Swarm Integration', () => {
     const { AutoSwarmFactory } = await import(
       '../../coordination/discovery/auto-swarm-factory.ts'
     );
-    const { HiveSwarmCoordinator } = await import(
-      '../../coordination/hive-swarm-sync.ts'
+    const { CollectiveSwarmCoordinator } = await import(
+      '../../coordination/collective-knowledge-bridge'
     );
     const { createPublicSwarmCoordinator } = await import(
       '../../coordination/public-api.ts'
     );
 
     expect(AutoSwarmFactory).toBeDefined();
-    expect(HiveSwarmCoordinator).toBeDefined();
+    expect(CollectiveSwarmCoordinator).toBeDefined();
     expect(createPublicSwarmCoordinator).toBeDefined();
   });
 
@@ -20,8 +20,8 @@ describe('Auto-Swarm Integration', () => {
     const { AutoSwarmFactory } = await import(
       '../../coordination/discovery/auto-swarm-factory.ts'
     );
-    const { HiveSwarmCoordinator } = await import(
-      '../../coordination/hive-swarm-sync.ts'
+    const { CollectiveSwarmCoordinator } = await import(
+      '../../coordination/collective-knowledge-bridge'
     );
     const { createPublicSwarmCoordinator } = await import(
       '../../coordination/public-api.ts'
@@ -47,7 +47,7 @@ describe('Auto-Swarm Integration', () => {
     // Create all required infrastructure
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
-    const hiveSync = new HiveSwarmCoordinator(eventBus);
+    const hiveSync = new CollectiveSwarmCoordinator(eventBus);
 
     // Create factory (this should work without errors)
     const factory = new AutoSwarmFactory(

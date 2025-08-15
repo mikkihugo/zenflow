@@ -9,7 +9,7 @@ import { access, readdir, stat } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
-import type React from 'react';
+import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   WorkspaceCollectiveSystem,

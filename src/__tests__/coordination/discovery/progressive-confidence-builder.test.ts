@@ -134,9 +134,7 @@ describe('ProgressiveConfidenceBuilder', () => {
         },
       ]);
 
-      const result = await builder.buildConfidence(
-        context
-      );
+      const result = await builder.buildConfidence(context);
 
       expect((result as any)?.domains.size).toBe(1);
       expect((result as any)?.domains?.has('auth')).toBe(true);
@@ -523,9 +521,9 @@ describe('ProgressiveConfidenceBuilder', () => {
 
       // Should have triggered checkpoint questions
       expect(checkpointQuestions.length).toBeGreaterThan(0);
-      expect(checkpointQuestions.some((q) => (q as any).priority === 'critical')).toBe(
-        true
-      );
+      expect(
+        checkpointQuestions.some((q) => (q as any).priority === 'critical')
+      ).toBe(true);
     });
 
     it('should allow domain review at checkpoints', async () => {
@@ -710,7 +708,9 @@ describe('ProgressiveConfidenceBuilder', () => {
       await builder.buildConfidence(context);
 
       // Check that confidence changed based on responses
-      const confidenceChanges = progressEvents.map((e) => (e as any).confidence);
+      const confidenceChanges = progressEvents.map(
+        (e) => (e as any).confidence
+      );
       expect(
         confidenceChanges.some(
           (c, i) => i > 0 && c !== confidenceChanges[i - 1]
@@ -749,7 +749,9 @@ describe('ProgressiveConfidenceBuilder', () => {
       await builder.buildConfidence(context);
 
       expect(finalQuestions.length).toBe(1);
-      expect((finalQuestions[0] as any)?.question).toContain('Approve and proceed');
+      expect((finalQuestions[0] as any)?.question).toContain(
+        'Approve and proceed'
+      );
     });
 
     it('should allow continuing iterations if requested', async () => {

@@ -1,14 +1,17 @@
 /**
  * @file Hierarchy FACT Validation System
  * Validates that all hierarchy levels have proper shared FACT access.
- * 
+ *
  * This system ensures the SHARED FACT principle is maintained:
  * ALL hierarchy levels (Cubes, Matrons, Queens, SwarmCommanders, Agents)
  * use the SAME CollectiveFACTSystem instance.
  */
 
 import { getLogger } from '../config/logging-config.ts';
-import { validateUniversalFACTAccess, getUniversalFACTAccess } from './shared-fact-access.ts';
+import {
+  validateUniversalFACTAccess,
+  getUniversalFACTAccess,
+} from './shared-fact-access.ts';
 import { getDSPySharedFACTSystem } from './shared-fact-integration.ts';
 
 const logger = getLogger('Hierarchy-FACT-Validation');
@@ -88,8 +91,14 @@ export class HierarchyFACTValidator {
 
       // 2. Test each hierarchy level individually
       logger.info('🔍 Step 2: Testing individual hierarchy levels');
-      const hierarchyLevels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'] as const;
-      
+      const hierarchyLevels = [
+        'Cube',
+        'Matron',
+        'Queen',
+        'SwarmCommander',
+        'Agent',
+      ] as const;
+
       for (const level of hierarchyLevels) {
         const levelValidation = await this.validateHierarchyLevel(level);
         result.hierarchyLevels.push(levelValidation);
@@ -104,12 +113,18 @@ export class HierarchyFACTValidator {
       result.sharedFACTSystemActive = await this.validateSharedFACTSystem();
 
       // 5. Calculate performance metrics
-      const searchTimes = result.hierarchyLevels.map(l => l.performance.searchTime);
-      const storeTimes = result.hierarchyLevels.map(l => l.performance.storeTime);
-      
+      const searchTimes = result.hierarchyLevels.map(
+        (l) => l.performance.searchTime
+      );
+      const storeTimes = result.hierarchyLevels.map(
+        (l) => l.performance.storeTime
+      );
+
       result.performanceMetrics = {
-        averageSearchTime: searchTimes.reduce((a, b) => a + b, 0) / searchTimes.length,
-        averageStoreTime: storeTimes.reduce((a, b) => a + b, 0) / storeTimes.length,
+        averageSearchTime:
+          searchTimes.reduce((a, b) => a + b, 0) / searchTimes.length,
+        averageStoreTime:
+          storeTimes.reduce((a, b) => a + b, 0) / storeTimes.length,
         totalValidationTime: Date.now() - startTime,
       };
 
@@ -117,8 +132,13 @@ export class HierarchyFACTValidator {
       result.recommendations = this.generateRecommendations(result);
 
       // 7. Determine overall success
-      const allLevelsWorking = result.hierarchyLevels.every(l => l.hasAccess && l.sharedInstance);
-      result.success = allLevelsWorking && result.universalAccessValidated && result.sharedFACTSystemActive;
+      const allLevelsWorking = result.hierarchyLevels.every(
+        (l) => l.hasAccess && l.sharedInstance
+      );
+      result.success =
+        allLevelsWorking &&
+        result.universalAccessValidated &&
+        result.sharedFACTSystemActive;
 
       if (result.success) {
         logger.info('✅ Hierarchy FACT validation completed successfully');
@@ -129,10 +149,12 @@ export class HierarchyFACTValidator {
       return result;
     } catch (error) {
       logger.error('❌ Hierarchy FACT validation failed with error:', error);
-      
-      result.criticalIssues.push(`Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+
+      result.criticalIssues.push(
+        `Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`
+      );
       result.performanceMetrics.totalValidationTime = Date.now() - startTime;
-      
+
       return result;
     }
   }
@@ -228,10 +250,13 @@ export class HierarchyFACTValidator {
         validation.dspyIntegration = false;
       }
 
-      logger.debug(`✅ ${level} validation completed: ${validation.hasAccess ? 'SUCCESS' : 'FAILED'}`);
+      logger.debug(
+        `✅ ${level} validation completed: ${validation.hasAccess ? 'SUCCESS' : 'FAILED'}`
+      );
       return validation;
     } catch (error) {
-      validation.error = error instanceof Error ? error.message : 'Unknown validation error';
+      validation.error =
+        error instanceof Error ? error.message : 'Unknown validation error';
       logger.error(`❌ ${level} validation failed:`, error);
       return validation;
     }
@@ -243,10 +268,10 @@ export class HierarchyFACTValidator {
   private async validateDSPyIntegration(): Promise<boolean> {
     try {
       const dspySystem = getDSPySharedFACTSystem();
-      
+
       // Test DSPy functionality
       await dspySystem.learnFromFactAccess('test-integration', 'System', true);
-      
+
       return true;
     } catch (error) {
       logger.warn('DSPy integration validation failed:', error);
@@ -260,14 +285,20 @@ export class HierarchyFACTValidator {
   private async validateSharedFACTSystem(): Promise<boolean> {
     try {
       // Test that all levels get the same instance
-      const levels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'] as const;
+      const levels = [
+        'Cube',
+        'Matron',
+        'Queen',
+        'SwarmCommander',
+        'Agent',
+      ] as const;
       const instances = await Promise.all(
-        levels.map(level => getUniversalFACTAccess(level))
+        levels.map((level) => getUniversalFACTAccess(level))
       );
 
       // Check if all instances are the same reference
       const firstInstance = instances[0];
-      return instances.every(instance => instance === firstInstance);
+      return instances.every((instance) => instance === firstInstance);
     } catch (error) {
       logger.error('Shared FACT system validation failed:', error);
       return false;
@@ -281,34 +312,52 @@ export class HierarchyFACTValidator {
     const recommendations: string[] = [];
 
     if (!result.universalAccessValidated) {
-      recommendations.push('Initialize universal FACT access system during startup');
+      recommendations.push(
+        'Initialize universal FACT access system during startup'
+      );
     }
 
     if (!result.sharedFACTSystemActive) {
-      recommendations.push('Ensure shared FACT system is properly initialized before hierarchy access');
+      recommendations.push(
+        'Ensure shared FACT system is properly initialized before hierarchy access'
+      );
     }
 
     if (!result.dspyIntegrationActive) {
-      recommendations.push('Consider enabling DSPy integration for intelligent FACT operations');
+      recommendations.push(
+        'Consider enabling DSPy integration for intelligent FACT operations'
+      );
     }
 
-    const failedLevels = result.hierarchyLevels.filter(l => !l.hasAccess);
+    const failedLevels = result.hierarchyLevels.filter((l) => !l.hasAccess);
     if (failedLevels.length > 0) {
-      recommendations.push(`Fix FACT access for hierarchy levels: ${failedLevels.map(l => l.level).join(', ')}`);
+      recommendations.push(
+        `Fix FACT access for hierarchy levels: ${failedLevels.map((l) => l.level).join(', ')}`
+      );
     }
 
-    const slowLevels = result.hierarchyLevels.filter(l => l.performance.searchTime > 1000);
+    const slowLevels = result.hierarchyLevels.filter(
+      (l) => l.performance.searchTime > 1000
+    );
     if (slowLevels.length > 0) {
-      recommendations.push(`Optimize FACT search performance for: ${slowLevels.map(l => l.level).join(', ')}`);
+      recommendations.push(
+        `Optimize FACT search performance for: ${slowLevels.map((l) => l.level).join(', ')}`
+      );
     }
 
-    const sharedInstanceIssues = result.hierarchyLevels.filter(l => !l.sharedInstance);
+    const sharedInstanceIssues = result.hierarchyLevels.filter(
+      (l) => !l.sharedInstance
+    );
     if (sharedInstanceIssues.length > 0) {
-      recommendations.push('Critical: Fix shared instance access - levels using different FACT instances');
+      recommendations.push(
+        'Critical: Fix shared instance access - levels using different FACT instances'
+      );
     }
 
     if (result.performanceMetrics.averageSearchTime > 500) {
-      recommendations.push('Consider enabling FACT caching to improve search performance');
+      recommendations.push(
+        'Consider enabling FACT caching to improve search performance'
+      );
     }
 
     return recommendations;
@@ -348,7 +397,9 @@ export async function quickValidateSharedFACT(): Promise<{
       timestamp: Date.now() - startTime,
     };
   } catch (error) {
-    issues.push(`Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    issues.push(
+      `Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
     return {
       healthy: false,
       issues,

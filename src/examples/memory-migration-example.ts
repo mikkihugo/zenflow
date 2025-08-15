@@ -2,7 +2,7 @@
  * @file Memory-migration-example implementation.
  */
 
-import type { SessionMemoryStore } from '../memory/index.js';
+import type { SessionMemoryStore } from '../memory/index.ts';
 import {
   extractErrorMessage,
   isMemoryError,

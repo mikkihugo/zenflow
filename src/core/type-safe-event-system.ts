@@ -17,9 +17,9 @@
  */
 
 import { EventEmitter } from 'events';
-import type { Logger } from '../config/logging-config.ts';
-import { getLogger } from '../config/logging-config.ts';
-import type { Agent, Task } from '../coordination/types.ts';
+import type { Logger } from '../config/logging-config';
+import { getLogger } from '../config/logging-config';
+import type { Agent, Task } from '../coordination/types';
 import type {
   WorkflowContext,
   WorkflowDefinition,
@@ -37,7 +37,7 @@ import {
   type TypeSchema,
   validateCrossDomain,
 } from './domain-boundary-validator.ts';
-import type { IEventBus } from './interfaces/base-interfaces.ts';
+import type { IEventBus } from './interfaces/base-interfaces';
 
 // ============================================================================
 // EVENT SYSTEM CORE TYPES - Foundation for all event operations

@@ -7,10 +7,10 @@ import type {
   Priority,
   RiskLevel,
 } from './coordination/swarm/sparc/types/sparc-types.js';
-import type { 
-  TestResult, 
-  CommandResult, 
-  BaseApiResponse 
+import type {
+  TestResult,
+  CommandResult,
+  BaseApiResponse,
 } from './types/api-response.js';
 
 const logger = getLogger('comprehensive-sparc-test');
@@ -172,11 +172,12 @@ async function testCLIIntegration() {
     const generateCommand = `cd ${process.cwd()} && npx tsx src/sparc-pseudocode-cli.ts generate --spec-file /tmp/cli-test-spec.json --output /tmp/cli-test-output.json`;
     const validateCommand = `cd ${process.cwd()} && npx tsx src/sparc-pseudocode-cli.ts validate --pseudocode-file /tmp/cli-test-output.json`;
 
-    const generateResult = await execAsync(generateCommand) as CommandResult;
-    const validateResult = await execAsync(validateCommand) as CommandResult;
+    const generateResult = (await execAsync(generateCommand)) as CommandResult;
+    const validateResult = (await execAsync(validateCommand)) as CommandResult;
 
     const success: boolean =
-      (generateResult?.stdout?.includes('✅ Pseudocode generation completed') ?? false) &&
+      (generateResult?.stdout?.includes('✅ Pseudocode generation completed') ??
+        false) &&
       (validateResult?.stdout?.includes('✅ APPROVED') ?? false);
 
     return {
@@ -242,26 +243,26 @@ async function testMCPIntegration() {
       successMetrics: [],
     };
 
-    const generateResult = await pseudocodeGenerationTool.handler({
+    const generateResult = (await pseudocodeGenerationTool.handler({
       specification: testSpec,
-    }) as BaseApiResponse;
+    })) as BaseApiResponse;
 
     if (!generateResult?.success) {
       return { success: false, error: 'MCP generation failed' } as TestResult;
     }
 
-    const validateResult = await validationTool.handler({
+    const validateResult = (await validationTool.handler({
       pseudocodeStructure: {
         id: (generateResult?.data as any)?.pseudocodeId,
         algorithms: (generateResult?.data as any)?.algorithms,
         dataStructures: (generateResult?.data as any)?.dataStructures,
         controlFlows: (generateResult?.data as any)?.controlFlows,
       },
-    }) as BaseApiResponse;
+    })) as BaseApiResponse;
 
-    const algorithmsResult = await algorithmsOnlyTool.handler({
+    const algorithmsResult = (await algorithmsOnlyTool.handler({
       specification: testSpec,
-    }) as BaseApiResponse;
+    })) as BaseApiResponse;
 
     const success: boolean =
       generateResult?.success &&

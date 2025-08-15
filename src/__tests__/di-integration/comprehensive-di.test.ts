@@ -109,11 +109,15 @@ describe('DI System Comprehensive Integration', () => {
       container.register(LOGGER_TOKEN, new SingletonProvider(() => mockLogger));
       container.register(
         createToken<TestService>('TestService'),
-        new SingletonProvider((c: unknown) => new TestService((c as any).resolve(LOGGER_TOKEN)))
+        new SingletonProvider(
+          (c: unknown) => new TestService((c as any).resolve(LOGGER_TOKEN))
+        )
       );
 
       // Act
-      const service = container.resolve(createToken<TestService>('TestService'));
+      const service = container.resolve(
+        createToken<TestService>('TestService')
+      );
       service.doSomething();
 
       // Assert
@@ -125,7 +129,13 @@ describe('DI System Comprehensive Integration', () => {
     it('should configure container using builder pattern', async () => {
       // Arrange & Act
       const builtContainer = createContainerBuilder()
-        .singleton(CORE_TOKENS.Logger, () => ({ log: vi.fn() }))
+        .singleton(CORE_TOKENS.Logger, () => ({ 
+          log: vi.fn(),
+          debug: vi.fn(),
+          info: vi.fn(),
+          warn: vi.fn(),
+          error: vi.fn()
+        }))
         .transient(createToken<string>('TestString'), () => 'test-value')
         .build();
 
@@ -152,11 +162,21 @@ describe('DI System Comprehensive Integration', () => {
         info: vi.fn(),
         debug: vi.fn(),
       };
-      const mockConfig = { get: vi.fn() };
+      const mockConfig = { 
+        get: vi.fn(),
+        set: vi.fn(),
+        has: vi.fn()
+      };
 
       // Act
-      container.register(CORE_TOKENS.Logger, new SingletonProvider(() => mockLogger));
-      container.register(CORE_TOKENS.Config, new SingletonProvider(() => mockConfig));
+      container.register(
+        CORE_TOKENS.Logger,
+        new SingletonProvider(() => mockLogger)
+      );
+      container.register(
+        CORE_TOKENS.Config,
+        new SingletonProvider(() => mockConfig)
+      );
 
       // Assert
       const logger = container.resolve(CORE_TOKENS.Logger);
@@ -172,11 +192,19 @@ describe('DI System Comprehensive Integration', () => {
         initializeSwarm: vi.fn(),
         addAgent: vi.fn(),
         removeAgent: vi.fn(),
+        assignTask: vi.fn(),
+        getMetrics: vi.fn(),
+        shutdown: vi.fn()
       };
       const mockAgentRegistry = {
         register: vi.fn(),
         find: vi.fn(),
         list: vi.fn(),
+        registerAgent: vi.fn(),
+        unregisterAgent: vi.fn(),
+        getAgent: vi.fn(),
+        getActiveAgents: vi.fn(),
+        findAvailableAgents: vi.fn()
       };
 
       // Act
@@ -203,16 +231,31 @@ describe('DI System Comprehensive Integration', () => {
         train: vi.fn(),
         evaluate: vi.fn(),
         save: vi.fn(),
+        createNetwork: vi.fn(),
+        trainNetwork: vi.fn(),
+        evaluateNetwork: vi.fn(),
+        saveModel: vi.fn(),
+        loadModel: vi.fn()
       };
       const mockDataLoader = {
         load: vi.fn(),
         preprocess: vi.fn(),
         batch: vi.fn(),
+        loadTrainingData: vi.fn(),
+        loadTestData: vi.fn(),
+        preprocessData: vi.fn(),
+        augmentData: vi.fn()
       };
 
       // Act
-      container.register(NEURAL_TOKENS['NetworkTrainer'], new SingletonProvider(() => mockTrainer));
-      container.register(NEURAL_TOKENS['DataLoader'], new SingletonProvider(() => mockDataLoader));
+      container.register(
+        NEURAL_TOKENS['NetworkTrainer'],
+        new SingletonProvider(() => mockTrainer)
+      );
+      container.register(
+        NEURAL_TOKENS['DataLoader'],
+        new SingletonProvider(() => mockDataLoader)
+      );
 
       // Assert
       const trainer = container.resolve(NEURAL_TOKENS['NetworkTrainer']);
@@ -237,8 +280,18 @@ describe('DI System Comprehensive Integration', () => {
       const TOKEN_A = createToken<unknown>('ServiceA');
       const TOKEN_B = createToken<unknown>('ServiceB');
 
-      container.register(TOKEN_A, new SingletonProvider((c: unknown) => ({ dep: (c as any).resolve(TOKEN_B) })));
-      container.register(TOKEN_B, new SingletonProvider((c: unknown) => ({ dep: (c as any).resolve(TOKEN_A) })));
+      container.register(
+        TOKEN_A,
+        new SingletonProvider((c: unknown) => ({
+          dep: (c as any).resolve(TOKEN_B),
+        }))
+      );
+      container.register(
+        TOKEN_B,
+        new SingletonProvider((c: unknown) => ({
+          dep: (c as any).resolve(TOKEN_A),
+        }))
+      );
 
       // Act & Assert
       expect(() => container.resolve(TOKEN_A)).toThrow(/circular/i);
@@ -269,8 +322,13 @@ describe('DI System Comprehensive Integration', () => {
   describe('Performance and Scalability', () => {
     it('should resolve services within performance thresholds', () => {
       // Arrange
-      const TEST_TOKEN = createToken<{ value: string }>('PerformanceTestService');
-      container.register(TEST_TOKEN, new SingletonProvider(() => ({ value: 'test' })));
+      const TEST_TOKEN = createToken<{ value: string }>(
+        'PerformanceTestService'
+      );
+      container.register(
+        TEST_TOKEN,
+        new SingletonProvider(() => ({ value: 'test' }))
+      );
 
       // Act - Measure resolution time
       const start = Date.now();
@@ -304,7 +362,9 @@ describe('DI System Comprehensive Integration', () => {
 
       // Assert - All should be the same instance (singleton)
       const firstResult = results?.[0];
-      expect(results?.every((result: unknown) => result === firstResult)).toBe(true);
+      expect(results?.every((result: unknown) => result === firstResult)).toBe(
+        true
+      );
       expect(creationCount).toBe(1); // Only created once
     });
   });
@@ -320,15 +380,21 @@ describe('DI System Comprehensive Integration', () => {
         completeTask: vi.fn(),
       };
 
-      const SPARC_TOKEN = createToken<typeof mockSPARCCoordinator>('SPARCCoordinator');
-      container.register(SPARC_TOKEN, new SingletonProvider(() => mockSPARCCoordinator));
+      const SPARC_TOKEN =
+        createToken<typeof mockSPARCCoordinator>('SPARCCoordinator');
+      container.register(
+        SPARC_TOKEN,
+        new SingletonProvider(() => mockSPARCCoordinator)
+      );
 
       // Act
       const sparcCoordinator = container.resolve(SPARC_TOKEN);
       sparcCoordinator.processSpecification({ task: 'test-task' });
 
       // Assert
-      expect(mockSPARCCoordinator.processSpecification).toHaveBeenCalledWith({ task: 'test-task' });
+      expect(mockSPARCCoordinator.processSpecification).toHaveBeenCalledWith({
+        task: 'test-task',
+      });
     });
 
     it('should integrate with memory systems', () => {
@@ -341,7 +407,10 @@ describe('DI System Comprehensive Integration', () => {
       };
 
       const MEMORY_TOKEN = createToken<typeof mockMemoryStore>('MemoryStore');
-      container.register(MEMORY_TOKEN, new SingletonProvider(() => mockMemoryStore));
+      container.register(
+        MEMORY_TOKEN,
+        new SingletonProvider(() => mockMemoryStore)
+      );
 
       // Act
       const memoryStore = container.resolve(MEMORY_TOKEN);

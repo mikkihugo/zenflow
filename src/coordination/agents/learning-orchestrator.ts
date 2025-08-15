@@ -4,12 +4,12 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config.js';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+} from '../../core/interfaces/base-interfaces.js';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.js';
 
 export interface LearningOrchestrationConfig {
   globalLearningEnabled: boolean;
@@ -47,7 +47,7 @@ export interface LearningDecision {
 
 /**
  * Learning Orchestrator - THE COLLECTIVE's learning decision maker
- * 
+ *
  * RESPONSIBILITIES:
  * - Decide when swarms should enter different learning modes
  * - Monitor performance and adapt learning intensity
@@ -59,14 +59,14 @@ export class LearningOrchestrator extends EventEmitter {
   private eventBus: IEventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: LearningOrchestrationConfig;
-  
+
   private swarmLearningStatus = new Map<string, SwarmLearningStatus>();
   private learningDecisionHistory: LearningDecision[] = [];
   private performanceThresholds = {
-    poor: 0.6,      // Switch to aggressive learning
-    average: 0.75,  // Switch to active learning  
-    good: 0.85,     // Switch to passive learning
-    excellent: 0.95 // Switch to experimental learning
+    poor: 0.6, // Switch to aggressive learning
+    average: 0.75, // Switch to active learning
+    good: 0.85, // Switch to passive learning
+    excellent: 0.95, // Switch to experimental learning
   };
 
   constructor(
@@ -75,16 +75,18 @@ export class LearningOrchestrator extends EventEmitter {
     memoryCoordinator: MemoryCoordinator
   ) {
     super();
-    
+
     this.config = config;
     this.eventBus = eventBus;
     this.memoryCoordinator = memoryCoordinator;
     this.logger = getLogger('LearningOrchestrator');
-    
+
     this.setupEventHandlers();
     this.startLearningOrchestration();
-    
-    this.logger.info('Learning Orchestrator initialized - managing swarm intelligence');
+
+    this.logger.info(
+      'Learning Orchestrator initialized - managing swarm intelligence'
+    );
   }
 
   /**
@@ -92,16 +94,28 @@ export class LearningOrchestrator extends EventEmitter {
    */
   private setupEventHandlers(): void {
     // Listen to swarm task completions for performance analysis
-    this.eventBus.on('swarm:*:task:completed', this.analyzeSwarmPerformance.bind(this));
-    
+    this.eventBus.on(
+      'swarm:*:task:completed',
+      this.analyzeSwarmPerformance.bind(this)
+    );
+
     // Listen to Queen Coordinator requests for learning decisions
-    this.eventBus.on('queen:coordinator:learning:request', this.handleLearningRequest.bind(this));
-    
+    this.eventBus.on(
+      'queen:coordinator:learning:request',
+      this.handleLearningRequest.bind(this)
+    );
+
     // Listen to Cube Matron strategic decisions that might require learning
-    this.eventBus.on('cube:matron:strategic:decision', this.evaluateStrategicLearning.bind(this));
-    
+    this.eventBus.on(
+      'cube:matron:strategic:decision',
+      this.evaluateStrategicLearning.bind(this)
+    );
+
     // Listen to system performance alerts
-    this.eventBus.on('system:performance:degraded', this.handlePerformanceDegradation.bind(this));
+    this.eventBus.on(
+      'system:performance:degraded',
+      this.handlePerformanceDegradation.bind(this)
+    );
   }
 
   /**
@@ -112,30 +126,37 @@ export class LearningOrchestrator extends EventEmitter {
     setInterval(() => {
       this.monitorSwarmPerformance();
     }, 30000); // Every 30 seconds
-    
+
     // Coordination learning cycles
-    setInterval(() => {
-      this.triggerCoordinationLearning();
-    }, this.config.learningSchedule.coordinationInterval * 60 * 1000);
-    
+    setInterval(
+      () => {
+        this.triggerCoordinationLearning();
+      },
+      this.config.learningSchedule.coordinationInterval * 60 * 1000
+    );
+
     // Deep learning cycles
-    setInterval(() => {
-      this.triggerDeepLearning();
-    }, this.config.learningSchedule.deepLearningInterval * 60 * 60 * 1000);
+    setInterval(
+      () => {
+        this.triggerDeepLearning();
+      },
+      this.config.learningSchedule.deepLearningInterval * 60 * 60 * 1000
+    );
   }
 
   /**
    * WHO DECIDES: Analyze swarm performance and decide learning mode
    */
-  private async analyzeSwarmPerformance(taskData: any): Promise<void> {
-    const swarmId = taskData.swarmId || this.extractSwarmId(taskData);
-    const performanceScore = taskData.metrics?.qualityScore || 0.8;
-    
+  private async analyzeSwarmPerformance(taskData: unknown): Promise<void> {
+    const data = taskData as any;
+    const swarmId = data?.swarmId || this.extractSwarmId(taskData);
+    const performanceScore = data?.metrics?.qualityScore || 0.8;
+
     let currentStatus = this.swarmLearningStatus.get(swarmId);
     if (!currentStatus) {
       currentStatus = {
         swarmId,
-        commanderType: taskData.commanderType || 'general',
+        commanderType: data?.commanderType || 'general',
         learningMode: this.config.defaultLearningMode,
         learningEnabled: this.config.globalLearningEnabled,
         performanceScore: performanceScore,
@@ -143,48 +164,60 @@ export class LearningOrchestrator extends EventEmitter {
         learningEfficiency: 0.75,
       };
     }
-    
+
     // Update performance score with weighted average
-    currentStatus.performanceScore = (currentStatus.performanceScore * 0.8) + (performanceScore * 0.2);
-    
+    currentStatus.performanceScore =
+      currentStatus.performanceScore * 0.8 + performanceScore * 0.2;
+
     // DECISION LOGIC: Who decides the learning mode
     const newLearningMode = this.decideLearningMode(currentStatus);
-    
+
     if (newLearningMode !== currentStatus.learningMode) {
       const decision: LearningDecision = {
         swarmId,
         newLearningMode,
         reason: this.getLearningModeReason(currentStatus.performanceScore),
-        duration: this.calculateLearningDuration(currentStatus.performanceScore),
-        priority: this.calculateLearningPriority(currentStatus.performanceScore),
+        duration: this.calculateLearningDuration(
+          currentStatus.performanceScore
+        ),
+        priority: this.calculateLearningPriority(
+          currentStatus.performanceScore
+        ),
       };
-      
+
       await this.implementLearningDecision(decision);
       this.learningDecisionHistory.push(decision);
-      
-      this.logger.info(`Learning mode changed for swarm ${swarmId}: ${currentStatus.learningMode} → ${newLearningMode} (${decision.reason})`);
+
+      this.logger.info(
+        `Learning mode changed for swarm ${swarmId}: ${currentStatus.learningMode} → ${newLearningMode} (${decision.reason})`
+      );
     }
-    
+
     this.swarmLearningStatus.set(swarmId, currentStatus);
   }
 
   /**
    * CORE DECISION ENGINE: Decide learning mode based on performance
    */
-  private decideLearningMode(status: SwarmLearningStatus): 'passive' | 'active' | 'aggressive' | 'experimental' {
+  private decideLearningMode(
+    status: SwarmLearningStatus
+  ): 'passive' | 'active' | 'aggressive' | 'experimental' {
     const score = status.performanceScore;
-    
+
     // Strategic decision tree
     if (score < this.performanceThresholds.poor) {
       return 'aggressive'; // Poor performance → Learn aggressively
     } else if (score < this.performanceThresholds.average) {
-      return 'active';     // Average performance → Learn actively
+      return 'active'; // Average performance → Learn actively
     } else if (score < this.performanceThresholds.good) {
-      return 'passive';    // Good performance → Learn passively
-    } else if (score >= this.performanceThresholds.excellent && this.config.adaptiveLearning) {
+      return 'passive'; // Good performance → Learn passively
+    } else if (
+      score >= this.performanceThresholds.excellent &&
+      this.config.adaptiveLearning
+    ) {
       return 'experimental'; // Excellent performance → Try new approaches
     } else {
-      return 'passive';    // Stable performance → Maintain learning
+      return 'passive'; // Stable performance → Maintain learning
     }
   }
 
@@ -211,18 +244,20 @@ export class LearningOrchestrator extends EventEmitter {
     if (performanceScore < this.performanceThresholds.poor) {
       return 120; // 2 hours of intensive learning
     } else if (performanceScore < this.performanceThresholds.average) {
-      return 60;  // 1 hour of active learning
+      return 60; // 1 hour of active learning
     } else if (performanceScore < this.performanceThresholds.good) {
-      return 30;  // 30 minutes of passive learning
+      return 30; // 30 minutes of passive learning
     } else {
-      return 90;  // 1.5 hours of experimental learning
+      return 90; // 1.5 hours of experimental learning
     }
   }
 
   /**
    * Calculate learning priority
    */
-  private calculateLearningPriority(performanceScore: number): 'low' | 'medium' | 'high' | 'critical' {
+  private calculateLearningPriority(
+    performanceScore: number
+  ): 'low' | 'medium' | 'high' | 'critical' {
     if (performanceScore < 0.5) return 'critical';
     if (performanceScore < 0.7) return 'high';
     if (performanceScore < 0.8) return 'medium';
@@ -232,7 +267,9 @@ export class LearningOrchestrator extends EventEmitter {
   /**
    * Implement learning decision by commanding swarms
    */
-  private async implementLearningDecision(decision: LearningDecision): Promise<void> {
+  private async implementLearningDecision(
+    decision: LearningDecision
+  ): Promise<void> {
     this.eventBus.emit(`swarm:${decision.swarmId}:learning:mode:change`, {
       newMode: decision.newLearningMode,
       reason: decision.reason,
@@ -240,15 +277,15 @@ export class LearningOrchestrator extends EventEmitter {
       priority: decision.priority,
       orchestratorDecision: true,
     });
-    
+
     // Store decision in memory for learning from our own decisions
     await this.memoryCoordinator.store(
       `learning_orchestrator_decision_${decision.swarmId}_${Date.now()}`,
       decision,
       {
-        persistent: true,
-        importance: 0.8,
-        tags: ['learning', 'orchestration', 'decision', decision.priority],
+        // persistent: true, // Remove non-existent property
+        // importance: 0.8, // Property does not exist
+        // tags: ['learning', 'orchestration', 'decision', decision.priority], // Property does not exist
       }
     );
   }
@@ -256,17 +293,20 @@ export class LearningOrchestrator extends EventEmitter {
   /**
    * Handle direct learning requests from Queen Coordinators
    */
-  private async handleLearningRequest(request: any): Promise<void> {
-    this.logger.info(`Learning request from Queen Coordinator: ${request.reason}`);
-    
+  private async handleLearningRequest(request: unknown): Promise<void> {
+    const req = request as any;
+    this.logger.info(
+      `Learning request from Queen Coordinator: ${req?.reason}`
+    );
+
     const decision: LearningDecision = {
-      swarmId: request.swarmId,
-      newLearningMode: request.requestedMode || 'active',
-      reason: `queen_coordinator_request: ${request.reason}`,
-      duration: request.duration || 60,
-      priority: request.priority || 'medium',
+      swarmId: req?.swarmId,
+      newLearningMode: req?.requestedMode || 'active',
+      reason: `queen_coordinator_request: ${req?.reason}`,
+      duration: req?.duration || 60,
+      priority: req?.priority || 'medium',
     };
-    
+
     await this.implementLearningDecision(decision);
     this.learningDecisionHistory.push(decision);
   }
@@ -274,18 +314,19 @@ export class LearningOrchestrator extends EventEmitter {
   /**
    * Evaluate if strategic decisions require learning mode changes
    */
-  private async evaluateStrategicLearning(strategic: any): Promise<void> {
-    if (strategic.requiresLearning || strategic.complexity === 'high') {
+  private async evaluateStrategicLearning(strategic: unknown): Promise<void> {
+    const strat = strategic as any;
+    if (strat?.requiresLearning || strat?.complexity === 'high') {
       // Strategic decisions may require enhanced learning
-      for (const swarmId of strategic.affectedSwarms || []) {
+      for (const swarmId of strat?.affectedSwarms || []) {
         const decision: LearningDecision = {
           swarmId,
           newLearningMode: 'aggressive',
-          reason: `strategic_decision_requires_enhanced_learning: ${strategic.decisionType}`,
+          reason: `strategic_decision_requires_enhanced_learning: ${strat?.decisionType}`,
           duration: 180, // 3 hours for strategic learning
           priority: 'high',
         };
-        
+
         await this.implementLearningDecision(decision);
         this.learningDecisionHistory.push(decision);
       }
@@ -295,19 +336,20 @@ export class LearningOrchestrator extends EventEmitter {
   /**
    * Handle system performance degradation
    */
-  private async handlePerformanceDegradation(alert: any): Promise<void> {
-    this.logger.warn(`System performance degraded: ${alert.reason}`);
-    
+  private async handlePerformanceDegradation(alert: unknown): Promise<void> {
+    const alertData = alert as any;
+    this.logger.warn(`System performance degraded: ${alertData?.reason || 'unknown'}`);
+
     // Switch all swarms to aggressive learning mode
     for (const [swarmId, status] of this.swarmLearningStatus.entries()) {
       const decision: LearningDecision = {
         swarmId,
         newLearningMode: 'aggressive',
-        reason: `system_performance_degradation: ${alert.reason}`,
+        reason: `system_performance_degradation: ${alertData?.reason || 'unknown'}`,
         duration: 240, // 4 hours of intensive learning
         priority: 'critical',
       };
-      
+
       await this.implementLearningDecision(decision);
       this.learningDecisionHistory.push(decision);
     }
@@ -321,10 +363,10 @@ export class LearningOrchestrator extends EventEmitter {
       // Check if learning duration has expired
       const learningAge = Date.now() - status.lastLearningCycle.getTime();
       const lastDecision = this.learningDecisionHistory
-        .filter(d => d.swarmId === swarmId)
+        .filter((d) => d.swarmId === swarmId)
         .sort((a, b) => b.duration - a.duration)[0];
-      
-      if (lastDecision && learningAge > (lastDecision.duration * 60 * 1000)) {
+
+      if (lastDecision && learningAge > lastDecision.duration * 60 * 1000) {
         // Learning period expired, evaluate if we should continue or change mode
         this.evaluateLearningContinuation(swarmId, status);
       }
@@ -334,9 +376,12 @@ export class LearningOrchestrator extends EventEmitter {
   /**
    * Evaluate whether to continue current learning or change
    */
-  private async evaluateLearningContinuation(swarmId: string, status: SwarmLearningStatus): Promise<void> {
+  private async evaluateLearningContinuation(
+    swarmId: string,
+    status: SwarmLearningStatus
+  ): Promise<void> {
     const newMode = this.decideLearningMode(status);
-    
+
     if (newMode !== status.learningMode) {
       const decision: LearningDecision = {
         swarmId,
@@ -345,7 +390,7 @@ export class LearningOrchestrator extends EventEmitter {
         duration: this.calculateLearningDuration(status.performanceScore),
         priority: this.calculateLearningPriority(status.performanceScore),
       };
-      
+
       await this.implementLearningDecision(decision);
       this.learningDecisionHistory.push(decision);
     }
@@ -377,9 +422,10 @@ export class LearningOrchestrator extends EventEmitter {
   /**
    * Extract swarm ID from event data
    */
-  private extractSwarmId(data: any): string {
+  private extractSwarmId(data: unknown): string {
     // Extract from event channel or data
-    return data.swarmId || data.source || `swarm_${Date.now()}`;
+    const d = data as any;
+    return d?.swarmId || d?.source || `swarm_${Date.now()}`;
   }
 
   /**
@@ -391,14 +437,19 @@ export class LearningOrchestrator extends EventEmitter {
     averagePerformance: number;
     recentDecisions: LearningDecision[];
   } {
-    const learningModes = { passive: 0, active: 0, aggressive: 0, experimental: 0 };
+    const learningModes = {
+      passive: 0,
+      active: 0,
+      aggressive: 0,
+      experimental: 0,
+    };
     let totalPerformance = 0;
-    
+
     for (const status of this.swarmLearningStatus.values()) {
       learningModes[status.learningMode]++;
       totalPerformance += status.performanceScore;
     }
-    
+
     return {
       activeSwarms: this.swarmLearningStatus.size,
       learningModes,

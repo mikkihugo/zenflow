@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'node:events';
 import { nanoid } from 'nanoid';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -22,9 +22,9 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../database/entities/product-entities.ts';
-import type { DocumentManager } from '../database/managers/document-manager.ts';
-import type { DocumentType } from '../types/workflow-types.ts';
-import type { WorkflowEngine } from './workflow-engine.ts';
+import type { DocumentManager } from '../database/managers/document-manager';
+import type { DocumentType } from '../types/workflow-types';
+import type { WorkflowEngine } from './workflow-engine';
 
 const logger = getLogger('DatabaseDriven');
 

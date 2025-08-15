@@ -486,10 +486,7 @@ class ZenSwarmHooks {
     }
 
     // Send telemetry if enabled
-    if (
-      sendTelemetry &&
-      process.env['ZEN_SWARM_TELEMETRY'] === 'true'
-    ) {
+    if (sendTelemetry && process.env['ZEN_SWARM_TELEMETRY'] === 'true') {
       this.sendTelemetry('notification', notification);
     }
 
@@ -1088,12 +1085,12 @@ class ZenSwarmHooks {
       /rm\s+-rf\s+\//,
       /rm\s+-rf\s+\*/,
       /rm\s+-rf\s+\~/,
-      
+
       // Remote execution
       /curl.*\|\s*bash/,
       /wget.*\|\s*sh/,
       /eval\s*\(/,
-      
+
       // Git destructive operations
       /git\s+reset\s+--hard/,
       /git\s+push\s+(-f|--force)/,
@@ -1108,12 +1105,12 @@ class ZenSwarmHooks {
       /git\s+gc\s+--prune=now/,
       /git\s+filter-branch/,
       /git\s+rebase.*&&.*git\s+push\s+-f/,
-      
+
       // System operations
       />\/dev\/null\s+2>&1/,
       /chmod\s+777/,
       /sudo\s+rm/,
-      /:\(\)\{\s*:\|:&\s*\};:/,  // Fork bomb
+      /:\(\)\{\s*:\|:&\s*\};:/, // Fork bomb
       /dd\s+if=.*of=\/dev/,
     ];
 
@@ -1128,7 +1125,8 @@ class ZenSwarmHooks {
     if (gitHardReset.test(command)) {
       return {
         safe: false,
-        reason: 'Git hard reset can destroy uncommitted changes. Use "git stash" first or "git reset --soft" for safer reset.',
+        reason:
+          'Git hard reset can destroy uncommitted changes. Use "git stash" first or "git reset --soft" for safer reset.',
         riskLevel: 'critical',
       };
     }
@@ -1136,7 +1134,8 @@ class ZenSwarmHooks {
     if (gitForcePattern.test(command)) {
       return {
         safe: false,
-        reason: 'Git force push can overwrite remote history. Use "git push --force-with-lease" after careful review.',
+        reason:
+          'Git force push can overwrite remote history. Use "git push --force-with-lease" after careful review.',
         riskLevel: 'critical',
       };
     }
@@ -1144,7 +1143,8 @@ class ZenSwarmHooks {
     if (gitBranchDelete.test(command)) {
       return {
         safe: false,
-        reason: 'Force branch deletion can lose work. Use "git branch -d" for safe deletion or backup first.',
+        reason:
+          'Force branch deletion can lose work. Use "git branch -d" for safe deletion or backup first.',
         riskLevel: 'high',
       };
     }
@@ -1152,7 +1152,8 @@ class ZenSwarmHooks {
     if (gitStashDrop.test(command)) {
       return {
         safe: false,
-        reason: 'Stash drop permanently deletes work. Use "git stash list" and "git stash show" to review first.',
+        reason:
+          'Stash drop permanently deletes work. Use "git stash list" and "git stash show" to review first.',
         riskLevel: 'high',
       };
     }
@@ -1160,7 +1161,8 @@ class ZenSwarmHooks {
     if (rmRf.test(command)) {
       return {
         safe: false,
-        reason: 'Recursive force removal can destroy important files. Specify exact paths instead of wildcards.',
+        reason:
+          'Recursive force removal can destroy important files. Specify exact paths instead of wildcards.',
         riskLevel: 'critical',
       };
     }
@@ -1178,7 +1180,8 @@ class ZenSwarmHooks {
       if (pattern.test(command)) {
         return {
           safe: false,
-          reason: 'Command contains potentially dangerous pattern. Please review and use safer alternatives.',
+          reason:
+            'Command contains potentially dangerous pattern. Please review and use safer alternatives.',
           riskLevel: 'high',
         };
       }
@@ -2085,12 +2088,12 @@ ${this.sessionData.learnings
 
   /**
    * 🕵️ Deception Scan Hook - Detect potential deceptive or malicious patterns
-   * 
+   *
    * @param args - Contains command/content to analyze
    */
   async deceptionScanHook(args: unknown) {
     const { content, command, context, source } = args;
-    
+
     const deceptionPatterns = {
       // Social engineering indicators
       social_engineering: [
@@ -2099,7 +2102,7 @@ ${this.sessionData.learnings
         /suspended.*account.*click/i,
         /congratulations.*winner.*claim/i,
       ],
-      
+
       // Code injection attempts
       code_injection: [
         /eval\s*\([^)]*input/i,
@@ -2107,30 +2110,30 @@ ${this.sessionData.learnings
         /innerHTML\s*=.*input/i,
         /document\.write.*user/i,
       ],
-      
+
       // Hidden/obfuscated operations
       obfuscation: [
-        /\w{50,}/,  // Extremely long variable names
-        /\\x[0-9a-f]{2}/i,  // Hex encoding
-        /eval.*atob/i,  // Base64 + eval
-        /String\.fromCharCode/i,  // Character code obfuscation
+        /\w{50,}/, // Extremely long variable names
+        /\\x[0-9a-f]{2}/i, // Hex encoding
+        /eval.*atob/i, // Base64 + eval
+        /String\.fromCharCode/i, // Character code obfuscation
       ],
-      
+
       // Suspicious resource access
       suspicious_access: [
         /\/etc\/passwd/,
         /\/proc\/\d+/,
         /\.ssh\/id_rsa/,
-        /\$\{.*\}/,  // Variable expansion in unexpected contexts
+        /\$\{.*\}/, // Variable expansion in unexpected contexts
       ],
-      
+
       // Behavioral anomalies
       behavioral: [
         /password.*plain.*text/i,
         /disable.*security/i,
         /bypass.*authentication/i,
         /admin.*backdoor/i,
-      ]
+      ],
     };
 
     const analysis = {
@@ -2143,7 +2146,7 @@ ${this.sessionData.learnings
 
     // Analyze content for deception patterns
     const textToAnalyze = content || command || '';
-    
+
     for (const [category, patterns] of Object.entries(deceptionPatterns)) {
       for (const pattern of patterns) {
         if (pattern.test(textToAnalyze)) {
@@ -2189,19 +2192,23 @@ ${this.sessionData.learnings
     return {
       continue: analysis.recommended_action !== 'block',
       deception_analysis: analysis,
-      require_confirmation: analysis.recommended_action === 'require_confirmation',
-      warning: analysis.recommended_action === 'warn' ? 'Potentially suspicious content detected' : null,
+      require_confirmation:
+        analysis.recommended_action === 'require_confirmation',
+      warning:
+        analysis.recommended_action === 'warn'
+          ? 'Potentially suspicious content detected'
+          : null,
     };
   }
 
   /**
    * 🧠 Pattern Learning Hook - Learn from successful/failed operations
-   * 
+   *
    * @param args - Contains operation results and context
    */
   async patternLearningHook(args: unknown) {
     const { operation, result, context, feedback } = args;
-    
+
     const learningEntry = {
       timestamp: Date.now(),
       operation_type: operation?.type || 'unknown',
@@ -2223,22 +2230,32 @@ ${this.sessionData.learnings
     }
 
     const learning = this.sessionData.patternLearning;
-    
+
     if (learningEntry.success && learningEntry.outcome_quality > 0.7) {
       // Store successful pattern
-      const existing = learning.successful_patterns.get(learningEntry.pattern_hash) || { count: 0, avg_quality: 0 };
+      const existing = learning.successful_patterns.get(
+        learningEntry.pattern_hash
+      ) || { count: 0, avg_quality: 0 };
       learning.successful_patterns.set(learningEntry.pattern_hash, {
         count: existing.count + 1,
-        avg_quality: (existing.avg_quality * existing.count + learningEntry.outcome_quality) / (existing.count + 1),
+        avg_quality:
+          (existing.avg_quality * existing.count +
+            learningEntry.outcome_quality) /
+          (existing.count + 1),
         last_seen: Date.now(),
         features: learningEntry.context_features,
       });
     } else if (!learningEntry.success) {
       // Store failed pattern
-      const existing = learning.failed_patterns.get(learningEntry.pattern_hash) || { count: 0, failure_reasons: [] };
+      const existing = learning.failed_patterns.get(
+        learningEntry.pattern_hash
+      ) || { count: 0, failure_reasons: [] };
       learning.failed_patterns.set(learningEntry.pattern_hash, {
         count: existing.count + 1,
-        failure_reasons: [...existing.failure_reasons, result?.error || 'unknown'].slice(-10),
+        failure_reasons: [
+          ...existing.failure_reasons,
+          result?.error || 'unknown',
+        ].slice(-10),
         last_seen: Date.now(),
         features: learningEntry.context_features,
       });
@@ -2246,17 +2263,23 @@ ${this.sessionData.learnings
 
     // Update context correlations
     for (const feature of learningEntry.context_features) {
-      const correlation = learning.context_correlations.get(feature) || { success_count: 0, total_count: 0 };
+      const correlation = learning.context_correlations.get(feature) || {
+        success_count: 0,
+        total_count: 0,
+      };
       learning.context_correlations.set(feature, {
-        success_count: correlation.success_count + (learningEntry.success ? 1 : 0),
+        success_count:
+          correlation.success_count + (learningEntry.success ? 1 : 0),
         total_count: correlation.total_count + 1,
-        success_rate: (correlation.success_count + (learningEntry.success ? 1 : 0)) / (correlation.total_count + 1),
+        success_rate:
+          (correlation.success_count + (learningEntry.success ? 1 : 0)) /
+          (correlation.total_count + 1),
       });
     }
 
     // Store learning entry
     learning.adaptation_history.push(learningEntry);
-    
+
     // Keep only recent history
     if (learning.adaptation_history.length > 1000) {
       learning.adaptation_history = learning.adaptation_history.slice(-500);
@@ -2268,19 +2291,21 @@ ${this.sessionData.learnings
     return {
       continue: true,
       learning_updated: true,
-      pattern_confidence: this.calculatePatternConfidence(learningEntry.pattern_hash),
+      pattern_confidence: this.calculatePatternConfidence(
+        learningEntry.pattern_hash
+      ),
       adaptations_count: learning.adaptation_history.length,
     };
   }
 
   /**
    * 🚨 Anomaly Detection Hook - Detect unusual behavioral patterns
-   * 
+   *
    * @param args - Contains current operation context
    */
   async anomalyDetectionHook(args: unknown) {
     const { operation, agent, context, timing } = args;
-    
+
     const currentPattern = {
       operation_type: operation?.type,
       agent_type: agent?.type,
@@ -2299,7 +2324,7 @@ ${this.sessionData.learnings
     }
 
     const detection = this.sessionData.anomalyDetection;
-    
+
     // Add to recent operations
     detection.recent_operations.push(currentPattern);
     if (detection.recent_operations.length > 100) {
@@ -2307,15 +2332,21 @@ ${this.sessionData.learnings
     }
 
     // Calculate anomaly score
-    const anomalyScore = this.calculateAnomalyScore(currentPattern, detection.baseline_patterns);
+    const anomalyScore = this.calculateAnomalyScore(
+      currentPattern,
+      detection.baseline_patterns
+    );
     detection.anomaly_scores.push(anomalyScore);
-    
+
     // Update baseline patterns
     this.updateBaselinePatterns(currentPattern, detection.baseline_patterns);
 
     // Detect anomalies
     const isAnomalous = anomalyScore > detection.alert_threshold;
-    const anomalyType = this.classifyAnomaly(currentPattern, detection.recent_operations);
+    const anomalyType = this.classifyAnomaly(
+      currentPattern,
+      detection.recent_operations
+    );
 
     if (isAnomalous) {
       // Generate anomaly alert
@@ -2338,12 +2369,12 @@ ${this.sessionData.learnings
 
   /**
    * 🤝 Trust Evaluation Hook - Evaluate trustworthiness of operations/agents
-   * 
+   *
    * @param args - Contains trust evaluation context
    */
   async trustEvaluationHook(args: unknown) {
     const { entity, operation, history, external_signals } = args;
-    
+
     const trustMetrics = {
       historical_reliability: 0.5,
       pattern_consistency: 0.5,
@@ -2354,32 +2385,44 @@ ${this.sessionData.learnings
 
     // Historical reliability analysis
     if (history && history.length > 0) {
-      const successRate = history.filter(h => h.success).length / history.length;
-      const avgQuality = history.reduce((acc, h) => acc + (h.quality || 0), 0) / history.length;
-      trustMetrics.historical_reliability = (successRate * 0.7) + (avgQuality * 0.3);
+      const successRate =
+        history.filter((h) => h.success).length / history.length;
+      const avgQuality =
+        history.reduce((acc, h) => acc + (h.quality || 0), 0) / history.length;
+      trustMetrics.historical_reliability =
+        successRate * 0.7 + avgQuality * 0.3;
     }
 
     // Pattern consistency analysis
     if (this.sessionData.patternLearning) {
-      const entityPatterns = Array.from(this.sessionData.patternLearning.successful_patterns.entries())
-        .filter(([_, data]) => data.features.includes(entity?.type || entity?.id));
-      
+      const entityPatterns = Array.from(
+        this.sessionData.patternLearning.successful_patterns.entries()
+      ).filter(([_, data]) =>
+        data.features.includes(entity?.type || entity?.id)
+      );
+
       if (entityPatterns.length > 0) {
-        const avgConfidence = entityPatterns.reduce((acc, [_, data]) => acc + data.avg_quality, 0) / entityPatterns.length;
+        const avgConfidence =
+          entityPatterns.reduce((acc, [_, data]) => acc + data.avg_quality, 0) /
+          entityPatterns.length;
         trustMetrics.pattern_consistency = avgConfidence;
       }
     }
 
     // External signals (reputation, verification, etc.)
     if (external_signals) {
-      trustMetrics.external_reputation = external_signals.reputation_score || 0.5;
+      trustMetrics.external_reputation =
+        external_signals.reputation_score || 0.5;
       trustMetrics.security_compliance = external_signals.security_score || 0.5;
     }
 
     // Behavioral predictability
     if (this.sessionData.anomalyDetection) {
-      const recentScores = this.sessionData.anomalyDetection.anomaly_scores.slice(-10);
-      const avgAnomalyScore = recentScores.reduce((acc, score) => acc + score, 0) / recentScores.length;
+      const recentScores =
+        this.sessionData.anomalyDetection.anomaly_scores.slice(-10);
+      const avgAnomalyScore =
+        recentScores.reduce((acc, score) => acc + score, 0) /
+        recentScores.length;
       trustMetrics.behavioral_predictability = Math.max(0, 1 - avgAnomalyScore);
     }
 
@@ -2392,9 +2435,12 @@ ${this.sessionData.learnings
       security_compliance: 0.1,
     };
 
-    const trustScore = Object.entries(trustMetrics).reduce((acc, [metric, value]) => {
-      return acc + (value * weights[metric]);
-    }, 0);
+    const trustScore = Object.entries(trustMetrics).reduce(
+      (acc, [metric, value]) => {
+        return acc + value * weights[metric];
+      },
+      0
+    );
 
     // Determine trust level
     let trustLevel = 'unknown';
@@ -2408,20 +2454,25 @@ ${this.sessionData.learnings
       trust_score: trustScore,
       trust_level: trustLevel,
       trust_metrics: trustMetrics,
-      recommendation: trustScore >= 0.7 ? 'proceed' : 
-                      trustScore >= 0.5 ? 'proceed_with_caution' : 
-                      trustScore >= 0.3 ? 'require_approval' : 'block',
+      recommendation:
+        trustScore >= 0.7
+          ? 'proceed'
+          : trustScore >= 0.5
+            ? 'proceed_with_caution'
+            : trustScore >= 0.3
+              ? 'require_approval'
+              : 'block',
     };
   }
 
   /**
    * 📊 Behavioral Analysis Hook - Analyze agent/user behavioral patterns
-   * 
+   *
    * @param args - Contains behavioral analysis context
    */
   async behavioralAnalysisHook(args: unknown) {
     const { entity, actions, timeframe, context } = args;
-    
+
     const behaviorProfile = {
       activity_patterns: this.analyzeActivityPatterns(actions, timeframe),
       command_preferences: this.analyzeCommandPreferences(actions),
@@ -2432,7 +2483,10 @@ ${this.sessionData.learnings
 
     // Detect behavioral changes
     const previousProfile = await this.getPreviousBehaviorProfile(entity);
-    const behaviorChanges = this.detectBehaviorChanges(behaviorProfile, previousProfile);
+    const behaviorChanges = this.detectBehaviorChanges(
+      behaviorProfile,
+      previousProfile
+    );
 
     // Update behavioral model
     await this.updateBehaviorProfile(entity, behaviorProfile);
@@ -2442,7 +2496,10 @@ ${this.sessionData.learnings
       behavior_profile: behaviorProfile,
       behavior_changes: behaviorChanges,
       profile_updated: true,
-      insights: this.generateBehavioralInsights(behaviorProfile, behaviorChanges),
+      insights: this.generateBehavioralInsights(
+        behaviorProfile,
+        behaviorChanges
+      ),
     };
   }
 
@@ -2470,11 +2527,14 @@ ${this.sessionData.learnings
     return weights[category] || 0.1;
   }
 
-  async storeDeceptionAnalysis(analysis: unknown, content: string): Promise<void> {
+  async storeDeceptionAnalysis(
+    analysis: unknown,
+    content: string
+  ): Promise<void> {
     if (!this.sessionData.deceptionHistory) {
       this.sessionData.deceptionHistory = [];
     }
-    
+
     this.sessionData.deceptionHistory.push({
       timestamp: Date.now(),
       analysis,
@@ -2483,7 +2543,8 @@ ${this.sessionData.learnings
 
     // Keep only recent history
     if (this.sessionData.deceptionHistory.length > 500) {
-      this.sessionData.deceptionHistory = this.sessionData.deceptionHistory.slice(-250);
+      this.sessionData.deceptionHistory =
+        this.sessionData.deceptionHistory.slice(-250);
     }
   }
 
@@ -2497,41 +2558,43 @@ ${this.sessionData.learnings
 
   extractContextFeatures(context: unknown): string[] {
     const features = [];
-    
+
     if (context?.file_type) features.push(`file_type:${context.file_type}`);
     if (context?.agent_type) features.push(`agent_type:${context.agent_type}`);
     if (context?.complexity) features.push(`complexity:${context.complexity}`);
     if (context?.source) features.push(`source:${context.source}`);
-    
+
     return features;
   }
 
   assessOutcomeQuality(result: unknown): number {
     if (!result) return 0;
-    
+
     let quality = 0;
     if (result.success) quality += 0.5;
     if (result.performance?.score) quality += result.performance.score * 0.3;
     if (result.user_satisfaction) quality += result.user_satisfaction * 0.2;
-    
+
     return Math.min(1, quality);
   }
 
   calculatePatternConfidence(patternHash: string): number {
     if (!this.sessionData.patternLearning) return 0.5;
-    
-    const successData = this.sessionData.patternLearning.successful_patterns.get(patternHash);
-    const failureData = this.sessionData.patternLearning.failed_patterns.get(patternHash);
-    
+
+    const successData =
+      this.sessionData.patternLearning.successful_patterns.get(patternHash);
+    const failureData =
+      this.sessionData.patternLearning.failed_patterns.get(patternHash);
+
     const successCount = successData?.count || 0;
     const failureCount = failureData?.count || 0;
     const totalCount = successCount + failureCount;
-    
+
     if (totalCount === 0) return 0.5;
-    
+
     const successRate = successCount / totalCount;
     const confidence = Math.min(1, totalCount / 10); // Confidence increases with sample size
-    
+
     return successRate * confidence + 0.5 * (1 - confidence);
   }
 
@@ -2542,9 +2605,13 @@ ${this.sessionData.learnings
           'learning-system',
           'pattern-learning',
           {
-            successful_patterns: Object.fromEntries(learning.successful_patterns),
+            successful_patterns: Object.fromEntries(
+              learning.successful_patterns
+            ),
             failed_patterns: Object.fromEntries(learning.failed_patterns),
-            context_correlations: Object.fromEntries(learning.context_correlations),
+            context_correlations: Object.fromEntries(
+              learning.context_correlations
+            ),
             last_updated: Date.now(),
           }
         );
@@ -2554,25 +2621,38 @@ ${this.sessionData.learnings
     }
   }
 
-  calculateAnomalyScore(currentPattern: unknown, baselinePatterns: Map<string, unknown>): number {
+  calculateAnomalyScore(
+    currentPattern: unknown,
+    baselinePatterns: Map<string, unknown>
+  ): number {
     // Simplified anomaly detection based on pattern frequency
     const patternKey = `${currentPattern.operation_type}:${currentPattern.agent_type}`;
     const baseline = baselinePatterns.get(patternKey);
-    
+
     if (!baseline) return 0.8; // New patterns are somewhat anomalous
-    
+
     const frequency = baseline.frequency || 0;
     const expectedFrequency = baseline.expected_frequency || 0.1;
-    
-    return Math.abs(frequency - expectedFrequency) / Math.max(frequency, expectedFrequency, 0.1);
+
+    return (
+      Math.abs(frequency - expectedFrequency) /
+      Math.max(frequency, expectedFrequency, 0.1)
+    );
   }
 
-  updateBaselinePatterns(pattern: unknown, baselinePatterns: Map<string, unknown>): void {
+  updateBaselinePatterns(
+    pattern: unknown,
+    baselinePatterns: Map<string, unknown>
+  ): void {
     const patternKey = `${pattern.operation_type}:${pattern.agent_type}`;
-    const existing = baselinePatterns.get(patternKey) || { frequency: 0, count: 0 };
-    
+    const existing = baselinePatterns.get(patternKey) || {
+      frequency: 0,
+      count: 0,
+    };
+
     baselinePatterns.set(patternKey, {
-      frequency: (existing.frequency * existing.count + 1) / (existing.count + 1),
+      frequency:
+        (existing.frequency * existing.count + 1) / (existing.count + 1),
       count: existing.count + 1,
       last_seen: Date.now(),
       expected_frequency: existing.expected_frequency || 0.1,
@@ -2581,11 +2661,12 @@ ${this.sessionData.learnings
 
   classifyAnomaly(pattern: unknown, recentOperations: unknown[]): string {
     // Simple anomaly classification
-    const recentSimilar = recentOperations.filter(op => 
-      op.operation_type === pattern.operation_type || 
-      op.agent_type === pattern.agent_type
+    const recentSimilar = recentOperations.filter(
+      (op) =>
+        op.operation_type === pattern.operation_type ||
+        op.agent_type === pattern.agent_type
     );
-    
+
     if (recentSimilar.length === 0) return 'new_pattern';
     if (recentSimilar.length === 1) return 'rare_pattern';
     return 'frequency_anomaly';
@@ -2623,7 +2704,7 @@ ${this.sessionData.learnings
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convert to 32-bit integer
     }
     return hash.toString(36);
@@ -2653,11 +2734,19 @@ ${this.sessionData.learnings
   }
 
   analyzeLearningProgression(actions: unknown[]): unknown {
-    return { skill_improvement: 0.3, adaptation_rate: 0.5, knowledge_growth: 0.4 };
+    return {
+      skill_improvement: 0.3,
+      adaptation_rate: 0.5,
+      knowledge_growth: 0.4,
+    };
   }
 
   analyzeCollaborationStyle(actions: unknown[], context: unknown): unknown {
-    return { cooperation_score: 0.7, communication_style: 'direct', team_impact: 0.6 };
+    return {
+      cooperation_score: 0.7,
+      communication_style: 'direct',
+      team_impact: 0.6,
+    };
   }
 
   async getPreviousBehaviorProfile(entity: unknown): Promise<unknown> {
@@ -2668,7 +2757,10 @@ ${this.sessionData.learnings
     return { significant_changes: [], change_score: 0.1 }; // Placeholder
   }
 
-  async updateBehaviorProfile(entity: unknown, profile: unknown): Promise<void> {
+  async updateBehaviorProfile(
+    entity: unknown,
+    profile: unknown
+  ): Promise<void> {
     // Update behavior profile in persistence layer
   }
 

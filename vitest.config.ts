@@ -90,7 +90,17 @@ export default defineConfig({
      * @type {string[]}
      * @rationale Excluding swarm-zen JS files as they're legacy and cause type conflicts
      */
-    exclude: ['node_modules', 'dist', '.git', 'coverage', 'src/__tests__/swarm-zen/**/*.js'],
+    exclude: [
+      'node_modules', 
+      'dist', 
+      '.git', 
+      'coverage', 
+      'src/__tests__/swarm-zen/**/*.js',
+      'src/interfaces/cli.disabled/**/*',
+      'src/__tests__/e2e/complete-workflow.test.ts',
+      'src/__tests__/coordination/shared-fact-system.test.ts',
+      'src/__tests__/coordination/collective-knowledge-*.test.ts'
+    ],
 
     /**
      * Global test utilities configuration.

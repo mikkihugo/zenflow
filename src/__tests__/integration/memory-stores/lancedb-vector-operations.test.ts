@@ -10,7 +10,7 @@ import { rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import LanceDBInterface from '../../../database/lancedb-interface';
+import LanceDBAdapter from '../../../database/adapters/lancedb-adapter';
 
 // Mock vector similarity functions for testing
 class VectorMath {
@@ -62,7 +62,7 @@ interface MockLanceDBConnection {
 }
 
 describe('LanceDB Vector Operations Integration Tests', () => {
-  let lancedb: LanceDBInterface;
+  let lancedb: LanceDBAdapter;
   let dbPath: string;
   let mockConnection: MockLanceDBConnection;
 
@@ -218,7 +218,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
   describe('Vector Database Operations (Classical School)', () => {
     beforeEach(async () => {
-      lancedb = new LanceDBInterface({
+      lancedb = new LanceDBAdapter({
         dbPath: dbPath,
         vectorDim: 128,
         similarity: 'cosine',
@@ -367,7 +367,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
   describe('Performance and Scalability', () => {
     beforeEach(async () => {
-      lancedb = new LanceDBInterface({
+      lancedb = new LanceDBAdapter({
         dbPath: dbPath,
         vectorDim: 256,
         batchSize: 100,
@@ -465,7 +465,7 @@ describe('LanceDB Vector Operations Integration Tests', () => {
 
   describe('Data Integrity and Edge Cases', () => {
     beforeEach(async () => {
-      lancedb = new LanceDBInterface({
+      lancedb = new LanceDBAdapter({
         dbPath: dbPath,
         vectorDim: 100,
       });

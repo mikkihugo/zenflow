@@ -84,7 +84,17 @@
 
 import { GNNModel } from '../../neural/models/presets/gnn.js';
 import { WASMNeuralAccelerator } from '../../neural/wasm/wasm-neural-accelerator.ts';
-import { LLMIntegrationService } from '../services/llm-integration.service.js';
+import {
+  LLMIntegrationService,
+  type LLMIntegrationConfig,
+  type AnalysisRequest,
+} from '../services/llm-integration.service.js';
+import {
+  selectOptimalModel,
+  getComponentModel,
+  type TaskContext,
+  type ModelType,
+} from '../../integrations/claude-code/model-strategy.js';
 
 import type {
   DependencyGraph,
@@ -132,8 +142,8 @@ export class NeuralDomainMapper {
   private _wasmAccelerator: unknown;
 
   /**
-   * LLM Integration Service for advanced domain analysis and validation.
-   * Provides intelligent analysis using Claude Code or Gemini CLI without external API keys.
+   * Enhanced LLM Integration Service with Claude Code SDK and optimal model strategy.
+   * Migrated to use Claude Code SDK with Opus for strategic domain analysis and architectural insights.
    * @private
    * @type {LLMIntegrationService}
    */
@@ -180,16 +190,28 @@ export class NeuralDomainMapper {
     this._wasmAccelerator = new WasmNeuralAccelerator();
 
     /**
-     * Initialize LLM Integration Service for intelligent analysis and validation.
-     * Uses Claude Code, Gemini CLI, or GitHub Models (free GPT-5) for enhanced domain insights.
+     * Enhanced: Initialize LLM Integration Service with Claude Code SDK and optimal strategy.
+     * Uses Claude Code SDK with Opus for strategic domain analysis and architectural validation.
      */
     this._llmService = new LLMIntegrationService({
       projectPath: process.cwd(),
-      preferredProvider: 'github-models', // Free GPT-5 with 200k context for complex analysis
-      model: 'openai/gpt-5',
+      preferredProvider: 'claude-code', // Migrated to Claude Code SDK as primary
+      useOptimalModel: true, // Enable Opus/Sonnet strategy
+      componentName: 'domain-mapper', // Component-based model selection
+      enhancedLogging: false, // Enhanced logging for debugging if needed
       temperature: 0.1, // Low temperature for consistent domain analysis
-      maxTokens: 100000, // Use GPT-5's full output capacity (100k max output)
+      maxTokens: 100000, // Use full context capacity
       debug: false,
+    });
+
+    const optimalModel = getComponentModel('domain-mapper');
+    console.log(`🗺️ Neural Domain Mapper initialized with Claude Code SDK`, {
+      llmProvider: 'claude-code',
+      optimalModel: optimalModel,
+      useOptimalStrategy: true,
+      migration: 'claude-code-sdk-integrated',
+      gnnLayers: 'domain-optimized',
+      wasmAcceleration: true,
     });
   }
 
@@ -384,11 +406,16 @@ export class NeuralDomainMapper {
           (graphData as { adjacency: unknown[][] }).adjacency
         );
 
-    // Enhanced LLM validation using smart provider selection or A/B testing
-    let llmAnalysis;
+    // Enhanced LLM validation using optimal model strategy (Opus for domain architecture analysis)
+    const taskContext: TaskContext = {
+      type: 'analysis',
+      complexity: 'high',
+      domain: 'architecture',
+      requiresFileOps: false,
+      componentName: 'domain-mapper',
+    };
 
-    // Use GPT-5 for all domain analysis (fully free, excellent performance)
-    llmAnalysis = await this._llmService.analyzeSmart({
+    const llmAnalysis = await this._llmService.analyze({
       task: 'domain-analysis',
       context: {
         domains,
@@ -411,6 +438,7 @@ export class NeuralDomainMapper {
         Respond with: {"approved": boolean, "reasoning": string, "improvements": string[]}
       `,
       requiresFileOperations: false,
+      taskContext, // Use task context for optimal model selection
     });
 
     let approvalResult;

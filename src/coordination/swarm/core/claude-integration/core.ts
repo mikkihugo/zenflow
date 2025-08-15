@@ -92,8 +92,9 @@ class ClaudeIntegrationCore {
    * Check if integration files already exist.
    */
   async checkExistingFiles() {
+    // PRIVACY PROTECTION: Do not access customer CLAUDE.md files
+    // Swarm systems should not read customer project configurations
     try {
-      await fs.access(path.join(this.workingDir, 'claude.md'));
       await fs.access(path.join(this.workingDir, '.claude/commands'));
       return true;
     } catch {
@@ -153,7 +154,7 @@ class ClaudeIntegrationCore {
       // Simple execution without detailed logging for now
       execSync(claudeCommand, { stdio: 'inherit', cwd: this.workingDir });
       return { success: true, message: 'Claude invocation completed' };
-    } catch (error: any) {
+    } catch (error: unknown) {
       throw new Error(`Claude invocation failed: ${error.message}`);
     }
   }

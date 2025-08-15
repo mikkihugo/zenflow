@@ -5,9 +5,11 @@
  * Focus: Full system workflows, user scenarios, performance validation
  */
 
-import 'jest-extended';
+// Import Vitest globals and utilities
+import { expect, beforeAll, afterAll, beforeEach, afterEach } from 'vitest';
 import { type ChildProcess, spawn } from 'node:child_process';
 import * as path from 'node:path';
+import './global-types';
 
 // E2E test setup with real system components
 beforeAll(async () => {
@@ -47,7 +49,7 @@ async function setupE2EEnvironment() {
   process.env.CLAUDE_ZEN_TEST_TIMEOUT = '300000';
 
   // E2E specific configuration
-  global.e2eConfig = {
+  globalThis.e2eConfig = {
     services: {
       mcp: { port: 40001, process: null },
       web: { port: 40002, process: null },
@@ -66,8 +68,8 @@ async function setupE2EEnvironment() {
     },
   };
 
-  global.testProcesses = new Map<string, ChildProcess>();
-  global.testMetrics = {
+  globalThis.testProcesses = new Map<string, ChildProcess>();
+  globalThis.testMetrics = {
     startTime: Date.now(),
     operations: [],
     performance: {},
@@ -75,7 +77,7 @@ async function setupE2EEnvironment() {
 }
 
 async function startTestServices() {
-  const { services } = global.e2eConfig;
+  const { services } = globalThis.e2eConfig;
 
   // Build the project first
   await buildProject();
@@ -113,7 +115,7 @@ async function startTestServices() {
 async function buildProject() {
   return new Promise<void>((resolve, reject) => {
     const buildProcess = spawn('npm', ['run', 'build'], {
-      cwd: global.e2eConfig.paths.root,
+      cwd: globalThis.e2eConfig.paths.root,
       stdio: 'pipe',
     });
 
@@ -132,28 +134,28 @@ async function buildProject() {
 async function startService(name: string, command: string[]) {
   return new Promise<void>((resolve, reject) => {
     const [cmd, ...args] = command;
-    const process = spawn(cmd, args, {
-      cwd: global.e2eConfig.paths.root,
+    const childProcess = spawn(cmd, args, {
+      cwd: globalThis.e2eConfig.paths.root,
       stdio: 'pipe',
       env: { ...process.env, ...getServiceEnv(name) },
     });
 
-    global.testProcesses.set(name, process);
+    globalThis.testProcesses.set(name, childProcess);
 
     let output = '';
-    process.stdout?.on('data', (data) => {
+    childProcess.stdout?.on('data', (data) => {
       output += data.toString();
       if (isServiceReady(name, output)) {
         resolve();
       }
     });
 
-    process.stderr?.on('data', (data) => {
+    childProcess.stderr?.on('data', (data) => {
       console.warn(`${name} stderr:`, data.toString());
     });
 
-    process.on('error', reject);
-    process.on('exit', (code) => {
+    childProcess.on('error', reject);
+    childProcess.on('exit', (code) => {
       if (code !== 0 && code !== null) {
         reject(new Error(`${name} exited with code ${code}`));
       }
@@ -164,12 +166,12 @@ async function startService(name: string, command: string[]) {
       if (!isServiceReady(name, output)) {
         reject(new Error(`${name} startup timeout`));
       }
-    }, global.e2eConfig.timeout.startup);
+    }, globalThis.e2eConfig.timeout.startup);
   });
 }
 
 function getServiceEnv(serviceName: string) {
-  const service = global.e2eConfig.services[serviceName];
+  const service = globalThis.e2eConfig.services[serviceName as keyof typeof globalThis.e2eConfig.services];
   return {
     PORT: service.port.toString(),
     CLAUDE_ZEN_SERVICE: serviceName,
@@ -190,10 +192,10 @@ function isServiceReady(serviceName: string, output: string): boolean {
 }
 
 async function waitForServicesReady() {
-  const { services } = global.e2eConfig;
+  const { services } = globalThis.e2eConfig;
 
   for (const [_name, config] of Object.entries(services)) {
-    await waitForPort(config.port, global.e2eConfig.timeout.startup);
+    await waitForPort((config as any).port, globalThis.e2eConfig.timeout.startup);
   }
 }
 
@@ -222,7 +224,7 @@ async function waitForPort(port: number, timeout: number = 30000) {
 
 async function initializeE2EData() {
   // Initialize test data for E2E scenarios
-  global.e2eTestData = {
+  globalThis.e2eTestData = {
     users: [
       { id: 'test-user-1', name: 'Test User', role: 'admin' },
       { id: 'test-user-2', name: 'Agent User', role: 'agent' },
@@ -256,8 +258,8 @@ async function resetSystemState() {
 
 async function clearSystemCaches() {
   const cacheEndpoints = [
-    `http://localhost:${global.e2eConfig.services.api.port}/cache/clear`,
-    `http://localhost:${global.e2eConfig.services.web.port}/api/cache/clear`,
+    `http://localhost:${globalThis.e2eConfig.services.api.port}/cache/clear`,
+    `http://localhost:${globalThis.e2eConfig.services.web.port}/api/cache/clear`,
   ];
 
   for (const endpoint of cacheEndpoints) {
@@ -272,7 +274,7 @@ async function clearSystemCaches() {
 async function resetDatabaseState() {
   // Reset test databases to clean state
   const dbEndpoints = [
-    `http://localhost:${global.e2eConfig.services.api.port}/test/reset`,
+    `http://localhost:${globalThis.e2eConfig.services.api.port}/test/reset`,
   ];
 
   for (const endpoint of dbEndpoints) {
@@ -287,8 +289,8 @@ async function resetDatabaseState() {
 async function clearMemoryState() {
   // Clear in-memory state in services
   const memoryEndpoints = [
-    `http://localhost:${global.e2eConfig.services.web.port}/api/memory/clear`,
-    `http://localhost:${global.e2eConfig.services.swarm.port}/memory/clear`,
+    `http://localhost:${globalThis.e2eConfig.services.web.port}/api/memory/clear`,
+    `http://localhost:${globalThis.e2eConfig.services.swarm.port}/memory/clear`,
   ];
 
   for (const endpoint of memoryEndpoints) {
@@ -302,9 +304,9 @@ async function clearMemoryState() {
 
 async function collectTestMetrics() {
   const endTime = Date.now();
-  const testDuration = endTime - global.testMetrics.startTime;
+  const testDuration = endTime - globalThis.testMetrics.startTime;
 
-  global.testMetrics.operations.push({
+  globalThis.testMetrics.operations.push({
     timestamp: endTime,
     duration: testDuration,
     memory: process.memoryUsage(),
@@ -313,26 +315,26 @@ async function collectTestMetrics() {
 
 async function stopTestServices() {
   // Stop all test processes
-  for (const [name, process] of global.testProcesses.entries()) {
+  for (const [name, childProcess] of Array.from(globalThis.testProcesses.entries())) {
     try {
-      process.kill('SIGTERM');
-      await waitForProcessExit(process, 10000);
+      childProcess.kill('SIGTERM');
+      await waitForProcessExit(childProcess, 10000);
     } catch (_error) {
       console.warn(`Failed to stop ${name} gracefully, force killing`);
-      process.kill('SIGKILL');
+      childProcess.kill('SIGKILL');
     }
   }
 
-  global.testProcesses.clear();
+  globalThis.testProcesses.clear();
 }
 
-async function waitForProcessExit(process: ChildProcess, timeout: number) {
+async function waitForProcessExit(childProcess: ChildProcess, timeout: number) {
   return new Promise<void>((resolve, reject) => {
     const timer = setTimeout(() => {
       reject(new Error('Process exit timeout'));
     }, timeout);
 
-    process.on('exit', () => {
+    childProcess.on('exit', () => {
       clearTimeout(timer);
       resolve();
     });
@@ -350,16 +352,16 @@ async function cleanupE2EState() {
 
 async function generateE2EReport() {
   const _report = {
-    duration: Date.now() - global.testMetrics.startTime,
-    operations: global.testMetrics.operations,
-    services: Object.keys(global.e2eConfig.services),
+    duration: Date.now() - globalThis.testMetrics.startTime,
+    operations: globalThis.testMetrics.operations,
+    services: Object.keys(globalThis.e2eConfig.services),
     summary: {
-      totalOperations: global.testMetrics.operations.length,
+      totalOperations: globalThis.testMetrics.operations.length,
       avgDuration:
-        global.testMetrics.operations.reduce(
+        globalThis.testMetrics.operations.reduce(
           (sum, op) => sum + op.duration,
           0
-        ) / global.testMetrics.operations.length || 0,
+        ) / globalThis.testMetrics.operations.length || 0,
     },
   };
 }
@@ -429,8 +431,8 @@ interface PerformanceMeasurement {
 }
 
 // E2E test helpers
-global.createE2EClient = (serviceName: string): E2EHttpClient => {
-  const service = global.e2eConfig.services[serviceName];
+globalThis.createE2EClient = (serviceName: string): E2EHttpClient => {
+  const service = globalThis.e2eConfig.services[serviceName as keyof typeof globalThis.e2eConfig.services];
   const baseURL = `http://localhost:${service.port}`;
 
   return {
@@ -451,7 +453,7 @@ global.createE2EClient = (serviceName: string): E2EHttpClient => {
   };
 };
 
-global.runE2EWorkflow = async (
+globalThis.runE2EWorkflow = async (
   workflow: WorkflowStep[]
 ): Promise<WorkflowResult[]> => {
   const results: WorkflowResult[] = [];
@@ -484,7 +486,7 @@ async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
       if (!(step.service && step.method && step.path)) {
         throw new Error('HTTP step requires service, method, and path');
       }
-      const client = global.createE2EClient(step.service);
+      const client = globalThis.createE2EClient(step.service);
       return await client[step.method](step.path, step.data);
     }
     case 'delay':
@@ -503,7 +505,7 @@ async function executeWorkflowStep(step: WorkflowStep): Promise<unknown> {
   }
 }
 
-global.measureE2EPerformance = async (
+globalThis.measureE2EPerformance = async (
   operation: () => Promise<unknown>,
   expectedMaxTime: number
 ): Promise<PerformanceMeasurement> => {
@@ -595,16 +597,4 @@ interface E2ETestData {
   }>;
 }
 
-declare global {
-  var e2eConfig: E2EConfig;
-  var testProcesses: Map<string, ChildProcess>;
-  var testMetrics: E2ETestMetrics;
-  var e2eTestData: E2ETestData;
-
-  function createE2EClient(serviceName: string): E2EHttpClient;
-  function runE2EWorkflow(workflow: WorkflowStep[]): Promise<WorkflowResult[]>;
-  function measureE2EPerformance(
-    operation: () => Promise<unknown>,
-    expectedMaxTime: number
-  ): Promise<PerformanceMeasurement>;
-}
+// Types are now declared in global-types.ts

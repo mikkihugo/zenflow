@@ -149,7 +149,8 @@ describe('DomainBoundaryValidator', () => {
       const customSchema: TypeSchema<string> = {
         type: 'string',
         required: true,
-        validator: (value: unknown) => typeof value === 'string' && value.length > 5,
+        validator: (value: unknown) =>
+          typeof value === 'string' && value.length > 5,
       };
 
       expect(validator.validateInput('longstring', customSchema)).toBe(
@@ -165,7 +166,10 @@ describe('DomainBoundaryValidator', () => {
       const transformSchema: TypeSchema<string> = {
         type: 'string',
         required: true,
-        transform: (value: unknown) => typeof value === 'string' ? value.toUpperCase() : String(value).toUpperCase(),
+        transform: (value: unknown) =>
+          typeof value === 'string'
+            ? value.toUpperCase()
+            : String(value).toUpperCase(),
       };
 
       expect(validator.validateInput('hello', transformSchema)).toBe('HELLO');

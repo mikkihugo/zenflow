@@ -9,7 +9,7 @@ import { exec } from 'node:child_process';
 import { readFile } from 'node:fs/promises';
 import { promisify } from 'node:util';
 import { Box, Text, useInput } from 'ink';
-import type React from 'react';
+import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Header,

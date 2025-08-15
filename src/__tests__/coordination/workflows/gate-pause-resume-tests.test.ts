@@ -511,7 +511,11 @@ describe('Gate Pause/Resume Functionality', () => {
   describe('Concurrent Gates and Resource Management', () => {
     test('should handle multiple concurrent workflows with gates', async () => {
       const workflowCount = 3;
-      const results: Array<{index: number, workflowId: string, success: boolean}> = [];
+      const results: Array<{
+        index: number;
+        workflowId: string;
+        success: boolean;
+      }> = [];
 
       // Start multiple workflows simultaneously
       for (let i = 0; i < workflowCount; i++) {

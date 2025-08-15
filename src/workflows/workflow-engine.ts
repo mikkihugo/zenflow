@@ -12,15 +12,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.ts';
-import type { WorkflowGatesManager } from '../coordination/orchestration/workflow-gates.ts';
+import { getLogger } from '../config/logging-config.js';
+import type { WorkflowGatesManager } from '../coordination/orchestration/workflow-gates.js';
 import type {
   WorkflowGateRequest,
   WorkflowGateResult,
-} from '../coordination/workflows/workflow-gate-request.ts';
-import type { BaseDocumentEntity } from '../database/entities/product-entities.ts';
-import type { DocumentManager } from '../database/managers/document-manager.ts';
-import type { MemorySystemFactory } from '../memory/index.ts';
+} from '../coordination/workflows/workflow-gate-request.js';
+import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
+import type { DocumentManager } from '../database/managers/document-manager.js';
+import type { MemorySystemFactory } from '../memory/index.js';
 import type {
   DocumentContent,
   StepExecutionResult,
@@ -30,7 +30,7 @@ import type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-base-types.ts';
+} from './workflow-base-types.js';
 
 const logger = getLogger('WorkflowEngine');
 
@@ -48,7 +48,7 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-base-types.ts';
+} from './workflow-base-types.js';
 
 // ============================================================================
 // WORKFLOW ENGINE CLASS
@@ -116,11 +116,15 @@ export class WorkflowEngine extends EventEmitter {
     logger.info('Shutting down WorkflowEngine');
 
     // Cancel all active workflows
-    const cancelPromises = Array.from(this.activeWorkflows.keys()).map((id) =>
-      this.cancelWorkflow(id).catch((err) =>
-        logger.error(`Error cancelling workflow ${id}:`, err)
-      )
-    );
+    const cancelPromises = Array.from(this.activeWorkflows.keys()).map((id) => {
+      try {
+        this.cancelWorkflow(id);
+        return Promise.resolve();
+      } catch (err) {
+        logger.error(`Error cancelling workflow ${id}:`, err);
+        return Promise.resolve();
+      }
+    });
 
     await Promise.all(cancelPromises);
 

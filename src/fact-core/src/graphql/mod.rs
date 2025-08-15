@@ -61,7 +61,9 @@ pub struct GitHubGraphQLClient {
 #[cfg(feature = "github-graphql")]
 impl GitHubGraphQLClient {
   pub fn new(token: Option<String>) -> Self {
-    Self { simple_client: SimpleGraphQLClient::new(token) }
+    Self {
+      simple_client: SimpleGraphQLClient::new(token),
+    }
   }
 
   /// Analyze version-specific repository using simplified GraphQL

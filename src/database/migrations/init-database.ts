@@ -1,6 +1,6 @@
 /**
  * Database Initialization System
- * 
+ *
  * Initializes the claude-code-zen database with all required schemas for
  * Vision/ADR/PRD/Epic/Feature/Task entities and AGUI workflow integration.
  */
@@ -24,15 +24,18 @@ export class DatabaseInitializer {
 
   constructor(config: DatabaseConfig) {
     this.config = config;
-    
+
     // Ensure database directory exists
-    const dbDir = config.databasePath.substring(0, config.databasePath.lastIndexOf('/'));
+    const dbDir = config.databasePath.substring(
+      0,
+      config.databasePath.lastIndexOf('/')
+    );
     if (!existsSync(dbDir)) {
       mkdirSync(dbDir, { recursive: true });
     }
 
     this.db = new Database(config.databasePath, {
-      verbose: config.verbose ? console.log : undefined
+      verbose: config.verbose ? console.log : undefined,
     });
 
     this.setupDatabase();
@@ -106,22 +109,22 @@ export class DatabaseInitializer {
       'CREATE INDEX IF NOT EXISTS idx_documents_title_fts ON documents(title)',
       'CREATE INDEX IF NOT EXISTS idx_documents_content_search ON documents(searchable_content)',
       'CREATE INDEX IF NOT EXISTS idx_documents_keywords ON documents(keywords)',
-      
+
       // ADR-specific indexes
       'CREATE INDEX IF NOT EXISTS idx_documents_adr_number ON documents(json_extract(adr_data, "$.decision_number")) WHERE type = "adr"',
       'CREATE INDEX IF NOT EXISTS idx_documents_adr_status ON documents(json_extract(adr_data, "$.decision_status")) WHERE type = "adr"',
-      
+
       // Vision document indexes
       'CREATE INDEX IF NOT EXISTS idx_documents_vision_timeline ON documents(json_extract(vision_data, "$.timeline.target_completion")) WHERE type = "vision"',
-      
+
       // Feature and task indexes
       'CREATE INDEX IF NOT EXISTS idx_documents_implementation_status ON documents(json_extract(feature_data, "$.implementation_status")) WHERE type = "feature"',
       'CREATE INDEX IF NOT EXISTS idx_documents_sparc_phase ON documents(json_extract(feature_data, "$.sparc_implementation.current_sparc_phase")) WHERE type = "feature"',
-      
+
       // Search optimization indexes
       'CREATE INDEX IF NOT EXISTS idx_search_combined ON document_search_index(document_type, status, priority)',
       'CREATE INDEX IF NOT EXISTS idx_search_sparc_combined ON document_search_index(uses_sparc_methodology, sparc_phase, sparc_progress)',
-      
+
       // Performance indexes for relationships
       'CREATE INDEX IF NOT EXISTS idx_relationships_combined ON document_relationships(relationship_type, source_document_id, target_document_id)',
     ];
@@ -193,8 +196,9 @@ export class DatabaseInitializer {
     const transaction = this.db.transaction(() => {
       // Create the Architecture Decisions project
       const architectureProjectId = 'arch-project-' + Date.now();
-      
-      this.db.prepare(`
+
+      this.db
+        .prepare(`
         INSERT OR IGNORE INTO projects (
           id, name, description, domain, complexity, author,
           created_at, updated_at, phase, overall_progress_percentage,
@@ -202,42 +206,45 @@ export class DatabaseInitializer {
           epic_document_ids, feature_document_ids, task_document_ids,
           tags, stakeholders
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        architectureProjectId,
-        'Architecture Decisions',
-        'Architecture Decision Records (ADRs) for Claude-Zen system',
-        'architecture',
-        'enterprise',
-        'claude-zen-system',
-        new Date().toISOString(),
-        new Date().toISOString(),
-        'implementation',
-        85,
-        JSON.stringify([]), // vision_document_ids
-        JSON.stringify([]), // adr_document_ids
-        JSON.stringify([]), // prd_document_ids
-        JSON.stringify([]), // epic_document_ids
-        JSON.stringify([]), // feature_document_ids
-        JSON.stringify([]), // task_document_ids
-        JSON.stringify(['architecture', 'adr', 'decisions']),
-        JSON.stringify(['architecture-team', 'developers', 'stakeholders'])
-      );
+      `)
+        .run(
+          architectureProjectId,
+          'Architecture Decisions',
+          'Architecture Decision Records (ADRs) for Claude-Zen system',
+          'architecture',
+          'enterprise',
+          'claude-zen-system',
+          new Date().toISOString(),
+          new Date().toISOString(),
+          'implementation',
+          85,
+          JSON.stringify([]), // vision_document_ids
+          JSON.stringify([]), // adr_document_ids
+          JSON.stringify([]), // prd_document_ids
+          JSON.stringify([]), // epic_document_ids
+          JSON.stringify([]), // feature_document_ids
+          JSON.stringify([]), // task_document_ids
+          JSON.stringify(['architecture', 'adr', 'decisions']),
+          JSON.stringify(['architecture-team', 'developers', 'stakeholders'])
+        );
 
       // Create initial ADR template document
       const templateAdrId = 'adr-template-' + Date.now();
-      
-      this.db.prepare(`
+
+      this.db
+        .prepare(`
         INSERT OR IGNORE INTO documents (
           id, type, title, content, status, priority, author,
           project_id, tags, keywords, searchable_content,
           version, checksum, workflow_stage, completion_percentage,
           adr_data, created_at, updated_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        templateAdrId,
-        'adr',
-        'ADR-000: Architecture Decision Record Template',
-        `# ADR-000: Architecture Decision Record Template
+      `)
+        .run(
+          templateAdrId,
+          'adr',
+          'ADR-000: Architecture Decision Record Template',
+          `# ADR-000: Architecture Decision Record Template
 
 ## Status
 **TEMPLATE**
@@ -257,61 +264,79 @@ Use this template structure for all ADRs to ensure consistency and completeness.
 **Decision Date**: ${new Date().toISOString().split('T')[0]}
 **Author**: claude-zen-system
 **Stakeholders**: architecture-team, developers`,
-        'approved',
-        'high',
-        'claude-zen-system',
-        architectureProjectId,
-        JSON.stringify(['template', 'adr', 'architecture']),
-        JSON.stringify(['architecture', 'decision', 'template', 'adr', 'governance']),
-        'ADR-000 Architecture Decision Record Template template adr architecture',
-        '1.0.0',
-        'template-checksum-000',
-        'complete',
-        100,
-        JSON.stringify({
-          decision_number: 0,
-          decision_status: 'accepted',
-          context: 'This is the template for Architecture Decision Records in the Claude-Zen system.',
-          decision: 'Use this template structure for all ADRs to ensure consistency and completeness.',
-          consequences: [
-            'Standardized ADR format across the system',
-            'Better decision tracking and documentation',
-            'Improved architectural governance'
-          ],
-          alternatives_considered: []
-        }),
-        new Date().toISOString(),
-        new Date().toISOString()
-      );
+          'approved',
+          'high',
+          'claude-zen-system',
+          architectureProjectId,
+          JSON.stringify(['template', 'adr', 'architecture']),
+          JSON.stringify([
+            'architecture',
+            'decision',
+            'template',
+            'adr',
+            'governance',
+          ]),
+          'ADR-000 Architecture Decision Record Template template adr architecture',
+          '1.0.0',
+          'template-checksum-000',
+          'complete',
+          100,
+          JSON.stringify({
+            decision_number: 0,
+            decision_status: 'accepted',
+            context:
+              'This is the template for Architecture Decision Records in the Claude-Zen system.',
+            decision:
+              'Use this template structure for all ADRs to ensure consistency and completeness.',
+            consequences: [
+              'Standardized ADR format across the system',
+              'Better decision tracking and documentation',
+              'Improved architectural governance',
+            ],
+            alternatives_considered: [],
+          }),
+          new Date().toISOString(),
+          new Date().toISOString()
+        );
 
       // Create corresponding search index entry
-      this.db.prepare(`
+      this.db
+        .prepare(`
         INSERT OR IGNORE INTO document_search_index (
           document_id, document_type, project_id, keywords, tags,
           status, priority, author, created_date, updated_date,
           search_rank, access_count, uses_sparc_methodology,
           parent_documents, child_documents, related_documents
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(
-        templateAdrId,
-        'adr',
-        architectureProjectId,
-        JSON.stringify(['architecture', 'decision', 'template', 'adr', 'governance']),
-        JSON.stringify(['template', 'adr', 'architecture']),
-        'approved',
-        'high',
-        'claude-zen-system',
-        new Date().toISOString(),
-        new Date().toISOString(),
-        10.0, // High search rank for template
-        0,
-        false,
-        JSON.stringify([]),
-        JSON.stringify([]),
-        JSON.stringify([])
-      );
+      `)
+        .run(
+          templateAdrId,
+          'adr',
+          architectureProjectId,
+          JSON.stringify([
+            'architecture',
+            'decision',
+            'template',
+            'adr',
+            'governance',
+          ]),
+          JSON.stringify(['template', 'adr', 'architecture']),
+          'approved',
+          'high',
+          'claude-zen-system',
+          new Date().toISOString(),
+          new Date().toISOString(),
+          10.0, // High search rank for template
+          0,
+          false,
+          JSON.stringify([]),
+          JSON.stringify([]),
+          JSON.stringify([])
+        );
 
-      console.log('✅ Seeded initial data: Architecture project and ADR template');
+      console.log(
+        '✅ Seeded initial data: Architecture project and ADR template'
+      );
     });
 
     transaction();
@@ -320,7 +345,11 @@ Use this template structure for all ADRs to ensure consistency and completeness.
   /**
    * Verify database integrity and schemas
    */
-  async verifyDatabase(): Promise<{ valid: boolean; tables: string[]; errors: string[] }> {
+  async verifyDatabase(): Promise<{
+    valid: boolean;
+    tables: string[];
+    errors: string[];
+  }> {
     const errors: string[] = [];
     const tables: string[] = [];
 
@@ -328,20 +357,22 @@ Use this template structure for all ADRs to ensure consistency and completeness.
       // Check if all expected tables exist
       const expectedTables = [
         'projects',
-        'documents', 
+        'documents',
         'document_relationships',
         'document_workflow_states',
         'document_search_index',
-        'sparc_integration_state'
+        'sparc_integration_state',
       ];
 
-      const result = this.db.prepare(`
+      const result = this.db
+        .prepare(`
         SELECT name FROM sqlite_master 
         WHERE type='table' 
         ORDER BY name
-      `).all() as { name: string }[];
+      `)
+        .all() as { name: string }[];
 
-      const actualTables = result.map(row => row.name);
+      const actualTables = result.map((row) => row.name);
       tables.push(...actualTables);
 
       for (const expectedTable of expectedTables) {
@@ -368,7 +399,6 @@ Use this template structure for all ADRs to ensure consistency and completeness.
       if (pragmaResult.length > 0) {
         errors.push('Foreign key constraint violations detected');
       }
-
     } catch (err) {
       errors.push(`Database verification error: ${err}`);
     }
@@ -376,7 +406,7 @@ Use this template structure for all ADRs to ensure consistency and completeness.
     return {
       valid: errors.length === 0,
       tables,
-      errors
+      errors,
     };
   }
 
@@ -390,23 +420,31 @@ Use this template structure for all ADRs to ensure consistency and completeness.
     documentsByType: Record<string, number>;
     databaseSize: number;
   } {
-    const tableCount = this.db.prepare(`
+    const tableCount = this.db
+      .prepare(`
       SELECT COUNT(*) as count FROM sqlite_master WHERE type='table'
-    `).get() as { count: number };
+    `)
+      .get() as { count: number };
 
-    const projectCount = this.db.prepare(`
+    const projectCount = this.db
+      .prepare(`
       SELECT COUNT(*) as count FROM projects
-    `).get() as { count: number };
+    `)
+      .get() as { count: number };
 
-    const documentCount = this.db.prepare(`
+    const documentCount = this.db
+      .prepare(`
       SELECT COUNT(*) as count FROM documents
-    `).get() as { count: number };
+    `)
+      .get() as { count: number };
 
-    const documentsByType = this.db.prepare(`
+    const documentsByType = this.db
+      .prepare(`
       SELECT type, COUNT(*) as count 
       FROM documents 
       GROUP BY type
-    `).all() as { type: string; count: number }[];
+    `)
+      .all() as { type: string; count: number }[];
 
     const documentTypeMap: Record<string, number> = {};
     for (const item of documentsByType) {
@@ -414,14 +452,18 @@ Use this template structure for all ADRs to ensure consistency and completeness.
     }
 
     // Get database file size
-    const dbStat = this.db.prepare('SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()').get() as { size: number };
+    const dbStat = this.db
+      .prepare(
+        'SELECT page_count * page_size as size FROM pragma_page_count(), pragma_page_size()'
+      )
+      .get() as { size: number };
 
     return {
       totalTables: tableCount.count,
       totalProjects: projectCount.count,
       totalDocuments: documentCount.count,
       documentsByType: documentTypeMap,
-      databaseSize: dbStat.size
+      databaseSize: dbStat.size,
     };
   }
 
@@ -436,17 +478,20 @@ Use this template structure for all ADRs to ensure consistency and completeness.
 /**
  * Default database initialization function
  */
-export async function initializeDatabase(databasePath?: string): Promise<DatabaseInitializer> {
-  const defaultPath = databasePath || join(process.cwd(), 'data', 'claude-zen.db');
-  
+export async function initializeDatabase(
+  databasePath?: string
+): Promise<DatabaseInitializer> {
+  const defaultPath =
+    databasePath || join(process.cwd(), 'data', 'claude-zen.db');
+
   console.log(`🔧 Initializing claude-code-zen database at: ${defaultPath}`);
-  
+
   const initializer = new DatabaseInitializer({
     databasePath: defaultPath,
     enableWAL: true,
     enableForeignKeys: true,
     busyTimeout: 30000,
-    verbose: false
+    verbose: false,
   });
 
   await initializer.initializeSchemas();
@@ -464,11 +509,11 @@ export async function initializeDatabase(databasePath?: string): Promise<Databas
     projects: stats.totalProjects,
     documents: stats.totalDocuments,
     types: stats.documentsByType,
-    size: `${(stats.databaseSize / 1024 / 1024).toFixed(2)} MB`
+    size: `${(stats.databaseSize / 1024 / 1024).toFixed(2)} MB`,
   });
 
   console.log('✅ Database initialization complete!');
-  
+
   return initializer;
 }
 

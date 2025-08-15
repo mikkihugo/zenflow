@@ -8,8 +8,8 @@
  * @file Error-recovery implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import { isRecoverableError } from './errors.ts';
+import { getLogger } from '../config/logging-config';
+import { isRecoverableError } from './errors';
 
 const logger = getLogger('ErrorRecovery');
 

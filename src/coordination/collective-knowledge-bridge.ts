@@ -10,13 +10,13 @@
 
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../config/logging-config.ts';
-import type { SessionMemoryStore } from '../memory/index.js';
+import type { SessionMemoryStore } from '../memory/index.ts';
 import {
-  getHiveFACT,
-  type HiveFACTSystem,
+  getCollectiveFACT,
+  type CollectiveFACTSystem,
   type UniversalFact,
-} from './hive-fact-integration.ts';
-import type { HiveSwarmCoordinator } from './hive-swarm-sync.ts';
+} from './collective-fact-integration.ts';
+import type { CollectiveSwarmCoordinator } from './swarm-synchronization';
 
 interface SwarmContext {
   relevanceScore: number;
@@ -88,8 +88,8 @@ export interface KnowledgeDistributionUpdate {
  * @example
  */
 export class CollectiveKnowledgeBridge extends EventEmitter {
-  private hiveFact?: HiveFACTSystem;
-  private hiveCoordinator?: HiveSwarmCoordinator;
+  private collectiveFact?: CollectiveFACTSystem;
+  private hiveCoordinator?: CollectiveSwarmCoordinator;
   private memoryStore?: SessionMemoryStore;
   private subscribedSwarms = new Map<string, Set<string>>(); // swarmId -> domains
   private pendingRequests = new Map<string, KnowledgeRequest>();
@@ -97,7 +97,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   private isInitialized = false;
 
   constructor(
-    hiveCoordinator?: HiveSwarmCoordinator,
+    hiveCoordinator?: CollectiveSwarmCoordinator,
     memoryStore?: SessionMemoryStore
   ) {
     super();
@@ -118,14 +118,14 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     try {
       logger.info('Initializing Hive Knowledge Bridge...');
 
-      // Get or wait for HiveFACT system
-      const fact = getHiveFACT();
+      // Get or wait for CollectiveFACT system
+      const fact = getCollectiveFACT();
       if (!fact) {
         throw new Error(
-          'HiveFACT system not available. Initialize HiveSwarmCoordinator first.'
+          'CollectiveFACT system not available. Initialize CollectiveSwarmCoordinator first.'
         );
       }
-      this.hiveFact = fact;
+      this.collectiveFact = fact;
 
       // Set up event handlers
       this.setupEventHandlers();
@@ -269,7 +269,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       throw new Error('Query is required for knowledge query request');
     }
 
-    // Query HiveFACT system
+    // Query CollectiveFACT system
     const searchQuery: {
       query: string;
       limit: number;
@@ -287,7 +287,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       searchQuery.domains = [domain];
     }
 
-    const searchResults = (await this.hiveFact?.searchFacts(searchQuery)) ?? [];
+    const searchResults = (await this.collectiveFact?.searchFacts(searchQuery)) ?? [];
 
     // Enhance results with swarm-specific context
     const enhancedResults = await this.enhanceResultsWithSwarmContext(
@@ -387,7 +387,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       throw new Error('Fact ID is required for knowledge update');
     }
 
-    // This would typically validate the update and apply it to HiveFACT
+    // This would typically validate the update and apply it to CollectiveFACT
     // For now, we'll emit an event for processing
     this.emit('knowledge:update-requested', {
       swarmId: request.swarmId,
@@ -558,9 +558,9 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
    * Set up event handlers for knowledge bridge.
    */
   private setupEventHandlers(): void {
-    // Listen for HiveFACT updates
-    if (this.hiveFact) {
-      this.hiveFact.on('fact-updated', (data: unknown) => {
+    // Listen for CollectiveFACT updates
+    if (this.collectiveFact) {
+      this.collectiveFact.on('fact-updated', (data: unknown) => {
         this.distributeKnowledgeUpdate({
           updateId: `fact-update-${Date.now()}`,
           type: 'fact-updated',
@@ -571,7 +571,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         });
       });
 
-      this.hiveFact.on('fact-refreshed', (data: unknown) => {
+      this.collectiveFact.on('fact-refreshed', (data: unknown) => {
         this.distributeKnowledgeUpdate({
           updateId: `fact-refresh-${Date.now()}`,
           type: 'fact-updated',
@@ -676,7 +676,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       },
     };
 
-    // Store in memory for later integration with HiveFACT
+    // Store in memory for later integration with CollectiveFACT
     if (this.memoryStore) {
       await this.memoryStore.store(
         `hive-bridge/processed-contributions/${contribution.swarmId}/${contribution.timestamp}`,

@@ -2,7 +2,7 @@
 
 /**
  * Test Real Database Adapters
- * 
+ *
  * Direct test of the real SQLite, LanceDB, and Kuzu adapters
  * without any mocks or DAL factory dependencies.
  */
@@ -27,8 +27,8 @@ async function main() {
       options: {
         readonly: false,
         fileMustExist: false,
-        timeout: 5000
-      }
+        timeout: 5000,
+      },
     });
 
     await sqliteAdapter.connect();
@@ -42,11 +42,18 @@ async function main() {
 
     const insertResult = await sqliteAdapter.execute(
       'INSERT INTO test_docs (id, title, content) VALUES (?, ?, ?)',
-      ['doc-1', 'Test Document', 'This is a test document with real SQLite storage.']
+      [
+        'doc-1',
+        'Test Document',
+        'This is a test document with real SQLite storage.',
+      ]
     );
     console.log('✅ SQLite insert successful:', insertResult);
 
-    const queryResult = await sqliteAdapter.query('SELECT * FROM test_docs WHERE id = ?', ['doc-1']);
+    const queryResult = await sqliteAdapter.query(
+      'SELECT * FROM test_docs WHERE id = ?',
+      ['doc-1']
+    );
     console.log('✅ SQLite query result:', queryResult);
 
     await sqliteAdapter.disconnect();
@@ -60,8 +67,8 @@ async function main() {
       options: {
         vectorSize: 384,
         metricType: 'cosine',
-        createIfNotExists: true
-      }
+        createIfNotExists: true,
+      },
     });
 
     await lancedbAdapter.connect();
@@ -73,22 +80,30 @@ async function main() {
         id: 'vec-1',
         vector: new Array(384).fill(0).map(() => Math.random()),
         text: 'This is a test document for vector similarity.',
-        metadata: { type: 'test', category: 'sample' }
+        metadata: { type: 'test', category: 'sample' },
       },
       {
         id: 'vec-2',
         vector: new Array(384).fill(0).map(() => Math.random()),
         text: 'Another test document with different content.',
-        metadata: { type: 'test', category: 'example' }
-      }
+        metadata: { type: 'test', category: 'example' },
+      },
     ];
 
     await lancedbAdapter.insertVectors('documents', testVectors);
     console.log('✅ LanceDB vectors inserted successfully');
 
     const queryVector = new Array(384).fill(0).map(() => Math.random());
-    const searchResults = await lancedbAdapter.searchVectors('documents', queryVector, { limit: 2 });
-    console.log('✅ LanceDB vector search results:', searchResults.length, 'results found');
+    const searchResults = await lancedbAdapter.searchVectors(
+      'documents',
+      queryVector,
+      { limit: 2 }
+    );
+    console.log(
+      '✅ LanceDB vector search results:',
+      searchResults.length,
+      'results found'
+    );
 
     const vectorCount = await lancedbAdapter.countVectors('documents');
     console.log('✅ LanceDB vector count:', vectorCount);
@@ -104,8 +119,8 @@ async function main() {
       options: {
         bufferPoolSize: '1GB',
         maxNumThreads: 4,
-        createIfNotExists: true
-      }
+        createIfNotExists: true,
+      },
     });
 
     await kuzuAdapter.connect();
@@ -118,7 +133,7 @@ async function main() {
       type: 'adr',
       content: 'This is a test architecture decision record.',
       status: 'active',
-      author: 'test-system'
+      author: 'test-system',
     });
     console.log('✅ Kuzu node 1 created:', nodeId1);
 
@@ -128,7 +143,7 @@ async function main() {
       type: 'prd',
       content: 'This is a test product requirements document.',
       status: 'active',
-      author: 'test-system'
+      author: 'test-system',
     });
     console.log('✅ Kuzu node 2 created:', nodeId2);
 
@@ -140,10 +155,18 @@ async function main() {
     );
     console.log('✅ Kuzu relationship created:', relationshipId);
 
-    const nodes = await kuzuAdapter.findNodes('Document', { type: 'adr' }, { limit: 10 });
+    const nodes = await kuzuAdapter.findNodes(
+      'Document',
+      { type: 'adr' },
+      { limit: 10 }
+    );
     console.log('✅ Kuzu nodes found:', nodes.length);
 
-    const relationships = await kuzuAdapter.findRelationships(nodeId1, undefined, 'RELATES_TO');
+    const relationships = await kuzuAdapter.findRelationships(
+      nodeId1,
+      undefined,
+      'RELATES_TO'
+    );
     console.log('✅ Kuzu relationships found:', relationships.length);
 
     const graphStats = await kuzuAdapter.getGraphStats();
@@ -155,12 +178,15 @@ async function main() {
     console.log('\n🎉 All Real Database Adapters Test Successfully!');
     console.log('');
     console.log('📁 Real data files created and tested:');
-    console.log('  - ./data/sqlite/test-real-sqlite.db (SQLite with real tables)');
-    console.log('  - ./data/lancedb/test-real-vectors.lance (LanceDB with real vectors)');
+    console.log(
+      '  - ./data/sqlite/test-real-sqlite.db (SQLite with real tables)'
+    );
+    console.log(
+      '  - ./data/lancedb/test-real-vectors.lance (LanceDB with real vectors)'
+    );
     console.log('  - ./data/kuzu/test-real-graph.kuzu (Kuzu with real graph)');
     console.log('');
     console.log('🎯 Production adapters are ready for MCP server integration!');
-
   } catch (error) {
     console.error('❌ Real adapter test failed:', error);
     process.exit(1);

@@ -2,7 +2,7 @@
 
 /**
  * Test Real Kuzu Adapter
- * 
+ *
  * Focused test of just the Kuzu graph database adapter.
  */
 
@@ -22,8 +22,8 @@ async function main() {
       options: {
         bufferPoolSize: '1GB',
         maxNumThreads: 4,
-        createIfNotExists: true
-      }
+        createIfNotExists: true,
+      },
     });
 
     console.log('🔧 Connecting to Kuzu...');
@@ -47,7 +47,10 @@ async function main() {
       const queryResult = await kuzuAdapter.query('RETURN 1');
       console.log('✅ Simple query result:', queryResult);
     } catch (queryError) {
-      console.log('ℹ️ Query test skipped (expected for empty database):', queryError.message);
+      console.log(
+        'ℹ️ Query test skipped (expected for empty database):',
+        queryError.message
+      );
     }
 
     console.log('🧪 Testing node creation...');
@@ -55,7 +58,7 @@ async function main() {
       id: 'test-node-1',
       title: 'Test Document',
       type: 'test',
-      content: 'This is a test document for the graph database.'
+      content: 'This is a test document for the graph database.',
     });
     console.log('✅ Node created with ID:', nodeId);
 
@@ -71,7 +74,6 @@ async function main() {
     console.log('');
     console.log('📁 Real Kuzu database created:');
     console.log('  - ./data/kuzu/test-kuzu-only.kuzu (Real graph database)');
-
   } catch (error) {
     console.error('❌ Kuzu test failed:', error);
     console.error('Error details:', error.stack);

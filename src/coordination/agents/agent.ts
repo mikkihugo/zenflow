@@ -194,7 +194,8 @@ export class BaseAgent implements Agent {
       this.metrics.tasksFailed = (this.metrics.tasksFailed || 0) + 1;
     }
 
-    const totalTasks = this.metrics.tasksCompleted + (this.metrics.tasksFailed || 0);
+    const totalTasks =
+      this.metrics.tasksCompleted + (this.metrics.tasksFailed || 0);
     this.metrics.successRate =
       totalTasks > 0 ? this.metrics.tasksCompleted / totalTasks : 0;
 
@@ -236,7 +237,11 @@ export class BaseAgent implements Agent {
 
   private async handleKnowledgeShare(message: Message): Promise<void> {
     // Store shared knowledge in memory
-    if (this.config.memory && typeof this.config?.memory === 'object' && 'shortTerm' in this.config.memory) {
+    if (
+      this.config.memory &&
+      typeof this.config?.memory === 'object' &&
+      'shortTerm' in this.config.memory
+    ) {
       const memory = this.config.memory as { shortTerm: Map<string, unknown> };
       memory.shortTerm.set(`knowledge_${message.id}`, message.payload);
     }
@@ -518,7 +523,7 @@ export class AgentPool {
 
   getAllAgents(): Agent[] {
     const agentList: Agent[] = [];
-    for (const agent of this.agents.values()) {
+    for (const agent of Array.from(this.agents.values())) {
       agentList.push(agent);
     }
     return agentList;
@@ -529,7 +534,9 @@ export class AgentPool {
   }
 
   getAgentsByStatus(status: AgentStatus): Agent[] {
-    return this.getAllAgents().filter((agent) => agent.state?.status === status);
+    return this.getAllAgents().filter(
+      (agent) => agent.state?.status === status
+    );
   }
 
   async shutdown(): Promise<void> {

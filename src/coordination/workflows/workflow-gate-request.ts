@@ -355,6 +355,9 @@ export interface EscalationRecord {
 export interface WorkflowGateRequest extends ValidationQuestion {
   /** Workflow-specific context information */
   readonly workflowContext: WorkflowContext;
+  
+  /** Required ValidationQuestion context property */
+  readonly context: unknown;
 
   /** Escalation chain configuration for this gate */
   readonly escalationChain?: EscalationChain;

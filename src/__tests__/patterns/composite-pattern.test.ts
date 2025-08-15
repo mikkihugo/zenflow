@@ -3,8 +3,8 @@
  * Hybrid TDD approach: London TDD for hierarchy management, Classical TDD for task execution algorithms
  */
 
-import { 
-  AgentFactory, 
+import {
+  AgentFactory,
   type Agent,
   type AgentGroup,
   type AgentCapability,
@@ -14,7 +14,7 @@ import {
   type CompositeStatus,
   type HierarchicalAgentGroup,
   type LoadBalancingStrategy,
-  type CompositeMetrics
+  type CompositeMetrics,
 } from '../../coordination/agents/composite-system.ts';
 
 // Mock task executor for testing
@@ -368,7 +368,7 @@ describe('Composite Pattern Implementation', () => {
             tasks.map((task) => testGroup.executeTask(task))
           );
           expect(results).toBeDefined();
-        expect(results?.every((r: TaskResult) => r.success)).toBe(true);
+          expect(results?.every((r: TaskResult) => r.success)).toBe(true);
 
           await testGroup.shutdown();
         }

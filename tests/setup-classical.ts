@@ -1,14 +1,13 @@
 /**
-/// <reference types="./global-types" />
  * Classical TDD (Detroit) Test Setup
  *
  * @file Setup configuration for state-based testing
  * Focus: Algorithms, computations, mathematical operations, data transformations
  */
 
-import 'jest-extended';
-// Explicit import for ESM environment to ensure jest global is available
-import { vi } from 'vitest';
+// Import Vitest globals and utilities
+import { vi, expect, beforeEach, afterEach } from 'vitest';
+import './global-types';
 
 // Classical TDD focuses on real implementations and state verification
 beforeEach(() => {
@@ -51,7 +50,7 @@ interface ExtendedMath extends Math {
 
 function initializeTestDataGenerators() {
   // Seed random number generator for reproducible tests
-  (Math as ExtendedMath).seedrandom = (seed: string) => {
+  (Math as any).seedrandom = (seed: string) => {
     const seedNum = hashCode(seed);
     let x = Math.sin(seedNum) * 10000;
     return () => {
@@ -100,7 +99,7 @@ function hashCode(str: string): number {
   return hash;
 }
 
-interface ExtendedGlobal extends NodeJS.Global {
+interface ExtendedGlobal {
   generateTestMatrix(
     rows: number,
     cols: number,
@@ -129,11 +128,11 @@ interface ExtendedGlobal extends NodeJS.Global {
 }
 
 // Classical TDD helpers for algorithm testing
-(globalThis as any as ExtendedGlobal).generateTestMatrix = (
+globalThis.generateTestMatrix = (
   rows: number,
   cols: number,
   fillFn?: (i: number, j: number) => number
-) => {
+): number[][] => {
   const matrix: number[][] = new Array(rows);
   for (let i = 0; i < rows; i++) {
     const row: number[] = new Array(cols);
@@ -145,10 +144,10 @@ interface ExtendedGlobal extends NodeJS.Global {
   return matrix;
 };
 
-(globalThis as any as ExtendedGlobal).generateTestVector = (
+globalThis.generateTestVector = (
   size: number,
   fillFn?: (i: number) => number
-) => {
+): number[] => {
   const vector: number[] = [];
   for (let i = 0; i < size; i++) {
     vector[i] = fillFn ? fillFn(i) : Math.random();
@@ -157,18 +156,18 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Neural network test data generators
-(globalThis as any as ExtendedGlobal).generateXORData = () => [
+globalThis.generateXORData = (): Array<{ input: number[]; output: number[] }> => [
   { input: [0, 0], output: [0] },
   { input: [0, 1], output: [1] },
   { input: [1, 0], output: [1] },
   { input: [1, 1], output: [0] },
 ];
 
-(globalThis as any as ExtendedGlobal).generateLinearData = (
+globalThis.generateLinearData = (
   samples: number,
   noise: number = 0.1
-) => {
-  const data = [];
+): Array<{ input: number[]; output: number[] }> => {
+  const data: Array<{ input: number[]; output: number[] }> = [];
   for (let i = 0; i < samples; i++) {
     const x = Math.random() * 10;
     const y = 2 * x + 3 + (Math.random() - 0.5) * noise;
@@ -178,10 +177,10 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Performance assertion helpers
-(globalThis as any as ExtendedGlobal).expectPerformance = (
+globalThis.expectPerformance = (
   fn: () => void,
   maxTimeMs: number
-) => {
+): number => {
   const start = Date.now();
   fn();
   const duration = Date.now() - start;
@@ -189,12 +188,12 @@ interface ExtendedGlobal extends NodeJS.Global {
   return duration;
 };
 
-(globalThis as any as ExtendedGlobal).expectMemoryUsage = (
+globalThis.expectMemoryUsage = (
   fn: () => void,
   maxMemoryMB: number
-) => {
-  const g = (globalThis as any as ExtendedGlobal).gc;
-  if (typeof g !== 'function') return; // Skip if garbage collection not available
+): number | undefined => {
+  const g = (globalThis as any).gc;
+  if (typeof g !== 'function') return undefined; // Skip if garbage collection not available
 
   try {
     g();
@@ -216,22 +215,22 @@ interface ExtendedGlobal extends NodeJS.Global {
 };
 
 // Mathematical precision helpers
-(globalThis as any as ExtendedGlobal).expectNearlyEqual = (
+globalThis.expectNearlyEqual = (
   actual: number,
   expected: number,
   tolerance: number = 1e-10
-) => {
+): void => {
   expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
 };
 
-(globalThis as any as ExtendedGlobal).expectArrayNearlyEqual = (
+globalThis.expectArrayNearlyEqual = (
   actual: number[],
   expected: number[],
   tolerance: number = 1e-10
-) => {
+): void => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (globalThis as any as ExtendedGlobal).expectNearlyEqual(
+    globalThis.expectNearlyEqual(
       actual[i]!,
       expected[i]!,
       tolerance
@@ -239,14 +238,14 @@ interface ExtendedGlobal extends NodeJS.Global {
   }
 };
 
-(globalThis as any as ExtendedGlobal).expectMatrixNearlyEqual = (
+globalThis.expectMatrixNearlyEqual = (
   actual: number[][],
   expected: number[][],
   tolerance: number = 1e-10
-) => {
+): void => {
   expect(actual).toHaveLength(expected.length);
   for (let i = 0; i < actual.length; i++) {
-    (globalThis as any as ExtendedGlobal).expectArrayNearlyEqual(
+    globalThis.expectArrayNearlyEqual(
       actual[i]!,
       expected[i]!,
       tolerance
@@ -254,53 +253,4 @@ interface ExtendedGlobal extends NodeJS.Global {
   }
 };
 
-declare global {
-  namespace NodeJS {
-    interface Global {
-      testStartTime: number;
-      testStartMemory: NodeJS.MemoryUsage;
-      lastTestExecutionTime: number;
-      lastTestMemoryDelta: {
-        rss: number;
-        heapUsed: number;
-        heapTotal: number;
-      };
-      gc?: () => void;
-
-      generateTestMatrix(
-        rows: number,
-        cols: number,
-        fillFn?: (i: number, j: number) => number
-      ): number[][];
-      generateTestVector(
-        size: number,
-        fillFn?: (i: number) => number
-      ): number[];
-      generateXORData(): Array<{ input: number[]; output: number[] }>;
-      generateLinearData(
-        samples: number,
-        noise?: number
-      ): Array<{ input: number[]; output: number[] }>;
-      expectPerformance(fn: () => void, maxTimeMs: number): number;
-      expectMemoryUsage(
-        fn: () => void,
-        maxMemoryMB: number
-      ): number | undefined;
-      expectNearlyEqual(
-        actual: number,
-        expected: number,
-        tolerance?: number
-      ): void;
-      expectArrayNearlyEqual(
-        actual: number[],
-        expected: number[],
-        tolerance?: number
-      ): void;
-      expectMatrixNearlyEqual(
-        actual: number[][],
-        expected: number[][],
-        tolerance?: number
-      ): void;
-    }
-  }
-}
+// Types are now declared in global-types.ts

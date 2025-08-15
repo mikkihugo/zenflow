@@ -34,14 +34,14 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     const { createPublicSwarmCoordinator } = await import(
       '../../coordination/public-api.ts'
     );
-    const { HiveSwarmCoordinator } = await import(
-      '../../coordination/hive-swarm-sync.ts'
+    const { CollectiveSwarmCoordinator } = await import(
+      '../../coordination/collective-knowledge-bridge'
     );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
-    const hiveSync = new HiveSwarmCoordinator(eventBus);
+    const hiveSync = new CollectiveSwarmCoordinator(eventBus);
 
     expect(swarmCoordinator).toBeDefined();
     expect(hiveSync).toBeDefined();
@@ -191,14 +191,14 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     const { createPublicSwarmCoordinator } = await import(
       '../../coordination/public-api.ts'
     );
-    const { HiveSwarmCoordinator } = await import(
-      '../../coordination/hive-swarm-sync.ts'
+    const { CollectiveSwarmCoordinator } = await import(
+      '../../coordination/collective-knowledge-bridge'
     );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
-    const hiveSync = new HiveSwarmCoordinator(eventBus);
+    const hiveSync = new CollectiveSwarmCoordinator(eventBus);
 
     // Mock coordinator to fail for one domain
     const originalInitialize = swarmCoordinator.initialize;
@@ -277,14 +277,14 @@ describe('Complete Auto-Swarm Pipeline Integration', () => {
     const { createPublicSwarmCoordinator } = await import(
       '../../coordination/public-api.ts'
     );
-    const { HiveSwarmCoordinator } = await import(
-      '../../coordination/hive-swarm-sync.ts'
+    const { CollectiveSwarmCoordinator } = await import(
+      '../../coordination/collective-knowledge-bridge'
     );
     const { EventBus } = await import('../../core/event-bus.ts');
 
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
-    const hiveSync = new HiveSwarmCoordinator(eventBus);
+    const hiveSync = new CollectiveSwarmCoordinator(eventBus);
 
     // Create factory with very restrictive constraints
     const factory = new AutoSwarmFactory(

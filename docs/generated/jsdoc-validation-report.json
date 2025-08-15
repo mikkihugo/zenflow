@@ -5,17 +5,15 @@
       "layer": "uacl",
       "coverage": {
         "documented": 1,
-        "total": 8,
-        "percentage": "12.50"
+        "total": 6,
+        "percentage": "16.67"
       },
       "errors": [
-        "Interface ClientConfig missing JSDoc",
         "Interface ClientResult missing JSDoc",
         "Interface ClientHealth missing JSDoc",
         "Interface ClientComponentHealth missing JSDoc",
-        "Interface ClientMetrics missing JSDoc",
-        "Interface IClient missing JSDoc",
-        "Interface IClientFactory missing JSDoc"
+        "Interface IClientAdapter missing JSDoc",
+        "Interface IClientAdapterFactory missing JSDoc"
       ],
       "warnings": []
     },
@@ -27,7 +25,9 @@
         "total": 2,
         "percentage": "50.00"
       },
-      "errors": ["Class EnhancedWebSocketClient missing JSDoc"],
+      "errors": [
+        "Class EnhancedWebSocketClient missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -73,7 +73,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -275,7 +277,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -342,7 +346,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -353,7 +359,24 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class UACL missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class UACL missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/clients/instance.ts",
+      "layer": "uacl",
+      "coverage": {
+        "documented": 0,
+        "total": 2,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Function initializeUACL missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -435,7 +458,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -472,6 +497,45 @@
       "warnings": []
     },
     {
+      "path": "src/database/adapters/kuzu-adapter.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 1,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/database/adapters/lancedb-adapter.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 1,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/database/adapters/sqlite-adapter.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 1,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
+      "warnings": []
+    },
+    {
       "path": "src/database/base.dao.ts",
       "layer": "dal",
       "coverage": {
@@ -479,7 +543,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -541,11 +607,13 @@
       "path": "src/database/dao/graph.dao.ts",
       "layer": "dal",
       "coverage": {
-        "documented": 0,
+        "documented": 1,
         "total": 2,
-        "percentage": "0.00"
+        "percentage": "50.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class GraphDao missing JSDoc"],
+      "errors": [
+        "Class GraphDao missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -556,7 +624,10 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class MemoryDao missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class MemoryDao missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -581,7 +652,10 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class VectorDao missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class VectorDao missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -592,7 +666,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -603,7 +679,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -614,7 +692,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -625,7 +705,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -636,7 +718,10 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class VectorDao missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class VectorDao missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -769,6 +854,20 @@
       "warnings": []
     },
     {
+      "path": "src/database/managers/adr-manager-hybrid.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 2,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class ADRManagerHybrid missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
       "path": "src/database/managers/adr-manager.ts",
       "layer": "dal",
       "coverage": {
@@ -776,7 +875,10 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class ADRManager missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class ADRManager missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -790,6 +892,19 @@
       "errors": [
         "Missing @fileoverview tag",
         "Class ADRProposalSystem missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/database/managers/database-connection-manager.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 1,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag"
       ],
       "warnings": []
     },
@@ -808,6 +923,51 @@
       "warnings": []
     },
     {
+      "path": "src/database/managers/hybrid-document-manager.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 2,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class HybridDocumentManager missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/database/managers/hybrid-factory.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 5,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Function createHybridSystem missing JSDoc",
+        "Function createADRManager missing JSDoc",
+        "Function createHybridDocumentManager missing JSDoc",
+        "Function healthCheckHybridSystem missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/database/managers/production-hybrid-factory.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 2,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Function createProductionHybridSystem missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
       "path": "src/database/mcp/database-tools.ts",
       "layer": "dal",
       "coverage": {
@@ -815,7 +975,23 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/database/migrations/init-database.ts",
+      "layer": "dal",
+      "coverage": {
+        "documented": 0,
+        "total": 2,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Function initializeDatabase missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -823,18 +999,11 @@
       "layer": "dal",
       "coverage": {
         "documented": 0,
-        "total": 8,
+        "total": 1,
         "percentage": "0.00"
       },
       "errors": [
-        "Missing @fileoverview tag",
-        "Interface GraphResult missing JSDoc",
-        "Interface VectorResult missing JSDoc",
-        "Interface VectorData missing JSDoc",
-        "Interface IndexConfig missing JSDoc",
-        "Interface GraphDatabaseAdapter missing JSDoc",
-        "Interface VectorDatabaseAdapter missing JSDoc",
-        "Interface DatabaseConfig missing JSDoc"
+        "Missing @fileoverview tag"
       ],
       "warnings": []
     },
@@ -1180,7 +1349,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -1290,7 +1461,10 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class WebService missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class WebService missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -1301,7 +1475,10 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class USL missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class USL missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -1368,7 +1545,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -1382,6 +1561,21 @@
       "errors": [
         "Missing @fileoverview tag",
         "Class USLValidationFramework missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/events/adapter-registry.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 0,
+        "total": 3,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Function registerDefaultAdapters missing JSDoc",
+        "Function initializeAdapterRegistry missing JSDoc"
       ],
       "warnings": []
     },
@@ -1475,6 +1669,19 @@
       "warnings": []
     },
     {
+      "path": "src/interfaces/events/adapters/database-event-factory.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 1,
+        "total": 2,
+        "percentage": "50.00"
+      },
+      "errors": [
+        "Class DatabaseEventManagerFactory missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
       "path": "src/interfaces/events/adapters/index.ts",
       "layer": "uel",
       "coverage": {
@@ -1482,7 +1689,35 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/events/adapters/interface-event-factory.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 1,
+        "total": 2,
+        "percentage": "50.00"
+      },
+      "errors": [
+        "Class InterfaceEventManagerFactory missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/events/adapters/memory-event-factory.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 1,
+        "total": 2,
+        "percentage": "50.00"
+      },
+      "errors": [
+        "Class MemoryEventManagerFactory missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -1525,7 +1760,22 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/events/adapters/neural-event-factory.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 1,
+        "total": 2,
+        "percentage": "50.00"
+      },
+      "errors": [
+        "Class NeuralEventManagerFactory missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -1565,6 +1815,19 @@
       "warnings": []
     },
     {
+      "path": "src/interfaces/events/adapters/workflow-event-factory.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 1,
+        "total": 2,
+        "percentage": "50.00"
+      },
+      "errors": [
+        "Class WorkflowEventManagerFactory missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
       "path": "src/interfaces/events/compatibility.ts",
       "layer": "uel",
       "coverage": {
@@ -1580,6 +1843,17 @@
         "Function createCompatibleEventEmitter missing JSDoc",
         "Function wrapWithUEL missing JSDoc"
       ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/events/core/base-event-manager.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 1,
+        "total": 1,
+        "percentage": "100.00"
+      },
+      "errors": [],
       "warnings": []
     },
     {
@@ -1621,7 +1895,31 @@
         "total": 2,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag", "Class UEL missing JSDoc"],
+      "errors": [
+        "Missing @fileoverview tag",
+        "Class UEL missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
+      "path": "src/interfaces/events/event-manager-types.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 0,
+        "total": 9,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Interface IWorkflowEventManager missing JSDoc",
+        "Interface INeuralEventManager missing JSDoc",
+        "Interface IMemoryEventManager missing JSDoc",
+        "Interface IInterfaceEventManager missing JSDoc",
+        "Interface IDatabaseEventManager missing JSDoc",
+        "Interface ISystemEventManager missing JSDoc",
+        "Interface ICommunicationEventManager missing JSDoc",
+        "Interface ICoordinationEventManager missing JSDoc"
+      ],
       "warnings": []
     },
     {
@@ -1669,7 +1967,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -1697,7 +1997,9 @@
         "total": 1,
         "percentage": "0.00"
       },
-      "errors": ["Missing @fileoverview tag"],
+      "errors": [
+        "Missing @fileoverview tag"
+      ],
       "warnings": []
     },
     {
@@ -1760,6 +2062,23 @@
       "warnings": []
     },
     {
+      "path": "src/interfaces/events/uel-shared.ts",
+      "layer": "uel",
+      "coverage": {
+        "documented": 0,
+        "total": 5,
+        "percentage": "0.00"
+      },
+      "errors": [
+        "Missing @fileoverview tag",
+        "Interface IUELEnhancedEventBus missing JSDoc",
+        "Interface IUELSystemIntegration missing JSDoc",
+        "Function createUELConfig missing JSDoc",
+        "Function isValidUELEvent missing JSDoc"
+      ],
+      "warnings": []
+    },
+    {
       "path": "src/interfaces/events/validation.ts",
       "layer": "uel",
       "coverage": {
@@ -1782,14 +2101,14 @@
     }
   ],
   "coverage": {
-    "documented": 4,
-    "total": 562,
-    "percentage": "0.71"
+    "documented": 11,
+    "total": 600,
+    "percentage": "1.83"
   },
   "quality": {
-    "passed": 1,
-    "failed": 106,
-    "score": "0.93"
+    "passed": 2,
+    "failed": 124,
+    "score": "1.59"
   },
   "layers": {
     "uacl": {
@@ -1799,17 +2118,15 @@
           "layer": "uacl",
           "coverage": {
             "documented": 1,
-            "total": 8,
-            "percentage": "12.50"
+            "total": 6,
+            "percentage": "16.67"
           },
           "errors": [
-            "Interface ClientConfig missing JSDoc",
             "Interface ClientResult missing JSDoc",
             "Interface ClientHealth missing JSDoc",
             "Interface ClientComponentHealth missing JSDoc",
-            "Interface ClientMetrics missing JSDoc",
-            "Interface IClient missing JSDoc",
-            "Interface IClientFactory missing JSDoc"
+            "Interface IClientAdapter missing JSDoc",
+            "Interface IClientAdapterFactory missing JSDoc"
           ],
           "warnings": []
         },
@@ -1821,7 +2138,9 @@
             "total": 2,
             "percentage": "50.00"
           },
-          "errors": ["Class EnhancedWebSocketClient missing JSDoc"],
+          "errors": [
+            "Class EnhancedWebSocketClient missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -1867,7 +2186,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2069,7 +2390,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2136,7 +2459,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2147,7 +2472,24 @@
             "total": 2,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag", "Class UACL missing JSDoc"],
+          "errors": [
+            "Missing @fileoverview tag",
+            "Class UACL missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/interfaces/clients/instance.ts",
+          "layer": "uacl",
+          "coverage": {
+            "documented": 0,
+            "total": 2,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Function initializeUACL missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -2229,7 +2571,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2273,13 +2617,52 @@
       },
       "quality": {
         "passed": 0,
-        "failed": 27,
+        "failed": 28,
         "score": "0.00"
       },
       "errors": []
     },
     "dal": {
       "files": [
+        {
+          "path": "src/database/adapters/kuzu-adapter.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 1,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/database/adapters/lancedb-adapter.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 1,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/database/adapters/sqlite-adapter.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 1,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
         {
           "path": "src/database/base.dao.ts",
           "layer": "dal",
@@ -2288,7 +2671,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2350,12 +2735,11 @@
           "path": "src/database/dao/graph.dao.ts",
           "layer": "dal",
           "coverage": {
-            "documented": 0,
+            "documented": 1,
             "total": 2,
-            "percentage": "0.00"
+            "percentage": "50.00"
           },
           "errors": [
-            "Missing @fileoverview tag",
             "Class GraphDao missing JSDoc"
           ],
           "warnings": []
@@ -2410,7 +2794,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2421,7 +2807,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2432,7 +2820,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2443,7 +2833,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -2590,6 +2982,20 @@
           "warnings": []
         },
         {
+          "path": "src/database/managers/adr-manager-hybrid.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 2,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Class ADRManagerHybrid missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
           "path": "src/database/managers/adr-manager.ts",
           "layer": "dal",
           "coverage": {
@@ -2618,6 +3024,19 @@
           "warnings": []
         },
         {
+          "path": "src/database/managers/database-connection-manager.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 1,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
+        {
           "path": "src/database/managers/document-manager.ts",
           "layer": "dal",
           "coverage": {
@@ -2632,6 +3051,51 @@
           "warnings": []
         },
         {
+          "path": "src/database/managers/hybrid-document-manager.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 2,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Class HybridDocumentManager missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/database/managers/hybrid-factory.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 5,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Function createHybridSystem missing JSDoc",
+            "Function createADRManager missing JSDoc",
+            "Function createHybridDocumentManager missing JSDoc",
+            "Function healthCheckHybridSystem missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/database/managers/production-hybrid-factory.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 2,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Function createProductionHybridSystem missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
           "path": "src/database/mcp/database-tools.ts",
           "layer": "dal",
           "coverage": {
@@ -2639,7 +3103,23 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/database/migrations/init-database.ts",
+          "layer": "dal",
+          "coverage": {
+            "documented": 0,
+            "total": 2,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Function initializeDatabase missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -2647,18 +3127,11 @@
           "layer": "dal",
           "coverage": {
             "documented": 0,
-            "total": 8,
+            "total": 1,
             "percentage": "0.00"
           },
           "errors": [
-            "Missing @fileoverview tag",
-            "Interface GraphResult missing JSDoc",
-            "Interface VectorResult missing JSDoc",
-            "Interface VectorData missing JSDoc",
-            "Interface IndexConfig missing JSDoc",
-            "Interface GraphDatabaseAdapter missing JSDoc",
-            "Interface VectorDatabaseAdapter missing JSDoc",
-            "Interface DatabaseConfig missing JSDoc"
+            "Missing @fileoverview tag"
           ],
           "warnings": []
         },
@@ -2689,14 +3162,14 @@
         }
       ],
       "coverage": {
-        "documented": 1,
-        "total": 109,
-        "percentage": "0.92"
+        "documented": 2,
+        "total": 119,
+        "percentage": "1.68"
       },
       "quality": {
         "passed": 1,
-        "failed": 25,
-        "score": "3.85"
+        "failed": 34,
+        "score": "2.86"
       },
       "errors": []
     },
@@ -3019,7 +3492,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -3143,7 +3618,10 @@
             "total": 2,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag", "Class USL missing JSDoc"],
+          "errors": [
+            "Missing @fileoverview tag",
+            "Class USL missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -3210,7 +3688,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -3242,6 +3722,21 @@
     },
     "uel": {
       "files": [
+        {
+          "path": "src/interfaces/events/adapter-registry.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 0,
+            "total": 3,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Function registerDefaultAdapters missing JSDoc",
+            "Function initializeAdapterRegistry missing JSDoc"
+          ],
+          "warnings": []
+        },
         {
           "path": "src/interfaces/events/adapters/communication-event-adapter.ts",
           "layer": "uel",
@@ -3332,6 +3827,19 @@
           "warnings": []
         },
         {
+          "path": "src/interfaces/events/adapters/database-event-factory.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 1,
+            "total": 2,
+            "percentage": "50.00"
+          },
+          "errors": [
+            "Class DatabaseEventManagerFactory missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
           "path": "src/interfaces/events/adapters/index.ts",
           "layer": "uel",
           "coverage": {
@@ -3339,7 +3847,35 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/interfaces/events/adapters/interface-event-factory.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 1,
+            "total": 2,
+            "percentage": "50.00"
+          },
+          "errors": [
+            "Class InterfaceEventManagerFactory missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/interfaces/events/adapters/memory-event-factory.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 1,
+            "total": 2,
+            "percentage": "50.00"
+          },
+          "errors": [
+            "Class MemoryEventManagerFactory missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -3382,7 +3918,22 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/interfaces/events/adapters/neural-event-factory.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 1,
+            "total": 2,
+            "percentage": "50.00"
+          },
+          "errors": [
+            "Class NeuralEventManagerFactory missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -3422,6 +3973,19 @@
           "warnings": []
         },
         {
+          "path": "src/interfaces/events/adapters/workflow-event-factory.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 1,
+            "total": 2,
+            "percentage": "50.00"
+          },
+          "errors": [
+            "Class WorkflowEventManagerFactory missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
           "path": "src/interfaces/events/compatibility.ts",
           "layer": "uel",
           "coverage": {
@@ -3437,6 +4001,17 @@
             "Function createCompatibleEventEmitter missing JSDoc",
             "Function wrapWithUEL missing JSDoc"
           ],
+          "warnings": []
+        },
+        {
+          "path": "src/interfaces/events/core/base-event-manager.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 1,
+            "total": 1,
+            "percentage": "100.00"
+          },
+          "errors": [],
           "warnings": []
         },
         {
@@ -3478,7 +4053,31 @@
             "total": 2,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag", "Class UEL missing JSDoc"],
+          "errors": [
+            "Missing @fileoverview tag",
+            "Class UEL missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
+          "path": "src/interfaces/events/event-manager-types.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 0,
+            "total": 9,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Interface IWorkflowEventManager missing JSDoc",
+            "Interface INeuralEventManager missing JSDoc",
+            "Interface IMemoryEventManager missing JSDoc",
+            "Interface IInterfaceEventManager missing JSDoc",
+            "Interface IDatabaseEventManager missing JSDoc",
+            "Interface ISystemEventManager missing JSDoc",
+            "Interface ICommunicationEventManager missing JSDoc",
+            "Interface ICoordinationEventManager missing JSDoc"
+          ],
           "warnings": []
         },
         {
@@ -3526,7 +4125,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -3554,7 +4155,9 @@
             "total": 1,
             "percentage": "0.00"
           },
-          "errors": ["Missing @fileoverview tag"],
+          "errors": [
+            "Missing @fileoverview tag"
+          ],
           "warnings": []
         },
         {
@@ -3617,6 +4220,23 @@
           "warnings": []
         },
         {
+          "path": "src/interfaces/events/uel-shared.ts",
+          "layer": "uel",
+          "coverage": {
+            "documented": 0,
+            "total": 5,
+            "percentage": "0.00"
+          },
+          "errors": [
+            "Missing @fileoverview tag",
+            "Interface IUELEnhancedEventBus missing JSDoc",
+            "Interface IUELSystemIntegration missing JSDoc",
+            "Function createUELConfig missing JSDoc",
+            "Function isValidUELEvent missing JSDoc"
+          ],
+          "warnings": []
+        },
+        {
           "path": "src/interfaces/events/validation.ts",
           "layer": "uel",
           "coverage": {
@@ -3639,14 +4259,14 @@
         }
       ],
       "coverage": {
-        "documented": 1,
-        "total": 131,
-        "percentage": "0.76"
+        "documented": 7,
+        "total": 159,
+        "percentage": "4.40"
       },
       "quality": {
-        "passed": 0,
-        "failed": 23,
-        "score": "0.00"
+        "passed": 1,
+        "failed": 31,
+        "score": "3.13"
       },
       "errors": []
     }

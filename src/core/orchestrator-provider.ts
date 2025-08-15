@@ -2,10 +2,10 @@
  * @file Orchestrator-provider implementation.
  */
 
-import { config } from '../config/index.js';
+import { config } from '../config/index.ts';
 import { getLogger } from '../config/logging-config.ts';
-import { HTTPMCPServer as MCPServer } from '../interfaces/mcp/index.js';
-import { TerminalManager } from '../interfaces/terminal/index.js';
+import { HTTPMCPServer as MCPServer } from '../interfaces/mcp/index.ts';
+import { TerminalManager } from '../interfaces/terminal/index.ts';
 import { MemoryManager } from '../memory/index.ts';
 import type { CoordinationProvider } from '../types/shared-types.ts';
 import { EventBus } from './event-bus.ts';

@@ -6,13 +6,17 @@
   "main": "dist/claude-zen.js",
   "bin": {
     "claude-zen": "dist/claude-zen.js",
-    "zenswarm-mcp-server": "dist/mcp-server.js"
+    "zenswarm-mcp-server": "dist/mcp-server.js",
+    "tui-monitor": "bin/tui-monitor.js"
   },
   "preferGlobal": true,
   "scripts": {
     "start": "node dist/claude-zen.js core",
     "dev": "npx tsx src/main.ts integrated --port 3000",
     "dev:tui": "npx tsx src/interfaces/terminal/main.ts --interactive",
+    "monitor": "npx tsx bin/tui-monitor.ts start",
+    "monitor:demo": "npx tsx bin/tui-monitor.ts start --demo",
+    "monitor:otel": "npx tsx bin/tui-monitor.ts otel-consumer",
     "dev:web": "npx tsx src/main.ts web --port 3000",
     "dev:full": "concurrently \"npm:dev\" \"npm:type-check:watch\" \"npm:test:watch\"",
     "dev:fast": "npm run build:watch",
@@ -152,8 +156,7 @@
   ],
   "dependencies": {
     "@ag-ui/core": "^0.0.35",
-    "@anthropic-ai/claude-code": "^1.0.72",
-    "@ax-llm/ax": "^14.0.11",
+    "@anthropic-ai/claude-code": "^1.0.81",
     "@azure-rest/ai-inference": "^1.0.0-beta.6",
     "@azure/core-auth": "^1.10.0",
     "@azure/core-sse": "^2.3.0",
@@ -171,9 +174,9 @@
     "better-sqlite3": "^12.2.0",
     "blessed": "^0.1.81",
     "chalk": "^5.5.0",
+    "commander": "^12.1.0",
     "compression": "^1.8.1",
     "cors": "^2.8.5",
-    "dspy.ts": "^0.1.3",
     "escomplex": "^1.3.0",
     "esprima": "^4.0.1",
     "express": "^5.1.0",
@@ -228,12 +231,14 @@
     "boxednode": "^2.4.4",
     "caxa": "^3.0.1",
     "concurrently": "^9.1.1",
+    "dependency-cruiser": "^17.0.1",
     "esbuild": "^0.25.9",
+    "execa": "^9.6.0",
+    "fast-check": "^4.2.0",
     "glob": "^11.0.0",
-    "gts": "^6.0.2",
+    "happy-dom": "^18.0.1",
     "jscodeshift": "^17.1.1",
-    "nexe": "^5.0.0-beta.4",
-    "pkg": "^5.8.1",
+    "react-devtools-core": "^4.28.5",
     "tsx": "^4.20.4"
   },
   "engines": {

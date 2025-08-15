@@ -12,7 +12,7 @@ import { EventEmitter } from 'node:events';
 import { existsSync } from 'node:fs';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('UnifiedDocLinker');
 

@@ -23,7 +23,7 @@
  *
  * @requires vitest - Testing framework
  * @requires @vitest/expect - Assertion library
- * @requires @coordination/hive-fact-integration - FACT system integration
+ * @requires @coordination/collective-fact-integration - FACT system integration
  * @requires @knowledge/types/fact-types - Knowledge type definitions
  *
  * @example
@@ -93,7 +93,7 @@ import type { SessionMemoryStore } from '../../memory/memory.ts';
  * expect(results).toHaveLength(1);
  * ```
  *
- * @see {@link ../../coordination/hive-fact-integration.ts} Production HiveFACTSystem
+ * @see {@link ../../coordination/collective-fact-integration.ts} Production CollectiveFACTSystem
  * @see {@link ../../knowledge/types/fact-types.ts} FACT type definitions
  */
 class MockHiveFACT extends EventEmitter {
@@ -407,24 +407,24 @@ class MockMemoryStore implements Partial<SessionMemoryStore> {
 }
 
 /**
- * Mock implementation of HiveSwarmCoordinator for testing.
+ * Mock implementation of CollectiveSwarmCoordinator for testing.
  *
  * Simulates the swarm coordination system that manages communication
  * between different swarms and knowledge requests.
  *
- * @class MockHiveSwarmCoordinator
+ * @class MockCollectiveSwarmCoordinator
  * @extends {EventEmitter}
  *
  * @example
  * ```typescript
- * const coordinator = new MockHiveSwarmCoordinator();
+ * const coordinator = new MockCollectiveSwarmCoordinator();
  * const fact = await coordinator.requestUniversalFact('swarm-1', 'auth', 'jwt');
  * expect(fact.content).toContain('auth:jwt');
  * ```
  *
- * @see {@link ../../coordination/hive-swarm-sync.ts} Production coordinator
+ * @see {@link ../../coordination/collective-knowledge-bridge} Production coordinator
  */
-class MockHiveSwarmCoordinator extends EventEmitter {
+class MockCollectiveSwarmCoordinator extends EventEmitter {
   /**
    * Requests a universal fact from the coordination system.
    *
@@ -470,7 +470,7 @@ class MockHiveSwarmCoordinator extends EventEmitter {
  * @suite Hive Knowledge Integration
  * @requires MockHiveFACT - Mock FACT system for isolated testing
  * @requires MockMemoryStore - Mock storage for test isolation
- * @requires MockHiveSwarmCoordinator - Mock coordination for testing
+ * @requires MockCollectiveSwarmCoordinator - Mock coordination for testing
  *
  * @performance Tests include concurrency and load validation
  * @coverage Comprehensive error handling and edge case testing
@@ -490,9 +490,9 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
 
   /**
    * Mock swarm coordinator for testing coordination features.
-   * @type {MockHiveSwarmCoordinator}
+   * @type {MockCollectiveSwarmCoordinator}
    */
-  let hiveCoordinator: MockHiveSwarmCoordinator;
+  let hiveCoordinator: MockCollectiveSwarmCoordinator;
 
   /**
    * Knowledge bridge instance under test.
@@ -531,7 +531,7 @@ describe('Hive Knowledge Integration - Complete System Tests', () => {
     // Initialize all components
     hiveFact = new MockHiveFACT();
     memoryStore = new MockMemoryStore();
-    hiveCoordinator = new MockHiveSwarmCoordinator();
+    hiveCoordinator = new MockCollectiveSwarmCoordinator();
   });
 
   /**

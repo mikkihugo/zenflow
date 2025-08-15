@@ -2,7 +2,7 @@
  * @file Test suite for test-sparc-mcp-tools.
  */
 
-import { getLogger } from './config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('test-sparc-mcp-tools');
 /**
@@ -14,7 +14,7 @@ async function testSPARCMCPTools() {
   try {
     // Import MCP tools
     const createSPARCTools = (
-      await import('./interfaces/mcp/tools/sparc-integration-tools')
+      await import('../../interfaces/mcp/tools/sparc-integration-tools')
     ).default;
 
     // Create mock document service

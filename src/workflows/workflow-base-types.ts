@@ -8,14 +8,31 @@
  * workflow-gate-request.ts → domain-boundary-validator.ts → workflows/types.ts → workflows/workflow-engine.ts
  */
 
-// Forward declarations to avoid circular dependencies
-// These will be properly typed by the actual implementations
+// Workflow gate types - unified definitions to avoid conflicts
 export interface WorkflowGateRequest {
   readonly [key: string]: unknown;
+  readonly id: string;
+  readonly type: string;
+  readonly workflowContext: unknown;
+  readonly gateType: string;
+  readonly context: unknown;
+  readonly question?: string;
+  readonly confidence?: number;
+  readonly priority?: string;
+  readonly validationReason?: string;
+  readonly expectedImpact?: number;
 }
 
 export interface WorkflowGateResult {
   readonly [key: string]: unknown;
+  readonly success: boolean;
+  readonly gateId: string;
+  readonly approved: boolean;
+  readonly processingTime: number;
+  readonly escalationLevel?: number;
+  readonly decisionMaker?: string;
+  readonly error?: Error;
+  readonly correlationId?: string;
 }
 
 // ============================================================================

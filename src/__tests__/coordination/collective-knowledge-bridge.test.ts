@@ -214,16 +214,18 @@ describe('CollectiveKnowledgeBridge Unit Tests', () => {
       const response = await bridge.processKnowledgeRequest(request);
 
       expect(response?.success).toBe(true);
-      expect((response?.data as any)?.results?.[0]).toHaveProperty('swarmContext');
-      expect((response?.data as any)?.results?.[0]?.swarmContext).toHaveProperty(
-        'relevanceScore'
+      expect((response?.data as any)?.results?.[0]).toHaveProperty(
+        'swarmContext'
       );
-      expect((response?.data as any)?.results?.[0]?.swarmContext).toHaveProperty(
-        'usageHistory'
-      );
-      expect((response?.data as any)?.results?.[0]?.swarmContext?.usageHistory).toBe(
-        'previously-used'
-      );
+      expect(
+        (response?.data as any)?.results?.[0]?.swarmContext
+      ).toHaveProperty('relevanceScore');
+      expect(
+        (response?.data as any)?.results?.[0]?.swarmContext
+      ).toHaveProperty('usageHistory');
+      expect(
+        (response?.data as any)?.results?.[0]?.swarmContext?.usageHistory
+      ).toBe('previously-used');
     });
   });
 

@@ -22,7 +22,7 @@ import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { DocumentDrivenSystem } from '../../../../core/document-driven-system.ts';
 import { MemorySystem } from '../../../../core/memory-system.ts';
-import type { WorkflowEngine } from '../../../../core/workflow-engine.ts';
+import type { WorkflowEngine } from '../../../../workflows/workflow-engine.ts';
 import { CoordinationAPI } from '../../../api.ts';
 
 const TaskAPI = CoordinationAPI.tasks;

@@ -1,6 +1,6 @@
 /**
  * @file Event Emitter Types
- * 
+ *
  * Type definitions for event emitters and error objects with proper typing
  * for properties like 'on', 'code', and other event-related functionality.
  */
@@ -69,7 +69,8 @@ export function hasErrorCode(error: unknown): error is BaseError {
     typeof error === 'object' &&
     error !== null &&
     'code' in error &&
-    (typeof (error as any).code === 'string' || typeof (error as any).code === 'number')
+    (typeof (error as any).code === 'string' ||
+      typeof (error as any).code === 'number')
   );
 }
 
@@ -88,10 +89,7 @@ export function isSystemError(error: unknown): error is SystemError {
  * Type guard to check if error is a network error
  */
 export function isNetworkError(error: unknown): error is NetworkError {
-  return (
-    hasErrorCode(error) &&
-    typeof (error as any).code === 'string'
-  );
+  return hasErrorCode(error) && typeof (error as any).code === 'string';
 }
 
 /**

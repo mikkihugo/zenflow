@@ -1,10 +1,10 @@
 /**
  * Phase 2 Swarm Database Integration Tests
- * 
+ *
  * Comprehensive integration tests for the complete Phase 2 swarm database system
  * including enhanced vector pattern discovery, cross-swarm knowledge transfer,
  * and real database integration validation.
- * 
+ *
  * Tests cover:
  * 1. Enhanced Vector Pattern Discovery with clustering and similarity search
  * 2. Cross-Swarm Knowledge Transfer with intelligent adaptation
@@ -96,16 +96,24 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       createIndex: vi.fn().mockResolvedValue(true),
     };
 
-    mockDALFactory.createCoordinationRepository.mockResolvedValue(mockCoordinationRepo);
+    mockDALFactory.createCoordinationRepository.mockResolvedValue(
+      mockCoordinationRepo
+    );
     mockDALFactory.createKuzuGraphRepository.mockResolvedValue(mockGraphRepo);
-    mockDALFactory.createLanceDBVectorRepository.mockResolvedValue(mockVectorRepo);
+    mockDALFactory.createLanceDBVectorRepository.mockResolvedValue(
+      mockVectorRepo
+    );
 
     // Initialize SwarmDatabaseManager with mocked dependencies
-    swarmDbManager = new SwarmDatabaseManager(testConfig, mockDALFactory as any, mockLogger);
-    
+    swarmDbManager = new SwarmDatabaseManager(
+      testConfig,
+      mockDALFactory as any,
+      mockLogger
+    );
+
     // Override registerEntityType to be a spy
     vi.spyOn(mockDALFactory, 'registerEntityType').mockImplementation(() => {});
-    
+
     await swarmDbManager.initialize();
 
     testSwarmId = `test-swarm-${nanoid()}`;
@@ -155,14 +163,14 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
           },
         },
         sparcPhaseEfficiency: {
-          'specification': {
+          specification: {
             phase: 'specification',
             averageTime: 1800,
             successRate: 0.95,
             commonIssues: ['unclear_requirements'],
             optimizations: ['requirement_templates'],
           },
-          'planning': {
+          planning: {
             phase: 'planning',
             averageTime: 2200,
             successRate: 0.89,
@@ -212,7 +220,11 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       };
 
       // Store TIER 1 learning data
-      await swarmDbManager.storeTier1Learning(testSwarmId, commanderType, learningData);
+      await swarmDbManager.storeTier1Learning(
+        testSwarmId,
+        commanderType,
+        learningData
+      );
 
       // Verify storage
       expect(mockDALFactory.createCoordinationRepository).toHaveBeenCalled();
@@ -220,7 +232,10 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       expect(mockDALFactory.createKuzuGraphRepository).toHaveBeenCalled();
 
       // Retrieve and verify
-      const retrievedLearning = await swarmDbManager.getTier1Learning(testSwarmId, commanderType);
+      const retrievedLearning = await swarmDbManager.getTier1Learning(
+        testSwarmId,
+        commanderType
+      );
       expect(retrievedLearning).toBeDefined();
     });
 
@@ -271,17 +286,22 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
           pattern,
           swarmId: testSwarmId,
         },
-        score: 0.8 + (index * 0.05),
+        score: 0.8 + index * 0.05,
       }));
 
-      vi.mocked(mockVectorRepo.repositories.vectors.findBy).mockResolvedValue(mockVectorResults);
+      vi.mocked(mockVectorRepo.repositories.vectors.findBy).mockResolvedValue(
+        mockVectorResults
+      );
 
       // Perform pattern clustering
-      const clusters = await swarmDbManager.performPatternClustering(testSwarmId, {
-        minClusterSize: 2,
-        maxClusters: 3,
-        similarityThreshold: 0.7,
-      });
+      const clusters = await swarmDbManager.performPatternClustering(
+        testSwarmId,
+        {
+          minClusterSize: 2,
+          maxClusters: 3,
+          similarityThreshold: 0.7,
+        }
+      );
 
       expect(clusters).toBeDefined();
       expect(Array.isArray(clusters)).toBe(true);
@@ -315,7 +335,11 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       // Mock active swarms by overriding the method
       (swarmDbManager as any).getActiveSwarms = vi.fn().mockResolvedValue([
         { swarmId: testSwarmId, path: '/test/path1', lastAccessed: new Date() },
-        { swarmId: secondarySwarmId, path: '/test/path2', lastAccessed: new Date() },
+        {
+          swarmId: secondarySwarmId,
+          path: '/test/path2',
+          lastAccessed: new Date(),
+        },
       ]);
 
       // Mock cross-swarm search results
@@ -338,12 +362,16 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       ];
 
       // Perform cross-swarm pattern search
-      const results = await swarmDbManager.searchCrossSwarmPatterns(queryPattern, testSwarmId, {
-        limit: 5,
-        minSimilarity: 0.7,
-        contextWeighting: true,
-        transferabilityAnalysis: true,
-      });
+      const results = await swarmDbManager.searchCrossSwarmPatterns(
+        queryPattern,
+        testSwarmId,
+        {
+          limit: 5,
+          minSimilarity: 0.7,
+          contextWeighting: true,
+          transferabilityAnalysis: true,
+        }
+      );
 
       expect(results).toBeDefined();
       expect(Array.isArray(results)).toBe(true);
@@ -362,7 +390,8 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
     });
 
     test('should demonstrate complete enhanced pattern discovery pipeline', async () => {
-      const demo = await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmId);
+      const demo =
+        await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmId);
 
       expect(demo).toBeDefined();
       expect(demo.enhancedEmbeddings).toBeDefined();
@@ -424,7 +453,10 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
           {
             patternId: 'transfer-pattern-1',
             adoptionStatus: 'successful',
-            adaptationChanges: ['adjusted timeout values', 'updated error codes'],
+            adaptationChanges: [
+              'adjusted timeout values',
+              'updated error codes',
+            ],
             performanceMetrics: {
               beforeAdoption: {
                 averageExecutionTime: 2800,
@@ -450,10 +482,15 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
                 description: 'Timeout values conflicted with existing settings',
                 resolutionStrategy: 'adaptive_merge',
                 outcome: 'resolved',
-                learningsExtracted: ['dynamic timeout configuration is more flexible'],
+                learningsExtracted: [
+                  'dynamic timeout configuration is more flexible',
+                ],
               },
             ],
-            learningFeedback: ['pattern adaptation successful', 'performance improvement confirmed'],
+            learningFeedback: [
+              'pattern adaptation successful',
+              'performance improvement confirmed',
+            ],
           },
         ],
         timestamp: new Date().toISOString(),
@@ -477,13 +514,14 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
 
     test('should generate comprehensive swarm performance comparison', async () => {
       const swarmIds = [testSwarmId, secondarySwarmId];
-      
-      const comparisons = await swarmDbManager.generateSwarmPerformanceComparison(swarmIds, {
-        includeMetrics: ['all'],
-        timeWindow: 30,
-        includeBenchmarks: true,
-        generateRecommendations: true,
-      });
+
+      const comparisons =
+        await swarmDbManager.generateSwarmPerformanceComparison(swarmIds, {
+          includeMetrics: ['all'],
+          timeWindow: 30,
+          includeBenchmarks: true,
+          generateRecommendations: true,
+        });
 
       expect(comparisons).toBeDefined();
       expect(Array.isArray(comparisons)).toBe(true);
@@ -512,13 +550,16 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
 
     test('should track pattern adoption with success metrics', async () => {
       const patternId = 'tracked-pattern-123';
-      
-      const adoptionTracking = await swarmDbManager.trackPatternAdoption(patternId, {
-        includeSwarms: [testSwarmId, secondarySwarmId],
-        timeWindow: 90,
-        detailedAnalysis: true,
-        predictFutureAdoption: true,
-      });
+
+      const adoptionTracking = await swarmDbManager.trackPatternAdoption(
+        patternId,
+        {
+          includeSwarms: [testSwarmId, secondarySwarmId],
+          timeWindow: 90,
+          detailedAnalysis: true,
+          predictFutureAdoption: true,
+        }
+      );
 
       expect(adoptionTracking).toBeDefined();
       expect(Array.isArray(adoptionTracking.adoptionHistory)).toBe(true);
@@ -529,14 +570,18 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       expect(Array.isArray(adoptionTracking.recommendations)).toBe(true);
 
       // Verify adoption history structure
-      adoptionTracking.adoptionHistory.forEach((result: PatternAdoptionResult) => {
-        expect(result.patternId).toBe(patternId);
-        expect(['successful', 'adapted', 'rejected', 'pending']).toContain(result.adoptionStatus);
-        expect(Array.isArray(result.adaptationChanges)).toBe(true);
-        expect(result.performanceMetrics).toBeDefined();
-        expect(Array.isArray(result.conflictResolutions)).toBe(true);
-        expect(Array.isArray(result.learningFeedback)).toBe(true);
-      });
+      adoptionTracking.adoptionHistory.forEach(
+        (result: PatternAdoptionResult) => {
+          expect(result.patternId).toBe(patternId);
+          expect(['successful', 'adapted', 'rejected', 'pending']).toContain(
+            result.adoptionStatus
+          );
+          expect(Array.isArray(result.adaptationChanges)).toBe(true);
+          expect(result.performanceMetrics).toBeDefined();
+          expect(Array.isArray(result.conflictResolutions)).toBe(true);
+          expect(Array.isArray(result.learningFeedback)).toBe(true);
+        }
+      );
     });
   });
 
@@ -637,11 +682,19 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       ];
 
       const cluster = await swarmDbManager.getSwarmCluster(testSwarmId);
-      vi.mocked(cluster.repositories.vectors.similaritySearch).mockResolvedValue(mockSimilarResults);
+      vi.mocked(
+        cluster.repositories.vectors.similaritySearch
+      ).mockResolvedValue(mockSimilarResults);
 
-      const results = await swarmDbManager.findSimilarEmbeddings(testSwarmId, queryVector, 5);
+      const results = await swarmDbManager.findSimilarEmbeddings(
+        testSwarmId,
+        queryVector,
+        5
+      );
 
-      expect(cluster.repositories.vectors.similaritySearch).toHaveBeenCalledWith(
+      expect(
+        cluster.repositories.vectors.similaritySearch
+      ).toHaveBeenCalledWith(
         queryVector,
         expect.objectContaining({
           limit: 5,
@@ -654,8 +707,16 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
     test('should validate graph traversal and relationship queries', async () => {
       const mockGraphTraversal = {
         nodes: [
-          { id: 'node-1', labels: ['Agent'], properties: { name: 'Research Agent' } },
-          { id: 'node-2', labels: ['Task'], properties: { title: 'Analysis Task' } },
+          {
+            id: 'node-1',
+            labels: ['Agent'],
+            properties: { name: 'Research Agent' },
+          },
+          {
+            id: 'node-2',
+            labels: ['Task'],
+            properties: { title: 'Analysis Task' },
+          },
         ],
         relationships: [
           { from: 'node-1', to: 'node-2', type: 'ASSIGNED_TO', properties: {} },
@@ -663,9 +724,15 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       };
 
       const cluster = await swarmDbManager.getSwarmCluster(testSwarmId);
-      vi.mocked(cluster.repositories.graph.traverse).mockResolvedValue(mockGraphTraversal);
+      vi.mocked(cluster.repositories.graph.traverse).mockResolvedValue(
+        mockGraphTraversal
+      );
 
-      const result = await swarmDbManager.getSwarmGraph(testSwarmId, 'node-1', 3);
+      const result = await swarmDbManager.getSwarmGraph(
+        testSwarmId,
+        'node-1',
+        3
+      );
 
       // Verify that traverse was called and result is correct
       expect(result).toEqual(mockGraphTraversal);
@@ -695,7 +762,11 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
         lastUpdated: new Date().toISOString(),
       };
 
-      await swarmDbManager.storeAgentPerformance(testSwarmId, agentId, performance);
+      await swarmDbManager.storeAgentPerformance(
+        testSwarmId,
+        agentId,
+        performance
+      );
 
       // Verify storage calls
       const cluster = await swarmDbManager.getSwarmCluster(testSwarmId);
@@ -712,7 +783,9 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
         })
       );
 
-      expect(cluster.repositories.graph.createRelationship).toHaveBeenCalledWith(
+      expect(
+        cluster.repositories.graph.createRelationship
+      ).toHaveBeenCalledWith(
         testSwarmId,
         agentId,
         'CURRENT_PERFORMANCE',
@@ -753,7 +826,7 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
 
     test('should retrieve agent performance history across swarms', async () => {
       const agentId = 'cross-swarm-agent';
-      
+
       // Mock performance data across multiple swarms
       const mockPerformanceData = [
         {
@@ -786,8 +859,12 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       const cluster1 = await swarmDbManager.getSwarmCluster(testSwarmId);
       const cluster2 = await swarmDbManager.getSwarmCluster(secondarySwarmId);
 
-      vi.mocked(cluster1.repositories.coordination.findBy).mockResolvedValue([mockPerformanceData[0]]);
-      vi.mocked(cluster2.repositories.coordination.findBy).mockResolvedValue([mockPerformanceData[1]]);
+      vi.mocked(cluster1.repositories.coordination.findBy).mockResolvedValue([
+        mockPerformanceData[0],
+      ]);
+      vi.mocked(cluster2.repositories.coordination.findBy).mockResolvedValue([
+        mockPerformanceData[1],
+      ]);
 
       const history = await swarmDbManager.getAgentPerformanceHistory(agentId);
 
@@ -810,7 +887,7 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       // Verify DAL Factory mock is set up correctly
       expect(mockDALFactory.registerEntityType).toBeDefined();
       expect(typeof mockDALFactory.registerEntityType).toBe('function');
-      
+
       // Verify the SwarmDatabaseManager was initialized successfully
       expect(swarmDbManager).toBeDefined();
     });
@@ -824,18 +901,20 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       expect(cluster.repositories).toBeDefined();
 
       // Retrieve cluster
-      const retrievedCluster = await swarmDbManager.getSwarmCluster(lifecycleSwarmId);
+      const retrievedCluster =
+        await swarmDbManager.getSwarmCluster(lifecycleSwarmId);
       expect(retrievedCluster.swarmId).toBe(lifecycleSwarmId);
 
       // Archive cluster
       await swarmDbManager.archiveSwarmCluster(lifecycleSwarmId);
-      
+
       // Verify archival completed (the swarm should be removed from cache)
       expect(true).toBe(true); // Test completed successfully
     });
 
     test('should validate cross-swarm dependency management', async () => {
-      const dependencies = await swarmDbManager.getSwarmDependencies(testSwarmId);
+      const dependencies =
+        await swarmDbManager.getSwarmDependencies(testSwarmId);
 
       expect(dependencies).toBeDefined();
       expect(Array.isArray(dependencies.dependencies)).toBe(true);
@@ -844,22 +923,32 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
 
     test('should handle active swarms retrieval', async () => {
       const mockActiveSwarms = [
-        { swarmId: testSwarmId, dbPath: '/test/path1', lastAccessed: new Date().toISOString() },
-        { swarmId: secondarySwarmId, dbPath: '/test/path2', lastAccessed: new Date().toISOString() },
+        {
+          swarmId: testSwarmId,
+          dbPath: '/test/path1',
+          lastAccessed: new Date().toISOString(),
+        },
+        {
+          swarmId: secondarySwarmId,
+          dbPath: '/test/path2',
+          lastAccessed: new Date().toISOString(),
+        },
       ];
 
       // Override the getActiveSwarms method directly
-      (swarmDbManager as any).getActiveSwarms = vi.fn().mockResolvedValue(mockActiveSwarms.map(swarm => ({
-        swarmId: swarm.swarmId,
-        path: swarm.dbPath,
-        lastAccessed: new Date(swarm.lastAccessed),
-      })));
+      (swarmDbManager as any).getActiveSwarms = vi.fn().mockResolvedValue(
+        mockActiveSwarms.map((swarm) => ({
+          swarmId: swarm.swarmId,
+          path: swarm.dbPath,
+          lastAccessed: new Date(swarm.lastAccessed),
+        }))
+      );
 
       const activeSwarms = await swarmDbManager.getActiveSwarms();
 
       expect(activeSwarms).toBeDefined();
       expect(Array.isArray(activeSwarms)).toBe(true);
-      
+
       activeSwarms.forEach((swarm) => {
         expect(swarm.swarmId).toBeDefined();
         expect(swarm.path).toBeDefined();
@@ -886,7 +975,7 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
           },
         },
         sparcPhaseEfficiency: {
-          'review': {
+          review: {
             phase: 'review',
             averageTime: 1500,
             successRate: 0.97,
@@ -910,10 +999,15 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
         updatedAt: new Date().toISOString(),
       };
 
-      await swarmDbManager.storeTier1Learning(testSwarmId, 'e2e-commander', sourceCommanderLearning);
+      await swarmDbManager.storeTier1Learning(
+        testSwarmId,
+        'e2e-commander',
+        sourceCommanderLearning
+      );
 
       // Phase 2: Perform pattern discovery
-      const discoveryDemo = await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmId);
+      const discoveryDemo =
+        await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmId);
       expect(discoveryDemo.analytics.totalPatterns).toBeGreaterThanOrEqual(0);
 
       // Phase 3: Execute knowledge transfer
@@ -930,11 +1024,17 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
       expect(transfer.targetSwarmId).toBe(secondarySwarmId);
 
       // Phase 4: Generate performance comparison
-      const comparisons = await swarmDbManager.generateSwarmPerformanceComparison([testSwarmId, secondarySwarmId]);
+      const comparisons =
+        await swarmDbManager.generateSwarmPerformanceComparison([
+          testSwarmId,
+          secondarySwarmId,
+        ]);
       expect(comparisons.length).toBe(2);
 
       // Phase 5: Track pattern adoption
-      const adoption = await swarmDbManager.trackPatternAdoption('e2e-pattern-microservices');
+      const adoption = await swarmDbManager.trackPatternAdoption(
+        'e2e-pattern-microservices'
+      );
       expect(adoption.adoptionRate).toBeGreaterThanOrEqual(0);
 
       // Verify complete workflow
@@ -968,7 +1068,10 @@ describe('Phase 2 Swarm Database Integration Tests', () => {
           lastUsed: 'invalid-date',
         };
 
-        await swarmDbManager.searchCrossSwarmPatterns(invalidPattern, testSwarmId);
+        await swarmDbManager.searchCrossSwarmPatterns(
+          invalidPattern,
+          testSwarmId
+        );
         expect(true).toBe(true); // Should handle gracefully
       } catch (error) {
         expect(error).toBeDefined();

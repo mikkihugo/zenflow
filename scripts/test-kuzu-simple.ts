@@ -2,7 +2,7 @@
 
 /**
  * Simple Test of Kuzu Adapter
- * 
+ *
  * Minimal test focusing on basic Kuzu functionality.
  */
 
@@ -40,8 +40,9 @@ async function main() {
     console.log('📁 Real Kuzu database file:');
     console.log('  - ./data/kuzu/test-simple.kuzu');
     console.log('');
-    console.log('🎯 Kuzu basic functionality works - now can build adapter on top');
-
+    console.log(
+      '🎯 Kuzu basic functionality works - now can build adapter on top'
+    );
   } catch (error) {
     console.error('❌ Kuzu basic test failed:', error);
     process.exit(1);

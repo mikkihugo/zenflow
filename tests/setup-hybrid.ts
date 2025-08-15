@@ -1,5 +1,4 @@
 /**
-/// <reference types="./global-types" />
  * Hybrid TDD Setup - Comprehensive Testing Configuration
  *
  * @file Implements the 70% London TDD / 30% Classical TDD hybrid approach
@@ -11,9 +10,9 @@
  * - Memory: Hybrid approach based on operation type
  */
 
-import 'jest-extended';
-// Explicit import for ESM environment to ensure jest global is available
-import { vi } from 'vitest';
+// Import Vitest globals and utilities
+import { vi, expect, beforeEach, afterEach } from 'vitest';
+import './global-types';
 
 /**
  * Hybrid TDD Configuration
@@ -83,12 +82,12 @@ function setupLondonTDD() {
   vi.useFakeTimers();
 
   // Setup interaction spies
-  createInteractionSpy = (name: string) => {
+  globalThis.createInteractionSpy = (name: string) => {
     return vi.fn().mockName(name);
   };
 
   // Mock factory for complex coordination objects
-  createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
+  globalThis.createCoordinationMock = <T>(defaults: Partial<T> = {}) => {
     return (overrides: Partial<T> = {}): T =>
       ({
         ...defaults,
@@ -121,7 +120,7 @@ function setupClassicalTDD() {
    * @param config - Configuration for data generation
    * @returns Array of training data points
    */
-  generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
+  globalThis.generateNeuralTestData = (config: NeuralTestConfig): NeuralTestData[] => {
     switch (config.type) {
       case 'xor':
         return [
@@ -149,7 +148,7 @@ function setupClassicalTDD() {
    * @param expected - Expected value
    * @param tolerance - Allowed difference (default: 1e-10)
    */
-  expectNearlyEqual = (
+  globalThis.expectNearlyEqual = (
     actual: number,
     expected: number,
     tolerance: number = 1e-10
@@ -168,7 +167,7 @@ function setupHybridTDD() {
   setupClassicalTDD();
 
   // Hybrid-specific utilities
-  testWithApproach = (
+  globalThis.testWithApproach = (
     approach: 'london' | 'classical',
     testFn: () => void | Promise<void>
   ) => {
@@ -181,7 +180,7 @@ function setupHybridTDD() {
   };
 
   // Memory-specific test utilities
-  createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
+  globalThis.createMemoryTestScenario = (type: 'sqlite' | 'lancedb' | 'json') => {
     switch (type) {
       case 'sqlite':
         return {
@@ -305,11 +304,11 @@ interface MemoryTestScenario {
  */
 interface TestContainer {
   /** Register a service */
-  register: vi.Mock;
+  register: any;
   /** Resolve a service */
-  resolve: vi.Mock;
+  resolve: any;
   /** Dispose container */
-  dispose: vi.Mock;
+  dispose: any;
 }
 
 /**
@@ -334,86 +333,7 @@ interface SPARCTestScenario {
 }
 
 // Type declarations for global test utilities
-declare global {
-  /**
-   * Neural test data configuration
-   *
-   * @example
-   */
-  interface NeuralTestConfig {
-    /** Type of test data to generate */
-    type: 'xor' | 'linear';
-    /** Number of samples to generate */
-    samples?: number;
-    /** Noise level for linear data */
-    noise?: number;
-  }
+// Types are now declared in global-types.ts
 
-  /**
-   * Neural test data point
-   *
-   * @example
-   */
-  interface NeuralTestData {
-    /** Input values */
-    input: number[];
-    /** Expected output values */
-    output: number[];
-  }
-
-  namespace NodeJS {
-    interface Global {
-      // London TDD utilities
-      createInteractionSpy(name: string): vi.Mock;
-      createCoordinationMock<T>(
-        defaults?: Partial<T>
-      ): (overrides?: Partial<T>) => T;
-
-      // Classical TDD utilities
-      testStartTime: number;
-      testStartMemory: NodeJS.MemoryUsage;
-      lastTestMemoryDelta: {
-        rss: number;
-        heapUsed: number;
-        heapTotal: number;
-      };
-      generateNeuralTestData(config: NeuralTestConfig): NeuralTestData[];
-      expectNearlyEqual(
-        actual: number,
-        expected: number,
-        tolerance?: number
-      ): void;
-
-      // Hybrid utilities
-      testWithApproach(
-        approach: 'london' | 'classical',
-        testFn: () => void | Promise<void>
-      ): void | Promise<void>;
-      createMemoryTestScenario(
-        type: 'sqlite' | 'lancedb' | 'json'
-      ): MemoryTestScenario;
-      expectPerformanceWithinThreshold(
-        operation: 'coordination' | 'neural' | 'memory',
-        actualTime: number
-      ): void;
-
-      // DI testing utilities
-      createTestContainer(): TestContainer;
-
-      // SPARC testing utilities
-      createSPARCTestScenario(
-        phase:
-          | 'specification'
-          | 'pseudocode'
-          | 'architecture'
-          | 'refinement'
-          | 'completion'
-      ): SPARCTestScenario;
-
-      // Global GC
-      gc?: () => void;
-    }
-  }
-}
 
 export { HYBRID_CONFIG };

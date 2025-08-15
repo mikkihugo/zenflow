@@ -277,7 +277,13 @@ export function performGapAnalysis(): GapAnalysisResult {
     .filter((agent, index, array) => array.indexOf(agent) === index).length; // Remove duplicates
 
   // Category-by-category comparison
-  const categoryComparison: Record<string, unknown> = {};
+  const categoryComparison: Record<string, {
+    ours: number;
+    theirs: number;
+    advantage: number;
+    ourAgents?: AgentType[];
+    theirAgents?: string[];
+  }> = {};
 
   // Compare similar categories
   const categoryMappings = {

@@ -2,10 +2,10 @@
  * @file Engine implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
-import type { BaseDocumentEntity } from '../database/entities/product-entities.ts';
-import type { DocumentManager } from '../database/managers/document-manager.ts';
-import type { MemorySystemFactory } from '../memory/index.ts';
+import { getLogger } from '../config/logging-config.js';
+import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
+import type { DocumentManager } from '../database/managers/document-manager.js';
+import type { MemorySystemFactory } from '../memory/index.js';
 
 const logger = getLogger('WorkflowEngine');
 
@@ -174,7 +174,7 @@ export class WorkflowEngine extends EventEmitter {
     this.registerStepHandler(
       'delay',
       async (_context: WorkflowContext, params: unknown) => {
-        const duration = params?.duration || 1000;
+        const duration = (params as any)?.duration || 1000;
         await new Promise((resolve) => setTimeout(resolve, duration));
         return { delayed: duration };
       }
@@ -184,10 +184,10 @@ export class WorkflowEngine extends EventEmitter {
     this.registerStepHandler(
       'transform',
       async (context: WorkflowContext, params: unknown) => {
-        const data = this.getContextValue(context, params?.input);
+        const data = this.getContextValue(context, (params as any)?.input);
         const transformed = await this.applyTransformation(
           data,
-          params?.transformation
+          (params as any)?.transformation
         );
         return { output: transformed };
       }
@@ -198,7 +198,7 @@ export class WorkflowEngine extends EventEmitter {
       'parallel',
       async (context: WorkflowContext, params: unknown) => {
         const results = await Promise.all(
-          params?.tasks?.map((task: WorkflowStep) =>
+          (params as any)?.tasks?.map((task: WorkflowStep) =>
             this.executeStep(task, context)
           )
         );
@@ -210,12 +210,12 @@ export class WorkflowEngine extends EventEmitter {
     this.registerStepHandler(
       'loop',
       async (context: WorkflowContext, params: unknown) => {
-        const items = this.getContextValue(context, params?.items);
+        const items = this.getContextValue(context, (params as any)?.items);
         const results: unknown[] = [];
 
         for (const item of items) {
           const loopContext = { ...context, loopItem: item };
-          const result = await this.executeStep(params?.step, loopContext);
+          const result = await this.executeStep((params as any)?.step, loopContext);
           results.push(result);
         }
 
@@ -227,12 +227,12 @@ export class WorkflowEngine extends EventEmitter {
     this.registerStepHandler(
       'condition',
       async (context: WorkflowContext, params: unknown) => {
-        const condition = this.evaluateCondition(context, params?.condition);
+        const condition = this.evaluateCondition(context, (params as any)?.condition);
         if (condition) {
-          return await this.executeStep(params?.thenStep, context);
+          return await this.executeStep((params as any)?.thenStep, context);
         }
-        if (params?.elseStep) {
-          return await this.executeStep(params?.elseStep, context);
+        if ((params as any)?.elseStep) {
+          return await this.executeStep((params as any)?.elseStep, context);
         }
         return { skipped: true };
       }
@@ -819,9 +819,9 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   /**
-   * Execute workflow step with enhanced error handling.
+   * Execute workflow step with enhanced error handling (public method).
    */
-  async executeWorkflowStep(
+  async executeWorkflowStepPublic(
     step: WorkflowStep,
     context: WorkflowContext,
     workflowId: string

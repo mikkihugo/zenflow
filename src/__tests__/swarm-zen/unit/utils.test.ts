@@ -5,7 +5,7 @@ import {
   priorityToNumber,
   recommendTopology,
   validateSwarmOptions,
-} from '../src/utils';
+} from '../../../coordination/swarm/core/utils';
 
 describe('Utils', () => {
   describe('generateId', () => {

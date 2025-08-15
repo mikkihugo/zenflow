@@ -1,17 +1,17 @@
 /**
  * @file Universal FACT System Access Layer
  * Provides shared FACT access across ALL hierarchy levels.
- * 
+ *
  * CRITICAL DESIGN PRINCIPLE:
  * FACT system is SHARED like "manuals of the internet" - same access for ALL levels
  * (Cubes, Matrons, Queens, SwarmCommanders, Agents)
  */
 
 import { getLogger } from '../config/logging-config.ts';
-import type { 
-  CollectiveFACTSystem, 
-  getCollectiveFACT, 
-  initializeCollectiveFACT 
+import type {
+  CollectiveFACTSystem,
+  getCollectiveFACT,
+  initializeCollectiveFACT,
 } from './collective-fact-integration.ts';
 
 const logger = getLogger('Shared-FACT-Access');
@@ -26,13 +26,13 @@ export interface UniversalFACTAccess {
    * Same instance returned for all hierarchy levels.
    */
   getSharedFACT(): Promise<CollectiveFACTSystem>;
-  
+
   /**
    * Verify universal access permissions.
    * All levels have same permissions.
    */
   verifyUniversalAccess(): Promise<boolean>;
-  
+
   /**
    * Get FACT system statistics.
    */
@@ -72,33 +72,39 @@ export class SharedFACTAccessManager implements UniversalFACTAccess {
     }
 
     try {
-      logger.info('Initializing shared FACT system for universal hierarchy access');
-      
+      logger.info(
+        'Initializing shared FACT system for universal hierarchy access'
+      );
+
       // Import dynamically to avoid circular dependencies
-      const { getCollectiveFACT, initializeCollectiveFACT } = await import('./collective-fact-integration.ts');
-      
+      const { getCollectiveFACT, initializeCollectiveFACT } = await import(
+        './collective-fact-integration.ts'
+      );
+
       let sharedFact = getCollectiveFACT();
-      
+
       if (!sharedFact) {
         // Initialize the shared FACT system once for all hierarchy levels
         sharedFact = await initializeCollectiveFACT({
           enableCache: true,
           cacheSize: 100000, // Large cache for universal access
           knowledgeSources: [
-            'context7', 
-            'deepwiki', 
-            'gitmcp', 
-            'semgrep', 
+            'context7',
+            'deepwiki',
+            'gitmcp',
+            'semgrep',
             'rust-fact-core',
-            'collective-memory'
+            'collective-memory',
           ],
           autoRefreshInterval: 1800000, // 30 minutes
         });
       }
-      
+
       this.sharedFactSystem = sharedFact;
-      
-      logger.info('✅ Shared FACT system initialized for universal hierarchy access');
+
+      logger.info(
+        '✅ Shared FACT system initialized for universal hierarchy access'
+      );
     } catch (error) {
       logger.error('Failed to initialize shared FACT system:', error);
       throw error;
@@ -113,11 +119,11 @@ export class SharedFACTAccessManager implements UniversalFACTAccess {
     if (!this.sharedFactSystem) {
       await this.initialize();
     }
-    
+
     if (!this.sharedFactSystem) {
       throw new Error('Failed to initialize shared FACT system');
     }
-    
+
     return this.sharedFactSystem;
   }
 
@@ -128,13 +134,13 @@ export class SharedFACTAccessManager implements UniversalFACTAccess {
   public async verifyUniversalAccess(): Promise<boolean> {
     try {
       const factSystem = await this.getSharedFACT();
-      
+
       // Test basic FACT operations to verify access
       const testResult = await factSystem.searchFacts({
         query: 'test-universal-access',
         limit: 1,
       });
-      
+
       // If we can search, we have access
       return Array.isArray(testResult);
     } catch (error) {
@@ -155,7 +161,7 @@ export class SharedFACTAccessManager implements UniversalFACTAccess {
       logger.error('Failed to get shared FACT stats:', error);
       return {
         error: 'Stats unavailable',
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : 'Unknown error',
       };
     }
   }
@@ -163,18 +169,23 @@ export class SharedFACTAccessManager implements UniversalFACTAccess {
 
 /**
  * Convenience function for any hierarchy level to access shared FACT system.
- * 
+ *
  * @param hierarchyLevel - For logging purposes (Cube, Matron, Queen, SwarmCommander, Agent)
  * @returns Promise resolving to shared CollectiveFACTSystem
  */
 export async function getUniversalFACTAccess(
-  hierarchyLevel: 'Cube' | 'Matron' | 'Queen' | 'SwarmCommander' | 'Agent' = 'Agent'
+  hierarchyLevel:
+    | 'Cube'
+    | 'Matron'
+    | 'Queen'
+    | 'SwarmCommander'
+    | 'Agent' = 'Agent'
 ): Promise<CollectiveFACTSystem> {
   logger.debug(`${hierarchyLevel} requesting universal FACT access`);
-  
+
   const manager = SharedFACTAccessManager.getInstance();
   const factSystem = await manager.getSharedFACT();
-  
+
   logger.debug(`✅ ${hierarchyLevel} granted universal FACT access`);
   return factSystem;
 }
@@ -188,22 +199,28 @@ export async function validateUniversalFACTAccess(): Promise<{
   accessLevels: Record<string, boolean>;
   error?: string;
 }> {
-  const hierarchyLevels = ['Cube', 'Matron', 'Queen', 'SwarmCommander', 'Agent'] as const;
+  const hierarchyLevels = [
+    'Cube',
+    'Matron',
+    'Queen',
+    'SwarmCommander',
+    'Agent',
+  ] as const;
   const accessLevels: Record<string, boolean> = {};
-  
+
   try {
     logger.info('Validating universal FACT access across all hierarchy levels');
-    
+
     for (const level of hierarchyLevels) {
       try {
         const factSystem = await getUniversalFACTAccess(level);
-        
+
         // Test that the system can perform basic operations
         const testSearch = await factSystem.searchFacts({
           query: `test-${level.toLowerCase()}-access`,
           limit: 1,
         });
-        
+
         accessLevels[level] = Array.isArray(testSearch);
         logger.debug(`✅ ${level} universal FACT access: VALIDATED`);
       } catch (error) {
@@ -211,25 +228,34 @@ export async function validateUniversalFACTAccess(): Promise<{
         logger.error(`❌ ${level} universal FACT access: FAILED`, error);
       }
     }
-    
-    const allAccessible = Object.values(accessLevels).every(accessible => accessible);
-    
+
+    const allAccessible = Object.values(accessLevels).every(
+      (accessible) => accessible
+    );
+
     if (allAccessible) {
-      logger.info('✅ Universal FACT access validated for all hierarchy levels');
+      logger.info(
+        '✅ Universal FACT access validated for all hierarchy levels'
+      );
     } else {
-      logger.warn('❌ Universal FACT access validation failed for some hierarchy levels');
+      logger.warn(
+        '❌ Universal FACT access validation failed for some hierarchy levels'
+      );
     }
-    
+
     return {
       success: allAccessible,
       accessLevels,
     };
   } catch (error) {
-    logger.error('Universal FACT access validation encountered an error:', error);
+    logger.error(
+      'Universal FACT access validation encountered an error:',
+      error
+    );
     return {
       success: false,
       accessLevels,
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
     };
   }
 }
@@ -240,21 +266,26 @@ export async function validateUniversalFACTAccess(): Promise<{
  */
 export async function initializeUniversalFACTAccess(): Promise<void> {
   logger.info('🚀 Initializing universal FACT access system');
-  
+
   try {
     const manager = SharedFACTAccessManager.getInstance();
     await manager.initialize();
-    
+
     // Validate that all levels can access the system
     const validation = await validateUniversalFACTAccess();
-    
+
     if (!validation.success) {
-      throw new Error(`Universal FACT access validation failed: ${JSON.stringify(validation.accessLevels)}`);
+      throw new Error(
+        `Universal FACT access validation failed: ${JSON.stringify(validation.accessLevels)}`
+      );
     }
-    
+
     logger.info('✅ Universal FACT access system initialized successfully');
   } catch (error) {
-    logger.error('❌ Failed to initialize universal FACT access system:', error);
+    logger.error(
+      '❌ Failed to initialize universal FACT access system:',
+      error
+    );
     throw error;
   }
 }

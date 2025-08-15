@@ -243,13 +243,16 @@ export class ConfigurationLoader {
   private deepMerge(target: unknown, source: unknown): unknown {
     const result = { ...(target as any) };
 
-    for (const key in (source as any)) {
+    for (const key in source as any) {
       if (
         (source as any)[key] &&
         typeof (source as any)[key] === 'object' &&
         !Array.isArray((source as any)[key])
       ) {
-        result[key] = this.deepMerge((result as any)?.[key] || {}, (source as any)[key]);
+        result[key] = this.deepMerge(
+          (result as any)?.[key] || {},
+          (source as any)[key]
+        );
       } else {
         result[key] = (source as any)[key];
       }
@@ -271,7 +274,11 @@ export class ConfigurationLoader {
 
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (part && (!(part in (current as any)) || typeof (current as any)?.[part] !== 'object')) {
+      if (
+        part &&
+        (!(part in (current as any)) ||
+          typeof (current as any)?.[part] !== 'object')
+      ) {
         (current as any)[part] = {};
       }
       if (part) {

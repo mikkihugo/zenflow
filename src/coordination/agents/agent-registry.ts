@@ -9,15 +9,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { SharedFACTCapable } from '../shared-fact-system.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+import { SharedFACTCapable } from '../shared-fact-system';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,
   AgentId,
   AgentMetrics,
   AgentStatus,
   AgentType,
-} from '../types.ts';
+} from '../types.js';
 
 export interface AgentRegistryQuery {
   type?: AgentType;
@@ -41,12 +41,15 @@ export interface RegisteredAgent {
   health: number;
   // FACT Integration: Personal agent knowledge that persists across swarms
   personalFACT?: {
-    domainExpertise: Record<string, {
-      level: number;           // 0.0-1.0 expertise level
-      patterns: string[];      // Learned patterns
-      successRate: number;     // Success rate in this domain
-      lastUpdated: Date;
-    }>;
+    domainExpertise: Record<
+      string,
+      {
+        level: number; // 0.0-1.0 expertise level
+        patterns: string[]; // Learned patterns
+        successRate: number; // Success rate in this domain
+        lastUpdated: Date;
+      }
+    >;
     learnedPatterns: Array<{
       pattern: string;
       domain: string;
@@ -57,7 +60,7 @@ export interface RegisteredAgent {
       taskType: string;
       solution: string;
       success: boolean;
-      context: any;
+      context: Record<string, unknown>;
       timestamp: Date;
     }>;
   };
@@ -468,7 +471,7 @@ export class AgentRegistry extends EventEmitter {
     const now = new Date();
     const staleThreshold = 5 * 60 * 1000; // 5 minutes
 
-    for (const [agentId, lastUpdate] of this.lastUpdate) {
+    for (const [agentId, lastUpdate] of Array.from(this.lastUpdate.entries())) {
       if (now.getTime() - lastUpdate.getTime() > staleThreshold) {
         const agent = this.agents.get(agentId);
         if (agent && agent.status !== 'terminated') {
@@ -528,7 +531,7 @@ export class AgentRegistry extends EventEmitter {
     if (status === 'terminated') health = 0;
 
     // Success rate factor
-    health *= (metrics.successRate ?? 0);
+    health *= metrics.successRate ?? 0;
 
     // Resource usage penalty
     const resourcePenalty = Math.max(
@@ -619,12 +622,7 @@ export class AgentRegistry extends EventEmitter {
   private getFileTypeMapping(): Record<string, AgentType[]> {
     return {
       // Frontend files
-      tsx: [
-        'coder',
-        'ui-designer',
-        'ux-designer',
-        'accessibility-specialist',
-      ],
+      tsx: ['coder', 'ui-designer', 'ux-designer', 'accessibility-specialist'],
       jsx: ['coder', 'ui-designer', 'ux-designer'],
       css: ['ui-designer', 'coder'],
       scss: ['ui-designer', 'coder'],

@@ -110,7 +110,7 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
       swarmId: string;
       agentType: string;
       taskComplexity: number;
-      environmentContext: Record<string, any>;
+      environmentContext: Record<string, unknown>;
     }
   ): Promise<number[]> {
     this._logger.debug(`Generating enhanced embedding for pattern ${pattern.patternId}`);
@@ -411,7 +411,7 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
       swarmId: string;
       agentType: string;
       taskComplexity: number;
-      environmentContext: Record<string, any>;
+      environmentContext: Record<string, unknown>;
     }
   ): string {
     const parts = [
@@ -554,7 +554,7 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
   private async performHierarchicalClustering(
     vectors: number[][],
     patterns: SuccessfulPattern[],
-    options: any
+    options: unknown
   ): Promise<PatternCluster[]> {
     // Placeholder for hierarchical clustering
     // Would implement agglomerative clustering here
@@ -644,12 +644,12 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
     return (pattern.successRate * 0.6) + (Math.min(pattern.usageCount / 10, 1) * 0.4);
   }
 
-  private calculateAverageSuccessRate(usageHistory: any[]): number {
+  private calculateAverageSuccessRate(usageHistory: unknown[]): number {
     if (usageHistory.length === 0) return 0;
     return usageHistory.reduce((sum, usage) => sum + (usage.metadata.successRate || 0), 0) / usageHistory.length;
   }
 
-  private calculatePerformanceTrend(usageHistory: any[]): 'improving' | 'stable' | 'declining' {
+  private calculatePerformanceTrend(usageHistory: unknown[]): 'improving' | 'stable' | 'declining' {
     if (usageHistory.length < 3) return 'stable';
 
     const recent = usageHistory.slice(-3).map(u => u.metadata.successRate || 0);
@@ -665,7 +665,7 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
     return 'stable';
   }
 
-  private calculateContextualEffectiveness(usageHistory: any[]): Record<string, number> {
+  private calculateContextualEffectiveness(usageHistory: unknown[]): Record<string, number> {
     const contexts: Record<string, number[]> = {};
     
     for (const usage of usageHistory) {
@@ -682,7 +682,7 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
     return effectiveness;
   }
 
-  private calculateRecommendationStrength(usageHistory: any[]): number {
+  private calculateRecommendationStrength(usageHistory: unknown[]): number {
     if (usageHistory.length === 0) return 0;
     
     const avgSuccessRate = this.calculateAverageSuccessRate(usageHistory);

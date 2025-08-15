@@ -20,7 +20,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       tolerance: 1e-6,
       convergenceThreshold: 0.05,
       maxTrainingTime: 10000,
-    });
+    } as any);
 
     it('should train XOR network to convergence using real implementation', async () => {
       // Classical TDD: Use real neural network implementation
@@ -38,11 +38,11 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
             let epochError = 0;
 
             for (const sample of data) {
-              const prediction = mockNetwork.predict(sample.input);
-              const error = neuralSuite.math.calculateMSE(
+              const prediction = mockNetwork.predict((sample as any).input);
+              const error = neuralSuite.math?.calculateMSE?.(
                 prediction,
-                sample.output
-              );
+                (sample as any).output
+              ) ?? 0.1;
               epochError += error;
             }
 

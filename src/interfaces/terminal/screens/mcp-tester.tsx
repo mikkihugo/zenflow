@@ -8,7 +8,7 @@
 import { Box, Text, useInput } from 'ink';
 import SelectInput from 'ink-select-input';
 import TextInput from 'ink-text-input';
-import type React from 'react';
+import React from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import {
   Header,

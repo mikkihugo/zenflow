@@ -528,7 +528,8 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
   ],
   validation: {
     NODE_ENV: (value: unknown) =>
-      typeof value === 'string' && ['production', 'development', 'test'].includes(value),
+      typeof value === 'string' &&
+      ['production', 'development', 'test'].includes(value),
     ANTHROPIC_API_KEY: (value: unknown) => true, // Optional - not required
     CLAUDE_WEB_PORT: (value: unknown) => {
       if (typeof value !== 'string') return false;

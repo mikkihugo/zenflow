@@ -6,7 +6,7 @@
  */
 
 import { vi } from 'vitest';
-import type { MemoryBackend } from '@/memory/backends/memory-backend';
+import type { MemoryBackend } from '@/memory/backends/base-backend';
 import { ConversationMemoryImpl } from '../../../src/intelligence/conversation-framework/memory.js';
 import type {
   ConversationSession,

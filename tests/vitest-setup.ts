@@ -1,13 +1,38 @@
 /**
-/// <reference types="./global-types" />
  * Vitest Global Setup
  *
  * This file sets up the global test environment for Vitest tests.
  * It includes enhanced matchers, test utilities, and environment configuration.
  */
 
-// Enhanced matchers from jest-extended (similar functionality for vitest)
+// Import Vitest globals and utilities
 import { expect, vi } from 'vitest';
+import './global-types';
+
+// Set up proper event handling to prevent memory leaks and hangs
+import { EventEmitter } from 'node:events';
+
+// Increase max listeners globally to prevent warnings
+EventEmitter.defaultMaxListeners = 20;
+
+// Mock process.exit to prevent tests from actually exiting
+vi.stubGlobal('process', {
+  ...process,
+  exit: vi.fn(),
+  on: vi.fn(),
+  off: vi.fn(),
+  removeListener: vi.fn(),
+  removeAllListeners: vi.fn(),
+  emit: vi.fn(),
+});
+
+// Set up timeout handling for hanging tests
+const originalSetTimeout = globalThis.setTimeout;
+globalThis.setTimeout = ((callback: (...args: any[]) => void, delay?: number, ...args: any[]) => {
+  // Limit timeouts to max 60 seconds to prevent infinite hangs
+  const safeDelay = Math.min(delay || 0, 60000);
+  return originalSetTimeout(callback, safeDelay, ...args);
+}) as typeof setTimeout;
 
 // Add custom matchers for better test assertions
 expect.extend({
@@ -27,14 +52,14 @@ expect.extend({
     };
   },
 
-  toHaveBeenCalledWithObjectContaining(received: vi.Mock, expected: unknown) {
+  toHaveBeenCalledWithObjectContaining(received: any, expected: unknown) {
     const pass = received.mock.calls.some((call: unknown[]) =>
       call.some(
         (arg) =>
           typeof arg === 'object' &&
           arg !== null &&
-          Object.keys(expected).every(
-            (key) => key in arg && arg[key] === expected[key]
+          Object.keys(expected as Record<string, unknown>).every(
+            (key) => key in arg && (arg as any)[key] === (expected as any)[key]
           )
       )
     );
@@ -65,20 +90,20 @@ globalThis.testUtils = {
   /**
    * Create a mock configuration object
    */
-  createMockConfig: (overrides = {}) => ({
+  createMockConfig: (overrides: any = {}) => ({
     database: {
       type: 'sqlite',
       path: ':memory:',
-      ...overrides.database,
+      ...(overrides.database || {}),
     },
     memory: {
       type: 'memory',
       maxSize: 1000,
-      ...overrides.memory,
+      ...(overrides.memory || {}),
     },
     neural: {
       enabled: false,
-      ...overrides.neural,
+      ...(overrides.neural || {}),
     },
     ...overrides,
   }),

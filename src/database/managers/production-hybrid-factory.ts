@@ -1,6 +1,6 @@
 /**
  * Production Hybrid Database Factory
- * 
+ *
  * Factory functions to create production-ready hybrid database managers
  * with real database connections and file persistence.
  */
@@ -26,7 +26,9 @@ export interface ProductionHybridSystemConfig {
 /**
  * Create a fully configured production hybrid database system
  */
-export async function createProductionHybridSystem(config: ProductionHybridSystemConfig = {}): Promise<{
+export async function createProductionHybridSystem(
+  config: ProductionHybridSystemConfig = {}
+): Promise<{
   dalFactory: DALFactory;
   hybridManager: HybridDocumentManager;
   adrManager: ADRManagerHybrid;
@@ -37,7 +39,7 @@ export async function createProductionHybridSystem(config: ProductionHybridSyste
     enableGraphRelationships = true,
     vectorDimension = 384,
     useRealDatabases = true,
-    logLevel = 'info'
+    logLevel = 'info',
   } = config;
 
   logger.info('🔧 Creating production hybrid database system...');
@@ -50,7 +52,10 @@ export async function createProductionHybridSystem(config: ProductionHybridSyste
     }
 
     // Create production DAL Factory with real database providers
-    const dalFactory = await createProductionDALFactory(dataDir, useRealDatabases);
+    const dalFactory = await createProductionDALFactory(
+      dataDir,
+      useRealDatabases
+    );
 
     // Create Hybrid Document Manager
     const hybridManager = new HybridDocumentManager(dalFactory);
@@ -70,11 +75,13 @@ export async function createProductionHybridSystem(config: ProductionHybridSyste
     return {
       dalFactory,
       hybridManager,
-      adrManager
+      adrManager,
     };
-
   } catch (error) {
-    logger.error('❌ Failed to create production hybrid database system:', error);
+    logger.error(
+      '❌ Failed to create production hybrid database system:',
+      error
+    );
     throw new Error(`Production hybrid system creation failed: ${error}`);
   }
 }
@@ -82,19 +89,26 @@ export async function createProductionHybridSystem(config: ProductionHybridSyste
 /**
  * Create a production DAL Factory with real database providers
  */
-async function createProductionDALFactory(dataDir: string, useRealDatabases: boolean): Promise<DALFactory> {
+async function createProductionDALFactory(
+  dataDir: string,
+  useRealDatabases: boolean
+): Promise<DALFactory> {
   const productionLogger = createLogger('production-dal-factory');
-  
+
   const productionConfig = {
     get: (key: string) => {
       switch (key) {
-        case 'database.sqlite.path': return join(dataDir, 'claude-zen-production.db');
-        case 'database.lancedb.path': return join(dataDir, 'claude-zen-vectors-production.lance');
-        case 'database.kuzu.path': return join(dataDir, 'claude-zen-graph-production.kuzu');
-        default: return null;
+        case 'database.sqlite.path':
+          return join(dataDir, 'claude-zen-production.db');
+        case 'database.lancedb.path':
+          return join(dataDir, 'claude-zen-vectors-production.lance');
+        case 'database.kuzu.path':
+          return join(dataDir, 'claude-zen-graph-production.kuzu');
+        default:
+          return null;
       }
     },
-    set: () => {}
+    set: () => {},
   };
 
   let providerFactory;
@@ -102,11 +116,18 @@ async function createProductionDALFactory(dataDir: string, useRealDatabases: boo
   if (useRealDatabases) {
     try {
       // Try to use real database provider factory
-      const { DatabaseProviderFactory } = await import('../providers/database-providers.ts');
-      providerFactory = new DatabaseProviderFactory(productionLogger as any, productionConfig as any);
+      const { DatabaseProviderFactory } = await import(
+        '../providers/database-providers.ts'
+      );
+      providerFactory = new DatabaseProviderFactory(
+        productionLogger as any,
+        productionConfig as any
+      );
       logger.info('✅ Using real database providers');
     } catch (error) {
-      logger.warn('⚠️ Real database providers not available, falling back to enhanced mocks');
+      logger.warn(
+        '⚠️ Real database providers not available, falling back to enhanced mocks'
+      );
       logger.error('Import error details:', error);
       providerFactory = createEnhancedMockProviderFactory(dataDir);
     }
@@ -138,40 +159,46 @@ function createEnhancedMockProviderFactory(dataDir: string) {
         query: async (sql: string, params: any[] = []) => {
           // Enhanced mock: return realistic data for queries
           if (sql.includes('WHERE') && sql.includes('id')) {
-            return { 
-              rows: [{
-                id: params[0] || `mock-${Date.now()}`,
-                title: 'Production Mock Entity',
-                type: 'adr',
-                status: 'active',
-                author: 'claude-zen-system',
-                created_at: new Date().toISOString(),
-                updated_at: new Date().toISOString(),
-                content: 'Mock content for development',
-                priority: 'medium'
-              }], 
-              rowCount: 1, 
+            return {
+              rows: [
+                {
+                  id: params[0] || `mock-${Date.now()}`,
+                  title: 'Production Mock Entity',
+                  type: 'adr',
+                  status: 'active',
+                  author: 'claude-zen-system',
+                  created_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                  content: 'Mock content for development',
+                  priority: 'medium',
+                },
+              ],
+              rowCount: 1,
               fields: [],
-              executionTime: 1
+              executionTime: 1,
             };
           }
-          
-          return { 
-            rows: [], 
-            rowCount: 0, 
+
+          return {
+            rows: [],
+            rowCount: 0,
             fields: [],
-            executionTime: 1
+            executionTime: 1,
           };
         },
         execute: async (sql: string, params: any[] = []) => ({
           affectedRows: 1,
           insertId: `mock-${Date.now()}`,
-          executionTime: 1
+          executionTime: 1,
         }),
-        transaction: async (fn: any) => fn({
-          query: async () => ({ rows: [], rowCount: 0 }),
-          execute: async () => ({ affectedRows: 1, insertId: `mock-${Date.now()}` })
-        }),
+        transaction: async (fn: any) =>
+          fn({
+            query: async () => ({ rows: [], rowCount: 0 }),
+            execute: async () => ({
+              affectedRows: 1,
+              insertId: `mock-${Date.now()}`,
+            }),
+          }),
         close: async () => {},
         getSchema: async () => ({ tables: [], views: [] }),
         health: async () => true,
@@ -179,8 +206,8 @@ function createEnhancedMockProviderFactory(dataDir: string) {
           total: 1,
           active: 0,
           idle: 1,
-          utilization: 0
-        })
+          utilization: 0,
+        }),
       };
 
       // Add specialized methods for different database types
@@ -191,13 +218,13 @@ function createEnhancedMockProviderFactory(dataDir: string) {
             rows: [],
             rowCount: 0,
             executionTime: 1,
-            results: []
+            results: [],
           }),
           insertVector: async (data: any) => ({
             affectedRows: 1,
             insertId: `vector-${Date.now()}`,
-            executionTime: 1
-          })
+            executionTime: 1,
+          }),
         };
       }
 
@@ -208,30 +235,33 @@ function createEnhancedMockProviderFactory(dataDir: string) {
             rows: [],
             rowCount: 0,
             executionTime: 1,
-            records: []
+            records: [],
           }),
           createNode: async (data: any) => ({
             affectedRows: 1,
             insertId: `node-${Date.now()}`,
-            executionTime: 1
+            executionTime: 1,
           }),
           createRelationship: async (data: any) => ({
             affectedRows: 1,
             insertId: `rel-${Date.now()}`,
-            executionTime: 1
-          })
+            executionTime: 1,
+          }),
         };
       }
 
       return baseAdapter;
-    }
+    },
   };
 }
 
 /**
  * Register production document entity types
  */
-function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: string): void {
+function registerProductionDocumentEntities(
+  dalFactory: DALFactory,
+  dataDir: string
+): void {
   const sqlitePath = join(dataDir, 'claude-zen-production.db');
   const lancedbPath = join(dataDir, 'claude-zen-vectors-production.lance');
   const kuzuPath = join(dataDir, 'claude-zen-graph-production.kuzu');
@@ -248,7 +278,7 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
       author: { type: 'string' },
       project_id: { type: 'string' },
       created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' }
+      updated_at: { type: 'datetime', default: 'now' },
     },
     primaryKey: 'id',
     tableName: 'documents',
@@ -256,12 +286,12 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
     databaseConfig: {
       type: 'sqlite',
       database: sqlitePath,
-      options: { 
+      options: {
         readonly: false,
         fileMustExist: false,
-        timeout: 5000
-      }
-    }
+        timeout: 5000,
+      },
+    },
   });
 
   // Document Embeddings for Vector Search
@@ -271,7 +301,7 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
       documentId: { type: 'string', required: true },
       documentType: { type: 'string', required: true },
       vector: { type: 'vector', required: true, dimension: 384 },
-      metadata: { type: 'json' }
+      metadata: { type: 'json' },
     },
     primaryKey: 'id',
     tableName: 'document_embeddings',
@@ -279,12 +309,12 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
     databaseConfig: {
       type: 'lancedb',
       database: lancedbPath,
-      options: { 
-        vectorSize: 384, 
+      options: {
+        vectorSize: 384,
         metricType: 'cosine',
-        createIfNotExists: true
-      }
-    }
+        createIfNotExists: true,
+      },
+    },
   });
 
   // Document Graph Nodes
@@ -293,7 +323,7 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
       id: { type: 'string', primaryKey: true },
       type: { type: 'string', required: true },
       labels: { type: 'array' },
-      properties: { type: 'json' }
+      properties: { type: 'json' },
     },
     primaryKey: 'id',
     tableName: 'document_nodes',
@@ -301,12 +331,12 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
     databaseConfig: {
       type: 'kuzu',
       database: kuzuPath,
-      options: { 
-        bufferPoolSize: '1GB', 
+      options: {
+        bufferPoolSize: '1GB',
         maxNumThreads: 4,
-        createIfNotExists: true
-      }
-    }
+        createIfNotExists: true,
+      },
+    },
   });
 
   // Document Relationships
@@ -318,7 +348,7 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
       relationship_type: { type: 'string', required: true },
       strength: { type: 'number' },
       created_at: { type: 'datetime', default: 'now' },
-      metadata: { type: 'json' }
+      metadata: { type: 'json' },
     },
     primaryKey: 'id',
     tableName: 'document_relationships',
@@ -326,8 +356,8 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
     databaseConfig: {
       type: 'sqlite',
       database: sqlitePath,
-      options: { readonly: false }
-    }
+      options: { readonly: false },
+    },
   });
 
   // Projects
@@ -340,7 +370,7 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
       complexity: { type: 'string', default: 'moderate' },
       author: { type: 'string', required: true },
       created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' }
+      updated_at: { type: 'datetime', default: 'now' },
     },
     primaryKey: 'id',
     tableName: 'projects',
@@ -348,8 +378,8 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
     databaseConfig: {
       type: 'sqlite',
       database: sqlitePath,
-      options: { readonly: false }
-    }
+      options: { readonly: false },
+    },
   });
 
   // Workflow States
@@ -361,7 +391,7 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
       current_stage: { type: 'string', required: true },
       stages_completed: { type: 'json' },
       created_at: { type: 'datetime', default: 'now' },
-      updated_at: { type: 'datetime', default: 'now' }
+      updated_at: { type: 'datetime', default: 'now' },
     },
     primaryKey: 'id',
     tableName: 'document_workflow_states',
@@ -369,8 +399,8 @@ function registerProductionDocumentEntities(dalFactory: DALFactory, dataDir: str
     databaseConfig: {
       type: 'sqlite',
       database: sqlitePath,
-      options: { readonly: false }
-    }
+      options: { readonly: false },
+    },
   });
 
   logger.info('✅ Production document entities registered');

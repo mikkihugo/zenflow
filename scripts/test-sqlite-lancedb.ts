@@ -2,7 +2,7 @@
 
 /**
  * Test Real SQLite and LanceDB Adapters
- * 
+ *
  * Simple test of SQLite and LanceDB adapters without Kuzu dependency.
  */
 
@@ -24,8 +24,8 @@ async function main() {
       options: {
         readonly: false,
         fileMustExist: false,
-        timeout: 5000
-      }
+        timeout: 5000,
+      },
     });
 
     await sqliteAdapter.connect();
@@ -43,7 +43,10 @@ async function main() {
     );
     console.log('✅ SQLite insert successful:', insertResult);
 
-    const queryResult = await sqliteAdapter.query('SELECT * FROM test_minimal WHERE id = ?', ['test-1']);
+    const queryResult = await sqliteAdapter.query(
+      'SELECT * FROM test_minimal WHERE id = ?',
+      ['test-1']
+    );
     console.log('✅ SQLite query result:', queryResult);
 
     const healthCheck = await sqliteAdapter.health();
@@ -58,23 +61,27 @@ async function main() {
     console.log('\n🎉 Real SQLite Adapter Works Perfectly!');
     console.log('');
     console.log('📁 Real SQLite file created:');
-    console.log('  - ./data/sqlite/test-minimal.db (Real SQLite with better-sqlite3)');
+    console.log(
+      '  - ./data/sqlite/test-minimal.db (Real SQLite with better-sqlite3)'
+    );
     console.log('');
     console.log('🎯 SQLite adapter is ready for production use!');
 
     // Test 2: Try LanceDB if dependencies available
     console.log('\n🚀 Testing LanceDB availability...');
-    
+
     try {
-      const { LanceDBAdapter } = await import('../src/database/adapters/lancedb-adapter.js');
-      
+      const { LanceDBAdapter } = await import(
+        '../src/database/adapters/lancedb-adapter.js'
+      );
+
       const lancedbAdapter = new LanceDBAdapter({
         type: 'lancedb',
         database: './data/lancedb/test-minimal.lance',
         options: {
           vectorSize: 384,
-          metricType: 'cosine'
-        }
+          metricType: 'cosine',
+        },
       });
 
       await lancedbAdapter.connect();
@@ -82,13 +89,14 @@ async function main() {
 
       await lancedbAdapter.disconnect();
       console.log('✅ LanceDB disconnected successfully');
-      
+
       console.log('🎉 Real LanceDB Adapter Works Too!');
     } catch (lanceError) {
-      console.log('⚠️ LanceDB not available (likely missing @lancedb/lancedb dependency)');
+      console.log(
+        '⚠️ LanceDB not available (likely missing @lancedb/lancedb dependency)'
+      );
       console.log('   This is OK - SQLite is working and ready for production');
     }
-
   } catch (error) {
     console.error('❌ Test failed:', error);
     process.exit(1);

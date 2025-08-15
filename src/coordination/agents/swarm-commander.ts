@@ -14,7 +14,11 @@ import type {
   ILogger,
 } from '../../core/interfaces/base-interfaces.ts';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
-import { CollectiveFACTSystem, getCollectiveFACT, initializeCollectiveFACT } from '../collective-fact-integration.ts';
+import {
+  CollectiveFACTSystem,
+  getCollectiveFACT,
+  initializeCollectiveFACT,
+} from '../collective-fact-integration.ts';
 import { generateId } from '../swarm/core/utils.ts';
 // SPARC Integration for Implementation Leadership
 import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine.ts';
@@ -23,9 +27,7 @@ import type {
   SPARCProject,
   SPARCPhase,
 } from '../swarm/sparc/types/sparc-types.ts';
-import type {
-  AgentType,
-} from '../../types/agent-types.ts';
+import type { AgentType } from '../../types/agent-types.ts';
 
 export interface SwarmCommanderConfig {
   swarmId: string;
@@ -124,7 +126,7 @@ export interface SuccessfulPattern {
 
 /**
  * Swarm Commander - Leads SPARC implementation within swarms.
- * 
+ *
  * Responsibilities:
  * - Lead systematic SPARC implementation
  * - Coordinate agents through SPARC phases
@@ -135,23 +137,26 @@ export class SwarmCommander extends EventEmitter {
   public readonly id: string;
   public readonly swarmId: string;
   public readonly commanderType: string;
-  
+
   private logger: ILogger;
   private eventBus: IEventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: SwarmCommanderConfig;
   private state: SwarmCommanderState;
-  
+
   // SPARC Implementation Leadership
   private sparcEngine: SPARCEngineCore;
   private activeProject?: SPARCProject;
   private currentTasks = new Map<string, SwarmTask>();
-  
+
   // ULTRA-DATABASE INTEGRATION
   private factSystem: CollectiveFACTSystem;
-  
+
   // Persistent Neural Learning
-  private agentPerformanceHistory = new Map<AgentType, AgentPerformanceHistory>();
+  private agentPerformanceHistory = new Map<
+    AgentType,
+    AgentPerformanceHistory
+  >();
   private sparcPhaseEfficiency = new Map<SPARCPhase, PhaseEfficiencyMetrics>();
   private implementationPatterns = new Map<string, SuccessfulPattern>();
 
@@ -161,16 +166,18 @@ export class SwarmCommander extends EventEmitter {
     memoryCoordinator: MemoryCoordinator
   ) {
     super();
-    
+
     this.id = generateId();
     this.swarmId = config.swarmId;
     this.commanderType = config.commanderType;
     this.config = config;
     this.eventBus = eventBus;
     this.memoryCoordinator = memoryCoordinator;
-    
-    this.logger = getLogger(`SwarmCommander-${this.swarmId}-${this.commanderType}`);
-    
+
+    this.logger = getLogger(
+      `SwarmCommander-${this.swarmId}-${this.commanderType}`
+    );
+
     // SHARED FACT SYSTEM: All hierarchy levels use the same CollectiveFACTSystem instance
     this.factSystem = new CollectiveFACTSystem({
       cacheEnabled: true,
@@ -178,14 +185,14 @@ export class SwarmCommander extends EventEmitter {
       storageLocation: '.claude-zen/fact',
       enableAdaptiveStrategies: true,
     });
-    
+
     // Initialize SPARC engine for implementation leadership
     this.sparcEngine = new SPARCEngineCore({
       persistenceEnabled: true,
       memorySystem: memoryCoordinator as any, // Type compatibility
       eventBus: eventBus as any,
     });
-    
+
     // Initialize state
     this.state = {
       id: this.id,
@@ -201,32 +208,45 @@ export class SwarmCommander extends EventEmitter {
         blockerResolutionTime: 0,
       },
     };
-    
+
     this.setupEventHandlers();
-    
+
     // Load persistent neural learning data (async initialization)
-    this.loadPersistentLearning().catch(error => {
-      this.logger.warn(`Failed to load persistent learning data during initialization: ${error}`);
+    this.loadPersistentLearning().catch((error) => {
+      this.logger.warn(
+        `Failed to load persistent learning data during initialization: ${error}`
+      );
     });
-    
-    this.logger.info(`Swarm Commander initialized for ${config.commanderType} swarm with persistent learning`);
+
+    this.logger.info(
+      `Swarm Commander initialized for ${config.commanderType} swarm with persistent learning`
+    );
   }
 
   /**
    * Setup event handlers for swarm coordination
    */
   private setupEventHandlers(): void {
-    this.eventBus.on(`swarm:${this.swarmId}:task:assigned`, this.handleTaskAssignment.bind(this));
-    this.eventBus.on(`swarm:${this.swarmId}:agent:available`, this.handleAgentAvailable.bind(this));
-    this.eventBus.on(`swarm:${this.swarmId}:sparc:phase:complete`, this.handlePhaseCompletion.bind(this));
+    this.eventBus.on(
+      `swarm:${this.swarmId}:task:assigned`,
+      this.handleTaskAssignment.bind(this)
+    );
+    this.eventBus.on(
+      `swarm:${this.swarmId}:agent:available`,
+      this.handleAgentAvailable.bind(this)
+    );
+    this.eventBus.on(
+      `swarm:${this.swarmId}:sparc:phase:complete`,
+      this.handlePhaseCompletion.bind(this)
+    );
   }
 
   /**
    * Accept task assignment from Queen Coordinator and begin SPARC implementation
    */
-  async handleTaskAssignment(taskData: any): Promise<void> {
+  async handleTaskAssignment(taskData: unknown): Promise<void> {
     this.logger.info(`Task assigned: ${taskData.title}`);
-    
+
     const task: SwarmTask = {
       id: generateId(),
       title: taskData.title,
@@ -238,11 +258,11 @@ export class SwarmCommander extends EventEmitter {
       dependencies: taskData.dependencies || [],
       deliverables: taskData.deliverables || [],
     };
-    
+
     this.currentTasks.set(task.id, task);
     this.state.currentTask = task;
     this.state.status = 'busy';
-    
+
     // Begin SPARC implementation if enabled
     if (this.config.sparcEnabled) {
       await this.initiateSPARCImplementation(task);
@@ -256,7 +276,7 @@ export class SwarmCommander extends EventEmitter {
    */
   private async initiateSPARCImplementation(task: SwarmTask): Promise<void> {
     this.logger.info(`Initiating SPARC implementation for: ${task.title}`);
-    
+
     // Create SPARC project specification from task
     const projectSpec: ProjectSpecification = {
       name: task.title,
@@ -268,65 +288,79 @@ export class SwarmCommander extends EventEmitter {
       successCriteria: [`Complete ${task.title} with quality score > 0.9`],
       timeline: {
         startDate: new Date(),
-        endDate: new Date(Date.now() + (task.estimatedEffort * 24 * 60 * 60 * 1000)),
+        endDate: new Date(
+          Date.now() + task.estimatedEffort * 24 * 60 * 60 * 1000
+        ),
       },
     };
-    
+
     try {
       // Initialize SPARC project
-      this.activeProject = await this.sparcEngine.initializeProject(projectSpec);
+      this.activeProject =
+        await this.sparcEngine.initializeProject(projectSpec);
       task.sparcPhase = 'specification';
-      
+
       // Begin with Specification phase
       await this.executeSPARCPhase('specification', task);
-      
+
       this.eventBus.emit(`swarm:${this.swarmId}:sparc:initiated`, {
         taskId: task.id,
         projectId: this.activeProject.id,
         phase: 'specification',
       });
-      
     } catch (error) {
       this.logger.error(`Failed to initiate SPARC: ${error}`);
-      await this.escalateToQueenCoordinator(task.id, 'sparc_initialization_failed', error);
+      await this.escalateToQueenCoordinator(
+        task.id,
+        'sparc_initialization_failed',
+        error
+      );
     }
   }
 
   /**
    * Execute specific SPARC phase with agent coordination
    */
-  private async executeSPARCPhase(phase: SPARCPhase, task: SwarmTask): Promise<void> {
+  private async executeSPARCPhase(
+    phase: SPARCPhase,
+    task: SwarmTask
+  ): Promise<void> {
     this.logger.info(`Executing SPARC phase: ${phase} for task: ${task.title}`);
-    
+
     task.sparcPhase = phase;
     this.state.currentPhase = phase;
-    
+
     try {
       // Consult Matron for phase-specific guidance
       const matronGuidance = await this.getMatronGuidanceForPhase(phase, task);
-      
+
       // Coordinate agents based on SPARC phase requirements and Matron guidance
       const requiredAgents = this.determineRequiredAgents(phase);
       await this.assignAgentsToPhase(requiredAgents, phase, task);
-      
+
       // Execute phase with SPARC engine, incorporating Matron guidance
       const phaseContext = this.buildPhaseContext(task);
       phaseContext.matronGuidance = matronGuidance;
-      
+
       const phaseResult = await this.sparcEngine.executePhase(
         this.activeProject!.id,
         phase,
         phaseContext
       );
-      
-      this.logger.info(`SPARC phase ${phase} completed successfully with Matron guidance`);
-      
+
+      this.logger.info(
+        `SPARC phase ${phase} completed successfully with Matron guidance`
+      );
+
       // Move to next phase or complete
       await this.progressToNextPhase(phase, task);
-      
     } catch (error) {
       this.logger.error(`SPARC phase ${phase} failed: ${error}`);
-      await this.escalateToQueenCoordinator(task.id, `sparc_phase_${phase}_failed`, error);
+      await this.escalateToQueenCoordinator(
+        task.id,
+        `sparc_phase_${phase}_failed`,
+        error
+      );
     }
   }
 
@@ -362,7 +396,7 @@ export class SwarmCommander extends EventEmitter {
       if (this.state.availableAgents.includes(agentType)) {
         task.assignedAgents.push(agentType);
         this.state.activeAgents.push(agentType);
-        
+
         this.eventBus.emit(`swarm:${this.swarmId}:agent:assigned`, {
           agentType,
           taskId: task.id,
@@ -376,7 +410,7 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Build context for SPARC phase execution
    */
-  private buildPhaseContext(task: SwarmTask): any {
+  private buildPhaseContext(task: SwarmTask): Record<string, unknown> {
     return {
       task: {
         id: task.id,
@@ -400,10 +434,19 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Progress to next SPARC phase or complete implementation
    */
-  private async progressToNextPhase(currentPhase: SPARCPhase, task: SwarmTask): Promise<void> {
-    const phaseOrder: SPARCPhase[] = ['specification', 'pseudocode', 'architecture', 'refinement', 'completion'];
+  private async progressToNextPhase(
+    currentPhase: SPARCPhase,
+    task: SwarmTask
+  ): Promise<void> {
+    const phaseOrder: SPARCPhase[] = [
+      'specification',
+      'pseudocode',
+      'architecture',
+      'refinement',
+      'completion',
+    ];
     const currentIndex = phaseOrder.indexOf(currentPhase);
-    
+
     if (currentIndex < phaseOrder.length - 1) {
       const nextPhase = phaseOrder[currentIndex + 1];
       this.logger.info(`Progressing from ${currentPhase} to ${nextPhase}`);
@@ -419,18 +462,18 @@ export class SwarmCommander extends EventEmitter {
   private async completeImplementation(task: SwarmTask): Promise<void> {
     task.status = 'completed';
     task.actualEffort = task.estimatedEffort; // In real implementation, track actual time
-    
+
     this.state.metrics.tasksCompleted++;
     this.state.status = 'active';
-    
+
     // TIER 1: Real-time learning from task completion
     if (this.config.learningEnabled) {
       await this.performRealTimeLearning(task);
     }
-    
+
     this.state.currentTask = undefined;
     this.logger.info(`Implementation completed: ${task.title}`);
-    
+
     this.eventBus.emit(`swarm:${this.swarmId}:task:completed`, {
       taskId: task.id,
       title: task.title,
@@ -440,11 +483,15 @@ export class SwarmCommander extends EventEmitter {
         qualityScore: this.state.metrics.qualityScore,
         sparcPhasesCompleted: 5,
       },
-      learningData: this.config.learningConfig.crossSwarmLearning ? {
-        agentPerformance: Array.from(this.agentPerformanceHistory.entries()),
-        phaseEfficiency: Array.from(this.sparcPhaseEfficiency.entries()),
-        patterns: Array.from(this.implementationPatterns.entries()),
-      } : undefined,
+      learningData: this.config.learningConfig.crossSwarmLearning
+        ? {
+            agentPerformance: Array.from(
+              this.agentPerformanceHistory.entries()
+            ),
+            phaseEfficiency: Array.from(this.sparcPhaseEfficiency.entries()),
+            patterns: Array.from(this.implementationPatterns.entries()),
+          }
+        : undefined,
     });
   }
 
@@ -453,11 +500,11 @@ export class SwarmCommander extends EventEmitter {
    */
   private async executeDirectImplementation(task: SwarmTask): Promise<void> {
     this.logger.info(`Executing direct implementation for: ${task.title}`);
-    
+
     // Simplified direct execution
     const requiredAgents = ['general-purpose-agent', 'code-reviewer-agent'];
     await this.assignAgentsToPhase(requiredAgents, 'completion', task);
-    
+
     // Simulate implementation work
     setTimeout(() => {
       this.completeImplementation(task);
@@ -467,9 +514,9 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Handle agent becoming available
    */
-  private handleAgentAvailable(agentData: any): void {
+  private handleAgentAvailable(agentData: unknown): void {
     const agentType = agentData.agentType as AgentType;
-    
+
     if (!this.state.availableAgents.includes(agentType)) {
       this.state.availableAgents.push(agentType);
       this.logger.debug(`Agent available: ${agentType}`);
@@ -479,7 +526,7 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Handle SPARC phase completion
    */
-  private handlePhaseCompletion(phaseData: any): void {
+  private handlePhaseCompletion(phaseData: unknown): void {
     this.logger.info(`Phase completed: ${phaseData.phase}`);
     this.state.metrics.sparcEfficiency = phaseData.efficiency || 0.85;
   }
@@ -490,10 +537,12 @@ export class SwarmCommander extends EventEmitter {
   private async escalateToQueenCoordinator(
     taskId: string,
     issueType: string,
-    details: any
+    details: unknown
   ): Promise<void> {
-    this.logger.warn(`Escalating to Queen Coordinator: ${issueType} for task ${taskId}`);
-    
+    this.logger.warn(
+      `Escalating to Queen Coordinator: ${issueType} for task ${taskId}`
+    );
+
     this.eventBus.emit('queen:coordinator:escalation', {
       swarmId: this.swarmId,
       commanderId: this.id,
@@ -508,7 +557,12 @@ export class SwarmCommander extends EventEmitter {
    * Consult Matron for technical expertise and guidance
    */
   private async consultMatron(
-    domain: 'architecture' | 'development' | 'security' | 'performance' | 'operations',
+    domain:
+      | 'architecture'
+      | 'development'
+      | 'security'
+      | 'performance'
+      | 'operations',
     consultationType: 'guidance' | 'review' | 'validation' | 'best_practices',
     context: {
       taskId?: string;
@@ -517,21 +571,23 @@ export class SwarmCommander extends EventEmitter {
       currentApproach?: string;
       riskLevel: 'low' | 'medium' | 'high' | 'critical';
     }
-  ): Promise<any> {
-    this.logger.info(`Consulting ${domain} Matron for ${consultationType}: ${context.technicalChallenge}`);
-    
+  ): Promise<unknown> {
+    this.logger.info(
+      `Consulting ${domain} Matron for ${consultationType}: ${context.technicalChallenge}`
+    );
+
     return new Promise((resolve) => {
       // Set up response handler
-      const responseHandler = (response: any) => {
+      const responseHandler = (response: unknown) => {
         if (response.consultationId === consultationId) {
           this.eventBus.off('matron:consultation:response', responseHandler);
           resolve(response);
         }
       };
-      
+
       const consultationId = `${this.id}_${Date.now()}`;
       this.eventBus.on('matron:consultation:response', responseHandler);
-      
+
       // Send consultation request
       this.eventBus.emit('matron:consultation:request', {
         consultationId,
@@ -542,13 +598,13 @@ export class SwarmCommander extends EventEmitter {
         context,
         timestamp: new Date(),
       });
-      
+
       // Timeout after 30 seconds
       setTimeout(() => {
         this.eventBus.off('matron:consultation:response', responseHandler);
         resolve({
           error: 'Matron consultation timeout',
-          fallbackGuidance: this.getFallbackGuidance(domain, consultationType)
+          fallbackGuidance: this.getFallbackGuidance(domain, consultationType),
         });
       }, 30000);
     });
@@ -557,79 +613,114 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Get fallback guidance when Matron consultation fails
    */
-  private getFallbackGuidance(domain: string, consultationType: string): any {
+  private getFallbackGuidance(
+    domain: string,
+    consultationType: string
+  ): Record<string, unknown> {
     const fallbackGuidance = {
       architecture: {
         guidance: 'Follow SOLID principles and established design patterns',
-        bestPractices: ['Single responsibility', 'Dependency injection', 'Interface segregation'],
+        bestPractices: [
+          'Single responsibility',
+          'Dependency injection',
+          'Interface segregation',
+        ],
       },
       development: {
         guidance: 'Use TDD approach with comprehensive testing',
-        bestPractices: ['Write tests first', 'Refactor continuously', 'Code review required'],
+        bestPractices: [
+          'Write tests first',
+          'Refactor continuously',
+          'Code review required',
+        ],
       },
       security: {
         guidance: 'Apply defense in depth and least privilege principles',
-        bestPractices: ['Input validation', 'Authentication required', 'Audit logging'],
+        bestPractices: [
+          'Input validation',
+          'Authentication required',
+          'Audit logging',
+        ],
       },
       performance: {
         guidance: 'Optimize for scalability and efficient resource usage',
-        bestPractices: ['Profile before optimizing', 'Cache appropriately', 'Monitor metrics'],
+        bestPractices: [
+          'Profile before optimizing',
+          'Cache appropriately',
+          'Monitor metrics',
+        ],
       },
       operations: {
         guidance: 'Ensure observability and maintainability',
-        bestPractices: ['Logging', 'Monitoring', 'Health checks', 'Graceful degradation'],
-      }
+        bestPractices: [
+          'Logging',
+          'Monitoring',
+          'Health checks',
+          'Graceful degradation',
+        ],
+      },
     };
-    
-    return fallbackGuidance[domain] || { guidance: 'Follow established best practices' };
+
+    return (
+      fallbackGuidance[domain] || {
+        guidance: 'Follow established best practices',
+      }
+    );
   }
 
   /**
    * Get Matron guidance for specific SPARC phase
    */
-  private async getMatronGuidanceForPhase(phase: SPARCPhase, task: SwarmTask): Promise<any> {
+  private async getMatronGuidanceForPhase(
+    phase: SPARCPhase,
+    task: SwarmTask
+  ): Promise<unknown> {
     // Determine which Matron domain is most relevant for the phase
     const phaseMatronMapping = {
-      'specification': 'architecture',
-      'pseudocode': 'development', 
-      'architecture': 'architecture',
-      'refinement': 'development',
-      'completion': 'operations'
+      specification: 'architecture',
+      pseudocode: 'development',
+      architecture: 'architecture',
+      refinement: 'development',
+      completion: 'operations',
     };
-    
-    const domain = phaseMatronMapping[phase] as 'architecture' | 'development' | 'security' | 'performance' | 'operations';
-    
+
+    const domain = phaseMatronMapping[phase] as
+      | 'architecture'
+      | 'development'
+      | 'security'
+      | 'performance'
+      | 'operations';
+
     // Assess risk level based on task complexity and phase
     const riskLevel = this.assessRiskLevel(task, phase);
-    
+
     // Get guidance from appropriate Matron
-    const guidance = await this.consultMatron(
-      domain,
-      'guidance',
-      {
-        taskId: task.id,
-        sparcPhase: phase,
-        technicalChallenge: `SPARC ${phase} phase for: ${task.description}`,
-        riskLevel,
-      }
-    );
-    
+    const guidance = await this.consultMatron(domain, 'guidance', {
+      taskId: task.id,
+      sparcPhase: phase,
+      technicalChallenge: `SPARC ${phase} phase for: ${task.description}`,
+      riskLevel,
+    });
+
     return guidance;
   }
 
   /**
    * Assess risk level for Matron consultation
    */
-  private assessRiskLevel(task: SwarmTask, phase: SPARCPhase): 'low' | 'medium' | 'high' | 'critical' {
+  private assessRiskLevel(
+    task: SwarmTask,
+    phase: SPARCPhase
+  ): 'low' | 'medium' | 'high' | 'critical' {
     // Base risk on task priority and complexity
     if (task.priority === 'critical') return 'critical';
     if (task.priority === 'high') return 'high';
-    
+
     // Architecture and specification phases are higher risk
     if (phase === 'architecture' || phase === 'specification') {
       return task.priority === 'medium' ? 'high' : 'medium';
     }
-    
+
     // Default to medium for development phases
     return 'medium';
   }
@@ -638,16 +729,26 @@ export class SwarmCommander extends EventEmitter {
    * Public method to consult Matron (exposed to MCP)
    */
   public async requestMatronConsultation(
-    domain: 'architecture' | 'development' | 'security' | 'performance' | 'operations',
+    domain:
+      | 'architecture'
+      | 'development'
+      | 'security'
+      | 'performance'
+      | 'operations',
     consultationType: 'guidance' | 'review' | 'validation' | 'best_practices',
     technicalChallenge: string,
     riskLevel: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ): Promise<any> {
-    this.logger.info(`Public Matron consultation requested: ${domain} - ${technicalChallenge}`);
-    
+  ): Promise<unknown> {
+    this.logger.info(
+      `Public Matron consultation requested: ${domain} - ${technicalChallenge}`
+    );
+
     // Get relevant ADRs and FACT knowledge for consultation
-    const contextData = await this.gatherConsultationContext(domain, technicalChallenge);
-    
+    const contextData = await this.gatherConsultationContext(
+      domain,
+      technicalChallenge
+    );
+
     return await this.consultMatron(domain, consultationType, {
       technicalChallenge,
       riskLevel,
@@ -659,7 +760,10 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Gather FACT and ADR context for consultations
    */
-  private async gatherConsultationContext(domain: string, challenge: string): Promise<any> {
+  private async gatherConsultationContext(
+    domain: string,
+    challenge: string
+  ): Promise<unknown> {
     try {
       // Search relevant ADRs for domain
       const adrResults = await this.factSystem.searchFacts({
@@ -694,7 +798,11 @@ export class SwarmCommander extends EventEmitter {
    * Request Queen coordination for complex multi-swarm features
    */
   public async requestQueenCoordination(
-    coordinationType: 'multi_swarm' | 'cross_domain' | 'complex_feature' | 'resource_conflict',
+    coordinationType:
+      | 'multi_swarm'
+      | 'cross_domain'
+      | 'complex_feature'
+      | 'resource_conflict',
     coordinationRequest: {
       description: string;
       requiredSwarms: string[];
@@ -702,25 +810,28 @@ export class SwarmCommander extends EventEmitter {
       timeline?: Date;
       dependencies?: string[];
     }
-  ): Promise<any> {
-    this.logger.info(`Queen coordination requested: ${coordinationType} - ${coordinationRequest.description}`);
-    
+  ): Promise<unknown> {
+    this.logger.info(
+      `Queen coordination requested: ${coordinationType} - ${coordinationRequest.description}`
+    );
+
     // Gather multi-swarm context from FACT system
-    const multiSwarmContext = await this.gatherMultiSwarmContext(coordinationRequest);
-    
+    const multiSwarmContext =
+      await this.gatherMultiSwarmContext(coordinationRequest);
+
     return new Promise((resolve) => {
       const coordinationId = `${this.id}_queen_${Date.now()}`;
-      
+
       // Set up response handler
-      const responseHandler = (response: any) => {
+      const responseHandler = (response: unknown) => {
         if (response.coordinationId === coordinationId) {
           this.eventBus.off('queen:coordination:response', responseHandler);
           resolve(response);
         }
       };
-      
+
       this.eventBus.on('queen:coordination:response', responseHandler);
-      
+
       // Send coordination request
       this.eventBus.emit('queen:coordination:request', {
         coordinationId,
@@ -731,13 +842,13 @@ export class SwarmCommander extends EventEmitter {
         context: multiSwarmContext,
         timestamp: new Date(),
       });
-      
+
       // Timeout after 60 seconds for complex coordination
       setTimeout(() => {
         this.eventBus.off('queen:coordination:response', responseHandler);
         resolve({
           error: 'Queen coordination timeout',
-          fallbackStrategy: this.getQueenCoordinationFallback(coordinationType)
+          fallbackStrategy: this.getQueenCoordinationFallback(coordinationType),
         });
       }, 60000);
     });
@@ -746,7 +857,7 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Gather multi-swarm context for Queen coordination
    */
-  private async gatherMultiSwarmContext(request: any): Promise<any> {
+  private async gatherMultiSwarmContext(request: unknown): Promise<unknown> {
     try {
       // Get cross-swarm patterns and dependencies
       const crossSwarmPatterns = await this.factSystem.searchFacts({
@@ -766,7 +877,9 @@ export class SwarmCommander extends EventEmitter {
         crossSwarmPatterns,
         integrationKnowledge,
         currentSwarmState: this.getState(),
-        coordinationHistory: await this.memoryCoordinator.retrieve(`queen_coordination_history_${this.swarmId}`),
+        coordinationHistory: await this.memoryCoordinator.retrieve(
+          `queen_coordination_history_${this.swarmId}`
+        ),
       };
     } catch (error) {
       this.logger.warn(`Failed to gather multi-swarm context: ${error}`);
@@ -777,15 +890,19 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Get fallback strategy when Queen coordination fails
    */
-  private getQueenCoordinationFallback(coordinationType: string): any {
+  private getQueenCoordinationFallback(
+    coordinationType: string
+  ): Record<string, unknown> {
     const fallbackStrategies = {
       multi_swarm: {
         strategy: 'Sequential implementation with interface contracts',
-        approach: 'Define clear APIs between swarms and implement independently',
+        approach:
+          'Define clear APIs between swarms and implement independently',
       },
       cross_domain: {
         strategy: 'Domain boundary enforcement with event-driven integration',
-        approach: 'Use events and message passing for cross-domain coordination',
+        approach:
+          'Use events and message passing for cross-domain coordination',
       },
       complex_feature: {
         strategy: 'Feature decomposition with incremental delivery',
@@ -793,14 +910,17 @@ export class SwarmCommander extends EventEmitter {
       },
       resource_conflict: {
         strategy: 'Resource prioritization based on business value',
-        approach: 'Escalate to higher authority for resource allocation decisions',
+        approach:
+          'Escalate to higher authority for resource allocation decisions',
       },
     };
-    
-    return fallbackStrategies[coordinationType] || { 
-      strategy: 'Conservative implementation approach',
-      approach: 'Proceed with known patterns and escalate unknown issues'
-    };
+
+    return (
+      fallbackStrategies[coordinationType] || {
+        strategy: 'Conservative implementation approach',
+        approach: 'Proceed with known patterns and escalate unknown issues',
+      }
+    );
   }
 
   /**
@@ -818,29 +938,44 @@ export class SwarmCommander extends EventEmitter {
       const persistentData = await this.memoryCoordinator.retrieve(
         `swarm_commander_learning_${this.swarmId}_${this.commanderType}`
       );
-      
+
       if (persistentData) {
         // Restore agent performance history
         if (persistentData.agentHistory) {
-          for (const [agentType, history] of Object.entries(persistentData.agentHistory)) {
-            this.agentPerformanceHistory.set(agentType as AgentType, history as AgentPerformanceHistory);
+          for (const [agentType, history] of Object.entries(
+            persistentData.agentHistory
+          )) {
+            this.agentPerformanceHistory.set(
+              agentType as AgentType,
+              history as AgentPerformanceHistory
+            );
           }
         }
-        
+
         // Restore SPARC phase efficiency data
         if (persistentData.phaseEfficiency) {
-          for (const [phase, metrics] of Object.entries(persistentData.phaseEfficiency)) {
-            this.sparcPhaseEfficiency.set(phase as SPARCPhase, metrics as PhaseEfficiencyMetrics);
+          for (const [phase, metrics] of Object.entries(
+            persistentData.phaseEfficiency
+          )) {
+            this.sparcPhaseEfficiency.set(
+              phase as SPARCPhase,
+              metrics as PhaseEfficiencyMetrics
+            );
           }
         }
-        
+
         // Restore successful implementation patterns
         if (persistentData.patterns) {
-          for (const [patternId, pattern] of Object.entries(persistentData.patterns)) {
-            this.implementationPatterns.set(patternId, pattern as SuccessfulPattern);
+          for (const [patternId, pattern] of Object.entries(
+            persistentData.patterns
+          )) {
+            this.implementationPatterns.set(
+              patternId,
+              pattern as SuccessfulPattern
+            );
           }
         }
-        
+
         this.logger.info('Loaded persistent neural learning data');
       }
     } catch (error) {
@@ -859,17 +994,17 @@ export class SwarmCommander extends EventEmitter {
         patterns: Object.fromEntries(this.implementationPatterns),
         lastUpdated: new Date(),
       };
-      
+
       await this.memoryCoordinator.store(
         `swarm_commander_learning_${this.swarmId}_${this.commanderType}`,
         learningData,
-        { 
+        {
           persistent: true,
           importance: 0.9, // High importance for learning data
-          tags: ['neural', 'learning', 'swarm', 'sparc']
+          tags: ['neural', 'learning', 'swarm', 'sparc'],
         }
       );
-      
+
       this.logger.debug('Saved persistent neural learning data');
     } catch (error) {
       this.logger.error(`Failed to save persistent learning data: ${error}`);
@@ -880,14 +1015,14 @@ export class SwarmCommander extends EventEmitter {
    * Update agent performance based on task completion
    */
   private async updateAgentPerformance(
-    agentType: AgentType, 
-    taskId: string, 
-    quality: number, 
+    agentType: AgentType,
+    taskId: string,
+    quality: number,
     duration: number,
     success: boolean
   ): Promise<void> {
     let history = this.agentPerformanceHistory.get(agentType);
-    
+
     if (!history) {
       history = {
         agentType,
@@ -900,14 +1035,16 @@ export class SwarmCommander extends EventEmitter {
         lastUpdated: new Date(),
       };
     }
-    
+
     // Update performance metrics using weighted average
     const weight = 0.8; // Give more weight to recent performance
-    history.averageQuality = (history.averageQuality * weight) + (quality * (1 - weight));
-    history.averageSpeed = (history.averageSpeed * weight) + (duration * (1 - weight));
+    history.averageQuality =
+      history.averageQuality * weight + quality * (1 - weight);
+    history.averageSpeed =
+      history.averageSpeed * weight + duration * (1 - weight);
     history.tasksCompleted++;
     history.lastUpdated = new Date();
-    
+
     // Track success/failure patterns
     if (success) {
       const pattern = `${this.state.currentPhase}_success`;
@@ -920,7 +1057,7 @@ export class SwarmCommander extends EventEmitter {
         history.failurePatterns.push(pattern);
       }
     }
-    
+
     this.agentPerformanceHistory.set(agentType, history);
     await this.savePersistentLearning();
   }
@@ -935,7 +1072,7 @@ export class SwarmCommander extends EventEmitter {
     bottlenecks: string[]
   ): Promise<void> {
     let metrics = this.sparcPhaseEfficiency.get(phase);
-    
+
     if (!metrics) {
       metrics = {
         phase,
@@ -948,17 +1085,19 @@ export class SwarmCommander extends EventEmitter {
     } else {
       // Update with weighted average
       const weight = 0.7;
-      metrics.averageDuration = (metrics.averageDuration * weight) + (duration * (1 - weight));
-      metrics.successRate = (metrics.successRate * weight) + ((success ? 1 : 0) * (1 - weight));
+      metrics.averageDuration =
+        metrics.averageDuration * weight + duration * (1 - weight);
+      metrics.successRate =
+        metrics.successRate * weight + (success ? 1 : 0) * (1 - weight);
     }
-    
+
     // Learn from bottlenecks
     for (const bottleneck of bottlenecks) {
       if (!metrics.commonBottlenecks.includes(bottleneck)) {
         metrics.commonBottlenecks.push(bottleneck);
       }
     }
-    
+
     this.sparcPhaseEfficiency.set(phase, metrics);
     await this.savePersistentLearning();
   }
@@ -968,9 +1107,11 @@ export class SwarmCommander extends EventEmitter {
    */
   private async performRealTimeLearning(task: SwarmTask): Promise<void> {
     const learningIntensity = this.getLearningIntensity();
-    
-    this.logger.debug(`Performing real-time learning (intensity: ${learningIntensity}) for task: ${task.title}`);
-    
+
+    this.logger.debug(
+      `Performing real-time learning (intensity: ${learningIntensity}) for task: ${task.title}`
+    );
+
     // Learn from each agent's performance in this task
     for (const agentType of task.assignedAgents) {
       await this.updateAgentPerformance(
@@ -981,7 +1122,7 @@ export class SwarmCommander extends EventEmitter {
         task.status === 'completed'
       );
     }
-    
+
     // Learn from SPARC phase efficiency if SPARC was used
     if (task.sparcPhase && this.activeProject) {
       await this.learnFromPhaseCompletion(
@@ -991,12 +1132,15 @@ export class SwarmCommander extends EventEmitter {
         this.identifyBottlenecks(task)
       );
     }
-    
+
     // Experimental learning mode - try new patterns
-    if (this.config.learningConfig.experimentalPatterns && learningIntensity > 0.7) {
+    if (
+      this.config.learningConfig.experimentalPatterns &&
+      learningIntensity > 0.7
+    ) {
       await this.experimentWithNewPatterns(task);
     }
-    
+
     // Update global performance metrics
     this.updateSwarmMetrics(task);
   }
@@ -1006,11 +1150,16 @@ export class SwarmCommander extends EventEmitter {
    */
   private getLearningIntensity(): number {
     switch (this.config.learningMode) {
-      case 'passive': return 0.3;
-      case 'active': return 0.6;
-      case 'aggressive': return 0.8;
-      case 'experimental': return 1.0;
-      default: return 0.5;
+      case 'passive':
+        return 0.3;
+      case 'active':
+        return 0.6;
+      case 'aggressive':
+        return 0.8;
+      case 'experimental':
+        return 1.0;
+      default:
+        return 0.5;
     }
   }
 
@@ -1020,9 +1169,15 @@ export class SwarmCommander extends EventEmitter {
   private calculateTaskQuality(task: SwarmTask): number {
     // In real implementation, this would analyze code quality, test coverage, etc.
     const baseQuality = 0.85;
-    const effortPenalty = task.actualEffort && task.actualEffort > task.estimatedEffort ? 
-      Math.max(0, 0.1 - (task.actualEffort - task.estimatedEffort) / task.estimatedEffort) : 0;
-    
+    const effortPenalty =
+      task.actualEffort && task.actualEffort > task.estimatedEffort
+        ? Math.max(
+            0,
+            0.1 -
+              (task.actualEffort - task.estimatedEffort) / task.estimatedEffort
+          )
+        : 0;
+
     return Math.min(1.0, baseQuality + effortPenalty);
   }
 
@@ -1031,15 +1186,15 @@ export class SwarmCommander extends EventEmitter {
    */
   private identifyBottlenecks(task: SwarmTask): string[] {
     const bottlenecks: string[] = [];
-    
+
     if (task.actualEffort && task.actualEffort > task.estimatedEffort * 1.5) {
       bottlenecks.push('estimation_inaccuracy');
     }
-    
+
     if (task.dependencies.length > 0) {
       bottlenecks.push('dependency_complexity');
     }
-    
+
     return bottlenecks;
   }
 
@@ -1050,7 +1205,9 @@ export class SwarmCommander extends EventEmitter {
     // Generate experimental pattern based on task characteristics
     const experimentalPattern: SuccessfulPattern = {
       patternId: `exp_${task.id}_${Date.now()}`,
-      taskType: task.title.toLowerCase().includes('auth') ? 'authentication' : 'general',
+      taskType: task.title.toLowerCase().includes('auth')
+        ? 'authentication'
+        : 'general',
       sparcApproach: 'experimental_sparc',
       agentConfiguration: task.assignedAgents,
       successRate: this.calculateTaskQuality(task),
@@ -1058,9 +1215,14 @@ export class SwarmCommander extends EventEmitter {
       qualityScore: this.state.metrics.qualityScore,
       reusable: this.state.metrics.qualityScore > 0.8,
     };
-    
-    this.implementationPatterns.set(experimentalPattern.patternId, experimentalPattern);
-    this.logger.info(`Discovered experimental pattern: ${experimentalPattern.patternId}`);
+
+    this.implementationPatterns.set(
+      experimentalPattern.patternId,
+      experimentalPattern
+    );
+    this.logger.info(
+      `Discovered experimental pattern: ${experimentalPattern.patternId}`
+    );
   }
 
   /**
@@ -1068,11 +1230,12 @@ export class SwarmCommander extends EventEmitter {
    */
   private updateSwarmMetrics(task: SwarmTask): void {
     const weight = 0.8;
-    this.state.metrics.sparcEfficiency = 
-      (this.state.metrics.sparcEfficiency * weight) + 
-      (this.calculateTaskQuality(task) * (1 - weight));
-    
-    this.state.metrics.agentUtilization = task.assignedAgents.length / this.state.availableAgents.length;
+    this.state.metrics.sparcEfficiency =
+      this.state.metrics.sparcEfficiency * weight +
+      this.calculateTaskQuality(task) * (1 - weight);
+
+    this.state.metrics.agentUtilization =
+      task.assignedAgents.length / this.state.availableAgents.length;
   }
 
   /**
@@ -1080,22 +1243,25 @@ export class SwarmCommander extends EventEmitter {
    */
   private getBestAgentsForPhase(phase: SPARCPhase): AgentType[] {
     const phaseMetrics = this.sparcPhaseEfficiency.get(phase);
-    
+
     if (phaseMetrics?.optimalAgentCombinations.length > 0) {
       // Return the best learned combination
       return phaseMetrics.optimalAgentCombinations[0];
     }
-    
+
     // Fall back to performance-based selection
     const availableAgents = Array.from(this.agentPerformanceHistory.entries())
-      .filter(([_, history]) => 
-        history.successPatterns.includes(`${phase}_success`) &&
-        this.state.availableAgents.includes(history.agentType)
+      .filter(
+        ([_, history]) =>
+          history.successPatterns.includes(`${phase}_success`) &&
+          this.state.availableAgents.includes(history.agentType)
       )
       .sort(([_, a], [__, b]) => b.averageQuality - a.averageQuality)
       .map(([agentType, _]) => agentType);
-    
-    return availableAgents.length > 0 ? availableAgents : this.determineRequiredAgents(phase);
+
+    return availableAgents.length > 0
+      ? availableAgents
+      : this.determineRequiredAgents(phase);
   }
 
   /**
@@ -1110,7 +1276,13 @@ export class SwarmCommander extends EventEmitter {
         {
           factSystemId: 'collective-fact-shared',
           accessLevel: 'universal',
-          hierarchyLevels: ['Cubes', 'Matrons', 'Queens', 'SwarmCommanders', 'Agents'],
+          hierarchyLevels: [
+            'Cubes',
+            'Matrons',
+            'Queens',
+            'SwarmCommanders',
+            'Agents',
+          ],
           storageType: 'shared',
           initialized: true,
           timestamp: Date.now(),
@@ -1121,8 +1293,10 @@ export class SwarmCommander extends EventEmitter {
           tags: ['shared-fact', 'universal-access', 'hierarchy-coordination'],
         }
       );
-      
-      this.logger.debug('Stored shared FACT system reference for universal hierarchy access');
+
+      this.logger.debug(
+        'Stored shared FACT system reference for universal hierarchy access'
+      );
     } catch (error) {
       this.logger.warn(`Failed to store shared FACT reference: ${error}`);
     }
@@ -1135,17 +1309,23 @@ export class SwarmCommander extends EventEmitter {
    */
   static async getSharedCollectiveFACT(): Promise<CollectiveFACTSystem> {
     let sharedFact = getCollectiveFACT();
-    
+
     if (!sharedFact) {
       // Initialize the shared FACT system once for all hierarchy levels
       sharedFact = await initializeCollectiveFACT({
         enableCache: true,
         cacheSize: 50000, // Large cache for all hierarchy levels
-        knowledgeSources: ['context7', 'deepwiki', 'gitmcp', 'semgrep', 'rust-fact-core'],
+        knowledgeSources: [
+          'context7',
+          'deepwiki',
+          'gitmcp',
+          'semgrep',
+          'rust-fact-core',
+        ],
         autoRefreshInterval: 1800000, // 30 minutes
       });
     }
-    
+
     return sharedFact;
   }
 
@@ -1154,13 +1334,15 @@ export class SwarmCommander extends EventEmitter {
    */
   public async shutdown(): Promise<void> {
     this.logger.info('Shutting down Swarm Commander');
-    
+
     // Save final learning data
     await this.savePersistentLearning();
-    
+
     this.state.status = 'idle';
     this.removeAllListeners();
-    
-    this.logger.info('Swarm Commander shutdown complete - neural learning preserved');
+
+    this.logger.info(
+      'Swarm Commander shutdown complete - neural learning preserved'
+    );
   }
 }

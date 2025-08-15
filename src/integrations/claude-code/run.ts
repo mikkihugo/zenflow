@@ -8,6 +8,11 @@
 import type { Anthropic } from '@anthropic-ai/sdk';
 import { execa } from 'execa';
 import { mkdtemp, readFile, unlink, writeFile } from 'fs/promises';
+import {
+  executeClaudeTask,
+  executeSwarmCoordinationTask,
+  type ClaudeSDKOptions,
+} from './sdk-integration';
 import { tmpdir } from 'os';
 import { dirname, join } from 'path';
 import { createInterface } from 'readline';
@@ -24,6 +29,102 @@ export interface RunClaudeCodeOptions {
   disableAllTools?: boolean;
 }
 
+/**
+ * Execute Claude Code using the official SDK (RECOMMENDED)
+ * Replaces CLI subprocess calls with direct SDK integration
+ */
+export async function runClaudeCodeSDK(
+  message: string,
+  options: {
+    workingDir?: string;
+    systemPrompt?: string;
+    allowedTools?: string[];
+    maxTurns?: number;
+    abortController?: AbortController;
+    model?: 'sonnet' | 'opus' | string;
+  } = {}
+): Promise<ClaudeCodeMessage[]> {
+  const {
+    workingDir = process.cwd(),
+    systemPrompt = 'You are Claude Code, helping with development tasks.',
+    allowedTools = ['Bash', 'Read', 'Write', 'Edit'],
+    maxTurns = 5,
+    model = 'sonnet', // Default to Sonnet for standard tasks
+    abortController,
+  } = options;
+
+  try {
+    // Use official SDK instead of CLI subprocess
+    const messages = await executeClaudeTask(message, {
+      workingDir,
+      customSystemPrompt: systemPrompt,
+      allowedTools,
+      maxTurns,
+      model, // Use specified model (sonnet/opus)
+      abortController,
+    });
+
+    // Convert SDK messages to ClaudeCodeMessage format
+    return messages.map((msg) => ({
+      type: msg.type as any,
+      content: msg.content || msg.result || msg.error || '',
+      toolName: msg.toolName,
+      toolInput: msg.toolInput,
+      toolResult: msg.toolResult,
+    }));
+  } catch (error) {
+    throw new Error(`Claude SDK execution failed: ${(error as Error).message}`);
+  }
+}
+
+/**
+ * Execute Claude Code with swarm coordination using SDK
+ */
+export async function runClaudeCodeSwarm(
+  task: string,
+  agents: string[],
+  options: {
+    workingDir?: string;
+    maxTurns?: number;
+    abortController?: AbortController;
+    model?: 'sonnet' | 'opus' | string;
+  } = {}
+): Promise<ClaudeCodeMessage[]> {
+  const {
+    workingDir = process.cwd(),
+    maxTurns = 10,
+    model = 'opus', // Default to Opus for complex swarm tasks
+    abortController,
+  } = options;
+
+  try {
+    // Use SDK for swarm coordination
+    const messages = await executeSwarmCoordinationTask(task, agents, {
+      workingDir,
+      maxTurns,
+      model, // Use specified model (defaults to opus for swarms)
+      abortController,
+    });
+
+    // Convert to ClaudeCodeMessage format
+    return messages.map((msg) => ({
+      type: msg.type as any,
+      content: msg.content || msg.result || msg.error || '',
+      toolName: msg.toolName,
+      toolInput: msg.toolInput,
+      toolResult: msg.toolResult,
+    }));
+  } catch (error) {
+    throw new Error(
+      `Claude swarm execution failed: ${(error as Error).message}`
+    );
+  }
+}
+
+/**
+ * LEGACY: Execute Claude Code using CLI subprocess (DEPRECATED)
+ * Use runClaudeCodeSDK() instead for better performance and type safety
+ */
 export async function* runClaudeCode(
   options: RunClaudeCodeOptions
 ): AsyncGenerator<ClaudeCodeMessage | string> {

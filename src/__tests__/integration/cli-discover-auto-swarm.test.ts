@@ -25,8 +25,8 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     const { AutoSwarmFactory } = await import(
       '../../coordination/discovery/auto-swarm-factory.ts'
     );
-    const { HiveSwarmCoordinator } = await import(
-      '../../coordination/hive-swarm-sync.ts'
+    const { CollectiveSwarmCoordinator } = await import(
+      '../../coordination/collective-knowledge-bridge'
     );
     const { createPublicSwarmCoordinator } = await import(
       '../../coordination/public-api.ts'
@@ -80,7 +80,7 @@ describe('CLI Discover Auto-Swarm Integration', () => {
     // Initialize swarm infrastructure (same as discover.ts)
     const eventBus = EventBus.getInstance();
     const swarmCoordinator = await createPublicSwarmCoordinator();
-    const hiveSync = new HiveSwarmCoordinator(eventBus);
+    const hiveSync = new CollectiveSwarmCoordinator(eventBus);
 
     const swarmFactory = new AutoSwarmFactory(
       swarmCoordinator,

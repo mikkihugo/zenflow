@@ -163,7 +163,9 @@ class ClaudeIntegrationOrchestrator {
       const packageName: string = this.options.packageName ?? 'ruv-swarm';
 
       const filesToRemove = [
-        'claude.md',
+        // PRIVACY PROTECTION: Do not remove customer CLAUDE.md files
+        // 'claude.md', // REMOVED - customer files are private
+        'CLAUDE-ZEN-SWARM.md', // Only remove swarm-specific files
         '.claude',
         packageName,
         `${packageName}.bat`,

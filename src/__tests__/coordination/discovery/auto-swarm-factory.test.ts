@@ -286,7 +286,9 @@ describe('AutoSwarmFactory', () => {
       const config = await factory.createSwarmForDomain(domain);
 
       expect((config as any)?.topology?.type).toBe('star');
-      expect((config as any)?.topology?.reason?.toLowerCase()).toContain('centralized');
+      expect((config as any)?.topology?.reason?.toLowerCase()).toContain(
+        'centralized'
+      );
     });
 
     it('should select ring topology for pipeline workflows', async () => {
@@ -306,7 +308,9 @@ describe('AutoSwarmFactory', () => {
       const config = await factory.createSwarmForDomain(domain);
 
       expect((config as any)?.topology?.type).toBe('ring');
-      expect((config as any)?.topology?.reason?.toLowerCase()).toContain('pipeline');
+      expect((config as any)?.topology?.reason?.toLowerCase()).toContain(
+        'pipeline'
+      );
     });
   });
 
@@ -665,9 +669,13 @@ describe('AutoSwarmFactory', () => {
       const config = await factory.createSwarmForDomain(domain);
 
       expect((config as any)?.performance?.expectedLatency).toBeGreaterThan(0);
-      expect((config as any)?.performance?.expectedThroughput).toBeGreaterThan(0);
+      expect((config as any)?.performance?.expectedThroughput).toBeGreaterThan(
+        0
+      );
       expect((config as any)?.performance?.resourceLimits?.memory).toBeTruthy();
-      expect((config as any)?.performance?.resourceLimits?.cpu).toBeGreaterThan(0);
+      expect((config as any)?.performance?.resourceLimits?.cpu).toBeGreaterThan(
+        0
+      );
     });
 
     it('should adjust performance based on complexity', async () => {
@@ -701,14 +709,16 @@ describe('AutoSwarmFactory', () => {
       const complexConfig = await factory.createSwarmForDomain(complexDomain);
 
       // Complex domain should have higher latency expectations
-      expect((complexConfig as any)?.performance?.expectedLatency).toBeGreaterThan(
-        (simpleConfig as any)?.performance?.expectedLatency
-      );
+      expect(
+        (complexConfig as any)?.performance?.expectedLatency
+      ).toBeGreaterThan((simpleConfig as any)?.performance?.expectedLatency);
 
       // Complex domain should have more resource allocation
       expect(
         (complexConfig as any)?.performance?.resourceLimits?.cpu
-      ).toBeGreaterThanOrEqual((simpleConfig as any)?.performance?.resourceLimits?.cpu);
+      ).toBeGreaterThanOrEqual(
+        (simpleConfig as any)?.performance?.resourceLimits?.cpu
+      );
     });
   });
 
@@ -830,7 +840,9 @@ describe('AutoSwarmFactory', () => {
 
       expect((config as any)?.coordination?.timeout).toBe(120000); // 2 minutes for extreme complexity
       expect((config as any)?.coordination?.retryPolicy?.maxRetries).toBe(3);
-      expect((config as any)?.coordination?.retryPolicy?.backoff).toBe('exponential');
+      expect((config as any)?.coordination?.retryPolicy?.backoff).toBe(
+        'exponential'
+      );
     });
   });
 });

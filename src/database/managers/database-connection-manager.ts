@@ -1,6 +1,6 @@
 /**
  * Database Connection Manager
- * 
+ *
  * Centralizes database connection management for all claude-code-zen services.
  * Ensures single database instance with proper initialization and health monitoring.
  */
@@ -29,13 +29,14 @@ export class DatabaseConnectionManager {
 
   private constructor(config: ConnectionConfig = {}) {
     this.config = {
-      databasePath: config.databasePath || join(process.cwd(), 'data', 'claude-zen.db'),
+      databasePath:
+        config.databasePath || join(process.cwd(), 'data', 'claude-zen.db'),
       autoInitialize: config.autoInitialize ?? true,
       enableWAL: config.enableWAL ?? true,
       enableForeignKeys: config.enableForeignKeys ?? true,
       busyTimeout: config.busyTimeout || 30000,
       maxRetries: config.maxRetries || 3,
-      retryDelay: config.retryDelay || 1000
+      retryDelay: config.retryDelay || 1000,
     };
   }
 
@@ -44,7 +45,9 @@ export class DatabaseConnectionManager {
    */
   static getInstance(config?: ConnectionConfig): DatabaseConnectionManager {
     if (!DatabaseConnectionManager.instance) {
-      DatabaseConnectionManager.instance = new DatabaseConnectionManager(config);
+      DatabaseConnectionManager.instance = new DatabaseConnectionManager(
+        config
+      );
     }
     return DatabaseConnectionManager.instance;
   }
@@ -58,21 +61,26 @@ export class DatabaseConnectionManager {
     }
 
     let lastError: Error | null = null;
-    
+
     for (let attempt = 1; attempt <= this.config.maxRetries; attempt++) {
       try {
-        console.log(`📡 Connecting to database (attempt ${attempt}/${this.config.maxRetries}): ${this.config.databasePath}`);
-        
+        console.log(
+          `📡 Connecting to database (attempt ${attempt}/${this.config.maxRetries}): ${this.config.databasePath}`
+        );
+
         // Check if database exists, initialize if needed
-        if (!existsSync(this.config.databasePath) && this.config.autoInitialize) {
+        if (
+          !existsSync(this.config.databasePath) &&
+          this.config.autoInitialize
+        ) {
           console.log('🔧 Database not found, initializing...');
           const initializer = new DatabaseInitializer({
             databasePath: this.config.databasePath,
             enableWAL: this.config.enableWAL,
             enableForeignKeys: this.config.enableForeignKeys,
-            busyTimeout: this.config.busyTimeout
+            busyTimeout: this.config.busyTimeout,
           });
-          
+
           await initializer.initializeSchemas();
           await initializer.seedInitialData();
           initializer.close();
@@ -80,32 +88,35 @@ export class DatabaseConnectionManager {
 
         // Create connection
         this.db = new Database(this.config.databasePath);
-        
+
         // Configure database
         this.setupDatabase();
-        
+
         // Test connection
         await this.testConnection();
-        
+
         this.isInitialized = true;
         console.log('✅ Database connection established successfully');
-        
+
         // Start health monitoring
         this.startHealthMonitoring();
-        
+
         return this.db;
-        
       } catch (error) {
         lastError = error as Error;
         console.warn(`⚠️ Database connection attempt ${attempt} failed:`, error);
-        
+
         if (attempt < this.config.maxRetries) {
-          await new Promise(resolve => setTimeout(resolve, this.config.retryDelay));
+          await new Promise((resolve) =>
+            setTimeout(resolve, this.config.retryDelay)
+          );
         }
       }
     }
 
-    throw new Error(`Failed to connect to database after ${this.config.maxRetries} attempts. Last error: ${lastError?.message}`);
+    throw new Error(
+      `Failed to connect to database after ${this.config.maxRetries} attempts. Last error: ${lastError?.message}`
+    );
   }
 
   /**
@@ -142,14 +153,19 @@ export class DatabaseConnectionManager {
 
     try {
       // Test basic query
-      const result = this.db.prepare('SELECT 1 as test').get() as { test: number };
+      const result = this.db.prepare('SELECT 1 as test').get() as {
+        test: number;
+      };
       if (result.test !== 1) {
         throw new Error('Database test query failed');
       }
 
       // Test table access
-      this.db.prepare('SELECT COUNT(*) as count FROM sqlite_master WHERE type="table"').get();
-      
+      this.db
+        .prepare(
+          'SELECT COUNT(*) as count FROM sqlite_master WHERE type="table"'
+        )
+        .get();
     } catch (error) {
       throw new Error(`Database connection test failed: ${error}`);
     }
@@ -164,7 +180,7 @@ export class DatabaseConnectionManager {
     }
 
     this.healthCheckInterval = setInterval(() => {
-      this.performHealthCheck().catch(error => {
+      this.performHealthCheck().catch((error) => {
         console.error('🚨 Database health check failed:', error);
       });
     }, 60000); // Check every minute
@@ -180,19 +196,21 @@ export class DatabaseConnectionManager {
 
     try {
       const start = Date.now();
-      
+
       // Test basic operations
       this.db.prepare('SELECT 1').get();
-      
+
       const responseTime = Date.now() - start;
-      
+
       // Get database stats
-      const stats = this.db.prepare(`
+      const stats = this.db
+        .prepare(`
         SELECT 
           (SELECT COUNT(*) FROM sqlite_master WHERE type='table') as table_count,
           (SELECT COUNT(*) FROM projects) as project_count,
           (SELECT COUNT(*) FROM documents) as document_count
-      `).get();
+      `)
+        .get();
 
       return {
         healthy: true,
@@ -201,16 +219,15 @@ export class DatabaseConnectionManager {
           stats,
           walMode: this.db.pragma('journal_mode'),
           foreignKeys: this.db.pragma('foreign_keys'),
-          cacheSize: this.db.pragma('cache_size')
-        }
+          cacheSize: this.db.pragma('cache_size'),
+        },
       };
-      
     } catch (error) {
       return {
         healthy: false,
         details: {
-          error: error instanceof Error ? error.message : 'Unknown error'
-        }
+          error: error instanceof Error ? error.message : 'Unknown error',
+        },
       };
     }
   }
@@ -236,7 +253,10 @@ export class DatabaseConnectionManager {
   /**
    * Execute prepared statement with error handling
    */
-  execute(sql: string, params: any[] = []): { changes: number; lastInsertRowid: number | bigint } {
+  execute(
+    sql: string,
+    params: unknown[] = []
+  ): { changes: number; lastInsertRowid: number | bigint } {
     const db = this.getConnection();
     try {
       const stmt = db.prepare(sql);
@@ -250,7 +270,7 @@ export class DatabaseConnectionManager {
   /**
    * Query database with error handling
    */
-  query(sql: string, params: any[] = []): any[] {
+  query(sql: string, params: unknown[] = []): unknown[] {
     const db = this.getConnection();
     try {
       const stmt = db.prepare(sql);
@@ -264,7 +284,7 @@ export class DatabaseConnectionManager {
   /**
    * Get single result
    */
-  queryOne(sql: string, params: any[] = []): any | null {
+  queryOne(sql: string, params: unknown[] = []): any | null {
     const db = this.getConnection();
     try {
       const stmt = db.prepare(sql);
@@ -280,35 +300,46 @@ export class DatabaseConnectionManager {
    */
   getStatistics() {
     const db = this.getConnection();
-    
-    const tableCount = db.prepare(`
+
+    const tableCount = db
+      .prepare(`
       SELECT COUNT(*) as count FROM sqlite_master WHERE type='table'
-    `).get() as { count: number };
+    `)
+      .get() as { count: number };
 
-    const projectCount = db.prepare(`
+    const projectCount = db
+      .prepare(`
       SELECT COUNT(*) as count FROM projects
-    `).get() as { count: number };
+    `)
+      .get() as { count: number };
 
-    const documentCount = db.prepare(`
+    const documentCount = db
+      .prepare(`
       SELECT COUNT(*) as count FROM documents
-    `).get() as { count: number };
+    `)
+      .get() as { count: number };
 
-    const documentsByType = db.prepare(`
+    const documentsByType = db
+      .prepare(`
       SELECT type, COUNT(*) as count 
       FROM documents 
       GROUP BY type
-    `).all() as { type: string; count: number }[];
+    `)
+      .all() as { type: string; count: number }[];
 
     return {
       totalTables: tableCount.count,
       totalProjects: projectCount.count,
       totalDocuments: documentCount.count,
-      documentsByType: documentsByType.reduce((acc, item) => {
-        acc[item.type] = item.count;
-        return acc;
-      }, {} as Record<string, number>),
+      documentsByType: documentsByType.reduce(
+        (acc, item) => {
+          acc[item.type] = item.count;
+          return acc;
+        },
+        {} as Record<string, number>
+      ),
       path: this.config.databasePath,
-      initialized: this.isInitialized
+      initialized: this.isInitialized,
     };
   }
 

@@ -1,6 +1,6 @@
 /**
  * @file API Response Types
- * 
+ *
  * Common interface definitions for API response objects throughout the application.
  * These types provide type safety for response objects with 'success' and 'data' properties.
  */
@@ -83,13 +83,17 @@ export function isApiResponse(obj: unknown): obj is BaseApiResponse {
 /**
  * Type guard for checking if response is successful
  */
-export function isSuccessResponse<T>(response: BaseApiResponse<T>): response is SuccessResponse<T> {
+export function isSuccessResponse<T>(
+  response: BaseApiResponse<T>
+): response is SuccessResponse<T> {
   return response.success === true;
 }
 
 /**
  * Type guard for checking if response is an error
  */
-export function isErrorResponse(response: BaseApiResponse): response is ErrorResponse {
+export function isErrorResponse(
+  response: BaseApiResponse
+): response is ErrorResponse {
   return response.success === false;
 }

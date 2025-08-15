@@ -2,7 +2,7 @@
  * @file Cognitive Pattern Evolution System - Enables autonomous learning and adaptation of cognitive patterns.
  */
 
-import type { TrainingData } from '../neural/types/wasm-types';
+import type { TrainingData } from '../../../neural/types/wasm-types';
 
 // Type definitions for cognitive patterns
 interface PatternCharacteristics {

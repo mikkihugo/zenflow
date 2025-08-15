@@ -3,7 +3,7 @@
  * Comprehensive testing of both HTTP and Stdio MCP implementations
  */
 
-import { StdioMcpServer } from '../../coordination/mcp/mcp-server';
+import { StdioMcpServer } from '../../coordination/swarm/mcp/mcp-server';
 import { HttpMcpServer } from '../../interfaces/mcp/http-mcp-server.ts';
 import type { MCPRequest } from '../../interfaces/mcp/types.ts';
 import { IntegrationTestSetup } from '../helpers/integration-test-setup.ts';

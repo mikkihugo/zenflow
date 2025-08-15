@@ -1226,12 +1226,12 @@ export class ClaudeZenFacade extends EventEmitter {
 
       // Shutdown event manager
       if ('shutdown' in this.eventManager) {
-        await (this.eventManager as any).shutdown();
+        await this.eventManager.shutdown();
       }
 
       // Close database connections
       if ('shutdown' in this.databaseService) {
-        await (this.databaseService as any).shutdown();
+        await this.databaseService.shutdown();
       }
 
       this.logger.info('System shutdown completed');
@@ -1246,18 +1246,15 @@ export class ClaudeZenFacade extends EventEmitter {
   private setupEventHandlers(): void {
     // Set up cross-service event coordination
     // Note: Using 'any' to handle event type mismatch until proper event types are defined
-    (this.eventManager as any).on('swarm:created', (event: unknown) => {
+    this.eventManager.on('swarm:created', (event: unknown) => {
       this.logger.info('Swarm created', { swarmId: event.swarmId });
     });
 
-    (this.eventManager as any).on(
-      'neural:training_complete',
-      (event: unknown) => {
-        this.logger.info('Neural training completed', {
-          modelId: event.modelId,
-        });
-      }
-    );
+    this.eventManager.on('neural:training_complete', (event: unknown) => {
+      this.logger.info('Neural training completed', {
+        modelId: event.modelId,
+      });
+    });
 
     this.commandQueue.on('command:executed', (event) => {
       this.logger.debug('Command executed', { commandType: event.commandType });

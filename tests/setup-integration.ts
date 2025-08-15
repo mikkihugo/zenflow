@@ -5,7 +5,9 @@
  * Focus: Component boundaries, system integration, protocol compliance
  */
 
-import { vi } from 'vitest';
+// Import Vitest globals and utilities
+import { vi, expect, beforeEach, afterEach } from 'vitest';
+import './global-types';
 
 // Integration test setup with hybrid approach
 beforeEach(async () => {
@@ -34,7 +36,7 @@ async function setupIntegrationEnvironment() {
   process.env['CLAUDE_ZEN_LOG_LEVEL'] = 'error'; // Reduce noise in tests
 
   // Initialize test-specific configurations
-  global.testConfig = {
+  globalThis.testConfig = {
     database: {
       type: 'sqlite',
       database: ':memory:',
@@ -56,14 +58,14 @@ async function setupIntegrationEnvironment() {
 
 async function initializeTestStorage() {
   // Create in-memory test databases
-  global.testDatabases = {
+  globalThis.testDatabases = {
     main: null,
     vector: null,
     cache: null,
   };
 
   // Setup test data fixtures
-  global.testFixtures = {
+  globalThis.testFixtures = {
     users: [],
     swarms: [],
     agents: [],
@@ -73,40 +75,40 @@ async function initializeTestStorage() {
 
 function setupNetworkMocking() {
   // Mock HTTP requests for external services
-  global.mockFetch = vi.fn();
-  global.originalFetch = global.fetch;
-  global.fetch = global.mockFetch;
+  globalThis.mockFetch = vi.fn();
+  globalThis.originalFetch = globalThis.fetch;
+  globalThis.fetch = globalThis.mockFetch;
 
   // Setup WebSocket mocking
-  global.mockWebSocket = vi.fn();
-  global.originalWebSocket = global.WebSocket;
+  globalThis.mockWebSocket = vi.fn();
+  globalThis.originalWebSocket = globalThis.WebSocket;
 
   // Mock process spawning for subprocess testing
-  global.mockSpawn = vi.fn();
+  globalThis.mockSpawn = vi.fn();
 }
 
 function resetNetworkMocks() {
-  if (global.originalFetch) {
-    global.fetch = global.originalFetch;
+  if (globalThis.originalFetch) {
+    globalThis.fetch = globalThis.originalFetch;
   }
-  if (global.originalWebSocket) {
-    global.WebSocket = global.originalWebSocket;
+  if (globalThis.originalWebSocket) {
+    globalThis.WebSocket = globalThis.originalWebSocket;
   }
   vi.clearAllMocks();
 }
 
 async function cleanupIntegrationState() {
   // Close test databases
-  if (global.testDatabases) {
-    for (const db of Object.values(global.testDatabases)) {
-      if (db && typeof db.close === 'function') {
-        await db.close();
+  if (globalThis.testDatabases) {
+    for (const db of Object.values(globalThis.testDatabases)) {
+      if (db && typeof (db as any).close === 'function') {
+        await (db as any).close();
       }
     }
   }
 
   // Clear test fixtures
-  global.testFixtures = {};
+  globalThis.testFixtures = {};
 
   // Clean environment variables
   process.env['CLAUDE_ZEN_TEST_MODE'] = undefined;
@@ -154,9 +156,9 @@ interface TestClient {
  * @param routes - Array of route configurations
  * @returns Promise resolving to server instance
  */
-global.createTestServer = async (port: number, routes: TestRoute[] = []) => {
+globalThis.createTestServer = async (port: number, routes: TestRoute[] = []) => {
   const express = await import('express');
-  const app = express.default();
+  const app = (express as any).default ? (express as any).default() : (express as any)();
 
   routes.forEach((route) => {
     app[route.method](route.path, route.handler);
@@ -176,7 +178,7 @@ global.createTestServer = async (port: number, routes: TestRoute[] = []) => {
  * @param baseURL - Base URL for all requests
  * @returns Test client interface
  */
-global.createTestClient = (baseURL: string): TestClient => {
+globalThis.createTestClient = (baseURL: string): TestClient => {
   return {
     get: (path: string) => fetch(`${baseURL}${path}`),
     post: (path: string, data: unknown) =>
@@ -195,7 +197,7 @@ global.createTestClient = (baseURL: string): TestClient => {
   };
 };
 
-global.waitForPort = async (port: number, timeout: number = 5000) => {
+globalThis.waitForPort = async (port: number, timeout: number = 5000) => {
   const net = await import('node:net');
   const start = Date.now();
 
@@ -264,10 +266,10 @@ interface MockSwarm {
  *
  * @param fixtures - Database fixtures to load
  */
-global.setupDatabaseFixtures = async (fixtures: DatabaseFixtures) => {
+globalThis.setupDatabaseFixtures = async (fixtures: DatabaseFixtures) => {
   // Load test data into databases
   for (const [table, data] of Object.entries(fixtures)) {
-    global.testFixtures[table] = data;
+    globalThis.testFixtures[table] = data;
   }
 };
 
@@ -277,7 +279,7 @@ global.setupDatabaseFixtures = async (fixtures: DatabaseFixtures) => {
  * @param agentCount - Number of agents to create
  * @returns Mock swarm instance
  */
-global.createMockSwarm = (agentCount: number = 3): MockSwarm => {
+globalThis.createMockSwarm = (agentCount: number = 3): MockSwarm => {
   const swarm: MockSwarm = {
     id: `test-swarm-${Date.now()}`,
     agents: [],
@@ -304,8 +306,13 @@ global.createMockSwarm = (agentCount: number = 3): MockSwarm => {
  * @param tasks - Tasks to execute
  * @returns Promise resolving to workflow results
  */
-global.simulateSwarmWorkflow = async (swarm: MockSwarm, tasks: unknown[]) => {
-  const results = [];
+globalThis.simulateSwarmWorkflow = async (swarm: MockSwarm, tasks: unknown[]) => {
+  const results: Array<{
+    taskId: string;
+    agentId: string;
+    result: string;
+    timestamp: number;
+  }> = [];
   for (const task of tasks) {
     const agent = swarm.agents.find((a) => a.status === 'idle');
     if (agent) {
@@ -338,15 +345,15 @@ global.simulateSwarmWorkflow = async (swarm: MockSwarm, tasks: unknown[]) => {
  */
 interface MockMCPClient {
   /** Send message to MCP server */
-  send: vi.Mock;
+  send: any;
   /** Connect to MCP server */
-  connect: vi.Mock;
+  connect: any;
   /** Disconnect from MCP server */
-  disconnect: vi.Mock;
+  disconnect: any;
   /** List available tools */
-  listTools: vi.Mock;
+  listTools: any;
   /** Call a specific tool */
-  callTool: vi.Mock;
+  callTool: any;
 }
 
 /**
@@ -371,7 +378,7 @@ interface MCPMessage {
  *
  * @returns Mock MCP client instance
  */
-global.createMockMCPClient = (): MockMCPClient => {
+globalThis.createMockMCPClient = (): MockMCPClient => {
   return {
     send: vi.fn().mockResolvedValue({ success: true }),
     connect: vi.fn().mockResolvedValue(true),
@@ -386,7 +393,7 @@ global.createMockMCPClient = (): MockMCPClient => {
  *
  * @param message - Message to validate
  */
-global.validateMCPProtocol = (message: MCPMessage) => {
+globalThis.validateMCPProtocol = (message: MCPMessage) => {
   expect(message).toHaveProperty('jsonrpc', '2.0');
   expect(message).toHaveProperty('id');
   expect(message).toHaveProperty('method');
@@ -440,38 +447,4 @@ interface PortConfig {
   mcp?: number;
 }
 
-declare global {
-  var testConfig: {
-    database: DatabaseConfig;
-    redis: RedisConfig;
-    ports: PortConfig;
-  };
-  var testDatabases: {
-    main: unknown;
-    vector: unknown;
-    cache: unknown;
-  };
-  var testFixtures: {
-    [key: string]: unknown;
-  };
-  var mockFetch: vi.Mock;
-  var originalFetch: typeof fetch;
-  var mockWebSocket: vi.Mock;
-  var originalWebSocket: typeof WebSocket;
-  var mockSpawn: vi.Mock;
-
-  function createTestServer(
-    port: number,
-    routes?: TestRoute[]
-  ): Promise<unknown>;
-  function createTestClient(baseURL: string): TestClient;
-  function waitForPort(port: number, timeout?: number): Promise<boolean>;
-  function setupDatabaseFixtures(fixtures: DatabaseFixtures): Promise<void>;
-  function createMockSwarm(agentCount?: number): MockSwarm;
-  function simulateSwarmWorkflow(
-    swarm: MockSwarm,
-    tasks: unknown[]
-  ): Promise<unknown[]>;
-  function createMockMCPClient(): MockMCPClient;
-  function validateMCPProtocol(message: MCPMessage): void;
-}
+// Types are now declared in global-types.ts

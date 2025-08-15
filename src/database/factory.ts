@@ -1325,7 +1325,7 @@ export class DALFactory {
       case 'memory':
         // TODO: TypeScript error TS2739 - Type 'MemoryDao<T>' is missing properties from type 'IDataAccessObject<T>' (AI unsure of safe fix - human review needed)
         // TODO: TypeScript error TS2345 - Argument of type 'IMemoryRepository<T>' is not assignable to parameter of type 'DatabaseAdapter' (AI unsure of safe fix - human review needed)
-        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this['_logger']);
+        return new MemoryDao<T>(repository as IMemoryRepository<T>, adapter, this['_logger']) as any;
 
       case 'coordination':
         // TODO: TypeScript error TS2739 - Type 'CoordinationDao<T>' is missing properties from type 'IDataAccessObject<T>' (AI unsure of safe fix - human review needed)

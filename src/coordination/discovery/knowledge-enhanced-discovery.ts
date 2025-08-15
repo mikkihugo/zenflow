@@ -13,14 +13,14 @@ import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config.ts';
 import type { DiscoveredDomain } from '../../interfaces/tui/types.ts';
 import type { SessionMemoryStore } from '../../memory/memory.ts';
-import type { HiveFACTSystem } from '../hive-fact-integration.ts';
+import type { CollectiveFACTSystem } from '../collective-fact-integration.ts';
 import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync.ts';
 
 const logger = getLogger('Knowledge-Aware-Discovery');
 
 export interface KnowledgeAwareConfig {
   swarmId: string;
-  useHiveFACT?: boolean;
+  useCollectiveFACT?: boolean;
   useSwarmKnowledge?: boolean;
   knowledgeWeight?: number; // 0-1, how much to weight knowledge vs analysis
   confidenceThreshold?: number;
@@ -84,27 +84,27 @@ export interface KnowledgeDiscoveryContext {
  */
 export class KnowledgeAwareDiscovery extends EventEmitter {
   private config: KnowledgeAwareConfig;
-  private hiveFact: HiveFACTSystem | undefined;
+  private collectiveFact: CollectiveFACTSystem | undefined;
   private swarmKnowledge: SwarmKnowledgeSync | undefined;
   private memoryStore: SessionMemoryStore | undefined;
   private appliedPatterns = new Map<string, DomainPattern[]>();
 
   constructor(
     config: KnowledgeAwareConfig,
-    hiveFact?: HiveFACTSystem,
+    collectiveFact?: CollectiveFACTSystem,
     swarmKnowledge?: SwarmKnowledgeSync,
     memoryStore?: SessionMemoryStore
   ) {
     super();
     this.config = {
-      useHiveFACT: true,
+      useCollectiveFACT: true,
       useSwarmKnowledge: true,
       knowledgeWeight: 0.4, // 40% knowledge, 60% analysis
       confidenceThreshold: 0.7,
       maxKnowledgeQueries: 10,
       ...config,
     };
-    this.hiveFact = hiveFact;
+    this.collectiveFact = collectiveFact;
     this.swarmKnowledge = swarmKnowledge;
     this.memoryStore = memoryStore;
   }
@@ -184,14 +184,14 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
     try {
       // Query Hive FACT for domain patterns
       if (
-        this.config.useHiveFACT &&
-        this.hiveFact &&
+        this.config.useCollectiveFACT &&
+        this.collectiveFact &&
         queryCount < this.config.maxKnowledgeQueries!
       ) {
         for (const domain of context.domains) {
           if (queryCount >= this.config.maxKnowledgeQueries!) break;
 
-          const domainKnowledge = await this.queryHiveFACTForDomain(
+          const domainKnowledge = await this.queryCollectiveFACTForDomain(
             domain,
             context
           );
@@ -259,13 +259,13 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
    * @param domain
    * @param context
    */
-  private async queryHiveFACTForDomain(
+  private async queryCollectiveFACTForDomain(
     domain: string,
     context: KnowledgeDiscoveryContext
   ): Promise<DomainKnowledge | null> {
     try {
       const query = `domain patterns for ${domain} in ${context.projectType} projects`;
-      const facts = await this.hiveFact?.searchFacts({
+      const facts = await this.collectiveFact?.searchFacts({
         query,
         limit: 5,
       });
@@ -326,9 +326,9 @@ export class KnowledgeAwareDiscovery extends EventEmitter {
       let knowledge: DomainKnowledge | null = null;
 
       // Try Hive FACT first
-      if (this.hiveFact) {
+      if (this.collectiveFact) {
         const query = `${technology} architecture patterns and best practices`;
-        const facts = await this.hiveFact.searchFacts({ query, limit: 3 });
+        const facts = await this.collectiveFact.searchFacts({ query, limit: 3 });
 
         if (facts.length > 0) {
           knowledge = this.convertFactsToDomainKnowledge(

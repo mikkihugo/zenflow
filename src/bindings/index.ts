@@ -33,12 +33,35 @@ export const BindingsUtils = {
    */
   isNativeAvailable: (): boolean => {
     try {
-      // Try to load native module
+      // Try to load zen-code native binding
+      const { platform, arch } = require('os');
+      const platformMap: Record<string, string> = {
+        'linux': 'linux',
+        'darwin': 'darwin', 
+        'win32': 'win32'
+      };
+      const archMap: Record<string, string> = {
+        'x64': 'x64',
+        'arm64': 'arm64',
+        'ia32': 'x86'
+      };
+      
+      const platformName = platformMap[platform()] || 'linux';
+      const archName = archMap[arch()] || 'x64';
+      const bindingName = `zen-code-bindings.${platformName}-${archName}-gnu.node`;
+      
       // eslint-disable-next-line @typescript-eslint/no-require-imports
-      require('./build/Release/native');
+      require(`./${bindingName}`);
       return true;
     } catch {
-      return false;
+      // Fallback: try common binding name
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        require('./zen-code-bindings.linux-x64-gnu.node');
+        return true;
+      } catch {
+        return false;
+      }
     }
   },
 
@@ -63,8 +86,33 @@ export const BindingsUtils = {
     const bindingType = BindingsUtils.getBindingType();
 
     switch (bindingType) {
-      case 'native':
-        return require('./build/Release/native'); // eslint-disable-next-line @typescript-eslint/no-require-imports
+      case 'native': {
+        // Try to load platform-specific zen-code binding
+        const { platform, arch } = require('os');
+        const platformMap: Record<string, string> = {
+          'linux': 'linux',
+          'darwin': 'darwin',
+          'win32': 'win32'
+        };
+        const archMap: Record<string, string> = {
+          'x64': 'x64',
+          'arm64': 'arm64',
+          'ia32': 'x86'
+        };
+        
+        const platformName = platformMap[platform()] || 'linux';
+        const archName = archMap[arch()] || 'x64';
+        const bindingName = `zen-code-bindings.${platformName}-${archName}-gnu.node`;
+        
+        try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          return require(`./${bindingName}`);
+        } catch {
+          // Fallback to common binding
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          return require('./zen-code-bindings.linux-x64-gnu.node');
+        }
+      }
       case 'wasm': {
         // Load WASM bindings through proper abstraction (fixed isolation violation)
         // Instead of direct import, use dynamic loading with proper interface

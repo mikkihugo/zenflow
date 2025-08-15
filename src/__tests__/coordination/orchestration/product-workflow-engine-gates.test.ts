@@ -373,10 +373,9 @@ describe('ProductWorkflowEngine with Gates Integration', () => {
 
         // The gate request should have been created with the appropriate approval level
         expect(mockProcessWorkflowGate).toHaveBeenCalled();
-        const gateRequest =
-          (mockProcessWorkflowGate as any).mock.calls[
-            (mockProcessWorkflowGate as any).mock.calls.length - 1
-          ][0];
+        const gateRequest = (mockProcessWorkflowGate as any).mock.calls[
+          (mockProcessWorkflowGate as any).mock.calls.length - 1
+        ][0];
         expect(gateRequest.requiredApprovalLevel).toBe(testCase.expectedLevel);
       }
     });

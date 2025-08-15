@@ -5,7 +5,7 @@
  * graceful shutdown patterns, and process management.
  */
 
-import { getLogger } from '../config/logging-config.js';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('ProcessLifecycle');
 

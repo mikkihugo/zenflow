@@ -1,3 +1,4 @@
+import type { ILogger } from '../core/interfaces/base-interfaces.ts';
 /**
  * @file Database layer: vector-dao.
  */

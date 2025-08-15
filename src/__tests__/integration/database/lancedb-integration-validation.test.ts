@@ -13,14 +13,14 @@ describe('LanceDB Integration Validation', () => {
     expect(lancedb.connect).toBeDefined();
   });
 
-  it('should have LanceDBInterface available', async () => {
-    // Test that our LanceDBInterface exists and has required methods
-    const { default: LanceDBInterface } = await import(
-      '../../../database/lancedb-interface'
+  it('should have LanceDBAdapter available', async () => {
+    // Test that our LanceDBAdapter exists and has required methods
+    const { LanceDBAdapter } = await import(
+      '../../../database/adapters/lancedb-adapter'
     );
-    expect(LanceDBInterface).toBeDefined();
+    expect(LanceDBAdapter).toBeDefined();
 
-    const instance = new LanceDBInterface({
+    const instance = new LanceDBAdapter({
       dbPath: './test-path',
       vectorDim: 128,
     });

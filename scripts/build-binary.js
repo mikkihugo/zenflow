@@ -2,7 +2,7 @@
 
 /**
  * Comprehensive Binary Build Script for Claude Code Zen
- * 
+ *
  * Creates multiple binary distributions:
  * 1. PKG binaries (cross-platform, self-contained)
  * 2. NCC bundles (optimized single JS file)
@@ -19,8 +19,15 @@ console.log('🚀 Building Claude Code Zen Binary Distributions...\n');
 const startTime = Date.now();
 
 // Ensure output directories exist
-const outputDirs = ['bin', 'bin/ncc', 'bin/yao', 'bin/nexe', 'bin/boxed', 'bin/wasm'];
-outputDirs.forEach(dir => {
+const outputDirs = [
+  'bin',
+  'bin/ncc',
+  'bin/yao',
+  'bin/nexe',
+  'bin/boxed',
+  'bin/wasm',
+];
+outputDirs.forEach((dir) => {
   if (!existsSync(dir)) {
     mkdirSync(dir, { recursive: true });
     console.log(`📁 Created directory: ${dir}`);
@@ -32,35 +39,38 @@ const buildConfigs = [
   {
     name: 'Production Build',
     command: 'npm run build:prod',
-    description: 'Compile TypeScript to optimized JavaScript'
+    description: 'Compile TypeScript to optimized JavaScript',
   },
   {
     name: 'YAO-PKG Binary (Node 22 Support)',
-    command: 'npx @yao-pkg/pkg dist/claude-zen.js --targets node22-linux-x64,node22-macos-x64,node22-win-x64 --output bin/yao/claude-zen',
-    description: 'Modern pkg with Node.js 22 support'
+    command:
+      'npx @yao-pkg/pkg dist/claude-zen.js --targets node22-linux-x64,node22-macos-x64,node22-win-x64 --output bin/yao/claude-zen',
+    description: 'Modern pkg with Node.js 22 support',
   },
   {
     name: 'Nexe Binary',
-    command: 'npx nexe dist/claude-zen.js --target=22.0.0 --output=bin/nexe/claude-zen',
-    description: 'Nexe binary compilation with Node.js 22'
+    command:
+      'npx nexe dist/claude-zen.js --target=22.0.0 --output=bin/nexe/claude-zen',
+    description: 'Nexe binary compilation with Node.js 22',
   },
   {
     name: 'BoxedNode Binary',
     command: 'npx boxednode dist/claude-zen.js bin/boxed/claude-zen',
-    description: 'BoxedNode portable executable'
+    description: 'BoxedNode portable executable',
   },
   {
     name: 'NCC Bundle',
-    command: 'npx ncc build dist/claude-zen.js -o bin/ncc --minify --no-source-map-register',
-    description: 'Create optimized single JavaScript bundle'
-  }
+    command:
+      'npx ncc build dist/claude-zen.js -o bin/ncc --minify --no-source-map-register',
+    description: 'Create optimized single JavaScript bundle',
+  },
 ];
 
 // Execute builds
 for (const config of buildConfigs) {
   console.log(`\n🔨 ${config.name}`);
   console.log(`   ${config.description}`);
-  
+
   try {
     const buildStart = Date.now();
     execSync(config.command, { stdio: 'inherit' });
@@ -76,19 +86,19 @@ console.log('\n📦 Copying WASM Modules...');
 const wasmSources = [
   'src/neural/wasm/pkg-manual/zen_swarm_neural.wasm',
   'src/neural/wasm/pkg-manual/zen_swarm_neural.js',
-  'src/neural/wasm/pkg-manual/zen_swarm_neural.d.ts'
+  'src/neural/wasm/pkg-manual/zen_swarm_neural.d.ts',
 ];
 
-wasmSources.forEach(src => {
+wasmSources.forEach((src) => {
   if (existsSync(src)) {
     const filename = path.basename(src);
     const destinations = [
       `bin/wasm/${filename}`,
       `bin/ncc/${filename}`,
-      `bin/pkg/${filename}`
+      `bin/pkg/${filename}`,
     ];
-    
-    destinations.forEach(dest => {
+
+    destinations.forEach((dest) => {
       try {
         copyFileSync(src, dest);
         console.log(`   📄 Copied ${filename} to ${path.dirname(dest)}`);
@@ -124,13 +134,13 @@ const binaries = [
   { path: 'bin/nexe/claude-zen', name: 'Nexe Binary' },
   { path: 'bin/boxed/claude-zen', name: 'BoxedNode Binary' },
   { path: 'bin/ncc/index.js', name: 'NCC Bundle' },
-  { path: 'bin/wasm/zen_swarm_neural.wasm', name: 'Neural WASM Module' }
+  { path: 'bin/wasm/zen_swarm_neural.wasm', name: 'Neural WASM Module' },
 ];
 
 let totalSize = 0;
 let successCount = 0;
 
-binaries.forEach(binary => {
+binaries.forEach((binary) => {
   const result = checkBinary(binary.path, binary.name);
   if (result.exists) {
     totalSize += result.size;
@@ -184,11 +194,11 @@ node bin/ncc/index.js
 - ✅ Optimized performance
 
 ## File Sizes:
-${binaries.map(b => `- ${b.name}: ${checkBinary(b.path, '').exists ? statSync(b.path).size + ' bytes' : 'Not found'}`).join('\n')}
+${binaries.map((b) => `- ${b.name}: ${checkBinary(b.path, '').exists ? statSync(b.path).size + ' bytes' : 'Not found'}`).join('\n')}
 `;
 
 try {
-  import('fs').then(fs => {
+  import('fs').then((fs) => {
     fs.writeFileSync('bin/USAGE.md', usageInstructions);
     console.log('📚 Created bin/USAGE.md with instructions');
   });

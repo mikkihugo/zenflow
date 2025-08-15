@@ -7,8 +7,8 @@
  */
 
 import { vi } from 'vitest';
-import { BaseCommand } from '../../../../cli/core/base-command';
-import { CommandRegistry } from '../../../../cli/core/command-registry';
+import { BaseCommand } from '../../../../interfaces/cli/core/base-command';
+import { CommandRegistry } from '../../../../interfaces/cli/core/command-registry';
 
 // Mock BaseCommand for testing
 class MockCommand extends BaseCommand {

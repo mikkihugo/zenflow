@@ -167,7 +167,6 @@ export function createClaudeZenDIContainer(): DIContainer {
     .singleton(CORE_TOKENS.Config, () => new AppConfig())
     .singleton(CORE_TOKENS.EventBus, () => new AppEventBus())
     .singleton(CORE_TOKENS.Database, () => new MockDatabase())
-
     // Additional tokens for future expansion
     .build();
 

@@ -1,9 +1,9 @@
 /**
  * Phase 2 Real Database Integration Validation Test
- * 
+ *
  * This test validates the complete Phase 2 system with actual database operations
  * to ensure all components work together in a real database environment.
- * 
+ *
  * Tests real integration with:
  * - SQLite for structured coordination data
  * - LanceDB for vector embeddings and similarity search
@@ -112,10 +112,22 @@ describe('Phase 2 Real Database Integration Validation', () => {
           delete: async (id: string) => true,
           count: async () => 0,
         }),
-        createKuzuGraphRepository: async (entityType: string, tableName: string) => ({
+        createKuzuGraphRepository: async (
+          entityType: string,
+          tableName: string
+        ) => ({
           create: async (node: any) => ({ ...node, created: true }),
-          createRelationship: async (from: string, to: string, type: string, props: any) => true,
-          traverse: async (startId: string, pattern: string, maxDepth: number) => ({
+          createRelationship: async (
+            from: string,
+            to: string,
+            type: string,
+            props: any
+          ) => true,
+          traverse: async (
+            startId: string,
+            pattern: string,
+            maxDepth: number
+          ) => ({
             nodes: [{ id: startId, labels: ['TestNode'], properties: {} }],
             relationships: [],
           }),
@@ -123,7 +135,10 @@ describe('Phase 2 Real Database Integration Validation', () => {
           update: async (id: string, data: any) => ({ id, ...data }),
           delete: async (id: string) => true,
         }),
-        createLanceDBVectorRepository: async (entityType: string, dimension: number) => ({
+        createLanceDBVectorRepository: async (
+          entityType: string,
+          dimension: number
+        ) => ({
           addVectors: async (vectors: any[]) => {
             expect(vectors[0].vector).toBeDefined();
             expect(vectors[0].vector.length).toBe(dimension);
@@ -154,7 +169,11 @@ describe('Phase 2 Real Database Integration Validation', () => {
       };
 
       // Initialize SwarmDatabaseManager with real-like configuration
-      swarmDbManager = new SwarmDatabaseManager(testConfig, mockDALFactory as any, mockLogger);
+      swarmDbManager = new SwarmDatabaseManager(
+        testConfig,
+        mockDALFactory as any,
+        mockLogger
+      );
       await swarmDbManager.initialize();
 
       // Validate initialization
@@ -175,11 +194,15 @@ describe('Phase 2 Real Database Integration Validation', () => {
 
       // Validate repository types and methods
       expect(typeof cluster.repositories.graph.create).toBe('function');
-      expect(typeof cluster.repositories.graph.createRelationship).toBe('function');
+      expect(typeof cluster.repositories.graph.createRelationship).toBe(
+        'function'
+      );
       expect(typeof cluster.repositories.graph.traverse).toBe('function');
 
       expect(typeof cluster.repositories.vectors.addVectors).toBe('function');
-      expect(typeof cluster.repositories.vectors.similaritySearch).toBe('function');
+      expect(typeof cluster.repositories.vectors.similaritySearch).toBe(
+        'function'
+      );
 
       expect(typeof cluster.repositories.coordination.create).toBe('function');
       expect(typeof cluster.repositories.coordination.findBy).toBe('function');
@@ -234,16 +257,25 @@ describe('Phase 2 Real Database Integration Validation', () => {
       await swarmDbManager.createSwarmCluster(secondarySwarmId);
 
       // Test graph traversal
-      const graphResult = await swarmDbManager.getSwarmGraph(testSwarmId, 'real-agent-1', 2);
+      const graphResult = await swarmDbManager.getSwarmGraph(
+        testSwarmId,
+        'real-agent-1',
+        2
+      );
       expect(graphResult).toBeDefined();
 
       // Test vector similarity search
       const queryVector = new Array(1536).fill(0).map(() => Math.random());
-      const similarResults = await swarmDbManager.findSimilarEmbeddings(testSwarmId, queryVector, 3);
+      const similarResults = await swarmDbManager.findSimilarEmbeddings(
+        testSwarmId,
+        queryVector,
+        3
+      );
       expect(Array.isArray(similarResults)).toBe(true);
 
       // Test cross-swarm dependency tracking
-      const dependencies = await swarmDbManager.getSwarmDependencies(testSwarmId);
+      const dependencies =
+        await swarmDbManager.getSwarmDependencies(testSwarmId);
       expect(dependencies).toBeDefined();
       expect(Array.isArray(dependencies.dependencies)).toBe(true);
       expect(Array.isArray(dependencies.dependents)).toBe(true);
@@ -254,8 +286,10 @@ describe('Phase 2 Real Database Integration Validation', () => {
     test('should validate pattern storage and retrieval with real vector operations', async () => {
       const realPattern: SuccessfulPattern = {
         patternId: 'real-database-pattern',
-        description: 'Multi-database coordination pattern with transaction safety',
-        context: 'database integration, transaction management, data consistency',
+        description:
+          'Multi-database coordination pattern with transaction safety',
+        context:
+          'database integration, transaction management, data consistency',
         successRate: 0.94,
         usageCount: 18,
         lastUsed: new Date().toISOString(),
@@ -275,8 +309,9 @@ describe('Phase 2 Real Database Integration Validation', () => {
       });
 
       // Test enhanced pattern discovery
-      const discoveryResult = await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmId);
-      
+      const discoveryResult =
+        await swarmDbManager.demonstrateEnhancedPatternDiscovery(testSwarmId);
+
       expect(discoveryResult).toBeDefined();
       expect(discoveryResult.analytics.totalPatterns).toBeGreaterThanOrEqual(0);
       expect(Array.isArray(discoveryResult.enhancedEmbeddings)).toBe(true);
@@ -348,11 +383,14 @@ describe('Phase 2 Real Database Integration Validation', () => {
       }
 
       // Test pattern clustering
-      const clusters = await swarmDbManager.performPatternClustering(testSwarmId, {
-        minClusterSize: 2,
-        maxClusters: 3,
-        similarityThreshold: 0.6,
-      });
+      const clusters = await swarmDbManager.performPatternClustering(
+        testSwarmId,
+        {
+          minClusterSize: 2,
+          maxClusters: 3,
+          similarityThreshold: 0.6,
+        }
+      );
 
       expect(clusters).toBeDefined();
       expect(Array.isArray(clusters)).toBe(true);
@@ -386,7 +424,11 @@ describe('Phase 2 Real Database Integration Validation', () => {
       // Mock active swarms for cross-swarm search
       const mockActiveSwarms = [
         { swarmId: testSwarmId, path: '/test/path1', lastAccessed: new Date() },
-        { swarmId: secondarySwarmId, path: '/test/path2', lastAccessed: new Date() },
+        {
+          swarmId: secondarySwarmId,
+          path: '/test/path2',
+          lastAccessed: new Date(),
+        },
       ];
 
       // Override getActiveSwarms method for this test
@@ -433,12 +475,15 @@ describe('Phase 2 Real Database Integration Validation', () => {
             taskSuccessRate: 0.94,
             averageCompletionTime: 2300,
             errorPatterns: ['database_timeout'],
-            optimizationSuggestions: ['connection_pooling', 'query_optimization'],
+            optimizationSuggestions: [
+              'connection_pooling',
+              'query_optimization',
+            ],
             lastUpdated: new Date().toISOString(),
           },
         },
         sparcPhaseEfficiency: {
-          'architecture': {
+          architecture: {
             phase: 'architecture',
             averageTime: 2800,
             successRate: 0.92,
@@ -462,7 +507,11 @@ describe('Phase 2 Real Database Integration Validation', () => {
         updatedAt: new Date().toISOString(),
       };
 
-      await swarmDbManager.storeTier1Learning(testSwarmId, 'transfer-source-commander', sourceLearning);
+      await swarmDbManager.storeTier1Learning(
+        testSwarmId,
+        'transfer-source-commander',
+        sourceLearning
+      );
 
       // Execute knowledge transfer
       const transfer = await swarmDbManager.transferKnowledgeBetweenSwarms(
@@ -481,37 +530,50 @@ describe('Phase 2 Real Database Integration Validation', () => {
       expect(transfer.sourceSwarmId).toBe(testSwarmId);
       expect(transfer.targetSwarmId).toBe(secondarySwarmId);
       expect(transfer.status).toBeDefined();
-      expect(['pending', 'active', 'completed', 'failed']).toContain(transfer.status);
+      expect(['pending', 'active', 'completed', 'failed']).toContain(
+        transfer.status
+      );
 
       // Validate transfer metrics
       expect(transfer.transferMetrics).toBeDefined();
-      expect(transfer.transferMetrics.patternsTransferred).toBeGreaterThanOrEqual(0);
-      expect(transfer.transferMetrics.successfulAdoptions).toBeGreaterThanOrEqual(0);
+      expect(
+        transfer.transferMetrics.patternsTransferred
+      ).toBeGreaterThanOrEqual(0);
+      expect(
+        transfer.transferMetrics.successfulAdoptions
+      ).toBeGreaterThanOrEqual(0);
       expect(transfer.transferMetrics.adaptationRate).toBeGreaterThanOrEqual(0);
-      expect(transfer.transferMetrics.performanceImprovement).toBeGreaterThanOrEqual(0);
+      expect(
+        transfer.transferMetrics.performanceImprovement
+      ).toBeGreaterThanOrEqual(0);
 
       // Validate adoption results
       expect(Array.isArray(transfer.adoptionResults)).toBe(true);
       transfer.adoptionResults.forEach((result) => {
         expect(result.patternId).toBeDefined();
-        expect(['successful', 'adapted', 'rejected', 'pending']).toContain(result.adoptionStatus);
+        expect(['successful', 'adapted', 'rejected', 'pending']).toContain(
+          result.adoptionStatus
+        );
         expect(Array.isArray(result.adaptationChanges)).toBe(true);
         expect(result.performanceMetrics).toBeDefined();
         expect(result.performanceMetrics.beforeAdoption).toBeDefined();
         expect(result.performanceMetrics.afterAdoption).toBeDefined();
-        expect(result.performanceMetrics.improvementScore).toBeGreaterThanOrEqual(0);
+        expect(
+          result.performanceMetrics.improvementScore
+        ).toBeGreaterThanOrEqual(0);
       });
     });
 
     test('should validate performance comparison across multiple swarms', async () => {
       const swarmIds = [testSwarmId, secondarySwarmId];
-      
-      const comparisons = await swarmDbManager.generateSwarmPerformanceComparison(swarmIds, {
-        includeMetrics: ['all'],
-        timeWindow: 30,
-        includeBenchmarks: true,
-        generateRecommendations: true,
-      });
+
+      const comparisons =
+        await swarmDbManager.generateSwarmPerformanceComparison(swarmIds, {
+          includeMetrics: ['all'],
+          timeWindow: 30,
+          includeBenchmarks: true,
+          generateRecommendations: true,
+        });
 
       expect(comparisons).toBeDefined();
       expect(Array.isArray(comparisons)).toBe(true);
@@ -542,20 +604,23 @@ describe('Phase 2 Real Database Integration Validation', () => {
       });
 
       // Validate ranking consistency
-      const ranks = comparisons.map(c => c.rank);
+      const ranks = comparisons.map((c) => c.rank);
       const uniqueRanks = new Set(ranks);
       expect(uniqueRanks.size).toBe(ranks.length); // All ranks should be unique
     });
 
     test('should validate pattern adoption tracking with temporal analysis', async () => {
       const trackedPatternId = 'real-tracked-pattern-microservices';
-      
-      const adoptionTracking = await swarmDbManager.trackPatternAdoption(trackedPatternId, {
-        includeSwarms: [testSwarmId, secondarySwarmId],
-        timeWindow: 90,
-        detailedAnalysis: true,
-        predictFutureAdoption: true,
-      });
+
+      const adoptionTracking = await swarmDbManager.trackPatternAdoption(
+        trackedPatternId,
+        {
+          includeSwarms: [testSwarmId, secondarySwarmId],
+          timeWindow: 90,
+          detailedAnalysis: true,
+          predictFutureAdoption: true,
+        }
+      );
 
       expect(adoptionTracking).toBeDefined();
       expect(Array.isArray(adoptionTracking.adoptionHistory)).toBe(true);
@@ -569,7 +634,9 @@ describe('Phase 2 Real Database Integration Validation', () => {
       // Validate adoption history details
       adoptionTracking.adoptionHistory.forEach((result) => {
         expect(result.patternId).toBe(trackedPatternId);
-        expect(['successful', 'adapted', 'rejected', 'pending']).toContain(result.adoptionStatus);
+        expect(['successful', 'adapted', 'rejected', 'pending']).toContain(
+          result.adoptionStatus
+        );
         expect(Array.isArray(result.adaptationChanges)).toBe(true);
         expect(result.performanceMetrics.beforeAdoption).toBeDefined();
         expect(result.performanceMetrics.afterAdoption).toBeDefined();
@@ -580,8 +647,12 @@ describe('Phase 2 Real Database Integration Validation', () => {
       // Validate future projections
       if (adoptionTracking.futureProjections) {
         Object.keys(adoptionTracking.futureProjections).forEach((key) => {
-          expect(typeof adoptionTracking.futureProjections![key]).toBe('number');
-          expect(adoptionTracking.futureProjections![key]).toBeGreaterThanOrEqual(0);
+          expect(typeof adoptionTracking.futureProjections![key]).toBe(
+            'number'
+          );
+          expect(
+            adoptionTracking.futureProjections![key]
+          ).toBeGreaterThanOrEqual(0);
         });
       }
     });
@@ -688,7 +759,11 @@ describe('Phase 2 Real Database Integration Validation', () => {
       const analytics = await swarmDbManager.getSwarmAnalytics(testSwarmId);
       expect(analytics).toBeDefined();
 
-      const graphData = await swarmDbManager.getSwarmGraph(testSwarmId, testData.agent.id, 2);
+      const graphData = await swarmDbManager.getSwarmGraph(
+        testSwarmId,
+        testData.agent.id,
+        2
+      );
       expect(graphData).toBeDefined();
 
       const similarEmbeddings = await swarmDbManager.findSimilarEmbeddings(
@@ -703,7 +778,7 @@ describe('Phase 2 Real Database Integration Validation', () => {
   describe('Performance and Scalability Validation', () => {
     test('should validate performance with concurrent operations', async () => {
       const startTime = Date.now();
-      
+
       // Execute multiple concurrent operations
       const concurrentOperations = [
         swarmDbManager.createSwarmCluster(`concurrent-1-${nanoid()}`),
@@ -727,13 +802,17 @@ describe('Phase 2 Real Database Integration Validation', () => {
       expect(duration).toBeLessThan(10000); // Should complete within 10 seconds
 
       // Cleanup concurrent test swarms
-      await swarmDbManager.archiveSwarmCluster(`concurrent-1-${results[0].swarmId}`);
-      await swarmDbManager.archiveSwarmCluster(`concurrent-2-${results[1].swarmId}`);
+      await swarmDbManager.archiveSwarmCluster(
+        `concurrent-1-${results[0].swarmId}`
+      );
+      await swarmDbManager.archiveSwarmCluster(
+        `concurrent-2-${results[1].swarmId}`
+      );
     });
 
     test('should validate memory usage and resource management', async () => {
       const initialMemory = process.memoryUsage();
-      
+
       // Perform memory-intensive operations
       const largePatterns: SuccessfulPattern[] = [];
       for (let i = 0; i < 100; i++) {
@@ -741,7 +820,7 @@ describe('Phase 2 Real Database Integration Validation', () => {
           patternId: `memory-test-pattern-${i}`,
           description: `Memory test pattern ${i} with detailed description and context`,
           context: `memory testing, performance validation, scalability, pattern ${i}`,
-          successRate: 0.8 + (Math.random() * 0.2),
+          successRate: 0.8 + Math.random() * 0.2,
           usageCount: Math.floor(Math.random() * 50),
           lastUsed: new Date().toISOString(),
         });
@@ -762,18 +841,21 @@ describe('Phase 2 Real Database Integration Validation', () => {
       }
 
       // Perform clustering on large dataset
-      const clusters = await swarmDbManager.performPatternClustering(testSwarmId, {
-        minClusterSize: 5,
-        maxClusters: 10,
-        similarityThreshold: 0.6,
-      });
+      const clusters = await swarmDbManager.performPatternClustering(
+        testSwarmId,
+        {
+          minClusterSize: 5,
+          maxClusters: 10,
+          similarityThreshold: 0.6,
+        }
+      );
 
       const finalMemory = process.memoryUsage();
-      
+
       // Validate operation completed successfully
       expect(clusters).toBeDefined();
       expect(Array.isArray(clusters)).toBe(true);
-      
+
       // Memory usage should be reasonable (not more than 100MB increase)
       const memoryIncrease = finalMemory.heapUsed - initialMemory.heapUsed;
       expect(memoryIncrease).toBeLessThan(100 * 1024 * 1024); // 100MB
@@ -781,10 +863,10 @@ describe('Phase 2 Real Database Integration Validation', () => {
 
     test('should validate system cleanup and resource deallocation', async () => {
       const cleanupSwarmId = `cleanup-test-${nanoid()}`;
-      
+
       // Create swarm and add data
       await swarmDbManager.createSwarmCluster(cleanupSwarmId);
-      
+
       await swarmDbManager.storeSwarmAgent(cleanupSwarmId, {
         id: 'cleanup-agent',
         name: 'Cleanup Test Agent',
@@ -807,7 +889,9 @@ describe('Phase 2 Real Database Integration Validation', () => {
 
       // Verify cleanup
       const activeSwarms = await swarmDbManager.getActiveSwarms();
-      const isSwarmActive = activeSwarms.some(swarm => swarm.swarmId === cleanupSwarmId);
+      const isSwarmActive = activeSwarms.some(
+        (swarm) => swarm.swarmId === cleanupSwarmId
+      );
       expect(isSwarmActive).toBe(false);
     });
   });

@@ -54,7 +54,11 @@ pub struct FactKey {
 
 impl FactKey {
   pub fn new(tool: String, version: String, ecosystem: String) -> Self {
-    Self { tool, version, ecosystem }
+    Self {
+      tool,
+      version,
+      ecosystem,
+    }
   }
 
   /// Generate storage key string

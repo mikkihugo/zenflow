@@ -1,19 +1,19 @@
 /**
  * @fileoverview Input Validation Utilities for Swarm Service
- * 
+ *
  * Comprehensive validation functions for all swarm service inputs
  * to ensure data integrity and prevent invalid operations.
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2025-08-14
  */
 
-import { 
-  SYSTEM_LIMITS, 
-  ERROR_MESSAGES, 
-  isValidAgentStatus, 
-  isValidCognitivePattern 
+import {
+  SYSTEM_LIMITS,
+  ERROR_MESSAGES,
+  isValidAgentStatus,
+  isValidCognitivePattern,
 } from '../config/swarm-constants.js';
 import type {
   AgentConfig,
@@ -55,9 +55,11 @@ export function validateSwarmConfig(config: SwarmConfig): void {
 
   // Validate maxAgents
   if (config.maxAgents !== undefined) {
-    if (!Number.isInteger(config.maxAgents) || 
-        config.maxAgents < SYSTEM_LIMITS.MIN_AGENTS || 
-        config.maxAgents > SYSTEM_LIMITS.MAX_AGENTS) {
+    if (
+      !Number.isInteger(config.maxAgents) ||
+      config.maxAgents < SYSTEM_LIMITS.MIN_AGENTS ||
+      config.maxAgents > SYSTEM_LIMITS.MAX_AGENTS
+    ) {
       throw new SwarmValidationError(
         ERROR_MESSAGES.INVALID_MAX_AGENTS,
         'maxAgents',
@@ -68,7 +70,12 @@ export function validateSwarmConfig(config: SwarmConfig): void {
 
   // Validate strategy
   if (config.strategy) {
-    const validStrategies = ['balanced', 'specialized', 'adaptive', 'parallel'] as const;
+    const validStrategies = [
+      'balanced',
+      'specialized',
+      'adaptive',
+      'parallel',
+    ] as const;
     if (!validStrategies.includes(config.strategy as any)) {
       throw new SwarmValidationError(
         `Invalid strategy. Must be one of: ${validStrategies.join(', ')}`,
@@ -82,7 +89,10 @@ export function validateSwarmConfig(config: SwarmConfig): void {
 /**
  * Validates agent configuration
  */
-export function validateAgentConfig(config: AgentConfig, swarmId?: string): void {
+export function validateAgentConfig(
+  config: AgentConfig,
+  swarmId?: string
+): void {
   if (!config) {
     throw new SwarmValidationError('Agent configuration is required');
   }
@@ -98,7 +108,12 @@ export function validateAgentConfig(config: AgentConfig, swarmId?: string): void
 
   // Validate agent type
   const validTypes = [
-    'researcher', 'coder', 'analyst', 'optimizer', 'coordinator', 'tester'
+    'researcher',
+    'coder',
+    'analyst',
+    'optimizer',
+    'coordinator',
+    'tester',
   ] as const;
   if (!config.type || !validTypes.includes(config.type as any)) {
     throw new SwarmValidationError(
@@ -135,7 +150,7 @@ export function validateAgentConfig(config: AgentConfig, swarmId?: string): void
         config.capabilities
       );
     }
-    
+
     for (const capability of config.capabilities) {
       if (typeof capability !== 'string') {
         throw new SwarmValidationError(
@@ -151,9 +166,13 @@ export function validateAgentConfig(config: AgentConfig, swarmId?: string): void
 /**
  * Validates task orchestration configuration
  */
-export function validateTaskOrchestrationConfig(config: TaskOrchestrationConfig): void {
+export function validateTaskOrchestrationConfig(
+  config: TaskOrchestrationConfig
+): void {
   if (!config) {
-    throw new SwarmValidationError('Task orchestration configuration is required');
+    throw new SwarmValidationError(
+      'Task orchestration configuration is required'
+    );
   }
 
   // Validate task description
@@ -199,9 +218,11 @@ export function validateTaskOrchestrationConfig(config: TaskOrchestrationConfig)
 
   // Validate maxAgents
   if (config.maxAgents !== undefined) {
-    if (!Number.isInteger(config.maxAgents) || 
-        config.maxAgents < SYSTEM_LIMITS.MIN_AGENTS || 
-        config.maxAgents > SYSTEM_LIMITS.MAX_TASK_AGENTS) {
+    if (
+      !Number.isInteger(config.maxAgents) ||
+      config.maxAgents < SYSTEM_LIMITS.MIN_AGENTS ||
+      config.maxAgents > SYSTEM_LIMITS.MAX_TASK_AGENTS
+    ) {
       throw new SwarmValidationError(
         `maxAgents must be between ${SYSTEM_LIMITS.MIN_AGENTS} and ${SYSTEM_LIMITS.MAX_TASK_AGENTS}`,
         'maxAgents',
@@ -254,9 +275,11 @@ export function validateSwarmId(swarmId: string): void {
  * Validates training iterations
  */
 export function validateTrainingIterations(iterations: number): void {
-  if (!Number.isInteger(iterations) || 
-      iterations < SYSTEM_LIMITS.MIN_TRAINING_ITERATIONS || 
-      iterations > SYSTEM_LIMITS.MAX_TRAINING_ITERATIONS) {
+  if (
+    !Number.isInteger(iterations) ||
+    iterations < SYSTEM_LIMITS.MIN_TRAINING_ITERATIONS ||
+    iterations > SYSTEM_LIMITS.MAX_TRAINING_ITERATIONS
+  ) {
     throw new SwarmValidationError(
       ERROR_MESSAGES.INVALID_TRAINING_ITERATIONS,
       'iterations',
@@ -268,9 +291,16 @@ export function validateTrainingIterations(iterations: number): void {
 /**
  * Validates monitoring parameters
  */
-export function validateMonitoringParams(duration?: number, interval?: number): void {
+export function validateMonitoringParams(
+  duration?: number,
+  interval?: number
+): void {
   if (duration !== undefined) {
-    if (!Number.isFinite(duration) || duration <= 0 || duration > SYSTEM_LIMITS.MAX_MONITORING_DURATION_SECONDS) {
+    if (
+      !Number.isFinite(duration) ||
+      duration <= 0 ||
+      duration > SYSTEM_LIMITS.MAX_MONITORING_DURATION_SECONDS
+    ) {
       throw new SwarmValidationError(
         `Monitoring duration must be between 1 and ${SYSTEM_LIMITS.MAX_MONITORING_DURATION_SECONDS} seconds`,
         'duration',
@@ -308,7 +338,13 @@ export function validateAgentFilter(filter: string): void {
  * Validates metric type parameter
  */
 export function validateMetricType(metric: string): void {
-  const validMetrics = ['all', 'cpu', 'memory', 'tasks', 'performance'] as const;
+  const validMetrics = [
+    'all',
+    'cpu',
+    'memory',
+    'tasks',
+    'performance',
+  ] as const;
   if (!validMetrics.includes(metric as any)) {
     throw new SwarmValidationError(
       `Invalid metric type. Must be one of: ${validMetrics.join(', ')}`,
@@ -336,7 +372,13 @@ export function validateResultFormat(format: string): void {
  * Validates feature category parameter
  */
 export function validateFeatureCategory(category: string): void {
-  const validCategories = ['all', 'wasm', 'simd', 'memory', 'platform'] as const;
+  const validCategories = [
+    'all',
+    'wasm',
+    'simd',
+    'memory',
+    'platform',
+  ] as const;
   if (!validCategories.includes(category as any)) {
     throw new SwarmValidationError(
       `Invalid feature category. Must be one of: ${validCategories.join(', ')}`,
@@ -378,7 +420,15 @@ export function validateMemoryDetail(detail: string): void {
  * Validates cognitive pattern parameter
  */
 export function validateCognitivePattern(pattern: string): void {
-  const validPatterns = ['all', 'convergent', 'divergent', 'lateral', 'systems', 'critical', 'abstract'] as const;
+  const validPatterns = [
+    'all',
+    'convergent',
+    'divergent',
+    'lateral',
+    'systems',
+    'critical',
+    'abstract',
+  ] as const;
   if (!validPatterns.includes(pattern as any)) {
     throw new SwarmValidationError(
       `Invalid cognitive pattern. Must be one of: ${validPatterns.join(', ')}`,

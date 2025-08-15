@@ -13,7 +13,10 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-base-types.ts';
+} from './workflow-base-types.js';
+
+// Import WorkflowDefinition for proper typing
+import type { WorkflowDefinition } from './workflow-base-types.js';
 
 // Additional workflow types for advanced functionality
 export interface WorkflowTemplate {

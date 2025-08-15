@@ -913,7 +913,7 @@ export class SwarmDatabaseManager extends EventEmitter {
     swarmId?: string;
     agentType?: string;
     taskComplexity?: number;
-    environmentContext?: Record<string, any>;
+    environmentContext?: Record<string, unknown>;
   }): Promise<number[]> {
     this._logger.debug(`Generating enhanced embedding for pattern ${pattern.patternId}`);
 
@@ -978,7 +978,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   /**
    * Analyze swarm context for knowledge transfer
    */
-  private async analyzeSwarmContext(swarmId: string): Promise<any> {
+  private async analyzeSwarmContext(swarmId: string): Promise<unknown> {
     // Return context analysis - in production this would analyze swarm characteristics
     return {
       primaryDomain: 'general',
@@ -993,7 +993,7 @@ export class SwarmDatabaseManager extends EventEmitter {
    */
   private async adaptPatternsForTarget(
     patterns: SuccessfulPattern[],
-    targetContext: any,
+    targetContext: unknown,
     options: { mode: string }
   ): Promise<SuccessfulPattern[]> {
     // Return adapted patterns - in production this would perform intelligent adaptation
@@ -1010,7 +1010,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   private async simulatePatternAdoption(
     targetSwarmId: string,
     patterns: SuccessfulPattern[]
-  ): Promise<any> {
+  ): Promise<unknown> {
     // Simulate conflicts - in production this would run actual simulation
     const conflicts = [];
     for (const pattern of patterns) {
@@ -1038,12 +1038,12 @@ export class SwarmDatabaseManager extends EventEmitter {
    */
   private async resolvePatternConflicts(
     patterns: SuccessfulPattern[],
-    conflictAnalysis: any,
+    conflictAnalysis: unknown,
     options: { strategy: string }
   ): Promise<SuccessfulPattern[]> {
     // Return resolved patterns - in production this would perform conflict resolution
     return patterns.map(pattern => {
-      const conflict = conflictAnalysis.conflicts.find((c: any) => c.patternId === pattern.patternId);
+      const conflict = conflictAnalysis.conflicts.find((c: unknown) => c.patternId === pattern.patternId);
       if (conflict) {
         return {
           ...pattern,
@@ -1147,7 +1147,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   /**
    * Collect swarm performance metrics
    */
-  private async collectSwarmPerformanceMetrics(swarmId: string, timeWindow: number): Promise<any> {
+  private async collectSwarmPerformanceMetrics(swarmId: string, timeWindow: number): Promise<unknown> {
     // In production, this would collect real metrics from the databases
     return {
       taskCompletionRate: 0.85 + (Math.random() * 0.1),
@@ -1162,7 +1162,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   /**
    * Calculate swarm benchmark score
    */
-  private async calculateSwarmBenchmarkScore(metrics: any): Promise<number> {
+  private async calculateSwarmBenchmarkScore(metrics: unknown): Promise<number> {
     // Weighted scoring of various metrics
     return (
       metrics.taskCompletionRate * 0.25 +
@@ -1177,7 +1177,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   /**
    * Identify improvement areas
    */
-  private async identifyImprovementAreas(metrics: any): Promise<string[]> {
+  private async identifyImprovementAreas(metrics: unknown): Promise<string[]> {
     const areas = [];
     if (metrics.taskCompletionRate < 0.8) areas.push('task_completion');
     if (metrics.averageExecutionTime > 3000) areas.push('execution_speed');
@@ -1191,7 +1191,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   /**
    * Identify swarm strengths
    */
-  private async identifySwarmStrengths(metrics: any): Promise<string[]> {
+  private async identifySwarmStrengths(metrics: unknown): Promise<string[]> {
     const strengths = [];
     if (metrics.taskCompletionRate > 0.9) strengths.push('high_task_completion');
     if (metrics.averageExecutionTime < 2000) strengths.push('fast_execution');
@@ -1207,7 +1207,7 @@ export class SwarmDatabaseManager extends EventEmitter {
    */
   private async generatePatternRecommendations(
     swarmId: string,
-    metrics: any,
+    metrics: unknown,
     otherSwarmIds: string[]
   ): Promise<CrossSwarmPatternResult[]> {
     // In production, this would analyze patterns from other swarms
@@ -1350,7 +1350,7 @@ export class SwarmDatabaseManager extends EventEmitter {
   /**
    * Store adoption tracking results
    */
-  private async storeAdoptionTracking(patternId: string, result: any): Promise<void> {
+  private async storeAdoptionTracking(patternId: string, result: unknown): Promise<void> {
     try {
       await this.centralRepo.create({
         id: `adoption-tracking-${patternId}-${Date.now()}`,
@@ -1376,7 +1376,7 @@ export class SwarmDatabaseManager extends EventEmitter {
       swarmId?: string;
       agentType?: string;
       taskComplexity?: number;
-      environmentContext?: Record<string, any>;
+      environmentContext?: Record<string, unknown>;
     }
   ): string {
     const parts = [
@@ -2516,7 +2516,7 @@ export class SwarmDatabaseManager extends EventEmitter {
         adaptationTrends
       );
 
-      const result: any = {
+      const result: Record<string, unknown> = {
         adoptionHistory,
         adoptionRate,
         successRate,

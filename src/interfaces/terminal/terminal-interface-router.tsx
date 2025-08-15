@@ -12,7 +12,7 @@
  */
 
 import { render } from 'ink';
-import type React from 'react';
+import React from 'react';
 import { CommandExecutionRenderer } from './command-execution-renderer.js';
 import { InteractiveTerminalApplication } from './interactive-terminal-application.js';
 import { createSimpleLogger } from './utils/logger.js';

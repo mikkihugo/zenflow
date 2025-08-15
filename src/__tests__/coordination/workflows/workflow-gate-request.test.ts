@@ -855,9 +855,13 @@ describe('WorkflowGateRequest System', () => {
         (e) => (e as any).type === 'validation_requested'
       );
       expect(validationRequested).toBeDefined();
-      expect((validationRequested as any).requestId).toBe(`gate-${gateRequest.id}`);
+      expect((validationRequested as any).requestId).toBe(
+        `gate-${gateRequest.id}`
+      );
 
-      const gateOpened = eventHistory.find((e) => (e as any).type === 'gate_opened');
+      const gateOpened = eventHistory.find(
+        (e) => (e as any).type === 'gate_opened'
+      );
       expect(gateOpened).toBeDefined();
       expect((gateOpened as any).gateId).toBe(gateRequest.id);
     });

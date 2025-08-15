@@ -2,7 +2,7 @@
  * @file Event-bus implementation.
  */
 
-import { getLogger } from '../config/logging-config.ts';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('EventBus');
 
@@ -19,7 +19,7 @@ import type {
   EventProcessingStrategy,
   SystemEvent,
 } from '../interfaces/events/core/interfaces.ts';
-import type { EventPriorityMap } from '../interfaces/events/types.ts';
+import type { EventPriorityMap } from '../interfaces/events/types';
 
 // Define missing types locally
 export interface EventBusConfig {

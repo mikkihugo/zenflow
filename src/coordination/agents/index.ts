@@ -5,11 +5,11 @@
  * @file Agents module exports.
  */
 
-export * from './agent.ts';
-export { AgentManager } from './agent-manager.ts';
-export { AgentRegistry } from './agent-registry.ts';
+export * from './agent.js';
+// export { AgentManager } from './agent-manager.js'; // File not found, commented out
+export { AgentRegistry } from './agent-registry.js';
 export {
   auditAutoAssignmentCapabilities,
   generateComparisonReport,
   performGapAnalysis,
-} from './gap-analysis.ts';
+} from './gap-analysis.js';

@@ -244,6 +244,8 @@ export class ProductWorkflowEngine extends EventEmitter {
     this.documentService = documentService;
     this.eventBus = eventBus;
     this.sparcEngine = new SPARCEngineCore();
+    // CIRCULAR DEPENDENCY FIX: Inject this workflow engine into SPARC engine
+    this.sparcEngine.setWorkflowEngine(this);
 
     // Initialize AGUI adapter with default config if not provided
     this.aguiAdapter =

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Queen Commander Launcher
- * 
+ *
  * Launches the QueenCommander system to spawn and coordinate multiple
  * Claude CLI agent processes for true parallel swarm execution.
- * 
+ *
  * @author Claude Code Zen Team
  * @version 1.0.0
  * @since 2025-08-14
@@ -15,7 +15,7 @@ import { join } from 'node:path';
 import type { ILogger } from '../core/logger.js';
 import type { DIContainer } from '../di/index.js';
 import { QueenCommander } from './agents/queen-coordinator.js';
-import { getLogger } from '../config/logging-config.js';
+import { getLogger } from '../config/logging-config.ts';
 
 export interface QueenCommanderLaunchConfig {
   maxQueens?: number;
@@ -42,15 +42,15 @@ function initializeQueenDirectories(sessionId: string): {
 } {
   const baseDir = './.claude-zen';
   const sessionDir = join(baseDir, 'sessions', sessionId);
-  
+
   const directories = {
     baseDir,
     // Queen-specific directories
     tempDir: join(sessionDir, 'tmp', 'queens'),
-    logDir: join(sessionDir, 'logs', 'queens'),  
+    logDir: join(sessionDir, 'logs', 'queens'),
     agentsDir: join(sessionDir, 'agents', 'claude-cli'),
     servicesDir: join(sessionDir, 'services'),
-    
+
     // THE COLLECTIVE integration directories
     collectiveDir: join(baseDir, 'collective'),
     cubesDir: join(baseDir, 'collective', 'cubes'),
@@ -60,7 +60,7 @@ function initializeQueenDirectories(sessionId: string): {
   // Create all required directories including THE COLLECTIVE structure
   const collectiveSubDirs = [
     join(directories.cubesDir, 'dev-cube'),
-    join(directories.cubesDir, 'ops-cube'), 
+    join(directories.cubesDir, 'ops-cube'),
     join(directories.cubesDir, 'security-cube'),
     join(directories.domainsDir, 'discovered'),
     join(directories.domainsDir, 'services'),
@@ -69,7 +69,7 @@ function initializeQueenDirectories(sessionId: string): {
     join(directories.collectiveDir, 'coordination'),
   ];
 
-  [...Object.values(directories), ...collectiveSubDirs].forEach(dir => {
+  [...Object.values(directories), ...collectiveSubDirs].forEach((dir) => {
     if (!existsSync(dir)) {
       mkdirSync(dir, { recursive: true });
     }
@@ -93,7 +93,7 @@ function parseQueenCommanderArgs(): QueenCommanderLaunchConfig {
         default: 'mesh',
       },
       strategy: {
-        type: 'string', 
+        type: 'string',
         default: 'adaptive',
       },
       'max-queens': {
@@ -114,8 +114,8 @@ function parseQueenCommanderArgs(): QueenCommanderLaunchConfig {
 
   return {
     maxQueens: parseInt(values['max-queens'] || '50', 10),
-    topology: values.topology as any || 'mesh',
-    strategy: values.strategy as any || 'adaptive', 
+    topology: (values.topology as any) || 'mesh',
+    strategy: (values.strategy as any) || 'adaptive',
     agents: parseInt(values.agents || '5', 10),
     autoScale: values['auto-scale'] ?? true,
     claudeCliPath: values['claude-cli'] || 'claude',
@@ -130,13 +130,13 @@ export async function launchQueenCommander(
   logger: ILogger
 ): Promise<void> {
   const config = parseQueenCommanderArgs();
-  
+
   // Generate unique session ID for this Queen Commander instance
   const sessionId = `queen-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
-  
+
   // Initialize directory structure for this instance
   const dirs = initializeQueenDirectories(sessionId);
-  
+
   logger.info('👑 Launching Queen Commander swarm mode', {
     sessionId,
     agents: config.agents,
@@ -149,20 +149,20 @@ export async function launchQueenCommander(
 
   try {
     // Get required services from DI container
-    const eventBus = container.get('EventBus'); 
-    const memoryCoordinator = container.get('MemoryCoordinator');
-    
+    const eventBus = container.resolve('EventBus');
+    const memoryCoordinator = container.resolve('MemoryCoordinator');
+
     // Initialize THE COLLECTIVE integration
     logger.info('🧠 Initializing THE COLLECTIVE integration...');
     const { CollectiveCubeSync } = await import('../collective-cube-sync.js');
     const { DevCubeMatron } = await import('../cubes/dev-cube-matron.js');
     const { OpsCubeMatron } = await import('../cubes/ops-cube-matron.js');
     const { AgentRegistry } = await import('../agents/agent-registry.js');
-    
+
     // Initialize agent registry for queen coordination
     const agentRegistry = new AgentRegistry(memoryCoordinator, eventBus);
     await agentRegistry.initialize();
-    
+
     // Initialize COLLECTIVE cube system
     const collectiveSync = new CollectiveCubeSync(eventBus, logger);
     await collectiveSync.initialize({
@@ -171,24 +171,32 @@ export async function launchQueenCommander(
       domainMapping: {
         development: 'dev-cube',
         operations: 'ops-cube',
-        security: 'security-cube'
+        security: 'security-cube',
       },
       collectiveDir: dirs.collectiveDir,
     });
-    
+
     // Initialize cube matrons that will coordinate queens
-    const devCubeMatron = new DevCubeMatron('dev-cube-matron', eventBus, logger);
-    const opsCubeMatron = new OpsCubeMatron('ops-cube-matron', eventBus, logger);
-    
+    const devCubeMatron = new DevCubeMatron(
+      'dev-cube-matron',
+      eventBus,
+      logger
+    );
+    const opsCubeMatron = new OpsCubeMatron(
+      'ops-cube-matron',
+      eventBus,
+      logger
+    );
+
     await devCubeMatron.initialize();
     await opsCubeMatron.initialize();
-    
+
     logger.info('✅ THE COLLECTIVE integration initialized', {
       registryActive: true,
       cubesActive: ['dev-cube', 'ops-cube'],
       collectiveDir: dirs.collectiveDir,
     });
-    
+
     // Initialize Queen Commander with COLLECTIVE integration
     const queenCommander = new QueenCommander(
       {
@@ -224,7 +232,7 @@ export async function launchQueenCommander(
 
     // Initialize the Queen Commander
     await queenCommander.initialize();
-    
+
     // Create agent pool for the swarm
     const poolId = await queenCommander.createAgentPool(
       'swarm-agents',
@@ -246,17 +254,17 @@ export async function launchQueenCommander(
 
     // Setup event handlers for coordination
     queenCommander.on('agent:created', (data) => {
-      logger.info('👥 Agent spawned in swarm', { 
+      logger.info('👥 Agent spawned in swarm', {
         agentId: data.agent.id,
         name: data.agent.name,
-        type: data.agent.type 
+        type: data.agent.type,
       });
     });
 
     queenCommander.on('agent:started', (data) => {
-      logger.info('🚀 Agent started in swarm', { 
+      logger.info('🚀 Agent started in swarm', {
         agentId: data.agent.id,
-        name: data.agent.name 
+        name: data.agent.name,
       });
     });
 
@@ -288,9 +296,12 @@ export async function launchQueenCommander(
       averageHealth: Math.round(stats.averageHealth * 100) / 100,
     });
 
-    logger.info('🎯 Queen Commander mode ready - agents are spawning Claude CLI processes');
-    logger.info('💡 Each agent runs as a separate Claude CLI instance with coordination');
-    
+    logger.info(
+      '🎯 Queen Commander mode ready - agents are spawning Claude CLI processes'
+    );
+    logger.info(
+      '💡 Each agent runs as a separate Claude CLI instance with coordination'
+    );
   } catch (error) {
     logger.error('❌ Failed to launch Queen Commander', error);
     throw error;
@@ -337,20 +348,20 @@ export function createClaudeCliAgentTemplate() {
       heartbeatInterval: 15000,
       permissions: [
         'file-read',
-        'file-write', 
+        'file-write',
         'terminal-access',
         'dangerous-permissions', // For --dangerously-skip-permissions
       ],
       trustedAgents: [],
-      expertise: { 
-        coding: 0.95, 
-        analysis: 0.9, 
-        coordination: 0.85 
+      expertise: {
+        coding: 0.95,
+        analysis: 0.9,
+        coordination: 0.85,
       },
-      preferences: { 
+      preferences: {
         outputFormat: 'json',
         dangerousPermissions: true,
-        sessionManagement: true 
+        sessionManagement: true,
       },
     },
     environment: {
@@ -361,7 +372,12 @@ export function createClaudeCliAgentTemplate() {
       logDirectory: './.claude-zen/logs/claude-cli',
       apiEndpoints: {},
       credentials: {},
-      availableTools: ['claude', '--dangerously-skip-permissions', '--output-format', 'json'],
+      availableTools: [
+        'claude',
+        '--dangerously-skip-permissions',
+        '--output-format',
+        'json',
+      ],
       toolConfigs: {
         claude: {
           outputFormat: 'json',

@@ -2,7 +2,7 @@
 
 /**
  * Test Production Hybrid System with Real Data
- * 
+ *
  * Tests the production hybrid database system to ensure it works with
  * real data outside of test mocks.
  */
@@ -21,7 +21,7 @@ async function main() {
       dataDir: './data',
       enableVectorSearch: true,
       enableGraphRelationships: true,
-      useRealDatabases: true
+      useRealDatabases: true,
     });
 
     console.log('✅ Production hybrid system created');
@@ -30,15 +30,20 @@ async function main() {
     console.log('📋 Creating production ADR with real data...');
     const testADR = await system.adrManager.createADR({
       title: 'Real Production Database Architecture Test',
-      context: 'Testing the production hybrid database architecture with real data persistence and file storage.',
-      decision: 'Use the production hybrid architecture with real SQLite, LanceDB, and Kuzu databases for actual data operations.',
-      consequences: 'Real data persistence, file-based storage, production-ready performance, and actual database operations.',
+      context:
+        'Testing the production hybrid database architecture with real data persistence and file storage.',
+      decision:
+        'Use the production hybrid architecture with real SQLite, LanceDB, and Kuzu databases for actual data operations.',
+      consequences:
+        'Real data persistence, file-based storage, production-ready performance, and actual database operations.',
       author: 'claude-zen-production-test',
       priority: 'high',
-      stakeholders: ['developers', 'users', 'production-team']
+      stakeholders: ['developers', 'users', 'production-team'],
     });
 
-    console.log(`✅ Real ADR created: ID=${testADR.id}, Number=${testADR.decision_number}`);
+    console.log(
+      `✅ Real ADR created: ID=${testADR.id}, Number=${testADR.decision_number}`
+    );
 
     // Test 3: Test SPARC Hybrid Tools with production data
     console.log('🛠️ Testing SPARC Hybrid Tools with production data...');
@@ -48,7 +53,7 @@ async function main() {
     const searchResult = await sparcTools.executeTool('adr_semantic_search', {
       query: 'production database architecture',
       limit: 5,
-      include_related: true
+      include_related: true,
     });
 
     console.log('✅ SPARC ADR semantic search completed');
@@ -56,21 +61,27 @@ async function main() {
 
     // Test ADR statistics
     const statsResult = await sparcTools.executeTool('adr_stats', {
-      include_semantic_analysis: true
+      include_semantic_analysis: true,
     });
 
     console.log('✅ SPARC ADR statistics completed');
     console.log('📈 Statistics:', JSON.stringify(statsResult, null, 2));
 
     // Test hybrid document search
-    const hybridSearchResult = await sparcTools.executeTool('hybrid_document_search', {
-      query: 'production architecture',
-      document_types: ['adr'],
-      max_results: 10
-    });
+    const hybridSearchResult = await sparcTools.executeTool(
+      'hybrid_document_search',
+      {
+        query: 'production architecture',
+        document_types: ['adr'],
+        max_results: 10,
+      }
+    );
 
     console.log('✅ SPARC hybrid document search completed');
-    console.log('🔍 Hybrid search results:', JSON.stringify(hybridSearchResult, null, 2));
+    console.log(
+      '🔍 Hybrid search results:',
+      JSON.stringify(hybridSearchResult, null, 2)
+    );
 
     console.log('');
     console.log('🎉 Production system test completed successfully!');
@@ -86,7 +97,6 @@ async function main() {
     console.log('  - hybrid_document_search: Search across all real documents');
     console.log('  - sparc_project_init: Initialize projects with real data');
     console.log('  - And 5 more production-ready tools!');
-
   } catch (error) {
     console.error('❌ Production system test failed:', error);
     process.exit(1);

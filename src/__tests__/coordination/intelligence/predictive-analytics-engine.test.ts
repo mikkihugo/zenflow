@@ -70,13 +70,17 @@ const mockNeuralLearning = {
 
 const mockMLRegistry = {
   neuralNetwork: {
-    predict: vi.fn().mockResolvedValue([
-      { id: 'pattern1', confidence: 0.8, type: 'optimization' }
-    ]),
+    predict: vi
+      .fn()
+      .mockResolvedValue([
+        { id: 'pattern1', confidence: 0.8, type: 'optimization' },
+      ]),
   },
   reinforcementLearning: {
     selectAction: vi.fn().mockReturnValue('optimize'),
-    getStats: vi.fn().mockReturnValue({ episodeCount: 100, explorationRate: 0.1 }),
+    getStats: vi
+      .fn()
+      .mockReturnValue({ episodeCount: 100, explorationRate: 0.1 }),
   },
   ensemble: {
     predict: vi.fn().mockResolvedValue({
@@ -136,18 +140,22 @@ describe('PredictiveAnalyticsEngine', () => {
         enableTaskDurationPrediction: false,
         confidenceThreshold: 0.9,
       };
-      
+
       const engine = createPredictiveAnalyticsEngine(customConfig);
       expect(engine).toBeInstanceOf(PredictiveAnalyticsEngine);
     });
 
-    it('should emit initialized event', (done) => {
+    it('should emit initialized event', async () => {
       const engine = createPredictiveAnalyticsEngine();
-      
-      engine.on('initialized', () => {
-        engine.shutdown();
-        done();
+
+      const initPromise = new Promise<void>((resolve) => {
+        engine.on('initialized', () => {
+          resolve();
+        });
       });
+
+      await initPromise;
+      await engine.shutdown();
     });
   });
 
@@ -162,13 +170,15 @@ describe('PredictiveAnalyticsEngine', () => {
       expect(prediction).toBeDefined();
       expect(prediction.agentId).toBe('agent-1');
       expect(prediction.taskType).toBe('feature-development');
-      
+
       // Check that all configured horizons are present
-      config.forecastHorizons.forEach(horizon => {
+      config.forecastHorizons.forEach((horizon) => {
         expect(prediction.predictions[horizon]).toBeDefined();
         expect(prediction.predictions[horizon].duration).toBeGreaterThan(0);
         expect(prediction.predictions[horizon].confidence).toBeGreaterThan(0);
-        expect(prediction.predictions[horizon].confidence).toBeLessThanOrEqual(1);
+        expect(prediction.predictions[horizon].confidence).toBeLessThanOrEqual(
+          1
+        );
       });
 
       // Validate ensemble prediction
@@ -200,7 +210,9 @@ describe('PredictiveAnalyticsEngine', () => {
         context
       );
 
-      expect(prediction1.metadata.lastUpdate).toBe(prediction2.metadata.lastUpdate);
+      expect(prediction1.metadata.lastUpdate).toBe(
+        prediction2.metadata.lastUpdate
+      );
       expect(mockTaskPredictor.predictTaskDuration).toHaveBeenCalledTimes(1);
     });
 
@@ -210,7 +222,7 @@ describe('PredictiveAnalyticsEngine', () => {
         'bug-fix'
       );
 
-      Object.values(prediction.predictions).forEach(horizonPrediction => {
+      Object.values(prediction.predictions).forEach((horizonPrediction) => {
         expect(horizonPrediction.confidenceInterval).toBeDefined();
         expect(horizonPrediction.confidenceInterval.lower).toBeLessThan(
           horizonPrediction.confidenceInterval.upper
@@ -268,16 +280,20 @@ describe('PredictiveAnalyticsEngine', () => {
     });
 
     it('should predict bottlenecks with preventive actions', async () => {
-      const forecast = await analyticsEngine.forecastPerformanceOptimization(
-        'swarm-1'
-      );
+      const forecast =
+        await analyticsEngine.forecastPerformanceOptimization('swarm-1');
 
       expect(forecast.bottleneckPrediction).toBeDefined();
-      expect(Array.isArray(forecast.bottleneckPrediction.predictedBottlenecks)).toBe(true);
-      expect(Array.isArray(forecast.bottleneckPrediction.preventiveActions)).toBe(true);
+      expect(
+        Array.isArray(forecast.bottleneckPrediction.predictedBottlenecks)
+      ).toBe(true);
+      expect(
+        Array.isArray(forecast.bottleneckPrediction.preventiveActions)
+      ).toBe(true);
 
       if (forecast.bottleneckPrediction.predictedBottlenecks.length > 0) {
-        const bottleneck = forecast.bottleneckPrediction.predictedBottlenecks[0];
+        const bottleneck =
+          forecast.bottleneckPrediction.predictedBottlenecks[0];
         expect(bottleneck.component).toBeDefined();
         expect(bottleneck.severity).toBeGreaterThan(0);
         expect(bottleneck.severity).toBeLessThanOrEqual(1);
@@ -309,7 +325,15 @@ describe('PredictiveAnalyticsEngine', () => {
           frequency: 5,
           data: { test: true },
           context: {},
-          metadata: {},
+          metadata: {
+            complexity: 0.5,
+            predictability: 0.7,
+            stability: 0.8,
+            anomalyScore: 0.1,
+            correlations: [],
+            quality: 0.9,
+            relevance: 0.8,
+          },
           timestamp: Date.now(),
         },
       ];
@@ -337,29 +361,45 @@ describe('PredictiveAnalyticsEngine', () => {
 
       // Validate risk assessment
       expect(prediction.riskAssessment).toBeDefined();
-      expect(Array.isArray(prediction.riskAssessment.recommendations)).toBe(true);
+      expect(Array.isArray(prediction.riskAssessment.recommendations)).toBe(
+        true
+      );
 
       // Validate optimal timing
       expect(prediction.optimalTransferTiming).toBeDefined();
-      expect(prediction.optimalTransferTiming.recommendedTime).toBeInstanceOf(Date);
+      expect(prediction.optimalTransferTiming.recommendedTime).toBeInstanceOf(
+        Date
+      );
 
       // Validate expected outcome
       expect(prediction.expectedOutcome).toBeDefined();
       expect(prediction.expectedOutcome.successProbability).toBeGreaterThan(0);
-      expect(prediction.expectedOutcome.successProbability).toBeLessThanOrEqual(1);
+      expect(prediction.expectedOutcome.successProbability).toBeLessThanOrEqual(
+        1
+      );
     });
 
     it('should assess compatibility across multiple dimensions', async () => {
-      const patterns = [{ 
-        id: 'test-pattern',
-        type: 'optimization' as const,
-        confidence: 0.8,
-        frequency: 1,
-        data: {},
-        context: {},
-        metadata: {},
-        timestamp: Date.now(),
-      }];
+      const patterns = [
+        {
+          id: 'test-pattern',
+          type: 'optimization' as const,
+          confidence: 0.8,
+          frequency: 1,
+          data: {},
+          context: {},
+          metadata: {
+            complexity: 0.5,
+            predictability: 0.7,
+            stability: 0.8,
+            anomalyScore: 0.1,
+            correlations: [],
+            quality: 0.9,
+            relevance: 0.8,
+          },
+          timestamp: Date.now(),
+        },
+      ];
 
       const prediction = await analyticsEngine.predictKnowledgeTransferSuccess(
         'swarm-a',
@@ -375,7 +415,11 @@ describe('PredictiveAnalyticsEngine', () => {
 
       // Overall should be influenced by all dimensions
       expect(compatibility.overall).toBeLessThanOrEqual(
-        Math.max(compatibility.technical, compatibility.contextual, compatibility.cultural)
+        Math.max(
+          compatibility.technical,
+          compatibility.contextual,
+          compatibility.cultural
+        )
       );
     });
 
@@ -405,17 +449,25 @@ describe('PredictiveAnalyticsEngine', () => {
 
       // Validate system convergence prediction
       expect(prediction.systemConvergencePrediction).toBeDefined();
-      expect(prediction.systemConvergencePrediction.convergenceTime).toBeGreaterThan(0);
+      expect(
+        prediction.systemConvergencePrediction.convergenceTime
+      ).toBeGreaterThan(0);
       expect(prediction.systemConvergencePrediction.finalState).toBeDefined();
 
       // Validate learning velocity forecast
       expect(prediction.learningVelocityForecast).toBeDefined();
-      expect(prediction.learningVelocityForecast.currentVelocity).toBeGreaterThan(0);
-      expect(prediction.learningVelocityForecast.forecastedVelocity).toBeGreaterThan(0);
+      expect(
+        prediction.learningVelocityForecast.currentVelocity
+      ).toBeGreaterThan(0);
+      expect(
+        prediction.learningVelocityForecast.forecastedVelocity
+      ).toBeGreaterThan(0);
 
       // Validate pattern evolution prediction
       expect(prediction.patternEvolutionPrediction).toBeDefined();
-      expect(Array.isArray(prediction.patternEvolutionPrediction.evolvingPatterns)).toBe(true);
+      expect(
+        Array.isArray(prediction.patternEvolutionPrediction.evolvingPatterns)
+      ).toBe(true);
 
       // Validate system-wide optimizations
       expect(Array.isArray(prediction.systemWideOptimizations)).toBe(true);
@@ -423,7 +475,9 @@ describe('PredictiveAnalyticsEngine', () => {
       // Validate confidence metrics
       expect(prediction.confidenceMetrics).toBeDefined();
       expect(prediction.confidenceMetrics.patternDetection).toBeGreaterThan(0);
-      expect(prediction.confidenceMetrics.patternDetection).toBeLessThanOrEqual(1);
+      expect(prediction.confidenceMetrics.patternDetection).toBeLessThanOrEqual(
+        1
+      );
     });
 
     it('should include metadata with analysis depth', async () => {
@@ -442,9 +496,9 @@ describe('PredictiveAnalyticsEngine', () => {
         enableEmergentBehaviorPrediction: false,
       });
 
-      await expect(
-        disabledEngine.predictEmergentBehavior()
-      ).rejects.toThrow('Emergent behavior prediction is disabled');
+      await expect(disabledEngine.predictEmergentBehavior()).rejects.toThrow(
+        'Emergent behavior prediction is disabled'
+      );
 
       await disabledEngine.shutdown();
     });
@@ -488,15 +542,18 @@ describe('PredictiveAnalyticsEngine', () => {
       expect(update.nextUpdateSchedule.scheduled).toBeInstanceOf(Date);
     });
 
-    it('should emit adaptive learning updated event', (done) => {
-      analyticsEngine.on('adaptiveLearningUpdated', (data) => {
-        expect(data.updateId).toBeDefined();
-        expect(data.modelsUpdated).toBeGreaterThan(0);
-        expect(data.timestamp).toBeGreaterThan(0);
-        done();
+    it('should emit adaptive learning updated event', async () => {
+      const updatePromise = new Promise<void>((resolve) => {
+        analyticsEngine.on('adaptiveLearningUpdated', (data) => {
+          expect(data.updateId).toBeDefined();
+          expect(data.modelsUpdated).toBeGreaterThan(0);
+          expect(data.timestamp).toBeGreaterThan(0);
+          resolve();
+        });
       });
 
       analyticsEngine.updateAdaptiveLearningModels();
+      await updatePromise;
     });
 
     it('should throw error when adaptive learning is disabled', async () => {
@@ -530,13 +587,13 @@ describe('PredictiveAnalyticsEngine', () => {
 
       // First call
       await engine.predictTaskDurationMultiHorizon('agent-1', 'task-1');
-      
+
       // Wait for cache to expire
-      await new Promise(resolve => setTimeout(resolve, 15));
-      
+      await new Promise((resolve) => setTimeout(resolve, 15));
+
       // Second call should not use cache
       await engine.predictTaskDurationMultiHorizon('agent-1', 'task-1');
-      
+
       expect(mockTaskPredictor.predictTaskDuration).toHaveBeenCalledTimes(2);
 
       await engine.shutdown();
@@ -564,7 +621,7 @@ describe('PredictiveAnalyticsEngine', () => {
       // First call should be evicted, requiring new prediction
       mockTaskPredictor.predictTaskDuration.mockClear();
       await engine.predictTaskDurationMultiHorizon('agent-1', 'task-1');
-      
+
       expect(mockTaskPredictor.predictTaskDuration).toHaveBeenCalled();
 
       await engine.shutdown();
@@ -577,7 +634,9 @@ describe('PredictiveAnalyticsEngine', () => {
         expect(isHighConfidencePrediction({ confidence: 0.9 })).toBe(true);
         expect(isHighConfidencePrediction({ confidence: 0.7 })).toBe(false);
         expect(isHighConfidencePrediction({ confidence: 0.8 }, 0.8)).toBe(true);
-        expect(isHighConfidencePrediction({ confidence: 0.79 }, 0.8)).toBe(false);
+        expect(isHighConfidencePrediction({ confidence: 0.79 }, 0.8)).toBe(
+          false
+        );
       });
     });
 
@@ -597,7 +656,10 @@ describe('PredictiveAnalyticsEngine', () => {
 
       // Should not throw, but should handle missing dependencies
       await expect(
-        engineWithoutDependencies.predictTaskDurationMultiHorizon('agent-1', 'task')
+        engineWithoutDependencies.predictTaskDurationMultiHorizon(
+          'agent-1',
+          'task'
+        )
       ).resolves.toBeDefined();
 
       await engineWithoutDependencies.shutdown();
@@ -605,7 +667,9 @@ describe('PredictiveAnalyticsEngine', () => {
 
     it('should handle prediction errors gracefully', async () => {
       const failingTaskPredictor = {
-        predictTaskDuration: vi.fn().mockRejectedValue(new Error('Prediction failed')),
+        predictTaskDuration: vi
+          .fn()
+          .mockRejectedValue(new Error('Prediction failed')),
       };
 
       const engine = new PredictiveAnalyticsEngine(config, {
@@ -621,18 +685,23 @@ describe('PredictiveAnalyticsEngine', () => {
   });
 
   describe('Event Emission', () => {
-    it('should emit events for major operations', (done) => {
+    it('should emit events for major operations', async () => {
       let eventsReceived = 0;
       const expectedEvents = 1;
 
       const engine = createPredictiveAnalyticsEngine();
 
-      engine.on('initialized', () => {
-        eventsReceived++;
-        if (eventsReceived === expectedEvents) {
-          engine.shutdown().then(() => done());
-        }
+      const eventPromise = new Promise<void>((resolve) => {
+        engine.on('initialized', () => {
+          eventsReceived++;
+          if (eventsReceived === expectedEvents) {
+            resolve();
+          }
+        });
       });
+
+      await eventPromise;
+      await engine.shutdown();
     });
   });
 
@@ -680,12 +749,16 @@ describe('PredictiveAnalyticsEngine', () => {
 
       // Ensemble prediction should be influenced by multiple algorithms
       expect(prediction.ensemblePrediction.consensus).toBeGreaterThan(0);
-      expect(prediction.ensemblePrediction.uncertainty).toBeGreaterThanOrEqual(0);
+      expect(prediction.ensemblePrediction.uncertainty).toBeGreaterThanOrEqual(
+        0
+      );
     });
 
     it('should handle algorithm failures gracefully in ensemble', async () => {
       // Mock one algorithm to fail
-      mockMLRegistry.neuralNetwork.predict.mockRejectedValueOnce(new Error('Algorithm failed'));
+      mockMLRegistry.neuralNetwork.predict.mockRejectedValueOnce(
+        new Error('Algorithm failed')
+      );
 
       const prediction = await analyticsEngine.predictTaskDurationMultiHorizon(
         'agent-1',
