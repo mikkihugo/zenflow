@@ -7,11 +7,211 @@
 import { promises as fs } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+// Database type definitions for testing - avoiding problematic imports
+type BetterSQLiteDatabase = {
+  exec(sql: string): void;
+  prepare(sql: string): BetterSQLiteStatement;
+  close(): void;
+};
+
+type BetterSQLiteStatement = {
+  run(...params: any[]): { changes: number; lastInsertRowid: number };
+  finalize(): void;
+};
+
+// Simple base entity interface for testing
+interface BaseDocumentEntity {
+  id: string;
+  type: string;
+  created_at: Date;
+  updated_at: Date;
+  [key: string]: any;
+}
+
+// Type definitions for integration test configuration and helpers
+
+/**
+ * Configuration for integration test environment setup
+ */
+export interface IntegrationTestConfig {
+  /** Environment configuration for different components */
+  environment?: {
+    /** Database type to use for testing */
+    database?: 'memory' | 'sqlite' | 'postgres';
+    /** Filesystem type to use for testing */
+    filesystem?: 'mock' | 'temp' | 'real';
+    /** Network configuration for testing */
+    network?: 'mock' | 'localhost' | 'integration';
+  };
+  /** List of services to start during test setup */
+  services?: string[];
+  /** Cleanup strategy after tests */
+  cleanup?: 'aggressive' | 'manual' | 'graceful';
+  /** Timeout for test operations in milliseconds */
+  timeout?: number;
+  /** Additional custom configuration */
+  [key: string]: string | number | boolean | object | null | undefined;
+}
+
+/**
+ * Database helper interface for test operations
+ */
+export interface DatabaseTestHelper {
+  /** Initialize the database for testing */
+  setup(): Promise<void>;
+  /** Clean up database resources */
+  cleanup(): Promise<void>;
+  /** Seed the database with test data */
+  seed(data: Record<string, any>[]): Promise<void>;
+  /** Reset database to initial state */
+  reset(): Promise<void>;
+  /** Get database connection for direct operations */
+  getConnection(): BetterSQLiteDatabase | MemoryDatabase | PostgresConnection | null;
+  /** Execute a query and return results */
+  query?(sql: string, params?: (string | number | boolean | null)[]): Promise<Record<string, any>[]>;
+  /** Insert data into the database */
+  insert?(table: string, data: Record<string, any>): Promise<void>;
+  /** Update data in the database */
+  update?(table: string, data: Record<string, any>, where: Record<string, any>): Promise<void>;
+  /** Delete data from the database */
+  delete?(table: string, where: Record<string, any>): Promise<void>;
+  /** Begin a transaction */
+  beginTransaction?(): Promise<void>;
+  /** Commit a transaction */
+  commitTransaction?(): Promise<void>;
+  /** Rollback a transaction */
+  rollbackTransaction?(): Promise<void>;
+}
+
+/**
+ * Filesystem helper interface for test operations
+ */
+export interface FileSystemTestHelper {
+  /** Create a temporary directory for testing */
+  createTempDir(): Promise<string>;
+  /** Create a file with specified content */
+  createFile(path: string, content: string): Promise<void>;
+  /** Clean up filesystem resources */
+  cleanup(): Promise<void>;
+  /** Mock the filesystem for testing */
+  mockFileSystem(): void;
+  /** Restore original filesystem state */
+  restoreFileSystem(): void;
+  /** Read file content */
+  readFile?(path: string): Promise<string>;
+  /** Check if file exists */
+  fileExists?(path: string): Promise<boolean>;
+  /** Create directory recursively */
+  createDirectory?(path: string): Promise<void>;
+  /** Remove file or directory */
+  remove?(path: string): Promise<void>;
+  /** Copy file from source to destination */
+  copyFile?(source: string, destination: string): Promise<void>;
+  /** Move/rename file */
+  moveFile?(source: string, destination: string): Promise<void>;
+  /** List directory contents */
+  listDirectory?(path: string): Promise<string[]>;
+  /** Get file stats */
+  getFileStats?(path: string): Promise<{ size: number; isFile: boolean; isDirectory: boolean; modified: Date }>;
+}
+
+/**
+ * Network helper interface for test operations
+ */
+export interface NetworkTestHelper {
+  /** Start a mock server for testing */
+  startMockServer(port?: number): Promise<void>;
+  /** Stop the mock server */
+  stopMockServer(): Promise<void>;
+  /** Mock a specific request/response */
+  mockRequest(path: string, response: Record<string, any> | string | number | boolean | null): void;
+  /** Capture all requests made during testing */
+  captureRequests(): Array<{
+    method?: string;
+    url?: string;
+    headers?: Record<string, string | string[] | undefined>;
+    timestamp: number;
+    data?: Record<string, any>;
+  }>;
+  /** Clear captured requests */
+  clearRequests(): void;
+  /** Make HTTP request to test endpoints */
+  makeRequest?(method: string, url: string, data?: Record<string, any> | string, headers?: Record<string, string>): Promise<{
+    status: number;
+    headers: Record<string, string>;
+    data: Record<string, any> | string | null;
+  }>;
+  /** Mock HTTP status responses */
+  mockStatus?(path: string, status: number): void;
+  /** Mock HTTP headers */
+  mockHeaders?(path: string, headers: Record<string, string>): void;
+  /** Mock network delays */
+  mockDelay?(path: string, delayMs: number): void;
+  /** Mock network errors */
+  mockError?(path: string, error: Error): void;
+  /** Get server port */
+  getPort?(): number;
+  /** Check if server is running */
+  isRunning?(): boolean;
+}
+
+/**
+ * Process interface for better type safety
+ */
+interface ManagedProcess {
+  kill?: (signal?: NodeJS.Signals) => boolean;
+  on?: (event: string, listener: (...args: any[]) => void) => void;
+  pid?: number;
+}
+
+/**
+ * Memory database interface for type safety
+ */
+interface MemoryDatabase {
+  get(key: string): any;
+  set(key: string, value: any): void;
+  delete(key: string): boolean;
+  has(key: string): boolean;
+  clear(): void;
+  size(): number;
+}
+
+/**
+ * PostgreSQL connection interface for type safety
+ */
+interface PostgresConnection {
+  query(text: string, params?: any[]): Promise<{ rows: any[]; rowCount: number }>;
+  end(): Promise<void>;
+  connect(): Promise<void>;
+}
+
+/**
+ * SQLite database interface for type safety (legacy sqlite3)
+ */
+interface SQLiteDatabase {
+  exec(sql: string, callback: (err: Error | null) => void): void;
+  run(sql: string, ...params: any[]): void;
+  prepare(sql: string): SQLiteStatement;
+  close(callback?: () => void): void;
+}
+
+interface SQLiteStatement {
+  run(...params: any[]): void;
+  finalize(): void;
+}
+
+/**
+ * HTTP Server interface for network testing
+ */
+interface HTTPServer {
+  listen(port: number, callback: (err?: Error) => void): void;
+  close(callback?: () => void): void;
+}
 
 export class IntegrationTestSetup {
   private config: IntegrationTestConfig;
   private tempDirs: string[] = [];
-  private processes: unknown[] = [];
+  private processes: ManagedProcess[] = [];
   private cleanupCallbacks: Array<() => Promise<void>> = [];
 
   constructor(config: IntegrationTestConfig = {}) {
@@ -186,7 +386,7 @@ export class IntegrationTestSetup {
         memoryDb.clear();
       },
 
-      async seed(data: unknown[]) {
+      async seed(data: Record<string, any>[]) {
         data?.forEach((item, index) => {
           memoryDb.set(`item-${index}`, item);
         });
@@ -196,10 +396,10 @@ export class IntegrationTestSetup {
         memoryDb.clear();
       },
 
-      getConnection() {
+      getConnection(): MemoryDatabase {
         return {
           get: (key: string) => memoryDb.get(key),
-          set: (key: string, value: unknown) => memoryDb.set(key, value),
+          set: (key: string, value: any) => memoryDb.set(key, value),
           delete: (key: string) => memoryDb.delete(key),
           has: (key: string) => memoryDb.has(key),
           clear: () => memoryDb.clear(),
@@ -211,43 +411,66 @@ export class IntegrationTestSetup {
 
   private async createSqliteDatabaseHelper(): Promise<DatabaseTestHelper> {
     const dbPath = join(await this.createTempDir('db'), 'test.db');
-    let db: unknown = null;
+    let db: BetterSQLiteDatabase | SQLiteDatabase | null = null;
+    let isBetterSqlite = false;
 
     return {
       async setup() {
-        // Import sqlite3 dynamically
+        // Try better-sqlite3 first, then fall back to sqlite3
         try {
-          const sqlite3 = await import('sqlite3');
-          db = new sqlite3.Database(dbPath);
+          const Database = (await import('better-sqlite3')).default;
+          db = new Database(dbPath) as BetterSQLiteDatabase;
+          isBetterSqlite = true;
 
-          // Create basic tables
-          await new Promise<void>((resolve, reject) => {
-            db.exec(
-              `
-              CREATE TABLE IF NOT EXISTS test_data (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                key TEXT UNIQUE,
-                value TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-              );
-            `,
-              (err: unknown) => {
-                if (err) reject(err);
-                else resolve();
-              }
+          // Create basic tables with better-sqlite3
+          (db as BetterSQLiteDatabase).exec(`
+            CREATE TABLE IF NOT EXISTS test_data (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              key TEXT UNIQUE,
+              value TEXT,
+              created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             );
-          });
-        } catch (_error) {
-          console.warn('SQLite not available, falling back to memory database');
-          return this.createMemoryDatabaseHelper().setup();
+          `);
+        } catch (_betterSqliteError) {
+          try {
+            // Fall back to sqlite3
+            const sqlite3 = await import('sqlite3');
+            db = new sqlite3.Database(dbPath) as SQLiteDatabase;
+            isBetterSqlite = false;
+
+            // Create basic tables with sqlite3
+            await new Promise<void>((resolve, reject) => {
+              (db as SQLiteDatabase).exec(
+                `
+                CREATE TABLE IF NOT EXISTS test_data (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  key TEXT UNIQUE,
+                  value TEXT,
+                  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                );
+              `,
+                (err: Error | null) => {
+                  if (err) reject(err);
+                  else resolve();
+                }
+              );
+            });
+          } catch (_sqliteError) {
+            console.warn('No SQLite libraries available, falling back to memory database');
+            return this.createMemoryDatabaseHelper().setup();
+          }
         }
       },
 
       async cleanup() {
         if (db) {
-          await new Promise<void>((resolve) => {
-            db.close(() => resolve());
-          });
+          if (isBetterSqlite) {
+            (db as BetterSQLiteDatabase).close();
+          } else {
+            await new Promise<void>((resolve) => {
+              (db as SQLiteDatabase).close(() => resolve());
+            });
+          }
         }
         try {
           await fs.unlink(dbPath);
@@ -256,37 +479,53 @@ export class IntegrationTestSetup {
         }
       },
 
-      async seed(data: unknown[]) {
+      async seed(data: Record<string, any>[]) {
         if (!db) return;
 
-        const stmt = db.prepare(
-          'INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)'
-        );
+        if (isBetterSqlite) {
+          const stmt = (db as BetterSQLiteDatabase).prepare(
+            'INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)'
+          );
 
-        for (const [index, item] of data?.entries()) {
-          await new Promise<void>((resolve, reject) => {
-            stmt.run(`item-${index}`, JSON.stringify(item), (err: unknown) => {
-              if (err) reject(err);
-              else resolve();
+          for (const [index, item] of (data || []).entries()) {
+            stmt.run(`item-${index}`, JSON.stringify(item));
+          }
+
+          stmt.finalize();
+        } else {
+          const stmt = (db as SQLiteDatabase).prepare(
+            'INSERT OR REPLACE INTO test_data (key, value) VALUES (?, ?)'
+          );
+
+          for (const [index, item] of (data || []).entries()) {
+            await new Promise<void>((resolve, reject) => {
+              stmt.run(`item-${index}`, JSON.stringify(item), (err: Error | null) => {
+                if (err) reject(err);
+                else resolve();
+              });
             });
-          });
-        }
+          }
 
-        stmt.finalize();
+          stmt.finalize();
+        }
       },
 
       async reset() {
         if (!db) return;
 
-        await new Promise<void>((resolve, reject) => {
-          db.run('DELETE FROM test_data', (err: unknown) => {
-            if (err) reject(err);
-            else resolve();
+        if (isBetterSqlite) {
+          (db as BetterSQLiteDatabase).prepare('DELETE FROM test_data').run();
+        } else {
+          await new Promise<void>((resolve, reject) => {
+            (db as SQLiteDatabase).run('DELETE FROM test_data', (err: Error | null) => {
+              if (err) reject(err);
+              else resolve();
+            });
           });
-        });
+        }
       },
 
-      getConnection() {
+      getConnection(): BetterSQLiteDatabase | SQLiteDatabase | null {
         return db;
       },
     };
@@ -383,8 +622,14 @@ export class IntegrationTestSetup {
   }
 
   private createMockNetworkHelper(): NetworkTestHelper {
-    const mockRequests: unknown[] = [];
-    const mockResponses = new Map<string, any>();
+    const mockRequests: Array<{
+      method?: string;
+      url?: string;
+      headers?: Record<string, string | string[] | undefined>;
+      timestamp: number;
+      data?: Record<string, any>;
+    }> = [];
+    const mockResponses = new Map<string, Record<string, any> | string | number | boolean | null>();
 
     return {
       async startMockServer(_port?: number): Promise<void> {
@@ -393,14 +638,20 @@ export class IntegrationTestSetup {
 
       async stopMockServer(): Promise<void> {
         mockRequests.length = 0;
-        mockResponses?.clear();
+        mockResponses.clear();
       },
 
-      mockRequest(path: string, response: unknown): void {
-        mockResponses?.set(path, response);
+      mockRequest(path: string, response: Record<string, any> | string | number | boolean | null): void {
+        mockResponses.set(path, response);
       },
 
-      captureRequests(): unknown[] {
+      captureRequests(): Array<{
+        method?: string;
+        url?: string;
+        headers?: Record<string, string | string[] | undefined>;
+        timestamp: number;
+        data?: Record<string, any>;
+      }> {
         return [...mockRequests];
       },
 
@@ -411,9 +662,15 @@ export class IntegrationTestSetup {
   }
 
   private async createLocalhostNetworkHelper(): Promise<NetworkTestHelper> {
-    let server: unknown = null;
-    const requests: unknown[] = [];
-    const routes = new Map<string, any>();
+    let server: HTTPServer | null = null;
+    const requests: Array<{
+      method?: string;
+      url?: string;
+      headers: Record<string, string | string[] | undefined>;
+      timestamp: number;
+      data?: Record<string, any>;
+    }> = [];
+    const routes = new Map<string, Record<string, any> | string | number | boolean | null>();
 
     return {
       async startMockServer(
@@ -440,10 +697,10 @@ export class IntegrationTestSetup {
               res.writeHead(404);
               res.end('Not Found');
             }
-          });
+          }) as HTTPServer;
 
           await new Promise<void>((resolve, reject) => {
-            server.listen(port, (err: unknown) => {
+            server!.listen(port, (err?: Error) => {
               if (err) reject(err);
               else resolve();
             });
@@ -456,17 +713,23 @@ export class IntegrationTestSetup {
       async stopMockServer(): Promise<void> {
         if (server) {
           await new Promise<void>((resolve) => {
-            server.close(() => resolve());
+            server!.close(() => resolve());
           });
           server = null;
         }
       },
 
-      mockRequest(path: string, response: unknown): void {
+      mockRequest(path: string, response: Record<string, any> | string | number | boolean | null): void {
         routes.set(path, response);
       },
 
-      captureRequests(): unknown[] {
+      captureRequests(): Array<{
+        method?: string;
+        url?: string;
+        headers: Record<string, string | string[] | undefined>;
+        timestamp: number;
+        data?: Record<string, any>;
+      }> {
         return [...requests];
       },
 
@@ -494,7 +757,7 @@ export class IntegrationTestSetup {
     this.processes = [];
   }
 
-  private async stopProcess(process: unknown): Promise<void> {
+  private async stopProcess(process: ManagedProcess): Promise<void> {
     if (process?.kill) {
       process.kill('SIGTERM');
 
@@ -507,10 +770,18 @@ export class IntegrationTestSetup {
           resolve();
         }, 5000);
 
-        process.on('exit', () => {
-          clearTimeout(timeout);
-          resolve();
-        });
+        if (process.on) {
+          process.on('exit', () => {
+            clearTimeout(timeout);
+            resolve();
+          });
+        } else {
+          // If we can't listen for exit, just wait for timeout
+          setTimeout(() => {
+            clearTimeout(timeout);
+            resolve();
+          }, 1000);
+        }
       });
     }
   }

@@ -183,6 +183,8 @@ export interface SystemEvent {
   source: string;
   /** Event type following domain:action pattern */
   type: string;
+  /** Event payload data */
+  payload: Record<string, unknown>;
   /** Processing priority of the event */
   priority?: EventPriority;
   /** Additional metadata associated with the event */

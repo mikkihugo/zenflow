@@ -559,6 +559,51 @@ export class NeuralMathHelpers {
   }
 
   /**
+   * Calculate Mean Squared Error
+   *
+   * @param predicted
+   * @param actual
+   */
+  static calculateMSE(predicted: number[], actual: number[]): number {
+    if (predicted.length !== actual.length) {
+      throw new Error(`Array length mismatch: predicted(${predicted.length}) != actual(${actual.length})`);
+    }
+    
+    const mse = predicted.reduce((sum, pred, index) => {
+      const error = pred - actual[index];
+      return sum + (error * error);
+    }, 0) / predicted.length;
+    
+    return mse;
+  }
+
+  /**
+   * Calculate Root Mean Squared Error
+   *
+   * @param predicted
+   * @param actual
+   */
+  static calculateRMSE(predicted: number[], actual: number[]): number {
+    return Math.sqrt(this.calculateMSE(predicted, actual));
+  }
+
+  /**
+   * Calculate Mean Absolute Error
+   *
+   * @param predicted
+   * @param actual
+   */
+  static calculateMAE(predicted: number[], actual: number[]): number {
+    if (predicted.length !== actual.length) {
+      throw new Error(`Array length mismatch: predicted(${predicted.length}) != actual(${actual.length})`);
+    }
+    
+    return predicted.reduce((sum, pred, index) => {
+      return sum + Math.abs(pred - actual[index]);
+    }, 0) / predicted.length;
+  }
+
+  /**
    * Compare matrices with tolerance
    *
    * @param a

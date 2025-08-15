@@ -211,6 +211,57 @@ export class TestDataFactory {
     };
   }
 
+  // TODO: investigate - test may need real implementation in src/
+  static createUsers(count: number = 5): UserTestData[] {
+    const factory = new TestDataFactory();
+    return Array.from({ length: count }, () => factory.createUser());
+  }
+
+  // TODO: investigate - test may need real implementation in src/
+  static createProject(overrides: Partial<ProjectTestData> = {}): ProjectTestData {
+    const factory = new TestDataFactory();
+    return factory.createProject(overrides);
+  }
+
+  // TODO: investigate - test may need real implementation in src/
+  static createSwarm(overrides: Partial<SwarmTestData> = {}): SwarmTestData {
+    const factory = new TestDataFactory();
+    return factory.createSwarm(overrides);
+  }
+
+  // TODO: investigate - test may need real implementation in src/
+  static createNeuralTrainingData(samples: number = 100) {
+    const factory = new TestDataFactory();
+    return {
+      trainingData: Array.from({ length: samples }, () => ({
+        input: [Math.random(), Math.random()],
+        output: [Math.random()],
+      })),
+      validationData: Array.from({ length: samples / 5 }, () => ({
+        input: [Math.random(), Math.random()],
+        output: [Math.random()],
+      })),
+    };
+  }
+
+  // TODO: investigate - test may need real implementation in src/
+  static createPerformanceData(operations: number = 1000) {
+    const factory = new TestDataFactory();
+    return factory.createPerformanceData(operations);
+  }
+
+  // TODO: investigate - test may need real implementation in src/
+  static resetSeed(seed: number = Date.now()): void {
+    // Reset the global seed for reproducible tests
+    Math.random = (() => {
+      let currentSeed = seed;
+      return () => {
+        const x = Math.sin(currentSeed++) * 10000;
+        return x - Math.floor(x);
+      };
+    })();
+  }
+
   /**
    * Create file system test structure
    */

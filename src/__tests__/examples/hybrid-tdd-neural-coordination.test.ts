@@ -4,6 +4,7 @@
  * @file Demonstrates hybrid approach - Classical TDD for neural computation + London TDD for coordination
  */
 
+import { vi, expect } from 'vitest';
 import {
   CoordinationProtocolValidator,
   createCoordinationTestSuite,
@@ -32,17 +33,17 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
         weights: neuralSuite.math.generateMatrix(4, 2),
         biases: neuralSuite.math.generateMatrix(4, 1),
 
-        train: (data: unknown[], config: unknown) => {
+        train: (data: unknown[], config: { epochs: number; convergenceThreshold: number }) => {
           const errors: number[] = [];
-          for (let epoch = 0; epoch < config?.epochs; epoch++) {
+          for (let epoch = 0; epoch < config.epochs; epoch++) {
             let epochError = 0;
 
             for (const sample of data) {
               const prediction = mockNetwork.predict((sample as any).input);
-              const error = neuralSuite.math?.calculateMSE?.(
+              const error = neuralSuite.math.calculateMSE(
                 prediction,
                 (sample as any).output
-              ) ?? 0.1;
+              );
               epochError += error;
             }
 
@@ -50,12 +51,12 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
             errors.push(epochError);
 
             // Simulate convergence
-            if (epochError < config?.convergenceThreshold) break;
+            if (epochError < config.convergenceThreshold) break;
           }
 
           return {
             errors,
-            converged: errors[errors.length - 1] < config?.convergenceThreshold,
+            converged: errors[errors.length - 1] < config.convergenceThreshold,
           };
         },
 
@@ -145,7 +146,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       ];
 
       const agentIds = Array.from(swarm.agents.keys());
-      const assignments = [];
+      const assignments: any[] = [];
 
       for (let i = 0; i < trainingTasks.length; i++) {
         const task = trainingTasks[i];
@@ -155,7 +156,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
           taskId: task.id,
           agentId,
         });
-        assignments.push(assignResult);
+        assignments.push(assignResult as any);
 
         // Verify task assignment interaction
         expect(assignResult?.success).toBe(true);
@@ -205,7 +206,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Test error detection
       const statusResult = swarm.coordinator('status', {});
       const failedAgent = statusResult?.agents?.find(
-        (agent: unknown) => agent.id === 'agent-1'
+        (agent: any) => agent.id === 'agent-1'
       );
 
       expect(failedAgent).toBeDefined();
@@ -223,7 +224,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       // Verify error handling interactions
       const interactions = coordinationSuite.builder.getInteractions();
       const errorInteractions = interactions.filter(
-        (i) => i.action === 'status' || i.data?.type === 'error'
+        (i: any) => i.action === 'status' || i.data?.type === 'error'
       );
 
       expect(errorInteractions.length).toBeGreaterThan(0);
@@ -277,7 +278,12 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
       expect(distributionResult?.distributed).toBe(true);
 
       // Step 3: Train on each node (Classical - test computation)
-      const nodeResults = [];
+      const nodeResults: Array<{
+        nodeId: number;
+        trainingData: Array<{ input: number[]; output: number[] }>;
+        epochs: number;
+        finalError: number;
+      }> = [];
       for (let nodeId = 0; nodeId < 3; nodeId++) {
         const nodeData = trainingData?.slice(nodeId, nodeId + 2); // Simulate data partition
 
@@ -289,7 +295,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
           finalError: Math.random() * 0.1, // Simulate training result
         };
 
-        nodeResults?.push(nodeResult);
+        nodeResults.push(nodeResult);
 
         // Mock message sending (London approach)
         const messageResult = mocks['message-router']({
@@ -303,7 +309,7 @@ describe('Hybrid TDD Example: Neural-Coordination Integration', () => {
 
       // Step 4: Aggregate results (Classical - verify computation)
       const avgError =
-        nodeResults?.reduce((sum, result) => sum + result?.finalError, 0) /
+        nodeResults.reduce((sum, result) => sum + result.finalError, 0) /
         nodeResults.length;
       expect(avgError).toBeLessThan(0.1);
 

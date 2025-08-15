@@ -21,16 +21,19 @@ export type AgentType =
   | 'coordinator'
   | 'tester'
   | 'architect'
-  | 'specialist';
+  | 'specialist'
+  | 'specialized';
 
 export type AgentStatus =
   | 'idle'
   | 'busy'
   | 'offline'
   | 'error'
-  | 'initializing';
+  | 'initializing'
+  | 'terminated';
 
 export interface AgentConfig {
+  name?: string;
   maxConcurrentTasks: number;
   specializations: string[];
   preferredTaskTypes: string[];
@@ -191,6 +194,7 @@ export interface QueenMetrics {
   tasksCompleted: number;
   tasksFailed: number;
   averageTaskDuration: number;
+  averageExecutionTime: number;
   resourceUtilization: {
     memory: number;
     cpu: number;
@@ -243,6 +247,7 @@ export interface QueenCommanderConfig {
   maxConcurrentQueens: number;
   healthCheckInterval: number;
   heartbeatInterval: number;
+  defaultTimeout: number;
   autoRestart: boolean;
   resourceLimits: {
     memory: number;
@@ -314,12 +319,14 @@ export interface AgentMetrics {
 }
 
 export interface AgentError {
+  code: string;
   timestamp: Date;
   type: string;
   message: string;
   context: Record<string, unknown>;
   severity: 'low' | 'medium' | 'high' | 'critical';
   resolved: boolean;
+  stack?: string;
 }
 
 export interface QueenTemplate {
@@ -337,6 +344,7 @@ export interface QueenCluster {
   id: string;
   name: string;
   queens: string[];
+  agents: AgentId[];
   status: 'active' | 'inactive' | 'failed';
   loadBalancer: {
     strategy: 'round_robin' | 'least_loaded';
@@ -351,6 +359,12 @@ export interface QueenPool {
   capacity: number;
   available: number;
   queens: string[];
+  minSize: number;
+  maxSize: number;
+  currentSize: number;
+  template: QueenTemplate;
+  availableAgents: AgentId[];
+  busyAgents: AgentId[];
 }
 
 export interface QueenHealth {
@@ -364,4 +378,86 @@ export interface QueenHealth {
     errorRate: number;
   };
   issues: string[];
+  components: Record<string, 'healthy' | 'degraded' | 'unhealthy'>;
+  overall: {
+    status: 'healthy' | 'degraded' | 'unhealthy';
+    score: number;
+  };
+}
+
+// Missing interfaces that are needed by queen-coordinator
+export interface AgentEnvironment {
+  platform: string;
+  version: string;
+  runtime?: 'deno' | 'node' | 'claude' | 'browser';
+  workingDirectory?: string;
+  tempDirectory?: string;
+  logDirectory?: string;
+  apiEndpoints?: Record<string, string>;
+  credentials?: Record<string, unknown>;
+  availableTools?: string[];
+  toolConfigs?: Record<string, unknown>;
+  resources: {
+    availableMemory: number;
+    availableCpu: number;
+    availableDisk: number;
+  };
+  constraints?: Record<string, unknown>;
+}
+
+export interface AgentId {
+  id: string;
+  swarmId: string;
+  type: AgentType;
+  instance: number;
+}
+
+export interface AgentState {
+  id: AgentId;
+  name: string;
+  type: AgentType;
+  status: AgentStatus;
+  capabilities: QueenCapabilities;
+  metrics: AgentMetrics;
+  workload: number;
+  health: number;
+  lastHeartbeat: Date;
+  errors: AgentError[];
+  config: AgentConfig;
+  environment: AgentEnvironment;
+}
+
+export interface AgentError {
+  code: string;
+  timestamp: Date;
+  type: string;
+  message: string;
+  context: Record<string, unknown>;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  resolved: boolean;
+}
+
+export interface AgentMetrics {
+  tasksCompleted: number;
+  tasksFailed: number;
+  tasksInProgress: number;
+  averageExecutionTime: number;
+  successRate: number;
+  cpuUsage: number;
+  memoryUsage: number;
+  diskUsage: number;
+  networkUsage: number;
+  codeQuality: number;
+  testCoverage: number;
+  bugRate: number;
+  userSatisfaction: number;
+  totalUptime: number;
+  lastActivity: Date;
+  responseTime: number;
+  resourceUsage: {
+    cpu: number;
+    memory: number;
+    disk: number;
+    network: number;
+  };
 }

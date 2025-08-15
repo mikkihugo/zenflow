@@ -4,7 +4,7 @@
  * Comprehensive file system testing support for both mocked and real environments
  */
 
-import { promises as fs } from 'node:fs';
+import { promises as fs, FSWatcher, WatchOptions } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 
@@ -20,7 +20,7 @@ export interface FileSystemTestHelper {
   copyFile(src: string, dest: string): Promise<void>;
   moveFile(src: string, dest: string): Promise<void>;
   getFileStats(path: string): Promise<unknown>;
-  watchFile(path: string, callback: (event: string) => void): () => void;
+  watchFile(path: string, callback: (eventType: string, filename?: string) => void): () => void;
   createSymlink(target: string, link: string): Promise<void>;
   cleanup(): Promise<void>;
 }
@@ -133,20 +133,37 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
     };
   }
 
-  watchFile(path: string, callback: (event: string) => void): () => void {
-    let watcher: unknown = null;
+  watchFile(path: string, callback: (eventType: string, filename?: string) => void): () => void {
+    let watcher: FSWatcher | any = null;
 
-    const startWatching = async () => {
+    const startWatching = async (): Promise<void> => {
       try {
+        // Try to use chokidar for more reliable file watching
         const { watch } = await import('chokidar');
         watcher = watch(path);
-        watcher.on('all', (event: string) => callback(event));
+        
+        // Chokidar provides more detailed events, map them to fs.watch style
+        watcher.on('all', (event: string, filename?: string) => {
+          const eventType = this.mapChokidarEventToFsEvent(event);
+          callback(eventType, filename);
+        });
       } catch {
         // Fallback to basic fs.watch if chokidar not available
         try {
-          watcher = fs.watch(path, (event: unknown) => callback(event));
-        } catch {
-          // File watching not available
+          const watchOptions: WatchOptions = {
+            persistent: true,
+            recursive: false,
+            encoding: 'utf8'
+          };
+          
+          // Properly typed fs.watch callback - receives eventType and filename
+          watcher = fs.watch(path, watchOptions, (eventType: string, filename: string | null) => {
+            callback(eventType, filename || undefined);
+          });
+        } catch (error) {
+          console.warn(`File watching failed for ${path}:`, error);
+          // File watching not available - return no-op cleanup
+          return () => {};
         }
       }
     };
@@ -155,16 +172,42 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
 
     const stopWatching = () => {
       if (watcher) {
-        if (typeof watcher.close === 'function') {
-          watcher.close();
-        } else if (typeof watcher.unwatch === 'function') {
-          watcher.unwatch(path);
+        try {
+          if (typeof watcher.close === 'function') {
+            // Standard FSWatcher or chokidar watcher
+            watcher.close();
+          } else if (typeof watcher.unwatch === 'function') {
+            // Some chokidar configurations
+            watcher.unwatch(path);
+          }
+        } catch (error) {
+          console.warn('Error stopping file watcher:', error);
         }
+        watcher = null;
       }
     };
 
     this.watchers.push(stopWatching);
     return stopWatching;
+  }
+
+  /**
+   * Maps chokidar events to fs.watch compatible event types
+   * @private
+   */
+  private mapChokidarEventToFsEvent(chokidarEvent: string): string {
+    switch (chokidarEvent) {
+      case 'add':
+      case 'addDir':
+        return 'rename'; // fs.watch uses 'rename' for file/directory creation
+      case 'change':
+        return 'change';
+      case 'unlink':
+      case 'unlinkDir':
+        return 'rename'; // fs.watch uses 'rename' for file/directory deletion
+      default:
+        return 'change'; // Default to 'change' for unknown events
+    }
   }
 
   async createSymlink(target: string, link: string): Promise<void> {
@@ -202,7 +245,7 @@ export class RealFileSystemTestHelper implements FileSystemTestHelper {
 export class MockFileSystemTestHelper implements FileSystemTestHelper {
   private files = new Map<string, string>();
   private directories = new Set<string>();
-  private watchers = new Map<string, Array<(event: string) => void>>();
+  private watchers = new Map<string, Array<(eventType: string, filename?: string) => void>>();
 
   async createTempDir(prefix: string = 'test'): Promise<string> {
     const tempPath = `/mock/temp/${prefix}-${Date.now()}`;
@@ -220,7 +263,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
       this.directories.add(dir);
     }
 
-    this.triggerWatchers(normalizedPath, 'add');
+    this.triggerWatchers(normalizedPath, 'rename', this.getFilename(normalizedPath));
   }
 
   async createDirectory(path: string): Promise<void> {
@@ -249,7 +292,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   async deleteFile(path: string): Promise<void> {
     const normalizedPath = this.normalizePath(path);
     if (this.files.delete(normalizedPath)) {
-      this.triggerWatchers(normalizedPath, 'unlink');
+      this.triggerWatchers(normalizedPath, 'rename', this.getFilename(normalizedPath));
     }
   }
 
@@ -324,7 +367,7 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
     };
   }
 
-  watchFile(path: string, callback: (event: string) => void): () => void {
+  watchFile(path: string, callback: (eventType: string, filename?: string) => void): () => void {
     const normalizedPath = this.normalizePath(path);
 
     if (!this.watchers.has(normalizedPath)) {
@@ -382,23 +425,31 @@ export class MockFileSystemTestHelper implements FileSystemTestHelper {
   /**
    * Simulate file system events
    *
-   * @param path
-   * @param event
+   * @param path - File or directory path
+   * @param eventType - Event type ('change' or 'rename')
+   * @param filename - Optional filename (extracted from path if not provided)
    */
-  simulateFileEvent(path: string, event: string): void {
-    this.triggerWatchers(path, event);
+  simulateFileEvent(path: string, eventType: string, filename?: string): void {
+    const normalizedPath = this.normalizePath(path);
+    const actualFilename = filename || this.getFilename(normalizedPath);
+    this.triggerWatchers(normalizedPath, eventType, actualFilename);
   }
 
   private normalizePath(path: string): string {
     return resolve(path).replace(/\\/g, '/');
   }
 
-  private triggerWatchers(path: string, event: string): void {
+  private getFilename(path: string): string {
+    const parts = path.split('/');
+    return parts[parts.length - 1] || '';
+  }
+
+  private triggerWatchers(path: string, eventType: string, filename?: string): void {
     const callbacks = this.watchers.get(path);
     if (callbacks) {
       callbacks.forEach((callback) => {
         try {
-          callback(event);
+          callback(eventType, filename);
         } catch (_error) {
           // Ignore callback errors
         }

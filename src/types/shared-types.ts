@@ -117,7 +117,7 @@ export interface SystemEvent {
   type: string;
   source: string;
   target?: string;
-  data: unknown;
+  payload: Record<string, unknown>;
   timestamp: Date;
   correlationId?: string;
 }

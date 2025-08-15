@@ -8,26 +8,26 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config.ts';
+import { getLogger } from '../../config/logging-config';
 import type {
   IEventBus,
   ILogger,
-} from '../../core/interfaces/base-interfaces.ts';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.ts';
+} from '../../core/interfaces/base-interfaces';
+import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import {
   CollectiveFACTSystem,
   getCollectiveFACT,
   initializeCollectiveFACT,
-} from '../collective-fact-integration.ts';
-import { generateId } from '../swarm/core/utils.ts';
+} from '../collective-fact-integration';
+import { generateId } from '../swarm/core/utils';
 // SPARC Integration for Implementation Leadership
-import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine.ts';
+import { SPARCEngineCore } from '../swarm/sparc/core/sparc-engine';
 import type {
   ProjectSpecification,
   SPARCProject,
   SPARCPhase,
-} from '../swarm/sparc/types/sparc-types.ts';
-import type { AgentType } from '../../types/agent-types.ts';
+} from '../swarm/sparc/types/sparc-types';
+import type { AgentType } from '../../types/agent-types';
 
 export interface SwarmCommanderConfig {
   swarmId: string;
@@ -180,18 +180,14 @@ export class SwarmCommander extends EventEmitter {
 
     // SHARED FACT SYSTEM: All hierarchy levels use the same CollectiveFACTSystem instance
     this.factSystem = new CollectiveFACTSystem({
-      cacheEnabled: true,
-      maxCacheSize: 1000,
-      storageLocation: '.claude-zen/fact',
-      enableAdaptiveStrategies: true,
+      enableCache: true,
+      cacheSize: 1000,
+      knowledgeSources: ['.claude-zen/fact'],
+      autoRefreshInterval: 3600000,
     });
 
     // Initialize SPARC engine for implementation leadership
-    this.sparcEngine = new SPARCEngineCore({
-      persistenceEnabled: true,
-      memorySystem: memoryCoordinator as any, // Type compatibility
-      eventBus: eventBus as any,
-    });
+    this.sparcEngine = new SPARCEngineCore();
 
     // Initialize state
     this.state = {
@@ -244,7 +240,7 @@ export class SwarmCommander extends EventEmitter {
   /**
    * Accept task assignment from Queen Coordinator and begin SPARC implementation
    */
-  async handleTaskAssignment(taskData: unknown): Promise<void> {
+  async handleTaskAssignment(taskData: Partial<SwarmTask> & { title: string; description: string }): Promise<void> {
     this.logger.info(`Task assigned: ${taskData.title}`);
 
     const task: SwarmTask = {
@@ -280,18 +276,10 @@ export class SwarmCommander extends EventEmitter {
     // Create SPARC project specification from task
     const projectSpec: ProjectSpecification = {
       name: task.title,
-      description: task.description,
-      objectives: [task.description],
-      scope: task.deliverables,
+      domain: 'general',
+      complexity: 'moderate',
+      requirements: [task.description, ...task.deliverables],
       constraints: [],
-      stakeholders: [],
-      successCriteria: [`Complete ${task.title} with quality score > 0.9`],
-      timeline: {
-        startDate: new Date(),
-        endDate: new Date(
-          Date.now() + task.estimatedEffort * 24 * 60 * 60 * 1000
-        ),
-      },
     };
 
     try {
@@ -343,9 +331,8 @@ export class SwarmCommander extends EventEmitter {
       phaseContext.matronGuidance = matronGuidance;
 
       const phaseResult = await this.sparcEngine.executePhase(
-        this.activeProject!.id,
-        phase,
-        phaseContext
+        this.activeProject!,
+        phase
       );
 
       this.logger.info(
@@ -370,17 +357,17 @@ export class SwarmCommander extends EventEmitter {
   private determineRequiredAgents(phase: SPARCPhase): AgentType[] {
     switch (phase) {
       case 'specification':
-        return ['analyst-agent', 'technical-writer-agent'];
+        return ['analyst', 'technical-writer'];
       case 'pseudocode':
-        return ['architect-agent', 'senior-developer-agent'];
+        return ['architect', 'developer'];
       case 'architecture':
-        return ['architect-agent', 'systems-analyst-agent'];
+        return ['architect', 'analyst'];
       case 'refinement':
-        return ['senior-developer-agent', 'code-reviewer-agent'];
+        return ['developer', 'reviewer'];
       case 'completion':
-        return ['tester-agent', 'deployment-agent', 'documentation-agent'];
+        return ['tester', 'ops', 'documentation-specialist'];
       default:
-        return ['general-purpose-agent'];
+        return ['coordinator'];
     }
   }
 
@@ -502,7 +489,7 @@ export class SwarmCommander extends EventEmitter {
     this.logger.info(`Executing direct implementation for: ${task.title}`);
 
     // Simplified direct execution
-    const requiredAgents = ['general-purpose-agent', 'code-reviewer-agent'];
+    const requiredAgents: AgentType[] = ['coordinator', 'reviewer'];
     await this.assignAgentsToPhase(requiredAgents, 'completion', task);
 
     // Simulate implementation work

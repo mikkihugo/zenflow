@@ -265,7 +265,18 @@ export interface AgentMetrics {
   };
 }
 
+export type AgentHealth = 'healthy' | 'degraded' | 'unhealthy';
+
+export type AgentStatus = 
+  | 'initializing'
+  | 'idle' 
+  | 'busy'
+  | 'error'
+  | 'offline'
+  | 'terminated';
+
 export interface AgentError {
+  code: string;
   timestamp: Date;
   type: string;
   message: string;

@@ -7,6 +7,7 @@
  */
 
 import { createToken } from './token-factory.ts';
+import type { SystemEvent } from '../../coordination/core/event-bus.ts';
 
 // Core infrastructure interfaces (to be implemented)
 export interface ILogger {
@@ -23,9 +24,10 @@ export interface IConfig {
 }
 
 export interface IEventBus {
-  emit(event: string, data: unknown): void;
-  on(event: string, handler: (data: unknown) => void): void;
-  off(event: string, handler: (data: unknown) => void): void;
+  emit(event: string, data: unknown): boolean;
+  emitSystemEvent(event: SystemEvent): boolean;
+  on(event: string, handler: (data: unknown) => void): this;
+  off(event: string, handler: (data: unknown) => void): this;
 }
 
 export interface IDatabase {

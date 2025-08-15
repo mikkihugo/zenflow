@@ -33,20 +33,23 @@ export {
 
 // Factory functions
 export function createLondonMocks(config?: unknown) {
-  return new MockBuilder().withLondonStyle().build(config);
+  const { MockBuilder } = require('./mock-builder.ts');
+  return new MockBuilder().createCommonMocks();
 }
 
 export function createClassicalMocks(config?: unknown) {
-  return new MockBuilder().withClassicalStyle().build(config);
+  const { MockBuilder } = require('./mock-builder.ts');
+  return new MockBuilder().createCommonMocks();
 }
 
 export function createTestLogger(config?: unknown) {
-  return new TestLogger(config);
+  const { TestLogger } = require('./test-logger.ts');
+  return new TestLogger(config as string);
 }
 
-export { DatabaseTestHelper } from './database-test-helper.ts';
-export { FileSystemTestHelper } from './filesystem-test-helper.ts';
-export { NetworkTestHelper } from './network-test-helper.ts';
+export type { DatabaseTestHelper } from './database-test-helper.ts';
+export type { FileSystemTestHelper } from './filesystem-test-helper.ts';
+export type { NetworkTestHelper } from './network-test-helper.ts';
 // Common test utilities
 export { TestLogger } from './test-logger.ts';
 

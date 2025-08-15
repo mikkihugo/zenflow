@@ -60,6 +60,7 @@ export interface IEventBus {
     listener: EventListener<EventMap[T]>
   ): this;
   emit<T extends keyof EventMap>(event: T, payload: EventMap[T]): boolean;
+  emitSystemEvent(event: SystemEvent): boolean;
   once<T extends keyof EventMap>(
     event: T,
     listener: EventListener<EventMap[T]>

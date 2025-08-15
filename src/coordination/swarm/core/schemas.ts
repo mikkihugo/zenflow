@@ -306,6 +306,11 @@ const MCPSchemas = {
       pattern: '^[a-fA-F0-9-]+$',
       required: false,
     },
+    temporary: {
+      type: 'boolean',
+      default: false,
+      required: false,
+    },
     requiredCapabilities: {
       type: 'array',
       items: {

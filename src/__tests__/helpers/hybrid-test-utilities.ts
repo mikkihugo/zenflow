@@ -4,6 +4,8 @@
  * @file Utilities that support both London and Classical TDD approaches
  */
 
+import { vi, expect, type MockedFunction } from 'vitest';
+
 export interface HybridTestConfig {
   approach: 'london' | 'classical' | 'hybrid';
   mockingStrategy: 'minimal' | 'moderate' | 'extensive';
@@ -48,9 +50,9 @@ export class HybridTestUtility {
    *
    * @param dependencies
    */
-  createDomainMocks(dependencies: string[]): Record<string, vi.Mock> {
+  createDomainMocks(dependencies: string[]): Record<string, any> {
     const approach = this.getRecommendedApproach();
-    const mocks: Record<string, vi.Mock> = {};
+    const mocks: Record<string, MockedFunction<any>> = {};
 
     for (const dep of dependencies) {
       if (this.shouldMock(dep, approach)) {
@@ -77,7 +79,7 @@ export class HybridTestUtility {
   private createMockForDependency(
     dependency: string,
     approach: 'london' | 'classical'
-  ): vi.Mock {
+  ): MockedFunction<any> {
     const mock = vi.fn();
 
     if (approach === 'london') {
@@ -102,7 +104,10 @@ export class HybridTestUtility {
       logger: () => undefined,
       validator: (_input: unknown) => ({ valid: true, errors: [] }),
       transformer: (data: unknown) => data,
-      calculator: (a: number, b: number) => a + b,
+      calculator: (...args: unknown[]) => {
+        const [a, b] = args as [number, number];
+        return typeof a === 'number' && typeof b === 'number' ? a + b : 0;
+      },
     };
 
     const key = Object.keys(behaviors).find((k) => dependency.includes(k));
@@ -145,7 +150,7 @@ export class LondonAssertions {
    * @param {...any} args
    */
   verifyInteractionPattern(
-    mock: vi.Mock,
+    mock: MockedFunction<any>,
     pattern: 'called' | 'not-called' | 'called-with' | 'called-times',
     ...args: unknown[]
   ) {
@@ -160,7 +165,7 @@ export class LondonAssertions {
         expect(mock).toHaveBeenCalledWith(...args);
         break;
       case 'called-times':
-        expect(mock).toHaveBeenCalledTimes(args[0]);
+        expect(mock).toHaveBeenCalledTimes(args[0] as number);
         break;
     }
   }
@@ -174,14 +179,14 @@ export class LondonAssertions {
   verifyProtocolCompliance(interactions: unknown[], protocol: string) {
     switch (protocol) {
       case 'mcp':
-        interactions.forEach((interaction) => {
+        interactions.forEach((interaction: any) => {
           expect(interaction).toHaveProperty('jsonrpc', '2.0');
           expect(interaction).toHaveProperty('id');
           expect(interaction).toHaveProperty('method');
         });
         break;
       case 'websocket':
-        interactions.forEach((interaction) => {
+        interactions.forEach((interaction: any) => {
           expect(interaction).toHaveProperty('type');
           expect(interaction).toHaveProperty('data');
         });
@@ -196,20 +201,20 @@ export class LondonAssertions {
    * @param expectedPattern
    */
   verifyCoordinationPattern(
-    mock: vi.Mock,
+    mock: MockedFunction<any>,
     expectedPattern: 'broadcast' | 'request-response' | 'publish-subscribe'
   ) {
     const calls = mock.mock.calls;
 
     switch (expectedPattern) {
       case 'broadcast':
-        expect(calls.some((call) => call[0]?.type === 'broadcast')).toBe(true);
+        expect(calls.some((call: any) => call[0]?.type === 'broadcast')).toBe(true);
         break;
       case 'request-response':
-        expect(calls.some((call) => call[0]?.type === 'request')).toBe(true);
+        expect(calls.some((call: any) => call[0]?.type === 'request')).toBe(true);
         break;
       case 'publish-subscribe':
-        expect(calls.some((call) => call[0]?.type === 'publish')).toBe(true);
+        expect(calls.some((call: any) => call[0]?.type === 'publish')).toBe(true);
         break;
     }
   }
@@ -294,7 +299,7 @@ export class ClassicalAssertions {
     state: unknown,
     invariants: Array<(state: unknown) => boolean>
   ) {
-    invariants.forEach((invariant, _index) => {
+    invariants.forEach((invariant) => {
       expect(invariant(state)).toBe(true);
     });
   }
@@ -399,4 +404,262 @@ export class TestScenarioBuilder {
 
 export function createTestScenarios(): TestScenarioBuilder {
   return new TestScenarioBuilder();
+}
+
+/**
+ * Advanced test utilities for complex scenarios
+ */
+export class AdvancedTestUtilities {
+  private testData: Map<string, any> = new Map();
+  private cleanupTasks: Array<() => Promise<void> | void> = [];
+
+  /**
+   * Store test data for later retrieval
+   */
+  storeTestData(key: string, data: any): void {
+    this.testData.set(key, data);
+  }
+
+  /**
+   * Retrieve stored test data
+   */
+  getTestData<T = any>(key: string): T | undefined {
+    return this.testData.get(key);
+  }
+
+  /**
+   * Register cleanup task
+   */
+  registerCleanup(task: () => Promise<void> | void): void {
+    this.cleanupTasks.push(task);
+  }
+
+  /**
+   * Execute all cleanup tasks
+   */
+  async executeCleanup(): Promise<void> {
+    for (const task of this.cleanupTasks) {
+      try {
+        await task();
+      } catch (error) {
+        console.warn('Cleanup task failed:', error);
+      }
+    }
+    this.cleanupTasks.length = 0;
+    this.testData.clear();
+  }
+
+  /**
+   * Create mock with enhanced capabilities
+   */
+  createEnhancedMock<T extends (...args: any[]) => any>(
+    name: string,
+    defaultReturn?: ReturnType<T>
+  ): MockedFunction<T> {
+    const mock = vi.fn() as MockedFunction<T>;
+    mock.mockName(name);
+    
+    if (defaultReturn !== undefined) {
+      mock.mockReturnValue(defaultReturn);
+    }
+
+    // Register for automatic cleanup
+    this.registerCleanup(() => {
+      mock.mockClear();
+    });
+
+    return mock;
+  }
+
+  /**
+   * Create async mock with controllable timing
+   */
+  createAsyncMock<T = any>(
+    resolveValue?: T,
+    delay: number = 0
+  ): MockedFunction<() => Promise<T>> {
+    const mock = vi.fn().mockImplementation(async () => {
+      if (delay > 0) {
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      return resolveValue;
+    });
+
+    this.registerCleanup(() => {
+      mock.mockClear();
+    });
+
+    return mock;
+  }
+
+  /**
+   * Create mock that throws after N calls
+   */
+  createFailingMock<T = any>(
+    failAfter: number,
+    error: Error | string = 'Mock failure'
+  ): MockedFunction<() => T> {
+    let callCount = 0;
+    const mock = vi.fn().mockImplementation(() => {
+      callCount++;
+      if (callCount > failAfter) {
+        throw typeof error === 'string' ? new Error(error) : error;
+      }
+      return undefined;
+    });
+
+    this.registerCleanup(() => {
+      mock.mockClear();
+      callCount = 0;
+    });
+
+    return mock;
+  }
+
+  /**
+   * Create performance monitoring utilities
+   */
+  createPerformanceMonitor() {
+    const metrics: Array<{name: string; duration: number; timestamp: number}> = [];
+    
+    return {
+      time: async <T>(name: string, operation: () => Promise<T> | T): Promise<T> => {
+        const start = performance.now();
+        try {
+          const result = await operation();
+          const duration = performance.now() - start;
+          metrics.push({ name, duration, timestamp: Date.now() });
+          return result;
+        } catch (error) {
+          const duration = performance.now() - start;
+          metrics.push({ name: `${name} (failed)`, duration, timestamp: Date.now() });
+          throw error;
+        }
+      },
+      
+      getMetrics: () => [...metrics],
+      
+      clearMetrics: () => {
+        metrics.length = 0;
+      },
+      
+      getAverageTime: (name: string) => {
+        const matching = metrics.filter(m => m.name === name);
+        return matching.length > 0 
+          ? matching.reduce((sum, m) => sum + m.duration, 0) / matching.length
+          : 0;
+      }
+    };
+  }
+}
+
+/**
+ * Factory for advanced test utilities
+ */
+export function createAdvancedTestUtilities(): AdvancedTestUtilities {
+  return new AdvancedTestUtilities();
+}
+
+/**
+ * Domain-specific test builders
+ */
+export class DomainTestBuilder {
+  private domain: string;
+  private utils: AdvancedTestUtilities;
+
+  constructor(domain: string) {
+    this.domain = domain;
+    this.utils = new AdvancedTestUtilities();
+  }
+
+  /**
+   * Create domain-specific mock based on common patterns
+   */
+  createDomainSpecificMock(type: string): MockedFunction<any> {
+    const domainPatterns: Record<string, Record<string, any>> = {
+      coordination: {
+        agent: () => ({ id: 'test-agent', status: 'active' }),
+        swarm: () => ({ agents: [], topology: 'mesh' }),
+        message: () => ({ type: 'test', data: {} }),
+      },
+      neural: {
+        network: () => ({ layers: [], weights: [] }),
+        activation: (x: number) => Math.max(0, x), // ReLU
+        optimizer: () => ({ learningRate: 0.001 }),
+      },
+      database: {
+        query: () => ({ rows: [], count: 0 }),
+        transaction: () => ({ commit: vi.fn(), rollback: vi.fn() }),
+        connection: () => ({ connected: true }),
+      },
+      memory: {
+        store: () => ({ size: 0, items: [] }),
+        cache: () => ({ hit: false, value: null }),
+        index: () => ({ entries: [], lastUpdate: Date.now() }),
+      }
+    };
+
+    const pattern = domainPatterns[this.domain]?.[type];
+    return this.utils.createEnhancedMock(
+      `${this.domain}-${type}`,
+      pattern ? pattern() : undefined
+    );
+  }
+
+  /**
+   * Setup domain-specific test environment
+   */
+  setupDomainEnvironment(): Record<string, any> {
+    const environments: Record<string, any> = {
+      coordination: {
+        agents: new Map(),
+        messageQueue: [],
+        topology: 'mesh',
+      },
+      neural: {
+        activationCache: new Map(),
+        gradientHistory: [],
+        modelWeights: {},
+      },
+      database: {
+        connections: new Map(),
+        transactionLog: [],
+        queryCache: new Map(),
+      },
+      memory: {
+        storage: new Map(),
+        indices: new Map(),
+        accessLog: [],
+      }
+    };
+
+    const env = environments[this.domain] || {};
+    
+    // Register cleanup for the environment
+    this.utils.registerCleanup(() => {
+      Object.keys(env).forEach(key => {
+        if (env[key] instanceof Map) {
+          env[key].clear();
+        } else if (Array.isArray(env[key])) {
+          env[key].length = 0;
+        }
+      });
+    });
+
+    return env;
+  }
+
+  /**
+   * Get utilities instance for manual cleanup
+   */
+  getUtils(): AdvancedTestUtilities {
+    return this.utils;
+  }
+}
+
+/**
+ * Create domain-specific test builder
+ */
+export function createDomainTestBuilder(domain: string): DomainTestBuilder {
+  return new DomainTestBuilder(domain);
 }

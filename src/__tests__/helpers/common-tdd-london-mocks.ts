@@ -241,9 +241,10 @@ export class MockSwarmService {
   }
 
   setupSwarmFailure(method: keyof MockSwarmService, error: string) {
-    (this[method] as MockedFunction<unknown>).mockRejectedValueOnce(
-      new Error(error)
-    );
+    const mockMethod = this[method] as MockedFunction<any>;
+    if (typeof mockMethod?.mockRejectedValueOnce === 'function') {
+      mockMethod.mockRejectedValueOnce(new Error(error));
+    }
     return this;
   }
 
@@ -264,7 +265,7 @@ export class MockDatabaseService {
     (sql: string, params?: unknown[]) => Promise<{ affectedRows: number }>
   > = vi.fn();
   transaction: MockedFunction<
-    (fn: (tx: unknown) => Promise<unknown>) => Promise<unknown>
+    (fn: (tx: any) => Promise<any>) => Promise<any>
   > = vi.fn();
   connect: MockedFunction<() => Promise<void>> = vi.fn();
   disconnect: MockedFunction<() => Promise<void>> = vi.fn();
@@ -272,7 +273,7 @@ export class MockDatabaseService {
   constructor() {
     this.query.mockResolvedValue([]);
     this.execute.mockResolvedValue({ affectedRows: 1 });
-    this.transaction.mockImplementation(async (fn: unknown) => fn(this));
+    this.transaction.mockImplementation(async (fn: any) => fn(this));
     this.connect.mockResolvedValue(undefined);
     this.disconnect.mockResolvedValue(undefined);
   }
@@ -291,8 +292,8 @@ export class MockDatabaseService {
     return this;
   }
 
-  setupQueryResult(sql: string, result: unknown[]) {
-    this.query.mockImplementationOnce((querySql: unknown) =>
+  setupQueryResult(sql: string, result: any[]) {
+    this.query.mockImplementationOnce((querySql: string) =>
       querySql.includes(sql) ? Promise.resolve(result) : Promise.resolve([])
     );
     return this;

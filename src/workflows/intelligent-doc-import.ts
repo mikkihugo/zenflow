@@ -620,7 +620,13 @@ export class IntelligentDocImport extends EventEmitter {
   private async performLLMDocumentAnalysis(
     content: string,
     documentType?: string
-  ): Promise<unknown> {
+  ): Promise<{
+    qualityScore: number;
+    completenessScore: number;
+    suggestions: string[];
+    riskFactors: string[];
+    confidence: number;
+  }> {
     // This would integrate with actual LLM service
     // For now, return simulated analysis
 
@@ -680,7 +686,13 @@ export class IntelligentDocImport extends EventEmitter {
   private async analyzeDocumentationCompleteness(
     content: string,
     fileExt: string
-  ): Promise<unknown> {
+  ): Promise<{
+    overall: number;
+    functions: number;
+    classes: number;
+    interfaces: number;
+    missing: string[];
+  }> {
     const functions = this.extractFunctions(content, fileExt);
     const classes = this.extractClasses(content, fileExt);
     const interfaces = this.extractInterfaces(content, fileExt);
@@ -871,7 +883,12 @@ export class IntelligentDocImport extends EventEmitter {
    */
   private async generateRecommendations(
     analysis: FileAnalysisResult
-  ): Promise<unknown> {
+  ): Promise<{
+    action: 'import' | 'improve' | 'reject' | 'manual_review';
+    reasoning: string;
+    improvements?: string[];
+    confidence: number;
+  }> {
     let confidence = 0.5;
     let action: 'import' | 'improve' | 'reject' | 'manual_review' =
       'manual_review';
@@ -880,18 +897,24 @@ export class IntelligentDocImport extends EventEmitter {
 
     // Document recommendations
     if (analysis.fileType === 'document' && analysis.llmAnalysis) {
-      confidence = analysis.llmAnalysis.confidence;
+      const llmAnalysis = analysis.llmAnalysis as {
+        qualityScore: number;
+        completenessScore: number;
+        suggestions: string[];
+        confidence: number;
+      };
+      confidence = llmAnalysis.confidence;
 
       if (
-        analysis.llmAnalysis.qualityScore >= 0.8 &&
-        analysis.llmAnalysis.completenessScore >= 0.8
+        llmAnalysis.qualityScore >= 0.8 &&
+        llmAnalysis.completenessScore >= 0.8
       ) {
         action = 'import';
         reasoning = 'High quality document ready for import';
-      } else if (analysis.llmAnalysis.qualityScore >= 0.6) {
+      } else if (llmAnalysis.qualityScore >= 0.6) {
         action = 'improve';
         reasoning = 'Good document that could benefit from improvements';
-        improvements.push(...analysis.llmAnalysis.suggestions);
+        improvements.push(...llmAnalysis.suggestions);
       } else {
         action = 'manual_review';
         reasoning = 'Document quality below threshold, needs manual review';
@@ -900,7 +923,11 @@ export class IntelligentDocImport extends EventEmitter {
 
     // Code documentation recommendations
     if (analysis.fileType === 'code' && analysis.documentationScore) {
-      const score = analysis.documentationScore.overall;
+      const docScore = analysis.documentationScore as {
+        overall: number;
+        missing: string[];
+      };
+      const score = docScore.overall;
 
       if (score >= 0.9) {
         action = 'import';
@@ -911,7 +938,7 @@ export class IntelligentDocImport extends EventEmitter {
         reasoning = 'Code partially documented, improvements recommended';
         confidence = 0.7;
         improvements.push(
-          `Add documentation for ${analysis.documentationScore.missing.length} missing items`
+          `Add documentation for ${docScore.missing.length} missing items`
         );
       } else {
         action = 'manual_review';
@@ -999,33 +1026,32 @@ export class IntelligentDocImport extends EventEmitter {
 
     // Create gates for files requiring approval
     for (const analysis of classified.requiresApproval) {
-      const gate = new WorkflowGateRequest({
-        id: `doc-approval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        title: `Approve Import: ${analysis.filePath}`,
-        description: `Review and approve import of ${analysis.fileType}: ${analysis.filePath}`,
+      const gateId = `doc-approval-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const gate: WorkflowGateRequest = {
+        // ValidationQuestion base properties
+        id: gateId,
+        type: 'checkpoint',
+        question: `Should we import "${analysis.filePath}" as a ${analysis.documentType || analysis.fileType}?`,
         context: {
           fileAnalysis: analysis,
           recommendations: analysis.recommendations,
           workflowType: 'document_import_approval',
         },
-        validationQuestions: [
-          {
-            question: `Should we import "${analysis.filePath}" as a ${analysis.documentType || analysis.fileType}?`,
-            context: `Analysis: ${analysis.recommendations.reasoning}`,
-            suggestedAnswer:
-              analysis.recommendations.action === 'import' ? 'yes' : 'no',
-            confidence: analysis.recommendations.confidence,
-            rationale: analysis.recommendations.reasoning,
-            alternatives: analysis.recommendations.improvements || [],
-          },
-        ],
+        confidence: analysis.recommendations.confidence,
         priority: analysis.recommendations.confidence > 0.8 ? 'high' : 'medium',
-        escalation: {
-          enabled: true,
-          timeoutMinutes: 60,
-          escalateTo: 'system-admin',
+        validationReason: `Document import approval for ${analysis.filePath}`,
+        expectedImpact: 0.1,
+        
+        // WorkflowGateRequest specific properties
+        workflowContext: {
+          workflowId: 'intelligent-doc-import',
+          stepName: 'approval',
+          businessImpact: 'medium',
+          decisionScope: 'task',
+          stakeholders: ['system-admin'],
         },
-      });
+        gateType: 'approval',
+      };
 
       gates.push(gate);
       this.workflowGates.push(gate);
@@ -1033,27 +1059,32 @@ export class IntelligentDocImport extends EventEmitter {
 
     // Create improvement review gates
     for (const analysis of classified.needsImprovement) {
-      const gate = new WorkflowGateRequest({
-        id: `doc-improve-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        title: `Review Improvements: ${analysis.filePath}`,
-        description: `Review suggested improvements for ${analysis.filePath}`,
+      const gateId = `doc-improve-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const gate: WorkflowGateRequest = {
+        // ValidationQuestion base properties
+        id: gateId,
+        type: 'review',
+        question: `Apply suggested improvements to "${analysis.filePath}"?`,
         context: {
           fileAnalysis: analysis,
           improvements: analysis.recommendations.improvements,
           workflowType: 'document_improvement_review',
         },
-        validationQuestions: [
-          {
-            question: `Apply suggested improvements to "${analysis.filePath}"?`,
-            context: `Improvements: ${analysis.recommendations.improvements?.join(', ')}`,
-            suggestedAnswer: 'yes',
-            confidence: analysis.recommendations.confidence,
-            rationale: 'Improvements will enhance document quality',
-            alternatives: ['Import as-is', 'Manual edit', 'Skip import'],
-          },
-        ],
+        confidence: analysis.recommendations.confidence,
         priority: 'low',
-      });
+        validationReason: `Document improvement review for ${analysis.filePath}`,
+        expectedImpact: 0.05,
+        
+        // WorkflowGateRequest specific properties
+        workflowContext: {
+          workflowId: 'intelligent-doc-import',
+          stepName: 'improvement',
+          businessImpact: 'low',
+          decisionScope: 'task',
+          stakeholders: ['system-admin'],
+        },
+        gateType: 'review',
+      };
 
       gates.push(gate);
       this.workflowGates.push(gate);
@@ -1083,7 +1114,12 @@ export class IntelligentDocImport extends EventEmitter {
     readyForImport: FileAnalysisResult[];
     requiresApproval: FileAnalysisResult[];
     needsImprovement: FileAnalysisResult[];
-  }): Promise<unknown> {
+  }): Promise<{
+    summary: string;
+    keyFindings: string[];
+    suggestedActions: string[];
+    estimatedEffort: 'low' | 'medium' | 'high';
+  }> {
     const total =
       classified.readyForImport.length +
       classified.requiresApproval.length +

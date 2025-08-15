@@ -83,6 +83,24 @@ class AppConfig implements IConfig {
 }
 
 class AppEventBus extends EventEmitter implements IEventBus {
+  emit(event: string, data: unknown): boolean {
+    return super.emit(event, data);
+  }
+
+  emitSystemEvent(event: import('./coordination/core/event-bus.js').SystemEvent): boolean {
+    return super.emit(event.type, event);
+  }
+
+  on(event: string, handler: (data: unknown) => void): this {
+    super.on(event, handler);
+    return this;
+  }
+
+  off(event: string, handler: (data: unknown) => void): this {
+    super.off(event, handler);
+    return this;
+  }
+
   publish(event: string, data: any): void {
     this.emit(event, data);
   }

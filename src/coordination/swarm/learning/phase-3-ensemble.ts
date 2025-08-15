@@ -61,7 +61,7 @@ import type {
 import type {
   CrossSwarmPattern,
   SwarmPerformanceProfile,
-} from '../agents/queen-coordinator.ts';
+} from '../agents/queen-coordinator.js';
 import type {
   LearningResult,
   BestPractice,

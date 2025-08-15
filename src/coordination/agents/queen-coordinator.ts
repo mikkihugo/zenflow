@@ -30,8 +30,15 @@ import type {
   QueenMetrics,
   TaskCompletionData,
   SwarmDegradationData,
-  QueenStatus
+  QueenStatus,
+  AgentStatus,
+  AgentType,
+  AgentId
 } from '../types/queen-types.js';
+import type { AgentPool } from '../../types/agent-types.js';
+import type { AgentEnvironment, AgentState } from '../types/queen-types.js';
+import type { AgentConfig as CompleteAgentConfig } from '../types.js';
+import type { AgentHealth } from '../intelligence/agent-health-monitor.js';
 import { generateId } from '../swarm/core/utils.js';
 import type { SPARCPhase } from '../swarm/sparc/types/sparc-types.js';
 // Strategic Task Coordination (Business Focus Only)
@@ -250,6 +257,9 @@ export class QueenCommander extends EventEmitter {
   private templates = new Map<string, QueenTemplate>();
   private clusters = new Map<string, QueenCluster>();
   private pools = new Map<string, QueenPool>();
+  
+  // Agent tracking (for compatibility with agent management methods)
+  private agents = new Map<string, AgentState>();
 
   // Health monitoring
   private healthChecks = new Map<string, QueenHealth>();
@@ -267,7 +277,7 @@ export class QueenCommander extends EventEmitter {
   >();
   private performanceHistory = new Map<
     string,
-    Array<{ timestamp: Date; metrics: QueenMetrics }>
+    Array<{ timestamp: Date; metrics: AgentMetrics }>
   >();
 
   // SPARC task tracking
@@ -325,7 +335,7 @@ export class QueenCommander extends EventEmitter {
       name: 'Primary Queen Commander',
       maxAgents: 50,
       maxConcurrentQueens: 50,
-      // defaultTimeout: 30000, // Property does not exist on QueenCommanderConfig
+      defaultTimeout: 30000,
       heartbeatInterval: 10000,
       healthCheckInterval: 30000,
       autoRestart: true,
@@ -434,7 +444,7 @@ export class QueenCommander extends EventEmitter {
     this.templates.set('researcher', {
       id: 'researcher-template',
       name: 'Research Agent',
-      type: 'researcher' as QueenType,
+      type: 'researcher' as const,
       capabilities: {
         codeGeneration: false,
         // codeReview: false, // Property does not exist on QueenCapabilities
@@ -489,7 +499,7 @@ export class QueenCommander extends EventEmitter {
     this.templates.set('coder', {
       id: 'coder-template',
       name: 'Developer Agent',
-      type: 'coder' as QueenType,
+      type: 'coder' as const,
       capabilities: {
         codeGeneration: true,
         // codeReview: true, // Property does not exist on QueenCapabilities
@@ -554,7 +564,7 @@ export class QueenCommander extends EventEmitter {
     this.templates.set('analyst', {
       id: 'analyst-template',
       name: 'Analyzer Agent',
-      type: 'analyst' as QueenType,
+      type: 'analyst' as const,
       capabilities: {
         codeGeneration: false,
         // codeReview: true, // Property does not exist on QueenCapabilities
@@ -1295,12 +1305,12 @@ export class QueenCommander extends EventEmitter {
   ): Promise<void> {
     const swarmId = taskData.swarmId;
     const resourceUsage = taskData.metrics?.resourceUsage || {};
-    const performance = taskData.metrics?.qualityScore || 0.8;
-    const duration = taskData.duration || 0;
+    const performance = Number(taskData.metrics?.qualityScore) || 0.8;
+    const duration = Number(taskData.duration) || 0;
 
     // Check if this task used resources efficiently
-    const cpuEfficiency = performance / (resourceUsage.cpu || 0.5);
-    const memoryEfficiency = performance / (resourceUsage.memory || 0.5);
+    const cpuEfficiency = performance / (Number(resourceUsage.cpu) || 0.5);
+    const memoryEfficiency = performance / (Number(resourceUsage.memory) || 0.5);
     const timeEfficiency = performance / (duration / 1000 / 60); // performance per minute
 
     // If efficiency is high, this could be a good optimization strategy
@@ -1439,7 +1449,7 @@ export class QueenCommander extends EventEmitter {
     }
 
     // Request Learning Orchestrator to consider learning mode change
-    this.eventBus.emit('queen:coordinator:learning:request', {
+    this.eventBus.emitSystemEvent({
       id: `learning-request-${swarmId}-${Date.now()}`,
       type: 'learning:request',
       source: 'queen-coordinator',
@@ -1460,8 +1470,9 @@ export class QueenCommander extends EventEmitter {
   private async handleLearningCoordinationRequest(
     data: unknown
   ): Promise<void> {
-    const requestType = data.requestType;
-    const swarmIds = data.swarmIds || [];
+    const requestData = data as any;
+    const requestType = requestData.requestType;
+    const swarmIds = requestData.swarmIds || [];
 
     this.logger.info(
       `Handling learning coordination request: ${requestType} for ${swarmIds.length} swarms`
@@ -1505,7 +1516,7 @@ export class QueenCommander extends EventEmitter {
     }> = [];
 
     // Analyze each swarm performance profile for improvement opportunities
-    for (const [swarmId, profile] of this.swarmPerformanceProfiles.entries()) {
+    for (const [swarmId, profile] of Array.from(this.swarmPerformanceProfiles.entries())) {
       if (profile.averagePerformance < 0.8) {
         // Find patterns that could help this swarm
         const helpfulPatterns = Array.from(
@@ -1588,12 +1599,13 @@ export class QueenCommander extends EventEmitter {
   // === TIER 2 UTILITY METHODS ===
 
   private identifyBottleneckFromTaskData(taskData: TaskCompletionData): string | null {
-    if (taskData.metrics?.resourceUsage?.cpu > 0.9) return 'cpu_bottleneck';
-    if (taskData.metrics?.resourceUsage?.memory > 0.9)
+    if (Number(taskData.metrics?.resourceUsage?.cpu) > 0.9) return 'cpu_bottleneck';
+    if (Number(taskData.metrics?.resourceUsage?.memory) > 0.9)
       return 'memory_bottleneck';
-    if (taskData.duration > taskData.estimatedDuration * 2)
+    const estimatedDuration = Number((taskData as any).estimatedDuration) || 0;
+    if (Number(taskData.duration) > estimatedDuration * 2)
       return 'time_bottleneck';
-    if (taskData.agentErrors?.length > 0)
+    if ((taskData as any).agentErrors?.length > 0)
       return 'agent_coordination_bottleneck';
     return null;
   }
@@ -1626,7 +1638,7 @@ export class QueenCommander extends EventEmitter {
       { cpu: number; memory: number; efficiency: number }
     > = {};
 
-    for (const [swarmId, profile] of this.swarmPerformanceProfiles.entries()) {
+    for (const [swarmId, profile] of Array.from(this.swarmPerformanceProfiles.entries())) {
       const cpu = profile.optimalResourceAllocation.cpu;
       const memory = profile.optimalResourceAllocation.memory;
       const efficiency = profile.averagePerformance;
@@ -1645,7 +1657,8 @@ export class QueenCommander extends EventEmitter {
     const opportunities: unknown[] = [];
 
     // Find overutilized swarms that could benefit from load balancing
-    Object.entries(resourceAnalysis.swarmUtilizations).forEach(
+    const resourceAnalysisTyped = resourceAnalysis as any;
+    Object.entries(resourceAnalysisTyped.swarmUtilizations || {}).forEach(
       ([swarmId, utilization]: [string, any]) => {
         if (utilization.cpu > 0.8 || utilization.memory > 0.8) {
           if (utilization.efficiency < 0.7) {
@@ -1665,28 +1678,36 @@ export class QueenCommander extends EventEmitter {
 
   private validateResourceOptimization(optimization: unknown): boolean {
     // Simple validation - in production this would be more sophisticated
-    return optimization.expectedGain > 0.1 && optimization.swarmId;
+    const opt = optimization as any;
+    return opt.expectedGain > 0.1 && opt.swarmId;
   }
 
   private async applyResourceOptimization(
     optimization: unknown
   ): Promise<void> {
+    const opt = optimization as any;
     this.logger.info(
-      `Applying resource optimization: ${optimization.type} for swarm ${optimization.swarmId}`
+      `Applying resource optimization: ${opt.type} for swarm ${opt.swarmId}`
     );
 
     // Emit optimization event for swarm system to handle
-    this.eventBus.emit('queen:resource:optimization', {
-      swarmId: optimization.swarmId,
-      optimizationType: optimization.type,
-      parameters: optimization,
-      coordinatedBy: 'queen-coordinator',
+    this.eventBus.emitSystemEvent({
+      id: `opt-${Date.now()}`,
+      type: 'resource:optimization',
+      source: 'queen-coordinator',
+      timestamp: new Date(),
+      payload: {
+        swarmId: opt.swarmId,
+        optimizationType: opt.type,
+        parameters: optimization,
+        coordinatedBy: 'queen-coordinator',
+      },
     });
   }
 
   private async analyzePatternEffectiveness(): Promise<void> {
     // Update effectiveness scores based on recent usage
-    for (const [patternId, pattern] of this.crossSwarmPatterns.entries()) {
+    for (const [patternId, pattern] of Array.from(this.crossSwarmPatterns.entries())) {
       if (pattern.usageCount > 5) {
         // Pattern has been used enough to have reliable effectiveness data
         // In a real system, we would gather actual performance data
@@ -1700,7 +1721,7 @@ export class QueenCommander extends EventEmitter {
     for (const [
       strategyId,
       strategy,
-    ] of this.resourceOptimizationStrategies.entries()) {
+    ] of Array.from(this.resourceOptimizationStrategies.entries())) {
       const recentResults = strategy.validationResults.slice(-5);
       if (recentResults.length > 0) {
         const avgSuccess =
@@ -1717,11 +1738,17 @@ export class QueenCommander extends EventEmitter {
   private async applyAdaptiveResourceAllocation(
     recommendations: unknown[]
   ): Promise<void> {
-    for (const rec of recommendations.filter((r) => r.confidence > 0.7)) {
-      this.eventBus.emit('queen:adaptive:resource:allocation', {
-        swarmId: rec.swarmId,
-        recommendation: rec,
-        coordinatedBy: 'queen-coordinator',
+    for (const rec of recommendations.filter((r: any) => r.confidence > 0.7)) {
+      this.eventBus.emitSystemEvent({
+        id: `alloc-${Date.now()}`,
+        type: 'adaptive:resource:allocation',
+        source: 'queen-coordinator',
+        timestamp: new Date(),
+        payload: {
+          swarmId: (rec as any).swarmId,
+          recommendation: rec,
+          coordinatedBy: 'queen-coordinator',
+        },
       });
     }
   }
@@ -1733,11 +1760,17 @@ export class QueenCommander extends EventEmitter {
     pattern.usageCount++;
     pattern.lastUsed = new Date();
 
-    this.eventBus.emit('queen:cross:swarm:pattern:applied', {
-      swarmId,
-      patternId: pattern.patternId,
-      patternType: pattern.patternType,
-      expectedEffectiveness: pattern.effectiveness,
+    this.eventBus.emitSystemEvent({
+      id: `pattern-${Date.now()}`,
+      type: 'cross:swarm:pattern:applied',
+      source: 'queen-coordinator',
+      timestamp: new Date(),
+      payload: {
+        swarmId,
+        patternId: pattern.patternId,
+        patternType: pattern.patternType,
+        expectedEffectiveness: pattern.effectiveness,
+      },
     });
   }
 
@@ -1747,9 +1780,15 @@ export class QueenCommander extends EventEmitter {
     ).filter((pattern) => pattern.effectiveness > 0.8);
 
     for (const swarmId of swarmIds) {
-      this.eventBus.emit(`swarm:${swarmId}:patterns:shared`, {
-        patterns: applicablePatterns,
-        sharedBy: 'queen-coordinator',
+      this.eventBus.emitSystemEvent({
+        id: `patterns-shared-${swarmId}-${Date.now()}`,
+        type: `swarm:${swarmId}:patterns:shared`,
+        source: 'queen-coordinator',
+        timestamp: new Date(),
+        payload: {
+          patterns: applicablePatterns,
+          sharedBy: 'queen-coordinator',
+        },
       });
     }
   }
@@ -1764,10 +1803,16 @@ export class QueenCommander extends EventEmitter {
       const utilization = totalResources.swarmUtilizations[swarmId];
       if (utilization && utilization.cpu > averageUtilization * 1.2) {
         // This swarm is over-utilizing, suggest rebalancing
-        this.eventBus.emit(`swarm:${swarmId}:resource:rebalance`, {
-          currentUtilization: utilization,
-          targetUtilization: averageUtilization,
-          coordinatedBy: 'queen-coordinator',
+        this.eventBus.emitSystemEvent({
+          id: `resource-rebalance-${swarmId}-${Date.now()}`,
+          type: `swarm:${swarmId}:resource:rebalance`,
+          source: 'queen-coordinator',
+          timestamp: new Date(),
+          payload: {
+            currentUtilization: utilization,
+            targetUtilization: averageUtilization,
+            coordinatedBy: 'queen-coordinator',
+          },
         });
       }
     }
@@ -1777,13 +1822,19 @@ export class QueenCommander extends EventEmitter {
     swarmIds: string[]
   ): Promise<void> {
     // Create collaborative learning session between swarms
-    this.eventBus.emit('queen:collaborative:learning:session', {
-      participatingSwarms: swarmIds,
-      sessionType: 'cross_swarm_pattern_sharing',
-      patterns: Array.from(this.crossSwarmPatterns.values()),
-      profiles: Array.from(this.swarmPerformanceProfiles.values()).filter(
-        (profile) => swarmIds.includes(profile.swarmId)
-      ),
+    this.eventBus.emitSystemEvent({
+      id: `collaborative-learning-${Date.now()}`,
+      type: 'queen:collaborative:learning:session',
+      source: 'queen-coordinator',
+      timestamp: new Date(),
+      payload: {
+        participatingSwarms: swarmIds,
+        sessionType: 'cross_swarm_pattern_sharing',
+        patterns: Array.from(this.crossSwarmPatterns.values()),
+        profiles: Array.from(this.swarmPerformanceProfiles.values()).filter(
+          (profile) => swarmIds.includes(profile.swarmId)
+        ),
+      },
     });
   }
 
@@ -1802,7 +1853,7 @@ export class QueenCommander extends EventEmitter {
     const oneMonthAgo = new Date();
     oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
 
-    for (const [patternId, pattern] of this.crossSwarmPatterns.entries()) {
+    for (const [patternId, pattern] of Array.from(this.crossSwarmPatterns.entries())) {
       if (pattern.lastUsed < oneMonthAgo && pattern.usageCount < 3) {
         this.crossSwarmPatterns.delete(patternId);
       }
@@ -1824,11 +1875,13 @@ export class QueenCommander extends EventEmitter {
 
   private async loadCoordinationLearningData(): Promise<void> {
     try {
-      const learningData = await this.memory.coordinate({
+      const decision = await this.memory.coordinate({
         type: 'read',
         sessionId: 'queen-coordinator-learning',
         target: 'coordination:learning:data',
       });
+
+      const learningData = decision.metadata?.data as any;
 
       if (learningData) {
         // Restore learning data from memory
@@ -1973,7 +2026,7 @@ export class QueenCommander extends EventEmitter {
     templateName: string,
     overrides: {
       name?: string;
-      config?: Partial<AgentConfig>;
+      config?: Partial<CompleteAgentConfig>;
       environment?: Partial<AgentEnvironment>;
     } = {}
   ): Promise<string> {
@@ -1990,18 +2043,17 @@ export class QueenCommander extends EventEmitter {
     const swarmId = 'default'; // Could be parameterized
 
     const agent: AgentState = {
-      id: { id: agentId, swarmId, type: template.type, instance: 1 },
+      id: { id: agentId, swarmId, type: template.type as AgentType, instance: 1 },
       name: overrides.name || `${template.name}-${agentId.slice(-8)}`,
-      type: template.type,
+      type: template.type as AgentType,
       status: 'initializing',
       capabilities: { ...template.capabilities },
       metrics: this.createDefaultMetrics(),
       workload: 0,
       health: 1.0,
-      load: 0,
       config: {
         name: overrides.name || `${template.name}-${agentId.slice(-8)}`,
-        type: template.type,
+        type: template.type as AgentType,
         swarmId,
         autonomyLevel:
           template.config.autonomyLevel ??
@@ -2021,9 +2073,15 @@ export class QueenCommander extends EventEmitter {
         trustedAgents: template.config.trustedAgents ?? [],
         expertise: template.config.expertise ?? {},
         preferences: template.config.preferences ?? {},
+        // Required properties for CompleteAgentConfig compatibility
+        specializations: [],
+        preferredTaskTypes: [template.type],
+        timeout: 30000,
+        retryAttempts: 3,
         ...overrides.config,
       },
       environment: {
+        platform: template.environment.platform ?? process.platform,
         runtime:
           template.environment.runtime ??
           this.config.environmentDefaults.runtime,
@@ -2041,13 +2099,15 @@ export class QueenCommander extends EventEmitter {
         credentials: template.environment.credentials ?? {},
         availableTools: template.environment.availableTools ?? [],
         toolConfigs: template.environment.toolConfigs ?? {},
+        resources: template.environment.resources ?? {
+          availableMemory: 1024,
+          availableCpu: 4,
+          availableDisk: 1000
+        },
         ...overrides.environment,
       },
       lastHeartbeat: new Date(),
-      taskHistory: [],
-      errorHistory: [],
-      childAgents: [],
-      collaborators: [],
+      errors: [],
     };
 
     this.agents.set(agentId, agent);
@@ -2236,19 +2296,19 @@ export class QueenCommander extends EventEmitter {
     }
 
     const poolId = generateId('pool');
-    const pool: AgentPool = {
+    const pool: QueenPool = {
       id: poolId,
       name,
       type: template.type,
-      minSize: config?.minSize,
-      maxSize: config?.maxSize,
+      capacity: config?.maxSize || 10,
+      available: 0,
+      queens: [],
+      minSize: config?.minSize || 1,
+      maxSize: config?.maxSize || 10,
       currentSize: 0,
+      template,
       availableAgents: [],
       busyAgents: [],
-      template,
-      autoScale: config?.autoScale,
-      scaleUpThreshold: config?.scaleUpThreshold || 0.8,
-      scaleDownThreshold: config?.scaleDownThreshold || 0.3,
     };
 
     this.pools.set(poolId, pool);
@@ -2259,7 +2319,12 @@ export class QueenCommander extends EventEmitter {
         name: `${name}-${i + 1}`,
       });
       await this.startAgent(agentId);
-      pool.availableAgents.push(agentId);
+      pool.availableAgents.push({ 
+        id: agentId, 
+        swarmId: 'default', 
+        type: template.type as AgentType, 
+        instance: i + 1 
+      });
       pool.currentSize++;
     }
 
@@ -2295,15 +2360,20 @@ export class QueenCommander extends EventEmitter {
           name: `${pool.name}-${currentSize + i + 1}`,
         });
         await this.startAgent(agentId);
-        pool.availableAgents.push(agentId);
+        pool.availableAgents.push({ 
+          id: agentId, 
+          swarmId: 'default', 
+          type: pool.template.type as AgentType, 
+          instance: currentSize + i + 1 
+        });
       }
     } else if (delta < 0) {
       // Scale down
       const agentsToRemove = pool.availableAgents.slice(0, Math.abs(delta));
       for (const agentId of agentsToRemove) {
-        await this.removeAgent(agentId);
+        await this.removeAgent(agentId.id);
         pool.availableAgents = pool.availableAgents.filter(
-          (a: unknown) => a !== agentId
+          (a: any) => a.id !== (agentId as any).id
         );
       }
     }
@@ -2363,24 +2433,27 @@ export class QueenCommander extends EventEmitter {
     try {
       // Check responsiveness
       const responsiveness = await this.checkResponsiveness(agentId);
-      health.components.responsiveness = responsiveness;
+      health.components.responsiveness = this.scoreToStatus(responsiveness);
 
       // Check performance
       const performance = this.calculatePerformanceScore(agentId);
-      health.components.performance = performance;
+      health.components.performance = this.scoreToStatus(performance);
 
       // Check reliability
       const reliability = this.calculateReliabilityScore(agentId);
-      health.components.reliability = reliability;
+      health.components.reliability = this.scoreToStatus(reliability);
 
       // Check resource usage
       const resourceScore = this.calculateResourceScore(agentId);
-      health.components.resourceUsage = resourceScore;
+      health.components.resourceUsage = this.scoreToStatus(resourceScore);
 
       // Calculate overall health
       const overall =
         (responsiveness + performance + reliability + resourceScore) / 4;
-      health.overall = overall;
+      health.overall = {
+        status: this.scoreToStatus(overall),
+        score: overall
+      };
       health.lastCheck = now;
 
       // Update agent health
@@ -2399,7 +2472,10 @@ export class QueenCommander extends EventEmitter {
       }
     } catch (error) {
       this.logger.error('Health check failed', { agentId, error });
-      health.overall = 0 as number;
+      health.overall = {
+        status: 'unhealthy',
+        score: 0
+      };
       health.lastCheck = now;
     }
   }
@@ -2465,13 +2541,13 @@ export class QueenCommander extends EventEmitter {
     return Math.max(0, (memoryScore + cpuScore + diskScore) / 3);
   }
 
-  private detectHealthIssues(_agentId: string, health: AgentHealth): void {
+  private detectHealthIssues(_agentId: string, health: QueenHealth): void {
     const issues: HealthIssue[] = [];
 
-    if (health.components.responsiveness < 0.5) {
+    if (health.components.responsiveness === 'unhealthy') {
       issues.push({
         type: 'communication',
-        severity: health.components.responsiveness < 0.2 ? 'critical' : 'high',
+        severity: 'critical',
         message: 'Agent is not responding to heartbeats',
         timestamp: new Date(),
         resolved: false,
@@ -2479,10 +2555,10 @@ export class QueenCommander extends EventEmitter {
       });
     }
 
-    if (health.components.performance < 0.6) {
+    if (health.components.performance === 'unhealthy' || health.components.performance === 'degraded') {
       issues.push({
         type: 'performance',
-        severity: health.components.performance < 0.3 ? 'high' : 'medium',
+        severity: health.components.performance === 'unhealthy' ? 'high' : 'medium',
         message: 'Agent performance is below expected levels',
         timestamp: new Date(),
         resolved: false,
@@ -2490,10 +2566,10 @@ export class QueenCommander extends EventEmitter {
       });
     }
 
-    if (health.components.resourceUsage < 0.4) {
+    if (health.components.resourceUsage === 'unhealthy') {
       issues.push({
         type: 'resource',
-        severity: health.components.resourceUsage < 0.2 ? 'critical' : 'high',
+        severity: 'critical',
         message: 'Agent resource usage is critically high',
         timestamp: new Date(),
         resolved: false,
@@ -2501,7 +2577,7 @@ export class QueenCommander extends EventEmitter {
       });
     }
 
-    health.issues = issues;
+    health.issues = issues.map(issue => issue.message);
   }
 
   private checkHeartbeats(): void {
@@ -2523,6 +2599,7 @@ export class QueenCommander extends EventEmitter {
 
         agent.status = 'error';
         this.addAgentError(agentId, {
+          code: 'HEARTBEAT_TIMEOUT',
           timestamp: new Date(),
           type: 'heartbeat_timeout',
           message: 'Agent failed to send heartbeat within timeout period',
@@ -2600,13 +2677,19 @@ export class QueenCommander extends EventEmitter {
       );
 
       // Notify THE COLLECTIVE of successful coordination
-      this.eventBus.emit('queen:sparc:task-coordinated', {
-        queenId: assignment.queenId,
-        taskId: assignment.task.id,
-        projectId: assignment.task.projectId,
-        phase: assignment.task.sparcPhase,
-        swarmAssignments,
-        status: 'coordinated',
+      this.eventBus.emitSystemEvent({
+        id: `sparc-task-coordinated-${assignment.task.id}-${Date.now()}`,
+        type: 'queen:sparc:task-coordinated',
+        source: 'queen-coordinator',
+        timestamp: new Date(),
+        payload: {
+          queenId: assignment.queenId,
+          taskId: assignment.task.id,
+          projectId: assignment.task.projectId,
+          phase: assignment.task.sparcPhase,
+          swarmAssignments,
+          status: 'coordinated',
+        },
       });
     } catch (error) {
       this.logger.error(`❌ Queen failed to coordinate SPARC task`, {
@@ -2616,12 +2699,18 @@ export class QueenCommander extends EventEmitter {
       });
 
       // Notify THE COLLECTIVE of coordination failure
-      this.eventBus.emit('queen:sparc:task-failed', {
-        queenId: assignment.queenId,
-        taskId: assignment.task.id,
-        projectId: assignment.task.projectId,
-        phase: assignment.task.sparcPhase,
-        error: error instanceof Error ? error.message : String(error),
+      this.eventBus.emitSystemEvent({
+        id: `sparc-task-failed-${assignment.task.id}-${Date.now()}`,
+        type: 'queen:sparc:task-failed',
+        source: 'queen-coordinator',
+        timestamp: new Date(),
+        payload: {
+          queenId: assignment.queenId,
+          taskId: assignment.task.id,
+          projectId: assignment.task.projectId,
+          phase: assignment.task.sparcPhase,
+          error: error instanceof Error ? error.message : String(error),
+        },
       });
     }
   }
@@ -2844,7 +2933,7 @@ export class QueenCommander extends EventEmitter {
    * Check if agent has required capabilities
    */
   private hasRequiredCapabilities(
-    agent: unknown,
+    agent: AgentState,
     requiredCapabilities: string[]
   ): boolean {
     return requiredCapabilities.some(
@@ -2883,12 +2972,18 @@ export class QueenCommander extends EventEmitter {
     });
 
     // Emit swarm creation event to be handled by swarm orchestration system
-    this.eventBus.emit('queen:create-sparc-swarm', {
-      swarmId: assignment.swarmId,
-      sparcTask,
-      assignment,
-      methodology: 'SPARC',
-      coordinatedBy: 'queen',
+    this.eventBus.emitSystemEvent({
+      id: `create-sparc-swarm-${assignment.swarmId}-${Date.now()}`,
+      type: 'queen:create-sparc-swarm',
+      source: 'queen-coordinator',
+      timestamp: new Date(),
+      payload: {
+        swarmId: assignment.swarmId,
+        sparcTask,
+        assignment,
+        methodology: 'SPARC',
+        coordinatedBy: 'queen',
+      },
     });
 
     // For now, simulate swarm execution
@@ -3005,6 +3100,7 @@ export class QueenCommander extends EventEmitter {
 
     if (code !== 0 && code !== null) {
       this.addAgentError(agentId, {
+        code: 'PROCESS_EXIT',
         timestamp: new Date(),
         type: 'process_exit',
         message: `Agent process exited with code ${code}`,
@@ -3022,6 +3118,7 @@ export class QueenCommander extends EventEmitter {
     this.logger.error('Agent process error', { agentId, error });
 
     this.addAgentError(agentId, {
+      code: 'PROCESS_ERROR',
       timestamp: new Date(),
       type: 'process_error',
       message: error instanceof Error ? error.message : String(error),
@@ -3106,15 +3203,21 @@ export class QueenCommander extends EventEmitter {
     this.resourceUsage.set(agentId, usage);
   }
 
+  private scoreToStatus(score: number): 'healthy' | 'degraded' | 'unhealthy' {
+    if (score >= 0.8) return 'healthy';
+    if (score >= 0.5) return 'degraded';
+    return 'unhealthy';
+  }
+
   private addAgentError(agentId: string, error: AgentError): void {
     const agent = this.agents.get(agentId);
     if (!agent) return;
 
-    agent.errorHistory.push(error);
+    agent.errors.push(error);
 
     // Keep only last 50 errors
-    if (agent.errorHistory.length > 50) {
-      agent.errorHistory.shift();
+    if (agent.errors.length > 50) {
+      agent.errors.shift();
     }
   }
 
@@ -3145,19 +3248,28 @@ export class QueenCommander extends EventEmitter {
     };
   }
 
-  private createDefaultHealth(agentId: string): AgentHealth {
+  private createDefaultHealth(agentId: string): QueenHealth {
     return {
-      agentId,
-      overall: 1.0,
-      components: {
-        responsiveness: 1.0,
-        performance: 1.0,
-        reliability: 1.0,
-        resourceUsage: 1.0,
+      queenId: agentId,
+      status: 'healthy',
+      lastCheck: new Date(),
+      metrics: {
+        cpuUsage: 0,
+        memoryUsage: 0,
+        responseTime: 0,
+        errorRate: 0,
       },
       issues: [],
-      lastCheck: new Date(),
-      trend: 'stable',
+      components: {
+        responsiveness: 'healthy',
+        performance: 'healthy',
+        reliability: 'healthy',
+        resourceUsage: 'healthy',
+      },
+      overall: {
+        status: 'healthy',
+        score: 1.0,
+      },
     };
   }
 
@@ -3165,17 +3277,17 @@ export class QueenCommander extends EventEmitter {
     // Remove from pools
     for (const pool of Array.from(this.pools.values())) {
       pool.availableAgents = pool.availableAgents.filter(
-        (a: unknown) => a.id !== agentId
+        (a: AgentId) => a.id !== agentId
       );
       pool.busyAgents = pool.busyAgents.filter(
-        (a: unknown) => a.id !== agentId
+        (a: AgentId) => a.id !== agentId
       );
       pool.currentSize = pool.availableAgents.length + pool.busyAgents.length;
     }
 
     // Remove from clusters
     for (const cluster of Array.from(this.clusters.values())) {
-      cluster.agents = cluster.agents.filter((a: unknown) => a.id !== agentId);
+      cluster.agents = cluster.agents.filter((a: any) => a.id !== agentId);
     }
   }
 
@@ -3229,19 +3341,19 @@ export class QueenCommander extends EventEmitter {
     );
   }
 
-  getAgentHealth(agentId: string): AgentHealth | undefined {
+  getAgentHealth(agentId: string): QueenHealth | undefined {
     return this.healthChecks.get(agentId);
   }
 
-  getPool(poolId: string): AgentPool | undefined {
+  getPool(poolId: string): QueenPool | undefined {
     return this.pools.get(poolId);
   }
 
-  getAllPools(): AgentPool[] {
+  getAllPools(): QueenPool[] {
     return Array.from(this.pools.values());
   }
 
-  getAgentTemplates(): AgentTemplate[] {
+  getAgentTemplates(): QueenTemplate[] {
     return Array.from(this.templates.values());
   }
 
@@ -3257,9 +3369,15 @@ export class QueenCommander extends EventEmitter {
     const agents = Array.from(this.agents.values());
     const healthChecks = Array.from(this.healthChecks.values());
 
-    const healthyAgents = healthChecks.filter((h) => h.overall > 0.7).length;
+    const healthyAgents = healthChecks.filter((h) => {
+      const overallScore = typeof h.overall === 'object' ? h.overall.score : h.overall;
+      return typeof overallScore === 'number' && overallScore > 0.7;
+    }).length;
     const averageHealth =
-      healthChecks.reduce((sum, h) => sum + h.overall, 0) /
+      healthChecks.reduce((sum, h) => {
+        const overallScore = typeof h.overall === 'object' ? h.overall.score : h.overall;
+        return sum + (typeof overallScore === 'number' ? overallScore : 0);
+      }, 0) /
         healthChecks.length || 1;
 
     const resourceUsages = Array.from(this.resourceUsage.values());

@@ -266,11 +266,12 @@ export class AssertionHelpers {
     expectedStatus: number,
     expectedHeaders?: Record<string, string>
   ): void {
-    expect(response?.status).toBe(expectedStatus);
+    const httpResponse = response as { status: number; headers?: Record<string, string> };
+    expect(httpResponse.status).toBe(expectedStatus);
 
-    if (expectedHeaders) {
+    if (expectedHeaders && httpResponse.headers) {
       Object.entries(expectedHeaders).forEach(([header, value]) => {
-        expect(response?.headers?.[header.toLowerCase()]).toBe(value);
+        expect(httpResponse.headers?.[header.toLowerCase()]).toBe(value);
       });
     }
   }
@@ -326,22 +327,29 @@ export class AssertionHelpers {
       completion?: number;
     }
   ): void {
+    const metrics = swarmMetrics as {
+      activeAgents?: number;
+      topology?: string;
+      efficiency?: number;
+      completionRate?: number;
+    };
+
     if (expectedPatterns.agentCount !== undefined) {
-      expect(swarmMetrics.activeAgents).toBe(expectedPatterns.agentCount);
+      expect(metrics.activeAgents).toBe(expectedPatterns.agentCount);
     }
 
     if (expectedPatterns.topology) {
-      expect(swarmMetrics.topology).toBe(expectedPatterns.topology);
+      expect(metrics.topology).toBe(expectedPatterns.topology);
     }
 
     if (expectedPatterns.efficiency !== undefined) {
-      expect(swarmMetrics.efficiency).toBeGreaterThanOrEqual(
+      expect(metrics.efficiency).toBeGreaterThanOrEqual(
         expectedPatterns.efficiency
       );
     }
 
     if (expectedPatterns.completion !== undefined) {
-      expect(swarmMetrics.completionRate).toBeGreaterThanOrEqual(
+      expect(metrics.completionRate).toBeGreaterThanOrEqual(
         expectedPatterns.completion
       );
     }
@@ -357,7 +365,8 @@ export class AssertionHelpers {
     mock: unknown,
     expectedSequence: { method: string; args?: unknown[] }[]
   ): void {
-    const interactions = mock.__interactions || [];
+    const mockObj = mock as { getInvocations?: () => { method: string; args?: unknown[] }[] };
+    const interactions = (mock as any).__interactions || [];
 
     expect(interactions).toHaveLength(expectedSequence.length);
 
@@ -460,6 +469,72 @@ export class AssertionHelpers {
 
   private sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  /**
+   * Static methods for direct access (for backward compatibility)
+   */
+  static toMeetPerformanceThreshold(
+    value: number,
+    threshold: number,
+    metric: string = 'performance'
+  ): void {
+    expect(value).toBeLessThanOrEqual(threshold);
+  }
+
+  static toBeApproximately(
+    actual: number,
+    expected: number,
+    precision: number = 2
+  ): void {
+    expect(actual).toBeCloseTo(expected, precision);
+  }
+
+  static toContainElementsInAnyOrder<T>(
+    actual: T[],
+    expected: T[]
+  ): void {
+    expected.forEach(item => {
+      expect(actual).toContain(item);
+    });
+    expect(actual).toHaveLength(expected.length);
+  }
+
+  static toSatisfyMathematicalProperty(
+    value: number,
+    property: string
+  ): void {
+    switch (property) {
+      case 'positive':
+        expect(value).toBeGreaterThan(0);
+        break;
+      case 'negative':
+        expect(value).toBeLessThan(0);
+        break;
+      case 'even':
+        expect(value % 2).toBe(0);
+        break;
+      case 'odd':
+        expect(value % 2).toBe(1);
+        break;
+      default:
+        throw new Error(`Unknown mathematical property: ${property}`);
+    }
+  }
+
+  static async toEventuallyBeTrue(
+    condition: () => boolean | Promise<boolean>,
+    timeout: number = 5000
+  ): Promise<void> {
+    const start = Date.now();
+    while (Date.now() - start < timeout) {
+      const result = await condition();
+      if (result) {
+        return;
+      }
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    throw new Error(`Condition did not become true within ${timeout}ms`);
   }
 }
 
