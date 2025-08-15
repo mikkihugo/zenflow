@@ -45,9 +45,36 @@ interface DatabaseAdapter {
 }
 
 /**
- * Base repository implementation that adapts to different database types.
- *
- * @template T The entity type this repository manages.
+ * Base Data Access Object (DAO) with embedded Query DSL.
+ * 
+ * This class provides:
+ * - Entity mapping (TypeScript objects ↔ database rows)
+ * - Query DSL (buildFindByQuery, buildWhereClause, etc.) 
+ * - CRUD operations with type safety
+ * - SQL injection protection through parameter binding
+ * - Database adapter abstraction
+ * 
+ * @template T The entity type this DAO manages.
+ * @example Basic Usage
+ * ```typescript
+ * class UserDao extends BaseDao<User> {
+ *   constructor(adapter: DatabaseAdapter, logger: ILogger) {
+ *     super(adapter, 'users', logger);
+ *   }
+ *   
+ *   protected mapEntityToRow(entity: Partial<User>) {
+ *     return { name: entity.name, email: entity.email };
+ *   }
+ *   
+ *   protected mapRowToEntity(row: any): User {
+ *     return { id: row.id, name: row.name, email: row.email };
+ *   }
+ * }
+ * 
+ * // Usage
+ * const userDao = new UserDao(sqliteAdapter, logger);
+ * const users = await userDao.findBy({ status: 'active' }, { limit: 10 });
+ * ```
  * @example
  */
 export abstract class BaseDao<T> implements IRepository<T> {
@@ -59,9 +86,47 @@ export abstract class BaseDao<T> implements IRepository<T> {
   ) {}
 
   /**
-   * Abstract methods that must be implemented by subclasses.
+   * Abstract entity mapping methods - must be implemented by subclasses.
+   * 
+   * These methods provide the bridge between TypeScript entities and database rows,
+   * handling field name mapping, type conversion, and data transformation.
+   */
+  
+  /**
+   * Convert database row to TypeScript entity.
+   * 
+   * @param row Raw database row object
+   * @returns Typed entity object
+   * @example
+   * ```typescript
+   * protected mapRowToEntity(row: any): User {
+   *   return {
+   *     id: row.id,
+   *     firstName: row.first_name, // Handle snake_case → camelCase
+   *     email: row.email,
+   *     createdAt: new Date(row.created_at) // Handle date conversion
+   *   };
+   * }
+   * ```
    */
   protected abstract mapRowToEntity(row: unknown): T;
+  
+  /**
+   * Convert TypeScript entity to database row.
+   * 
+   * @param entity Partial entity object (for updates/inserts)
+   * @returns Database row object with proper field names
+   * @example
+   * ```typescript
+   * protected mapEntityToRow(entity: Partial<User>) {
+   *   return {
+   *     first_name: entity.firstName, // Handle camelCase → snake_case
+   *     email: entity.email,
+   *     created_at: entity.createdAt?.toISOString() // Handle date conversion
+   *   };
+   * }
+   * ```
+   */
   protected abstract mapEntityToRow(
     entity: Partial<T>
   ): Record<string, unknown>;
@@ -320,6 +385,34 @@ export abstract class BaseDao<T> implements IRepository<T> {
     };
   }
 
+  /**
+   * 🔧 Query DSL: Build SELECT query with WHERE, ORDER BY, and LIMIT clauses.
+   * 
+   * This method constructs type-safe SELECT queries using the embedded DSL.
+   * It handles parameter binding to prevent SQL injection.
+   * 
+   * @param criteria Entity fields to filter by (becomes WHERE clause)
+   * @param options Query options (sorting, pagination, etc.)
+   * @returns Object with SQL string and parameter array
+   * 
+   * @example Generated SQL
+   * ```sql
+   * SELECT * FROM users 
+   * WHERE status = ? AND age > ? 
+   * ORDER BY created_at DESC 
+   * LIMIT 10 OFFSET 0
+   * ```
+   * 
+   * @example Usage
+   * ```typescript
+   * const query = this.buildFindByQuery(
+   *   { status: 'active', age: 18 },
+   *   { sort: [{ field: 'createdAt', direction: 'desc' }], limit: 10 }
+   * );
+   * // query.sql = "SELECT * FROM users WHERE status = ? AND age = ? ORDER BY created_at DESC LIMIT 10"
+   * // query.params = ['active', 18]
+   * ```
+   */
   protected buildFindByQuery(
     criteria: Partial<T>,
     options?: QueryOptions
@@ -355,6 +448,27 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params: [] };
   }
 
+  /**
+   * 🔧 Query DSL: Build INSERT query for entity creation.
+   * 
+   * Constructs parameterized INSERT statements with proper field mapping.
+   * Automatically handles primary key exclusion and parameter binding.
+   * 
+   * @param entity Entity data (without ID - auto-generated)
+   * @returns Object with INSERT SQL and parameter array
+   * 
+   * @example Generated SQL
+   * ```sql
+   * INSERT INTO users (first_name, email, status) VALUES (?, ?, ?)
+   * ```
+   * 
+   * @example Usage
+   * ```typescript
+   * const query = this.buildCreateQuery({ firstName: 'John', email: 'john@example.com' });
+   * // query.sql = "INSERT INTO users (first_name, email) VALUES (?, ?)"
+   * // query.params = ['John', 'john@example.com']
+   * ```
+   */
   protected buildCreateQuery(entity: Omit<T, 'id'>): {
     sql: string;
     params: unknown[];
@@ -371,6 +485,28 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params };
   }
 
+  /**
+   * 🔧 Query DSL: Build UPDATE query for entity modification.
+   * 
+   * Creates parameterized UPDATE statements with SET clauses.
+   * Only updates provided fields (partial updates supported).
+   * 
+   * @param id Primary key of entity to update
+   * @param updates Partial entity with fields to update
+   * @returns Object with UPDATE SQL and parameter array
+   * 
+   * @example Generated SQL
+   * ```sql
+   * UPDATE users SET first_name = ?, email = ? WHERE id = ?
+   * ```
+   * 
+   * @example Usage
+   * ```typescript
+   * const query = this.buildUpdateQuery('123', { firstName: 'Jane' });
+   * // query.sql = "UPDATE users SET first_name = ? WHERE id = ?"
+   * // query.params = ['Jane', '123']
+   * ```
+   */
   protected buildUpdateQuery(
     id: string | number,
     updates: Partial<T>
@@ -416,6 +552,24 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return { sql, params };
   }
 
+  /**
+   * 🔧 DSL Helper: Build WHERE clause from criteria object.
+   * 
+   * Converts entity fields into parameterized WHERE conditions.
+   * Uses AND logic between conditions and prevents SQL injection.
+   * 
+   * @param criteria Object with column names and values
+   * @returns WHERE clause string or empty string if no criteria
+   * 
+   * @example
+   * ```typescript
+   * buildWhereClause({ status: 'active', age: 25 })
+   * // Returns: "WHERE status = ? AND age = ?"
+   * 
+   * buildWhereClause({})
+   * // Returns: ""
+   * ```
+   */
   protected buildWhereClause(criteria: Record<string, unknown>): string {
     if (Object.keys(criteria).length === 0) {
       return '';
@@ -425,6 +579,24 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return `WHERE ${conditions.join(' AND ')}`;
   }
 
+  /**
+   * 🔧 DSL Helper: Build ORDER BY clause from sort criteria.
+   * 
+   * Creates sorting clauses with proper SQL syntax.
+   * Supports multiple fields with different directions.
+   * 
+   * @param sortCriteria Array of sort criteria objects
+   * @returns ORDER BY clause string or empty string if no sorting
+   * 
+   * @example
+   * ```typescript
+   * buildOrderClause([{ field: 'created_at', direction: 'desc' }, { field: 'name', direction: 'asc' }])
+   * // Returns: "ORDER BY created_at DESC, name ASC"
+   * 
+   * buildOrderClause([])
+   * // Returns: ""
+   * ```
+   */
   protected buildOrderClause(sortCriteria?: SortCriteria[]): string {
     if (!sortCriteria || sortCriteria.length === 0) {
       return '';
@@ -437,6 +609,28 @@ export abstract class BaseDao<T> implements IRepository<T> {
     return `ORDER BY ${orderBy}`;
   }
 
+  /**
+   * 🔧 DSL Helper: Build LIMIT clause for pagination.
+   * 
+   * Creates LIMIT and OFFSET clauses for result pagination.
+   * Handles both simple limiting and offset-based pagination.
+   * 
+   * @param limit Maximum number of results to return
+   * @param offset Number of results to skip (for pagination)
+   * @returns LIMIT clause string or empty string if no limit
+   * 
+   * @example
+   * ```typescript
+   * buildLimitClause(10, 20)
+   * // Returns: "LIMIT 10 OFFSET 20" (page 3 of 10 items per page)
+   * 
+   * buildLimitClause(5)
+   * // Returns: "LIMIT 5" (first 5 results)
+   * 
+   * buildLimitClause()
+   * // Returns: "" (no limit)
+   * ```
+   */
   protected buildLimitClause(limit?: number, offset?: number): string {
     if (!limit) {
       return '';

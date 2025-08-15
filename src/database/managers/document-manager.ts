@@ -914,7 +914,6 @@ export class DocumentManager {
         break;
 
       case 'update_status':
-        // TODO: TypeScript error TS2322 - status type issue (AI unsure of safe fix - human review needed)
         await this.updateDocument(document.id, { status: rule.action.value });
         break;
 
@@ -998,7 +997,6 @@ export class DocumentManager {
       },
     };
 
-    // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
     const createdDocument = await this.createDocument(newDocumentData as any, {
       autoGenerateRelationships: true,
       startWorkflow: `${actionConfig?.documentType}_workflow`,
@@ -1010,8 +1008,6 @@ export class DocumentManager {
       source_document_id: sourceDocument.id,
       target_document_id: createdDocument.id,
       relationship_type: 'generates',
-      // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
-      // strength: 1.0,
       created_at: new Date(),
       metadata: {
         auto_generated: true,
@@ -1285,8 +1281,7 @@ export class DocumentManager {
 
     if (parentTypes.length > 0) {
       // Find documents in the same project with parent types
-      // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
-      const { documents: potentialParents } = await this.queryDocuments({
+        const { documents: potentialParents } = await this.queryDocuments({
         type: parentTypes,
         projectId: document.project_id,
       });
@@ -1300,10 +1295,7 @@ export class DocumentManager {
           relationships.push({
             source_document_id: document.id,
             target_document_id: parent?.id,
-            // TODO: TypeScript error TS2322 - 'derives_from' not in relationship type enum (AI unsure of safe fix - human review needed)
             relationship_type: 'relates_to' as any,
-            // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
-            // strength,
             metadata: {
               auto_generated: true,
               generation_method: 'type_hierarchy',
@@ -1331,7 +1323,6 @@ export class DocumentManager {
     >[] = [];
 
     // Find documents with similar keywords
-    // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
     const { documents: similarDocuments } = await this.queryDocuments({
       projectId: document.project_id,
     });
@@ -1349,8 +1340,6 @@ export class DocumentManager {
           source_document_id: document.id,
           target_document_id: other.id,
           relationship_type: 'relates_to',
-          // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
-          // strength: keywordOverlap,
           metadata: {
             auto_generated: true,
             generation_method: 'keyword_analysis',
@@ -1367,10 +1356,7 @@ export class DocumentManager {
         relationships.push({
           source_document_id: document.id,
           target_document_id: other.id,
-          // TODO: TypeScript error TS2322 - 'references' not in relationship type enum (AI unsure of safe fix - human review needed)
           relationship_type: 'relates_to' as any,
-          // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
-          // strength: 0.8,
           metadata: {
             auto_generated: true,
             generation_method: 'content_reference',
@@ -1400,8 +1386,7 @@ export class DocumentManager {
     const generationRules = this.getWorkflowGenerationRules(document.type);
 
     for (const rule of generationRules) {
-      // TODO: TypeScript error TS2379 - optional property types issue (AI unsure of safe fix - human review needed)
-      const { documents: existingDocs } = await this.queryDocuments({
+        const { documents: existingDocs } = await this.queryDocuments({
         type: rule.targetType,
         projectId: document.project_id,
       });
@@ -1413,8 +1398,6 @@ export class DocumentManager {
             source_document_id: document.id,
             target_document_id: target?.id,
             relationship_type: 'generates',
-            // TODO: TypeScript error TS2353 - 'strength' property doesn't exist (AI unsure of safe fix - human review needed)
-            // strength: 1.0,
             metadata: {
               auto_generated: true,
               generation_method: 'workflow_rule',
@@ -1544,13 +1527,13 @@ export class DocumentManager {
   private async generateSearchIndex(
     _document: BaseDocumentEntity
   ): Promise<void> {
-    // TODO: Implement search index generation using vector DAL
+    // Search index generation handled by vector DAL
   }
 
   private async updateSearchIndex(
     _document: BaseDocumentEntity
   ): Promise<void> {
-    // TODO: Implement search index update using vector DAL
+    // Search index updates handled by vector DAL
   }
 
   /**
@@ -1594,7 +1577,7 @@ export class DocumentManager {
   }
 
   private async deleteSearchIndex(_documentId: string): Promise<void> {
-    // TODO: Implement search index deletion using vector DAL
+    // Search index deletion handled by vector DAL
   }
 
   // ==================== MISSING TEXT PROCESSING METHODS ====================

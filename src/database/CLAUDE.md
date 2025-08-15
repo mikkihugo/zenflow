@@ -17,7 +17,36 @@ The database domain has been comprehensively enhanced with dependency injection 
 - ✅ **95%+ test coverage** - Extensive test suite with mocking
 - ✅ **Complete documentation** - Usage guides and API documentation
 
-## 🏗️ Architecture
+## 🏗️ Architecture Overview
+
+### **🎯 IMPORTANT: Understanding the 3-Layer Architecture**
+
+**The database system uses a 3-layer architecture with specialized DAOs for different database types:**
+
+```
+📱 Application Code (Business Logic)
+       ↓
+🏛️ Specialized DAO Layer (Data Access Objects + Embedded Query DSL)
+   ├── RelationalDAO (SQLite/PostgreSQL) - Traditional SQL queries
+   ├── VectorDAO (LanceDB) - Similarity search, embeddings  
+   ├── GraphDAO (Kuzu) - Graph traversals, Cypher queries
+       ↓  
+🔌 Database Adapters (Connection Management + Database-Specific Operations)
+   ├── SQLiteAdapter - Raw SQL execution
+   ├── LanceDBAdapter - Vector operations (.createTable, .searchVectors)
+   ├── KuzuAdapter - Graph operations (.createNode, .executeCypher)
+       ↓
+💾 Raw Drivers (better-sqlite3, @lancedb/lancedb, kuzu)
+```
+
+**Key Architectural Principles:**
+- **Specialized DAOs**: Different DAO types for different data models (relational, vector, graph)
+- **Embedded DSL**: Type-safe query building within each DAO type
+- **Entity Mapping**: TypeScript objects ↔ database-specific formats
+- **Type Safety**: Parameterized queries prevent injection attacks across all database types
+- **Performance Paths**: Core systems can bypass layers for speed when needed
+
+**📖 For detailed usage examples and patterns, see [ARCHITECTURE_GUIDE.md](./ARCHITECTURE_GUIDE.md)**
 
 ### **Directory Structure**
 ```
@@ -602,34 +631,91 @@ GET /api/database/analytics
 
 ## 🔧 Usage Examples
 
+### **Multi-Database DAO Setup**
+```typescript
+import { SqliteAdapter, LanceDBAdapter, KuzuAdapter } from './adapters';
+import { BaseDao, VectorDao, GraphDao } from './dao';
+
+// Setup adapters for different database types
+const sqliteAdapter = new SqliteAdapter({ type: 'sqlite', database: './app.db' });
+const lancedbAdapter = new LanceDBAdapter({ type: 'lancedb', database: './vectors.lance' });
+const kuzuAdapter = new KuzuAdapter({ type: 'kuzu', database: './graph.kuzu' });
+
+// Create specialized DAOs for different data types
+class UserDao extends BaseDao<User> {
+  // Handles relational user data (profiles, settings, etc.)
+}
+
+class DocumentEmbeddingDao extends VectorDao<Document> {
+  // Handles vector similarity search for documents
+}
+
+class UserGraphDao extends GraphDao<User> {
+  // Handles user relationships and social connections
+}
+
+const userDao = new UserDao(sqliteAdapter, logger, 'users');
+const docDao = new DocumentEmbeddingDao(lancedbAdapter, logger, 'documents');
+const graphDao = new UserGraphDao(kuzuAdapter, logger, 'User');
+```
+
+### **Relational Data Operations**
+```typescript
+// Traditional CRUD with embedded DSL
+const activeUsers = await userDao.findBy({ status: 'active' }, {
+  sort: [{ field: 'created_at', direction: 'desc' }],
+  limit: 50
+});
+
+const userStats = await userDao.count({ status: 'active' });
+```
+
+### **Vector Operations (AI/ML)**
+```typescript
+// Similarity search for document recommendations
+const similarDocs = await docDao.similaritySearch(queryVector, {
+  limit: 10,
+  threshold: 0.7
+});
+
+// Batch insert embeddings
+await docDao.addVectors([
+  { id: 'doc1', vector: [0.1, 0.2, ...], metadata: { title: 'Document 1' }},
+  { id: 'doc2', vector: [0.3, 0.4, ...], metadata: { title: 'Document 2' }}
+]);
+```
+
+### **Graph Operations (Relationships)**
+```typescript
+// Find user's social network within 3 degrees
+const network = await graphDao.traverse('user123', 'FOLLOWS', 3);
+
+// Create friendship between users
+await graphDao.createRelationship('user123', 'user456', 'FRIENDS', {
+  since: '2024-01-01',
+  strength: 0.8
+});
+
+// Custom Cypher queries for complex analysis
+const influencers = await graphDao.executeCypher(`
+  MATCH (u:User)-[:FOLLOWS]->(influencer:User)
+  WHERE influencer.followerCount > $threshold
+  RETURN influencer, count(u) as followers
+  ORDER BY followers DESC
+`, { threshold: 1000 });
+```
+
 ### **Basic DI Setup**
 ```typescript
 import { DIContainer } from '../di/container/di-container.js';
 import { DatabaseController } from './controllers/database-controller.js';
 import { DatabaseProviderFactory } from './providers/database-providers.js';
-import { DATABASE_TOKENS, CORE_TOKENS } from '../di/tokens/core-tokens.js';
 
-// Create DI container
+// Create DI container with multi-database support
 const container = new DIContainer();
-
-// Register core services
-container.register(CORE_TOKENS.Logger, () => new ConsoleLogger());
-container.register(CORE_TOKENS.Config, () => new ConfigManager());
-
-// Register database services
 container.register(DATABASE_TOKENS.ProviderFactory, DatabaseProviderFactory);
-container.register(DATABASE_TOKENS.Config, () => ({
-  type: 'postgresql',
-  host: 'localhost',
-  port: 5432,
-  database: 'myapp',
-  username: 'user',
-  password: 'password',
-  pool: { min: 2, max: 20 }
-}));
-container.register(DATABASE_TOKENS.Controller, DatabaseController);
 
-// Use database controller
+// The controller can route to appropriate adapters based on config
 const databaseController = container.resolve(DatabaseController);
 ```
 

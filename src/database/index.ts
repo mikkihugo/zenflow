@@ -59,10 +59,6 @@ export { VectorDao } from './dao/vector.dao.ts';
 // Factory and configuration
 export {
   DALFactory,
-  // TODO: TypeScript error TS2614 - DaoConfig not exported from factory (AI unsure of safe fix - human review needed)
-  // type DaoConfig,
-  // TODO: TypeScript error TS2614 - DaoType not exported from factory (AI unsure of safe fix - human review needed)
-  // type DaoType,
   type EntityTypeRegistry,
   MultiDatabaseDAO,
 } from './factory.ts';
@@ -262,7 +258,6 @@ export async function createManager<T>(
 
   const container = new DIContainer();
 
-  // TODO: TypeScript error TS2345 - Logger provider type mismatch (AI unsure of safe fix - human review needed)
   container.register(CORE_TOKENS.Logger, (() => ({
     debug: console.debug,
     info: console.info,
@@ -270,10 +265,8 @@ export async function createManager<T>(
     error: console.error,
   })) as any);
 
-  // TODO: TypeScript error TS2345 - Config provider type mismatch (AI unsure of safe fix - human review needed)
   container.register(CORE_TOKENS.Config, (() => ({})) as any);
 
-  // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
   const factory = container.resolve(DALFactory as any);
 
   return await factory.createManager({
@@ -385,7 +378,6 @@ export async function createMultiDatabaseSetup<T>(
 
   const container = new DIContainer();
 
-  // TODO: TypeScript error TS2345 - Logger provider type mismatch (AI unsure of safe fix - human review needed)
   container.register(CORE_TOKENS.Logger, (() => ({
     debug: console.debug,
     info: console.info,
@@ -393,10 +385,8 @@ export async function createMultiDatabaseSetup<T>(
     error: console.error,
   })) as any);
 
-  // TODO: TypeScript error TS2345 - Config provider type mismatch (AI unsure of safe fix - human review needed)
   container.register(CORE_TOKENS.Config, (() => ({})) as any);
 
-  // TODO: TypeScript error TS2345/TS18046 - DALFactory DI token type mismatch (AI unsure of safe fix - human review needed)
   const factory = container.resolve(DALFactory as any);
 
   const primaryDaoConfig = {

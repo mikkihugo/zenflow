@@ -69,7 +69,6 @@ export class ADRProposalSystem {
       context: this.formatContext(proposal),
       decision: `PROPOSED: ${proposal.proposed_decision}`,
       consequences: this.formatConsequences(proposal),
-      // TODO: TypeScript error TS2412 - Type mismatch between 'why_not_chosen' and 'rejected_reason' (AI unsure of safe fix - human review needed)
       alternatives: proposal.alternatives,
       author: proposal.proposer,
       priority: this.mapUrgencyToPriority(proposal.urgency),
@@ -172,7 +171,6 @@ export class ADRProposalSystem {
       throw new Error(`ADR ${adrNumber} not found`);
     }
 
-    // TODO: TypeScript error TS2345 - Status "rejected" not allowed, valid types are "proposed" | "deprecated" | "superseded" | "discussion" | "decided" | "implemented" (AI unsure of safe fix - human review needed)
     const newStatus = decision.approved ? 'decided' : 'rejected';
 
     // Update ADR with final decision

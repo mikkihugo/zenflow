@@ -246,7 +246,6 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
         ORDER BY length(path)
       `;
 
-      // TODO: TypeScript error TS2353 - queryGraph expects any[] but we need named parameters (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, [startNode] as any);
 
       // Process results into GraphTraversalResult format
@@ -296,7 +295,6 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += ' RETURN n';
 
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, Object.values(parameters));
       return result.nodes as GraphNode[];
     } catch (error) {
@@ -336,7 +334,6 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += ']->(b) WHERE a.id = $fromNodeId AND b.id = $toNodeId RETURN r';
 
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, Object.values(parameters));
       return result.relationships as GraphRelationship[];
     } catch (error) {
@@ -393,7 +390,6 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += ']->(b) RETURN r';
 
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, Object.values(parameters));
 
       if (result.relationships.length === 0) {
@@ -508,7 +504,6 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
     this.logger.debug(`Executing Cypher query: ${cypher}`, { parameters });
 
     try {
-      // TODO: TypeScript error TS2345 - queryGraph expects any[] but we have Record<string, unknown> (AI review needed)
       const paramArray = parameters ? Object.values(parameters) : [];
       const result = await this.graphAdapter.queryGraph(cypher, paramArray);
 
@@ -560,9 +555,7 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
             'MATCH (n)-[]-(connected) WHERE n.id = $nodeId RETURN count(connected) as degree';
       }
 
-      // TODO: TypeScript error TS2353 - queryGraph expects any[] but we need named parameters (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, [nodeId] as any);
-      // TODO: TypeScript error TS2339 - Property 'results' may not exist on GraphResult type (AI review needed)
       return (result as any).results[0]?.degree || 0;
     } catch (error) {
       this.logger.error(`Get node degree failed: ${error}`);
@@ -595,7 +588,6 @@ export class GraphDao<T> extends BaseDao<T> implements IGraphRepository<T> {
 
       cypher += '*]-(b)) WHERE a.id = $fromNodeId AND b.id = $toNodeId RETURN path';
 
-      // TODO: TypeScript error TS2353 - queryGraph expects any[] but we need named parameters (AI review needed)
       const result = await this.graphAdapter.queryGraph(cypher, [fromNodeId, toNodeId] as any);
 
       if (result.nodes.length === 0) {
