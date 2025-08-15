@@ -28,6 +28,7 @@ import type {
   QueenState,
   QueenId,
   QueenMetrics,
+  TaskCompletionData,
   QueenStatus
 } from '../types/queen-types.js';
 import { generateId } from '../swarm/core/utils.js';
@@ -321,6 +322,7 @@ export class QueenCommander extends EventEmitter {
     this.config = {
       id: 'queen-commander-1',
       name: 'Primary Queen Commander',
+      maxAgents: 50,
       maxConcurrentQueens: 50,
       // defaultTimeout: 30000, // Property does not exist on QueenCommanderConfig
       heartbeatInterval: 10000,
@@ -404,7 +406,7 @@ export class QueenCommander extends EventEmitter {
 
     // TIER 2: Coordination learning event handlers
     this.eventBus.on('swarm:*:task:completed', (data: unknown) => {
-      if (this.coordinationLearningConfig.enabled) {
+      if (this.coordinationLearningConfig.enabled && this.isTaskCompletionData(data)) {
         this.analyzeSwarmTaskCompletion(data);
       }
     });
@@ -1118,7 +1120,7 @@ export class QueenCommander extends EventEmitter {
   /**
    * Analyze completed swarm tasks for cross-swarm patterns
    */
-  private async analyzeSwarmTaskCompletion(taskData: unknown): Promise<void> {
+  private async analyzeSwarmTaskCompletion(taskData: TaskCompletionData): Promise<void> {
     const swarmId = taskData.swarmId;
     const performance = taskData.metrics?.qualityScore || 0.8;
     const resourceUsage = taskData.metrics?.resourceUsage || {};
@@ -1128,7 +1130,7 @@ export class QueenCommander extends EventEmitter {
     await this.updateSwarmPerformanceProfile(swarmId, taskData);
 
     // Detect cross-swarm collaboration patterns
-    if (taskData.collaboratedWith?.length > 0) {
+    if (taskData.collaboratedWith && taskData.collaboratedWith.length > 0) {
       await this.detectCrossSwarmCollaborationPattern(taskData);
     }
 
@@ -1159,7 +1161,7 @@ export class QueenCommander extends EventEmitter {
    */
   private async updateSwarmPerformanceProfile(
     swarmId: string,
-    taskData: unknown
+    taskData: TaskCompletionData
   ): Promise<void> {
     let profile = this.swarmPerformanceProfiles.get(swarmId);
 
@@ -1171,8 +1173,8 @@ export class QueenCommander extends EventEmitter {
         taskTypes: [taskData.taskType || 'general'],
         preferredAgentTypes: taskData.agentTypes || [],
         optimalResourceAllocation: {
-          cpu: taskData.metrics?.resourceUsage?.cpu || 0.5,
-          memory: taskData.metrics?.resourceUsage?.memory || 0.5,
+          cpu: (typeof taskData.metrics?.resourceUsage?.cpu === 'number' ? taskData.metrics.resourceUsage.cpu : 0.5),
+          memory: (typeof taskData.metrics?.resourceUsage?.memory === 'number' ? taskData.metrics.resourceUsage.memory : 0.5),
           agents: taskData.agentCount || 1,
         },
         collaborationPatterns: [],
@@ -1231,7 +1233,7 @@ export class QueenCommander extends EventEmitter {
    * Detect cross-swarm collaboration patterns
    */
   private async detectCrossSwarmCollaborationPattern(
-    taskData: unknown
+    taskData: TaskCompletionData
   ): Promise<void> {
     const mainSwarmId = taskData.swarmId;
     const collaboratedSwarms = taskData.collaboratedWith || [];
@@ -1286,7 +1288,7 @@ export class QueenCommander extends EventEmitter {
    * Analyze resource optimization opportunities
    */
   private async analyzeResourceOptimizationOpportunity(
-    taskData: unknown
+    taskData: TaskCompletionData
   ): Promise<void> {
     const swarmId = taskData.swarmId;
     const resourceUsage = taskData.metrics?.resourceUsage || {};
@@ -1552,9 +1554,20 @@ export class QueenCommander extends EventEmitter {
     return recommendations;
   }
 
+  // === TYPE GUARDS ===
+
+  private isTaskCompletionData(data: unknown): data is TaskCompletionData {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'swarmId' in data &&
+      typeof (data as any).swarmId === 'string'
+    );
+  }
+
   // === TIER 2 UTILITY METHODS ===
 
-  private identifyBottleneckFromTaskData(taskData: unknown): string | null {
+  private identifyBottleneckFromTaskData(taskData: TaskCompletionData): string | null {
     if (taskData.metrics?.resourceUsage?.cpu > 0.9) return 'cpu_bottleneck';
     if (taskData.metrics?.resourceUsage?.memory > 0.9)
       return 'memory_bottleneck';

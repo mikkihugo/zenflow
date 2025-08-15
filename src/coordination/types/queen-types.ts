@@ -239,6 +239,7 @@ export type QueenType =
 export interface QueenCommanderConfig {
   id: string;
   name: string;
+  maxAgents: number;
   maxConcurrentQueens: number;
   healthCheckInterval: number;
   heartbeatInterval: number;
@@ -272,6 +273,21 @@ export interface QueenCoordinatorConfig extends QueenCommanderConfig {
   autonomyLevel?: number;
   learningEnabled?: boolean;
   adaptationEnabled?: boolean;
+}
+
+export interface TaskCompletionData {
+  swarmId: string;
+  duration: number;
+  metrics?: {
+    qualityScore?: number;
+    resourceUsage?: Record<string, unknown>;
+  };
+  collaboratedWith?: string[];
+  taskType?: string;
+  domain?: string;
+  agentTypes?: string[];
+  agentCount?: number;
+  commanderType?: string;
 }
 
 export interface AgentMetrics {
