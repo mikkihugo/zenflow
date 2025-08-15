@@ -895,6 +895,21 @@ Output: All packages processed with security priorities`,
           required: ['packageJson'],
         },
       },
+      {
+        name: 'instructions',
+        description: '📖 Get comprehensive usage instructions for SwarmCommander MCP tools - START HERE for guidance!',
+        inputSchema: {
+          type: 'object',
+          properties: {
+            topic: {
+              type: 'string',
+              enum: ['quick-start', 'tools-reference', 'troubleshooting', 'examples', 'all'],
+              default: 'all',
+              description: 'Which instructions to show',
+            },
+          },
+        },
+      },
     ];
   }
 
@@ -1995,6 +2010,139 @@ Output: All packages processed with security priorities`,
                 isError: true,
               };
             }
+          }
+
+          case 'instructions': {
+            // COMPREHENSIVE MCP TOOL INSTRUCTIONS
+            const topic = (args.topic as string) || 'all';
+            
+            const instructions = {
+              'quick-start': `
+🚀 QUICK START GUIDE - SwarmCommander MCP Tools
+
+1. START HERE - Check what's available:
+   mcp__claude-zen__swarm_status {}
+
+2. Initialize SwarmCommander (if needed):
+   mcp__claude-zen__swarm_init {
+     "topology": "hierarchical",
+     "maxAgents": 6,
+     "sparcEnabled": true
+   }
+
+3. Spawn specialized agents:
+   mcp__claude-zen__agent_spawn { "swarmId": "your-swarm-id", "type": "researcher" }
+   mcp__claude-zen__agent_spawn { "swarmId": "your-swarm-id", "type": "coder" }
+
+4. Execute coordinated tasks:
+   mcp__claude-zen__task_orchestrate {
+     "task": "Your task description",
+     "strategy": "sparc-guided"
+   }
+
+🔑 KEY RULE: Use multiple tool calls in ONE message for parallel execution!
+              `,
+
+              'tools-reference': `
+🛠️ SWARMCOMMANDER TOOLS REFERENCE
+
+PRIMARY TOOL (Start here):
+• swarm_status - Get comprehensive swarm status with SPARC & neural learning
+  Parameters: swarmId (optional), includeMetrics (true), verbose (false)
+
+CORE ORCHESTRATION:
+• swarm_init - Initialize SwarmCommander with SPARC methodology
+  Required: topology ("mesh"|"hierarchical"|"ring"|"star")
+  Optional: maxAgents, strategy, sparcEnabled, learningEnabled
+
+• agent_spawn - Create specialized coordinated agents  
+  Required: swarmId, type ("researcher"|"coder"|"analyst"|"optimizer"|"coordinator"|"tester")
+
+• task_orchestrate - Execute tasks with SPARC methodology
+  Required: task (description)
+  Recommended: strategy: "sparc-guided"
+
+ADVANCED COORDINATION:
+• queen_escalation - Strategic issue resolution for complex problems
+• matron_advisory - Domain expertise consultation
+• sparc_phase_execute - Execute specific SPARC phases
+• neural_learning_status - Neural learning metrics and performance
+
+FACT SYSTEM:
+• fact_npm - Individual NPM package information
+• fact_github - GitHub repository facts  
+• fact_bulk_dependencies - Process entire package.json files
+• fact_detect - Auto-detect external knowledge needs
+              `,
+
+              'troubleshooting': `
+🔧 TROUBLESHOOTING GUIDE
+
+"TOOL NOT FOUND" ERRORS:
+1. Check MCP connection: Run /mcp to see available tools
+2. Use exact tool names: mcp__claude-zen__swarm_status (not swarm_status)
+3. Verify parameters: Required parameters must be provided
+
+SWARM COORDINATION NOT WORKING:
+1. Start with status: mcp__claude-zen__swarm_status {} (always first!)
+2. Initialize if needed: mcp__claude-zen__swarm_init with topology
+3. Check swarm ID: Many tools require valid swarmId from init
+
+PERFORMANCE ISSUES:
+1. Use parallel tool calls: Multiple MCP tools in ONE message
+2. Don't chain sequentially: Avoid one-tool-per-message pattern
+3. Batch file operations: Combine Read/Write/Edit calls
+
+COMPLEX ISSUES:
+1. Escalate to Queen: mcp__claude-zen__queen_escalation for strategic help
+2. Get expert advice: mcp__claude-zen__matron_advisory for domain expertise
+3. Check learning: mcp__claude-zen__neural_learning_status for neural issues
+              `,
+
+              'examples': `
+🎯 PRACTICAL EXAMPLES
+
+Example 1 - Research Project:
+mcp__claude-zen__swarm_init { "topology": "mesh", "maxAgents": 4 }
+mcp__claude-zen__agent_spawn { "swarmId": "research-123", "type": "researcher" }
+mcp__claude-zen__agent_spawn { "swarmId": "research-123", "type": "analyst" }
+mcp__claude-zen__task_orchestrate { "task": "Research neural networks", "strategy": "sparc-guided" }
+
+Example 2 - Development Project:
+mcp__claude-zen__swarm_init { "topology": "hierarchical", "maxAgents": 6, "sparcEnabled": true }
+mcp__claude-zen__agent_spawn { "swarmId": "dev-456", "type": "coder" }
+mcp__claude-zen__agent_spawn { "swarmId": "dev-456", "type": "tester" }
+mcp__claude-zen__task_orchestrate { "task": "Build React component", "strategy": "sparc-guided" }
+
+Example 3 - Check Status:
+mcp__claude-zen__swarm_status { "includeMetrics": true, "verbose": true }
+
+Example 4 - Get Help When Stuck:
+mcp__claude-zen__queen_escalation { 
+  "swarmId": "your-swarm", 
+  "issueType": "agent_coordination_failure",
+  "severity": "medium"
+}
+              `
+            };
+
+            let response = '';
+            if (topic === 'all') {
+              response = Object.values(instructions).join('\\n\\n' + '='.repeat(80) + '\\n\\n');
+            } else if (instructions[topic]) {
+              response = instructions[topic];
+            } else {
+              response = 'Invalid topic. Use: quick-start, tools-reference, troubleshooting, examples, or all';
+            }
+
+            return {
+              content: [
+                {
+                  type: 'text', 
+                  text: response.trim(),
+                },
+              ],
+            };
           }
 
           // SPARC Hybrid Database Tools
