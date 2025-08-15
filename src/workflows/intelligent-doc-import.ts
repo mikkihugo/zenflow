@@ -27,7 +27,7 @@ import { existsSync } from 'fs';
 import { readdir, readFile, stat } from 'fs/promises';
 import { extname, join, relative } from 'path';
 import { getLogger } from '../config/logging-config.js';
-import { WorkflowGateRequest } from '../coordination/workflows/workflow-gate-request.js';
+import type { WorkflowGateRequest } from './workflow-base-types.js';
 import { DocumentManager } from '../database/managers/document-manager.js';
 
 const logger = getLogger('IntelligentDocImport');

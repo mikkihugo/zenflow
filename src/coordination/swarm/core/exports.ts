@@ -8,7 +8,7 @@
 export * from './base-swarm.ts';
 export * from './daa-service.ts';
 export * from './logger.ts';
-export { PerformanceTracker } from './performance.ts';
+export { PerformanceCLI as PerformanceTracker } from './performance.ts';
 // Re-export performance components separately to break cycles
 export { PerformanceBenchmarks } from './performance-benchmarks.ts';
 export * from './recovery-integration.ts';

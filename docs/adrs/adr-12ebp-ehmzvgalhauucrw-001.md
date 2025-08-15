@@ -1,32 +1,35 @@
-# Architecture Decision for Performance Test Project
+# Architecture Decision for Test Swarm System
 
 ## Status
 accepted
 
 ## Context
-Architecture decisions for SPARC project: Performance Test Project
+Architecture decisions for SPARC project: Test Swarm System
 
-Domain: rest-api
+Domain: swarm-coordination
 Complexity: moderate
 
 ## Decision
-Architecture Decision for Performance Test Project:
+Architecture Decision for Test Swarm System:
 
 ## Components
 - Core System FunctionalityService: service
 - Error HandlingService: service
 - Data ManagementService: service
-- Performance RequirementsService: service
+- Agent RegistrationService: service
+- Task DistributionService: service
 - Core System FunctionalityDataManager: data-manager
 - Error HandlingDataManager: data-manager
 - Data ManagementDataManager: data-manager
-- Performance RequirementsDataManager: data-manager
+- Agent RegistrationDataManager: data-manager
+- Task DistributionDataManager: data-manager
 - APIGateway: gateway
 - ConfigurationManager: configuration
 - MonitoringService: monitoring
 
 ## Patterns
 Microservices
+- Event-Driven Architecture
 - CQRS
 - Layered Architecture
 
@@ -37,9 +40,9 @@ Technology stack not defined
 - Establishes clear component boundaries and responsibilities
 - Enables modular development and testing
 - Provides foundation for scalable implementation
-- Leverages proven architectural patterns: Microservices, CQRS, Layered Architecture
+- Leverages proven architectural patterns: Microservices, Event-Driven Architecture, CQRS, Layered Architecture
 
 ---
-*Generated from SPARC project: 4FtG-QpKBhC_vCRZGBAAN*
-*Date: 2025-08-14T21:56:01.078Z*
+*Generated from SPARC project: 12ebp-EhmzVgalHAUUCRW*
+*Date: 2025-08-15T08:53:05.276Z*
 *Phase: architecture*

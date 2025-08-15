@@ -219,7 +219,9 @@ describe('Test Helper Utilities - Example Usage', () => {
             for (let i = 0; i < n - 1; i++) {
               for (let j = 0; j < n - i - 1; j++) {
                 if (result?.[j] > result?.[j + 1]) {
-                  [result?.[j], result?.[j + 1]] = [result?.[j + 1], result?.[j]];
+                  if (result && result[j] !== undefined && result[j + 1] !== undefined) {
+                    [result[j], result[j + 1]] = [result[j + 1], result[j]];
+                  }
                 }
               }
             }

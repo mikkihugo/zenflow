@@ -604,6 +604,7 @@ export class QueenCommander extends EventEmitter {
 
     // Requirements Engineer Agent Template
     this.templates.set('requirements-engineer', {
+      id: 'requirements-engineer-template',
       name: 'Requirements Engineer Agent',
       type: 'requirements-engineer',
       capabilities: {
@@ -658,6 +659,7 @@ export class QueenCommander extends EventEmitter {
 
     // Design Architect Agent Template
     this.templates.set('design-architect', {
+      id: 'design-architect-template',
       name: 'Design Architect Agent',
       type: 'design-architect',
       capabilities: {
@@ -712,6 +714,7 @@ export class QueenCommander extends EventEmitter {
 
     // Task Planner Agent Template
     this.templates.set('task-planner', {
+      id: 'task-planner-template',
       name: 'Task Planner Agent',
       type: 'task-planner',
       capabilities: {
@@ -770,6 +773,7 @@ export class QueenCommander extends EventEmitter {
 
     // Developer Agent Template (already exists, but ensure it's aligned)
     this.templates.set('developer', {
+      id: 'developer-template',
       name: 'Developer Agent',
       type: 'developer',
       capabilities: {
@@ -829,6 +833,7 @@ export class QueenCommander extends EventEmitter {
 
     // System Architect Agent Template
     this.templates.set('system-architect', {
+      id: 'system-architect-template',
       name: 'System Architect Agent',
       type: 'system-architect',
       capabilities: {
@@ -896,6 +901,7 @@ export class QueenCommander extends EventEmitter {
 
     // Tester Agent Template
     this.templates.set('tester', {
+      id: 'tester-template',
       name: 'Testing Agent',
       type: 'tester',
       capabilities: {
@@ -950,6 +956,7 @@ export class QueenCommander extends EventEmitter {
 
     // Code Reviewer Agent Template
     this.templates.set('reviewer', {
+      id: 'reviewer-template',
       name: 'Code Review Agent',
       type: 'reviewer',
       capabilities: {
@@ -1008,6 +1015,7 @@ export class QueenCommander extends EventEmitter {
 
     // Steering Author Agent Template
     this.templates.set('steering-author', {
+      id: 'steering-author-template',
       name: 'Steering Author Agent',
       type: 'steering-author',
       capabilities: {

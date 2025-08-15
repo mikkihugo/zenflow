@@ -2,7 +2,7 @@
  * @file Interface implementation: safe-api-client.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-api-safe-api-client');
 

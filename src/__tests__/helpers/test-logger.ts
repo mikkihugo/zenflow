@@ -193,7 +193,9 @@ export class TestLogger {
   createChild(name: string): TestLogger {
     const child = new TestLogger(`${this.testName ? `${this.testName}.` : ''}${name}`, this.silent);
     // Share the log storage
-    child?.logs = this.logs;
+    if (child) {
+      child.logs = this.logs;
+    }
     return child;
   }
 

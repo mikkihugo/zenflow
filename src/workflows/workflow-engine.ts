@@ -17,7 +17,7 @@ import type { WorkflowGatesManager } from '../coordination/orchestration/workflo
 import type {
   WorkflowGateRequest,
   WorkflowGateResult,
-} from '../coordination/workflows/workflow-gate-request.js';
+} from './workflow-base-types.js';
 import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
 import type { DocumentManager } from '../database/managers/document-manager.js';
 import type { MemorySystemFactory } from '../memory/index.js';

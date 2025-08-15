@@ -21,7 +21,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { config } from '../../config';
+import { config } from '../config';
 import { getLogger } from '../config/logging-config.ts';
 
 const logger = getLogger('InterfaceManager');
