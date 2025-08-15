@@ -45,6 +45,20 @@ const config = {
     
     // Native modules that must stay external
     'pty.js',
+    
+    // Node.js built-in modules (must be external)
+    'node:*',
+    'fs',
+    'path',
+    'events',
+    'http',
+    'https',
+    'crypto',
+    'os',
+    'util',
+    'stream',
+    'url',
+    'querystring',
   ],
 
   // Bundle everything else for complete system
@@ -73,6 +87,13 @@ const config = {
         build.onResolve({ filter: /^[^.\/]/ }, (args) => {
           // Skip if it's already in explicit external list
           if (args.path.startsWith('.') || args.path.startsWith('/')) return;
+          
+          // Handle Node.js built-in modules
+          if (args.path.startsWith('node:') || 
+              ['fs', 'path', 'events', 'http', 'https', 'crypto', 'os', 'util', 'stream', 'url', 'querystring'].includes(args.path)) {
+            return { path: args.path, external: true };
+          }
+          
           // Only externalize specific native modules that can't be bundled
           const nativeModules = ['better-sqlite3', 'kuzu', '@lancedb/lancedb', 'canvas', 'sharp', 'fsevents', 'pty.js'];
           if (nativeModules.includes(args.path) || nativeModules.some(mod => args.path.startsWith(mod))) {
