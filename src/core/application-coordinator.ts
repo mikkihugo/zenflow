@@ -23,7 +23,7 @@ import { DocumentationLinker } from './documentation-linker.ts';
 import { ExportSystem as ExportManager } from './export-manager.ts';
 import { InterfaceLauncher } from './interface-launcher.ts';
 import { MemorySystem } from './memory-system.ts';
-import { WorkflowEngine } from './workflow-engine.ts';
+import { WorkflowEngine } from '../workflows/workflow-engine.ts';
 
 const logger = getLogger('ApplicationCoordinator');
 

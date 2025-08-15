@@ -252,7 +252,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   public async batchRetrieve<T = unknown>(keys: string[]): Promise<Record<string, T | null>> {
     const results: Record<string, T | null> = {};
     for (const key of keys) {
-      results?.[key] = await this.retrieve<T>(key);
+      results[key] = await this.retrieve<T>(key);
     }
     return results;
   }
@@ -260,7 +260,7 @@ export abstract class BaseMemoryBackend extends EventEmitter {
   public async batchDelete(keys: string[]): Promise<Record<string, boolean>> {
     const results: Record<string, boolean> = {};
     for (const key of keys) {
-      results?.[key] = await this.delete(key);
+      results[key] = await this.delete(key);
     }
     return results;
   }

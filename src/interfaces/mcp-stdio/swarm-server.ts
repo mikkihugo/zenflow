@@ -2135,6 +2135,16 @@ COMPLEX ISSUES:
 1. Escalate to Queen: mcp__claude-zen__queen_escalation for strategic help
 2. Get expert advice: mcp__claude-zen__matron_advisory for domain expertise
 3. Check learning: mcp__claude-zen__neural_learning_status for neural issues
+
+CLAUDE CODE HOOKS (Post-Command Logging):
+Claude Code has built-in hooks for automating actions around tool usage:
+- PostToolUse: Runs after each MCP tool completes
+- PreToolUse: Runs before each MCP tool starts
+- UserPromptSubmit: Runs when prompts are submitted
+- Notification: Runs when notifications are sent
+
+These are shell commands configured in Claude Code settings, not MCP tools.
+See: https://docs.anthropic.com/en/docs/claude-code/hooks-guide
               `,
 
               'examples': `

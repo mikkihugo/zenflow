@@ -20,7 +20,7 @@ import {
   extractErrorMessage,
   isAPIError,
   isAPISuccess,
-} from '../utils/type-guards';
+} from '../../utils/type-guards';
 
 export interface APIRequestOptions {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
