@@ -21,7 +21,7 @@ const logger = getLogger('coordination-swarm-core-index');
 
 import type { SessionCoordinationDao } from '../../../database/index.js';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-loader.ts';
+import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat.ts';
 import { AgentPool, createAgent } from '../../agents/agent.ts';
 import { executeTaskWithAgent } from './agent-adapter.ts';
 import { getContainer } from './singleton-container.ts';

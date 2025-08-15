@@ -232,52 +232,27 @@ export class StdioMCPServer {
         },
       },
       {
-        name: 'swarm_commander_status',
+        name: 'swarm_status',
         description:
-          'Get detailed SwarmCommander status including SPARC phases and neural learning metrics',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            topology: {
-              type: 'string',
-              enum: ['mesh', 'hierarchical', 'ring', 'star'],
-              description: 'Swarm topology type',
-            },
-            maxAgents: {
-              type: 'number',
-              minimum: 1,
-              maximum: 100,
-              default: 5,
-              description: 'Maximum number of agents',
-            },
-            strategy: {
-              type: 'string',
-              enum: ['balanced', 'specialized', 'adaptive', 'parallel'],
-              default: 'adaptive',
-              description: 'Distribution strategy',
-            },
-          },
-          required: ['topology'],
-        },
-      },
-      {
-        name: 'swarm_commander_status',
-        description:
-          'Get detailed SwarmCommander status including SPARC phases and neural learning metrics',
+          'Get detailed swarm status with SwarmCommander integration including SPARC phases and neural learning metrics',
         inputSchema: {
           type: 'object',
           properties: {
             swarmId: {
               type: 'string',
-              description: 'Swarm ID to get commander status for',
+              description: 'Swarm ID to get status for (optional)',
             },
             includeMetrics: {
               type: 'boolean',
               default: true,
               description: 'Include performance and learning metrics',
             },
+            verbose: {
+              type: 'boolean',
+              default: false,
+              description: 'Include detailed agent information',
+            },
           },
-          required: ['swarmId'],
         },
       },
       {
@@ -450,24 +425,6 @@ export class StdioMCPServer {
             },
           },
           required: ['domain'],
-        },
-      },
-      {
-        name: 'swarm_status',
-        description: 'Get current swarm status and agent information',
-        inputSchema: {
-          type: 'object',
-          properties: {
-            swarmId: {
-              type: 'string',
-              description: 'Specific swarm ID (optional)',
-            },
-            verbose: {
-              type: 'boolean',
-              default: false,
-              description: 'Include detailed agent information',
-            },
-          },
         },
       },
       {
@@ -998,64 +955,87 @@ Output: All packages processed with security priorities`,
             };
           }
 
-          case 'swarm_commander_status': {
-            // GET SWARMCOMMANDER STATUS
+          case 'swarm_status': {
+            // COMPREHENSIVE SWARM STATUS with SwarmCommander integration
             const swarmId = args.swarmId as string;
             const includeMetrics = args.includeMetrics !== false;
+            const verbose = args.verbose as boolean;
 
             try {
-              const commander = this.swarmCommanders.get(swarmId);
-              if (!commander) {
+              // First, get base swarm status for backwards compatibility
+              const baseResult = await this.swarmTools.swarmStatus({
+                swarmId,
+                verbose,
+              });
+
+              // If specific swarmId provided, try to enhance with SwarmCommander
+              if (swarmId && this.swarmCommanders.has(swarmId)) {
+                const commander = this.swarmCommanders.get(swarmId)!;
+                const state = commander.getState();
+                
+                const enhancedResult = {
+                  ...baseResult,
+                  swarmCommander: {
+                    id: commander.id,
+                    commanderType: commander.commanderType,
+                    state,
+                    capabilities: {
+                      sparcLeadership: true,
+                      phaseCoordination: true,
+                      agentManagement: true,
+                      qualityAssurance: true,
+                      progressTracking: true,
+                      riskManagement: true,
+                    },
+                    features: {
+                      sparcMethodology: true,
+                      neuralLearning: true,
+                      agentPerformanceTracking: true,
+                      phaseEfficiencyMetrics: true,
+                      crossSwarmLearning: true,
+                      patternRecognition: true,
+                    },
+                    integration: 'active',
+                  },
+                  timestamp: new Date().toISOString(),
+                };
+
                 return {
                   content: [
                     {
                       type: 'text',
-                      text: JSON.stringify(
-                        {
-                          error: `SwarmCommander not found for swarm: ${swarmId}`,
-                          available_swarms: Array.from(
-                            this.swarmCommanders.keys()
-                          ),
-                        },
-                        null,
-                        2
-                      ),
+                      text: JSON.stringify(enhancedResult, null, 2),
                     },
                   ],
-                  isError: true,
                 };
               }
 
-              const state = commander.getState();
-              const result = {
-                swarmId,
-                commanderId: commander.id,
-                commanderType: commander.commanderType,
-                state,
-                capabilities: {
-                  sparcLeadership: true,
-                  phaseCoordination: true,
-                  agentManagement: true,
-                  qualityAssurance: true,
-                  progressTracking: true,
-                  riskManagement: true,
-                },
-                features: {
-                  sparcMethodology: true,
-                  neuralLearning: true,
-                  agentPerformanceTracking: true,
-                  phaseEfficiencyMetrics: true,
-                  crossSwarmLearning: true,
-                  patternRecognition: true,
-                },
-                timestamp: new Date().toISOString(),
-              };
+              // If swarmId provided but no SwarmCommander found, or no swarmId provided
+              if (swarmId && !this.swarmCommanders.has(swarmId)) {
+                baseResult.warning = `SwarmCommander not found for swarm: ${swarmId}`;
+                baseResult.available_commanders = Array.from(
+                  this.swarmCommanders.keys()
+                );
+              }
+
+              // Add general SwarmCommander overview if no specific swarm requested
+              if (!swarmId) {
+                baseResult.swarmCommanderOverview = {
+                  totalCommanders: this.swarmCommanders.size,
+                  activeCommanders: Array.from(this.swarmCommanders.values()).filter(
+                    (c) => c.getState().status === 'active'
+                  ).length,
+                  commanderTypes: Array.from(this.swarmCommanders.values()).map(
+                    (c) => ({ id: c.id, type: c.commanderType })
+                  ),
+                };
+              }
 
               return {
                 content: [
                   {
                     type: 'text',
-                    text: JSON.stringify(result, null, 2),
+                    text: JSON.stringify(baseResult, null, 2),
                   },
                 ],
               };
@@ -1067,7 +1047,8 @@ Output: All packages processed with security priorities`,
                     text: JSON.stringify(
                       {
                         error: error.message,
-                        swarmId,
+                        swarmId: swarmId || 'all',
+                        fallback: 'Basic swarm status unavailable',
                       },
                       null,
                       2
@@ -1406,34 +1387,6 @@ Output: All packages processed with security priorities`,
             }
           }
 
-          case 'swarm_status': {
-            // ENHANCED SWARM STATUS with SwarmCommander integration
-            const result = await this.swarmTools.swarmStatus({
-              swarmId: args.swarmId as string,
-              verbose: args.verbose as boolean,
-            });
-
-            // Enhance with SwarmCommander status if available
-            const swarmId = args.swarmId as string;
-            if (swarmId && this.swarmCommanders.has(swarmId)) {
-              const commander = this.swarmCommanders.get(swarmId)!;
-              result.swarmCommander = {
-                id: commander.id,
-                type: commander.commanderType,
-                state: commander.getState(),
-                integration: 'active',
-              };
-            }
-
-            return {
-              content: [
-                {
-                  type: 'text',
-                  text: JSON.stringify(result, null, 2),
-                },
-              ],
-            };
-          }
 
           case 'task_status': {
             // USE NEW NEURAL SYSTEM

@@ -23,7 +23,7 @@
  * @file Neural network: wasm-enhanced-loader.
  */
 
-import { WasmModuleLoader } from './wasm-loader.ts';
+import { WasmModuleLoader } from './wasm-compat.ts';
 import type { WasmModuleStatus } from './wasm-loader.ts';
 
 export class WasmEnhancedLoader {
