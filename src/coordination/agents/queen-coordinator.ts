@@ -29,6 +29,7 @@ import type {
   QueenId,
   QueenMetrics,
   TaskCompletionData,
+  SwarmDegradationData,
   QueenStatus
 } from '../types/queen-types.js';
 import { generateId } from '../swarm/core/utils.js';
@@ -418,7 +419,7 @@ export class QueenCommander extends EventEmitter {
     });
 
     this.eventBus.on('swarm:performance:degraded', (data: unknown) => {
-      if (this.coordinationLearningConfig.adaptiveResourceAllocation) {
+      if (this.coordinationLearningConfig.adaptiveResourceAllocation && this.isSwarmDegradationData(data)) {
         this.handleSwarmPerformanceDegradation(data);
       }
     });
@@ -1196,12 +1197,14 @@ export class QueenCommander extends EventEmitter {
 
       // Update resource allocation based on successful patterns
       if (taskData.metrics?.qualityScore > 0.9) {
+        const cpuUsage = (typeof taskData.metrics?.resourceUsage?.cpu === 'number' ? taskData.metrics.resourceUsage.cpu : 0.5);
+        const memoryUsage = (typeof taskData.metrics?.resourceUsage?.memory === 'number' ? taskData.metrics.resourceUsage.memory : 0.5);
         profile.optimalResourceAllocation.cpu =
-          profile.optimalResourceAllocation.cpu * weight +
-          (taskData.metrics.resourceUsage?.cpu || 0.5) * (1 - weight);
+          (profile.optimalResourceAllocation.cpu || 0.5) * weight +
+          cpuUsage * (1 - weight);
         profile.optimalResourceAllocation.memory =
-          profile.optimalResourceAllocation.memory * weight +
-          (taskData.metrics.resourceUsage?.memory || 0.5) * (1 - weight);
+          (profile.optimalResourceAllocation.memory || 0.5) * weight +
+          memoryUsage * (1 - weight);
       }
 
       // Identify bottlenecks from poor performance
@@ -1405,7 +1408,7 @@ export class QueenCommander extends EventEmitter {
    * Handle swarm performance degradation with adaptive coordination
    */
   private async handleSwarmPerformanceDegradation(
-    data: unknown
+    data: SwarmDegradationData
   ): Promise<void> {
     const swarmId = data.swarmId;
     const degradationReason = data.reason;
@@ -1437,11 +1440,17 @@ export class QueenCommander extends EventEmitter {
 
     // Request Learning Orchestrator to consider learning mode change
     this.eventBus.emit('queen:coordinator:learning:request', {
-      swarmId,
-      reason: `performance_degradation: ${degradationReason}`,
-      requestedMode: 'aggressive',
-      duration: 60,
-      priority: 'high',
+      id: `learning-request-${swarmId}-${Date.now()}`,
+      type: 'learning:request',
+      source: 'queen-coordinator',
+      timestamp: new Date(),
+      payload: {
+        swarmId,
+        reason: `performance_degradation: ${degradationReason}`,
+        requestedMode: 'aggressive',
+        duration: 60,
+        priority: 'high',
+      },
     });
   }
 
@@ -1562,6 +1571,17 @@ export class QueenCommander extends EventEmitter {
       data !== null &&
       'swarmId' in data &&
       typeof (data as any).swarmId === 'string'
+    );
+  }
+
+  private isSwarmDegradationData(data: unknown): data is SwarmDegradationData {
+    return (
+      typeof data === 'object' &&
+      data !== null &&
+      'swarmId' in data &&
+      'reason' in data &&
+      typeof (data as any).swarmId === 'string' &&
+      typeof (data as any).reason === 'string'
     );
   }
 

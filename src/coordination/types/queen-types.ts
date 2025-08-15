@@ -278,9 +278,16 @@ export interface QueenCoordinatorConfig extends QueenCommanderConfig {
 export interface TaskCompletionData {
   swarmId: string;
   duration: number;
+  priority?: string;
   metrics?: {
     qualityScore?: number;
     resourceUsage?: Record<string, unknown>;
+    resourceSavings?: {
+      cpu?: number;
+      memory?: number;
+    };
+    timeReduction?: number;
+    resourceUtilization?: number;
   };
   collaboratedWith?: string[];
   taskType?: string;
@@ -288,6 +295,11 @@ export interface TaskCompletionData {
   agentTypes?: string[];
   agentCount?: number;
   commanderType?: string;
+}
+
+export interface SwarmDegradationData {
+  swarmId: string;
+  reason: string;
 }
 
 export interface AgentMetrics {
