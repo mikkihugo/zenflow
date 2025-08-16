@@ -26,7 +26,7 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/database": "workspace:*",
-    "@zen-ai/dspy-engine": "workspace:*"
+    "@claude-zen/dspy": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.7.3",

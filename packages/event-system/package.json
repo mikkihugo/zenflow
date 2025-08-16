@@ -1,5 +1,5 @@
 {
-  "name": "@zen-ai/event-system",
+  "name": "@claude-zen/event-system",
   "version": "1.0.0",
   "type": "module",
   "description": "Type-safe event system with domain validation, unified event layer (UEL), and advanced coordination capabilities",

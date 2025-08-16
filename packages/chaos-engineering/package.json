@@ -1,5 +1,5 @@
 {
-  "name": "@zen-ai/chaos-engineering",
+  "name": "@claude-zen/chaos-engineering",
   "version": "1.0.0",
   "description": "Production-ready chaos engineering framework for system resilience testing",
   "main": "dist/index.js",

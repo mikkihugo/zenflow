@@ -1,5 +1,5 @@
 {
-  "name": "@zen-ai/neural-forecasting",
+  "name": "@claude-zen/neural-forecasting",
   "version": "1.0.0-alpha.1",
   "description": "High-performance neural forecasting library with 27+ time series models: LSTM, N-BEATS, DeepAR, Transformers, and more",
   "type": "module",

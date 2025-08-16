@@ -1,5 +1,5 @@
 {
-  "name": "@zen-ai/adaptive-learning",
+  "name": "@claude-zen/adaptive-learning",
   "version": "1.0.0",
   "description": "Standalone adaptive learning library for behavioral optimization and pattern recognition",
   "main": "dist/index.js",
@@ -25,7 +25,8 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3",

@@ -1,5 +1,5 @@
 {
-  "name": "@zen-ai/dspy-engine",
+  "name": "@claude-zen/dspy",
   "version": "1.0.0",
   "description": "Standalone DSPy integration engine for claude-code-zen",
   "main": "dist/index.js",

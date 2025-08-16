@@ -1,5 +1,5 @@
 {
-  "name": "@zen-ai/gpu-acceleration",
+  "name": "@claude-zen/gpu-acceleration",
   "version": "1.0.0-alpha.1", 
   "description": "GPU acceleration toolkit: CUDA-to-Rust transpiler, WebGPU backend, and WASM acceleration",
   "type": "module",

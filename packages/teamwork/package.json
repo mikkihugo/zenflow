@@ -34,7 +34,7 @@
   },
   "peerDependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@zen-ai/database": "workspace:*"
+    "@claude-zen/database": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3",

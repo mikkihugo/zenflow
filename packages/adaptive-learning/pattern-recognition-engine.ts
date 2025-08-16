@@ -1252,7 +1252,6 @@ export class PatternRecognitionEngine
     // Validate with Zod schema
     return ExecutionTraceSchema.parse(trace);
   }
-  }
 
   private maintainSlidingWindow(): void {
     const cutoff = Date.now() - this.analysisWindow;
