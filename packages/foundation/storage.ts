@@ -14,8 +14,8 @@ const logger = getLogger('shared-storage');
  * Simple key-value interface for lib storage needs
  */
 export interface SimpleKV {
-  get(key: string): Promise<any>;
-  set(key: string, value: any): Promise<void>;
+  get(key: string): Promise<string | null>;
+  set(key: string, value: string | number | boolean | Record<string, unknown>): Promise<void>;
   delete(key: string): Promise<boolean>;
   clear(): Promise<void>;
   has(key: string): Promise<boolean>;
@@ -23,12 +23,30 @@ export interface SimpleKV {
 }
 
 /**
+ * Database adapter interface for different database types
+ */
+export interface DatabaseAdapter {
+  query<T = Record<string, unknown>>(sql: string, params?: unknown[]): Promise<T[]>;
+  execute(sql: string, params?: unknown[]): Promise<void>;
+  close?(): Promise<void>;
+}
+
+/**
+ * Legacy DAO interface for backward compatibility with existing database system
+ */
+export interface LegacyDAO {
+  findBy(criteria: Record<string, unknown>): Promise<any[]>;
+  createOrUpdate(criteria: Record<string, unknown>, data: Record<string, unknown>): Promise<void>;
+  deleteBy(criteria: Record<string, unknown>): Promise<number>;
+}
+
+/**
  * Database access interface using existing database system
  */
 export interface DatabaseAccess {
-  getSQLite(namespace: string): Promise<any>;
-  getLanceDB(namespace: string): Promise<any>;
-  getKuzu(namespace: string): Promise<any>;
+  getSQLite(namespace: string): Promise<DatabaseAdapter>;
+  getLanceDB(namespace: string): Promise<DatabaseAdapter>;
+  getKuzu(namespace: string): Promise<DatabaseAdapter>;
   getKV(namespace: string): Promise<SimpleKV>;
 }
 
@@ -36,26 +54,26 @@ export interface DatabaseAccess {
  * Simple KV implementation using existing database infrastructure
  */
 class NamespacedKV implements SimpleKV {
-  private dao: any;
+  private dao: LegacyDAO;
   private namespace: string;
 
-  constructor(dao: any, namespace: string) {
+  constructor(dao: LegacyDAO, namespace: string) {
     this.dao = dao;
     this.namespace = namespace;
   }
 
-  async get(key: string): Promise<any> {
+  async get(key: string): Promise<string | null> {
     try {
       const namespacedKey = `${this.namespace}:${key}`;
       const result = await this.dao.findBy({ key: namespacedKey });
-      return result?.[0]?.value;
+      return result?.[0]?.value ?? null;
     } catch (error) {
       logger.warn(`KV get failed for key ${key}:`, error);
-      return undefined;
+      return null;
     }
   }
 
-  async set(key: string, value: any): Promise<void> {
+  async set(key: string, value: string | number | boolean | Record<string, unknown>): Promise<void> {
     try {
       const namespacedKey = `${this.namespace}:${key}`;
       const serializedValue = JSON.stringify(value);
@@ -101,7 +119,7 @@ class NamespacedKV implements SimpleKV {
       const results = await this.dao.findBy({ 
         key: { startsWith: `${this.namespace}:` } 
       });
-      return results.map((item: any) => 
+      return results.map((item: { key: string }) => 
         item.key.substring(this.namespace.length + 1)
       );
     } catch (error) {

@@ -10,15 +10,21 @@
   "preferGlobal": true,
   "private": true,
   "workspaces": [
-    "src/lib/dspy",
-    "src/lib/conversation",
-    "src/lib/adaptive-learning",
-    "src/lib/chaos-engineering",
-    "src/lib/task-approval",
-    "src/lib/event-system",
     "packages/brain",
     "packages/database",
-    "packages/foundation"
+    "packages/foundation",
+    "packages/agui",
+    "packages/event-system",
+    "packages/adaptive-learning",
+    "packages/chaos-engineering",
+    "packages/dspy",
+    "packages/gpu-acceleration",
+    "packages/neural-forecasting",
+    "packages/teamwork",
+    "packages/monitoring",
+    "packages/optimization",
+    "packages/workflows",
+    "packages/knowledge"
   ],
   "scripts": {
     "start": "node dist/claude-zen.js core",

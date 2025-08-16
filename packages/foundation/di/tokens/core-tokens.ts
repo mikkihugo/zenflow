@@ -35,6 +35,37 @@ export interface EventBus {
   off(event: string, handler: (data: unknown) => void): this;
 }
 
+// Enhanced type definitions for core services
+export interface TaskData {
+  id: string;
+  swarmId: string;
+  type: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  priority: 'low' | 'medium' | 'high' | 'critical';
+  createdAt: Date;
+  updatedAt: Date;
+  payload: Record<string, unknown>;
+}
+
+export interface AgentData {
+  id: string;
+  type: string;
+  status: 'active' | 'idle' | 'busy' | 'offline';
+  capabilities: string[];
+  currentLoad: number;
+  lastActivity: Date;
+}
+
+export interface MetricEntry {
+  id: string;
+  entityId: string;
+  metricType: 'performance' | 'usage' | 'error' | 'custom';
+  value: number;
+  unit?: string;
+  timestamp: Date;
+  metadata?: Record<string, unknown>;
+}
+
 export interface Database {
   initialize?(): Promise<void>;
   query<T>(sql: string, params?: unknown[]): Promise<T[]>;
@@ -43,15 +74,15 @@ export interface Database {
   shutdown?(): Promise<void>;
 
   // Task management methods
-  createTask(task: unknown): Promise<void>;
-  updateTask(taskId: string, updates: unknown): Promise<void>;
-  getSwarmTasks(swarmId: string, status?: string): Promise<any[]>;
+  createTask(task: Omit<TaskData, 'id' | 'createdAt' | 'updatedAt'>): Promise<void>;
+  updateTask(taskId: string, updates: Partial<TaskData>): Promise<void>;
+  getSwarmTasks(swarmId: string, status?: TaskData['status']): Promise<TaskData[]>;
 
   // Agent management methods
-  updateAgent(agentId: string, updates: unknown): Promise<void>;
+  updateAgent(agentId: string, updates: Partial<AgentData>): Promise<void>;
 
   // Metrics methods
-  getMetrics(entityId: string, metricType: string): Promise<any[]>;
+  getMetrics(entityId: string, metricType: MetricEntry['metricType']): Promise<MetricEntry[]>;
 }
 
 export interface HttpClient {
