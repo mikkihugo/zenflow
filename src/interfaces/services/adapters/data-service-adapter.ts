@@ -7,20 +7,20 @@
  * caching, retry logic, and performance metrics.
  *
  * This adapter follows the exact same patterns as the UACL client adapters,
- * implementing the IService interface and providing unified configuration.
+ * implementing the Service interface and providing unified configuration.
  * management for data operations across Claude-Zen.
  */
 
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../../config/logging-config';
-import type { ILogger } from '../../../core/logger';
+import type { Logger } from '../../../core/logger';
 import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
 import type {
   DocumentCreateOptions,
   DocumentQueryOptions,
   DocumentSearchOptions,
 } from "../services/document/document-service"
-import { DocumentService } from '../../../database/services/document-service-legacy';
+import { DocumentService } from '../../../database/services/document-service';
 import type {
   CommandResult,
   DocumentData,
@@ -31,7 +31,7 @@ import type {
 import { WebDataService } from '../../../interfaces/web/web-data-service';
 import type { DocumentType } from '../../../types/workflow-types';
 import type {
-  IService,
+  Service,
   ServiceConfig,
   ServiceDependencyConfig,
   ServiceError,
@@ -161,7 +161,7 @@ interface PendingRequest<T = any> {
  * Unified Data Service Adapter.
  *
  * Provides a unified interface to WebDataService and DocumentService.
- * While implementing the IService interface for USL compatibility.
+ * While implementing the Service interface for USL compatibility.
  *
  * Features:
  * - Unified configuration management
@@ -174,7 +174,7 @@ interface PendingRequest<T = any> {
  *
  * @example
  */
-export class DataServiceAdapter implements IService {
+export class DataServiceAdapter implements Service {
   // Core service properties
   public readonly name: string;
   public readonly type: string;
@@ -183,7 +183,7 @@ export class DataServiceAdapter implements IService {
   // Service state
   private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
   private eventEmitter = new EventEmitter();
-  private logger: ILogger;
+  private logger: Logger;
   private startTime?: Date;
   private operationCount = 0;
   private successCount = 0;
@@ -263,7 +263,7 @@ export class DataServiceAdapter implements IService {
   }
 
   // ============================================
-  // IService Interface Implementation
+  // Service Interface Implementation
   // ============================================
 
   /**

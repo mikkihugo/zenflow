@@ -25,8 +25,8 @@
  * @version 1.0.0-alpha.43
  *
  * @see {@link https://nodejs.org/api/events.html} Node.js EventEmitter
- * @see {@link IEventBus} Event bus interface for system-wide event handling
- * @see {@link ILogger} Logging interface for structured logging
+ * @see {@link EventBus} Event bus interface for system-wide event handling
+ * @see {@link Logger} Logging interface for structured logging
  *
  * @requires node:events - For event-driven architecture
  * @requires ../core/interfaces/base-interfaces.ts - Core system interfaces
@@ -40,7 +40,7 @@
  *   maxConcurrentTasks: 20,
  *   enableHealthCheck: true,
  *   healthCheckInterval: 30000
- * }, terminalManager, memoryManager, coordinationManager, mcpServer, eventBus, logger);
+ * }, terminalManager, memoryManager, coordinationManager, eventBus, logger);
  *
  * // Start system coordination
  * await orchestrator.start();
@@ -58,7 +58,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 
 /**
  * Configuration interface for orchestrator initialization.
@@ -191,12 +191,12 @@ export interface TaskResult {
  * @extends {EventEmitter}
  *
  * @param {OrchestratorConfig} config - Configuration settings for the orchestrator
- * @param {any} terminalManager - Terminal interface management system
+ * @param {any} terminalManager - Terminal manager removed - using direct TypeScript integration
  * @param {any} memoryManager - Memory storage and retrieval management
  * @param {any} coordinationManager - Multi-agent coordination system
- * @param {any} mcpServer - Model Context Protocol server instance
- * @param {IEventBus} eventBus - System-wide event bus for inter-component communication
- * @param {ILogger} logger - Structured logging interface
+ * @param {undefined} mcpServer - MCP server removed, using direct TypeScript integration
+ * @param {EventBus} eventBus - System-wide event bus for inter-component communication
+ * @param {Logger} logger - Structured logging interface
  *
  * @fires Orchestrator#started - Emitted when orchestrator starts successfully
  * @fires Orchestrator#stopped - Emitted when orchestrator stops gracefully
@@ -214,7 +214,7 @@ export interface TaskResult {
  *   maxConcurrentTasks: 25,
  *   enableHealthCheck: true,
  *   healthCheckInterval: 20000
- * }, terminalMgr, memoryMgr, coordMgr, mcpServer, eventBus, logger);
+ * }, terminalMgr, memoryMgr, coordMgr, eventBus, logger);
  *
  * // Set up event listeners
  * orchestrator.on('taskCompleted', ({ taskId, result, duration }) => {
@@ -265,12 +265,12 @@ export class Orchestrator extends EventEmitter {
 
   constructor(
     config: OrchestratorConfig,
-    private terminalManager?: unknown,
+    // TerminalManager removed - using direct TypeScript integration
     private memoryManager?: unknown,
     private coordinationManager?: unknown,
-    private mcpServer?: unknown,
-    private eventBus?: IEventBus,
-    private logger?: ILogger
+    // MCP server removed - using direct TypeScript integration
+    private eventBus?: EventBus,
+    private logger?: Logger
   ) {
     super();
 

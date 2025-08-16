@@ -156,7 +156,7 @@ export const LLM_CONSTANTS = {
 // Status and state constants
 export const STATUS_CONSTANTS = {
   AGENT_STATUS: {
-    IDLE: 'idle',
+    DLE: 'idle',
     BUSY: 'busy',
     ACTIVE: 'active',
   },
@@ -171,13 +171,13 @@ export const STATUS_CONSTANTS = {
 
   SWARM_STATUS: {
     ACTIVE: 'active',
-    INACTIVE: 'inactive',
-    INITIALIZING: 'initializing',
+    NACTIVE: 'inactive',
+    NITIALIZING: 'initializing',
   },
 
   PERFORMANCE_TREND: {
     STABLE: 'stable',
-    IMPROVING: 'improving',
+    MPROVING: 'improving',
     DEGRADING: 'degrading',
   },
 } as const;

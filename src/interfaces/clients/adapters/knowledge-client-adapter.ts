@@ -1,7 +1,7 @@
 /**
  * UACL Knowledge Client Adapter - FACT Integration Conversion.
  *
- * Converts the existing FACTIntegration to implement the UACL IClient interface,
+ * Converts the existing FACTIntegration to implement the UACL Client interface,
  * providing standardized access to external knowledge gathering through the.
  * Unified API client layer architecture.
  *
@@ -28,9 +28,9 @@ import type {
   ClientConfig,
   ClientMetadata,
   ClientMetrics,
-  IClient,
-  IClientFactory,
-  IKnowledgeClient,
+  Client,
+  ClientFactory,
+  KnowledgeClient,
   KnowledgeQueryOptions,
   KnowledgeSearchOptions,
   KnowledgeStats,
@@ -112,7 +112,7 @@ export interface KnowledgeResponse {
  */
 export class KnowledgeClientAdapter
   extends EventEmitter
-  implements IKnowledgeClient<KnowledgeRequest>
+  implements KnowledgeClient<KnowledgeRequest>
 {
   private factIntegration: FACTIntegration;
   private _connected = false;
@@ -303,7 +303,7 @@ export class KnowledgeClientAdapter
     };
   }
 
-  // IKnowledgeClient interface implementation
+  // KnowledgeClient interface implementation
 
   /**
    * Query knowledge base.
@@ -606,7 +606,7 @@ export class KnowledgeClientAdapter
  *
  * @example
  */
-export class KnowledgeClientFactory implements IClientFactory {
+export class KnowledgeClientFactory implements ClientFactory {
   constructor(
     private logger?: {
       debug: Function;
@@ -622,7 +622,7 @@ export class KnowledgeClientFactory implements IClientFactory {
    * @param protocol
    * @param config
    */
-  async create(protocol: ProtocolType, config: ClientConfig): Promise<IClient> {
+  async create(protocol: ProtocolType, config: ClientConfig): Promise<Client> {
     this.logger?.info(`Creating Knowledge client with protocol: ${protocol}`);
 
     // Validate configuration

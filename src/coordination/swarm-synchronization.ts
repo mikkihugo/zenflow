@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { AgentState } from '../types/agent-types';
 
 export interface SwarmSyncConfig {
@@ -73,8 +73,8 @@ export class SwarmSynchronizer extends EventEmitter {
   constructor(
     swarmId: string,
     config: Partial<SwarmSyncConfig> = {},
-    private eventBus?: IEventBus,
-    private logger?: ILogger
+    private eventBus?: EventBus,
+    private logger?: Logger
   ) {
     super();
 
@@ -605,7 +605,7 @@ interface Task {
  * @example
  */
 class ConsensusProtocol {
-  constructor(_config: SwarmSyncConfig, _logger?: ILogger) {
+  constructor(_config: SwarmSyncConfig, _logger?: Logger) {
     // xxx NEEDS_HUMAN: config and logger not used - verify if needed for consensus algorithms
   }
 
@@ -665,7 +665,7 @@ class ConsensusProtocol {
     const consensusStates = new Map<string, AgentState>();
     const allAgentIds = new Set<string>();
 
-    // Collect all agent IDs
+    // Collect all agent Ds
     states.forEach((state) => {
       state.agentStates.forEach((_, agentId) => allAgentIds.add(agentId));
     });

@@ -18,7 +18,7 @@
 import { getLogger } from '../../config/logging-config';
 import type { SwarmAgent } from '../../types/shared-types';
 import type { SwarmStrategy } from '../types';
-import { ZenOrchestratorIntegration } from '../../zen-orchestrator-integration.js';
+import { ZenOrchestratorIntegration } from '../integrations/zen-orchestrator-integration';
 import { AgentLearningSystem } from '../intelligence/agent-learning-system';
 import { TaskPredictor } from '../intelligence/task-predictor';
 import { AgentHealthMonitor } from '../intelligence/agent-health-monitor';

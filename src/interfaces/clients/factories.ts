@@ -10,20 +10,20 @@
  */
 
 import type {
-  IConfig,
-  ILogger,
+  Config,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type {
   ClientConfig,
   ClientHealthStatus,
   ClientOperation,
   ClientTransaction,
-  IClient,
-  IClientFactory,
-  IHttpClient,
-  IKnowledgeClient,
-  IMcpClient,
-  IWebSocketClient,
+  Client,
+  ClientFactory,
+  HttpClient,
+  KnowledgeClient,
+  McpClient,
+  WebSocketClient,
 } from './interfaces';
 import type { ClientStatus, ClientType, ProtocolType } from './types';
 import {
@@ -62,18 +62,18 @@ export interface ClientFactoryConfig {
   /** Custom client implementation */
   customImplementation?: new (
     ...args: unknown[]
-  ) => IClient;
+  ) => Client;
 }
 
 /**
  * Client type mapping for better type safety.
  */
 export type ClientTypeMap<T> =
-  | IClient<T>
-  | IHttpClient<T>
-  | IWebSocketClient<T>
-  | IKnowledgeClient<T>
-  | IMcpClient<T>;
+  | Client<T>
+  | HttpClient<T>
+  | WebSocketClient<T>
+  | KnowledgeClient<T>
+  | McpClient<T>;
 
 /**
  * Client registry for managing client instances.
@@ -82,7 +82,7 @@ export type ClientTypeMap<T> =
  */
 export interface ClientRegistry {
   [clientId: string]: {
-    client: IClient;
+    client: Client;
     config: ClientConfig;
     created: Date;
     lastUsed: Date;
@@ -97,14 +97,14 @@ export interface ClientRegistry {
  * @example
  */
 export class UACLFactory {
-  private clientCache = new Map<string, IClient>();
-  private factoryCache = new Map<ClientType, IClientFactory>();
+  private clientCache = new Map<string, Client>();
+  private factoryCache = new Map<ClientType, ClientFactory>();
   private clientRegistry: ClientRegistry = {};
   private transactionLog = new Map<string, ClientTransaction>();
 
   constructor(
-    private _logger: ILogger,
-    private _config: IConfig
+    private _logger: Logger,
+    private _config: Config
   ) {
     this.initializeFactories();
   }
@@ -180,7 +180,7 @@ export class UACLFactory {
   async createHttpClient<T = any>(
     url: string,
     config?: Partial<ClientConfig>
-  ): Promise<IHttpClient<T>> {
+  ): Promise<HttpClient<T>> {
     const protocol = url.startsWith('https')
       ? ProtocolTypes.HTTPS
       : ProtocolTypes.HTTP;
@@ -190,7 +190,7 @@ export class UACLFactory {
       protocol,
       url,
       config: config || undefined,
-    })) as IHttpClient<T>;
+    })) as HttpClient<T>;
   }
 
   /**
@@ -202,7 +202,7 @@ export class UACLFactory {
   async createWebSocketClient<T = any>(
     url: string,
     config?: Partial<ClientConfig>
-  ): Promise<IWebSocketClient<T>> {
+  ): Promise<WebSocketClient<T>> {
     const protocol = url.startsWith('wss')
       ? ProtocolTypes.WSS
       : ProtocolTypes.WS;
@@ -212,7 +212,7 @@ export class UACLFactory {
       protocol,
       url,
       config: config || undefined,
-    })) as IWebSocketClient<T>;
+    })) as WebSocketClient<T>;
   }
 
   /**
@@ -224,7 +224,7 @@ export class UACLFactory {
   async createKnowledgeClient<T = any>(
     url: string,
     config?: Partial<ClientConfig>
-  ): Promise<IKnowledgeClient<T>> {
+  ): Promise<KnowledgeClient<T>> {
     return (await this.createClient<T>({
       clientType: ClientTypes.KNOWLEDGE,
       protocol: url.startsWith('https')
@@ -232,7 +232,7 @@ export class UACLFactory {
         : ProtocolTypes.HTTP,
       url,
       config: config || undefined,
-    })) as IKnowledgeClient<T>;
+    })) as KnowledgeClient<T>;
   }
 
   /**
@@ -244,7 +244,7 @@ export class UACLFactory {
   async createMcpClient<T = any>(
     url: string,
     config?: Partial<ClientConfig>
-  ): Promise<IMcpClient<T>> {
+  ): Promise<McpClient<T>> {
     // Determine protocol based on URL format
     let protocol: ProtocolType;
     if (url.startsWith('stdio://')) {
@@ -262,7 +262,7 @@ export class UACLFactory {
       protocol,
       url,
       config: config || undefined,
-    })) as IMcpClient<T>;
+    })) as McpClient<T>;
   }
 
   /**
@@ -276,7 +276,7 @@ export class UACLFactory {
     protocol: ProtocolType,
     url: string,
     config?: Partial<ClientConfig>
-  ): Promise<IClient<T>> {
+  ): Promise<Client<T>> {
     return await this.createClient<T>({
       clientType: ClientTypes.GENERIC,
       protocol,
@@ -290,7 +290,7 @@ export class UACLFactory {
    *
    * @param clientId
    */
-  getClient(clientId: string): IClient | null {
+  getClient(clientId: string): Client | null {
     return this.clientRegistry[clientId]?.client || null;
   }
 
@@ -493,42 +493,42 @@ export class UACLFactory {
 
   private async getOrCreateFactory(
     clientType: ClientType
-  ): Promise<IClientFactory> {
+  ): Promise<ClientFactory> {
     if (this.factoryCache.has(clientType)) {
       return this.factoryCache.get(clientType)!;
     }
 
     // Dynamic import based on client type
-    let FactoryClass: new (...args: unknown[]) => IClientFactory;
+    let FactoryClass: new (...args: unknown[]) => ClientFactory;
 
     switch (clientType) {
       case ClientTypes.HTTP: {
         const { HTTPClientFactory } = await import(
-          './factories/http-client-factory.ts'
+          './factories/http-client-factory'
         );
         FactoryClass = HTTPClientFactory as unknown as new (
           ...args: unknown[]
-        ) => IClientFactory;
+        ) => ClientFactory;
         break;
       }
 
       case ClientTypes.WEBSOCKET: {
         const { WebSocketClientFactory } = await import(
-          './adapters/websocket-client-factory.ts'
+          './adapters/websocket-client-factory'
         );
         FactoryClass = WebSocketClientFactory as unknown as new (
           ...args: unknown[]
-        ) => IClientFactory;
+        ) => ClientFactory;
         break;
       }
 
       case ClientTypes.KNOWLEDGE: {
         const { KnowledgeClientFactory } = await import(
-          './implementations/knowledge-client-factory.ts'
+          './implementations/knowledge-client-factory'
         );
         FactoryClass = KnowledgeClientFactory as unknown as new (
           ...args: unknown[]
-        ) => IClientFactory;
+        ) => ClientFactory;
         break;
       }
 
@@ -583,7 +583,7 @@ export class UACLFactory {
   }
 
   private registerClient(
-    client: IClient,
+    client: Client,
     config: ClientConfig,
     cacheKey: string
   ): string {
@@ -646,7 +646,7 @@ export class UACLFactory {
 export class MultiClientCoordinator {
   constructor(
     private factory: UACLFactory,
-    private logger: ILogger
+    private logger: Logger
   ) {}
 
   /**
@@ -662,7 +662,7 @@ export class MultiClientCoordinator {
       url: string;
       config?: Partial<ClientConfig>;
     }>,
-    operation: (client: IClient) => Promise<T>
+    operation: (client: Client) => Promise<T>
   ): Promise<T[]> {
     this.logger.info(
       `Executing multi-protocol operation on ${clients.length} clients`
@@ -744,13 +744,13 @@ export class MultiClientCoordinator {
  *
  * @example
  */
-export class LoadBalancedClient<T = any> implements IClient<T> {
+export class LoadBalancedClient<T = any> implements Client<T> {
   private currentIndex = 0;
   private requestCount = 0;
 
   constructor(
     private clients: Array<{
-      client: IClient<T>;
+      client: Client<T>;
       weight: number;
       url: string;
     }>,
@@ -794,7 +794,7 @@ export class LoadBalancedClient<T = any> implements IClient<T> {
     return await client.getMetadata();
   }
 
-  private selectClient(): IClient<T> {
+  private selectClient(): Client<T> {
     switch (this.strategy) {
       case 'round-robin': {
         const client = this.clients[this.currentIndex];
@@ -844,16 +844,16 @@ export async function createClient<T = any>(
   protocol: ProtocolType,
   url: string,
   config?: Partial<ClientConfig>
-): Promise<IClient<T>> {
+): Promise<Client<T>> {
   // Create basic logger and config
-  const logger: ILogger = {
+  const logger: Logger = {
     debug: console.debug.bind(console),
     info: console.info.bind(console),
     warn: console.warn.bind(console),
     error: console.error.bind(console),
   };
 
-  const appConfig: IConfig = {} as IConfig;
+  const appConfig: Config = {} as Config;
 
   const factory = new UACLFactory(logger, appConfig);
 
@@ -875,7 +875,7 @@ export async function createClient<T = any>(
 export async function createHttpClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
-): Promise<IHttpClient<T>> {
+): Promise<HttpClient<T>> {
   const protocol = url.startsWith('https')
     ? ProtocolTypes.HTTPS
     : ProtocolTypes.HTTP;
@@ -884,7 +884,7 @@ export async function createHttpClient<T = any>(
     protocol,
     url,
     config
-  )) as IHttpClient<T>;
+  )) as HttpClient<T>;
 }
 
 /**
@@ -897,14 +897,14 @@ export async function createHttpClient<T = any>(
 export async function createWebSocketClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
-): Promise<IWebSocketClient<T>> {
+): Promise<WebSocketClient<T>> {
   const protocol = url.startsWith('wss') ? ProtocolTypes.WSS : ProtocolTypes.WS;
   return (await createClient<T>(
     ClientTypes.WEBSOCKET,
     protocol,
     url,
     config
-  )) as IWebSocketClient<T>;
+  )) as WebSocketClient<T>;
 }
 
 /**
@@ -917,7 +917,7 @@ export async function createWebSocketClient<T = any>(
 export async function createMcpClient<T = any>(
   url: string,
   config?: Partial<ClientConfig>
-): Promise<IMcpClient<T>> {
+): Promise<McpClient<T>> {
   let protocol: ProtocolType;
   if (url.startsWith('stdio://')) {
     protocol = ProtocolTypes.STDIO;
@@ -934,7 +934,7 @@ export async function createMcpClient<T = any>(
     protocol,
     url,
     config
-  )) as IMcpClient<T>;
+  )) as McpClient<T>;
 }
 
 export default UACLFactory;

@@ -13,7 +13,7 @@ import { createServer } from 'http';
 import path from 'path';
 import type { Server as SocketIOServer } from 'socket.io';
 // Configuration system
-import { config } from '../config/index.js';
+import { config } from '../config/config';
 import type { SystemConfiguration } from '../config/types';
 // LogTape integration
 import {
@@ -22,7 +22,7 @@ import {
   createExpressLoggingMiddleware,
   initializeLogging,
   logServerEvent,
-} from '../utils/logging-config.js';
+} from '../config/logging-config';
 
 // Route handlers (to be created)
 // import { mcpRoutes } from './routes/mcp-routes';
@@ -157,7 +157,7 @@ export class UnifiedClaudeZenServer {
           origin: this.getAllowedOrigins(),
           credentials: true,
           methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-          allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
+          allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-D'],
         })
       );
     }
@@ -167,8 +167,8 @@ export class UnifiedClaudeZenServer {
       this.app.use(
         rateLimit({
           windowMs: 15 * 60 * 1000, // 15 minutes
-          max: 1000, // Limit each IP to 1000 requests per windowMs
-          message: 'Too many requests from this IP',
+          max: 1000, // Limit each P to 1000 requests per windowMs
+          message: 'Too many requests from this P',
           standardHeaders: true,
           legacyHeaders: false,
         })
@@ -323,7 +323,7 @@ export class UnifiedClaudeZenServer {
         res.json({
           service: 'MCP Protocol',
           status: 'active',
-          message: 'MCP routes will be migrated here from http-mcp-server.ts',
+          message: 'MCP routes will be migrated here from http-mcp-server',
         });
       });
     }
@@ -335,7 +335,7 @@ export class UnifiedClaudeZenServer {
         res.json({
           service: 'REST API',
           status: 'active',
-          message: 'API routes will be migrated here from api/http/server.ts',
+          message: 'API routes will be migrated here from api/http/server',
         });
       });
     }
@@ -348,7 +348,7 @@ export class UnifiedClaudeZenServer {
           service: 'Web Dashboard',
           status: 'active',
           message:
-            'Dashboard routes will be migrated here from web-interface-server.ts',
+            'Dashboard routes will be migrated here from web-interface-server',
         });
       });
     }
@@ -361,7 +361,7 @@ export class UnifiedClaudeZenServer {
           service: 'Monitoring Dashboard',
           status: 'active',
           message:
-            'Monitoring routes will be migrated here from dashboard-server.ts',
+            'Monitoring routes will be migrated here from dashboard-server',
         });
       });
     }

@@ -12,9 +12,9 @@
 import { parseArgs } from 'node:util';
 import { mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import type { ILogger } from '../core/logger.js';
-import type { DIContainer } from '../di/index.js';
-import { QueenCommander } from './agents/queen-coordinator.js';
+import type { Logger } from './types/interfaces';
+import type { DIContainer } from './types/interfaces';
+import { QueenCommander } from './agents/queen-coordinator';
 import { getLogger } from '../config/logging-config';
 
 export interface QueenCommanderLaunchConfig {
@@ -28,7 +28,7 @@ export interface QueenCommanderLaunchConfig {
 
 /**
  * Initialize .claude-zen directory structure for Queen Commander instances
- * Supports multiple concurrent instances with unique session IDs
+ * Supports multiple concurrent instances with unique session Ds
  */
 function initializeQueenDirectories(sessionId: string): {
   baseDir: string;
@@ -127,7 +127,7 @@ function parseQueenCommanderArgs(): QueenCommanderLaunchConfig {
  */
 export async function launchQueenCommander(
   container: DIContainer,
-  logger: ILogger
+  logger: Logger
 ): Promise<void> {
   const config = parseQueenCommanderArgs();
 
@@ -154,10 +154,10 @@ export async function launchQueenCommander(
 
     // Initialize THE COLLECTIVE integration
     logger.info('🧠 Initializing THE COLLECTIVE integration...');
-    const { CollectiveCubeSync } = await import('../collective-cube-sync.js');
-    const { DevCubeMatron } = await import('../cubes/dev-cube-matron.js');
-    const { OpsCubeMatron } = await import('../cubes/ops-cube-matron.js');
-    const { AgentRegistry } = await import('../agents/agent-registry.js');
+    const { CollectiveCubeSync } = await import('../collective-cube-sync');
+    const { DevCubeMatron } = await import('../cubes/dev-cube-matron');
+    const { OpsCubeMatron } = await import('../cubes/ops-cube-matron');
+    const { AgentRegistry } = await import('../agents/agent-registry');
 
     // Initialize agent registry for queen coordination
     const agentRegistry = new AgentRegistry(memoryCoordinator, eventBus);
@@ -386,6 +386,6 @@ export function createClaudeCliAgentTemplate() {
         },
       },
     },
-    startupScript: './scripts/start-claude-cli-agent.ts',
+    startupScript: './scripts/start-claude-cli-agent',
   };
 }

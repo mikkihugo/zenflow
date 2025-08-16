@@ -40,7 +40,7 @@ vi.mock('../../../../knowledge/knowledge-client', () => {
 // Import the mock for access in tests
 const {
   __mockFACTIntegration,
-} = require('../../../../knowledge/knowledge-client.js');
+} = require('../../../../knowledge/knowledge-client');
 
 describe('KnowledgeClientAdapter', () => {
   let knowledgeConfig: KnowledgeClientConfig;
@@ -81,7 +81,7 @@ describe('KnowledgeClientAdapter', () => {
     describe('Client Initialization', () => {
       it('should create FACT integration with converted config', () => {
         expect(
-          require('../../../../knowledge/knowledge-client.js').FACTIntegration
+          require('../../../../knowledge/knowledge-client').FACTIntegration
         ).toHaveBeenCalledWith({
           pythonPath: 'python3',
           factRepoPath: './test-fact',
@@ -216,7 +216,7 @@ describe('KnowledgeClientAdapter', () => {
       });
     });
 
-    describe('IKnowledgeClient Interface Methods', () => {
+    describe('KnowledgeClient Interface Methods', () => {
       beforeEach(async () => {
         await knowledgeClient.connect();
 
@@ -326,7 +326,7 @@ describe('KnowledgeClientAdapter', () => {
 
         // Verify the FACT integration was created with correct config
         expect(
-          require('../../../../knowledge/knowledge-client.js').FACTIntegration
+          require('../../../../knowledge/knowledge-client').FACTIntegration
         ).toHaveBeenCalledWith({
           pythonPath: 'python3.9',
           factRepoPath: '/path/to/fact',
@@ -359,7 +359,7 @@ describe('KnowledgeClientAdapter', () => {
         new KnowledgeClientAdapter(uaclConfig);
 
         expect(
-          require('../../../../knowledge/knowledge-client.js').FACTIntegration
+          require('../../../../knowledge/knowledge-client').FACTIntegration
         ).toHaveBeenCalledWith(
           expect.objectContaining({
             anthropicApiKey: 'env-test-key',

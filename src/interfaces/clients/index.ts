@@ -84,8 +84,8 @@ export type {
   ClientMetrics as CoreClientMetrics,
   ClientResponse as CoreClientResponse,
   ClientStatus as CoreClientStatus,
-  IClient,
-  IClientFactory,
+  Client,
+  ClientFactory,
   RequestOptions as CoreRequestOptions,
 } from './core/interfaces';
 // Client manager types and interfaces
@@ -495,7 +495,7 @@ export class UACL {
    *     {
    *       name: 'database',
    *       command: 'node',
-   *       args: ['database-mcp-server.js'],
+   *       args: ['database-mcp-server'],
    *       env: { DB_URL: process.env['DATABASE_URL'] }
    *     }
    *   ],
@@ -1149,7 +1149,7 @@ export const UACLHelpers = {
   /**
    * Perform health check on all clients.
    *
-   * @returns {Promise<Record<string, boolean>>} Map of client IDs to health status (true = healthy, false = unhealthy).
+   * @returns {Promise<Record<string, boolean>>} Map of client Ds to health status (true = healthy, false = unhealthy).
    * @throws Never throws - all errors are caught and reported as unhealthy clients.
    * @description Performs individual health checks on all registered clients across all types.
    *              Returns a simple boolean status for each client, making it easy to identify

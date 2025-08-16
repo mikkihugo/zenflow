@@ -15,8 +15,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
-import type { WASMPerformanceMetrics } from '../neural/types/wasm-types';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
+import type { WASMPerformanceMetrics } from '@claude-zen/brain/types';
 
 // Use WASM performance metrics as base performance type
 export type PerformanceMetrics = WASMPerformanceMetrics;
@@ -1172,8 +1172,8 @@ export type CacheType =
  * @example
  */
 export class CollectiveIntelligenceCoordinator extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: CollectiveIntelligenceConfig;
 
   // Core Systems - converted to concrete implementations
@@ -1193,8 +1193,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
 
   constructor(
     config: CollectiveIntelligenceConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;
@@ -1500,8 +1500,8 @@ export class CollectiveIntelligenceCoordinator extends EventEmitter {
   }
 
   private async calculateCollectiveIQ(): Promise<number> {
-    // TODO: Implement collective IQ calculation
-    this.logger.info('Calculating collective IQ');
+    // TODO: Implement collective Q calculation
+    this.logger.info('Calculating collective Q');
     return 120; // Placeholder
   }
 
@@ -2017,8 +2017,8 @@ export interface CollectiveIntelligenceMetrics {
 class KnowledgeExchangeSystem {
   constructor(
     private config: KnowledgeExchangeConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   async getMetrics(): Promise<unknown> {
@@ -2045,8 +2045,8 @@ class KnowledgeExchangeSystem {
 class DistributedLearningSystem {
   constructor(
     private config: DistributedLearningConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   async getMetrics(): Promise<unknown> {
@@ -2069,8 +2069,8 @@ class DistributedLearningSystem {
 class CollaborativeProblemSolvingSystem {
   constructor(
     private config: CollaborativeSolvingConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   async getMetrics(): Promise<unknown> {
@@ -2093,8 +2093,8 @@ class CollaborativeProblemSolvingSystem {
 class IntelligenceCoordinationSystem {
   constructor(
     private config: IntelligenceCoordinationConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   async getMetrics(): Promise<unknown> {
@@ -2121,8 +2121,8 @@ class IntelligenceCoordinationSystem {
 class KnowledgeQualityManagementSystem {
   constructor(
     private config: QualityManagementConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   async getMetrics(): Promise<unknown> {
@@ -2155,8 +2155,8 @@ class KnowledgeQualityManagementSystem {
 class PerformanceOptimizationSystem {
   constructor(
     private config: PerformanceOptimizationConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   async getMetrics(): Promise<unknown> {

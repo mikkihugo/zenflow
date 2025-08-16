@@ -36,8 +36,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 
@@ -61,7 +61,7 @@ import type {
 import type {
   CrossSwarmPattern,
   SwarmPerformanceProfile,
-} from '../agents/queen-coordinator.js';
+} from '../cross-swarm/cross-swarm-types';
 import type {
   LearningResult,
   BestPractice,
@@ -269,8 +269,8 @@ export interface Phase3EnsembleConfig {
  * sophisticated model fusion and adaptive weighting strategies.
  */
 export class Phase3EnsembleLearning extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: Phase3EnsembleConfig;
 
@@ -297,7 +297,7 @@ export class Phase3EnsembleLearning extends EventEmitter {
 
   constructor(
     config: Phase3EnsembleConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator
   ) {
     super();

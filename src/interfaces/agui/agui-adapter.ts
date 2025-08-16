@@ -43,6 +43,9 @@ export interface AGUIInterface {
     message: string,
     type?: 'info' | 'warning' | 'error' | 'success'
   ): Promise<void>;
+  showInfo(title: string, data: Record<string, unknown>): Promise<void>;
+  clear?(): Promise<void>;
+  close?(): Promise<void>;
 }
 
 /**
@@ -67,21 +70,55 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
     const rl = this.getReadline();
-    if (question.confidence !== undefined) {
+    
+    // Display formatted question
+    console.log('\n' + '='.repeat(60));
+    console.log(`📋 ${question.type.toUpperCase()} QUESTION`);
+    console.log('='.repeat(60));
+    
+    // Show priority if set
+    if (question.priority) {
+      const priorityIcon = {
+        critical: '🔴',
+        high: '🟡', 
+        medium: '🔵',
+        low: '🟢'
+      }[question.priority];
+      console.log(`${priorityIcon} Priority: ${question.priority.toUpperCase()}`);
     }
-
+    
+    // Show confidence
+    if (question.confidence !== undefined) {
+      const confidencePercent = Math.round(question.confidence * 100);
+      console.log(`🎯 Confidence: ${confidencePercent}%`);
+    }
+    
+    // Show validation reason
+    if (question.validationReason) {
+      console.log(`💡 Reason: ${question.validationReason}`);
+    }
+    
+    console.log('\n' + question.question);
+    
     // Show options if available
     if (question.options && question.options.length > 0) {
-      question.options.forEach((_opt, _idx) => {});
+      console.log('\n📝 Available Options:');
+      question.options.forEach((opt, idx) => {
+        console.log(`   ${idx + 1}. ${opt}`);
+      });
       if (question.allowCustom) {
+        console.log('   0. Custom response');
       }
     }
 
     // Show context if available
     if (question.context && Object.keys(question.context).length > 0) {
-      Object.entries(question.context).forEach(([_key, value]) => {
-        if (typeof value === 'object') {
+      console.log('\n📊 Context Information:');
+      Object.entries(question.context).forEach(([key, value]) => {
+        if (typeof value === 'object' && value !== null) {
+          console.log(`   ${key}: ${JSON.stringify(value, null, 2)}`);
         } else {
+          console.log(`   ${key}: ${value}`);
         }
       });
     }
@@ -124,22 +161,81 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
   }
 
   async showProgress(progress: unknown): Promise<void> {
-    if (typeof progress === 'object') {
-      Object.entries(progress).forEach(([_key, _value]) => {});
+    if (typeof progress === 'object' && progress !== null) {
+      const prog = progress as any;
+      
+      if (prog.current !== undefined && prog.total !== undefined) {
+        const percentage = Math.round((prog.current / prog.total) * 100);
+        const progressBar = this.createProgressBar(percentage);
+        
+        console.log(`\n📈 Progress: ${prog.current}/${prog.total} (${percentage}%)`);
+        console.log(`${progressBar}`);
+        
+        if (prog.description) {
+          console.log(`📋 ${prog.description}`);
+        }
+        
+        if (prog.estimatedRemaining) {
+          const minutes = Math.ceil(prog.estimatedRemaining / 60000);
+          console.log(`⏱️  Est. remaining: ${minutes}m`);
+        }
+      } else {
+        console.log(`\n📊 Status: ${JSON.stringify(progress, null, 2)}`);
+      }
     } else {
+      console.log(`\n📊 Progress: ${progress}`);
     }
+  }
+  
+  private createProgressBar(percentage: number, width: number = 40): string {
+    const filled = Math.round((percentage / 100) * width);
+    const empty = width - filled;
+    return `[${'█'.repeat(filled)}${'░'.repeat(empty)}] ${percentage}%`;
   }
 
   async showMessage(
-    _message: string,
-    _type: 'info' | 'warning' | 'error' | 'success' = 'info'
+    message: string,
+    type: 'info' | 'warning' | 'error' | 'success' = 'info'
   ): Promise<void> {
-    const _icons = {
+    const icons = {
       info: 'ℹ️ ',
       warning: '⚠️ ',
-      error: '❌',
-      success: '✅',
+      error: '❌ ',
+      success: '✅ ',
     };
+    
+    const colors = {
+      info: '\x1b[36m',    // Cyan
+      warning: '\x1b[33m', // Yellow
+      error: '\x1b[31m',   // Red
+      success: '\x1b[32m', // Green
+    };
+    
+    const reset = '\x1b[0m';
+    const icon = icons[type];
+    const color = colors[type];
+    
+    console.log(`\n${icon}${color}${message}${reset}`);
+  }
+
+  async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
+    console.log(`\\n📋 ${title}`);
+    console.log('='.repeat(Math.max(title.length + 3, 40)));
+    
+    Object.entries(data).forEach(([key, value]) => {
+      if (typeof value === 'object' && value !== null) {
+        console.log(`   ${key}:`);
+        console.log(`      ${JSON.stringify(value, null, 6).replace(/\\n/g, '\\n      ')}`);
+      } else {
+        console.log(`   ${key}: ${value}`);
+      }
+    });
+    console.log('');
+  }
+
+  async clear(): Promise<void> {
+    // Clear terminal screen
+    console.clear();
   }
 
   close(): void {
@@ -189,6 +285,18 @@ export class MockAGUI implements AGUIInterface {
     type?: 'info' | 'warning' | 'error' | 'success'
   ): Promise<void> {
     logger.debug(`Mock AGUI Message [${type || 'info'}]:`, message);
+  }
+
+  async showInfo(title: string, data: Record<string, unknown>): Promise<void> {
+    logger.debug(`Mock AGUI Info [${title}]:`, data);
+  }
+
+  async clear(): Promise<void> {
+    logger.debug('Mock AGUI: Clear called');
+  }
+
+  close(): void {
+    logger.debug('Mock AGUI: Close called');
   }
 }
 

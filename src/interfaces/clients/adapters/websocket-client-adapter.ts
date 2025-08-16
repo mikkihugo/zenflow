@@ -1,5 +1,5 @@
 /**
- * @file WebSocket client adapter implementing the UACL IClient interface for real-time communication.
+ * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  */
 
 import { getLogger } from '../config/logging-config';
@@ -15,12 +15,12 @@ const logger = getLogger(
  * Provides reliable, event-driven connectivity with automatic reconnection, message queuing,
  * and comprehensive monitoring capabilities.
  *
- * @file WebSocket client adapter implementing the UACL IClient interface for real-time communication.
+ * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  * @module interfaces/clients/adapters/websocket
  * @version 2.0.0
  *
  * Key Features:
- * - Full UACL IClient interface compliance
+ * - Full UACL Client interface compliance
  * - Automatic reconnection with configurable backoff strategies
  * - Message queuing for offline reliability
  * - Heartbeat/ping-pong monitoring for connection health
@@ -164,7 +164,7 @@ import type {
   ClientMetrics,
   ClientResponse,
   ClientStatus,
-  IClient,
+  Client,
   RequestOptions,
   RetryConfig,
 } from '../core/interfaces';
@@ -296,14 +296,14 @@ export interface WebSocketMessage<T = any> {
 }
 
 /**
- * WebSocket Client Adapter implementing UACL IClient interface.
+ * WebSocket Client Adapter implementing UACL Client interface.
  *
  * @class WebSocketClientAdapter
  * @augments EventEmitter
- * @implements {IClient}
+ * @implements {Client}
  * @description Enterprise-grade WebSocket client providing real-time communication capabilities
  *              with automatic reconnection, message queuing, heartbeat monitoring, and comprehensive
- *              observability features. Implements the UACL IClient interface for unified client management.
+ *              observability features. Implements the UACL Client interface for unified client management.
  * @property {WebSocketClientConfig} config - WebSocket client configuration (read-only).
  * @property {string} name - Client identifier (read-only).
  * @property {WebSocket|null} ws - Underlying WebSocket connection (private).
@@ -329,7 +329,7 @@ export interface WebSocketMessage<T = any> {
  *   authentication: {
  *     type: 'query',
  *     query: { token: userToken },
- *     headers: { 'User-ID': userId }
+ *     headers: { 'User-D': userId }
  *   },
  *   reconnection: {
  *     enabled: true,
@@ -440,7 +440,7 @@ export interface WebSocketMessage<T = any> {
  * }, 60000);
  * ```
  */
-export class WebSocketClientAdapter extends EventEmitter implements IClient {
+export class WebSocketClientAdapter extends EventEmitter implements Client {
   public readonly config: WebSocketClientConfig;
   public readonly name: string;
 
@@ -1116,7 +1116,7 @@ export class WebSocketClientAdapter extends EventEmitter implements IClient {
 }
 
 /**
- * WebSocket Client Factory implementing UACL IClientFactory interface.
+ * WebSocket Client Factory implementing UACL ClientFactory interface.
  *
  * @example
  */

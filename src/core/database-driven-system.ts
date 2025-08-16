@@ -1013,7 +1013,7 @@ ${spec.title} for ${feature.title}
           files_to_create: [
             `${feature.title.toLowerCase().replace(/\s+/g, '-')}.ts`,
           ],
-          files_to_modify: ['index.ts', 'routes.ts'],
+          files_to_modify: ['index', 'routes.ts'],
           test_files: [
             `${feature.title.toLowerCase().replace(/\s+/g, '-')}.test.ts`,
           ],

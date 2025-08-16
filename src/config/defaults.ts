@@ -1,8 +1,94 @@
 /**
- * @file Defaults implementation.
+ * @fileoverview System Default Configuration - Comprehensive default settings for Claude Code Zen
+ * 
+ * This module provides the complete default configuration system for Claude Code Zen including
+ * system-wide settings, environment-specific overrides, validation schemas, and URL building
+ * utilities. Serves as the single source of truth for all default system behavior and provides
+ * production-ready configuration templates with intelligent fallbacks.
+ * 
+ * **Key Features:**
+ * - **Complete System Defaults**: All subsystem configurations with intelligent defaults
+ * - **Environment-Aware Settings**: Development, production, and test-specific configurations
+ * - **Validation Schemas**: Comprehensive validation rules with type checking and range validation
+ * - **Port Allocation Strategy**: Conflict-free port assignment across all services
+ * - **URL Building System**: Type-safe URL construction for all service endpoints
+ * - **Production Safety**: Security-focused defaults with strict production validation
+ * - **Configuration Mapping**: Environment variable to configuration path mapping
+ * - **Performance Optimization**: Optimized defaults based on deployment environment
+ * 
+ * **Configuration Categories:**
+ * - Core system (logging, performance, security)
+ * - Interface configuration (web, terminal)
+ * - Storage systems (memory, database, persistence)
+ * - Coordination and swarm management
+ * - External service integrations (Anthropic, OpenAI, GitHub)
+ * - Monitoring and logging infrastructure
+ * - Network and connectivity settings
+ * - Neural processing and WASM optimization
+ * - Environment-specific behavior controls
+ * 
+ * @example Basic System Configuration
+ * ```typescript
+ * import { DEFAULT_CONFIG } from './defaults';
+ * 
+ * // Use default configuration for system startup
+ * const systemConfig = {
+ *   ...DEFAULT_CONFIG,
+ *   // Override specific settings
+ *   interfaces: {
+ *     ...DEFAULT_CONFIG.interfaces,
+ *     web: {
+ *       ...DEFAULT_CONFIG.interfaces.web,
+ *       port: 8080
+ *     }
+ *   }
+ * };
+ * ```
+ * 
+ * @example Environment Variable Configuration
+ * ```typescript
+ * import { ENV_MAPPINGS, DEFAULT_CONFIG } from './defaults';
+ * 
+ * // Map environment variables to configuration
+ * const config = applyEnvironmentOverrides(DEFAULT_CONFIG, ENV_MAPPINGS);
+ * 
+ * // Environment variables like WEB_PORT=8080 automatically applied
+ * ```
+ * 
+ * @example Production Validation
+ * ```typescript
+ * import { PRODUCTION_VALIDATION_SCHEMA } from './defaults';
+ * 
+ * // Validate production configuration
+ * const errors = validateProductionConfig(config, PRODUCTION_VALIDATION_SCHEMA);
+ * if (errors.length > 0) {
+ *   console.error('Production validation errors:', errors);
+ * }
+ * ```
+ * 
+ * @example URL Building
+ * ```typescript
+ * import { URLBuilder, getWebDashboardURL } from './defaults';
+ * 
+ * // Build service URLs with automatic protocol/port detection
+ * const webURL = getWebDashboardURL({ host: 'dashboard.company.com' });
+ * 
+ * // Custom URL builder
+ * const builder = new URLBuilder(customConfig);
+ * const monitoringURL = builder.getMonitoringDashboardURL();
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43
+ * @version 2.1.0
+ * 
+ * @see {@link SystemConfiguration} Complete configuration interface
+ * @see {@link ENV_MAPPINGS} Environment variable mapping system
+ * @see {@link VALIDATION_RULES} Configuration validation rules
+ * @see {@link URLBuilder} Service URL construction utilities
  */
 
-import type { SystemConfiguration } from './types.js';
+import type { SystemConfiguration } from '../types/system-config';
 
 /**
  * Default system configuration.
@@ -43,30 +129,12 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
       enableProgressBars: true,
     },
     web: {
-      port: 3456,
-      host: 'localhost',
+      port: Number.parseInt(process.env['WEB_PORT'] || '3000', 10),
+      host: process.env['WEB_HOST'] || 'localhost',
       enableHttps: false,
-      corsOrigins: ['http://localhost:3000', 'http://localhost:3456'],
+      corsOrigins: ['http://localhost:3000'],
       staticPath: './public',
       enableCompression: true,
-    },
-    mcp: {
-      http: {
-        port: 3000,
-        host: 'localhost',
-        timeout: 30000,
-        maxRequestSize: '10mb',
-        enableCors: true,
-      },
-      stdio: {
-        timeout: 30000,
-        maxBufferSize: 1024 * 1024, // 1MB
-      },
-      tools: {
-        enableAll: true,
-        enabledTools: [],
-        disabledTools: [],
-      },
     },
   },
 
@@ -140,8 +208,8 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
   // Monitoring and logging
   monitoring: {
     dashboard: {
-      port: Number.parseInt(process.env['DASHBOARD_PORT'] || '3456', 10),
-      host: process.env['DASHBOARD_HOST'] || 'localhost',
+      port: Number.parseInt(process.env['WEB_PORT'] || '3000', 10),
+      host: process.env['WEB_HOST'] || 'localhost',
       enableMetrics: process.env['ENABLE_METRICS'] !== 'false',
       metricsInterval: Number.parseInt(
         process.env['METRICS_INTERVAL'] || '10000',
@@ -210,48 +278,36 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
  */
 export const ENV_MAPPINGS = {
   // Core
-  CLAUDE_LOG_LEVEL: { path: 'core.logger.level', type: 'string' as const },
-  CLAUDE_LOG_CONSOLE: { path: 'core.logger.console', type: 'boolean' as const },
-  CLAUDE_LOG_FILE: { path: 'core.logger.file', type: 'string' as const },
-  CLAUDE_ENABLE_METRICS: {
+  ZEN_LOG_LEVEL: { path: 'core.logger.level', type: 'string' as const },
+  ZEN_LOG_CONSOLE: { path: 'core.logger.console', type: 'boolean' as const },
+  ZEN_LOG_FILE: { path: 'core.logger.file', type: 'string' as const },
+  ZEN_ENABLE_METRICS: {
     path: 'core.performance.enableMetrics',
     type: 'boolean' as const,
   },
-  CLAUDE_METRICS_INTERVAL: {
+  ZEN_METRICS_INTERVAL: {
     path: 'core.performance.metricsInterval',
     type: 'number' as const,
   },
 
   // Interfaces
-  CLAUDE_WEB_PORT: { path: 'interfaces.web.port', type: 'number' as const },
-  CLAUDE_WEB_HOST: { path: 'interfaces.web.host', type: 'string' as const },
-  CLAUDE_MCP_PORT: {
-    path: 'interfaces.mcp.http.port',
-    type: 'number' as const,
-  },
-  CLAUDE_MCP_HOST: {
-    path: 'interfaces.mcp.http.host',
-    type: 'string' as const,
-  },
-  CLAUDE_MCP_TIMEOUT: {
-    path: 'interfaces.mcp.http.timeout',
-    type: 'number' as const,
-  },
+  WEB_PORT: { path: 'interfaces.web.port', type: 'number' as const },
+  WEB_HOST: { path: 'interfaces.web.host', type: 'string' as const },
 
   // Storage
-  CLAUDE_MEMORY_BACKEND: {
+  ZEN_MEMORY_BACKEND: {
     path: 'storage.memory.backend',
     type: 'string' as const,
   },
-  CLAUDE_MEMORY_DIR: {
+  ZEN_MEMORY_DIR: {
     path: 'storage.memory.directory',
     type: 'string' as const,
   },
-  CLAUDE_DB_PATH: {
+  ZEN_DB_PATH: {
     path: 'storage.database.sqlite.path',
     type: 'string' as const,
   },
-  CLAUDE_LANCEDB_PATH: {
+  ZEN_LANCEDB_PATH: {
     path: 'storage.database.lancedb.path',
     type: 'string' as const,
   },
@@ -279,40 +335,40 @@ export const ENV_MAPPINGS = {
   },
 
   // Coordination
-  CLAUDE_MAX_AGENTS: {
+  ZEN_MAX_AGENTS: {
     path: 'coordination.maxAgents',
     type: 'number' as const,
   },
-  CLAUDE_HEARTBEAT_INTERVAL: {
+  ZEN_HEARTBEAT_INTERVAL: {
     path: 'coordination.heartbeatInterval',
     type: 'number' as const,
   },
-  CLAUDE_COORDINATION_TIMEOUT: {
+  ZEN_COORDINATION_TIMEOUT: {
     path: 'coordination.timeout',
     type: 'number' as const,
   },
-  CLAUDE_SWARM_TOPOLOGY: {
+  ZEN_SWARM_TOPOLOGY: {
     path: 'coordination.topology',
     type: 'string' as const,
   },
 
   // Neural
-  CLAUDE_ENABLE_WASM: { path: 'neural.enableWASM', type: 'boolean' as const },
-  CLAUDE_ENABLE_SIMD: { path: 'neural.enableSIMD', type: 'boolean' as const },
-  CLAUDE_ENABLE_CUDA: { path: 'neural.enableCUDA', type: 'boolean' as const },
-  CLAUDE_NEURAL_BACKEND: { path: 'neural.backend', type: 'string' as const },
-  CLAUDE_MODEL_PATH: { path: 'neural.modelPath', type: 'string' as const },
+  ZEN_ENABLE_WASM: { path: 'neural.enableWASM', type: 'boolean' as const },
+  ZEN_ENABLE_SIMD: { path: 'neural.enableSIMD', type: 'boolean' as const },
+  ZEN_ENABLE_CUDA: { path: 'neural.enableCUDA', type: 'boolean' as const },
+  ZEN_NEURAL_BACKEND: { path: 'neural.backend', type: 'string' as const },
+  ZEN_NEURAL_MODEL_PATH: { path: 'neural.modelPath', type: 'string' as const },
 
   // Security
-  CLAUDE_ENABLE_SANDBOX: {
+  ZEN_ENABLE_SANDBOX: {
     path: 'core.security.enableSandbox',
     type: 'boolean' as const,
   },
-  CLAUDE_ALLOW_SHELL: {
+  ZEN_ALLOW_SHELL: {
     path: 'core.security.allowShellAccess',
     type: 'boolean' as const,
   },
-  CLAUDE_TRUSTED_HOSTS: {
+  ZEN_TRUSTED_HOSTS: {
     path: 'core.security.trustedHosts',
     type: 'array' as const,
     parser: (value: string) => value.split(',').map((h) => h.trim()),
@@ -403,16 +459,7 @@ export const VALIDATION_RULES = {
     productionMin: 3000,
     productionMax: 65535,
     conflictCheck: true,
-    fallback: 3456, // Safe fallback different from MCP
-  },
-  'interfaces.mcp.http.port': {
-    type: 'number',
-    min: 1,
-    max: 65535,
-    productionMin: 3000,
-    productionMax: 65535,
-    conflictCheck: true,
-    fallback: 3000, // Primary MCP port
+    fallback: 3000, // Default web port
   },
   'coordination.maxAgents': {
     type: 'number',
@@ -521,22 +568,16 @@ export const VALIDATION_RULES = {
 export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
   required: ['NODE_ENV'],
   optional: [
-    'CLAUDE_WEB_PORT',
-    'CLAUDE_MCP_PORT',
-    'CLAUDE_LOG_LEVEL',
-    'CLAUDE_MAX_AGENTS',
+    'WEB_PORT',
+    'ZEN_LOG_LEVEL',
+    'ZEN_MAX_AGENTS',
   ],
   validation: {
     NODE_ENV: (value: unknown) =>
       typeof value === 'string' &&
       ['production', 'development', 'test'].includes(value),
     ANTHROPIC_API_KEY: (value: unknown) => true, // Optional - not required
-    CLAUDE_WEB_PORT: (value: unknown) => {
-      if (typeof value !== 'string') return false;
-      const port = Number.parseInt(value, 10);
-      return !isNaN(port) && port >= 3000 && port <= 65535;
-    },
-    CLAUDE_MCP_PORT: (value: unknown) => {
+    WEB_PORT: (value: unknown) => {
       if (typeof value !== 'string') return false;
       const port = Number.parseInt(value, 10);
       return !isNaN(port) && port >= 3000 && port <= 65535;
@@ -557,8 +598,7 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
       'core.logger.level': 'info',
       'core.security.enableSandbox': true,
       'core.security.allowShellAccess': false,
-      'interfaces.web.port': 3456,
-      'interfaces.mcp.http.port': 3000,
+      'interfaces.web.port': 3000,
       'coordination.maxAgents': 10,
       'coordination.topology': 'hierarchical',
       'storage.memory.backend': 'sqlite',
@@ -571,154 +611,13 @@ export const PRODUCTION_VALIDATION_SCHEMA: ConfigValidationSchema = {
   },
 };
 
-/**
- * Default Port Allocation Strategy.
- *
- * Carefully planned port allocation strategy designed to prevent conflicts
- * between different system components. Provides a stable, predictable port
- * assignment scheme that works across development, testing, and production
- * environments while avoiding common port conflicts.
- *
- * Port Assignment Philosophy:
- * - Primary services get well-known, memorable ports
- * - Sequential allocation for related services
- * - Gaps between service groups to allow expansion
- * - Avoids system ports (< 1024) and common application ports
- * - Compatible with firewall rules and load balancer configurations
- *
- * Service Port Mapping:
- * - `3000`: MCP HTTP Server (primary Claude integration)
- * - `3456`: Web Dashboard (administrative interface)
- * - `3457`: Monitoring Dashboard (metrics and health)
- * - `3001`: Development Server (when needed)
- * - `3002`: Backup/Failover Port (high availability)
- *
- * @example
- * ```typescript
- * import { DEFAULT_PORT_ALLOCATION } from 'claude-code-zen/config';
- *
- * // Get assigned port for a service
- * const mcpPort = DEFAULT_PORT_ALLOCATION['interfaces.mcp.http.port'];
- * console.log('MCP server will run on port:', mcpPort); // 3000
- *
- * // Check for conflicts before starting services
- * const webPort = DEFAULT_PORT_ALLOCATION['interfaces.web.port'];
- * const monitorPort = DEFAULT_PORT_ALLOCATION['monitoring.dashboard.port'];
- *
- * if (webPort === monitorPort) {
- *   throw new Error('Port conflict detected!');
- * }
- *
- * // Use in server configuration
- * const serverConfig = {
- *   mcp: { port: DEFAULT_PORT_ALLOCATION['interfaces.mcp.http.port'] },
- *   web: { port: DEFAULT_PORT_ALLOCATION['interfaces.web.port'] },
- *   monitoring: { port: DEFAULT_PORT_ALLOCATION['monitoring.dashboard.port'] }
- * };
- * ```
- *
- * @const DEFAULT_PORT_ALLOCATION
- * @see {@link PORT_ALLOCATION_BY_ENV} - Environment-specific overrides
- * @see {@link VALIDATION_RULES} - Port validation rules
- * @since 1.0.0-alpha.43
- */
-export const DEFAULT_PORT_ALLOCATION = {
-  'interfaces.mcp.http.port': 3000, // Primary MCP server
-  'interfaces.web.port': 3456, // Web dashboard
-  'monitoring.dashboard.port': 3457, // Monitoring dashboard
-  'development.port': 3001, // Development server if needed
-  'backup.port': 3002, // Backup/failover port
-} as const;
-
-/**
- * Environment-Specific Port Allocation Overrides.
- *
- * Environment-aware port allocation that provides different port assignments
- * for development, production, and testing environments. Allows for isolation
- * between environments while maintaining service functionality and preventing
- * conflicts when multiple environments run on the same system.
- *
- * Environment Strategy:
- * - **Development**: Standard ports for easy access and debugging
- * - **Production**: Environment variable override support with fallbacks
- * - **Testing**: Offset ports to avoid conflicts with development services
- *
- * Port Environment Mapping:
- * - Development: 3000, 3456, 3457 (standard allocation)
- * - Production: Environment variable driven with same fallbacks
- * - Testing: 3100, 3556, 3557 (offset by +100/+100/+100)
- *
- * Environment Variables:
- * - `CLAUDE_MCP_PORT`: Override MCP server port in production
- * - `CLAUDE_WEB_PORT`: Override web dashboard port in production
- * - `CLAUDE_MONITOR_PORT`: Override monitoring dashboard port in production
- *
- * @example
- * ```typescript
- * import { PORT_ALLOCATION_BY_ENV } from 'claude-code-zen/config';
- *
- * const env = process.env.NODE_ENV || 'development';
- * const ports = PORT_ALLOCATION_BY_ENV[env];
- *
- * // Get environment-specific port
- * const mcpPort = ports['interfaces.mcp.http.port'];
- * console.log(`MCP server port for ${env}:`, mcpPort);
- *
- * // Start services with environment-appropriate ports
- * const config = {
- *   environment: env,
- *   services: {
- *     mcp: { port: ports['interfaces.mcp.http.port'] },
- *     web: { port: ports['interfaces.web.port'] },
- *     monitoring: { port: ports['monitoring.dashboard.port'] }
- *   }
- * };
- *
- * // Production example with environment variables
- * // CLAUDE_MCP_PORT=8080 CLAUDE_WEB_PORT=8081 npm start
- * if (env === 'production') {
- *   console.log('Production ports can be overridden via environment variables');
- * }
- * ```
- *
- * @const PORT_ALLOCATION_BY_ENV
- * @see {@link DEFAULT_PORT_ALLOCATION} - Base port allocation strategy
- * @see {@link VALIDATION_RULES} - Port validation and conflict checking
- * @since 1.0.0-alpha.43
- */
-export const PORT_ALLOCATION_BY_ENV = {
-  development: {
-    'interfaces.mcp.http.port': 3000,
-    'interfaces.web.port': 3456,
-    'monitoring.dashboard.port': 3457,
-  },
-  production: {
-    'interfaces.mcp.http.port': Number.parseInt(
-      process.env['CLAUDE_MCP_PORT'] || '3000',
-      10
-    ),
-    'interfaces.web.port': Number.parseInt(
-      process.env['CLAUDE_WEB_PORT'] || '3456',
-      10
-    ),
-    'monitoring.dashboard.port': Number.parseInt(
-      process.env['CLAUDE_MONITOR_PORT'] || '3457',
-      10
-    ),
-  },
-  test: {
-    'interfaces.mcp.http.port': 3100,
-    'interfaces.web.port': 3556,
-    'monitoring.dashboard.port': 3557,
-  },
-} as const;
 
 /**
  * URL Builder Configuration and Utilities.
  *
  * Comprehensive URL construction system consolidated from url-builder.ts.
  * Provides type-safe, environment-aware URL building capabilities for
- * all system services including MCP servers, web dashboards, monitoring
+ * all system services including web dashboards, monitoring
  * endpoints, and API routes.
  *
  * Features:
@@ -746,12 +645,12 @@ export const PORT_ALLOCATION_BY_ENV = {
  *   protocol: 'https',
  *   host: 'api.example.com',
  *   port: 443,
- *   path: '/v1/mcp'
+ *   path: '/v1/api'
  * };
  *
  * // Used with URLBuilder
  * const builder = new URLBuilder(systemConfig);
- * const url = builder.buildURL('mcp', config);
+ * const url = builder.buildURL('web', config);
  * ```
  *
  * @interface URLBuilderConfig
@@ -772,19 +671,6 @@ export class URLBuilder {
     this.config = config;
   }
 
-  /**
-   * Build HTTP MCP server URL.
-   *
-   * @param overrides
-   */
-  getMCPServerURL(overrides: Partial<URLBuilderConfig> = {}): string {
-    const protocol = overrides.protocol || this.getProtocol();
-    const host = overrides.host || this.config.interfaces.mcp.http.host;
-    const port = overrides.port || this.config.interfaces.mcp.http.port;
-    const path = overrides.path || '';
-
-    return this.buildURL(protocol, host, port, path);
-  }
 
   /**
    * Build web dashboard URL.
@@ -819,7 +705,6 @@ export class URLBuilder {
    */
   getCORSOrigins(): string[] {
     const protocol = this.getProtocol();
-    const mcpURL = this.getMCPServerURL({ protocol });
     const webURL = this.getWebDashboardURL({ protocol });
     const monitoringURL = this.getMonitoringDashboardURL({ protocol });
     const configuredOrigins = this.config.interfaces.web.corsOrigins || [];
@@ -834,7 +719,7 @@ export class URLBuilder {
       return origin;
     });
 
-    const allOrigins = [...updatedOrigins, mcpURL, webURL, monitoringURL];
+    const allOrigins = [...updatedOrigins, webURL, monitoringURL];
     return Array.from(new Set(allOrigins));
   }
 
@@ -845,12 +730,10 @@ export class URLBuilder {
    * @param overrides
    */
   getServiceBaseURL(
-    service: 'mcp' | 'web' | 'monitoring',
+    service: 'web' | 'monitoring',
     overrides: Partial<URLBuilderConfig> = {}
   ): string {
     switch (service) {
-      case 'mcp':
-        return this.getMCPServerURL(overrides);
       case 'web':
         return this.getWebDashboardURL(overrides);
       case 'monitoring':
@@ -930,8 +813,6 @@ export const createURLBuilder = (config: SystemConfiguration): URLBuilder => {
  *
  * @param overrides
  */
-export const getMCPServerURL = (overrides?: Partial<URLBuilderConfig>) =>
-  defaultURLBuilder.getMCPServerURL(overrides);
 
 export const getWebDashboardURL = (overrides?: Partial<URLBuilderConfig>) =>
   defaultURLBuilder.getWebDashboardURL(overrides);

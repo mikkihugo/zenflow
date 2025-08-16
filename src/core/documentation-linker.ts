@@ -661,8 +661,8 @@ export class DocumentationLinker extends EventEmitter {
 
   private isCodeFile(filename: string): boolean {
     const codeExtensions = [
-      '.js',
-      '.ts',
+      '',
+      '',
       '.jsx',
       '.tsx',
       '.py',

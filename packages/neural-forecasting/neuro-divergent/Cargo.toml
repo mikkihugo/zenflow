@@ -1,0 +1,182 @@
+[package]
+name = "neuro-divergent"
+version = "0.1.0"
+edition = "2021"
+authors = ["Claude Code <noreply@anthropic.com>"]
+description = "High-performance neural forecasting library providing 100% compatibility with NeuralForecast Python API, built on ruv-FANN foundation"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/your-org/ruv-FANN"
+homepage = "https://github.com/your-org/ruv-FANN"
+documentation = "https://docs.rs/neuro-divergent"
+keywords = ["neural-network", "forecasting", "time-series", "machine-learning", "rust"]
+categories = ["science", "algorithms", "mathematics"]
+readme = "README.md"
+
+[workspace]
+members = [
+    ".",
+    "neuro-divergent-core",
+    "neuro-divergent-data",
+    "neuro-divergent-models",
+    "neuro-divergent-registry", 
+    "neuro-divergent-training"
+]
+
+# Note: Remaining vulnerabilities are low-severity transitive dependencies
+# These require upstream fixes in polars ecosystem
+
+[lib]
+name = "neuro_divergent"
+path = "src/lib.rs"
+
+[dependencies]
+# Core numeric traits and operations
+num-traits = "0.2"
+num-complex = "0.4"
+
+# Data structures and manipulation 
+polars = { version = "0.50", features = ["lazy", "temporal", "csv", "parquet", "json"] }
+ndarray = "0.16"
+csv = "1.3"
+
+# Serialization and configuration
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Date and time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Parallel processing
+rayon = "1.10"
+
+# Async support
+tokio = { version = "1.0", features = ["full"], optional = true }
+futures = { version = "0.3", optional = true }
+
+# Optional GPU support
+candle-core = { version = "0.9", optional = true }
+candle-nn = { version = "0.9", optional = true }
+
+# Logging and monitoring
+log = "0.4"
+tracing = { version = "0.1", optional = true }
+
+# Internal neuro-divergent crates (using local path dependencies)
+neuro-divergent-core = { path = "./neuro-divergent-core" } 
+neuro-divergent-models = { path = "./neuro-divergent-models", optional = true }
+neuro-divergent-registry = { path = "./neuro-divergent-registry", optional = true }
+
+# ruv-FANN dependency - using published version
+ruv-fann = "0.1.6"
+
+[dev-dependencies]
+approx = "0.5"
+tempfile = "3.14"
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.6"
+rand = "0.9"
+rand_distr = "0.4"
+serde_json = "1.0"
+quickcheck = "1.0"
+arbitrary = { version = "1.3", features = ["derive"] }
+crossbeam = "0.8"
+plotly = "0.13"
+csv = "1.3"
+tokio-test = "0.4"
+futures = "0.3"
+thiserror = "2.0"
+toml = "0.8"
+
+# For benchmarking - minimal for security
+pprof = { version = "0.15", features = ["flamegraph"] }
+
+# For memory profiling - minimal for security  
+stats_alloc = "0.1"
+
+[features]
+default = ["std", "models", "registry"]
+std = []
+async = ["tokio", "futures"]
+gpu = ["candle-core", "candle-nn"]
+tracing = ["dep:tracing"]
+models = ["dep:neuro-divergent-models"]
+registry = ["dep:neuro-divergent-registry"]
+python-compat = []  # Enable Python-specific compatibility features
+
+# WASM support - removed ruv-fann dependency
+# wasm = ["ruv-fann/wasm"]
+no_std = []
+
+
+[[test]]
+name = "memory_tests"
+path = "tests/performance/memory_tests.rs"
+
+[[test]]
+name = "scaling_tests"
+path = "tests/performance/scaling_tests.rs"
+
+[[example]]
+name = "basic_usage"
+path = "examples/basic_usage.rs"
+
+[[example]]
+name = "lstm_forecasting"
+path = "examples/lstm_forecasting.rs"
+
+[[example]]
+name = "multiple_models"
+path = "examples/multiple_models.rs"
+
+[[example]]
+name = "cross_validation"
+path = "examples/cross_validation.rs"
+
+[[example]]
+name = "complete_workflow"
+path = "examples/complete_workflow.rs"
+
+[[example]]
+name = "ensemble_forecasting"
+path = "examples/ensemble_forecasting.rs"
+
+[[example]]
+name = "advanced_features"
+path = "examples/advanced_features.rs"
+
+[[test]]
+name = "integration"
+path = "tests/integration/mod.rs"
+
+[[test]]
+name = "model_registry_integration"
+path = "tests/integration/model_registry.rs"
+
+[[test]]
+name = "cross_crate_communication"
+path = "tests/integration/cross_crate_communication.rs"
+
+[[test]]
+name = "error_propagation"
+path = "tests/integration/error_propagation.rs"
+
+[[test]]
+name = "performance_integration"
+path = "tests/integration/performance_integration.rs"
+
+[[test]]
+name = "cli_integration"
+path = "tests/integration/cli_integration.rs"
+
+[[test]]
+name = "real_world_scenarios"
+path = "tests/integration/real_world_scenarios.rs"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

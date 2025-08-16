@@ -579,7 +579,7 @@ genrule(
       0
     );
 
-    logger.info('\n📊 === BAZEL INTEGRATION TEST RESULTS ===');
+    logger.info('\n📊 === BAZEL NTEGRATION TEST RESULTS ===');
     logger.info(
       `🎯 Tests: ${passedTests}/${totalTests} passed (${((passedTests / totalTests) * 100).toFixed(1)}%)`
     );

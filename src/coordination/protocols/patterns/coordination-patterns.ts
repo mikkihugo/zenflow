@@ -9,8 +9,8 @@
 
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../../core/interfaces/base-interfaces';
+import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core coordination types
 export interface CoordinationNode {
@@ -251,8 +251,8 @@ export class CoordinationPatterns extends EventEmitter {
       workStealing: WorkStealingConfig;
       hierarchical: HierarchicalConfig;
     },
-    private readonly logger: ILogger,
-    private readonly eventBus: IEventBus
+    private readonly logger: Logger,
+    private readonly eventBus: EventBus
   ) {
     super();
 
@@ -698,8 +698,8 @@ class LeaderElection extends EventEmitter {
   constructor(
     private nodeId: string,
     private config: LeaderElectionConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {
     super();
 
@@ -1074,8 +1074,8 @@ class ConsensusEngine extends EventEmitter {
   constructor(
     private nodeId: string,
     private config: ConsensusConfig,
-    private logger: ILogger,
-    _eventBus: IEventBus // Prefixed with _ to indicate intentionally unused
+    private logger: Logger,
+    _eventBus: EventBus // Prefixed with _ to indicate intentionally unused
   ) {
     // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future features.
     super();
@@ -1386,8 +1386,8 @@ class WorkStealingSystem extends EventEmitter {
   constructor(
     private nodeId: string,
     private config: WorkStealingConfig,
-    private logger: ILogger,
-    _eventBus: IEventBus // Prefixed with _ to indicate intentionally unused
+    private logger: Logger,
+    _eventBus: EventBus // Prefixed with _ to indicate intentionally unused
   ) {
     super();
     // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future event propagation
@@ -1787,8 +1787,8 @@ class HierarchicalCoordinator extends EventEmitter {
   constructor(
     private nodeId: string,
     private config: HierarchicalConfig,
-    private logger: ILogger,
-    eventBus: IEventBus
+    private logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     // xxx NEEDS_HUMAN: eventBus passed but not used - confirm if needed for future event propagation

@@ -300,7 +300,7 @@ class JSONBackend implements BackendInterface {
  * 
  * **Database Configuration**:
  * - Journal Mode: WAL (Write-Ahead Logging) for better concurrency
- * - Auto Vacuum: INCREMENTAL for space management without blocking
+ * - Auto Vacuum: NCREMENTAL for space management without blocking
  * - File Location: `{config.path}/memory.db`
  * - Schema: Single table with namespace:key indexing for fast lookups
  * 
@@ -391,27 +391,27 @@ class SQLiteBackend implements BackendInterface {
 
       // Configure SQLite options
       this.db.pragma('journal_mode = WAL');
-      this.db.pragma('auto_vacuum = INCREMENTAL');
+      this.db.pragma('auto_vacuum = NCREMENTAL');
 
       // Create memory table
       this.db.exec(`
-        CREATE TABLE IF NOT EXISTS memory (
+        CREATE TABLE F NOT EXISTS memory (
           id TEXT PRIMARY KEY,
           namespace TEXT NOT NULL,
           key TEXT NOT NULL,
           value TEXT NOT NULL,
           value_type TEXT NOT NULL,
-          timestamp INTEGER NOT NULL,
-          size INTEGER NOT NULL,
+          timestamp NTEGER NOT NULL,
+          size NTEGER NOT NULL,
           UNIQUE(namespace, key)
         )
       `);
 
       // Create indexes
       this.db.exec(`
-        CREATE INDEX IF NOT EXISTS idx_namespace ON memory(namespace);
-        CREATE INDEX IF NOT EXISTS idx_key ON memory(key);
-        CREATE INDEX IF NOT EXISTS idx_timestamp ON memory(timestamp);
+        CREATE NDEX F NOT EXISTS idx_namespace ON memory(namespace);
+        CREATE NDEX F NOT EXISTS idx_key ON memory(key);
+        CREATE NDEX F NOT EXISTS idx_timestamp ON memory(timestamp);
       `);
 
       logger.info('SQLite backend initialized');
@@ -434,7 +434,7 @@ class SQLiteBackend implements BackendInterface {
 
     try {
       const stmt = this.db.prepare(`
-        INSERT OR REPLACE INTO memory(id, namespace, key, value, value_type, timestamp, size)
+        INSERT OR REPLACE NTO memory(id, namespace, key, value, value_type, timestamp, size)
         VALUES(?, ?, ?, ?, ?, ?, ?)
       `);
 

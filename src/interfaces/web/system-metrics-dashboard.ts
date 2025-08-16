@@ -17,7 +17,7 @@ import {
   DatabaseTypes,
   EntityTypes,
 } from '../../database/index';
-import type { IRepository } from '../../database/interfaces';
+import type { Repository } from '../../database/interfaces';
 // Import UACL for unified client management
 import { UACLHelpers, uacl } from '../clients/index';
 
@@ -58,7 +58,7 @@ interface SystemHealth {
 export class UnifiedPerformanceDashboard extends EventEmitter {
   private mcpMetrics: MCPPerformanceMetrics;
   private enhancedMemory: EnhancedMemory;
-  private vectorRepository?: IRepository<any>;
+  private vectorRepository?: Repository<any>;
   private config: Required<DashboardConfig>;
   private refreshTimer?: NodeJS.Timeout;
   private isRunning = false;

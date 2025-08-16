@@ -1541,7 +1541,7 @@ export const NeuralCoreUtils = {
    * ```typescript
    * import { NeuralCoreUtils } from './neural/core';
    *
-   * // Generate IDs for different network types
+   * // Generate Ds for different network types
    * const feedforwardId = NeuralCoreUtils.generateNetworkId('feedforward');
    * const lstmId = NeuralCoreUtils.generateNetworkId('lstm');
    * const cnnId = NeuralCoreUtils.generateNetworkId('cnn');

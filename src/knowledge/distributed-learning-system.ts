@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { ComponentHealth } from '../types/shared-types';
 
 // Performance metrics interface (replacing missing module)
@@ -1391,8 +1391,8 @@ export type ConsolidationTrigger =
 class FederatedLearningCoordinator extends EventEmitter {
   constructor(
     config: FederatedLearningConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     // TODO: Implement federated learning coordinator initialization
@@ -1410,8 +1410,8 @@ class FederatedLearningCoordinator extends EventEmitter {
 class ExperienceAggregationSystem extends EventEmitter {
   constructor(
     config: ExperienceSharingConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     // TODO: Implement experience aggregation system initialization
@@ -1427,7 +1427,7 @@ class ExperienceAggregationSystem extends EventEmitter {
 }
 
 class ModelSynchronizationSystem extends EventEmitter {
-  constructor(config: ModelSyncConfig, logger: ILogger, eventBus: IEventBus) {
+  constructor(config: ModelSyncConfig, logger: Logger, eventBus: EventBus) {
     super();
     // TODO: Implement model synchronization system initialization
   }
@@ -1440,8 +1440,8 @@ class ModelSynchronizationSystem extends EventEmitter {
 class TransferLearningSystem extends EventEmitter {
   constructor(
     config: TransferLearningConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     // TODO: Implement transfer learning system initialization
@@ -1459,8 +1459,8 @@ class TransferLearningSystem extends EventEmitter {
 class CollectiveMemorySystem extends EventEmitter {
   constructor(
     config: CollectiveMemoryConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     // TODO: Implement collective memory system initialization
@@ -1481,8 +1481,8 @@ class CollectiveMemorySystem extends EventEmitter {
  * @example
  */
 export class DistributedLearningSystem extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: DistributedLearningConfig;
 
   // Core Components - FIXED: Now properly initialized
@@ -1501,8 +1501,8 @@ export class DistributedLearningSystem extends EventEmitter {
 
   constructor(
     config: DistributedLearningConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;

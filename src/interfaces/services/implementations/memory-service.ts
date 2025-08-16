@@ -8,7 +8,7 @@
  * @file Memory service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
@@ -17,7 +17,7 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class MemoryService extends BaseService implements IService {
+export class MemoryService extends BaseService implements Service {
   private store = new Map<string, any>();
   private metadata = new Map<string, any>();
   private evictionTimer?: NodeJS.Timeout;

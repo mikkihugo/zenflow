@@ -31,7 +31,7 @@ import { AgentHealthMonitor } from '../../intelligence/agent-health-monitor';
 import type { SwarmAgent } from '../../../types/shared-types';
 
 // Mock the logging system
-vi.mock('../../../config/logging-config.ts', () => ({
+vi.mock('../../../config/logging-config', () => ({
   getLogger: () => ({
     info: vi.fn(),
     debug: vi.fn(),
@@ -41,7 +41,7 @@ vi.mock('../../../config/logging-config.ts', () => ({
 }));
 
 // Mock the ZenOrchestratorIntegration
-vi.mock('../../../zen-orchestrator-integration.js', () => ({
+vi.mock('../../../zen-orchestrator-integration', () => ({
   ZenOrchestratorIntegration: vi.fn().mockImplementation(() => ({
     initialize: vi.fn().mockResolvedValue(true),
     shutdown: vi.fn().mockResolvedValue(true),

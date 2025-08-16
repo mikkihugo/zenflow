@@ -1113,7 +1113,7 @@ export class ConnectionStateManager extends EventEmitter {
     try {
       await (this.persistence as any).pool.write(
         `
-        INSERT OR REPLACE INTO mcp_connections 
+        INSERT OR REPLACE NTO mcp_connections 
         (id, type, config, status, created_at, last_connected, last_disconnected, reconnect_attempts, metadata)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
       `,
@@ -1146,7 +1146,7 @@ export class ConnectionStateManager extends EventEmitter {
     try {
       // Create table if it doesn't exist
       await (this.persistence as any).pool.write(`
-        CREATE TABLE IF NOT EXISTS mcp_connections (
+        CREATE TABLE F NOT EXISTS mcp_connections (
           id TEXT PRIMARY KEY,
           type TEXT NOT NULL,
           config TEXT NOT NULL,
@@ -1154,13 +1154,13 @@ export class ConnectionStateManager extends EventEmitter {
           created_at DATETIME,
           last_connected DATETIME,
           last_disconnected DATETIME,
-          reconnect_attempts INTEGER DEFAULT 0,
+          reconnect_attempts NTEGER DEFAULT 0,
           metadata TEXT DEFAULT '{}'
         )
       `);
 
       const connections = await (this.persistence as any).pool.read(
-        'SELECT * FROM mcp_connections WHERE status IN (?, ?)',
+        'SELECT * FROM mcp_connections WHERE status N (?, ?)',
         ['connected', 'reconnecting']
       );
 

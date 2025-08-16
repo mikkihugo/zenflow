@@ -123,7 +123,7 @@ async function testDeceptionDetection() {
   }
   console.log();
 
-  // TEST 5: ORCHESTRATOR INTEGRATION
+  // TEST 5: ORCHESTRATOR NTEGRATION
   console.log('🔍 TEST 5: Safety Orchestrator Integration');
   await orchestrator.startSafetyMonitoring();
 

@@ -11,7 +11,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { CollectiveFACTSystemInterface } from './shared-types';
 
 // Type alias for backward compatibility
@@ -65,8 +65,8 @@ export class CollectiveCubeCoordinator extends EventEmitter {
   private collectiveFact: CollectiveFACTSystem | undefined;
 
   constructor(
-    private eventBus: IEventBus,
-    private logger?: ILogger
+    private eventBus: EventBus,
+    private logger?: Logger
   ) {
     super();
 

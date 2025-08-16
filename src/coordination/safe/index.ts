@@ -52,8 +52,8 @@ export interface ValueStream {
   readonly name: string;
   readonly description: string;
   readonly type: 'operational' | 'development';
-  readonly solutions: string[]; // Solution IDs
-  readonly trains: string[]; // ART IDs
+  readonly solutions: string[]; // Solution Ds
+  readonly trains: string[]; // ART Ds
   readonly customers: Customer[];
   readonly valueFlowSteps: ValueFlowStep[];
   readonly metrics: ValueStreamMetrics;
@@ -70,7 +70,7 @@ export interface Solution {
   readonly capabilities: Capability[];
   readonly solutionIntent: SolutionIntent;
   readonly architecture: SolutionArchitecture;
-  readonly trains: string[]; // ART IDs supporting this solution
+  readonly trains: string[]; // ART Ds supporting this solution
 }
 
 /**
@@ -83,7 +83,7 @@ export interface Capability {
   readonly solutionId: string;
   readonly businessValue: number;
   readonly enablers: Enabler[];
-  readonly features: string[]; // Feature IDs
+  readonly features: string[]; // Feature Ds
   readonly acceptanceCriteria: string[];
   readonly status: CapabilityStatus;
 }
@@ -132,7 +132,7 @@ export interface PIObjective {
   readonly businessValue: number;
   readonly stretch: boolean; // Uncommitted objective
   readonly assignedTeam: string;
-  readonly features: string[]; // Feature IDs
+  readonly features: string[]; // Feature Ds
   readonly confidence: number; // 1-10 scale
   readonly actualValue: number;
   readonly status: ObjectiveStatus;
@@ -202,14 +202,14 @@ export interface Enabler {
     | 'compliance'
     | 'exploration';
   readonly level: 'portfolio' | 'solution' | 'program' | 'team';
-  readonly parentId: string; // ID of parent entity (Feature, Capability, etc.)
+  readonly parentId: string; // D of parent entity (Feature, Capability, etc.)
   readonly acceptanceCriteria: string[];
   readonly effort: number;
   readonly status: EnablerStatus;
 }
 
 // ============================================================================
-// SAFE TO WORKFLOW MAPPING INTERFACES
+// SAFE TO WORKFLOW MAPPING NTERFACES
 // ============================================================================
 
 /**
@@ -218,21 +218,21 @@ export interface Enabler {
 export interface SAFeWorkflowMapping {
   // Portfolio Level Mapping
   readonly portfolioMapping: {
-    readonly strategicThemes: string[]; // Maps to PortfolioItem IDs
-    readonly valueStreams: string[]; // Maps to workflow stream IDs
-    readonly solutions: string[]; // Maps to PortfolioItem IDs
+    readonly strategicThemes: string[]; // Maps to PortfolioItem Ds
+    readonly valueStreams: string[]; // Maps to workflow stream Ds
+    readonly solutions: string[]; // Maps to PortfolioItem Ds
   };
 
   // Program Level Mapping
   readonly programMapping: {
-    readonly artTrains: string[]; // Maps to ProgramItem IDs
+    readonly artTrains: string[]; // Maps to ProgramItem Ds
     readonly programIncrements: string[]; // Maps to program workflow cycles
-    readonly features: string[]; // Maps to ProgramItem IDs
+    readonly features: string[]; // Maps to ProgramItem Ds
   };
 
   // Team Level Mapping
   readonly teamMapping: {
-    readonly teams: string[]; // Maps to SwarmExecutionItem IDs
+    readonly teams: string[]; // Maps to SwarmExecutionItem Ds
     readonly stories: string[]; // Maps to individual tasks/features
     readonly enablers: string[]; // Maps to technical work items
   };
@@ -507,7 +507,7 @@ export interface SharedService {
   readonly name: string;
   readonly description: string;
   readonly capabilities: string[];
-  readonly consumers: string[]; // ART IDs
+  readonly consumers: string[]; // ART Ds
 }
 
 export interface TeamMember {

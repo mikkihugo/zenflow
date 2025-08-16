@@ -8,7 +8,7 @@
  * and performance metrics.
  *
  * This adapter follows the exact same patterns as other USL service adapters,
- * implementing the IService interface and providing unified configuration.
+ * implementing the Service interface and providing unified configuration.
  * management for infrastructure operations across Claude-Zen.
  */
 
@@ -17,12 +17,12 @@ import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import {
   ClaudeZenFacade,
-  type IDatabaseService,
-  type IInterfaceService,
-  type IMemoryService,
-  type INeuralService,
-  type ISwarmService,
-  type IWorkflowService,
+  type DatabaseService,
+  type InterfaceService,
+  type MemoryService,
+  type NeuralService,
+  type SwarmService,
+  type WorkflowService,
 } from '../../../core/facade';
 import {
   ConfigurationFactory,
@@ -30,7 +30,7 @@ import {
   type IntegrationConfig,
 } from '../../../core/pattern-integration';
 import type {
-  IService,
+  Service,
   ServiceDependencyConfig,
   ServiceEvent,
   ServiceEventType,
@@ -265,7 +265,7 @@ interface ResourceTrackingEntry {
  * Unified Infrastructure Service Adapter.
  *
  * Provides a unified interface to ClaudeZenFacade, IntegratedPatternSystem,
- * and core infrastructure services while implementing the IService interface.
+ * and core infrastructure services while implementing the Service interface.
  * For USL compatibility.
  *
  * Features:
@@ -281,7 +281,7 @@ interface ResourceTrackingEntry {
  *
  * @example
  */
-export class InfrastructureServiceAdapter implements IService {
+export class InfrastructureServiceAdapter implements Service {
   // Core service properties
   public readonly name: string;
   public readonly type: string;
@@ -417,7 +417,7 @@ export class InfrastructureServiceAdapter implements IService {
   }
 
   // ============================================
-  // IService Interface Implementation
+  // Service Interface Implementation
   // ============================================
 
   /**
@@ -2146,7 +2146,7 @@ export class InfrastructureServiceAdapter implements IService {
 
   private createStandaloneFacade(): ClaudeZenFacade {
     // Create mock services for standalone facade
-    const mockSwarmService: ISwarmService = {
+    const mockSwarmService: SwarmService = {
       initializeSwarm: async () => ({
         swarmId: 'mock',
         topology: 'hierarchical',
@@ -2195,7 +2195,7 @@ export class InfrastructureServiceAdapter implements IService {
       listSwarms: async () => [],
     };
 
-    const mockNeuralService: INeuralService = {
+    const mockNeuralService: NeuralService = {
       trainModel: async () => ({
         modelId: 'mock',
         accuracy: 0.95,
@@ -2229,7 +2229,7 @@ export class InfrastructureServiceAdapter implements IService {
       deleteModel: async () => {},
     };
 
-    const mockMemoryService: IMemoryService = {
+    const mockMemoryService: MemoryService = {
       store: async () => {},
       retrieve: async () => null,
       delete: async () => true,
@@ -2244,7 +2244,7 @@ export class InfrastructureServiceAdapter implements IService {
       }),
     };
 
-    const mockDatabaseService: IDatabaseService = {
+    const mockDatabaseService: DatabaseService = {
       query: async () => [],
       insert: async () => 'mock-id',
       update: async () => true,
@@ -2259,7 +2259,7 @@ export class InfrastructureServiceAdapter implements IService {
       }),
     };
 
-    const mockInterfaceService: IInterfaceService = {
+    const mockInterfaceService: InterfaceService = {
       startHTTPMCP: async () => ({
         serverId: 'mock',
         port: 3000,
@@ -2282,7 +2282,7 @@ export class InfrastructureServiceAdapter implements IService {
       getInterfaceStatus: async () => [],
     };
 
-    const mockWorkflowService: IWorkflowService = {
+    const mockWorkflowService: WorkflowService = {
       executeWorkflow: async () => ({
         workflowId: 'mock',
         executionId: 'mock',
@@ -2794,7 +2794,7 @@ export function createDefaultInfrastructureServiceAdapterConfig(
 ): InfrastructureServiceAdapterConfig {
   return {
     name,
-    type: ServiceType.INFRASTRUCTURE,
+    type: ServiceType.NFRASTRUCTURE,
     enabled: true,
     priority: ServicePriority.HIGH,
     environment: ServiceEnvironment.DEVELOPMENT,

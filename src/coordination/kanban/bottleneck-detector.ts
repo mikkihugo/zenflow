@@ -196,7 +196,7 @@ export interface DetectedBottleneck {
   readonly duration: number; // milliseconds since detection
   readonly rootCause: RootCauseAnalysis;
   readonly impactMetrics: BottleneckImpactMetrics;
-  readonly affectedItems: string[]; // work item IDs
+  readonly affectedItems: string[]; // work item Ds
   readonly contributingFactors: ContributingFactor[];
   readonly resolutionStrategy: ResolutionStrategy;
   readonly confidence: number; // 0-1 detection confidence
@@ -1607,7 +1607,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): BottleneckDetectionEngineState {

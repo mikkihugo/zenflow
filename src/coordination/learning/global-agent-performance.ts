@@ -12,8 +12,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type { AgentType } from '../../types/agent-types';
@@ -114,7 +114,7 @@ export interface ExpertiseMapping {
     contributions: number;
     availability: 'available' | 'busy' | 'unavailable';
   }>;
-  bestPractices: string[]; // IDs of best practices for this domain
+  bestPractices: string[]; // Ds of best practices for this domain
   commonChallenges: string[];
   knowledgeGaps: string[];
   lastUpdated: Date;
@@ -147,7 +147,7 @@ export interface CrossSwarmLearningSession {
       | 'best-practice-discovered'
       | 'innovation-created';
     description: string;
-    beneficiaries: string[]; // Agent IDs that benefited
+    beneficiaries: string[]; // Agent Ds that benefited
     measurableImpact: number;
   }>;
   duration: number;
@@ -186,8 +186,8 @@ export interface KnowledgeGraph {
  * through knowledge sharing, mentorship, and collaborative learning sessions.
  */
 export class GlobalAgentPerformance extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: GlobalAgentPerformanceConfig;
 
@@ -208,7 +208,7 @@ export class GlobalAgentPerformance extends EventEmitter {
 
   constructor(
     config: GlobalAgentPerformanceConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator
   ) {
     super();

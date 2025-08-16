@@ -2,9 +2,9 @@
  * @file Claude-zen-integrated implementation.
  */
 
-import { getLogger } from './config/logging-config.js';
-import type { ServerInstance, BaseError } from './types/event-emitter.js';
-import { hasErrorCode } from './types/event-emitter.js';
+import { getLogger } from './config/logging-config';
+import type { ServerInstance, BaseError } from './coordination/types/interfaces';
+import { hasErrorCode } from './coordination/types/type-guards';
 
 const logger = getLogger('claude-zen-integrated');
 /**
@@ -115,14 +115,25 @@ export class ClaudeZenIntegrated {
       );
 
       // Start server
-      this.server = app.listen(this.options.port, () => {
+      const expressServer = app.listen(this.options.port, () => {
         logger.info(`✅ HTTP server started on port ${this.options.port}`);
         logger.info(
           `🌐 Health check: http://localhost:${this.options.port}/health`
         );
       });
 
-      this.server.on('error', (err: BaseError) => {
+      // Wrap Express server with ServerInstance interface
+      this.server = {
+        id: `server-${Date.now()}`,
+        status: 'running',
+        port: this.options.port,
+        host: 'localhost',
+        uptime: 0,
+        close: expressServer.close.bind(expressServer),
+        on: expressServer.on.bind(expressServer)
+      };
+
+      expressServer.on('error', (err: BaseError) => {
         logger.error(`❌ Server error:`, err);
         if (hasErrorCode(err) && err.code === 'EADDRINUSE') {
           logger.error(`Port ${this.options.port} is already in use`);
@@ -140,9 +151,9 @@ export class ClaudeZenIntegrated {
    */
   async shutdown(): Promise<void> {
     // Close HTTP server
-    if (this.server) {
+    if (this.server?.close) {
       await new Promise<void>((resolve, reject) => {
-        this.server?.close((err?: Error) => {
+        this.server!.close!((err?: Error) => {
           if (err) reject(err);
           else resolve();
         });
@@ -195,4 +206,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-// Default export removed - use named export: import { ClaudeZenIntegrated } from './claude-zen-integrated.js'
+// Default export removed - use named export: import { ClaudeZenIntegrated } js

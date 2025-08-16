@@ -19,16 +19,15 @@ export {
   OnlineLearningSystem,
   ReinforcementLearningEngine,
 } from './adaptive-learning/ml-integration';
-// Enhanced adaptive learning components
-export { PatternRecognitionEngine } from './adaptive-learning/pattern-recognition-engine';
-export { PerformanceOptimizer } from './adaptive-learning/performance-optimizer';
-// Enhanced adaptive learning types
-// TODO: TypeScript error TS2308 - Module './adaptive-learning/knowledge-evolution' has already exported 'AntiPattern' and 'BestPractice'. Consider explicitly re-exporting to resolve the ambiguity. (AI unsure of safe fix - human review needed)
-export type * from './adaptive-learning/types';
+// Enhanced adaptive learning components (moved to lib)
+export { PatternRecognitionEngine } from '../lib/adaptive-learning/pattern-recognition-engine';
+export { PerformanceOptimizer } from '../lib/adaptive-learning/performance-optimizer';
+// Enhanced adaptive learning types (moved to lib)
+export type * from '../lib/adaptive-learning/types';
 
-// ag2.ai-inspired conversation framework
-export * from './conversation-framework/index';
-export { ConversationFramework } from './conversation-framework/index';
+// ag2.ai-inspired conversation framework (moved to lib)
+export * from '../lib/conversation/index';
+export { ConversationFramework } from '../lib/conversation/index';
 
 // Intelligence utilities
 export const IntelligenceUtils = {
@@ -130,12 +129,12 @@ export const IntelligenceUtils = {
     };
 
     const systems = await Promise.all([
-      import('./adaptive-learning/pattern-recognition-engine.ts'),
-      import('./adaptive-learning/learning-coordinator.ts'),
-      import('./adaptive-learning/performance-optimizer.ts'),
-      import('./adaptive-learning/ml-integration.ts'),
-      import('./adaptive-learning/behavioral-optimization.ts'),
-      import('./adaptive-learning/knowledge-evolution.ts'),
+      import('./adaptive-learning/pattern-recognition-engine'),
+      import('./adaptive-learning/learning-coordinator'),
+      import('./adaptive-learning/performance-optimizer'),
+      import('./adaptive-learning/ml-integration'),
+      import('./adaptive-learning/behavioral-optimization'),
+      import('./adaptive-learning/knowledge-evolution'),
     ]);
 
     // Validate all systems loaded successfully
@@ -188,16 +187,16 @@ export const IntelligenceUtils = {
    */
   createAdaptiveLearningSystem: async (config?: unknown) => {
     const { PatternRecognitionEngine } = await import(
-      './adaptive-learning/pattern-recognition-engine.ts'
+      './adaptive-learning/pattern-recognition-engine'
     );
     const { LearningCoordinator } = await import(
-      './adaptive-learning/learning-coordinator.ts'
+      './adaptive-learning/learning-coordinator'
     );
     const { PerformanceOptimizer } = await import(
-      './adaptive-learning/performance-optimizer.ts'
+      './adaptive-learning/performance-optimizer'
     );
     const { MLModelRegistry } = await import(
-      './adaptive-learning/ml-integration.ts'
+      './adaptive-learning/ml-integration'
     );
 
     const defaultConfig = {

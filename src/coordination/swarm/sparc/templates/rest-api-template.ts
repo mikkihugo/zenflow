@@ -184,7 +184,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
     dependencies: [
       {
         id: nanoid(),
-        name: 'Express.js',
+        name: 'Express',
         type: 'library',
         version: '4.18+',
         critical: true,
@@ -232,7 +232,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
         {
           riskId: 'api-abuse',
           strategy:
-            'Implement comprehensive rate limiting, IP blocking, and request analysis',
+            'Implement comprehensive rate limiting, P blocking, and request analysis',
           priority: 'HIGH',
           effort: 'medium',
         },
@@ -365,7 +365,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 3,
             description: 'Check rate limits',
-            pseudocode: 'IF userUsage >= userLimit THEN RETURN false',
+            pseudocode: 'F userUsage >= userLimit THEN RETURN false',
             complexity: 'O(1)',
           },
         ],
@@ -642,7 +642,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Response formatting and headers',
           'CORS and security headers',
         ],
-        interfaces: ['IAPIGateway'],
+        interfaces: ['APIGateway'],
         dependencies: ['Router', 'MiddlewareManager', 'ResponseFormatter'],
         qualityAttributes: { scalability: 'horizontal', performance: 'high' },
         performance: {
@@ -661,7 +661,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Role-based access control',
           'Token refresh and revocation',
         ],
-        interfaces: ['IAuthenticationService'],
+        interfaces: ['AuthenticationService'],
         dependencies: ['JWTLibrary', 'UserService', 'TokenBlacklist'],
         qualityAttributes: { scalability: 'horizontal', performance: 'high' },
         performance: {
@@ -680,7 +680,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Business rule validation',
           'Security constraint checking',
         ],
-        interfaces: ['IValidationService'],
+        interfaces: ['ValidationService'],
         dependencies: ['SchemaRegistry', 'SanitizationEngine'],
         qualityAttributes: { scalability: 'horizontal', performance: 'high' },
         performance: {
@@ -699,7 +699,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Adaptive threshold adjustment',
           'Abuse detection and blocking',
         ],
-        interfaces: ['IRateLimitingService'],
+        interfaces: ['RateLimitingService'],
         dependencies: ['RateLimitStore', 'AnalyticsEngine'],
         qualityAttributes: { scalability: 'horizontal', performance: 'high' },
         performance: {
@@ -718,7 +718,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Cache warming and preloading',
           'Performance optimization',
         ],
-        interfaces: ['IResponseCacheService'],
+        interfaces: ['ResponseCacheService'],
         dependencies: ['CacheStore', 'InvalidationEngine'],
         qualityAttributes: { scalability: 'horizontal', performance: 'high' },
         performance: {
@@ -738,7 +738,7 @@ export const REST_API_TEMPLATE: SPARCTemplate = {
           'Code example generation',
           'API testing interface',
         ],
-        interfaces: ['IDocumentationService'],
+        interfaces: ['DocumentationService'],
         dependencies: ['SchemaRegistry', 'TemplateEngine'],
         qualityAttributes: { scalability: 'vertical', performance: 'medium' },
         performance: {

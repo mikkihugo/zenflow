@@ -9,11 +9,11 @@
 
 // Re-export core token interfaces for consistency
 export {
-  IConfig,
-  IDatabase,
-  IEventBus,
-  ILogger,
-} from '../../di/tokens/core-tokens.js';
+  Config,
+  Database,
+  EventBus,
+  Logger,
+} from '../tokens';
 
 /**
  * Base database adapter interface that all database implementations must follow.
@@ -144,7 +144,7 @@ export interface ConnectionStats {
  *
  * @example
  */
-export interface IMemoryStore {
+export interface MemoryStore {
   /** Initialize the memory store */
   initialize(): Promise<void>;
   /** Store data with optional TTL */

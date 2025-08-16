@@ -8,7 +8,7 @@
  * @file Interface implementation: web-config.
  */
 
-import type { DIContainer } from '../../di/index.js';
+import type { DIContainer } from '../../config/di-container';
 
 export interface WebConfig {
   port?: number;

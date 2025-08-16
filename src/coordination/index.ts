@@ -9,7 +9,6 @@
  * @file Coordination module exports.
  */
 
-export * from './diagnostics/index.js';
 
 // Export core coordination components
 export { Orchestrator } from './orchestrator';

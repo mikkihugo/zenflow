@@ -1,19 +1,142 @@
 /**
- * @file Configuration Health Checker.
- *
- * Provides health check endpoints and monitoring for configuration validation.
- * Designed for production deployment validation and monitoring.
+ * @fileoverview Configuration Health Checker - Comprehensive health monitoring and validation system
+ * 
+ * This module provides advanced health checking and monitoring capabilities for Claude Code Zen
+ * configuration systems. Features real-time health monitoring, production deployment validation,
+ * port conflict detection, and comprehensive health reporting with multiple export formats.
+ * Designed for production environments with automated monitoring and alerting capabilities.
+ * 
+ * **Key Features:**
+ * - **Real-time Health Monitoring**: Continuous monitoring with event-based notifications
+ * - **Production Deployment Validation**: Comprehensive pre-deployment checks and blockers
+ * - **Port Conflict Detection**: Automatic detection and resolution recommendations
+ * - **Multiple Export Formats**: JSON and Prometheus metrics for external monitoring
+ * - **Event-Driven Architecture**: EventEmitter-based for integration with monitoring systems
+ * - **Configuration Change Detection**: Automatic health revalidation on configuration changes
+ * - **Express.js Integration**: Ready-to-use health check endpoints
+ * - **Deployment Readiness Assessment**: Production deployment validation and recommendations
+ * 
+ * **Health Check Categories:**
+ * - Configuration validation and compliance
+ * - Port conflict detection across services
+ * - Security configuration validation
+ * - Performance optimization validation
+ * - Production readiness assessment
+ * - Environment-specific validation rules
+ * 
+ * **Monitoring Features:**
+ * - Automatic periodic health checks
+ * - Event emission on health status changes
+ * - Critical health issue alerts
+ * - Recovery notifications when issues are resolved
+ * - Prometheus metrics export for monitoring systems
+ * - Deployment readiness validation
+ * 
+ * @example Basic Health Monitoring
+ * ```typescript
+ * import { ConfigHealthChecker, initializeConfigHealthChecker } from './health-checker';
+ * 
+ * // Initialize health monitoring
+ * await initializeConfigHealthChecker({
+ *   enableMonitoring: true,
+ *   healthCheckFrequency: 30000
+ * });
+ * 
+ * // Get current health status
+ * const healthChecker = new ConfigHealthChecker();
+ * const health = await healthChecker.getHealthReport();
+ * console.log(`Config health: ${health.status} (${health.score}/100)`);
+ * 
+ * // Monitor for critical issues
+ * healthChecker.on('health:critical', (report) => {
+ *   console.error('Critical configuration issues:', report.blockers);
+ * });
+ * ```
+ * 
+ * @example Production Deployment Validation
+ * ```typescript
+ * const healthChecker = new ConfigHealthChecker();
+ * 
+ * // Validate configuration for production deployment
+ * const deploymentCheck = await healthChecker.validateForProduction();
+ * 
+ * if (!deploymentCheck.deploymentReady) {
+ *   console.error('Deployment blocked by:', deploymentCheck.blockers);
+ *   console.warn('Warnings:', deploymentCheck.warnings);
+ *   console.info('Recommendations:', deploymentCheck.recommendations);
+ *   process.exit(1);
+ * }
+ * 
+ * // Check for port conflicts
+ * const portCheck = await healthChecker.checkPortConflicts();
+ * if (portCheck.conflicts.length > 0) {
+ *   console.warn('Port conflicts detected:', portCheck.conflicts);
+ * }
+ * ```
+ * 
+ * @example Express.js Integration
+ * ```typescript
+ * import express from 'express';
+ * import { createConfigHealthEndpoint, createDeploymentReadinessEndpoint } from './health-checker';
+ * 
+ * const app = express();
+ * 
+ * // Health check endpoint
+ * app.get('/health/config', createConfigHealthEndpoint());
+ * 
+ * // Deployment readiness endpoint
+ * app.get('/health/deployment', createDeploymentReadinessEndpoint());
+ * 
+ * // Prometheus metrics endpoint
+ * app.get('/metrics/config', async (req, res) => {
+ *   const healthChecker = new ConfigHealthChecker();
+ *   const metrics = await healthChecker.exportHealthReport('prometheus');
+ *   res.set('Content-Type', 'text/plain').send(metrics);
+ * });
+ * ```
+ * 
+ * @example Event-Driven Monitoring
+ * ```typescript
+ * const healthChecker = new ConfigHealthChecker();
+ * await healthChecker.initialize({ enableMonitoring: true });
+ * 
+ * // Listen for health changes
+ * healthChecker.on('health:changed', (report) => {
+ *   console.log(`Health status changed to: ${report.status}`);
+ * });
+ * 
+ * healthChecker.on('health:critical', (report) => {
+ *   // Send alert to monitoring system
+ *   alertingSystem.sendAlert({
+ *     severity: 'critical',
+ *     message: 'Configuration health critical',
+ *     details: report
+ *   });
+ * });
+ * 
+ * healthChecker.on('health:recovered', (report) => {
+ *   console.log('Configuration health recovered');
+ * });
+ * ```
+ * 
+ * @author Claude Code Zen Team
+ * @since 1.0.0-alpha.43
+ * @version 2.1.0
+ * 
+ * @see {@link ConfigValidator} Configuration validation system
+ * @see {@link ConfigHealthReport} Health report interface
+ * @see {@link SystemConfiguration} System configuration interface
  */
 
 import { EventEmitter } from 'node:events';
-import { logRepoConfigStatus } from './default-repo-config.js';
-import { configManager } from './manager.js';
+import { logRepoConfigStatus } from './default-repo-config';
+import { configManager } from './manager';
 import type {
   ConfigHealthReport,
   SystemConfiguration,
   ValidationResult,
-} from './types.js';
-import { ConfigValidator } from './validator.js';
+} from '../types/config-types';
+import { ConfigValidator } from './validator';
 
 /**
  * Configuration health checker with monitoring capabilities.

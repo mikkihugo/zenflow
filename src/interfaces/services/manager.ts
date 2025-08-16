@@ -94,8 +94,8 @@ import {
   integrationServiceFactory,
 } from './adapters/integration-service-factory';
 import type {
-  IService,
-  IServiceFactory,
+  Service,
+  ServiceFactory,
   ServiceMetrics,
   ServiceStatus,
 } from './core/interfaces';
@@ -441,7 +441,7 @@ export class ServiceManager extends EventEmitter {
    *
    * @param request
    */
-  async createService(request: ServiceCreationRequest): Promise<IService> {
+  async createService(request: ServiceCreationRequest): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -472,14 +472,14 @@ export class ServiceManager extends EventEmitter {
    */
   async createServices(
     request: BatchServiceCreationRequest
-  ): Promise<IService[]> {
+  ): Promise<Service[]> {
     if (!this.initialized) {
       await this.initialize();
     }
 
     this.logger.info(`Creating batch of ${request.services.length} services`);
 
-    const createdServices: IService[] = [];
+    const createdServices: Service[] = [];
 
     try {
       if (request.dependencyResolution) {
@@ -547,42 +547,42 @@ export class ServiceManager extends EventEmitter {
   async createWebDataService(
     name: string,
     config?: Partial<DataServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     return (await this.dataServiceFactory.createWebDataAdapter(
       name,
       config
-    )) as unknown as IService;
+    )) as unknown as Service;
   }
 
   async createDocumentService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
     config?: Partial<DataServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     return (await this.dataServiceFactory.createDocumentAdapter(
       name,
       databaseType,
       config
-    )) as unknown as IService;
+    )) as unknown as Service;
   }
 
   async createUnifiedDataService(
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
     config?: Partial<DataServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     return (await this.dataServiceFactory.createUnifiedDataAdapter(
       name,
       databaseType,
       config
-    )) as unknown as IService;
+    )) as unknown as Service;
   }
 
   // Coordination Services
   async createDaaService(
     name: string,
     config?: Partial<CoordinationServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     // TODO: Method createDaaAdapter does not exist on CoordinationServiceFactory
     // Use generic create method instead
     const daaConfig: CoordinationServiceAdapterConfig = {
@@ -594,13 +594,13 @@ export class ServiceManager extends EventEmitter {
     } as CoordinationServiceAdapterConfig;
     return (await this.coordinationServiceFactory.create(
       daaConfig
-    )) as IService;
+    )) as Service;
   }
 
   async createSessionRecoveryService(
     name: string,
     config?: Partial<CoordinationServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     // TODO: Method createSessionRecoveryAdapter does not exist on CoordinationServiceFactory
     // Use generic create method instead
     const sessionConfig: CoordinationServiceAdapterConfig = {
@@ -612,13 +612,13 @@ export class ServiceManager extends EventEmitter {
     } as CoordinationServiceAdapterConfig;
     return (await this.coordinationServiceFactory.create(
       sessionConfig
-    )) as IService;
+    )) as Service;
   }
 
   async createUnifiedCoordinationService(
     name: string,
     config?: Partial<CoordinationServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     // TODO: Method createUnifiedCoordinationAdapter does not exist on CoordinationServiceFactory
     // Use generic create method instead
     const unifiedConfig: CoordinationServiceAdapterConfig = {
@@ -629,7 +629,7 @@ export class ServiceManager extends EventEmitter {
     } as CoordinationServiceAdapterConfig;
     return (await this.coordinationServiceFactory.create(
       unifiedConfig
-    )) as IService;
+    )) as Service;
   }
 
   // Integration Services
@@ -637,24 +637,24 @@ export class ServiceManager extends EventEmitter {
     name: string,
     databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql',
     config?: Partial<IntegrationServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     return (await this.integrationServiceFactory.createArchitectureStorageAdapter(
       name,
       databaseType,
       config
-    )) as IService;
+    )) as Service;
   }
 
   async createSafeAPIService(
     name: string,
     baseURL: string,
     config?: Partial<IntegrationServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     return (await this.integrationServiceFactory.createSafeAPIAdapter(
       name,
       baseURL,
       config
-    )) as IService;
+    )) as Service;
   }
 
   async createUnifiedIntegrationService(
@@ -665,34 +665,34 @@ export class ServiceManager extends EventEmitter {
       supportedProtocols?: string[];
     } = {},
     config?: Partial<IntegrationServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     return (await this.integrationServiceFactory.createUnifiedIntegrationAdapter(
       name,
       {
         ...options,
         ...config,
       }
-    )) as IService;
+    )) as Service;
   }
 
   // Infrastructure Services
   async createFacadeService(
     name: string,
     config?: Partial<InfrastructureServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     // TODO: Method createFacadeAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
     return (await this.infrastructureServiceFactory.createService(name, {
       config: config || undefined,
       autoStart: true,
-    } as CreateServiceOptions)) as IService;
+    } as CreateServiceOptions)) as Service;
   }
 
   async createPatternIntegrationService(
     name: string,
     configProfile: 'default' | 'production' | 'development' = 'default',
     config?: Partial<InfrastructureServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     // TODO: Method createPatternIntegrationAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
     return (await this.infrastructureServiceFactory.createService(
@@ -702,14 +702,14 @@ export class ServiceManager extends EventEmitter {
         autoStart: true,
         tags: ['pattern-integration', configProfile],
       } as CreateServiceOptions
-    )) as IService;
+    )) as Service;
   }
 
   async createUnifiedInfrastructureService(
     name: string,
     configProfile: 'default' | 'production' | 'development' = 'default',
     config?: Partial<InfrastructureServiceAdapterConfig>
-  ): Promise<IService> {
+  ): Promise<Service> {
     // TODO: Method createUnifiedInfrastructureAdapter does not exist on InfrastructureServiceFactory
     // Use generic createService method instead
     return (await this.infrastructureServiceFactory.createService(
@@ -719,7 +719,7 @@ export class ServiceManager extends EventEmitter {
         autoStart: true,
         tags: ['unified-infrastructure', configProfile],
       } as CreateServiceOptions
-    )) as IService;
+    )) as Service;
   }
 
   // ============================================
@@ -1000,7 +1000,7 @@ export class ServiceManager extends EventEmitter {
     capabilities?: string[];
     health?: 'healthy' | 'degraded' | 'unhealthy';
     tags?: string[];
-  }): IService[] {
+  }): Service[] {
     return this.registry.discoverServices(criteria);
   }
 
@@ -1009,14 +1009,14 @@ export class ServiceManager extends EventEmitter {
    *
    * @param name
    */
-  getService(name: string): IService | undefined {
+  getService(name: string): Service | undefined {
     return this.registry.findService(name);
   }
 
   /**
    * Get all services.
    */
-  getAllServices(): Map<string, IService> {
+  getAllServices(): Map<string, Service> {
     return this.registry.getAllServices();
   }
 
@@ -1025,7 +1025,7 @@ export class ServiceManager extends EventEmitter {
    *
    * @param type
    */
-  getServicesByType(type: string): IService[] {
+  getServicesByType(type: string): Service[] {
     return this.registry.getServicesByType(type);
   }
 
@@ -1238,7 +1238,7 @@ export class ServiceManager extends EventEmitter {
 
       // Infrastructure service types
       {
-        types: [ServiceType.INFRASTRUCTURE, ServiceType.SYSTEM],
+        types: [ServiceType.NFRASTRUCTURE, ServiceType.SYSTEM],
         factory: this.infrastructureServiceFactory,
       },
     ];
@@ -1304,7 +1304,7 @@ export class ServiceManager extends EventEmitter {
     // Set up discovery event handlers
     this.registry.on(
       'service-registered',
-      (_serviceName: string, service?: IService) => {
+      (_serviceName: string, service?: Service) => {
         if (service) {
           this.announceServiceDiscovery(service);
         }
@@ -1322,7 +1322,7 @@ export class ServiceManager extends EventEmitter {
     // Handle registry events
     this.registry.on(
       'health-alert',
-      (serviceName: string, service?: IService) => {
+      (serviceName: string, service?: Service) => {
         this.emit('health-alert', serviceName);
       }
     );
@@ -1338,7 +1338,7 @@ export class ServiceManager extends EventEmitter {
     // Handle factory events
     this.mainFactory.on(
       'service-created',
-      (serviceName: string, service: IService) => {
+      (serviceName: string, service: Service) => {
         this.emit('service-created', serviceName, service);
       }
     );
@@ -1350,7 +1350,7 @@ export class ServiceManager extends EventEmitter {
 
   private getFactoryForServiceType(
     serviceType: ServiceType | string
-  ): IServiceFactory<ServiceConfig> | null {
+  ): ServiceFactory<ServiceConfig> | null {
     // Map service types to their appropriate specialized factories
     switch (serviceType) {
       case ServiceType.DATA:
@@ -1368,7 +1368,7 @@ export class ServiceManager extends EventEmitter {
       case ServiceType.ARCHITECTURE_STORAGE:
         return this.integrationServiceFactory as any;
 
-      case ServiceType.INFRASTRUCTURE:
+      case ServiceType.NFRASTRUCTURE:
       case ServiceType.SYSTEM:
         return this.infrastructureServiceFactory as any;
 
@@ -1379,7 +1379,7 @@ export class ServiceManager extends EventEmitter {
 
   private async createServiceWithMainFactory(
     request: ServiceCreationRequest
-  ): Promise<IService> {
+  ): Promise<Service> {
     // Create service configuration
     const config: AnyServiceConfig = {
       name: request.name,
@@ -1402,9 +1402,9 @@ export class ServiceManager extends EventEmitter {
   }
 
   private async createServiceWithSpecializedFactory(
-    factory: IServiceFactory<ServiceConfig>,
+    factory: ServiceFactory<ServiceConfig>,
     request: ServiceCreationRequest
-  ): Promise<IService> {
+  ): Promise<Service> {
     // Create service configuration for specialized factory
     const config: AnyServiceConfig = {
       name: request.name,
@@ -1473,7 +1473,7 @@ export class ServiceManager extends EventEmitter {
     // Build dependency graph and start in correct order
     const services = serviceNames
       .map((name) => this.registry.findService(name))
-      .filter((service): service is IService => service !== undefined);
+      .filter((service): service is Service => service !== undefined);
 
     // Start services based on dependency levels
     for (const service of services) {
@@ -1522,7 +1522,7 @@ export class ServiceManager extends EventEmitter {
     }
   }
 
-  private async startServiceWithTimeout(service: IService): Promise<void> {
+  private async startServiceWithTimeout(service: Service): Promise<void> {
     const timeout = this.config.lifecycle.startupTimeout;
 
     return Promise.race([
@@ -1536,7 +1536,7 @@ export class ServiceManager extends EventEmitter {
     ]);
   }
 
-  private async stopServiceWithTimeout(service: IService): Promise<void> {
+  private async stopServiceWithTimeout(service: Service): Promise<void> {
     const timeout = this.config.lifecycle.shutdownTimeout;
 
     return Promise.race([
@@ -1550,7 +1550,7 @@ export class ServiceManager extends EventEmitter {
     ]);
   }
 
-  private scheduleServiceRecovery(service: IService): void {
+  private scheduleServiceRecovery(service: Service): void {
     if (!this.config.recovery.enabled) {
       return;
     }
@@ -1570,7 +1570,7 @@ export class ServiceManager extends EventEmitter {
     }, 5000); // 5 second delay before recovery
   }
 
-  private async performServiceRecovery(service: IService): Promise<void> {
+  private async performServiceRecovery(service: Service): Promise<void> {
     const maxRetries = this.config.recovery.maxRetries;
     const backoffMultiplier = this.config.recovery.backoffMultiplier;
 
@@ -1762,7 +1762,7 @@ export class ServiceManager extends EventEmitter {
     return alerts;
   }
 
-  private announceServiceDiscovery(service: IService): void {
+  private announceServiceDiscovery(service: Service): void {
     if (this.config.discovery.enabled) {
       this.logger.debug(`Announcing service discovery: ${service.name}`);
       this.emit('service-announced', {

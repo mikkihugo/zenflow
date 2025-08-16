@@ -23,5 +23,19 @@ export * from './models';
 // Advanced model presets (JavaScript configurations)
 export * from './models/presets';
 
+// Coordination and feedback systems
+export { RetrainingMonitor } from './coordination/retraining-monitor';
+export { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
+export type { 
+  RetrainingConfig, 
+  RetrainingTrigger, 
+  RetrainingResult
+} from './coordination/retraining-monitor';
+export type {
+  CoordinationTask,
+  CoordinationResult,
+  DSPyLLMConfig
+} from './coordination/dspy-llm-bridge';
+
 // Convenience functions
 export { createNeuralNetwork, trainNeuralNetwork, predictWithNetwork } from './neural-bridge';

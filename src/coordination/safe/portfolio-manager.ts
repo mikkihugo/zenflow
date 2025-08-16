@@ -184,7 +184,7 @@ export interface CostCenter {
   readonly budget: number;
   readonly actualSpend: number;
   readonly forecastSpend: number;
-  readonly allocations: string[]; // Allocation IDs
+  readonly allocations: string[]; // Allocation Ds
   readonly trackingCategories: CostCategory[];
   readonly reportingFrequency: 'weekly' | 'monthly' | 'quarterly';
 }
@@ -998,7 +998,7 @@ export class PortfolioManager extends EventEmitter {
   }
 
   // ============================================================================
-  // EPIC INVESTMENT ANALYSIS - Task 14.3
+  // EPIC NVESTMENT ANALYSIS - Task 14.3
   // ============================================================================
 
   /**
@@ -1140,7 +1140,7 @@ export class PortfolioManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): PortfolioManagerState {

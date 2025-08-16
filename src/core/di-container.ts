@@ -12,10 +12,10 @@ import {
   createContainerBuilder,
   createToken,
   type DIContainer,
-  type IConfig,
-  type IDatabase,
-  type IEventBus,
-  type ILogger,
+  type Config,
+  type Database,
+  type EventBus,
+  type Logger,
   SWARM_TOKENS,
 } from '../di/index';
 
@@ -25,7 +25,7 @@ const logger = getLogger('DIContainer');
  * Console Logger Implementation
  * Preserved from claude-zen-core.ts
  */
-export class ConsoleLogger implements ILogger {
+export class ConsoleLogger implements Logger {
   private logger = getLogger('ConsoleLogger');
 
   log(message: string): void {
@@ -53,7 +53,7 @@ export class ConsoleLogger implements ILogger {
  * Application Configuration Implementation
  * Preserved from claude-zen-core.ts
  */
-export class AppConfig implements IConfig {
+export class AppConfig implements Config {
   private config = new Map<string, any>();
 
   constructor() {
@@ -105,7 +105,7 @@ export class AppConfig implements IConfig {
  * Application Event Bus Implementation
  * Preserved from claude-zen-core.ts
  */
-export class AppEventBus extends EventEmitter implements IEventBus {
+export class AppEventBus extends EventEmitter implements EventBus {
   emit(event: string | symbol, ...args: unknown[]): boolean {
     logger.debug(`Event emitted: ${String(event)}`);
     return super.emit(event, ...args);
@@ -121,7 +121,7 @@ export class AppEventBus extends EventEmitter implements IEventBus {
  * Mock Database Implementation
  * Preserved from claude-zen-core.ts
  */
-export class MockDatabase implements IDatabase {
+export class MockDatabase implements Database {
   private data = new Map<string, any>();
   private initialized = false;
 
@@ -180,16 +180,23 @@ export function createClaudeZenDIContainer(): DIContainer {
 export async function initializeDIServices(
   container: DIContainer
 ): Promise<void> {
-  logger.info('Initializing DI services...');
+  logger.info('🔧 Starting DI services initialization...');
 
   try {
+    logger.info('🗃️ Resolving database from container...');
     // Initialize database
     const database = container.resolve(CORE_TOKENS.Database);
+    logger.info('✅ Database resolved from container');
+    
     if (database && typeof database.initialize === 'function') {
+      logger.info('🚀 Calling database.initialize()...');
       await database.initialize();
+      logger.info('✅ Database initialization completed');
+    } else {
+      logger.info('ℹ️ Database does not have initialize method or is null');
     }
 
-    logger.info('✅ All DI services initialized');
+    logger.info('✅ All DI services initialized successfully');
   } catch (error) {
     logger.error('❌ Failed to initialize DI services:', error);
     throw error;

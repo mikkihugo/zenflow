@@ -8,7 +8,7 @@
  * @file Coordination service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type {
   CoordinationServiceConfig,
   ServiceOperationOptions,
@@ -20,7 +20,7 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class CoordinationService extends BaseService implements IService {
+export class CoordinationService extends BaseService implements Service {
   private agents = new Map<string, any>();
   private swarms = new Map<string, any>();
   private coordinationState = new Map<string, any>();
@@ -372,7 +372,7 @@ export class CoordinationService extends BaseService implements IService {
     agentIds: string[]
   ): Promise<unknown> {
     if (!(task && agentIds) || agentIds.length === 0) {
-      throw new Error('Task and agent IDs are required for coordination');
+      throw new Error('Task and agent Ds are required for coordination');
     }
 
     const coordinationId = `coord-${Date.now()}`;

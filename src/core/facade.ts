@@ -19,12 +19,12 @@
  * - Workflow orchestration and management
  *
  * Service Architecture:
- * - **ISwarmService**: Multi-agent swarm coordination and management
- * - **INeuralService**: Neural network training, inference, and optimization
- * - **IMemoryService**: Memory storage, retrieval, and statistics
- * - **IDatabaseService**: Database operations and vector search capabilities
- * - **IInterfaceService**: Multi-modal user interface management
- * - **IWorkflowService**: Workflow execution and lifecycle management
+ * - **SwarmService**: Multi-agent swarm coordination and management
+ * - **NeuralService**: Neural network training, inference, and optimization
+ * - **MemoryService**: Memory storage, retrieval, and statistics
+ * - **DatabaseService**: Database operations and vector search capabilities
+ * - **InterfaceService**: Multi-modal user interface management
+ * - **WorkflowService**: Workflow execution and lifecycle management
  *
  * Design Patterns:
  * - **Facade Pattern**: Simplified interfaces to complex subsystems
@@ -38,7 +38,7 @@
  * @version 1.0.0-alpha.43
  *
  * @see {@link https://nodejs.org/api/events.html} Node.js EventEmitter
- * @see {@link ISystemEventManager} System-wide event management
+ * @see {@link SystemEventManager} System-wide event management
  * @see {@link MCPCommandQueue} Model Context Protocol command queueing
  *
  * @requires node:events - For event-driven architecture
@@ -105,7 +105,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ISystemEventManager } from '../interfaces/events/factories';
+import type { SystemEventManager } from '../interfaces/events/factories';
 import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 import type {
   EventMap as AllSystemEvents,
@@ -126,10 +126,10 @@ export interface CoordinationResult {
 }
 
 // Type alias for compatibility
-export type SystemEventManager = ISystemEventManager;
+export type SystemEventManager = SystemEventManager;
 
 // Service interface definitions for dependency injection
-export interface ISwarmService {
+export interface SwarmService {
   initializeSwarm(config: SwarmConfig): Promise<SwarmResult>;
   getSwarmStatus(swarmId: string): Promise<SwarmStatus>;
   destroySwarm(swarmId: string): Promise<void>;
@@ -141,7 +141,7 @@ export interface ISwarmService {
   listSwarms(): Promise<SwarmInfo[]>;
 }
 
-export interface INeuralService {
+export interface NeuralService {
   trainModel(data: TrainingData): Promise<ModelResult>;
   predictWithModel(
     modelId: string,
@@ -156,7 +156,7 @@ export interface INeuralService {
   deleteModel(modelId: string): Promise<void>;
 }
 
-export interface IMemoryService {
+export interface MemoryService {
   store(key: string, value: unknown, options?: MemoryOptions): Promise<void>;
   retrieve<T>(key: string): Promise<T | null>;
   delete(key: string): Promise<boolean>;
@@ -165,7 +165,7 @@ export interface IMemoryService {
   getStats(): Promise<MemoryStats>;
 }
 
-export interface IDatabaseService {
+export interface DatabaseService {
   query<T>(sql: string, params?: unknown[]): Promise<T[]>;
   insert(tableName: string, data: Record<string, unknown>): Promise<string>;
   update(
@@ -183,7 +183,7 @@ export interface IDatabaseService {
   getHealth(): Promise<DatabaseHealth>;
 }
 
-export interface IInterfaceService {
+export interface InterfaceService {
   startHTTPMCP(config: MCPConfig): Promise<HTTPMCPServer>;
   startWebDashboard(config: WebConfig): Promise<WebServer>;
   startTUI(mode: TUIMode): Promise<TUIInstance>;
@@ -192,7 +192,7 @@ export interface IInterfaceService {
   getInterfaceStatus(): Promise<InterfaceStatus[]>;
 }
 
-export interface IWorkflowService {
+export interface WorkflowService {
   executeWorkflow(
     workflowId: string,
     inputs: Record<string, unknown>
@@ -606,7 +606,7 @@ export interface Recommendation {
 }
 
 // Logger interface
-export interface ILogger {
+export interface Logger {
   debug(message: string, meta?: Record<string, unknown>): void;
   info(message: string, meta?: Record<string, unknown>): void;
   warn(message: string, meta?: Record<string, unknown>): void;
@@ -614,7 +614,7 @@ export interface ILogger {
 }
 
 // Metrics collector interface
-export interface IMetricsCollector {
+export interface MetricsCollector {
   startOperation(operationType: string, operationId: string): void;
   endOperation(
     operationType: string,
@@ -634,16 +634,16 @@ export interface IMetricsCollector {
  */
 export class ClaudeZenFacade extends EventEmitter {
   constructor(
-    private swarmService: ISwarmService,
-    private neuralService: INeuralService,
-    private memoryService: IMemoryService,
-    private databaseService: IDatabaseService,
-    private interfaceService: IInterfaceService,
-    private workflowService: IWorkflowService,
-    private eventManager: ISystemEventManager,
+    private swarmService: SwarmService,
+    private neuralService: NeuralService,
+    private memoryService: MemoryService,
+    private databaseService: DatabaseService,
+    private interfaceService: InterfaceService,
+    private workflowService: WorkflowService,
+    private eventManager: SystemEventManager,
     private commandQueue: MCPCommandQueue,
-    private logger: ILogger,
-    private metrics: IMetricsCollector
+    private logger: Logger,
+    private metrics: MetricsCollector
   ) {
     super();
     this.setMaxListeners(1000);

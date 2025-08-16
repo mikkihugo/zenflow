@@ -11,7 +11,7 @@ import type {
   Agent as CoordinationAgent,
   Task as CoordinationTask,
   Message,
-} from '../../../types/index.js';
+} from '../../types/interfaces';
 import type {
   Agent as BaseAgent,
   Task as BaseTask,

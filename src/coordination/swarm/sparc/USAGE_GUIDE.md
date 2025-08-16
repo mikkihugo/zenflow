@@ -6,33 +6,29 @@ The SPARC (Specification, Pseudocode, Architecture, Refinement, Completion) meth
 
 ## 🚀 Quick Start - How to Use SPARC
 
-### 1. Via MCP Tools (Recommended for External AI)
+### 1. Via Direct Engine (Recommended)
 
 ```typescript
+import { SPARC } from './sparc';
+
 // Create a new SPARC project with full infrastructure integration
-await sparcMCPTools.handleToolCall('sparc_create_project', {
-  name: 'Intelligent Load Balancer',
-  domain: 'swarm-coordination',
-  complexity: 'high',
-  requirements: [
+const project = await SPARC.createProject(
+  'Intelligent Load Balancer',
+  'swarm-coordination',
+  [
     'Distribute load across 1000+ agents',
     'Sub-100ms response time',
     'Fault tolerance and recovery'
-  ]
-});
+  ],
+  'high'
+);
 
-// Execute specific phases with swarm coordination
-await sparcMCPTools.handleToolCall('sparc_execute_phase', {
-  projectId: 'project-id',
-  phase: 'architecture',
-  useSwarmCoordination: true
-});
+// Execute specific phases directly
+const sparcEngine = SPARC.getEngine();
+const result = await sparcEngine.executePhase(project, 'architecture');
 
-// Generate comprehensive project management artifacts
-await sparcMCPTools.handleToolCall('sparc_generate_pm_artifacts', {
-  projectId: 'project-id',
-  artifactTypes: ['all'] // tasks, adrs, prd, epics, features
-});
+// Generate comprehensive project artifacts
+const artifacts = await sparcEngine.generateArtifacts(project);
 ```
 
 ### 2. Via Task System Integration

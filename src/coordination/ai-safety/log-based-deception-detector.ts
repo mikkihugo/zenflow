@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { getLogger } from '../../config/logging-config.js';
+import { getLogger } from '../../../config/logging-config';
 
 export interface LogAnalysisResult {
   toolCallsFound: string[];

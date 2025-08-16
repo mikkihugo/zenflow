@@ -1,0 +1,63 @@
+{
+  "name": "@claude-zen/database",
+  "version": "1.0.0",
+  "description": "Multi-database abstraction layer with dependency injection support",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./adapters/*": {
+      "types": "./dist/adapters/*.d.ts",
+      "import": "./dist/adapters/*.js"
+    },
+    "./dao/*": {
+      "types": "./dist/dao/*.d.ts", 
+      "import": "./dist/dao/*.js"
+    },
+    "./core/*": {
+      "types": "./dist/core/*.d.ts",
+      "import": "./dist/core/*.js"
+    },
+    "./types/*": {
+      "types": "./dist/types/*.d.ts",
+      "import": "./dist/types/*.js"
+    }
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.2.0",
+    "@lancedb/lancedb": "^0.21.2",
+    "kuzu": "^0.10.0",
+    "@claude-zen/foundation": "workspace:*",
+    "reflect-metadata": "^0.2.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.17.1", 
+    "@types/better-sqlite3": "^7.6.13",
+    "vitest": "^3.2.4"
+  },
+  "keywords": [
+    "database",
+    "sqlite",
+    "postgresql",
+    "mysql",
+    "lancedb", 
+    "kuzu",
+    "graph-database",
+    "vector-database",
+    "multi-database",
+    "dependency-injection",
+    "typescript"
+  ]
+}

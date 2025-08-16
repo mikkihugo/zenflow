@@ -3,18 +3,18 @@
  *
  * Unified Service Layer adapter for integration-related services, providing a consistent interface to ArchitectureStorageService, SafeAPIService, and Integration Protocols while maintaining full backward compatibility and adding enhanced monitoring, caching, retry logic, and performance metrics.
  *
- * This adapter follows the exact same patterns as the UACL client adapters, implementing the IService interface and providing unified configuration management for integration operations across Claude-Zen.
+ * This adapter follows the exact same patterns as the UACL client adapters, implementing the Service interface and providing unified configuration management for integration operations across Claude-Zen.
  */
 
 import { EventEmitter } from 'node:events';
-import { config, getMCPServerURL } from '../../../config/index.js';
+import { config, getMCPServerURL } from '../../../config/config';
 import { getLogger } from '../../../config/logging-config';
 import { ArchitectureStorageService } from '../../../coordination/swarm/sparc/database/architecture-storage';
 import type {
   ArchitecturalValidation,
   ArchitectureDesign,
 } from '../../../coordination/swarm/sparc/types/sparc-types';
-import type { ILogger } from '../../../core/logger';
+import type { Logger } from '../../../core/logger';
 import type { ConnectionConfig } from '../../../integration/adapter-system';
 import {
   MCPAdapter,
@@ -25,7 +25,7 @@ import {
 import type { APIResult } from '../../../utils/type-guards';
 import { SafeAPIClient, SafeAPIService } from '../../api/safe-api-client';
 import type {
-  IService,
+  Service,
   ServiceConfig,
   ServiceDependencyConfig,
   ServiceEvent,
@@ -275,7 +275,7 @@ interface PendingRequest<T = any> {
  * Unified Integration Service Adapter.
  *
  * Provides a unified interface to ArchitectureStorageService, SafeAPIService,
- * and Protocol Management while implementing the IService interface for USL compatibility.
+ * and Protocol Management while implementing the Service interface for USL compatibility.
  *
  * Features:
  * - Unified configuration management
@@ -293,7 +293,7 @@ interface PendingRequest<T = any> {
  *
  * @example
  */
-export class IntegrationServiceAdapter implements IService {
+export class IntegrationServiceAdapter implements Service {
   // Core service properties
   public readonly name: string;
   public readonly type: string;
@@ -302,7 +302,7 @@ export class IntegrationServiceAdapter implements IService {
   // Service state
   private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
   private eventEmitter = new EventEmitter();
-  private logger: ILogger;
+  private logger: Logger;
   private startTime?: Date;
   private operationCount = 0;
   private successCount = 0;
@@ -458,7 +458,7 @@ export class IntegrationServiceAdapter implements IService {
   }
 
   // ============================================
-  // IService Interface Implementation
+  // Service Interface Implementation
   // ============================================
 
   /**
@@ -495,11 +495,11 @@ export class IntegrationServiceAdapter implements IService {
         // Connect to real database adapter using DAL Factory
         let realDatabaseAdapter;
         try {
-          const { DALFactory } = await import('../../../database/factory.ts');
+          const { DALFactory } = await import('../../../database/factory');
           // TODO: Fix DI container imports and token resolution
-          // const { DIContainer } = await import('../../../di/container/di-container.ts');
+          // const { DIContainer } = await import('../../../di/container/di-container');
           // const { DATABASE_TOKENS } = await import('../../../di/tokens/database-tokens');
-          // const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens.ts');
+          // const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
 
           // TODO: Fix DI container usage
           // const container = new DIContainer();

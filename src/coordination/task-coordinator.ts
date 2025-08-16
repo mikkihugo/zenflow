@@ -307,8 +307,8 @@ export class TaskCoordinator {
             specification: ['requirements.md'],
             pseudocode: ['algorithm.md'],
             architecture: ['design.md'],
-            implementation: ['code.ts'],
-            tests: ['tests.ts'],
+            implementation: ['code'],
+            tests: ['tests'],
             documentation: ['docs.md'],
           },
         });
@@ -442,7 +442,7 @@ export class TaskCoordinator {
   }
 
   /**
-   * Simple hash function for task IDs.
+   * Simple hash function for task Ds.
    *
    * @param str
    */

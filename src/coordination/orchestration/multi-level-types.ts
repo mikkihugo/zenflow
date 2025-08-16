@@ -89,7 +89,7 @@ export interface WorkflowStream<TWorkItem = unknown> {
   readonly inProgress: TWorkItem[];
   readonly completed: TWorkItem[];
   readonly wipLimit: number;
-  readonly dependencies: string[]; // Other stream IDs this depends on
+  readonly dependencies: string[]; // Other stream Ds this depends on
   readonly metrics: StreamMetrics;
   readonly configuration: StreamConfiguration;
 }
@@ -372,7 +372,7 @@ export interface ProgramItem {
   readonly complexity: ComplexityLevel;
   readonly technicalRisk: number; // 0-100 scale
   readonly dependencies: ProgramDependency[];
-  readonly features: string[]; // Feature IDs
+  readonly features: string[]; // Feature Ds
   readonly timeline: ProgramTimeline;
   readonly technicalSpecs: TechnicalSpecification;
   readonly gates: ProgramGate[];
@@ -694,7 +694,7 @@ export enum HumanOversightLevel {
   MINIMAL = 'minimal',
   PERIODIC = 'periodic',
   CONTINUOUS = 'continuous',
-  INTENSIVE = 'intensive',
+  NTENSIVE = 'intensive',
 }
 
 /**
@@ -1049,7 +1049,7 @@ export interface CrossLevelDependencyEvent extends ParallelExecutionEvent {
 }
 
 // ============================================================================
-// INTEGRATION INTERFACES - Connecting with existing systems
+// NTEGRATION NTERFACES - Connecting with existing systems
 // ============================================================================
 
 /**

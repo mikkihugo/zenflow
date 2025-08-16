@@ -15,7 +15,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type {
   AIAnalysisResult,
   CodePattern,
@@ -29,16 +29,16 @@ import type { BiomeConfiguration, BiomeRule } from './types/biome-types';
  * Main Claude-Biome bridge that orchestrates AI-native linting
  */
 export class ClaudeBiomeBridge extends EventEmitter {
-  private readonly logger: ILogger;
-  private readonly eventBus: IEventBus;
+  private readonly logger: Logger;
+  private readonly eventBus: EventBus;
   private readonly swarmCoordinator: unknown; // Will be properly typed when integrated
   private biomeConfig: BiomeConfiguration;
   private activeRules: Map<string, BiomeRule> = new Map();
   private analysisCache: Map<string, AIAnalysisResult> = new Map();
 
   constructor(
-    logger: ILogger,
-    eventBus: IEventBus,
+    logger: Logger,
+    eventBus: EventBus,
     initialConfig: BiomeConfiguration
   ) {
     super();
@@ -436,8 +436,8 @@ export class ClaudeBiomeBridge extends EventEmitter {
  * Factory function to create and configure the Claude-Biome bridge
  */
 export function createClaudeBiomeBridge(
-  logger: ILogger,
-  eventBus: IEventBus,
+  logger: Logger,
+  eventBus: EventBus,
   config: BiomeConfiguration
 ): ClaudeBiomeBridge {
   return new ClaudeBiomeBridge(logger, eventBus, config);

@@ -9,7 +9,7 @@
  */
 
 import { type Request, type Response, Router } from 'express';
-import { NeuralDomainAPI } from '../../../../neural/api';
+import { NeuralDomainAPI } from '@claude-zen/brain/api';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
 

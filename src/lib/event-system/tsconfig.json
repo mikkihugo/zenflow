@@ -1,0 +1,27 @@
+{
+  "extends": "../../../tsconfig.json",
+  "compilerOptions": {
+    // Library-specific build settings
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+    
+    // Future: Enable stricter settings once code is compliant
+    // TODO: Harden event-system library to support stricter TypeScript rules
+    // "exactOptionalPropertyTypes": true,
+    // "noUncheckedIndexedAccess": true,
+    // "noImplicitOverride": true,
+    // "useUnknownInCatchVariables": true,
+    // "noUncheckedSideEffectImports": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "tests/**/*"
+  ]
+}

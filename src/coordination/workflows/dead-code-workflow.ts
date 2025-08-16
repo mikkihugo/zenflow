@@ -10,14 +10,14 @@ import {
   AutomatedDeadCodeManager,
   type DeadCodeDecision,
   type DeadCodeScanResult,
-} from '../../core/automated-dead-code-manager.js';
-import type { AGUIInterface } from '../../interfaces/agui/agui-adapter.js';
+} from '../ai-agents/core/automated-dead-code-manager';
+import type { AGUIInterface } from '../types/interfaces';
 import type {
   WorkflowContext,
   WorkflowDefinition,
   WorkflowStep,
-} from '../../types/workflow-types.js';
-import type { WorkflowEngine } from '../../workflows/workflow-engine.js';
+} from '../types/interfaces';
+import type { WorkflowEngine } from '../types/interfaces';
 
 const logger = getLogger('dead-code-workflow');
 

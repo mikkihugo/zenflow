@@ -97,7 +97,7 @@ export {
 
 import type { AgentId, SwarmId } from '../types';
 import type { Tier3NeuralLearning } from '../learning/tier3-neural-learning';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
+import type { MLModelRegistry } from '../../lib/adaptive-learning';
 import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager';
 
 /**

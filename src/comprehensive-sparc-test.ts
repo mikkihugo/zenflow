@@ -2,16 +2,16 @@
  * @file Test suite for comprehensive-sparc-test.
  */
 
-import { getLogger } from './config/logging-config.js';
+import { getLogger } from './config/logging-config';
 import type {
   Priority,
   RiskLevel,
-} from './coordination/swarm/sparc/types/sparc-types.js';
+} from './coordination/swarm/sparc/types/sparc-types';
 import type {
   TestResult,
   CommandResult,
   BaseApiResponse,
-} from './types/api-response.js';
+} from './coordination/types/interfaces';
 
 const logger = getLogger('comprehensive-sparc-test');
 
@@ -21,7 +21,6 @@ const logger = getLogger('comprehensive-sparc-test');
  * This test validates the complete implementation of SPARC Phase 2:
  * - Core pseudocode engine functionality
  * - CLI integration
- * - MCP tools integration.
  * - End-to-end specification → pseudocode flow.
  */
 
@@ -31,7 +30,6 @@ async function runComprehensiveTest() {
   const results = {
     coreEngine: false,
     cliIntegration: false,
-    mcpIntegration: false,
     endToEndFlow: false,
     overallSuccess: false,
   };
@@ -41,8 +39,6 @@ async function runComprehensiveTest() {
     results.coreEngine = coreTest.success;
     const cliTest: TestResult = await testCLIIntegration();
     results.cliIntegration = cliTest.success;
-    const mcpTest: TestResult = await testMCPIntegration();
-    results.mcpIntegration = mcpTest.success;
     const e2eTest: TestResult = await testEndToEndFlow();
     results.endToEndFlow = e2eTest.success;
 
@@ -65,7 +61,7 @@ async function runComprehensiveTest() {
 async function testCoreEngine() {
   try {
     const { PseudocodePhaseEngine } = await import(
-      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.js'
+      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
     );
     const engine = new PseudocodePhaseEngine();
 
@@ -172,8 +168,22 @@ async function testCLIIntegration() {
     const generateCommand = `cd ${process.cwd()} && npx tsx src/sparc-pseudocode-cli.ts generate --spec-file /tmp/cli-test-spec.json --output /tmp/cli-test-output.json`;
     const validateCommand = `cd ${process.cwd()} && npx tsx src/sparc-pseudocode-cli.ts validate --pseudocode-file /tmp/cli-test-output.json`;
 
-    const generateResult = (await execAsync(generateCommand)) as CommandResult;
-    const validateResult = (await execAsync(validateCommand)) as CommandResult;
+    const generateExecResult = await execAsync(generateCommand);
+    const validateExecResult = await execAsync(validateCommand);
+    
+    const generateResult: CommandResult = {
+      success: true,
+      timestamp: new Date(),
+      stdout: generateExecResult.stdout,
+      stderr: generateExecResult.stderr
+    };
+    
+    const validateResult: CommandResult = {
+      success: true,
+      timestamp: new Date(),
+      stdout: validateExecResult.stdout,
+      stderr: validateExecResult.stderr
+    };
 
     const success: boolean =
       (generateResult?.stdout?.includes('✅ Pseudocode generation completed') ??
@@ -195,97 +205,7 @@ async function testCLIIntegration() {
   }
 }
 
-async function testMCPIntegration() {
-  try {
-    const createSPARCTools = (
-      await import('./interfaces/mcp/tools/sparc-integration-tools.js')
-    ).default;
-    const tools = createSPARCTools({} as any);
-
-    const pseudocodeGenerationTool = tools.find(
-      (tool) => tool.name === 'sparc_generate_pseudocode'
-    );
-    const validationTool = tools.find(
-      (tool) => tool.name === 'sparc_validate_pseudocode'
-    );
-    const algorithmsOnlyTool = tools.find(
-      (tool) => tool.name === 'sparc_generate_algorithms_only'
-    );
-
-    if (!(pseudocodeGenerationTool && validationTool && algorithmsOnlyTool)) {
-      return { success: false, error: 'Required MCP tools not found' };
-    }
-
-    // Test MCP tool execution
-    const testSpec = {
-      id: 'mcp-test-spec',
-      domain: 'neural-networks',
-      functionalRequirements: [
-        {
-          id: 'req-mcp-001',
-          title: 'MCP Neural Algorithm',
-          description: 'Test neural algorithm via MCP',
-          type: 'algorithmic',
-          priority: 'HIGH' as Priority,
-          testCriteria: ['MCP generation works'],
-        },
-      ],
-      nonFunctionalRequirements: [],
-      constraints: [],
-      assumptions: [],
-      dependencies: [],
-      acceptanceCriteria: [],
-      riskAssessment: {
-        risks: [],
-        mitigationStrategies: [],
-        overallRisk: 'LOW' as RiskLevel,
-      },
-      successMetrics: [],
-    };
-
-    const generateResult = (await pseudocodeGenerationTool.handler({
-      specification: testSpec,
-    })) as BaseApiResponse;
-
-    if (!generateResult?.success) {
-      return { success: false, error: 'MCP generation failed' } as TestResult;
-    }
-
-    const validateResult = (await validationTool.handler({
-      pseudocodeStructure: {
-        id: (generateResult?.data as any)?.pseudocodeId,
-        algorithms: (generateResult?.data as any)?.algorithms,
-        dataStructures: (generateResult?.data as any)?.dataStructures,
-        controlFlows: (generateResult?.data as any)?.controlFlows,
-      },
-    })) as BaseApiResponse;
-
-    const algorithmsResult = (await algorithmsOnlyTool.handler({
-      specification: testSpec,
-    })) as BaseApiResponse;
-
-    const success: boolean =
-      generateResult?.success &&
-      validateResult?.success &&
-      algorithmsResult?.success &&
-      (validateResult?.data as any)?.validation?.approved;
-
-    return {
-      success,
-      details: {
-        generation: generateResult?.success,
-        validation: validateResult?.success,
-        algorithmsOnly: algorithmsResult?.success,
-        approved: (validateResult?.data as any)?.validation?.approved,
-      },
-    } as TestResult;
-  } catch (error) {
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
-    } as TestResult;
-  }
-}
+// MCP integration test removed - MCP was eliminated from architecture
 
 async function testEndToEndFlow() {
   try {
@@ -349,7 +269,7 @@ async function testEndToEndFlow() {
 
     // Phase 2 Processing (Pseudocode Generation)
     const { PseudocodePhaseEngine } = await import(
-      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.js'
+      './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
     );
     const engine = new PseudocodePhaseEngine();
 

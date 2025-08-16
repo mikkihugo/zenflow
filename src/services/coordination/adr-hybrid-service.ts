@@ -6,12 +6,12 @@
  */
 
 import { nanoid } from 'nanoid';
-import { createLogger } from '../../core/logger.js';
+import { createLogger } from '../../core/logger';
 import type {
   ADRDocumentEntity,
   ProjectEntity,
-} from '../entities/document-entities.js';
-import { HybridDocumentManager } from './hybrid-document-manager.js';
+} from '../../database/entities/document-entities';
+import { HybridDocumentManager } from './hybrid-document-service';
 
 const logger = createLogger('adr-manager-hybrid');
 

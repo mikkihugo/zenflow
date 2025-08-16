@@ -156,7 +156,7 @@ export interface SwarmAgent {
   };
 
   /**
-   * Array of agent IDs representing active communication connections.
+   * Array of agent Ds representing active communication connections.
    * Used for topology-aware coordination and message routing.
    */
   connections: string[];
@@ -607,9 +607,9 @@ export class SwarmCoordinator extends EventEmitter {
   }
 
   /**
-   * Get list of currently active agent IDs.
+   * Get list of currently active agent Ds.
    *
-   * Returns IDs of agents that are available for task assignment (status 'idle' or 'busy').
+   * Returns Ds of agents that are available for task assignment (status 'idle' or 'busy').
    * Excludes offline and error-state agents from the results.
    *
    * @returns Array of active agent ID strings

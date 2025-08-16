@@ -39,7 +39,7 @@ program
   .action(async (options) => {
     try {
       const { ArchitecturePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
+        './coordination/swarm/sparc/phases/architecture/architecture-engine'
       );
 
       const engine = new ArchitecturePhaseEngine();
@@ -118,7 +118,7 @@ program
   .action(async (options) => {
     try {
       const { ArchitecturePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
+        './coordination/swarm/sparc/phases/architecture/architecture-engine'
       );
 
       const engine = new ArchitecturePhaseEngine();
@@ -172,7 +172,7 @@ program
   .action(async (options) => {
     try {
       const { ArchitecturePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/architecture/architecture-engine.ts'
+        './coordination/swarm/sparc/phases/architecture/architecture-engine'
       );
 
       const engine = new ArchitecturePhaseEngine();

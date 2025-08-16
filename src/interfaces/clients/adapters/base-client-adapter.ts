@@ -9,8 +9,8 @@ import { getLogger } from '../config/logging-config';
 import type { 
   ClientConfig, 
   ClientMetrics, 
-  IClient, 
-  IClientFactory 
+  Client, 
+  ClientFactory 
 } from '../core/interfaces';
 
 const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
@@ -89,7 +89,7 @@ export interface ClientResult<T = any> {
  *
  * @interface ClientHealth
  * @property {'healthy' | 'degraded' | 'unhealthy'} status - Overall health status.
- * @property {string} timestamp - Health check timestamp in ISO 8601 format.
+ * @property {string} timestamp - Health check timestamp in SO 8601 format.
  * @property {object} components - Detailed health status of individual client components.
  * @property {ClientComponentHealth} components.connectivity - Health of client connectivity.
  * @property {ClientComponentHealth} components.performance - Health of client performance.
@@ -148,10 +148,10 @@ export interface ClientComponentHealth {
 // ClientMetrics is now imported from '../core/interfaces'
 
 /**
- * Adapter-specific client interface that bridges between core IClient and implementation needs.
- * Extends the core IClient pattern with operation execution and adapter-specific methods.
+ * Adapter-specific client interface that bridges between core Client and implementation needs.
+ * Extends the core Client pattern with operation execution and adapter-specific methods.
  */
-export interface IClientAdapter extends EventEmitter {
+export interface ClientAdapter extends EventEmitter {
   readonly config: ClientConfig;
   readonly type: string;
   readonly version: string;
@@ -167,12 +167,12 @@ export interface IClientAdapter extends EventEmitter {
 /**
  * Adapter-specific factory interface for creating and managing client adapters.
  */
-export interface IClientAdapterFactory<TConfig extends ClientConfig = ClientConfig> {
+export interface ClientAdapterFactory<TConfig extends ClientConfig = ClientConfig> {
   readonly type: string;
-  createClient(config: TConfig): Promise<IClientAdapter>;
-  getClient(id: string, config: TConfig): Promise<IClientAdapter>;
+  createClient(config: TConfig): Promise<ClientAdapter>;
+  getClient(id: string, config: TConfig): Promise<ClientAdapter>;
   validateConfig(config: TConfig): boolean;
-  getActiveClients(): IClientAdapter[];
+  getActiveClients(): ClientAdapter[];
   shutdownAll(): Promise<void>;
 }
 
@@ -180,11 +180,11 @@ export interface IClientAdapterFactory<TConfig extends ClientConfig = ClientConf
  * Base Client Adapter.
  *
  * Abstract base class that provides common functionality for all client adapters.
- * Implements the IClient interface with shared behavior.
+ * Implements the Client interface with shared behavior.
  *
  * @example
  */
-export abstract class BaseClientAdapter extends EventEmitter implements IClientAdapter {
+export abstract class BaseClientAdapter extends EventEmitter implements ClientAdapter {
   protected _isInitialized = false;
   protected _metrics: ClientMetrics;
   protected _startTime: number;
@@ -393,16 +393,16 @@ export abstract class BaseClientAdapter extends EventEmitter implements IClientA
  * @example
  */
 export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientConfig>
-  implements IClientAdapterFactory<TConfig>
+  implements ClientAdapterFactory<TConfig>
 {
-  protected clients = new Map<string, IClientAdapter>();
+  protected clients = new Map<string, ClientAdapter>();
 
   constructor(public readonly type: string) {}
 
   /**
    * Create a new client instance (abstract - must be implemented by subclasses)
    */
-  abstract createClient(config: TConfig): Promise<IClientAdapter>;
+  abstract createClient(config: TConfig): Promise<ClientAdapter>;
 
   /**
    * Get or create a cached client instance.
@@ -410,7 +410,7 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
    * @param id
    * @param config
    */
-  async getClient(id: string, config: TConfig): Promise<IClientAdapter> {
+  async getClient(id: string, config: TConfig): Promise<ClientAdapter> {
     if (this.clients.has(id)) {
       return this.clients.get(id)!;
     }
@@ -438,7 +438,7 @@ export abstract class BaseClientFactory<TConfig extends ClientConfig = ClientCon
   /**
    * Get all active client instances.
    */
-  getActiveClients(): IClientAdapter[] {
+  getActiveClients(): ClientAdapter[] {
     return Array.from(this.clients.values());
   }
 

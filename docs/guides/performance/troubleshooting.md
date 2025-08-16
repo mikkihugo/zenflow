@@ -840,11 +840,10 @@ claude-zen config env --validate
 ```bash
 # .env.template
 NODE_ENV=production
-CLAUDE_ZEN_PORT=3456
-CLAUDE_ZEN_MCP_PORT=3000
-CLAUDE_ZEN_LOG_LEVEL=info
-CLAUDE_ZEN_WASM_ENABLED=true
-CLAUDE_ZEN_MEMORY_LIMIT=2048
+WEB_PORT=3000
+ZEN_LOG_LEVEL=info
+ZEN_ENABLE_WASM=true
+ZEN_MEMORY_BACKEND=sqlite
 DATABASE_URL=postgresql://user:pass@localhost:5432/claudezen
 REDIS_URL=redis://localhost:6379
 ```
@@ -911,7 +910,7 @@ services:
       - ./config:/app/config
     environment:
       - NODE_ENV=production
-      - CLAUDE_ZEN_LOG_LEVEL=info
+      - ZEN_LOG_LEVEL=info
     deploy:
       resources:
         limits:
@@ -970,7 +969,7 @@ claude-zen health --detailed --components swarm,neural,api,database
 ```bash
 # Set debug logging for troubleshooting
 export DEBUG=claude-zen:*
-export CLAUDE_ZEN_LOG_LEVEL=debug
+export ZEN_LOG_LEVEL=debug
 
 # Component-specific logging
 export DEBUG=claude-zen:swarm,claude-zen:neural

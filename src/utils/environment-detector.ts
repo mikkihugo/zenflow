@@ -475,8 +475,8 @@ export class EnvironmentDetector extends EventEmitter {
   private async scanForLanguages(): Promise<string[]> {
     const languages: string[] = [];
     const extensionMap: Record<string, string> = {
-      '.js': 'JavaScript',
-      '.ts': 'TypeScript',
+      '': 'JavaScript',
+      '': 'TypeScript',
       '.jsx': 'React',
       '.tsx': 'React TypeScript',
       '.py': 'Python',

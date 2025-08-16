@@ -11,9 +11,9 @@
  * @file Data service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type { DataServiceConfig, ServiceOperationOptions } from '../types';
-import { WebDataService } from '../web/web-data-service';
+import { WebDataService } from '../../web/web-data-service';
 import { BaseService } from './base-service';
 
 /**
@@ -36,7 +36,7 @@ export interface DataServiceOptions {
  *
  * @example
  */
-export class DataService extends BaseService implements IService {
+export class DataService extends BaseService implements Service {
   private webDataService?: WebDataService;
   private cache = new Map<
     string,

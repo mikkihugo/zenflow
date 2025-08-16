@@ -46,6 +46,9 @@ export class WebSocketManager {
       return;
     }
 
+    // Set up log broadcaster for real-time log updates
+    this.setupLogBroadcaster();
+
     this.io.on('connection', (socket) => {
       this.logger.debug(`Client connected: ${socket.id}`);
 
@@ -99,7 +102,7 @@ export class WebSocketManager {
    * @param channel
    */
   private async sendChannelData(
-    socket: unknown,
+    socket: any,
     channel: string
   ): Promise<void> {
     try {
@@ -124,6 +127,16 @@ export class WebSocketManager {
           const tasks = await this.dataService.getTasks();
           socket.emit('tasks:initial', {
             data: tasks,
+            timestamp: new Date().toISOString(),
+          });
+          break;
+        }
+        case 'logs': {
+          // Send initial logs from the logging system
+          const { getLogEntries } = await import('../../config/logging-config');
+          const logs = getLogEntries();
+          socket.emit('logs:initial', {
+            data: logs,
             timestamp: new Date().toISOString(),
           });
           break;
@@ -173,11 +186,26 @@ export class WebSocketManager {
       }
     }, 10000);
 
+    // Logs updates every 2 seconds (more frequent for real-time feel)
+    const logsInterval = setInterval(async () => {
+      try {
+        const { getLogEntries } = await import('../../config/logging-config');
+        const logs = getLogEntries();
+        // Only broadcast if we have logs
+        if (logs.length > 0) {
+          this.broadcastToRoom('logs', 'logs:bulk', logs);
+        }
+      } catch (error) {
+        this.logger.error('Failed to broadcast logs:', error);
+      }
+    }, 2000);
+
     // Store intervals for cleanup
     this.broadcastIntervals.push(
       systemInterval,
       tasksInterval,
-      metricsInterval
+      metricsInterval,
+      logsInterval
     );
 
     this.logger.info('Real-time data broadcasting started');
@@ -234,7 +262,7 @@ export class WebSocketManager {
     const connectedClients = Array.from(sockets.keys());
     const rooms = Array.from(this.io.sockets.adapter.rooms.keys()).filter(
       (room) => !connectedClients.includes(room)
-    ); // Filter out client IDs
+    ); // Filter out client Ds
 
     return {
       totalConnections: sockets.size,
@@ -250,6 +278,26 @@ export class WebSocketManager {
     this.broadcastIntervals.forEach((interval) => clearInterval(interval));
     this.broadcastIntervals = [];
     this.logger.info('Real-time broadcasting stopped');
+  }
+
+  /**
+   * Setup log broadcaster for real-time log updates.
+   */
+  private setupLogBroadcaster(): void {
+    try {
+      // Dynamically import to avoid circular dependencies
+      import('../../config/logging-config').then(({ setLogBroadcaster }) => {
+        setLogBroadcaster((event: string, data: any) => {
+          // Broadcast to the logs room specifically
+          this.broadcastToRoom('logs', event, data);
+        });
+        this.logger.debug('Log broadcaster configured for real-time updates');
+      }).catch((error) => {
+        this.logger.warn('Failed to setup log broadcaster:', error);
+      });
+    } catch (error) {
+      this.logger.error('Error setting up log broadcaster:', error);
+    }
   }
 
   /**

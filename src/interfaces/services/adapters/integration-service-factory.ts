@@ -10,12 +10,12 @@
  * @file Interface implementation: integration-service-factory.
  */
 
-import { getMCPServerURL } from '../../../config/index.js';
+import { getMCPServerURL } from "../../../config/config";
 import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IService,
-  IServiceFactory,
+  Service,
+  ServiceFactory,
   ServiceConfig,
 } from '../core/interfaces';
 import type { ServiceType } from '../types';
@@ -68,7 +68,7 @@ export interface IntegrationServiceFactoryOptions {
  * @example
  */
 export class IntegrationServiceFactory
-  implements IServiceFactory<ServiceConfig>
+  implements ServiceFactory<ServiceConfig>
 {
   private logger: Logger;
   private options: IntegrationServiceFactoryOptions;
@@ -100,11 +100,11 @@ export class IntegrationServiceFactory
   }
 
   /**
-   * IServiceFactory implementation - create service from configuration.
+   * ServiceFactory implementation - create service from configuration.
    *
    * @param config
    */
-  async create(config: ServiceConfig): Promise<IService> {
+  async create(config: ServiceConfig): Promise<Service> {
     this.logger.info(`Creating integration service: ${config?.name}`);
 
     if (!this.canHandle(config?.type)) {
@@ -149,7 +149,7 @@ export class IntegrationServiceFactory
    *
    * @param configs
    */
-  async createMultiple(configs: ServiceConfig[]): Promise<IService[]> {
+  async createMultiple(configs: ServiceConfig[]): Promise<Service[]> {
     return Promise.all(configs.map((config) => this.create(config)));
   }
 
@@ -158,14 +158,14 @@ export class IntegrationServiceFactory
    *
    * @param name
    */
-  get(name: string): IService | undefined {
+  get(name: string): Service | undefined {
     return this.createdServices.get(name);
   }
 
   /**
    * List all managed service instances.
    */
-  list(): IService[] {
+  list(): Service[] {
     return Array.from(this.createdServices.values());
   }
 
@@ -270,7 +270,7 @@ export class IntegrationServiceFactory
    *
    * @param type
    */
-  getServicesByType(type: string): IService[] {
+  getServicesByType(type: string): Service[] {
     return Array.from(this.createdServices.values()).filter(
       (service) => service.type === type
     );

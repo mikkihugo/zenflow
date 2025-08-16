@@ -24,7 +24,8 @@ src/sparc/
 ├── templates/
 │   └── swarm-coordination-template.ts # Pre-built templates
 ├── integrations/
-│   └── mcp-sparc-tools.ts          # MCP protocol integration
+│   ├── project-management-integration.ts # Project management
+│   └── roadmap-integration.ts       # Roadmap management
 └── index.ts                        # Main SPARC export
 ```
 
@@ -97,24 +98,22 @@ The SPARC system provides comprehensive MCP (Model Context Protocol) tools for e
 6. **sparc_list_projects** - List active projects
 7. **sparc_refine_implementation** - Apply performance optimizations
 
-### MCP Usage Example
+### Direct Engine Usage Example
 
 ```typescript
-import { sparcMCPTools } from './sparc/integrations/mcp-sparc-tools';
+import { SPARC } from './sparc';
 
-// Create project via MCP
-const result = await sparcMCPTools.handleToolCall('sparc_create_project', {
-  name: 'Neural Network Trainer',
-  domain: 'neural-networks',
-  complexity: 'high',
-  requirements: ['WASM acceleration', 'Real-time inference']
-});
+// Create project directly
+const project = await SPARC.createProject(
+  'Neural Network Trainer',
+  'neural-networks',
+  ['WASM acceleration', 'Real-time inference'],
+  'high'
+);
 
-// Execute specification phase
-await sparcMCPTools.handleToolCall('sparc_execute_phase', {
-  projectId: result.projectId,
-  phase: 'specification'
-});
+// Execute specification phase directly
+const sparcEngine = SPARC.getEngine();
+const result = await sparcEngine.executePhase(project, 'specification');
 ```
 
 ## Templates

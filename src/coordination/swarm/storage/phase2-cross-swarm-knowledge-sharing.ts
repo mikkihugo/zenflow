@@ -14,7 +14,7 @@ import { EventEmitter } from 'node:events';
 import type { SwarmDatabaseManager, SuccessfulPattern, SwarmRepositories } from './swarm-database-manager';
 import type { EnhancedVectorPatternDiscovery, CrossSwarmPatternResult, PatternCluster } from './phase2-enhanced-vector-discovery';
 import { inject, injectable } from '../../../di/decorators/injectable';
-import { CORE_TOKENS, type ILogger } from '../../../di/tokens/core-tokens';
+import { CORE_TOKENS, type Logger } from '../../../di/tokens/core-tokens';
 
 /**
  * Knowledge Transfer Request
@@ -128,7 +128,7 @@ export class CrossSwarmKnowledgeSharing extends EventEmitter {
   private recommendationCache: Map<string, PatternRecommendation[]> = new Map();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger,
     private swarmDatabaseManager: SwarmDatabaseManager,
     private vectorPatternDiscovery: EnhancedVectorPatternDiscovery
   ) {

@@ -10,7 +10,7 @@
  */
 
 import { getLogger, type Logger } from '../../config/logging-config';
-import type { IService } from './core/interfaces';
+import type { Service } from './core/interfaces';
 import { ServiceManager } from './manager';
 import {
   type AnyServiceConfig,
@@ -116,7 +116,7 @@ export class USLCompatibilityLayer {
   async createWebDataService(
     name: string,
     options?: unknown
-  ): Promise<IService> {
+  ): Promise<Service> {
     this.logLegacyUsage(
       'createWebDataService',
       'serviceManager.createWebDataService()'
@@ -145,7 +145,7 @@ export class USLCompatibilityLayer {
     name: string,
     dbType?: string,
     options?: unknown
-  ): Promise<IService> {
+  ): Promise<Service> {
     this.logLegacyUsage(
       'createDocumentService',
       'serviceManager.createDocumentService()'
@@ -177,7 +177,7 @@ export class USLCompatibilityLayer {
    * @param options
    * @deprecated Use serviceManager.createDaaService() instead.
    */
-  async createDAAService(name: string, options?: unknown): Promise<IService> {
+  async createDAAService(name: string, options?: unknown): Promise<Service> {
     this.logLegacyUsage(
       'createDAAService',
       'serviceManager.createDaaService()'
@@ -207,7 +207,7 @@ export class USLCompatibilityLayer {
   async createSessionRecoveryService(
     name: string,
     options?: unknown
-  ): Promise<IService> {
+  ): Promise<Service> {
     this.logLegacyUsage(
       'createSessionRecoveryService',
       'serviceManager.createSessionRecoveryService()'
@@ -242,7 +242,7 @@ export class USLCompatibilityLayer {
     name: string,
     dbType?: string,
     options?: unknown
-  ): Promise<IService> {
+  ): Promise<Service> {
     this.logLegacyUsage(
       'createArchitectureStorageService',
       'serviceManager.createArchitectureStorageService()'
@@ -279,7 +279,7 @@ export class USLCompatibilityLayer {
     name: string,
     baseURL: string,
     options?: unknown
-  ): Promise<IService> {
+  ): Promise<Service> {
     this.logLegacyUsage(
       'createSafeAPIService',
       'serviceManager.createSafeAPIService()'
@@ -310,7 +310,7 @@ export class USLCompatibilityLayer {
    * @param name
    * @deprecated Use serviceManager.getService() instead.
    */
-  getService(name: string): IService | undefined {
+  getService(name: string): Service | undefined {
     this.logLegacyUsage('getService', 'serviceManager.getService()');
     return this.serviceManager.getService(name);
   }
@@ -318,7 +318,7 @@ export class USLCompatibilityLayer {
   /**
    * @deprecated Use serviceManager.getAllServices() instead.
    */
-  getAllServices(): Map<string, IService> {
+  getAllServices(): Map<string, Service> {
     this.logLegacyUsage('getAllServices', 'serviceManager.getAllServices()');
     return this.serviceManager.getAllServices();
   }
@@ -371,7 +371,7 @@ export class USLCompatibilityLayer {
    * @param services
    */
   async migrateExistingServices(services: Record<string, unknown>): Promise<{
-    migrated: IService[];
+    migrated: Service[];
     failed: Array<{ name: string; error: string }>;
     warnings: string[];
   }> {
@@ -379,7 +379,7 @@ export class USLCompatibilityLayer {
       `Migrating ${Object.keys(services).length} existing services to USL`
     );
 
-    const migrated: IService[] = [];
+    const migrated: Service[] = [];
     const failed: Array<{ name: string; error: string }> = [];
     const warnings: string[] = [];
 
@@ -550,7 +550,7 @@ export class USLCompatibilityLayer {
    */
   async migrateFacadeToUSL(): Promise<{
     success: boolean;
-    facadeService?: IService;
+    facadeService?: Service;
     warnings: string[];
     errors: string[];
   }> {
@@ -587,7 +587,7 @@ export class USLCompatibilityLayer {
 
       this.logMigration(
         'ClaudeZenFacade',
-        ServiceType.INFRASTRUCTURE,
+        ServiceType.NFRASTRUCTURE,
         'Migrated facade to USL infrastructure service'
       );
 
@@ -616,7 +616,7 @@ export class USLCompatibilityLayer {
    */
   async migratePatternIntegrationToUSL(): Promise<{
     success: boolean;
-    patternService?: IService;
+    patternService?: Service;
     warnings: string[];
     errors: string[];
   }> {
@@ -653,7 +653,7 @@ export class USLCompatibilityLayer {
 
       this.logMigration(
         'PatternIntegration',
-        ServiceType.INFRASTRUCTURE,
+        ServiceType.NFRASTRUCTURE,
         'Migrated pattern integration to USL infrastructure service'
       );
 
@@ -897,7 +897,7 @@ export class USLCompatibilityLayer {
       serviceInstance.isInfrastructureService ||
       serviceInstance.constructor?.name.includes('Infrastructure')
     ) {
-      return ServiceType.INFRASTRUCTURE;
+      return ServiceType.NFRASTRUCTURE;
     }
 
     // Fallback to custom type

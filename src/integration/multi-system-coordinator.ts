@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { Logger } from '../core/interfaces/base-interfaces';
 import { inject } from '../di/decorators/inject';
 import { injectable } from '../di/decorators/injectable';
 import { CORE_TOKENS } from '../di/tokens/core-tokens';
@@ -20,7 +20,7 @@ export class MultiSystemCoordinator extends EventEmitter {
   private crossSystemCache = new Map();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger,
     private config: unknown = {},
   ) {
     super();

@@ -3,22 +3,22 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces';
-import type { IDatabase } from '../di/tokens/core-tokens';
-import type { ISwarmCoordinator } from '../di/tokens/swarm-tokens';
+import type { Logger } from '../core/interfaces/base-interfaces';
+import type { Database } from '../di/tokens/core-tokens';
+import type { SwarmCoordinator } from '../di/tokens/swarm-tokens';
 import { ZenSwarmStrategy } from './strategies/zen-swarm.strategy';
 import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
-export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
+export class Orchestrator extends EventEmitter implements SwarmCoordinator {
   private strategy: SwarmStrategy | ZenSwarmStrategy;
-  private db: IDatabase;
+  private db: Database;
   private executionPlans = new Map<string, ExecutionPlan>();
   private activeExecutions = new Map<string, any>();
   private taskAssignments = new Map<string, any[]>();
   private isActive = false;
-  private _logger: ILogger;
+  private _logger: Logger;
 
-  constructor(logger: ILogger, database: IDatabase, strategy?: SwarmStrategy) {
+  constructor(logger: Logger, database: Database, strategy?: SwarmStrategy) {
     super();
     this._logger = logger;
     this.strategy = strategy || new ZenSwarmStrategy();
@@ -308,7 +308,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
     }, 30000);
   }
 
-  // ISwarmCoordinator interface implementation
+  // SwarmCoordinator interface implementation
   async initializeSwarm(options: unknown): Promise<void> {
     this['_logger']?.info('Initializing swarm with options', options);
     await this.initialize();
@@ -320,7 +320,7 @@ export class Orchestrator extends EventEmitter implements ISwarmCoordinator {
 
     // Create agent record in database
     await this.db.execute(
-      'INSERT INTO agents (id, config, status, created_at) VALUES (?, ?, ?, ?)',
+      'INSERT NTO agents (id, config, status, created_at) VALUES (?, ?, ?, ?)',
       [agentId, JSON.stringify(config), 'active', new Date().toISOString()]
     );
 

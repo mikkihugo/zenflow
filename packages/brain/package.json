@@ -24,7 +24,8 @@
     "lint": "eslint . --ext .ts --fix"
   },
   "dependencies": {
-    "@zen-ai/shared": "workspace:*",
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/database": "workspace:*",
     "@zen-ai/dspy-engine": "workspace:*"
   },
   "devDependencies": {

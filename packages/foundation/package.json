@@ -1,0 +1,80 @@
+{
+  "name": "@claude-zen/foundation",
+  "version": "1.0.0",
+  "description": "Foundation utilities for claude-code-zen ecosystem - logging, config, DI, storage, and LLM integration",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "foundation",
+    "utilities",
+    "logging",
+    "dependency-injection",
+    "config",
+    "storage",
+    "llm",
+    "ai",
+    "claude-code-zen",
+    "infrastructure"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/claude-code": "^1.0.0",
+    "@logtape/logtape": "^0.7.0",
+    "reflect-metadata": "^0.2.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./llm-provider": {
+      "import": "./dist/llm-provider.js",
+      "types": "./dist/llm-provider.d.ts"
+    },
+    "./di": {
+      "import": "./dist/di/index.js",
+      "types": "./dist/di/index.d.ts"
+    },
+    "./di/container": {
+      "import": "./dist/di/container/di-container.js",
+      "types": "./dist/di/container/di-container.d.ts"
+    },
+    "./di/decorators/*": {
+      "import": "./dist/di/decorators/*.js",
+      "types": "./dist/di/decorators/*.d.ts"
+    },
+    "./di/tokens/*": {
+      "import": "./dist/di/tokens/*.js",
+      "types": "./dist/di/tokens/*.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/foundation"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

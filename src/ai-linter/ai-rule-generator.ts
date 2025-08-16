@@ -17,7 +17,7 @@
  * @version 1.0.0
  */
 
-import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { Logger } from '../core/interfaces/base-interfaces';
 import type {
   AIAnalysisResult,
   ClaudeInsights,
@@ -222,7 +222,7 @@ export interface RuleFeedback {
  * AI-powered rule generation engine
  */
 export class AIRuleGenerator {
-  private readonly logger: ILogger;
+  private readonly logger: Logger;
   private readonly config: AIRuleGeneratorConfig;
   private readonly ruleTemplates: Map<string, AIRuleTemplate> = new Map();
   private readonly generatedRules: Map<string, BiomeRule> = new Map();
@@ -230,7 +230,7 @@ export class AIRuleGenerator {
     new Map();
   private evolutionTimer?: NodeJS.Timeout;
 
-  constructor(logger: ILogger, config: AIRuleGeneratorConfig) {
+  constructor(logger: Logger, config: AIRuleGeneratorConfig) {
     this.logger = logger;
     this.config = config;
 

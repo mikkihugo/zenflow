@@ -107,10 +107,10 @@
 
 import { type ChildProcess, spawn } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import { SharedFACTCapable } from '../shared-fact-system.js';
-import type { IEventBus } from '../../core/event-bus.js';
-import type { ILogger } from '../../core/logger.js';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator.js';
+import { SharedFACTCapable } from '../shared-fact-system';
+import type { EventBus } from '../types/interfaces';
+import type { Logger } from '../types/interfaces';
+import type { MemoryCoordinator } from '../types/memory';
 import type {
   QueenCommanderConfig,
   AgentMetrics,
@@ -132,13 +132,13 @@ import type {
   AgentStatus,
   AgentType,
   AgentId
-} from '../types/queen-types.js';
-import type { AgentPool } from '../../types/agent-types.js';
-import type { AgentEnvironment, AgentState } from '../types/queen-types.js';
-import type { AgentConfig as CompleteAgentConfig } from '../types.js';
-import type { AgentHealth } from '../intelligence/agent-health-monitor.js';
-import { generateId } from '../swarm/core/utils.js';
-import type { SPARCPhase } from '../swarm/sparc/types/sparc-types.js';
+} from '../types/interfaces';
+import type { AgentPool } from './agent';
+import type { AgentEnvironment, AgentState } from '../types/interfaces';
+import type { AgentConfig as CompleteAgentConfig } from '../types/interfaces';
+import type { AgentHealth } from '../types/interfaces';
+import { generateId } from '../swarm/core/utils';
+import type { SPARCPhase } from '../../core/sparc/types';
 // Strategic Task Coordination (Business Focus Only)
 
 // QueenCoordinatorConfig imported from types
@@ -344,8 +344,8 @@ export interface CoordinationLearningConfig {
  * @example
  */
 export class QueenCommander extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memory: MemoryCoordinator;
   private config: QueenCommanderConfig;
 
@@ -413,14 +413,14 @@ export class QueenCommander extends EventEmitter {
   // Example:
   // constructor(
   //   @inject(AGENT_TOKENS.Config) config: Partial<AgentManagerConfig>,
-  //   @inject(CORE_TOKENS.Logger) logger: ILogger,
-  //   @inject(CORE_TOKENS.EventBus) eventBus: IEventBus,
+  //   @inject(CORE_TOKENS.Logger) logger: Logger,
+  //   @inject(CORE_TOKENS.EventBus) eventBus: EventBus,
   //   @inject(MEMORY_TOKENS.Coordinator) memory: MemoryCoordinator
   // ) {
   constructor(
     config: Partial<QueenCommanderConfig>,
-    logger: ILogger,
-    eventBus: IEventBus,
+    logger: Logger,
+    eventBus: EventBus,
     memory: MemoryCoordinator
   ) {
     super();
@@ -590,7 +590,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['web-search', 'document-reader', 'data-extractor'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-researcher.ts',
+      startupScript: './scripts/start-researcher',
     });
 
     // Developer agent template
@@ -650,7 +650,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['git', 'deno', 'editor', 'debugger'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-developer.ts',
+      startupScript: './scripts/start-developer',
     });
 
     // Add more templates...
@@ -710,7 +710,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['data-processor', 'chart-gen', 'stats-calc'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-analyzer.ts',
+      startupScript: './scripts/start-analyzer',
     });
 
     // Requirements Engineer Agent Template
@@ -765,7 +765,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['document-writer', 'nlp-processor'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-requirements-engineer.ts',
+      startupScript: './scripts/start-requirements-engineer',
     });
 
     // Design Architect Agent Template
@@ -820,7 +820,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['diagram-gen', 'code-analyzer'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-design-architect.ts',
+      startupScript: './scripts/start-design-architect',
     });
 
     // Task Planner Agent Template
@@ -879,7 +879,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['task-scheduler', 'dependency-analyzer'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-task-planner.ts',
+      startupScript: './scripts/start-task-planner',
     });
 
     // Developer Agent Template (already exists, but ensure it's aligned)
@@ -939,7 +939,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['git', 'deno', 'editor', 'debugger'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-developer.ts',
+      startupScript: './scripts/start-developer',
     });
 
     // System Architect Agent Template
@@ -1007,7 +1007,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['architecture-analyzer', 'system-modeler'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-system-architect.ts',
+      startupScript: './scripts/start-system-architect',
     });
 
     // Tester Agent Template
@@ -1062,7 +1062,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['test-runner', 'coverage-tool', 'test-gen'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-tester.ts',
+      startupScript: './scripts/start-tester',
     });
 
     // Code Reviewer Agent Template
@@ -1121,7 +1121,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['static-analyzer', 'quality-checker'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-reviewer.ts',
+      startupScript: './scripts/start-reviewer',
     });
 
     // Steering Author Agent Template
@@ -1180,7 +1180,7 @@ export class QueenCommander extends EventEmitter {
         availableTools: ['document-writer', 'content-analyzer'],
         toolConfigs: {},
       },
-      startupScript: './scripts/start-steering-author.ts',
+      startupScript: './scripts/start-steering-author',
     });
   }
 
@@ -3123,7 +3123,7 @@ export class QueenCommander extends EventEmitter {
     const args = [
       'run',
       '--allow-all',
-      agent.environment.availableTools[0] || './agents/generic-agent.ts',
+      agent.environment.availableTools[0] || './agents/generic-agent',
       '--config',
       JSON.stringify(agent.config),
     ];

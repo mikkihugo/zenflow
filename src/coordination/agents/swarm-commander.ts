@@ -10,8 +10,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import {
@@ -28,6 +28,14 @@ import type {
   SPARCPhase,
 } from '../swarm/sparc/types/sparc-types';
 import type { AgentType } from '../../types/agent-types';
+
+// External conversation framework library
+import type { 
+  ConversationFramework,
+  ConversationConfig,
+  ConversationSession,
+  ConversationDecision
+} from 'conversation-framework';
 
 export interface SwarmCommanderConfig {
   swarmId: string;
@@ -47,6 +55,23 @@ export interface SwarmCommanderConfig {
     crossSwarmLearning: boolean;
     experimentalPatterns: boolean;
     learningRate: number; // 0-1
+  };
+  conversationMode: {
+    enabled: boolean;
+    useForTaskAssignment: boolean;
+    useForPhaseTransitions: boolean;
+    useForTechnicalConsultations: boolean;
+    useForArchitectureReviews: boolean;
+    defaultTimeout: number; // milliseconds
+    fallbackToDirectExecution: boolean;
+    autoTriggerCriteria: {
+      minPriority: 'medium' | 'high' | 'critical';
+      minEstimatedEffort: number;
+      minDependencies: number;
+      phases: SPARCPhase[];
+      domains: string[];
+      minRiskLevel: 'medium' | 'high' | 'critical';
+    };
   };
 }
 
@@ -138,8 +163,8 @@ export class SwarmCommander extends EventEmitter {
   public readonly swarmId: string;
   public readonly commanderType: string;
 
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: SwarmCommanderConfig;
   private state: SwarmCommanderState;
@@ -149,8 +174,13 @@ export class SwarmCommander extends EventEmitter {
   private activeProject?: SPARCProject;
   private currentTasks = new Map<string, SwarmTask>();
 
-  // ULTRA-DATABASE INTEGRATION
+  // ULTRA-DATABASE NTEGRATION
   private factSystem: CollectiveFACTSystem;
+
+  // CONVERSATION FRAMEWORK NTEGRATION
+  private conversationSystem?: ConversationFramework;
+  private activeConversations = new Map<string, ConversationSession>();
+  private conversationHistory = new Map<string, ConversationDecision>();
 
   // Persistent Neural Learning
   private agentPerformanceHistory = new Map<
@@ -162,7 +192,7 @@ export class SwarmCommander extends EventEmitter {
 
   constructor(
     config: SwarmCommanderConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator
   ) {
     super();
@@ -214,9 +244,41 @@ export class SwarmCommander extends EventEmitter {
       );
     });
 
+    // Initialize conversation system if enabled
+    if (config.conversationMode?.enabled) {
+      this.initializeConversationSystem().catch((error) => {
+        this.logger.warn(`Failed to initialize conversation system: ${error}`);
+        if (!config.conversationMode.fallbackToDirectExecution) {
+          throw new Error(`Conversation system required but failed to initialize: ${error}`);
+        }
+      });
+    }
+
     this.logger.info(
-      `Swarm Commander initialized for ${config.commanderType} swarm with persistent learning`
+      `Swarm Commander initialized for ${config.commanderType} swarm with persistent learning${config.conversationMode?.enabled ? ' and conversation framework' : ''}`
     );
+  }
+
+  /**
+   * Initialize the conversation framework system.
+   */
+  private async initializeConversationSystem(): Promise<void> {
+    try {
+      // Use external conversation framework library
+      const { ConversationFramework } = await import('conversation-framework');
+      
+      this.conversationSystem = await ConversationFramework.create({
+        memoryBackend: 'sqlite',
+        memoryConfig: {
+          path: '.claude-zen/conversations',
+        },
+      });
+
+      this.logger.info('Conversation framework system initialized successfully');
+    } catch (error) {
+      this.logger.error(`Failed to initialize conversation system: ${error}`);
+      throw error;
+    }
   }
 
   /**
@@ -259,12 +321,213 @@ export class SwarmCommander extends EventEmitter {
     this.state.currentTask = task;
     this.state.status = 'busy';
 
+    // Check if conversation mode should be used for task assignment
+    const shouldUseConversation = this.shouldUseConversationForTaskAssignment(task);
+
+    if (shouldUseConversation && this.conversationSystem) {
+      try {
+        const assignmentDecision = await this.conductTaskAssignmentConversation(task);
+        
+        if (assignmentDecision.decision === 'proceed') {
+          // Apply any modifications suggested by conversation
+          if (assignmentDecision.modifications) {
+            this.applyTaskModifications(task, assignmentDecision.modifications);
+          }
+        } else if (assignmentDecision.decision === 'reject') {
+          this.logger.info(`Task assignment rejected by conversation: ${assignmentDecision.reasoning}`);
+          return;
+        } else if (assignmentDecision.decision === 'escalate') {
+          await this.escalateToQueenCoordinator(task.id, 'task_assignment_escalated', assignmentDecision);
+          return;
+        }
+      } catch (error) {
+        this.logger.warn(`Task assignment conversation failed: ${error}`);
+        if (!this.config.conversationMode.fallbackToDirectExecution) {
+          throw error;
+        }
+        this.logger.info('Falling back to direct task assignment');
+      }
+    }
+
     // Begin SPARC implementation if enabled
     if (this.config.sparcEnabled) {
       await this.initiateSPARCImplementation(task);
     } else {
       await this.executeDirectImplementation(task);
     }
+  }
+
+  /**
+   * Determine if conversation mode should be used for task assignment.
+   */
+  private shouldUseConversationForTaskAssignment(task: SwarmTask): boolean {
+    if (!this.config.conversationMode?.useForTaskAssignment) {
+      return false;
+    }
+
+    const criteria = this.config.conversationMode.autoTriggerCriteria;
+    
+    // Check if task meets conversation criteria
+    const priorityMatches = ['critical', 'high', 'medium'].indexOf(task.priority) <= ['critical', 'high', 'medium'].indexOf(criteria.minPriority);
+    const effortMatches = task.estimatedEffort >= criteria.minEstimatedEffort;
+    const dependenciesMatch = task.dependencies.length >= criteria.minDependencies;
+    
+    return priorityMatches || effortMatches || dependenciesMatch;
+  }
+
+  /**
+   * Conduct task assignment conversation with relevant agents.
+   */
+  private async conductTaskAssignmentConversation(task: SwarmTask): Promise<ConversationDecision> {
+    if (!this.conversationSystem) {
+      throw new Error('Conversation system not initialized');
+    }
+
+    // Determine participants for task assignment conversation
+    const participants = this.selectTaskAssignmentParticipants(task);
+
+    const conversationConfig: ConversationConfig = {
+      title: `Task Assignment Review: ${task.title}`,
+      description: `Review and validate task assignment for: ${task.description}`,
+      pattern: 'planning',
+      context: {
+        goal: 'Determine optimal agent assignment and task parameters',
+        constraints: [`Estimated effort: ${task.estimatedEffort}h`, `Priority: ${task.priority}`],
+        resources: [`Available agents: ${this.state.availableAgents.join(', ')}`],
+        domain: 'task-management',
+        expertise: ['coordination', 'resource-planning', 'agent-optimization'],
+      },
+      initialParticipants: participants.map(type => ({ 
+        id: `${type}_${this.swarmId}`, 
+        type: type as any, 
+        swarmId: this.swarmId 
+      })),
+      timeout: this.config.conversationMode.defaultTimeout,
+    };
+
+    // Start conversation
+    const session = await this.conversationSystem.orchestrator.createConversation(conversationConfig);
+    this.activeConversations.set(task.id, session);
+
+    // Monitor conversation and extract decision
+    return this.monitorTaskAssignmentConversation(session, task);
+  }
+
+  /**
+   * Select appropriate participants for task assignment conversation.
+   */
+  private selectTaskAssignmentParticipants(task: SwarmTask): AgentType[] {
+    const participants: AgentType[] = ['coordinator']; // Always include coordinator
+
+    // Add domain-specific experts based on task characteristics
+    if (task.title.toLowerCase().includes('security') || task.title.toLowerCase().includes('auth')) {
+      participants.push('security');
+    }
+    if (task.title.toLowerCase().includes('performance') || task.title.toLowerCase().includes('optimization')) {
+      participants.push('performance-analyzer');
+    }
+    if (task.title.toLowerCase().includes('database') || task.title.toLowerCase().includes('data')) {
+      participants.push('data');
+    }
+    if (task.estimatedEffort > 15) {
+      participants.push('architect'); // Complex tasks need architectural input
+    }
+
+    // Always include a planner for capacity planning
+    participants.push('planner');
+
+    return [...new Set(participants)]; // Remove duplicates
+  }
+
+  /**
+   * Monitor task assignment conversation and extract decision.
+   */
+  private async monitorTaskAssignmentConversation(
+    session: ConversationSession,
+    task: SwarmTask
+  ): Promise<ConversationDecision> {
+    return new Promise((resolve, reject) => {
+      const startTime = Date.now();
+      const timeout = setTimeout(() => {
+        reject(new Error('Task assignment conversation timeout'));
+      }, this.config.conversationMode.defaultTimeout);
+
+      // Monitor conversation status
+      const checkStatus = async () => {
+        try {
+          if (session.status === 'completed') {
+            clearTimeout(timeout);
+            const decision = this.extractTaskAssignmentDecision(session);
+            
+            // Store conversation history
+            this.conversationHistory.set(task.id, decision);
+            this.activeConversations.delete(task.id);
+            
+            resolve(decision);
+          } else if (session.status === 'error' || session.status === 'terminated') {
+            clearTimeout(timeout);
+            reject(new Error(`Conversation failed with status: ${session.status}`));
+          } else {
+            // Check again in 1 second
+            setTimeout(checkStatus, 1000);
+          }
+        } catch (error) {
+          clearTimeout(timeout);
+          reject(error);
+        }
+      };
+
+      checkStatus();
+    });
+  }
+
+  /**
+   * Extract task assignment decision from conversation outcomes.
+   */
+  private extractTaskAssignmentDecision(session: ConversationSession): ConversationDecision {
+    // Analyze conversation outcomes to determine decision
+    const outcomes = session.outcomes;
+    const lastMessage = session.messages[session.messages.length - 1];
+
+    // For now, implement basic decision extraction
+    // In a full implementation, this would use NLP to analyze conversation content
+    let decision: 'proceed' | 'modify' | 'reject' | 'escalate' = 'proceed';
+    let reasoning = 'Task assignment approved by conversation participants';
+    let modifications: string[] = [];
+
+    // Check for consensus in outcomes
+    const consensusOutcome = outcomes.find(o => o.type === 'decision');
+    if (consensusOutcome && consensusOutcome.confidence < 0.7) {
+      decision = 'modify';
+      reasoning = 'Low confidence in current approach, modifications recommended';
+      modifications = ['Reduce estimated effort', 'Add additional domain expert'];
+    }
+
+    return {
+      decision,
+      reasoning,
+      modifications,
+      confidence: session.metrics.consensusScore,
+      participantConsensus: session.metrics.consensusScore,
+      timestamp: new Date(),
+    };
+  }
+
+  /**
+   * Apply task modifications suggested by conversation.
+   */
+  private applyTaskModifications(task: SwarmTask, modifications: string[]): void {
+    for (const modification of modifications) {
+      if (modification.includes('Reduce estimated effort')) {
+        task.estimatedEffort = Math.max(1, task.estimatedEffort * 0.8);
+      }
+      if (modification.includes('Add additional domain expert')) {
+        // This would be handled in agent assignment phase
+      }
+      // Add more modification handlers as needed
+    }
+
+    this.logger.info(`Applied modifications to task ${task.id}: ${modifications.join(', ')}`);
   }
 
   /**
@@ -318,6 +581,35 @@ export class SwarmCommander extends EventEmitter {
     task.sparcPhase = phase;
     this.state.currentPhase = phase;
 
+    // Check if conversation should be used for phase transition validation
+    const shouldUseConversation = this.shouldUseConversationForPhaseTransition(phase, task);
+
+    if (shouldUseConversation && this.conversationSystem) {
+      // Conduct phase validation conversation before execution
+      try {
+        const validationDecision = await this.conductPhaseTransitionConversation(phase, task);
+        
+        if (validationDecision.decision !== 'proceed') {
+          this.logger.info(`SPARC phase ${phase} validation failed: ${validationDecision.reasoning}`);
+          
+          if (validationDecision.decision === 'escalate') {
+            await this.escalateToQueenCoordinator(task.id, `sparc_phase_validation_escalated`, validationDecision);
+            return;
+          }
+          
+          // Apply modifications if suggested
+          if (validationDecision.modifications) {
+            this.applyPhaseModifications(phase, task, validationDecision.modifications);
+          }
+        }
+      } catch (error) {
+        this.logger.warn(`Phase transition conversation failed: ${error}`);
+        if (!this.config.conversationMode.fallbackToDirectExecution) {
+          throw error;
+        }
+      }
+    }
+
     try {
       // Consult Matron for phase-specific guidance
       const matronGuidance = await this.getMatronGuidanceForPhase(phase, task);
@@ -349,6 +641,152 @@ export class SwarmCommander extends EventEmitter {
         error
       );
     }
+  }
+
+  /**
+   * Determine if conversation should be used for phase transition.
+   */
+  private shouldUseConversationForPhaseTransition(phase: SPARCPhase, task: SwarmTask): boolean {
+    if (!this.config.conversationMode?.useForPhaseTransitions) {
+      return false;
+    }
+
+    const criteria = this.config.conversationMode.autoTriggerCriteria;
+    
+    // Use conversation for specified phases or critical tasks
+    return criteria.phases.includes(phase) || task.priority === 'critical';
+  }
+
+  /**
+   * Conduct phase transition validation conversation.
+   */
+  private async conductPhaseTransitionConversation(
+    phase: SPARCPhase,
+    task: SwarmTask
+  ): Promise<ConversationDecision> {
+    if (!this.conversationSystem) {
+      throw new Error('Conversation system not initialized');
+    }
+
+    const reviewers = this.selectPhaseTransitionReviewers(phase);
+
+    const conversationConfig: ConversationConfig = {
+      title: `SPARC Phase Validation: ${phase}`,
+      description: `Validate readiness for SPARC ${phase} phase execution`,
+      pattern: 'architecture-review',
+      context: {
+        goal: `Ensure ${phase} phase is properly prepared and executable`,
+        constraints: [`Task priority: ${task.priority}`, `Dependencies: ${task.dependencies.length}`],
+        resources: [`Assigned agents: ${task.assignedAgents.join(', ')}`],
+        domain: 'sparc-methodology',
+        expertise: ['architecture', 'methodology', 'quality-assurance'],
+      },
+      initialParticipants: reviewers.map(type => ({ 
+        id: `${type}_${this.swarmId}`, 
+        type: type as any, 
+        swarmId: this.swarmId 
+      })),
+      timeout: this.config.conversationMode.defaultTimeout,
+    };
+
+    const session = await this.conversationSystem.orchestrator.createConversation(conversationConfig);
+    return this.monitorPhaseTransitionConversation(session, phase);
+  }
+
+  /**
+   * Select reviewers for phase transition validation.
+   */
+  private selectPhaseTransitionReviewers(phase: SPARCPhase): AgentType[] {
+    const baseReviewers: AgentType[] = ['coordinator'];
+
+    switch (phase) {
+      case 'specification':
+        return [...baseReviewers, 'analyst', 'technical-writer'];
+      case 'pseudocode':
+        return [...baseReviewers, 'architect', 'developer'];
+      case 'architecture':
+        return [...baseReviewers, 'architect', 'security'];
+      case 'refinement':
+        return [...baseReviewers, 'developer', 'reviewer'];
+      case 'completion':
+        return [...baseReviewers, 'tester', 'ops'];
+      default:
+        return baseReviewers;
+    }
+  }
+
+  /**
+   * Monitor phase transition conversation.
+   */
+  private async monitorPhaseTransitionConversation(
+    session: ConversationSession,
+    phase: SPARCPhase
+  ): Promise<ConversationDecision> {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Phase transition conversation timeout'));
+      }, this.config.conversationMode.defaultTimeout);
+
+      const checkStatus = async () => {
+        try {
+          if (session.status === 'completed') {
+            clearTimeout(timeout);
+            const decision = this.extractPhaseTransitionDecision(session, phase);
+            resolve(decision);
+          } else if (session.status === 'error' || session.status === 'terminated') {
+            clearTimeout(timeout);
+            reject(new Error(`Phase transition conversation failed: ${session.status}`));
+          } else {
+            setTimeout(checkStatus, 1000);
+          }
+        } catch (error) {
+          clearTimeout(timeout);
+          reject(error);
+        }
+      };
+
+      checkStatus();
+    });
+  }
+
+  /**
+   * Extract phase transition decision from conversation.
+   */
+  private extractPhaseTransitionDecision(session: ConversationSession, phase: SPARCPhase): ConversationDecision {
+    // Analyze conversation for phase transition decision
+    const consensusScore = session.metrics.consensusScore;
+    let decision: 'proceed' | 'modify' | 'reject' | 'escalate' = 'proceed';
+    let reasoning = `${phase} phase validated and approved for execution`;
+    let modifications: string[] = [];
+
+    if (consensusScore < 0.6) {
+      decision = 'modify';
+      reasoning = `${phase} phase requires modifications before execution`;
+      modifications = ['Add additional validation steps', 'Include domain expert review'];
+    } else if (consensusScore < 0.4) {
+      decision = 'escalate';
+      reasoning = `${phase} phase validation requires higher-level review`;
+    }
+
+    return {
+      decision,
+      reasoning,
+      modifications,
+      confidence: consensusScore,
+      participantConsensus: consensusScore,
+      timestamp: new Date(),
+    };
+  }
+
+  /**
+   * Apply phase modifications suggested by conversation.
+   */
+  private applyPhaseModifications(phase: SPARCPhase, task: SwarmTask, modifications: string[]): void {
+    // Apply suggested modifications to phase execution
+    this.logger.info(`Applying modifications to ${phase} phase: ${modifications.join(', ')}`);
+    
+    // In a full implementation, this would modify phase execution parameters
+    // For now, we log the modifications for tracking
   }
 
   /**
@@ -730,7 +1168,26 @@ export class SwarmCommander extends EventEmitter {
       `Public Matron consultation requested: ${domain} - ${technicalChallenge}`
     );
 
-    // Get relevant ADRs and FACT knowledge for consultation
+    // Check if conversation mode should be used for technical consultations
+    const shouldUseConversation = this.shouldUseConversationForTechnicalConsultation(domain, riskLevel);
+
+    if (shouldUseConversation && this.conversationSystem) {
+      try {
+        return await this.conductTechnicalConsultationConversation(
+          domain,
+          consultationType,
+          technicalChallenge,
+          riskLevel
+        );
+      } catch (error) {
+        this.logger.warn(`Technical consultation conversation failed: ${error}`);
+        if (!this.config.conversationMode.fallbackToDirectExecution) {
+          throw error;
+        }
+      }
+    }
+
+    // Fall back to standard Matron consultation
     const contextData = await this.gatherConsultationContext(
       domain,
       technicalChallenge
@@ -742,6 +1199,151 @@ export class SwarmCommander extends EventEmitter {
       sparcPhase: this.state.currentPhase,
       contextData,
     } as any);
+  }
+
+  /**
+   * Determine if conversation should be used for technical consultations.
+   */
+  private shouldUseConversationForTechnicalConsultation(
+    domain: string,
+    riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  ): boolean {
+    if (!this.config.conversationMode?.useForTechnicalConsultations) {
+      return false;
+    }
+
+    const criteria = this.config.conversationMode.autoTriggerCriteria;
+    
+    // Use conversation for high-risk consultations or specific domains
+    const riskMatches = ['critical', 'high', 'medium'].indexOf(riskLevel) <= ['critical', 'high', 'medium'].indexOf(criteria.minRiskLevel);
+    const domainMatches = criteria.domains.includes(domain) || criteria.domains.includes('all');
+    
+    return riskMatches || domainMatches;
+  }
+
+  /**
+   * Conduct technical consultation conversation with domain experts.
+   */
+  private async conductTechnicalConsultationConversation(
+    domain: string,
+    consultationType: string,
+    technicalChallenge: string,
+    riskLevel: string
+  ): Promise<unknown> {
+    if (!this.conversationSystem) {
+      throw new Error('Conversation system not initialized');
+    }
+
+    const experts = this.selectTechnicalConsultationExperts(domain);
+
+    const conversationConfig: ConversationConfig = {
+      title: `Technical Consultation: ${domain}`,
+      description: `${consultationType} consultation for: ${technicalChallenge}`,
+      pattern: 'technical-review',
+      context: {
+        goal: `Provide expert ${consultationType} for ${domain} challenge`,
+        constraints: [`Risk level: ${riskLevel}`, `Domain: ${domain}`],
+        resources: [`Swarm: ${this.swarmId}`, `Phase: ${this.state.currentPhase || 'none'}`],
+        domain: domain,
+        expertise: [domain, 'technical-consultation', consultationType],
+      },
+      initialParticipants: experts.map(type => ({ 
+        id: `${type}_${this.swarmId}`, 
+        type: type as any, 
+        swarmId: this.swarmId 
+      })),
+      timeout: this.config.conversationMode.defaultTimeout,
+    };
+
+    const session = await this.conversationSystem.orchestrator.createConversation(conversationConfig);
+    return this.monitorTechnicalConsultationConversation(session, domain, technicalChallenge);
+  }
+
+  /**
+   * Select experts for technical consultation.
+   */
+  private selectTechnicalConsultationExperts(domain: string): AgentType[] {
+    const baseExperts: AgentType[] = ['coordinator'];
+
+    switch (domain) {
+      case 'architecture':
+        return [...baseExperts, 'architect', 'analyst', 'system-architect'];
+      case 'development':
+        return [...baseExperts, 'developer', 'architect', 'reviewer'];
+      case 'security':
+        return [...baseExperts, 'security', 'security-analyzer', 'security-architect'];
+      case 'performance':
+        return [...baseExperts, 'performance-analyzer', 'bottleneck-analyzer', 'optimizer'];
+      case 'operations':
+        return [...baseExperts, 'ops', 'devops-engineer', 'infrastructure-ops'];
+      default:
+        return [...baseExperts, 'analyst'];
+    }
+  }
+
+  /**
+   * Monitor technical consultation conversation.
+   */
+  private async monitorTechnicalConsultationConversation(
+    session: ConversationSession,
+    domain: string,
+    challenge: string
+  ): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        reject(new Error('Technical consultation conversation timeout'));
+      }, this.config.conversationMode.defaultTimeout);
+
+      const checkStatus = async () => {
+        try {
+          if (session.status === 'completed') {
+            clearTimeout(timeout);
+            const consultation = this.extractTechnicalConsultation(session, domain, challenge);
+            resolve(consultation);
+          } else if (session.status === 'error' || session.status === 'terminated') {
+            clearTimeout(timeout);
+            reject(new Error(`Technical consultation failed: ${session.status}`));
+          } else {
+            setTimeout(checkStatus, 1000);
+          }
+        } catch (error) {
+          clearTimeout(timeout);
+          reject(error);
+        }
+      };
+
+      checkStatus();
+    });
+  }
+
+  /**
+   * Extract technical consultation from conversation.
+   */
+  private extractTechnicalConsultation(session: ConversationSession, domain: string, challenge: string): unknown {
+    // Extract expert recommendations from conversation
+    const consensusScore = session.metrics.consensusScore;
+    const outcomes = session.outcomes;
+    
+    // Find technical recommendations in outcomes
+    const recommendations = outcomes
+      .filter(o => o.type === 'recommendation')
+      .map(o => o.content);
+    
+    const bestPractices = outcomes
+      .filter(o => o.type === 'best-practice')
+      .map(o => o.content);
+
+    return {
+      domain,
+      challenge,
+      recommendations,
+      bestPractices,
+      consensusLevel: consensusScore,
+      confidence: consensusScore,
+      participantExpertise: session.participants.map(p => p.type),
+      consultationTimestamp: new Date(),
+      fallbackGuidance: consensusScore < 0.5 ? this.getFallbackGuidance(domain, 'consultation') : undefined,
+    };
   }
 
   /**
@@ -1317,10 +1919,165 @@ export class SwarmCommander extends EventEmitter {
   }
 
   /**
-   * Shutdown swarm commander with neural learning persistence
+   * Get conversation framework metrics and statistics.
+   */
+  public getConversationMetrics(): unknown {
+    if (!this.conversationSystem) {
+      return { error: 'Conversation system not initialized' };
+    }
+
+    const totalConversations = this.conversationHistory.size;
+    const activeConversations = this.activeConversations.size;
+    
+    // Calculate conversation success rates
+    const conversationResults = Array.from(this.conversationHistory.values());
+    const successfulConversations = conversationResults.filter(
+      result => result.decision === 'proceed' && result.confidence > 0.7
+    ).length;
+    
+    const escalatedConversations = conversationResults.filter(
+      result => result.decision === 'escalate'
+    ).length;
+
+    const averageConfidence = conversationResults.length > 0
+      ? conversationResults.reduce((sum, result) => sum + result.confidence, 0) / conversationResults.length
+      : 0;
+
+    return {
+      totalConversations,
+      activeConversations,
+      successfulConversations,
+      escalatedConversations,
+      successRate: totalConversations > 0 ? successfulConversations / totalConversations : 0,
+      escalationRate: totalConversations > 0 ? escalatedConversations / totalConversations : 0,
+      averageConfidence,
+      conversationModeEnabled: this.config.conversationMode?.enabled || false,
+      autoTriggerCriteria: this.config.conversationMode?.autoTriggerCriteria,
+      supportedDomains: ['architecture', 'development', 'security', 'performance', 'operations'],
+      supportedServices: {
+        taskAssignment: this.config.conversationMode?.useForTaskAssignment || false,
+        phaseTransitions: this.config.conversationMode?.useForPhaseTransitions || false,
+        technicalConsultations: this.config.conversationMode?.useForTechnicalConsultations || false,
+        architectureReviews: this.config.conversationMode?.useForArchitectureReviews || false,
+      },
+      lastConversationTimestamp: conversationResults.length > 0 
+        ? Math.max(...conversationResults.map(r => r.timestamp.getTime()))
+        : null,
+    };
+  }
+
+  /**
+   * Clear conversation history and reset metrics.
+   */
+  public async clearConversationHistory(): Promise<void> {
+    this.conversationHistory.clear();
+    
+    // Terminate any active conversations
+    for (const [taskId, session] of this.activeConversations.entries()) {
+      try {
+        if (this.conversationSystem) {
+          await this.conversationSystem.orchestrator.terminateConversation(session.id);
+        }
+      } catch (error) {
+        this.logger.warn(`Failed to terminate conversation for task ${taskId}: ${error}`);
+      }
+    }
+    
+    this.activeConversations.clear();
+    this.logger.info('Conversation history cleared and active conversations terminated');
+  }
+
+  /**
+   * Update conversation framework configuration.
+   */
+  public updateConversationConfig(updates: Partial<SwarmCommanderConfig['conversationMode']>): void {
+    if (this.config.conversationMode) {
+      this.config.conversationMode = {
+        ...this.config.conversationMode,
+        ...updates,
+      };
+      this.logger.info('Conversation framework configuration updated');
+    }
+  }
+
+  /**
+   * Test conversation framework connectivity and functionality.
+   */
+  public async testConversationFramework(): Promise<unknown> {
+    if (!this.conversationSystem) {
+      return { 
+        status: 'error', 
+        message: 'Conversation system not initialized',
+        domains: [],
+        services: []
+      };
+    }
+
+    try {
+      // Test basic conversation creation
+      const testConfig: ConversationConfig = {
+        title: 'Framework Test',
+        description: 'Testing conversation framework connectivity',
+        pattern: 'testing',
+        context: {
+          goal: 'Verify framework functionality',
+          constraints: ['Test environment'],
+          resources: [`Swarm: ${this.swarmId}`],
+          domain: 'testing',
+          expertise: ['testing'],
+        },
+        initialParticipants: [{ 
+          id: `coordinator_${this.swarmId}`, 
+          type: 'coordinator' as any, 
+          swarmId: this.swarmId 
+        }],
+        timeout: 5000, // Short timeout for test
+      };
+
+      const testSession = await this.conversationSystem.orchestrator.createConversation(testConfig);
+      
+      // Immediately terminate test conversation
+      await this.conversationSystem.orchestrator.terminateConversation(testSession.id);
+
+      return {
+        status: 'success',
+        message: 'Conversation framework is operational',
+        domains: ['architecture', 'development', 'security', 'performance', 'operations'],
+        services: {
+          taskAssignment: this.config.conversationMode?.useForTaskAssignment || false,
+          phaseTransitions: this.config.conversationMode?.useForPhaseTransitions || false,
+          technicalConsultations: this.config.conversationMode?.useForTechnicalConsultations || false,
+          architectureReviews: this.config.conversationMode?.useForArchitectureReviews || false,
+        },
+        testSessionId: testSession.id,
+        timestamp: new Date(),
+      };
+    } catch (error) {
+      return {
+        status: 'error',
+        message: `Conversation framework test failed: ${error}`,
+        domains: [],
+        services: {},
+        error: error.toString(),
+      };
+    }
+  }
+
+  /**
+   * Shutdown swarm commander with neural learning persistence and conversation cleanup
    */
   public async shutdown(): Promise<void> {
     this.logger.info('Shutting down Swarm Commander');
+
+    // Clean up conversation framework
+    if (this.conversationSystem) {
+      try {
+        await this.clearConversationHistory();
+        this.logger.info('Conversation framework cleaned up');
+      } catch (error) {
+        this.logger.warn(`Error during conversation framework cleanup: ${error}`);
+      }
+    }
 
     // Save final learning data
     await this.savePersistentLearning();
@@ -1329,7 +2086,7 @@ export class SwarmCommander extends EventEmitter {
     this.removeAllListeners();
 
     this.logger.info(
-      'Swarm Commander shutdown complete - neural learning preserved'
+      'Swarm Commander shutdown complete - neural learning preserved, conversations cleaned up'
     );
   }
 }

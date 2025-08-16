@@ -45,10 +45,10 @@ import type {
   SystemPrediction,
 } from '../learning/tier3-neural-learning';
 import type { CollectiveIntelligenceCoordinator } from '../../knowledge/collective-intelligence-coordinator';
-import type { MetaLearningFramework } from '../../neural/core/meta-learning-framework';
+import type { MetaLearningFramework } from '@claude-zen/intelligence/core';
 import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
-import type { Pattern } from '../../intelligence/adaptive-learning/types';
+import type { MLModelRegistry } from '../../lib/adaptive-learning';
+import type { Pattern } from '@claude-zen/intelligence/types';
 
 const logger = getLogger(
   'coordination-intelligence-emergent-intelligence-engine'

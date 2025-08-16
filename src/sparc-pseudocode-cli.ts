@@ -36,7 +36,7 @@ program
     try {
       // Import the pseudocode engine dynamically
       const { PseudocodePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
+        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
       );
 
       const engine = new PseudocodePhaseEngine();
@@ -74,7 +74,7 @@ program
   .action(async (options) => {
     try {
       const { PseudocodePhaseEngine } = await import(
-        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine.ts'
+        './coordination/swarm/sparc/phases/pseudocode/pseudocode-engine'
       );
 
       const engine = new PseudocodePhaseEngine();
@@ -201,7 +201,7 @@ program
 function formatPseudocodeAsMarkdown(pseudocodeStructure: any): string {
   let markdown = `# SPARC Pseudocode Generation Results\n\n`;
   markdown += `**Generated on:** ${new Date().toISOString()}\n`;
-  markdown += `**ID:** ${pseudocodeStructure.id}\n\n`;
+  markdown += `**D:** ${pseudocodeStructure.id}\n\n`;
 
   // Algorithms section
   markdown += `## 🔧 Algorithms (${pseudocodeStructure.algorithms.length})\n\n`;

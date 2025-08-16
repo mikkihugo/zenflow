@@ -175,9 +175,9 @@ export class IntelligentAgentAssignor implements AgentCoordinator {
   private detectFileType(filePath: string): FileType {
     const extension = path.extname(filePath).toLowerCase();
     const fileTypeMap: Record<string, FileType> = {
-      '.ts': 'typescript',
+      '': 'typescript',
       '.tsx': 'typescript',
-      '.js': 'javascript',
+      '': 'javascript',
       '.jsx': 'javascript',
       '.py': 'python',
       '.rs': 'rust',

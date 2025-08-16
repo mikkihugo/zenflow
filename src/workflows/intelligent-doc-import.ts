@@ -26,8 +26,8 @@ import { EventEmitter } from 'events';
 import { existsSync } from 'fs';
 import { readdir, readFile, stat } from 'fs/promises';
 import { extname, join, relative } from 'path';
-import { getLogger } from '../config/logging-config.js';
-import type { WorkflowGateRequest } from './workflow-base-types.js';
+import { getLogger } from '../config/logging-config';
+import type { WorkflowGateRequest } from '../coordination/workflows/workflow-gate-request';
 import { DocumentManager } from "../services/document/document-service"
 
 const logger = getLogger('IntelligentDocImport');
@@ -334,8 +334,8 @@ export class IntelligentDocImport extends EventEmitter {
     // Code files that should have documentation
     if (
       [
-        '.ts',
-        '.js',
+        '',
+        '',
         '.tsx',
         '.jsx',
         '.py',
@@ -499,8 +499,8 @@ export class IntelligentDocImport extends EventEmitter {
     // Code files
     if (
       [
-        '.ts',
-        '.js',
+        '',
+        '',
         '.tsx',
         '.jsx',
         '.py',
@@ -753,7 +753,7 @@ export class IntelligentDocImport extends EventEmitter {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const functions: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === '.ts' || fileExt === '.js') {
+    if (fileExt === '' || fileExt === '') {
       // TypeScript/JavaScript function patterns
       const functionRegex =
         /(?:export\s+)?(?:async\s+)?function\s+(\w+)|(\w+)\s*=\s*(?:async\s+)?\(/g;
@@ -800,7 +800,7 @@ export class IntelligentDocImport extends EventEmitter {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const classes: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === '.ts' || fileExt === '.js') {
+    if (fileExt === '' || fileExt === '') {
       const classRegex = /(?:export\s+)?class\s+(\w+)/g;
       const lines = content.split('\n');
 
@@ -843,7 +843,7 @@ export class IntelligentDocImport extends EventEmitter {
   ): Array<{ name: string; hasDocumentation: boolean }> {
     const interfaces: Array<{ name: string; hasDocumentation: boolean }> = [];
 
-    if (fileExt === '.ts') {
+    if (fileExt === '') {
       const interfaceRegex = /(?:export\s+)?interface\s+(\w+)/g;
       const lines = content.split('\n');
 

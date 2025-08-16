@@ -11,8 +11,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import { NeuralService } from '../../interfaces/services/implementations/neural-service';
@@ -176,8 +176,8 @@ export interface LearningMetaAnalysis {
  * Integrates with the existing Neural Service to leverage deep learning capabilities.
  */
 export class Tier3NeuralLearning extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private neuralService: NeuralService;
   private config: DeepLearningConfig;
@@ -211,7 +211,7 @@ export class Tier3NeuralLearning extends EventEmitter {
 
   constructor(
     config: DeepLearningConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     neuralService?: NeuralService
   ) {

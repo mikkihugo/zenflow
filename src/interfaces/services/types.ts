@@ -48,7 +48,7 @@ export enum ServiceType {
   GRAPH = 'graph',
 
   // System Services
-  INFRASTRUCTURE = 'infrastructure',
+  NFRASTRUCTURE = 'infrastructure',
   SYSTEM = 'system',
   HEALTH = 'health',
   MONITORING = 'monitoring',
@@ -423,7 +423,7 @@ export interface IntegrationServiceConfig extends BaseServiceConfig {
  */
 export interface InfrastructureServiceConfig extends BaseServiceConfig {
   type:
-    | ServiceType.INFRASTRUCTURE
+    | ServiceType.NFRASTRUCTURE
     | ServiceType.SYSTEM
     | ServiceType.MONITORING;
   facade?: {
@@ -939,7 +939,7 @@ export class ServiceConfigFactory {
   ): InfrastructureServiceConfig {
     return {
       name,
-      type: ServiceType.INFRASTRUCTURE,
+      type: ServiceType.NFRASTRUCTURE,
       enabled: true,
       priority: ServicePriority.HIGH,
       environment: ServiceEnvironment.DEVELOPMENT,
@@ -1159,7 +1159,7 @@ export function isInfrastructureServiceConfig(
   config: AnyServiceConfig
 ): config is InfrastructureServiceConfig {
   return [
-    ServiceType.INFRASTRUCTURE,
+    ServiceType.NFRASTRUCTURE,
     ServiceType.SYSTEM,
     ServiceType.MONITORING,
   ].includes(config?.type as ServiceType);

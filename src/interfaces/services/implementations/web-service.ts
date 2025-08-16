@@ -8,7 +8,7 @@
  * @file Web service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type { ServiceOperationOptions, WebServiceConfig } from '../types';
 import { BaseService } from './base-service';
 
@@ -17,7 +17,7 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class WebService extends BaseService implements IService {
+export class WebService extends BaseService implements Service {
   private server?: unknown; // Would be Express server in real implementation
   private middleware: Array<{ name: string; handler: Function }> = [];
   private routes = new Map<string, Function>();

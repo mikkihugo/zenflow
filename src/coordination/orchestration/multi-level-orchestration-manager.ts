@@ -852,7 +852,7 @@ export class MultiLevelOrchestrationManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): MultiLevelOrchestrationManagerState {

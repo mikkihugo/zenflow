@@ -1,82 +1,78 @@
-# CLI Reference
+# Configuration Reference
 
-**Complete command-line interface reference for Claude Code Flow.**
+**Complete configuration reference for Claude Code Zen workspace server.**
 
-## 📋 **Command Overview**
+## 📋 **System Overview**
+
+Claude Code Zen is a web-based workspace server with API endpoints and file operations:
 
 ```bash
-claude-zen <command> [options] [arguments]
+# Start workspace server
+claude-zen [--port 3000]
+
+# Or using npm scripts
+npm run dev
+npm run start
 ```
 
-### **Global Options**
-- `--help, -h` - Show help information
-- `--version, -v` - Show version number
-- `--debug` - Enable debug mode with verbose logging
-- `--quiet, -q` - Suppress non-essential output
-- `--format <type>` - Output format: `json`, `yaml`, `table` (default: `table`)
+## 🚀 **Command Line Options**
 
-## 🚀 **Core Commands**
+### **`--port <number>`**
 
-### **`init` - Initialize New Project**
-
-Create a new Claude Code Flow project with templates and configuration.
+Specify the port for the web server (default: 3000).
 
 ```bash
-claude-zen init <project-name> [options]
+claude-zen --port 3000
 ```
 
-**Options:**
-- `--template <type>` - Project template: `basic`, `advanced`, `neural`, `swarm` (default: `basic`)
-- `--directory <path>` - Target directory (default: current directory)
-- `--git` - Initialize git repository
-- `--install` - Install dependencies after creation
+## 🌐 **Available Endpoints**
 
-**Examples:**
+Once running, the system provides:
+
+- **Workspace**: `http://localhost:3000/workspace`
+- **API**: `http://localhost:3000/api/`
+- **Health Check**: `http://localhost:3000/api/health`
+- **System Status**: API endpoints for file operations and workspace management
+
+## 🔧 **Features**
+
+When running, Claude Code Zen provides:
+
+- **File Operations**: Create, read, edit, and delete files via API
+- **Workspace Management**: Browser-based workspace interface  
+- **Health Monitoring**: System health checks and status reporting
+- **Auto-Detection**: Automatically detects if another instance is running
+
+## 🚀 **Usage Examples**
+
 ```bash
-# Basic project setup
-claude-zen init my-project
+# Start on default port (3000)
+claude-zen
 
-# Advanced project with neural capabilities
-claude-zen init ai-assistant --template=advanced --git --install
+# Start on custom port  
+claude-zen --port 8080
 
-# Swarm-focused project
-claude-zen init swarm-coordinator --template=swarm
+# Using npm scripts
+npm run dev          # Development mode with TypeScript
+npm run start        # Production mode (requires build)
 ```
 
-**Generated Structure:**
-- `docs/` - Document-driven development structure
-- `src/` - Source code directory
-- `tests/` - Test suites
-- `.claude/` - Claude Code integration files
-- `package.json` - Project configuration
+## ⚡ **Quick Start**
 
----
-
-### **`status` - System Status**
-
-Display comprehensive system status and health information.
-
+1. Install the package:
 ```bash
-claude-zen status [options]
+npm install -g @zen-ai/claude-code-zen
 ```
 
-**Options:**
-- `--detailed` - Show detailed component information
-- `--watch` - Continuously monitor status (updates every 5s)
-- `--component <name>` - Show specific component: `mcp`, `swarm`, `web`, `memory`
-
-**Examples:**
+2. Start the workspace server:
 ```bash
-# Basic status
-claude-zen status
+claude-zen
+```
 
-# Detailed status in JSON format
-claude-zen status --detailed --format json
-
-# Watch system status continuously
-claude-zen status --watch
-
-# Check specific component
+3. Open your browser:
+```
+http://localhost:3000/workspace
+```
 claude-zen status --component swarm
 ```
 
@@ -573,38 +569,26 @@ claude-zen doctor [options]
 - `--fix` - Attempt to fix detected issues automatically
 - `--verbose` - Show detailed diagnostic information
 
-**Checks Include:**
-- Node.js and npm version compatibility
-- Required dependencies installation
-- Configuration file validity
-- Network connectivity for MCP services
-- File system permissions
-- Port availability
-
 ---
 
 ## 📚 **Environment Variables**
 
 ### **Configuration via Environment**
 
-Claude Code Flow can be configured using environment variables:
+Claude Code Zen can be configured using environment variables:
 
 ```bash
-# MCP server configuration
-export CLAUDE_ZEN_MCP_PORT=3000
-export CLAUDE_ZEN_MCP_HOST=localhost
-
-# Web dashboard configuration
-export CLAUDE_ZEN_WEB_PORT=3456
-export CLAUDE_ZEN_WEB_THEME=dark
+# Web dashboard configuration  
+export WEB_PORT=3000
+export WEB_HOST=localhost
 
 # Swarm configuration
-export CLAUDE_ZEN_SWARM_MAX_AGENTS=20
-export CLAUDE_ZEN_SWARM_DEFAULT_TOPOLOGY=mesh
+export ZEN_MAX_AGENTS=20
+export ZEN_SWARM_TOPOLOGY=mesh
 
 # Logging configuration
-export CLAUDE_ZEN_LOG_LEVEL=info
-export CLAUDE_ZEN_DEBUG=false
+export ZEN_LOG_LEVEL=info
+export ZEN_ENABLE_METRICS=false
 ```
 
 ---

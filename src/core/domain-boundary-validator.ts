@@ -98,7 +98,7 @@ export enum Domain {
   MEMORY = 'memory',
   KNOWLEDGE = 'knowledge',
   OPTIMIZATION = 'optimization',
-  INTERFACES = 'interfaces',
+  NTERFACES = 'interfaces',
   CORE = 'core',
 }
 
@@ -155,7 +155,7 @@ export interface RetryPolicy {
 }
 
 // ============================================================================
-// DOMAIN BOUNDARY INTERFACE - Core contract for all boundary validation
+// DOMAIN BOUNDARY NTERFACE - Core contract for all boundary validation
 // ============================================================================
 
 /**
@@ -243,7 +243,7 @@ export class ContractViolationError extends Error {
 }
 
 // ============================================================================
-// DOMAIN BOUNDARY VALIDATOR IMPLEMENTATION - Production-grade validator
+// DOMAIN BOUNDARY VALIDATOR MPLEMENTATION - Production-grade validator
 // ============================================================================
 
 /**
@@ -569,7 +569,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION - Internal validation logic
+  // PRIVATE MPLEMENTATION - Internal validation logic
   // ============================================================================
 
   private performValidation<T>(
@@ -849,7 +849,7 @@ export class DomainBoundaryValidator implements DomainBoundary {
 }
 
 // ============================================================================
-// SUPPORTING TYPES AND INTERFACES
+// SUPPORTING TYPES AND NTERFACES
 // ============================================================================
 
 /**

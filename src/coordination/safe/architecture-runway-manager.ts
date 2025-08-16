@@ -62,12 +62,12 @@ export interface ArchitectureRunwayConfig {
  */
 export enum RunwayItemType {
   FOUNDATION = 'foundation',
-  INFRASTRUCTURE = 'infrastructure',
+  NFRASTRUCTURE = 'infrastructure',
   PLATFORM = 'platform',
   SECURITY = 'security',
   COMPLIANCE = 'compliance',
   PERFORMANCE = 'performance',
-  INTEGRATION = 'integration',
+  NTEGRATION = 'integration',
   TOOLING = 'tooling',
 }
 
@@ -80,7 +80,7 @@ export enum ArchitectureDecisionStatus {
   APPROVED = 'approved',
   REJECTED = 'rejected',
   SUPERSEDED = 'superseded',
-  IMPLEMENTED = 'implemented',
+  MPLEMENTED = 'implemented',
 }
 
 /**
@@ -110,7 +110,7 @@ export interface ArchitectureRunwayItem {
   readonly status: RunwayItemStatus;
   readonly assignedTeams: string[];
   readonly requiredSkills: string[];
-  readonly dependencies: string[]; // Other runway item IDs
+  readonly dependencies: string[]; // Other runway item Ds
   readonly blockers: string[];
   readonly targetPI: string; // PI ID when this should be completed
   readonly createdBy: string;
@@ -134,7 +134,7 @@ export enum RunwayItemStatus {
   BLOCKED = 'blocked',
   REVIEW = 'review',
   APPROVED = 'approved',
-  IMPLEMENTED = 'implemented',
+  MPLEMENTED = 'implemented',
   VERIFIED = 'verified',
   CLOSED = 'closed',
 }
@@ -192,7 +192,7 @@ export interface IntegrationPoint {
  * Data flow direction
  */
 export enum DataFlowDirection {
-  INBOUND = 'inbound',
+  NBOUND = 'inbound',
   OUTBOUND = 'outbound',
   BIDIRECTIONAL = 'bidirectional',
 }
@@ -545,14 +545,14 @@ export enum TechnicalDebtType {
   TESTING = 'testing',
   SECURITY = 'security',
   PERFORMANCE = 'performance',
-  INFRASTRUCTURE = 'infrastructure',
+  NFRASTRUCTURE = 'infrastructure',
 }
 
 /**
  * Technical debt status
  */
 export enum TechnicalDebtStatus {
-  IDENTIFIED = 'identified',
+  DENTIFIED = 'identified',
   ASSESSED = 'assessed',
   PLANNED = 'planned',
   IN_PROGRESS = 'in_progress',
@@ -1345,7 +1345,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
       mitigationOptions: debtData.mitigationOptions || [],
       assignedTeam: debtData.assignedTeam,
       targetResolution: debtData.targetResolution,
-      status: TechnicalDebtStatus.IDENTIFIED,
+      status: TechnicalDebtStatus.DENTIFIED,
       priority: debtData.priority || 5,
       createdBy: debtData.createdBy || 'system',
       createdAt: new Date(),
@@ -1433,7 +1433,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): ArchitectureRunwayState {

@@ -8,8 +8,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../../core/interfaces/base-interfaces';
+import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core types for topology management
 export type TopologyType =
@@ -127,8 +127,8 @@ export class TopologyManager extends EventEmitter {
 
   constructor(
     initialConfig: TopologyConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {
     super();
     this.currentConfig = initialConfig;
@@ -1157,7 +1157,7 @@ interface MigrationStep {
 }
 
 class MigrationController {
-  constructor(private logger: ILogger) {}
+  constructor(private logger: Logger) {}
 
   async createMigrationPlan(
     currentConfig: TopologyConfig,

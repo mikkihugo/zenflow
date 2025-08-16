@@ -14,7 +14,7 @@ import { cpus, totalmem, freemem, loadavg } from 'os';
 import {
   PERFORMANCE_CONSTANTS,
   SYSTEM_LIMITS,
-} from '../config/swarm-constants.js';
+} from '../coordination/types/constants';
 
 /**
  * Interface for real CPU metrics

@@ -13,7 +13,7 @@ const logger = getLogger('coordination-swarm-core-session-integration');
 import { EventEmitter } from 'node:events';
 
 // External dependencies
-import type { IDao, SessionCoordinationDao } from '../database';
+import type { Dao, SessionCoordinationDao } from '../database';
 
 // Internal modules - absolute paths
 import { ZenSwarm } from './base-swarm';

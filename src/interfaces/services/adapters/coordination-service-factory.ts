@@ -11,7 +11,7 @@
 
 import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
-import type { IServiceFactory } from '../core/interfaces';
+import type { ServiceFactory } from '../core/interfaces';
 import { ServicePriority, ServiceType } from '../types';
 import {
   type CoordinationServiceAdapter,
@@ -26,7 +26,7 @@ import {
  * @example
  */
 export class CoordinationServiceFactory
-  implements IServiceFactory<CoordinationServiceAdapterConfig>
+  implements ServiceFactory<CoordinationServiceAdapterConfig>
 {
   private instances = new Map<string, CoordinationServiceAdapter>();
   private logger: Logger;

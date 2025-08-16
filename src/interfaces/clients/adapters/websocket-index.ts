@@ -18,8 +18,8 @@ export type {
   ClientMetrics,
   ClientResponse,
   ClientStatus,
-  IClient,
-  IClientFactory,
+  Client,
+  ClientFactory,
   RequestOptions,
 } from '../core/interfaces';
 
@@ -116,7 +116,7 @@ export async function createOptimalWebSocketClient(
       size?: number;
     };
   }
-): Promise<import('../core/interfaces.ts').IClient> {
+): Promise<import('../core/interfaces').Client> {
   const factory = new WebSocketClientFactory();
 
   // Handle load balancing
@@ -184,7 +184,7 @@ export async function createSimpleWebSocketClient(
     heartbeat?: boolean;
     useEnhanced?: boolean;
   }
-): Promise<import('../core/interfaces.ts').IClient> {
+): Promise<import('../core/interfaces').Client> {
   const config: WebSocketClientConfig = {
     name: `simple-ws-${Date.now()}`,
     baseURL: url,
@@ -360,7 +360,7 @@ export const WebSocketClientPresets = {
  * @example
  */
 export class WebSocketHealthMonitor {
-  private clients = new Map<string, import('../core/interfaces.ts').IClient>();
+  private clients = new Map<string, import('../core/interfaces').Client>();
   private intervals = new Map<string, NodeJS.Timeout>();
 
   /**
@@ -372,7 +372,7 @@ export class WebSocketHealthMonitor {
    */
   addClient(
     name: string,
-    client: import('../core/interfaces.ts').IClient,
+    client: import('../core/interfaces').Client,
     checkInterval: number = 60000
   ): void {
     this.clients.set(name, client);
@@ -413,7 +413,7 @@ export class WebSocketHealthMonitor {
    * Get health status for all monitored clients.
    */
   async getHealthStatus(): Promise<
-    Map<string, import('../core/interfaces.ts').ClientStatus>
+    Map<string, import('../core/interfaces').ClientStatus>
   > {
     const results = new Map();
 

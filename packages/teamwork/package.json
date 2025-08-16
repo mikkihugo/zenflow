@@ -1,0 +1,75 @@
+{
+  "name": "@claude-zen/teamwork",
+  "version": "1.0.0",
+  "description": "Universal multi-agent teamwork framework for collaborative problem-solving and sequential decision-making",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "teamwork",
+    "multi-agent",
+    "collaborative-problem-solving",
+    "sequential-thinking", 
+    "agent-coordination",
+    "cross-agent-communication",
+    "collaborative-decision-making",
+    "orchestration",
+    "memory-management",
+    "ai",
+    "session-management",
+    "universal-agents"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "nanoid": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@zen-ai/database": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "@types/node": "^20.10.6"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./orchestrator": {
+      "import": "./dist/orchestrator.js",
+      "types": "./dist/orchestrator.d.ts"
+    },
+    "./storage": {
+      "import": "./dist/storage.js",
+      "types": "./dist/storage.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/conversation"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

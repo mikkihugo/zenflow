@@ -98,7 +98,7 @@ export type {
 export { ExportSystem, ExportUtils } from './exporters';
 export * from './helpers';
 export { InterfaceModeDetector } from './interface-mode-detector';
-export type { ILogger, LoggerConfig, LogLevel } from './logger';
+export type { Logger, LoggerConfig, LogLevel } from './logger';
 // Logging system
 export { createLogger, Logger } from './logger';
 export type { LogMeta } from './logger-old';

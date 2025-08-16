@@ -42,7 +42,7 @@ import type {
 } from './index';
 
 // ============================================================================
-// PROGRAM INCREMENT MANAGER CONFIGURATION
+// PROGRAM NCREMENT MANAGER CONFIGURATION
 // ============================================================================
 
 /**
@@ -113,7 +113,7 @@ export interface PlanningAgendaItem {
   readonly participants: string[];
   readonly deliverables: string[];
   readonly aguiGateRequired: boolean;
-  readonly dependsOn?: string[]; // Other agenda item IDs
+  readonly dependsOn?: string[]; // Other agenda item Ds
 }
 
 /**
@@ -137,7 +137,7 @@ export interface ArchitecturalVision {
   readonly technicalConstraints: string[];
   readonly qualityAttributes: QualityAttribute[];
   readonly significantDecisions: ArchitecturalDecision[];
-  readonly enablers: string[]; // Enabler IDs
+  readonly enablers: string[]; // Enabler Ds
 }
 
 /**
@@ -286,7 +286,7 @@ export interface PIManagerState {
 }
 
 // ============================================================================
-// PROGRAM INCREMENT MANAGER - Main Implementation
+// PROGRAM NCREMENT MANAGER - Main Implementation
 // ============================================================================
 
 /**
@@ -751,7 +751,7 @@ export class ProgramIncrementManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): PIManagerState {

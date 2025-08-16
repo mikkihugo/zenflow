@@ -19,8 +19,8 @@ import type {
   ClientConfig,
   ClientMetrics,
   ClientStatus,
-  IClient,
-  IClientFactory,
+  Client,
+  ClientFactory,
 } from '../core/interfaces';
 import { EnhancedWebSocketClient } from './enhanced-websocket-client';
 import {
@@ -35,14 +35,14 @@ import type {
 } from './websocket-types';
 
 /**
- * WebSocket Client Factory implementing UACL IClientFactory interface.
+ * WebSocket Client Factory implementing UACL ClientFactory interface.
  *
  * @example
  */
 export class WebSocketClientFactory
-  implements IClientFactory<WebSocketClientConfig>
+  implements ClientFactory<WebSocketClientConfig>
 {
-  private clients = new Map<string, IClient>();
+  private clients = new Map<string, Client>();
   private clientConfigs = new Map<string, WebSocketClientConfig>();
   private connectionPool = new Map<string, WebSocketConnectionInfo>();
 
@@ -51,14 +51,14 @@ export class WebSocketClientFactory
    *
    * @param config
    */
-  async create(config: WebSocketClientConfig): Promise<IClient> {
+  async create(config: WebSocketClientConfig): Promise<Client> {
     // Validate configuration
     if (!this.validateConfig(config)) {
       throw new Error('Invalid WebSocket client configuration');
     }
 
     // Create client based on configuration preference
-    let client: IClient;
+    let client: Client;
 
     if (config?.metadata?.['clientType'] === 'enhanced') {
       // Use enhanced client with backward compatibility
@@ -66,7 +66,7 @@ export class WebSocketClientFactory
     } else {
       // Use pure UACL adapter
       client = new WebSocketClientAdapter(
-        config as import('./websocket-client-adapter.ts').WebSocketClientConfig
+        config as import('./websocket-client-adapter').WebSocketClientConfig
       );
     }
 
@@ -93,7 +93,7 @@ export class WebSocketClientFactory
    *
    * @param configs
    */
-  async createMultiple(configs: WebSocketClientConfig[]): Promise<IClient[]> {
+  async createMultiple(configs: WebSocketClientConfig[]): Promise<Client[]> {
     const creationPromises = configs.map((config) => this.create(config));
     return Promise.all(creationPromises);
   }
@@ -103,14 +103,14 @@ export class WebSocketClientFactory
    *
    * @param name
    */
-  get(name: string): IClient | undefined {
+  get(name: string): Client | undefined {
     return this.clients.get(name);
   }
 
   /**
    * List all active clients.
    */
-  list(): IClient[] {
+  list(): Client[] {
     return Array.from(this.clients.values());
   }
 
@@ -301,8 +301,8 @@ export class WebSocketClientFactory
   async createPooled(
     config: WebSocketClientConfig,
     poolSize: number = 5
-  ): Promise<IClient[]> {
-    const clients: IClient[] = [];
+  ): Promise<Client[]> {
+    const clients: Client[] = [];
 
     for (let i = 0; i < poolSize; i++) {
       const pooledConfig = {
@@ -443,12 +443,12 @@ export class WebSocketClientFactory
  *
  * @example
  */
-export class LoadBalancedWebSocketClient implements IClient {
+export class LoadBalancedWebSocketClient implements Client {
   private currentIndex = 0;
   private requestCount = 0;
 
   constructor(
-    private clients: IClient[],
+    private clients: Client[],
     private strategy: 'round-robin' | 'random' | 'least-connections'
   ) {
     if (clients.length === 0) {
@@ -610,7 +610,7 @@ export class LoadBalancedWebSocketClient implements IClient {
     await Promise.all(this.clients.map((client) => client.destroy()));
   }
 
-  private selectClient(): IClient {
+  private selectClient(): Client {
     switch (this.strategy) {
       case 'round-robin': {
         const client = this.clients[this.currentIndex];
@@ -638,13 +638,13 @@ export class LoadBalancedWebSocketClient implements IClient {
  *
  * @example
  */
-export class FailoverWebSocketClient implements IClient {
-  private currentClient: IClient;
+export class FailoverWebSocketClient implements Client {
+  private currentClient: Client;
   private fallbackIndex = 0;
 
   constructor(
-    private primaryClient: IClient,
-    private fallbackClients: IClient[]
+    private primaryClient: Client,
+    private fallbackClients: Client[]
   ) {
     this.currentClient = primaryClient;
 
@@ -751,7 +751,7 @@ export async function createWebSocketClientFactory(): Promise<WebSocketClientFac
 
 export async function createWebSocketClientWithConfig(
   config: WebSocketClientConfig
-): Promise<IClient> {
+): Promise<Client> {
   const factory = new WebSocketClientFactory();
   return factory.create(config);
 }

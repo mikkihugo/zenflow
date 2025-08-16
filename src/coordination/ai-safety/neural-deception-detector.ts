@@ -5,11 +5,11 @@
  * and adapt to new forms of AI deception over time.
  */
 
-import { getLogger } from '../../config/logging-config.js';
+import { getLogger } from '../../../config/logging-config';
 import {
   type LogAnalysisResult,
   LogBasedDeceptionDetector,
-} from './log-based-deception-detector.js';
+} from './log-based-deception-detector';
 
 interface DeceptionFeatures {
   claimToActionRatio: number;

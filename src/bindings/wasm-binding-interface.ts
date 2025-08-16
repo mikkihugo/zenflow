@@ -2,12 +2,12 @@
  * @file Wasm-binding-interface implementation.
  */
 
-import { getLogger } from '../config/logging-config.js';
+import { getLogger } from '../config/logging-config';
 import type {
   NeuralConfig,
   NeuralNetworkInterface,
   WasmNeuralBinding,
-} from '../core/interfaces/base-interfaces.js';
+} from '../coordination/types/interfaces';
 
 const logger = getLogger('WasmBinding');
 
@@ -38,7 +38,7 @@ class WasmBindingProvider implements WasmBindingInterface {
     if (!this.wasmModule) {
       try {
         // Use public API instead of direct neural/wasm import
-        const { createNeuralWASM } = await import('../neural/public-api.js');
+        const { createNeuralWASM } = await import('../neural/public-api');
         this.wasmModule = await createNeuralWASM();
       } catch (error) {
         logger.warn(
@@ -75,11 +75,11 @@ class WasmBindingProvider implements WasmBindingInterface {
       async initialize(_config: NeuralConfig): Promise<void> {
         // Initialize neural network with WASM
       },
-      async train(_data, options) {
+      async train(_data: number[][], _outputs: number[][]) {
         // Training implementation
         return {
           finalError: 0.01,
-          epochsCompleted: options?.epochs || 100,
+          epochsCompleted: 100,
           duration: 1000,
           converged: true,
         };
@@ -125,7 +125,7 @@ class WasmBindingProvider implements WasmBindingInterface {
  *
  * @example
  * ```typescript
- * import wasmBinding from './wasm-binding-interface.js';
+ * import wasmBinding js;
  *
  * // Check WASM availability
  * if (wasmBinding.isWasmAvailable()) {

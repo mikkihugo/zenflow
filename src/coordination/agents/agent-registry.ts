@@ -17,7 +17,7 @@ import type {
   AgentMetrics,
   AgentStatus,
   AgentType,
-} from '../types.js';
+} from '../types/interfaces';
 
 export interface AgentRegistryQuery {
   type?: AgentType;

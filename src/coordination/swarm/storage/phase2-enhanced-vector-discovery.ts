@@ -11,10 +11,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IVectorRepository, VectorSearchOptions } from '../../../database/interfaces';
+import type { VectorRepository, VectorSearchOptions } from '../../../database/interfaces';
 import type { SwarmDatabaseManager, SuccessfulPattern, SwarmRepositories } from './swarm-database-manager';
 import { inject, injectable } from '../../../di/decorators/injectable';
-import { CORE_TOKENS, DATABASE_TOKENS, type ILogger } from '../../../di/tokens/core-tokens';
+import { CORE_TOKENS, DATABASE_TOKENS, type Logger } from '../../../di/tokens/core-tokens';
 
 /**
  * Enhanced Pattern Embedding Configuration
@@ -85,7 +85,7 @@ export class EnhancedVectorPatternDiscovery extends EventEmitter {
   private performanceCache: Map<string, PatternPerformanceAnalytics> = new Map();
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger,
     private swarmDatabaseManager: SwarmDatabaseManager
   ) {
     super();

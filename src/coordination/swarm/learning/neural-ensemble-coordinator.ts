@@ -36,8 +36,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 
@@ -57,7 +57,7 @@ import type {
   Phase3EnsembleConfig,
 } from './phase-3-ensemble';
 import type { NeuralService } from '../../../interfaces/services/implementations/neural-service';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
+import type { MLModelRegistry } from '../../../lib/adaptive-learning';
 
 const logger = getLogger(
   'coordination-swarm-learning-neural-ensemble-coordinator'
@@ -175,8 +175,8 @@ export interface NeuralEnsembleCoordinatorConfig {
  * insights and ensemble robustness for optimal predictions and decisions.
  */
 export class NeuralEnsembleCoordinator extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: NeuralEnsembleCoordinatorConfig;
 
@@ -210,7 +210,7 @@ export class NeuralEnsembleCoordinator extends EventEmitter {
 
   constructor(
     config: NeuralEnsembleCoordinatorConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     dependencies: {
       tier3Neural?: Tier3NeuralLearning;

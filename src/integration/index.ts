@@ -75,15 +75,15 @@ export const IntegrationUtils = {
     try {
       switch (system) {
         case 'neural': {
-          const neural = await import('../neural/index.ts');
+          const neural = await import('../neural/index');
           return Boolean(neural);
         }
         case 'database': {
-          const database = await import('../database/index.ts');
+          const database = await import('../database/index');
           return Boolean(database);
         }
         case 'coordination': {
-          const coordination = await import('../coordination/index.ts');
+          const coordination = await import('../coordination/index');
           return Boolean(coordination);
         }
         default:
@@ -113,7 +113,7 @@ export class IntegrationFactory {
 
     if (!IntegrationFactory.coordinators.has(key)) {
       const { MultiSystemCoordinator } = await import(
-        './multi-system-coordinator.ts'
+        './multi-system-coordinator'
       );
 
       // Create a simple logger for the coordinator

@@ -168,7 +168,7 @@ export const ProtocolTypes = {
   TCP: 'tcp' as const,
   UDP: 'udp' as const,
   STDIO: 'stdio' as const,
-  IPC: 'ipc' as const,
+  PC: 'ipc' as const,
   CUSTOM: 'custom' as const,
 } as const;
 
@@ -378,7 +378,7 @@ export const McpConstants = {
 
   // Standard methods
   METHODS: {
-    INITIALIZE: 'initialize',
+    NITIALIZE: 'initialize',
     LIST_TOOLS: 'tools/list',
     CALL_TOOL: 'tools/call',
     LIST_RESOURCES: 'resources/list',
@@ -389,7 +389,7 @@ export const McpConstants = {
 
   // Standard notifications
   NOTIFICATIONS: {
-    INITIALIZED: 'notifications/initialized',
+    NITIALIZED: 'notifications/initialized',
     TOOLS_LIST_CHANGED: 'notifications/tools/list_changed',
     RESOURCES_LIST_CHANGED: 'notifications/resources/list_changed',
     PROGRESS: 'notifications/progress',

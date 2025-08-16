@@ -85,7 +85,7 @@ export class ScalingIntelligence {
       'react',
       'vue',
       'angular',
-      'next.js',
+      'next',
       'nuxt',
     ],
     moderate: [

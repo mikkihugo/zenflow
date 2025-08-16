@@ -190,7 +190,7 @@ const logger = getLogger('Collective-FACT');
  *
  * @example
  */
-interface IFactOrchestrator {
+interface FactOrchestrator {
   gatherKnowledge(
     query: string,
     options: {
@@ -219,7 +219,7 @@ interface IFactOrchestrator {
  * @example
  */
 export class CollectiveFACTSystem extends EventEmitter {
-  private factOrchestrator?: IFactOrchestrator; // TODO: Migrate to unified MCP
+  private factOrchestrator?: FactOrchestrator; // TODO: Migrate to unified MCP
   private universalFacts: Map<string, UniversalFact> = new Map();
   private refreshTimers: Map<string, NodeJS.Timeout> = new Map();
   private collectiveCoordinator: CollectiveSwarmCoordinator | undefined;
@@ -499,7 +499,7 @@ export class CollectiveFACTSystem extends EventEmitter {
   }
 
   /**
-   * Gather fact from external sources - RUST WASM POWERED IMPLEMENTATION.
+   * Gather fact from external sources - RUST WASM POWERED MPLEMENTATION.
    * Uses high-performance Rust WASM external API integration.
    *
    * @param type
@@ -517,7 +517,7 @@ export class CollectiveFACTSystem extends EventEmitter {
       // Load Rust WASM external fact fetcher
       let factCore;
       try {
-        const wasmModule = await import('../../neural/wasm/wasm-loader.ts');
+        const wasmModule = await import('../../neural/wasm/wasm-loader');
         factCore = await wasmModule.loadFactCore();
       } catch (importError) {
         // Fallback for tests or when WASM is not available

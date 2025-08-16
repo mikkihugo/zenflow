@@ -28,7 +28,7 @@ import {
 } from './session-utils';
 import type { SwarmOptions, SwarmState } from './types';
 
-// TDD London Mock - Tests INTERACTIONS, not state
+// TDD London Mock - Tests NTERACTIONS, not state
 class MockCoordinationDao implements SessionCoordinationDao {
   public initialized: boolean = true;
 
@@ -362,7 +362,7 @@ describe('SessionManager', () => {
       expect(persistence.releaseLock).toHaveBeenCalledWith(
         'checkpoint_lock_123'
       );
-      persistence.expectExecuteCalled('INSERT INTO session_checkpoints', [
+      persistence.expectExecuteCalled('INSERT NTO session_checkpoints', [
         expect.any(String),
         sessionId,
         'Test checkpoint',

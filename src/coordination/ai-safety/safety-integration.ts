@@ -110,7 +110,7 @@ export function getSafetyMetrics(): SafetyMetrics | null {
  * @example
  */
 export async function emergencySafetyShutdown(): Promise<void> {
-  console.error('🛑 EMERGENCY SAFETY SHUTDOWN INITIATED');
+  console.error('🛑 EMERGENCY SAFETY SHUTDOWN NITIATED');
 
   if (globalSafetyOrchestrator) {
     await globalSafetyOrchestrator.stopSafetyMonitoring();

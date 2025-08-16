@@ -63,14 +63,14 @@ export const defaultCoreConfig: ClaudeZenCoreConfig = {
 export async function initializeCore(
   config: Partial<ClaudeZenCoreConfig> = {}
 ): Promise<void> {
-  const { logSystemInfo } = await import('../config/system-info.ts');
+  const { logSystemInfo } = await import('../config/system-info');
   const { createAdaptiveOptimizer } = await import(
-    '../config/memory-optimization.ts'
+    '../config/memory-optimization'
   );
 
   const finalConfig = { ...defaultCoreConfig, ...config };
 
-  const { createLogger } = await import('./logger.ts');
+  const { createLogger } = await import('./logger');
   const logger = createLogger('claude-zen-core');
 
   logger.info(
@@ -196,7 +196,7 @@ async function initializeAdvancedKanbanFlow(
         {
           level: 'portfolio' as const,
           orchestratorPath:
-            '../coordination/orchestration/portfolio-orchestrator.ts',
+            '../coordination/orchestration/portfolio-orchestrator',
           integrationPoints: [
             {
               id: 'portfolio-wip',
@@ -212,7 +212,7 @@ async function initializeAdvancedKanbanFlow(
         {
           level: 'program' as const,
           orchestratorPath:
-            '../coordination/orchestration/program-orchestrator.ts',
+            '../coordination/orchestration/program-orchestrator',
           integrationPoints: [
             {
               id: 'program-bottleneck',
@@ -228,7 +228,7 @@ async function initializeAdvancedKanbanFlow(
         {
           level: 'swarm' as const,
           orchestratorPath:
-            '../coordination/orchestration/swarm-execution-orchestrator.ts',
+            '../coordination/orchestration/swarm-execution-orchestrator',
           integrationPoints: [
             {
               id: 'swarm-resources',

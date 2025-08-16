@@ -9,8 +9,8 @@
 
 import { EventEmitter } from 'node:events';
 import { LRUCache } from 'lru-cache';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../../core/interfaces/base-interfaces';
+import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core optimization types
 export interface OptimizationConfig {
@@ -238,8 +238,8 @@ export class PerformanceOptimizer extends EventEmitter {
 
   constructor(
     private config: OptimizationConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {
     super();
 
@@ -812,7 +812,7 @@ class AdaptiveBatchProcessor extends EventEmitter {
 
   constructor(
     private config: BatchSizingConfig,
-    private logger: ILogger
+    private logger: Logger
   ) {
     super();
     this.currentBatchSize = config?.initialSize;
@@ -926,7 +926,7 @@ class AdvancedConnectionPool extends EventEmitter implements ConnectionPool {
 
   constructor(
     private config: ConnectionPoolingConfig,
-    private logger: ILogger
+    private logger: Logger
   ) {
     super();
     this.stats = {
@@ -1163,7 +1163,7 @@ class IntelligentCache extends EventEmitter {
 
   constructor(
     private config: CachingConfig,
-    private logger: ILogger
+    private logger: Logger
   ) {
     super();
 
@@ -1407,8 +1407,8 @@ class RealTimeMonitor extends EventEmitter {
 
   constructor(
     private config: MonitoringConfig,
-    private logger: ILogger,
-    eventBus: IEventBus
+    private logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     // xxx NEEDS_HUMAN: eventBus parameter kept for future event propagation implementation
@@ -1644,7 +1644,7 @@ class PerformancePredictor {
   private models = new Map<string, PredictionModel>();
   private trainingData: Array<{ features: number[]; label: number }> = [];
 
-  constructor(private logger: ILogger) {
+  constructor(private logger: Logger) {
     this.initializeModels();
   }
 
@@ -1786,7 +1786,7 @@ class AdaptationEngine {
 
   constructor(
     private config: AdaptationConfig,
-    private logger: ILogger
+    private logger: Logger
   ) {
     // Learning history will be used for ML-based optimization in future
     void this.learningHistory; // xxx NEEDS_HUMAN: Will be used for ML-based optimization

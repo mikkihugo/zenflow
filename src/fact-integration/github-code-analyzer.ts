@@ -362,8 +362,8 @@ export class GitHubCodeAnalyzer {
       '.hrl', // Erlang
       '.gleam', // Gleam
       '.rs', // Rust
-      '.js',
-      '.ts', // JavaScript/TypeScript
+      '',
+      '', // JavaScript/TypeScript
       '.py', // Python
       '.md', // Documentation
       '.yml',
@@ -534,8 +534,8 @@ export class GitHubCodeAnalyzer {
       '.hrl': 'erlang',
       '.gleam': 'gleam',
       '.rs': 'rust',
-      '.js': 'javascript',
-      '.ts': 'typescript',
+      '': 'javascript',
+      '': 'typescript',
       '.py': 'python',
       '.md': 'markdown',
     };

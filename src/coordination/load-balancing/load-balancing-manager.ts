@@ -103,7 +103,7 @@ export class LoadBalancingManager extends EventEmitter {
   // Should inject dependencies instead of creating them in initializeComponents()
   // Example constructor with DI:
   // constructor(
-  //   @inject(CORE_TOKENS.Logger) private logger: ILogger,
+  //   @inject(CORE_TOKENS.Logger) private logger: Logger,
   //   @inject(COORDINATION_TOKENS.CapacityManager) private capacityManager: CapacityManager,
   //   @inject(COORDINATION_TOKENS.RoutingEngine) private routingEngine: RoutingEngine,
   //   @inject(COORDINATION_TOKENS.HealthChecker) private healthChecker: HealthChecker,

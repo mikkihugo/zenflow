@@ -9,8 +9,8 @@
  */
 
 import { nanoid } from 'nanoid';
-import { createLogger } from '../../core/logger.js';
-import { DALFactory } from '../factory.js';
+import { createLogger } from '../../core/logger';
+import { DALFactory } from '../../database/dal/dal-factory';
 import type {
   ADRDocumentEntity,
   BaseDocumentEntity,
@@ -22,12 +22,12 @@ import type {
   ProjectEntity,
   TaskDocumentEntity,
   VisionDocumentEntity,
-} from '../entities/document-entities.js';
+} from '../../database/entities/document-entities';
 import type {
-  IGraphRepository,
-  IVectorRepository,
-  IRepository,
-} from '../interfaces.js';
+  GraphRepository,
+  VectorRepository,
+  Repository,
+} from '../../database/interfaces/repository-interfaces';
 
 const logger = createLogger('hybrid-document-manager');
 
@@ -97,12 +97,12 @@ export interface HybridSearchResult {
  * Hybrid Document Manager leveraging existing DAL infrastructure
  */
 export class HybridDocumentManager {
-  private documentRepo: IRepository<BaseDocumentEntity>;
-  private relationshipRepo: IRepository<DocumentRelationshipEntity>;
-  private workflowRepo: IRepository<DocumentWorkflowStateEntity>;
-  private projectRepo: IRepository<ProjectEntity>;
-  private vectorRepo: IVectorRepository<DocumentEmbedding>;
-  private graphRepo: IGraphRepository<DocumentNode>;
+  private documentRepo: Repository<BaseDocumentEntity>;
+  private relationshipRepo: Repository<DocumentRelationshipEntity>;
+  private workflowRepo: Repository<DocumentWorkflowStateEntity>;
+  private projectRepo: Repository<ProjectEntity>;
+  private vectorRepo: VectorRepository<DocumentEmbedding>;
+  private graphRepo: GraphRepository<DocumentNode>;
   private dalFactory: DALFactory;
   private initialized = false;
 
@@ -292,7 +292,7 @@ export class HybridDocumentManager {
 
         if (documentTypes.length > 0) {
           const typeFilter = projectId ? ' AND' : ' WHERE';
-          graphQuery += `${typeFilter} d.properties.documentType IN $documentTypes`;
+          graphQuery += `${typeFilter} d.properties.documentType N $documentTypes`;
           params.documentTypes = documentTypes;
         }
 

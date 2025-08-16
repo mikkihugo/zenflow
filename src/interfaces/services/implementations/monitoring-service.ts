@@ -8,7 +8,7 @@
  * @file Monitoring service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type {
   MonitoringServiceConfig,
   ServiceOperationOptions,
@@ -20,7 +20,7 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class MonitoringService extends BaseService implements IService {
+export class MonitoringService extends BaseService implements Service {
   private metrics = new Map<string, any[]>();
   private alerts = new Map<string, any>();
   private collectors = new Map<string, Function>();

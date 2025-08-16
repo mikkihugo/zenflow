@@ -572,7 +572,7 @@ async function runAllExamples() {
 /**
  * Extension method for SessionEnabledSwarm to export session data.
  */
-declare module './session-integration.js' {
+declare module './session-integration' {
   interface SessionEnabledSwarm {
     exportSession(): Promise<string>;
   }
@@ -580,8 +580,8 @@ declare module './session-integration.js' {
 
 // Add the export method to the prototype (for demonstration)
 if (typeof module !== 'undefined' && module.exports) {
-  const { SessionEnabledSwarm } = require('./session-integration.js');
-  const { SessionSerializer } = require('./session-utils.js');
+  const { SessionEnabledSwarm } = require('./session-integration');
+  const { SessionSerializer } = require('./session-utils');
 
   SessionEnabledSwarm.prototype.exportSession =
     async function (): Promise<string> {

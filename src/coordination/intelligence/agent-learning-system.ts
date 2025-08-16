@@ -44,7 +44,7 @@ import type {
   Pattern,
   ExecutionData,
   PerformanceImprovement,
-} from '../../intelligence/adaptive-learning/types';
+} from '../../lib/adaptive-learning/types';
 
 const logger = getLogger('coordination-intelligence-agent-learning-system');
 

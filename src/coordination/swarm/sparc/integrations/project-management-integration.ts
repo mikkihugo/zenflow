@@ -1,5 +1,5 @@
 /**
- * @file Coordination system: project-management-integration.
+ * @file Database-driven SPARC coordination integration.
  */
 
 import { getLogger } from '../../../../config/logging-config';
@@ -9,25 +9,26 @@ const logger = getLogger(
 );
 
 /**
- * SPARC Integration with Existing Claude-Zen Infrastructure.
+ * SPARC Database-Driven Coordination Integration.
  *
- * Integrates SPARC methodology with existing sophisticated infrastructure:
- * - DocumentDrivenSystem (core document workflow)
- * - WorkflowEngine (Vision → ADRs → PRDs → Epics → Features → Tasks → Code)
- * - TaskAPI & EnhancedTaskTool (coordination)
- * - Existing ADR templates and project management systems.
+ * Integrates SPARC methodology with database-driven coordination for SwarmCommander:
+ * - Database entities for real-time agent coordination
+ * - TaskAPI & TaskCoordinator for swarm task distribution
+ * - Memory system for persistent coordination state
+ * - NO file operations - pure database coordination
  */
 
-import * as fs from 'node:fs/promises';
-import * as path from 'node:path';
-import { DocumentDrivenSystem } from '../../../../core/document-driven-system';
 import { MemorySystem } from '../../../../core/memory-system';
-import type { WorkflowEngine } from '../../../../workflows/workflow-engine';
 import { CoordinationAPI } from '../../../api';
+import { CoordinationDao } from '../../../../database/dao/coordination.dao';
+import type { 
+  ProductProject,
+  Feature,
+  Task as DatabaseTask,
+  Epic
+} from '../../../../database/entities/product-entities';
 
 const TaskAPI = CoordinationAPI.tasks;
-
-// import { type TaskConfig, TaskCoordinator } from '../../../protocols/distribution/task-distribution-engine'; // Temporarily commented out
 import { type TaskConfig, TaskCoordinator } from '../../../task-coordinator';
 import type {
   DetailedSpecification,
@@ -93,1104 +94,393 @@ export interface UserStory {
   effort_estimate: number;
 }
 
-// Feature and Epic Types
-export interface Feature {
-  id: string;
-  title: string;
-  description: string;
-  epic_id?: string;
-  user_stories: string[]; // References to user story IDs
-  status: 'backlog' | 'planned' | 'in_progress' | 'completed';
-  sparc_project_id?: string;
-}
-
-export interface Epic {
-  id: string;
-  title: string;
-  description: string;
-  features: string[]; // References to feature IDs
-  business_value: string;
-  timeline: {
-    start_date: string;
-    end_date: string;
-  };
-  status: 'draft' | 'approved' | 'in_progress' | 'completed';
-  sparc_project_id?: string;
-}
-
-// Roadmap Types
-export interface RoadmapItem {
-  id: string;
-  title: string;
-  description: string;
-  type: 'epic' | 'feature' | 'initiative';
-  quarter: string; // e.g., "2024-Q1"
-  effort_estimate: number; // story points or hours
-  business_value: 'high' | 'medium' | 'low';
-  dependencies: string[];
-  status: 'planned' | 'in_progress' | 'completed' | 'blocked';
-  sparc_project_id?: string;
-}
-
-export interface Roadmap {
-  id: string;
-  title: string;
-  description: string;
-  timeframe: {
-    start_quarter: string;
-    end_quarter: string;
-  };
-  items: RoadmapItem[];
-  last_updated: string;
-}
-
 /**
- * Project Management Integration Service.
+ * Database-Driven SPARC Coordination Service.
  *
- * Integrates SPARC methodology with existing Claude-Zen infrastructure:
- * - Uses existing TaskAPI and EnhancedTaskTool for task management
- * - Integrates with TaskDistributionEngine for task coordination
- * - Leverages existing ADR infrastructure.
- * - Extends existing tasks.json format.
+ * Coordinates SPARC methodology with database-driven swarm management:
+ * - TaskAPI and TaskCoordinator for real-time task distribution
+ * - Database entities for persistent coordination state
+ * - Memory system for cross-session coordination
+ * - SwarmCommander integration for agent assignment
  *
  * @example
+ * const coordination = new ProjectManagementIntegration();
+ * await coordination.updateDatabaseWithSPARC(project);
+ * const tasks = await coordination.getTasksForSwarmAssignment();
  */
 export class ProjectManagementIntegration {
-  private readonly projectRoot: string;
-  private readonly tasksFile: string;
-  private readonly adrDir: string;
-  private readonly prdDir: string;
-  private readonly featuresFile: string;
-  private readonly epicsFile: string;
-  private readonly roadmapFile: string;
   private readonly taskTool: TaskCoordinator;
-  private readonly taskDistributor: unknown;
+  private readonly memorySystem: MemorySystem;
+  private readonly coordinationDao: CoordinationDao<any>;
   private readonly logger?: unknown;
 
-  // Enhanced infrastructure integration
-  private documentDrivenSystem: DocumentDrivenSystem;
-  private workflowEngine: WorkflowEngine | undefined;
-  private memorySystem: MemorySystem;
-
   constructor(
-    projectRoot: string = process.cwd(),
-    workflowEngine?: WorkflowEngine,
     memorySystem?: MemorySystem,
+    coordinationDao?: CoordinationDao<any>,
     logger?: unknown
   ) {
     this.logger = logger;
-    this.projectRoot = projectRoot;
-    this.tasksFile = path.join(projectRoot, 'tasks.json');
-    this.adrDir = path.join(projectRoot, 'docs', 'adrs');
-    this.prdDir = path.join(projectRoot, 'docs', 'prds');
-    this.featuresFile = path.join(projectRoot, 'docs', 'features.json');
-    this.epicsFile = path.join(projectRoot, 'docs', 'epics.json');
-    this.roadmapFile = path.join(projectRoot, 'docs', 'roadmap.json');
-
-    // Use existing Claude-Zen infrastructure (with minimal setup to avoid dependency issues)
+    
+    // Database-driven coordination components
     this.taskTool = TaskCoordinator.getInstance();
-    // Note: TaskDistributionEngine requires complex setup, will use TaskAPI instead
-    this.taskDistributor = null;
-
-    // Initialize sophisticated document-driven infrastructure
+    this.coordinationDao = coordinationDao || new CoordinationDao();
     this.memorySystem =
       memorySystem ||
       new MemorySystem({
         backend: 'json',
-        path: path.join(projectRoot, '.memory'),
+        config: { 
+          persistence: true,
+          ttl: 86400000, // 24 hours
+        },
       });
-    this.documentDrivenSystem = new DocumentDrivenSystem();
-    this.workflowEngine = workflowEngine; // Optional - can be provided externally
   }
 
   /**
-   * Initialize sophisticated infrastructure integration.
-   */
-  async initialize(): Promise<void> {
-    await this.memorySystem.initialize();
-    await this.documentDrivenSystem.initialize();
-    if (this.workflowEngine) {
-      await this.workflowEngine.initialize();
-    }
-  }
-
-  /**
-   * Enhanced comprehensive project management artifacts using existing infrastructure.
+   * Database-driven SPARC coordination for SwarmCommander.
    *
-   * @param project
-   * @param artifactTypes
+   * Updates database entities with SPARC context for real-time agent coordination.
+   * No file operations - pure database coordination for swarm task assignment.
+   *
+   * @param project SPARC project to integrate
+   * @param coordinationOptions Configuration for coordination behavior
    */
-  async createAllProjectManagementArtifacts(
+  async updateDatabaseWithSPARC(
     project: SPARCProject,
-    artifactTypes: string[] = ['all']
+    coordinationOptions: {
+      updateTasks?: boolean;
+      createEpicFeatures?: boolean;
+      enableMemoryStorage?: boolean;
+    } = {
+      updateTasks: true,
+      createEpicFeatures: true,
+      enableMemoryStorage: true,
+    }
   ): Promise<{
-    tasks: Task[];
-    adrs: ADR[];
-    prd: PRD;
-    epics: Epic[];
-    features: Feature[];
-    workspaceId: string;
-    workflowResults?: unknown;
+    tasksUpdated: number;
+    entitiesCreated: number;
+    coordinationMemoryKeys: string[];
   }> {
-    // Initialize infrastructure
-    await this.initialize();
-
-    // Load workspace using DocumentDrivenSystem
-    const workspaceId = await this.documentDrivenSystem.loadWorkspace(
-      this.projectRoot
-    );
-
-    // Create vision document from SPARC project for document workflow
-    const visionDocument = await this.createVisionDocumentFromSPARC(
-      project,
-      workspaceId
-    );
-
-    // Process through DocumentDrivenSystem
-    await this.documentDrivenSystem.processVisionaryDocument(
-      workspaceId,
-      visionDocument.path
-    );
-
-    // Execute document workflows using UnifiedWorkflowEngine
-    const workflowResults = await this.executeDocumentWorkflows(
-      workspaceId,
-      visionDocument
-    );
+    logger.info('Starting database-driven SPARC coordination', {
+      projectId: project.id,
+      projectName: project.name,
+      options: coordinationOptions,
+    });
 
     const results = {
-      tasks: [] as Task[],
-      adrs: [] as ADR[],
-      prd: {} as PRD,
-      epics: [] as Epic[],
-      features: [] as Feature[],
-      workspaceId,
-      workflowResults,
+      tasksUpdated: 0,
+      entitiesCreated: 0,
+      coordinationMemoryKeys: [] as string[],
     };
 
-    if (artifactTypes.includes('all') || artifactTypes.includes('tasks')) {
-      results.tasks = await this.generateTasksFromSPARC(project);
-      await this.updateTasksWithSPARC(project);
-      await this.distributeTasksWithCoordination(project);
+    // Database coordination operations
+    if (coordinationOptions.updateTasks) {
+      results.tasksUpdated = await this.updateTasksWithSPARCMetadata(project);
     }
 
-    if (artifactTypes.includes('all') || artifactTypes.includes('adrs')) {
-      results.adrs = await this.generateADRFromSPARC(project);
-      await this.createADRFiles(project);
+    if (coordinationOptions.createEpicFeatures) {
+      results.entitiesCreated = await this.createDatabaseEntitiesFromSPARC(
+        project
+      );
     }
 
-    if (artifactTypes.includes('all') || artifactTypes.includes('prd')) {
-      results.prd = await this.generatePRDFromSPARC(project);
-      await this.createPRDFile(project);
+    if (coordinationOptions.enableMemoryStorage) {
+      results.coordinationMemoryKeys = await this.storeCoordinationInMemory(
+        project
+      );
     }
 
-    if (artifactTypes.includes('all') || artifactTypes.includes('epics')) {
-      results.epics = await this.createEpicsFromSPARC(project);
-      await this.saveEpicsToWorkspace(results?.epics, workspaceId);
-    }
-
-    if (artifactTypes.includes('all') || artifactTypes.includes('features')) {
-      results.features = await this.createFeaturesFromSPARC(project);
-      await this.saveFeaturesFromWorkspace(results?.features, workspaceId);
-    }
+    logger.info('Database-driven SPARC coordination completed', {
+      projectId: project.id,
+      ...results,
+    });
 
     return results;
   }
 
   /**
-   * Create vision document from SPARC project using DocumentDrivenSystem patterns.
+   * Get tasks ready for SwarmCommander assignment.
    *
-   * @param project
-   * @param _workspaceId
+   * Queries database for tasks with SPARC metadata for agent coordination.
    */
-  private async createVisionDocumentFromSPARC(
-    project: SPARCProject,
-    _workspaceId: string
-  ): Promise<{
-    path: string;
-    content: string;
-  }> {
-    const visionContent = `# Vision: ${project.name}
-
-## Overview
-${project.specification.successMetrics?.[0]?.description || `Vision for ${project.name} in the ${project.domain} domain.`}
-
-## Domain
-${project.domain}
-
-## Objectives
-${project.specification.functionalRequirements.map((req) => `- ${req.description}`).join('\n')}
-
-## Success Metrics
-${project.specification.acceptanceCriteria
-  .map((criteria) => criteria.criteria.map((c) => `- ${c}`).join('\n'))
-  .join('\n')}
-
-## Constraints
-${project.specification.constraints.map((constraint) => `- ${constraint.description}`).join('\n')}
-
-## Dependencies
-${project.specification.dependencies.map((dep) => `- ${dep.name} (${dep.type}): ${dep.version || 'latest'}${dep.critical ? ' [CRITICAL]' : ''}`).join('\n')}
-
----
-Author: SPARC Engine
-Created: ${new Date().toISOString()}
-Status: draft
-Related: SPARC-${project.id}
-`;
-
-    const visionDir = path.join(this.projectRoot, 'docs/01-vision');
-    const visionPath = path.join(visionDir, `${project.id}-vision.md`);
-
-    await fs.mkdir(visionDir, { recursive: true });
-    await fs.writeFile(visionPath, visionContent);
-
-    return { path: visionPath, content: visionContent };
+  async getTasksForSwarmAssignment(
+    filters: {
+      sparcProjectId?: string;
+      domain?: string;
+      phase?: string;
+      status?: string;
+    } = {}
+  ): Promise<DatabaseTask[]> {
+    // Use coordination DAO to query tasks with SPARC context
+    return this.coordinationDao.findBy({ ...filters, type: 'sparc_task' });
   }
 
   /**
-   * Execute document workflows using UnifiedWorkflowEngine.
-   *
-   * @param workspaceId
-   * @param visionDocument
-   * @param visionDocument.path
-   * @param visionDocument.content
+   * Updates existing tasks with SPARC project metadata in database.
    */
-  private async executeDocumentWorkflows(
-    workspaceId: string,
-    visionDocument: { path: string; content: string }
-  ): Promise<unknown> {
-    const workflows = [
-      // Note: ADRs are NOT auto-generated from vision. They are independent architectural governance.
-      'vision-to-prds',
-      'prd-to-epics',
-      'epic-to-features',
-      'feature-to-tasks',
-    ];
+  private async updateTasksWithSPARCMetadata(
+    project: SPARCProject
+  ): Promise<number> {
+    const tasks = await this.generateTasksFromSPARC(project);
+    let updatedCount = 0;
 
-    const results = {};
-
-    for (const workflowName of workflows) {
+    for (const task of tasks) {
       try {
-        const result = this.workflowEngine
-          ? await this.workflowEngine.startWorkflow(workflowName, {
-              currentDocument: {
-                id: `vision-${workspaceId}-${Date.now()}`,
-                type: 'vision',
-                title: 'Vision Document',
-                content: visionDocument.content,
-                metadata: {
-                  author: 'SPARC Engine',
-                  tags: [workspaceId],
-                  status: 'draft' as const,
-                  priority: 'medium' as const,
-                  dependencies: [],
-                  relatedDocuments: [],
-                },
-                created: new Date(),
-                updated: new Date(),
-                version: '1.0.0',
-              },
-              workspaceId: this.projectRoot,
-            })
-          : { success: false, error: 'WorkflowEngine not available' };
-
-        if (result?.success && result?.workflowId) {
-          results[workflowName] = result?.workflowId;
-        }
+        // Store in database with SPARC metadata
+        await this.coordinationDao.update(task.id, {
+          ...task,
+          sparc_project_id: project.id,
+          sparc_phase: project.currentPhase,
+          sparc_domain: project.domain,
+          sparc_metadata: {
+            component: task.component,
+            priority: task.priority,
+            estimatedHours: task.estimated_hours,
+            dependencies: task.dependencies,
+          },
+        });
+        updatedCount++;
       } catch (error) {
-        logger.warn(`Failed to execute workflow ${workflowName}:`, error);
-        results[workflowName] = { error: (error as Error).message };
+        logger.warn(`Failed to update task ${task.id} with SPARC context:`, error);
       }
     }
 
-    return results;
+    return updatedCount;
   }
 
   /**
-   * Generate tasks from SPARC project using existing task infrastructure.
-   *
-   * @param project
+   * Creates database entities (Features, Epics) from SPARC project.
    */
-  async generateTasksFromSPARC(project: SPARCProject): Promise<Task[]> {
+  private async createDatabaseEntitiesFromSPARC(
+    project: SPARCProject
+  ): Promise<number> {
+    let createdCount = 0;
+
+    // Create Epic from SPARC project
+    const epic = await this.coordinationDao.create({
+      title: `${project.name} Implementation`,
+      description: project.description,
+      businessValue: this.extractBusinessValue(project),
+      sparcProjectId: project.id,
+      status: this.mapSPARCStatusToEpicStatus(project.status),
+    });
+    createdCount++;
+
+    // Create Features from SPARC deliverables
+    const features = await this.createFeaturesFromSPARC(project);
+    for (const feature of features) {
+      await this.coordinationDao.create({
+        ...feature,
+        epicId: epic.id,
+        sparcProjectId: project.id,
+      });
+      createdCount++;
+    }
+
+    return createdCount;
+  }
+
+  /**
+   * Store coordination state in memory system for cross-session persistence.
+   */
+  private async storeCoordinationInMemory(
+    project: SPARCProject
+  ): Promise<string[]> {
+    const memoryKeys: string[] = [];
+
+    // Store SPARC project coordination state
+    const projectKey = `sparc-coordination:${project.id}`;
+    await this.memorySystem.store(projectKey, {
+      projectId: project.id,
+      name: project.name,
+      domain: project.domain,
+      currentPhase: project.currentPhase,
+      status: project.status,
+      lastUpdated: new Date().toISOString(),
+      coordinationContext: {
+        readyForSwarmAssignment: true,
+        taskCount: project.phases?.length || 0,
+        complexityLevel: project.complexity,
+      },
+    });
+    memoryKeys.push(projectKey);
+
+    // Store phase-specific coordination context
+    for (const phase of project.phases || []) {
+      const phaseKey = `sparc-phase:${project.id}:${phase.phase}`;
+      await this.memorySystem.store(phaseKey, {
+        phase: phase.phase,
+        status: phase.status,
+        deliverables: phase.deliverables,
+        metrics: phase.metrics,
+        sparcProjectId: project.id,
+        coordinationReady: phase.status === 'completed',
+      });
+      memoryKeys.push(phaseKey);
+    }
+
+    return memoryKeys;
+  }
+
+  // Legacy method - kept for backward compatibility but now database-only
+  async updateTasksWithSPARC(project: SPARCProject): Promise<void> {
+    await this.updateTasksWithSPARCMetadata(project);
+  }
+
+  // Legacy method - kept for backward compatibility but now database-only  
+  async createADRFiles(project: SPARCProject): Promise<void> {
+    // Store ADR content in database instead of files
+    const adrs = await this.generateADRFromSPARC(project);
+    for (const adr of adrs) {
+      await this.coordinationDao.create({
+        sparcProjectId: project.id,
+        title: adr.title,
+        content: this.formatADRContent(adr),
+        phase: adr.phase,
+        status: adr.status,
+      });
+    }
+  }
+
+  // Legacy method - kept for backward compatibility but now database-only
+  async createPRDFile(project: SPARCProject): Promise<void> {
+    // Store PRD content in database instead of files
+    const prd = await this.generatePRDFromSPARC(project);
+    await this.coordinationDao.create({
+      sparcProjectId: project.id,
+      title: prd.title,
+      content: this.formatPRDContent(prd),
+      version: prd.version,
+    });
+  }
+
+  /**
+   * Generate tasks from SPARC project for coordination.
+   */
+  private async generateTasksFromSPARC(project: SPARCProject): Promise<Task[]> {
     const tasks: Task[] = [];
-    let taskCounter = 1;
 
-    // Generate tasks for each phase using existing task infrastructure
-    const phases = [
-      'specification',
-      'pseudocode',
-      'architecture',
-      'refinement',
-      'completion',
-    ];
-
-    for (const phase of phases) {
-      const taskId = `SPARC-${project.id.toUpperCase()}-${taskCounter.toString().padStart(3, '0')}`;
-
-      // Create enhanced task configuration for existing infrastructure
-      const enhancedTaskConfig: TaskConfig = {
-        description: `${phase.charAt(0).toUpperCase() + phase.slice(1)} Phase - ${project.name}`,
-        prompt: this.generatePhasePrompt(phase, project),
-        subagent_type: this.getOptimalAgentForPhase(phase),
-        use_claude_subagent: true,
-        domain_context: `SPARC ${project.domain} project: ${project.name}`,
-        expected_output: this.getPhaseExpectedOutput(phase),
-        tools_required: this.getPhaseTools(phase),
-        priority: this.getPhasePriority(phase),
-        dependencies:
-          taskCounter > 1
-            ? [
-                `SPARC-${project.id.toUpperCase()}-${(taskCounter - 1).toString().padStart(3, '0')}`,
-              ]
-            : [],
-        timeout_minutes: this.getPhaseTimeout(phase),
-      };
-
-      // Execute task through existing infrastructure to validate
-      try {
-        await this.taskTool.executeTask(enhancedTaskConfig);
-      } catch (error) {
-        logger.warn(`Task validation failed for ${phase}:`, error);
-      }
-
-      const task: Task = {
-        id: taskId,
-        title: enhancedTaskConfig?.description,
-        component: `sparc-${phase}`,
-        description: this.getPhaseDescription(phase),
-        status:
-          project.currentPhase === phase
-            ? 'in_progress'
-            : phases.indexOf(phase) < phases.indexOf(project.currentPhase)
-              ? 'completed'
-              : 'todo',
-        priority: this.convertPriorityToNumber(
-          enhancedTaskConfig?.priority || 'medium'
-        ),
-        estimated_hours: this.getPhaseEstimatedHours(phase),
-        actual_hours: null,
-        dependencies: enhancedTaskConfig?.dependencies || [],
-        acceptance_criteria: this.getPhaseAcceptanceCriteria(phase, project),
-        notes: `Generated from SPARC project: ${project.name}. Agent: ${enhancedTaskConfig?.subagent_type}`,
-        assigned_to: 'sparc-engine',
-        created_date: new Date().toISOString(),
-        completed_date: null,
-        sparc_project_id: project.id,
-      };
-
-      tasks.push(task);
-      taskCounter++;
+    // Generate tasks from each SPARC phase
+    for (const phase of project.phases || []) {
+      const phaseTasks = this.generateTasksForPhase(project, phase);
+      tasks.push(...phaseTasks);
     }
 
     return tasks;
   }
 
   /**
-   * Update existing tasks with SPARC project information using TaskAPI.
-   *
-   * @param project
+   * Generate tasks for a specific SPARC phase.
    */
-  async updateTasksWithSPARC(project: SPARCProject): Promise<void> {
-    try {
-      const tasksData = await fs.readFile(this.tasksFile, 'utf-8');
-      const existingTasks: Task[] = JSON.parse(tasksData);
+  private generateTasksForPhase(project: SPARCProject, phase: any): Task[] {
+    const tasks: Task[] = [];
+    const phaseId = `${project.id}-${phase.phase}`;
 
-      // Add SPARC-generated tasks
-      const sparcTasks = await this.generateTasksFromSPARC(project);
+    // Create main implementation task for phase
+    tasks.push({
+      id: `task-${phaseId}-impl`,
+      title: `${phase.phase.charAt(0).toUpperCase() + phase.phase.slice(1)} Implementation`,
+      component: project.domain || 'general',
+      description: `Implement ${phase.phase} phase for ${project.name}`,
+      status: this.mapSPARCStatusToTaskStatus(phase.status),
+      priority: this.calculateTaskPriority(phase.phase),
+      estimated_hours: this.estimateTaskHours(phase.phase, project.complexity),
+      actual_hours: null,
+      dependencies: this.getTaskDependencies(phase.phase),
+      acceptance_criteria: phase.deliverables || [],
+      notes: `Generated from SPARC ${phase.phase} phase`,
+      assigned_to: 'swarm-coordinator',
+      created_date: new Date().toISOString(),
+      completed_date: phase.status === 'completed' ? new Date().toISOString() : null,
+      sparc_project_id: project.id,
+    });
 
-      // Use TaskAPI to validate tasks before adding
-      for (const task of sparcTasks) {
-        try {
-          // Convert to TaskAPI format and validate
-          const deadline = task.completed_date
-            ? new Date(task.completed_date)
-            : undefined;
-          await TaskAPI.createTask({
-            type: task.component,
-            description: task.description,
-            priority: task.priority * 20, // Convert to 0-100 scale
-            ...(deadline && { deadline }),
-          });
-        } catch (error) {
-          logger.warn(`Task validation failed for ${task.id}:`, error);
-        }
-      }
-
-      existingTasks.push(...sparcTasks);
-
-      // Write back to file
-      await fs.writeFile(
-        this.tasksFile,
-        JSON.stringify(existingTasks, null, 2)
-      );
-    } catch (error) {
-      logger.warn('Could not update tasks file:', error);
-    }
+    return tasks;
   }
 
   /**
-   * Create tasks using enhanced task distribution engine.
-   *
-   * @param project
+   * Generate Features from SPARC project.
    */
-  async distributeTasksWithCoordination(project: SPARCProject): Promise<void> {
-    try {
-      const sparcTasks = await this.generateTasksFromSPARC(project);
+  private async createFeaturesFromSPARC(project: SPARCProject): Promise<any[]> {
+    const features: any[] = [];
 
-      for (const task of sparcTasks) {
-        const enhancedTaskConfig: TaskConfig = {
-          description: task.description,
-          prompt: this.generatePhasePrompt(
-            task.component.replace('sparc-', ''),
-            project
-          ),
-          subagent_type: this.getOptimalAgentForPhase(
-            task.component.replace('sparc-', '')
-          ),
-          use_claude_subagent: true,
-          domain_context: `SPARC ${project.domain} project`,
-          expected_output: this.getPhaseExpectedOutput(
-            task.component.replace('sparc-', '')
-          ),
-          priority: this.convertNumberToPriority(task.priority),
-          dependencies: task.dependencies,
-          timeout_minutes: task.estimated_hours * 60,
-        };
-
-        // Log enhanced task configuration for monitoring
-        this.logger?.debug('Enhanced SPARC task configuration created', {
-          taskId: task.id,
-          component: task.component,
-          priority: enhancedTaskConfig?.priority,
-          agentType: enhancedTaskConfig?.subagent_type,
-          estimatedHours: task.estimated_hours,
+    // Create a feature for each major deliverable
+    for (const phase of project.phases || []) {
+      if (phase.deliverables && phase.deliverables.length > 0) {
+        features.push({
+          id: `feature-${project.id}-${phase.phase}`,
+          title: `${project.name} - ${phase.phase.charAt(0).toUpperCase() + phase.phase.slice(1)}`,
+          description: `Feature implementation for ${phase.phase} phase`,
+          status: this.mapSPARCStatusToFeatureStatus(phase.status),
+          userStories: phase.deliverables.map((deliverable: string, index: number) => ({
+            id: `story-${project.id}-${phase.phase}-${index}`,
+            title: deliverable,
+            description: `User story for ${deliverable}`,
+            acceptance_criteria: [`${deliverable} is completed`],
+            priority: 'medium' as const,
+            effort_estimate: 3,
+          })),
         });
-
-        // Use TaskAPI for simpler integration (TaskDistributionEngine requires complex setup)
-        try {
-          const deadline = task.completed_date
-            ? new Date(task.completed_date)
-            : undefined;
-          await TaskAPI.createTask({
-            type: task.component,
-            description: task.description,
-            priority: task.priority * 20, // Convert to 0-100 scale
-            ...(deadline && { deadline }),
-          });
-        } catch (error) {
-          logger.warn(`Task creation failed for ${task.id}:`, error);
-        }
       }
-    } catch (error) {
-      logger.warn('Could not distribute SPARC tasks:', error);
     }
+
+    return features;
   }
 
   /**
-   * Generate ADR from SPARC architecture decisions.
-   *
-   * @param project
+   * Generate ADRs from SPARC project.
    */
-  async generateADRFromSPARC(project: SPARCProject): Promise<ADR[]> {
+  private async generateADRFromSPARC(project: SPARCProject): Promise<ADR[]> {
     const adrs: ADR[] = [];
 
-    if (project.architecture) {
-      // Generate ADR for overall architecture
-      const architectureADR: ADR = {
-        id: `ADR-${project.id}-001`,
+    // Generate ADR for architectural decisions
+    if (project.phases?.some(p => p.phase === 'architecture')) {
+      adrs.push({
+        id: `adr-${project.id}-architecture`,
         title: `Architecture Decision for ${project.name}`,
         status: 'accepted',
-        context: `Architecture decisions for SPARC project: ${project.name}\n\nDomain: ${project.domain}\nComplexity: moderate`,
-        decision: this.formatArchitectureDecision(project),
-        consequences: this.extractArchitectureConsequences(project),
+        context: `Architectural decisions for ${project.name} implementation`,
+        decision: `Use ${project.domain} domain architecture pattern`,
+        consequences: ['Improved maintainability', 'Clear separation of concerns'],
         date: new Date().toISOString(),
         sparc_project_id: project.id,
         phase: 'architecture',
-      };
-
-      adrs.push(architectureADR);
-
-      // Generate ADRs for significant components
-      if (project.architecture?.systemArchitecture?.components) {
-        project.architecture.systemArchitecture.components.forEach(
-          (component, index) => {
-            if (
-              component.qualityAttributes &&
-              component.qualityAttributes['importance'] === 'high'
-            ) {
-              const componentADR: ADR = {
-                id: `ADR-${project.id}-${(index + 2).toString().padStart(3, '0')}`,
-                title: `${component.name} Component Design`,
-                status: 'accepted',
-                context: `Design decisions for ${component.name} component in ${project.name}`,
-                decision: `Implement ${component.name} with:\n- Type: ${component.type}\n- Responsibilities: ${component.responsibilities.join(', ')}\n- Interfaces: ${component.interfaces.join(', ')}`,
-                consequences: [
-                  `Enables ${component.responsibilities.join(' and ')}`,
-                  'Requires integration with other components',
-                ],
-                date: new Date().toISOString(),
-                sparc_project_id: project.id,
-                phase: 'architecture',
-              };
-              adrs.push(componentADR);
-            }
-          }
-        );
-      }
+      });
     }
 
     return adrs;
   }
 
   /**
-   * Generate PRD from SPARC specification.
-   *
-   * @param project
+   * Generate PRD from SPARC project.
    */
-  async generatePRDFromSPARC(project: SPARCProject): Promise<PRD> {
-    const prd: PRD = {
-      id: `PRD-${project.id}`,
+  private async generatePRDFromSPARC(project: SPARCProject): Promise<PRD> {
+    return {
+      id: `prd-${project.id}`,
       title: `Product Requirements - ${project.name}`,
       version: '1.0.0',
-      overview:
-        project.specification.successMetrics?.[0]?.description ||
-        `Product requirements for ${project.name} in the ${project.domain} domain.`,
-      objectives: project.specification.functionalRequirements.map(
-        (req) => req.description
-      ),
-      success_metrics: project.specification.acceptanceCriteria.map(
-        (criteria) => criteria.criteria.join(', ')
-      ),
-      user_stories: this.generateUserStoriesFromRequirements(
-        project.specification
-      ),
-      functional_requirements: project.specification.functionalRequirements.map(
-        (req) => req.description
-      ),
-      non_functional_requirements:
-        project.specification.nonFunctionalRequirements.map(
-          (req) => req.description
-        ),
-      constraints: project.specification.constraints.map(
-        (constraint) => constraint.description
-      ),
-      dependencies: project.specification.dependencies.map((dep) => dep.name),
-      timeline: `Estimated ${this.calculateProjectTimeline(project)} weeks`,
-      stakeholders: ['Product Manager', 'Engineering Team', 'QA Team'],
+      overview: project.description,
+      objectives: [`Implement ${project.name} using SPARC methodology`],
+      success_metrics: ['Implementation completed', 'All phases delivered'],
+      user_stories: [],
+      functional_requirements: project.phases?.map(p => `${p.phase} phase deliverable`) || [],
+      non_functional_requirements: [`${project.complexity} complexity level`],
+      constraints: ['SPARC methodology compliance'],
+      dependencies: [],
+      timeline: 'TBD based on phase completion',
+      stakeholders: ['Development team', 'SwarmCommander'],
       sparc_project_id: project.id,
     };
-
-    return prd;
-  }
-
-  // Helper methods for task integration
-  private generatePhasePrompt(phase: string, project: SPARCProject): string {
-    const prompts = {
-      specification: `Analyze and document comprehensive requirements for ${project.name} in the ${project.domain} domain. Focus on functional requirements, constraints, and success metrics.`,
-      pseudocode: `Design algorithms and pseudocode for ${project.name}. Include complexity analysis and optimization strategies.`,
-      architecture: `Design system architecture for ${project.name}. Include component relationships, data flow, and deployment strategies.`,
-      refinement: `Optimize and refine the implementation of ${project.name}. Focus on performance, security, and scalability improvements.`,
-      completion: `Generate production-ready implementation for ${project.name}. Include comprehensive tests, documentation, and deployment artifacts.`,
-    };
-    return prompts[phase] || `Execute ${phase} phase for ${project.name}`;
-  }
-
-  private getOptimalAgentForPhase(phase: string): unknown {
-    const agentMapping = {
-      specification: 'system-analyst',
-      pseudocode: 'algorithm-designer',
-      architecture: 'system-architect',
-      refinement: 'performance-optimizer',
-      completion: 'full-stack-developer',
-    };
-    return agentMapping[phase] || 'generalist';
-  }
-
-  private getPhaseExpectedOutput(phase: string): string {
-    const outputs = {
-      specification: 'Detailed requirements document with acceptance criteria',
-      pseudocode: 'Algorithm designs with complexity analysis',
-      architecture: 'System architecture diagrams and component specifications',
-      refinement: 'Performance optimization report and recommendations',
-      completion: 'Production-ready code with tests and documentation',
-    };
-    return outputs[phase] || 'Phase deliverables completed';
-  }
-
-  private getPhaseTools(phase: string): string[] {
-    const tools = {
-      specification: [
-        'requirements-analysis',
-        'stakeholder-interview',
-        'constraint-modeling',
-      ],
-      pseudocode: [
-        'algorithm-design',
-        'complexity-analysis',
-        'optimization-modeling',
-      ],
-      architecture: [
-        'system-design',
-        'component-modeling',
-        'deployment-planning',
-      ],
-      refinement: [
-        'performance-profiling',
-        'security-analysis',
-        'scalability-testing',
-      ],
-      completion: [
-        'code-generation',
-        'test-automation',
-        'documentation-generation',
-      ],
-    };
-    return tools[phase] || ['general-development'];
-  }
-
-  private getPhasePriority(
-    phase: string
-  ): 'low' | 'medium' | 'high' | 'critical' {
-    const priorities = {
-      specification: 'high',
-      pseudocode: 'medium',
-      architecture: 'high',
-      refinement: 'medium',
-      completion: 'critical',
-    };
-    return (priorities[phase] as any) || 'medium';
-  }
-
-  private getPhaseTimeout(phase: string): number {
-    const timeouts = {
-      specification: 120, // 2 hours
-      pseudocode: 180, // 3 hours
-      architecture: 240, // 4 hours
-      refinement: 120, // 2 hours
-      completion: 360, // 6 hours
-    };
-    return timeouts[phase] || 120;
-  }
-
-  private convertPriorityToNumber(
-    priority: 'low' | 'medium' | 'high' | 'critical'
-  ): number {
-    const mapping = { low: 1, medium: 3, high: 4, critical: 5 };
-    return mapping[priority] || 3;
-  }
-
-  private convertNumberToPriority(
-    num: number
-  ): 'low' | 'medium' | 'high' | 'critical' {
-    if (num <= 1) return 'low';
-    if (num <= 3) return 'medium';
-    if (num <= 4) return 'high';
-    return 'critical';
-  }
-
-  private generateEpicDescription(project: SPARCProject): string {
-    return `Epic for ${project.name} development in the ${project.domain} domain using SPARC methodology.
-
-**Scope:** Comprehensive implementation of ${project.name} with full SPARC methodology
-
-**Key Deliverables:**
-- Complete specification and requirements analysis
-- System architecture and component design  
-- Production-ready implementation
-- Comprehensive testing and documentation
-
-**Business Impact:** ${this.calculateBusinessValue(project)}
-
-**Technical Complexity:** moderate`;
-  }
-
-  private calculateBusinessValue(project: SPARCProject): string {
-    const domainValues = {
-      'swarm-coordination':
-        'High - Core platform capability for agent coordination',
-      'neural-networks':
-        'High - AI/ML acceleration and intelligence enhancement',
-      'memory-systems':
-        'Medium - Infrastructure efficiency and data management',
-      'rest-api':
-        'Medium - External integration and user interface capabilities',
-      interfaces: 'Medium - User experience and system accessibility',
-      'wasm-integration':
-        'High - Performance optimization and computational efficiency',
-      general: 'Low to Medium - General platform improvements',
-    };
-
-    return domainValues[project.domain] || 'Medium - Platform enhancement';
-  }
-
-  private calculateEpicEndDate(_project: SPARCProject): string {
-    const complexityWeeks = {
-      simple: 4,
-      moderate: 8,
-      high: 12,
-      complex: 16,
-      enterprise: 20,
-    };
-
-    const weeks = complexityWeeks.moderate;
-    const endDate = new Date();
-    endDate.setDate(endDate.getDate() + weeks * 7);
-
-    return endDate.toISOString().split('T')[0] ?? '';
-  }
-
-  private generateFeaturesFromPhases(project: SPARCProject): Feature[] {
-    const features: Feature[] = [];
-
-    const phaseFeatures = [
-      {
-        phase: 'specification',
-        title: `${project.name} Requirements Analysis`,
-        description: 'Complete requirements gathering and constraint analysis',
-      },
-      {
-        phase: 'architecture',
-        title: `${project.name} System Architecture`,
-        description: 'Design and document system architecture and components',
-      },
-      {
-        phase: 'completion',
-        title: `${project.name} Implementation`,
-        description: 'Production-ready implementation with full test coverage',
-      },
-    ];
-
-    phaseFeatures.forEach((phaseFeature, index) => {
-      const feature: Feature = {
-        id: `FEAT-${project.id}-${index + 1}`,
-        title: phaseFeature.title,
-        description: phaseFeature.description,
-        epic_id: `EPIC-${project.id}`,
-        user_stories: [
-          `US-${project.id}-${phaseFeature.phase.toUpperCase()}-001`,
-        ],
-        status: this.getFeatureStatusFromProject(project, phaseFeature.phase),
-        sparc_project_id: project.id,
-      };
-
-      features.push(feature);
-    });
-
-    return features;
-  }
-
-  private generateFeaturesFromRequirements(project: SPARCProject): Feature[] {
-    const features: Feature[] = [];
-
-    if (project.specification?.functionalRequirements) {
-      project.specification.functionalRequirements.forEach((req, index) => {
-        const feature: Feature = {
-          id: `FEAT-${project.id}-REQ-${index + 1}`,
-          title: req.description,
-          description: `Implementation of functional requirement: ${req.description}`,
-          epic_id: `EPIC-${project.id}`,
-          user_stories: [`US-${project.id}-REQ-${index + 1}`],
-          status: 'backlog',
-          sparc_project_id: project.id,
-        };
-
-        features.push(feature);
-      });
-    }
-
-    return features;
-  }
-
-  private getFeatureStatusFromProject(
-    project: SPARCProject,
-    phase: string
-  ): 'backlog' | 'planned' | 'in_progress' | 'completed' {
-    if (project.progress?.completedPhases?.includes(phase as any)) {
-      return 'completed';
-    }
-    if (project.currentPhase === phase) {
-      return 'in_progress';
-    }
-    return 'planned';
   }
 
   /**
-   * Create ADR files from SPARC project using existing template structure.
-   *
-   * @param project
+   * Format ADR content for storage.
    */
-  async createADRFiles(project: SPARCProject): Promise<void> {
-    try {
-      await fs.mkdir(this.adrDir, { recursive: true });
-
-      const adrs = await this.generateADRFromSPARC(project);
-
-      for (const adr of adrs) {
-        const adrContent = this.formatADRContent(adr);
-        const adrFile = path.join(this.adrDir, `${adr.id.toLowerCase()}.md`);
-        await fs.writeFile(adrFile, adrContent);
-      }
-    } catch (error) {
-      logger.warn('Could not create ADR files:', error);
-    }
-  }
-
-  /**
-   * Create PRD file from SPARC project with enhanced integration.
-   *
-   * @param project
-   */
-  async createPRDFile(project: SPARCProject): Promise<void> {
-    try {
-      await fs.mkdir(this.prdDir, { recursive: true });
-
-      const prd = await this.generatePRDFromSPARC(project);
-      const prdContent = this.formatPRDContent(prd);
-      const prdFile = path.join(this.prdDir, `${prd.id.toLowerCase()}.md`);
-
-      await fs.writeFile(prdFile, prdContent);
-    } catch (error) {
-      logger.warn('Could not create PRD file:', error);
-    }
-  }
-
-  /**
-   * Create or update epics file from SPARC project.
-   *
-   * @param project
-   */
-  async createEpicsFromSPARC(project: SPARCProject): Promise<Epic[]> {
-    try {
-      // Ensure docs directory exists
-      await fs.mkdir(path.dirname(this.epicsFile), { recursive: true });
-
-      // Load existing epics or create new array
-      let epics: Epic[] = [];
-      try {
-        const epicsData = await fs.readFile(this.epicsFile, 'utf-8');
-        epics = JSON.parse(epicsData);
-      } catch {
-        // File doesn't exist, start with empty array
-      }
-
-      // Generate epic for the project
-      const projectEpic: Epic = {
-        id: `EPIC-${project.id}`,
-        title: `${project.name} Development Epic`,
-        description: this.generateEpicDescription(project),
-        features: [],
-        business_value: this.calculateBusinessValue(project),
-        timeline: {
-          start_date: new Date().toISOString().split('T')[0] ?? '',
-          end_date: this.calculateEpicEndDate(project),
-        },
-        status: 'approved',
-        sparc_project_id: project.id,
-      };
-
-      // Check if epic already exists
-      const existingEpicIndex = epics.findIndex(
-        (e) => e.sparc_project_id === project.id
-      );
-      if (existingEpicIndex >= 0) {
-        epics[existingEpicIndex] = projectEpic;
-      } else {
-        epics.push(projectEpic);
-      }
-
-      // Save epics file
-      await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
-
-      return epics;
-    } catch (error) {
-      logger.warn('Could not create epics file:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Create or update features file from SPARC project.
-   *
-   * @param project
-   */
-  async createFeaturesFromSPARC(project: SPARCProject): Promise<Feature[]> {
-    try {
-      // Ensure docs directory exists
-      await fs.mkdir(path.dirname(this.featuresFile), { recursive: true });
-
-      // Load existing features or create new array
-      let features: Feature[] = [];
-      try {
-        const featuresData = await fs.readFile(this.featuresFile, 'utf-8');
-        features = JSON.parse(featuresData);
-      } catch {
-        // File doesn't exist, start with empty array
-      }
-
-      // Generate features for each SPARC phase
-      const phaseFeatures = this.generateFeaturesFromPhases(project);
-
-      // Add functional requirement features
-      const requirementFeatures =
-        this.generateFeaturesFromRequirements(project);
-
-      const allProjectFeatures = [...phaseFeatures, ...requirementFeatures];
-
-      // Remove existing features for this project
-      features = features.filter((f) => f.sparc_project_id !== project.id);
-
-      // Add new features
-      features.push(...allProjectFeatures);
-
-      // Save features file
-      await fs.writeFile(this.featuresFile, JSON.stringify(features, null, 2));
-
-      return allProjectFeatures;
-    } catch (error) {
-      logger.warn('Could not create features file:', error);
-      return [];
-    }
-  }
-
-  /**
-   * Create comprehensive project management artifacts.
-   *
-   * @param project
-   * @param phase
-   */
-  // Duplicate method createAllProjectManagementArtifacts removed
-
-  // Helper methods
-  private getPhaseDescription(phase: string): string {
-    const descriptions = {
-      specification:
-        'Gather and analyze detailed requirements, constraints, and acceptance criteria',
-      pseudocode:
-        'Design algorithms and data structures with complexity analysis',
-      architecture: 'Design system architecture and component relationships',
-      refinement: 'Optimize and refine based on performance feedback',
-      completion: 'Generate production-ready implementation and documentation',
-    };
-    return descriptions[phase] || 'SPARC methodology phase execution';
-  }
-
-  private getPhaseEstimatedHours(phase: string): number {
-    const estimates = {
-      specification: 4,
-      pseudocode: 6,
-      architecture: 8,
-      refinement: 4,
-      completion: 12,
-    };
-    return estimates[phase] || 4;
-  }
-
-  private getPhaseAcceptanceCriteria(
-    phase: string,
-    _project: SPARCProject
-  ): string[] {
-    const baseCriteria = {
-      specification: [
-        'All functional requirements identified and documented',
-        'Non-functional requirements defined with measurable criteria',
-        'Constraints and dependencies identified',
-        'Acceptance criteria defined for each requirement',
-      ],
-      pseudocode: [
-        'Core algorithms designed with pseudocode',
-        'Time and space complexity analyzed',
-        'Data structures specified',
-        'Algorithm correctness validated',
-      ],
-      architecture: [
-        'System architecture designed and documented',
-        'Component relationships defined',
-        'Interface specifications completed',
-        'Deployment architecture planned',
-      ],
-      refinement: [
-        'Performance optimization strategies identified',
-        'Security considerations addressed',
-        'Scalability improvements documented',
-        'Quality metrics achieved',
-      ],
-      completion: [
-        'Production-ready code generated',
-        'Comprehensive test suite created',
-        'Documentation completed',
-        'Deployment artifacts ready',
-      ],
-    };
-
-    return baseCriteria[phase] || ['Phase objectives completed'];
-  }
-
-  private formatArchitectureDecision(project: SPARCProject): string {
-    if (!project.architecture) return 'Architecture not yet defined';
-
-    return `Architecture Decision for ${project.name}:
-
-## Components
-${project.architecture?.systemArchitecture?.components?.map((comp) => `- ${comp.name}: ${comp.type}`).join('\n') || 'Components not defined'}
-
-## Patterns
-${project.architecture?.systemArchitecture?.architecturalPatterns?.map((p) => p.name).join('\n- ') || 'Patterns not defined'}
-
-## Technology Stack
-${project.architecture?.systemArchitecture?.technologyStack?.map((t) => t.technology).join('\n- ') || 'Technology stack not defined'}`;
-  }
-
-  private extractArchitectureConsequences(project: SPARCProject): string[] {
-    const consequences = [
-      'Establishes clear component boundaries and responsibilities',
-      'Enables modular development and testing',
-      'Provides foundation for scalable implementation',
-    ];
-
-    if (project.architecture?.systemArchitecture?.architecturalPatterns) {
-      consequences.push(
-        `Leverages proven architectural patterns: ${project.architecture.systemArchitecture.architecturalPatterns.map((p) => p.name).join(', ')}`
-      );
-    }
-
-    return consequences;
-  }
-
-  private generateUserStoriesFromRequirements(
-    spec: DetailedSpecification
-  ): UserStory[] {
-    return spec.functionalRequirements.map((req, index) => ({
-      id: `US-${index + 1}`,
-      title: req.description,
-      description: `As a system user, I want ${req.description.toLowerCase()} so that I can achieve the system objectives.`,
-      acceptance_criteria: [
-        `System implements ${req.description}`,
-        'Implementation meets performance requirements',
-      ],
-      priority:
-        (req.priority?.toLowerCase() as 'high' | 'medium' | 'low') || 'medium',
-      effort_estimate: 5,
-    }));
-  }
-
-  private calculateProjectTimeline(_project: SPARCProject): number {
-    const complexityWeeks = {
-      simple: 2,
-      moderate: 4,
-      high: 8,
-      complex: 12,
-      enterprise: 16,
-    };
-
-    return complexityWeeks.moderate || 4;
-  }
-
   private formatADRContent(adr: ADR): string {
     return `# ${adr.title}
 
-## Status
-${adr.status}
+**Status:** ${adr.status}
+**Date:** ${adr.date}
+**Phase:** ${adr.phase}
 
 ## Context
 ${adr.context}
@@ -1199,270 +489,107 @@ ${adr.context}
 ${adr.decision}
 
 ## Consequences
-${adr.consequences.map((c) => `- ${c}`).join('\n')}
-
----
-*Generated from SPARC project: ${adr.sparc_project_id}*
-*Date: ${adr.date}*
-*Phase: ${adr.phase}*
+${adr.consequences.map(c => `- ${c}`).join('\n')}
 `;
   }
 
+  /**
+   * Format PRD content for storage.
+   */
   private formatPRDContent(prd: PRD): string {
     return `# ${prd.title}
 
 **Version:** ${prd.version}
-**Generated from SPARC Project:** ${prd.sparc_project_id}
 
 ## Overview
 ${prd.overview}
 
 ## Objectives
-${prd.objectives.map((obj) => `- ${obj}`).join('\n')}
+${prd.objectives.map(o => `- ${o}`).join('\n')}
 
 ## Success Metrics
-${prd.success_metrics.map((metric) => `- ${metric}`).join('\n')}
-
-## User Stories
-${prd.user_stories.map((story) => `### ${story.title}\n${story.description}\n\n**Acceptance Criteria:**\n${story.acceptance_criteria.map((ac) => `- ${ac}`).join('\n')}`).join('\n\n')}
+${prd.success_metrics.map(m => `- ${m}`).join('\n')}
 
 ## Functional Requirements
-${prd.functional_requirements.map((req) => `- ${req}`).join('\n')}
+${prd.functional_requirements.map(r => `- ${r}`).join('\n')}
 
 ## Non-Functional Requirements
-${prd.non_functional_requirements.map((req) => `- ${req}`).join('\n')}
-
-## Constraints
-${prd.constraints.map((constraint) => `- ${constraint}`).join('\n')}
-
-## Dependencies
-${prd.dependencies.map((dep) => `- ${dep}`).join('\n')}
-
-## Timeline
-${prd.timeline}
-
-## Stakeholders
-${prd.stakeholders.map((stakeholder) => `- ${stakeholder}`).join('\n')}
+${prd.non_functional_requirements.map(r => `- ${r}`).join('\n')}
 `;
   }
 
-  /**
-   * Enhanced ADR creation using existing template structure and workspace management.
-   *
-   * @param adrs
-   * @param workspaceId
-   */
-  async createADRFilesWithWorkspace(
-    adrs: ADR[],
-    workspaceId: string
-  ): Promise<string[]> {
-    const createdFiles: string[] = [];
-
-    // Ensure ADR directory exists
-    await fs.mkdir(this.adrDir, { recursive: true });
-
-    // Check for existing ADR template (following existing patterns)
-    const templatePath = path.join(
-      this.projectRoot,
-      'docs/adrs/adr-template.md'
-    );
-    let template = '';
-
-    try {
-      template = await fs.readFile(templatePath, 'utf-8');
-    } catch {
-      // Use default template that matches existing structure
-      template = `# ADR-{NUMBER}: {TITLE}
-
-## Status
-{STATUS}
-
-## Context
-{CONTEXT}
-
-## Decision
-{DECISION}
-
-## Consequences
-{CONSEQUENCES}
-
-## Date
-{DATE}
-
-## Related
-- SPARC Project: {SPARC_PROJECT_ID}
-- Phase: {PHASE}
-`;
-    }
-
-    for (const adr of adrs) {
-      const number = adr.id.replace(/.*ADR-/, '').replace(/-.*/, '');
-      const filename = `${adr.id.toLowerCase()}-${adr.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-      const filePath = path.join(this.adrDir, filename);
-
-      const content = template
-        .replace(/{NUMBER}/g, number)
-        .replace(/{TITLE}/g, adr.title)
-        .replace(/{STATUS}/g, adr.status)
-        .replace(/{CONTEXT}/g, adr.context)
-        .replace(/{DECISION}/g, adr.decision)
-        .replace(
-          /{CONSEQUENCES}/g,
-          Array.isArray(adr.consequences)
-            ? adr.consequences.map((c) => `- ${c}`).join('\n')
-            : adr.consequences
-        )
-        .replace(/{DATE}/g, adr.date)
-        .replace(/{SPARC_PROJECT_ID}/g, adr.sparc_project_id || 'N/A')
-        .replace(/{PHASE}/g, adr.phase || 'N/A');
-
-      await fs.writeFile(filePath, content);
-      createdFiles.push(filePath);
-
-      // Store in memory system for workflow engine access
-      if (this.memorySystem) {
-        await this.memorySystem.storeDocument('adr', adr.id, {
-          id: adr.id,
-          title: adr.title,
-          content,
-          metadata: {
-            status: adr.status,
-            phase: adr.phase,
-            sparcProjectId: adr.sparc_project_id,
-            filePath,
-          },
-        });
-      }
-
-      // Process through document-driven system
-      if (this.documentDrivenSystem && workspaceId) {
-        await this.documentDrivenSystem.processVisionaryDocument(
-          workspaceId,
-          filePath
-        );
-      }
-    }
-
-    return createdFiles;
-  }
-
-  /**
-   * Save epics to workspace using document-driven system.
-   *
-   * @param epics
-   * @param workspaceId
-   */
-  async saveEpicsToWorkspace(
-    epics: Epic[],
-    workspaceId: string
-  ): Promise<void> {
-    const epicsDir = path.join(this.projectRoot, 'docs/04-epics');
-    await fs.mkdir(epicsDir, { recursive: true });
-
-    for (const epic of epics) {
-      const filename = `${epic.id.toLowerCase()}-${epic.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-      const filePath = path.join(epicsDir, filename);
-
-      const content = `# Epic: ${epic.title}
-
-## Description
-${epic.description}
-
-## Business Value
-${epic.business_value}
-
-## Timeline
-- Start: ${epic.timeline.start_date}
-- End: ${epic.timeline.end_date}
-
-## Status
-${epic.status}
-
-## Features
-${epic.features.map((f) => `- ${f}`).join('\n')}
-
-## Related SPARC Project
-${epic.sparc_project_id || 'N/A'}
-
----
-Created: ${new Date().toISOString()}
-Type: Epic
-`;
-
-      await fs.writeFile(filePath, content);
-
-      // Process through document-driven system
-      if (this.documentDrivenSystem && workspaceId) {
-        await this.documentDrivenSystem.processVisionaryDocument(
-          workspaceId,
-          filePath
-        );
-      }
-    }
-
-    // Also save to epics.json for backward compatibility
-    try {
-      await fs.writeFile(this.epicsFile, JSON.stringify(epics, null, 2));
-    } catch (error) {
-      logger.warn('Could not save epics.json:', error);
+  // Helper methods for status mapping and calculation
+  private mapSPARCStatusToTaskStatus(status: string): 'todo' | 'in_progress' | 'completed' | 'blocked' {
+    switch (status) {
+      case 'completed': return 'completed';
+      case 'in_progress': return 'in_progress';
+      case 'not_started': return 'todo';
+      default: return 'todo';
     }
   }
 
-  /**
-   * Save features to workspace using document-driven system.
-   *
-   * @param features
-   * @param workspaceId
-   */
-  async saveFeaturesFromWorkspace(
-    features: Feature[],
-    workspaceId: string
-  ): Promise<void> {
-    const featuresDir = path.join(this.projectRoot, 'docs/05-features');
-    await fs.mkdir(featuresDir, { recursive: true });
-
-    for (const feature of features) {
-      const filename = `${feature.id.toLowerCase()}-${feature.title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.md`;
-      const filePath = path.join(featuresDir, filename);
-
-      const content = `# Feature: ${feature.title}
-
-## Description
-${feature.description}
-
-## Epic
-${feature.epic_id || 'N/A'}
-
-## Status
-${feature.status}
-
-## User Stories
-${feature.user_stories.map((us) => `- ${us}`).join('\n')}
-
-## Related SPARC Project
-${feature.sparc_project_id || 'N/A'}
-
----
-Created: ${new Date().toISOString()}
-Type: Feature
-`;
-
-      await fs.writeFile(filePath, content);
-
-      // Process through document-driven system
-      if (this.documentDrivenSystem && workspaceId) {
-        await this.documentDrivenSystem.processVisionaryDocument(
-          workspaceId,
-          filePath
-        );
-      }
+  private mapSPARCStatusToFeatureStatus(status: string): 'backlog' | 'planned' | 'in_progress' | 'completed' {
+    switch (status) {
+      case 'completed': return 'completed';
+      case 'in_progress': return 'in_progress';
+      case 'not_started': return 'backlog';
+      default: return 'backlog';
     }
+  }
 
-    // Also save to features.json for backward compatibility
-    try {
-      await fs.writeFile(this.featuresFile, JSON.stringify(features, null, 2));
-    } catch (error) {
-      logger.warn('Could not save features.json:', error);
+  private mapSPARCStatusToEpicStatus(status: string): 'draft' | 'approved' | 'in_progress' | 'completed' {
+    switch (status) {
+      case 'completed': return 'completed';
+      case 'in_progress': return 'in_progress';
+      case 'not_started': return 'draft';
+      default: return 'draft';
     }
+  }
+
+  private calculateTaskPriority(phase: string): number {
+    const phasePriorities: Record<string, number> = {
+      specification: 5,
+      pseudocode: 4,
+      architecture: 5,
+      refinement: 3,
+      completion: 4,
+    };
+    return phasePriorities[phase] || 3;
+  }
+
+  private estimateTaskHours(phase: string, complexity: string): number {
+    const baseHours: Record<string, number> = {
+      specification: 8,
+      pseudocode: 16,
+      architecture: 24,
+      refinement: 12,
+      completion: 20,
+    };
+
+    const complexityMultiplier: Record<string, number> = {
+      simple: 0.5,
+      moderate: 1.0,
+      high: 1.5,
+      complex: 2.0,
+      enterprise: 3.0,
+    };
+
+    const base = baseHours[phase] || 8;
+    const multiplier = complexityMultiplier[complexity] || 1.0;
+    return Math.round(base * multiplier);
+  }
+
+  private getTaskDependencies(phase: string): string[] {
+    const dependencies: Record<string, string[]> = {
+      pseudocode: ['specification'],
+      architecture: ['specification', 'pseudocode'],
+      refinement: ['architecture'],
+      completion: ['refinement'],
+    };
+    return dependencies[phase] || [];
+  }
+
+  private extractBusinessValue(project: SPARCProject): string {
+    return `Implements ${project.name} using SPARC methodology for ${project.domain} domain`;
   }
 }

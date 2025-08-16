@@ -6,7 +6,7 @@
  */
 
 import { EventEmitter } from 'events';
-import type { ILogger } from '../core/types';
+import type { Logger } from '../core/types';
 import { getLogger } from '../config/logging-config';
 import type { AgentConfig, SwarmConfig, TaskOrchestrationConfig } from '../types/swarm-types';
 import type { AgentType } from '../types/agent-types';
@@ -64,7 +64,7 @@ export interface CoordinationInstructions {
  * 3. Event-driven progress tracking
  */
 export class SwarmMemoryCoordinator extends EventEmitter {
-  private logger: ILogger;
+  private logger: Logger;
   private activeSwarms: Map<string, SwarmConfig> = new Map();
   private agentProgress: Map<string, AgentProgress> = new Map();
   private sharedDecisions: Map<string, SharedDecision[]> = new Map();

@@ -8,7 +8,7 @@
  * @file Neural service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type { NeuralServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
 
@@ -17,7 +17,7 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class NeuralService extends BaseService implements IService {
+export class NeuralService extends BaseService implements Service {
   private models = new Map<string, any>();
   private trainingJobs = new Map<string, any>();
   private inferenceCache = new Map<string, any>();

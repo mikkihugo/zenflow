@@ -438,7 +438,7 @@ export class AgentHealthMonitor {
   /**
    * Get list of healthy agents
    *
-   * @returns Array of agent IDs that are healthy
+   * @returns Array of agent Ds that are healthy
    */
   public getHealthyAgents(): AgentId[] {
     const healthyAgents = Array.from(this.healthMetrics.entries())
@@ -452,7 +452,7 @@ export class AgentHealthMonitor {
   /**
    * Get list of degraded agents
    *
-   * @returns Array of agent IDs that are degraded
+   * @returns Array of agent Ds that are degraded
    */
   public getDegradedAgents(): AgentId[] {
     const degradedAgents = Array.from(this.healthMetrics.entries())
@@ -466,7 +466,7 @@ export class AgentHealthMonitor {
   /**
    * Get list of unhealthy agents
    *
-   * @returns Array of agent IDs that are unhealthy
+   * @returns Array of agent Ds that are unhealthy
    */
   public getUnhealthyAgents(): AgentId[] {
     const unhealthyAgents = Array.from(this.healthMetrics.entries())

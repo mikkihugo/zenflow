@@ -27,7 +27,7 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../../database/entities/document-entities';
-import type { IRepository } from '../../database/interfaces';
+import type { Repository } from '../../database/interfaces';
 
 export interface DocumentCreateOptions {
   autoGenerateRelationships?: boolean;
@@ -72,10 +72,10 @@ export interface DocumentSearchOptions extends DocumentQueryOptions {
  * @example
  */
 export class DocumentManager {
-  private documentRepository!: IRepository<BaseDocumentEntity>;
-  private projectRepository!: IRepository<ProjectEntity>;
-  private relationshipRepository!: IRepository<DocumentRelationshipEntity>;
-  private workflowRepository!: IRepository<DocumentWorkflowStateEntity>;
+  private documentRepository!: Repository<BaseDocumentEntity>;
+  private projectRepository!: Repository<ProjectEntity>;
+  private relationshipRepository!: Repository<DocumentRelationshipEntity>;
+  private workflowRepository!: Repository<DocumentWorkflowStateEntity>;
 
   constructor(
     private databaseType: 'postgresql' | 'sqlite' | 'mysql' = 'postgresql'
@@ -445,7 +445,7 @@ export class DocumentManager {
   }
 
   /**
-   * Perform fulltext search with TF-IDF scoring.
+   * Perform fulltext search with TF-DF scoring.
    *
    * @param documents
    * @param query

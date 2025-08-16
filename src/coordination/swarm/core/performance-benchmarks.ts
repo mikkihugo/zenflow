@@ -13,7 +13,7 @@ const logger = getLogger('coordination-swarm-core-performance-benchmarks');
  * WASM loading, memory management, and Claude Code Flow coordination.
  */
 
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat';
+import { WasmModuleLoader } from '@claude-zen/brain/wasm';
 // import { getClaudeFlow } from './claude-flow-enhanced';
 import { ZenSwarm } from './base-swarm';
 
@@ -721,7 +721,7 @@ class PerformanceBenchmarks {
         isFirefox: userAgent.includes('Firefox'),
         isSafari: userAgent.includes('Safari') && !userAgent.includes('Chrome'),
         isEdge: userAgent.includes('Edge'),
-        mobile: /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        mobile: /Android|iPhone|iPad|iPod|BlackBerry|EMobile|Opera Mini/i.test(
           userAgent
         ),
       };

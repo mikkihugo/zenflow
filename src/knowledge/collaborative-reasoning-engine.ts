@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 
 // Basic utility types
 export interface DependencyMapper {
@@ -865,8 +865,8 @@ export type ContextRole =
  * @example
  */
 export class CollaborativeReasoningEngine extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: CollaborativeReasoningConfig;
 
   // Core Systems
@@ -885,8 +885,8 @@ export class CollaborativeReasoningEngine extends EventEmitter {
 
   constructor(
     config: CollaborativeReasoningConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;
@@ -2111,8 +2111,8 @@ export class ProblemDecompositionSystem implements ProblemDecomposer {
 
   constructor(
     private config: unknown,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   on(_event: string, _handler: Function) {}
@@ -2144,8 +2144,8 @@ export class DistributedReasoningSystem implements DistributedReasoningEngine {
 
   constructor(
     private config: unknown,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   on(_event: string, _handler: Function) {}
@@ -2173,8 +2173,8 @@ export class ConsensusBuilderSystem implements ConsensusBuilder {
 
   constructor(
     private config: unknown,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   on(_event: string, _handler: Function) {}
@@ -2208,8 +2208,8 @@ export class SolutionSynthesisSystem implements SolutionSynthesizer {
 
   constructor(
     private config: unknown,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   on(_event: string, _handler: Function) {}
@@ -2240,8 +2240,8 @@ export class ContextSharingSystem implements ContextSharingManager {
 
   constructor(
     private config: unknown,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {}
 
   on(_event: string, _handler: Function) {}

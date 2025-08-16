@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Zen API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.6.2/swagger-ui.css" />
+    <style>
+        html {
+            box-sizing: border-box;
+            overflow: -moz-scrollbars-vertical;
+            overflow-y: scroll;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        body {
+            margin: 0;
+            background: #fafafa;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .swagger-ui .topbar {
+            background-color: #1f2937;
+            border-bottom: 1px solid #374151;
+        }
+        .swagger-ui .topbar .link {
+            color: #9ca3af;
+        }
+        .swagger-ui .info .title {
+            color: #6366f1;
+        }
+        .custom-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .custom-header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+        .custom-header p {
+            margin: 0.5rem 0 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .custom-links {
+            margin-top: 1rem;
+        }
+        .custom-links a {
+            color: white;
+            text-decoration: none;
+            margin: 0 1rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 0.375rem;
+            transition: all 0.2s;
+        }
+        .custom-links a:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(255,255,255,0.5);
+        }
+        .api-info {
+            max-width: 1200px;
+            margin: 0 auto 2rem auto;
+            padding: 0 2rem;
+        }
+        .api-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .api-card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            border-left: 4px solid #6366f1;
+        }
+        .api-card h3 {
+            margin: 0 0 0.5rem 0;
+            color: #1f2937;
+            font-size: 1.25rem;
+        }
+        .api-card p {
+            margin: 0;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+        .endpoint-count {
+            background: #ede9fe;
+            color: #7c3aed;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            float: right;
+        }
+        .quick-start {
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .quick-start h3 {
+            margin: 0 0 1rem 0;
+            color: #1f2937;
+        }
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+        }
+        .swagger-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="custom-header">
+        <h1>🧠 Claude Code Zen API</h1>
+        <p>AI-Powered Development Coordination Platform - API Documentation</p>
+        <div class="custom-links">
+            <a href="http://localhost:3000" target="_blank">🌐 Live Dashboard</a>
+            <a href="http://localhost:3000/api/health" target="_blank">🏥 Health Check</a>
+            <a href="https://github.com/zen-neural/claude-code-zen" target="_blank">📚 GitHub Repository</a>
+        </div>
+    </div>
+
+    <div class="api-info">
+        <div class="quick-start">
+            <h3>🚀 Quick Start</h3>
+            <p>Base URL for all API endpoints:</p>
+            <div class="code-block">
+curl -X GET "http://localhost:3000/api/health"</div>
+        </div>
+
+        <div class="api-cards">
+            <div class="api-card">
+                <h3>System & Health <span class="endpoint-count">3 endpoints</span></h3>
+                <p>System status monitoring, health checks, and performance metrics for the claude-code-zen platform.</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>Swarm Management <span class="endpoint-count">2 endpoints</span></h3>
+                <p>Create and manage AI agent swarms with different topologies (mesh, hierarchical, ring, star).</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>Task Management <span class="endpoint-count">2 endpoints</span></h3>
+                <p>Task creation, tracking, and management with priority levels and progress monitoring.</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>LLM Analytics <span class="endpoint-count">5 endpoints</span></h3>
+                <p>Comprehensive LLM usage statistics, provider health monitoring, and cost analytics.</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>Matron Advisory <span class="endpoint-count">4 endpoints</span></h3>
+                <p>AI-powered consultation system with domain experts and strategic recommendations.</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>Visionary Roadmap <span class="endpoint-count">4 endpoints</span></h3>
+                <p>Strategic planning with roadmaps, milestones, vision statements, and progress tracking.</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>Workspace Management <span class="endpoint-count">8 endpoints</span></h3>
+                <p>File system operations, project management, and Git integration for development workflows.</p>
+            </div>
+            
+            <div class="api-card">
+                <h3>Command Execution <span class="endpoint-count">2 endpoints</span></h3>
+                <p>Execute system commands and project scripts with timeout control and result tracking.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="swagger-container">
+        <div id="swagger-ui"></div>
+    </div>
+
+    <script src="https://unpkg.com/swagger-ui-dist@5.6.2/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.6.2/swagger-ui-standalone-preset.js"></script>
+    <script>
+        window.onload = function() {
+            // Begin Swagger UI call region
+            const ui = SwaggerUIBundle({
+                url: './openapi.yaml',
+                dom_id: '#swagger-ui',
+                deepLinking: true,
+                presets: [
+                    SwaggerUIBundle.presets.apis,
+                    SwaggerUIStandalonePreset
+                ],
+                plugins: [
+                    SwaggerUIBundle.plugins.DownloadUrl
+                ],
+                layout: "StandaloneLayout",
+                validatorUrl: null,
+                docExpansion: "none",
+                operationsSorter: "alpha",
+                tagsSorter: "alpha",
+                filter: true,
+                showExtensions: true,
+                showCommonExtensions: true,
+                defaultModelsExpandDepth: 2,
+                defaultModelExpandDepth: 2,
+                displayRequestDuration: true,
+                tryItOutEnabled: true,
+                requestInterceptor: function(request) {
+                    // Add any custom headers or authentication here
+                    console.log('API Request:', request);
+                    return request;
+                },
+                responseInterceptor: function(response) {
+                    console.log('API Response:', response);
+                    return response;
+                }
+            });
+            // End Swagger UI call region
+            
+            window.ui = ui;
+        }
+    </script>
+</body>
+</html>

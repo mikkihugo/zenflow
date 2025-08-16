@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { CoordinationEvent } from '../interfaces/events/types';
 
 /**
@@ -3517,8 +3517,8 @@ export type RetrievalStrategy =
  * @example
  */
 export class IntelligenceCoordinationSystem extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: IntelligenceCoordinationConfig;
 
   // Core Systems
@@ -3537,8 +3537,8 @@ export class IntelligenceCoordinationSystem extends EventEmitter {
 
   constructor(
     config: IntelligenceCoordinationConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;

@@ -342,7 +342,7 @@ export async function createIntegratedSystem() {
  */
 export async function demonstrateMCPIntegration() {
   // Import MCP tools
-  const { memoryTools } = await import('../memory/mcp/memory-tools.ts');
+  const { memoryTools } = await import('../memory/mcp/memory-tools');
   // Database operations handled through DAL factory (removed MCP layer)
 
   // Example: Initialize memory system via MCP
@@ -406,10 +406,10 @@ export async function demonstrateErrorHandling() {
   } catch (error) {
     // Import error handling classes
     const { MemoryError, MemoryErrorClassifier } = await import(
-      '../memory/error-handling/memory-errors.ts'
+      '../memory/error-handling/memory-errors'
     );
     const { DatabaseError, DatabaseErrorClassifier } = await import(
-      '../database/error-handling/database-errors.ts'
+      '../database/error-handling/database-errors'
     );
 
     if (error instanceof MemoryError) {

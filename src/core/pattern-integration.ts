@@ -1,6 +1,11 @@
 /**
  * @file Pattern Integration Layer
- * Integrates all design patterns with existing swarm coordination system.
+ * Integrates all design patterns with direct TypeScript coordination system.
+ * 
+ * Architecture:
+ * - Internal Communication: Direct TypeScript function calls between services
+ * - External Web API: Dedicated web interface components (see src/interfaces/web/)
+ * - No internal protocol adapters (REST/WebSocket) - pure TypeScript integration
  */
 
 import { Logger } from '../core/logger';
@@ -24,32 +29,27 @@ import {
 } from '../coordination/swarm/core/strategy';
 import {
   ClaudeZenFacade,
-  type IDatabaseService,
-  type IInterfaceService,
-  type IMemoryService,
-  type INeuralService,
-  type ISwarmService,
-  type IWorkflowService,
+  type DatabaseService,
+  type InterfaceService,
+  type MemoryService,
+  type NeuralService,
+  type SwarmService,
+  type WorkflowService,
 } from '../core/facade';
-import {
-  AdapterFactory,
-  type ConnectionConfig,
-  MCPAdapter,
-  ProtocolManager,
-  RESTAdapter,
-  WebSocketAdapter,
-} from '../integration/adapter-system';
+// Internal protocol adapters removed - using direct TypeScript integration
+// Only external web API components needed for browser/client access
 import {
   EventBuilder,
   LoggerObserver,
   MetricsObserver,
   SystemEventManager,
 } from '../interfaces/events/observer-system';
-import {
-  type CommandContext,
-  CommandFactory,
-  MCPCommandQueue,
-} from '../interfaces/mcp/command-system';
+// MCP command system removed - using direct coordination
+interface CommandContext {
+  sessionId: string;
+  timestamp: Date;
+  metadata?: Record<string, unknown>;
+}
 
 // Integration configuration
 export interface IntegrationConfig {
@@ -70,10 +70,12 @@ export interface IntegrationConfig {
     enableTransactions: boolean;
     maxConcurrentCommands: number;
   };
-  protocols: {
-    enabledAdapters: string[];
-    defaultProtocol: string;
-    enableAutoFailover: boolean;
+  // Internal protocols removed - using direct TypeScript integration
+  webAPI: {
+    enableHTTPEndpoints: boolean;
+    enableWebSocketUpdates: boolean;
+    enableExternalAccess: boolean;
+    port: number;
   };
   agents: {
     enableHierarchicalGroups: boolean;
@@ -83,24 +85,17 @@ export interface IntegrationConfig {
 }
 
 // Integrated service implementations
-export class IntegratedSwarmService implements ISwarmService {
+export class IntegratedSwarmService implements SwarmService {
   constructor(
     private swarmCoordinator: SwarmCoordinator,
     private eventManager: SystemEventManager,
-    private commandQueue: MCPCommandQueue,
+    // Direct coordination without MCP command queue
     private agentManager: AgentManager
   ) {}
 
   async initializeSwarm(config: unknown): Promise<unknown> {
-    // Create command for swarm initialization
-    const command = CommandFactory.createSwarmInitCommand(
-      config,
-      this,
-      this.createCommandContext()
-    );
-
-    // Execute through command queue for undo support
-    const result = await this.commandQueue.execute(command);
+    // Direct swarm initialization without MCP command system
+    const result = await this.swarmCoordinator.initializeSwarm(config);
 
     if (result?.success && result?.data) {
       // Emit event through observer system
@@ -191,14 +186,8 @@ export class IntegratedSwarmService implements ISwarmService {
   }
 
   async spawnAgent(swarmId: string, agentConfig: unknown): Promise<unknown> {
-    const command = CommandFactory.createAgentSpawnCommand(
-      agentConfig,
-      this,
-      swarmId,
-      this.createCommandContext()
-    );
-
-    const result = await this.commandQueue.execute(command);
+    // Direct agent spawning without MCP command system
+    const result = await this.agentManager.spawnAgent(swarmId, agentConfig);
 
     if (result?.success && result?.data) {
       // Add agent to the swarm group
@@ -396,9 +385,9 @@ export class AgentManager extends EventEmitter {
 export class IntegratedPatternSystem extends EventEmitter {
   private config: IntegrationConfig;
   private eventManager!: SystemEventManager;
-  private commandQueue!: MCPCommandQueue;
+  // Direct coordination without MCP command queue
   private swarmCoordinator!: SwarmCoordinator;
-  private protocolManager!: ProtocolManager;
+  // ProtocolManager removed - using direct TypeScript integration for internal communication
   private agentManager!: AgentManager;
   private swarmService!: IntegratedSwarmService;
   private facade!: ClaudeZenFacade;
@@ -411,7 +400,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     this.initializeEventSystem(logger);
     this.initializeCommandSystem(logger);
     this.initializeCoordinationSystem();
-    this.initializeProtocolSystem();
+    // Protocol system removed - using direct TypeScript integration
     this.initializeAgentSystem();
     this.initializeSwarmService();
     this.initializeFacade(logger, metrics);
@@ -426,14 +415,14 @@ export class IntegratedPatternSystem extends EventEmitter {
     if (this.config.events.enableLogging) {
       const loggerObserver = new LoggerObserver(logger);
       this.eventManager.subscribe('swarm', loggerObserver);
-      this.eventManager.subscribe('mcp', loggerObserver);
+      this.eventManager.subscribe('coordination', loggerObserver);
       this.eventManager.subscribe('neural', loggerObserver);
     }
 
     if (this.config.events.enableMetrics) {
       const metricsObserver = new MetricsObserver();
       this.eventManager.subscribe('swarm', metricsObserver);
-      this.eventManager.subscribe('mcp', metricsObserver);
+      this.eventManager.subscribe('coordination', metricsObserver);
       this.eventManager.subscribe('neural', metricsObserver);
     }
 
@@ -445,12 +434,8 @@ export class IntegratedPatternSystem extends EventEmitter {
   }
 
   private initializeCommandSystem(logger: unknown): void {
-    this.commandQueue = new MCPCommandQueue(logger);
-
-    // Configure command queue based on config
-    if (!this.config.commands.enableUndo) {
-      // Disable undo functionality
-    }
+    // Direct command execution without MCP command queue
+    // Commands will be executed directly through service methods
   }
 
   private initializeCoordinationSystem(): void {
@@ -460,31 +445,8 @@ export class IntegratedPatternSystem extends EventEmitter {
     this.swarmCoordinator = new SwarmCoordinator(defaultStrategy);
   }
 
-  private initializeProtocolSystem(): void {
-    this.protocolManager = new ProtocolManager();
-
-    // Setup protocol adapters based on configuration
-    this.config.protocols.enabledAdapters.forEach((adapterType) => {
-      try {
-        AdapterFactory.registerAdapter(`integrated-${adapterType}`, () => {
-          switch (adapterType) {
-            case 'mcp-http':
-              return new MCPAdapter('http');
-            case 'mcp-stdio':
-              return new MCPAdapter('stdio');
-            case 'websocket':
-              return new WebSocketAdapter();
-            case 'rest':
-              return new RESTAdapter();
-            default:
-              throw new Error(`Unknown adapter type: ${adapterType}`);
-          }
-        });
-      } catch (error) {
-        logger.warn(`Failed to register adapter ${adapterType}:`, error);
-      }
-    });
-  }
+  // Protocol system removed - internal communication uses direct TypeScript integration
+  // External web API is handled by dedicated web interface components
 
   private initializeAgentSystem(): void {
     this.agentManager = new AgentManager(this.config);
@@ -494,7 +456,7 @@ export class IntegratedPatternSystem extends EventEmitter {
     this.swarmService = new IntegratedSwarmService(
       this.swarmCoordinator,
       this.eventManager,
-      this.commandQueue,
+      // CommandQueue removed - using direct TypeScript integration
       this.agentManager
     );
   }
@@ -504,15 +466,15 @@ export class IntegratedPatternSystem extends EventEmitter {
     metrics: unknown
   ): Promise<void> {
     // Create real services connected to actual systems
-    const realNeuralService: INeuralService =
+    const realNeuralService: NeuralService =
       await this.createRealNeuralService();
-    const realMemoryService: IMemoryService =
+    const realMemoryService: MemoryService =
       await this.createRealMemoryService();
-    const realDatabaseService: IDatabaseService =
+    const realDatabaseService: DatabaseService =
       await this.createRealDatabaseService();
-    const realInterfaceService: IInterfaceService =
+    const realInterfaceService: InterfaceService =
       await this.createRealInterfaceService();
-    const realWorkflowService: IWorkflowService =
+    const realWorkflowService: WorkflowService =
       await this.createRealWorkflowService();
 
     this.facade = new ClaudeZenFacade(
@@ -523,7 +485,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       realInterfaceService,
       realWorkflowService,
       this.eventManager,
-      this.commandQueue,
+      // CommandQueue removed - using direct TypeScript integration
       logger,
       metrics
     );
@@ -535,24 +497,20 @@ export class IntegratedPatternSystem extends EventEmitter {
       this.emit('integration:swarm_created', event);
     });
 
-    this.commandQueue.on('command:executed', (event) => {
-      this.emit('integration:command_executed', event);
-    });
+    // CommandQueue removed - using direct TypeScript integration
 
     this.swarmCoordinator.on('coordination:completed', (event) => {
       this.emit('integration:coordination_completed', event);
     });
 
-    this.protocolManager.on('protocol:added', (event) => {
-      this.emit('integration:protocol_added', event);
-    });
+    // ProtocolManager removed - using direct TypeScript integration
   }
 
   // Public API methods
   async initialize(): Promise<void> {
     try {
       // Initialize all subsystems
-      await this.initializeProtocols();
+      // Protocol initialization removed - using direct TypeScript integration
 
       this.emit('integration:initialized');
     } catch (error) {
@@ -564,9 +522,8 @@ export class IntegratedPatternSystem extends EventEmitter {
   async shutdown(): Promise<void> {
     try {
       await Promise.all([
-        this.commandQueue.shutdown(),
+        // CommandQueue and ProtocolManager removed - using direct TypeScript integration
         this.eventManager.shutdown(),
-        this.protocolManager.shutdown(),
         this.facade.shutdown(),
       ]);
 
@@ -585,16 +542,10 @@ export class IntegratedPatternSystem extends EventEmitter {
     return this.eventManager;
   }
 
-  getCommandQueue(): MCPCommandQueue {
-    return this.commandQueue;
-  }
+  // Command queue and protocol manager removed - using direct TypeScript integration
 
   getSwarmCoordinator(): SwarmCoordinator {
     return this.swarmCoordinator;
-  }
-
-  getProtocolManager(): ProtocolManager {
-    return this.protocolManager;
   }
 
   getAgentManager(): AgentManager {
@@ -627,71 +578,36 @@ export class IntegratedPatternSystem extends EventEmitter {
     swarmId: string,
     taskDefinition: unknown
   ): Promise<unknown> {
-    // Create MCP command for task execution
-    const command = CommandFactory.createTaskOrchestrationCommand(
-      taskDefinition,
-      this.swarmService,
-      swarmId,
-      {
-        sessionId: `task-${Date.now()}`,
-        timestamp: new Date(),
-        environment: 'development',
-        permissions: ['task:orchestrate'],
-        resources: {
-          cpu: 0.8,
-          memory: 0.7,
-          network: 0.6,
-          storage: 0.9,
-          timestamp: new Date(),
-        },
-      }
-    );
-
-    // Execute through command queue
-    const commandResult = await this.commandQueue.execute(command);
-
-    if (commandResult?.success) {
-      // Execute through agent system
+    // Direct TypeScript service integration - no CLI/MCP needed
+    this.eventManager.emit('task:execution:started', { swarmId, taskDefinition });
+    
+    try {
+      // Execute through agent system directly
       const taskResult = await this.agentManager.executeTaskOnSwarm(
         swarmId,
         taskDefinition
       );
 
       // Emit completion event
-      const taskEvent = EventBuilder.createSwarmEvent(
-        swarmId,
-        'update',
-        { healthy: true, activeAgents: 1, completedTasks: 1, errors: [] },
-        'hierarchical',
-        {
-          latency: commandResult?.executionTime,
-          throughput: 1,
-          reliability: 1,
-          resourceUsage: commandResult?.resourceUsage,
-        }
-      );
-
-      await this.eventManager.notify(taskEvent);
+      this.eventManager.emit('task:execution:completed', { 
+        swarmId, 
+        taskDefinition, 
+        result: taskResult 
+      });
 
       return taskResult;
+    } catch (error) {
+      this.eventManager.emit('task:execution:failed', { 
+        swarmId, 
+        taskDefinition, 
+        error 
+      });
+      throw error;
     }
-
-    throw new Error(`Task execution failed: ${commandResult?.error?.message}`);
   }
 
-  async broadcastToProtocols(message: unknown): Promise<any[]> {
-    // Convert to protocol message format
-    const protocolMessage = {
-      id: `msg-${Date.now()}`,
-      timestamp: new Date(),
-      source: 'integration-system',
-      type: message.type,
-      payload: message.payload,
-    };
-
-    // Broadcast through protocol manager
-    return this.protocolManager.broadcast(protocolMessage);
-  }
+  // Protocol broadcasting removed - using direct TypeScript integration
+  // External web API broadcasting handled by dedicated web interface components
 
   getIntegratedSystemStatus(): unknown {
     return {
@@ -708,19 +624,12 @@ export class IntegratedPatternSystem extends EventEmitter {
           observerCount: this.eventManager.getObserverStats().length,
           queueStatus: this.eventManager.getQueueStats(),
         },
-        command: {
-          active: true,
-          metrics: this.commandQueue.getMetrics(),
-          historySize: this.commandQueue.getHistory().length,
-        },
+        // Command queue removed - using direct TypeScript integration
         facade: {
           active: true,
           servicesIntegrated: 6,
         },
-        adapter: {
-          active: true,
-          protocols: this.protocolManager.getProtocolStatus(),
-        },
+        // Protocol adapters removed - using direct TypeScript integration
         composite: {
           active: true,
           swarmGroups: this.agentManager.listSwarmGroups().length,
@@ -737,33 +646,14 @@ export class IntegratedPatternSystem extends EventEmitter {
     };
   }
 
-  private async initializeProtocols(): Promise<void> {
-    // Initialize configured protocols
-    for (const protocolType of this.config.protocols.enabledAdapters) {
-      try {
-        const config: ConnectionConfig = {
-          protocol: protocolType,
-          host: 'localhost',
-          port: protocolType.includes('http') ? 3000 : 3456,
-          timeout: 10000,
-        };
-
-        await this.protocolManager.addProtocol(
-          `integrated-${protocolType}`,
-          protocolType,
-          config
-        );
-      } catch (error) {
-        logger.warn(`Failed to initialize protocol ${protocolType}:`, error);
-      }
-    }
-  }
+  // Protocol initialization removed - using direct TypeScript integration
+  // External web API handled by dedicated web interface components
 
   /**
    * Create neural service with mock implementation.
    * Note: Real neural modules not yet implemented - using mock service.
    */
-  private async createRealNeuralService(): Promise<INeuralService> {
+  private async createRealNeuralService(): Promise<NeuralService> {
     // TODO: Replace with real neural system components when available
     // const { NeuralNetworkManager } = await import('../neural/core/network-manager');
     // const { WASMAccelerator } = await import('../neural/wasm/accelerator');
@@ -835,7 +725,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   /**
    * Create real memory service connected to actual memory coordinator.
    */
-  private async createRealMemoryService(): Promise<IMemoryService> {
+  private async createRealMemoryService(): Promise<MemoryService> {
     try {
       // Import memory coordinator with fallback
       const memoryModule = await import('./memory-coordinator').catch(
@@ -900,7 +790,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   /**
    * Create real database service connected to DAL Factory.
    */
-  private async createRealDatabaseService(): Promise<IDatabaseService> {
+  private async createRealDatabaseService(): Promise<DatabaseService> {
     try {
       const { DALFactory } = await import('../database/factory');
       const { DIContainer } = await import('../di/container/di-container');
@@ -980,13 +870,13 @@ export class IntegratedPatternSystem extends EventEmitter {
   /**
    * Create real interface service connected to actual interface managers.
    */
-  private async createRealInterfaceService(): Promise<IInterfaceService> {
+  private async createRealInterfaceService(): Promise<InterfaceService> {
     try {
       return {
-        startHTTPMCP: async (config?: unknown) => {
+        startHTTPServer: async (config?: unknown) => {
           const port = config?.port || 3000;
-          // Would start real HTTP MCP server process
-          const serverId = `http-mcp-${Date.now()}`;
+          // Would start real HTTP server process
+          const serverId = `http-server-${Date.now()}`;
           return {
             serverId,
             port,
@@ -1032,7 +922,7 @@ export class IntegratedPatternSystem extends EventEmitter {
       };
     } catch (_error) {
       return {
-        startHTTPMCP: async (): Promise<unknown> => ({
+        startHTTPServer: async (): Promise<unknown> => ({
           serverId: '',
           port: 0,
           status: 'failed',
@@ -1062,7 +952,7 @@ export class IntegratedPatternSystem extends EventEmitter {
   /**
    * Create real workflow service connected to actual workflow engine.
    */
-  private async createRealWorkflowService(): Promise<IWorkflowService> {
+  private async createRealWorkflowService(): Promise<WorkflowService> {
     try {
       return {
         executeWorkflow: async (workflowId: string, _inputs?: unknown) => {
@@ -1134,10 +1024,12 @@ export class ConfigurationFactory {
         enableTransactions: true,
         maxConcurrentCommands: 5,
       },
-      protocols: {
-        enabledAdapters: ['mcp-http', 'websocket'],
-        defaultProtocol: 'mcp-http',
-        enableAutoFailover: true,
+      // Internal protocols removed - using direct TypeScript integration
+      webAPI: {
+        enableHTTPEndpoints: true,
+        enableWebSocketUpdates: true,
+        enableExternalAccess: true,
+        port: 3000,
       },
       agents: {
         enableHierarchicalGroups: true,
@@ -1154,13 +1046,12 @@ export class ConfigurationFactory {
     if (config?.swarm) config.swarm.maxAgents = 100;
     if (config?.events) config.events.enableDatabasePersistence = true;
     if (config?.commands) config.commands.maxConcurrentCommands = 10;
-    if (config?.protocols)
-      config.protocols.enabledAdapters = [
-        'mcp-http',
-        'mcp-stdio',
-        'websocket',
-        'rest',
-      ];
+    if (config?.webAPI) {
+      config.webAPI.enableHTTPEndpoints = true;
+      config.webAPI.enableWebSocketUpdates = true;
+      config.webAPI.enableExternalAccess = true;
+      config.webAPI.port = 3000;
+    }
 
     return config;
   }

@@ -627,14 +627,14 @@ export class CompletionPhaseEngine implements CompletionEngine {
   ): Promise<SourceCodeArtifact> {
     return {
       id: nanoid(),
-      name: 'ApiControllers.ts',
+      name: 'ApiControllers',
       type: 'implementation',
-      path: 'src/controllers/api-controllers.ts',
+      path: 'src/controllers/api-controllers',
       content: this.generateControllerCode(architecture),
       language: 'typescript',
       estimatedLines: 300,
       dependencies: ['express', 'services'],
-      tests: ['ApiControllers.test.ts'],
+      tests: ['ApiControllers.test'],
     };
   }
 
@@ -642,7 +642,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     architecture: unknown
   ): Promise<SourceCodeArtifact> {
     return {
-      path: 'src/routes/routes.ts',
+      path: 'src/routes/routes',
       content: this.generateRoutesCode(architecture),
       language: 'typescript',
       type: 'implementation',
@@ -654,7 +654,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     architecture: unknown
   ): Promise<SourceCodeArtifact> {
     return {
-      path: 'src/middleware/middleware.ts',
+      path: 'src/middleware/middleware',
       content: this.generateMiddlewareCode(architecture),
       language: 'typescript',
       type: 'implementation',
@@ -664,7 +664,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   private async generateConfigurationManagement(): Promise<SourceCodeArtifact> {
     return {
-      path: 'src/config/config-manager.ts',
+      path: 'src/config/config-manager',
       content: this.generateConfigManagerCode(),
       language: 'typescript',
       type: 'configuration',
@@ -674,7 +674,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   private async generateLoggingFramework(): Promise<SourceCodeArtifact> {
     return {
-      path: 'src/utils/logger.ts',
+      path: 'src/utils/logger',
       content: this.generateLoggerCode(),
       language: 'typescript',
       type: 'implementation',
@@ -684,7 +684,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
 
   private async generateErrorHandling(): Promise<SourceCodeArtifact> {
     return {
-      path: 'src/utils/error-handler.ts',
+      path: 'src/utils/error-handler',
       content: this.generateErrorHandlerCode(),
       language: 'typescript',
       type: 'implementation',
@@ -696,7 +696,7 @@ export class CompletionPhaseEngine implements CompletionEngine {
     securityOpts: unknown[]
   ): Promise<SourceCodeArtifact> {
     return {
-      path: 'src/security/security-framework.ts',
+      path: 'src/security/security-framework',
       content: this.generateSecurityCode(securityOpts),
       language: 'typescript',
       type: 'implementation',

@@ -11,7 +11,7 @@ import type {
   QueueConfig,
   WorkflowState,
   WorkflowStep,
-} from '../types.js';
+} from '../workflows/types';
 import { BottleneckDetectionEngine } from './bottleneck-detector';
 // Import all Kanban flow components
 import { AdvancedFlowManager } from './flow-manager';

@@ -11,8 +11,8 @@ import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config';
 import { SharedFACTCapable } from '../shared-fact-system';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type {
   CollectiveConfig,
@@ -82,8 +82,8 @@ export class DevCubeMatron
     'tactical';
   public borgRank: number = 2;
 
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private cube: CubeInfo;
   private config: CollectiveConfig;
   private metrics: DevCubeMetrics;
@@ -92,7 +92,7 @@ export class DevCubeMatron
   // SPARC Integration will be added when we find the import
   private sparcEngine?: unknown;
 
-  constructor(id: string, eventBus: IEventBus, config: CollectiveConfig) {
+  constructor(id: string, eventBus: EventBus, config: CollectiveConfig) {
     super(); // Initialize SharedFACTCapable (includes EventEmitter)
     this.id = id;
     this.designation = `Matron-${id.slice(-4)}`;

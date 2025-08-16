@@ -9,7 +9,7 @@ import type {
   AgentMetrics,
   AgentStatus,
   AgentType,
-} from '../types/agent-types.js';
+} from './types/interfaces';
 export interface CollectiveFACTConfig {
   enableCache?: boolean;
   cacheSize?: number;
@@ -60,7 +60,7 @@ export interface CubeInfo {
     | 'SECURITY-CUBE'
     | 'DATA-CUBE';
   matron: string; // Designate-Matron ID
-  queens: string[]; // Queen IDs coordinating this cube
+  queens: string[]; // Queen Ds coordinating this cube
   status: 'active' | 'standby' | 'maintenance' | 'error';
   capacity: {
     maxDrones: number;

@@ -1,0 +1,36 @@
+{
+  "name": "@claude-zen/neural-wasm",
+  "version": "0.1.0",
+  "description": "WASM bindings for claude-zen neural networks",
+  "main": "pkg/claude_zen_neural.js",
+  "types": "pkg/claude_zen_neural.d.ts",
+  "files": [
+    "pkg/"
+  ],
+  "scripts": {
+    "build": "./build.sh",
+    "clean": "rm -rf pkg/ target/",
+    "test": "wasm-pack test --node",
+    "dev": "wasm-pack build --dev --target web --out-dir pkg"
+  },
+  "keywords": [
+    "wasm",
+    "neural-networks",
+    "claude-zen", 
+    "fann",
+    "machine-learning"
+  ],
+  "author": "claude-code-zen Team",
+  "license": "MIT OR Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "src/neural/rust/wasm-api"
+  },
+  "devDependencies": {
+    "wasm-pack": "^0.12.1"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

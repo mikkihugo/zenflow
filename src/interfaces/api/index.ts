@@ -12,7 +12,7 @@
  * @file Api module exports.
  */
 
-import { getWebDashboardURL } from '../../config/defaults.js';
+import { getWebDashboardURL } from '../../config/config';
 
 // HTTP API (REST/GraphQL - consolidated from src/api/)
 export * from './http/index';

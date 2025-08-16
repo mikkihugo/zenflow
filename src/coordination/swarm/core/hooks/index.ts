@@ -11,7 +11,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 // fileURLToPath is provided by esbuild banner
 
-import type { AgentMemoryCoordinationDao } from '../../../../database/index.js';
+import type { AgentMemoryCoordinationDao } from '../../database/dao';
 
 // import { DALFactory } from '../../database'; // TODO: Implement proper DI integration
 
@@ -953,8 +953,8 @@ class ZenSwarmHooks {
 
   getAgentTypeForFile(extension: string): string {
     const mapping = {
-      '.js': 'coder',
-      '.ts': 'coder',
+      '': 'coder',
+      '': 'coder',
       '.jsx': 'coder',
       '.tsx': 'coder',
       '.py': 'coder',
@@ -1027,8 +1027,8 @@ class ZenSwarmHooks {
   ): Promise<{ success: boolean; reason?: string; details?: unknown }> {
     const ext = path.extname(filePath);
     const formatters = {
-      '.js': 'prettier --write',
-      '.ts': 'prettier --write',
+      '': 'prettier --write',
+      '': 'prettier --write',
       '.jsx': 'prettier --write',
       '.tsx': 'prettier --write',
       '.json': 'prettier --write',
@@ -1903,8 +1903,8 @@ ${this.sessionData.learnings
   getFileType(filePath: string): string {
     const ext = path.extname(filePath);
     const typeMap = {
-      '.js': 'javascript',
-      '.ts': 'typescript',
+      '': 'javascript',
+      '': 'typescript',
       '.py': 'python',
       '.go': 'golang',
       '.rs': 'rust',
@@ -1950,12 +1950,12 @@ ${this.sessionData.learnings
 
     // For now, return mock related files
     // In production, would use file system search
-    if (filePath.endsWith('.js')) {
-      related.push(filePath.replace('.js', '.test.js'));
+    if (filePath.endsWith('')) {
+      related.push(filePath.replace('', '.test.js'));
     }
-    if (filePath.endsWith('.ts')) {
-      related.push(filePath.replace('.ts', '.test.ts'));
-      related.push(filePath.replace('.ts', '.d.ts'));
+    if (filePath.endsWith('')) {
+      related.push(filePath.replace('', '.test.ts'));
+      related.push(filePath.replace('', '.d.ts'));
     }
 
     return related.filter((f) => f !== filePath);

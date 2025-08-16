@@ -78,7 +78,7 @@ export class SharedFACTAccessManager implements UniversalFACTAccess {
 
       // Import dynamically to avoid circular dependencies
       const { getCollectiveFACT, initializeCollectiveFACT } = await import(
-        './collective-fact-integration.ts'
+        './collective-fact-integration'
       );
 
       let sharedFact = getCollectiveFACT();

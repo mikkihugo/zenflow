@@ -12,7 +12,7 @@ import {
 } from './shared-fact-system';
 import { SwarmCommander } from './agents/swarm-commander';
 import type { SwarmCommanderConfig } from './agents/swarm-commander';
-import type { IEventBus } from '../core/interfaces/base-interfaces';
+import type { EventBus } from '../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../memory/core/memory-coordinator';
 
 const logger = getLogger('SharedFACTIntegrationTest');
@@ -43,7 +43,7 @@ export async function testUniversalFACTAccess(): Promise<void> {
       on: () => {},
       emit: () => {},
       off: () => {},
-    } as IEventBus;
+    } as EventBus;
     const mockMemory = {
       store: async () => {},
       retrieve: async () => null,
@@ -258,7 +258,7 @@ export async function runSharedFACTIntegrationTests(): Promise<void> {
     await testLevelSpecificStorageRemoval();
     await testSharedKnowledgeLearning();
 
-    logger.info('🎉 ALL SHARED FACT INTEGRATION TESTS PASSED!');
+    logger.info('🎉 ALL SHARED FACT NTEGRATION TESTS PASSED!');
     logger.info(
       '✅ Shared FACT system successfully implemented across all hierarchy levels'
     );

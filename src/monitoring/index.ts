@@ -91,7 +91,7 @@ export class PerformanceMonitoringSystem {
   /**
    * Get system integration hooks for external systems.
    */
-  public getHooks(): import('./integrations/system-integration.ts').SystemHooks {
+  public getHooks(): import('./integrations/system-integration').SystemHooks {
     return this.integration.getSystemHooks();
   }
 
@@ -141,7 +141,7 @@ export async function setupClaudeZenMonitoring(
   } = {}
 ): Promise<{
   system: PerformanceMonitoringSystem;
-  hooks: import('./integrations/system-integration.ts').SystemHooks;
+  hooks: import('./integrations/system-integration').SystemHooks;
   dashboardUrl: string;
 }> {
   const centralConfig = getConfig();
@@ -243,7 +243,7 @@ export const examples = {
         (a) => a.severity === 'critical'
       );
       if (criticalAnomalies.length > 0) {
-        logger.error('CRITICAL PERFORMANCE ISSUES:', criticalAnomalies);
+        logger.error('CRITICAL PERFORMANCE SSUES:', criticalAnomalies);
         // In production, you might send alerts to external monitoring systems
       }
     });

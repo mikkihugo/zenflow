@@ -9,11 +9,11 @@
 import type {
   DIContainer,
   DIToken,
-  DIScope as IDIScope,
+  DIScope as DIScope,
   Provider,
 } from '../types/di-types';
 
-export class DIScope implements IDIScope {
+export class DIScope implements DIScope {
   private readonly scopedProviders = new Map<symbol, Provider<any>>();
   private readonly scopedInstances = new Map<symbol, any>();
   private readonly children = new Set<DIScope>();
@@ -49,7 +49,7 @@ export class DIScope implements IDIScope {
   /**
    * Create a child scope.
    */
-  createScope(): IDIScope {
+  createScope(): DIScope {
     const child = new DIScope(this);
     this.children.add(child);
     return child;
@@ -58,7 +58,7 @@ export class DIScope implements IDIScope {
   /**
    * Create a child scope (alias for createScope).
    */
-  createChild(): IDIScope {
+  createChild(): DIScope {
     return this.createScope();
   }
 

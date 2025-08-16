@@ -7,18 +7,18 @@
  */
 
 import * as express from 'express';
-import { getLogger } from '../../../config/logging-config.js';
-import { SwarmService } from '../../../services/coordination/swarm-service.js';
+import { getLogger } from "../../../config/logging-config";
+import { SwarmService } from '../../../services/coordination/swarm-service';
 import type {
   AgentConfig,
   SwarmConfig,
   TaskOrchestrationConfig,
-} from '../../../types/swarm-types.js';
+} from '../../../coordination/types/interfaces';
 import {
   AgentConfigSchema,
   SwarmConfigSchema,
   TaskOrchestrationSchema,
-} from '../../../types/swarm-types.js';
+} from '../../../coordination/schemas';
 
 const logger = getLogger('swarm-api-routes');
 const router = express.Router();

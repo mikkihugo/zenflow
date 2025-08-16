@@ -13,12 +13,12 @@ export type {
   OrchestratorMetrics,
   OrchestratorStatus,
   TypedNeuralServiceResult,
-} from './zen-orchestrator-wrapper.js';
+} from './zen-orchestrator-wrapper';
 // zen-orchestrator integration
 export {
   type ZenOrchestratorConfig,
   ZenOrchestratorWrapper,
-} from './zen-orchestrator-wrapper.js';
+} from './zen-orchestrator-wrapper';
 
 // TypeScript definitions for Rust bindings - types will be inferred from implementations
 
@@ -116,7 +116,7 @@ export const BindingsUtils = {
       case 'wasm': {
         // Load WASM bindings through proper abstraction (fixed isolation violation)
         // Instead of direct import, use dynamic loading with proper interface
-        const wasmModule = await import('./wasm-binding-interface.js');
+        const wasmModule = await import('./wasm-binding-interface');
         return wasmModule.default;
       }
       default:

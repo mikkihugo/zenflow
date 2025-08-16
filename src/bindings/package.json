@@ -44,5 +44,8 @@
     "type": "git",
     "url": "git+https://github.com/your-org/claude-code-zen.git"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "http-proxy-middleware": "^3.0.5"
+  }
 }

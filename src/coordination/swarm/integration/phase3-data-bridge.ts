@@ -27,8 +27,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator';
 
@@ -113,8 +113,8 @@ export interface AggregatedLearningMetrics extends LearningMetrics {
  * Learning Monitor displays actual system activity instead of zero states.
  */
 export class Phase3DataBridge extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: Phase3DataBridgeConfig;
 
@@ -143,7 +143,7 @@ export class Phase3DataBridge extends EventEmitter {
 
   constructor(
     config: Phase3DataBridgeConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     dependencies: {
       swarmService?: SwarmService;

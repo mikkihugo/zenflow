@@ -7,7 +7,7 @@ import { getLogger } from '../../../config/logging-config';
 const logger = getLogger('coordination-swarm-core-index');
 
 /**
- * 🚀 ULTIMATE ZenSwarm Implementation - FULLY INTEGRATED.
+ * 🚀 ULTIMATE ZenSwarm Implementation - FULLY NTEGRATED.
  *
  * Advanced swarm orchestration with:
  * - WASM-accelerated neural networks
@@ -19,9 +19,9 @@ const logger = getLogger('coordination-swarm-core-index');
  * - Chaos engineering and fault tolerance.
  */
 
-import type { SessionCoordinationDao } from '../../../database/index.js';
+import type { SessionCoordinationDao } from '../database/dao';
 // import { DALFactory } from '../database'; // TODO: Implement proper DI integration
-import { WasmModuleLoader } from '../../../neural/wasm/wasm-compat';
+import { WasmModuleLoader } from '@claude-zen/brain/wasm';
 import { AgentPool, createAgent } from '../../agents/agent';
 import { executeTaskWithAgent } from './agent-adapter';
 import { getContainer } from './singleton-container';
@@ -43,15 +43,15 @@ import {
   validateSwarmOptions,
 } from './utils';
 
-export * from '../../../neural/core/neural-network-manager';
-export * from '../../../neural/wasm/wasm-enhanced-loader';
+export * from '@claude-zen/brain/core';
+export * from '@claude-zen/brain/wasm';
 // Enhanced exports with neural capabilities
 export * from '../../agents/agent';
 export * from '../mcp/mcp-daa-tools';
 // Export the base implementation as BaseZenSwarm to avoid conflict
 export { ZenSwarm as BaseZenSwarm } from './base-swarm';
 export * from './errors';
-export * from './hooks/index.js';
+export * from './session-example';
 export * from './logger';
 export * from './logging-config';
 export * from './monitoring-dashboard';
@@ -232,7 +232,7 @@ export class ZenSwarm implements SwarmEventEmitter {
       maxAgents: options?.maxAgents || 10,
       connectionDensity: options?.connectionDensity || 0.5,
       syncInterval: options?.syncInterval || 1000,
-      wasmPath: options?.wasmPath || './wasm/ruv_swarm_wasm.js',
+      wasmPath: options?.wasmPath || './wasm/ruv_swarm_wasm',
       persistence: {
         enabled: false,
         dbPath: '',
@@ -516,7 +516,7 @@ export class ZenSwarm implements SwarmEventEmitter {
     if (this.persistence && !id) {
       try {
         await this.persistence.execute(
-          'INSERT INTO swarms (id, name, topology, strategy, max_agents, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+          'INSERT NTO swarms (id, name, topology, strategy, max_agents, created_at) VALUES (?, ?, ?, ?, ?, ?)',
           [
             swarm.id,
             name,

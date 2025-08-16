@@ -10,31 +10,31 @@ import { createToken } from './token-factory';
 import type { SystemEvent } from '../../coordination/core/event-bus';
 
 // Core infrastructure interfaces (to be implemented)
-export interface ILogger {
+export interface Logger {
   debug(message: string, meta?: unknown): void;
   info(message: string, meta?: unknown): void;
   warn(message: string, meta?: unknown): void;
   error(message: string, meta?: unknown): void;
 }
 
-export interface IConfig {
+export interface Config {
   get<T>(key: string, defaultValue?: T): T;
   set(key: string, value: unknown): void;
   has(key: string): boolean;
 }
 
-export interface IEventBus {
+export interface EventBus {
   emit(event: string, data: unknown): boolean;
   emitSystemEvent(event: SystemEvent): boolean;
   on(event: string, handler: (data: unknown) => void): this;
   off(event: string, handler: (data: unknown) => void): this;
 }
 
-export interface IDatabase {
+export interface Database {
   initialize?(): Promise<void>;
   query<T>(sql: string, params?: unknown[]): Promise<T[]>;
   execute(sql: string, params?: unknown[]): Promise<void>;
-  transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T>;
+  transaction<T>(fn: (db: Database) => Promise<T>): Promise<T>;
   shutdown?(): Promise<void>;
 
   // Task management methods
@@ -49,7 +49,7 @@ export interface IDatabase {
   getMetrics(entityId: string, metricType: string): Promise<any[]>;
 }
 
-export interface IHttpClient {
+export interface HttpClient {
   get<T>(url: string, config?: unknown): Promise<T>;
   post<T>(url: string, data?: unknown, config?: unknown): Promise<T>;
   put<T>(url: string, data?: unknown, config?: unknown): Promise<T>;
@@ -58,11 +58,11 @@ export interface IHttpClient {
 
 // Core system tokens
 export const CORE_TOKENS = {
-  Logger: createToken<ILogger>('Logger'),
-  Config: createToken<IConfig>('Config'),
-  EventBus: createToken<IEventBus>('EventBus'),
-  Database: createToken<IDatabase>('Database'),
-  HttpClient: createToken<IHttpClient>('HttpClient'),
+  Logger: createToken<Logger>('Logger'),
+  Config: createToken<Config>('Config'),
+  EventBus: createToken<EventBus>('EventBus'),
+  Database: createToken<Database>('Database'),
+  HttpClient: createToken<HttpClient>('HttpClient'),
 } as const;
 
 // Memory domain tokens

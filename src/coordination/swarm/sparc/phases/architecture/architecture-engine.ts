@@ -275,9 +275,9 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
           'Rate limiting',
           'Request/response transformation',
         ],
-        interfaces: ['IAPIGateway'],
+        interfaces: ['APIGateway'],
         dependencies: ['AuthenticationService', 'RateLimitingService'],
-        technologies: ['Express.js', 'JWT', 'Redis'],
+        technologies: ['Express', 'JWT', 'Redis'],
         scalability: 'horizontal',
         performance: {
           expectedLatency: '<50ms',
@@ -294,7 +294,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
           'Hot reloading',
           'Configuration validation',
         ],
-        interfaces: ['IConfigurationManager'],
+        interfaces: ['ConfigurationManager'],
         dependencies: ['FileSystem', 'EnvironmentVariables'],
         technologies: ['JSON', 'YAML', 'Environment Variables'],
         scalability: 'vertical',
@@ -313,7 +313,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
           'Alerting',
           'Performance tracking',
         ],
-        interfaces: ['IMonitoringService'],
+        interfaces: ['MonitoringService'],
         dependencies: ['MetricsDatabase', 'AlertingSystem'],
         technologies: ['Prometheus', 'Grafana', 'WebSocket'],
         scalability: 'horizontal',
@@ -927,7 +927,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
   private async selectTechnologiesForAlgorithm(
     algorithm: unknown
   ): Promise<string[]> {
-    const technologies = ['TypeScript', 'Node.js'];
+    const technologies = ['TypeScript', 'Node'];
 
     if (algorithm.complexity?.timeComplexity) {
       if (
@@ -939,7 +939,7 @@ export class ArchitecturePhaseEngine implements ArchitectureEngine {
     }
 
     if (algorithm.name.includes('Neural')) {
-      technologies.push('TensorFlow.js', 'WASM');
+      technologies.push('TensorFlow', 'WASM');
     }
 
     return technologies;

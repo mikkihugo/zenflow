@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 // TODO: LEGACY - Remove old agent terminology, replace with DroneType
 import type { AgentType } from '../types/agent-types';
 
@@ -168,8 +168,8 @@ export class PersistentLearningSystem extends EventEmitter {
   private crossSwarmLearnings: CrossSwarmLearning[] = [];
 
   constructor(
-    private eventBus: IEventBus,
-    private logger?: ILogger
+    private eventBus: EventBus,
+    private logger?: Logger
   ) {
     super();
     this.setupEventHandlers();

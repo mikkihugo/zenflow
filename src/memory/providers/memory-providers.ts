@@ -7,13 +7,13 @@
  */
 
 import type { DALFactory } from '../../database/factory';
-import type { ICoordinationRepository, IVectorRepository } from '../../database/interfaces';
+import type { CoordinationRepository, VectorRepository } from '../../database/interfaces';
 import { inject, injectable } from '../../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
-  type IConfig,
-  type ILogger,
+  type Config,
+  type Logger,
   MEMORY_TOKENS,
 } from '../../di/tokens/core-tokens';
 
@@ -65,8 +65,8 @@ export interface MemoryConfig {
 @injectable
 export class MemoryProviderFactory {
   constructor(
-    @inject(CORE_TOKENS.Logger) private logger: ILogger,
-    @inject(CORE_TOKENS.Config) private config: IConfig,
+    @inject(CORE_TOKENS.Logger) private logger: Logger,
+    @inject(CORE_TOKENS.Config) private config: Config,
     @inject(DATABASE_TOKENS.DALFactory) private dalFactory: DALFactory
   ) {}
 
@@ -114,12 +114,12 @@ interface MemoryRecord {
 
 @injectable
 export class SqliteMemoryBackend implements MemoryBackend {
-  private repository: ICoordinationRepository<MemoryRecord>;
+  private repository: CoordinationRepository<MemoryRecord>;
   private initialized = false;
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger,
+    private logger: Logger,
     private dalFactory: DALFactory
   ) {}
 
@@ -249,12 +249,12 @@ interface VectorMemoryRecord {
 
 @injectable
 export class LanceDBMemoryBackend implements MemoryBackend {
-  private repository: IVectorRepository<VectorMemoryRecord>;
+  private repository: VectorRepository<VectorMemoryRecord>;
   private initialized = false;
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger,
+    private logger: Logger,
     private dalFactory: DALFactory
   ) {}
 
@@ -417,7 +417,7 @@ export class JsonMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: Logger
   ) {}
 
   async store(key: string, value: unknown): Promise<void> {
@@ -534,7 +534,7 @@ export class InMemoryBackend implements MemoryBackend {
 
   constructor(
     private config: MemoryConfig,
-    private logger: ILogger
+    private logger: Logger
   ) {
     this.maxSize = config?.maxSize || 10000;
     this.logger.info(`Initialized in-memory backend with max size: ${this.maxSize}`);

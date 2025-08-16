@@ -78,9 +78,9 @@ import type {
   DeepPattern,
   SystemPrediction,
 } from '../learning/tier3-neural-learning';
-import type { MLModelRegistry } from '../../intelligence/adaptive-learning/ml-integration';
+import type { MLModelRegistry } from '@claude-zen/intelligence/ml-integration';
 import type { SwarmDatabaseManager } from '../swarm/storage/swarm-database-manager';
-import type { Pattern } from '../../intelligence/adaptive-learning/types';
+import type { Pattern } from '@claude-zen/intelligence/types';
 
 const logger = getLogger(
   'coordination-intelligence-predictive-analytics-engine'

@@ -265,7 +265,7 @@ export class InterfaceLauncher extends EventEmitter {
     try {
       // Dynamic import of Web interface
       const { WebInterface } = await import(
-        '../interfaces/web/web-interface.ts'
+        '../interfaces/web/web-interface'
       );
 
       const webConfig: WebConfig = {

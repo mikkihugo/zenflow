@@ -197,7 +197,7 @@ export class RustFactBridge extends EventEmitter {
     knowledgeType: string
   ): Promise<unknown> {
     // Use GitHub analyzer to get real code examples
-    const { GitHubCodeAnalyzer } = await import('./github-code-analyzer.js');
+    const { GitHubCodeAnalyzer } = await import('./github-code-analyzer');
     const analyzer = new GitHubCodeAnalyzer();
 
     // For BEAM ecosystem tools, analyze Hex package repositories

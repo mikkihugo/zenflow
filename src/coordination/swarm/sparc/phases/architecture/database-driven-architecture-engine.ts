@@ -3,7 +3,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import { ArchitectureStorageService } from '../database/architecture-storage';
+import { ArchitectureStorageService } from '../../database/architecture-storage';
 import type {
   AlgorithmPseudocode,
   ArchitecturalPattern,
@@ -22,7 +22,7 @@ import type {
   SecurityRequirement,
   SystemArchitecture,
   ValidationResult,
-} from '../types/sparc-types';
+} from '../../types/sparc-types';
 
 // Additional types needed for this module
 interface SystemComponent {
@@ -111,7 +111,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
 
   constructor(
     private db: unknown, // DatabaseAdapter
-    private logger?: unknown // Logger interface
+    private logger?: { info?: (msg: string) => void; error?: (msg: string, error?: unknown) => void; warn?: (msg: string, error?: unknown) => void } // Logger interface
   ) {
     this.storageService = new ArchitectureStorageService(db);
   }
@@ -121,7 +121,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
    */
   async initialize(): Promise<void> {
     await this.storageService.initialize();
-    this.logger?.info('Database-driven Architecture Engine initialized');
+    this.logger?.info?.('Database-driven Architecture Engine initialized');
   }
 
   /**
@@ -132,7 +132,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
   async designArchitecture(
     pseudocode: PseudocodeStructure
   ): Promise<ArchitectureDesign> {
-    this.logger?.info('Starting architecture design from pseudocode structure');
+    this.logger?.info?.('Starting architecture design from pseudocode structure');
 
     const components = await this.identifySystemComponents(pseudocode);
     const relationships = await this.defineComponentRelationships(components);
@@ -179,7 +179,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       await this.storageService.saveArchitecture(architecture);
     architecture.id = architectureId;
 
-    this.logger?.info(
+    this.logger?.info?.(
       `Architecture design completed and saved with ID: ${architectureId}`
     );
     return architecture;
@@ -195,7 +195,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
     spec: DetailedSpecification,
     pseudocode: AlgorithmPseudocode[]
   ): Promise<SystemArchitecture> {
-    this.logger?.info(
+    this.logger?.info?.(
       'Designing system architecture from specification and pseudocode'
     );
 
@@ -233,11 +233,11 @@ export class DatabaseDrivenArchitecturePhaseEngine
   async generateComponentDiagrams(
     architecture: SystemArchitecture
   ): Promise<ComponentDiagram[]> {
-    this.logger?.info('Generating component diagrams');
+    this.logger?.info?.('Generating component diagrams');
 
     const diagrams: ComponentDiagram[] = [
       // High-level system overview
-      architecture.components.map((component: unknown) => ({
+      architecture.components.map((component: Component) => ({
         id: component.id || nanoid(),
         name: component.name,
         type: component.type,
@@ -258,7 +258,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
    * @param components
    */
   async designDataFlow(components: Component[]): Promise<DataFlowDiagram> {
-    this.logger?.info('Designing data flow between components');
+    this.logger?.info?.('Designing data flow between components');
 
     const dataFlowConnections: DataFlowConnection[] = [];
 
@@ -333,12 +333,12 @@ export class DatabaseDrivenArchitecturePhaseEngine
   async planDeploymentArchitecture(
     system: SystemArchitecture
   ): Promise<DeploymentPlan> {
-    this.logger?.info('Planning deployment architecture');
+    this.logger?.info?.('Planning deployment architecture');
 
-    const deploymentUnits = system.deploymentUnits.map((unit: unknown) => ({
+    const deploymentUnits = system.deploymentUnits.map((unit: any) => ({
       name: unit.name,
       components: unit.components,
-      infrastructure: unit.infrastructure.map((infra: unknown) => ({
+      infrastructure: unit.infrastructure.map((infra: any) => ({
         type: infra.type,
         specification: infra.specification,
         constraints: infra.constraints || [],
@@ -361,7 +361,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
   async validateArchitecturalConsistency(
     architecture: SystemArchitecture
   ): Promise<ArchitecturalValidation> {
-    this.logger?.info('Validating architectural consistency');
+    this.logger?.info?.('Validating architectural consistency');
 
     const validationResults: ValidationResult[] = [];
 
@@ -524,7 +524,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
    * @param algorithm
    */
   private async createComponentFromAlgorithm(
-    algorithm: unknown
+    algorithm: any
   ): Promise<SystemComponent> {
     return {
       id: nanoid(),
@@ -555,7 +555,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
    * @param dataStructure
    */
   private async createComponentFromDataStructure(
-    dataStructure: unknown
+    dataStructure: any
   ): Promise<SystemComponent> {
     return {
       id: nanoid(),
@@ -605,9 +605,9 @@ export class DatabaseDrivenArchitecturePhaseEngine
         'Rate limiting',
         'Request/response transformation',
       ],
-      interfaces: ['IAPIGateway'],
+      interfaces: ['APIGateway'],
       dependencies: ['AuthenticationService', 'RateLimitingService'],
-      technologies: ['Express.js', 'JWT', 'Redis'],
+      technologies: ['Express', 'JWT', 'Redis'],
       scalability: 'horizontal',
       performance: {
         expectedThroughput: '10000 requests/sec',
@@ -628,7 +628,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
         'Hot reloading',
         'Configuration validation',
       ],
-      interfaces: ['IConfigurationManager'],
+      interfaces: ['ConfigurationManager'],
       dependencies: ['FileSystem', 'EnvironmentVariables'],
       technologies: ['JSON', 'YAML', 'Environment Variables'],
       scalability: 'vertical',
@@ -652,7 +652,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
           'Alerting',
           'Performance tracking',
         ],
-        interfaces: ['IMonitoringService'],
+        interfaces: ['MonitoringService'],
         dependencies: ['MetricsDatabase', 'AlertingSystem'],
         technologies: ['Prometheus', 'Grafana', 'WebSocket'],
         scalability: 'horizontal',
@@ -841,8 +841,8 @@ export class DatabaseDrivenArchitecturePhaseEngine
         dataFlows.push({
           id: nanoid(),
           name: `${sourceComponent.name}To${targetComponent?.name}Flow`,
-          sourceComponentId: relationship['sourceId'],
-          targetComponentId: relationship['targetId'],
+          sourceComponentId: relationship['sourceId'] as string,
+          targetComponentId: relationship['targetId'] as string,
           dataType: this.inferDataType(sourceComponent, targetComponent),
           format: 'JSON',
           volume: this.estimateDataVolume(sourceComponent, targetComponent),
@@ -876,7 +876,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       for (const interfaceName of component.interfaces) {
         interfaces.push({
           id: nanoid(),
-          name: interfaceName,
+          name: interfaceName as string,
           componentId: component.id,
           type: this.determineInterfaceType(component),
           methods: await this.generateInterfaceMethods(component),
@@ -1048,7 +1048,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.interfaces && architecture.interfaces.length > 0;
     const interfaceConsistency = hasInterfaces
       ? architecture.interfaces.every(
-          (iface: unknown) => iface.methods && iface.methods.length > 0
+          (iface: any) => iface.methods && iface.methods.length > 0
         )
       : false;
 
@@ -1070,7 +1070,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.dataFlow && architecture.dataFlow.length > 0;
     const dataFlowComplete = hasDataFlow
       ? architecture.dataFlow.every(
-          (flow: unknown) => flow.from && flow.to && flow.protocol
+          (flow: any) => flow.from && flow.to && flow.protocol
         )
       : false;
 
@@ -1093,7 +1093,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.architecturalPatterns.length > 0;
     const patternsApplied = hasPatterns
       ? architecture.architecturalPatterns.every(
-          (pattern: unknown) =>
+          (pattern: any) =>
             pattern.applicability && pattern.applicability.length > 0
         )
       : false;
@@ -1117,7 +1117,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
       architecture.qualityAttributes.length >= 3;
     const qualityAttrsComplete = hasQualityAttrs
       ? architecture.qualityAttributes.every(
-          (attr: unknown) => attr.target && attr.measurement && attr.criteria
+          (attr: any) => attr.target && attr.measurement && attr.criteria
         )
       : false;
 
@@ -1179,7 +1179,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
         type: 'processor',
         description: algorithm.purpose,
         responsibilities: algorithm.steps.map(
-          (step: unknown) => step.description
+          (step: any) => step.description
         ),
         interfaces: [`I${algorithm.name}Processor`],
         dependencies: this.extractDependenciesFromAlgorithm(algorithm),
@@ -1285,7 +1285,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
         ],
         scaling: {
           type: 'vertical',
-          triggers: ['Storage > 80%', 'IOPS > 1000'],
+          triggers: ['Storage > 80%', 'OPS > 1000'],
           limits: { min: 1, max: 3 },
         },
       });
@@ -1338,7 +1338,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
 
     // Analyze functional requirements to suggest patterns
     const hasRealtimeReqs = spec.functionalRequirements.some(
-      (req: unknown) =>
+      (req: any) =>
         req.description.toLowerCase().includes('real-time') ||
         req.description.toLowerCase().includes('event')
     );
@@ -1365,7 +1365,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
     // Backend technology selection
     stack.push({
       category: 'backend',
-      technology: 'Node.js',
+      technology: 'Node',
       version: '20+',
       rationale: 'High performance for I/O operations',
       alternatives: ['Python', 'Java', 'Go'],
@@ -1373,7 +1373,7 @@ export class DatabaseDrivenArchitecturePhaseEngine
 
     // Database selection based on requirements
     const needsGraph = spec.functionalRequirements.some(
-      (req: unknown) =>
+      (req: any) =>
         req.description.toLowerCase().includes('relationship') ||
         req.description.toLowerCase().includes('network')
     );
@@ -1461,18 +1461,18 @@ export class DatabaseDrivenArchitecturePhaseEngine
     const dependencies: string[] = [];
 
     // Extract dependencies from inputs and steps
-    algorithm.inputs.forEach((input: unknown) => {
+    algorithm.inputs.forEach((input: any) => {
       if (input.type.includes('Agent')) dependencies.push('AgentService');
       if (input.type.includes('Task')) dependencies.push('TaskManager');
       if (input.type.includes('Memory')) dependencies.push('MemoryService');
     });
 
-    return [...new Set(dependencies)];
+    return Array.from(new Set(dependencies));
   }
 
   // Keep existing helper methods with minor type adjustments
   private async extractAlgorithmDependencies(
-    algorithm: unknown
+    algorithm: any
   ): Promise<string[]> {
     const dependencies: string[] = [];
 
@@ -1486,13 +1486,13 @@ export class DatabaseDrivenArchitecturePhaseEngine
       if (paramType.includes('Memory')) dependencies.push('MemoryManager');
     }
 
-    return [...new Set(dependencies)];
+    return Array.from(new Set(dependencies));
   }
 
   private async selectTechnologiesForAlgorithm(
-    algorithm: unknown
+    algorithm: any
   ): Promise<string[]> {
-    const technologies = ['TypeScript', 'Node.js'];
+    const technologies = ['TypeScript', 'Node'];
 
     const complexity = algorithm.complexity;
     if (
@@ -1504,14 +1504,14 @@ export class DatabaseDrivenArchitecturePhaseEngine
     }
 
     if (algorithm.name.toLowerCase().includes('neural')) {
-      technologies.push('TensorFlow.js', 'WASM');
+      technologies.push('TensorFlow', 'WASM');
     }
 
     return technologies;
   }
 
   private async assessComponentScalability(
-    algorithm: unknown
+    algorithm: any
   ): Promise<string> {
     const complexity = algorithm.complexity;
     if (
@@ -1525,11 +1525,11 @@ export class DatabaseDrivenArchitecturePhaseEngine
   }
 
   private async extractDataStructureDependencies(
-    dataStructure: unknown
+    dataStructure: any
   ): Promise<string[]> {
     const dependencies: string[] = [];
 
-    const type = dataStructure?.type || dataStructure?.name || '';
+    const type = (dataStructure as any)?.type || (dataStructure as any)?.name || '';
     if (type.includes('HashMap') || type.includes('Map'))
       dependencies.push('HashingService');
     if (type.includes('PriorityQueue') || type.includes('Queue'))
@@ -1541,11 +1541,11 @@ export class DatabaseDrivenArchitecturePhaseEngine
   }
 
   private async selectTechnologiesForDataStructure(
-    dataStructure: unknown
+    dataStructure: any
   ): Promise<string[]> {
     const technologies = ['TypeScript'];
 
-    const type = dataStructure?.type || dataStructure?.name || '';
+    const type = (dataStructure as any)?.type || (dataStructure as any)?.name || '';
     if (type.includes('HashMap') || type.includes('Map')) {
       technologies.push('Map', 'Redis');
     } else if (type.includes('Queue')) {
@@ -1558,19 +1558,19 @@ export class DatabaseDrivenArchitecturePhaseEngine
   }
 
   private async assessDataStructureScalability(
-    dataStructure: unknown
+    dataStructure: any
   ): Promise<string> {
-    const expectedSize = dataStructure?.expectedSize || 1000;
+    const expectedSize = (dataStructure as any)?.expectedSize || 1000;
     return expectedSize > 100000 ? 'horizontal' : 'vertical';
   }
 
-  private getDataStructureLatency(performance: unknown): string {
+  private getDataStructureLatency(performance: any): string {
     const accessTime = performance.lookup || performance.access || 'O(1)';
     return accessTime === 'O(1)' ? '<1ms' : '<10ms';
   }
 
-  private estimateMemoryUsage(dataStructure: unknown): string {
-    const size = dataStructure?.expectedSize || 1000;
+  private estimateMemoryUsage(dataStructure: any): string {
+    const size = (dataStructure as any)?.expectedSize || 1000;
     if (size > 1000000) return '1GB';
     if (size > 100000) return '100MB';
     if (size > 10000) return '10MB';

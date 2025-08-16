@@ -30,15 +30,15 @@ class MockDatabaseAdapter {
   async execute(sql: string, params?: unknown[]): Promise<unknown> {
     // Simple mock for table creation and data manipulation
     if (sql.includes('CREATE TABLE')) {
-      const tableName = sql.match(/CREATE TABLE IF NOT EXISTS (\w+)/)?.[1];
+      const tableName = sql.match(/CREATE TABLE F NOT EXISTS (\w+)/)?.[1];
       if (tableName && !this.tables.has(tableName)) {
         this.tables.set(tableName, []);
       }
       return { affectedRows: 0 };
     }
 
-    if (sql.includes('INSERT INTO')) {
-      const tableName = sql.match(/INSERT INTO (\w+)/)?.[1];
+    if (sql.includes('INSERT NTO')) {
+      const tableName = sql.match(/INSERT NTO (\w+)/)?.[1];
       if (tableName && this.tables.has(tableName)) {
         const table = this.tables.get(tableName)!;
         const record = this.createMockRecord(params || []);
@@ -144,6 +144,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
       id: nanoid(),
       algorithms: [
         {
+          id: nanoid(),
           name: 'SwarmCoordinator',
           purpose: 'Coordinate agent tasks and resource allocation',
           inputs: [
@@ -203,6 +204,7 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
           ],
         },
         {
+          id: nanoid(),
           name: 'TaskScheduler',
           purpose: 'Schedule tasks based on priority and dependencies',
           inputs: [
@@ -396,12 +398,12 @@ async function testDatabaseDrivenArchitectureEngine(): Promise<void> {
 
     // Display component details
     if (architecture.components && architecture.components.length > 0) {
-      architecture.components.forEach((_component, _index) => {});
+      architecture.components.forEach((_component: unknown, _index: number) => {});
     }
 
     // Display recommendations if any
     if (validation.recommendations && validation.recommendations.length > 0) {
-      validation.recommendations.forEach((_rec, _index) => {});
+      validation.recommendations.forEach((_rec: unknown, _index: number) => {});
     }
   } catch (error) {
     logger.error('❌ Test failed:', error);

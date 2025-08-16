@@ -19,7 +19,7 @@ const logger = getLogger('KnowledgeSwarm');
 
 import { EventEmitter } from 'node:events';
 import { createDao, DatabaseTypes, EntityTypes } from '../database/index';
-import type { IRepository } from '../database/interfaces';
+import type { Repository } from '../database/interfaces';
 // Import UACL for unified client management
 import { ClientType, uacl } from '../interfaces/clients/index';
 import type { ClientInstance } from '../interfaces/clients/registry';
@@ -109,7 +109,7 @@ export class KnowledgeSwarm extends EventEmitter {
   private queryQueue: KnowledgeQuery[] = [];
   private isProcessing = false;
   private queryCounter = 0;
-  private vectorRepository?: IRepository<any>;
+  private vectorRepository?: Repository<any>;
   private vectorDAO?: unknown; // TODO: Add proper type
 
   // Pre-defined agent specializations

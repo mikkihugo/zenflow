@@ -2,10 +2,10 @@
  * @file Engine implementation.
  */
 
-import { getLogger } from '../config/logging-config.js';
-import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
+import { getLogger } from '../config/logging-config';
+import type { BaseDocumentEntity } from '../database/entities/document-entities';
 import type { DocumentManager } from "../services/document/document-service";
-import type { MemorySystemFactory } from '../memory/index.js';
+import type { MemorySystemFactory } from '../memory/types';
 
 const logger = getLogger('WorkflowEngine');
 
@@ -714,7 +714,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   // ====================================================================
-  // ENHANCED METHODS TO MATCH CORE WORKFLOW ENGINE INTERFACE
+  // ENHANCED METHODS TO MATCH CORE WORKFLOW ENGINE NTERFACE
   // ====================================================================
 
   /**

@@ -24,9 +24,9 @@
  * @example
  * ```typescript
  * // Implement a custom client using UACL interfaces.
- * import type { IClient, ClientConfig, ClientResponse } from './core/interfaces';
+ * import type { Client, ClientConfig, ClientResponse } from './core/interfaces';
  *
- * class CustomClient extends EventEmitter implements IClient {
+ * class CustomClient extends EventEmitter implements Client {
  *   constructor(public readonly config: ClientConfig) {
  *     super();
  *   }
@@ -311,17 +311,17 @@ export interface ClientResponse<T = any> {
 /**
  * Core client interface that all clients must implement.
  *
- * @interface IClient
+ * @interface Client
  * @augments EventEmitter
  * @description The foundational interface that all UACL clients must implement.
  *              Provides a unified API contract for connection management, request handling,
  *              health monitoring, and lifecycle management across all client types.
  * @example
  * ```typescript
- * // Using a UACL client through the IClient interface
- * import type { IClient } from './core/interfaces';
+ * // Using a UACL client through the Client interface
+ * import type { Client } from './core/interfaces';
  *
- * async function useClient(client: IClient) {
+ * async function useClient(client: Client) {
  *   // Connection management
  *   await client.connect();
  *   console.log('Connected:', client.isConnected());
@@ -361,7 +361,7 @@ export interface ClientResponse<T = any> {
  * }
  *
  * // Implementing a custom client
- * class CustomClient extends EventEmitter implements IClient {
+ * class CustomClient extends EventEmitter implements Client {
  *   constructor(public readonly config: ClientConfig) {
  *     super();
  *     this.name = config.name;
@@ -387,7 +387,7 @@ export interface ClientResponse<T = any> {
  * }
  * ```
  */
-export interface IClient {
+export interface Client {
   /** Client configuration (read-only) */
   readonly config: ClientConfig;
   /** Client name identifier (read-only) */
@@ -539,14 +539,14 @@ export interface IClient {
  *
  * @example
  */
-export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
+export interface ClientFactory<TConfig extends ClientConfig = ClientConfig> {
   // Client creation
-  create(config: TConfig): Promise<IClient>;
-  createMultiple(configs: TConfig[]): Promise<IClient[]>;
+  create(config: TConfig): Promise<Client>;
+  createMultiple(configs: TConfig[]): Promise<Client[]>;
 
   // Client management
-  get(name: string): IClient | undefined;
-  list(): IClient[];
+  get(name: string): Client | undefined;
+  list(): Client[];
   has(name: string): boolean;
   remove(name: string): Promise<boolean>;
 
@@ -564,21 +564,21 @@ export interface IClientFactory<TConfig extends ClientConfig = ClientConfig> {
  *
  * @example
  */
-export interface IClientRegistry {
+export interface ClientRegistry {
   // Factory registration
   registerFactory<T extends ClientConfig>(
     type: string,
-    factory: IClientFactory<T>
+    factory: ClientFactory<T>
   ): void;
   getFactory<T extends ClientConfig>(
     type: string
-  ): IClientFactory<T> | undefined;
+  ): ClientFactory<T> | undefined;
   listFactoryTypes(): string[];
 
   // Client management across all factories
-  getAllClients(): Map<string, IClient>;
-  findClient(name: string): IClient | undefined;
-  getClientsByType(type: string): IClient[];
+  getAllClients(): Map<string, Client>;
+  findClient(name: string): Client | undefined;
+  getClientsByType(type: string): Client[];
 
   // Global operations
   healthCheckAll(): Promise<Map<string, ClientStatus>>;

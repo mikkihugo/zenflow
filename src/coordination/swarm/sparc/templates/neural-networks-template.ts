@@ -387,7 +387,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           {
             name: 'clusterNodes',
             type: 'string[]',
-            description: 'List of cluster node IDs',
+            description: 'List of cluster node Ds',
           },
         ],
         outputs: [
@@ -737,7 +737,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           'Memory management',
           'Performance optimization',
         ],
-        interfaces: ['INeuralEngine'],
+        interfaces: ['NeuralEngine'],
         dependencies: ['WASMModule', 'TensorStorage'],
         qualityAttributes: { performance: 'high', reliability: 'critical' },
         performance: {
@@ -756,7 +756,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           'Node health monitoring',
           'Fault tolerance and recovery',
         ],
-        interfaces: ['ITrainingCoordinator'],
+        interfaces: ['TrainingCoordinator'],
         dependencies: ['ClusterManager', 'GradientSynchronizer'],
         qualityAttributes: {
           scalability: 'high',
@@ -778,7 +778,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           'Metadata tracking',
           'Performance benchmarking',
         ],
-        interfaces: ['IModelRegistry'],
+        interfaces: ['ModelRegistry'],
         dependencies: ['ModelStorage', 'MetadataDB'],
         qualityAttributes: { consistency: 'high', availability: 'critical' },
         performance: {
@@ -797,7 +797,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           'Data compression and serialization',
           'Cache optimization',
         ],
-        interfaces: ['ITensorStorage'],
+        interfaces: ['TensorStorage'],
         dependencies: ['MemoryPool', 'CompressionEngine'],
         qualityAttributes: {
           'memory-efficiency': 'high',
@@ -819,7 +819,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           'Resource utilization',
           'Alert generation',
         ],
-        interfaces: ['IPerformanceMonitor'],
+        interfaces: ['PerformanceMonitor'],
         dependencies: ['MetricsCollector', 'AlertManager'],
         qualityAttributes: { 'real-time': 'critical', accuracy: 'high' },
         performance: {
@@ -914,7 +914,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
       components: [],
       interfaces: [
         {
-          name: 'INeuralEngine',
+          name: 'NeuralEngine',
           description: 'Neural network inference and model management API',
           methods: [
             {
@@ -937,7 +937,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
           protocols: ['HTTP/REST'],
         },
         {
-          name: 'ITrainingCoordinator',
+          name: 'TrainingCoordinator',
           description: 'Distributed training coordination and management',
           methods: [
             {
@@ -1119,7 +1119,7 @@ export const NEURAL_NETWORKS_TEMPLATE: SPARCTemplate = {
         description: 'Enterprise-grade model governance and compliance',
         pseudocode: `
 ALGORITHM EnterpriseModelGovernance
-INPUT: model, complianceRules, auditRequirements
+NPUT: model, complianceRules, auditRequirements
 OUTPUT: governanceReport, complianceStatus
 
 BEGIN

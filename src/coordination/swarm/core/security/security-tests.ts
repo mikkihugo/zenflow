@@ -14,7 +14,7 @@ const {
   SecureClaudeGitHubHooks,
 } = require('../github-coordinator/claude-hooks-secure');
 const SecureGHCoordinator = require('../github-coordinator/gh-cli-coordinator-secure');
-const CommandSanitizer = require('./command-sanitizer.js');
+const CommandSanitizer = require('./command-sanitizer');
 
 class SecurityTester {
   public testResults: unknown[];

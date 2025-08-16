@@ -11,7 +11,7 @@
 
 import { getLogger, type Logger } from '../../config/logging-config';
 import { USLCompatibilityLayer } from './compatibility';
-import type { IService, ServiceLifecycleStatus } from './core/interfaces';
+import type { Service, ServiceLifecycleStatus } from './core/interfaces';
 import type { ServiceManager } from './manager';
 import type { EnhancedServiceRegistry } from './registry';
 import { ServiceType } from './types';
@@ -1248,7 +1248,7 @@ export class USLValidationFramework {
     };
   }
 
-  private checkServiceSecurity(service: IService): {
+  private checkServiceSecurity(service: Service): {
     secure: boolean;
     issues: string[];
   } {
@@ -1410,7 +1410,7 @@ export class USLValidationFramework {
   }
 
   private async validateServiceTypeSpecific(
-    _service: IService,
+    _service: Service,
     _issues: string[],
     _warnings: string[],
     _recommendations: string[]

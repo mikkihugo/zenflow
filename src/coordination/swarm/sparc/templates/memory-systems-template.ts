@@ -355,13 +355,13 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 3,
             description: 'If successful, update cache and return',
-            pseudocode: 'IF value.IS_VALID() THEN UPDATE_CACHE(key, value)',
+            pseudocode: 'F value.IS_VALID() THEN UPDATE_CACHE(key, value)',
             complexity: 'O(1)',
           },
           {
             stepNumber: 4,
             description: 'On failure, try secondary backends in order',
-            pseudocode: 'FOR EACH backend IN secondary_backends DO',
+            pseudocode: 'FOR EACH backend N secondary_backends DO',
             complexity: 'O(b)',
             dependencies: ['Secondary Backend Registry'],
           },
@@ -427,7 +427,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 2,
             description: 'Check available space in target cache layer',
-            pseudocode: 'IF cache_layer.HAS_SPACE(value.size) THEN',
+            pseudocode: 'F cache_layer.HAS_SPACE(value.size) THEN',
             complexity: 'O(1)',
           },
           {
@@ -447,7 +447,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
             stepNumber: 5,
             description: 'Demote evicted items to lower cache layers',
             pseudocode:
-              'FOR EACH item IN evicted_items DO lower_layer.PUT(item)',
+              'FOR EACH item N evicted_items DO lower_layer.PUT(item)',
             complexity: 'O(k)',
             dependencies: ['Lower Cache Layers'],
           },
@@ -515,20 +515,20 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
             stepNumber: 3,
             description: 'Execute operation on required nodes',
             pseudocode:
-              'FOR EACH node IN nodes DO node.EXECUTE_OPERATION(operation)',
+              'FOR EACH node N nodes DO node.EXECUTE_OPERATION(operation)',
             complexity: 'O(n)',
           },
           {
             stepNumber: 4,
             description: 'Verify quorum achievement',
-            pseudocode: 'IF committed_nodes.length >= quorum_size THEN',
+            pseudocode: 'F committed_nodes.length >= quorum_size THEN',
             complexity: 'O(1)',
           },
           {
             stepNumber: 5,
             description: 'Commit or rollback based on success',
             pseudocode:
-              'FOR EACH node IN committed_nodes DO node.COMMIT(operation.id)',
+              'FOR EACH node N committed_nodes DO node.COMMIT(operation.id)',
             complexity: 'O(n)',
           },
           {
@@ -884,7 +884,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           'Handle failover and recovery',
           'Monitor system health',
         ],
-        interfaces: ['IMemoryCoordinator'],
+        interfaces: ['MemoryCoordinator'],
         dependencies: ['BackendRegistry', 'CacheManager', 'ConsistencyManager'],
         qualityAttributes: {
           coordination: 'high',
@@ -908,7 +908,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           'Cache warming and preloading',
           'Performance monitoring',
         ],
-        interfaces: ['ICacheManager'],
+        interfaces: ['CacheManager'],
         dependencies: ['L1Cache', 'L2Cache', 'L3Cache', 'EvictionPolicyEngine'],
         qualityAttributes: {
           performance: 'high',
@@ -934,7 +934,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           'Load balancing across backends',
           'Connection pooling',
         ],
-        interfaces: ['IBackendManager'],
+        interfaces: ['BackendManager'],
         dependencies: ['SQLiteBackend', 'LanceDBBackend', 'JSONBackend'],
         qualityAttributes: {
           reliability: 'high',
@@ -961,7 +961,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           'Consensus coordination',
           'Consistency level enforcement',
         ],
-        interfaces: ['IConsistencyEngine'],
+        interfaces: ['ConsistencyEngine'],
         dependencies: ['VectorClockManager', 'ConflictResolver'],
         qualityAttributes: {
           consistency: 'high',
@@ -987,7 +987,7 @@ export const MEMORY_SYSTEMS_TEMPLATE: SPARCTemplate = {
           'Cross-region replication',
           'Backup verification',
         ],
-        interfaces: ['IBackupManager'],
+        interfaces: ['BackupManager'],
         dependencies: ['BackupStorage', 'CompressionEngine'],
         qualityAttributes: {
           reliability: 'high',

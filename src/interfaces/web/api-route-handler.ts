@@ -82,6 +82,9 @@ export class ApiRouteHandler {
     this.app.get(`${api}/settings`, this.handleGetSettings.bind(this));
     this.app.post(`${api}/settings`, this.handleUpdateSettings.bind(this));
 
+    // Logs management endpoint
+    this.app.get(`${api}/logs`, this.handleGetLogs.bind(this));
+
     this.logger.info(`API routes initialized with prefix: ${api}`);
   }
 
@@ -267,6 +270,28 @@ export class ApiRouteHandler {
   }
 
   /**
+   * Get logs handler.
+   *
+   * @param req
+   * @param res
+   */
+  private async handleGetLogs(req: Request, res: Response): Promise<void> {
+    try {
+      const { level, source, limit = 100, search } = req.query;
+      const logs = await this.getLogs({
+        level: level as string,
+        source: source as string,
+        limit: parseInt(limit as string) || 100,
+        search: search as string,
+      });
+      res.json({ logs, timestamp: new Date().toISOString() });
+    } catch (error) {
+      this.logger.error('Failed to get logs:', error);
+      res.status(500).json({ error: 'Failed to get logs' });
+    }
+  }
+
+  /**
    * Get comprehensive system status.
    */
   private async getSystemStatus(): Promise<SystemStatus> {
@@ -429,6 +454,57 @@ export class ApiRouteHandler {
       output: `Command '${command}' executed successfully`,
       timestamp: new Date().toISOString(),
     };
+  }
+
+  /**
+   * Get logs with filtering options.
+   */
+  private async getLogs(filters: {
+    level?: string;
+    source?: string;
+    limit?: number;
+    search?: string;
+  }): Promise<any[]> {
+    try {
+      // Import logging config to get log entries
+      const { getLogEntries } = await import('../../config/logging-config');
+      let logs = getLogEntries();
+
+      // Apply filters
+      if (filters.level && filters.level !== 'all') {
+        logs = logs.filter((entry: any) => entry.level === filters.level);
+      }
+
+      if (filters.source && filters.source !== 'all') {
+        logs = logs.filter((entry: any) => entry.component === filters.source);
+      }
+
+      if (filters.search && filters.search.trim()) {
+        const searchTerm = filters.search.toLowerCase();
+        logs = logs.filter((entry: any) => 
+          entry.message?.toLowerCase().includes(searchTerm) ||
+          entry.component?.toLowerCase().includes(searchTerm)
+        );
+      }
+
+      // Sort by timestamp (newest first)
+      logs.sort((a: any, b: any) => {
+        const dateA = new Date(a.timestamp || 0).getTime();
+        const dateB = new Date(b.timestamp || 0).getTime();
+        return dateB - dateA;
+      });
+
+      // Apply limit
+      if (filters.limit && filters.limit > 0) {
+        logs = logs.slice(0, filters.limit);
+      }
+
+      return logs;
+    } catch (error) {
+      this.logger.error('Failed to retrieve logs:', error);
+      // Return empty array on error
+      return [];
+    }
   }
 }
 

@@ -107,7 +107,7 @@
  *           description: Task description
  *         assignedAgent:
  *           type: string
- *           description: ID of assigned agent
+ *           description: D of assigned agent
  *         status:
  *           type: string
  *           enum: [pending, assigned, in_progress, completed, failed]

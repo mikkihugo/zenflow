@@ -1,10 +1,12 @@
 /**
- * @file Brain Configuration using Shared Infrastructure
+ * @file Brain Configuration using Foundation Infrastructure
  * 
  * Demonstrates optimal usage of @claude-zen/foundation components:
  * - Shared config system with validation
  * - Centralized logging configuration
  * - Type-safe configuration management
+ * - Performance metrics integration
+ * - Storage configuration
  */
 
 import { 
@@ -12,8 +14,10 @@ import {
   isDebugMode, 
   getNeuralConfig,
   type SharedConfig,
-  getLogger
-} from '@zen-ai/shared';
+  getLogger,
+  areMetricsEnabled,
+  validateSharedConfig
+} from '../../foundation';
 
 const logger = getLogger('BrainConfig');
 
@@ -58,7 +62,7 @@ export const DEFAULT_BRAIN_CONFIG: BrainSpecificConfig = {
   },
   performance: {
     enableBenchmarking: isDebugMode(),
-    trackMetrics: true,
+    trackMetrics: areMetricsEnabled(),
     autoOptimize: false,
   },
 };
@@ -89,7 +93,7 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<SharedConfig> {
       performance: {
         ...DEFAULT_BRAIN_CONFIG.performance,
         enableBenchmarking: debugMode,
-        trackMetrics: environment !== 'test',
+        trackMetrics: areMetricsEnabled() && environment !== 'test',
       },
       // Production optimizations
       dspy: {

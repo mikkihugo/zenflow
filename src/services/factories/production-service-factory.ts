@@ -7,10 +7,10 @@
 
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
-import { createLogger } from '../../core/logger.js';
-import { DALFactory } from '../factory.js';
-import { HybridDocumentManager } from './hybrid-document-manager.js';
-import { ADRManagerHybrid } from './adr-manager-hybrid.js';
+import { createLogger } from '../../core/logger';
+import { DALFactory } from '../../database/dal/dal-factory';
+import { HybridDocumentManager } from '../coordination/hybrid-document-service';
+import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
 
 const logger = createLogger('production-hybrid-factory');
 
@@ -117,7 +117,7 @@ async function createProductionDALFactory(
     try {
       // Try to use real database provider factory
       const { DatabaseProviderFactory } = await import(
-        '../providers/database-providers.ts'
+        '../providers/database-providers'
       );
       providerFactory = new DatabaseProviderFactory(
         productionLogger as any,

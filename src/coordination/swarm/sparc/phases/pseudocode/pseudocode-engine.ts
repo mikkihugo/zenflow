@@ -312,7 +312,7 @@ export class PseudocodePhaseEngine implements PseudocodeEngine {
   ): Promise<string> {
     return `
 ALGORITHM ${requirement.title.replace(/\s+/g, '')}
-INPUT: ${requirement.inputs?.join(', ') || 'input_data'}
+NPUT: ${requirement.inputs?.join(', ') || 'input_data'}
 OUTPUT: ${requirement.outputs?.join(', ') || 'output_result'}
 
 BEGIN

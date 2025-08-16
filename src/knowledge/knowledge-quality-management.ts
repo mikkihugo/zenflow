@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 
 // Quick type aliases to resolve missing type errors
 export type BootstrappingConfig = any;
@@ -604,7 +604,7 @@ export type ReviewRecommendation =
  *
  * @example
  */
-interface IReputationManagementSystem extends EventEmitter {
+interface ReputationManagementSystem extends EventEmitter {
   scoringAlgorithms: ScoringAlgorithm[];
   reputationModel: ReputationModel;
   decayFunctions: DecayFunction[];
@@ -612,17 +612,17 @@ interface IReputationManagementSystem extends EventEmitter {
   shutdown(): Promise<void>;
 }
 
-interface IQualityAssuranceEngine extends EventEmitter {
+interface QualityAssuranceEngine extends EventEmitter {
   handleExpiredKnowledge(expiration: unknown): Promise<void>;
   shutdown(): Promise<void>;
 }
 
-interface ITemporalKnowledgeSystem extends EventEmitter {
+interface TemporalKnowledgeSystem extends EventEmitter {
   handleQualityDegradation(degradation: unknown): Promise<void>;
   shutdown(): Promise<void>;
 }
 
-interface IPeerReviewEngine extends EventEmitter {
+interface PeerReviewEngine extends EventEmitter {
   shutdown(): Promise<void>;
 }
 
@@ -632,16 +632,16 @@ interface IPeerReviewEngine extends EventEmitter {
  * @example
  */
 export class KnowledgeQualityManagementSystem extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: KnowledgeQualityConfig;
 
   // Core Systems - initialized in constructor
-  private reputationSystem: IReputationManagementSystem;
+  private reputationSystem: ReputationManagementSystem;
   private validationProtocols: Map<string, ValidationProtocol>;
-  private qualityAssurance: IQualityAssuranceEngine;
-  private temporalManager: ITemporalKnowledgeSystem;
-  private peerReviewSystem: IPeerReviewEngine;
+  private qualityAssurance: QualityAssuranceEngine;
+  private temporalManager: TemporalKnowledgeSystem;
+  private peerReviewSystem: PeerReviewEngine;
 
   // State Management
   private reputationScores = new Map<string, ReputationScore>();
@@ -652,8 +652,8 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
 
   constructor(
     config: KnowledgeQualityConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;
@@ -1465,8 +1465,8 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
   }
 
   // Mock system creation methods
-  private createMockReputationSystem(): IReputationManagementSystem {
-    const mockSystem = new EventEmitter() as IReputationManagementSystem;
+  private createMockReputationSystem(): ReputationManagementSystem {
+    const mockSystem = new EventEmitter() as ReputationManagementSystem;
     mockSystem.scoringAlgorithms = [];
     mockSystem.reputationModel = {} as ReputationModel;
     mockSystem.decayFunctions = [];
@@ -1475,22 +1475,22 @@ export class KnowledgeQualityManagementSystem extends EventEmitter {
     return mockSystem;
   }
 
-  private createMockQualityAssuranceEngine(): IQualityAssuranceEngine {
-    const mockEngine = new EventEmitter() as IQualityAssuranceEngine;
+  private createMockQualityAssuranceEngine(): QualityAssuranceEngine {
+    const mockEngine = new EventEmitter() as QualityAssuranceEngine;
     mockEngine.handleExpiredKnowledge = async () => {};
     mockEngine.shutdown = async () => {};
     return mockEngine;
   }
 
-  private createMockTemporalKnowledgeSystem(): ITemporalKnowledgeSystem {
-    const mockSystem = new EventEmitter() as ITemporalKnowledgeSystem;
+  private createMockTemporalKnowledgeSystem(): TemporalKnowledgeSystem {
+    const mockSystem = new EventEmitter() as TemporalKnowledgeSystem;
     mockSystem.handleQualityDegradation = async () => {};
     mockSystem.shutdown = async () => {};
     return mockSystem;
   }
 
-  private createMockPeerReviewEngine(): IPeerReviewEngine {
-    const mockEngine = new EventEmitter() as IPeerReviewEngine;
+  private createMockPeerReviewEngine(): PeerReviewEngine {
+    const mockEngine = new EventEmitter() as PeerReviewEngine;
     mockEngine.shutdown = async () => {};
     return mockEngine;
   }

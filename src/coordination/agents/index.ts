@@ -5,11 +5,11 @@
  * @file Agents module exports.
  */
 
-export * from './agent.js';
-// export { AgentManager } from './agent-manager.js'; // File not found, commented out
-export { AgentRegistry } from './agent-registry.js';
+export * from './agent';
+// export { AgentManager } from './agent-manager'; // File not found, commented out
+export { AgentRegistry } from './agent-registry';
 export {
   auditAutoAssignmentCapabilities,
   generateComparisonReport,
   performGapAnalysis,
-} from './gap-analysis.js';
+} from './composite-system';

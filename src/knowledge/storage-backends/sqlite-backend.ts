@@ -109,7 +109,7 @@ export class SQLiteBackend implements FACTStorageBackend {
 
     try {
       await this.dalAdapter.execute(
-        `INSERT OR REPLACE INTO ${this.config.tableName}
+        `INSERT OR REPLACE NTO ${this.config.tableName}
          (id, query, response, metadata, timestamp, ttl, access_count, last_accessed, expires_at)
          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
@@ -128,7 +128,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       // Insert into FTS table if enabled
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
-          `INSERT OR REPLACE INTO ${this.config.tableName}_fts (id, query, response, domains, type)
+          `INSERT OR REPLACE NTO ${this.config.tableName}_fts (id, query, response, domains, type)
            VALUES (?, ?, ?, ?, ?)`,
           [
             entry.id,
@@ -308,7 +308,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+           WHERE id NOT N (SELECT id FROM ${this.config.tableName})`
         );
       }
 
@@ -393,7 +393,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+           WHERE id NOT N (SELECT id FROM ${this.config.tableName})`
         );
       }
 
@@ -420,7 +420,7 @@ export class SQLiteBackend implements FACTStorageBackend {
       if (this.config.enableFullTextSearch) {
         await this.dalAdapter.execute(
           `DELETE FROM ${this.config.tableName}_fts 
-           WHERE id NOT IN (SELECT id FROM ${this.config.tableName})`
+           WHERE id NOT N (SELECT id FROM ${this.config.tableName})`
         );
       }
 
@@ -581,23 +581,23 @@ export class SQLiteBackend implements FACTStorageBackend {
 
     // Main table
     await this.dalAdapter.execute(`
-      CREATE TABLE IF NOT EXISTS ${this.config.tableName} (
+      CREATE TABLE F NOT EXISTS ${this.config.tableName} (
         id TEXT PRIMARY KEY,
         query TEXT NOT NULL,
         response TEXT NOT NULL,
         metadata TEXT NOT NULL, -- JSON column
-        timestamp INTEGER NOT NULL,
-        ttl INTEGER NOT NULL,
-        access_count INTEGER DEFAULT 0,
-        last_accessed INTEGER NOT NULL,
-        expires_at INTEGER NOT NULL
+        timestamp NTEGER NOT NULL,
+        ttl NTEGER NOT NULL,
+        access_count NTEGER DEFAULT 0,
+        last_accessed NTEGER NOT NULL,
+        expires_at NTEGER NOT NULL
       )
     `);
 
     // Full-text search table
     if (this.config.enableFullTextSearch) {
       await this.dalAdapter.execute(`
-        CREATE VIRTUAL TABLE IF NOT EXISTS ${this.config.tableName}_fts USING fts5(
+        CREATE VIRTUAL TABLE F NOT EXISTS ${this.config.tableName}_fts USING fts5(
           id UNINDEXED,
           query,
           response,
@@ -613,11 +613,11 @@ export class SQLiteBackend implements FACTStorageBackend {
     if (!this.dalAdapter) return;
 
     const indexes = [
-      `CREATE INDEX IF NOT EXISTS idx_${this.config.tableName}_timestamp ON ${this.config.tableName}(timestamp)`,
-      `CREATE INDEX IF NOT EXISTS idx_${this.config.tableName}_expires_at ON ${this.config.tableName}(expires_at)`,
-      `CREATE INDEX IF NOT EXISTS idx_${this.config.tableName}_type ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.type'))`,
-      `CREATE INDEX IF NOT EXISTS idx_${this.config.tableName}_confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,
-      `CREATE INDEX IF NOT EXISTS idx_${this.config.tableName}_access_count ON ${this.config.tableName}(access_count)`,
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_timestamp ON ${this.config.tableName}(timestamp)`,
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_expires_at ON ${this.config.tableName}(expires_at)`,
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_type ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.type'))`,
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_confidence ON ${this.config.tableName}(JSON_EXTRACT(metadata, '$.confidence'))`,
+      `CREATE NDEX F NOT EXISTS idx_${this.config.tableName}_access_count ON ${this.config.tableName}(access_count)`,
     ];
 
     for (const indexSQL of indexes) {

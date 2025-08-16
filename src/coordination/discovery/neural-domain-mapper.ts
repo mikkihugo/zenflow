@@ -82,19 +82,19 @@
  * ```
  */
 
-import { GNNModel } from '../../neural/models/presets/gnn.js';
-import { WASMNeuralAccelerator } from '../../neural/wasm/wasm-neural-accelerator';
+import { GNNModel } from '@claude-zen/brain/core';
+import { WASMNeuralAccelerator } from '@claude-zen/brain/wasm';
 import {
   LLMIntegrationService,
   type LLMIntegrationConfig,
   type AnalysisRequest,
-} from '../services/llm-integration.service.js';
+} from '../services/llm-integration.service';
 import {
   selectOptimalModel,
   getComponentModel,
   type TaskContext,
   type ModelType,
-} from '../../integrations/claude-code/model-strategy.js';
+} from '../../intelligence/model-strategy/optimal-model-selector';
 
 import type {
   DependencyGraph,
@@ -255,13 +255,13 @@ export class NeuralDomainMapper {
    * const domains = [
    *   {
    *     name: 'user-service',
-   *     files: ['user.ts', 'user-repository.ts'],
+   *     files: ['user', 'user-repository.ts'],
    *     dependencies: ['common-utils'],
    *     confidenceScore: 0.9
    *   },
    *   {
    *     name: 'order-service',
-   *     files: ['order.ts', 'order-repository.ts'],
+   *     files: ['order', 'order-repository.ts'],
    *     dependencies: ['common-utils', 'user-service'],
    *     confidenceScore: 0.8
    *   }

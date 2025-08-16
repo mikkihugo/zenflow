@@ -379,7 +379,7 @@ async function loadBalancingExample() {
 async function backwardCompatibility() {
   // Import the compatible API client
   const { APIClient, createAPIClient } = await import(
-    '../wrappers/api-client-wrapper.ts'
+    '../wrappers/api-client-wrapper'
   );
 
   // Create client using the old interface

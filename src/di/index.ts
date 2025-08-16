@@ -36,28 +36,28 @@ export { SingletonProvider } from './providers/singleton-provider';
 export { TransientProvider } from './providers/transient-provider';
 // Re-export interfaces for convenience
 export type {
-  IConfig,
-  IDatabase,
-  IEventBus,
-  IHttpClient,
-  ILogger,
+  Config,
+  Database,
+  EventBus,
+  HttpClient,
+  Logger,
 } from './tokens/core-tokens';
 // Core system tokens
 export { CORE_TOKENS } from './tokens/core-tokens';
 export type {
-  IDataLoader,
-  IMetricsCollector,
-  IModelStorage,
-  INeuralNetworkTrainer,
-  IOptimizationEngine,
+  DataLoader,
+  MetricsCollector,
+  ModelStorage,
+  NeuralNetworkTrainer,
+  OptimizationEngine,
 } from './tokens/neural-tokens';
 export { NEURAL_TOKENS } from './tokens/neural-tokens';
 export type {
-  IAgentRegistry,
-  ILoadBalancer,
-  IMessageBroker,
-  ISwarmCoordinator,
-  ITopologyManager,
+  AgentRegistry,
+  LoadBalancer,
+  MessageBroker,
+  SwarmCoordinator,
+  TopologyManager,
 } from './tokens/swarm-tokens';
 export { SWARM_TOKENS } from './tokens/swarm-tokens';
 // Token utilities
@@ -122,8 +122,8 @@ export class DIContainerBuilder {
    * @param factory
    */
   singleton<T>(
-    token: import('./types/di-types.ts').DIToken<T>,
-    factory: (container: import('./types/di-types.ts').DIContainer) => T
+    token: import('./types/di-types').DIToken<T>,
+    factory: (container: import('./types/di-types').DIContainer) => T
   ): this {
     this.container.register(token, new SingletonProvider(factory));
     return this;
@@ -136,8 +136,8 @@ export class DIContainerBuilder {
    * @param factory
    */
   transient<T>(
-    token: import('./types/di-types.ts').DIToken<T>,
-    factory: (container: import('./types/di-types.ts').DIContainer) => T
+    token: import('./types/di-types').DIToken<T>,
+    factory: (container: import('./types/di-types').DIContainer) => T
   ): this {
     this.container.register(token, new TransientProvider(factory));
     return this;
@@ -150,8 +150,8 @@ export class DIContainerBuilder {
    * @param factory
    */
   scoped<T>(
-    token: import('./types/di-types.ts').DIToken<T>,
-    factory: (container: import('./types/di-types.ts').DIContainer) => T
+    token: import('./types/di-types').DIToken<T>,
+    factory: (container: import('./types/di-types').DIContainer) => T
   ): this {
     this.container.register(token, new ScopedProvider(factory));
     return this;

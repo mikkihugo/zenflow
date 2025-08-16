@@ -5,11 +5,18 @@
  * Uses runClaudeCode function for streaming responses and proper error handling.
  */
 
-import type { Anthropic } from '@anthropic-ai/sdk';
 import {
+  executeClaudeTask,
   filterMessagesForClaudeCode,
-  runClaudeCode,
-} from '../../../integrations/claude-code/index.js';
+  type ClaudeSDKOptions,
+  type ClaudeMessage
+} from '../../../lib/shared/claude-sdk';
+
+// Simple message types - no external SDK dependency needed
+export interface MessageParam {
+  role: 'user' | 'assistant' | 'system';
+  content: string | Array<{ type: 'text'; text: string }>;
+}
 
 // Stream types (from Cline's stream.ts)
 export type ApiStream = AsyncGenerator<ApiStreamChunk>;
@@ -68,11 +75,11 @@ export const claudeCodeModels = {
 export type ClaudeCodeModelId = keyof typeof claudeCodeModels;
 export const claudeCodeDefaultModelId: ClaudeCodeModelId = 'sonnet'; // Use Sonnet as default
 
-// API Handler interface (from Cline's api/index.ts)
+// API Handler interface - using our own simple types instead of Anthropic SDK
 export interface ApiHandler {
   createMessage(
     systemPrompt: string,
-    messages: Anthropic.Messages.MessageParam[]
+    messages: MessageParam[]
   ): ApiStream;
   getModel(): { id: string; info: ModelInfo };
   getApiStreamUsage?(): Promise<ApiStreamUsageChunk | undefined>;
@@ -132,29 +139,7 @@ export function withRetry(config: {
   };
 }
 
-/**
- * Filter messages for Claude Code compatibility
- */
-export function filterMessagesForClaudeCode(
-  messages: Anthropic.Messages.MessageParam[]
-): Anthropic.Messages.MessageParam[] {
-  return messages.map((message) => {
-    if (Array.isArray(message.content)) {
-      // Filter out image blocks since Claude Code doesn't support them
-      const textContent = message.content.filter(
-        (content: unknown) => content.type === 'text'
-      );
-      return {
-        ...message,
-        content:
-          textContent.length > 0
-            ? textContent
-            : [{ type: 'text' as const, text: 'Empty message' }],
-      };
-    }
-    return message;
-  });
-}
+// filterMessagesForClaudeCode is now imported from shared SDK integration
 
 /**
  * Claude Code Handler - Programmatic Integration
@@ -178,19 +163,30 @@ export class ClaudeCodeHandler implements ApiHandler {
     // Filter out image blocks since Claude Code doesn't support them
     const filteredMessages = filterMessagesForClaudeCode(messages);
 
-    const claudeProcess = runClaudeCode({
+    // Create unified prompt from system prompt and messages
+    const prompt = [
       systemPrompt,
-      messages: filteredMessages,
-      path: this.options.claudeCodePath,
-      modelId: this.getModel().id,
-      thinkingBudgetTokens: this.options.thinkingBudgetTokens,
-      disableAllTools: !this.options.enableTools, // Default: disable tools for pure chat
-      allowedTools: this.options.allowedTools,
-      disallowedTools: this.options.disallowedTools,
-    });
+      ...filteredMessages.map(msg => {
+        if (typeof msg.content === 'string') {
+          return `${msg.role}: ${msg.content}`;
+        } else {
+          const textParts = msg.content.filter(c => c.type === 'text').map(c => c.text);
+          return `${msg.role}: ${textParts.join(' ')}`;
+        }
+      })
+    ].join('\n\n');
 
-    // Usage is included with assistant messages,
-    // but cost is included in the result chunk
+    const claudeOptions: ClaudeSDKOptions = {
+      model: this.getModel().id,
+      customSystemPrompt: systemPrompt,
+      maxThinkingTokens: this.options.thinkingBudgetTokens,
+      // Allow tools based on configuration - swarm coordination needs full access
+      allowedTools: this.options.enableTools ? this.options.allowedTools : [],
+      disallowedTools: this.options.disallowedTools,
+      pathToClaudeCodeExecutable: this.options.claudeCodePath,
+    };
+
+    // Execute Claude task and convert results to streaming format
     const usage: ApiStreamUsageChunk = {
       type: 'usage',
       inputTokens: 0,
@@ -201,7 +197,10 @@ export class ClaudeCodeHandler implements ApiHandler {
 
     let isPaidUsage = true;
 
-    for await (const chunk of claudeProcess) {
+    try {
+      const claudeMessages = await executeClaudeTask(prompt, claudeOptions);
+      
+      for (const chunk of claudeMessages) {
       if (typeof chunk === 'string') {
         yield {
           type: 'text',
@@ -291,6 +290,9 @@ export class ClaudeCodeHandler implements ApiHandler {
 
         yield usage;
       }
+    }
+    } catch (error) {
+      throw error;
     }
   }
 

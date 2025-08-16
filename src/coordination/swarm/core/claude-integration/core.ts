@@ -1,7 +1,7 @@
 /**
  * @file Coordination system: core.
  *
- * ⚠️  CORE CLAUDE INTEGRATION - NEVER REMOVE ⚠️.
+ * ⚠️  CORE CLAUDE NTEGRATION - NEVER REMOVE ⚠️.
  *
  * This module is ACTIVELY USED in the test suite and integration system:
  * - src/__tests__/swarm-zen/claude-integration-comprehensive.test.js - 9+ dynamic imports of ClaudeIntegrationCore

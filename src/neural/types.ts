@@ -228,7 +228,7 @@ export interface DAAAgent {
   readonly id: string;
   readonly cognitivePattern: CognitivePatternType;
   readonly capabilities: readonly string[];
-  readonly neuralNetworks: readonly string[]; // Network IDs
+  readonly neuralNetworks: readonly string[]; // Network Ds
   readonly learningRate: number;
   readonly adaptationThreshold: number;
   readonly autonomyLevel: number;
@@ -241,7 +241,7 @@ export interface DAAKnowledgeBase {
   readonly domains: readonly string[];
   readonly facts: readonly DAAFact[];
   readonly experiences: readonly DAAExperience[];
-  readonly patterns: readonly string[]; // Pattern IDs
+  readonly patterns: readonly string[]; // Pattern Ds
   readonly lastUpdated: string;
   readonly size: number;
 }

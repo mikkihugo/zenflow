@@ -12,7 +12,7 @@ import { EventEmitter } from 'node:events';
 import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IService,
+  Service,
   ServiceConfig,
   ServiceDependencyConfig,
   ServiceEvent,
@@ -37,7 +37,7 @@ import {
  *
  * @example
  */
-export abstract class BaseService extends EventEmitter implements IService {
+export abstract class BaseService extends EventEmitter implements Service {
   protected logger: Logger;
   protected lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
   protected startTime: Date | null = null;
@@ -99,7 +99,7 @@ export abstract class BaseService extends EventEmitter implements IService {
   protected abstract doHealthCheck(): Promise<boolean>;
 
   // ============================================
-  // IService Implementation
+  // Service Implementation
   // ============================================
 
   async initialize(config?: Partial<ServiceConfig>): Promise<void> {

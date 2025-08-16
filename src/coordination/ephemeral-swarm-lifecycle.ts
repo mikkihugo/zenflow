@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { AgentType } from '../types/agent-types';
 
 export interface SwarmRequest {
@@ -100,8 +100,8 @@ export class EphemeralSwarmManager extends EventEmitter {
   private maxConcurrentSwarms = 10;
 
   constructor(
-    private eventBus: IEventBus,
-    private logger?: ILogger
+    private eventBus: EventBus,
+    private logger?: Logger
   ) {
     super();
     this.startCleanupProcess();

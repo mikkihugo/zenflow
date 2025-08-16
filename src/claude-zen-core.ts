@@ -2,7 +2,7 @@
  * @file Claude-zen-core implementation.
  */
 
-import { getLogger } from './config/logging-config.js';
+import { getLogger } from './config/logging-config';
 
 const logger = getLogger('claude-zen-core');
 
@@ -14,26 +14,26 @@ const logger = getLogger('claude-zen-core');
  */
 
 import { EventEmitter } from 'node:events';
-import { CoordinationManager } from './coordination/manager.js';
+import { CoordinationManager } from './coordination/manager';
 
 // Import DI-enhanced coordinators
-import { Orchestrator } from './coordination/orchestrator.js';
+import { Orchestrator } from './coordination/orchestrator';
 import {
   CORE_TOKENS,
   createContainerBuilder,
   createToken,
   type DIContainer,
-  type IConfig,
-  type IDatabase,
-  type IEventBus,
-  type ILogger,
   SWARM_TOKENS,
-} from './di/index.js';
-import { MultiSystemCoordinator } from './integration/multi-system-coordinator.js';
-import { LearningCoordinator } from './intelligence/adaptive-learning/learning-coordinator.js';
+  type Config,
+  type EventBus,
+  type Database,
+  type Logger,
+} from './di';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
+import { LearningCoordinator } from './lib/adaptive-learning/learning-coordinator';
 
 // Core service implementations
-class ConsoleLogger implements ILogger {
+class ConsoleLogger implements Logger {
   log(_message: string): void {}
 
   debug(_message: string, _meta?: any): void {}
@@ -49,7 +49,7 @@ class ConsoleLogger implements ILogger {
   }
 }
 
-class AppConfig implements IConfig {
+class AppConfig implements Config {
   private config = new Map<string, any>();
 
   constructor() {
@@ -82,12 +82,12 @@ class AppConfig implements IConfig {
   }
 }
 
-class AppEventBus extends EventEmitter implements IEventBus {
+class AppEventBus extends EventEmitter implements EventBus {
   emit(event: string, data: unknown): boolean {
     return super.emit(event, data);
   }
 
-  emitSystemEvent(event: import('./coordination/core/event-bus.js').SystemEvent): boolean {
+  emitSystemEvent(event: import('./coordination/core/event-bus').SystemEvent): boolean {
     return super.emit(event.type, event);
   }
 
@@ -114,7 +114,7 @@ class AppEventBus extends EventEmitter implements IEventBus {
   }
 }
 
-class MockDatabase implements IDatabase {
+class MockDatabase implements Database {
   private data = new Map<string, any>();
 
   async initialize(): Promise<void> {}
@@ -130,7 +130,7 @@ class MockDatabase implements IDatabase {
     }
   }
 
-  async transaction<T>(fn: (db: IDatabase) => Promise<T>): Promise<T> {
+  async transaction<T>(fn: (db: Database) => Promise<T>): Promise<T> {
     const result = await fn(this);
     return result;
   }
@@ -461,4 +461,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main().catch(console.error);
 }
 
-// Default export removed - use named export: import { ClaudeZenCore } from './claude-zen-core.js'
+// Default export removed - use named export: import { ClaudeZenCore } js

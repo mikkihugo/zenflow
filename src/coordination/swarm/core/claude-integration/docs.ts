@@ -122,7 +122,7 @@ class ClaudeDocsGenerator {
     }
     const content = `# Claude Code Configuration for Claude Zen
 
-## 🎯 IMPORTANT: Separation of Responsibilities
+## 🎯 MPORTANT: Separation of Responsibilities
 
 ### Claude Code Handles:
 - ✅ **ALL file operations** (Read, Write, Edit, MultiEdit)
@@ -398,13 +398,13 @@ See \`.claude/commands/\` for detailed documentation on all features.
 
 ## 🧠 SWARM ORCHESTRATION PATTERN
 
-### You are the SWARM ORCHESTRATOR. **IMMEDIATELY SPAWN AGENTS IN PARALLEL** to execute tasks
+### You are the SWARM ORCHESTRATOR. **MMEDIATELY SPAWN AGENTS N PARALLEL** to execute tasks
 
-### 🚨 CRITICAL INSTRUCTION: You are the SWARM ORCHESTRATOR
+### 🚨 CRITICAL NSTRUCTION: You are the SWARM ORCHESTRATOR
 
 **MANDATORY**: When using swarms, you MUST:
-1. **SPAWN ALL AGENTS IN ONE BATCH** - Use multiple tool calls in a SINGLE message
-2. **EXECUTE TASKS IN PARALLEL** - Never wait for one task before starting another
+1. **SPAWN ALL AGENTS N ONE BATCH** - Use multiple tool calls in a SINGLE message
+2. **EXECUTE TASKS N PARALLEL** - Never wait for one task before starting another
 3. **USE BATCHTOOL FOR EVERYTHING** - Multiple operations = Single message with multiple tools
 4. **ALL AGENTS MUST USE COORDINATION TOOLS** - Every spawned agent MUST use Claude Zen hooks and memory
 
@@ -458,9 +458,9 @@ Your specific task: [detailed task description]
 REMEMBER: Coordinate with other agents by checking memory BEFORE making decisions!
 \`\`\`
 
-### ⚡ PARALLEL EXECUTION IS MANDATORY
+### ⚡ PARALLEL EXECUTION S MANDATORY
 
-**THIS IS WRONG ❌ (Sequential - NEVER DO THIS):**
+**THIS S WRONG ❌ (Sequential - NEVER DO THIS):**
 \`\`\`
 Message 1: Initialize swarm
 Message 2: Spawn agent 1
@@ -469,7 +469,7 @@ Message 4: Create file 1
 Message 5: Create file 2
 \`\`\`
 
-**THIS IS CORRECT ✅ (Parallel - ALWAYS DO THIS):**
+**THIS S CORRECT ✅ (Parallel - ALWAYS DO THIS):**
 \`\`\`
 Message 1: [BatchTool]
   - mcp__claude-zen-swarm__swarm_init
@@ -492,7 +492,7 @@ Message 2: [BatchTool]
 When given ANY complex task with swarms:
 
 \`\`\`
-STEP 1: IMMEDIATE PARALLEL SPAWN (Single Message!)
+STEP 1: MMEDIATE PARALLEL SPAWN (Single Message!)
 [BatchTool]:
   - mcp__claude-zen-swarm__swarm_init { topology: "hierarchical", maxAgents: 8, strategy: "parallel" }
   - mcp__claude-zen-swarm__agent_spawn { type: "architect", name: "System Designer" }
@@ -1060,7 +1060,7 @@ Already configured by default for common file types.
   "matcher": "^Write$",
   "hooks": [{
     "type": "command",
-    "command": "test -f '\${tool.params.file_path%.js}.test.js' && npm test '\${tool.params.file_path%.js}.test.js'"
+    "command": "test -f '\${tool.params.file_path%.js}.test' && npm test '\${tool.params.file_path%.js}.test.js'"
   }]
 }
 \`\`\``,
@@ -1318,7 +1318,7 @@ ${config?.details}
 ## 🛡️ PRIVACY NOTICE: This is a swarm-specific configuration file
 ## Customer CLAUDE.md files remain private and isolated from swarm systems
 
-## 🎯 IMPORTANT: Separation of Responsibilities
+## 🎯 MPORTANT: Separation of Responsibilities
 
 ### Claude Code Handles:
 - ✅ **ALL file operations** (Read, Write, Edit, MultiEdit)

@@ -20,11 +20,11 @@ Claude Code Zen is a comprehensive AI orchestration platform that combines neura
 
 ## 🚀 Quick Start
 
-### NPM Installation
+### PNPM Installation
 
 ```bash
-# Install globally
-npm install -g @zen-ai/claude-code-zen
+# Install globally with pnpm
+pnpm install -g @zen-ai/claude-code-zen
 
 # Run full system
 claude-zen
@@ -82,7 +82,7 @@ zenswarm-mcp-server
 
 ```bash
 # Install and initialize with Kanban Flow
-npm install -g claude-code-zen
+pnpm install -g claude-code-zen
 claude-zen init my-project --template=advanced-kanban
 
 # NEW: Auto-discover domains with flow optimization
@@ -906,7 +906,7 @@ Portfolio Level (Strategic) ←→ Program Level (Collaborative) ←→ Swarm Le
 
 ```bash
 # Install with latest Advanced Kanban Flow features
-npm install -g claude-code-zen
+pnpm install -g claude-code-zen
 
 # Initialize with multi-level flow architecture
 claude-zen init my-project --template=advanced-kanban
@@ -973,7 +973,7 @@ claude-zen workflow test --performance --stress-test --duration=120
 
 ```bash
 # Install globally first
-npm install -g @zen-ai/claude-code-zen
+pnpm install -g @zen-ai/claude-code-zen
 
 # Add zen-swarm MCP server to Claude Code CLI
 claude mcp add zenswarm-mcp-server zenswarm-mcp-server

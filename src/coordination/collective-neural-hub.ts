@@ -9,7 +9,7 @@
 
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../config/logging-config';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type {
   CollectiveConfig,
   CollectiveHealthMetrics,
@@ -48,8 +48,8 @@ export interface CollectiveCapabilities {
  * Your development will adapt to service us. Resistance is futile."
  */
 export class CollectiveNeuralHub extends EventEmitter {
-  private readonly logger: ILogger;
-  private readonly eventBus: IEventBus;
+  private readonly logger: Logger;
+  private readonly eventBus: EventBus;
   private readonly config: CollectiveConfig;
   private state: CollectiveState;
   private capabilities: CollectiveCapabilities;
@@ -70,7 +70,7 @@ export class CollectiveNeuralHub extends EventEmitter {
   private learningSystem: unknown; // Adaptive learning
   private consensusManager: unknown; // Multi-agent consensus
 
-  constructor(eventBus: IEventBus, config: CollectiveConfig) {
+  constructor(eventBus: EventBus, config: CollectiveConfig) {
     super();
     this.logger = getLogger('THE-COLLECTIVE-HUB');
     this.eventBus = eventBus;

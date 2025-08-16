@@ -8,7 +8,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../di/index';
+import type { EventBus, Logger } from '../di/index';
 import { CORE_TOKENS, inject, injectable } from '../di/index';
 
 export interface CoordinationConfig {
@@ -53,8 +53,8 @@ export class CoordinationManager extends EventEmitter {
 
   constructor(
     config: CoordinationConfig,
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
-    @inject(CORE_TOKENS.EventBus) private _eventBus: IEventBus,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger,
+    @inject(CORE_TOKENS.EventBus) private _eventBus: EventBus,
   ) {
     super();
 

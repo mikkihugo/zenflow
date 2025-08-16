@@ -306,12 +306,12 @@ export interface ServiceEvent {
 /**
  * Core service interface that all services must implement.
  *
- * @interface IService
+ * @interface Service
  * @description Base interface that all USL services must implement for consistent lifecycle management,
  * monitoring, configuration, and operation execution across all service types.
  * @example
  * ```typescript
- * class MyCustomService implements IService {
+ * class MyCustomService implements Service {
  *   readonly name: string = 'my-service';
  *   readonly type: string = 'custom';
  *   readonly config: ServiceConfig;
@@ -368,7 +368,7 @@ export interface ServiceEvent {
  * }
  * ```
  */
-export interface IService {
+export interface Service {
   /** Unique service identifier */
   readonly name: string;
   /** Service type/category identifier */
@@ -511,23 +511,23 @@ export interface IService {
 /**
  * Service factory interface for creating and managing service instances.
  *
- * @interface IServiceFactory
+ * @interface ServiceFactory
  * @template TConfig Service configuration type.
  * @description Factory interface for creating, managing, and coordinating service instances
  * with support for batch operations, health monitoring, and lifecycle management.
  * @example
  * ```typescript
- * class DataServiceFactory implements IServiceFactory<DataServiceConfig> {
- *   private services = new Map<string, IService>();
+ * class DataServiceFactory implements ServiceFactory<DataServiceConfig> {
+ *   private services = new Map<string, Service>();
  *
- *   async create(config: DataServiceConfig): Promise<IService> {
+ *   async create(config: DataServiceConfig): Promise<Service> {
  *     const service = new DataService(config);
  *     await service.initialize();
  *     this.services.set(config.name, service);
  *     return service;
  *   }
  *
- *   async createMultiple(configs: DataServiceConfig[]): Promise<IService[]> {
+ *   async createMultiple(configs: DataServiceConfig[]): Promise<Service[]> {
  *     return Promise.all(configs.map(config => this.create(config)));
  *   }
  *
@@ -545,7 +545,7 @@ export interface IService {
  * }
  * ```
  */
-export interface IServiceFactory<
+export interface ServiceFactory<
   TConfig extends ServiceConfig = ServiceConfig,
 > {
   /**
@@ -555,7 +555,7 @@ export interface IServiceFactory<
    * @returns Promise resolving to created service.
    * @throws {ServiceInitializationError} When service creation fails.
    */
-  create(config: TConfig): Promise<IService>;
+  create(config: TConfig): Promise<Service>;
 
   /**
    * Create multiple service instances.
@@ -564,7 +564,7 @@ export interface IServiceFactory<
    * @returns Promise resolving to array of created services.
    * @throws {ServiceInitializationError} When any service creation fails.
    */
-  createMultiple(configs: TConfig[]): Promise<IService[]>;
+  createMultiple(configs: TConfig[]): Promise<Service[]>;
 
   /**
    * Get a service instance by name.
@@ -572,14 +572,14 @@ export interface IServiceFactory<
    * @param name Service name identifier.
    * @returns Service instance or undefined if not found.
    */
-  get(name: string): IService | undefined;
+  get(name: string): Service | undefined;
 
   /**
    * List all managed service instances.
    *
    * @returns Array of all service instances.
    */
-  list(): IService[];
+  list(): Service[];
 
   /**
    * Check if a service with the given name exists.
@@ -611,7 +611,7 @@ export interface IServiceFactory<
   // Factory management
   shutdown(): Promise<void>;
   getActiveCount(): number;
-  getServicesByType(type: string): IService[];
+  getServicesByType(type: string): Service[];
 
   // Configuration validation
   validateConfig(config: TConfig): Promise<boolean>;
@@ -623,23 +623,23 @@ export interface IServiceFactory<
  *
  * @example
  */
-export interface IServiceRegistry {
+export interface ServiceRegistry {
   // Factory registration
   registerFactory<T extends ServiceConfig>(
     type: string,
-    factory: IServiceFactory<T>
+    factory: ServiceFactory<T>
   ): void;
   getFactory<T extends ServiceConfig>(
     type: string
-  ): IServiceFactory<T> | undefined;
+  ): ServiceFactory<T> | undefined;
   listFactoryTypes(): string[];
   unregisterFactory(type: string): void;
 
   // Service management across all factories
-  getAllServices(): Map<string, IService>;
-  findService(name: string): IService | undefined;
-  getServicesByType(type: string): IService[];
-  getServicesByStatus(status: ServiceLifecycleStatus): IService[];
+  getAllServices(): Map<string, Service>;
+  findService(name: string): Service | undefined;
+  getServicesByType(type: string): Service[];
+  getServicesByStatus(status: ServiceLifecycleStatus): Service[];
 
   // Global operations
   startAllServices(): Promise<void>;
@@ -660,7 +660,7 @@ export interface IServiceRegistry {
     capabilities?: string[];
     health?: 'healthy' | 'degraded' | 'unhealthy';
     tags?: string[];
-  }): IService[];
+  }): Service[];
 
   // Event management
   on(
@@ -668,7 +668,7 @@ export interface IServiceRegistry {
       | 'service-registered'
       | 'service-unregistered'
       | 'service-status-changed',
-    handler: (serviceName: string, service?: IService) => void
+    handler: (serviceName: string, service?: Service) => void
   ): void;
   off(event: string, handler?: Function): void;
 }
@@ -678,7 +678,7 @@ export interface IServiceRegistry {
  *
  * @example
  */
-export interface IServiceConfigValidator {
+export interface ServiceConfigValidator {
   validate(config: ServiceConfig): Promise<{
     valid: boolean;
     errors: string[];
@@ -792,7 +792,7 @@ export interface ServiceCapability {
  *
  * @example
  */
-export interface IServiceCapabilityRegistry {
+export interface ServiceCapabilityRegistry {
   register(serviceName: string, capability: ServiceCapability): void;
   unregister(serviceName: string, capabilityName: string): void;
   getCapabilities(serviceName: string): ServiceCapability[];

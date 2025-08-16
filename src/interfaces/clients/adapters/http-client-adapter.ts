@@ -4,12 +4,12 @@
  * Converts existing HTTP APIClient to UACL architecture while maintaining.
  * Backward compatibility and adding enterprise-grade features..
  *
- * @file HTTP client adapter implementing the UACL IClient interface.
+ * @file HTTP client adapter implementing the UACL Client interface.
  * @module interfaces/clients/adapters/http
  * @version 2.0.0
  *
  * Key Features:
- * - Full UACL IClient interface compliance
+ * - Full UACL Client interface compliance
  * - Multiple authentication methods (Bearer, API Key, OAuth, Basic, Custom)
  * - Intelligent retry logic with configurable backoff strategies
  * - Comprehensive health monitoring and performance metrics
@@ -94,7 +94,7 @@ import type {
   ClientMetrics,
   ClientResponse,
   ClientStatus,
-  IClient,
+  Client,
   RequestOptions,
 } from '../core/interfaces';
 import {
@@ -110,11 +110,11 @@ import type {
 } from './http-types';
 
 /**
- * HTTP Client Adapter implementing UACL IClient interface.
+ * HTTP Client Adapter implementing UACL Client interface.
  *
  * @class HTTPClientAdapter
  * @augments EventEmitter
- * @implements {IClient}
+ * @implements {Client}
  * @description Production-ready HTTP client adapter providing enterprise-grade features
  *              including authentication, retry logic, health monitoring, and comprehensive metrics.
  *              Built on Axios with additional UACL-specific enhancements for reliability and observability.
@@ -219,7 +219,7 @@ import type {
  * // Advanced: Custom request interceptors
  * client.config.requestInterceptors = [
  *   (config) => {
- *     config.headers['X-Request-ID'] = generateUUID();
+ *     config.headers['X-Request-D'] = generateUUID();
  *     config.headers['X-Timestamp'] = new Date().toISOString();
  *     return config;
  *   }
@@ -234,7 +234,7 @@ import type {
  * ];
  * ```
  */
-export class HTTPClientAdapter extends EventEmitter implements IClient {
+export class HTTPClientAdapter extends EventEmitter implements Client {
   public readonly config: HTTPClientConfig;
   public readonly name: string;
 
@@ -716,7 +716,7 @@ export class HTTPClientAdapter extends EventEmitter implements IClient {
     return sorted[Math.max(0, index)];
   }
 
-  // ===== UACL IClient Interface Implementation =====
+  // ===== UACL Client Interface Implementation =====
 
   async connect(): Promise<void> {
     try {

@@ -7,7 +7,7 @@
  * @file Express error handling middleware.
  */
 
-import { getLogger } from '../../../../config/logging-config.js';
+import { getLogger } from "../../../config/logging-config";
 
 const logger = getLogger('interfaces-api-http-middleware-errors');
 

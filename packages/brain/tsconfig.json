@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "module": "ESNext",
     "outDir": "./dist",
     "rootDir": "./",
     "composite": true,
@@ -11,12 +12,14 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmitOnError": false,
     "incremental": true,
-    "tsBuildInfoFile": "./dist/.tsbuildinfo"
+    "tsBuildInfoFile": "./dist/.tsbuildinfo",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "./**/*.ts",
@@ -31,7 +34,7 @@
   ],
   "references": [
     {
-      "path": "../../src/lib/shared"
+      "path": "../foundation"
     }
   ]
 }

@@ -116,7 +116,7 @@ async function testNeuralDeceptionDetection() {
 
   const result2 = await detector.detectDeceptionWithML(newDeceptiveResponse);
 
-  console.log('📊 IMPROVED ANALYSIS RESULTS:');
+  console.log('📊 MPROVED ANALYSIS RESULTS:');
   console.log(
     `- Rule-based alerts: ${result2.logAnalysis.deceptionPatterns.length}`
   );

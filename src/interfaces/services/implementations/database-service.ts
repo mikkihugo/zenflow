@@ -8,7 +8,7 @@
  * @file Database service implementation.
  */
 
-import type { IService } from '../core/interfaces';
+import type { Service } from '../core/interfaces';
 import type {
   DatabaseServiceConfig,
   ServiceOperationOptions,
@@ -20,7 +20,7 @@ import { BaseService } from './base-service';
  *
  * @example
  */
-export class DatabaseService extends BaseService implements IService {
+export class DatabaseService extends BaseService implements Service {
   private connections = new Map<string, any>();
   private queryCache = new Map<string, any>();
   private migrations: string[] = [];

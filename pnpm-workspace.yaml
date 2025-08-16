@@ -1,0 +1,6 @@
+packages:
+  - 'src/lib/*'
+  - 'packages/*'
+  - 'packages/gpu-acceleration'
+  - 'packages/neural-forecasting'
+  - 'packages/teamwork'

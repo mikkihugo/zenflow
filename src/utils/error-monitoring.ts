@@ -7,7 +7,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../core/interfaces/base-interfaces';
+import type { Logger } from '../core/interfaces/base-interfaces';
 
 export interface ErrorContext {
   component: string;
@@ -63,7 +63,7 @@ export class ErrorMonitoring extends EventEmitter {
   };
   private monitoringInterval?: NodeJS.Timeout;
 
-  constructor(private logger: ILogger) {
+  constructor(private logger: Logger) {
     super();
     this.initializeDefaultPatterns();
     this.startMonitoring();
@@ -471,7 +471,7 @@ export class ErrorMonitoring extends EventEmitter {
 }
 
 // Factory function
-export function createErrorMonitoring(logger: ILogger): ErrorMonitoring {
+export function createErrorMonitoring(logger: Logger): ErrorMonitoring {
   return new ErrorMonitoring(logger);
 }
 

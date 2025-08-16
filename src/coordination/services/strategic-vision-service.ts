@@ -31,7 +31,7 @@ export interface StrategicVisionAnalysis {
   timeline: string;
   risks: string[];
   confidenceScore: number; // 0-1 based on data sources
-  sourceDocuments: string[]; // IDs of documents used in analysis
+  sourceDocuments: string[]; // Ds of documents used in analysis
   lastAnalyzed: Date;
 }
 
@@ -1023,7 +1023,7 @@ export class StrategicVisionService {
         // Limit for performance
         if (
           typeof file === 'string' &&
-          ['.ts', '.tsx', '.js', '.jsx'].includes(extname(file))
+          ['', '.tsx', '', '.jsx'].includes(extname(file))
         ) {
           try {
             const filePath = join(srcPath, file);

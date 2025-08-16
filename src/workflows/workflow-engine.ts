@@ -12,15 +12,15 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config.js';
-import type { WorkflowGatesManager } from '../coordination/orchestration/workflow-gates.js';
+import { getLogger } from '../config/logging-config';
+import type { WorkflowGatesManager } from '../coordination/orchestration/workflow-gates';
 import type {
   WorkflowGateRequest,
   WorkflowGateResult,
-} from './workflow-base-types.js';
-import type { BaseDocumentEntity } from '../database/entities/product-entities.js';
+} from '../coordination/workflows/workflow-gate-request';
+import type { BaseDocumentEntity } from '../database/entities/document-entities';
 import type { DocumentManager } from "../services/document/document-service"
-import type { MemorySystemFactory } from '../memory/index.js';
+import type { MemorySystemFactory } from '../memory/types';
 import type {
   DocumentContent,
   StepExecutionResult,
@@ -30,12 +30,12 @@ import type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-base-types.js';
+} from './workflow-base-types';
 
 const logger = getLogger('WorkflowEngine');
 
 // ============================================================================
-// INTERFACES & TYPES
+// NTERFACES & TYPES
 // ============================================================================
 
 // Re-export base types to maintain backward compatibility
@@ -48,7 +48,7 @@ export type {
   WorkflowEngineConfig,
   WorkflowState,
   WorkflowStep,
-} from './workflow-base-types.js';
+} from './workflow-base-types';
 
 // ============================================================================
 // WORKFLOW ENGINE CLASS
@@ -527,7 +527,7 @@ export class WorkflowEngine extends EventEmitter {
   }
 
   // --------------------------------------------------------------------------
-  // GATE INTEGRATION METHODS
+  // GATE NTEGRATION METHODS
   // --------------------------------------------------------------------------
 
   /**

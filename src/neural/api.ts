@@ -52,12 +52,12 @@
  * @since 1.0.0
  */
 
-import type { IConfig, ILogger } from '../core/interfaces/base-interfaces';
+import type { Config, Logger } from '../core/interfaces/base-interfaces';
 import {
   COMPLETE_NEURAL_PRESETS,
   CognitivePatternSelector,
   NeuralAdaptationEngine,
-} from './models/presets/neural-presets-complete.js';
+} from './presets';
 
 /**
  * Enhanced Neural Model interface with cognitive patterns and presets.
@@ -234,8 +234,8 @@ export class NeuralDomainAPI {
   private initialized = false;
 
   constructor(
-    private logger: ILogger,
-    private config: IConfig
+    private logger: Logger,
+    private config: Config
   ) {
     this.patternSelector = new CognitivePatternSelector();
     this.adaptationEngine = new NeuralAdaptationEngine();

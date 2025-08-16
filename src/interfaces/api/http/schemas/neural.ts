@@ -439,7 +439,7 @@ export const NeuralSchemas = {
     properties: {
       networkId: {
         type: 'string',
-        description: 'ID of neural network to train',
+        description: 'D of neural network to train',
       },
       trainingData: {
         type: 'array',

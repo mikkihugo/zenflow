@@ -24,7 +24,7 @@ import {
 } from '../../core/type-safe-event-system';
 import type { Agent } from '../agents/agent';
 import type { CollectiveCubeCoordinator } from '../collective-cube-sync';
-import type { SPARCEngineCore } from '../swarm/sparc/index.js';
+import type { SPARCEngineCore } from '../swarm/sparc/sparc-engine-core';
 import type {
   SPARCPhase,
   SPARCProject,
@@ -903,7 +903,7 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): SwarmExecutionOrchestratorState {

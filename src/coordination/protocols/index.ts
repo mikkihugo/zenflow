@@ -100,8 +100,8 @@ export {
  * Advanced Coordination System Factory.
  * Creates and configures integrated coordination systems.
  */
-import type { ILogger } from '../../core/logger';
-import type { EventBusInterface as IEventBus } from '../core/event-bus';
+import type { Logger } from '../../core/logger';
+import type { EventBusInterface as EventBus } from '../core/event-bus';
 import { CommunicationProtocols } from './communication/communication-protocols';
 import { TaskDistributionEngine } from './distribution/task-distribution-engine';
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
@@ -294,8 +294,8 @@ export interface CoordinationMetrics {
  */
 export async function createAdvancedCoordinationSystem(
   config: AdvancedCoordinationConfig,
-  logger: ILogger,
-  eventBus: IEventBus
+  logger: Logger,
+  eventBus: EventBus
 ): Promise<AdvancedCoordinationSystem> {
   // Create topology manager
   const topologyManager = new TopologyManager(
@@ -389,7 +389,7 @@ export async function createAdvancedCoordinationSystem(
  */
 async function setupIntegrations(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger
+  logger: Logger
 ): Promise<void> {
   // Topology -> Distribution: Optimal task routing based on network topology
   systems.topologyManager.on('topology:optimized', (data) => {
@@ -542,7 +542,7 @@ function calculateAdaptabilityScore(metrics: unknown): number {
  */
 export async function shutdownCoordinationSystem(
   systems: AdvancedCoordinationSystem,
-  logger: ILogger
+  logger: Logger
 ): Promise<void> {
   logger.info('Shutting down advanced coordination system...');
 

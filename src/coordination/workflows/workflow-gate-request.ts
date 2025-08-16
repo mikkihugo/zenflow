@@ -344,7 +344,7 @@ export interface EscalationRecord {
 }
 
 // ============================================================================
-// WORKFLOW GATE REQUEST INTERFACE - Extended ValidationQuestion
+// WORKFLOW GATE REQUEST NTERFACE - Extended ValidationQuestion
 // ============================================================================
 
 /**
@@ -985,7 +985,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private async validateGateRequest(
@@ -1535,7 +1535,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     // Create human validation request event for integration with existing AGUI system
     const validationRequestEvent: HumanValidationRequestedEvent = createEvent(
       'human.validation.requested',
-      Domain.INTERFACES,
+      Domain.NTERFACES,
       {
         payload: {
           requestId: `gate-${gateRequest.id}`,
@@ -1734,7 +1734,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   ): Promise<void> {
     const gateOpenedEvent: AGUIGateOpenedEvent = createEvent(
       'agui.gate.opened',
-      Domain.INTERFACES,
+      Domain.NTERFACES,
       {
         payload: {
           gateId: gateRequest.id,
@@ -1766,7 +1766,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   ): Promise<void> {
     const gateClosedEvent: AGUIGateClosedEvent = createEvent(
       'agui.gate.closed',
-      Domain.INTERFACES,
+      Domain.NTERFACES,
       {
         payload: {
           gateId: gateRequest.id,
@@ -1883,7 +1883,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 }
 
 // ============================================================================
-// SUPPORTING TYPES AND INTERFACES
+// SUPPORTING TYPES AND NTERFACES
 // ============================================================================
 
 /**

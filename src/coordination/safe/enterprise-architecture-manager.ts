@@ -86,7 +86,7 @@ export enum PrincipleCategory {
   APPLICATION = 'application',
   TECHNOLOGY = 'technology',
   SECURITY = 'security',
-  INTEGRATION = 'integration',
+  NTEGRATION = 'integration',
   GOVERNANCE = 'governance',
 }
 
@@ -211,7 +211,7 @@ export enum TechnologyCategory {
   MESSAGING = 'messaging',
   MONITORING = 'monitoring',
   SECURITY = 'security',
-  INFRASTRUCTURE = 'infrastructure',
+  NFRASTRUCTURE = 'infrastructure',
   TOOLS = 'tools',
 }
 
@@ -380,8 +380,8 @@ export interface ArchitectureGovernanceFramework {
   readonly structure: GovernanceStructure;
   readonly processes: GovernanceProcess[];
   readonly policies: GovernancePolicy[];
-  readonly standards: string[]; // Technology standard IDs
-  readonly principles: string[]; // Architecture principle IDs
+  readonly standards: string[]; // Technology standard Ds
+  readonly principles: string[]; // Architecture principle Ds
   readonly roles: GovernanceRole[];
   readonly decisions: GovernanceDecisionRights;
   readonly metrics: GovernanceMetric[];
@@ -910,7 +910,7 @@ export interface GovernanceMaturity {
  * Maturity levels
  */
 export enum MaturityLevel {
-  INITIAL = 'initial',
+  NITIAL = 'initial',
   MANAGED = 'managed',
   DEFINED = 'defined',
   QUANTITATIVELY_MANAGED = 'quantitatively_managed',
@@ -1783,7 +1783,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): EnterpriseArchState {

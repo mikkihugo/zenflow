@@ -16,8 +16,8 @@ import { EventEmitter } from 'node:events';
 import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IService,
-  IServiceFactory,
+  Service,
+  ServiceFactory,
   ServiceMetrics,
   ServiceStatus,
 } from '../core/interfaces';
@@ -79,7 +79,7 @@ export interface DataServiceFactoryConfig {
  * @example
  */
 export class DataServiceFactory
-  implements IServiceFactory<DataServiceAdapterConfig>
+  implements ServiceFactory<DataServiceAdapterConfig>
 {
   private services = new Map<string, DataServiceAdapter>();
   private logger: Logger;
@@ -125,7 +125,7 @@ export class DataServiceFactory
   }
 
   // ============================================
-  // IServiceFactory Implementation
+  // ServiceFactory Implementation
   // ============================================
 
   /**
@@ -133,7 +133,7 @@ export class DataServiceFactory
    *
    * @param config
    */
-  async create(config: DataServiceAdapterConfig): Promise<IService> {
+  async create(config: DataServiceAdapterConfig): Promise<Service> {
     this.logger.info(`Creating data service adapter: ${config?.name}`);
 
     try {
@@ -175,7 +175,7 @@ export class DataServiceFactory
       this.logger.info(
         `Data service adapter created successfully: ${config?.name}`
       );
-      return adapter as unknown as IService;
+      return adapter as unknown as Service;
     } catch (error) {
       this.logger.error(
         `Failed to create data service adapter ${config?.name}:`,
@@ -194,13 +194,13 @@ export class DataServiceFactory
    */
   async createMultiple(
     configs: DataServiceAdapterConfig[]
-  ): Promise<IService[]> {
+  ): Promise<Service[]> {
     this.logger.info(`Creating ${configs.length} data service adapters`);
 
     const creationPromises = configs.map((config) => this.create(config));
     const results = await Promise.allSettled(creationPromises);
 
-    const services: IService[] = [];
+    const services: Service[] = [];
     const errors: Error[] = [];
 
     results?.forEach((result, index) => {
@@ -233,15 +233,15 @@ export class DataServiceFactory
    *
    * @param name
    */
-  get(name: string): IService | undefined {
-    return this.services.get(name) as IService | undefined;
+  get(name: string): Service | undefined {
+    return this.services.get(name) as Service | undefined;
   }
 
   /**
    * List all services.
    */
-  list(): IService[] {
-    return Array.from(this.services.values()) as unknown as IService[];
+  list(): Service[] {
+    return Array.from(this.services.values()) as unknown as Service[];
   }
 
   /**
@@ -463,7 +463,7 @@ export class DataServiceFactory
    *
    * @param type
    */
-  getServicesByType(type: string): IService[] {
+  getServicesByType(type: string): Service[] {
     return this.list().filter((service) => service.type === type);
   }
 

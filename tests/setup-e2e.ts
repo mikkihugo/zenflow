@@ -44,9 +44,9 @@ afterEach(async () => {
 async function setupE2EEnvironment() {
   // Set E2E environment variables
   process.env.NODE_ENV = 'test';
-  process.env.CLAUDE_ZEN_E2E_MODE = 'true';
-  process.env.CLAUDE_ZEN_LOG_LEVEL = 'warn';
-  process.env.CLAUDE_ZEN_TEST_TIMEOUT = '300000';
+  process.env.ZEN_E2E_MODE = 'true';
+  process.env.ZEN_LOG_LEVEL = 'warn';
+  process.env.ZEN_TEST_TIMEOUT = '300000';
 
   // E2E specific configuration
   globalThis.e2eConfig = {
@@ -174,8 +174,8 @@ function getServiceEnv(serviceName: string) {
   const service = globalThis.e2eConfig.services[serviceName as keyof typeof globalThis.e2eConfig.services];
   return {
     PORT: service.port.toString(),
-    CLAUDE_ZEN_SERVICE: serviceName,
-    CLAUDE_ZEN_E2E_MODE: 'true',
+    ZEN_SERVICE: serviceName,
+    ZEN_E2E_MODE: 'true',
   };
 }
 
@@ -343,8 +343,8 @@ async function waitForProcessExit(childProcess: ChildProcess, timeout: number) {
 
 async function cleanupE2EState() {
   // Final cleanup
-  process.env.CLAUDE_ZEN_E2E_MODE = undefined;
-  process.env.CLAUDE_ZEN_TEST_TIMEOUT = undefined;
+  process.env.ZEN_E2E_MODE = undefined;
+  process.env.ZEN_TEST_TIMEOUT = undefined;
 
   // Generate E2E test report
   await generateE2EReport();

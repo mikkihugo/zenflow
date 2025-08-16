@@ -4,8 +4,8 @@
 
 import { config } from '../config/index';
 import { getLogger } from '../config/logging-config';
-import { HTTPMCPServer as MCPServer } from '../interfaces/mcp/index';
-import { TerminalManager } from '../interfaces/terminal/index';
+// HTTPMCPServer removed - using direct TypeScript integration
+// TerminalManager removed - no longer needed in TypeScript integration
 import { MemoryManager } from '../memory/index';
 import type { CoordinationProvider } from '../types/shared-types';
 import { EventBus } from './event-bus';
@@ -38,12 +38,10 @@ export function createOrchestratorInstance(
   const eventBus = new EventBus();
 
   // Get configuration sections from unified config
-  const terminalConfig = config?.getSection('interfaces').terminal;
   const memoryConfig = config?.getSection('storage').memory;
   const coordinationConfig = config?.getSection('coordination');
-  const mcpConfig = config?.getSection('interfaces').mcp.http;
 
-  const terminalManager = new TerminalManager(terminalConfig, logger, eventBus);
+  // HTTPMCPServer and TerminalManager removed - direct TypeScript integration used instead
   const memoryManager = new MemoryManager(
     memoryConfig
   ) as any as any as any as any;
@@ -51,15 +49,13 @@ export function createOrchestratorInstance(
   // Use injected coordination provider or fall back to lazy loading
   const coordinationManagerProvider =
     customCoordinationProvider || coordinationProvider;
-  const mcpServer = new MCPServer(mcpConfig);
 
-  // Create orchestrator with proper coordination configuration
+  // Create orchestrator with proper coordination configuration  
   const orchestrator = new Orchestrator(
     coordinationConfig, // Use coordination config instead of empty object
-    terminalManager,
+    // HTTPMCPServer and TerminalManager removed - direct TypeScript integration used instead
     memoryManager,
     coordinationManagerProvider as any, // Type assertion for now, will be properly typed later
-    mcpServer,
     eventBus,
     logger
   );
@@ -78,7 +74,7 @@ export function getOrchestratorInstance(): Orchestrator {
     // Lazy load coordination manager only when needed
     if (!coordinationProvider) {
       // Dynamic import to break circular dependency
-      import('../coordination/manager.ts')
+      import('../coordination/manager')
         .then(({ CoordinationManager }) => {
           const coordinationConfig = config?.getSection('coordination');
           const logger = getLogger('coordination');

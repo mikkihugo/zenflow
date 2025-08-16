@@ -1,0 +1,44 @@
+{
+  "name": "@zen-ai/neural-forecasting",
+  "version": "1.0.0-alpha.1",
+  "description": "High-performance neural forecasting library with 27+ time series models: LSTM, N-BEATS, DeepAR, Transformers, and more",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "neuro-divergent/"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "build:rust": "cd neuro-divergent && cargo build --release",
+    "test": "vitest run",
+    "test:rust": "cd neuro-divergent && cargo test",
+    "clean": "rm -rf dist/ && cd neuro-divergent && cargo clean"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.5"
+  },
+  "keywords": [
+    "neural-forecasting",
+    "time-series",
+    "lstm",
+    "transformers",
+    "n-beats",
+    "deepar",
+    "forecasting",
+    "rust",
+    "machine-learning"
+  ],
+  "author": "claude-code-zen Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/neural-forecasting"
+  }
+}

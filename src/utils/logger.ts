@@ -7,10 +7,10 @@ import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-utils-logger');
 
-import { config } from '../config/index.js';
+import { config } from '../config/config';
 
-// Local Logger interface - matches ILogger from core/logger for compatibility
-export interface ILogger {
+// Local Logger interface - matches Logger from core/logger for compatibility
+export interface Logger {
   debug(message: string, meta?: unknown): void;
   info(message: string, meta?: unknown): void;
   warn(message: string, meta?: unknown): void;
@@ -85,7 +85,7 @@ const shouldLog = (
   return levels[messageLevel] >= levels[configuredLevel];
 };
 
-class Logger implements ILogger {
+class Logger implements Logger {
   private logLevel: LogLevel;
 
   constructor(private prefix: string = '') {
@@ -131,7 +131,7 @@ class Logger implements ILogger {
   }
 }
 
-export function createUtilsLogger(prefix?: string): ILogger {
+export function createUtilsLogger(prefix?: string): Logger {
   return new Logger(prefix);
 }
 

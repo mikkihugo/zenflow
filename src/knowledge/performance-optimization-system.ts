@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { SystemHealth } from '../types/shared-types';
 
 // Use SystemHealth instead of missing HealthStatus
@@ -824,8 +824,8 @@ export type AnomalyDetectionAlgorithm =
  * @example
  */
 export class PerformanceOptimizationSystem extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: PerformanceOptimizationConfig;
 
   // Core Systems - properly initialized in constructor
@@ -844,8 +844,8 @@ export class PerformanceOptimizationSystem extends EventEmitter {
 
   constructor(
     config: PerformanceOptimizationConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;

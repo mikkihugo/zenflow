@@ -19,9 +19,6 @@ export {
   ProjectManagementIntegration,
   SPARC,
   SPARCEngineCore,
-  SPARCMCPTools,
-  SPARCRoadmapManager,
   SpecificationPhaseEngine,
   SWARM_COORDINATION_TEMPLATE,
-  sparcMCPTools,
 } from './sparc/index';

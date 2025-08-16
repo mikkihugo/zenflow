@@ -18,7 +18,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from '../neural/types/wasm-types';
+} from '@claude-zen/brain/types';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
   AgentCapabilities,
@@ -47,7 +47,7 @@ export type {
 // Type guards and utilities
 export function isZenSwarm(
   obj: unknown
-): obj is import('./shared-types.ts').ZenSwarm {
+): obj is import('./shared-types').ZenSwarm {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -58,7 +58,7 @@ export function isZenSwarm(
 
 export function isSwarmAgent(
   obj: unknown
-): obj is import('./shared-types.ts').SwarmAgent {
+): obj is import('./shared-types').SwarmAgent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -69,7 +69,7 @@ export function isSwarmAgent(
 
 export function isSystemEvent(
   obj: unknown
-): obj is import('./shared-types.ts').SystemEvent {
+): obj is import('./shared-types').SystemEvent {
   return (
     obj &&
     typeof obj.id === 'string' &&
@@ -88,12 +88,11 @@ export {
   isValidNumber,
 } from '../utils/type-guards';
 export * from './client-types';
-export * from './conversation-types';
 export * from './events-types';
 export * from './knowledge-types';
-export * from './mcp-types';
 export * from './neural-types';
 export * from './protocol-types';
 export * from './services-types';
 export * from './singletons';
 export * from './workflow-types';
+export * from './logger';

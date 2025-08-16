@@ -7,10 +7,10 @@
 import {
   type LogLevel as BootstrapLogLevel,
   createBootstrapLogger,
-  type ILogger,
+  type Logger,
 } from './bootstrap-logger';
 
-export type { ILogger } from './bootstrap-logger';
+export type { Logger } from './bootstrap-logger';
 // Re-export for compatibility
 export { LogLevel } from './bootstrap-logger';
 
@@ -24,8 +24,8 @@ export interface LoggerConfig {
  *
  * @example
  */
-class EnhancedLogger implements ILogger {
-  private bootstrapLogger: ILogger;
+class EnhancedLogger implements Logger {
+  private bootstrapLogger: Logger;
   private configLoaded: boolean = false;
   private prefix: string;
 
@@ -105,6 +105,6 @@ export function upgradeAllLoggersWithConfig(config: unknown): void {
  * @returns Logger instance.
  * @example
  */
-export function createLogger(prefix: string = 'system'): ILogger {
+export function createLogger(prefix: string = 'system'): Logger {
   return new Logger(prefix);
 }

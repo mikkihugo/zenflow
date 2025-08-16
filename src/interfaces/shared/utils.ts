@@ -1,7 +1,7 @@
 /**
  * @file Provides shared utility functions for use across different interfaces.
  *
- * ⚠️  SHARED INTERFACE LAYER - NEVER REMOVE ⚠️.
+ * ⚠️  SHARED NTERFACE LAYER - NEVER REMOVE ⚠️.
  *
  * This module is part of the interfaces/shared system that is ACTIVELY USED:
  * - src/interfaces/shared/config.ts - Extensively references shared interface configuration

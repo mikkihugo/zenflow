@@ -94,29 +94,6 @@ export interface WebConfig {
   enableCompression: boolean;
 }
 
-/**
- * MCP server configuration.
- *
- * @example
- */
-export interface MCPConfig {
-  http: {
-    port: number;
-    host: string;
-    timeout: number;
-    maxRequestSize: string;
-    enableCors: boolean;
-  };
-  stdio: {
-    timeout: number;
-    maxBufferSize: number;
-  };
-  tools: {
-    enableAll: boolean;
-    enabledTools: string[];
-    disabledTools: string[];
-  };
-}
 
 /**
  * Memory system configuration.
@@ -295,7 +272,6 @@ export interface SystemConfiguration {
     shared: InterfaceConfig;
     terminal: TerminalConfig;
     web: WebConfig;
-    mcp: MCPConfig;
   };
   storage: {
     memory: MemoryConfig;

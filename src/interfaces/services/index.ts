@@ -19,11 +19,11 @@ const logger = getLogger('interfaces-services-index');
 import {
   createDefaultIntegrationServiceAdapterConfig,
   globalDataServiceFactory,
-} from './adapters/index.js';
+} from './adapters';
 import type { CompatibilityConfig } from './compatibility';
 import { USLCompatibilityLayer } from './compatibility';
 import type {
-  IService,
+  Service,
   ServiceCapability,
   ServiceMetrics,
   ServiceStatus,
@@ -82,7 +82,7 @@ export {
   integrationServiceFactory,
   type ProtocolOperationConfig,
   type TransformationStep,
-} from './adapters/index.js';
+} from './adapters';
 export {
   type CompatibilityConfig,
   initializeCompatibility,
@@ -117,11 +117,11 @@ export const compat = (() => {
 // Core USL components
 export {
   // Core interfaces
-  type IService,
-  type IServiceCapabilityRegistry,
-  type IServiceConfigValidator,
-  type IServiceFactory,
-  type IServiceRegistry,
+  type Service,
+  type ServiceCapabilityRegistry,
+  type ServiceConfigValidator,
+  type ServiceFactory,
+  type ServiceRegistry,
   // Configuration interfaces
   type ServiceAuthConfig,
   type ServiceCapability,
@@ -328,7 +328,7 @@ export class USL {
    *
    * @param {string} name Unique service name identifier.
    * @param {Partial<DataServiceConfig>} [options={}] Service configuration options.
-   * @returns {Promise<IService>} Promise resolving to the created data service.
+   * @returns {Promise<Service>} Promise resolving to the created data service.
    * @throws {ServiceConfigurationError} When configuration is invalid.
    * @throws {ServiceInitializationError} When service creation fails.
    * @description Creates a new data service with enhanced adapter capabilities.
@@ -351,7 +351,7 @@ export class USL {
   async createDataService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -506,7 +506,7 @@ export class USL {
    * @param {string} name Unique service name identifier.
    * @param {number} [port=3000] Port number for the web server.
    * @param {Partial<WebServiceConfig>} [options={}] Web service configuration options.
-   * @returns {Promise<IService>} Promise resolving to the created web service.
+   * @returns {Promise<Service>} Promise resolving to the created web service.
    * @throws {ServiceConfigurationError} When web server configuration is invalid.
    * @throws {ServiceInitializationError} When web service creation fails.
    * @description Creates and registers a new web service with HTTP server capabilities.
@@ -537,7 +537,7 @@ export class USL {
     name: string,
     port: number = 3000,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -556,7 +556,7 @@ export class USL {
    *
    * @param {string} name Unique service name identifier.
    * @param {Partial<CoordinationServiceConfig>} [options={}] Coordination service configuration.
-   * @returns {Promise<IService>} Promise resolving to the created coordination service.
+   * @returns {Promise<Service>} Promise resolving to the created coordination service.
    * @throws {ServiceConfigurationError} When coordination configuration is invalid.
    * @throws {ServiceInitializationError} When coordination service creation fails.
    * @description Creates a coordination service for managing distributed operations and agent coordination.
@@ -591,7 +591,7 @@ export class USL {
   async createCoordinationService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -609,7 +609,7 @@ export class USL {
    *
    * @param {string} name Unique service name identifier.
    * @param {Partial<NeuralServiceConfig>} [options={}] Neural service configuration options.
-   * @returns {Promise<IService>} Promise resolving to the created neural service.
+   * @returns {Promise<Service>} Promise resolving to the created neural service.
    * @throws {ServiceConfigurationError} When neural network configuration is invalid.
    * @throws {ServiceInitializationError} When neural service creation fails.
    * @description Creates a neural service for machine learning operations and neural network management.
@@ -650,7 +650,7 @@ export class USL {
   async createNeuralService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -672,7 +672,7 @@ export class USL {
   async createMemoryService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -694,7 +694,7 @@ export class USL {
   async createDatabaseService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -716,7 +716,7 @@ export class USL {
   async createIntegrationService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -747,7 +747,7 @@ export class USL {
     const config = createDefaultIntegrationServiceAdapterConfig(name, options);
     // Dynamic import for createIntegrationServiceAdapter
     const { createIntegrationServiceAdapter } = await import(
-      './adapters/index.js'
+      './adapters/index'
     );
     const adapter = createIntegrationServiceAdapter(config);
     await adapter.initialize();
@@ -940,7 +940,7 @@ export class USL {
   async createMonitoringService(
     name: string,
     options: Partial<any> = {}
-  ): Promise<IService> {
+  ): Promise<Service> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -958,7 +958,7 @@ export class USL {
    *
    * @param serviceName
    */
-  getService(serviceName: string): IService | undefined {
+  getService(serviceName: string): Service | undefined {
     return globalServiceRegistry.findService(serviceName);
   }
 
@@ -967,14 +967,14 @@ export class USL {
    *
    * @param type
    */
-  getServicesByType(type: ServiceType): IService[] {
+  getServicesByType(type: ServiceType): Service[] {
     return globalServiceRegistry.getServicesByType(type);
   }
 
   /**
    * Get all services.
    */
-  getAllServices(): Map<string, IService> {
+  getAllServices(): Map<string, Service> {
     return globalServiceRegistry.getAllServices();
   }
 
@@ -1148,7 +1148,7 @@ export class USL {
    * @param {ServiceType} [criteria.type] Filter by service type.
    * @param {string[]} [criteria.capabilities] Filter by required capabilities.
    * @param {string[]} [criteria.tags] Filter by service tags.
-   * @returns {IService[]} Array of services matching the criteria.
+   * @returns {Service[]} Array of services matching the criteria.
    * @description Discovers services based on specified criteria for dynamic service resolution.
    * @example
    * ```typescript
@@ -1179,7 +1179,7 @@ export class USL {
     type?: ServiceType;
     capabilities?: string[];
     tags?: string[];
-  }): IService[] {
+  }): Service[] {
     return globalServiceRegistry.discoverServices(criteria);
   }
 
@@ -1355,24 +1355,24 @@ export const USLHelpers = {
     databaseConfig?: Partial<any>;
     memoryConfig?: Partial<any>;
   }): Promise<{
-    web?: IService;
-    data?: IService;
-    memory?: IService;
-    database?: IService;
-    coordination?: IService;
-    neural?: IService;
-    monitoring?: IService;
+    web?: Service;
+    data?: Service;
+    memory?: Service;
+    database?: Service;
+    coordination?: Service;
+    neural?: Service;
+    monitoring?: Service;
   }> {
     await usl.initialize();
 
     const services: {
-      web?: IService;
-      data?: IService;
-      memory?: IService;
-      database?: IService;
-      coordination?: IService;
-      neural?: IService;
-      monitoring?: IService;
+      web?: Service;
+      data?: Service;
+      memory?: Service;
+      database?: Service;
+      coordination?: Service;
+      neural?: Service;
+      monitoring?: Service;
     } = {};
 
     try {
@@ -1614,7 +1614,7 @@ export const USLHelpers = {
   async createServiceWithDependencies<T extends AnyServiceConfig>(
     config: T,
     dependencies: string[] = []
-  ): Promise<IService> {
+  ): Promise<Service> {
     // Ensure dependencies exist
     for (const depName of dependencies) {
       const existingService = usl.getService(depName);
@@ -1645,7 +1645,7 @@ export const USLHelpers = {
    */
   async createServiceBatch(
     configs: Array<{ config: AnyServiceConfig; dependencies?: string[] }>
-  ): Promise<IService[]> {
+  ): Promise<Service[]> {
     // Sort by dependency order
     const sortedConfigs = [...configs].sort((a, b) => {
       const aDeps = a.dependencies?.length || 0;
@@ -1653,7 +1653,7 @@ export const USLHelpers = {
       return aDeps - bDeps;
     });
 
-    const createdServices: IService[] = [];
+    const createdServices: Service[] = [];
 
     for (const { config, dependencies = [] } of sortedConfigs) {
       try {
@@ -1714,7 +1714,7 @@ export const USLHelpers = {
     try {
       // Initialize Service Manager if enabled
       if (config?.enableServiceManager ?? true) {
-        const { ServiceManager } = await import('./manager.ts');
+        const { ServiceManager } = await import('./manager');
         const serviceManager = new ServiceManager(config?.serviceManagerConfig);
         await serviceManager.initialize();
         result.serviceManager = serviceManager;
@@ -1722,14 +1722,14 @@ export const USLHelpers = {
 
       // Initialize Enhanced Registry if enabled
       if (config?.enableEnhancedRegistry ?? true) {
-        const { EnhancedServiceRegistry } = await import('./registry.ts');
+        const { EnhancedServiceRegistry } = await import('./registry');
         const registry = new EnhancedServiceRegistry(config?.registryConfig);
         result.registry = registry;
       }
 
       // Initialize Compatibility Layer if enabled
       if (config?.enableCompatibilityLayer ?? true) {
-        const { USLCompatibilityLayer } = await import('./compatibility.ts');
+        const { USLCompatibilityLayer } = await import('./compatibility');
         const compatibility = new USLCompatibilityLayer(
           config?.compatibilityConfig
         );
@@ -1739,7 +1739,7 @@ export const USLHelpers = {
 
       // Initialize Validation Framework if enabled
       if (config?.enableValidationFramework ?? false) {
-        const { USLValidationFramework } = await import('./validation.ts');
+        const { USLValidationFramework } = await import('./validation');
         if (result?.serviceManager && result?.registry) {
           const validation = new USLValidationFramework(
             result?.serviceManager,
@@ -1764,14 +1764,14 @@ export const USLHelpers = {
    */
   async migrateToUSL(existingServices: Record<string, unknown>): Promise<{
     success: boolean;
-    migrated: IService[];
+    migrated: Service[];
     failed: Array<{ name: string; error: string }>;
     warnings: string[];
     compatibilityReport: unknown;
   }> {
     try {
       // Initialize compatibility layer
-      const { USLCompatibilityLayer } = await import('./compatibility.ts');
+      const { USLCompatibilityLayer } = await import('./compatibility');
       const compatibility = new USLCompatibilityLayer();
       await compatibility.initialize();
 
@@ -1780,7 +1780,7 @@ export const USLHelpers = {
         await compatibility.migrateExistingServices(existingServices);
 
       // Generate compatibility report
-      const { MigrationUtils } = await import('./compatibility.ts');
+      const { MigrationUtils } = await import('./compatibility');
       const compatibilityReport = MigrationUtils.generateCompatibilityReport();
 
       return {
@@ -1964,7 +1964,7 @@ export const USLHelpers = {
  * @function createDataService
  * @param {string} name Service name identifier.
  * @param {Partial<DataServiceConfig>} options Service configuration options.
- * @returns {Promise<IService>} Promise resolving to created data service.
+ * @returns {Promise<Service>} Promise resolving to created data service.
  * @example createDataService('user-data', { enabled: true })
  */
 export const createDataService = usl.createDataService.bind(usl);
@@ -2011,7 +2011,7 @@ export const createUnifiedDataService = usl.createUnifiedDataService.bind(usl);
  * @param {string} name Service name identifier.
  * @param {number} port Server port number.
  * @param {Partial<WebServiceConfig>} options Web service configuration options.
- * @returns {Promise<IService>} Promise resolving to created web service.
+ * @returns {Promise<Service>} Promise resolving to created web service.
  * @example createWebService('api', 3000, { server: { cors: { enabled: true } } })
  */
 export const createWebService = usl.createWebService.bind(usl);
@@ -2022,7 +2022,7 @@ export const createWebService = usl.createWebService.bind(usl);
  * @function createCoordinationService
  * @param {string} name Service name identifier.
  * @param {Partial<CoordinationServiceConfig>} options Coordination configuration options.
- * @returns {Promise<IService>} Promise resolving to created coordination service.
+ * @returns {Promise<Service>} Promise resolving to created coordination service.
  * @example createCoordinationService('swarm', { swarm: { topology: 'mesh' } })
  */
 export const createCoordinationService =
@@ -2034,7 +2034,7 @@ export const createCoordinationService =
  * @function createNeuralService
  * @param {string} name Service name identifier.
  * @param {Partial<NeuralServiceConfig>} options Neural service configuration options.
- * @returns {Promise<IService>} Promise resolving to created neural service.
+ * @returns {Promise<Service>} Promise resolving to created neural service.
  * @example createNeuralService('ml', { networks: { defaultArchitecture: [784, 128, 10] } })
  */
 export const createNeuralService = usl.createNeuralService.bind(usl);
@@ -2045,7 +2045,7 @@ export const createNeuralService = usl.createNeuralService.bind(usl);
  * @function createMemoryService
  * @param {string} name Service name identifier.
  * @param {Partial<MemoryServiceConfig>} options Memory service configuration options.
- * @returns {Promise<IService>} Promise resolving to created memory service.
+ * @returns {Promise<Service>} Promise resolving to created memory service.
  * @example createMemoryService('cache', { cacheSize: 1000, ttl: 3600 })
  */
 export const createMemoryService = usl.createMemoryService.bind(usl);
@@ -2056,7 +2056,7 @@ export const createMemoryService = usl.createMemoryService.bind(usl);
  * @function createDatabaseService
  * @param {string} name Service name identifier.
  * @param {Partial<DatabaseServiceConfig>} options Database configuration options.
- * @returns {Promise<IService>} Promise resolving to created database service.
+ * @returns {Promise<Service>} Promise resolving to created database service.
  * @example createDatabaseService('db', { connectionString: process.env['DATABASE_URL'] })
  */
 export const createDatabaseService = usl.createDatabaseService.bind(usl);
@@ -2067,7 +2067,7 @@ export const createDatabaseService = usl.createDatabaseService.bind(usl);
  * @function createIntegrationService
  * @param {string} name Service name identifier.
  * @param {Partial<IntegrationServiceConfig>} options Integration configuration options.
- * @returns {Promise<IService>} Promise resolving to created integration service.
+ * @returns {Promise<Service>} Promise resolving to created integration service.
  * @example createIntegrationService('api-client', { endpoints: { baseURL: 'https://api.example.com' } })
  */
 export const createIntegrationService = usl.createIntegrationService.bind(usl);
@@ -2140,7 +2140,7 @@ export const createUnifiedIntegrationService =
  * @function createMonitoringService
  * @param {string} name Service name identifier.
  * @param {Partial<MonitoringServiceConfig>} options Monitoring configuration options.
- * @returns {Promise<IService>} Promise resolving to created monitoring service.
+ * @returns {Promise<Service>} Promise resolving to created monitoring service.
  * @example createMonitoringService('monitor', { metrics: { enabled: true, interval: 30000 } })
  */
 export const createMonitoringService = usl.createMonitoringService.bind(usl);
@@ -2152,7 +2152,7 @@ export const createMonitoringService = usl.createMonitoringService.bind(usl);
  *
  * @function getService
  * @param {string} serviceName Unique service identifier.
- * @returns {IService | undefined} Service instance or undefined if not found.
+ * @returns {Service | undefined} Service instance or undefined if not found.
  * @example const userService = getService('user-data');
  */
 export const getService = usl.getService.bind(usl);
@@ -2162,7 +2162,7 @@ export const getService = usl.getService.bind(usl);
  *
  * @function getServicesByType
  * @param {ServiceType} type Service type to filter by.
- * @returns {IService[]} Array of services matching the type.
+ * @returns {Service[]} Array of services matching the type.
  * @example const dataServices = getServicesByType(ServiceType.DATA);
  */
 export const getServicesByType = usl.getServicesByType.bind(usl);
@@ -2171,7 +2171,7 @@ export const getServicesByType = usl.getServicesByType.bind(usl);
  * Get all registered services.
  *
  * @function getAllServices
- * @returns {Map<string, IService>} Map of all services by name.
+ * @returns {Map<string, Service>} Map of all services by name.
  * @example const allServices = getAllServices();
  */
 export const getAllServices = usl.getAllServices.bind(usl);
@@ -2181,7 +2181,7 @@ export const getAllServices = usl.getAllServices.bind(usl);
  *
  * @function discoverServices
  * @param {Object} criteria Discovery criteria.
- * @returns {IService[]} Array of matching services.
+ * @returns {Service[]} Array of matching services.
  * @example const mlServices = discoverServices({ capabilities: ['training', 'inference'] });
  */
 export const discoverServices = usl.discoverServices.bind(usl);

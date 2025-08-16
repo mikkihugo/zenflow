@@ -19,14 +19,9 @@ export { SPARCEngineCore } from './core/sparc-engine';
 import { SPARCEngineCore } from './core/sparc-engine';
 import type { PhaseResult, SPARCProject } from './types/sparc-types';
 
-// MCP Integration
-export {
-  SPARCMCPTools,
-  sparcMCPTools,
-} from './integrations/mcp-sparc-tools';
+// Core Integration - SPARC works as internal system
 // Project Management Integration
 export { ProjectManagementIntegration } from './integrations/project-management-integration';
-export { SPARCRoadmapManager } from './integrations/roadmap-integration';
 // Phase Engines
 export { SpecificationPhaseEngine } from './phases/specification/specification-engine';
 // Templates

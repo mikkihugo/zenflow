@@ -2,7 +2,7 @@
  * @file Main entry point for REST API layer.
  */
 
-import { getLogger } from '../../../config/logging-config.js';
+import { getLogger } from '../../../config/logging-config';
 
 const logger = getLogger('interfaces-api-http-index');
 
@@ -14,7 +14,7 @@ const logger = getLogger('interfaces-api-http-index');
  * Clean separation between API layer and business domains.
  */
 
-import { getCORSOrigins, getMCPServerURL } from '../../../config/defaults.js';
+import { getCORSOrigins, getMCPServerURL } from '../../../config/config';
 import { APIClient } from './client';
 // Import server types for internal use
 import {
@@ -96,7 +96,7 @@ export { createDatabaseRoutes } from './v1/database';
 export { createMemoryRoutes } from './v1/memory';
 export { createNeuralRoutes } from './v1/neural';
 
-// ===== VERSION INFORMATION =====
+// ===== VERSION NFORMATION =====
 export const REST_API_VERSION = '1.0.0' as const;
 export const SUPPORTED_API_VERSIONS = ['v1'] as const;
 

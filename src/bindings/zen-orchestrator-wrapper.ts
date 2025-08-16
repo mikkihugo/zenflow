@@ -142,7 +142,7 @@ export class ZenOrchestratorWrapper {
     if (!this.integration) {
       // Lazy load the integration to avoid circular dependencies
       const { getZenSwarmOrchestratorIntegration } = await import(
-        '../zen-orchestrator-integration.js'
+        '../zen-orchestrator-integration'
       );
       this.integration = getZenSwarmOrchestratorIntegration(this.config);
     }

@@ -7,7 +7,7 @@ import type {
   ClientMetrics,
   ClientResponse,
   ClientStatus,
-  IClient,
+  Client,
   RequestOptions,
 } from '../core/interfaces';
 
@@ -38,7 +38,7 @@ interface WebSocketClientOptions {
  *
  * @example
  */
-export class EnhancedWebSocketClient extends EventEmitter implements IClient {
+export class EnhancedWebSocketClient extends EventEmitter implements Client {
   // UACL interface properties
   public readonly config: WebSocketClientConfig;
   public readonly name: string;

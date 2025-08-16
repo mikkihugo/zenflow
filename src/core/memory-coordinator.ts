@@ -15,7 +15,7 @@ import {
   type DatabaseTypes,
   EntityTypes,
 } from '../database/index';
-import type { IRepository, IVectorRepository } from '../database/interfaces';
+import type { Repository, VectorRepository } from '../database/interfaces';
 
 const logger = getLogger('UnifiedMemory');
 
@@ -88,8 +88,8 @@ interface BackendInterface {
  * @example
  */
 class LanceDBBackend implements BackendInterface {
-  private vectorRepository!: IRepository<any>;
-  private vectorDAO!: IRepository<any>;
+  private vectorRepository!: Repository<any>;
+  private vectorDAO!: Repository<any>;
   private config: MemoryConfig;
 
   constructor(config: MemoryConfig) {
@@ -283,29 +283,29 @@ class SQLiteBackend implements BackendInterface {
     }
 
     if (this.config.sqlite?.autoVacuum !== false) {
-      this.db.pragma('auto_vacuum = INCREMENTAL');
+      this.db.pragma('auto_vacuum = NCREMENTAL');
     }
 
     // Create unified memory table
     this.db.exec(`
-      CREATE TABLE IF NOT EXISTS unified_memory (
+      CREATE TABLE F NOT EXISTS unified_memory (
         id TEXT PRIMARY KEY,
         namespace TEXT NOT NULL,
         key TEXT NOT NULL,
         value TEXT NOT NULL,
         value_type TEXT NOT NULL,
-        timestamp INTEGER NOT NULL,
-        size INTEGER NOT NULL,
+        timestamp NTEGER NOT NULL,
+        size NTEGER NOT NULL,
         UNIQUE(namespace, key)
       )
     `);
 
     // Create indexes for performance
     this.db.exec(`
-      CREATE INDEX IF NOT EXISTS idx_namespace ON unified_memory(namespace);
-      CREATE INDEX IF NOT EXISTS idx_key ON unified_memory(key);
-      CREATE INDEX IF NOT EXISTS idx_timestamp ON unified_memory(timestamp);
-      CREATE INDEX IF NOT EXISTS idx_type ON unified_memory(value_type);
+      CREATE NDEX F NOT EXISTS idx_namespace ON unified_memory(namespace);
+      CREATE NDEX F NOT EXISTS idx_key ON unified_memory(key);
+      CREATE NDEX F NOT EXISTS idx_timestamp ON unified_memory(timestamp);
+      CREATE NDEX F NOT EXISTS idx_type ON unified_memory(value_type);
     `);
 
     logger.info('SQLite backend initialized');
@@ -324,7 +324,7 @@ class SQLiteBackend implements BackendInterface {
 
     try {
       const stmt = this.db.prepare(`
-        INSERT OR REPLACE INTO unified_memory(id, namespace, key, value, value_type, timestamp, size)
+        INSERT OR REPLACE NTO unified_memory(id, namespace, key, value, value_type, timestamp, size)
         VALUES(?, ?, ?, ?, ?, ?, ?)
       `);
 

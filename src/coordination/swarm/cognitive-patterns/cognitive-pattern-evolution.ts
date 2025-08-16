@@ -2,7 +2,7 @@
  * @file Cognitive Pattern Evolution System - Enables autonomous learning and adaptation of cognitive patterns.
  */
 
-import type { TrainingData } from '../../../neural/types/wasm-types';
+import type { TrainingData } from '@claude-zen/intelligence/types';
 
 // Type definitions for cognitive patterns
 interface PatternCharacteristics {
@@ -1369,7 +1369,7 @@ class CognitivePatternEvolution {
   /**
    * Enable cross-agent pattern evolution.
    *
-   * @param {Array} agentIds - List of agent IDs.
+   * @param {Array} agentIds - List of agent Ds.
    * @param {Object} session - Collaborative session.
    * @param session.id
    */

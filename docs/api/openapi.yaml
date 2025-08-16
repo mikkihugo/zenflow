@@ -1,0 +1,2632 @@
+openapi: 3.0.3
+info:
+  title: Claude Code Zen API
+  description: |
+    Comprehensive API documentation for Claude Code Zen - AI-powered development coordination platform.
+    
+    This API provides endpoints for:
+    - System health and status monitoring
+    - Swarm management and coordination
+    - Task management and orchestration
+    - Document and file operations
+    - LLM statistics and analytics
+    - Matron advisory system
+    - Visionary roadmap planning
+    - Workspace management
+    - Real-time WebSocket communications
+    
+    The API follows RESTful principles and returns JSON responses.
+  version: 2.0.0
+  contact:
+    name: Claude Code Zen Team
+    url: https://github.com/zen-neural/claude-code-zen
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+  - url: https://fra-d1.in.centralcloud.net/api
+    description: Production server
+
+paths:
+  # Health and System Status
+  /health:
+    get:
+      summary: Health Check
+      description: Check if the API server is running and healthy
+      operationId: getHealth
+      tags:
+        - System
+      responses:
+        '200':
+          description: Server is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: "healthy"
+                timestamp: "2024-08-15T10:30:00.000Z"
+                version: "2.0.0"
+                uptime: 3600
+
+  /status:
+    get:
+      summary: System Status
+      description: Get comprehensive system status including performance metrics
+      operationId: getSystemStatus
+      tags:
+        - System
+      responses:
+        '200':
+          description: System status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemStatus'
+        '500':
+          description: Failed to get system status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Swarm Management
+  /swarms:
+    get:
+      summary: List Swarms
+      description: Get all active swarms and their current status
+      operationId: getSwarms
+      tags:
+        - Swarm Management
+      responses:
+        '200':
+          description: Swarms retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Swarm'
+        '500':
+          description: Failed to get swarms
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create Swarm
+      description: Create a new swarm with specified configuration
+      operationId: createSwarm
+      tags:
+        - Swarm Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSwarmRequest'
+            example:
+              name: "Development Swarm"
+              topology: "hierarchical"
+              maxAgents: 8
+              strategy: "specialized"
+      responses:
+        '201':
+          description: Swarm created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Swarm'
+        '400':
+          description: Invalid swarm configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create swarm
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Task Management
+  /tasks:
+    get:
+      summary: List Tasks
+      description: Get all tasks in the system
+      operationId: getTasks
+      tags:
+        - Task Management
+      parameters:
+        - name: status
+          in: query
+          description: Filter tasks by status
+          required: false
+          schema:
+            type: string
+            enum: [pending, in-progress, completed, failed]
+        - name: priority
+          in: query
+          description: Filter tasks by priority
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+      responses:
+        '200':
+          description: Tasks retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '500':
+          description: Failed to get tasks
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create Task
+      description: Create a new task for execution
+      operationId: createTask
+      tags:
+        - Task Management
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+            example:
+              title: "Implement authentication system"
+              description: "Build JWT-based authentication with refresh tokens"
+              priority: "high"
+              assignedTo: "AI Agent 001"
+              estimatedDuration: "2h"
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Invalid task data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create task
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Document Management
+  /documents:
+    get:
+      summary: List Documents
+      description: Get all documents in the system
+      operationId: getDocuments
+      tags:
+        - Document Management
+      parameters:
+        - name: type
+          in: query
+          description: Filter documents by type
+          required: false
+          schema:
+            type: string
+            enum: [code, documentation, specification, report]
+        - name: search
+          in: query
+          description: Search documents by content or title
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Documents retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Document'
+        '500':
+          description: Failed to get documents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Command Execution
+  /execute:
+    post:
+      summary: Execute Command
+      description: Execute a system command or script
+      operationId: executeCommand
+      tags:
+        - Command Execution
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteCommandRequest'
+            example:
+              command: "npm"
+              args: ["test", "--coverage"]
+              workingDirectory: "/project/root"
+      responses:
+        '200':
+          description: Command executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+        '400':
+          description: Invalid command
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Command execution failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Settings Management
+  /settings:
+    get:
+      summary: Get Settings
+      description: Get current system and user settings
+      operationId: getSettings
+      tags:
+        - Settings
+      responses:
+        '200':
+          description: Settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Settings'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Update Settings
+      description: Update system or user settings
+      operationId: updateSettings
+      tags:
+        - Settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSettingsRequest'
+            example:
+              theme: "dark"
+              realTime: true
+              notifications: true
+      responses:
+        '200':
+          description: Settings updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        '400':
+          description: Invalid settings data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Session not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # LLM Statistics
+  /llm-stats:
+    get:
+      summary: Get LLM Statistics
+      description: Get comprehensive LLM usage analytics and system health
+      operationId: getLLMStats
+      tags:
+        - LLM Analytics
+      responses:
+        '200':
+          description: LLM statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMStatistics'
+        '500':
+          description: Failed to get LLM statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /llm-stats/export:
+    get:
+      summary: Export LLM Statistics
+      description: Export LLM statistics in various formats
+      operationId: exportLLMStats
+      tags:
+        - LLM Analytics
+      parameters:
+        - name: format
+          in: query
+          description: Export format
+          required: false
+          schema:
+            type: string
+            enum: [json, csv]
+            default: json
+      responses:
+        '200':
+          description: Statistics exported successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                description: JSON formatted statistics
+            text/csv:
+              schema:
+                type: string
+                description: CSV formatted statistics
+        '500':
+          description: Failed to export statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /llm-stats/health:
+    get:
+      summary: Get LLM System Health
+      description: Get health status of LLM systems and providers
+      operationId: getLLMHealth
+      tags:
+        - LLM Analytics
+      responses:
+        '200':
+          description: LLM health retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LLMHealth'
+        '500':
+          description: Failed to get LLM health
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /llm-stats/providers:
+    get:
+      summary: Get LLM Provider Statistics
+      description: Get statistics for specific LLM providers or all providers
+      operationId: getLLMProviders
+      tags:
+        - LLM Analytics
+      parameters:
+        - name: provider
+          in: query
+          description: Specific provider ID to get statistics for
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Provider statistics retrieved successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ProviderStats'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/ProviderStats'
+        '404':
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to get provider statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /llm-stats/history:
+    delete:
+      summary: Clear LLM History
+      description: Clear LLM statistics history
+      operationId: clearLLMHistory
+      tags:
+        - LLM Analytics
+      responses:
+        '200':
+          description: History cleared successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "LLM statistics history cleared"
+        '500':
+          description: Failed to clear history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Matron Advisory System
+  /matron/consultations:
+    get:
+      summary: Get Consultations
+      description: Get all matron advisory consultations
+      operationId: getConsultations
+      tags:
+        - Matron Advisory
+      parameters:
+        - name: status
+          in: query
+          description: Filter consultations by status
+          required: false
+          schema:
+            type: string
+            enum: [active, completed, pending, cancelled]
+        - name: domain
+          in: query
+          description: Filter by expertise domain
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Consultations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  consultations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Consultation'
+        '500':
+          description: Failed to get consultations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create Consultation
+      description: Create a new matron advisory consultation
+      operationId: createConsultation
+      tags:
+        - Matron Advisory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateConsultationRequest'
+            example:
+              title: "Architecture Decision: Microservices vs Monolith"
+              domain: "system-architecture"
+              question: "Should we migrate from monolith to microservices?"
+              context:
+                projectType: "E-commerce Platform"
+                teamSize: "8 developers"
+                timeline: "6 months"
+              priority: "high"
+              requestedBy: "Tech Lead"
+      responses:
+        '201':
+          description: Consultation created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Consultation'
+        '400':
+          description: Invalid consultation data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create consultation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /matron/experts:
+    get:
+      summary: Get Experts
+      description: Get available matron advisory experts and their specialties
+      operationId: getExperts
+      tags:
+        - Matron Advisory
+      parameters:
+        - name: domain
+          in: query
+          description: Filter experts by domain
+          required: false
+          schema:
+            type: string
+        - name: available
+          in: query
+          description: Filter by availability status
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Experts retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  experts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Expert'
+        '500':
+          description: Failed to get experts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /matron/recommendations:
+    get:
+      summary: Get Recommendations
+      description: Get matron advisory recommendations
+      operationId: getRecommendations
+      tags:
+        - Matron Advisory
+      parameters:
+        - name: consultationId
+          in: query
+          description: Get recommendations for specific consultation
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recommendations retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  recommendations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Recommendation'
+        '500':
+          description: Failed to get recommendations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /matron/metrics:
+    get:
+      summary: Get Matron Metrics
+      description: Get matron advisory system metrics and performance
+      operationId: getMatronMetrics
+      tags:
+        - Matron Advisory
+      responses:
+        '200':
+          description: Metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MatronMetrics'
+        '500':
+          description: Failed to get metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Visionary Roadmap System
+  /roadmap/roadmaps:
+    get:
+      summary: Get Roadmaps
+      description: Get all roadmaps with their current status and progress
+      operationId: getRoadmaps
+      tags:
+        - Visionary Roadmap
+      parameters:
+        - name: status
+          in: query
+          description: Filter roadmaps by status
+          required: false
+          schema:
+            type: string
+            enum: [active, planning, completed, on-hold, cancelled]
+        - name: priority
+          in: query
+          description: Filter roadmaps by priority
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high, critical]
+      responses:
+        '200':
+          description: Roadmaps retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  roadmaps:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Roadmap'
+        '500':
+          description: Failed to get roadmaps
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create Roadmap
+      description: Create a new roadmap for strategic planning
+      operationId: createRoadmap
+      tags:
+        - Visionary Roadmap
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRoadmapRequest'
+            example:
+              title: "AI Platform Evolution 2025"
+              description: "Roadmap for advancing AI capabilities"
+              vision: "Become the leading AI development platform"
+              owner: "Product Team"
+              startDate: "2024-01-01"
+              endDate: "2025-12-31"
+              priority: "critical"
+              strategicThemes: ["AI Innovation", "Platform Excellence"]
+              stakeholders: ["Engineering", "Product", "AI Research"]
+              budget: "$2M"
+      responses:
+        '201':
+          description: Roadmap created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Roadmap'
+        '400':
+          description: Invalid roadmap data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create roadmap
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /roadmap/milestones:
+    get:
+      summary: Get Milestones
+      description: Get all milestones across roadmaps
+      operationId: getMilestones
+      tags:
+        - Visionary Roadmap
+      parameters:
+        - name: roadmapId
+          in: query
+          description: Filter milestones by roadmap ID
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: Filter milestones by status
+          required: false
+          schema:
+            type: string
+            enum: [planning, in-progress, completed, cancelled]
+        - name: type
+          in: query
+          description: Filter milestones by type
+          required: false
+          schema:
+            type: string
+            enum: [major-release, feature-release, improvement, compliance, research]
+      responses:
+        '200':
+          description: Milestones retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  milestones:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Milestone'
+        '500':
+          description: Failed to get milestones
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create Milestone
+      description: Create a new milestone for a roadmap
+      operationId: createMilestone
+      tags:
+        - Visionary Roadmap
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMilestoneRequest'
+            example:
+              roadmapId: "rm-zen-001"
+              title: "AI Model v4.0 Release"
+              description: "Next-generation AI model with enhanced capabilities"
+              type: "major-release"
+              priority: "critical"
+              dueDate: "2024-12-01"
+              owner: "AI Research Team"
+              deliverables: ["Model Training", "Performance Testing", "Integration"]
+              dependencies: ["Infrastructure Scaling", "Model Architecture"]
+              riskFactors: ["Training Data Quality", "Compute Resources"]
+              successCriteria: ["95% accuracy", "50% performance improvement"]
+      responses:
+        '201':
+          description: Milestone created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Milestone'
+        '400':
+          description: Invalid milestone data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create milestone
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /roadmap/vision:
+    get:
+      summary: Get Vision Statements
+      description: Get organizational vision statements and strategic goals
+      operationId: getVisionStatements
+      tags:
+        - Visionary Roadmap
+      parameters:
+        - name: status
+          in: query
+          description: Filter vision statements by status
+          required: false
+          schema:
+            type: string
+            enum: [active, research, archived]
+        - name: timeframe
+          in: query
+          description: Filter by timeframe
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Vision statements retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  visions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/VisionStatement'
+        '500':
+          description: Failed to get vision statements
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /roadmap/metrics:
+    get:
+      summary: Get Roadmap Metrics
+      description: Get comprehensive roadmap performance metrics
+      operationId: getRoadmapMetrics
+      tags:
+        - Visionary Roadmap
+      responses:
+        '200':
+          description: Roadmap metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RoadmapMetrics'
+        '500':
+          description: Failed to get roadmap metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Workspace Management
+  /workspace/files:
+    get:
+      summary: List Files
+      description: List files and directories in the workspace
+      operationId: listWorkspaceFiles
+      tags:
+        - Workspace
+      parameters:
+        - name: path
+          in: query
+          description: Directory path to list (relative to workspace root)
+          required: false
+          schema:
+            type: string
+            default: ""
+      responses:
+        '200':
+          description: Files listed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileListResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to list files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      summary: Create File
+      description: Create a new file in the workspace
+      operationId: createWorkspaceFile
+      tags:
+        - Workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFileRequest'
+            example:
+              path: "src/components/NewComponent.tsx"
+              content: "import React from 'react';\n\nexport const NewComponent = () => {\n  return <div>Hello World</div>;\n};"
+              template: "react"
+      responses:
+        '201':
+          description: File created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileOperationResponse'
+        '400':
+          description: Invalid file data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    put:
+      summary: Update File
+      description: Update content of an existing file
+      operationId: updateWorkspaceFile
+      tags:
+        - Workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateFileRequest'
+            example:
+              path: "src/components/Component.tsx"
+              content: "// Updated file content\nimport React from 'react';\n\nexport const Component = () => {\n  return <div>Updated!</div>;\n};"
+      responses:
+        '200':
+          description: File updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileOperationResponse'
+        '400':
+          description: Invalid file data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to update file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    delete:
+      summary: Delete File
+      description: Delete a file from the workspace
+      operationId: deleteWorkspaceFile
+      tags:
+        - Workspace
+      parameters:
+        - name: path
+          in: query
+          description: File path to delete (relative to workspace root)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileOperationResponse'
+        '400':
+          description: File path required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to delete file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/files/content:
+    get:
+      summary: Get File Content
+      description: Get content of a specific file
+      operationId: getWorkspaceFileContent
+      tags:
+        - Workspace
+      parameters:
+        - name: path
+          in: query
+          description: File path to read (relative to workspace root)
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: File content retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileContentResponse'
+        '400':
+          description: File path required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to read file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/directories:
+    post:
+      summary: Create Directory
+      description: Create a new directory in the workspace
+      operationId: createWorkspaceDirectory
+      tags:
+        - Workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDirectoryRequest'
+            example:
+              path: "src/new-feature"
+      responses:
+        '201':
+          description: Directory created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileOperationResponse'
+        '400':
+          description: Directory path required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Access denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to create directory
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/project/info:
+    get:
+      summary: Get Project Info
+      description: Get information about the current workspace project
+      operationId: getWorkspaceProjectInfo
+      tags:
+        - Workspace
+      responses:
+        '200':
+          description: Project information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectInfo'
+        '500':
+          description: Failed to get project info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/project/commands:
+    post:
+      summary: Execute Project Command
+      description: Execute a command in the workspace context (npm scripts, etc.)
+      operationId: executeWorkspaceCommand
+      tags:
+        - Workspace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceCommandRequest'
+            example:
+              command: "npm"
+              args: ["run", "build"]
+      responses:
+        '200':
+          description: Command executed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommandResult'
+        '400':
+          description: Command required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '408':
+          description: Command timeout
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to execute command
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/search/files:
+    get:
+      summary: Search Files
+      description: Search for files by name in the workspace
+      operationId: searchWorkspaceFiles
+      tags:
+        - Workspace
+      parameters:
+        - name: q
+          in: query
+          description: Search query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of results
+          required: false
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 200
+      responses:
+        '200':
+          description: File search completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileSearchResponse'
+        '400':
+          description: Search query required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to search files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/git/status:
+    get:
+      summary: Get Git Status
+      description: Get current Git status of the workspace
+      operationId: getWorkspaceGitStatus
+      tags:
+        - Workspace
+      responses:
+        '200':
+          description: Git status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitStatusResponse'
+        '400':
+          description: Not a git repository or git error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Failed to get git status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /workspace/recent:
+    get:
+      summary: Get Recent Files
+      description: Get recently modified files in the workspace
+      operationId: getWorkspaceRecentFiles
+      tags:
+        - Workspace
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of recent files to return
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 50
+      responses:
+        '200':
+          description: Recent files retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  files:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/FileInfo'
+        '500':
+          description: Failed to get recent files
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # Dashboard Health Check
+  /dashboard/health:
+    get:
+      summary: Dashboard Health Check
+      description: Check if the Svelte dashboard is running and accessible
+      operationId: getDashboardHealth
+      tags:
+        - Dashboard
+      responses:
+        '200':
+          description: Dashboard is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  sveltePort:
+                    type: integer
+                    example: 3002
+                  proxyEnabled:
+                    type: boolean
+                    example: true
+        '503':
+          description: Dashboard unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    # Basic Response Types
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          example: "2024-08-15T10:30:00.000Z"
+        version:
+          type: string
+          example: "2.0.0"
+        uptime:
+          type: number
+          description: Server uptime in seconds
+          example: 3600
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Resource not found"
+        code:
+          type: string
+          description: Error code (optional)
+          example: "NOT_FOUND"
+        details:
+          type: object
+          description: Additional error details (optional)
+
+    # System Status
+    SystemStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+        uptime:
+          type: number
+        performance:
+          $ref: '#/components/schemas/PerformanceMetrics'
+        services:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceStatus'
+
+    PerformanceMetrics:
+      type: object
+      properties:
+        cpu:
+          type: number
+          format: float
+          description: CPU usage percentage
+          example: 15.5
+        memory:
+          type: number
+          format: float
+          description: Memory usage percentage
+          example: 45.2
+        disk:
+          type: number
+          format: float
+          description: Disk usage percentage
+          example: 60.1
+        responseTime:
+          type: number
+          description: Average response time in milliseconds
+          example: 125
+
+    ServiceStatus:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "swarm-coordinator"
+        status:
+          type: string
+          enum: [running, stopped, error]
+          example: "running"
+        lastCheck:
+          type: string
+          format: date-time
+        details:
+          type: object
+
+    # Swarm Management
+    Swarm:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "swarm-001"
+        name:
+          type: string
+          example: "Development Swarm"
+        topology:
+          type: string
+          enum: [mesh, hierarchical, ring, star]
+          example: "hierarchical"
+        status:
+          type: string
+          enum: [active, inactive, paused, error]
+          example: "active"
+        maxAgents:
+          type: integer
+          example: 8
+        currentAgents:
+          type: integer
+          example: 6
+        strategy:
+          type: string
+          enum: [balanced, specialized, adaptive, parallel]
+          example: "specialized"
+        created:
+          type: string
+          format: date-time
+        lastActivity:
+          type: string
+          format: date-time
+        metrics:
+          $ref: '#/components/schemas/SwarmMetrics'
+
+    CreateSwarmRequest:
+      type: object
+      required:
+        - name
+        - topology
+      properties:
+        name:
+          type: string
+          example: "Development Swarm"
+        topology:
+          type: string
+          enum: [mesh, hierarchical, ring, star]
+          example: "hierarchical"
+        maxAgents:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 5
+          example: 8
+        strategy:
+          type: string
+          enum: [balanced, specialized, adaptive, parallel]
+          default: "balanced"
+          example: "specialized"
+        configuration:
+          type: object
+          description: Additional swarm configuration
+          additionalProperties: true
+
+    SwarmMetrics:
+      type: object
+      properties:
+        tasksCompleted:
+          type: integer
+          example: 45
+        tasksActive:
+          type: integer
+          example: 3
+        averageTaskTime:
+          type: number
+          description: Average task completion time in minutes
+          example: 12.5
+        efficiency:
+          type: number
+          format: float
+          description: Swarm efficiency percentage
+          example: 87.3
+
+    # Task Management
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "task-001"
+        title:
+          type: string
+          example: "Implement authentication system"
+        description:
+          type: string
+          example: "Build JWT-based authentication with refresh tokens"
+        status:
+          type: string
+          enum: [pending, in-progress, completed, failed, cancelled]
+          example: "in-progress"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "high"
+        assignedTo:
+          type: string
+          example: "AI Agent 001"
+        estimatedDuration:
+          type: string
+          example: "2h"
+        actualDuration:
+          type: string
+          example: "1h 45m"
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        completed:
+          type: string
+          format: date-time
+          nullable: true
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["authentication", "security", "backend"]
+        dependencies:
+          type: array
+          items:
+            type: string
+          example: ["task-002", "task-003"]
+        progress:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 65.5
+
+    CreateTaskRequest:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+          example: "Implement user registration"
+        description:
+          type: string
+          example: "Create user registration form and API endpoint"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "high"
+        assignedTo:
+          type: string
+          example: "AI Agent 002"
+        estimatedDuration:
+          type: string
+          example: "3h"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["user-management", "frontend", "backend"]
+        dependencies:
+          type: array
+          items:
+            type: string
+          example: ["task-005"]
+
+    # Document Management
+    Document:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "doc-001"
+        title:
+          type: string
+          example: "API Documentation"
+        type:
+          type: string
+          enum: [code, documentation, specification, report]
+          example: "documentation"
+        content:
+          type: string
+          example: "# API Documentation\n\nThis document describes..."
+        path:
+          type: string
+          example: "/docs/api.md"
+        size:
+          type: integer
+          description: Document size in bytes
+          example: 2048
+        created:
+          type: string
+          format: date-time
+        updated:
+          type: string
+          format: date-time
+        author:
+          type: string
+          example: "AI Assistant"
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["api", "documentation", "reference"]
+        metadata:
+          type: object
+          additionalProperties: true
+
+    # Command Execution
+    ExecuteCommandRequest:
+      type: object
+      required:
+        - command
+      properties:
+        command:
+          type: string
+          example: "npm"
+        args:
+          type: array
+          items:
+            type: string
+          example: ["test", "--coverage"]
+        workingDirectory:
+          type: string
+          example: "/project/root"
+        environment:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            NODE_ENV: "test"
+        timeout:
+          type: integer
+          description: Command timeout in seconds
+          default: 30
+          example: 60
+
+    CommandResult:
+      type: object
+      properties:
+        command:
+          type: string
+          example: "npm"
+        args:
+          type: array
+          items:
+            type: string
+          example: ["test", "--coverage"]
+        exitCode:
+          type: integer
+          example: 0
+        stdout:
+          type: string
+          example: "Test output..."
+        stderr:
+          type: string
+          example: ""
+        success:
+          type: boolean
+          example: true
+        duration:
+          type: number
+          description: Command execution time in milliseconds
+          example: 5420
+
+    # Settings
+    Settings:
+      type: object
+      properties:
+        session:
+          type: object
+          properties:
+            theme:
+              type: string
+              enum: [light, dark, auto]
+              example: "dark"
+            language:
+              type: string
+              example: "en"
+            notifications:
+              type: boolean
+              example: true
+            autoSave:
+              type: boolean
+              example: true
+        system:
+          type: object
+          properties:
+            theme:
+              type: string
+              example: "dark"
+            realTime:
+              type: boolean
+              example: true
+            debug:
+              type: boolean
+              example: false
+
+    UpdateSettingsRequest:
+      type: object
+      properties:
+        theme:
+          type: string
+          enum: [light, dark, auto]
+          example: "dark"
+        language:
+          type: string
+          example: "en"
+        notifications:
+          type: boolean
+          example: true
+        autoSave:
+          type: boolean
+          example: true
+        realTime:
+          type: boolean
+          example: true
+
+    # LLM Statistics
+    LLMStatistics:
+      type: object
+      properties:
+        analytics:
+          $ref: '#/components/schemas/LLMAnalytics'
+        systemHealth:
+          $ref: '#/components/schemas/LLMHealth'
+        timestamp:
+          type: string
+          format: date-time
+
+    LLMAnalytics:
+      type: object
+      properties:
+        totalRequests:
+          type: integer
+          example: 1250
+        totalTokens:
+          type: integer
+          example: 875000
+        averageResponseTime:
+          type: number
+          description: Average response time in milliseconds
+          example: 1250.5
+        successRate:
+          type: number
+          format: float
+          description: Success rate percentage
+          example: 98.5
+        providerStats:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderStats'
+        dailyUsage:
+          type: array
+          items:
+            $ref: '#/components/schemas/DailyUsage'
+
+    LLMHealth:
+      type: object
+      properties:
+        overall:
+          type: string
+          enum: [healthy, degraded, unhealthy]
+          example: "healthy"
+        providers:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProviderHealth'
+        lastCheck:
+          type: string
+          format: date-time
+
+    ProviderStats:
+      type: object
+      properties:
+        providerId:
+          type: string
+          example: "anthropic"
+        name:
+          type: string
+          example: "Anthropic Claude"
+        requests:
+          type: integer
+          example: 450
+        tokens:
+          type: integer
+          example: 320000
+        averageResponseTime:
+          type: number
+          example: 1100.2
+        successRate:
+          type: number
+          format: float
+          example: 99.1
+        costEstimate:
+          type: number
+          format: float
+          description: Estimated cost in USD
+          example: 15.75
+
+    ProviderHealth:
+      type: object
+      properties:
+        providerId:
+          type: string
+          example: "anthropic"
+        status:
+          type: string
+          enum: [healthy, degraded, unhealthy, unknown]
+          example: "healthy"
+        latency:
+          type: number
+          description: Current latency in milliseconds
+          example: 850
+        lastCheck:
+          type: string
+          format: date-time
+        errors:
+          type: integer
+          example: 2
+
+    DailyUsage:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          example: "2024-08-15"
+        requests:
+          type: integer
+          example: 125
+        tokens:
+          type: integer
+          example: 89000
+        cost:
+          type: number
+          format: float
+          example: 3.25
+
+    # Matron Advisory
+    Consultation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "cons-001"
+        title:
+          type: string
+          example: "Architecture Decision: Microservices vs Monolith"
+        domain:
+          type: string
+          example: "system-architecture"
+        expert:
+          type: string
+          example: "AI Architecture Advisor"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "high"
+        status:
+          type: string
+          enum: [active, completed, pending, cancelled]
+          example: "active"
+        requestedBy:
+          type: string
+          example: "Tech Lead"
+        created:
+          type: string
+          format: date-time
+        context:
+          type: object
+          additionalProperties: true
+          example:
+            projectType: "E-commerce Platform"
+            scalabilityRequirements: "High"
+            teamSize: "8 developers"
+            timeline: "6 months"
+        question:
+          type: string
+          example: "Should we migrate from monolith to microservices architecture?"
+        complexity:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "high"
+        businessImpact:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "critical"
+        stakeholders:
+          type: array
+          items:
+            type: string
+          example: ["Engineering Team", "Product Manager", "CTO"]
+
+    CreateConsultationRequest:
+      type: object
+      required:
+        - title
+        - domain
+        - question
+        - requestedBy
+      properties:
+        title:
+          type: string
+          example: "Performance Optimization Strategy"
+        domain:
+          type: string
+          example: "performance"
+        question:
+          type: string
+          example: "How can we optimize our database queries for better performance?"
+        requestedBy:
+          type: string
+          example: "Senior Developer"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "high"
+        context:
+          type: object
+          additionalProperties: true
+          example:
+            currentLoad: "10k requests/hour"
+            databaseType: "PostgreSQL"
+            queryComplexity: "High"
+        complexity:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "high"
+        businessImpact:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "high"
+        stakeholders:
+          type: array
+          items:
+            type: string
+          example: ["Development Team", "Database Admin"]
+
+    Expert:
+      type: object
+      properties:
+        domain:
+          type: string
+          example: "system-architecture"
+        name:
+          type: string
+          example: "AI Architecture Advisor"
+        specialties:
+          type: array
+          items:
+            type: string
+          example: ["Microservices", "Scalability", "Design Patterns"]
+        consultations:
+          type: integer
+          example: 15
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+          example: 4.8
+        status:
+          type: string
+          enum: [available, busy, offline]
+          example: "available"
+        lastActive:
+          type: string
+          format: date-time
+
+    Recommendation:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "rec-001"
+        consultationId:
+          type: string
+          example: "cons-001"
+        title:
+          type: string
+          example: "Incremental Migration to Microservices"
+        expert:
+          type: string
+          example: "AI Architecture Advisor"
+        summary:
+          type: string
+          example: "Recommended phased approach starting with user service separation"
+        confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0.89
+        implementationComplexity:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "high"
+        estimatedTimeframe:
+          type: string
+          example: "4-6 months"
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "medium"
+        created:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [draft, under-review, approved, rejected, implemented]
+          example: "under-review"
+
+    MatronMetrics:
+      type: object
+      properties:
+        totalConsultations:
+          type: integer
+          example: 48
+        activeExperts:
+          type: integer
+          example: 3
+        resolutionRate:
+          type: number
+          format: float
+          description: Resolution rate percentage
+          example: 94
+        averageResponseTime:
+          type: string
+          example: "18m"
+
+    # Visionary Roadmap
+    Roadmap:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "rm-zen-001"
+        title:
+          type: string
+          example: "Claude Code Zen Platform Evolution 2024-2025"
+        description:
+          type: string
+          example: "Comprehensive roadmap for advancing claude-code-zen capabilities"
+        vision:
+          type: string
+          example: "Transform claude-code-zen into the most intelligent development platform"
+        status:
+          type: string
+          enum: [active, planning, completed, on-hold, cancelled]
+          example: "active"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "critical"
+        owner:
+          type: string
+          example: "Claude Code Zen Team"
+        startDate:
+          type: string
+          format: date
+          example: "2024-08-01"
+        endDate:
+          type: string
+          format: date
+          example: "2025-08-01"
+        completion:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          example: 35
+        strategicThemes:
+          type: array
+          items:
+            type: string
+          example: ["Swarm Intelligence", "Developer Experience", "Performance Optimization"]
+        stakeholders:
+          type: array
+          items:
+            type: string
+          example: ["Development Team", "Claude Code Users", "AI Research"]
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "medium"
+        budget:
+          type: string
+          example: "$500K"
+        dependencies:
+          type: array
+          items:
+            type: string
+          example: ["Claude Code CLI Integration", "MCP Protocol Stability"]
+        kpis:
+          type: array
+          items:
+            type: string
+          example: ["User Adoption Rate", "Task Completion Speed", "Error Reduction"]
+
+    CreateRoadmapRequest:
+      type: object
+      required:
+        - title
+        - description
+        - vision
+        - owner
+        - startDate
+        - endDate
+      properties:
+        title:
+          type: string
+          example: "Mobile App Development 2024"
+        description:
+          type: string
+          example: "Roadmap for mobile application development"
+        vision:
+          type: string
+          example: "Create industry-leading mobile experiences"
+        owner:
+          type: string
+          example: "Mobile Team"
+        startDate:
+          type: string
+          format: date
+          example: "2024-01-01"
+        endDate:
+          type: string
+          format: date
+          example: "2024-12-31"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "high"
+        strategicThemes:
+          type: array
+          items:
+            type: string
+          example: ["Mobile Innovation", "User Experience"]
+        stakeholders:
+          type: array
+          items:
+            type: string
+          example: ["Mobile Team", "UX Design", "Product"]
+        riskLevel:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "low"
+        budget:
+          type: string
+          example: "$250K"
+        dependencies:
+          type: array
+          items:
+            type: string
+          example: ["Platform API", "Design System"]
+        kpis:
+          type: array
+          items:
+            type: string
+          example: ["App Store Rating", "User Engagement", "Performance"]
+
+    Milestone:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "ms-zen-001"
+        roadmapId:
+          type: string
+          example: "rm-zen-001"
+        title:
+          type: string
+          example: "Native Swarm System Implementation"
+        description:
+          type: string
+          example: "Complete implementation of native TypeScript swarm coordination system"
+        type:
+          type: string
+          enum: [major-release, feature-release, improvement, compliance, research]
+          example: "major-release"
+        status:
+          type: string
+          enum: [planning, in-progress, completed, cancelled]
+          example: "completed"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          example: "critical"
+        dueDate:
+          type: string
+          format: date
+          example: "2024-08-15"
+        completedDate:
+          type: string
+          format: date
+          nullable: true
+          example: "2024-08-14"
+        owner:
+          type: string
+          example: "Core Development Team"
+        deliverables:
+          type: array
+          items:
+            type: string
+          example: ["SwarmCommander", "Agent Coordination", "Memory Management"]
+        dependencies:
+          type: array
+          items:
+            type: string
+          example: ["TypeScript Infrastructure", "MCP Integration"]
+        riskFactors:
+          type: array
+          items:
+            type: string
+          example: ["Complexity Management", "Performance Requirements"]
+        successCriteria:
+          type: array
+          items:
+            type: string
+          example: ["All swarm tools functional", "Performance benchmarks met"]
+
+    CreateMilestoneRequest:
+      type: object
+      required:
+        - roadmapId
+        - title
+        - description
+        - type
+        - dueDate
+        - owner
+      properties:
+        roadmapId:
+          type: string
+          example: "rm-zen-001"
+        title:
+          type: string
+          example: "Beta Testing Phase"
+        description:
+          type: string
+          example: "Comprehensive beta testing with selected users"
+        type:
+          type: string
+          enum: [major-release, feature-release, improvement, compliance, research]
+          example: "feature-release"
+        priority:
+          type: string
+          enum: [low, medium, high, critical]
+          default: "medium"
+          example: "high"
+        dueDate:
+          type: string
+          format: date
+          example: "2024-11-30"
+        owner:
+          type: string
+          example: "QA Team"
+        deliverables:
+          type: array
+          items:
+            type: string
+          example: ["Beta Release", "User Feedback", "Bug Reports"]
+        dependencies:
+          type: array
+          items:
+            type: string
+          example: ["Development Complete", "Testing Environment"]
+        riskFactors:
+          type: array
+          items:
+            type: string
+          example: ["User Feedback Quality", "Timeline Pressure"]
+        successCriteria:
+          type: array
+          items:
+            type: string
+          example: ["100 beta users", "Positive feedback", "Major bugs resolved"]
+
+    VisionStatement:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "vs-zen-001"
+        title:
+          type: string
+          example: "AI-Native Development Platform"
+        description:
+          type: string
+          example: "Transform claude-code-zen into the world's most intelligent AI-native development platform"
+        timeframe:
+          type: string
+          example: "2-3 years"
+        strategicPillars:
+          type: array
+          items:
+            type: string
+          example: ["AI-First Architecture", "Seamless Integration", "Developer Empowerment"]
+        successMetrics:
+          type: array
+          items:
+            type: string
+          example: ["Developer Productivity +300%", "90% Task Automation", "99.9% System Reliability"]
+        status:
+          type: string
+          enum: [active, research, archived]
+          example: "active"
+        owner:
+          type: string
+          example: "Chief Product Officer"
+        lastUpdated:
+          type: string
+          format: date-time
+
+    RoadmapMetrics:
+      type: object
+      properties:
+        totalRoadmaps:
+          type: integer
+          example: 4
+        activeMilestones:
+          type: integer
+          example: 3
+        completionRate:
+          type: number
+          format: float
+          description: Overall completion rate percentage
+          example: 32
+        strategicAlignment:
+          type: number
+          format: float
+          description: Strategic alignment score percentage
+          example: 89
+
+    # Workspace Management
+    FileInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "component.tsx"
+        path:
+          type: string
+          example: "src/components/component.tsx"
+        type:
+          type: string
+          enum: [file, directory]
+          example: "file"
+        size:
+          type: integer
+          description: File size in bytes
+          example: 2048
+        modified:
+          type: string
+          format: date-time
+        extension:
+          type: string
+          example: "tsx"
+        isHidden:
+          type: boolean
+          example: false
+
+    FileListResponse:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileInfo'
+        currentPath:
+          type: string
+          example: "src/components"
+
+    FileContentResponse:
+      type: object
+      properties:
+        content:
+          type: string
+          example: "import React from 'react';\n\nexport const Component = () => {\n  return <div>Hello</div>;\n};"
+        path:
+          type: string
+          example: "src/components/component.tsx"
+        size:
+          type: integer
+          example: 95
+        modified:
+          type: string
+          format: date-time
+        encoding:
+          type: string
+          example: "utf-8"
+
+    CreateFileRequest:
+      type: object
+      required:
+        - path
+      properties:
+        path:
+          type: string
+          example: "src/components/NewComponent.tsx"
+        content:
+          type: string
+          default: ""
+          example: "import React from 'react';\n\nexport const NewComponent = () => {\n  return <div>New Component</div>;\n};"
+        template:
+          type: string
+          enum: [typescript, react, svelte, markdown]
+          example: "react"
+
+    UpdateFileRequest:
+      type: object
+      required:
+        - path
+        - content
+      properties:
+        path:
+          type: string
+          example: "src/components/component.tsx"
+        content:
+          type: string
+          example: "// Updated content\nimport React from 'react';\n\nexport const Component = () => {\n  return <div>Updated!</div>;\n};"
+
+    CreateDirectoryRequest:
+      type: object
+      required:
+        - path
+      properties:
+        path:
+          type: string
+          example: "src/new-feature"
+
+    FileOperationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        path:
+          type: string
+          example: "src/components/component.tsx"
+        message:
+          type: string
+          example: "File created successfully"
+
+    ProjectInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "claude-code-zen"
+        type:
+          type: string
+          enum: [generic, nodejs, python, rust, java, other]
+          example: "nodejs"
+        path:
+          type: string
+          example: "/workspace/claude-code-zen"
+        hasPackageJson:
+          type: boolean
+          example: true
+        hasGit:
+          type: boolean
+          example: true
+        scripts:
+          type: array
+          items:
+            type: string
+          example: ["build", "test", "lint", "dev"]
+        dependencies:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            react: "^18.0.0"
+            typescript: "^5.0.0"
+        devDependencies:
+          type: object
+          additionalProperties:
+            type: string
+          example:
+            "@types/react": "^18.0.0"
+            vite: "^4.0.0"
+
+    WorkspaceCommandRequest:
+      type: object
+      required:
+        - command
+      properties:
+        command:
+          type: string
+          example: "npm"
+        args:
+          type: array
+          items:
+            type: string
+          default: []
+          example: ["run", "build"]
+
+    FileSearchResponse:
+      type: object
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/FileInfo'
+        query:
+          type: string
+          example: "component"
+        count:
+          type: integer
+          example: 5
+
+    GitStatusResponse:
+      type: object
+      properties:
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/GitFileStatus'
+        hasChanges:
+          type: boolean
+          example: true
+
+    GitFileStatus:
+      type: object
+      properties:
+        status:
+          type: string
+          description: Git status code (e.g., "M ", " M", "A ", "D ", "??")
+          example: "M "
+        path:
+          type: string
+          example: "src/components/component.tsx"
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication (if implemented)
+
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token authentication (if implemented)
+
+security:
+  - ApiKeyAuth: []
+  - BearerAuth: []
+
+tags:
+  - name: System
+    description: System health and status endpoints
+  - name: Swarm Management
+    description: Swarm coordination and management
+  - name: Task Management
+    description: Task creation and tracking
+  - name: Document Management
+    description: Document operations and search
+  - name: Command Execution
+    description: System command execution
+  - name: Settings
+    description: System and user settings
+  - name: LLM Analytics
+    description: LLM usage statistics and analytics
+  - name: Matron Advisory
+    description: AI advisory and consultation system
+  - name: Visionary Roadmap
+    description: Strategic planning and roadmap management
+  - name: Workspace
+    description: File system and project workspace management
+  - name: Dashboard
+    description: Web dashboard health and status

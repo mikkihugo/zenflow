@@ -127,7 +127,7 @@ export async function createKnowledgeSharingSystem(
   eventBus?: unknown
 ): Promise<unknown> {
   const { CrossAgentKnowledgeIntegration, getDefaultConfig } = await import(
-    './cross-agent-knowledge-integration.ts'
+    './cross-agent-knowledge-integration'
   );
 
   // Use provided config or create default
@@ -158,7 +158,7 @@ export async function createKnowledgeSharingSystem(
  * @example
  */
 export async function createKnowledgeSwarm(config?: unknown): Promise<unknown> {
-  const { initializeFACTSwarm } = await import('./knowledge-swarm.ts');
+  const { initializeFACTSwarm } = await import('./knowledge-swarm');
   return initializeFACTSwarm(config);
 }
 

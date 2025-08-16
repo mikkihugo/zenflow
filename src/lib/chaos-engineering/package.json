@@ -1,0 +1,42 @@
+{
+  "name": "@zen-ai/chaos-engineering",
+  "version": "1.0.0",
+  "description": "Production-ready chaos engineering framework for system resilience testing",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./chaos-engineering": "./dist/chaos-engineering.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "biome check .",
+    "lint:fix": "biome check --apply ."
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4",
+    "@biomejs/biome": "^2.1.4"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "keywords": [
+    "chaos-engineering",
+    "resilience-testing",
+    "failure-injection",
+    "recovery-testing",
+    "system-reliability",
+    "production-ready"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT"
+}

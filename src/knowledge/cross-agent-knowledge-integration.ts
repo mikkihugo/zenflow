@@ -14,7 +14,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { IEventBus, ILogger } from '../core/interfaces/base-interfaces';
+import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { CollaborativeReasoningConfig } from './collaborative-reasoning-engine';
 import { CollaborativeReasoningEngine } from './collaborative-reasoning-engine';
 import type { CollectiveIntelligenceConfig } from './collective-intelligence-coordinator';
@@ -148,8 +148,8 @@ export interface CollectiveKnowledgeResponse {
  * @example
  */
 export class CrossAgentKnowledgeIntegration extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private config: CrossAgentKnowledgeConfig;
 
   // Core Cross-Agent Systems - Initialize as optional to fix constructor issues
@@ -168,8 +168,8 @@ export class CrossAgentKnowledgeIntegration extends EventEmitter {
 
   constructor(
     config: CrossAgentKnowledgeConfig,
-    logger: ILogger,
-    eventBus: IEventBus
+    logger: Logger,
+    eventBus: EventBus
   ) {
     super();
     this.config = config;
@@ -999,8 +999,8 @@ export interface OptimizationSummary {
  */
 export async function createCrossAgentKnowledgeIntegration(
   config: CrossAgentKnowledgeConfig,
-  logger: ILogger,
-  eventBus: IEventBus
+  logger: Logger,
+  eventBus: EventBus
 ): Promise<CrossAgentKnowledgeIntegration> {
   const integration = new CrossAgentKnowledgeIntegration(
     config,

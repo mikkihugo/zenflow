@@ -277,7 +277,7 @@ export class ADRProposalSystem {
       proposed_decision: `Implement a comprehensive document workflow automation architecture with four core subsystems:
 
 1. **Document Relationship Management** - Auto-generation based on type hierarchy, semantic analysis, workflow tracking
-2. **Advanced Multi-Strategy Search** - Fulltext (TF-IDF), semantic (similarity), keyword (exact), combined (weighted fusion)  
+2. **Advanced Multi-Strategy Search** - Fulltext (TF-DF), semantic (similarity), keyword (exact), combined (weighted fusion)  
 3. **Workflow Automation Engine** - 6 predefined workflows with rule-based automation and document generation
 4. **Integration Architecture** - DAL integration, event-driven updates, transaction support, performance monitoring`,
 

@@ -9,7 +9,7 @@
  * - 🏠 Workspace Collective: Which tools/versions are installed HERE (isolated per workspace)
  * - 📄 Workspace RAG Database: Separate system for document vectors (ADRs, specs, etc.) - THIS workspace only
  *
- * IMPORTANT: "Collective" = per workspace, "FACT" = global documentation database
+ * MPORTANT: "Collective" = per workspace, "FACT" = global documentation database
  */
 
 import { EventEmitter } from 'node:events';
@@ -18,7 +18,7 @@ import { basename, extname, join } from 'node:path';
 import EnvironmentDetector, {
   type EnvironmentSnapshot,
   type EnvironmentTool,
-} from './environment-detector.js';
+} from './environment-detector';
 
 export interface WorkspaceFact {
   id: string;
@@ -110,7 +110,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       // Connect to high-performance Rust FACT system for documentation
       try {
         const { getRustFactBridge } = await import(
-          '../fact-integration/rust-fact-bridge.js'
+          '../fact-integration/rust-fact-bridge'
         );
         this.globalFactDatabase = getRustFactBridge({
           cacheSize: 50 * 1024 * 1024, // 50MB cache for workspace
@@ -863,9 +863,9 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       'tsconfig.json',
       '.eslintrc',
       '.prettierrc',
-      'webpack.config.js',
-      'vite.config.js',
-      'next.config.js',
+      'webpack.config',
+      'vite.config',
+      'next.config',
       '.env',
       'Dockerfile',
       'docker-compose.yml',

@@ -77,7 +77,7 @@ export class SQLiteBackend implements FACTStorageBackend {
     try {
       // TODO: Insert entry into SQLite database
       // const stmt = this.db.prepare(`
-      //   INSERT OR REPLACE INTO knowledge_entries
+      //   INSERT OR REPLACE NTO knowledge_entries
       //   (id, content, metadata, embedding, timestamp, source, type, tags)
       //   VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       // `);

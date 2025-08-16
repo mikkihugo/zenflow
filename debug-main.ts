@@ -58,4 +58,27 @@ try {
   process.exit(1);
 }
 
-console.log('🎉 All tests passed! The issue is elsewhere in main.ts');
+// Test 4: WebDashboardServer
+try {
+  console.log('4️⃣ Testing WebDashboardServer...');
+  const { WebDashboardServer } = await import('./src/interfaces/web');
+  
+  const webApp = new WebDashboardServer({
+    port: 3001, // Use different port
+    host: 'localhost',
+  });
+  console.log('✅ WebDashboardServer created');
+  
+  await webApp.start();
+  console.log('✅ WebDashboardServer started');
+  
+  await webApp.stop();
+  console.log('✅ WebDashboardServer stopped');
+  
+} catch (error) {
+  console.error('❌ WebDashboardServer failed:', error.message);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+}
+
+console.log('🎉 All tests passed! Issue must be in the integration');

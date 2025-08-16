@@ -148,7 +148,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     super();
 
     this.logger = getLogger('workflow-agui-adapter');
-    this.domainValidator = getDomainValidator(Domain.INTERFACES);
+    this.domainValidator = getDomainValidator(Domain.NTERFACES);
     this.eventBus = eventBus;
 
     this.config = {
@@ -535,7 +535,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     await this.eventBus.emitEvent(
       createEvent(
         'agui.gate.timeout',
-        Domain.INTERFACES,
+        Domain.NTERFACES,
         {
           payload: {
             gateId,
@@ -589,7 +589,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     await this.eventBus.emitEvent(
       createEvent(
         'agui.gate.escalated',
-        Domain.INTERFACES,
+        Domain.NTERFACES,
         {
           payload: {
             gateId,
@@ -673,7 +673,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
     await this.eventBus.emitEvent(
       createEvent(
         'workflow.decision.audited',
-        Domain.INTERFACES,
+        Domain.NTERFACES,
         {
           payload: {
             auditRecord,
@@ -714,7 +714,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   /**
@@ -986,7 +986,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   ): Promise<void> {
     const gateOpenedEvent: AGUIGateOpenedEvent = createEvent(
       'agui.gate.opened',
-      Domain.INTERFACES,
+      Domain.NTERFACES,
       {
         payload: {
           gateId: gateRequest.id,
@@ -1027,7 +1027,7 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
   ): Promise<void> {
     const gateClosedEvent: AGUIGateClosedEvent = createEvent(
       'agui.gate.closed',
-      Domain.INTERFACES,
+      Domain.NTERFACES,
       {
         payload: {
           gateId: gateRequest.id,

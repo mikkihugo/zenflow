@@ -25,7 +25,8 @@ This document provides comprehensive documentation for all environment variables
 
 ### Variable Naming Convention
 
-- **CLAUDE_*** - Core application settings
+- **ZEN_*** - Core application settings
+- **WEB_*** - Web interface settings  
 - **MCP_*** - Model Context Protocol settings
 - **DATABASE_*** - Database connection settings
 - **REDIS_*** - Redis cache settings

@@ -7,7 +7,7 @@
  * caching, retry logic, and performance metrics.
  *
  * This adapter follows the exact same patterns as the UACL client adapters,
- * implementing the IService interface and providing unified configuration.
+ * implementing the Service interface and providing unified configuration.
  * management for coordination operations across Claude-Zen.
  */
 
@@ -31,7 +31,7 @@ import type {
 } from '../../../coordination/swarm/core/types';
 import type { AgentType } from '../../../types/agent-types';
 import type {
-  IService,
+  Service,
   ServiceConfig,
   ServiceDependencyConfig,
   ServiceEvent,
@@ -209,7 +209,7 @@ interface PendingRequest<T = any> {
  * Unified Coordination Service Adapter.
  *
  * Provides a unified interface to DaaService, SessionRecoveryService, and SwarmCoordinator.
- * While implementing the IService interface for USL compatibility.
+ * While implementing the Service interface for USL compatibility.
  *
  * Features:
  * - Unified configuration management
@@ -225,7 +225,7 @@ interface PendingRequest<T = any> {
  *
  * @example
  */
-export class CoordinationServiceAdapter implements IService {
+export class CoordinationServiceAdapter implements Service {
   // Core service properties
   public readonly name: string;
   public readonly type: string;
@@ -234,7 +234,7 @@ export class CoordinationServiceAdapter implements IService {
   // Service state
   private lifecycleStatus: ServiceLifecycleStatus = 'uninitialized';
   private eventEmitter = new EventEmitter();
-  private logger: ILogger;
+  private logger: Logger;
   private startTime?: Date;
   private operationCount = 0;
   private successCount = 0;
@@ -349,7 +349,7 @@ export class CoordinationServiceAdapter implements IService {
   }
 
   // ============================================
-  // IService Interface Implementation
+  // Service Interface Implementation
   // ============================================
 
   /**

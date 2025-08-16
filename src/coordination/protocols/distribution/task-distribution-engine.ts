@@ -8,8 +8,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../../core/logger';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../../core/logger';
+import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core types for task distribution
 export interface TaskDefinition {
@@ -318,8 +318,8 @@ export class TaskDistributionEngine extends EventEmitter {
       enablePredictiveAssignment: boolean;
       enableDynamicRebalancing: boolean;
     },
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {
     super();
 
@@ -1192,7 +1192,7 @@ export class TaskDistributionEngine extends EventEmitter {
 class TaskQueue {
   private queue: TaskDefinition[] = [];
 
-  constructor(private logger: ILogger) {
+  constructor(private logger: Logger) {
     // Logger for debugging queue operations if needed
     void this.logger; // Mark as intentionally unused
   }
@@ -1230,7 +1230,7 @@ class TaskQueue {
 }
 
 class TaskDecomposer {
-  constructor(private logger: ILogger) {
+  constructor(private logger: Logger) {
     // Logger for tracking decomposition operations
     void this.logger; // Mark as intentionally unused
   }
@@ -1267,7 +1267,7 @@ class AssignmentOptimizer {
       enablePredictiveAssignment: boolean;
       enableDynamicRebalancing: boolean;
     },
-    private logger: ILogger
+    private logger: Logger
   ) {
     // Optimizer initialization
     void this.config; // Mark as intentionally unused
@@ -1322,7 +1322,7 @@ class WorkloadBalancer {
       enablePredictiveAssignment: boolean;
       enableDynamicRebalancing: boolean;
     },
-    private logger: ILogger
+    private logger: Logger
   ) {
     // Balancer initialization
     void this.config; // Mark as intentionally unused for now
@@ -1343,7 +1343,7 @@ class WorkloadBalancer {
 }
 
 class PerformancePredictor {
-  constructor(private logger: ILogger) {
+  constructor(private logger: Logger) {
     // Logger for prediction tracking
     void this.logger; // Mark as intentionally unused
   }
@@ -1361,7 +1361,7 @@ class PerformancePredictor {
 }
 
 class FailureHandler {
-  constructor(private logger: ILogger) {}
+  constructor(private logger: Logger) {}
 
   async handleFailure(
     taskId: string,

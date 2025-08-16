@@ -15,7 +15,7 @@ import type {
   DIContainerOptions,
   DIScope,
   DIToken,
-  DIContainer as IDIContainer,
+  DIContainer as DIContainer,
   Provider,
 } from '../types/di-types';
 import {
@@ -24,7 +24,7 @@ import {
   ServiceNotFoundError,
 } from '../types/di-types';
 
-export class DIContainer implements IDIContainer {
+export class DIContainer implements DIContainer {
   private readonly providers = new Map<symbol, Provider<any>>();
   private readonly singletonInstances = new Map<symbol, any>();
   private readonly scopes = new WeakSet<DIScope>();
@@ -88,7 +88,7 @@ export class DIContainer implements IDIContainer {
    */
   createScope(): DIScope {
     // Import DIScope dynamically to avoid circular dependency
-    const DIScopeModule = require('./di-scope.js');
+    const DIScopeModule = require('./di-scope');
     const DIScopeImpl = DIScopeModule.DIScope;
     const scope = new DIScopeImpl(this);
     this.scopes.add(scope);

@@ -5,7 +5,7 @@
  * - **Product Flow = WHAT to build** (Vision→ADR→PRD→Epic→Feature→Task)
  * - **SPARC = HOW to implement** (Technical methodology applied WITHIN Features/Tasks).
  *
- * KEY INTEGRATION POINTS:
+ * KEY NTEGRATION POINTS:
  * 1. Features contain sparc_implementation with all 5 phases
  * 2. Tasks have sparc_implementation_details linking to parent Feature SPARC
  * 3. Product Flow defines business requirements, SPARC provides technical implementation
@@ -1474,7 +1474,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   }
 
   // ============================================================================
-  // GATE INTEGRATION METHODS - AGUI gate capabilities
+  // GATE NTEGRATION METHODS - AGUI gate capabilities
   // ============================================================================
 
   /**

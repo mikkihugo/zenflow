@@ -106,7 +106,7 @@ export {
 } from './integration-service-factory';
 export * from './integration-service-helpers';
 
-import type { IServiceFactory, ServiceConfig } from '../core/interfaces';
+import type { ServiceFactory, ServiceConfig } from '../core/interfaces';
 // Integration with global service registry
 import { globalServiceRegistry } from '../factories';
 import { ServiceType } from '../types';
@@ -144,15 +144,15 @@ export function registerDataServiceFactory(): void {
   // Register the specialized data service factory for DATA, WEB_DATA, and DOCUMENT types
   globalServiceRegistry.registerFactory(
     ServiceType.DATA,
-    globalDataServiceFactory as IServiceFactory<ServiceConfig>
+    globalDataServiceFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.WEB_DATA,
-    globalDataServiceFactory as IServiceFactory<ServiceConfig>
+    globalDataServiceFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.DOCUMENT,
-    globalDataServiceFactory as IServiceFactory<ServiceConfig>
+    globalDataServiceFactory as ServiceFactory<ServiceConfig>
   );
 }
 
@@ -179,15 +179,15 @@ export function registerCoordinationServiceFactory(): void {
   // Register the specialized coordination service factory for COORDINATION, DAA, and SESSION_RECOVERY types
   globalServiceRegistry.registerFactory(
     ServiceType.COORDINATION,
-    coordinationServiceFactory as IServiceFactory<ServiceConfig>
+    coordinationServiceFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.DAA,
-    coordinationServiceFactory as IServiceFactory<ServiceConfig>
+    coordinationServiceFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.SESSION_RECOVERY,
-    coordinationServiceFactory as IServiceFactory<ServiceConfig>
+    coordinationServiceFactory as ServiceFactory<ServiceConfig>
   );
 }
 
@@ -218,15 +218,15 @@ export function registerIntegrationServiceFactory(): void {
   // Register the specialized integration service factory for API, SAFE_API, and ARCHITECTURE_STORAGE types
   globalServiceRegistry.registerFactory(
     ServiceType.API,
-    integrationServiceFactory as IServiceFactory<ServiceConfig>
+    integrationServiceFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.SAFE_API,
-    integrationServiceFactory as IServiceFactory<ServiceConfig>
+    integrationServiceFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.ARCHITECTURE_STORAGE,
-    integrationServiceFactory as IServiceFactory<ServiceConfig>
+    integrationServiceFactory as ServiceFactory<ServiceConfig>
   );
 }
 
@@ -236,7 +236,7 @@ export function registerIntegrationServiceFactory(): void {
  * @function registerInfrastructureServiceFactory
  * @returns {void}
  * @description Registers the specialized infrastructure service factory with the global USL registry
- * for handling INFRASTRUCTURE, SYSTEM, and MONITORING service types.
+ * for handling NFRASTRUCTURE, SYSTEM, and MONITORING service types.
  * @example
  * ```typescript
  * // Infrastructure services provide system monitoring and health checks
@@ -254,19 +254,19 @@ export function registerIntegrationServiceFactory(): void {
  * ```
  */
 export function registerInfrastructureServiceFactory(): void {
-  // Register the specialized infrastructure service factory for INFRASTRUCTURE, SYSTEM, and MONITORING types
+  // Register the specialized infrastructure service factory for NFRASTRUCTURE, SYSTEM, and MONITORING types
   const infrastructureFactory = getInfrastructureServiceFactory();
   globalServiceRegistry.registerFactory(
-    ServiceType.INFRASTRUCTURE,
-    infrastructureFactory as IServiceFactory<ServiceConfig>
+    ServiceType.NFRASTRUCTURE,
+    infrastructureFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.SYSTEM,
-    infrastructureFactory as IServiceFactory<ServiceConfig>
+    infrastructureFactory as ServiceFactory<ServiceConfig>
   );
   globalServiceRegistry.registerFactory(
     ServiceType.MONITORING,
-    infrastructureFactory as IServiceFactory<ServiceConfig>
+    infrastructureFactory as ServiceFactory<ServiceConfig>
   );
 }
 

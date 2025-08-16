@@ -12,9 +12,9 @@
 import { EventEmitter } from 'node:events';
 import { getLogger, type Logger } from '../../config/logging-config';
 import type {
-  IService,
-  IServiceFactory,
-  IServiceRegistry,
+  Service,
+  ServiceFactory,
+  ServiceRegistry,
   ServiceConfig,
   ServiceEvent,
   ServiceEventType,
@@ -94,7 +94,7 @@ export interface ServiceDependencyGraph {
   nodes: Map<
     string,
     {
-      service: IService;
+      service: Service;
       dependencies: Set<string>;
       dependents: Set<string>;
       level: number;
@@ -116,10 +116,10 @@ export interface ServiceDependencyGraph {
  */
 export class EnhancedServiceRegistry
   extends EventEmitter
-  implements IServiceRegistry
+  implements ServiceRegistry
 {
-  private factories = new Map<string, IServiceFactory>();
-  private services = new Map<string, IService>();
+  private factories = new Map<string, ServiceFactory>();
+  private services = new Map<string, Service>();
   private serviceDiscovery = new Map<string, ServiceDiscoveryInfo>();
   private dependencyGraph: ServiceDependencyGraph | null = null;
   private healthStatuses = new Map<string, ServiceStatus>();
@@ -209,7 +209,7 @@ export class EnhancedServiceRegistry
 
   registerFactory<T extends ServiceConfig>(
     type: string,
-    factory: IServiceFactory<T>
+    factory: ServiceFactory<T>
   ): void {
     this.logger.info(`Registering factory for service type: ${type}`);
 
@@ -224,8 +224,8 @@ export class EnhancedServiceRegistry
 
   getFactory<T extends ServiceConfig>(
     type: string
-  ): IServiceFactory<T> | undefined {
-    return this.factories.get(type) as IServiceFactory<T>;
+  ): ServiceFactory<T> | undefined {
+    return this.factories.get(type) as ServiceFactory<T>;
   }
 
   listFactoryTypes(): string[] {
@@ -252,8 +252,8 @@ export class EnhancedServiceRegistry
   // Service Management and Discovery
   // ============================================
 
-  getAllServices(): Map<string, IService> {
-    const allServices = new Map<string, IService>();
+  getAllServices(): Map<string, Service> {
+    const allServices = new Map<string, Service>();
 
     // Collect services from all factories
     for (const factory of this.factories.values()) {
@@ -270,7 +270,7 @@ export class EnhancedServiceRegistry
     return allServices;
   }
 
-  findService(name: string): IService | undefined {
+  findService(name: string): Service | undefined {
     // Check directly registered services first
     if (this.services.has(name)) {
       return this.services.get(name);
@@ -291,7 +291,7 @@ export class EnhancedServiceRegistry
     return undefined;
   }
 
-  getServicesByType(type: string): IService[] {
+  getServicesByType(type: string): Service[] {
     const factory = this.factories.get(type);
     if (factory) {
       return factory.list();
@@ -303,8 +303,8 @@ export class EnhancedServiceRegistry
     );
   }
 
-  getServicesByStatus(status: ServiceLifecycleStatus): IService[] {
-    const matchingServices: IService[] = [];
+  getServicesByStatus(status: ServiceLifecycleStatus): Service[] {
+    const matchingServices: Service[] = [];
     const allServices = this.getAllServices();
 
     for (const service of allServices.values()) {
@@ -474,7 +474,7 @@ export class EnhancedServiceRegistry
     capabilities?: string[];
     health?: 'healthy' | 'degraded' | 'unhealthy';
     tags?: string[];
-  }): IService[] {
+  }): Service[] {
     const allServices = Array.from(this.getAllServices().values());
 
     if (!criteria) {
@@ -535,7 +535,7 @@ export class EnhancedServiceRegistry
    * @param metadata
    */
   registerServiceForDiscovery(
-    service: IService,
+    service: Service,
     metadata?: Record<string, unknown>
   ): void {
     const discoveryInfo: ServiceDiscoveryInfo = {
@@ -576,7 +576,7 @@ export class EnhancedServiceRegistry
       | 'service-unregistered'
       | 'service-status-changed'
       | string,
-    handler: (serviceName: string, service?: IService) => void
+    handler: (serviceName: string, service?: Service) => void
   ): void {
     super.on(event, handler);
   }
@@ -664,13 +664,13 @@ export class EnhancedServiceRegistry
 
   private setupFactoryEventHandling<T extends ServiceConfig>(
     _type: string,
-    factory: IServiceFactory<T>
+    factory: ServiceFactory<T>
   ): void {
     // Handle service creation events from factory
     if ('on' in factory && typeof factory.on === 'function') {
       factory.on(
         'service-created',
-        (_serviceName: string, service: IService) => {
+        (_serviceName: string, service: Service) => {
           this.handleServiceRegistration(service);
         }
       );
@@ -681,7 +681,7 @@ export class EnhancedServiceRegistry
     }
   }
 
-  private handleServiceRegistration(service: IService): void {
+  private handleServiceRegistration(service: Service): void {
     this.logger.debug(`Handling service registration: ${service.name}`);
 
     // Register for discovery
@@ -694,7 +694,7 @@ export class EnhancedServiceRegistry
     this.emit('service-registered', service.name, service);
   }
 
-  private setupServiceEventHandling(service: IService): void {
+  private setupServiceEventHandling(service: Service): void {
     const eventTypes: ServiceEventType[] = [
       'initializing',
       'initialized',
@@ -716,7 +716,7 @@ export class EnhancedServiceRegistry
   }
 
   private handleServiceEvent(
-    service: IService,
+    service: Service,
     eventType: ServiceEventType,
     event: ServiceEvent
   ): void {
@@ -756,7 +756,7 @@ export class EnhancedServiceRegistry
   }
 
   private async performServiceHealthCheck(
-    service: IService
+    service: Service
   ): Promise<ServiceStatus> {
     const startTime = Date.now();
 
@@ -1062,7 +1062,7 @@ export class EnhancedServiceRegistry
     await Promise.allSettled(stopPromises);
   }
 
-  private scheduleServiceRecovery(service: IService): void {
+  private scheduleServiceRecovery(service: Service): void {
     // Implementation for auto-recovery scheduling
     this.logger.info(`Scheduling recovery for service: ${service.name}`);
 
@@ -1078,7 +1078,7 @@ export class EnhancedServiceRegistry
     }, 5000); // 5 second delay before recovery attempt
   }
 
-  private async performServiceRecovery(service: IService): Promise<void> {
+  private async performServiceRecovery(service: Service): Promise<void> {
     const maxRetries = this.config.autoRecovery.maxRetries;
     const backoffMultiplier = this.config.autoRecovery.backoffMultiplier;
 

@@ -206,10 +206,10 @@ export function createSwarmContainer(
   container.register(DATABASE_TOKENS?.DALFactory, {
     type: 'singleton',
     create: (container: unknown) => {
-      const { DALFactory } = require('../../../database/factory.js');
+      const { DALFactory } = require('../../../database/factory');
       const {
         DatabaseProviderFactory,
-      } = require('../../../database/providers/database-providers.js');
+      } = require('../../../database/providers/database-providers');
 
       return new DALFactory(
         container.resolve(CORE_TOKENS.Logger),

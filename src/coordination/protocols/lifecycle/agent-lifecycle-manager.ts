@@ -13,8 +13,8 @@ import {
   spawn,
 } from 'node:child_process';
 import { EventEmitter } from 'node:events';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../../core/interfaces/base-interfaces';
+import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core lifecycle types.
 export interface AgentLifecycleConfig {
@@ -303,8 +303,8 @@ export class AgentLifecycleManager extends EventEmitter {
 
   constructor(
     private config: AgentLifecycleConfig,
-    private logger: ILogger,
-    private eventBus: IEventBus
+    private logger: Logger,
+    private eventBus: EventBus
   ) {
     super();
 
@@ -1403,7 +1403,7 @@ export class AgentLifecycleManager extends EventEmitter {
 class HealthMonitor {
   constructor(
     private readonly _config: AgentLifecycleConfig, // For future health check configuration
-    private readonly _logger: ILogger // For health monitoring logs
+    private readonly _logger: Logger // For health monitoring logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future health monitoring configuration and logging
   }
@@ -1463,7 +1463,7 @@ class HealthMonitor {
 class PerformanceTracker {
   constructor(
     private readonly _config: AgentLifecycleConfig, // For future performance thresholds
-    private readonly _logger: ILogger // For performance tracking logs
+    private readonly _logger: Logger // For performance tracking logs
   ) {
     // xxx NEEDS_HUMAN: Properties kept for future performance threshold configuration and logging
   }
@@ -1508,7 +1508,7 @@ class PerformanceTracker {
 // class ResourceMonitor {
 //   constructor(
 //     private readonly _config: AgentLifecycleConfig, // For resource limit configuration
-//     private readonly _logger: ILogger // For resource monitoring logs
+//     private readonly _logger: Logger // For resource monitoring logs
 //   ) {
 //   }
 //
@@ -1516,7 +1516,7 @@ class PerformanceTracker {
 // }
 
 class CapabilityDiscovery {
-  constructor(/* private readonly _logger: ILogger */) {
+  constructor(/* private readonly _logger: Logger */) {
     // For capability discovery logs
     // xxx NEEDS_HUMAN: Property kept for future capability discovery logging
   }
@@ -1534,7 +1534,7 @@ class CapabilityDiscovery {
 class ScalingEngine {
   constructor(
     private readonly config: AgentLifecycleConfig,
-    private readonly logger: ILogger
+    private readonly logger: Logger
   ) {}
 
   async analyze(
@@ -1595,7 +1595,7 @@ class ScalingEngine {
 class RecoveryEngine {
   constructor(
     private readonly config: AgentLifecycleConfig,
-    private readonly logger: ILogger
+    private readonly logger: Logger
   ) {}
 
   async recoverAgent(

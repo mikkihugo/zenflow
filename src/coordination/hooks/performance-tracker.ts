@@ -2,7 +2,7 @@
  * @file Coordination system: performance-tracker.
  */
 
-import { getLogger } from '../../config/logging-config.js';
+import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('coordination-hooks-performance-tracker');
 

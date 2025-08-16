@@ -21,7 +21,7 @@ export type Logger = {
   error: (message: string, meta?: unknown) => void;
 };
 
-export interface ILogger {
+export interface Logger {
   debug(message: string, meta?: unknown): void;
   info(message: string, meta?: unknown): void;
   warn(message: string, meta?: unknown): void;
@@ -33,7 +33,7 @@ export interface ILogger {
  *
  * @example
  */
-export class BootstrapLogger implements ILogger {
+export class BootstrapLogger implements Logger {
   private logger: Logger; // logtape logger
   private prefix: string;
 
@@ -81,7 +81,7 @@ export class BootstrapLogger implements ILogger {
  * @param prefix
  * @example
  */
-export function createBootstrapLogger(prefix: string): ILogger {
+export function createBootstrapLogger(prefix: string): Logger {
   return new BootstrapLogger(prefix);
 }
 

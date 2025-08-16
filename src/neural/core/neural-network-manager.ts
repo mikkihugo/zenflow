@@ -1032,7 +1032,7 @@ class NeuralNetworkManager {
   }
 
   // ===============================
-  // PRESET INTEGRATION METHODS
+  // PRESET NTEGRATION METHODS
   // ===============================
 
   /**
@@ -1361,7 +1361,7 @@ class NeuralNetworkManager {
   /**
    * Enable knowledge sharing between agents.
    *
-   * @param {Array} agentIds - List of agent IDs.
+   * @param {Array} agentIds - List of agent Ds.
    * @param {Object} session - Collaborative session object.
    */
   async enableKnowledgeSharing(
@@ -1512,7 +1512,7 @@ class NeuralNetworkManager {
   /**
    * Create knowledge sharing matrix between agents.
    *
-   * @param {Array} agentIds - List of agent IDs.
+   * @param {Array} agentIds - List of agent Ds.
    */
   async createKnowledgeSharingMatrix(agentIds: string[]) {
     const matrix: Record<string, Record<string, number>> = {};
@@ -1709,7 +1709,7 @@ class NeuralNetworkManager {
   /**
    * Identify teacher agents based on performance.
    *
-   * @param {Array} agentIds - List of agent IDs.
+   * @param {Array} agentIds - List of agent Ds.
    */
   async identifyTeacherAgents(agentIds: string[]): Promise<string[]> {
     const agentPerformances: Array<{ agentId: string; performance: number }> =

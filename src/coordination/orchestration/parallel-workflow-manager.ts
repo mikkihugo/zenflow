@@ -102,7 +102,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   // ============================================================================
-  // INITIALIZATION AND LIFECYCLE
+  // NITIALIZATION AND LIFECYCLE
   // ============================================================================
 
   /**
@@ -687,7 +687,7 @@ export class ParallelWorkflowManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): MultiLevelOrchestratorState {

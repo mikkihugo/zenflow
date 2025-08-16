@@ -77,7 +77,7 @@ const generateRequestId = (): string => {
 };
 
 /**
- * Get client IP address from request.
+ * Get client P address from request.
  * Handles various proxy headers.
  *
  * @param req
@@ -306,7 +306,7 @@ export const requestLogger = (
   } as RequestMetadata;
 
   // Set request ID header for client tracing
-  res.setHeader('X-Request-ID', requestId);
+  res.setHeader('X-Request-D', requestId);
 
   // Log request start (only if should be logged)
   if (shouldLog(req.path, req.method)) {

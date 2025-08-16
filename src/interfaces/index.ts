@@ -14,12 +14,12 @@
  * @file Interfaces module exports.
  */
 
-export * from './api/index.js';
+
 // Advanced CLI System (Revolutionary AI-powered capabilities)
 export * from './cli';
-export * from './mcp/index.js';
-export * from './terminal/index.js';
-export * from './web/index.js';
+
+
+
 
 // Enhanced Interface types
 export interface InterfaceConfig {

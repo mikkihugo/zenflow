@@ -60,7 +60,7 @@ export interface CDPipelineStage {
   readonly parallelizable: boolean;
   readonly qualityGates: QualityGate[];
   readonly automations: StageAutomation[];
-  readonly dependencies: string[]; // Stage IDs this depends on
+  readonly dependencies: string[]; // Stage Ds this depends on
   readonly timeout: number; // milliseconds
   readonly retryPolicy: RetryPolicy;
   readonly rollbackPolicy: RollbackPolicy;
@@ -797,7 +797,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): CDPipelineState {

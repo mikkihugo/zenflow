@@ -62,7 +62,7 @@ export class ApiServer {
       origin: this.getCorsOrigins(),
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Session-ID'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Session-D'],
       optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
     };
     this.app.use(cors(corsOptions));
@@ -81,8 +81,8 @@ export class ApiServer {
     // Rate limiting for API routes only
     const limiter = rateLimit({
       windowMs: 60 * 1000, // 1 minute
-      max: 100, // limit each IP to 100 requests per windowMs
-      message: 'Too many requests from this IP, please try again later.',
+      max: 100, // limit each P to 100 requests per windowMs
+      message: 'Too many requests from this P, please try again later.',
       standardHeaders: true,
       legacyHeaders: false,
     });

@@ -34,14 +34,14 @@ export {
   NeuralNetwork as CoreNeuralNetwork,
   NeuralNetworkManager,
 } from './core/index';
-// DSPy wrapper implementation and factory functions
+// DSPy wrapper implementation and factory functions (moved to lib)
 export {
   createDefaultDSPyWrapper,
   createDSPyEngine,
   DSPyEngineImpl,
   default as DSPyEngine,
   getSingletonDSPyEngine,
-} from './dspy-engine';
+} from '../lib/dspy/engine';
 // Neural models and presets
 export { NEURAL_PRESETS as NeuralPresets } from './models/index';
 // Neural Bridge (main interface)
@@ -49,7 +49,7 @@ export { NeuralBridge, NeuralBridge as default } from './neural-bridge';
 // Public API for external access
 // export { createNeuralNetwork, initializeWASM } from './public-api'; // TODO: Fix public-api exports
 export { createNeuralWASM } from './public-api';
-// DSPy types and functionality
+// DSPy types and functionality (moved to lib)
 export type {
   DSPyConfig,
   DSPyExample,
@@ -61,7 +61,7 @@ export type {
   DSPyProgram,
   DSPyProgramMetadata,
   DSPyWrapper as DSPyWrapperInterface,
-} from './types';
+} from '../lib/dspy/types';
 // Types barrel export
 export * from './types';
 export {
@@ -81,4 +81,4 @@ export {
   sanitizeInput,
   validateDSPyConfig,
   validateSignature,
-} from './types';
+} from '../lib/dspy/types';

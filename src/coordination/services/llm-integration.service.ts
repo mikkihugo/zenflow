@@ -30,7 +30,7 @@
  *
  * const result = await llmService.analyze({
  *   task: 'typescript-error-analysis',
- *   context: { files: ['src/neural/gnn.js'], errors: [...] },
+ *   context: { files: ['src/neural/gnn'], errors: [...] },
  *   requiresFileOperations: true,
  *   taskContext: {
  *     type: 'analysis',
@@ -61,8 +61,8 @@ import {
   type ModelType,
   type ModelConfig,
   Models,
-} from '../../integrations/claude-code/model-strategy.js';
-import LLMStatsService from './llm-stats-service.js';
+} from '../../intelligence/model-strategy/optimal-model-selector';
+import LLMStatsService from '../../intelligence/adaptive-learning/llm-stats-service';
 
 const execAsync = promisify(spawn);
 
@@ -524,7 +524,7 @@ export class LLMIntegrationService {
    * ```typescript
    * const result = await service.analyze({
    *   task: 'typescript-error-analysis',
-   *   context: { files: ['src/neural/gnn.js'], errors: compilationErrors },
+   *   context: { files: ['src/neural/gnn'], errors: compilationErrors },
    *   taskContext: {
    *     type: 'analysis',
    *     complexity: 'medium',
@@ -1067,7 +1067,7 @@ export class LLMIntegrationService {
   ): Promise<Partial<AnalysisResult>> {
     const prompt = `${this.buildPrompt(request)}
 
-IMPORTANT: Respond with valid JSON format only. Do not include markdown code blocks or explanations outside the JSON.`;
+MPORTANT: Respond with valid JSON format only. Do not include markdown code blocks or explanations outside the JSON.`;
 
     const args = [
       '--print', // Print response and exit (non-interactive)
@@ -1828,7 +1828,7 @@ CRITICAL: Respond ONLY in valid JSON format. Do not use markdown, code blocks, o
 
 Context: You're analyzing a GNN-Kuzu integration system that combines neural networks with graph databases for intelligent code analysis.
 
-IMPORTANT: Always respond in valid JSON format unless explicitly requested otherwise. Structure your responses as:
+MPORTANT: Always respond in valid JSON format unless explicitly requested otherwise. Structure your responses as:
 {
   "analysis": "your main analysis here",
   "recommendations": ["recommendation 1", "recommendation 2"],
@@ -1869,7 +1869,7 @@ Analyze the following domain relationships using your GNN-Kuzu integration exper
 Domains: ${JSON.stringify(request.context.domains, null, 2)}
 Dependencies: ${JSON.stringify(request.context.dependencies, null, 2)}
 
-RESPOND IN JSON FORMAT:
+RESPOND N JSON FORMAT:
 {
   "domainAnalysis": {
     "enhancedRelationships": [
@@ -1904,7 +1904,7 @@ Analyze and fix the following TypeScript errors in the GNN-Kuzu integration syst
 Files: ${request.context.files?.join(', ')}
 Errors: ${JSON.stringify(request.context.errors, null, 2)}
 
-RESPOND IN JSON FORMAT:
+RESPOND N JSON FORMAT:
 {
   "errorAnalysis": [
     {
@@ -1943,7 +1943,7 @@ Perform a comprehensive code review of the GNN-Kuzu integration components:
 
 Files: ${request.context.files?.join(', ')}
 
-RESPOND IN JSON FORMAT:
+RESPOND N JSON FORMAT:
 {
   "codeReview": {
     "overallRating": "A/B/C/D/F",
@@ -1983,7 +1983,7 @@ Perform custom analysis task: ${request.task}
 
 Context: ${JSON.stringify(request.context, null, 2)}
 
-RESPOND IN JSON FORMAT:
+RESPOND N JSON FORMAT:
 {
   "taskType": "${request.task}",
   "analysis": "detailed analysis of the provided context",

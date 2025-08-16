@@ -867,7 +867,7 @@ export class AdvancedFlowManager extends EventEmitter {
   }
 
   // ============================================================================
-  // INTELLIGENT WIP MANAGEMENT - Task 16.1
+  // NTELLIGENT WIP MANAGEMENT - Task 16.1
   // ============================================================================
 
   /**
@@ -1305,7 +1305,7 @@ export class AdvancedFlowManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): AdvancedFlowManagerState {

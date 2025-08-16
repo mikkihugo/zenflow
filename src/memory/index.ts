@@ -56,15 +56,6 @@ export {
   RecoveryStrategyManager,
 } from './error-handling/recovery-strategies';
 
-// MCP Tools
-export {
-  memoryDistributeTool,
-  memoryHealthCheckTool,
-  memoryInitTool,
-  memoryMonitorTool,
-  memoryOptimizeTool,
-  memoryTools,
-} from './mcp/memory-tools';
 export { MemoryManager, SessionMemoryStore } from './memory';
 // Monitoring and analytics
 export {
@@ -102,15 +93,15 @@ export class MemorySystemFactory {
     }>;
   }) {
     // Import directly from source modules instead of circular self-import
-    const { MemoryCoordinator } = await import('./core/memory-coordinator.ts');
+    const { MemoryCoordinator } = await import('./core/memory-coordinator');
     const { PerformanceOptimizer } = await import(
-      './optimization/performance-optimizer.ts'
+      './optimization/performance-optimizer'
     );
-    const { MemoryMonitor } = await import('./monitoring/memory-monitor.ts');
+    const { MemoryMonitor } = await import('./monitoring/memory-monitor');
     const { RecoveryStrategyManager } = await import(
-      './error-handling/recovery-strategies.ts'
+      './error-handling/recovery-strategies'
     );
-    const { MemoryBackendFactory } = await import('./backends/factory.ts');
+    const { MemoryBackendFactory } = await import('./backends/factory');
 
     // Initialize components
     const coordinator = config?.['coordination']

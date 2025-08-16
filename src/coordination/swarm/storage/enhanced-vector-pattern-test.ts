@@ -11,10 +11,10 @@
 
 import { SwarmDatabaseManager } from './swarm-database-manager';
 import type { DALFactory } from '../../../database/factory';
-import type { ILogger } from '../../../di/tokens/core-tokens';
+import type { Logger } from '../../../di/tokens/core-tokens';
 
 // Mock implementations for testing
-class MockLogger implements ILogger {
+class MockLogger implements Logger {
   debug(message: string, meta?: unknown): void {
     console.log(`[DEBUG] ${message}`, meta);
   }

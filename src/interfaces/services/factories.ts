@@ -38,11 +38,11 @@
 import { EventEmitter } from 'node:events';
 import { getLogger, type Logger } from '../../config/logging-config';
 import type {
-  IService,
-  IServiceCapabilityRegistry,
-  IServiceConfigValidator,
-  IServiceFactory,
-  IServiceRegistry,
+  Service,
+  ServiceCapabilityRegistry,
+  ServiceConfigValidator,
+  ServiceFactory,
+  ServiceRegistry,
   ServiceCapability,
   ServiceConfig,
   ServiceEvent,
@@ -165,12 +165,12 @@ export interface USLFactoryConfig {
  *
  * @example
  */
-export class USLFactory implements IServiceFactory {
-  private services = new Map<string, IService>();
-  private serviceFactories = new Map<string, IServiceFactory>();
+export class USLFactory implements ServiceFactory {
+  private services = new Map<string, Service>();
+  private serviceFactories = new Map<string, ServiceFactory>();
   private logger: Logger;
   private eventEmitter = new EventEmitter();
-  private initializationQueue = new Map<string, Promise<IService>>();
+  private initializationQueue = new Map<string, Promise<Service>>();
   private config: Required<USLFactoryConfig>;
 
   constructor(config: USLFactoryConfig = {}) {
@@ -216,7 +216,7 @@ export class USLFactory implements IServiceFactory {
    */
   async create<T extends ServiceConfig = ServiceConfig>(
     config: T
-  ): Promise<IService> {
+  ): Promise<Service> {
     this.logger.info(`Creating service: ${config?.name} (${config?.type})`);
 
     // Validate configuration
@@ -275,7 +275,7 @@ export class USLFactory implements IServiceFactory {
    */
   async createMultiple<T extends ServiceConfig = ServiceConfig>(
     configs: T[]
-  ): Promise<IService[]> {
+  ): Promise<Service[]> {
     this.logger.info(`Creating ${configs.length} services concurrently`);
 
     // Sort by priority for initialization order
@@ -286,7 +286,7 @@ export class USLFactory implements IServiceFactory {
     });
 
     // Create services in batches based on maxConcurrentInits
-    const results: IService[] = [];
+    const results: Service[] = [];
     const batchSize = this.config.maxConcurrentInits;
 
     for (let i = 0; i < sortedConfigs.length; i += batchSize) {
@@ -313,14 +313,14 @@ export class USLFactory implements IServiceFactory {
    *
    * @param name
    */
-  get(name: string): IService | undefined {
+  get(name: string): Service | undefined {
     return this.services.get(name);
   }
 
   /**
    * List all services.
    */
-  list(): IService[] {
+  list(): Service[] {
     return Array.from(this.services.values());
   }
 
@@ -577,7 +577,7 @@ export class USLFactory implements IServiceFactory {
    *
    * @param type
    */
-  getServicesByType(type: string): IService[] {
+  getServicesByType(type: string): Service[] {
     return this.list().filter((service) => service.type === type);
   }
 
@@ -687,7 +687,7 @@ export class USLFactory implements IServiceFactory {
 
   private async createServiceInstance(
     config: ServiceConfig
-  ): Promise<IService> {
+  ): Promise<Service> {
     const startTime = Date.now();
 
     try {
@@ -713,7 +713,7 @@ export class USLFactory implements IServiceFactory {
 
   private async instantiateServiceByType(
     config: ServiceConfig
-  ): Promise<IService> {
+  ): Promise<Service> {
     // Dynamic import based on service type to avoid circular dependencies
     const serviceType = config?.type as ServiceType;
 
@@ -723,14 +723,14 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.DOCUMENT: {
         // Use the enhanced DataServiceAdapter for unified data operations
         const { DataServiceAdapter } = await import(
-          './adapters/data-service-adapter.ts'
+          './adapters/data-service-adapter'
         );
         return new DataServiceAdapter(config as any);
       }
 
       case ServiceType.WEB:
       case ServiceType.API: {
-        const { WebService } = await import('./implementations/web-service.ts');
+        const { WebService } = await import('./implementations/web-service');
         return new WebService(config as WebServiceConfig);
       }
 
@@ -739,7 +739,7 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.SESSION_RECOVERY: {
         // Use the enhanced CoordinationServiceAdapter for unified coordination operations
         const { CoordinationServiceAdapter } = await import(
-          './adapters/coordination-service-adapter.ts'
+          './adapters/coordination-service-adapter'
         );
         return new CoordinationServiceAdapter(config as any);
       }
@@ -747,14 +747,14 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.SWARM:
       case ServiceType.ORCHESTRATION: {
         const { CoordinationService } = await import(
-          './implementations/coordination-service.ts'
+          './implementations/coordination-service'
         );
         return new CoordinationService(config as CoordinationServiceConfig);
       }
 
       case ServiceType.NEURAL: {
         const { NeuralService } = await import(
-          './implementations/neural-service.ts'
+          './implementations/neural-service'
         );
         return new NeuralService(config as NeuralServiceConfig);
       }
@@ -762,21 +762,21 @@ export class USLFactory implements IServiceFactory {
       case ServiceType.MEMORY:
       case ServiceType.CACHE: {
         const { MemoryService } = await import(
-          './implementations/memory-service.ts'
+          './implementations/memory-service'
         );
         return new MemoryService(config as MemoryServiceConfig);
       }
 
       case ServiceType.DATABASE: {
         const { DatabaseService } = await import(
-          './implementations/database-service.ts'
+          './implementations/database-service'
         );
         return new DatabaseService(config as DatabaseServiceConfig);
       }
 
       case ServiceType.MONITORING: {
         const { MonitoringService } = await import(
-          './implementations/monitoring-service.ts'
+          './implementations/monitoring-service'
         );
         return new MonitoringService(config);
       }
@@ -790,7 +790,7 @@ export class USLFactory implements IServiceFactory {
 
         // Fall back to generic service implementation
         const { GenericService } = await import(
-          './implementations/generic-service.ts'
+          './implementations/generic-service'
         );
         return new GenericService(config);
       }
@@ -842,7 +842,7 @@ export class USLFactory implements IServiceFactory {
     }
   }
 
-  private setupServiceEventHandling(service: IService): void {
+  private setupServiceEventHandling(service: Service): void {
     // Forward service events to factory event emitter
     const eventTypes: ServiceEventType[] = [
       'initializing',
@@ -870,9 +870,9 @@ export class USLFactory implements IServiceFactory {
   }
 
   private groupServicesByPriority(
-    services: IService[]
-  ): Map<ServicePriority, IService[]> {
-    const groups = new Map<ServicePriority, IService[]>();
+    services: Service[]
+  ): Map<ServicePriority, Service[]> {
+    const groups = new Map<ServicePriority, Service[]>();
 
     services.forEach((service) => {
       const priority =
@@ -886,7 +886,7 @@ export class USLFactory implements IServiceFactory {
     return groups;
   }
 
-  private scheduleServiceRecovery(service: IService): void {
+  private scheduleServiceRecovery(service: Service): void {
     const recoveryKey = `recovery-${service.name}`;
 
     // Don't schedule multiple recoveries for the same service
@@ -902,7 +902,7 @@ export class USLFactory implements IServiceFactory {
     });
   }
 
-  private async performServiceRecovery(service: IService): Promise<IService> {
+  private async performServiceRecovery(service: Service): Promise<Service> {
     const maxRetries = this.config.autoRecovery.maxRetries;
     const backoffMultiplier = this.config.autoRecovery.backoffMultiplier;
 
@@ -1047,8 +1047,8 @@ export class USLFactory implements IServiceFactory {
  *
  * @example
  */
-export class ServiceRegistry implements IServiceRegistry {
-  private factories = new Map<string, IServiceFactory>();
+export class ServiceRegistry implements ServiceRegistry {
+  private factories = new Map<string, ServiceFactory>();
   private eventEmitter = new EventEmitter();
   private logger: Logger;
 
@@ -1058,7 +1058,7 @@ export class ServiceRegistry implements IServiceRegistry {
 
   registerFactory<T extends ServiceConfig>(
     type: string,
-    factory: IServiceFactory<T>
+    factory: ServiceFactory<T>
   ): void {
     this.logger.info(`Registering service factory for type: ${type}`);
     this.factories.set(type, factory);
@@ -1067,8 +1067,8 @@ export class ServiceRegistry implements IServiceRegistry {
 
   getFactory<T extends ServiceConfig>(
     type: string
-  ): IServiceFactory<T> | undefined {
-    return this.factories.get(type) as IServiceFactory<T>;
+  ): ServiceFactory<T> | undefined {
+    return this.factories.get(type) as ServiceFactory<T>;
   }
 
   listFactoryTypes(): string[] {
@@ -1081,8 +1081,8 @@ export class ServiceRegistry implements IServiceRegistry {
     this.eventEmitter.emit('factory-unregistered', type);
   }
 
-  getAllServices(): Map<string, IService> {
-    const allServices = new Map<string, IService>();
+  getAllServices(): Map<string, Service> {
+    const allServices = new Map<string, Service>();
 
     for (const factory of this.factories.values()) {
       factory.list().forEach((service) => {
@@ -1093,7 +1093,7 @@ export class ServiceRegistry implements IServiceRegistry {
     return allServices;
   }
 
-  findService(name: string): IService | undefined {
+  findService(name: string): Service | undefined {
     for (const factory of this.factories.values()) {
       const service = factory.get(name);
       if (service) {
@@ -1103,12 +1103,12 @@ export class ServiceRegistry implements IServiceRegistry {
     return undefined;
   }
 
-  getServicesByType(type: string): IService[] {
+  getServicesByType(type: string): Service[] {
     const factory = this.factories.get(type);
     return factory ? factory.list() : [];
   }
 
-  getServicesByStatus(status: ServiceLifecycleStatus): IService[] {
+  getServicesByStatus(status: ServiceLifecycleStatus): Service[] {
     const allServices = this.getAllServices();
     return Array.from(allServices.values()).filter(async (service) => {
       try {
@@ -1217,7 +1217,7 @@ export class ServiceRegistry implements IServiceRegistry {
     capabilities?: string[];
     health?: 'healthy' | 'degraded' | 'unhealthy';
     tags?: string[];
-  }): IService[] {
+  }): Service[] {
     const allServices = Array.from(this.getAllServices().values());
 
     if (!criteria) {
@@ -1264,7 +1264,7 @@ export class ServiceRegistry implements IServiceRegistry {
       | 'service-registered'
       | 'service-unregistered'
       | 'service-status-changed',
-    handler: (serviceName: string, service?: IService) => void
+    handler: (serviceName: string, service?: Service) => void
   ): void {
     this.eventEmitter.on(event, handler);
   }
@@ -1296,7 +1296,7 @@ globalServiceRegistry.registerFactory('usl', globalUSLFactory);
  *
  * @example
  */
-export class ServiceConfigValidator implements IServiceConfigValidator {
+export class ServiceConfigValidator implements ServiceConfigValidator {
   private schemas = new Map<string, Record<string, unknown>>();
   private logger: Logger;
 
@@ -1390,7 +1390,7 @@ export class ServiceConfigValidator implements IServiceConfigValidator {
  *
  * @example
  */
-export class ServiceCapabilityRegistry implements IServiceCapabilityRegistry {
+export class ServiceCapabilityRegistry implements ServiceCapabilityRegistry {
   private capabilities = new Map<string, ServiceCapability[]>();
   private logger: Logger;
 

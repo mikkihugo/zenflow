@@ -155,7 +155,7 @@ console.debug = vi.fn();
 
 // Environment variables for tests
 process.env.NODE_ENV = 'test';
-process.env.CLAUDE_ZEN_TEST_MODE = 'true';
+process.env.ZEN_TEST_MODE = 'true';
 
 // Global timeout for async operations in tests
 vi.setConfig({ testTimeout: 30000 });

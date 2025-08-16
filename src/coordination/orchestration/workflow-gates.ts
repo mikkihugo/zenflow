@@ -4,7 +4,7 @@
  * Define workflow gate types and triggers for human-in-the-loop orchestration.
  * Provides comprehensive gate management with persistence, state tracking, and metrics.
  *
- * IMPLEMENTATION:
+ * MPLEMENTATION:
  * - Strategic, Architectural, Quality, Business, and Ethical gates
  * - Event-driven gate triggers with condition evaluation
  * - Gate persistence and state management with SQLite backend
@@ -42,7 +42,7 @@ import {
 const logger = getLogger('workflow-gates');
 
 // ============================================================================
-// WORKFLOW HUMAN GATE INTERFACES - Core gate definitions
+// WORKFLOW HUMAN GATE NTERFACES - Core gate definitions
 // ============================================================================
 
 /**
@@ -669,7 +669,7 @@ export type GateTriggerEvent =
  * Gate trigger urgency levels
  */
 export enum GateTriggerUrgency {
-  IMMEDIATE = 'immediate', // Trigger immediately
+  MMEDIATE = 'immediate', // Trigger immediately
   WITHIN_HOUR = 'within-hour', // Trigger within 1 hour
   WITHIN_DAY = 'within-day', // Trigger within 24 hours
   NEXT_REVIEW = 'next-review', // Trigger at next scheduled review
@@ -924,15 +924,15 @@ export class GatePersistenceManager {
 
     // Create gates table
     this.db.exec(`
-      CREATE TABLE IF NOT EXISTS workflow_gates (
+      CREATE TABLE F NOT EXISTS workflow_gates (
         id TEXT PRIMARY KEY,
         type TEXT NOT NULL,
         subtype TEXT NOT NULL,
         title TEXT NOT NULL,
         description TEXT NOT NULL,
         status TEXT NOT NULL,
-        created_at INTEGER NOT NULL,
-        updated_at INTEGER NOT NULL,
+        created_at NTEGER NOT NULL,
+        updated_at NTEGER NOT NULL,
         workflow_context TEXT NOT NULL,
         gate_data TEXT NOT NULL,
         triggers TEXT NOT NULL,
@@ -947,13 +947,13 @@ export class GatePersistenceManager {
 
     // Create gate_queue table for pending gates
     this.db.exec(`
-      CREATE TABLE IF NOT EXISTS gate_queue (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+      CREATE TABLE F NOT EXISTS gate_queue (
+        id NTEGER PRIMARY KEY AUTOINCREMENT,
         gate_id TEXT NOT NULL,
-        priority INTEGER NOT NULL,
+        priority NTEGER NOT NULL,
         urgency TEXT NOT NULL,
-        scheduled_at INTEGER NOT NULL,
-        created_at INTEGER NOT NULL,
+        scheduled_at NTEGER NOT NULL,
+        created_at NTEGER NOT NULL,
         processed BOOLEAN DEFAULT FALSE,
         FOREIGN KEY(gate_id) REFERENCES workflow_gates(id)
       )
@@ -961,12 +961,12 @@ export class GatePersistenceManager {
 
     // Create gate_history table for tracking changes
     this.db.exec(`
-      CREATE TABLE IF NOT EXISTS gate_history (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+      CREATE TABLE F NOT EXISTS gate_history (
+        id NTEGER PRIMARY KEY AUTOINCREMENT,
         gate_id TEXT NOT NULL,
         action TEXT NOT NULL,
         actor TEXT NOT NULL,
-        timestamp INTEGER NOT NULL,
+        timestamp NTEGER NOT NULL,
         data TEXT,
         FOREIGN KEY(gate_id) REFERENCES workflow_gates(id)
       )
@@ -974,12 +974,12 @@ export class GatePersistenceManager {
 
     // Create indexes
     this.db.exec(`
-      CREATE INDEX IF NOT EXISTS idx_gates_status ON workflow_gates(status);
-      CREATE INDEX IF NOT EXISTS idx_gates_type ON workflow_gates(type);
-      CREATE INDEX IF NOT EXISTS idx_gates_created ON workflow_gates(created_at);
-      CREATE INDEX IF NOT EXISTS idx_queue_priority ON gate_queue(priority, scheduled_at);
-      CREATE INDEX IF NOT EXISTS idx_queue_processed ON gate_queue(processed);
-      CREATE INDEX IF NOT EXISTS idx_history_gate ON gate_history(gate_id);
+      CREATE NDEX F NOT EXISTS idx_gates_status ON workflow_gates(status);
+      CREATE NDEX F NOT EXISTS idx_gates_type ON workflow_gates(type);
+      CREATE NDEX F NOT EXISTS idx_gates_created ON workflow_gates(created_at);
+      CREATE NDEX F NOT EXISTS idx_queue_priority ON gate_queue(priority, scheduled_at);
+      CREATE NDEX F NOT EXISTS idx_queue_processed ON gate_queue(processed);
+      CREATE NDEX F NOT EXISTS idx_history_gate ON gate_history(gate_id);
     `);
 
     this.logger.debug('Database tables created successfully');
@@ -989,7 +989,7 @@ export class GatePersistenceManager {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
-      INSERT OR REPLACE INTO workflow_gates 
+      INSERT OR REPLACE NTO workflow_gates 
       (id, type, subtype, title, description, status, created_at, updated_at,
        workflow_context, gate_data, triggers, priority, approval_config,
        timeout_config, resolution, metrics, workflow_gate_request)
@@ -1042,7 +1042,7 @@ export class GatePersistenceManager {
 
     const placeholders = status.map(() => '?').join(',');
     const stmt = this.db.prepare(`
-      SELECT * FROM workflow_gates WHERE status IN (${placeholders})
+      SELECT * FROM workflow_gates WHERE status N (${placeholders})
       ORDER BY created_at DESC
     `);
 
@@ -1096,7 +1096,7 @@ export class GatePersistenceManager {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
-      INSERT INTO gate_queue (gate_id, priority, urgency, scheduled_at, created_at)
+      INSERT NTO gate_queue (gate_id, priority, urgency, scheduled_at, created_at)
       VALUES (?, ?, ?, ?, ?)
     `);
 
@@ -1155,7 +1155,7 @@ export class GatePersistenceManager {
     if (!this.db) throw new Error('Database not initialized');
 
     const stmt = this.db.prepare(`
-      INSERT INTO gate_history (gate_id, action, actor, timestamp, data)
+      INSERT NTO gate_history (gate_id, action, actor, timestamp, data)
       VALUES (?, ?, ?, ?, ?)
     `);
 
@@ -1229,7 +1229,7 @@ export class GatePersistenceManager {
         json_extract(resolution, '$.resolvedAt') - created_at
       ) as avg_time
       FROM workflow_gates 
-      WHERE resolution IS NOT NULL ${whereClause ? 'AND ' + whereClause.replace('WHERE ', '') : ''}
+      WHERE resolution S NOT NULL ${whereClause ? 'AND ' + whereClause.replace('WHERE ', '') : ''}
     `);
     const resolutionTimeResult = resolutionTimeStmt.get(...params) as any;
 
@@ -1720,7 +1720,7 @@ export class WorkflowGatesManager extends EventEmitter {
     });
 
     // Create WorkflowGateRequest for AGUI integration if needed
-    if (trigger.urgency === GateTriggerUrgency.IMMEDIATE) {
+    if (trigger.urgency === GateTriggerUrgency.MMEDIATE) {
       await this.createWorkflowGateRequest(gate);
     }
 
@@ -1734,7 +1734,7 @@ export class WorkflowGatesManager extends EventEmitter {
   }
 
   // --------------------------------------------------------------------------
-  // AGUI INTEGRATION
+  // AGUI NTEGRATION
   // --------------------------------------------------------------------------
 
   async createWorkflowGateRequest(
@@ -1895,7 +1895,7 @@ export class WorkflowGatesManager extends EventEmitter {
     switch (urgency) {
       case GateTriggerUrgency.EMERGENCY:
         return 1;
-      case GateTriggerUrgency.IMMEDIATE:
+      case GateTriggerUrgency.MMEDIATE:
         return 2;
       case GateTriggerUrgency.WITHIN_HOUR:
         return 3;
@@ -1916,7 +1916,7 @@ export class WorkflowGatesManager extends EventEmitter {
     const baseDelay = delay || 0;
 
     switch (urgency) {
-      case GateTriggerUrgency.IMMEDIATE:
+      case GateTriggerUrgency.MMEDIATE:
         return new Date(now.getTime() + baseDelay);
       case GateTriggerUrgency.WITHIN_HOUR:
         return new Date(now.getTime() + Math.min(3600000, baseDelay + 1800000)); // 30min to 1hr

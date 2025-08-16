@@ -1,0 +1,29 @@
+{
+  "watch": [
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
+  "ext": "ts,js,json",
+  "ignore": [
+    "node_modules/**/*",
+    "dist/**/*",
+    "build/**/*",
+    "svelte-build/**/*",
+    "src/**/*.test.*",
+    "src/**/*.spec.*",
+    "**/*.log",
+    ".git/**/*",
+    "**/.svelte-kit/**/*",
+    "static/**/*"
+  ],
+  "delay": "5000",
+  "throttle": "60000",
+  "restartable": "rs",
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "verbose": false,
+  "colours": true,
+  "legacyWatch": false,
+  "exec": "npx tsx src/main.ts web --port 3000"
+}

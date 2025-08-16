@@ -50,7 +50,7 @@ export async function createPublicSwarmCoordinator(
 ): Promise<PublicSwarmCoordinator> {
   // Dynamically import to avoid circular dependencies
   const { SwarmCoordinator } = await import(
-    './swarm/core/swarm-coordinator.ts'
+    './swarm/core/swarm-coordinator'
   );
 
   const coordinator = new SwarmCoordinator();

@@ -33,7 +33,7 @@ export interface NeuralWASM {
 export async function createNeuralWASM(): Promise<NeuralWASM> {
   // Dynamically import to avoid architecture violations
   const { WASMNeuralAccelerator } = await import(
-    './wasm/wasm-neural-accelerator.ts'
+    './wasm/wasm-neural-accelerator'
   );
 
   const accelerator = new WASMNeuralAccelerator({

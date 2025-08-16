@@ -34,10 +34,6 @@ export interface Config {
     enabled?: boolean;
     maxConnections?: number;
   };
-  mcp?: {
-    enabled?: boolean;
-    port?: number;
-  };
   database?: {
     url: string;
     poolSize?: number;
@@ -278,7 +274,6 @@ export interface SystemConfig {
   terminal: TerminalConfig;
   memory: MemoryConfig;
   coordination: CoordinationConfig;
-  mcp: MCPConfig;
   logging: LoggingConfig;
   credentials?: CredentialsConfig;
   security?: SecurityConfig;
@@ -324,20 +319,6 @@ export interface CoordinationConfig {
   messageTimeout: number;
 }
 
-export interface MCPConfig {
-  transport: 'stdio' | 'http' | 'websocket';
-  host?: string;
-  port?: number;
-  tlsEnabled?: boolean;
-  authToken?: string;
-  auth?: MCPAuthConfig;
-  loadBalancer?: MCPLoadBalancerConfig;
-  sessionTimeout?: number;
-  maxSessions?: number;
-  enableMetrics?: boolean;
-  corsEnabled?: boolean;
-  corsOrigins?: string[];
-}
 
 export interface LoggingConfig {
   level: 'debug' | 'info' | 'warn' | 'error';
@@ -384,175 +365,9 @@ export interface Resource {
   metadata?: Record<string, unknown>;
 }
 
-// MCP types - Full protocol compliance
-export interface MCPProtocolVersion {
-  major: number;
-  minor: number;
-  patch: number;
-}
-
-export interface MCPCapabilities {
-  logging?: {
-    level?: 'debug' | 'info' | 'warn' | 'error';
-  };
-  prompts?: {
-    listChanged?: boolean;
-  };
-  resources?: {
-    listChanged?: boolean;
-    subscribe?: boolean;
-  };
-  tools?: {
-    listChanged?: boolean;
-  };
-  sampling?: Record<string, unknown>;
-}
-
-export interface MCPInitializeParams {
-  protocolVersion: MCPProtocolVersion;
-  capabilities: MCPCapabilities;
-  clientInfo: {
-    name: string;
-    version: string;
-  };
-}
-
-export interface MCPInitializeResult {
-  protocolVersion: MCPProtocolVersion;
-  capabilities: MCPCapabilities;
-  serverInfo: {
-    name: string;
-    version: string;
-  };
-  instructions?: string;
-}
-
-export interface MCPTool {
-  name: string;
-  description: string;
-  inputSchema: Record<string, unknown>;
-  handler: (input: unknown, context?: MCPContext) => Promise<unknown>;
-}
-
-export interface MCPPrompt {
-  name: string;
-  description?: string;
-  arguments?: Array<{
-    name: string;
-    description?: string;
-    required?: boolean;
-  }>;
-}
-
-export interface MCPResource {
-  uri: string;
-  name: string;
-  description?: string;
-  mimeType?: string;
-}
-
-export interface MCPRequest {
-  jsonrpc: '2.0';
-  id: string | number;
-  method: string;
-  params?: unknown;
-}
-
-export interface MCPResponse {
-  jsonrpc: '2.0';
-  id: string | number;
-  result?: unknown;
-  error?: MCPError;
-}
-
-export interface MCPNotification {
-  jsonrpc: '2.0';
-  method: string;
-  params?: unknown;
-}
-
-export interface MCPError {
-  code: number;
-  message: string;
-  data?: unknown;
-}
-
-export interface MCPToolCall {
-  name: string;
-  arguments?: Record<string, unknown>;
-}
-
-export interface MCPToolResult {
-  content: Array<{
-    type: 'text' | 'image' | 'resource';
-    text?: string;
-    data?: string;
-    mimeType?: string;
-  }>;
-  isError?: boolean;
-}
-
-export interface MCPLogEntry {
-  level: 'debug' | 'info' | 'warn' | 'error';
-  data?: unknown;
-  logger?: string;
-}
-
-export interface MCPSession {
-  id: string;
-  clientInfo: {
-    name: string;
-    version: string;
-  };
-  protocolVersion: MCPProtocolVersion;
-  capabilities: MCPCapabilities;
-  isInitialized: boolean;
-  createdAt: Date;
-  lastActivity: Date;
-  transport: 'stdio' | 'http' | 'websocket';
-  authenticated: boolean;
-  authData?: {
-    token?: string;
-    user?: string;
-    permissions?: string[];
-  };
-}
-
-export interface MCPAuthConfig {
-  enabled: boolean;
-  method: 'token' | 'basic' | 'oauth';
-  tokens?: string[];
-  users?: Array<{
-    username: string;
-    password: string;
-    permissions: string[];
-    roles?: string[];
-  }>;
-  jwtSecret?: string;
-  sessionTimeout?: number;
-}
-
-export interface MCPLoadBalancerConfig {
-  enabled: boolean;
-  strategy: 'round-robin' | 'least-connections' | 'weighted';
-  maxRequestsPerSecond: number;
-  healthCheckInterval: number;
-  circuitBreakerThreshold: number;
-}
-
-export interface MCPMetrics {
-  totalRequests: number;
-  successfulRequests: number;
-  failedRequests: number;
-  averageResponseTime: number;
-  activeSessions: number;
-  toolInvocations: Record<string, number>;
-  errors: Record<string, number>;
-  lastReset: Date;
-}
 
 // Interface declarations for dependency injection
-export interface ILogger {
+export interface Logger {
   debug(message: string, meta?: unknown): void;
   info(message: string, meta?: unknown): void;
   warn(message: string, meta?: unknown): void;
@@ -560,7 +375,7 @@ export interface ILogger {
   configure(config: LoggingConfig): Promise<void>;
 }
 
-export interface IEventBus {
+export interface EventBus {
   emit(event: string, data?: unknown): void;
   on(event: string, handler: (data: unknown) => void): void;
   off(event: string, handler: (data: unknown) => void): void;
@@ -583,11 +398,6 @@ export interface TerminalCommand {
   timeout?: number;
 }
 
-export interface MCPContext {
-  sessionId: string;
-  agentId?: string;
-  logger: ILogger;
-}
 
 // Additional configuration interfaces
 export interface CredentialsConfig {

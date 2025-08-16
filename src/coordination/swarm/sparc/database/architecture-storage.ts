@@ -178,7 +178,7 @@ export class ArchitectureStorageService {
   async initialize(): Promise<void> {
     // Create architectures table
     await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS ${this.tableName} (
+      CREATE TABLE F NOT EXISTS ${this.tableName} (
         id TEXT PRIMARY KEY,
         architecture_id TEXT UNIQUE NOT NULL,
         project_id TEXT,
@@ -189,7 +189,7 @@ export class ArchitectureStorageService {
         validation_data TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        version INTEGER DEFAULT 1,
+        version NTEGER DEFAULT 1,
         tags TEXT,
         metadata TEXT
       )
@@ -197,7 +197,7 @@ export class ArchitectureStorageService {
 
     // Create components table for detailed component tracking
     await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS ${this.componentsTableName} (
+      CREATE TABLE F NOT EXISTS ${this.componentsTableName} (
         id TEXT PRIMARY KEY,
         architecture_id TEXT NOT NULL,
         component_id TEXT NOT NULL,
@@ -215,7 +215,7 @@ export class ArchitectureStorageService {
 
     // Create validations table
     await this.db.execute(`
-      CREATE TABLE IF NOT EXISTS ${this.validationsTableName} (
+      CREATE TABLE F NOT EXISTS ${this.validationsTableName} (
         id TEXT PRIMARY KEY,
         architecture_id TEXT NOT NULL,
         validation_type TEXT NOT NULL,
@@ -230,22 +230,22 @@ export class ArchitectureStorageService {
 
     // Create indexes for performance
     await this.db.execute(`
-      CREATE INDEX IF NOT EXISTS idx_architectures_domain 
+      CREATE NDEX F NOT EXISTS idx_architectures_domain 
       ON ${this.tableName}(domain)
     `);
 
     await this.db.execute(`
-      CREATE INDEX IF NOT EXISTS idx_architectures_project 
+      CREATE NDEX F NOT EXISTS idx_architectures_project 
       ON ${this.tableName}(project_id)
     `);
 
     await this.db.execute(`
-      CREATE INDEX IF NOT EXISTS idx_components_architecture 
+      CREATE NDEX F NOT EXISTS idx_components_architecture 
       ON ${this.componentsTableName}(architecture_id)
     `);
 
     await this.db.execute(`
-      CREATE INDEX IF NOT EXISTS idx_validations_architecture 
+      CREATE NDEX F NOT EXISTS idx_validations_architecture 
       ON ${this.validationsTableName}(architecture_id)
     `);
   }
@@ -293,7 +293,7 @@ export class ArchitectureStorageService {
     // Insert new record
     await this.db.execute(
       `
-      INSERT INTO ${this.tableName} (
+      INSERT NTO ${this.tableName} (
         id, architecture_id, project_id, name, domain, design_data, 
         components_data, validation_data, created_at, updated_at, 
         tags, metadata
@@ -495,7 +495,7 @@ export class ArchitectureStorageService {
 
     await this.db.execute(
       `
-      INSERT INTO ${this.validationsTableName} (
+      INSERT NTO ${this.validationsTableName} (
         id, architecture_id, validation_type, passed, score,
         results_data, recommendations, created_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -697,7 +697,7 @@ export class ArchitectureStorageService {
 
       await this.db.execute(
         `
-        INSERT INTO ${this.componentsTableName} (
+        INSERT NTO ${this.componentsTableName} (
           id, architecture_id, component_id, name, type,
           responsibilities, interfaces, dependencies, performance_data,
           created_at, updated_at

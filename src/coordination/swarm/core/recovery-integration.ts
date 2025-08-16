@@ -919,7 +919,7 @@ export class RecoveryIntegration extends EventEmitter {
    * @param reason
    */
   async emergencyShutdown(reason = 'Emergency shutdown') {
-    this.logger.warn('EMERGENCY SHUTDOWN INITIATED', { reason });
+    this.logger.warn('EMERGENCY SHUTDOWN NITIATED', { reason });
 
     try {
       // Stop chaos engineering first

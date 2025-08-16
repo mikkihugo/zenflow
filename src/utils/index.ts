@@ -2,7 +2,7 @@
  * @file Main utilities module that re-exports system utility functions including logging, error handling, type guards, and various helper utilities.
  */
 
-export type { ILogger, LoggerConfig, LogLevel } from '../core/logger';
+export type { Logger, LoggerConfig, LogLevel } from '../core/logger';
 // Re-export core logger to avoid conflicts
 export { createLogger, Logger } from '../core/logger';
 // Error handling utilities

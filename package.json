@@ -8,6 +8,18 @@
     "claude-zen": "dist/claude-zen.js"
   },
   "preferGlobal": true,
+  "private": true,
+  "workspaces": [
+    "src/lib/dspy",
+    "src/lib/conversation",
+    "src/lib/adaptive-learning",
+    "src/lib/chaos-engineering",
+    "src/lib/task-approval",
+    "src/lib/event-system",
+    "packages/brain",
+    "packages/database",
+    "packages/foundation"
+  ],
   "scripts": {
     "start": "node dist/claude-zen.js core",
     "dev": "npx tsx src/main.ts web --port 3000",
@@ -27,6 +39,8 @@
     "build:wasm": "cd src/neural/wasm && ./scripts/build-wasm.sh",
     "build:wasm:dev": "cd src/neural/wasm && BUILD_MODE=dev ./scripts/build-wasm.sh",
     "build:wasm:prod": "cd src/neural/wasm && OPTIMIZE_SIZE=true BUILD_MODE=release ./scripts/build-wasm.sh",
+    "build:neural-wasm": "cd src/neural/rust/wasm-api && ./build.sh",
+    "build:neural-wasm:dev": "cd src/neural/rust/wasm-api && wasm-pack build --dev --target web --out-dir pkg",
     "build:bindings": "cd src/bindings && npm run build",
     "build:bindings:dev": "cd src/bindings && npm run build:dev",
     "build:bindings:release": "cd src/bindings && npm run build:release",
@@ -104,6 +118,8 @@
     "docs:templates:fix": "node scripts/template-validator.js --auto-fix",
     "docs:deploy": "node scripts/docs-deploy.js",
     "docs:deploy:staging": "node scripts/docs-deploy.js --environment staging",
+    "import-scanner": "npx tsx scripts/import-scanner.ts",
+    "demo-scanner": "npx tsx scripts/demo-scanner.ts",
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "binary:build": "npm run build:prod && npm run binary:bundle",
@@ -212,7 +228,8 @@
     "vitest": "^3.2.4",
     "ws": "^8.18.3",
     "yaml": "^2.6.1",
-    "zod": "^3.24.1"
+    "zod": "^3.24.1",
+    "seedrandom": "^3.0.5"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.4",
@@ -232,6 +249,7 @@
     "@types/semver": "^7.5.8",
     "@types/uuid": "^10.0.0",
     "@types/ws": "^8.18.1",
+    "@types/seedrandom": "^3.0.8",
     "@vercel/ncc": "^0.38.3",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
@@ -243,7 +261,6 @@
     "esbuild": "^0.25.9",
     "execa": "^9.6.0",
     "fast-check": "^4.2.0",
-    "glob": "^11.0.0",
     "happy-dom": "^18.0.1",
     "jscodeshift": "^17.1.1",
     "nodemon": "^3.1.7",

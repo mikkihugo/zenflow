@@ -46,7 +46,7 @@ class WebTerminalLauncher {
       logger.info('📡 Starting web server in background...');
 
       // Use the working minimal server
-      this.webServer = spawn('npx', ['tsx', 'minimal-server.ts'], {
+      this.webServer = spawn('npx', ['tsx', 'minimal-server'], {
         cwd: process.cwd(),
         stdio: ['ignore', 'pipe', 'pipe'],
         detached: false,

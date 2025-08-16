@@ -12,7 +12,7 @@
  * - Bridge to zen-code's existing LLM infrastructure
  */
 
-import { getLogger } from './config/logging-config.js';
+import { getLogger } from './config/logging-config';
 
 const logger = getLogger('ZenSwarmOrchestrator');
 

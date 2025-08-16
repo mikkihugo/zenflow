@@ -133,7 +133,7 @@ export interface DocumentDomainMapping {
   documentPath: string;
   /** Document type (vision, adr, prd, etc.) */
   documentType: DocumentType;
-  /** Mapped domain IDs */
+  /** Mapped domain Ds */
   domainIds: string[];
   /** Mapping confidence scores */
   confidenceScores: number[];
@@ -1165,7 +1165,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    *
    * @param domain - Domain to find relations for.
    * @param allDomains - All discovered domains.
-   * @returns Array of related domain IDs.
+   * @returns Array of related domain Ds.
    */
   private findRelatedDomains(
     domain: DiscoveredDomain,

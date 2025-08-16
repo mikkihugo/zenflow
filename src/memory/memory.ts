@@ -8,7 +8,7 @@ const logger = getLogger('Memory');
 
 import { EventEmitter } from 'node:events';
 import type {
-  IMemoryStore,
+  MemoryStore,
   MemoryStats,
   StoreOptions,
 } from '../core/interfaces/base-interfaces';
@@ -52,7 +52,7 @@ export interface CacheEntry {
   timestamp: number;
 }
 
-export class SessionMemoryStore extends EventEmitter implements IMemoryStore {
+export class SessionMemoryStore extends EventEmitter implements MemoryStore {
   private backend: BackendInterface | null = null;
   private initialized = false;
   private sessions = new Map<string, SessionState>();

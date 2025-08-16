@@ -26,8 +26,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator';
 
@@ -96,7 +96,7 @@ export interface Phase3IntegrationBundle {
  * and provides different configuration profiles for various use cases.
  */
 export class Phase3IntegrationFactory {
-  private logger: ILogger;
+  private logger: Logger;
 
   constructor() {
     this.logger = getLogger('Phase3IntegrationFactory');
@@ -106,7 +106,7 @@ export class Phase3IntegrationFactory {
    * Create a complete Phase 3 integration bundle
    */
   public async createIntegrationBundle(
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     config: Phase3IntegrationFactoryConfig,
     availableSystems: {
@@ -226,7 +226,7 @@ export class Phase3IntegrationFactory {
    * Create a simple integration service for basic use cases
    */
   public async createSimpleIntegration(
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     profile: IntegrationProfile = 'development'
   ): Promise<Phase3IntegratorService> {
@@ -250,7 +250,7 @@ export class Phase3IntegrationFactory {
    * Create integration for Learning Monitor specifically
    */
   public async createLearningMonitorIntegration(
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     existingSystems: {
       ensembleSystem?: Phase3EnsembleLearning;
@@ -537,7 +537,7 @@ export class Phase3IntegrationFactory {
    * Create a demo integration with realistic simulation data
    */
   public async createDemoIntegration(
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator
   ): Promise<Phase3IntegratorService> {
     return this.createSimpleIntegration(eventBus, memoryCoordinator, 'demo');
@@ -547,7 +547,7 @@ export class Phase3IntegrationFactory {
    * Create a testing integration with minimal overhead
    */
   public async createTestingIntegration(
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator
   ): Promise<Phase3IntegratorService> {
     return this.createSimpleIntegration(eventBus, memoryCoordinator, 'testing');

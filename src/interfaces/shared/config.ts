@@ -8,7 +8,7 @@ import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('interfaces-shared-config');
 
-import { config, type InterfaceConfig } from '../../config/index.js';
+import { config, type InterfaceConfig } from "../../config/config";
 
 /**
  * Get interface configuration with fallbacks.

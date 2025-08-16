@@ -10,8 +10,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type {
   CollectiveConfig,
@@ -62,13 +62,13 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
     'operational';
   public borgRank: number = 1;
 
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private cube: CubeInfo;
   private config: CollectiveConfig;
   private metrics: OpsCubeMetrics;
 
-  constructor(id: string, eventBus: IEventBus, config: CollectiveConfig) {
+  constructor(id: string, eventBus: EventBus, config: CollectiveConfig) {
     super();
     this.id = id;
     this.designation = `Matron-${id.slice(-4)}`;

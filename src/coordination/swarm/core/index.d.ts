@@ -252,7 +252,7 @@ export declare class ZenSwarm {
   /**
    * Get list of active agents
    *
-   * @returns Array of agent IDs
+   * @returns Array of agent Ds
    */
   getAgents(): string[];
 
@@ -311,4 +311,4 @@ export declare function consoleWarn(message: string): void;
 export declare function formatJsError(error: unknown): string;
 
 // Export DAA service types and interfaces
-export * from './daa-service.js';
+

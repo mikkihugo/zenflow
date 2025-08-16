@@ -468,7 +468,7 @@ export class ProgramOrchestrator extends EventEmitter {
   }
 
   // ============================================================================
-  // PROGRAM INCREMENT MANAGEMENT - Task 8.2
+  // PROGRAM NCREMENT MANAGEMENT - Task 8.2
   // ============================================================================
 
   /**
@@ -738,7 +738,7 @@ export class ProgramOrchestrator extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): ProgramOrchestratorState {

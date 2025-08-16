@@ -18,7 +18,7 @@ import type { ProtocolType } from '../../types/protocol-types';
  * @file Interface implementation: interfaces.
  */
 
-export interface IClient<T = any> {
+export interface Client<T = any> {
   /** Connect to the service */
   connect(): Promise<void>;
 
@@ -46,9 +46,9 @@ export interface IClient<T = any> {
  *
  * @example
  */
-export interface IClientFactory {
+export interface ClientFactory {
   /** Create a client instance */
-  create(protocol: ProtocolType, config: ClientConfig): Promise<IClient>;
+  create(protocol: ProtocolType, config: ClientConfig): Promise<Client>;
 
   /** Check if factory supports a protocol */
   supports(protocol: ProtocolType): boolean;
@@ -65,7 +65,7 @@ export interface IClientFactory {
  *
  * @example
  */
-export interface IHttpClient<T = any> extends IClient<T> {
+export interface HttpClient<T = any> extends Client<T> {
   /** GET request */
   get<R = any>(
     path: string,
@@ -104,7 +104,7 @@ export interface IHttpClient<T = any> extends IClient<T> {
  *
  * @example
  */
-export interface IWebSocketClient<T = any> extends IClient<T> {
+export interface WebSocketClient<T = any> extends Client<T> {
   /** Subscribe to events */
   subscribe(event: string, callback: (data: T) => void): Promise<string>;
 
@@ -132,7 +132,7 @@ export interface IWebSocketClient<T = any> extends IClient<T> {
  *
  * @example
  */
-export interface IKnowledgeClient<T = any> extends IClient<T> {
+export interface KnowledgeClient<T = any> extends Client<T> {
   /** Query knowledge base */
   query<R = any>(query: string, options?: KnowledgeQueryOptions): Promise<R>;
 
@@ -170,7 +170,7 @@ export interface IKnowledgeClient<T = any> extends IClient<T> {
  * @example.
  * @example
  */
-export interface IMcpClient<T = any> extends IClient<T> {
+export interface McpClient<T = any> extends Client<T> {
   /** List available tools */
   listTools(): Promise<McpTool[]>;
 

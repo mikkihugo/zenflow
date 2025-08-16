@@ -45,8 +45,8 @@ export { SwarmBatchCoordinator } from './swarm-batch';
  * @example
  */
 export function createBatchSystem(options?: {
-  batchConfig?: import('./batch-engine.ts').BatchExecutionConfig;
-  swarmConfig?: import('./swarm-batch.ts').SwarmBatchConfig;
+  batchConfig?: import('./batch-engine').BatchExecutionConfig;
+  swarmConfig?: import('./swarm-batch').SwarmBatchConfig;
   maxConcurrentFiles?: number;
 }) {
   const batchEngine = new BatchEngine(options?.['batchConfig']);
@@ -70,7 +70,7 @@ export function createBatchSystem(options?: {
      * @param operations
      */
     async executeBatchWorkflow(
-      operations: import('./batch-engine.ts').BatchOperation[]
+      operations: import('./batch-engine').BatchOperation[]
     ) {
       // Execute batch operations
       const summary = await batchEngine.executeBatch(operations);

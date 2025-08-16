@@ -794,7 +794,7 @@ export class PortfolioOrchestrator extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): PortfolioOrchestratorState {

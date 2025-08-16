@@ -29,8 +29,8 @@
 import { EventEmitter } from 'node:events';
 import { getLogger } from '../../../config/logging-config';
 import type {
-  IEventBus,
-  ILogger,
+  EventBus,
+  Logger,
 } from '../../core/interfaces/base-interfaces';
 import type { MemoryCoordinator } from '../../../memory/core/memory-coordinator';
 
@@ -151,8 +151,8 @@ export interface CoordinationPattern {
  * real-time data to the ensemble models for continuous improvement.
  */
 export class SwarmEnsembleIntegrator extends EventEmitter {
-  private logger: ILogger;
-  private eventBus: IEventBus;
+  private logger: Logger;
+  private eventBus: EventBus;
   private memoryCoordinator: MemoryCoordinator;
   private config: SwarmEnsembleIntegratorConfig;
   private dataBridge: Phase3DataBridge;
@@ -181,7 +181,7 @@ export class SwarmEnsembleIntegrator extends EventEmitter {
 
   constructor(
     config: SwarmEnsembleIntegratorConfig,
-    eventBus: IEventBus,
+    eventBus: EventBus,
     memoryCoordinator: MemoryCoordinator,
     dataBridgeConfig: Phase3DataBridgeConfig,
     dependencies: {

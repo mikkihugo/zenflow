@@ -1075,7 +1075,7 @@ export class SAFeEventsManager extends EventEmitter {
   }
 
   // ============================================================================
-  // INSPECT & ADAPT WORKSHOPS - Task 15.2
+  // NSPECT & ADAPT WORKSHOPS - Task 15.2
   // ============================================================================
 
   /**
@@ -1316,7 +1316,7 @@ export class SAFeEventsManager extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): SAFeEventsManagerState {

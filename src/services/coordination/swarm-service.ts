@@ -12,7 +12,7 @@
 
 import { EventEmitter } from 'events';
 import { getLogger } from '../../config/logging-config';
-import { LLMIntegrationService } from '../../coordination/services/llm-integration.service.js';
+import { LLMIntegrationService } from '../../coordination/services/llm-integration.service';
 import {
   PERFORMANCE_CONSTANTS,
   SYSTEM_LIMITS,
@@ -20,8 +20,8 @@ import {
   LLM_CONSTANTS,
   STATUS_CONSTANTS,
   ERROR_MESSAGES,
-} from '../../config/swarm-constants.js';
-import { SystemMetricsCollector } from '../../utils/system-metrics.js';
+} from '../../coordination/constants';
+import { SystemMetricsCollector } from '../../coordination/metrics/system-metrics-collector';
 import {
   validateSwarmConfig,
   validateAgentConfig,
@@ -39,7 +39,7 @@ import {
   validateMemoryDetail,
   validateCognitivePattern,
   SwarmValidationError,
-} from '../../utils/swarm-validation.js';
+} from '../../coordination/validation';
 import type {
   AgentConfig,
   AgentStatus,
@@ -47,7 +47,7 @@ import type {
   SwarmStatus,
   TaskOrchestrationConfig,
   TaskStatus,
-} from '../../types/swarm-types.js';
+} from '../../coordination/validation';
 import type {
   NeuralStatusResult,
   NeuralTrainingResult,
@@ -59,7 +59,7 @@ import type {
   AgentListResult,
   AgentMetricsResult,
   TaskResultsResult,
-} from '../../types/swarm-results.js';
+} from '../../coordination/validation';
 
 // Safe logger that won't break execution if undefined
 let logger;
@@ -698,7 +698,7 @@ export class SwarmService extends EventEmitter {
       // Clean up orphaned idle agents from old swarms
       for (const [agentId, agent] of this.agents) {
         if (
-          agent.status === STATUS_CONSTANTS.AGENT_STATUS.IDLE &&
+          agent.status === STATUS_CONSTANTS.AGENT_STATUS.DLE &&
           agent.created.getTime() < agentCutoff &&
           !this.swarms.has(agent.swarmId)
         ) {

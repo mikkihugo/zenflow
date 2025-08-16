@@ -100,7 +100,7 @@ export interface FlowBottleneck {
   readonly severity: 'minor' | 'moderate' | 'severe' | 'critical';
   readonly impact: BottleneckImpact;
   readonly duration: number; // hours bottleneck has existed
-  readonly affectedItems: string[]; // Work item IDs affected
+  readonly affectedItems: string[]; // Work item Ds affected
   readonly rootCause: string;
   readonly recommendedActions: string[];
   readonly estimatedResolutionTime: number; // hours
@@ -807,7 +807,7 @@ export class ValueStreamMapper extends EventEmitter {
   }
 
   // ============================================================================
-  // PRIVATE IMPLEMENTATION METHODS
+  // PRIVATE MPLEMENTATION METHODS
   // ============================================================================
 
   private initializeState(): ValueStreamMapperState {

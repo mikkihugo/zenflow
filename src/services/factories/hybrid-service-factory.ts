@@ -5,10 +5,10 @@
  * without singleton dependencies or circular imports.
  */
 
-import { createLogger } from '../../core/logger.js';
-import { DALFactory } from '../../database/factory.js';
-import { HybridDocumentManager } from '../coordination/hybrid-document-service.js';
-import { ADRManagerHybrid } from '../coordination/adr-hybrid-service.js';
+import { createLogger } from '../../core/logger';
+import { DALFactory } from '../../database/dal/dal-factory';
+import { HybridDocumentManager } from '../coordination/hybrid-document-service';
+import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
 
 const logger = createLogger('hybrid-factory');
 

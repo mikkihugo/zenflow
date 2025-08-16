@@ -442,9 +442,9 @@ export class DocumentProcessor extends EventEmitter {
   }
 
   /**
-   * Get all workspace IDs.
+   * Get all workspace Ds.
    *
-   * @returns Array of workspace IDs.
+   * @returns Array of workspace Ds.
    */
   getWorkspaces(): string[] {
     return Array.from(this.workspaces.keys());

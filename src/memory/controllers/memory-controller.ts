@@ -141,7 +141,7 @@ export class MemoryController {
   constructor(
     @inject(MEMORY_TOKENS.ProviderFactory) private _factory: MemoryProviderFactory,
     @inject(MEMORY_TOKENS.Config) private _config: MemoryConfig,
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger,
+    @inject(CORE_TOKENS.Logger) private _logger: Logger,
   ) {
     this.initializeBackend();
   }
@@ -700,7 +700,7 @@ export class MemoryController {
 }
 
 // Type definitions for DI integration
-interface ILogger {
+interface Logger {
   info(message: string): void;
   error(message: string): void;
   warn(message: string): void;

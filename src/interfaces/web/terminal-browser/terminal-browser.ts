@@ -10,7 +10,7 @@ import * as blessed from 'blessed';
 import fetch from 'node-fetch';
 import { parse } from 'node-html-parser';
 import * as terminalKit from 'terminal-kit';
-import { getLogger } from '../../../config/logging-config.js';
+import { getLogger } from "../../../config/logging-config";
 
 const logger = getLogger('terminal-browser');
 const terminal = terminalKit.terminal;

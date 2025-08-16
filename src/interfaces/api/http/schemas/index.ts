@@ -7,7 +7,7 @@
  * @file REST API schemas for all domains.
  */
 
-import { getMCPServerURL } from '../../../../config/defaults.js';
+import { getMCPServerURL } from "../../../config/config";
 
 // Re-export coordination types that are actually available
 export type {
@@ -511,7 +511,7 @@ export const RestAPISchema = {
           },
           assignedTo: {
             type: 'string',
-            description: 'ID of assigned agent',
+            description: 'D of assigned agent',
           },
         },
       },
@@ -585,7 +585,7 @@ export const RestAPISchema = {
         properties: {
           networkId: {
             type: 'string',
-            description: 'ID of neural network to train',
+            description: 'D of neural network to train',
           },
           trainingData: {
             type: 'array',

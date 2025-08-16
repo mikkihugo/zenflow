@@ -4,7 +4,7 @@
  * Handles the first phase of SPARC methodology - gathering and analyzing.
  * Detailed requirements, constraints, and acceptance criteria.
  *
- * TEMPLATE INTEGRATION: Now supports template-based specification generation.
+ * TEMPLATE NTEGRATION: Now supports template-based specification generation.
  * Using the TemplateEngine for domain-specific requirements and patterns.
  */
 /**
@@ -12,7 +12,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import { TemplateEngine } from '../../core/template-engine.js';
+import { TemplateEngine } from '../../core/template-engine';
 import type {
   AcceptanceCriterion,
   ConstraintAnalysis,
@@ -655,7 +655,7 @@ export class SpecificationPhaseEngine implements SpecificationEngine {
       },
       {
         id: 'ED-002',
-        name: 'Node.js',
+        name: 'Node',
         type: 'infrastructure',
         version: '>=20.0.0',
         critical: true,

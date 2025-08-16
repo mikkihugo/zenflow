@@ -152,7 +152,7 @@ export type AgentStatus =
 export type AgentId = string;
 
 // ==========================================
-// AGENT INTERFACES
+// AGENT NTERFACES
 // ==========================================
 
 export interface AgentMetrics {

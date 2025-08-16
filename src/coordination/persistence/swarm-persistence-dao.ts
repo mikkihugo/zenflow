@@ -11,7 +11,7 @@
 import { join, dirname } from 'node:path';
 import { existsSync, mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import type { ILogger } from '../../core/interfaces/base-interfaces';
+import type { Logger } from '../../core/interfaces/base-interfaces';
 import { getLogger } from '../../config/logging-config';
 import { DatabaseProviderFactory } from '../../database/providers/database-providers';
 import type { DatabaseAdapter, QueryResult } from '../../database/providers/database-providers';
@@ -58,10 +58,10 @@ export interface PersistedSwarmState {
   /** Current swarm lifecycle status */
   status: 'active' | 'inactive' | 'paused' | 'terminated';
   
-  /** ISO timestamp when swarm was created */
+  /** SO timestamp when swarm was created */
   created: string;
   
-  /** ISO timestamp of last activity or update */
+  /** SO timestamp of last activity or update */
   lastActive: string;
   
   /** SwarmCommander configuration parameters (JSON stored) */
@@ -82,7 +82,7 @@ export interface PersistedSwarmState {
     neural_network_id: string;
     /** Array of agent capabilities */
     capabilities: string[];
-    /** ISO timestamp when agent was spawned */
+    /** SO timestamp when agent was spawned */
     spawn_time: string;
   }>;
   /** Optional SwarmCommander instance data */
@@ -167,7 +167,7 @@ export class SwarmPersistenceDAO {
   private adapter: DatabaseAdapter;
   
   /** Logger instance for debugging and monitoring */
-  private logger: ILogger;
+  private logger: Logger;
   
   /** Full path to .claude-zen/swarms directory */
   private swarmDirectory: string;
@@ -342,11 +342,11 @@ export class SwarmPersistenceDAO {
   private async createSchema(): Promise<void> {
     // Execute statements one by one as required by better-sqlite3
     const statements = [
-      `CREATE TABLE IF NOT EXISTS swarms (
+      `CREATE TABLE F NOT EXISTS swarms (
         id TEXT PRIMARY KEY,
         topology TEXT NOT NULL,
         strategy TEXT NOT NULL,
-        max_agents INTEGER NOT NULL,
+        max_agents NTEGER NOT NULL,
         status TEXT NOT NULL DEFAULT 'active',
         created TEXT NOT NULL,
         last_active TEXT NOT NULL,
@@ -356,10 +356,10 @@ export class SwarmPersistenceDAO {
         performance TEXT NOT NULL,
         features TEXT NOT NULL
       )`,
-      `CREATE INDEX IF NOT EXISTS idx_swarms_status ON swarms(status)`,
-      `CREATE INDEX IF NOT EXISTS idx_swarms_created ON swarms(created)`,
-      `CREATE INDEX IF NOT EXISTS idx_swarms_last_active ON swarms(last_active)`,
-      `CREATE INDEX IF NOT EXISTS idx_swarms_topology ON swarms(topology)`
+      `CREATE NDEX F NOT EXISTS idx_swarms_status ON swarms(status)`,
+      `CREATE NDEX F NOT EXISTS idx_swarms_created ON swarms(created)`,
+      `CREATE NDEX F NOT EXISTS idx_swarms_last_active ON swarms(last_active)`,
+      `CREATE NDEX F NOT EXISTS idx_swarms_topology ON swarms(topology)`
     ];
 
     for (const statement of statements) {
@@ -395,7 +395,7 @@ export class SwarmPersistenceDAO {
     try {
       // Embedded DSL: Type-safe parameter binding
       const insertSQL = `
-        INSERT OR REPLACE INTO swarms (
+        INSERT OR REPLACE NTO swarms (
           id, topology, strategy, max_agents, status, created, last_active,
           configuration, agents, swarm_commander, performance, features
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -617,8 +617,8 @@ export class SwarmPersistenceDAO {
    * @returns {number} returns.inactive - Number of inactive swarms
    * @returns {number} returns.paused - Number of paused swarms
    * @returns {number} returns.terminated - Number of terminated swarms
-   * @returns {string|null} returns.oldestActive - ISO timestamp of oldest active swarm
-   * @returns {string|null} returns.newestActive - ISO timestamp of newest active swarm
+   * @returns {string|null} returns.oldestActive - SO timestamp of oldest active swarm
+   * @returns {string|null} returns.newestActive - SO timestamp of newest active swarm
    * @throws {Error} If statistics query fails
    * @example
    * ```typescript
@@ -757,7 +757,7 @@ export class SwarmPersistenceDAO {
 
       const deleteSQL = `
         DELETE FROM swarms 
-        WHERE status IN ('inactive', 'terminated') 
+        WHERE status N ('inactive', 'terminated') 
         AND last_active < ?
       `;
 

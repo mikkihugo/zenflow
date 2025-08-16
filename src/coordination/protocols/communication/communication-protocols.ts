@@ -10,8 +10,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import { gunzipSync, gzipSync } from 'node:zlib';
-import type { ILogger } from '../../../core/interfaces/base-interfaces';
-import type { EventBusInterface as IEventBus } from '../../core/event-bus';
+import type { Logger } from '../../../core/interfaces/base-interfaces';
+import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core communication types
 export interface Message {
@@ -188,8 +188,8 @@ export class CommunicationProtocols extends EventEmitter {
       consensusTimeout: number;
       maxHops: number;
     },
-    private _logger: ILogger,
-    private eventBus: IEventBus
+    private _logger: Logger,
+    private eventBus: EventBus
   ) {
     super();
 
@@ -1155,7 +1155,7 @@ export class CommunicationProtocols extends EventEmitter {
 export type MessageHandler = (message: Message) => Promise<void> | void;
 
 class CompressionEngine {
-  constructor(private logger: ILogger) {}
+  constructor(private logger: Logger) {}
 
   async compress(
     payload: MessagePayload,
@@ -1227,7 +1227,7 @@ class CompressionEngine {
 class EncryptionEngine {
   constructor(
     private enabled: boolean,
-    private logger: ILogger
+    private logger: Logger
   ) {
     void this.logger; // Mark as intentionally unused for now
   }
@@ -1262,7 +1262,7 @@ class EncryptionEngine {
 }
 
 class RoutingEngine {
-  constructor(private logger: ILogger) {
+  constructor(private logger: Logger) {
     void this.logger; // Mark as intentionally unused for now
   }
 
@@ -1382,7 +1382,7 @@ class ConsensusEngine {
 
   constructor(
     private _nodeId: string,
-    private logger: ILogger
+    private logger: Logger
   ) {}
 
   /**
@@ -1430,7 +1430,7 @@ class ConsensusEngine {
 class GossipEngine {
   constructor(
     private _nodeId: string,
-    private logger: ILogger
+    private logger: Logger
   ) {}
 
   async propagate(

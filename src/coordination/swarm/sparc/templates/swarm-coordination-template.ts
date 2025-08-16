@@ -204,7 +204,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
           {
             stepNumber: 1,
             description: 'Validate agent ID uniqueness',
-            pseudocode: 'IF registry.contains(agentId) THEN RETURN ERROR',
+            pseudocode: 'F registry.contains(agentId) THEN RETURN ERROR',
           },
           {
             stepNumber: 2,
@@ -236,7 +236,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
             name: 'agents',
             type: 'Map<string, AgentInfo>',
             visibility: 'private',
-            description: 'Map of agent IDs to agent information',
+            description: 'Map of agent Ds to agent information',
           },
         ],
         methods: [
@@ -292,7 +292,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
           'Task distribution',
           'Health monitoring',
         ],
-        interfaces: ['ISwarmCoordinator'],
+        interfaces: ['SwarmCoordinator'],
         dependencies: ['AgentRegistry', 'TaskQueue'],
         qualityAttributes: {
           performance: 'Sub-5ms coordination',
@@ -406,7 +406,7 @@ export const SWARM_COORDINATION_TEMPLATE: SPARCTemplate = {
         name: 'EnterpriseSecurityManager',
         type: 'service',
         responsibilities: ['Enterprise security compliance', 'Audit logging'],
-        interfaces: ['ISecurityManager'],
+        interfaces: ['SecurityManager'],
         dependencies: ['AuditLogger'],
         qualityAttributes: {
           security: 'Enterprise-grade',

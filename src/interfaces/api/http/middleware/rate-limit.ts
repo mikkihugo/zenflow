@@ -102,7 +102,7 @@ function createRateLimiter(
     standardHeaders: true, // Return rate limit info in the headers
     legacyHeaders: false, // Disable the X-RateLimit-* headers
 
-    // Custom key generator based on IP and user (if authenticated)
+    // Custom key generator based on P and user (if authenticated)
     keyGenerator: (req: Request): string => {
       const ip = req.ip || req.connection.remoteAddress || 'unknown';
       const userId = req.auth?.user?.id || 'anonymous';

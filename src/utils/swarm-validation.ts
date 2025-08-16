@@ -14,12 +14,12 @@ import {
   ERROR_MESSAGES,
   isValidAgentStatus,
   isValidCognitivePattern,
-} from '../config/swarm-constants.js';
+} from '../coordination/types/constants';
 import type {
   AgentConfig,
   SwarmConfig,
   TaskOrchestrationConfig,
-} from '../types/swarm-types.js';
+} from '../coordination/types/interfaces';
 
 /**
  * Custom validation error class

@@ -8,8 +8,8 @@ import { getLogger } from '../../config/logging-config';
 import type { BatchExecutionSummary } from './performance-monitor';
 
 // TODO: Use dependency injection for logger
-// Should inject ILogger from DI container instead of creating directly
-// Example: constructor(@inject(CORE_TOKENS.Logger) private logger: ILogger) {}
+// Should inject Logger from DI container instead of creating directly
+// Example: constructor(@inject(CORE_TOKENS.Logger) private logger: Logger) {}
 const logger = getLogger('BatchEngine');
 
 export interface BatchOperation {
@@ -18,7 +18,7 @@ export interface BatchOperation {
   operation: string;
   params: Record<string, unknown>;
   priority?: 'low' | 'medium' | 'high' | 'critical';
-  dependencies?: string[]; // Operation IDs this depends on
+  dependencies?: string[]; // Operation Ds this depends on
   timeout?: number;
 }
 

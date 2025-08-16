@@ -122,7 +122,7 @@ export async function initializeNeuralWasm() {
     // Dynamic import of WASM module - use placeholder if not available
     try {
       // Use require-style dynamic import to avoid TypeScript resolution issues
-      const wasmModulePath = '../wasm/ruv_swarm_wasm.js';
+      const wasmModulePath = '../wasm/ruv_swarm_wasm';
       const importedWasmModule = await eval(
         `import('${wasmModulePath}')`
       ).catch(() => null);

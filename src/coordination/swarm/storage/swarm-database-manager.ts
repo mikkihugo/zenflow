@@ -14,15 +14,15 @@ import { EventEmitter } from 'node:events';
 import path from 'node:path';
 import type { DALFactory } from '../../../database/factory';
 import type {
-  ICoordinationRepository,
-  IGraphRepository,
-  IVectorRepository,
+  CoordinationRepository,
+  GraphRepository,
+  VectorRepository,
 } from '../../../database/interfaces';
 import { inject, injectable } from '../../../di/decorators/injectable';
 import {
   CORE_TOKENS,
   DATABASE_TOKENS,
-  type ILogger,
+  type Logger,
   SWARM_TOKENS,
 } from '../../../di/tokens/core-tokens';
 
@@ -120,9 +120,9 @@ export interface CrossSwarmPatternResult {
 export interface SwarmRepositories {
   swarmId: string;
   repositories: {
-    graph: IGraphRepository<any>; // Kuzu for relationships
-    vectors: IVectorRepository<any>; // LanceDB for embeddings
-    coordination: ICoordinationRepository<any>; // SQLite for data
+    graph: GraphRepository<any>; // Kuzu for relationships
+    vectors: VectorRepository<any>; // LanceDB for embeddings
+    coordination: CoordinationRepository<any>; // SQLite for data
   };
   path: string;
 }
@@ -244,13 +244,13 @@ export interface KnowledgeDecayAnalysis {
 
 @injectable
 export class SwarmDatabaseManager extends EventEmitter {
-  private centralRepo!: ICoordinationRepository<any>;
+  private centralRepo!: CoordinationRepository<any>;
   private swarmClusters: Map<string, SwarmRepositories> = new Map();
 
   constructor(
     @inject(SWARM_TOKENS.Config) private _config: SwarmDatabaseConfig,
     @inject(DATABASE_TOKENS.DALFactory) private _dalFactory: DALFactory,
-    @inject(CORE_TOKENS.Logger) private _logger: ILogger
+    @inject(CORE_TOKENS.Logger) private _logger: Logger
   ) {
     super();
     this._logger.info('SwarmDatabaseManager initialized with DI');
@@ -2306,7 +2306,7 @@ export class SwarmDatabaseManager extends EventEmitter {
     this._logger.info('✅ Sample patterns created successfully');
   }
 
-  // 🔄 CROSS-SWARM KNOWLEDGE TRANSFER IMPLEMENTATION
+  // 🔄 CROSS-SWARM KNOWLEDGE TRANSFER MPLEMENTATION
 
   /**
    * Transfer knowledge patterns between swarms with intelligent adaptation
@@ -2632,6 +2632,6 @@ export class SwarmDatabaseManager extends EventEmitter {
   }
 
   // ============================================
-  // TIER 3: NEURAL MODEL PERSISTENCE & DEEP LEARNING INTEGRATION
+  // TIER 3: NEURAL MODEL PERSISTENCE & DEEP LEARNING NTEGRATION
   // ============================================
 }

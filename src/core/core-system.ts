@@ -271,7 +271,7 @@ export interface SystemConfig {
  * @property {string} version - Current system version identifier
  * @property {object} components - Status of all core system components
  * @property {number} uptime - System uptime in milliseconds
- * @property {string} lastUpdate - ISO timestamp of last status update
+ * @property {string} lastUpdate - SO timestamp of last status update
  *
  * @example
  * ```typescript

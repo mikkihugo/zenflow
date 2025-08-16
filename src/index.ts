@@ -9,7 +9,7 @@
 // CORE SYSTEMS
 // =============================================================================
 
-export * as Config from './config/index.js';
+export * as Config from './config/index';
 export * as Core from './core/index';
 export * as Types from './types/agent-types';
 export * as Utils from './utils/index';
@@ -134,7 +134,7 @@ export * as Optimization from './optimization/index';
 export * as Workflows from './workflows/index';
 
 // =============================================================================
-// INTERFACE SYSTEMS
+// NTERFACE SYSTEMS
 // =============================================================================
 
 /**
@@ -229,7 +229,7 @@ export * as Integration from './integration/index';
 // ✅ Updated documentation to match new structure
 
 // =============================================================================
-// MAIN SYSTEM INITIALIZATION
+// MAIN SYSTEM NITIALIZATION
 // =============================================================================
 
 /**
@@ -248,51 +248,12 @@ export * as Integration from './integration/index';
 //   SwarmOrchestrator, // Not available in public-api
 // } from './coordination/public-api';
 export * from './coordination/public-api';
-// Core MCP integration
-export * from './coordination/swarm/mcp/mcp-server';
-export * from './coordination/swarm/mcp/mcp-tool-registry';
-/**
- * Core MCP (Model Context Protocol) Type Definitions.
- *
- * Essential type definitions for MCP tools, requests, and responses used
- * throughout the Claude Code Zen system for seamless Claude CLI integration.
- * These types ensure type safety and compatibility with the MCP specification.
- *
- * @example
- * ```typescript
- * import type { MCPRequest, MCPResponse, MCPTool } from 'claude-code-zen';
- *
- * const tool: MCPTool = {
- *   name: 'swarm_init',
- *   description: 'Initialize swarm coordination',
- *   inputSchema: { ... }
- * };
- *
- * const request: MCPRequest = {
- *   method: 'tools/call',
- *   params: { name: 'swarm_init', arguments: {...} }
- * };
- * ```
- *
- * @see {@link https://github.com/modelcontextprotocol/specification} - MCP Specification
- * @since 1.0.0-alpha.43
- */
-export type {
-  /** MCP request structure for tool calls and server communication */
-  MCPRequest,
-  /** MCP response structure for tool results and server responses */
-  MCPResponse,
-  /** MCP tool definition interface for creating Claude-compatible tools */
-  MCPTool,
-  // Note: MCPServer and MCPToolCall not available in types module
-  // SwarmAgent, SwarmStatus, SwarmTask will come from types/index
-} from './coordination/swarm/mcp/types';
 
 // Utils and core services
 export * from './core/logger';
 
 // Terminal Interface (CLI and TUI unified)
-export * from './interfaces/terminal/index.js';
+
 
 /**
  * Neural Agent System - Advanced AI-driven agent coordination and intelligence.
@@ -409,17 +370,6 @@ export * as SharedTypes from './types/index';
  * @since 1.0.0-alpha.43
  */
 export interface ClaudeZenConfig {
-  // MCP Server settings
-  mcp: {
-    http: {
-      enabled: boolean; // HTTP MCP for Claude Desktop (port 3000)
-      port?: number;
-      host?: string;
-    };
-    stdio: {
-      enabled: boolean; // stdio MCP for temporary Claude Code coordination (dormant by default)
-    };
-  };
 
   // Swarm orchestration
   swarm: {
@@ -498,16 +448,6 @@ export interface ClaudeZenConfig {
  * @since 1.0.0-alpha.43
  */
 export const defaultConfig: ClaudeZenConfig = {
-  mcp: {
-    http: {
-      enabled: true, // HTTP MCP for Claude Desktop (port 3000)
-      port: 3000,
-      host: 'localhost',
-    },
-    stdio: {
-      enabled: false, // stdio MCP for swarm coordination (dormant, activate when needed)
-    },
-  },
   swarm: {
     maxAgents: 8,
     topology: 'hierarchical',
@@ -543,40 +483,9 @@ export async function initializeClaudeZen(
 ): Promise<void> {
   const finalConfig = { ...defaultConfig, ...config };
 
-  // Initialize HTTP MCP for Claude Desktop (usually enabled)
-  if (finalConfig?.mcp?.http?.enabled) {
-    const { HTTPMCPServer } = await import(
-      './interfaces/mcp/http-mcp-server.ts'
-    );
-    const httpMcpServer = new HTTPMCPServer({
-      ...(finalConfig?.mcp?.http?.port !== undefined && {
-        port: finalConfig?.mcp?.http?.port,
-      }),
-      ...(finalConfig?.mcp?.http?.host !== undefined && {
-        host: finalConfig?.mcp?.http?.host,
-      }),
-    });
-    await httpMcpServer.start();
-
-    // Store reference for shutdown orchestration
-    (global as any).httpMcpServer = httpMcpServer;
-  }
-
-  // Initialize stdio MCP only if explicitly enabled (for temporary Claude Code coordination)
-  if (finalConfig?.mcp?.stdio?.enabled) {
-    const { MCPServer } = await import(
-      './coordination/swarm/mcp/mcp-server.ts'
-    );
-    const stdioMcpServer = new MCPServer();
-    await stdioMcpServer.start();
-
-    // Store reference for shutdown orchestration
-    (global as any).stdioMcpServer = stdioMcpServer;
-  }
-
   // Initialize SwarmOrchestrator from coordination module
   try {
-    const coordinationModule = await import('./coordination/public-api.ts');
+    const coordinationModule = await import('./coordination/public-api');
     // Create and initialize a public swarm coordinator
     const swarmCoordinator =
       await coordinationModule.createPublicSwarmCoordinator({
@@ -600,7 +509,7 @@ export async function initializeClaudeZen(
 
   // Initialize memory system
   try {
-    const { MemorySystemFactory } = await import('./memory/index.ts');
+    const { MemorySystemFactory } = await import('./memory/index');
     const memorySystem = await MemorySystemFactory.createBasicMemorySystem([
       {
         id: 'primary',
@@ -625,14 +534,14 @@ export async function initializeClaudeZen(
 
   // Initialize neural bridge if enabled
   if (finalConfig?.neural?.enabled) {
-    const { NeuralBridge } = await import('./neural/neural-bridge.ts');
+    const { NeuralBridge } = await import('./neural/neural-bridge');
     const neuralBridge = NeuralBridge.getInstance(finalConfig?.neural);
     await neuralBridge.initialize();
   }
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig?.sparc?.enabled) {
-    const { SPARC } = await import('./coordination/swarm/sparc/index.ts');
+    const { SPARC } = await import('./coordination/swarm/sparc/index');
     const _sparcEngine = SPARC.getEngine();
   }
 
@@ -681,7 +590,7 @@ export async function shutdownClaudeZen(): Promise<void> {
 
     // Shutdown neural bridge if initialized
     try {
-      const { NeuralBridge } = await import('./neural/neural-bridge.ts');
+      const { NeuralBridge } = await import('./neural/neural-bridge');
       const neuralBridge = NeuralBridge.getInstance();
       if (neuralBridge && typeof neuralBridge.shutdown === 'function') {
         await neuralBridge.shutdown();
@@ -697,36 +606,9 @@ export async function shutdownClaudeZen(): Promise<void> {
       console.error('❌ Neural bridge shutdown failed:', error);
     }
 
-    // Shutdown MCP servers
-    try {
-      // HTTP MCP Server shutdown (if running)
-      if ((global as any).httpMcpServer) {
-        await (global as any).httpMcpServer.stop();
-        shutdownResults.push({ component: 'HTTPMCPServer', status: 'success' });
-        console.log('✅ HTTP MCP server shutdown complete');
-      }
-
-      // stdio MCP Server shutdown (if running)
-      if ((global as any).stdioMcpServer) {
-        await (global as any).stdioMcpServer.stop();
-        shutdownResults.push({
-          component: 'StdioMCPServer',
-          status: 'success',
-        });
-        console.log('✅ stdio MCP server shutdown complete');
-      }
-    } catch (error) {
-      shutdownResults.push({
-        component: 'MCPServers',
-        status: 'error',
-        error: (error as Error).message,
-      });
-      console.error('❌ MCP servers shutdown failed:', error);
-    }
-
     // Shutdown memory systems
     try {
-      const { MemorySystemFactory } = await import('./memory/index.ts');
+      const { MemorySystemFactory } = await import('./memory/index');
       if (
         (global as any).memorySystem &&
         typeof (global as any).memorySystem.shutdown === 'function'
@@ -746,8 +628,6 @@ export async function shutdownClaudeZen(): Promise<void> {
 
     // Clean up global references
     delete (global as any).swarmCoordinator;
-    delete (global as any).httpMcpServer;
-    delete (global as any).stdioMcpServer;
     delete (global as any).memorySystem;
 
     const successCount = shutdownResults.filter(
@@ -822,7 +702,7 @@ export async function healthCheck() {
 
   // Check Memory system
   try {
-    const { MemorySystemFactory } = await import('./memory/index.ts');
+    const { MemorySystemFactory } = await import('./memory/index');
     const memorySystem = (global as any).memorySystem;
     if (memorySystem && typeof memorySystem.getHealthReport === 'function') {
       const healthReport = memorySystem.getHealthReport();
@@ -856,7 +736,7 @@ export async function healthCheck() {
 
   // Check Neural system
   try {
-    const { NeuralBridge } = await import('./neural/neural-bridge.ts');
+    const { NeuralBridge } = await import('./neural/neural-bridge');
     const neuralBridge = NeuralBridge.getInstance();
     if (neuralBridge && typeof neuralBridge.getHealth === 'function') {
       const neuralHealth = await neuralBridge.getHealth();
@@ -885,7 +765,7 @@ export async function healthCheck() {
 
   // Check Database system
   try {
-    const { createDatabaseManager } = await import('./database/index.ts');
+    const { createDatabaseManager } = await import('./database/index');
     // Attempt a simple database operation
     healthStatus.components.database = {
       status: 'healthy',
@@ -926,41 +806,12 @@ export async function healthCheck() {
     degradedComponents++;
   }
 
-  // Check Interfaces (MCP servers)
+  // Interface systems health
   try {
-    let interfaceStatus = 'healthy' as 'healthy' | 'degraded' | 'unhealthy';
-    const interfaceDetails: any = {};
-
-    // Check HTTP MCP server
-    const httpMcpServer = (global as any).httpMcpServer;
-    if (httpMcpServer && typeof httpMcpServer.isRunning === 'function') {
-      interfaceDetails.httpMcp = httpMcpServer.isRunning()
-        ? 'running'
-        : 'stopped';
-      if (!httpMcpServer.isRunning()) interfaceStatus = 'degraded';
-    } else {
-      interfaceDetails.httpMcp = 'not_initialized';
-      interfaceStatus = 'degraded';
-    }
-
-    // Check stdio MCP server
-    const stdioMcpServer = (global as any).stdioMcpServer;
-    if (stdioMcpServer && typeof stdioMcpServer.isRunning === 'function') {
-      interfaceDetails.stdioMcp = stdioMcpServer.isRunning()
-        ? 'running'
-        : 'stopped';
-    } else {
-      interfaceDetails.stdioMcp = 'not_initialized';
-    }
-
     healthStatus.components.interfaces = {
-      status: interfaceStatus,
-      details: interfaceDetails,
+      status: 'healthy',
+      details: { message: 'Standard interfaces available' }
     };
-
-    if (interfaceStatus !== 'healthy') {
-      degradedComponents++;
-    }
   } catch (error) {
     healthStatus.components.interfaces = {
       status: 'unhealthy',

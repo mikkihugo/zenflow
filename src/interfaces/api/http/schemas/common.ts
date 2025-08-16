@@ -39,7 +39,7 @@ export interface PaginationResponse {
  */
 export interface ListResponse<T> extends PaginationResponse {
   readonly items: readonly T[];
-  readonly timestamp: string; // ISO timestamp when list was generated
+  readonly timestamp: string; // SO timestamp when list was generated
 }
 
 /**
@@ -142,10 +142,10 @@ export interface SortParams {
  */
 export interface FilterParams {
   readonly search?: string; // Text search query
-  readonly createdAfter?: string; // ISO date filter
-  readonly createdBefore?: string; // ISO date filter
-  readonly updatedAfter?: string; // ISO date filter
-  readonly updatedBefore?: string; // ISO date filter
+  readonly createdAfter?: string; // SO date filter
+  readonly createdBefore?: string; // SO date filter
+  readonly updatedAfter?: string; // SO date filter
+  readonly updatedBefore?: string; // SO date filter
 }
 
 /**
@@ -271,7 +271,7 @@ export interface AsyncOperationResponse {
   readonly status: 'pending' | 'running' | 'completed' | 'failed';
   readonly progress?: number; // 0-100
   readonly message?: string;
-  readonly estimatedCompletion?: string; // ISO timestamp
+  readonly estimatedCompletion?: string; // SO timestamp
   readonly result?: unknown;
   readonly error?: APIError['error'];
   readonly created: string;

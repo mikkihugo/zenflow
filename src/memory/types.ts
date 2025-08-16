@@ -7,7 +7,7 @@
 
 // Re-export core memory interfaces
 export type {
-  IMemoryStore,
+  MemoryStore,
   MemoryStats,
   StoreOptions,
 } from '../core/interfaces/base-interfaces';
@@ -166,7 +166,7 @@ export interface BatchOperationResult {
 export interface MemoryProviderConfig {
   readonly type: MemoryConfig['type'];
   readonly config: MemoryConfig;
-  readonly logger?: unknown; // ILogger interface
+  readonly logger?: unknown; // Logger interface
 }
 
 // API request/response types for REST endpoints
@@ -348,7 +348,7 @@ export interface MemoryBackendFactory {
 
 // Memory system factory type (for DI)
 export interface MemorySystemFactory {
-  createMemoryStore(config: MemoryConfig): Promise<IMemoryStore>;
+  createMemoryStore(config: MemoryConfig): Promise<MemoryStore>;
   createSessionStore(
     options: SessionMemoryStoreOptions
   ): Promise<SessionMemoryStore>;
@@ -358,7 +358,7 @@ export interface MemorySystemFactory {
 }
 
 // Additional specialized store interfaces
-export interface SessionMemoryStore extends IMemoryStore {
+export interface SessionMemoryStore extends MemoryStore {
   getSession(sessionId: string): Promise<SessionState | null>;
   updateSession(
     sessionId: string,

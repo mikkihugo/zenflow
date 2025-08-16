@@ -270,7 +270,7 @@ export class TemplateEngine {
     // Apply template using the template's own applyTo method
     const applied = await template.applyTo(projectSpec);
 
-    // Generate unique IDs and update metadata
+    // Generate unique Ds and update metadata
     const customizedSpec = {
       ...applied.specification,
       id: nanoid(),

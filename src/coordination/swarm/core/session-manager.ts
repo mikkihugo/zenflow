@@ -23,15 +23,15 @@ const logger = getLogger('coordination-swarm-core-session-manager');
 import crypto from 'node:crypto';
 import { EventEmitter } from 'node:events';
 import type {
-  IDao,
+  Dao,
   SessionCoordinationDao,
   SessionEntity,
-} from '../../../database/index.js';
+} from '../database/dao';
 import {
   createDao,
   DatabaseTypes,
   EntityTypes,
-} from '../../../database/index.js';
+} from '../database/factory';
 import type { SwarmOptions, SwarmState } from './types';
 import { generateId } from './utils';
 
@@ -277,7 +277,7 @@ export class SessionManager extends EventEmitter {
     const dao = await this.getDao();
     await dao.execute(
       `
-      INSERT INTO sessions (id, name, status, swarm_options, swarm_state, metadata, created_at, last_accessed_at, version)
+      INSERT NTO sessions (id, name, status, swarm_options, swarm_state, metadata, created_at, last_accessed_at, version)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `,
       [
@@ -442,7 +442,7 @@ export class SessionManager extends EventEmitter {
     const dao = await this.getDao();
     await dao.execute(
       `
-      INSERT INTO session_checkpoints (id, session_id, timestamp, checksum, state_data, description, metadata)
+      INSERT NTO session_checkpoints (id, session_id, timestamp, checksum, state_data, description, metadata)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `,
       [
@@ -808,7 +808,7 @@ export class SessionManager extends EventEmitter {
     const dao = await this.getDao();
     // Create sessions table
     await dao.execute(`
-      CREATE TABLE IF NOT EXISTS sessions (
+      CREATE TABLE F NOT EXISTS sessions (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'active',
@@ -824,7 +824,7 @@ export class SessionManager extends EventEmitter {
 
     // Create checkpoints table
     await dao.execute(`
-      CREATE TABLE IF NOT EXISTS session_checkpoints (
+      CREATE TABLE F NOT EXISTS session_checkpoints (
         id TEXT PRIMARY KEY,
         session_id TEXT NOT NULL,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -838,23 +838,23 @@ export class SessionManager extends EventEmitter {
 
     // Create indexes
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_sessions_status ON sessions(status)'
+      'CREATE NDEX F NOT EXISTS idx_sessions_status ON sessions(status)'
     );
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)'
+      'CREATE NDEX F NOT EXISTS idx_sessions_last_accessed ON sessions(last_accessed_at)'
     );
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)'
+      'CREATE NDEX F NOT EXISTS idx_checkpoints_session ON session_checkpoints(session_id)'
     );
     await dao.execute(
-      'CREATE INDEX IF NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)'
+      'CREATE NDEX F NOT EXISTS idx_checkpoints_timestamp ON session_checkpoints(timestamp)'
     );
   }
 
   private async restoreActiveSessions(): Promise<void> {
     const dao = await this.getDao();
     const activeSessions = await dao.query(
-      "SELECT * FROM sessions WHERE status IN ('active', 'paused')"
+      "SELECT * FROM sessions WHERE status N ('active', 'paused')"
     );
 
     for (const sessionData of activeSessions) {

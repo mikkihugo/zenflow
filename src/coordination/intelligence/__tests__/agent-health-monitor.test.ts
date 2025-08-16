@@ -41,7 +41,7 @@ import {
 } from '../agent-learning-system';
 
 // Mock the logging system
-vi.mock('../../../config/logging-config.ts', () => ({
+vi.mock('../../../config/logging-config', () => ({
   getLogger: () => ({
     info: vi.fn(),
     debug: vi.fn(),
