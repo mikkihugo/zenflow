@@ -1,0 +1,27 @@
+[build]
+target = "wasm32-unknown-unknown"
+
+[target.wasm32-unknown-unknown]
+rustflags = [
+  "-C", "opt-level=s",          # Optimize for size
+  "-C", "lto=fat",              # Link-time optimization
+  "-C", "codegen-units=1",      # Better optimization
+  "-C", "panic=abort",          # Smaller wasm files
+]
+
+# For better debugging during development
+[profile.dev]
+debug = 2
+opt-level = 0
+
+[profile.release]
+debug = false
+opt-level = "s"  # Optimize for size
+lto = true
+panic = "abort"
+codegen-units = 1
+
+# wasm-pack specific optimizations
+[profile.release.package."*"]
+opt-level = "s"
+overflow-checks = false

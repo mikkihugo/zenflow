@@ -1,0 +1,79 @@
+{
+  "name": "@claude-zen/brain",
+  "version": "1.0.0-alpha.1", 
+  "description": "Focused neural brain coordination system for claude-code-zen: core neural networks, cognitive patterns, and brain-specific coordination",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "rust/core/",
+    "rust/wasm-api/"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "build:watch": "tsc --project tsconfig.json --watch", 
+    "build:wasm": "cd rust/wasm-api && ./build.sh",
+    "build:rust": "cd rust/core && cargo build --release",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:integration": "npx tsx test-wasm-integration.ts",
+    "test:rust": "cd rust/core && cargo test",
+    "clean": "rm -rf dist/ && cd rust/core && cargo clean",
+    "dev": "concurrently \"npm run build:watch\" \"npm run test:watch\"",
+    "lint": "eslint . --ext .ts --fix"
+  },
+  "dependencies": {
+    "@zen-ai/shared": "workspace:*",
+    "@zen-ai/dspy-engine": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^2.1.5",
+    "tsx": "^4.19.2",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.16.0"
+  },
+  "keywords": [
+    "brain",
+    "neural-coordination", 
+    "cognitive-patterns",
+    "neural-networks",
+    "fann",
+    "wasm",
+    "rust",
+    "claude-zen",
+    "coordination"
+  ],
+  "author": "claude-code-zen Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/brain"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./neural-bridge": {
+      "types": "./dist/neural-bridge.d.ts", 
+      "import": "./dist/neural-bridge.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
+    },
+    "./wasm": {
+      "types": "./wasm/claude_zen_neural.d.ts",
+      "import": "./wasm/claude_zen_neural.js"
+    }
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}
