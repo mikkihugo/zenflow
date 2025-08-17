@@ -39,7 +39,9 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.3.0"
+    "@claude-zen/foundation": "workspace:*",
+    "chalk": "^5.3.0",
+    "nanoid": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

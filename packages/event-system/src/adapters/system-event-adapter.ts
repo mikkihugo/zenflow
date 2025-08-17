@@ -12,7 +12,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../config/logging-config';
+import type { Logger } from '@claude-zen/foundation';
 // Import logger (using relative path)
 import { getLogger } from '@claude-zen/foundation';
 // Import types (will be set as any for now to fix type resolution issues)
@@ -1415,13 +1415,14 @@ export class SystemEventAdapter implements EventManager {
               type: 'system:health',
               operation: 'status',
               status: health.status === 'unhealthy' ? 'error' : 'warning',
+              payload: {},
               details: {
                 component,
                 healthScore: (health.metadata as any)?.['healthScore'] as
                   | number
                   | undefined,
-                errorRate: health.errorRate,
-                consecutiveFailures: health.consecutiveFailures,
+                // errorRate: health.errorRate, // Not part of SystemLifecycleEvent details interface
+                // consecutiveFailures: health.consecutiveFailures, // Not part of SystemLifecycleEvent details interface
               },
             });
           }
@@ -1926,7 +1927,14 @@ export const SystemEventHelpers = {
    */
   createStartupEvent(
     component: string,
-    details?: unknown
+    details?: {
+      component?: string;
+      version?: string;
+      duration?: number;
+      errorCode?: string;
+      errorMessage?: string;
+      healthScore?: number;
+    }
   ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
@@ -1934,6 +1942,7 @@ export const SystemEventHelpers = {
       operation: 'start',
       status: 'success',
       priority: 'high',
+      payload: {},
       details,
     };
   },
@@ -1946,7 +1955,14 @@ export const SystemEventHelpers = {
    */
   createShutdownEvent(
     component: string,
-    details?: unknown
+    details?: {
+      component?: string;
+      version?: string;
+      duration?: number;
+      errorCode?: string;
+      errorMessage?: string;
+      healthScore?: number;
+    }
   ): Omit<SystemLifecycleEvent, 'id' | 'timestamp'> {
     return {
       source: component,
@@ -1954,6 +1970,7 @@ export const SystemEventHelpers = {
       operation: 'stop',
       status: 'success',
       priority: 'critical',
+      payload: {},
       details,
     };
   },
@@ -1991,7 +2008,7 @@ export const SystemEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details && typeof details === 'object' ? details as Record<string, unknown> : {}),
         healthScore,
       },
     };
@@ -2028,7 +2045,7 @@ export const SystemEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details && typeof details === 'object' ? details as Record<string, unknown> : {}),
         errorCode: error.name,
         errorMessage: error.message,
       },

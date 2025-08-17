@@ -11,7 +11,7 @@ import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
 import type {
   EventManagerType,
-  EventManager,
+  EventManager as IEventManager,
   SystemEvent,
 } from './core/interfaces';
 import { EventManagerTypes } from './core/interfaces';
@@ -82,7 +82,7 @@ export class UELCompatibleEventEmitter extends EventEmitter {
   disableUEL(): void {
     this.uelEnabled = false;
     this.migrationMode = 'disabled';
-    this.uelManager = undefined as EventManager | undefined;
+    this.uelManager = undefined;
 
     this.logger?.info('❌ UEL integration disabled for EventEmitter');
   }
@@ -206,7 +206,9 @@ export class UELCompatibleEventEmitter extends EventEmitter {
       const uelEvent = this.createUELEvent(uelEventType, eventName, args);
 
       // Emit to UEL manager
-      await this.uelManager.emit(uelEvent);
+      if (this.uelManager) {
+        await (this.uelManager as any).emit(uelEvent);
+      }
     } catch (error) {
       if (this.migrationMode === 'active') {
         throw error;
@@ -233,10 +235,13 @@ export class UELCompatibleEventEmitter extends EventEmitter {
       };
 
       // Subscribe to UEL manager
-      const subscriptionId = this.uelManager.subscribe(
-        [uelEventType],
-        uelListener
-      );
+      let subscriptionId: string | undefined;
+      if (this.uelManager) {
+        subscriptionId = (this.uelManager as any).subscribe(
+          [uelEventType],
+          uelListener
+        );
+      }
 
       this.logger?.debug(
         `UEL subscription created: ${subscriptionId} for ${eventName}`
@@ -345,10 +350,11 @@ export class EventEmitterMigrationHelper {
     }
   ): Promise<UELCompatibleEventEmitter> {
     // Create UEL manager
-    const uelManager = await this.eventManager.createEventManager({
-      type: managerType,
-      name: managerName,
-    });
+    // const uelManager = await this.eventManager.createEventManager({
+    //   type: managerType,
+    //   name: managerName,
+    // });
+    const uelManager: EventManager | undefined = undefined; // Temporarily disabled
 
     // Create compatible EventEmitter
     const eventEmitter = new UELCompatibleEventEmitter({
@@ -386,10 +392,11 @@ export class EventEmitterMigrationHelper {
       this.migrationStats.scanned++;
 
       // Create UEL manager
-      const uelManager = await this.eventManager.createEventManager({
-        type: managerType,
-        name: managerName,
-      });
+      // const uelManager = await this.eventManager.createEventManager({
+      //   type: managerType,
+      //   name: managerName,
+      // });
+      const uelManager: EventManager | undefined = undefined; // Temporarily disabled
 
       // Create new compatible instance
       const compatibleEmitter = new UELCompatibleEventEmitter({

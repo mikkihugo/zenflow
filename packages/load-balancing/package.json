@@ -1,0 +1,62 @@
+{
+  "name": "@claude-zen/load-balancing",
+  "version": "1.0.0",
+  "description": "Intelligent load balancing with ML algorithms, health monitoring, and adaptive resource management",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "load-balancing",
+    "machine-learning",
+    "resource-management",
+    "adaptive-algorithms",
+    "health-monitoring",
+    "auto-scaling",
+    "task-routing",
+    "agent-coordination",
+    "intelligent-routing",
+    "capacity-management",
+    "ai"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "nanoid": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/adaptive-learning": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "@types/node": "^20.10.6"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/load-balancing"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

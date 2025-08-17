@@ -84,8 +84,8 @@ export const SWARM_AGENT_ROLES: Record<string, SwarmAgentRole> = {
   }
 };
 
-// Enhanced ClaudeCodeLLM with role-based functionality
-export class ClaudeCodeLLM {
+// Generic LLM Provider with role-based functionality and multiple provider support
+export class LLMProvider {
   private requestCount = 0;
   private lastRequestTime = 0;
   private currentRole: SwarmAgentRole | undefined;
@@ -330,16 +330,16 @@ export class ClaudeCodeLLM {
 }
 
 // Singleton instance for shared usage
-let globalLLM: ClaudeCodeLLM | null = null;
+let globalLLM: LLMProvider | null = null;
 
-export function getGlobalLLM(): ClaudeCodeLLM {
+export function getGlobalLLM(): LLMProvider {
   if (!globalLLM) {
-    globalLLM = new ClaudeCodeLLM(); // Defaults to 'coder' role with dangerous permissions
+    globalLLM = new LLMProvider(); // Defaults to 'coder' role with dangerous permissions
   }
   return globalLLM;
 }
 
-export function setGlobalLLM(llm: ClaudeCodeLLM): void {
+export function setGlobalLLM(llm: LLMProvider): void {
   globalLLM = llm;
 }
 
@@ -377,7 +377,7 @@ export async function executeSwarmTask(task: SwarmTask): Promise<SwarmTaskResult
   } else {
     // Parallel execution - create separate LLM instances
     const promises = task.agents.map(async (agent) => {
-      const agentLLM = new ClaudeCodeLLM();
+      const agentLLM = new LLMProvider();
       agentLLM.setRole(agent.role);
       const result = await agentLLM.complete(task.description, {
         model: agent.model || 'sonnet'

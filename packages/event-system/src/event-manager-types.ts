@@ -17,11 +17,12 @@ import type {
   SystemEvent,
   WorkflowEvent,
 } from './core/interfaces';
+import type { MonitoringEvent } from './types';
 
 /**
  * Workflow Event Manager Interface.
  */
-export interface WorkflowEventManager extends EventManager<WorkflowEvent> {
+export interface WorkflowEventManager extends EventManager {
   processWorkflowStep(stepId: string, data: unknown): Promise<void>;
   getWorkflowStatus(workflowId: string): Promise<string>;
   cancelWorkflow(workflowId: string): Promise<void>;
@@ -30,7 +31,7 @@ export interface WorkflowEventManager extends EventManager<WorkflowEvent> {
 /**
  * Neural Event Manager Interface.
  */
-export interface NeuralEventManager extends EventManager<NeuralEvent> {
+export interface NeuralEventManager extends EventManager {
   processNeuralSignal(signal: unknown): Promise<void>;
   trainModel(modelId: string, data: unknown): Promise<void>;
   getModelStatus(modelId: string): Promise<string>;
@@ -39,7 +40,7 @@ export interface NeuralEventManager extends EventManager<NeuralEvent> {
 /**
  * Memory Event Manager Interface.
  */
-export interface MemoryEventManager extends EventManager<MemoryEvent> {
+export interface MemoryEventManager extends EventManager {
   storeMemoryEvent(key: string, data: unknown): Promise<void>;
   retrieveMemoryEvent(key: string): Promise<unknown>;
   clearMemoryCache(): Promise<void>;
@@ -48,7 +49,7 @@ export interface MemoryEventManager extends EventManager<MemoryEvent> {
 /**
  * Interface Event Manager Interface.
  */
-export interface InterfaceEventManager extends EventManager<InterfaceEvent> {
+export interface InterfaceEventManager extends EventManager {
   handleUIInteraction(element: string, action: string): Promise<void>;
   updateInterface(componentId: string, state: unknown): Promise<void>;
   refreshComponent(componentId: string): Promise<void>;
@@ -57,7 +58,7 @@ export interface InterfaceEventManager extends EventManager<InterfaceEvent> {
 /**
  * Database Event Manager Interface.
  */
-export interface DatabaseEventManager extends EventManager<DatabaseEvent> {
+export interface DatabaseEventManager extends EventManager {
   processTransaction(transactionId: string): Promise<void>;
   handleSchemaChange(changeId: string): Promise<void>;
   optimizeQuery(queryId: string): Promise<void>;
@@ -66,7 +67,7 @@ export interface DatabaseEventManager extends EventManager<DatabaseEvent> {
 /**
  * System Event Manager Interface.
  */
-export interface SystemEventManager extends EventManager<SystemEvent> {
+export interface SystemEventManager extends EventManager {
   handleSystemAlert(alertId: string): Promise<void>;
   processHealthCheck(): Promise<boolean>;
   restartService(serviceId: string): Promise<void>;
@@ -76,7 +77,7 @@ export interface SystemEventManager extends EventManager<SystemEvent> {
  * Communication Event Manager Interface.
  */
 export interface CommunicationEventManager
-  extends EventManager<CommunicationEvent> {
+  extends EventManager {
   sendMessage(channel: string, message: unknown): Promise<void>;
   receiveMessage(channel: string): Promise<unknown>;
   closeChannel(channel: string): Promise<void>;
@@ -86,8 +87,17 @@ export interface CommunicationEventManager
  * Coordination Event Manager Interface.
  */
 export interface CoordinationEventManager
-  extends EventManager<CoordinationEvent> {
+  extends EventManager {
   coordinateTask(taskId: string): Promise<void>;
   assignAgent(agentId: string, task: string): Promise<void>;
   getCoordinationStatus(): Promise<unknown>;
+}
+
+/**
+ * Monitoring Event Manager Interface.
+ */
+export interface MonitoringEventManager extends EventManager {
+  processMetricEvent(metricId: string, data: unknown): Promise<void>;
+  handleHealthCheck(): Promise<boolean>;
+  generateReport(type: string): Promise<unknown>;
 }

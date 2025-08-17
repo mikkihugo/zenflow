@@ -30,6 +30,7 @@ import type {
   TaskCompletionPattern,
   TaskResult,
   TrendAnalysis,
+  PreventionStrategy,
 } from './types';
 
 // Import schemas for type validation
@@ -37,6 +38,8 @@ import {
   SuccessDataSchema,
   ResourceUsageStatsSchema,
   TaskCompletionStatsSchema,
+  ExecutionDataSchema,
+  ExecutionTraceSchema,
   type SuccessData,
   type ResourceUsageStats,
   type TaskCompletionStats,
@@ -109,6 +112,7 @@ export interface FailurePattern {
   preconditions: unknown[];
   impacts: string[];
   recoveryTime: number;
+  prevention: PreventionStrategy[];
 }
 
 export class PatternRecognitionEngine
@@ -146,7 +150,7 @@ export class PatternRecognitionEngine
     data: ExecutionData[]
   ): Promise<PatternAnalysis> {
     // Convert ExecutionData to ExecutionTrace format for compatibility
-    const traces = data.map(this.convertToTrace.bind(this));
+    const traces: ExecutionTrace[] = data.map(this.convertToTrace.bind(this));
 
     // Update internal traces
     this.traces.push(...traces);
@@ -1249,8 +1253,8 @@ export class PatternRecognitionEngine
       },
     };
     
-    // Validate with Zod schema
-    return ExecutionTraceSchema.parse(trace);
+    // Validate with Zod schema and return validated result
+    return ExecutionTraceSchema.parse(trace) as ExecutionTrace;
   }
 
   private maintainSlidingWindow(): void {

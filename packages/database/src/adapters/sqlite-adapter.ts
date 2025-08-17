@@ -8,8 +8,8 @@ import 'reflect-metadata';
 import Database from 'better-sqlite3';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { getLogger } from '../logger.js';
-import { injectable } from '@claude-zen/foundation/di';
+import { getLogger } from '@claude-zen/foundation';
+import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('sqlite-adapter');
 
@@ -25,7 +25,6 @@ export interface SQLiteConfig {
 
 import type { DatabaseAdapter } from '../interfaces.js';
 
-@injectable()
 export class SQLiteAdapter implements DatabaseAdapter {
   private db: Database.Database | null = null;
   private config: SQLiteConfig;

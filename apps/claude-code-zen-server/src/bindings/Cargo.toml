@@ -1,0 +1,72 @@
+[package]
+name = "zen-neural-bindings"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.88"
+description = "Native NAPI bindings for zen-neural-stack with zen-swarm coordination"
+authors = ["Claude Code Zen Team"]
+
+[lib]
+name = "zen_neural_bindings"
+crate-type = ["cdylib"]
+
+[dependencies]
+# Core NAPI bindings (essential)
+napi = { version = "2.16", features = ["async"] }
+napi-derive = "2.16"
+
+# Async runtime (actually used extensively)
+tokio = { version = "1.0", features = ["rt", "rt-multi-thread", "sync", "time"] }
+
+# Essential serialization (heavily used)
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Time handling (used for timestamps throughout)
+chrono = { version = "0.4", features = ["serde"] }
+
+# Logging (used extensively with tracing::info!, etc.)
+tracing = "0.1"
+
+# A2A protocol support (needs both client AND server features)
+a2a-rs = { version = "0.1", features = ["http-client", "http-server"] }
+
+# WebSocket coordination (used for swarm communication)
+tokio-tungstenite = { version = "0.20", features = ["native-tls"] }
+futures-util = "0.3"
+
+# Task ID generation (used for UUID generation)
+uuid = { version = "1.0", features = ["v4"] }
+
+# Optional quantum computing
+reqwest = { version = "0.11", features = ["json"], optional = true }
+toml = { version = "0.8", optional = true }
+
+# zen-neural-stack components (available in ../../zen-neural-stack/)
+zen-neural = { path = "../../zen-neural-stack/zen-neural", optional = true }
+zen-orchestrator = { path = "../../zen-neural-stack/zen-orchestrator", optional = true }
+zen-forecasting = { path = "../../zen-neural-stack/zen-forecasting", optional = true }
+zen-compute = { path = "../../zen-neural-stack/zen-compute", optional = true }
+zen-swarm = { path = "../../zen-neural-stack/zen-swarm", optional = true }
+
+[build-dependencies]
+napi-build = "2.1"
+
+[features]
+# Core features - actually used in the code
+default = ["a2a-protocol"]
+
+# Core working features
+a2a-protocol = []                           # A2A agent communication (ACTUALLY USED)
+quantum = ["reqwest", "toml"]               # IBM Quantum integration (ACTUALLY USED)
+
+# zen-neural-stack integration (currently only config flags, not functional)
+zen-neural = ["dep:zen-neural"]             # Neural AI core (CONFIG ONLY)
+zen-orchestrator = ["dep:zen-orchestrator"] # Neural orchestration (CONFIG ONLY)
+zen-forecasting = ["dep:zen-forecasting"]   # Neural forecasting (CONFIG ONLY) 
+zen-compute = ["dep:zen-compute"]           # GPU/CUDA computing (CONFIG ONLY)
+zen-swarm = ["dep:zen-swarm"]               # Neural swarm coordination (CONFIG ONLY)
+
+# Feature bundles for future use
+neural-stack = ["zen-neural", "zen-orchestrator", "zen-forecasting", "zen-swarm"]
+zen-full = ["neural-stack", "zen-compute", "quantum"] # Everything enabled

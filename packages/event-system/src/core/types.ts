@@ -27,6 +27,7 @@ export interface Result<T, E = Error> {
   success: boolean;
   data?: T;
   error?: E;
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -129,6 +130,8 @@ export class ContractViolationError extends Error {
 export interface DomainBoundaryValidator {
   validate<T>(data: T, schema: TypeSchema): Result<T>;
   validateCrossDomain<T>(source: Domain, target: Domain, data: T): Result<T>;
+  trackCrossings(fromDomain: Domain, toDomain: Domain, operation: string): void;
+  validateInput<T>(data: T, schema: TypeSchema): Result<T>;
 }
 
 /**

@@ -946,4 +946,4 @@ UEL integrates seamlessly with all claude-zen systems:
 
 UEL provides a comprehensive, type-safe, and backward-compatible event management system for claude-zen. Its layered architecture, factory patterns, and migration utilities make it easy to adopt gradually while providing immediate benefits for event handling, monitoring, and system integration.
 
-For detailed usage examples and advanced patterns, see the `examples/` directory and refer to the inline documentation in each module.
+For detailed usage examples and advanced patterns, refer to the inline documentation and `@example` tags in each module.

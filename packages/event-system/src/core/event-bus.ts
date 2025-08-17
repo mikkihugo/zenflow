@@ -18,8 +18,8 @@ import type {
   EventPriority,
   EventProcessingStrategy,
   SystemEvent,
-} from '../interfaces/events/core/interfaces';
-import type { EventPriorityMap } from '../interfaces/events/types';
+} from './interfaces';
+import { EventPriorityMap } from '../types';
 
 // Define missing types locally
 export interface EventBusConfig {

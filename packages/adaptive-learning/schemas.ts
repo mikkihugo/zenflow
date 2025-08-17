@@ -252,6 +252,20 @@ export const SystemContextSchema = z.object({
   })),
 });
 
+/**
+ * Execution trace schema for pattern recognition
+ */
+export const ExecutionTraceSchema = z.object({
+  swarmId: BaseSchemas.Id,
+  agentId: BaseSchemas.Id,
+  action: BaseSchemas.NonEmptyString,
+  parameters: z.unknown(),
+  result: z.unknown(),
+  timestamp: BaseSchemas.Timestamp,
+  duration: BaseSchemas.PositiveNumber,
+  resourceUsage: ResourceUsageSchema,
+});
+
 // ============================================
 // Pattern Recognition Schemas
 // ============================================
@@ -936,6 +950,7 @@ export const AllSchemas = {
  * These replace the unknown types in the original types.ts
  */
 export type ExecutionData = z.infer<typeof ExecutionDataSchema>;
+export type ExecutionTrace = z.infer<typeof ExecutionTraceSchema>;
 export type Pattern = z.infer<typeof PatternSchema>;
 export type Agent = z.infer<typeof AgentSchema>;
 export type Task = z.infer<typeof TaskSchema>;
@@ -956,6 +971,7 @@ export type AntiPattern = z.infer<typeof AntiPatternSchema>;
 export type BehaviorOptimization = z.infer<typeof BehaviorOptimizationSchema>;
 export type AllocationStrategy = z.infer<typeof AllocationStrategySchema>;
 export type AllocationConstraint = z.infer<typeof AllocationConstraintSchema>;
+export type TaskAllocation = z.infer<typeof TaskAllocationSchema>;
 export type ResourceStrategy = z.infer<typeof ResourceStrategySchema>;
 export type LatencyOptimization = z.infer<typeof LatencyOptimizationSchema>;
 export type ImplementationPlan = z.infer<typeof ImplementationPlanSchema>;
@@ -1039,6 +1055,7 @@ export function safeValidateWithSchema<T>(schema: z.ZodSchema<T>, data: unknown)
  */
 export const SchemaRegistry = new Map<string, z.ZodSchema<any>>([
   ['ExecutionData', ExecutionDataSchema],
+  ['ExecutionTrace', ExecutionTraceSchema],
   ['Pattern', PatternSchema],
   ['Agent', AgentSchema],
   ['Task', TaskSchema],

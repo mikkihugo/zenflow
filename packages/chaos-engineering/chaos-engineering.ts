@@ -27,7 +27,7 @@ import {
   configHelpers,
   validateSharedConfig,
   watchSharedConfig
-} from '../shared/index';
+} from '@claude-zen/foundation';
 
 // Define custom error types for chaos engineering
 export class SystemError extends Error {

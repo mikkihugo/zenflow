@@ -24,14 +24,15 @@ export * from './core/type-safe-event-system';
 export * from './core/event-bus';
 
 // UEL (Unified Event Layer) exports - Main interface
-export * from './index';
+export * from './core/uel-singleton';
 
 // Core interfaces and types
 export * from './core/interfaces';
-export * from './types';
+// Note: Event types are re-exported from core/interfaces to avoid conflicts
 
 // Event adapters
 export * from './adapters/index';
+// Note: neural-event-factory temporarily excluded due to complex type conflicts
 
 // Event factories and registry
 export * from './factories/index';
@@ -51,9 +52,6 @@ export * from './system-integrations/index';
 
 // Observer system (legacy compatibility)
 export * from './observer-system';
-
-// UEL singleton and core
-export * from './core/uel-singleton';
 
 // Default export - UEL singleton for convenience
 export { uel as default } from './core/uel-singleton';

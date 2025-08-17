@@ -761,7 +761,8 @@ describe('SystemEventAdapter', () => {
 
     it('should create shutdown event with correct properties', () => {
       const event = SystemEventHelpers.createShutdownEvent('test-component', {
-        reason: 'maintenance',
+        component: 'test-component',
+        errorMessage: 'maintenance',
       });
 
       expect(event['source']).toBe('test-component');

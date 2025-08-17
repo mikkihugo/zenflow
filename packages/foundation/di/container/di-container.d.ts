@@ -5,11 +5,11 @@
  * Main dependency injection container implementation.
  * Provides type-safe service registration and resolution.
  */
-import type { DIContainerOptions, DIScope, DIToken, DIContainer as DIContainer, Provider } from '../types/di-types';
-export declare class DIContainer implements DIContainer {
+import type { DIContainerOptions, DIToken, DIContainer as DIContainerInterface, Provider } from '../types/di-types';
+import { DIScope } from './di-scope';
+export declare class DIContainer implements DIContainerInterface {
     private readonly providers;
     private readonly singletonInstances;
-    private readonly scopes;
     private readonly resolutionStack;
     private readonly options;
     constructor(options?: DIContainerOptions);

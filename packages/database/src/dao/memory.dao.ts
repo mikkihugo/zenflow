@@ -10,7 +10,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 import type {
   DatabaseAdapter,
   Logger,
@@ -40,7 +40,6 @@ interface CacheEntry<T> {
  * @template T The entity type this repository manages.
  * @example
  */
-@injectable()
 export class MemoryDao<T> extends BaseDao<T> implements MemoryRepository<T> {
   private memoryStore = new Map<string, CacheEntry<T>>();
   private keyStore = new Map<string, CacheEntry<any>>();

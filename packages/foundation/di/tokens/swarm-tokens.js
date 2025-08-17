@@ -14,4 +14,3 @@ export const SWARM_TOKENS = {
     LoadBalancer: createToken('LoadBalancer'),
     TopologyManager: createToken('TopologyManager'),
 };
-//# sourceMappingURL=swarm-tokens.js.map

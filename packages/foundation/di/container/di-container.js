@@ -1,13 +1,14 @@
 /**
  * @file Di-container implementation.
  */
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '../../logging';
 const logger = getLogger('di-container-di-container');
+import { DIScope } from './di-scope';
 import { CircularDependencyError, DIError, ServiceNotFoundError, } from '../types/di-types';
 export class DIContainer {
     providers = new Map();
     singletonInstances = new Map();
-    scopes = new WeakSet();
+    // private readonly scopes = new WeakSet<DIScope>(); // Disabled for minimal build
     resolutionStack = [];
     options;
     constructor(options = {}) {
@@ -56,12 +57,7 @@ export class DIContainer {
      * Create a new scope.
      */
     createScope() {
-        // Import DIScope dynamically to avoid circular dependency
-        const DIScopeModule = require('./di-scope');
-        const DIScopeImpl = DIScopeModule.DIScope;
-        const scope = new DIScopeImpl(this);
-        this.scopes.add(scope);
-        return scope;
+        return new DIScope(this);
     }
     /**
      * Dispose all singleton instances and clean up resources.
@@ -165,4 +161,3 @@ export class DIContainer {
         logger.debug(`DI Resolution: ${token.name} resolved in ${duration}ms`);
     }
 }
-//# sourceMappingURL=di-container.js.map

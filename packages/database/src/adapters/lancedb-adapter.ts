@@ -8,9 +8,9 @@ import 'reflect-metadata';
 import { connect, Connection, Table } from '@lancedb/lancedb';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { getLogger } from '../logger.js';
+import { getLogger } from '@claude-zen/foundation';
 import type { DatabaseAdapter } from '../interfaces.js';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('lancedb-adapter');
 
@@ -41,7 +41,6 @@ export interface VectorSearchOptions {
   includeMetadata?: boolean;
 }
 
-@injectable()
 export class LanceDBAdapter implements DatabaseAdapter {
   private connection: Connection | null = null;
   private config: LanceDBConfig;

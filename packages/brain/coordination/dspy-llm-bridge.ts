@@ -31,7 +31,7 @@ import {
   type Teleprompter as DSPyTeleprompter,
   type Example as DSPyExample,
   type Signature as DSPySignature
-} from '@zen-ai/dspy-engine';
+} from '@claude-zen/dspy';
 
 import { NeuralBridge } from '../neural-bridge';
 

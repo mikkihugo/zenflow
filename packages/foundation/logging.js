@@ -31,7 +31,7 @@ class LoggingConfigurationManager {
         // Load from ZEN_ environment variables with sensible defaults
         const nodeEnv = process.env['NODE_ENV'] || 'development';
         const defaultLevel = nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
-        // ZEN-specific environment variables
+        // Use centralized ZEN environment variable access
         const zenLogLevel = process.env['ZEN_LOG_LEVEL'];
         const zenLogFormat = process.env['ZEN_LOG_FORMAT'];
         const zenLogConsole = process.env['ZEN_LOG_CONSOLE'];

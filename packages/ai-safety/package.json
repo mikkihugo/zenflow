@@ -1,0 +1,62 @@
+{
+  "name": "@claude-zen/ai-safety",
+  "version": "1.0.0",
+  "description": "AI safety monitoring with deception detection, behavioral analysis, and real-time intervention protocols",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "keywords": [
+    "ai-safety",
+    "deception-detection",
+    "behavioral-analysis",
+    "safety-monitoring",
+    "neural-detection",
+    "intervention-protocols",
+    "real-time-monitoring",
+    "safety-orchestration",
+    "ai-ethics",
+    "safety-guard",
+    "ai"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "nanoid": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/brain": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "@types/node": "^20.10.6"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/ai-safety"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

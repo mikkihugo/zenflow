@@ -159,7 +159,7 @@ export class DSPyEngine {
       if (await this.isSharedAvailable()) {
         try {
           const sharedModule = await this.loadSharedModule();
-          this.llmService = await sharedModule.llm.createClaudeCodeLLM();
+          this.llmService = await sharedModule.llm.createLLMProvider();
           logger.info('DSPy LLM initialized with @claude-zen/foundation');
         } catch (error) {
           // Fallback to mock/simple implementation

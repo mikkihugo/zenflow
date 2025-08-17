@@ -25,13 +25,15 @@ import type {
   WorkflowContext,
   WorkflowDefinition,
   WorkflowEvent,
-  Domain,
   DomainBoundaryValidator,
   DomainMetadata,
   PerformanceMetrics,
   Result,
-  TypeSchema,
-  EventBus,
+  EventBus
+} from './types';
+import type { EventTypeSchema } from '../validation';
+import {
+  Domain,
   ContractViolationError,
   DomainValidationError
 } from './types';
@@ -506,44 +508,33 @@ export type SystemEvent =
 /**
  * Base event schema template
  */
-const BaseEventSchema: TypeSchema<BaseEvent> = {
+const BaseEventSchema: EventTypeSchema = {
   type: 'object',
-  required: true,
+  required: ['id', 'type', 'domain', 'timestamp', 'version'],
+  additionalProperties: true,
   properties: {
-    id: { type: 'string', required: true },
-    type: { type: 'string', required: true },
+    id: { type: 'string' },
+    type: { type: 'string' },
     domain: {
       type: 'string',
-      required: true,
       enum: Object.values(Domain),
     },
-    timestamp: { type: 'object', required: true },
-    version: { type: 'string', required: true },
-    metadata: {
-      type: 'object',
-      required: false,
-      properties: {
-        correlationId: { type: 'string', required: false },
-        causationId: { type: 'string', required: false },
-        source: { type: 'string', required: false },
-        userId: { type: 'string', required: false },
-        sessionId: { type: 'string', required: false },
-        traceId: { type: 'string', required: false },
-        priority: {
-          type: 'number',
-          required: false,
-          enum: Object.values(EventPriority).filter(
-            (v) => typeof v === 'number'
-          ),
-        },
-        tags: {
-          type: 'array',
-          required: false,
-          items: { type: 'string' },
-        },
-        customData: { type: 'object', required: false },
-      },
+    timestamp: { type: 'object' },
+    version: { type: 'string' },
+    payload: { type: 'object' },
+    metadata: { type: 'object' },
+    correlationId: { type: 'string' },
+    causationId: { type: 'string' },
+    source: { type: 'string' },
+    userId: { type: 'string' },
+    sessionId: { type: 'string' },
+    traceId: { type: 'string' },
+    priority: {
+      type: 'string',
+      enum: ['critical', 'high', 'medium', 'low']
     },
+    tags: { type: 'array' },
+    customData: { type: 'object' },
   },
 };
 
@@ -573,7 +564,7 @@ export const EventSchemas = {
         },
       },
     },
-  } as TypeSchema<AgentCreatedEvent>,
+  } as EventTypeSchema,
 
   TaskAssigned: {
     ...BaseEventSchema,
@@ -589,7 +580,7 @@ export const EventSchemas = {
         },
       },
     },
-  } as TypeSchema<TaskAssignedEvent>,
+  } as EventTypeSchema,
 
   WorkflowStarted: {
     ...BaseEventSchema,
@@ -606,7 +597,7 @@ export const EventSchemas = {
         },
       },
     },
-  } as TypeSchema<WorkflowStartedEvent>,
+  } as EventTypeSchema,
 
   HumanValidationRequested: {
     ...BaseEventSchema,
@@ -634,7 +625,7 @@ export const EventSchemas = {
         },
       },
     },
-  } as TypeSchema<HumanValidationRequestedEvent>,
+  } as EventTypeSchema,
 } as const;
 
 // ============================================================================
@@ -670,7 +661,7 @@ export interface TypedEventHandler<TEvent extends BaseEvent = BaseEvent> {
   readonly domain?: Domain;
   readonly handler: EventHandler<TEvent>;
   readonly config: EventHandlerConfig;
-  readonly schema?: TypeSchema<TEvent>;
+  readonly schema?: EventTypeSchema;
 }
 
 // ============================================================================
@@ -723,7 +714,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
 
   // Performance optimization
   private readonly eventCache = new Map<string, BaseEvent>();
-  private readonly schemaCache = new Map<string, TypeSchema>();
+  private readonly schemaCache = new Map<string, EventTypeSchema>();
   private eventCounter = 0;
   private startTime = Date.now();
 
@@ -752,7 +743,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     // Initialize domain validators if domain validation is enabled
     if (this.config.domainValidation) {
       for (const domain of Object.values(Domain)) {
-        this.domainValidators.set(domain, getDomainValidator(domain));
+        this.domainValidators.set(domain, getDomainValidator());
       }
     }
 
@@ -809,12 +800,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
         if (!validationResult.success) {
           throw new DomainValidationError(
             `Event validation failed: ${validationResult.error?.message}`,
-            'EVENT_VALIDATION_FAILED',
-            event.domain,
-            'emitEvent',
-            [],
-            event,
-            event.type
+            event.domain
           );
         }
       }
@@ -981,7 +967,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     eventType: string,
     handler: EventHandler<TEvent>,
     config: EventHandlerConfig = {},
-    schema?: TypeSchema<TEvent>
+    schema?: EventTypeSchema
   ): string {
     const handlerId = this.generateHandlerId();
 
@@ -1007,7 +993,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     }
 
     const handlers = this.eventHandlers.get(eventType)!;
-    handlers.push(typedHandler);
+    handlers.push(typedHandler as TypedEventHandler<BaseEvent>);
 
     // Sort by priority (higher priority first)
     handlers.sort(
@@ -1032,7 +1018,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       eventType: string;
       handler: EventHandler<any>;
       config?: EventHandlerConfig;
-      schema?: TypeSchema<any>;
+      schema?: EventTypeSchema;
     }>
   ): string[] {
     return registrations.map((reg) =>
@@ -1363,7 +1349,14 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       p99Time: number;
     }
   > {
-    const stats: Record<string, unknown> = {};
+    const stats: Record<string, {
+      count: number;
+      averageTime: number;
+      minTime: number;
+      maxTime: number;
+      p95Time: number;
+      p99Time: number;
+    }> = {};
 
     for (const [eventType, times] of this.processingStats.entries()) {
       if (times.length === 0) continue;
@@ -1620,19 +1613,33 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
       const schema = this.getEventSchema(event.type);
 
       if (schema) {
-        const validatedEvent = validator.validateInput(event, schema);
-        return {
-          success: true,
-          data: validatedEvent,
-        };
+        const validationResult = validator.validateInput(event, schema);
+        if (validationResult.success && validationResult.data) {
+          return {
+            success: true,
+            data: validationResult.data as TEvent,
+          };
+        } else {
+          return {
+            success: false,
+            error: validationResult.error || new Error('Validation failed'),
+          };
+        }
       }
       // If no schema, just validate basic structure
-      const basicSchema: TypeSchema<BaseEvent> = BaseEventSchema;
-      validator.validateInput(event, basicSchema);
-      return {
-        success: true,
-        data: event,
-      };
+      const basicSchema: EventTypeSchema = BaseEventSchema;
+      const basicValidationResult = validator.validateInput(event, basicSchema);
+      if (basicValidationResult.success) {
+        return {
+          success: true,
+          data: event,
+        };
+      } else {
+        return {
+          success: false,
+          error: basicValidationResult.error || new Error('Basic validation failed'),
+        };
+      }
     } catch (error) {
       return {
         success: false,
@@ -1649,17 +1656,22 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     try {
       const schema = this.getEventSchema(event.type);
       if (schema) {
-        const validatedEvent = validateCrossDomain(
-          event,
-          schema,
+        const validationResult = validateCrossDomain(
           fromDomain,
           toDomain,
-          `event_validation:${event.type}`
+          event
         );
-        return {
-          success: true,
-          data: validatedEvent,
-        };
+        if (validationResult.success && validationResult.data) {
+          return {
+            success: true,
+            data: validationResult.data as TEvent,
+          };
+        } else {
+          return {
+            success: false,
+            error: validationResult.error || new Error('Cross-domain validation failed'),
+          };
+        }
       }
       return {
         success: true,
@@ -1673,7 +1685,7 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     }
   }
 
-  private getEventSchema(eventType: string): TypeSchema | undefined {
+  private getEventSchema(eventType: string): EventTypeSchema | undefined {
     // Check cache first
     if (this.schemaCache.has(eventType)) {
       return this.schemaCache.get(eventType);
@@ -1914,53 +1926,4 @@ export function getEventType<TEvent extends BaseEvent>(
 
 export default TypeSafeEventBus;
 
-// Re-export important types and interfaces
-export type {
-  BaseEvent,
-  DomainEvent,
-  SystemEvent,
-  EventHandler,
-  EventHandlerContext,
-  EventHandlerConfig,
-  EventProcessingResult,
-  EventProcessingMetadata,
-  EventSystemMetrics,
-  EventSystemConfig,
-  TypedEventHandler,
-  // Domain-specific events
-  CoordinationEvent,
-  WorkflowDomainEvent,
-  NeuralEvent,
-  DatabaseEvent,
-  MemoryEvent,
-  KnowledgeEvent,
-  InterfaceEvent,
-  CoreEvent,
-  // Specific event types
-  AgentCreatedEvent,
-  AgentDestroyedEvent,
-  TaskAssignedEvent,
-  TaskCompletedEvent,
-  SwarmStateChangedEvent,
-  WorkflowStartedEvent,
-  WorkflowCompletedEvent,
-  WorkflowFailedEvent,
-  WorkflowStepCompletedEvent,
-  NetworkTrainingStartedEvent,
-  NetworkTrainingCompletedEvent,
-  NetworkPredictionEvent,
-  QueryExecutedEvent,
-  TransactionCompletedEvent,
-  MemoryStoredEvent,
-  MemoryRetrievedEvent,
-  MemoryEvictedEvent,
-  KnowledgeUpdatedEvent,
-  KnowledgeQueryEvent,
-  HumanValidationRequestedEvent,
-  HumanValidationCompletedEvent,
-  AGUIGateOpenedEvent,
-  AGUIGateClosedEvent,
-  SystemStartedEvent,
-  SystemShutdownEvent,
-  ErrorOccurredEvent,
-};
+// Types are exported directly above, no need for re-export

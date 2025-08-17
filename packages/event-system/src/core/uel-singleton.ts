@@ -4,6 +4,7 @@
  * Extracted UEL class to break circular dependency between index.ts and system-integrations.ts.
  */
 
+import type { Logger } from '@claude-zen/foundation';
 import type { CompatibilityFactory } from '../compatibility';
 import type { UELFactory, UELRegistry } from '../factories';
 import type { EventManager } from '../manager';
@@ -55,13 +56,9 @@ export class UEL {
     const { EventRegistry } = await import('../registry');
     const { UELValidationFramework } = await import('../validation');
     const { CompatibilityFactory } = await import('../compatibility');
-    const { DIContainer } = await import(
-      '../../../di/container/di-container'
-    );
-    const { CORE_TOKENS } = await import('../../../di/tokens/core-tokens');
-    const { SingletonProvider } = await import(
-      '../../../di/providers/singleton-provider'
-    );
+    const { DIContainer } = await import('@claude-zen/foundation');
+    const { CORE_TOKENS } = await import('@claude-zen/foundation');
+    const { SingletonProvider } = await import('@claude-zen/foundation');
 
     const container = new DIContainer();
 
@@ -326,7 +323,12 @@ export class UEL {
 
   async createEnhancedApplicationCoordinator(config?: {
     enableUEL?: boolean;
-    uelConfig?: unknown;
+    logger?: Logger;
+    uelConfig?: {
+      enableValidation?: boolean;
+      enableCompatibility?: boolean;
+      healthMonitoring?: boolean;
+    };
   }): Promise<unknown> {
     const { UELEnhancedApplicationCoordinator } = await import(
       '../system-integrations'

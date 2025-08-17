@@ -56,7 +56,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 import type { 
   Dao, 
   DataAccessObject,
@@ -116,7 +116,6 @@ import type {
  * const userCount = await userDao.aggregate('COUNT', '*', { isActive: true });
  * ```
  */
-@injectable()
 export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessObject<T> {
   /**
    * Map Database Row to Entity Object.

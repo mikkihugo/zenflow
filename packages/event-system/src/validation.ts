@@ -140,6 +140,9 @@ export interface ValidationRecommendation {
  * @example
  */
 export interface EventTypeSchema {
+  /** Schema type */
+  type: string;
+  
   /** Required properties */
   required: string[];
 
@@ -1207,6 +1210,7 @@ export class UELValidationFramework {
   private initializeDefaultSchemas(): void {
     // System lifecycle event schema
     this.registerEventTypeSchema('system:lifecycle', {
+      type: 'object',
       required: ['id', 'timestamp', 'source', 'type', 'operation', 'status'],
       properties: {
         id: { type: 'string' },
@@ -1228,6 +1232,7 @@ export class UELValidationFramework {
 
     // Coordination event schema
     this.registerEventTypeSchema('coordination:swarm', {
+      type: 'object',
       required: ['id', 'timestamp', 'source', 'type', 'operation', 'targetId'],
       properties: {
         id: { type: 'string' },

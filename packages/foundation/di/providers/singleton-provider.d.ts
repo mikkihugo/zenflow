@@ -5,7 +5,7 @@
 /**
  * @file Singleton-provider implementation.
  */
-import type { Provider } from '../types/di-types';
+import type { Provider, DIContainer } from '../types/di-types';
 export declare class SingletonProvider<T> implements Provider<T> {
     private readonly factory;
     private readonly disposeFn?;

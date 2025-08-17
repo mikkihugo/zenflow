@@ -14,4 +14,3 @@ export const NEURAL_TOKENS = {
     ModelStorage: createToken('ModelStorage'),
     MetricsCollector: createToken('MetricsCollector'),
 };
-//# sourceMappingURL=neural-tokens.js.map

@@ -34,7 +34,9 @@
   },
   "peerDependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/database": "workspace:*"
+    "@claude-zen/database": "workspace:*",
+    "@claude-zen/brain": "workspace:*",
+    "@claude-zen/adaptive-learning": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.3.3",

@@ -45,4 +45,3 @@ export class ScopedProvider {
         // This method is mainly for explicit cleanup if needed.
     }
 }
-//# sourceMappingURL=scoped-provider.js.map

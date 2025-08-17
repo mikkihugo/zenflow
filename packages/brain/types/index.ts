@@ -10,7 +10,7 @@ export type {
   Signature as DSPySignature,
   Module as DSPyModule,
   Teleprompter as DSPyTeleprompter
-} from '@zen-ai/dspy-engine';
+} from '@claude-zen/dspy';
 
 // Main neural types from comprehensive types.ts
 export * from '../types';

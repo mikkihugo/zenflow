@@ -10,7 +10,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 import type {
   ClusteringOptions,
   ClusterResult,
@@ -36,7 +36,6 @@ import type { VectorDatabaseAdapter } from '../providers/database-providers';
  * @template T The entity type this repository manages.
  * @example
  */
-@injectable()
 export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, DataAccessObject<T> {
   private get vectorAdapter(): VectorDatabaseAdapter {
     return this.adapter as VectorDatabaseAdapter;

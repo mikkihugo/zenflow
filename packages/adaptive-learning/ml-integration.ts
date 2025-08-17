@@ -2,7 +2,7 @@
  * @file Ml-integration implementation.
  */
 
-import { getLogger } from '@zen-ai/foundation';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('intelligence-adaptive-learning-ml-integration');
 

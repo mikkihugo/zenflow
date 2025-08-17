@@ -3,7 +3,7 @@
  * Provides type-safe event handling with priority management and error recovery.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-events-observer-system');
 
@@ -163,7 +163,7 @@ export class WebSocketObserver
   private connections: Set<any> = new Set();
   private healthy = true;
 
-  constructor(private logger?: unknown) {}
+  constructor(private logger?: Logger) {}
 
   addConnection(socket: unknown): void {
     this.connections.add(socket);
@@ -256,7 +256,7 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
 
   constructor(
     private dbService: unknown,
-    private logger?: unknown,
+    private logger?: Logger,
     batchSize = 100
   ) {
     this.batchSize = batchSize;
@@ -307,8 +307,8 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
       const batch = [...this.eventBatch];
       this.eventBatch = [];
 
-      await this.dbService.query(
-        'INSERT NTO system_events (id, type, timestamp, source, data) VALUES ?',
+      await (this.dbService as any).query(
+        'INSERT INTO system_events (id, type, timestamp, source, data) VALUES ?',
         [
           batch.map((event) => [
             event.id,
@@ -337,14 +337,14 @@ export class DatabaseObserver implements SystemObserver<SystemEvent> {
 export class LoggerObserver implements SystemObserver<SystemEvent> {
   private healthy = true;
 
-  constructor(private logger: unknown) {}
+  constructor(private logger?: Logger) {}
 
   update(event: SystemEvent): void {
     try {
       const logLevel = this.getLogLevel(event);
       const message = this.formatLogMessage(event);
 
-      this.logger[logLevel](message, {
+      this.logger?.[logLevel](message, {
         eventId: event.id,
         type: event.type,
         source: event.source,
@@ -410,7 +410,7 @@ export class MetricsObserver implements SystemObserver<SystemEvent> {
   private healthy = true;
   private metrics: Map<string, any> = new Map();
 
-  constructor(private metricsService?: unknown) {}
+  constructor(private metricsService?: { recordEvent(event: SystemEvent): void }) {}
 
   update(event: SystemEvent): void {
     try {
@@ -510,7 +510,7 @@ export class SystemEventManager extends EventEmitter {
   private maxRetries = 3;
   private retryDelay = 1000;
 
-  constructor(private logger?: unknown) {
+  constructor(private logger?: Logger) {
     super();
     this.setMaxListeners(1000);
     this.startEventProcessing();

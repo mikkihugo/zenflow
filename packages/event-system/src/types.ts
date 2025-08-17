@@ -293,7 +293,8 @@ export interface WorkflowEvent extends SystemEvent {
     | 'workflow:execution'
     | 'workflow:task'
     | 'workflow:condition'
-    | 'workflow:trigger';
+    | 'workflow:trigger'
+    | 'workflow:orchestration';
   operation:
     | 'start'
     | 'complete'
@@ -302,7 +303,14 @@ export interface WorkflowEvent extends SystemEvent {
     | 'skip'
     | 'branch'
     | 'merge'
-    | 'loop';
+    | 'loop'
+    | 'create'
+    | 'pause'
+    | 'resume'
+    | 'task-complete'
+    | 'task-fail'
+    | 'dependency-resolved'
+    | 'orchestrate';
   workflowId: string;
   taskId?: string;
   details?: {
@@ -318,6 +326,14 @@ export interface WorkflowEvent extends SystemEvent {
     conditionResult?: boolean;
     branchTaken?: string;
     loopIteration?: number;
+    // Additional properties used by workflow implementation
+    orchestrationId?: string;
+    totalTasks?: number;
+    error?: string;
+    attempt?: number;
+    duration?: number;
+    dependency?: string;
+    action?: string;
   };
 }
 
@@ -343,7 +359,7 @@ export const EventCategories = {
   COORDINATION: 'coordination' as const,
   COMMUNICATION: 'communication' as const,
   MONITORING: 'monitoring' as const,
-  NTERFACE: 'interface' as const,
+  INTERFACE: 'interface' as const,
   NEURAL: 'neural' as const,
   DATABASE: 'database' as const,
   MEMORY: 'memory' as const,
@@ -497,7 +513,7 @@ export const DefaultEventManagerConfigs = {
     },
   },
 
-  [EventCategories.NTERFACE]: {
+  [EventCategories.INTERFACE]: {
     maxListeners: 100,
     processing: {
       strategy: 'immediate' as const,

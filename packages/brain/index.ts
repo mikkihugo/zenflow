@@ -1,31 +1,28 @@
 /**
  * @file Brain Package Main Index
  * 
- * Optimized brain package using shared infrastructure:
- * - @zen-ai/shared for logging, config, DI
+ * Simple AI coordination and prompt optimization:
+ * - Easy-to-use BrainCoordinator (main interface)
+ * - Neural networks, DSPy integration, learning
  * - Proper error handling and type safety
- * - Clean separation of concerns
  */
 
-// Main neural bridge (core functionality)
+// 🧠 MAIN INTERFACE - Use this for everything!
+export { BrainCoordinator as default } from './brain-coordinator';
+export { BrainCoordinator } from './brain-coordinator';
+export type { 
+  BrainConfig, 
+  PromptOptimizationRequest, 
+  PromptOptimizationResult 
+} from './brain-coordinator';
+
+// Advanced interfaces (for power users)
 export { NeuralBridge } from './neural-bridge';
-export type { NeuralConfig, NeuralNetwork, TrainingData, PredictionResult } from './neural-bridge';
-
-// Backward compatibility alias
-export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
-
-// Core types and interfaces
-export * from './types';
-
-// Neural models and presets
-export * from './models';
-
-// Advanced model presets (JavaScript configurations)
-export * from './models/presets';
-
-// Coordination and feedback systems
-export { RetrainingMonitor } from './coordination/retraining-monitor';
 export { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
+export { RetrainingMonitor } from './coordination/retraining-monitor';
+
+// Types for advanced usage
+export type { NeuralConfig, NeuralNetwork, TrainingData, PredictionResult } from './neural-bridge';
 export type { 
   RetrainingConfig, 
   RetrainingTrigger, 
@@ -37,5 +34,9 @@ export type {
   DSPyLLMConfig
 } from './coordination/dspy-llm-bridge';
 
-// Convenience functions
+// Legacy exports (backward compatibility)
+export { NeuralBridge as IntelligenceBridge } from './neural-bridge';
+export * from './types';
+export * from './models';
+export * from './models/presets';
 export { createNeuralNetwork, trainNeuralNetwork, predictWithNetwork } from './neural-bridge';

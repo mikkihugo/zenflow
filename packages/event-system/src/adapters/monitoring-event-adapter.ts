@@ -106,7 +106,7 @@ const createLogger = (name: string): Logger => ({
     message: string,
     meta?: Record<string, unknown>,
     error?: Error | unknown
-  ) => logger.error(`[ERROR] ${name}: ${message}`, meta, error),
+  ) => logger.error(`[ERROR] ${name}: ${message}`, { ...meta, error }),
 });
 
 import { EventEmitter } from 'node:events';
@@ -561,9 +561,9 @@ export class MonitoringEventAdapter implements EventManager {
     } catch (error) {
       this.logger.error(
         `Failed to start monitoring event adapter ${this.name}:`,
-        error
+        { error }
       );
-      this.emitInternal('error', error);
+      this.emitInternal('error', { error });
       throw error;
     }
   }
@@ -598,9 +598,9 @@ export class MonitoringEventAdapter implements EventManager {
     } catch (error) {
       this.logger.error(
         `Failed to stop monitoring event adapter ${this.name}:`,
-        error
+        { error }
       );
-      this.emitInternal('error', error);
+      this.emitInternal('error', { error });
       throw error;
     }
   }
@@ -673,7 +673,7 @@ export class MonitoringEventAdapter implements EventManager {
         metricValue: this.extractMetricValue(event),
         alertLevel: this.extractAlertLevel(event),
         healthScore: this.extractHealthScore(event),
-        performanceData: this.extractPerformanceData(event),
+        performanceData: this.extractPerformanceData(event) as any,
         timestamp: new Date(),
       });
 
@@ -697,7 +697,7 @@ export class MonitoringEventAdapter implements EventManager {
         metricValue: this.extractMetricValue(event),
         alertLevel: this.extractAlertLevel(event),
         healthScore: this.extractHealthScore(event),
-        performanceData: this.extractPerformanceData(event),
+        performanceData: this.extractPerformanceData(event) as any,
         errorType:
           error instanceof Error ? error.constructor.name : 'UnknownError',
         recoveryAttempts: undefined,
@@ -718,7 +718,7 @@ export class MonitoringEventAdapter implements EventManager {
 
       this.logger.error(
         `Monitoring event emission failed for ${event.type}:`,
-        error
+        { error }
       );
       throw error;
     }
@@ -766,7 +766,7 @@ export class MonitoringEventAdapter implements EventManager {
     } catch (error) {
       this.logger.error(
         `Monitoring event batch processing failed for ${batch.id}:`,
-        error
+        { error }
       );
       throw error;
     }
@@ -935,8 +935,8 @@ export class MonitoringEventAdapter implements EventManager {
     // Apply sorting
     if (options?.sortBy) {
       events.sort((a, b) => {
-        const aVal = this.getEventSortValue(a, options?.sortBy!);
-        const bVal = this.getEventSortValue(b, options?.sortBy!);
+        const aVal = this.getEventSortValue(a, options?.sortBy!) as any;
+        const bVal = this.getEventSortValue(b, options?.sortBy!) as any;
         const comparison = aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
         return options.sortOrder === 'desc' ? -comparison : comparison;
       });
@@ -1141,7 +1141,7 @@ export class MonitoringEventAdapter implements EventManager {
     } catch (error) {
       this.logger.error(
         `Failed to destroy monitoring event adapter ${this.name}:`,
-        error
+        { error }
       );
       throw error;
     }
@@ -1932,7 +1932,7 @@ export class MonitoringEventAdapter implements EventManager {
       } catch (error) {
         this.logger.warn(
           `Failed to unwrap monitoring component ${componentName}:`,
-          error
+          { error }
         );
       }
     }
@@ -2019,7 +2019,7 @@ export class MonitoringEventAdapter implements EventManager {
       } catch (error) {
         this.logger.error(
           `Monitoring subscription listener error for ${subscription.id}:`,
-          error
+          { error }
         );
         this.eventEmitter.emit('subscription-error', {
           subscriptionId: subscription.id,
@@ -2050,7 +2050,7 @@ export class MonitoringEventAdapter implements EventManager {
         try {
           await this.processMonitoringEventEmission(event);
         } catch (error) {
-          this.logger.error('Monitoring event processing error:', error);
+          this.logger.error('Monitoring event processing error:', { error });
         }
       }
 
@@ -2112,7 +2112,7 @@ export class MonitoringEventAdapter implements EventManager {
           }
         }
       } catch (error) {
-        this.logger.error('Monitoring health monitoring error:', error);
+        this.logger.error('Monitoring health monitoring error:', { error });
       }
     }, interval);
   }
@@ -2220,7 +2220,7 @@ export class MonitoringEventAdapter implements EventManager {
           }
         }
       } catch (error) {
-        this.logger.error('Metrics optimization error:', error);
+        this.logger.error('Metrics optimization error:', { error });
       }
     }, interval);
   }
@@ -2939,7 +2939,7 @@ export const MonitoringEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details as object),
         metricName,
         metricValue,
         severity: 'info',
@@ -2978,7 +2978,7 @@ export const MonitoringEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details as object),
         healthScore,
         severity:
           status === 'unhealthy'
@@ -3025,7 +3025,7 @@ export const MonitoringEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details as object),
         alertId,
         severity,
       },
@@ -3060,10 +3060,10 @@ export const MonitoringEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details as object),
         insights,
         severity: 'info',
-      },
+      } as any,
     };
   },
 
@@ -3101,11 +3101,11 @@ export const MonitoringEventHelpers = {
         eventData: details || {},
       },
       details: {
-        ...details,
+        ...(details as object),
         severity: 'error',
         errorCode: error.name,
         errorMessage: error.message,
-      },
+      } as any,
     };
   },
 };

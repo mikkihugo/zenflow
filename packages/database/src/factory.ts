@@ -48,14 +48,13 @@
 
 // Foundation interfaces for DI
 import type { Logger } from '@claude-zen/foundation';
-import type { Config } from '@claude-zen/foundation/di/tokens/core-tokens';
+import type { Config } from '@claude-zen/foundation';
 
 // DatabaseAdapter interface imported from interfaces.js
 
 // Foundation DI system integration
 import 'reflect-metadata';
-import { DIContainer, injectable, inject } from '@claude-zen/foundation/di';
-import { CORE_TOKENS, DATABASE_TOKENS } from '@claude-zen/foundation/di/tokens/core-tokens';
+import { DIContainer, injectable, inject, CORE_TOKENS, DATABASE_TOKENS } from '@claude-zen/foundation';
 
 // Database config types
 interface DatabaseConfig {
@@ -268,7 +267,6 @@ export interface EntityTypeRegistry {
  * - Transaction and error handling support.
  *
  * @class DALFactory
- * @injectable.
  * @since 1.0.0
  * @example Basic Factory Setup
  * ```typescript
@@ -309,7 +307,6 @@ export interface EntityTypeRegistry {
  * const coordRepo = await factory.createCoordinationRepository<Lock>('Lock');
  * ```
  */
-@injectable()
 export class DALFactory {
   private repositoryCache = new Map<string, any>();
   private daoCache = new Map<string, any>();
@@ -926,7 +923,7 @@ export class DALFactory {
       tableName: entityType,
       databaseConfig: {
         type: 'sqlite', // Use SQLite for coordination by default
-        database: './data/coordination.db',
+        database: './.claude-zen/data/coordination.db',
       },
     };
 
@@ -1324,7 +1321,7 @@ export class DALFactory {
   private getDefaultKuzuConfig(): DatabaseConfig {
     return {
       type: 'kuzu',
-      database: './data/kuzu-graph.db',
+      database: './.claude-zen/data/kuzu-graph.db',
       options: {
         bufferPoolSize: '1GB',
         maxNumThreads: 4,
@@ -1335,7 +1332,7 @@ export class DALFactory {
   private getDefaultLanceDBConfig(vectorDimension: number): DatabaseConfig {
     return {
       type: 'lancedb',
-      database: './data/lancedb-vectors.db',
+      database: './.claude-zen/data/lancedb-vectors.db',
       options: {
         vectorSize: vectorDimension,
         metricType: 'cosine',

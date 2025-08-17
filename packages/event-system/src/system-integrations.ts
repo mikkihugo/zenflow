@@ -592,14 +592,14 @@ export class UELEnhancedApplicationCoordinator extends EventEmitter {
     }
 
     try {
-      const manager = await this.uelSystem
-        .getEventManager()
-        .createEventManager({
-          type,
-          name: `app-${componentName}`,
-          config: config || {},
-          autoStart: true,
-        } as any);
+      // Direct creation since we can't use createEventManager on the base EventManager
+      const eventManager = this.uelSystem.getEventManager() as any;
+      const manager = await eventManager.createEventManager?.({
+        type,
+        name: `app-${componentName}`,
+        config: config || {},
+        autoStart: true,
+      });
 
       this.systemManagers.set(componentName, manager);
       this.logger.info(`Created event manager for component: ${componentName}`);
@@ -746,12 +746,12 @@ export class UELEnhancedObserverSystem extends EventEmitter {
     eventManager: EventManager
   ): Promise<void> {
     try {
-      this.uelEventManager = await eventManager.createMonitoringEventManager(
+      this.uelEventManager = await (eventManager as any).createMonitoringEventManager?.(
         'observer-system',
         {
           maxListeners: 100,
           retryAttempts: 2,
-        } as any
+        }
       );
 
       this.logger?.info('✅ UEL integration initialized for Observer System');
@@ -1066,7 +1066,7 @@ export async function enhanceWithUEL<T extends EventEmitter>(
  */
 export function analyzeSystemEventEmitterUsage(
   systems: { [key: string]: EventEmitter },
-  logger?: unknown
+  logger?: Logger
 ): {
   totalSystems: number;
   systemAnalyses: {
@@ -1171,7 +1171,7 @@ export const UELSystemIntegration = {
   // Initialize system integration
   async initialize(
     eventManager: EventManager,
-    logger?: unknown
+    logger?: Logger
   ): Promise<void> {
     await SystemIntegrationFactory.getInstance().initialize(
       eventManager,

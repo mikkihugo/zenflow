@@ -8,9 +8,9 @@ import 'reflect-metadata';
 import { Database, Connection } from 'kuzu';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { getLogger } from '../logger.js';
+import { getLogger } from '@claude-zen/foundation';
 import type { DatabaseAdapter } from '../interfaces.js';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('kuzu-adapter');
 
@@ -47,7 +47,6 @@ export interface GraphQueryOptions {
   where?: Record<string, unknown>;
 }
 
-@injectable()
 export class KuzuAdapter implements DatabaseAdapter {
   private database: Database | null = null;
   private connection: Connection | null = null;

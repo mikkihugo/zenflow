@@ -1,0 +1,34 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "paths": {
+      "@claude-zen/*": ["../../packages/*/src", "../../packages/*/dist"],
+      "$lib/*": ["./src/lib/*"],
+      "$components/*": ["./src/components/*"],
+      "$stores/*": ["./src/stores/*"],
+      "$utils/*": ["./src/utils/*"],
+      "$types/*": ["./src/types/*"]
+    }
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "**/*.test.ts",
+    "**/*.spec.ts"
+  ],
+  "references": [
+    { "path": "../../packages/foundation" },
+    { "path": "../../packages/event-system" },
+    { "path": "../../packages/database" },
+    { "path": "../../packages/brain" },
+    { "path": "../../packages/dspy" }
+  ]
+}

@@ -61,6 +61,16 @@ export class SimpleDomainValidator implements DomainBoundaryValidator {
       };
     }
   }
+
+  trackCrossings(fromDomain: Domain, toDomain: Domain, operation: string): void {
+    // Track cross-domain operations for audit and monitoring
+    console.debug(`Cross-domain operation: ${operation} from ${fromDomain} to ${toDomain}`);
+  }
+
+  validateInput<T>(data: T, schema: TypeSchema): Result<T> {
+    // Use the same validation logic as validate()
+    return this.validate(data, schema);
+  }
 }
 
 /**

@@ -11,9 +11,8 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config';
-import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
-import type { ValidationQuestion } from './types';
+import { getLogger } from '@claude-zen/foundation';
+import type { AGUIInterface, ValidationQuestion } from './interfaces';
 
 // Export additional interfaces for external use
 export interface BaseDocumentEntity {

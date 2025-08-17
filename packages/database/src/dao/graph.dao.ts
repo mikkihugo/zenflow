@@ -70,7 +70,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 import type {
   CustomQuery,
   GraphNode,
@@ -162,7 +162,6 @@ import type { GraphDatabaseAdapter } from '../providers/database-providers';
  */
 import type { DataAccessObject, DatabaseMetadata, HealthStatus, PerformanceMetrics, TransactionOperation } from '../interfaces';
 
-@injectable()
 export class GraphDao<T> extends BaseDao<T> implements GraphRepository<T>, DataAccessObject<T> {
   private get graphAdapter(): GraphDatabaseAdapter {
     return this.adapter as GraphDatabaseAdapter;

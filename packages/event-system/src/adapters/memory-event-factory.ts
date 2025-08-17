@@ -917,13 +917,17 @@ export class MemoryEventManagerFactory
       ...config,
       maxListeners: config.maxListeners || 500,
       processing: {
-        strategy: 'immediate', // Memory operations need immediate processing
         batchSize: 200, // High batch size for memory events
         ...config.processing,
+        strategy: 'immediate', // Memory operations need immediate processing
       },
       monitoring: {
         enabled: true,
         metricsInterval: 10000, // 10 second metrics for memory
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true,
+        enableProfiling: false,
         ...config.monitoring,
       },
     };

@@ -5,8 +5,8 @@
 /**
  * @file Di-scope implementation.
  */
-import type { DIContainer, DIToken, DIScope as DIScope, Provider } from '../types/di-types';
-export declare class DIScope implements DIScope {
+import type { DIContainer, DIToken, DIScope as DIScopeInterface, Provider } from '../types/di-types';
+export declare class DIScope implements DIScopeInterface {
     readonly parent: DIContainer;
     private readonly scopedProviders;
     private readonly scopedInstances;

@@ -883,7 +883,7 @@ export const EventManagerTypes = {
   COORDINATION: 'coordination' as const,
   COMMUNICATION: 'communication' as const,
   MONITORING: 'monitoring' as const,
-  NTERFACE: 'interface' as const,
+  INTERFACE: 'interface' as const,
   NEURAL: 'neural' as const,
   DATABASE: 'database' as const,
   MEMORY: 'memory' as const,
@@ -1124,7 +1124,7 @@ export const EventTypeGuards = {
    * @returns True if value is a valid EventManagerType.
    */
   isEventManagerType: (value: unknown): value is EventManagerType => {
-    return Object.values(EventManagerTypes).includes(value);
+    return typeof value === 'string' && Object.values(EventManagerTypes).includes(value as EventManagerType);
   },
 
   /**
@@ -1134,7 +1134,7 @@ export const EventTypeGuards = {
    * @returns True if value is a valid EventPriority.
    */
   isEventPriority: (value: unknown): value is EventPriority => {
-    return ['critical', 'high', 'medium', 'low'].includes(value);
+    return typeof value === 'string' && ['critical', 'high', 'medium', 'low'].includes(value);
   },
 
   /**
@@ -1146,7 +1146,7 @@ export const EventTypeGuards = {
   isEventProcessingStrategy: (
     value: unknown
   ): value is EventProcessingStrategy => {
-    return ['immediate', 'queued', 'batched', 'throttled'].includes(value);
+    return typeof value === 'string' && ['immediate', 'queued', 'batched', 'throttled'].includes(value);
   },
 
   /**
@@ -1157,11 +1157,13 @@ export const EventTypeGuards = {
    */
   isSystemEvent: (value: unknown): value is SystemEvent => {
     return (
-      value &&
-      typeof value.id === 'string' &&
-      value.timestamp instanceof Date &&
-      typeof value.source === 'string' &&
-      typeof value.type === 'string'
+      value !== null &&
+      typeof value === 'object' &&
+      typeof (value as any).id === 'string' &&
+      (value as any).timestamp instanceof Date &&
+      typeof (value as any).source === 'string' &&
+      typeof (value as any).type === 'string' &&
+      typeof (value as any).payload === 'object'
     );
   },
 
@@ -1173,14 +1175,18 @@ export const EventTypeGuards = {
    */
   isEventManagerConfig: (value: unknown): value is EventManagerConfig => {
     return (
-      value &&
-      typeof value.name === 'string' &&
-      EventTypeGuards.isEventManagerType(value.type) &&
-      value.processing &&
-      EventTypeGuards.isEventProcessingStrategy(value.processing.strategy)
+      value !== null &&
+      typeof value === 'object' &&
+      typeof (value as any).name === 'string' &&
+      EventTypeGuards.isEventManagerType((value as any).type) &&
+      (value as any).processing &&
+      typeof (value as any).processing === 'object' &&
+      EventTypeGuards.isEventProcessingStrategy((value as any).processing.strategy)
     );
   },
 } as const;
 
 // Re-export types for compatibility
 export type { SystemEvent as BaseSystemEvent } from '../observer-system';
+
+// Event types are exported from core/type-safe-event-system.ts to avoid conflicts

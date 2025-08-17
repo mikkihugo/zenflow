@@ -50,4 +50,3 @@ export class SingletonProvider {
         return this.instance;
     }
 }
-//# sourceMappingURL=singleton-provider.js.map

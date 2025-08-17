@@ -9,7 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger, type Logger } from '../foundation';
+import { getLogger, type Logger } from '@claude-zen/foundation';
 import type {
   AdaptiveLearningConfig,
   Agent,

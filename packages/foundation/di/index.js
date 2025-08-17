@@ -7,20 +7,18 @@
  * @file Di module exports.
  */
 import { DIContainer } from './container/di-container';
-import { ScopedProvider } from './providers/scoped-provider';
 import { SingletonProvider } from './providers/singleton-provider';
 import { TransientProvider } from './providers/transient-provider';
+import { ScopedProvider } from './providers/scoped-provider';
 // Re-export for external use
 export { DIContainer } from './container/di-container';
-export { DIScope } from './container/di-scope';
 export { getInjectionToken, hasInjectionToken, inject, } from './decorators/inject';
 // Decorators
 export { getInjectionMetadata, injectable, isInjectable, } from './decorators/injectable';
-export { FactoryProvider } from './providers/factory-provider';
-export { ScopedProvider } from './providers/scoped-provider';
 // Provider implementations
 export { SingletonProvider } from './providers/singleton-provider';
 export { TransientProvider } from './providers/transient-provider';
+export { ScopedProvider } from './providers/scoped-provider';
 // Core system tokens
 export { CORE_TOKENS } from './tokens/core-tokens';
 export { NEURAL_TOKENS } from './tokens/neural-tokens';
@@ -95,6 +93,7 @@ export class DIContainerBuilder {
      * @param factory
      */
     scoped(token, factory) {
+        // Full DI features now enabled - use proper scoped provider
         this.container.register(token, new ScopedProvider(factory));
         return this;
     }
@@ -115,4 +114,3 @@ export function createContainerBuilder() {
 }
 // Note: Integration examples are available in ./examples/ directory
 // Import them directly when needed to avoid circular dependencies
-//# sourceMappingURL=index.js.map

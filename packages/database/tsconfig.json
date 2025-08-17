@@ -7,12 +7,12 @@
     "declarationMap": true,
     "composite": true,
     "types": ["node"],
-    "baseUrl": "../..",
+    "moduleResolution": "node",
+    "skipLibCheck": true,
     "paths": {
-      "better-sqlite3": ["packages/database/src/stubs/better-sqlite3.d.ts"],
-      "@lancedb/lancedb": ["packages/database/src/stubs/lancedb.d.ts"],
-      "kuzu": ["packages/database/src/stubs/kuzu.d.ts"],
-      "@claude-zen/*": ["packages/*"]
+      "better-sqlite3": ["./src/stubs/better-sqlite3.d.ts"],
+      "@lancedb/lancedb": ["./src/stubs/lancedb.d.ts"],
+      "kuzu": ["./src/stubs/kuzu.d.ts"]
     }
   },
   "include": [
@@ -23,5 +23,8 @@
     "node_modules",
     "**/*.test.ts",
     "**/*.spec.ts"
+  ],
+  "references": [
+    { "path": "../foundation" }
   ]
 }

@@ -12,17 +12,17 @@
  * - Event-driven architecture support
  */
 
-// Core AGUI exports from interfaces
+// Core AGUI exports from local interfaces
 export type { 
   AGUIInterface,
   EventHandlerConfig 
-} from '../../interfaces/agui/agui-adapter';
+} from './interfaces';
 
 export { 
   TerminalAGUI, 
   MockAGUI, 
   createAGUI 
-} from '../../interfaces/agui/agui-adapter';
+} from './interfaces';
 
 // AGUI library types
 export type {
@@ -47,20 +47,7 @@ export {
   AGUIValidationError
 } from './types';
 
-// Workflow AGUI exports
-export type {
-  WorkflowDecisionAudit,
-  WorkflowPromptContext,
-  TimeoutConfig,
-  WorkflowAGUIConfig
-} from '../../interfaces/agui/workflow-agui-adapter';
-
-export {
-  WorkflowAGUIAdapter,
-  createWorkflowAGUIAdapter,
-  createProductionWorkflowAGUIAdapter,
-  createTestWorkflowAGUIAdapter
-} from '../../interfaces/agui/workflow-agui-adapter';
+// Workflow AGUI exports (simplified - core interfaces only, complex workflow features not included)
 
 // Task Approval System exports  
 export type {
@@ -92,23 +79,22 @@ export const AGUI_DESCRIPTION = 'Autonomous Graphical User Interface Library for
  * Create a complete AGUI system with task approval capabilities
  */
 export async function createAGUISystem(config?: {
-  aguiType?: 'terminal' | 'mock' | 'workflow';
-  taskApprovalConfig?: Partial<TaskApprovalConfig>;
-  enableWorkflowFeatures?: boolean;
+  aguiType?: 'terminal' | 'mock';
+  taskApprovalConfig?: Partial<import('./task-approval-system').TaskApprovalConfig>;
 }): Promise<{
-  agui: AGUIInterface;
-  taskApproval: TaskApprovalSystem;
+  agui: import('./interfaces').AGUIInterface;
+  taskApproval: import('./task-approval-system').TaskApprovalSystem;
 }> {
+  // Import locally to avoid bundling issues
+  const { createAGUI } = await import('./interfaces');
+  const { createTaskApprovalSystem } = await import('./task-approval-system');
+  
   // Create appropriate AGUI adapter
-  let agui: AGUIInterface;
+  let agui: import('./interfaces').AGUIInterface;
   
   switch (config?.aguiType) {
     case 'mock':
       agui = createAGUI('mock');
-      break;
-    case 'workflow':
-      // Would need TypeSafeEventBus instance - placeholder for now
-      agui = createAGUI('terminal');
       break;
     default:
       agui = createAGUI('terminal');

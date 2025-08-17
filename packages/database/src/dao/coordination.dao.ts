@@ -15,7 +15,7 @@ import type {
   Logger,
 } from '../interfaces.js';
 import { BaseDao } from '../base.dao';
-import { injectable } from '@claude-zen/foundation/di';
+import { injectable } from '@claude-zen/foundation';
 import type {
   CoordinationChange,
   CoordinationEvent,
@@ -59,7 +59,6 @@ interface LockInfo extends CoordinationLock {
  * @template T The entity type this repository manages.
  * @example
  */
-@injectable()
 export class CoordinationDao<T>
   extends BaseDao<T>
   implements CoordinationRepository<T>, DataAccessObject<T>

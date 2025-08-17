@@ -27,7 +27,7 @@ export type { SharedConfig, ZenConfigKey, ZenConfigValue } from './config';
 
 // LLM provider with Claude Code SDK integration
 export * from './llm-provider';
-export { ClaudeCodeLLM, getGlobalLLM, setGlobalLLM, SWARM_AGENT_ROLES } from './llm-provider';
+export { LLMProvider, getGlobalLLM, setGlobalLLM, SWARM_AGENT_ROLES } from './llm-provider';
 export type { LLMMessage, LLMRequest, LLMResponse, SwarmAgentRole } from './llm-provider';
 
 // Claude SDK integration - Centralized SDK access
@@ -56,17 +56,23 @@ export * from './storage';
 export { 
   getDatabaseAccess, 
   getKVStore, 
-  storage 
+  storage,
+  StorageError,
+  DatabaseConnectionError
 } from './storage';
 export type { 
-  SimpleKV, 
-  DatabaseAccess 
+  KeyValueStore, 
+  DatabaseAccess,
+  KeyValueStorage,
+  AllStorageTypes,
+  HybridStorage
 } from './storage';
 
 // Dependency Injection system - Foundation DI container
 export * from './di/index';
 export { DIContainer } from './di/container/di-container';
 export { injectable, inject } from './di/decorators/injectable';
+export { CORE_TOKENS, DATABASE_TOKENS, MEMORY_TOKENS, SWARM_TOKENS } from './di/tokens/core-tokens';
 export type { 
   Constructor, 
   Provider,

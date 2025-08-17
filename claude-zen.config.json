@@ -67,7 +67,7 @@
   "storage": {
     "memory": {
       "backend": "sqlite",
-      "directory": "./data/memory",
+      "directory": "./.claude-zen/data/memory",
       "namespace": "claude-zen",
       "enableCompression": false,
       "maxMemorySize": 104857600,
@@ -77,13 +77,13 @@
     },
     "database": {
       "sqlite": {
-        "path": "./data/claude-zen.db",
+        "path": "./.claude-zen/data/claude-zen.db",
         "enableWAL": true,
         "maxConnections": 10,
         "timeout": 30000
       },
       "lancedb": {
-        "path": "./data/lancedb",
+        "path": "./.claude-zen/data/lancedb",
         "enableVectorIndex": true,
         "indexType": "ivf"
       },
@@ -110,7 +110,7 @@
     "enableWASM": true,
     "enableSIMD": true,
     "enableCUDA": false,
-    "modelPath": "./data/neural",
+    "modelPath": "./.claude-zen/data/neural",
     "maxModelSize": 104857600,
     "enableTraining": false,
     "enableInference": true,

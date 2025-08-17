@@ -257,13 +257,23 @@ export const MonitoringEventConfigs = {
       alertLevels: ['info', 'warning', 'error', 'critical'],
     },
     monitoring: {
+      enabled: true,
       strategy: 'alerts' as const,
+      metricsInterval: 10000,
+      trackLatency: true,
+      trackThroughput: true,
+      trackErrors: true,
+      enableProfiling: false,
       correlationTTL: 1800000, // 30 minutes
+      maxCorrelationDepth: 5,
       correlationPatterns: [
         'monitoring:alert->monitoring:health',
         'monitoring:health->monitoring:alert',
         'monitoring:metrics->monitoring:alert',
       ],
+      trackMetricsFlow: true,
+      trackHealthStatus: true,
+      trackPerformanceInsights: true,
     },
     healthMonitoringConfig: {
       enabled: true,
@@ -275,7 +285,7 @@ export const MonitoringEventConfigs = {
         'monitoring-availability': 0.95,
       },
     },
-  } as Partial<MonitoringEventAdapterConfig>,
+  } as any,
 
   /**
    * Dashboard integration focused configuration.
@@ -518,6 +528,14 @@ export const MonitoringEventAdapterFactory = {
       monitoring: {
         enabled: true,
         strategy: 'metrics' as const,
+        metricsInterval: 10000,
+        trackLatency: true,
+        trackThroughput: true,
+        trackErrors: true,
+        enableProfiling: false,
+        correlationTTL: 1800000,
+        maxCorrelationDepth: 5,
+        correlationPatterns: [],
         trackMetricsFlow: true,
         trackHealthStatus: true,
         trackPerformanceInsights: true,
@@ -595,7 +613,8 @@ export class MonitoringEventRegistry {
       }
     });
 
-    adapter.on('error', async (error: Error) => {
+    adapter.on('error', async (...args: unknown[]) => {
+      const error = args[0] as Error;
       const hook = MonitoringEventRegistry.lifecycleHooks.get(name)?.onError;
       if (hook) {
         await hook(adapter, error);
@@ -778,7 +797,7 @@ export {
   createDefaultMonitoringEventAdapterConfig,
   createMonitoringEventAdapter,
   MonitoringEventAdapter,
-  MonitoringEventAdapterConfig,
 } from './monitoring-event-adapter';
+export type { MonitoringEventAdapterConfig } from './monitoring-event-adapter';
 
 export default MonitoringEventFactory;

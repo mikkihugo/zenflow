@@ -59,4 +59,3 @@ export function getTokenName(token) {
 export function tokensEqual(token1, token2) {
     return token1.symbol === token2.symbol;
 }
-//# sourceMappingURL=token-factory.js.map

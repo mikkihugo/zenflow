@@ -14,7 +14,7 @@ import { getInjectionTokens, setInjectionTokens } from './injectable';
  * @example
  */
 export function inject(token) {
-    return (target, propertyKey, parameterIndex) => {
+    return (target, _propertyKey, parameterIndex) => {
         // Get existing injection tokens
         const existingTokens = getInjectionTokens(target) || [];
         // Ensure array is large enough
@@ -48,4 +48,3 @@ export function getInjectionToken(constructor, parameterIndex) {
 export function hasInjectionToken(constructor, parameterIndex) {
     return getInjectionToken(constructor, parameterIndex) !== undefined;
 }
-//# sourceMappingURL=inject.js.map

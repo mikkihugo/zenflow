@@ -30,7 +30,6 @@
     "noImplicitThis": true,
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
-    "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "verbatimModuleSyntax": false

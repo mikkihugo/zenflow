@@ -1,0 +1,74 @@
+{
+  "name": "@claude-zen/fact-system",
+  "version": "1.0.0",
+  "description": "High-performance FACT (Fast Augmented Context Tools) system combining TypeScript coordination with Rust processing engine",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "bin": {
+    "fact-tools": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc && npm run build:rust",
+    "build:rust": "cd src/rust && cargo build --release",
+    "build:wasm": "cd src/rust && wasm-pack build --target nodejs --out-dir ../../wasm",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist wasm target",
+    "prepublishOnly": "npm run clean && npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:rust": "cd src/rust && cargo test",
+    "bench": "cd src/rust && cargo bench",
+    "cli": "node dist/cli.js"
+  },
+  "keywords": [
+    "fact-system",
+    "context-processing",
+    "github-integration", 
+    "knowledge-management",
+    "rust-engine",
+    "typescript-api",
+    "high-performance",
+    "caching",
+    "external-apis",
+    "ai"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "nanoid": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/database": "workspace:*",
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "@types/node": "^20.10.6"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/cli.js"
+    }
+  },
+  "files": [
+    "dist",
+    "wasm",
+    "src/rust/target/release/fact-tools",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/fact-system"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

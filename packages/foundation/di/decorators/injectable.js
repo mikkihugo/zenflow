@@ -111,4 +111,3 @@ export function copyMetadata(source, target) {
         Reflect.defineMetadata(key, metadata, target);
     }
 }
-//# sourceMappingURL=injectable.js.map

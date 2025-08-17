@@ -7,6 +7,8 @@
 import { nanoid } from 'nanoid';
 import { getLogger } from '@claude-zen/foundation';
 import { getTeamworkStorage } from './storage';
+import { BrainCoordinator, type PromptOptimizationRequest } from '@claude-zen/brain';
+import { PatternRecognitionEngine } from '@claude-zen/adaptive-learning';
 
 const logger = getLogger('teamwork-orchestrator');
 import type {
@@ -28,6 +30,27 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
   private activeSessions = new Map<string, ConversationSession>();
   private eventHandlers = new Map<string, Function[]>();
   private storage = getTeamworkStorage();
+  
+  // AI-powered coordination with Brain + Adaptive Learning
+  private brainCoordinator: BrainCoordinator;
+  private patternEngine: PatternRecognitionEngine;
+
+  constructor() {
+    // Initialize AI coordination systems
+    this.brainCoordinator = new BrainCoordinator({
+      sessionId: 'teamwork-orchestrator',
+      enableLearning: true,
+      cacheOptimizations: true
+    });
+    
+    this.patternEngine = new PatternRecognitionEngine({
+      enableCaching: true,
+      confidenceThreshold: 0.75,
+      learningRate: 0.2
+    });
+    
+    logger.info('🧠 Team coordination initialized with Brain + Adaptive Learning');
+  }
 
   /**
    * Create a new conversation session.
@@ -96,7 +119,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
         metrics: session.metrics,
       });
       
-      logger.info('Agent joined conversation:', agent.id, conversationId);
+      logger.info('Agent joined conversation', { agentId: agent.id, conversationId });
     }
   }
 
@@ -116,7 +139,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       participants: session.participants,
     });
     
-    logger.info('Agent left conversation:', agent.id, conversationId);
+    logger.info('Agent left conversation', { agentId: agent.id, conversationId });
   }
 
   /**
@@ -154,7 +177,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Update storage
     await this.storage.addMessage(message.conversationId, message);
 
-    logger.debug('Message sent:', message.id, message.messageType);
+    logger.debug('Message sent', { messageId: message.id, messageType: message.messageType });
 
     // Emit message event
     await this.emit('message', { session, message });
@@ -188,7 +211,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       status: session.status,
     });
     
-    logger.info('Moderation action applied:', action.type, conversationId);
+    logger.info('Moderation action applied', { actionType: action.type, conversationId });
   }
 
   /**
@@ -243,7 +266,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     // Remove from active sessions
     this.activeSessions.delete(conversationId);
 
-    logger.info('Conversation terminated:', conversationId, reason);
+    logger.info('Conversation terminated', { conversationId, reason });
 
     return outcomes;
   }

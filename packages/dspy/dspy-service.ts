@@ -11,7 +11,7 @@
 // Shared module interfaces
 interface SharedLLMService {
   analyze(prompt: string, options?: any): Promise<string>;
-  createClaudeCodeLLM(): Promise<any>;
+  createLLMProvider(): Promise<any>;
 }
 
 interface SharedStorage {
@@ -177,7 +177,7 @@ export class DSPyService {
         return `Mock DSPy response for: ${prompt.substring(0, 50)}...`;
       },
       
-      async createClaudeCodeLLM(): Promise<any> {
+      async createLLMProvider(): Promise<any> {
         return this; // Return self as fallback
       }
     };

@@ -14,6 +14,14 @@
 
 import { BaseModule, type Parameter, type UsageStats } from './module.js';
 import type { Example, Prediction, TraceStep } from '../interfaces/types.js';
+import { 
+  SignatureValidator, 
+  SignatureValidationError,
+  type EnhancedSignature,
+  type FieldSpec,
+  toBasicSignature,
+  createEnhancedSignature
+} from './signature.js';
 
 /**
  * Signature for predictor input/output specification
@@ -70,6 +78,10 @@ export interface PredictionResult extends Prediction {
 export interface DSPyPredictor extends BaseModule {
   /** Input/output signature */
   signature: Signature;
+  /** Enhanced signature with validation (if available) */
+  enhancedSignature?: EnhancedSignature;
+  /** Signature validator */
+  validator?: SignatureValidator;
   /** Demonstration examples */
   demos: Example[];
   /** Optional instruction string */
@@ -80,10 +92,16 @@ export interface DSPyPredictor extends BaseModule {
   updateDemos(newDemos: Example[]): void;
   /** Update instructions */
   updateInstructions(newInstructions: string): void;
+  /** Update signature */
+  updateSignature(newSignature: Signature | EnhancedSignature): void;
   /** Format prompt for language model */
   formatPrompt(inputs: Record<string, any>): string;
   /** Parse language model response */
   parseResponse(response: string, inputs: Record<string, any>): PredictionResult;
+  /** Validate inputs against signature */
+  validateInputs(inputs: Record<string, any>): void;
+  /** Validate outputs against signature */
+  validateOutputs(outputs: Record<string, any>): void;
 }
 
 /**
@@ -109,24 +127,51 @@ export interface DSPyPredictor extends BaseModule {
  */
 export class Predictor extends BaseModule implements DSPyPredictor {
   public signature: Signature;
+  public enhancedSignature?: EnhancedSignature;
+  public validator?: SignatureValidator;
   public demos: Example[] = [];
   public instructions?: string;
 
   /**
    * Initialize predictor with signature
    * 
-   * @param signature - Input/output specification
+   * @param signature - Input/output specification or enhanced signature
    * @param callbacks - Optional callback functions
    */
-  constructor(signature: Signature, callbacks?: any[]) {
+  constructor(signature: Signature | EnhancedSignature, callbacks?: any[]) {
     super(callbacks);
-    this.signature = signature;
-    this.instructions = signature.instruction;
+    
+    // Handle both basic and enhanced signatures
+    if (this.isEnhancedSignature(signature)) {
+      this.enhancedSignature = signature;
+      this.signature = toBasicSignature(signature);
+      this.validator = new SignatureValidator(signature);
+    } else {
+      this.signature = signature;
+    }
+    
+    this.instructions = this.signature.instruction;
 
     // Add predictor parameters
     this.addParameter('demos', this.demos, true, { type: 'predictor' });
     this.addParameter('instructions', this.instructions, true, { type: 'predictor' });
     this.addParameter('signature', this.signature, false, { type: 'predictor' });
+    if (this.enhancedSignature) {
+      this.addParameter('enhancedSignature', this.enhancedSignature, false, { type: 'predictor' });
+    }
+  }
+
+  /**
+   * Check if signature is enhanced
+   */
+  private isEnhancedSignature(signature: any): signature is EnhancedSignature {
+    return signature && 
+           typeof signature === 'object' &&
+           signature.inputs &&
+           signature.outputs &&
+           Object.values(signature.inputs).some((field: any) => 
+             typeof field === 'object' && 'type' in field
+           );
   }
 
   /**

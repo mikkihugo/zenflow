@@ -343,9 +343,15 @@ importers:
 
   packages/agui:
     dependencies:
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../foundation
       chalk:
         specifier: ^5.3.0
         version: 5.5.0
+      nanoid:
+        specifier: ^5.0.0
+        version: 5.1.5
     devDependencies:
       '@types/node':
         specifier: ^20.0.0

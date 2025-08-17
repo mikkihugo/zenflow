@@ -7,13 +7,11 @@
  */
 import { DIContainer } from './container/di-container';
 export { DIContainer } from './container/di-container';
-export { DIScope } from './container/di-scope';
 export { getInjectionToken, hasInjectionToken, inject, } from './decorators/inject';
 export { getInjectionMetadata, injectable, isInjectable, } from './decorators/injectable';
-export { FactoryProvider } from './providers/factory-provider';
-export { ScopedProvider } from './providers/scoped-provider';
 export { SingletonProvider } from './providers/singleton-provider';
 export { TransientProvider } from './providers/transient-provider';
+export { ScopedProvider } from './providers/scoped-provider';
 export type { Config, Database, EventBus, HttpClient, Logger, } from './tokens/core-tokens';
 export { CORE_TOKENS } from './tokens/core-tokens';
 export type { DataLoader, MetricsCollector, ModelStorage, NeuralNetworkTrainer, OptimizationEngine, } from './tokens/neural-tokens';

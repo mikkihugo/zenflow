@@ -39,4 +39,3 @@ export const SWARM_TOKENS = {
     Config: createToken('SwarmConfig'),
     StoragePath: createToken('SwarmStoragePath'),
 };
-//# sourceMappingURL=core-tokens.js.map

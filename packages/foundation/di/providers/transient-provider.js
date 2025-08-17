@@ -22,4 +22,3 @@ export class TransientProvider {
         }
     }
 }
-//# sourceMappingURL=transient-provider.js.map
