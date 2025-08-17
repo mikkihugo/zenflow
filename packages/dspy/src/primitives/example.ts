@@ -15,8 +15,23 @@
 export class Example {
   public data: Record<string, any>;
   
-  constructor(data: Record<string, any> = {}) {
-    this.data = { ...data };
+  constructor(
+    inputsOrData?: Record<string, any>, 
+    outputs?: Record<string, any>
+  ) {
+    if (typeof inputsOrData === 'object' && inputsOrData !== null && outputs === undefined) {
+      // Single object constructor: new Example({question: "What?", answer: "42"})
+      this.data = { ...inputsOrData };
+    } else if (typeof inputsOrData === 'object' && typeof outputs === 'object') {
+      // Two-object constructor: new Example({question: "What?"}, {answer: "42"})
+      this.data = { 
+        ...inputsOrData,
+        ...outputs
+      };
+    } else {
+      // Default empty constructor
+      this.data = {};
+    }
   }
 
   /**
@@ -150,6 +165,100 @@ export class Example {
    */
   get isEmpty(): boolean {
     return this.size === 0;
+  }
+
+
+  /**
+   * Stanford DSPy compatible inputs() method
+   * Returns a new Example with only input fields
+   */
+  inputs(): Example {
+    const inputData: Record<string, any> = {};
+    
+    // If input fields are explicitly designated, use those
+    if ((this as any)._input_fields) {
+      const inputFields = (this as any)._input_fields as Set<string>;
+      for (const [key, value] of Object.entries(this.data)) {
+        if (inputFields.has(key)) {
+          inputData[key] = value;
+        }
+      }
+    } else {
+      // Otherwise, use heuristic approach
+      const outputFields = new Set(['answer', 'output', 'result', 'prediction', 'target', 'label', 'completion']);
+      for (const [key, value] of Object.entries(this.data)) {
+        if (!outputFields.has(key.toLowerCase())) {
+          inputData[key] = value;
+        }
+      }
+    }
+    
+    return new Example(inputData);
+  }
+
+  /**
+   * Stanford DSPy compatible labels() method
+   * Returns a new Example with only output/label fields
+   */
+  labels(): Example {
+    const outputData: Record<string, any> = {};
+    
+    // If input fields are explicitly designated, labels are everything else
+    if ((this as any)._input_fields) {
+      const inputFields = (this as any)._input_fields as Set<string>;
+      for (const [key, value] of Object.entries(this.data)) {
+        if (!inputFields.has(key)) {
+          outputData[key] = value;
+        }
+      }
+    } else {
+      // Otherwise, use heuristic approach for output fields
+      const outputFields = new Set(['answer', 'output', 'result', 'prediction', 'target', 'label', 'completion']);
+      for (const [key, value] of Object.entries(this.data)) {
+        if (outputFields.has(key.toLowerCase())) {
+          outputData[key] = value;
+        }
+      }
+    }
+    
+    return new Example(outputData);
+  }
+
+  /**
+   * Stanford DSPy compatible outputs() method (alias for labels)
+   * Returns a new Example with only output fields
+   */
+  outputs(): Example {
+    return this.labels();
+  }
+
+  /**
+   * Stanford DSPy compatible without() method
+   * Returns a new Example excluding specified fields
+   */
+  without(...fields: string[]): Example {
+    const filteredData: Record<string, any> = {};
+    const fieldsToExclude = new Set(fields);
+    
+    for (const [key, value] of Object.entries(this.data)) {
+      if (!fieldsToExclude.has(key)) {
+        filteredData[key] = value;
+      }
+    }
+    
+    return new Example(filteredData);
+  }
+
+  /**
+   * Stanford DSPy compatible with_inputs method
+   * Creates a new Example where specified fields are marked as inputs
+   * This changes the behavior of inputs() and labels() methods
+   */
+  with_inputs(...fields: string[]): Example {
+    const newExample = new Example(this.data);
+    // Store the input field designation
+    (newExample as any)._input_fields = new Set(fields);
+    return newExample;
   }
 
   /**

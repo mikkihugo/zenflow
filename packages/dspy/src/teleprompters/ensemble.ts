@@ -129,20 +129,131 @@ class EnsembledProgram extends DSPyModule {
  * 
  * @example
  * ```typescript
- * // Basic ensemble
+ * // Basic ensemble with all programs
  * const ensemble = new Ensemble();
- * const ensembledProgram = ensemble.compile([program1, program2, program3]);
+ * const ensembledProgram = ensemble.compile([
+ *   optimizedProgram1,
+ *   optimizedProgram2, 
+ *   optimizedProgram3
+ * ]);
  * 
  * // Ensemble with majority voting
- * const ensemble = new Ensemble({ reduce_fn: dspy.majority });
- * const ensembledProgram = ensemble.compile(programs);
+ * const majorityEnsemble = new Ensemble({
+ *   reduce_fn: (outputs) => {
+ *     // Implement majority voting
+ *     const votes = outputs.map(o => o.data.answer);
+ *     const counts = votes.reduce((acc, vote) => {
+ *       acc[vote] = (acc[vote] || 0) + 1;
+ *       return acc;
+ *     }, {});
+ *     const winner = Object.keys(counts).reduce((a, b) => 
+ *       counts[a] > counts[b] ? a : b
+ *     );
+ *     return { data: { answer: winner }, confidence: counts[winner] / votes.length };
+ *   }
+ * });
+ * const majorityProgram = majorityEnsemble.compile([
+ *   program1, program2, program3, program4, program5
+ * ]);
  * 
- * // Ensemble with fixed size sampling
- * const ensemble = new Ensemble({ size: 3 });
- * const ensembledProgram = ensemble.compile(programs);
+ * // Ensemble with random sampling (useful for large program sets)
+ * const samplingEnsemble = new Ensemble({
+ *   size: 3,  // Randomly sample 3 programs per prediction
+ *   reduce_fn: (outputs) => {
+ *     // Average confidence scores
+ *     const avgConfidence = outputs.reduce((sum, o) => 
+ *       sum + (o.confidence || 0), 0) / outputs.length;
+ *     
+ *     // Use highest confidence prediction
+ *     const best = outputs.reduce((best, current) => 
+ *       (current.confidence || 0) > (best.confidence || 0) ? current : best
+ *     );
+ *     
+ *     return { ...best, confidence: avgConfidence };
+ *   }
+ * });
+ * const sampledProgram = samplingEnsemble.compile(manyPrograms);
+ * 
+ * // Production ensemble with error handling
+ * const productionEnsemble = new Ensemble({
+ *   reduce_fn: (outputs) => {
+ *     try {
+ *       // Filter out failed predictions
+ *       const validOutputs = outputs.filter(o => o.data && !o.data.error);
+ *       
+ *       if (validOutputs.length === 0) {
+ *         return { data: { error: "All ensemble members failed" }, confidence: 0 };
+ *       }
+ *       
+ *       // Weighted voting based on confidence
+ *       const weighted = validOutputs.map(o => ({
+ *         ...o,
+ *         weight: o.confidence || 0.5
+ *       }));
+ *       
+ *       const totalWeight = weighted.reduce((sum, o) => sum + o.weight, 0);
+ *       const normalized = weighted.map(o => ({
+ *         ...o,
+ *         normalizedWeight: o.weight / totalWeight
+ *       }));
+ *       
+ *       // Return consensus with aggregated confidence
+ *       const consensus = selectConsensus(normalized);
+ *       return {
+ *         data: consensus.data,
+ *         confidence: consensus.normalizedWeight,
+ *         reasoning: `Ensemble consensus from ${validOutputs.length}/${outputs.length} members`
+ *       };
+ *     } catch (error) {
+ *       return { 
+ *         data: { error: `Ensemble reduce failed: ${error.message}` }, 
+ *         confidence: 0 
+ *       };
+ *     }
+ *   }
+ * });
+ * 
+ * // Multi-domain ensemble (different programs for different tasks)
+ * const multiDomainEnsemble = new Ensemble({
+ *   size: 2,  // Sample 2 programs per prediction
+ *   reduce_fn: (outputs) => {
+ *     // Domain-aware aggregation
+ *     const domainScores = outputs.map(o => ({
+ *       ...o,
+ *       domain: detectDomain(o.data),
+ *       expertise: calculateExpertise(o.data)
+ *     }));
+ *     
+ *     // Weight by domain expertise
+ *     const expertChoice = domainScores.reduce((best, current) => 
+ *       current.expertise > best.expertise ? current : best
+ *     );
+ *     
+ *     return {
+ *       data: expertChoice.data,
+ *       confidence: expertChoice.expertise,
+ *       reasoning: `Selected expert for domain: ${expertChoice.domain}`
+ *     };
+ *   }
+ * });
+ * 
+ * const domainProgram = multiDomainEnsemble.compile([
+ *   mathSpecialistProgram,
+ *   scienceSpecialistProgram,
+ *   generalPurposeProgram
+ * ]);
+ * 
+ * // Run ensemble prediction
+ * const input = new Example({ question: "What is 2+2?", context: "math" });
+ * const result = await ensembledProgram.forward(input);
+ * console.log('Ensemble result:', result);
+ * 
+ * // Access ensemble configuration
+ * const config = ensemble.getConfig();
+ * console.log('Ensemble settings:', config);
  * ```
  */
-export class Ensemble extends Teleprompter {
+export class Ensemble {
   private config: Required<EnsembleConfig>;
 
   /**

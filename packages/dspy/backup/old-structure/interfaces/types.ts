@@ -93,11 +93,30 @@ export interface Teleprompter {
 }
 
 /**
+ * Field information for signature
+ */
+export interface FieldInfo {
+  type: string;
+  description?: string;
+  required?: boolean;
+}
+
+/**
+ * Language model interface
+ */
+export interface LanguageModel {
+  model: string;
+  generate(prompt: string, ...args: any[]): Promise<string>;
+}
+
+/**
  * Signature interface for DSPy components
  */
 export interface Signature {
   name: string;
   instructions?: string;
-  inputFields: Record<string, any>;
-  outputFields: Record<string, any>;
+  inputFields: Record<string, FieldInfo>;
+  outputFields: Record<string, FieldInfo>;
+  inputs?: Record<string, FieldInfo>; // Alias for compatibility
+  outputs?: Record<string, FieldInfo>; // Alias for compatibility
 }

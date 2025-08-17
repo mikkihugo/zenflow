@@ -78,6 +78,47 @@ export {
   Ensemble, 
   EnsembleConfig
 } from '../teleprompters/ensemble';
+export { 
+  GEPA, 
+  DspyGEPAResult,
+  type GEPAFeedbackMetric,
+  type ScoreWithFeedback,
+  type DSPyTrace,
+  AUTO_RUN_SETTINGS
+} from '../teleprompters/gepa';
+export { 
+  BootstrapFewShot,
+  LabeledFewShot,
+  type BootstrapConfig,
+  DEFAULT_BOOTSTRAP_CONFIG,
+  type BootstrapCompileOptions
+} from '../teleprompters/bootstrap';
+export { 
+  COPRO,
+  type BasicGenerateInstructionSignature,
+  type GenerateInstructionGivenAttemptsSignature,
+  type InstructionCompletions,
+  type CoproCandidate,
+  type CoproStats
+} from '../teleprompters/copro';
+export { 
+  BootstrapFewShotWithRandomSearch,
+  type CandidateResult
+} from '../teleprompters/bootstrap-random-search';
+export { 
+  SignatureOptimizer
+} from '../teleprompters/signature-opt';
+export { 
+  AvatarOptimizer,
+  type EvalResult,
+  type ActionOutput,
+  type ComparatorSignature,
+  type FeedbackBasedInstructionSignature,
+  type AvatarModule
+} from '../teleprompters/avatar-optimizer';
+export { 
+  BetterTogether
+} from '../teleprompters/better-together';
 
 /**
  * Mock Evaluate class for compatibility with existing tests
@@ -90,7 +131,7 @@ export class Evaluate {
     this.config = config;
   }
 
-  async evaluate(program: DSPyModule, dataset: Example[]): Promise<{ score: number }> {
+  async evaluate(program: any, dataset: any[]): Promise<{ score: number }> {
     // Mock evaluation - return random score for testing
     // In production, this would run the actual evaluation logic
     return { score: Math.random() * 0.3 + 0.7 }; // Score between 0.7-1.0

@@ -8,9 +8,9 @@
  * @version 2.0.0
  */
 
-import type { Signature } from '../primitives/predictor';
-import type { Example } from '../primitives/example';
-import type { Prediction } from '../primitives/prediction';
+import type { Signature } from './types';
+import { Example } from '../primitives/example';
+import type { Prediction } from './types';
 
 /**
  * Base adapter interface for formatting data

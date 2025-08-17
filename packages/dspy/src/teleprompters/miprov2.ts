@@ -104,25 +104,78 @@ export interface TrialLog {
  * 
  * @example
  * ```typescript
- * // Basic usage with auto mode
+ * // Basic usage with auto mode (recommended)
  * const miprov2 = new MIPROv2({
  *   metric: exactMatch,
- *   auto: 'light'
+ *   auto: 'light'  // Quick optimization for small datasets
  * });
- * const optimizedProgram = await miprov2.compile(student, { trainset });
+ * const optimizedProgram = await miprov2.compile(studentProgram, { 
+ *   trainset: trainingData 
+ * });
  * 
- * // Advanced usage with custom parameters
- * const miprov2 = new MIPROv2({
- *   metric: exactMatch,
- *   num_candidates: 12,
- *   max_bootstrapped_demos: 4,
+ * // Medium auto mode for balanced optimization
+ * const mediumOptimizer = new MIPROv2({
+ *   metric: f1ScoreMetric,
+ *   auto: 'medium',  // More thorough optimization
  *   verbose: true
  * });
- * const optimizedProgram = await miprov2.compile(student, {
- *   trainset,
- *   valset,
- *   num_trials: 50
+ * const result = await mediumOptimizer.compile(complexProgram, {
+ *   trainset: largerTrainingSet,
+ *   valset: validationSet
  * });
+ * 
+ * // Heavy auto mode for maximum optimization
+ * const heavyOptimizer = new MIPROv2({
+ *   metric: accuracyMetric,
+ *   auto: 'heavy',  // Comprehensive optimization for critical applications
+ *   track_stats: true,
+ *   log_dir: './optimization_logs'
+ * });
+ * const bestProgram = await heavyOptimizer.compile(criticalProgram, {
+ *   trainset: comprehensiveTrainingSet,
+ *   valset: largeValidationSet
+ * });
+ * 
+ * // Advanced manual configuration (experts only)
+ * const customOptimizer = new MIPROv2({
+ *   metric: customMetric,
+ *   num_candidates: 20,        // Manual candidate count
+ *   max_bootstrapped_demos: 8, // More demonstrations
+ *   max_labeled_demos: 6,      // More labeled examples
+ *   init_temperature: 0.7,     // Higher exploration
+ *   num_threads: 4,            // Parallel evaluation
+ *   verbose: true
+ * });
+ * const optimized = await customOptimizer.compile(studentProgram, {
+ *   trainset: trainingExamples,
+ *   valset: validationExamples,
+ *   num_trials: 100,           // More optimization rounds
+ *   minibatch: true,           // Use minibatch evaluation
+ *   minibatch_size: 50,        // Minibatch size
+ *   program_aware_proposer: true,  // Use program-aware proposals
+ *   data_aware_proposer: true      // Use data-aware proposals
+ * });
+ * 
+ * // Production configuration with error handling
+ * const productionOptimizer = new MIPROv2({
+ *   metric: productionMetric,
+ *   auto: 'medium',
+ *   max_errors: 5,             // Allow some failures
+ *   metric_threshold: 0.8,     // Quality threshold
+ *   seed: 42                   // Reproducible results
+ * });
+ * 
+ * try {
+ *   const production = await productionOptimizer.compile(deploymentProgram, {
+ *     trainset: productionTraining,
+ *     valset: productionValidation,
+ *     requires_permission_to_run: false,  // Skip permission prompts
+ *     provide_traceback: true              // Debug information
+ *   });
+ *   console.log('Optimization successful!');
+ * } catch (error) {
+ *   console.error('Optimization failed:', error.message);
+ * }
  * ```
  */
 export class MIPROv2 extends Teleprompter {

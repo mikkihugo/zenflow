@@ -468,7 +468,10 @@ describe('BootstrapFinetune Teleprompter', () => {
       differentTeacher.mockPredictors = []; // Different number of predictors
 
       await expect(
-        bootstrapFinetune.compile(mockStudent, trainset, differentTeacher)
+        bootstrapFinetune.compile(mockStudent, {
+          trainset,
+          teacher: differentTeacher
+        })
       ).rejects.toThrow('Structurally equivalent programs must have the same number of predictors');
     });
 
@@ -478,7 +481,10 @@ describe('BootstrapFinetune Teleprompter', () => {
       sharedTeacher.mockPredictors = mockStudent.predictors(); // Share same predictor objects
 
       await expect(
-        bootstrapFinetune.compile(mockStudent, trainset, sharedTeacher)
+        bootstrapFinetune.compile(mockStudent, {
+          trainset,
+          teacher: sharedTeacher
+        })
       ).rejects.toThrow('The programs share predictor');
     });
 

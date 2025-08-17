@@ -56,20 +56,55 @@ export interface OptimizationResult {
  * This class provides the interface that all teleprompters must implement.
  * It follows the exact API design of Stanford DSPy's Teleprompter class.
  * 
+ * EXACT Stanford DSPy API:
+ * def compile(self, student: Module, *, trainset: list[Example], teacher: Module | None = None, valset: list[Example] | None = None, **kwargs) -> Module:
+ * 
  * @abstract
  */
 export abstract class Teleprompter {
   /**
    * Compile and optimize a DSPy program
    * 
-   * @param student The student program to optimize
-   * @param options Compilation options including trainset, valset, etc.
+   * This method implements the exact Stanford DSPy Teleprompter API signature:
+   * compile(student, *, trainset, teacher=None, valset=None, **kwargs) -> Module
+   * 
+   * In TypeScript, we simulate keyword-only args using a required config object after student.
+   * 
+   * @param student The student program to optimize (required positional)
+   * @param config Required configuration object with trainset and optional parameters
+   * @param config.trainset Training dataset (required)
+   * @param config.teacher Teacher program (optional)
+   * @param config.valset Validation dataset (optional)
+   * @param config.kwargs Additional keyword arguments (optional)
    * @returns Promise resolving to the optimized program
    */
-  abstract compile(student: DSPyModule, options: CompileOptions): Promise<DSPyModule>;
+  abstract compile(
+    student: DSPyModule,
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | null;
+      valset?: Example[] | null;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule>;
 
   /**
-   * Get teleprompter configuration
+   * Get teleprompter parameters (matches Stanford get_params())
+   * Returns all instance attributes as a dictionary
+   */
+  getParams(): Record<string, any> {
+    // Return all enumerable properties (matches Python __dict__)
+    const params: Record<string, any> = {};
+    for (const key in this) {
+      if (this.hasOwnProperty(key) && typeof this[key] !== 'function') {
+        params[key] = this[key];
+      }
+    }
+    return params;
+  }
+
+  /**
+   * Get teleprompter configuration (alias for getParams for backwards compatibility)
    * Optional method for teleprompters to expose their configuration
    */
   getConfig?(): Record<string, any>;

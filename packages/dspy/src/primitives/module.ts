@@ -19,7 +19,7 @@ export abstract class DSPyModule {
   /**
    * Forward pass through the module
    */
-  abstract forward(example: Example): Promise<Prediction>;
+  abstract forward(inputs: any): Promise<any>;
 
   /**
    * Get all predictors in this module
@@ -54,6 +54,13 @@ export abstract class DSPyModule {
   }
 
   /**
+   * Stanford DSPy compatible named_predictors method
+   */
+  named_predictors(): [string, any][] {
+    return this.namedPredictors();
+  }
+
+  /**
    * Deep copy the module
    */
   deepcopy(): DSPyModule {
@@ -73,6 +80,16 @@ export abstract class DSPyModule {
       }
     }
     
+    return copy;
+  }
+
+  /**
+   * Stanford DSPy compatible reset_copy method
+   */
+  reset_copy(): DSPyModule {
+    const copy = this.deepcopy();
+    copy.reset();
+    (copy as any)._compiled = false;
     return copy;
   }
 

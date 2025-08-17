@@ -441,11 +441,14 @@ export class GRPO extends FinetuneTeleprompter {
    */
   async compile(
     student: DSPyModule,
-    trainset: Example[],
-    teacher: DSPyModule | DSPyModule[] | null = null,
-    valset: Example[] | null = null,
-    **kwargs: any
+    config: {
+      trainset: Example[];
+      teacher?: DSPyModule | DSPyModule[] | null;
+      valset?: Example[] | null;
+      [key: string]: any;
+    }
   ): Promise<DSPyModule> {
+    const { trainset, teacher = null, valset = null } = config;
     const logger = { info: console.log, warning: console.warn };
     
     logger.info("Starting the GRPO compilation process... The LM(s) for the student program will be updated in place at the end of the training.");
@@ -796,7 +799,7 @@ export class GRPO extends FinetuneTeleprompter {
   /**
    * Check if prediction is a failed prediction
    */
-  private is_failed_prediction(prediction: any): prediction is FailedPrediction {
+  private is_failed_prediction(prediction: any): boolean {
     return prediction && typeof prediction === 'object' && 'completion_text' in prediction;
   }
 }

@@ -10,9 +10,9 @@
  * @since 1.0.0-alpha.45
  */
 
-import { ChatAdapter, type FieldInfoWithName } from './chat-adapter.js';
-import type { Signature, LanguageModel, FieldInfo } from '../interfaces/types.js';
-import { parseValue, formatFieldValue, getAnnotationName, translateFieldType } from './utils.js';
+import { ChatAdapter, type FieldInfoWithName } from './chat-adapter';
+import type { Signature, LanguageModel, FieldInfo } from '../interfaces/types';
+import { parseValue, formatFieldValue, getAnnotationName, translateFieldType } from './utils';
 
 /**
  * Adapter configuration for JSON mode
@@ -77,9 +77,9 @@ export class JSONAdapter extends ChatAdapter {
   }
 
   /**
-   * Format LM call with JSON response formatting
+   * Generate JSON response using language model
    */
-  async call(
+  async generate(
     lm: LanguageModel,
     lmKwargs: Record<string, any>,
     signature: Signature,
@@ -91,16 +91,16 @@ export class JSONAdapter extends ChatAdapter {
     const supportsStructuredOutputs = this.supportsStructuredOutputs(provider);
     
     if (supportsStructuredOutputs && !this.hasOpenEndedMapping(signature)) {
-      return this.callWithStructuredOutputs(lm, lmKwargs, signature, demos, inputs);
+      return this.generateWithStructuredOutputs(lm, lmKwargs, signature, demos, inputs);
     } else {
-      return this.callWithJSONMode(lm, lmKwargs, signature, demos, inputs);
+      return this.generateWithJSONMode(lm, lmKwargs, signature, demos, inputs);
     }
   }
 
   /**
-   * Call with OpenAI Structured Outputs
+   * Generate with OpenAI Structured Outputs
    */
-  private async callWithStructuredOutputs(
+  private async generateWithStructuredOutputs(
     lm: LanguageModel,
     lmKwargs: Record<string, any>,
     signature: Signature,
@@ -114,17 +114,24 @@ export class JSONAdapter extends ChatAdapter {
         response_format: responseFormat
       };
       
-      return await super.call(lm, enhancedKwargs, signature, demos, inputs);
+      // Generate response using language model
+      const formattedMessages = this.format(signature, inputs, demos as any[]);
+      const prompt = formattedMessages.map(m => `${m.role}: ${m.content}`).join('\n');
+      const response = await lm.generate(prompt, enhancedKwargs);
+      
+      // Parse the structured response
+      const parsed = this.parse(signature, response);
+      return [parsed];
     } catch (error) {
       console.warn('Structured outputs failed, falling back to JSON mode:', error);
-      return this.callWithJSONMode(lm, lmKwargs, signature, demos, inputs);
+      return this.generateWithJSONMode(lm, lmKwargs, signature, demos, inputs);
     }
   }
 
   /**
-   * Call with JSON object mode
+   * Generate with JSON object mode
    */
-  private async callWithJSONMode(
+  private async generateWithJSONMode(
     lm: LanguageModel,
     lmKwargs: Record<string, any>,
     signature: Signature,
@@ -136,7 +143,15 @@ export class JSONAdapter extends ChatAdapter {
       response_format: { type: "json_object" }
     };
     
-    return await super.call(lm, enhancedKwargs, signature, demos, inputs);
+    // Generate response using language model
+    const formattedMessages = this.format(signature, inputs, demos as any[]);
+    const prompt = formattedMessages.map(m => `${m.role}: ${m.content}`).join('\n') + 
+      '\n\nRespond with a valid JSON object.';
+    const response = await lm.generate(prompt, enhancedKwargs);
+    
+    // Parse the JSON response
+    const parsed = this.parse(signature, response);
+    return [parsed];
   }
 
   /**
@@ -148,11 +163,13 @@ export class JSONAdapter extends ChatAdapter {
 
     // Format input fields
     parts.push("Inputs will have the following structure:");
-    parts.push(this.formatSignatureFieldsForInstructions(signature.inputs, "user"));
+    const inputFields = signature.inputs || signature.inputFields || {};
+    parts.push(this.formatSignatureFieldsForInstructions(inputFields, "user"));
 
     // Format output fields
     parts.push("Outputs will be a JSON object with the following fields.");
-    parts.push(this.formatSignatureFieldsForInstructions(signature.outputs, "assistant"));
+    const outputFields = signature.outputs || signature.outputFields || {};
+    parts.push(this.formatSignatureFieldsForInstructions(outputFields, "assistant"));
 
     return parts.join("\n\n").trim();
   }
@@ -168,7 +185,8 @@ export class JSONAdapter extends ChatAdapter {
     };
 
     let message = "Respond with a JSON object in the following order of fields: ";
-    const fieldDescriptions = Object.entries(signature.outputs).map(
+    const outputFields = signature.outputs || signature.outputFields || {};
+    const fieldDescriptions = Object.entries(outputFields).map(
       ([name, field]) => `\`${name}\`${typeInfo(field)}`
     );
     message += fieldDescriptions.join(", then ");
@@ -186,8 +204,9 @@ export class JSONAdapter extends ChatAdapter {
     missingFieldMessage?: string
   ): string {
     const fieldsWithValues: Record<string, any> = {};
+    const outputFields = signature.outputs || signature.outputFields || {};
     
-    for (const [key, field] of Object.entries(signature.outputs)) {
+    for (const [key] of Object.entries(outputFields)) {
       fieldsWithValues[key] = outputs[key] ?? missingFieldMessage;
     }
 
@@ -296,7 +315,7 @@ export class JSONAdapter extends ChatAdapter {
       signature,
       jsonContent,
       undefined,
-      `Failed to parse JSON after ${this.config.max_parse_attempts} attempts: ${attempts.map(e => e.message).join(', ')}`
+      `Failed to parse JSON after ${this.config.max_parse_attempts} attempts: ${attempts.map((e: any) => e.message).join(', ')}`
     );
   }
 

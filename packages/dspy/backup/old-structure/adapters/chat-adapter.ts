@@ -9,9 +9,9 @@
  */
 
 import type { Adapter } from '../interfaces/adapter';
-import type { Signature } from '../primitives/predictor';
-import type { Example } from '../primitives/example';
-import type { Prediction } from '../primitives/prediction';
+import type { Signature } from '../interfaces/types';
+import { Example } from '../primitives/example';
+import type { Prediction } from '../interfaces/types';
 
 /**
  * Chat message interface
@@ -19,6 +19,18 @@ import type { Prediction } from '../primitives/prediction';
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant';
   content: string;
+}
+
+/**
+ * Field info with name for adapter formatting
+ */
+export interface FieldInfoWithName {
+  name: string;
+  info: {
+    type: string;
+    description?: string;
+    required?: boolean;
+  };
 }
 
 /**
@@ -36,10 +48,10 @@ export class ChatAdapter implements Adapter {
     const messages: ChatMessage[] = [];
 
     // Add system message with instruction
-    if (signature.instruction) {
+    if (signature.instructions) {
       messages.push({
         role: 'system',
-        content: signature.instruction
+        content: signature.instructions
       });
     }
 
@@ -85,7 +97,7 @@ export class ChatAdapter implements Adapter {
     const messages = this.format(signature, inputs, demos);
     
     // Add expected output as final assistant message
-    const outputData = 'data' in outputs ? outputs.data : outputs;
+    const outputData = 'data' in outputs ? outputs['data'] : outputs;
     const outputText = this.formatOutputs(outputData, signature);
     messages.push({
       role: 'assistant',
@@ -105,14 +117,25 @@ export class ChatAdapter implements Adapter {
     // Simple parsing - extract fields based on signature outputs
     const result: Record<string, any> = {};
     
-    for (const [field, type] of Object.entries(signature.outputs)) {
-      // For now, just return the raw response for the primary output field
-      if (Object.keys(signature.outputs).length === 1) {
-        result[field] = response.trim();
-      } else {
-        // Multi-field parsing would require more sophisticated logic
+    // Get output fields from signature
+    const outputFields = signature.outputs 
+      ? Object.keys(signature.outputs) 
+      : signature.outputFields 
+        ? Object.keys(signature.outputFields)
+        : [];
+    
+    if (outputFields.length === 1) {
+      // Single output field - return response as that field
+      result[outputFields[0]] = response.trim();
+    } else if (outputFields.length > 1) {
+      // Multi-field parsing would require more sophisticated logic
+      // For now, assign the response to all fields
+      for (const field of outputFields) {
         result[field] = response.trim();
       }
+    } else {
+      // No defined outputs, return as generic output
+      result.output = response.trim();
     }
 
     return result;
@@ -125,7 +148,11 @@ export class ChatAdapter implements Adapter {
     const parts: string[] = [];
     
     for (const [field, value] of Object.entries(inputs)) {
-      if (signature.inputs[field]) {
+      if ((signature.inputs && signature.inputs[field]) || 
+          (signature.inputFields && signature.inputFields[field])) {
+        parts.push(`${field}: ${value}`);
+      } else {
+        // If no signature inputs defined, include all fields
         parts.push(`${field}: ${value}`);
       }
     }
@@ -140,7 +167,11 @@ export class ChatAdapter implements Adapter {
     const parts: string[] = [];
     
     for (const [field, value] of Object.entries(outputs)) {
-      if (signature.outputs[field]) {
+      if ((signature.outputs && signature.outputs[field]) || 
+          (signature.outputFields && signature.outputFields[field])) {
+        parts.push(`${field}: ${value}`);
+      } else {
+        // If no signature outputs defined, include all fields
         parts.push(`${field}: ${value}`);
       }
     }
