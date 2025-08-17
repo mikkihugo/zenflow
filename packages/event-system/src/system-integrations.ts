@@ -101,7 +101,7 @@ export class UELEnhancedEventBus extends EventEmitter {
 
       // Initialize migration helper
       this.migrationHelper = new EventEmitterMigrationHelper(
-        integration.eventManager,
+        integration.eventManager as any,
         this.logger
       );
 

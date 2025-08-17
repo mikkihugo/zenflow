@@ -7,7 +7,7 @@
  */
 
 import { configure } from '@logtape/logtape';
-import { getLogger } from './config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 import { ProcessLifecycleManager } from './core/process-lifecycle';
 import type { DIContainer } from './di/index';
 import { createClaudeZenDIContainer, initializeDIServices, shutdownDIContainer } from './core/di-container';
@@ -43,7 +43,7 @@ async function main() {
     loggers: [{ category: [], level: 'debug', sinks: ['console'] }],
   });
 
-  logger = getLogger('Main');
+  logger = new Logger('Main');
 
   // Check if another instance is already running
   const isRunning = await checkIfRunning();

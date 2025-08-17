@@ -6,13 +6,13 @@
  */
 
 import { LLM_PROVIDER_CONFIG } from '../../config/llm-providers.config';
-import { createLogger } from '../../core/logger';
+import { Logger } from '@claude-zen/foundation';
 import type {
   AnalysisRequest,
   AnalysisResult,
 } from './llm-integration.service';
 
-const logger = createLogger('coordination-services-llm-stats');
+const logger = new Logger('coordination-services-llm-stats');
 
 export interface LLMCallRecord {
   id: string;

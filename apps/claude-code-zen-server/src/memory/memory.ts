@@ -2,9 +2,9 @@
  * @file Session-based memory storage with pluggable backends.
  */
 
-import { getLogger } from '../config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 
-const logger = getLogger('Memory');
+const logger = new Logger('Memory');
 
 import { EventEmitter } from 'node:events';
 import type {

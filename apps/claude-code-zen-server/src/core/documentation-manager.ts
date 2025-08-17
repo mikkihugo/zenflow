@@ -20,10 +20,10 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '@claude-zen/foundation';
+import { Logger } from '@claude-zen/foundation';
 import type { MemorySystem } from '../memory/memory-system';
 
-const logger = getLogger('DocumentationManager');
+const logger = new Logger('DocumentationManager');
 
 /**
  * Documentation manager configuration.

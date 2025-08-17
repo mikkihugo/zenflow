@@ -208,11 +208,12 @@ export class UELFactory {
     getFactory: () => undefined,
     listFactoryTypes: () => [],
     getAllEventManagers: () => new Map<string, EventManager>(),
+    findEventManager: () => undefined,
+    getEventManagersByType: () => [],
     broadcast: async () => {},
+    broadcastToType: async () => {},
     getGlobalMetrics: async () => ({ totalManagers: 0, totalEvents: 0, totalSubscriptions: 0, averageLatency: 0, errorRate: 0 }),
     healthCheckAll: async () => new Map<string, EventManagerStatus>(),
-    getRegistryStats: () => ({ totalFactories: 0, totalManagers: 0, totalEventTypes: 0, managersByType: {} }),
-    clearAll: async () => {},
     shutdownAll: async () => {}
   };
   private transactionLog = new Map<string, EventManagerTransaction>();
@@ -621,11 +622,12 @@ export class UELFactory {
       getFactory: () => undefined,
       listFactoryTypes: () => [],
       getAllEventManagers: () => new Map<string, EventManager>(),
+      findEventManager: () => undefined,
+      getEventManagersByType: () => [],
       broadcast: async () => {},
+      broadcastToType: async () => {},
       getGlobalMetrics: async () => ({ totalManagers: 0, totalEvents: 0, totalSubscriptions: 0, averageLatency: 0, errorRate: 0 }),
       healthCheckAll: async () => new Map<string, EventManagerStatus>(),
-        getRegistryStats: () => ({ totalFactories: 0, totalManagers: 0, totalEventTypes: 0, managersByType: {} }),
-      clearAll: async () => {},
       shutdownAll: async () => {}
     };
     this.factoryCache.clear();

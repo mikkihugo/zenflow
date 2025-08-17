@@ -26,16 +26,30 @@ export * from './core/event-bus';
 // UEL (Unified Event Layer) exports - Main interface
 export * from './core/uel-singleton';
 
-// Core interfaces and types
-export * from './core/interfaces';
-// Note: Event types are re-exported from core/interfaces to avoid conflicts
+// Core interfaces and types - selective exports to avoid conflicts
+export type {
+  EventManagerConfig,
+  EventManagerStatus,
+  EventManagerMetrics,
+  EventFilter,
+  EventManagerType,
+  EventListener,
+  EventSubscription,
+  EventManager,
+  EventManagerFactory,
+  EventManagerRegistry
+} from './core/interfaces';
+export {
+  EventManagerTypes,
+  EventManagerPresets,
+  EventTypeGuards
+} from './core/interfaces';
 
-// Event adapters
-export * from './adapters/index';
+// Event adapters - remove duplicate exports
 // Note: neural-event-factory temporarily excluded due to complex type conflicts
 
 // Event factories and registry
-export * from './factories/index';
+export * from './factories';
 export * from './registry';
 
 // Event manager

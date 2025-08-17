@@ -322,6 +322,347 @@ importers:
         specifier: ^4.20.4
         version: 4.20.4
 
+  apps/claude-code-zen-server:
+    dependencies:
+      '@claude-zen/adaptive-learning':
+        specifier: workspace:*
+        version: link:../../packages/adaptive-learning
+      '@claude-zen/agent-monitoring':
+        specifier: workspace:*
+        version: link:../../packages/agent-monitoring
+      '@claude-zen/agui':
+        specifier: workspace:*
+        version: link:../../packages/agui
+      '@claude-zen/ai-safety':
+        specifier: workspace:*
+        version: link:../../packages/ai-safety
+      '@claude-zen/brain':
+        specifier: workspace:*
+        version: link:../../packages/brain
+      '@claude-zen/chaos-engineering':
+        specifier: workspace:*
+        version: link:../../packages/chaos-engineering
+      '@claude-zen/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@claude-zen/dspy':
+        specifier: workspace:*
+        version: link:../../packages/dspy
+      '@claude-zen/event-system':
+        specifier: workspace:*
+        version: link:../../packages/event-system
+      '@claude-zen/fact-system':
+        specifier: workspace:*
+        version: link:../../packages/fact-system
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../packages/foundation
+      '@claude-zen/gpu-acceleration':
+        specifier: workspace:*
+        version: link:../../packages/gpu-acceleration
+      '@claude-zen/knowledge':
+        specifier: workspace:*
+        version: link:../../packages/knowledge
+      '@claude-zen/load-balancing':
+        specifier: workspace:*
+        version: link:../../packages/load-balancing
+      '@claude-zen/monitoring':
+        specifier: workspace:*
+        version: link:../../packages/monitoring
+      '@claude-zen/neural-forecasting':
+        specifier: workspace:*
+        version: link:../../packages/neural-forecasting
+      '@claude-zen/optimization':
+        specifier: workspace:*
+        version: link:../../packages/optimization
+      '@claude-zen/teamwork':
+        specifier: workspace:*
+        version: link:../../packages/teamwork
+      '@claude-zen/workflows':
+        specifier: workspace:*
+        version: link:../../packages/workflows
+      '@godaddy/terminus':
+        specifier: ^4.12.1
+        version: 4.12.1
+      '@lancedb/lancedb':
+        specifier: ^0.21.2
+        version: 0.21.3(apache-arrow@15.0.2)
+      '@logtape/file':
+        specifier: ^1.0.4
+        version: 1.0.4(@logtape/logtape@1.0.4)
+      '@logtape/logtape':
+        specifier: ^1.0.4
+        version: 1.0.4
+      '@octokit/rest':
+        specifier: ^22.0.0
+        version: 22.0.0
+      '@types/better-sqlite3':
+        specifier: ^7.6.13
+        version: 7.6.13
+      better-sqlite3:
+        specifier: ^12.2.0
+        version: 12.2.0
+      chalk:
+        specifier: ^5.5.0
+        version: 5.5.0
+      commander:
+        specifier: ^12.1.0
+        version: 12.1.0
+      compression:
+        specifier: ^1.8.1
+        version: 1.8.1
+      connect-redis:
+        specifier: ^9.0.0
+        version: 9.0.0(express-session@1.18.2)(redis@5.8.1)
+      cors:
+        specifier: ^2.8.5
+        version: 2.8.5
+      express:
+        specifier: ^5.1.0
+        version: 5.1.0
+      express-rate-limit:
+        specifier: ^8.0.1
+        version: 8.0.1(express@5.1.0)
+      express-session:
+        specifier: ^1.18.2
+        version: 1.18.2
+      express-slow-down:
+        specifier: ^3.0.0
+        version: 3.0.0(express@5.1.0)
+      express-status-monitor:
+        specifier: ^1.3.4
+        version: 1.3.4
+      express-validator:
+        specifier: ^7.2.1
+        version: 7.2.1
+      express-ws:
+        specifier: ^5.0.2
+        version: 5.0.2(express@5.1.0)
+      fs-extra:
+        specifier: ^11.3.1
+        version: 11.3.1
+      helmet:
+        specifier: ^8.1.0
+        version: 8.1.0
+      http-proxy-middleware:
+        specifier: ^3.0.5
+        version: 3.0.5
+      ioredis:
+        specifier: ^5.7.0
+        version: 5.7.0
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
+      kuzu:
+        specifier: ^0.7.1
+        version: 0.7.1
+      listr2:
+        specifier: ^8.2.8
+        version: 8.3.3
+      markdown-it:
+        specifier: ^14.1.0
+        version: 14.1.0
+      morgan:
+        specifier: ^1.10.1
+        version: 1.10.1
+      nanoid:
+        specifier: ^5.0.10
+        version: 5.1.5
+      node-cron:
+        specifier: ^4.2.1
+        version: 4.2.1
+      on-finished:
+        specifier: ^2.4.1
+        version: 2.4.1
+      path-to-regexp:
+        specifier: ^8.2.0
+        version: 8.2.0
+      prom-client:
+        specifier: ^15.1.3
+        version: 15.1.3
+      redis:
+        specifier: ^5.8.1
+        version: 5.8.1
+      response-time:
+        specifier: ^2.3.4
+        version: 2.3.4
+      seedrandom:
+        specifier: ^3.0.5
+        version: 3.0.5
+      semver:
+        specifier: ^7.6.3
+        version: 7.7.2
+      socket.io:
+        specifier: ^4.8.1
+        version: 4.8.1
+      swagger-jsdoc:
+        specifier: ^6.2.8
+        version: 6.2.8(openapi-types@12.1.3)
+      swagger-ui-express:
+        specifier: ^5.0.1
+        version: 5.0.1(express@5.1.0)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      uuid:
+        specifier: ^11.1.0
+        version: 11.1.0
+      ws:
+        specifier: ^8.18.3
+        version: 8.18.3
+      yaml:
+        specifier: ^2.6.1
+        version: 2.8.1
+      zod:
+        specifier: ^3.24.1
+        version: 3.25.76
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^2.1.4
+        version: 2.2.0
+      '@types/compression':
+        specifier: ^1.7.5
+        version: 1.8.1
+      '@types/cors':
+        specifier: ^2.8.17
+        version: 2.8.19
+      '@types/express':
+        specifier: ^5.0.2
+        version: 5.0.3
+      '@types/fs-extra':
+        specifier: ^11.0.4
+        version: 11.0.4
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
+      '@types/markdown-it':
+        specifier: ^14.1.2
+        version: 14.1.2
+      '@types/node':
+        specifier: ^22.17.1
+        version: 22.17.2
+      '@types/node-cron':
+        specifier: ^3.0.11
+        version: 3.0.11
+      '@types/on-finished':
+        specifier: ^2.3.5
+        version: 2.3.5
+      '@types/response-time':
+        specifier: ^2.3.9
+        version: 2.3.9
+      '@types/seedrandom':
+        specifier: ^3.0.8
+        version: 3.0.8
+      '@types/semver':
+        specifier: ^7.5.8
+        version: 7.7.0
+      '@types/uuid':
+        specifier: ^10.0.0
+        version: 10.0.0
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
+      '@vitest/coverage-v8':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4)
+      concurrently:
+        specifier: ^9.1.1
+        version: 9.2.0
+      esbuild:
+        specifier: ^0.25.9
+        version: 0.25.9
+      nodemon:
+        specifier: ^3.1.7
+        version: 3.1.10
+      tsx:
+        specifier: ^4.20.4
+        version: 4.20.4
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(tsx@4.20.4)(yaml@2.8.1)
+
+  apps/web-dashboard:
+    dependencies:
+      '@claude-zen/agui':
+        specifier: workspace:*
+        version: link:../../packages/agui
+      '@claude-zen/database':
+        specifier: workspace:*
+        version: link:../../packages/database
+      '@claude-zen/event-system':
+        specifier: workspace:*
+        version: link:../../packages/event-system
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../packages/foundation
+      '@claude-zen/monitoring':
+        specifier: workspace:*
+        version: link:../../packages/monitoring
+      '@floating-ui/dom':
+        specifier: ^1.7.3
+        version: 1.7.3
+      '@sveltejs/adapter-node':
+        specifier: ^5.3.0
+        version: 5.3.1(@sveltejs/kit@2.31.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.1.2(svelte@5.38.1)(vite@7.1.2(@types/node@22.17.2)(tsx@4.20.4)(yaml@2.8.1)))(svelte@5.38.1)(vite@7.1.2(@types/node@22.17.2)(tsx@4.20.4)(yaml@2.8.1)))
+      '@sveltejs/kit':
+        specifier: ^2.31.0
+        version: 2.31.1(@opentelemetry/api@1.9.0)(@sveltejs/vite-plugin-svelte@6.1.2(svelte@5.38.1)(vite@7.1.2(@types/node@22.17.2)(tsx@4.20.4)(yaml@2.8.1)))(svelte@5.38.1)(vite@7.1.2(@types/node@22.17.2)(tsx@4.20.4)(yaml@2.8.1))
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.1.2
+        version: 6.1.2(svelte@5.38.1)(vite@7.1.2(@types/node@22.17.2)(tsx@4.20.4)(yaml@2.8.1))
+      '@tailwindcss/typography':
+        specifier: ^0.5.16
+        version: 0.5.16(tailwindcss@4.1.12)
+      autoprefixer:
+        specifier: ^10.4.21
+        version: 10.4.21(postcss@8.5.6)
+      lucide-svelte:
+        specifier: ^0.539.0
+        version: 0.539.0(svelte@5.38.1)
+      postcss:
+        specifier: ^8.5.6
+        version: 8.5.6
+      prism-themes:
+        specifier: ^1.9.0
+        version: 1.9.0
+      prismjs:
+        specifier: ^1.30.0
+        version: 1.30.0
+      socket.io-client:
+        specifier: ^4.8.1
+        version: 4.8.1
+      svelte:
+        specifier: ^5.38.1
+        version: 5.38.1
+      tailwindcss:
+        specifier: ^4.1.12
+        version: 4.1.12
+      vite:
+        specifier: ^7.1.2
+        version: 7.1.2(@types/node@22.17.2)(tsx@4.20.4)(yaml@2.8.1)
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^2.1.4
+        version: 2.2.0
+      '@types/node':
+        specifier: ^22.17.1
+        version: 22.17.2
+      '@vitest/coverage-v8':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4)
+      '@vitest/ui':
+        specifier: ^3.2.4
+        version: 3.2.4(vitest@3.2.4)
+      svelte-check:
+        specifier: ^4.3.1
+        version: 4.3.1(picomatch@4.0.3)(svelte@5.38.1)(typescript@5.9.2)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(tsx@4.20.4)(yaml@2.8.1)
+
   packages/adaptive-learning:
     dependencies:
       '@claude-zen/foundation':
@@ -330,6 +671,31 @@ importers:
       zod:
         specifier: ^3.22.4
         version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.19.11
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+      vitest:
+        specifier: ^1.1.0
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)
+
+  packages/agent-monitoring:
+    dependencies:
+      '@claude-zen/adaptive-learning':
+        specifier: workspace:*
+        version: link:../adaptive-learning
+      '@claude-zen/brain':
+        specifier: workspace:*
+        version: link:../brain
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+      nanoid:
+        specifier: ^5.0.0
+        version: 5.1.5
     devDependencies:
       '@types/node':
         specifier: ^20.10.6
@@ -370,6 +736,28 @@ importers:
         version: 5.9.2
       vitest:
         specifier: ^1.0.0
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)
+
+  packages/ai-safety:
+    dependencies:
+      '@claude-zen/brain':
+        specifier: workspace:*
+        version: link:../brain
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+      nanoid:
+        specifier: ^5.0.0
+        version: 5.1.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.19.11
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+      vitest:
+        specifier: ^1.1.0
         version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)
 
   packages/brain:
@@ -497,6 +885,28 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(tsx@4.20.4)(yaml@2.8.1)
 
+  packages/fact-system:
+    dependencies:
+      '@claude-zen/database':
+        specifier: workspace:*
+        version: link:../database
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+      nanoid:
+        specifier: ^5.0.0
+        version: 5.1.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.19.11
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+      vitest:
+        specifier: ^1.1.0
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)
+
   packages/foundation:
     dependencies:
       '@anthropic-ai/claude-code':
@@ -566,6 +976,28 @@ importers:
         specifier: ^1.0.0
         version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)
 
+  packages/load-balancing:
+    dependencies:
+      '@claude-zen/adaptive-learning':
+        specifier: workspace:*
+        version: link:../adaptive-learning
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../foundation
+      nanoid:
+        specifier: ^5.0.0
+        version: 5.1.5
+    devDependencies:
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.19.11
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.2
+      vitest:
+        specifier: ^1.1.0
+        version: 1.6.1(@types/node@20.19.11)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)
+
   packages/monitoring:
     dependencies:
       '@claude-zen/foundation':
@@ -631,6 +1063,12 @@ importers:
 
   packages/teamwork:
     dependencies:
+      '@claude-zen/adaptive-learning':
+        specifier: workspace:*
+        version: link:../adaptive-learning
+      '@claude-zen/brain':
+        specifier: workspace:*
+        version: link:../brain
       '@claude-zen/database':
         specifier: workspace:*
         version: link:../database

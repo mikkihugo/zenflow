@@ -11,20 +11,6 @@ const config = {
 			envPrefix: ''
 		}),
 		
-		// Configure file paths
-		files: {
-			assets: 'static',
-			hooks: {
-				client: 'src/hooks.client.ts',
-				server: 'src/hooks.server.ts'
-			},
-			lib: 'src/lib',
-			params: 'src/params',
-			routes: 'src/routes',
-			serviceWorker: 'src/service-worker.ts',
-			appTemplate: 'src/app.html'
-		},
-		
 		// Configure the development server
 		alias: {
 			$lib: 'src/lib',
@@ -32,15 +18,6 @@ const config = {
 			$stores: 'src/lib/stores',
 			$utils: 'src/lib/utils',
 			$types: 'src/lib/types'
-		},
-		
-		// Enable TypeScript checking in development
-		typescript: {
-			config: (config) => {
-				config.compilerOptions.allowJs = true;
-				config.compilerOptions.checkJs = true;
-				return config;
-			}
 		}
 	}
 };

@@ -5,7 +5,7 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 import type { 
   ClientConfig, 
   ClientMetrics, 
@@ -13,7 +13,7 @@ import type {
   ClientFactory 
 } from '../core/interfaces';
 
-const logger = getLogger('interfaces-clients-adapters-base-client-adapter');
+const logger = new Logger('interfaces-clients-adapters-base-client-adapter');
 
 /**
  * Universal Abstraction and Client Layer (UACL) Base Adapter.

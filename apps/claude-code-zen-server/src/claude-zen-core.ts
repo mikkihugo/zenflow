@@ -2,9 +2,9 @@
  * @file Claude-zen-core implementation.
  */
 
-import { getLogger } from './config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 
-const logger = getLogger('claude-zen-core');
+const logger = new Logger('claude-zen-core');
 
 /**
  * Claude Code Zen - Main Application Entry Point.

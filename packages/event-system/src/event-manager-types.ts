@@ -6,17 +6,19 @@
  */
 
 import type {
+  EventManagerConfig,
+  EventManager,
+  SystemEvent,
+} from './core/interfaces';
+import type {
   CommunicationEvent,
   CoordinationEvent,
   DatabaseEvent,
-  EventManagerConfig,
-  EventManager,
   InterfaceEvent,
   MemoryEvent,
   NeuralEvent,
-  SystemEvent,
   WorkflowEvent,
-} from './core/interfaces';
+} from './types';
 import type { MonitoringEvent } from './types';
 
 /**

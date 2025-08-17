@@ -1,22 +1,14 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "./.svelte-kit/tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "composite": true,
     "declaration": true,
     "declarationMap": true,
     "paths": {
-      "@claude-zen/*": ["../../packages/*/src", "../../packages/*/dist"],
-      "$lib/*": ["./src/lib/*"],
-      "$app/*": ["./.svelte-kit/runtime/app/*"],
-      "$env/*": ["./.svelte-kit/runtime/env/*"]
+      "@claude-zen/*": ["../../packages/*/src", "../../packages/*/dist"]
     }
   },
-  "include": [
-    "src/**/*",
-    ".svelte-kit/ambient.d.ts"
-  ],
   "exclude": [
     "dist",
     "node_modules",
