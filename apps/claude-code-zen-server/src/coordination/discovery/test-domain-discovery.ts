@@ -24,7 +24,7 @@ import { getLogger } from '../../config/logging-config';
 import { WorkflowEngine } from '../../workflows/workflow-engine';
 import { DocumentProcessor } from '../../core/document-processor';
 import { EventBus } from '../core/event-bus';
-import { MemorySystem } from '../../core/memory-system';
+import { MemorySystem } from '../../core/memory-coordinator';
 import { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../../tools/domain-splitting/analyzers/domain-analyzer';

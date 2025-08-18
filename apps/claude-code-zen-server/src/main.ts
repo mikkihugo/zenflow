@@ -339,7 +339,7 @@ async function main() {
   });
 
   const loadBalancer = new LoadBalancer({
-    algorithms: ['adaptive-learning', 'ml-predictive'],
+    algorithms: ['brain-neural', 'ml-predictive'],
     capacityManagement: true
   });
 

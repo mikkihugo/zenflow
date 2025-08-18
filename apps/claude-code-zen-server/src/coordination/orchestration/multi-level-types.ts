@@ -12,7 +12,7 @@
  */
 
 import type { Domain } from '../../core/domain-boundary-validator';
-import type { BaseEvent } from '../../core/type-safe-event-system';
+import type { BaseEvent } from '@claude-zen/event-system';
 import type {
   WorkflowContext,
   WorkflowDefinition,

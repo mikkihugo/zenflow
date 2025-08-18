@@ -166,22 +166,27 @@ export class DatabaseController extends EventEmitter {
     try {
       this._logger.info('Initializing Database Controller with package delegation');
 
-      // Delegate to @claude-zen/database for multi-database operations
-      const { DatabaseFactory, RelationalDao, VectorDao, GraphDao } = await import('@claude-zen/database');
-      this.databaseFactory = new DatabaseFactory({
-        sqlite: { path: './data/app.db', enableWAL: true },
-        lancedb: { path: './data/vectors', dimensions: 1536 },
-        kuzu: { path: './data/graph.kuzu', enableOptimizations: true }
-      });
-      await this.databaseFactory.initialize();
-
-      // Create specialized DAOs
-      this.relationalDao = new RelationalDao(this.databaseFactory.getSQLiteAdapter());
-      this.vectorDao = new VectorDao(this.databaseFactory.getLanceDBAdapter());
-      this.graphDao = new GraphDao(this.databaseFactory.getKuzuAdapter());
+      // Delegate to @claude-zen/foundation for database operations (private database package)
+      const { getDatabaseAccess, Storage } = await import('@claude-zen/foundation');
+      const dbAccess = getDatabaseAccess();
+      
+      // Use foundation's storage abstraction for multi-database access
+      this.relationalDao = await dbAccess.getSQL('database-controller');
+      this.vectorDao = await dbAccess.getVector('database-controller');
+      this.graphDao = await dbAccess.getGraph('database-controller');
+      
+      // Store reference to database access for adapter compatibility
+      this.databaseFactory = {
+        getSQLiteAdapter: () => this.relationalDao,
+        getLanceDBAdapter: () => this.vectorDao,
+        getKuzuAdapter: () => this.graphDao,
+        shutdown: async () => {
+          // Foundation handles cleanup
+        }
+      };
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation/telemetry');
+      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
         serviceName: 'database-controller',
@@ -227,11 +232,10 @@ export class DatabaseController extends EventEmitter {
     const timer = this.performanceTracker.startTimer('execute_query');
     
     try {
-      // Delegate query execution to relational DAO
-      const result = await this.relationalDao.executeRawQuery(
+      // Delegate query execution to SQL database via foundation
+      const result = await this.relationalDao.query(
         request.sql,
-        request.params,
-        request.options
+        request.params || []
       );
 
       this.updateMetrics(timer.elapsed(), true);
@@ -274,8 +278,8 @@ export class DatabaseController extends EventEmitter {
     const timer = this.performanceTracker.startTimer('vector_query');
     
     try {
-      // Delegate vector search to vector DAO
-      const results = await this.vectorDao.search(request.vector, {
+      // Delegate vector search to vector database via foundation
+      const results = await this.vectorDao.similaritySearch(request.vector, {
         limit: request.limit || 10,
         threshold: request.threshold || 0.7,
         filter: request.filter,
@@ -322,11 +326,10 @@ export class DatabaseController extends EventEmitter {
     const timer = this.performanceTracker.startTimer('graph_query');
     
     try {
-      // Delegate graph query to graph DAO
-      const result = await this.graphDao.executeQuery(
+      // Delegate graph query to graph database via foundation
+      const result = await this.graphDao.query(
         request.query,
-        request.params,
-        request.options
+        request.params || {}
       );
 
       this.updateMetrics(timer.elapsed(), true);

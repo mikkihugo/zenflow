@@ -8,7 +8,7 @@
  * - @claude-zen/workflows: SPARC methodology workflow orchestration
  * - @claude-zen/knowledge: Coordination facts and learning from development patterns
  * - @claude-zen/foundation: Performance tracking, telemetry, and core utilities
- * - @claude-zen/adaptive-learning: Learning from swarm coordination patterns
+ * - @claude-zen/brain: Neural learning and adaptive patterns via BrainCoordinator
  * - @claude-zen/monitoring: Swarm health monitoring and performance metrics
  *
  * PERFORMANCE BENEFITS:
@@ -175,7 +175,6 @@ export class SwarmCommander extends EventEmitter {
       // Delegate to @claude-zen/workflows for SPARC methodology orchestration
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        name: `sparc-workflow-${this.config.swarmId}`,
         persistWorkflows: true,
         maxConcurrentWorkflows: this.config.maxAgents
       });
@@ -183,13 +182,13 @@ export class SwarmCommander extends EventEmitter {
 
       // Initialize SPARC engine if enabled
       if (this.config.sparcEnabled) {
-        const { SPARCEngineCore } = await import('@claude-zen/workflows');
+        const { SPARCEngineCore } = await import('@claude-zen/sparc');
         this.sparcEngine = new SPARCEngineCore({
-          mode: 'swarm-integrated',
-          swarmId: this.config.swarmId,
-          maxProjects: 10
+          maxProjects: 10,
+          enableMetrics: true,
+          defaultTimeout: 30000
         });
-        await this.workflowEngine.registerSPARCWorkflows();
+        await this.sparcEngine.initialize();
       }
 
       // Delegate to @claude-zen/knowledge for coordination facts and learning
@@ -206,22 +205,21 @@ export class SwarmCommander extends EventEmitter {
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/monitoring for swarm health monitoring
-      const { MonitoringSystem } = await import('@claude-zen/monitoring');
-      this.monitoringSystem = new MonitoringSystem({
-        serviceName: `swarm-${this.config.swarmId}`,
-        metricsCollection: { enabled: this.config.performanceMetrics.enabled },
-        performanceTracking: { enabled: true },
-        alerts: { enabled: true }
+      // Delegate to @claude-zen/foundation for swarm health monitoring  
+      const { createAgentMonitor } = await import('@claude-zen/foundation');
+      this.monitoringSystem = createAgentMonitor({
+        serviceName: `swarm-${this.config.swarmId}`
       });
 
-      // Delegate to @claude-zen/adaptive-learning for optimization
+      // Delegate to @claude-zen/brain for neural ML capabilities (per CLAUDE.md)
       if (this.config.learningEnabled) {
-        const { AdaptiveLearningSystem } = await import('@claude-zen/adaptive-learning');
-        this.adaptiveLearning = new AdaptiveLearningSystem({
-          domain: `swarm-coordination-${this.config.swarmId}`,
-          learningRate: this.config.learningMode === 'aggressive' ? 0.2 : 0.1,
-          adaptationThreshold: 0.7
+        const { BrainCoordinator } = await import('@claude-zen/brain');
+        this.adaptiveLearning = new BrainCoordinator({
+          autonomous: { 
+            enabled: true, 
+            learningRate: this.config.learningMode === 'aggressive' ? 0.2 : 0.1,
+            adaptationThreshold: 0.7
+          }
         });
         await this.adaptiveLearning.initialize();
       }

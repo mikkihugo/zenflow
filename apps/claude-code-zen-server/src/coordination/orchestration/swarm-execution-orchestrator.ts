@@ -16,12 +16,12 @@
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-system';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
+import type { MemorySystem } from '../../core/memory-coordinator';
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system';
+} from '@claude-zen/event-system';
 import type { Agent } from '../agents/agent';
 import type { CollectiveCubeCoordinator } from '../collective-cube-sync';
 import type { SPARCEngineCore } from '../swarm/sparc/sparc-engine-core';

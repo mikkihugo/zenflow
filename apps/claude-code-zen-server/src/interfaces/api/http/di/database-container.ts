@@ -432,24 +432,30 @@ class SimplifiedDatabaseController {
 
   async executeQuery(request: unknown): Promise<unknown> {
     const startTime = Date.now();
+    
+    // Type assertion with validation
+    const queryRequest = request as QueryRequest;
+    if (!queryRequest || typeof queryRequest !== 'object') {
+      throw new Error('Invalid query request format');
+    }
 
     try {
       this.logger.debug(
-        `Executing database query: ${request.sql.substring(0, 100)}...`
+        `Executing database query: ${queryRequest.sql.substring(0, 100)}...`
       );
 
-      if (!request.sql) {
+      if (!queryRequest.sql) {
         throw new Error('SQL query is required');
       }
 
       // Validate that this is actually a query (SELECT statement)
-      if (!this.isQueryStatement(request.sql)) {
+      if (!this.isQueryStatement(queryRequest.sql)) {
         throw new Error(
           'Only SELECT statements are allowed for query operations'
         );
       }
 
-      const result = await this.adapter.query(request.sql, request.params);
+      const result = await this.adapter.query(queryRequest.sql, queryRequest.params);
       const connectionStats = await this.adapter.getConnectionStats();
 
       const executionTime = Date.now() - startTime;
@@ -462,8 +468,8 @@ class SimplifiedDatabaseController {
       return {
         success: true,
         data: {
-          query: request.sql,
-          parameters: request.params,
+          query: queryRequest.sql,
+          parameters: queryRequest.params,
           results: result?.rows,
           fields: result?.fields,
         },
@@ -495,17 +501,23 @@ class SimplifiedDatabaseController {
 
   async executeCommand(request: unknown): Promise<unknown> {
     const startTime = Date.now();
+    
+    // Type assertion with validation
+    const commandRequest = request as CommandRequest;
+    if (!commandRequest || typeof commandRequest !== 'object') {
+      throw new Error('Invalid command request format');
+    }
 
     try {
       this.logger.debug(
-        `Executing database command: ${request.sql.substring(0, 100)}...`
+        `Executing database command: ${commandRequest.sql.substring(0, 100)}...`
       );
 
-      if (!request.sql) {
+      if (!commandRequest.sql) {
         throw new Error('SQL command is required');
       }
 
-      const result = await this.adapter.execute(request.sql, request.params);
+      const result = await this.adapter.execute(commandRequest.sql, commandRequest.params);
       const connectionStats = await this.adapter.getConnectionStats();
 
       const executionTime = Date.now() - startTime;
@@ -518,8 +530,8 @@ class SimplifiedDatabaseController {
       return {
         success: true,
         data: {
-          command: request.sql,
-          parameters: request.params,
+          command: commandRequest.sql,
+          parameters: commandRequest.params,
           affectedRows: result?.affectedRows,
           insertId: result?.insertId,
         },
@@ -551,25 +563,31 @@ class SimplifiedDatabaseController {
 
   async executeTransaction(request: unknown): Promise<unknown> {
     const startTime = Date.now();
+    
+    // Type assertion with validation
+    const batchRequest = request as BatchRequest;
+    if (!batchRequest || typeof batchRequest !== 'object') {
+      throw new Error('Invalid batch request format');
+    }
 
     try {
       this.logger.debug(
-        `Executing transaction with ${request.operations.length} operations`
+        `Executing transaction with ${batchRequest.operations.length} operations`
       );
 
-      if (!request.operations || request.operations.length === 0) {
+      if (!batchRequest.operations || batchRequest.operations.length === 0) {
         throw new Error('At least one operation is required for transaction');
       }
 
       const results = await this.adapter.transaction(async (tx) => {
         const transactionResults = [];
 
-        for (const operation of request.operations) {
+        for (const operation of batchRequest.operations) {
           try {
             let result;
 
             if (operation.type === 'query') {
-              result = await tx.query(operation.sql, operation.params);
+              result = await (tx as any).query(operation.sql, operation.params);
               transactionResults.push({
                 type: 'query',
                 sql: operation.sql,
@@ -579,7 +597,7 @@ class SimplifiedDatabaseController {
                 data: result?.rows,
               });
             } else if (operation.type === 'execute') {
-              result = await tx.execute(operation.sql, operation.params);
+              result = await (tx as any).execute(operation.sql, operation.params);
               transactionResults.push({
                 type: 'execute',
                 sql: operation.sql,
@@ -602,7 +620,7 @@ class SimplifiedDatabaseController {
 
             transactionResults.push(errorResult);
 
-            if (!request.continueOnError) {
+            if (!batchRequest.continueOnError) {
               throw error;
             }
           }
@@ -616,10 +634,10 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       const totalRows = results.reduce(
-        (sum: number, r: unknown) => sum + (r.rowCount || r.affectedRows || 0),
+        (sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0),
         0
       );
-      const successfulOps = results.filter((r: unknown) => r.success).length;
+      const successfulOps = results.filter((r: any) => r.success).length;
 
       this.logger.debug(
         `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
@@ -630,7 +648,7 @@ class SimplifiedDatabaseController {
         data: {
           results,
           summary: {
-            totalOperations: request.operations.length,
+            totalOperations: batchRequest.operations.length,
             successfulOperations: successfulOps,
             failedOperations: results.length - successfulOps,
             totalRowsAffected: totalRows,
@@ -725,22 +743,28 @@ class SimplifiedDatabaseController {
 
   async executeMigration(request: unknown): Promise<unknown> {
     const startTime = Date.now();
+    
+    // Type assertion with validation
+    const migrationRequest = request as MigrationRequest;
+    if (!migrationRequest || typeof migrationRequest !== 'object') {
+      throw new Error('Invalid migration request format');
+    }
 
     try {
       this.logger.info(
-        `Executing migration: ${request.version} - ${request.description || 'No description'}`
+        `Executing migration: ${migrationRequest.version} - ${migrationRequest.description || 'No description'}`
       );
 
-      if (!request.statements || request.statements.length === 0) {
+      if (!migrationRequest.statements || migrationRequest.statements.length === 0) {
         throw new Error('Migration statements are required');
       }
 
-      if (request.dryRun) {
+      if (migrationRequest.dryRun) {
         this.logger.info('Dry run mode: validating migration statements');
 
         // Validate statements without executing
         const validationResults = [];
-        for (const statement of request.statements) {
+        for (const statement of migrationRequest.statements) {
           try {
             // In a real implementation, this would validate syntax
             validationResults.push({
@@ -765,11 +789,11 @@ class SimplifiedDatabaseController {
           success: true,
           data: {
             dryRun: true,
-            version: request.version,
-            description: request.description,
+            version: migrationRequest.version,
+            description: migrationRequest.description,
             validationResults,
-            totalStatements: request.statements.length,
-            validStatements: validationResults.filter((r: unknown) => r.valid)
+            totalStatements: migrationRequest.statements.length,
+            validStatements: validationResults.filter((r: any) => r.valid)
               .length,
           },
           metadata: {
@@ -785,9 +809,9 @@ class SimplifiedDatabaseController {
       const results = await this.adapter.transaction(async (tx) => {
         const migrationResults = [];
 
-        for (const statement of request.statements) {
+        for (const statement of migrationRequest.statements) {
           try {
-            const result = await tx.execute(statement);
+            const result = await (tx as any).execute(statement);
             migrationResults.push({
               statement: `${statement.substring(0, 100)}...`,
               success: true,
@@ -812,21 +836,21 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       this.logger.info(
-        `Migration ${request.version} completed successfully in ${executionTime}ms`
+        `Migration ${migrationRequest.version} completed successfully in ${executionTime}ms`
       );
 
       return {
         success: true,
         data: {
-          version: request.version,
-          description: request.description,
+          version: migrationRequest.version,
+          description: migrationRequest.description,
           results,
-          totalStatements: request.statements.length,
+          totalStatements: migrationRequest.statements.length,
           successfulStatements: results.length,
         },
         metadata: {
           rowCount: results.reduce(
-            (sum: number, r: unknown) => sum + (r.affectedRows || 0),
+            (sum: number, r: any) => sum + (r.affectedRows || 0),
             0
           ),
           executionTime,
@@ -1037,15 +1061,15 @@ export async function checkDatabaseContainerHealth(): Promise<{
     // Test controller functionality
     try {
       const result = await controller.getDatabaseStatus();
-      services.controller = result?.success;
+      services.controller = (result as any)?.success;
       services.logger = true; // Logger is working if we got this far
       services.config = true; // Config is working if we got this far
       services.factory = true; // Factory is working if we got this far
     } catch (error) {
-      errors.push(`Controller: ${error.message}`);
+      errors.push(`Controller: ${(error as Error).message}`);
     }
   } catch (error) {
-    errors.push(`Container: ${error.message}`);
+    errors.push(`Container: ${(error as Error).message}`);
   }
 
   const allHealthy = Object.values(services).every(Boolean);

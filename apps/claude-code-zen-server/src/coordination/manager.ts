@@ -182,7 +182,7 @@ export class CoordinationManager extends EventEmitter {
       // Initialize load balancing for intelligent agent selection
       if (this.config.enableLoadBalancing) {
         this.loadBalancer = new LoadBalancer({
-          strategy: 'adaptive-learning' as LoadBalancingStrategy,
+          strategy: 'ml-predictive' as LoadBalancingStrategy,
           enablePredictiveAnalytics: true,
           enableCapacityManagement: true
         });

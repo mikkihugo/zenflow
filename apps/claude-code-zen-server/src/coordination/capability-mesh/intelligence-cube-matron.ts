@@ -44,6 +44,7 @@ import {
 interface TaskPredictor {
   predictTask?(task: any): Promise<any>;
   analyzeTrends?(data: any): Promise<any>;
+  updateModel?(data: any): Promise<any>;
 }
 
 const logger = getLogger('INTELLIGENCE-CUBE-Matron');
@@ -100,6 +101,7 @@ export interface SwarmFormationResult {
   coordinationPattern: 'mesh' | 'hierarchical' | 'star' | 'ring';
   estimatedEfficiency: number;
   learningOpportunities: string[];
+  timestamp?: number;
 }
 
 /**
@@ -185,11 +187,11 @@ export class IntelligenceCubeMatron {
     };
 
     // Initialize intelligence systems
-    this.behavioralIntelligence = new BehavioralIntelligence({} as any); // Placeholder bridge
+    this.behavioralIntelligence = new BehavioralIntelligence(); // No config needed
     this.promptGenerator = new IntelligentPromptGenerator();
     this.safetyOrchestrator = new AISafetyOrchestrator();
     this.safetyMonitor = new SafetyMonitor();
-    this.agentHealthMonitor = new AgentMonitor({} as any); // Placeholder config
+    this.agentHealthMonitor = new AgentMonitor(); // No config needed
     this.taskPredictor = {} as TaskPredictor; // Interface, not class
 
     // Note: Fact system now accessed via knowledge package methods directly

@@ -20,7 +20,7 @@ import { EventEmitter } from 'eventemitter3';
 import { container } from 'tsyringe';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
-import type { MemorySystem } from '../../core/memory-system';
+import type { MemorySystem } from '../../core/memory-coordinator';
 import type {
   FlowState,
   FlowStage,

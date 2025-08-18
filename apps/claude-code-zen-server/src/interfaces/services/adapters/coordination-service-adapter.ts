@@ -8,7 +8,7 @@
  * - @claude-zen/foundation: Core service management, performance tracking, and logging
  * - @claude-zen/workflows: Workflow orchestration for coordination processes
  * - @claude-zen/monitoring: Service health monitoring and performance metrics
- * - @claude-zen/adaptive-learning: Learning from coordination patterns and optimization
+ * - @claude-zen/brain: Neural learning and adaptive patterns via BrainCoordinator
  *
  * PERFORMANCE BENEFITS:
  * - Battle-tested multi-agent coordination patterns from Microsoft AutoGen/ag2.ai
@@ -203,22 +203,24 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/monitoring for service health monitoring
-      const { MonitoringSystem } = await import('@claude-zen/monitoring');
-      this.monitoringSystem = new MonitoringSystem({
+      // Delegate to @claude-zen/agent-monitoring for service health monitoring
+      const { AgentMonitor } = await import('@claude-zen/agent-monitoring');
+      this.monitoringSystem = await AgentMonitor.create({
         serviceName: 'coordination-service',
         metricsCollection: { enabled: this.config.performance?.enableMetricsCollection !== false },
         performanceTracking: { enabled: true },
         alerts: { enabled: true }
       });
 
-      // Delegate to @claude-zen/adaptive-learning for optimization
+      // Delegate to @claude-zen/brain for neural ML capabilities (per CLAUDE.md)
       if (this.config.performance?.enableLearning !== false) {
-        const { AdaptiveLearningSystem } = await import('@claude-zen/adaptive-learning');
-        this.adaptiveLearning = new AdaptiveLearningSystem({
-          domain: 'coordination-service',
-          learningRate: 0.1,
-          adaptationThreshold: 0.8
+        const { BrainCoordinator } = await import('@claude-zen/brain');
+        this.adaptiveLearning = new BrainCoordinator({
+          autonomous: { 
+            enabled: true, 
+            learningRate: 0.1,
+            adaptationThreshold: 0.8
+          }
         });
         await this.adaptiveLearning.initialize();
       }

@@ -33,12 +33,12 @@ import {
   type SystemHealthSummary
 } from '@claude-zen/foundation';
 
-import type { MemorySystem } from '../../core/memory-system';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
+import type { MemorySystem } from '../../core/memory-coordinator';
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system';
+} from '@claude-zen/event-system';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
 import type {
   AdvancedFlowManager,

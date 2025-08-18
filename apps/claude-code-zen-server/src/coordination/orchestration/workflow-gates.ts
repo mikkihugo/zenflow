@@ -34,7 +34,7 @@ import {
   createEvent,
   EventPriority,
   type TypeSafeEventBus,
-} from '../../core/type-safe-event-system';
+} from '@claude-zen/event-system';
 
 const logger = getLogger('workflow-gates');
 const kvStore = getKVStore();

@@ -16,12 +16,12 @@
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-system';
-import type { TypeSafeEventBus } from '../../core/type-safe-event-system';
+import type { MemorySystem } from '../../core/memory-coordinator';
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import {
   createEvent,
   EventPriority,
-} from '../../core/type-safe-event-system';
+} from '@claude-zen/event-system';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';

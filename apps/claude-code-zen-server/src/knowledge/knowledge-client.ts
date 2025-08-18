@@ -9,7 +9,7 @@
  * Delegates to:
  * - @claude-zen/knowledge: Knowledge management and semantic understanding  
  * - @claude-zen/foundation: Logging and telemetry
- * - @claude-zen/fact-system: Fact-based reasoning engine
+ * - @claude-zen/knowledge: Fact-based reasoning (includes private fact-system)
  * 
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.44
@@ -97,8 +97,8 @@ export class FACTIntegration {
       });
       await this.knowledgeManager.initialize();
 
-      // Delegate to @claude-zen/fact-system for fact-based reasoning  
-      const { FactSystem } = await import('@claude-zen/fact-system');
+      // Delegate to @claude-zen/knowledge for fact-based reasoning (includes fact-system)
+      const { FactSystem } = await import('@claude-zen/knowledge');
       this.factSystem = new FactSystem({
         knowledgeBase: this.knowledgeManager,
         enableInference: true,

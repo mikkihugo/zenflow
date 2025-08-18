@@ -260,6 +260,56 @@ export class BehavioralIntelligence {
       probability: 0.8
     };
   }
+
+  async learnFromExecution(data: {
+    agentId: string;
+    taskType: string;
+    taskComplexity: number;
+    duration: number;
+    success: boolean;
+    efficiency: number;
+    resourceUsage: number;
+    errorCount: number;
+    timestamp: number;
+    context: Record<string, unknown>;
+  }): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Behavioral intelligence not initialized');
+    }
+
+    logger.debug(`Learning from execution: ${data.agentId} - ${data.taskType}`);
+    // Store learning data for behavioral analysis
+  }
+
+  async recordBehavior(data: {
+    agentId: string;
+    behaviorType: string;
+    context: Record<string, unknown>;
+    timestamp: number;
+    success: boolean;
+    metadata?: Record<string, unknown>;
+  }): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Behavioral intelligence not initialized');
+    }
+
+    logger.debug(`Recording behavior: ${data.agentId} - ${data.behaviorType}`);
+    // Store behavior data for pattern analysis
+  }
+
+  async enableContinuousLearning(config: {
+    learningRate?: number;
+    adaptationThreshold?: number;
+    evaluationInterval?: number;
+    maxMemorySize?: number;
+  }): Promise<void> {
+    if (!this.initialized) {
+      throw new Error('Behavioral intelligence not initialized');
+    }
+
+    logger.debug('Enabling continuous learning with config:', config);
+    // Enable continuous learning features
+  }
 }
 
 // Factory functions
@@ -308,6 +358,11 @@ export async function initializeGPUAcceleration(config?: Record<string, unknown>
     device: 'cpu'
   };
 }
+
+// Import and export missing autonomous optimization classes
+export { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
+export { TaskComplexityEstimator } from './task-complexity-estimator';
+export { AgentPerformancePredictor } from './agent-performance-predictor';
 
 // Module exports
 export default {

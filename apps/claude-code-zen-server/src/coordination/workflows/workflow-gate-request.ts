@@ -39,7 +39,7 @@ import {
   type HumanValidationCompletedEvent,
   type HumanValidationRequestedEvent,
   type TypeSafeEventBus,
-} from '../../core/type-safe-event-system';
+} from '@claude-zen/event-system';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import { WorkflowEngine } from '@claude-zen/workflows';
 import { TaskApprovalSystem } from '@claude-zen/agui';

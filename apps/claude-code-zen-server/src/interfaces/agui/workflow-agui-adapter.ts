@@ -40,7 +40,7 @@ import {
   type HumanValidationCompletedEvent,
   type HumanValidationRequestedEvent,
   type TypeSafeEventBus,
-} from '../../core/type-safe-event-system';
+} from '@claude-zen/event-system';
 import {
   AGUIInterface,
   type EventHandlerConfig,
