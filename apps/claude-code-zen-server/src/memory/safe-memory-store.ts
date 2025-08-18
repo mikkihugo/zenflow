@@ -2,7 +2,7 @@
  * @file Memory management: safe-memory-store
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-memory-safe-memory-store');
 
@@ -13,7 +13,7 @@ const logger = getLogger('src-memory-safe-memory-store');
  * for proper error handling and result discrimination.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import {
   isMemoryError,
   isMemoryNotFound,

@@ -449,7 +449,7 @@ impl<T: Float + Send + Default> IntegrationTestSuite<T> {
         let start_time = Instant::now();
 
         // Test different training algorithms
-        use crate::training::IncrementalBackprop;
+        use crate::training_types::IncrementalBackprop;
 
         let _trainer = IncrementalBackprop::new(T::from(0.1).unwrap());
 
@@ -472,7 +472,7 @@ impl<T: Float + Send + Default> IntegrationTestSuite<T> {
         Ok(BenchmarkResult {
             duration,
             memory_mb: 0.0,
-            throughput: data.inputs.len() as f64 / duration.as_secs_f64(),
+            throughput: T::from(data.inputs.len()).unwrap_or_default().to_f64().unwrap_or(0.0) / duration.as_secs_f64(),
             accuracy: 1.0 - total_error.to_f64().unwrap_or(1.0).min(1.0),
             baseline_duration: None,
             performance_ratio: None,

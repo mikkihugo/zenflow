@@ -8,14 +8,19 @@
  * @author Claude Code Zen Team
  */
 
-import type { Example } from './example';
-import type { Prediction } from './prediction';
+// import type { Example } from './example'; // Unused import
+// import type { Prediction } from './prediction'; // Unused import
 
 /**
  * Abstract base class for all DSPy modules
  * Exact match with Stanford DSPy's Module class
  */
 export abstract class DSPyModule {
+  /**
+   * Whether the module has been compiled/optimized
+   */
+  public compiled: boolean = false;
+
   /**
    * Forward pass through the module
    */
@@ -28,7 +33,7 @@ export abstract class DSPyModule {
     const predictors: any[] = [];
     
     // Iterate through all properties to find predictors
-    for (const [key, value] of Object.entries(this)) {
+    for (const [_key, value] of Object.entries(this)) {
       if (value && typeof value === 'object' && 'signature' in value) {
         predictors.push(value);
       }
@@ -157,10 +162,11 @@ export abstract class DSPyModule {
   /**
    * Load module state
    */
-  load(state: Record<string, any>): void {
+  load(_state: Record<string, any>): void {
     // Implementation would restore module state
     // This is a placeholder for now
   }
 }
 
-export default DSPyModule;
+// Export as both named and default export for compatibility
+export { DSPyModule as default };

@@ -76,8 +76,8 @@ class MockModule extends DSPyModule {
     return this.mockPredictors;
   }
 
-  namedPredictors() {
-    return this.mockPredictors.map((pred, i) => [`predictor_${i}`, pred]);
+  namedPredictors(): [string, any][] {
+    return this.mockPredictors.map((pred, i) => [`predictor_${i}`, pred] as [string, any]);
   }
 
   deepcopy(): MockModule {

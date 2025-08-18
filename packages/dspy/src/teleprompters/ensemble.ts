@@ -261,7 +261,6 @@ export class Ensemble {
    * Exact API match with Stanford DSPy constructor
    */
   constructor(config: EnsembleConfig = {}) {
-    super();
     
     // Validate deterministic parameter (not implemented yet)
     if (config.deterministic === true) {

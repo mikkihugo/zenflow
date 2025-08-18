@@ -9,9 +9,15 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "keywords": [
     "ai-safety",
@@ -29,21 +35,30 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^5.0.0"
+    "@claude-zen/brain": "file:../brain",
+    "@claude-zen/foundation": "file:../foundation",
+    "eventemitter3": "^5.0.1",
+    "nanoid": "^5.1.5",
+    "@claude-zen/chaos-engineering": "file:../chaos-engineering"
   },
-  "peerDependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/brain": "workspace:*"
-  },
+  "_comment_chaos_engineering": "chaos-engineering is a private implementation detail - only ai-safety package should access it",
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "vitest": "^1.1.0",
-    "@types/node": "^20.10.6"
+    "@types/node": "^22.17.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./detection": {
+      "types": "./dist/ai-deception-detector.d.ts",
+      "import": "./dist/ai-deception-detector.js"
+    },
+    "./orchestrator": {
+      "types": "./dist/safety-orchestrator.d.ts",
+      "import": "./dist/safety-orchestrator.js"
     }
   },
   "files": [

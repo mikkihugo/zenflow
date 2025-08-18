@@ -6,7 +6,7 @@ import { Logger } from '@claude-zen/foundation';
 
 const logger = new Logger('Memory');
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type {
   MemoryStore,
   MemoryStats,

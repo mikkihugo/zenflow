@@ -1,0 +1,60 @@
+{
+  "name": "@claude-zen/multi-level-orchestration",
+  "version": "1.0.0",
+  "description": "Multi-level orchestration system: Portfolio → Program → Swarm execution with intelligent coordination",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js"
+    },
+    "./orchestrators": {
+      "types": "./dist/orchestrators/index.d.ts",
+      "import": "./dist/orchestrators/index.js"
+    },
+    "./managers": {
+      "types": "./dist/managers/index.d.ts",
+      "import": "./dist/managers/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
+    "@claude-zen/coordination-core": "workspace:*",
+    "@claude-zen/workflows": "workspace:*",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "orchestration",
+    "multi-level",
+    "portfolio",
+    "program",
+    "swarm",
+    "coordination",
+    "workflow-management"
+  ],
+  "author": "Claude-Zen Team",
+  "license": "MIT"
+}

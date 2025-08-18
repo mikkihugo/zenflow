@@ -8,7 +8,24 @@
  * @file Errors implementation.
  */
 
-import { getLogger } from '@claude-zen/foundation';
+import { 
+  getLogger,
+  ContextError,
+  ValidationError,
+  ConfigurationError,
+  NetworkError,
+  TimeoutError,
+  ResourceError,
+  EnhancedError,
+  withContext,
+  ensureError,
+  isError,
+  isErrorWithContext,
+  safeAsync,
+  safe,
+  withRetry,
+  createCircuitBreaker
+} from '@claude-zen/foundation';
 
 const logger = getLogger('ErrorSystem');
 
@@ -228,171 +245,28 @@ export abstract class BaseClaudeZenError extends Error {
 }
 
 // ===============================
-// FACT System Errors
+// FACT System Errors - Domain-Specific (Moved to @claude-zen/knowledge)
 // ===============================
 
-/**
- * Base error class for FACT (Flexible AI Context Transfer) system failures.
- *
- * @class FACTError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new FACTError(
- *   'Failed to process FACT data',
- *   'high',
- *   { operation: 'dataProcessing', metadata: { factId: 'fact-123' } }
- * );
- * ```
- */
-export class FACTError extends BaseClaudeZenError {
-  /**
-   * Creates a new FACTError instance.
-   *
-   * @param message - Error message.
-   * @param severity - Error severity level (defaults to 'medium').
-   * @param context - Additional error context (optional).
-   */
-  constructor(
-    message: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
-  ) {
-    super(message, 'FACT', severity, context);
-    this.name = 'FACTError';
-  }
-}
-
-/**
- * Error for FACT storage backend operations.
- *
- * @class FACTStorageError
- * @augments FACTError
- * @example
- * ```typescript
- * throw new FACTStorageError(
- *   'Failed to write to storage backend',
- *   'sqlite',
- *   'write',
- *   'critical'
- * );
- * ```
- */
-export class FACTStorageError extends FACTError {
-  /**
-   * Creates a new FACTStorageError instance.
-   *
-   * @param message - Error message.
-   * @param backend - Storage backend name (e.g., 'sqlite', 'lancedb').
-   * @param operation - Storage operation that failed (e.g., 'read', 'write').
-   * @param severity - Error severity level (defaults to 'high').
-   */
-  constructor(
-    message: string,
-    public readonly backend: string,
-    public readonly operation: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, severity, { operation, metadata: { backend } });
-    this.name = 'FACTStorageError';
-  }
-}
-
-export class FACTGatheringError extends FACTError {
-  constructor(
-    message: string,
-    public readonly query: string,
-    public readonly sources: string[],
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, severity, { metadata: { query, sources } });
-    this.name = 'FACTGatheringError';
-  }
-}
-
-export class FACTProcessingError extends FACTError {
-  constructor(
-    message: string,
-    public readonly processType: string,
-    public readonly dataId?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, severity, { metadata: { processType, dataId } });
-    this.name = 'FACTProcessingError';
-  }
-}
+// FACT errors moved to @claude-zen/knowledge package where FACT integration lives
+export {
+  FACTError,
+  FACTStorageError,
+  FACTGatheringError,
+  FACTProcessingError
+} from '@claude-zen/knowledge';
 
 // ===============================
-// RAG System Errors
+// RAG System Errors - Domain-Specific (Moved to @claude-zen/knowledge)
 // ===============================
 
-/**
- * Base error class for RAG (Retrieval Augmented Generation) system failures.
- *
- * @class RAGError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new RAGError(
- *   'RAG processing failed',
- *   'high',
- *   { operation: 'retrieval', metadata: { queryId: 'query-456' } }
- * );
- * ```
- */
-export class RAGError extends BaseClaudeZenError {
-  /**
-   * Creates a new RAGError instance.
-   *
-   * @param message - Error message.
-   * @param severity - Error severity level (defaults to 'medium').
-   * @param context - Additional error context (optional).
-   */
-  constructor(
-    message: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
-  ) {
-    super(message, 'RAG', severity, context);
-    this.name = 'RAGError';
-  }
-}
-
-export class RAGVectorError extends RAGError {
-  constructor(
-    message: string,
-    public readonly operation: 'embed' | 'search' | 'index' | 'delete',
-    public readonly vectorDimension?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, severity, { operation, metadata: { vectorDimension } });
-    this.name = 'RAGVectorError';
-  }
-}
-
-export class RAGEmbeddingError extends RAGError {
-  constructor(
-    message: string,
-    public readonly modelName: string,
-    public readonly textLength?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, severity, { metadata: { modelName, textLength } });
-    this.name = 'RAGEmbeddingError';
-  }
-}
-
-export class RAGRetrievalError extends RAGError {
-  constructor(
-    message: string,
-    public readonly query: string,
-    public readonly similarityThreshold?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, severity, { metadata: { query, similarityThreshold } });
-    this.name = 'RAGRetrievalError';
-  }
-}
+// RAG errors moved to @claude-zen/knowledge package where RAG integration lives
+export {
+  RAGError,
+  RAGVectorError,
+  RAGEmbeddingError,
+  RAGRetrievalError
+} from '@claude-zen/knowledge';
 
 // ===============================
 // Swarm Coordination Errors
@@ -497,235 +371,34 @@ export class SwarmCoordinationError extends SwarmError {
   }
 }
 
-// ===============================
-// MCP Protocol Errors
-// ===============================
 
-/**
- * Base error class for MCP (Model Context Protocol) system failures.
- *
- * @class MCPError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new MCPError(
- *   'MCP tool execution failed',
- *   'filesystem',
- *   'high',
- *   { operation: 'read', metadata: { path: '/data/file.txt' } }
- * );
- * ```
- */
-export class MCPError extends BaseClaudeZenError {
-  /**
-   * Creates a new MCPError instance.
-   *
-   * @param message - Error message.
-   * @param toolName - Name of the MCP tool that failed (optional).
-   * @param severity - Error severity level (defaults to 'medium').
-   * @param context - Additional error context (optional).
-   */
-  constructor(
-    message: string,
-    public readonly toolName?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
-  ) {
-    super(message, 'MCP', severity, { ...context, metadata: { toolName } });
-    this.name = 'MCPError';
-  }
-}
-
-export class MCPValidationError extends MCPError {
-  constructor(
-    message: string,
-    public readonly parameterName: string,
-    public readonly expectedType: string,
-    public readonly actualValue: unknown,
-    toolName?: string
-  ) {
-    super(message, toolName, 'medium', {
-      metadata: { parameterName, expectedType, actualValue },
-    });
-    this.name = 'MCPValidationError';
-  }
-}
-
-export class MCPExecutionError extends MCPError {
-  constructor(
-    message: string,
-    toolName: string,
-    public readonly executionPhase: 'pre' | 'during' | 'post',
-    public readonly originalError?: Error,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, toolName, severity, {
-      metadata: { executionPhase, originalError: originalError?.message },
-    });
-    this.name = 'MCPExecutionError';
-  }
-}
-
-export class MCPTimeoutError extends MCPError {
-  constructor(
-    message: string,
-    toolName: string,
-    public readonly timeoutMs: number,
-    public readonly actualTimeMs?: number
-  ) {
-    super(message, toolName, 'high', { metadata: { timeoutMs, actualTimeMs } });
-    this.name = 'MCPTimeoutError';
-  }
-}
-
-// ===============================
-// WASM Integration Errors
-// ===============================
-
-/**
- * Base error class for WASM (WebAssembly) integration failures.
- *
- * @class WASMError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new WASMError(
- *   'WASM module execution failed',
- *   'critical',
- *   { operation: 'execute', metadata: { moduleName: 'math-utils' } }
- * );
- * ```
- */
-export class WASMError extends BaseClaudeZenError {
-  /**
-   * Creates a new WASMError instance.
-   *
-   * @param message - Error message.
-   * @param severity - Error severity level (defaults to 'medium').
-   * @param context - Additional error context (optional).
-   */
-  constructor(
-    message: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
-  ) {
-    super(message, 'WASM', severity, context);
-    this.name = 'WASMError';
-  }
-}
-
-export class WASMLoadingError extends WASMError {
-  constructor(
-    message: string,
-    public readonly moduleName: string,
-    public readonly moduleSize?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'critical'
-  ) {
-    super(message, severity, { metadata: { moduleName, moduleSize } });
-    this.name = 'WASMLoadingError';
-  }
-}
-
-export class WASMExecutionError extends WASMError {
-  constructor(
-    message: string,
-    public readonly functionName: string,
-    public readonly parameters?: unknown[],
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, severity, { metadata: { functionName, parameters } });
-    this.name = 'WASMExecutionError';
-  }
-}
-
-export class WASMMemoryError extends WASMError {
-  constructor(
-    message: string,
-    public readonly memoryUsage: number,
-    public readonly memoryLimit?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'critical'
-  ) {
-    super(message, severity, { metadata: { memoryUsage, memoryLimit } });
-    this.name = 'WASMMemoryError';
-  }
-}
 
 // ===============================
 // System Infrastructure Errors
 // ===============================
 
+// ===============================
+// Domain-Specific Errors (Keep these - they're claude-code-zen specific)
+// ===============================
+
 /**
- * General system infrastructure error for core system failures.
- *
- * @class SystemError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new SystemError(
- *   'System resource exhausted',
- *   'RESOURCE_LIMIT',
- *   'critical',
- *   { operation: 'allocate', metadata: { resourceType: 'memory' } }
- * );
- * ```
+ * Error for task execution failures (domain-specific).
  */
-export class SystemError extends BaseClaudeZenError {
-  /**
-   * Creates a new SystemError instance.
-   *
-   * @param message - Error message.
-   * @param code - System error code for classification (optional).
-   * @param severity - Error severity level (defaults to 'high').
-   * @param context - Additional error context (optional).
-   */
+export class TaskError extends BaseClaudeZenError {
   constructor(
     message: string,
-    public readonly code?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
-    context: Partial<ErrorContext> = {}
+    public readonly taskId?: string,
+    public readonly taskType?: string,
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
   ) {
-    super(message, 'System', severity, { ...context, metadata: { code } });
-    this.name = 'SystemError';
+    super(message, 'Task', severity, { metadata: { taskId, taskType } });
+    this.name = 'TaskError';
   }
 }
 
 /**
- * Error for input validation failures.
- *
- * @class ValidationError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new ValidationError(
- *   'Invalid email format',
- *   'email',
- *   'valid email address',
- *   'invalid-email'
- * );
- * ```
+ * Error for resource not found (domain-specific).
  */
-export class ValidationError extends BaseClaudeZenError {
-  /**
-   * Creates a new ValidationError instance.
-   *
-   * @param message - Error message.
-   * @param field - Name of the field that failed validation (optional).
-   * @param expectedValue - Expected value or format (optional).
-   * @param actualValue - Actual value that failed validation (optional).
-   */
-  constructor(
-    message: string,
-    public readonly field?: string,
-    public readonly expectedValue?: unknown,
-    public readonly actualValue?: unknown
-  ) {
-    super(message, 'Validation', 'medium', {
-      metadata: { field, expectedValue, actualValue },
-    });
-    this.name = 'ValidationError';
-  }
-}
-
 export class NotFoundError extends BaseClaudeZenError {
   constructor(
     message: string,
@@ -739,140 +412,15 @@ export class NotFoundError extends BaseClaudeZenError {
   }
 }
 
-/**
- * Error for operation timeout failures.
- *
- * @class TimeoutError
- * @augments BaseClaudeZenError
- * @example
- * ```typescript
- * throw new TimeoutError(
- *   'Operation timed out',
- *   5000,  // 5 second timeout
- *   7500,  // actual time taken
- *   'high'
- * );
- * ```
- */
-export class TimeoutError extends BaseClaudeZenError {
-  /**
-   * Creates a new TimeoutError instance.
-   *
-   * @param message - Error message.
-   * @param timeoutMs - Configured timeout in milliseconds (optional).
-   * @param actualTimeMs - Actual time taken in milliseconds (optional).
-   * @param severity - Error severity level (defaults to 'high').
-   */
-  constructor(
-    message: string,
-    public readonly timeoutMs?: number,
-    public readonly actualTimeMs?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(
-      message,
-      'Timeout',
-      severity,
-      { metadata: { timeoutMs, actualTimeMs } },
-      false
-    );
-    this.name = 'TimeoutError';
-  }
-}
-
-export class ConfigurationError extends BaseClaudeZenError {
-  constructor(
-    message: string,
-    public readonly configKey?: string,
-    public readonly configValue?: unknown
-  ) {
-    super(
-      message,
-      'Configuration',
-      'high',
-      { metadata: { configKey, configValue } },
-      false
-    );
-    this.name = 'ConfigurationError';
-  }
-}
-
-export class NetworkError extends BaseClaudeZenError {
-  constructor(
-    message: string,
-    public readonly statusCode?: number,
-    public readonly endpoint?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, 'Network', severity, { metadata: { statusCode, endpoint } });
-    this.name = 'NetworkError';
-  }
-}
-
-export class TaskError extends BaseClaudeZenError {
-  constructor(
-    message: string,
-    public readonly taskId?: string,
-    public readonly taskType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
-  ) {
-    super(message, 'Task', severity, { metadata: { taskId, taskType } });
-    this.name = 'TaskError';
-  }
-}
-
 // ===============================
-// Storage and Database Errors
+// Storage and Database Errors - Foundation's Public API Only
 // ===============================
 
-export class StorageError extends BaseClaudeZenError {
-  constructor(
-    message: string,
-    public readonly storageType:
-      | 'sqlite'
-      | 'memory'
-      | 'file'
-      | 'lancedb'
-      | 'vector',
-    public readonly operation: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, 'Storage', severity, {
-      operation,
-      metadata: { storageType },
-    });
-    this.name = 'StorageError';
-  }
-}
-
-export class DatabaseError extends StorageError {
-  constructor(
-    message: string,
-    public readonly query?: string,
-    public readonly connectionId?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
-  ) {
-    super(message, 'sqlite', 'database', severity);
-    this.context.metadata = { ...this.context.metadata, query, connectionId };
-    this.name = 'DatabaseError';
-  }
-}
-
-export class TransactionError extends DatabaseError {
-  constructor(
-    message: string,
-    public readonly transactionId: string,
-    public readonly rollbackSuccess: boolean = false
-  ) {
-    super(message, undefined, undefined, 'critical');
-    this.context.metadata = {
-      ...this.context.metadata,
-      transactionId,
-      rollbackSuccess,
-    };
-    this.name = 'TransactionError';
-  }
-}
+// Foundation's public storage error API (database package is private/internal)
+export {
+  StorageError,
+  DatabaseConnectionError
+} from '@claude-zen/foundation';
 
 // ===============================
 // Error Classification Utilities
@@ -989,3 +537,31 @@ export function shouldRetry(
 
   return true;
 }
+
+// ===============================
+// Re-export Foundation Error Utilities for Backward Compatibility
+// ===============================
+
+// Re-export infrastructure error classes from foundation
+export {
+  // Base error types from foundation
+  ContextError,
+  ValidationError,
+  ConfigurationError,
+  NetworkError,
+  TimeoutError,
+  ResourceError,
+  EnhancedError,
+  
+  // Error utilities from foundation
+  withContext,
+  ensureError,
+  isError,
+  isErrorWithContext,
+  
+  // Async utilities from foundation
+  safeAsync,
+  safe,
+  withRetry,
+  createCircuitBreaker
+} from '@claude-zen/foundation';

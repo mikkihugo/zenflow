@@ -264,7 +264,7 @@ class CompileFixerErrorsOnly {
 
     // Common missing imports that cause compilation errors
     const commonImports = {
-      EventEmitter: "import { EventEmitter } from 'events';",
+      EventEmitter: "import { EventEmitter } from 'eventemitter3';",
       Buffer: "import { Buffer } from 'buffer';",
       URL: "import { URL } from 'url';",
       process: "import process from 'process';",

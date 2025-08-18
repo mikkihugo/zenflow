@@ -8,7 +8,7 @@
  * @file Memory management: base-backend.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { MemoryConfig } from '../providers/memory-providers';
 
 // Define BackendCapabilities here to avoid circular dependency

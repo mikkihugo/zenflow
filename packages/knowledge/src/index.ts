@@ -1,16 +1,32 @@
 /**
- * @fileoverview Claude-Zen Knowledge Package
+ * @fileoverview Knowledge Package - Main exports
  * 
- * Advanced knowledge management system with distributed learning, reasoning, and storage backends.
- * Provides knowledge storage, reasoning engines, and collaborative intelligence coordination.
+ * This package provides collective intelligence, distributed learning,
+ * and knowledge management capabilities for the swarm system.
  */
 
-// Export available types
-export * from '../types/fact-types';
+export * from './main';
+export * from './intelligent-doc-import';
 
-// Placeholder export for package info
-export const KnowledgePackage = {
-  name: '@claude-zen/knowledge',
-  version: '1.0.0',
-  description: 'Advanced knowledge management system with distributed learning'
-};
+// Public coordination API (fact system implementation is private)
+export { 
+  getCoordinationFactSystem,
+  initializeCoordinationFactSystem,
+  storeCoordinationFact,
+  queryCoordinationFacts,
+  searchCoordinationFacts,
+  getCoordinationFacts,
+  storeCoordinationEvent,
+  storeAgentFact,
+  queryAgentFacts,
+  searchExternalFacts,
+  getNPMPackageInfo,
+  getGitHubRepoInfo,
+  
+  // Re-export types for coordination layer
+  type CoordinationFact,
+  type CoordinationFactQuery,
+  type FactEntry,
+  type FactQuery,
+  type FactSearchResult,
+} from './coordination-api';

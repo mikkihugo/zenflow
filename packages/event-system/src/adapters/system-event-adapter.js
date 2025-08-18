@@ -10,7 +10,7 @@
  * implementing the IEventManager interface and providing unified configuration
  * management for system events across Claude-Zen.
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 // Import logger (using relative path)
 import { getLogger } from '../../../config/logging-config';
 import { EventEmissionError, EventManagerTypes, EventTimeoutError, } from '../core/interfaces';

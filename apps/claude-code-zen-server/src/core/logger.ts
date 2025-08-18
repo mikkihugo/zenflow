@@ -1,109 +1,78 @@
 /**
- * @file Logger utility - Fixed circular dependency version
- * Enhanced logger with two-phase initialization to avoid circular dependencies.
+ * @file Logger utility - Foundation Integration
+ * Re-exports foundation logging with compatibility layer for existing code.
  * @module Logger
  */
 
-import {
-  type LogLevel as BootstrapLogLevel,
-  createBootstrapLogger,
-  type Logger,
-} from './bootstrap-logger';
+import { getLogger } from '@claude-zen/foundation';
 
-export type { Logger } from './bootstrap-logger';
-// Re-export for compatibility
-export { LogLevel } from './bootstrap-logger';
+// Re-export foundation logger types and functions
+export { getLogger };
+export type { Logger } from '@claude-zen/foundation';
+
+/**
+ * Legacy compatibility enum - foundation uses string levels
+ * @deprecated Use foundation logging levels directly
+ */
+export enum LogLevel {
+  DEBUG = 0,
+  INFO = 1,
+  WARN = 2,
+  ERROR = 3,
+}
 
 export interface LoggerConfig {
   prefix?: string;
-  level?: BootstrapLogLevel;
+  level?: LogLevel;
 }
 
 /**
- * Enhanced logger that can be upgraded from bootstrap logger.
- *
- * @example
+ * Legacy Logger class for compatibility.
+ * @deprecated Use getLogger from @claude-zen/foundation directly
  */
-class EnhancedLogger implements Logger {
-  private bootstrapLogger: Logger;
-  private configLoaded: boolean = false;
-  private prefix: string;
+export class Logger {
+  private foundationLogger: ReturnType<typeof getLogger>;
 
-  constructor(prefix: string) {
-    this.prefix = prefix;
-    this.bootstrapLogger = createBootstrapLogger(prefix);
+  constructor(prefix: string = 'system') {
+    this.foundationLogger = getLogger(prefix);
   }
 
   /**
-   * Upgrade logger with config (called after config system is ready).
-   *
-   * @param config
+   * @deprecated No longer needed - foundation handles config automatically
    */
-  upgradeWithConfig(config: unknown): void {
-    try {
-      // This will be called AFTER config system is fully loaded
-      const centralConfig = config?.getAll?.();
-      if (centralConfig) {
-        this.configLoaded = true;
-        // Enhanced logging behavior can be implemented here
-      }
-    } catch (error) {
-      // Keep using bootstrap logger if config fails
-      this.bootstrapLogger.error('Failed to upgrade logger with config', error);
-    }
+  upgradeWithConfig(_config: unknown): void {
+    // No-op for compatibility
   }
 
   debug(message: string, meta?: unknown): void {
-    this.bootstrapLogger.debug(message, meta);
+    this.foundationLogger.debug(message, meta);
   }
 
   info(message: string, meta?: unknown): void {
-    this.bootstrapLogger.info(message, meta);
+    this.foundationLogger.info(message, meta);
   }
 
   warn(message: string, meta?: unknown): void {
-    this.bootstrapLogger.warn(message, meta);
+    this.foundationLogger.warn(message, meta);
   }
 
   error(message: string, meta?: unknown): void {
-    this.bootstrapLogger.error(message, meta);
-  }
-}
-
-// Registry for enhanced loggers that can be upgraded later
-const loggerRegistry = new Map<string, EnhancedLogger>();
-
-/**
- * Create or get an enhanced logger for a component.
- *
- * @example
- */
-export class Logger extends EnhancedLogger {
-  constructor(prefix: string = 'system') {
-    super(prefix);
-    loggerRegistry.set(prefix, this);
+    this.foundationLogger.error(message, meta);
   }
 }
 
 /**
- * Upgrade all loggers with config system (called after config is loaded).
- *
- * @param config
- * @example
+ * @deprecated No longer needed - foundation handles config automatically
  */
-export function upgradeAllLoggersWithConfig(config: unknown): void {
-  for (const logger of loggerRegistry.values()) {
-    logger.upgradeWithConfig(config);
-  }
+export function upgradeAllLoggersWithConfig(_config: unknown): void {
+  // No-op for compatibility
 }
 
 /**
  * Factory function to create a logger instance.
- * Uses bootstrap logger initially, can be upgraded later with config.
- *
+ * @deprecated Use getLogger from @claude-zen/foundation directly
  * @param prefix Component prefix for log messages.
  * @returns Logger instance.
- * @example
  */
 export function createLogger(prefix: string = 'system'): Logger {
   return new Logger(prefix);

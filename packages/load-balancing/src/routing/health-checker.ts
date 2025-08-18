@@ -2,16 +2,21 @@
  * @file Coordination system: health-checker
  */
 
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('coordination-load-balancing-routing-health-checker');
+// Simple console logger to avoid circular dependencies
+const logger = {
+  debug: (message: string, meta?: unknown) => console.log(`[DEBUG] ${message}`, meta || ''),
+  info: (message: string, meta?: unknown) => console.log(`[INFO] ${message}`, meta || ''),
+  warn: (message: string, meta?: unknown) => console.warn(`[WARN] ${message}`, meta || ''),
+  error: (message: string, meta?: unknown) => console.error(`[ERROR] ${message}`, meta || ''),
+};
 
 /**
  * Health Checker.
  * Comprehensive agent health monitoring and status management.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
+import type { Agent } from '../types';
 
 interface HealthStatus {
   healthy: boolean;

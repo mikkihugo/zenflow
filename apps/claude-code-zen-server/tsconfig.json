@@ -2,12 +2,20 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "composite": true,
     "declaration": true,
     "declarationMap": true,
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "strict": false,
+    "noImplicitReturns": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitThis": false,
+    "downlevelIteration": true,
     "paths": {
-      "@claude-zen/*": ["../../packages/*/src", "../../packages/*/dist"],
+      "@claude-zen/*": ["../../packages/*/dist", "../../packages/*/src"],
       "$lib/*": ["./src/lib/*"],
       "$components/*": ["./src/components/*"],
       "$stores/*": ["./src/stores/*"],
@@ -29,6 +37,19 @@
     { "path": "../../packages/event-system" },
     { "path": "../../packages/database" },
     { "path": "../../packages/brain" },
-    { "path": "../../packages/dspy" }
+    { "path": "../../packages/fact-system" },
+    { "path": "../../packages/load-balancing" },
+    { "path": "../../packages/agui" },
+    { "path": "../../packages/agent-monitoring" },
+    { "path": "../../packages/teamwork" },
+    { "path": "../../packages/ai-safety" },
+    { "path": "../../packages/knowledge" },
+    { "path": "../../packages/chaos-engineering" },
+    { "path": "../../packages/agent-manager" },
+    { "path": "../../packages/dspy" },
+    { "path": "../../packages/llm-routing" },
+    { "path": "../../packages/workflows" },
+    { "path": "../../packages/sparc" },
+    { "path": "../../packages/multi-level-orchestration" }
   ]
 }

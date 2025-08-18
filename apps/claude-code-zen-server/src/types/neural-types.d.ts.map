@@ -1,1 +1,0 @@
-{"version":3,"file":"neural-types.d.ts","sourceRoot":"","sources":["neural-types.ts"],"names":[],"mappings":"AAAA;;;GAGG;AAEH,qBAAa,WAAY,SAAQ,KAAK;aAGlB,IAAI,EAAE,MAAM;aACZ,OAAO,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC;gBAFjD,OAAO,EAAE,MAAM,EACC,IAAI,GAAE,MAAuB,EAC7B,OAAO,CAAC,EAAE,MAAM,CAAC,MAAM,EAAE,OAAO,CAAC,YAAA;CAKpD"}

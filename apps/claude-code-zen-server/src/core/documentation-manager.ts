@@ -19,7 +19,7 @@
  * @file Documentation management system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { Logger } from '@claude-zen/foundation';
 import type { MemorySystem } from '../memory/memory-system';
 

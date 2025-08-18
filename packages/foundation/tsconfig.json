@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
+    "module": "ES2022",
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
@@ -43,7 +43,8 @@
     "allowImportingTsExtensions": false,
     "noEmit": false,
     "noPropertyAccessFromIndexSignature": true,
-    "useDefineForClassFields": true
+    "useDefineForClassFields": true,
+    "experimentalDecorators": true
   },
   "include": [
     "./**/*.ts"
@@ -55,6 +56,8 @@
     "./**/*.spec.ts",
     "../../**/*.test.ts",
     "../../**/*.spec.ts",
-    "di/examples/**/*.ts"
+    "di/examples/**/*.ts",
+    "./test-new-systems.ts",
+    "./di-new.ts"
   ]
 }

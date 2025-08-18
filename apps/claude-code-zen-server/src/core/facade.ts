@@ -104,7 +104,7 @@
  * ```
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { SystemEventManager } from '../interfaces/events/factories';
 import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 import type {

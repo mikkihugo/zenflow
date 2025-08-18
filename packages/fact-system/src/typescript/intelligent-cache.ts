@@ -43,7 +43,7 @@ interface CacheConfig {
 /**
  * Cache entry with metadata
  */
-interface CacheEntry {
+interface CacheEntry extends Record<string, unknown> {
   key: string;
   data: any;
   timestamp: number;
@@ -58,7 +58,7 @@ interface CacheEntry {
  * Intelligent cache system that adapts cache duration based on data type and volatility
  */
 export class IntelligentCache {
-  private kv: KeyValueStore;
+  private kv!: KeyValueStore;
   private cacheConfigs: Map<string, CacheConfig>;
   private hitCount = 0;
   private missCount = 0;

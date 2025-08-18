@@ -4,7 +4,7 @@
  */
 import { getLogger } from '../../config/logging-config';
 const logger = getLogger('interfaces-events-observer-system');
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 // Priority queue for event processing
 class PriorityQueue {
     items = [];

@@ -19,9 +19,6 @@ export {
   type LoggingConfig
 } from '@claude-zen/foundation';
 
-// Maintain backward compatibility for any old interfaces
-export { type Logger as Logger } from '@claude-zen/foundation';
-
 // Keep any old constants that might be referenced
 export const LOG_LEVELS = {
   DEBUG: 'debug' as const,
@@ -30,5 +27,5 @@ export const LOG_LEVELS = {
   ERROR: 'error' as const,
 };
 
-// Default export for convenience (if the old file had one)
-export { default } from '@claude-zen/foundation';
+// Default export for convenience
+export { getLogger as default } from '@claude-zen/foundation';

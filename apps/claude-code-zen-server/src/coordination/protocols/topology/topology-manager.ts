@@ -7,7 +7,7 @@
  * @file Topology management system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../../core/interfaces/base-interfaces';
 import type { EventBusInterface as EventBus } from '../../core/event-bus';
 

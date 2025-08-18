@@ -13,7 +13,7 @@
  * @file Enhanced document scanner for code analysis and task generation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
 import { getLogger } from '../config/logging-config';

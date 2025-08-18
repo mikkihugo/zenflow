@@ -1,0 +1,229 @@
+{
+  "../../node_modules/.pnpm/@sveltejs+kit@2.31.1_@opentelemetry+api@1.9.0_@sveltejs+vite-plugin-svelte@6.1.2_svelte_12335bdc8939649d573d2b27501837f4/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js": {
+    "file": "remote-entry.js",
+    "name": "remote-entry",
+    "src": "../../node_modules/.pnpm/@sveltejs+kit@2.31.1_@opentelemetry+api@1.9.0_@sveltejs+vite-plugin-svelte@6.1.2_svelte_12335bdc8939649d573d2b27501837f4/node_modules/@sveltejs/kit/src/runtime/app/server/remote/index.js",
+    "isEntry": true,
+    "imports": [
+      "_shared.js",
+      "_false.js",
+      "_environment.js"
+    ]
+  },
+  "../../node_modules/.pnpm/@sveltejs+kit@2.31.1_@opentelemetry+api@1.9.0_@sveltejs+vite-plugin-svelte@6.1.2_svelte_12335bdc8939649d573d2b27501837f4/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte": {
+    "file": "entries/fallbacks/error.svelte.js",
+    "name": "entries/fallbacks/error.svelte",
+    "src": "../../node_modules/.pnpm/@sveltejs+kit@2.31.1_@opentelemetry+api@1.9.0_@sveltejs+vite-plugin-svelte@6.1.2_svelte_12335bdc8939649d573d2b27501837f4/node_modules/@sveltejs/kit/src/runtime/components/svelte-5/error.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_state.svelte.js",
+      "_exports.js",
+      "_utils.js",
+      "_index.js"
+    ]
+  },
+  "../../node_modules/.pnpm/@sveltejs+kit@2.31.1_@opentelemetry+api@1.9.0_@sveltejs+vite-plugin-svelte@6.1.2_svelte_12335bdc8939649d573d2b27501837f4/node_modules/@sveltejs/kit/src/runtime/server/index.js": {
+    "file": "index.js",
+    "name": "index",
+    "src": "../../node_modules/.pnpm/@sveltejs+kit@2.31.1_@opentelemetry+api@1.9.0_@sveltejs+vite-plugin-svelte@6.1.2_svelte_12335bdc8939649d573d2b27501837f4/node_modules/@sveltejs/kit/src/runtime/server/index.js",
+    "isEntry": true,
+    "imports": [
+      "_false.js",
+      "_environment.js",
+      "_shared.js",
+      "_exports.js",
+      "_utils.js",
+      "_index.js",
+      "_internal.js"
+    ]
+  },
+  ".svelte-kit/generated/server/internal.js": {
+    "file": "internal.js",
+    "name": "internal",
+    "src": ".svelte-kit/generated/server/internal.js",
+    "isEntry": true,
+    "imports": [
+      "_internal.js",
+      "_environment.js"
+    ]
+  },
+  "_environment.js": {
+    "file": "chunks/environment.js",
+    "name": "environment"
+  },
+  "_exports.js": {
+    "file": "chunks/exports.js",
+    "name": "exports"
+  },
+  "_false.js": {
+    "file": "chunks/false.js",
+    "name": "false"
+  },
+  "_index.js": {
+    "file": "chunks/index.js",
+    "name": "index",
+    "imports": [
+      "_index2.js"
+    ]
+  },
+  "_index2.js": {
+    "file": "chunks/index2.js",
+    "name": "index",
+    "imports": [
+      "_false.js"
+    ]
+  },
+  "_internal.js": {
+    "file": "chunks/internal.js",
+    "name": "internal",
+    "imports": [
+      "_index2.js",
+      "_environment.js"
+    ]
+  },
+  "_shared.js": {
+    "file": "chunks/shared.js",
+    "name": "shared",
+    "imports": [
+      "_utils.js"
+    ]
+  },
+  "_state.svelte.js": {
+    "file": "chunks/state.svelte.js",
+    "name": "state.svelte",
+    "imports": [
+      "_index2.js"
+    ]
+  },
+  "_stores.js": {
+    "file": "chunks/stores.js",
+    "name": "stores",
+    "imports": [
+      "_index2.js",
+      "_exports.js",
+      "_utils.js",
+      "_state.svelte.js"
+    ]
+  },
+  "_utils.js": {
+    "file": "chunks/utils.js",
+    "name": "utils"
+  },
+  "src/routes/+layout.svelte": {
+    "file": "entries/pages/_layout.svelte.js",
+    "name": "entries/pages/_layout.svelte",
+    "src": "src/routes/+layout.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_stores.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_layout.BsgI6FQG.css"
+    ]
+  },
+  "src/routes/+page.svelte": {
+    "file": "entries/pages/_page.svelte.js",
+    "name": "entries/pages/_page.svelte",
+    "src": "src/routes/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.BhFq8y-Q.css"
+    ]
+  },
+  "src/routes/agu/+page.svelte": {
+    "file": "entries/pages/agu/_page.svelte.js",
+    "name": "entries/pages/agu/_page.svelte",
+    "src": "src/routes/agu/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.3YMJtgrP.css"
+    ]
+  },
+  "src/routes/agu/task/[id]/+page.svelte": {
+    "file": "entries/pages/agu/task/_id_/_page.svelte.js",
+    "name": "entries/pages/agu/task/_id_/_page.svelte",
+    "src": "src/routes/agu/task/[id]/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_stores.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.3YMJtgrP.css"
+    ]
+  },
+  "src/routes/api/workspace/files/+server.ts": {
+    "file": "entries/endpoints/api/workspace/files/_server.ts.js",
+    "name": "entries/endpoints/api/workspace/files/_server.ts",
+    "src": "src/routes/api/workspace/files/+server.ts",
+    "isEntry": true
+  },
+  "src/routes/api/workspace/files/content/+server.ts": {
+    "file": "entries/endpoints/api/workspace/files/content/_server.ts.js",
+    "name": "entries/endpoints/api/workspace/files/content/_server.ts",
+    "src": "src/routes/api/workspace/files/content/+server.ts",
+    "isEntry": true
+  },
+  "src/routes/dev-communication/+page.svelte": {
+    "file": "entries/pages/dev-communication/_page.svelte.js",
+    "name": "entries/pages/dev-communication/_page.svelte",
+    "src": "src/routes/dev-communication/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.3YMJtgrP.css"
+    ]
+  },
+  "src/routes/matron/+page.svelte": {
+    "file": "entries/pages/matron/_page.svelte.js",
+    "name": "entries/pages/matron/_page.svelte",
+    "src": "src/routes/matron/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.3YMJtgrP.css"
+    ]
+  },
+  "src/routes/roadmap/+page.svelte": {
+    "file": "entries/pages/roadmap/_page.svelte.js",
+    "name": "entries/pages/roadmap/_page.svelte",
+    "src": "src/routes/roadmap/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js",
+      "_index.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.3YMJtgrP.css"
+    ]
+  },
+  "src/routes/workspace/+page.svelte": {
+    "file": "entries/pages/workspace/_page.svelte.js",
+    "name": "entries/pages/workspace/_page.svelte",
+    "src": "src/routes/workspace/+page.svelte",
+    "isEntry": true,
+    "imports": [
+      "_index2.js"
+    ],
+    "css": [
+      "_app/immutable/assets/_page.FKzUfNGn.css"
+    ]
+  }
+}

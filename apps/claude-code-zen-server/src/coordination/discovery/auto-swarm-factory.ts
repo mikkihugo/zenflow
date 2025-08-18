@@ -9,7 +9,7 @@
  * - Register with HiveSwarmCoordinator.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '../../memory/memory';

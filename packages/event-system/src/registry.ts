@@ -979,4 +979,7 @@ export class EventRegistry implements EventManagerRegistry {
   }
 }
 
+// Global registry instance for convenience
+export const globalEventRegistry = new EventRegistry();
+
 export default EventRegistry;

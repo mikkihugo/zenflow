@@ -33,14 +33,33 @@ export interface Task {
   timeout: number;
   metadata: Record<string, unknown>;
   createdAt: Date;
+  sessionId?: string; // For stateful tasks
 }
 
 export enum TaskPriority {
-  LOW = 1,
-  NORMAL = 2,
-  HIGH = 3,
-  CRITICAL = 4,
-  EMERGENCY = 5,
+  LOW = 'low',
+  NORMAL = 'normal', 
+  HIGH = 'high',
+  CRITICAL = 'critical',
+  EMERGENCY = 'emergency',
+}
+
+// Helper function to convert TaskPriority to numeric value for comparisons
+export function taskPriorityToNumber(priority: TaskPriority): number {
+  switch (priority) {
+    case TaskPriority.LOW:
+      return 1;
+    case TaskPriority.NORMAL:
+      return 2;
+    case TaskPriority.HIGH:
+      return 3;
+    case TaskPriority.CRITICAL:
+      return 4;
+    case TaskPriority.EMERGENCY:
+      return 5;
+    default:
+      return 2; // Default to NORMAL
+  }
 }
 
 export interface LoadMetrics {
@@ -54,6 +73,7 @@ export interface LoadMetrics {
   responseTime: number;
   errorRate: number;
   throughput: number;
+  loadAverage?: number; // System load average
 }
 
 export interface CapacityMetrics {
@@ -79,10 +99,12 @@ export interface RoutingResult {
   alternativeAgents: Agent[];
   estimatedLatency: number;
   expectedQuality: number;
+  routingDecision?: string; // Algorithm used for routing
+  mlPrediction?: number; // ML prediction score if applicable
 }
 
 export interface LoadBalancingConfig {
-  algorithm: LoadBalancingAlgorithm;
+  algorithm: LoadBalancingAlgorithmType;
   healthCheckInterval: number;
   maxRetries: number;
   timeoutMs: number;
@@ -90,9 +112,10 @@ export interface LoadBalancingConfig {
   stickySessionConfig: StickySessionConfig;
   autoScalingConfig: AutoScalingConfig;
   optimizationConfig: OptimizationConfig;
+  adaptiveLearning?: boolean; // Enable machine learning-based load balancing improvements
 }
 
-export enum LoadBalancingAlgorithm {
+export enum LoadBalancingAlgorithmType {
   ROUND_ROBIN = 'round_robin',
   WEIGHTED_ROUND_ROBIN = 'weighted_round_robin',
   LEAST_CONNECTIONS = 'least_connections',
@@ -209,4 +232,69 @@ export interface EmergencyAction {
   type: 'load_shed' | 'scale_up' | 'failover' | 'throttle' | 'alert';
   parameters: Record<string, unknown>;
   timeout: number;
+}
+
+// =============================================================================
+// Missing Types from Index Exports  
+// =============================================================================
+
+export interface TaskRoutingRequest {
+  task: Task;
+  routingStrategy?: string;
+  preferredAgents?: string[];
+  constraints?: Record<string, unknown>;
+  qosRequirements?: QoSRequirement;
+  deadline?: Date;
+}
+
+export interface AgentAssignment {
+  agentId: string;
+  taskId: string;
+  assignedAt: Date;
+  estimatedCompletion: Date;
+  priority: TaskPriority;
+  status: 'assigned' | 'active' | 'completed' | 'failed' | 'cancelled';
+}
+
+export interface LoadBalancingMetrics {
+  totalRequests: number;
+  successfulRequests: number;
+  failedRequests: number;
+  averageResponseTime: number;
+  throughput: number;
+  errorRate: number;
+  agentUtilization: Map<string, number>;
+  timestamp: Date;
+}
+
+export interface HealthStatus {
+  agentId: string;
+  status: AgentStatus;
+  lastCheck: Date;
+  responseTime: number;
+  availability: number;
+  healthScore: number;
+  issues: string[];
+}
+
+// =============================================================================
+// Additional Supporting Types
+// =============================================================================
+
+export interface LearningPattern {
+  id: string;
+  pattern: string;
+  confidence: number;
+  frequency: number;
+  context: Record<string, unknown>;
+  timestamp: Date;
+}
+
+export interface RoutingTable {
+  agentId: string;
+  endpoint: string;
+  weight: number;
+  healthScore: number;
+  capabilities: string[];
+  lastUpdated: Date;
 }

@@ -243,8 +243,7 @@ export class BetterTogether extends Teleprompter {
     // Save predictor LMs before optimization exactly matching Stanford implementation
     const pred_lms = this._get_predictors(student).map(pred => pred.lm);
     
-    student = await this.prompt_optimizer.compile({
-      student,
+    student = await this.prompt_optimizer.compile(student, {
       trainset: prompt_trainset,
       valset: prompt_valset
     });
@@ -273,7 +272,7 @@ export class BetterTogether extends Teleprompter {
     const original_lms = this._get_predictors(student).map(pred => pred.lm);
 
     console.log("Compiling the weight optimizer...");
-    student = await this.weight_optimizer.compile({ student, trainset });
+    student = await this.weight_optimizer.compile(student, { trainset });
 
     // Update train kwargs for new LMs exactly matching Stanford implementation
     const new_lms = this._get_predictors(student).map(pred => pred.lm);

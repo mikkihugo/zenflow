@@ -1,3 +1,7 @@
 packages:
-  - 'apps/*'
-  - 'packages/*'
+  - apps/*
+  - packages/*
+  - '!apps/*-backup'
+
+overrides:
+  '@claude-zen/agui': link:packages/agui

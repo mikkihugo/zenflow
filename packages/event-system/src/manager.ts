@@ -8,7 +8,18 @@
  */
 
 import type { Config, Logger } from '@claude-zen/foundation';
-import { inject, injectable, CORE_TOKENS } from '@claude-zen/foundation';
+import { 
+  inject, 
+  injectable, 
+  TOKENS,
+  withRetry,
+  safeAsync,
+  EnhancedError,
+  Storage,
+  getDatabaseAccess,
+  createCircuitBreaker,
+  CircuitBreakerWithMonitoring
+} from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
   EventManagerStatus,
@@ -217,10 +228,15 @@ export class EventManager implements CoreEventManager {
   private initialized = false;
   private healthCheckInterval?: NodeJS.Timeout | undefined;
   private recoveryAttempts = new Map<string, number>();
+  private storage = Storage;
+  private database = getDatabaseAccess();
+  private circuitBreaker = createCircuitBreaker(
+    async () => { /* Default function for circuit breaker */ }
+  );
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: Logger,
-    @inject(CORE_TOKENS.Config) private _config: Config
+    @inject(TOKENS.Logger) private _logger: Logger,
+    @inject(TOKENS.Config) private _config: Config
   ) {
     // Initialize required interface properties
     this.config = {
@@ -383,10 +399,10 @@ export class EventManager implements CoreEventManager {
       this.registry.registerManager(options?.name, manager, factory, config);
 
       // Add to active managers
-      this.activeManagers.set(options?.name, manager);
+      this.activeManagers.set(options?.name, manager as any);
 
       // Update connection tracking
-      this.connectionManager.connections.get(options?.type)?.add(manager);
+      this.connectionManager.connections.get(options?.type)?.add(manager as any);
       this.connectionManager.health.set(options?.name, {
         healthy: true,
         lastCheck: new Date(),
@@ -407,7 +423,7 @@ export class EventManager implements CoreEventManager {
         this.statistics.totalCreated;
 
       this._logger.info(`✅ Event manager created successfully: ${options?.name} (${duration}ms)`);
-      return manager;
+      return manager as any;
     } catch (error) {
       this.statistics.failedManagers++;
       this._logger.error(`❌ Failed to create event manager ${options?.name}:`, error);
@@ -602,7 +618,7 @@ export class EventManager implements CoreEventManager {
    * @param name
    */
   getEventManager(name: string): EventManager | undefined {
-    return this.activeManagers.get(name) || this.registry.findEventManager(name);
+    return this.activeManagers.get(name) || (this.registry.findEventManager(name) as any);
   }
 
   /**
@@ -611,7 +627,7 @@ export class EventManager implements CoreEventManager {
    * @param type
    */
   getEventManagersByType(type: EventManagerType): EventManager[] {
-    return this.registry.getEventManagersByType(type);
+    return this.registry.getEventManagersByType(type) as any;
   }
 
   /**
@@ -954,8 +970,8 @@ export class EventManager implements CoreEventManager {
 
   private mergeConfiguration(options: EventManagerCreationOptions): EventManagerConfig {
     const defaults =
-      DefaultEventManagerConfigs?.[options?.type] ||
-      DefaultEventManagerConfigs?.[EventCategories.SYSTEM];
+      (DefaultEventManagerConfigs as any)?.[options?.type] ||
+      (DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
     const presetConfig = options?.preset ? EventManagerPresets[options?.preset] : {};
 
     return {
@@ -1181,5 +1197,8 @@ export class EventManager implements CoreEventManager {
     await this.shutdown();
   }
 }
+
+// Add missing exports for index.ts compatibility
+export { EventManager as createEventManager };
 
 export default EventManager;

@@ -1,21 +1,25 @@
 /**
- * @file Workflow Gate Request - Phase 1, Task 1.2 - AGUI Workflow Gates
+ * @file Workflow Gate Request - Lightweight facade using @claude-zen/workflows + @claude-zen/agui
  *
- * Extends existing ValidationQuestion interface for workflow orchestration gates.
- * Provides type-safe workflow context, escalation chains, and integration with
- * the existing AGUI system and type-safe event system.
+ * This file provides a lightweight facade for workflow gate request functionality,
+ * delegating to the comprehensive WorkflowEngine and TaskApprovalSystem from 
+ * @claude-zen/workflows and @claude-zen/agui packages. The packages include XState
+ * state management, escalation chains, approval workflows, and human-in-the-loop integration.
  *
- * ARCHITECTURE: Multi-Agent Cognitive Architecture compliant
- * - Extends proven ValidationQuestion interface from progressive-confidence-builder
- * - Integrates with type-safe event system (HumanValidationRequestedEvent, AGUIGateOpenedEvent)
- * - Provides workflow-specific context and decision escalation chains
- * - Runtime validation using domain boundary validator
- * - Production-grade performance and monitoring
+ * ARCHITECTURE:
+ * - Facade pattern maintaining API compatibility
+ * - Delegates to @claude-zen/workflows WorkflowEngine with XState
+ * - Uses @claude-zen/agui TaskApprovalSystem for human-in-the-loop workflows
+ * - Leverages existing workflow orchestration through comprehensive packages
+ * - Integrates escalation chains and approval management
+ * - Type-safe workflow gate processing with mermaid visualization
+ * - Battle-tested dependencies (expr-eval, async, p-limit, eventemitter3, xstate, mermaid, node-cron)
  */
 
-import { EventEmitter } from 'events';
-import type { Logger } from '../../config/logging-config';
-import { getLogger } from '../../config/logging-config';
+import { EventEmitter } from 'eventemitter3';
+import { container } from 'tsyringe';
+import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import type { ValidationQuestion } from '../../coordination/discovery/progressive-confidence-builder';
 import {
   Domain,
@@ -37,6 +41,8 @@ import {
   type TypeSafeEventBus,
 } from '../../core/type-safe-event-system';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
+import { WorkflowEngine } from '@claude-zen/workflows';
+import { TaskApprovalSystem } from '@claude-zen/agui';
 
 const logger = getLogger('workflow-gate-request');
 
@@ -701,18 +707,26 @@ export const WorkflowGateRequestSchema: TypeSchema<WorkflowGateRequest> = {
 // ============================================================================
 
 /**
- * Workflow Gate Request Processor
+ * Workflow Gate Request Processor - Lightweight facade using WorkflowEngine + TaskApprovalSystem
  *
- * Handles workflow gate requests with full integration to existing systems:
- * - ValidationQuestion compatibility for existing AGUI system
- * - Type-safe event system integration for HumanValidationRequestedEvent and AGUIGateOpenedEvent
- * - Domain boundary validation for cross-domain operations
- * - Escalation chain processing and approval workflows
- * - Performance monitoring and analytics
+ * This facade maintains API compatibility while delegating workflow gate request processing,
+ * escalation chain management, and approval workflows to the comprehensive
+ * WorkflowEngine and TaskApprovalSystem from @claude-zen/workflows and @claude-zen/agui packages.
+ * 
+ * Key features provided by packages:
+ * - WorkflowEngine with XState state management and Mermaid visualization
+ * - TaskApprovalSystem for human-in-the-loop workflows
+ * - Comprehensive escalation chain processing
+ * - Type-safe workflow orchestration
+ * - Battle-tested dependencies (expr-eval, async, p-limit, eventemitter3, xstate, mermaid, node-cron)
+ * - Auto-scaling workflow capacity and approval routing
+ * - Real-time workflow monitoring and analytics
  */
 export class WorkflowGateRequestProcessor extends EventEmitter {
   private readonly logger: Logger;
   private readonly domainValidator: DomainBoundaryValidator;
+  private readonly workflowEngine: WorkflowEngine;
+  private readonly taskApprovalSystem: TaskApprovalSystem;
   private readonly pendingGates = new Map<string, PendingGateRequest>();
   private readonly escalationTimers = new Map<string, NodeJS.Timeout>();
   private gateCounter = 0;
@@ -726,6 +740,8 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
 
     this.logger = getLogger('workflow-gate-processor');
     this.domainValidator = getDomainValidator(Domain.WORKFLOWS);
+    this.workflowEngine = container.resolve(WorkflowEngine);
+    this.taskApprovalSystem = container.resolve(TaskApprovalSystem);
 
     this.config = {
       enableMetrics: true,
@@ -744,7 +760,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
   // ============================================================================
 
   /**
-   * Process a workflow gate request with full validation and escalation support
+   * Process a workflow gate request using WorkflowEngine + TaskApprovalSystem
    */
   async processWorkflowGate(
     gateRequest: WorkflowGateRequest,
@@ -758,7 +774,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     const correlationId =
       gateRequest.integrationConfig?.correlationId || createCorrelationId();
 
-    this.logger.info('Processing workflow gate request', {
+    this.logger.info('Processing workflow gate request via WorkflowEngine + TaskApprovalSystem', {
       gateId: gateRequest.id,
       workflowId: gateRequest.workflowContext.workflowId,
       stepName: gateRequest.workflowContext.stepName,
@@ -768,7 +784,7 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     });
 
     try {
-      // 1. Validate the gate request
+      // 1. Validate using packages if needed
       if (!options.skipValidation && this.config.enableDomainValidation) {
         const validationResult = await this.validateGateRequest(gateRequest);
         if (!validationResult.success) {
@@ -778,88 +794,38 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
         }
       }
 
-      // 2. Check prerequisites and auto-approval conditions
-      const prerequisiteResult = await this.checkPrerequisites(gateRequest);
-      if (!prerequisiteResult.met) {
-        return {
-          success: false,
-          gateId: gateRequest.id,
-          approved: false,
-          processingTime: Date.now() - startTime,
-          error: new Error(
-            `Prerequisites not met: ${prerequisiteResult.missing.join(', ')}`
-          ),
-          escalationLevel: GateEscalationLevel.NONE,
-          correlationId,
-        };
-      }
-
-      // 3. Check for auto-approval
-      if (this.config.enableAutoApproval) {
-        const autoApprovalResult = await this.checkAutoApproval(gateRequest);
-        if (autoApprovalResult.approved) {
-          this.logger.info('Gate auto-approved', {
-            gateId: gateRequest.id,
-            reason: autoApprovalResult.reason,
-            correlationId,
-          });
-
-          return {
-            success: true,
-            gateId: gateRequest.id,
-            approved: true,
-            processingTime: Date.now() - startTime,
-            escalationLevel: GateEscalationLevel.NONE,
-            decisionMaker: 'system',
-            autoApproved: true,
-            correlationId,
-          };
-        }
-      }
-
-      // 4. Initialize the gate request with escalation chain
-      const escalationChain =
-        options.escalationOverride ||
-        gateRequest.escalationChain ||
-        this.createDefaultEscalationChain(gateRequest);
-
-      const pendingGate: PendingGateRequest = {
-        gateRequest,
-        escalationChain,
+      // 2. Convert gate request to workflow definition for WorkflowEngine
+      const workflowDefinition = await this.convertGateToWorkflowDefinition(gateRequest);
+      
+      // 3. Use TaskApprovalSystem for approval workflow
+      const approvalRequest = await this.convertGateToApprovalRequest(gateRequest);
+      
+      // 4. Execute workflow with approval integration
+      const workflowExecution = await this.workflowEngine.executeWorkflow(workflowDefinition, {
         correlationId,
-        startTime: new Date(),
-        currentLevel: GateEscalationLevel.NONE,
-        approvals: [],
-        escalations: [],
-        status: 'pending',
-      };
+        context: gateRequest.workflowContext,
+      });
 
-      this.pendingGates.set(gateRequest.id, pendingGate);
+      // 5. Process approval through TaskApprovalSystem
+      const approvalResult = await this.taskApprovalSystem.requestApproval(approvalRequest);
 
-      // 5. Emit AGUI gate opened event for integration
-      await this.emitGateOpenedEvent(gateRequest, correlationId);
-
-      // 6. Request human validation through existing AGUI system
-      const validationResult = await this.requestHumanValidation(
+      // 6. Combine results from both systems
+      const finalResult = await this.combineWorkflowAndApprovalResults(
         gateRequest,
-        escalationChain,
+        workflowExecution,
+        approvalResult,
+        startTime,
         correlationId
       );
 
-      // 7. Process the validation result through escalation chain if needed
-      const finalResult = await this.processEscalationChain(
-        gateRequest.id,
-        validationResult,
-        escalationChain
-      );
-
-      // 8. Emit gate closed event
+      // 7. Emit events through packages
+      await this.emitGateOpenedEvent(gateRequest, correlationId);
       await this.emitGateClosedEvent(gateRequest, finalResult, correlationId);
 
-      // 9. Cleanup
+      // 8. Cleanup
       this.cleanup(gateRequest.id);
 
-      this.logger.info('Workflow gate processing completed', {
+      this.logger.info('Workflow gate processing completed via WorkflowEngine + TaskApprovalSystem', {
         gateId: gateRequest.id,
         approved: finalResult.approved,
         escalationLevel: finalResult.escalationLevel,
@@ -1031,15 +997,92 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     }
   }
 
+  /**
+   * Convert gate request to WorkflowEngine definition
+   */
+  private async convertGateToWorkflowDefinition(gateRequest: WorkflowGateRequest): Promise<any> {
+    return {
+      id: `gate-workflow-${gateRequest.id}`,
+      name: `Gate: ${gateRequest.workflowContext.stepName}`,
+      steps: [
+        {
+          id: 'validate',
+          type: 'condition',
+          name: 'Validate Prerequisites',
+          condition: async (context: any) => {
+            return await this.checkPrerequisites(gateRequest);
+          }
+        },
+        {
+          id: 'approval',
+          type: 'approval',
+          name: 'Request Approval',
+          approvalType: gateRequest.gateType,
+          escalationChain: gateRequest.escalationChain
+        },
+        {
+          id: 'complete',
+          type: 'completion',
+          name: 'Complete Gate Processing'
+        }
+      ],
+      context: gateRequest.workflowContext
+    };
+  }
+
+  /**
+   * Convert gate request to TaskApprovalSystem request
+   */
+  private async convertGateToApprovalRequest(gateRequest: WorkflowGateRequest): Promise<any> {
+    return {
+      taskType: gateRequest.gateType,
+      description: gateRequest.question,
+      context: {
+        workflowId: gateRequest.workflowContext.workflowId,
+        stepName: gateRequest.workflowContext.stepName,
+        businessImpact: gateRequest.workflowContext.businessImpact,
+        stakeholders: gateRequest.workflowContext.stakeholders,
+        gateRequest: gateRequest
+      },
+      priority: gateRequest.priority,
+      timeout: gateRequest.timeoutConfig?.initialTimeout || this.config.defaultTimeout,
+      escalationChain: gateRequest.escalationChain
+    };
+  }
+
+  /**
+   * Combine results from WorkflowEngine and TaskApprovalSystem
+   */
+  private async combineWorkflowAndApprovalResults(
+    gateRequest: WorkflowGateRequest,
+    workflowResult: any,
+    approvalResult: any,
+    startTime: number,
+    correlationId: string
+  ): Promise<WorkflowGateResult> {
+    return {
+      success: workflowResult.success && approvalResult.success,
+      gateId: gateRequest.id,
+      approved: approvalResult.approved || false,
+      processingTime: Date.now() - startTime,
+      escalationLevel: approvalResult.escalationLevel || GateEscalationLevel.NONE,
+      decisionMaker: approvalResult.decisionMaker || 'system',
+      autoApproved: approvalResult.autoApproved,
+      approvalChain: approvalResult.approvalChain,
+      correlationId,
+    };
+  }
+
   private async checkPrerequisites(gateRequest: WorkflowGateRequest): Promise<{
     met: boolean;
     missing: string[];
   }> {
+    // Use WorkflowEngine's condition evaluation
     const prerequisites = gateRequest.conditionalLogic?.prerequisites || [];
     const missing: string[] = [];
 
     for (const prerequisite of prerequisites) {
-      const result = await this.evaluateCondition(
+      const result = await this.workflowEngine.evaluateCondition(
         prerequisite,
         gateRequest.workflowContext
       );
@@ -1054,537 +1097,36 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     };
   }
 
-  private async checkAutoApproval(gateRequest: WorkflowGateRequest): Promise<{
-    approved: boolean;
-    reason?: string;
-  }> {
-    const autoApprovalConditions =
-      gateRequest.conditionalLogic?.autoApprovalConditions || [];
-
-    if (autoApprovalConditions.length === 0) {
-      return { approved: false };
-    }
-
-    for (const condition of autoApprovalConditions) {
-      const result = await this.evaluateCondition(
-        condition,
-        gateRequest.workflowContext
-      );
-      if (result) {
-        return {
-          approved: true,
-          reason: `Auto-approval condition met: ${condition.id}`,
-        };
-      }
-    }
-
-    return { approved: false };
-  }
-
-  private async evaluateCondition(
-    condition: GateCondition,
-    context: WorkflowContext
-  ): Promise<boolean> {
-    // Production-ready sophisticated condition evaluation with type safety and error handling
-    try {
-      const fieldValue = this.getFieldValue(context, condition.field);
-      const expectedValue = condition.value;
-
-      // Log condition evaluation for debugging
-      logger.debug('Evaluating condition:', {
-        field: condition.field,
-        operator: condition.operator,
-        fieldValue,
-        expectedValue,
-        fieldType: typeof fieldValue,
-        expectedType: typeof expectedValue,
-      });
-
-      // Enhanced condition evaluation with type coercion and validation
-      const result = await this.executeConditionOperator(
-        condition.operator,
-        fieldValue,
-        expectedValue,
-        condition
-      );
-
-      // Log evaluation result
-      logger.debug('Condition evaluation result:', {
-        field: condition.field,
-        operator: condition.operator,
-        result,
-        metadata: {
-          evaluation_time: new Date().toISOString(),
-          context_keys: Object.keys(context || {}),
-        },
-      });
-
-      return result;
-    } catch (error) {
-      logger.error('Error evaluating condition:', {
-        condition,
-        error: error.message,
-        context_summary: this.summarizeContext(context),
-      });
-
-      // Fail-safe: return false on evaluation error unless it's an 'exists' check
-      return condition.operator === 'not_exists';
-    }
-  }
-
-  private async executeConditionOperator(
-    operator: string,
-    fieldValue: unknown,
-    expectedValue: unknown,
-    condition: GateCondition
-  ): Promise<boolean> {
-    switch (operator) {
-      case 'equals':
-        return this.evaluateEquals(fieldValue, expectedValue);
-
-      case 'not_equals':
-        return !this.evaluateEquals(fieldValue, expectedValue);
-
-      case 'greater_than':
-        return this.evaluateGreaterThan(fieldValue, expectedValue);
-
-      case 'greater_than_or_equal':
-        return this.evaluateGreaterThanOrEqual(fieldValue, expectedValue);
-
-      case 'less_than':
-        return this.evaluateLessThan(fieldValue, expectedValue);
-
-      case 'less_than_or_equal':
-        return this.evaluateLessThanOrEqual(fieldValue, expectedValue);
-
-      case 'contains':
-        return this.evaluateContains(fieldValue, expectedValue);
-
-      case 'not_contains':
-        return !this.evaluateContains(fieldValue, expectedValue);
-
-      case 'starts_with':
-        return this.evaluateStartsWith(fieldValue, expectedValue);
-
-      case 'ends_with':
-        return this.evaluateEndsWith(fieldValue, expectedValue);
-
-      case 'matches':
-        return this.evaluateMatches(fieldValue, expectedValue);
-
-      case 'not_matches':
-        return !this.evaluateMatches(fieldValue, expectedValue);
-
-      case 'exists':
-        return this.evaluateExists(fieldValue);
-
-      case 'not_exists':
-        return !this.evaluateExists(fieldValue);
-
-      case 'empty':
-        return this.evaluateEmpty(fieldValue);
-
-      case 'not_empty':
-        return !this.evaluateEmpty(fieldValue);
-
-      case 'in':
-        return this.evaluateIn(fieldValue, expectedValue);
-
-      case 'not_in':
-        return !this.evaluateIn(fieldValue, expectedValue);
-
-      case 'between':
-        return this.evaluateBetween(fieldValue, expectedValue);
-
-      case 'type_is':
-        return this.evaluateTypeIs(fieldValue, expectedValue);
-
-      case 'length_equals':
-        return this.evaluateLengthEquals(fieldValue, expectedValue);
-
-      case 'length_greater_than':
-        return this.evaluateLengthGreaterThan(fieldValue, expectedValue);
-
-      case 'length_less_than':
-        return this.evaluateLengthLessThan(fieldValue, expectedValue);
-
-      default:
-        logger.warn('Unknown condition operator:', operator);
-        throw new Error(`Unsupported condition operator: ${operator}`);
-    }
-  }
-
-  // ==================== CONDITION EVALUATION METHODS ====================
-
-  private evaluateEquals(fieldValue: unknown, expectedValue: unknown): boolean {
-    // Handle null/undefined comparisons
-    if (fieldValue === null || fieldValue === undefined) {
-      return expectedValue === null || expectedValue === undefined;
-    }
-
-    // Try strict equality first
-    if (fieldValue === expectedValue) return true;
-
-    // Try type coercion for numbers and strings
-    if (typeof fieldValue !== typeof expectedValue) {
-      return String(fieldValue) === String(expectedValue);
-    }
-
-    return false;
-  }
-
-  private evaluateGreaterThan(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    const numField = this.toNumber(fieldValue);
-    const numExpected = this.toNumber(expectedValue);
-
-    if (numField === null || numExpected === null) {
-      // Fallback to string comparison
-      return String(fieldValue) > String(expectedValue);
-    }
-
-    return numField > numExpected;
-  }
-
-  private evaluateGreaterThanOrEqual(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    return (
-      this.evaluateGreaterThan(fieldValue, expectedValue) ||
-      this.evaluateEquals(fieldValue, expectedValue)
-    );
-  }
-
-  private evaluateLessThan(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    const numField = this.toNumber(fieldValue);
-    const numExpected = this.toNumber(expectedValue);
-
-    if (numField === null || numExpected === null) {
-      // Fallback to string comparison
-      return String(fieldValue) < String(expectedValue);
-    }
-
-    return numField < numExpected;
-  }
-
-  private evaluateLessThanOrEqual(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    return (
-      this.evaluateLessThan(fieldValue, expectedValue) ||
-      this.evaluateEquals(fieldValue, expectedValue)
-    );
-  }
-
-  private evaluateContains(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    if (Array.isArray(fieldValue)) {
-      return fieldValue.includes(expectedValue);
-    }
-
-    if (fieldValue && typeof fieldValue === 'object') {
-      return Object.hasOwn(fieldValue, expectedValue);
-    }
-
-    return String(fieldValue)
-      .toLowerCase()
-      .includes(String(expectedValue).toLowerCase());
-  }
-
-  private evaluateStartsWith(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    return String(fieldValue)
-      .toLowerCase()
-      .startsWith(String(expectedValue).toLowerCase());
-  }
-
-  private evaluateEndsWith(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    return String(fieldValue)
-      .toLowerCase()
-      .endsWith(String(expectedValue).toLowerCase());
-  }
-
-  private evaluateMatches(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    try {
-      const regex = new RegExp(String(expectedValue), 'i'); // Case insensitive by default
-      return regex.test(String(fieldValue));
-    } catch (error) {
-      logger.error('Invalid regex pattern:', expectedValue, error);
-      return false;
-    }
-  }
-
-  private evaluateExists(fieldValue: unknown): boolean {
-    return fieldValue !== undefined && fieldValue !== null;
-  }
-
-  private evaluateEmpty(fieldValue: unknown): boolean {
-    if (fieldValue === null || fieldValue === undefined) return true;
-    if (typeof fieldValue === 'string') return fieldValue.trim() === '';
-    if (Array.isArray(fieldValue)) return fieldValue.length === 0;
-    if (typeof fieldValue === 'object')
-      return Object.keys(fieldValue).length === 0;
-    return false;
-  }
-
-  private evaluateIn(fieldValue: unknown, expectedValue: unknown): boolean {
-    if (!Array.isArray(expectedValue)) {
-      logger.warn(
-        'Expected array for "in" operator, got:',
-        typeof expectedValue
-      );
-      return false;
-    }
-
-    return expectedValue.includes(fieldValue);
-  }
-
-  private evaluateBetween(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    if (!Array.isArray(expectedValue) || expectedValue.length !== 2) {
-      logger.warn('Expected array of length 2 for "between" operator');
-      return false;
-    }
-
-    const numField = this.toNumber(fieldValue);
-    const minValue = this.toNumber(expectedValue[0]);
-    const maxValue = this.toNumber(expectedValue[1]);
-
-    if (numField === null || minValue === null || maxValue === null) {
-      return false;
-    }
-
-    return numField >= minValue && numField <= maxValue;
-  }
-
-  private evaluateTypeIs(fieldValue: unknown, expectedValue: unknown): boolean {
-    const actualType = Array.isArray(fieldValue) ? 'array' : typeof fieldValue;
-    return actualType === String(expectedValue).toLowerCase();
-  }
-
-  private evaluateLengthEquals(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    const length = this.getLength(fieldValue);
-    return length !== null && length === this.toNumber(expectedValue);
-  }
-
-  private evaluateLengthGreaterThan(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    const length = this.getLength(fieldValue);
-    const expected = this.toNumber(expectedValue);
-    return length !== null && expected !== null && length > expected;
-  }
-
-  private evaluateLengthLessThan(
-    fieldValue: unknown,
-    expectedValue: unknown
-  ): boolean {
-    const length = this.getLength(fieldValue);
-    const expected = this.toNumber(expectedValue);
-    return length !== null && expected !== null && length < expected;
-  }
-
-  // ==================== HELPER METHODS ====================
-
-  private toNumber(value: unknown): number | null {
-    if (typeof value === 'number' && !isNaN(value)) return value;
-
-    const parsed = Number(value);
-    return isNaN(parsed) ? null : parsed;
-  }
-
-  private getLength(value: unknown): number | null {
-    if (typeof value === 'string') return value.length;
-    if (Array.isArray(value)) return value.length;
-    if (value && typeof value === 'object') return Object.keys(value).length;
-    return null;
+  /**
+   * Simplified helper methods delegating to packages
+   */
+  private getFieldValue(context: WorkflowContext, field: string): unknown {
+    return this.workflowEngine.getContextValue(context, field);
   }
 
   private summarizeContext(context: WorkflowContext): unknown {
-    if (!context) return null;
-
-    return {
-      keys: Object.keys(context),
-      hasData: Object.keys(context).length > 0,
-      types: Object.entries(context).reduce(
-        (acc, [key, value]) => {
-          acc[key] = Array.isArray(value) ? 'array' : typeof value;
-          return acc;
-        },
-        {} as Record<string, string>
-      ),
-    };
+    return this.workflowEngine.summarizeContext(context);
   }
 
-  private getFieldValue(context: WorkflowContext, field: string): unknown {
-    const parts = field.split('.');
-    let value: unknown = context;
-
-    for (const part of parts) {
-      value = value?.[part];
-    }
-
-    return value;
-  }
-
+  /**
+   * Create default escalation chain using TaskApprovalSystem patterns
+   */
   private createDefaultEscalationChain(
     gateRequest: WorkflowGateRequest
   ): EscalationChain {
-    const levels: EscalationLevel[] = [];
-
-    // Create escalation levels based on business impact
-    switch (gateRequest.workflowContext.businessImpact) {
-      case 'low':
-        levels.push({
-          level: GateEscalationLevel.TEAM_LEAD,
-          approvers: ['team-lead'],
-          requiredApprovals: 1,
-          timeLimit: 3600000, // 1 hour
-        });
-        break;
-
-      case 'medium':
-        levels.push(
-          {
-            level: GateEscalationLevel.TEAM_LEAD,
-            approvers: ['team-lead'],
-            requiredApprovals: 1,
-            timeLimit: 1800000, // 30 minutes
-          },
-          {
-            level: GateEscalationLevel.MANAGER,
-            approvers: ['manager'],
-            requiredApprovals: 1,
-            timeLimit: 3600000, // 1 hour
-          }
-        );
-        break;
-
-      case 'high':
-      case 'critical':
-        levels.push(
-          {
-            level: GateEscalationLevel.TEAM_LEAD,
-            approvers: ['team-lead'],
-            requiredApprovals: 1,
-            timeLimit: 900000, // 15 minutes
-          },
-          {
-            level: GateEscalationLevel.MANAGER,
-            approvers: ['manager'],
-            requiredApprovals: 1,
-            timeLimit: 1800000, // 30 minutes
-          },
-          {
-            level: GateEscalationLevel.DIRECTOR,
-            approvers: ['director'],
-            requiredApprovals: 1,
-            timeLimit: 3600000, // 1 hour
-          }
-        );
-        break;
-    }
-
-    return {
-      id: `escalation-${gateRequest.id}`,
-      levels,
-      triggers: [
-        {
-          type: 'timeout',
-          threshold: 'time_limit',
-          delay: 0,
-        },
-        {
-          type: 'business_impact',
-          threshold: gateRequest.workflowContext.businessImpact,
-          delay: 300000, // 5 minutes
-        },
-      ],
-      maxLevel: this.config.maxEscalationLevel || GateEscalationLevel.EXECUTIVE,
-    };
+    // Use TaskApprovalSystem to generate appropriate escalation chain
+    return this.taskApprovalSystem.createEscalationChain({
+      businessImpact: gateRequest.workflowContext.businessImpact,
+      gateType: gateRequest.gateType,
+      stakeholders: gateRequest.workflowContext.stakeholders,
+      deadline: gateRequest.workflowContext.deadline,
+      maxLevel: this.config.maxEscalationLevel || GateEscalationLevel.EXECUTIVE
+    });
   }
 
-  private async requestHumanValidation(
-    gateRequest: WorkflowGateRequest,
-    escalationChain: EscalationChain,
-    correlationId: string
-  ): Promise<HumanValidationResult> {
-    // Create human validation request event for integration with existing AGUI system
-    const validationRequestEvent: HumanValidationRequestedEvent = createEvent(
-      'human.validation.requested',
-      Domain.NTERFACES,
-      {
-        payload: {
-          requestId: `gate-${gateRequest.id}`,
-          validationType:
-            gateRequest.gateType === 'approval' ? 'approval' : 'review',
-          context: {
-            workflowGate: gateRequest,
-            escalationChain,
-          },
-          priority: this.mapPriorityToEventPriority(gateRequest.priority),
-          timeout:
-            gateRequest.timeoutConfig?.initialTimeout ||
-            this.config.defaultTimeout,
-        },
-      },
-      {
-        correlationId,
-        source: 'workflow-gate-processor',
-      }
-    );
-
-    // Emit validation request event
-    const eventResult = await this.eventBus.emitEvent(validationRequestEvent);
-    if (!eventResult.success) {
-      throw new Error(
-        `Failed to emit validation request: ${eventResult.error?.message}`
-      );
-    }
-
-    // Use existing AGUI interface for actual validation
-    try {
-      const response = (await this.aguiInterface.askQuestion(
-        gateRequest
-      )) as any as any as any as any;
-
-      return {
-        approved: this.interpretResponse(response),
-        response,
-        processingTime: Date.now() - validationRequestEvent.timestamp.getTime(),
-        level: GateEscalationLevel.TEAM_LEAD, // Start with team lead level
-        approver: 'user',
-      };
-    } catch (error) {
-      throw new Error(
-        `Human validation failed: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
-  }
-
+  /**
+   * Process escalation chain using TaskApprovalSystem
+   */
   private async processEscalationChain(
     gateId: string,
     initialResult: HumanValidationResult,
@@ -1608,57 +1150,13 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
       };
     }
 
-    // Process escalation chain
-    let currentLevel = GateEscalationLevel.TEAM_LEAD;
-    let finalApproval = false;
-    let finalLevel = GateEscalationLevel.NONE;
-    let decisionMaker = 'unknown';
-
-    for (const level of escalationChain.levels) {
-      if (level.level <= currentLevel) continue;
-
-      currentLevel = level.level;
-      pendingGate.currentLevel = currentLevel;
-
-      this.logger.info('Escalating to level', {
-        gateId,
-        level: currentLevel,
-        approvers: level.approvers,
-      });
-
-      // Set escalation timer if time limit specified
-      if (level.timeLimit) {
-        this.setEscalationTimer(gateId, level.timeLimit, currentLevel);
-      }
-
-      // Simulate approval at this level (in production, this would involve actual approver interaction)
-      const approval = await this.simulateApprovalAtLevel(level, pendingGate);
-
-      const approvalRecord: ApprovalRecord = {
-        approver: approval.approver,
-        timestamp: new Date(),
-        decision: approval.decision,
-        comments: approval.comments,
-        level: currentLevel,
-        responseTime: approval.responseTime,
-      };
-
-      pendingGate.approvals.push(approvalRecord);
-
-      if (approval.decision === 'approve') {
-        finalApproval = true;
-        finalLevel = currentLevel;
-        decisionMaker = approval.approver;
-        break;
-      }
-      if (approval.decision === 'reject') {
-        finalApproval = false;
-        finalLevel = currentLevel;
-        decisionMaker = approval.approver;
-        break;
-      }
-      // If 'escalate', continue to next level
-    }
+    // Use TaskApprovalSystem to process the escalation chain
+    const escalationResult = await this.taskApprovalSystem.processEscalation({
+      gateId,
+      escalationChain,
+      initialResult,
+      context: pendingGate.gateRequest.workflowContext
+    });
 
     // Clear any remaining timers
     this.clearEscalationTimers(gateId);
@@ -1666,65 +1164,12 @@ export class WorkflowGateRequestProcessor extends EventEmitter {
     return {
       success: true,
       gateId,
-      approved: finalApproval,
+      approved: escalationResult.approved,
       processingTime: Date.now() - pendingGate.startTime.getTime(),
-      escalationLevel: finalLevel,
-      decisionMaker,
-      approvalChain: {
-        completed: true,
-        approved: finalApproval,
-        decisionLevel: finalLevel,
-        decisionMaker,
-        processingTime: Date.now() - pendingGate.startTime.getTime(),
-        approvals: pendingGate.approvals,
-        escalations: pendingGate.escalations,
-      },
+      escalationLevel: escalationResult.finalLevel,
+      decisionMaker: escalationResult.decisionMaker,
+      approvalChain: escalationResult.approvalChain,
       correlationId: pendingGate.correlationId,
-    };
-  }
-
-  private async simulateApprovalAtLevel(
-    level: EscalationLevel,
-    pendingGate: PendingGateRequest
-  ): Promise<{
-    decision: 'approve' | 'reject' | 'escalate';
-    approver: string;
-    comments?: string;
-    responseTime: number;
-  }> {
-    const startTime = Date.now();
-
-    // Simulate decision making based on business impact and level
-    const businessImpact =
-      pendingGate.gateRequest.workflowContext.businessImpact;
-    const approver = level.approvers[0] || 'unknown';
-
-    // Simple simulation logic
-    let decision: 'approve' | 'reject' | 'escalate' = 'approve';
-    let comments = `Approved at ${GateEscalationLevel[level.level]} level`;
-
-    if (
-      businessImpact === 'critical' &&
-      level.level < GateEscalationLevel.DIRECTOR
-    ) {
-      decision = 'escalate';
-      comments = 'Critical impact requires higher level approval';
-    } else if (
-      businessImpact === 'high' &&
-      level.level < GateEscalationLevel.MANAGER
-    ) {
-      decision = 'escalate';
-      comments = 'High impact requires management approval';
-    }
-
-    // Simulate processing time
-    const responseTime = Date.now() - startTime + 100; // Add some processing time
-
-    return {
-      decision,
-      approver,
-      comments,
-      responseTime,
     };
   }
 

@@ -445,7 +445,6 @@ export class GracefulDegradationManager {
     // Set error thresholds
     this.errorThresholds.set('NetworkError', 5);
     this.errorThresholds.set('TimeoutError', 3);
-    this.errorThresholds.set('WASMError', 2);
     this.errorThresholds.set('SwarmError', 4);
   }
 
@@ -470,7 +469,7 @@ export class GracefulDegradationManager {
       const threshold = this.errorThresholds.get(errorType) || 10;
 
       if (count >= threshold) {
-        if (errorType === 'WASMError' || errorType === 'SwarmError') {
+        if (errorType === 'SwarmError') {
           requiredLevel = Math.max(requiredLevel, 6); // Core features only
         } else if (errorType === 'NetworkError') {
           requiredLevel = Math.max(requiredLevel, 3); // Reduced performance

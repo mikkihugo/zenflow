@@ -1,386 +1,337 @@
 /**
- * @file Universal FACT Mixin
- * Provides shared FACT access capabilities to any class in the hierarchy.
- *
- * This mixin ensures ALL hierarchy levels (Cubes, Matrons, Queens, SwarmCommanders, Agents)
- * can access the shared FACT system using consistent patterns.
+ * @file Universal Fact Mixin - Foundation Fact System Integration
+ * 
+ * Provides a mixin that adds foundation fact system capabilities to any agent class.
+ * This allows agents to seamlessly integrate with both coordination facts and
+ * external facts (NPM, GitHub, security, etc.) through the foundation fact system.
  */
 
-import { getLogger } from '../config/logging-config';
-import type { CollectiveFACTSystem } from './collective-fact-integration';
-import {
-  getUniversalFACTAccess,
-  type UniversalFACTAccess,
-} from './shared-fact-access';
+import { 
+  sharedFactSystem, 
+  storeAgentFact, 
+  queryAgentFacts,
+  searchExternalFacts,
+  getNPMPackageInfo,
+  getGitHubRepoInfo
+} from './shared-fact-system';
+import type { FactEntry, FactQuery } from './shared-fact-system';
+import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger('Universal-FACT-Mixin');
+const logger = getLogger('UniversalFactMixin');
 
 /**
- * Universal FACT capabilities interface.
- * Can be mixed into any hierarchy level class.
+ * Enhanced fact-capable interface that agents can implement
+ * Includes both coordination facts and external fact access
  */
-export interface UniversalFACTCapabilities {
-  /** Get shared FACT system access */
-  getSharedFACTSystem(): Promise<CollectiveFACTSystem>;
-
-  /** Search facts using shared system */
-  searchSharedFacts(query: unknown): Promise<unknown[]>;
-
-  /** Store fact in shared system */
-  storeSharedFact(fact: unknown): Promise<void>;
-
-  /** Get NPM package facts */
-  getSharedNPMFacts(packageName: string, version?: string): Promise<unknown>;
-
-  /** Get GitHub repository facts */
-  getSharedGitHubFacts(owner: string, repo: string): Promise<unknown>;
-
-  /** Get API documentation facts */
-  getSharedAPIFacts(api: string, endpoint?: string): Promise<unknown>;
-
-  /** Get security advisory facts */
-  getSharedSecurityFacts(cve: string): Promise<unknown>;
+export interface FactCapable {
+  agentId: string;
+  storeFact(type: string, data: unknown, confidence?: number, tags?: string[]): Promise<string>;
+  queryFacts(query?: FactQuery): Promise<FactEntry[]>;
+  getMyFacts(type?: string, limit?: number): Promise<FactEntry[]>;
+  shareFact(factId: string, targetAgentId?: string): Promise<boolean>;
+  
+  // External fact system access through foundation
+  searchExternalFacts(query: string, sources?: string[], limit?: number): Promise<any[]>;
+  getNPMPackageInfo(packageName: string, version?: string): Promise<any>;
+  getGitHubRepoInfo(owner: string, repo: string): Promise<any>;
 }
 
 /**
- * Mixin function to add universal FACT capabilities to any class.
- *
- * @param hierarchyLevel - The hierarchy level using this mixin
- * @returns Mixin class with universal FACT capabilities
+ * Fact mixin constructor type
  */
-export function withUniversalFACT<T extends new (...args: unknown[]) => object>(
-  hierarchyLevel: 'Cube' | 'Matron' | 'Queen' | 'SwarmCommander' | 'Agent'
+export type FactMixinConstructor<T = {}> = new (...args: any[]) => T;
+
+/**
+ * Universal fact mixin that adds fact capabilities to any class
+ */
+export function withFactCapabilities<TBase extends FactMixinConstructor<{ agentId: string }>>(
+  Base: TBase
 ) {
-  return function <U extends T>(BaseClass: U) {
-    return class extends BaseClass implements UniversalFACTCapabilities {
-      protected _sharedFactSystem: CollectiveFACTSystem | null = null;
+  return class FactEnhanced extends Base implements FactCapable {
+    /**
+     * Store a fact associated with this agent
+     */
+    async storeFact(
+      type: string,
+      data: unknown,
+      confidence = 1.0,
+      tags: string[] = []
+    ): Promise<string> {
+      try {
+        const factId = await storeAgentFact(this.agentId, type, data, confidence, tags);
+        logger.debug(`Agent ${this.agentId} stored fact: ${factId} (${type})`);
+        return factId;
+      } catch (error) {
+        logger.error(`Failed to store fact for agent ${this.agentId}:`, error);
+        throw error;
+      }
+    }
 
-      /**
-       * Get shared FACT system access.
-       * Lazy-loaded and cached for performance.
-       */
-      public async getSharedFACTSystem(): Promise<CollectiveFACTSystem> {
-        if (!this._sharedFactSystem) {
-          logger.debug(
-            `${hierarchyLevel} initializing shared FACT system access`
-          );
-          this._sharedFactSystem = await getUniversalFACTAccess(hierarchyLevel);
-          logger.debug(`✅ ${hierarchyLevel} shared FACT system access ready`);
+    /**
+     * Query facts from the shared system
+     */
+    async queryFacts(query: FactQuery = {}): Promise<FactEntry[]> {
+      try {
+        return await sharedFactSystem.queryFacts(query);
+      } catch (error) {
+        logger.error(`Failed to query facts for agent ${this.agentId}:`, error);
+        return [];
+      }
+    }
+
+    /**
+     * Get facts stored by this agent
+     */
+    async getMyFacts(type?: string, limit = 100): Promise<FactEntry[]> {
+      try {
+        return await queryAgentFacts(this.agentId, type, limit);
+      } catch (error) {
+        logger.error(`Failed to get facts for agent ${this.agentId}:`, error);
+        return [];
+      }
+    }
+
+    /**
+     * Share a fact with another agent (adds sharing metadata)
+     */
+    async shareFact(factId: string, targetAgentId?: string): Promise<boolean> {
+      try {
+        const fact = await sharedFactSystem.getFact(factId);
+        if (!fact) {
+          logger.warn(`Fact ${factId} not found for sharing`);
+          return false;
         }
-        return this._sharedFactSystem;
+
+        // Create a sharing event
+        await sharedFactSystem.storeFact({
+          type: 'fact_sharing',
+          data: {
+            originalFactId: factId,
+            sharedBy: this.agentId,
+            sharedWith: targetAgentId || 'all',
+            originalFact: fact,
+          },
+          source: `agent:${this.agentId}`,
+          confidence: 1.0,
+          tags: ['sharing', 'collaboration'],
+        });
+
+        logger.debug(`Agent ${this.agentId} shared fact ${factId} with ${targetAgentId || 'all'}`);
+        return true;
+      } catch (error) {
+        logger.error(`Failed to share fact ${factId}:`, error);
+        return false;
+      }
+    }
+
+    /**
+     * Store a decision or reasoning fact
+     */
+    async storeDecision(
+      decision: string,
+      reasoning: string,
+      confidence = 1.0,
+      context?: unknown
+    ): Promise<string> {
+      return await this.storeFact(
+        'decision',
+        {
+          decision,
+          reasoning,
+          context,
+        },
+        confidence,
+        ['decision', 'reasoning']
+      );
+    }
+
+    /**
+     * Store an observation fact
+     */
+    async storeObservation(
+      observation: string,
+      category: string,
+      confidence = 1.0,
+      metadata?: unknown
+    ): Promise<string> {
+      return await this.storeFact(
+        'observation',
+        {
+          observation,
+          category,
+          metadata,
+        },
+        confidence,
+        ['observation', category]
+      );
+    }
+
+    /**
+     * Store a learning or insight fact
+     */
+    async storeLearning(
+      insight: string,
+      evidence: unknown,
+      confidence = 1.0,
+      applicableContexts: string[] = []
+    ): Promise<string> {
+      return await this.storeFact(
+        'learning',
+        {
+          insight,
+          evidence,
+          applicableContexts,
+        },
+        confidence,
+        ['learning', 'insight', ...applicableContexts]
+      );
+    }
+
+    /**
+     * Get recent decisions made by this agent
+     */
+    async getRecentDecisions(limit = 10): Promise<FactEntry[]> {
+      return await this.queryFacts({
+        type: 'decision',
+        source: `agent:${this.agentId}`,
+        limit,
+      });
+    }
+
+    /**
+     * Get observations in a specific category
+     */
+    async getObservations(category?: string, limit = 20): Promise<FactEntry[]> {
+      const query: FactQuery = {
+        type: 'observation',
+        source: `agent:${this.agentId}`,
+        limit,
+      };
+
+      if (category) {
+        query.tags = ['observation', category];
       }
 
-      /**
-       * Search facts using shared system.
-       * Unified interface for all hierarchy levels.
-       */
-      public async searchSharedFacts(query: {
-        query?: string;
-        type?: string;
-        limit?: number;
-        domains?: string[];
-      }): Promise<unknown[]> {
-        try {
-          const factSystem = await this.getSharedFACTSystem();
-          const results = await factSystem.searchFacts(query);
+      return await this.queryFacts(query);
+    }
 
-          logger.debug(
-            `${hierarchyLevel} searched shared facts: ${results.length} results`
-          );
-          return results;
-        } catch (error) {
-          logger.error(`${hierarchyLevel} shared fact search failed:`, error);
-          throw error;
-        }
+    /**
+     * Get learnings and insights
+     */
+    async getLearnings(context?: string, limit = 15): Promise<FactEntry[]> {
+      const query: FactQuery = {
+        type: 'learning',
+        source: `agent:${this.agentId}`,
+        limit,
+      };
+
+      if (context) {
+        query.tags = ['learning', context];
       }
 
-      /**
-       * Store fact in shared system.
-       * Available to all hierarchy levels.
-       */
-      public async storeSharedFact(fact: {
-        id?: string;
-        type: string;
-        subject: string;
-        content: unknown;
-        source: string;
-        confidence: number;
-      }): Promise<void> {
-        try {
-          const factSystem = await this.getSharedFACTSystem();
+      return await this.queryFacts(query);
+    }
 
-          // Convert to UniversalFact format
-          const universalFact = {
-            id: fact.id || `${fact.type}:${fact.subject}:${Date.now()}`,
-            type: fact.type as any,
-            category: 'shared',
-            subject: fact.subject,
-            content: fact.content,
-            source: fact.source,
-            confidence: fact.confidence,
-            timestamp: Date.now(),
-            metadata: {
-              source: fact.source,
-              timestamp: Date.now(),
-              confidence: fact.confidence,
-              addedBy: hierarchyLevel,
-            },
-            accessCount: 0,
-            cubeAccess: new Set<string>(),
-            swarmAccess: new Set<string>(),
-          };
-
-          await factSystem.storeFact(universalFact);
-
-          logger.debug(
-            `✅ ${hierarchyLevel} stored shared fact: ${fact.subject}`
-          );
-        } catch (error) {
-          logger.error(`${hierarchyLevel} shared fact storage failed:`, error);
-          throw error;
+    /**
+     * Subscribe to new facts from other agents
+     */
+    onNewFacts(callback: (fact: FactEntry) => void): () => void {
+      return sharedFactSystem.onFactAdded((fact) => {
+        // Only notify about facts from other agents
+        if (fact.source !== `agent:${this.agentId}`) {
+          callback(fact);
         }
+      });
+    }
+
+    /**
+     * Search external facts using foundation fact system
+     */
+    async searchExternalFacts(
+      query: string, 
+      sources?: string[], 
+      limit = 10
+    ): Promise<any[]> {
+      try {
+        logger.debug(`Agent ${this.agentId} searching external facts: ${query}`);
+        return await searchExternalFacts(query, sources, limit);
+      } catch (error) {
+        logger.error(`Failed to search external facts for agent ${this.agentId}:`, error);
+        return [];
       }
+    }
 
-      /**
-       * Get NPM package facts using shared system.
-       */
-      public async getSharedNPMFacts(
-        packageName: string,
-        version?: string
-      ): Promise<unknown> {
-        try {
-          const factSystem = await this.getSharedFACTSystem();
-          const result = await factSystem.getNPMPackageFacts(
-            packageName,
-            version
-          );
-
-          logger.debug(
-            `✅ ${hierarchyLevel} retrieved NPM facts for: ${packageName}`
-          );
-          return result.content;
-        } catch (error) {
-          logger.error(`${hierarchyLevel} NPM fact retrieval failed:`, error);
-          throw error;
-        }
+    /**
+     * Get NPM package information using foundation fact system
+     */
+    async getNPMPackageInfo(packageName: string, version?: string): Promise<any> {
+      try {
+        logger.debug(`Agent ${this.agentId} getting NPM package: ${packageName}`);
+        return await getNPMPackageInfo(packageName, version);
+      } catch (error) {
+        logger.error(`Failed to get NPM package info for agent ${this.agentId}:`, error);
+        return null;
       }
+    }
 
-      /**
-       * Get GitHub repository facts using shared system.
-       */
-      public async getSharedGitHubFacts(
-        owner: string,
-        repo: string
-      ): Promise<unknown> {
-        try {
-          const factSystem = await this.getSharedFACTSystem();
-          const result = await factSystem.getGitHubRepoFacts(owner, repo);
-
-          logger.debug(
-            `✅ ${hierarchyLevel} retrieved GitHub facts for: ${owner}/${repo}`
-          );
-          return result.content;
-        } catch (error) {
-          logger.error(
-            `${hierarchyLevel} GitHub fact retrieval failed:`,
-            error
-          );
-          throw error;
-        }
+    /**
+     * Get GitHub repository information using foundation fact system
+     */
+    async getGitHubRepoInfo(owner: string, repo: string): Promise<any> {
+      try {
+        logger.debug(`Agent ${this.agentId} getting GitHub repo: ${owner}/${repo}`);
+        return await getGitHubRepoInfo(owner, repo);
+      } catch (error) {
+        logger.error(`Failed to get GitHub repo info for agent ${this.agentId}:`, error);
+        return null;
       }
-
-      /**
-       * Get API documentation facts using shared system.
-       */
-      public async getSharedAPIFacts(
-        api: string,
-        endpoint?: string
-      ): Promise<unknown> {
-        try {
-          const factSystem = await this.getSharedFACTSystem();
-          const result = await factSystem.getAPIDocsFacts(api, endpoint);
-
-          logger.debug(`✅ ${hierarchyLevel} retrieved API facts for: ${api}`);
-          return result.content;
-        } catch (error) {
-          logger.error(`${hierarchyLevel} API fact retrieval failed:`, error);
-          throw error;
-        }
-      }
-
-      /**
-       * Get security advisory facts using shared system.
-       */
-      public async getSharedSecurityFacts(cve: string): Promise<unknown> {
-        try {
-          const factSystem = await this.getSharedFACTSystem();
-          const result = await factSystem.getSecurityAdvisoryFacts(cve);
-
-          logger.debug(
-            `✅ ${hierarchyLevel} retrieved security facts for: ${cve}`
-          );
-          return result.content;
-        } catch (error) {
-          logger.error(
-            `${hierarchyLevel} security fact retrieval failed:`,
-            error
-          );
-          throw error;
-        }
-      }
-    };
+    }
   };
 }
 
 /**
- * Convenience mixins for specific hierarchy levels.
+ * Simple base class for fact-capable agents
  */
-export const withCubeFACT = withUniversalFACT('Cube');
-export const withMatronFACT = withUniversalFACT('Matron');
-export const withQueenFACT = withUniversalFACT('Queen');
-export const withSwarmCommanderFACT = withUniversalFACT('SwarmCommander');
-export const withAgentFACT = withUniversalFACT('Agent');
+export class FactCapableAgent implements FactCapable {
+  constructor(public agentId: string) {}
 
-/**
- * Type guard to check if an object has universal FACT capabilities.
- */
-export function hasUniversalFACTCapabilities(
-  obj: unknown
-): obj is UniversalFACTCapabilities {
-  return (
-    typeof obj === 'object' &&
-    obj !== null &&
-    'getSharedFACTSystem' in obj &&
-    'searchSharedFacts' in obj &&
-    'storeSharedFact' in obj
-  );
+  async storeFact(type: string, data: unknown, confidence = 1.0, tags: string[] = []): Promise<string> {
+    return await storeAgentFact(this.agentId, type, data, confidence, tags);
+  }
+
+  async queryFacts(query: FactQuery = {}): Promise<FactEntry[]> {
+    return await sharedFactSystem.queryFacts(query);
+  }
+
+  async getMyFacts(type?: string, limit = 100): Promise<FactEntry[]> {
+    return await queryAgentFacts(this.agentId, type, limit);
+  }
+
+  async shareFact(factId: string, targetAgentId?: string): Promise<boolean> {
+    const enhanced = withFactCapabilities(class { constructor(public agentId: string) {} });
+    const instance = new enhanced(this.agentId);
+    return await instance.shareFact(factId, targetAgentId);
+  }
+
+  async searchExternalFacts(query: string, sources?: string[], limit?: number): Promise<any[]> {
+    return await searchExternalFacts(query, sources, limit || 10);
+  }
+
+  async getNPMPackageInfo(packageName: string, version?: string): Promise<any> {
+    return await getNPMPackageInfo(packageName, version);
+  }
+
+  async getGitHubRepoInfo(owner: string, repo: string): Promise<any> {
+    return await getGitHubRepoInfo(owner, repo);
+  }
 }
 
 /**
- * Abstract base class with universal FACT capabilities.
- * Can be extended by any hierarchy level class.
+ * Export the enhanced agent class
  */
-export abstract class UniversalFACTBase implements UniversalFACTCapabilities {
-  protected _sharedFactSystem: CollectiveFACTSystem | null = null;
-  protected abstract hierarchyLevel:
-    | 'Cube'
-    | 'Matron'
-    | 'Queen'
-    | 'SwarmCommander'
-    | 'Agent';
+export const UniversalFactMixin = withFactCapabilities;
 
-  public async getSharedFACTSystem(): Promise<CollectiveFACTSystem> {
-    if (!this._sharedFactSystem) {
-      logger.debug(
-        `${this.hierarchyLevel} initializing shared FACT system access`
-      );
-      this._sharedFactSystem = await getUniversalFACTAccess(
-        this.hierarchyLevel
-      );
-      logger.debug(`✅ ${this.hierarchyLevel} shared FACT system access ready`);
-    }
-    return this._sharedFactSystem;
-  }
-
-  public async searchSharedFacts(query: unknown): Promise<unknown[]> {
-    try {
-      const factSystem = await this.getSharedFACTSystem();
-      const results = await factSystem.searchFacts(query as any);
-
-      logger.debug(
-        `${this.hierarchyLevel} searched shared facts: ${results.length} results`
-      );
-      return results;
-    } catch (error) {
-      logger.error(`${this.hierarchyLevel} shared fact search failed:`, error);
-      throw error;
-    }
-  }
-
-  public async storeSharedFact(fact: unknown): Promise<void> {
-    try {
-      const factSystem = await this.getSharedFACTSystem();
-      await factSystem.storeFact(fact as any);
-
-      logger.debug(`✅ ${this.hierarchyLevel} stored shared fact`);
-    } catch (error) {
-      logger.error(`${this.hierarchyLevel} shared fact storage failed:`, error);
-      throw error;
-    }
-  }
-
-  public async getSharedNPMFacts(
-    packageName: string,
-    version?: string
-  ): Promise<unknown> {
-    try {
-      const factSystem = await this.getSharedFACTSystem();
-      const result = await factSystem.getNPMPackageFacts(packageName, version);
-
-      logger.debug(
-        `✅ ${this.hierarchyLevel} retrieved NPM facts for: ${packageName}`
-      );
-      return result.content;
-    } catch (error) {
-      logger.error(`${this.hierarchyLevel} NPM fact retrieval failed:`, error);
-      throw error;
-    }
-  }
-
-  public async getSharedGitHubFacts(
-    owner: string,
-    repo: string
-  ): Promise<unknown> {
-    try {
-      const factSystem = await this.getSharedFACTSystem();
-      const result = await factSystem.getGitHubRepoFacts(owner, repo);
-
-      logger.debug(
-        `✅ ${this.hierarchyLevel} retrieved GitHub facts for: ${owner}/${repo}`
-      );
-      return result.content;
-    } catch (error) {
-      logger.error(
-        `${this.hierarchyLevel} GitHub fact retrieval failed:`,
-        error
-      );
-      throw error;
-    }
-  }
-
-  public async getSharedAPIFacts(
-    api: string,
-    endpoint?: string
-  ): Promise<unknown> {
-    try {
-      const factSystem = await this.getSharedFACTSystem();
-      const result = await factSystem.getAPIDocsFacts(api, endpoint);
-
-      logger.debug(`✅ ${this.hierarchyLevel} retrieved API facts for: ${api}`);
-      return result.content;
-    } catch (error) {
-      logger.error(`${this.hierarchyLevel} API fact retrieval failed:`, error);
-      throw error;
-    }
-  }
-
-  public async getSharedSecurityFacts(cve: string): Promise<unknown> {
-    try {
-      const factSystem = await this.getSharedFACTSystem();
-      const result = await factSystem.getSecurityAdvisoryFacts(cve);
-
-      logger.debug(
-        `✅ ${this.hierarchyLevel} retrieved security facts for: ${cve}`
-      );
-      return result.content;
-    } catch (error) {
-      logger.error(
-        `${this.hierarchyLevel} security fact retrieval failed:`,
-        error
-      );
-      throw error;
-    }
-  }
-}
-
-export default withUniversalFACT;
+/**
+ * Type for fact-enhanced classes
+ */
+export type FactEnhanced<T> = T & FactCapable;

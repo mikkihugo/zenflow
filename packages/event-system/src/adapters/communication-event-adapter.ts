@@ -96,7 +96,7 @@ interface RPCClientConfig {
   retries?: number;
 }
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 /**
  * Communication event adapter configuration extending UEL EventManagerConfig.
@@ -460,7 +460,6 @@ export class CommunicationEventAdapter implements EventManager {
     this.logger.info(`Creating communication event adapter: ${this.name}`);
 
     // Set max listeners to handle many communication components
-    this.eventEmitter.setMaxListeners(2000);
   }
 
   // ============================================

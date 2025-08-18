@@ -62,7 +62,10 @@ export class PredictionUtils {
     }
 
     if (predictions.length === 1) {
-      return predictions[0];
+      const firstPred = predictions[0];
+      if (firstPred) {
+        return firstPred;
+      }
     }
 
     // Merge data fields
@@ -87,15 +90,23 @@ export class PredictionUtils {
       ? confidences.reduce((sum, c) => sum + c, 0) / confidences.length 
       : undefined;
 
-    return {
+    const result: Prediction = {
       data: mergedData,
-      reasoning: reasoning || undefined,
-      confidence: avgConfidence,
       metadata: { 
         merged_from: predictions.length,
         merged_at: Date.now()
       }
     };
+
+    if (reasoning) {
+      result.reasoning = reasoning;
+    }
+
+    if (avgConfidence !== undefined) {
+      result.confidence = avgConfidence;
+    }
+
+    return result;
   }
 
   /**

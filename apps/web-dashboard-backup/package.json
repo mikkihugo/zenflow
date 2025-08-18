@@ -1,0 +1,80 @@
+{
+  "name": "@claude-zen/web-dashboard",
+  "version": "1.0.0-alpha.44",
+  "type": "module",
+  "description": "Claude Code Zen Web Dashboard: Svelte frontend interface for AI swarm orchestration platform",
+  "scripts": {
+    "dev": "vite dev --port 3002",
+    "dev:host": "vite dev --port 3002 --host",
+    "dev:watch": "nodemon --watch src --ext svelte,ts,js,css --exec \"pnpm build\"",
+    "dev:auto-rebuild": "chokidar \"src/**/*\" -c \"echo 'Rebuilding Svelte app...' && pnpm build && echo 'Rebuild complete!'\"",
+    "build": "vite build",
+    "build:watch": "vite build --watch",
+    "preview": "vite preview",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "BIOME_DAEMON=0 biome check . --max-diagnostics=50",
+    "format": "BIOME_DAEMON=0 biome format --write . --max-diagnostics=50",
+    "type-check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
+  },
+  "dependencies": {
+    "@claude-zen/agui": "workspace:*",
+    "@claude-zen/database": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
+    "@claude-zen/foundation": "workspace:*",
+    "@floating-ui/dom": "^1.7.3",
+    "@sveltejs/adapter-node": "^5.3.1",
+    "@sveltejs/kit": "^2.31.1",
+    "@sveltejs/vite-plugin-svelte": "^6.1.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "autoprefixer": "^10.4.21",
+    "lucide-svelte": "^0.539.0",
+    "postcss": "^8.5.6",
+    "prism-themes": "^1.9.0",
+    "prismjs": "^1.30.0",
+    "socket.io-client": "^4.8.1",
+    "svelte": "^5.38.1",
+    "tailwindcss": "^4.1.12",
+    "vite": "^7.1.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "@skeletonlabs/skeleton": "^3.1.8",
+    "@skeletonlabs/skeleton-svelte": "^1.4.0",
+    "@types/node": "^22.17.2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "chokidar-cli": "^3.0.0",
+    "nodemon": "^3.1.7",
+    "svelte-check": "^4.3.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "keywords": [
+    "ai",
+    "swarm",
+    "orchestration",
+    "dashboard",
+    "frontend",
+    "svelte",
+    "web-interface",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "apps/web-dashboard"
+  }
+}

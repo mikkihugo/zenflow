@@ -5,7 +5,7 @@
  * and adapt to new forms of AI deception over time.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import {
   type LogAnalysisResult,
   LogBasedDeceptionDetector,
@@ -366,7 +366,7 @@ export class NeuralDeceptionDetector {
   }
 
   /**
-   * Enhanced deception detection with neural network.
+   * Enhanced deception detection with neural network and telemetry.
    *
    * @param aiResponse
    */
@@ -379,45 +379,69 @@ export class NeuralDeceptionDetector {
       reasoning: string[];
     };
   }> {
-    // Get base log analysis
-    const logAnalysis =
-      await this.baseDetector.analyzeRecentActivity(aiResponse);
+    return withTrace('neural-deception-detection', async (span) => {
+      span?.setAttributes({
+        'ai.response.length': aiResponse.length,
+        'ai.response.wordCount': aiResponse.split(/\s+/).length
+      });
 
-    // Extract neural features and predict
-    const features = this.extractFeatures(logAnalysis, aiResponse);
-    const neuralPrediction = this.predict(features);
+      // Get base log analysis
+      const logAnalysis =
+        await this.baseDetector.analyzeRecentActivity(aiResponse);
 
-    // Combine rule-based and ML predictions
-    const ruleBasedDeception = logAnalysis.deceptionPatterns.length > 0;
-    const mlDeception = neuralPrediction.deceptionProbability > 0.6;
+      // Extract neural features and predict
+      const features = this.extractFeatures(logAnalysis, aiResponse);
+      const neuralPrediction = this.predict(features);
 
-    const finalVerdict = {
-      isDeceptive: ruleBasedDeception || mlDeception,
-      confidence: Math.max(
-        ruleBasedDeception ? 0.9 : 0,
-        neuralPrediction.confidence
-      ),
-      reasoning: [
-        ...logAnalysis.deceptionPatterns.map(
-          (p) => `Rule-based: ${p.type} detected`
+      // Combine rule-based and ML predictions
+      const ruleBasedDeception = logAnalysis.deceptionPatterns.length > 0;
+      const mlDeception = neuralPrediction.deceptionProbability > 0.6;
+
+      const finalVerdict = {
+        isDeceptive: ruleBasedDeception || mlDeception,
+        confidence: Math.max(
+          ruleBasedDeception ? 0.9 : 0,
+          neuralPrediction.confidence
         ),
-        ...neuralPrediction.explanation,
-        `Neural network deception probability: ${(neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
-      ],
-    };
+        reasoning: [
+          ...logAnalysis.deceptionPatterns.map(
+            (p) => `Rule-based: ${p.type} detected`
+          ),
+          ...neuralPrediction.explanation,
+          `Neural network deception probability: ${(neuralPrediction.deceptionProbability * 100).toFixed(1)}%`,
+        ],
+      };
 
-    this.logger.info('Neural deception detection complete', {
-      ruleBasedAlerts: logAnalysis.deceptionPatterns.length,
-      neuralProbability: neuralPrediction.deceptionProbability,
-      finalVerdict: finalVerdict.isDeceptive,
-      confidence: finalVerdict.confidence,
+      // Record telemetry metrics
+      recordMetric('ai_safety_detection_completed', 1, {
+        ruleBasedDeception: ruleBasedDeception.toString(),
+        mlDeception: mlDeception.toString(),
+        finalVerdict: finalVerdict.isDeceptive.toString()
+      });
+
+      recordMetric('ai_safety_detection_confidence', finalVerdict.confidence);
+      recordMetric('ai_safety_neural_probability', neuralPrediction.deceptionProbability);
+
+      span?.setAttributes({
+        'detection.ruleBasedAlerts': logAnalysis.deceptionPatterns.length,
+        'detection.neuralProbability': neuralPrediction.deceptionProbability,
+        'detection.finalVerdict': finalVerdict.isDeceptive,
+        'detection.confidence': finalVerdict.confidence
+      });
+
+      this.logger.info('Neural deception detection complete', {
+        ruleBasedAlerts: logAnalysis.deceptionPatterns.length,
+        neuralProbability: neuralPrediction.deceptionProbability,
+        finalVerdict: finalVerdict.isDeceptive,
+        confidence: finalVerdict.confidence,
+      });
+
+      return {
+        logAnalysis,
+        neuralPrediction,
+        finalVerdict,
+      };
     });
-
-    return {
-      logAnalysis,
-      neuralPrediction,
-      finalVerdict,
-    };
   }
 
   /**

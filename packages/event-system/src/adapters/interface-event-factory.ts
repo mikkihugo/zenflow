@@ -58,7 +58,7 @@
  */
 
 import type {
-  SharedConfig,
+  Config,
   Logger,
 } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager';
@@ -551,7 +551,7 @@ export class InterfaceEventManagerFactory
 
   constructor(
     private logger: Logger,
-    private config: SharedConfig
+    private config: Config
   ) {
     this.logger.debug('InterfaceEventManagerFactory initialized');
   }

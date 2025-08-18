@@ -1,7 +1,8 @@
 {
   "name": "@claude-zen/dspy",
   "version": "1.0.0",
-  "description": "Standalone DSPy integration engine for claude-code-zen",
+  "description": "INTERNAL: DSPy Stanford integration engine - Private implementation detail of @claude-zen/brain",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -34,7 +35,7 @@
     "zod": "^4.0.17"
   },
   "devDependencies": {
-    "@types/node": "^24.3.0",
+    "@types/node": "^22.0.0",
     "@types/seedrandom": "^3.0.8",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
@@ -46,6 +47,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./brain": {
+      "types": "./dist/src/core/brain-service.d.ts",
+      "import": "./dist/src/core/brain-service.js"
     },
     "./core": {
       "types": "./dist/src/core/dspy-engine.d.ts",

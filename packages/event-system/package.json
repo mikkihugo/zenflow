@@ -1,30 +1,42 @@
 {
   "name": "@claude-zen/event-system",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "description": "Type-safe event system with domain validation, unified event layer (UEL), and advanced coordination capabilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    },
-    "./core": {
-      "import": "./dist/core/index.js",
-      "types": "./dist/core/index.d.ts"
-    },
-    "./adapters": {
-      "import": "./dist/adapters/index.js",
-      "types": "./dist/adapters/index.d.ts"
-    },
-    "./factories": {
-      "import": "./dist/factories/index.js",
-      "types": "./dist/factories/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./validation": {
-      "import": "./dist/validation/index.js",
-      "types": "./dist/validation/index.d.ts"
+      "types": "./dist/validation/index.d.ts",
+      "import": "./dist/validation/index.js"
+    },
+    "./factories": {
+      "types": "./dist/factories/index.d.ts",
+      "import": "./dist/factories/index.js"
+    },
+    "./registry": {
+      "types": "./dist/registry/index.d.ts",
+      "import": "./dist/registry/index.js"
+    },
+    "./manager": {
+      "types": "./dist/manager/index.d.ts",
+      "import": "./dist/manager/index.js"
+    },
+    "./compatibility": {
+      "types": "./dist/compatibility/index.d.ts",
+      "import": "./dist/compatibility/index.js"
+    },
+    "./system-integrations": {
+      "types": "./dist/system-integrations/index.d.ts",
+      "import": "./dist/system-integrations/index.js"
+    },
+    "./adapters": {
+      "types": "./dist/adapters/index.d.ts",
+      "import": "./dist/adapters/index.js"
     }
   },
   "scripts": {
@@ -38,7 +50,13 @@
     "format": "biome format --write .",
     "type-check": "tsc --noEmit",
     "clean": "rm -rf dist",
-    "prepublishOnly": "pnpm run clean && pnpm run build"
+    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "files": [
     "dist/",
@@ -65,15 +83,19 @@
     "migration-helpers"
   ],
   "dependencies": {
-    "events": "^3.3.0",
-    "@claude-zen/foundation": "workspace:*"
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/brain": "workspace:*",
+    "eventemitter3": "^5.0.1",
+    "koa-compose": "^4.1.0",
+    "mitt": "^3.0.1",
+    "zod": "^4.0.17"
   },
   "devDependencies": {
-    "@types/node": "^22.17.1",
+    "@biomejs/biome": "^2.2.0",
+    "@types/node": "^22.17.2",
+    "@vitest/coverage-v8": "^3.2.4",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "@biomejs/biome": "^2.1.4",
-    "@vitest/coverage-v8": "^3.2.4"
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "typescript": ">=5.0.0"

@@ -2,7 +2,7 @@
  * @file Integration module exports.
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-integration-index');
 

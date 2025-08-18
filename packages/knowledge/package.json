@@ -4,14 +4,18 @@
   "private": false,
   "description": "Advanced knowledge management system with distributed learning, reasoning, and storage backends",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
       "types": "./dist/index.d.ts"
+    },
+    "./errors": {
+      "import": "./dist/errors.js",
+      "require": "./dist/errors.js",
+      "types": "./dist/errors.d.ts"
     }
   },
   "files": [
@@ -19,11 +23,17 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
-    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "build": "tsc",
+    "dev": "tsc --watch",
     "test": "vitest",
     "lint": "eslint .",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "keywords": [
     "knowledge-management",
@@ -38,16 +48,19 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/database": "workspace:*",
-    "@claude-zen/event-system": "workspace:*"
+    "@claude-zen/database": "file:../database",
+    "@claude-zen/event-system": "file:../event-system",
+    "@claude-zen/foundation": "file:../foundation",
+    "@claude-zen/fact-system": "file:../fact-system",
+    "eventemitter3": "^5.0.1"
   },
+  "_comment_fact_system": "fact-system is a private implementation detail - only knowledge package should access it",
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "eslint": "^8.0.0"
+    "@types/node": "^22.17.2",
+    "eslint": "^9.33.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -14,7 +14,7 @@
  * @file Interface implementation: coordination-event-factory.
  */
 
-import { getLogger, type Logger, type SharedConfig } from '@claude-zen/foundation';
+import { getLogger, type Logger, getConfig } from '@claude-zen/foundation';
 import type {
   EventManager,
   EventManagerFactory,
@@ -38,45 +38,10 @@ export class CoordinationEventManagerFactory
   implements EventManagerFactory<CoordinationEventAdapterConfig>
 {
   private logger: Logger;
-  private config: SharedConfig;
   private instances = new Map<string, CoordinationEventAdapter>();
 
-  constructor(logger?: Logger, config?: SharedConfig) {
+  constructor(logger?: Logger) {
     this.logger = logger || getLogger('CoordinationEventManagerFactory');
-    // Create a minimal SharedConfig implementation if none provided
-    this.config = config || {
-      get: () => undefined,
-      set: () => {},
-      has: () => false,
-      logging: { 
-        level: 'info', 
-        console: true,
-        file: false,
-        timestamp: true,
-        format: 'text' 
-      },
-      metrics: { 
-        enabled: false,
-        interval: 60000
-      },
-      storage: { 
-        backend: 'memory',
-        memoryDir: './data/memory',
-        dbPath: './data/zen.db'
-      },
-      neural: { 
-        learning: false,
-        cacheSize: 1000
-      },
-      performance: { 
-        maxConcurrent: 5,
-        timeoutMs: 300000
-      },
-      development: {
-        debug: false,
-        verboseErrors: false
-      },
-    } as SharedConfig;
     this.logger.debug('CoordinationEventManagerFactory initialized');
   }
 

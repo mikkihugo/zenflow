@@ -3,7 +3,7 @@
  * Advanced error recovery and fault tolerance mechanisms.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { BaseMemoryBackend } from '../backends/base-backend';
 import type { BackendInterface } from '../core/memory-system';
 import { type MemoryError, MemoryErrorCode } from './memory-errors';

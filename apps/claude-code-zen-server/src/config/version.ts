@@ -41,7 +41,7 @@ export function getVersion(): string {
 
     if (packageJson && packageJson.version) {
       cachedVersion = packageJson.version;
-      return cachedVersion;
+      return cachedVersion!; // Safe to assert non-null since we just assigned it
     }
   } catch (error) {
     // Silent fallback to avoid breaking the application

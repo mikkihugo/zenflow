@@ -8,7 +8,7 @@
  * @file Interface implementation: system-event-factory.
  */
 
-import { getLogger, type Logger, type SharedConfig } from '@claude-zen/foundation';
+import { getLogger, type Logger, type Config } from '@claude-zen/foundation';
 import type {
   EventManager,
   EventManagerFactory,
@@ -32,10 +32,10 @@ export class SystemEventManagerFactory
   implements EventManagerFactory<SystemEventAdapterConfig>
 {
   private logger: Logger;
-  private config: SharedConfig;
+  private config: Config;
   private instances = new Map<string, SystemEventAdapter>();
 
-  constructor(logger?: Logger, config?: SharedConfig) {
+  constructor(logger?: Logger, config?: Config) {
     this.logger = logger || getLogger('SystemEventManagerFactory');
     this.config = config || ({} as any);
     this.logger.debug('SystemEventManagerFactory initialized');

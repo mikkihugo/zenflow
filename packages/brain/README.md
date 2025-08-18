@@ -8,7 +8,7 @@ This package provides **core brain functionality only**:
 
 - **🧠 Neural Coordination**: Brain-specific neural network management  
 - **🔮 Cognitive Patterns**: 12 specialized thinking patterns (convergent, divergent, lateral, etc.)
-- **⚡ Core Neural Networks**: Pure FANN-based neural network implementation
+- **⚡ Core Neural Networks**: Dual implementation - Rust/WASM FANN + JavaScript brain.js
 - **🌐 WASM Integration**: Essential WebAssembly bindings for neural operations
 - **🎛️ Brain Configuration**: Brain-specific settings and coordination
 - **🎯 DSPy Integration**: Symbolic reasoning coordination (brain-level only)
@@ -17,10 +17,18 @@ This package provides **core brain functionality only**:
 ## 📦 **Architecture**
 
 ### TypeScript Layer
-- **`neural-bridge.ts`**: Main neural coordination interface
+- **`neural-bridge.ts`**: Main neural coordination interface (Rust/WASM)
+- **`brain-js-bridge.ts`**: JavaScript neural networks bridge (brain.js integration)
 - **`neural-core.ts`**: Neural CLI system with comprehensive pattern management
 - **`brain-config.ts`**: Configuration using @zen-ai/shared infrastructure
 - **`types.ts`**: Core type definitions for neural operations
+
+### JavaScript Neural Networks (brain.js)
+- **Rapid Prototyping**: Quick neural network experimentation
+- **JavaScript Native**: Easy integration with existing JavaScript codebases
+- **Multiple Network Types**: Feedforward, RNN, LSTM, GRU networks
+- **Foundation Integration**: Result patterns, error handling, logging
+- **Complementary**: Works alongside Rust/WASM for optimal performance
 
 ### Rust Core (`rust/core/`)
 - **Pure FANN Implementation**: Modern, safe neural network library
@@ -211,6 +219,117 @@ This package maintains focused scope by **NOT including**:
 - ❌ **General DSPy Reasoning**: Use `@zen-ai/dspy-engine`
 - ❌ **Application Business Logic**: Use main application
 
+## 🚀 **Brain.js Usage Examples**
+
+### Quick Start with JavaScript Neural Networks
+
+```typescript
+import { BrainJsBridge, type BrainJsTrainingData } from '@claude-zen/brain/brain-js';
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('MyApp');
+const bridge = new BrainJsBridge(logger);
+
+// Initialize the bridge
+await bridge.initialize();
+
+// Create a simple XOR classifier
+const networkResult = await bridge.createNeuralNet('xor-classifier', 'feedforward', {
+  hiddenLayers: [4],
+  learningRate: 0.3
+});
+
+if (networkResult.isOk()) {
+  // Train with XOR data
+  const trainingData: BrainJsTrainingData[] = [
+    { input: [0, 0], output: [0] },
+    { input: [0, 1], output: [1] },
+    { input: [1, 0], output: [1] },
+    { input: [1, 1], output: [0] }
+  ];
+
+  const trainResult = await bridge.trainNeuralNet(networkResult.value, trainingData, {
+    iterations: 20000,
+    errorThreshold: 0.005
+  });
+
+  if (trainResult.isOk()) {
+    // Make predictions
+    const prediction = await bridge.predictWithNeuralNet(networkResult.value, [1, 0]);
+    console.log('Prediction:', prediction); // Should be close to [1]
+  }
+}
+```
+
+### LSTM for Sequence Prediction
+
+```typescript
+// Create LSTM for time series
+const lstmResult = await bridge.createNeuralNet('sequence-predictor', 'lstm', {
+  inputSize: 1,
+  hiddenLayers: [20],
+  outputSize: 1
+});
+
+// Train on sequence data
+const sequenceData: BrainJsTrainingData[] = [];
+for (let i = 0; i < 100; i++) {
+  const x = i * 0.1;
+  sequenceData.push({
+    input: [Math.sin(x)],
+    output: [Math.sin(x + 0.1)] // Predict next value
+  });
+}
+
+await bridge.trainNeuralNet(lstmResult.value, sequenceData);
+```
+
+### Hybrid Usage: Rust/WASM + brain.js
+
+```typescript
+import { HybridNeuralManager } from '@claude-zen/brain/examples/hybrid-neural-example';
+
+const manager = new HybridNeuralManager();
+await manager.initialize();
+
+// Use brain.js for rapid prototyping
+const prototypeResult = await manager.brainJsBridge.createNeuralNet(
+  'prototype', 'feedforward', { hiddenLayers: [10] }
+);
+
+// Use Rust/WASM for production performance
+const productionId = await manager.neuralBridge.createNetwork(
+  'production', 'feedforward', [10, 20, 10]
+);
+
+// Compare performance
+await manager.runPerformanceBenchmark();
+```
+
+### When to Use Brain.js vs Rust/WASM
+
+| Use Case | Recommendation | Reason |
+|----------|----------------|--------|
+| **Rapid Prototyping** | brain.js | Simple API, immediate feedback |
+| **Production Inference** | Rust/WASM | Performance, reliability |
+| **Educational Projects** | brain.js | Readable, interactive |
+| **High-Volume Training** | Rust/WASM | Memory efficiency |
+| **Browser Integration** | brain.js | Native JavaScript |
+| **Research/Complex Models** | Rust/WASM | Extensibility, precision |
+
+## 🧪 **Testing Brain.js Integration**
+
+```bash
+# Test brain.js integration
+npm run test:brain-js
+
+# Test hybrid functionality
+npm run test:hybrid
+
+# Run all neural tests
+npm run test
+```
+
 ## 📈 **Use Cases**
 
 Perfect for:
@@ -227,9 +346,11 @@ Perfect for:
 npm run build
 npm run build:rust
 
-# Test both layers
-npm run test
-npm run test:rust
+# Test all implementations
+npm run test              # Vitest unit tests
+npm run test:rust         # Rust/WASM tests
+npm run test:brain-js     # Brain.js integration tests
+npm run test:hybrid       # Hybrid example
 
 # Development mode
 npm run dev
@@ -237,4 +358,4 @@ npm run dev
 
 ---
 
-**🎯 Focused Brain Package**: Core neural coordination with brain-level DSPy integration and UltraThink deep analysis. Supports all 9 matron types with optimized cognitive patterns. For specialized needs, use dedicated packages in the @zen-ai ecosystem.
+**🎯 Focused Brain Package**: Core neural coordination with dual implementation (Rust/WASM + brain.js), brain-level DSPy integration and UltraThink deep analysis. Supports all 9 matron types with optimized cognitive patterns. High-performance Rust/WASM for production, JavaScript brain.js for rapid prototyping. For specialized needs, use dedicated packages in the @zen-ai ecosystem.

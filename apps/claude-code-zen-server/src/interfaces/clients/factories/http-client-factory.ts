@@ -2,9 +2,9 @@
  * @file Interface implementation: http-client-factory.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 
-const logger = getLogger('interfaces-clients-factories-http-client-factory');
+const logger = new Logger('interfaces-clients-factories-http-client-factory');
 
 /**
  * HTTP Client Factory.

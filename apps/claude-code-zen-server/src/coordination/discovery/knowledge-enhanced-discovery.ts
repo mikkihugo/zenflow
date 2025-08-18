@@ -9,11 +9,11 @@
  * - Confidence boosting through knowledge validation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type { DiscoveredDomain } from '../../interfaces/tui/types';
 import type { SessionMemoryStore } from '../../memory/memory';
-import type { CollectiveFACTSystem } from '../collective-fact-integration';
+import type { SharedFactSystem as CollectiveFACTSystem } from '../shared-fact-system';
 import type { SwarmKnowledgeSync } from '../swarm/knowledge-sync';
 
 const logger = getLogger('Knowledge-Aware-Discovery');

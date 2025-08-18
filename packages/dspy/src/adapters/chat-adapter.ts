@@ -9,7 +9,7 @@
  */
 
 import { BaseAdapter, type FinetuneDataInput, type FinetuneDataOutput } from '../interfaces/adapter';
-import type { Example } from '../primitives/example';
+// import type { Example } from '../primitives/example'; // Unused import
 import type { Prediction } from '../primitives/prediction';
 
 /**
@@ -65,7 +65,7 @@ export class ChatAdapter extends BaseAdapter {
   /**
    * Format data for fine-tuning in chat format
    */
-  formatFinetuneData(data: FinetuneDataInput): FinetuneDataOutput {
+  override formatFinetuneData(data: FinetuneDataInput): FinetuneDataOutput {
     this.validateInput(data, ['signature', 'demos', 'inputs', 'outputs']);
 
     const messages: ChatMessage[] = [];
@@ -140,10 +140,13 @@ export class ChatAdapter extends BaseAdapter {
     }
 
     if (inputPairs.length === 1) {
-      const [key, value] = inputPairs[0];
-      // For single inputs, often just the value is sufficient
-      if (key === 'question' || key === 'query' || key === 'input' || key === 'prompt') {
-        return String(value);
+      const pair = inputPairs[0];
+      if (pair) {
+        const [key, value] = pair;
+        // For single inputs, often just the value is sufficient
+        if (key === 'question' || key === 'query' || key === 'input' || key === 'prompt') {
+          return String(value);
+        }
       }
     }
 
@@ -164,10 +167,13 @@ export class ChatAdapter extends BaseAdapter {
     }
 
     if (outputPairs.length === 1) {
-      const [key, value] = outputPairs[0];
-      // For single outputs, often just the value is sufficient
-      if (key === 'answer' || key === 'response' || key === 'output' || key === 'completion') {
-        return String(value);
+      const pair = outputPairs[0];
+      if (pair) {
+        const [key, value] = pair;
+        // For single outputs, often just the value is sufficient
+        if (key === 'answer' || key === 'response' || key === 'output' || key === 'completion') {
+          return String(value);
+        }
       }
     }
 
@@ -217,13 +223,21 @@ export class ChatAdapter extends BaseAdapter {
     const systemMessages = messages.filter(m => m.role === 'system');
     const conversationMessages = messages.filter(m => m.role !== 'system');
 
-    return {
-      system: systemMessages.length > 0 ? systemMessages.map(m => m.content).join('\n\n') : undefined,
+    const result: {
+      system?: string;
+      messages: Array<{ role: 'user' | 'assistant'; content: string }>;
+    } = {
       messages: conversationMessages.map(msg => ({
         role: msg.role as 'user' | 'assistant',
         content: msg.content
       }))
     };
+
+    if (systemMessages.length > 0) {
+      result.system = systemMessages.map(m => m.content).join('\n\n');
+    }
+
+    return result;
   }
 
   /**
@@ -259,7 +273,7 @@ export class ChatAdapter extends BaseAdapter {
   /**
    * Get adapter configuration
    */
-  getConfig(): ChatAdapterConfig {
+  override getConfig(): ChatAdapterConfig {
     return { ...this.chatConfig };
   }
 

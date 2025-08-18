@@ -278,10 +278,12 @@ export class Example {
     return {
       next(): IteratorResult<[string, any]> {
         if (index < entries.length) {
-          return { value: entries[index++], done: false };
-        } else {
-          return { done: true, value: undefined };
+          const entry = entries[index++];
+          if (entry) {
+            return { value: entry, done: false };
+          }
         }
+        return { done: true, value: undefined };
       }
     };
   }

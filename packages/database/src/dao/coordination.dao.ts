@@ -9,7 +9,7 @@
  */
 
 import 'reflect-metadata';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type {
   DatabaseAdapter,
   Logger,
@@ -78,8 +78,7 @@ export class CoordinationDao<T>
   ) {
     super(adapter, logger, tableName, entitySchema);
 
-    // Set up event emitter with increased listener limit for coordination
-    this.eventEmitter.setMaxListeners(1000);
+    // eventemitter3 doesn't have setMaxListeners - no limit needed
   }
 
   /**

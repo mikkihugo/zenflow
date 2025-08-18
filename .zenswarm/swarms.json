@@ -1,0 +1,242 @@
+{
+  "swarm-1755440069509-ps3ln8kj9": {
+    "id": "swarm-1755440069509-ps3ln8kj9",
+    "task": "comprehensive security audit of user authentication with vulnerability testing and performance analysis",
+    "agents": [
+      {
+        "id": "researcher-1755440069509-gi55jw",
+        "archetype": "researcher",
+        "status": "initializing",
+        "capabilities": [
+          "systematic-analysis",
+          "data-gathering",
+          "hypothesis-testing",
+          "literature-review",
+          "pattern-recognition"
+        ],
+        "performance": {
+          "decisions": 0,
+          "averageThinkingTime": 0,
+          "coordinationSuccess": 0
+        },
+        "connections": [],
+        "cognition": {
+          "patterns": [
+            "systematic-analysis",
+            "data-gathering",
+            "hypothesis-testing"
+          ],
+          "strengths": [
+            "thoroughness",
+            "accuracy",
+            "depth"
+          ],
+          "decisionSpeed": 150
+        }
+      },
+      {
+        "id": "coder-1755440069509-q6b7ao",
+        "archetype": "coder",
+        "status": "initializing",
+        "capabilities": [
+          "solution-implementation",
+          "optimization",
+          "debugging",
+          "code-review",
+          "architecture-design"
+        ],
+        "performance": {
+          "decisions": 0,
+          "averageThinkingTime": 0,
+          "coordinationSuccess": 0
+        },
+        "connections": [],
+        "cognition": {
+          "patterns": [
+            "solution-implementation",
+            "optimization",
+            "debugging"
+          ],
+          "strengths": [
+            "efficiency",
+            "pragmatism",
+            "technical-depth"
+          ],
+          "decisionSpeed": 80
+        }
+      }
+    ],
+    "topology": "mesh",
+    "created": "2025-08-17T14:14:29.509Z",
+    "expiresAt": "2025-08-17T15:14:29.509Z",
+    "status": "initializing",
+    "persistent": true,
+    "performance": {
+      "decisions": 0,
+      "averageDecisionTime": 0,
+      "coordinationEvents": 0,
+      "claudeInteractions": 0,
+      "lastActivity": "2025-08-17T14:14:29.509Z"
+    }
+  },
+  "swarm-1755440122730-f9a8qj0ms": {
+    "id": "swarm-1755440122730-f9a8qj0ms",
+    "task": "simple code review",
+    "agents": [
+      {
+        "id": "researcher-1755440122730-18bi8d",
+        "archetype": "researcher",
+        "status": "initializing",
+        "capabilities": [
+          "systematic-analysis",
+          "data-gathering",
+          "hypothesis-testing",
+          "literature-review",
+          "pattern-recognition"
+        ],
+        "performance": {
+          "decisions": 0,
+          "averageThinkingTime": 0,
+          "coordinationSuccess": 0
+        },
+        "connections": [],
+        "cognition": {
+          "patterns": [
+            "systematic-analysis",
+            "data-gathering",
+            "hypothesis-testing"
+          ],
+          "strengths": [
+            "thoroughness",
+            "accuracy",
+            "depth"
+          ],
+          "decisionSpeed": 150
+        }
+      },
+      {
+        "id": "coder-1755440122730-n20glx",
+        "archetype": "coder",
+        "status": "initializing",
+        "capabilities": [
+          "solution-implementation",
+          "optimization",
+          "debugging",
+          "code-review",
+          "architecture-design"
+        ],
+        "performance": {
+          "decisions": 0,
+          "averageThinkingTime": 0,
+          "coordinationSuccess": 0
+        },
+        "connections": [],
+        "cognition": {
+          "patterns": [
+            "solution-implementation",
+            "optimization",
+            "debugging"
+          ],
+          "strengths": [
+            "efficiency",
+            "pragmatism",
+            "technical-depth"
+          ],
+          "decisionSpeed": 80
+        }
+      }
+    ],
+    "topology": "mesh",
+    "created": "2025-08-17T14:15:22.730Z",
+    "expiresAt": "2025-08-17T15:15:22.730Z",
+    "status": "initializing",
+    "persistent": true,
+    "performance": {
+      "decisions": 0,
+      "averageDecisionTime": 0,
+      "coordinationEvents": 0,
+      "claudeInteractions": 0,
+      "lastActivity": "2025-08-17T14:15:22.730Z"
+    }
+  },
+  "swarm-1755440389330-voxnh5419": {
+    "id": "swarm-1755440389330-voxnh5419",
+    "task": "test repository analysis",
+    "agents": [
+      {
+        "id": "researcher-1755440389331-ic3f0t",
+        "archetype": "researcher",
+        "status": "initializing",
+        "capabilities": [
+          "systematic-analysis",
+          "data-gathering",
+          "hypothesis-testing",
+          "literature-review",
+          "pattern-recognition"
+        ],
+        "performance": {
+          "decisions": 0,
+          "averageThinkingTime": 0,
+          "coordinationSuccess": 0
+        },
+        "connections": [],
+        "cognition": {
+          "patterns": [
+            "systematic-analysis",
+            "data-gathering",
+            "hypothesis-testing"
+          ],
+          "strengths": [
+            "thoroughness",
+            "accuracy",
+            "depth"
+          ],
+          "decisionSpeed": 150
+        }
+      },
+      {
+        "id": "coder-1755440389331-jrpapb",
+        "archetype": "coder",
+        "status": "initializing",
+        "capabilities": [
+          "solution-implementation",
+          "optimization",
+          "debugging",
+          "code-review",
+          "architecture-design"
+        ],
+        "performance": {
+          "decisions": 0,
+          "averageThinkingTime": 0,
+          "coordinationSuccess": 0
+        },
+        "connections": [],
+        "cognition": {
+          "patterns": [
+            "solution-implementation",
+            "optimization",
+            "debugging"
+          ],
+          "strengths": [
+            "efficiency",
+            "pragmatism",
+            "technical-depth"
+          ],
+          "decisionSpeed": 80
+        }
+      }
+    ],
+    "topology": "mesh",
+    "created": "2025-08-17T14:19:49.331Z",
+    "expiresAt": "2025-08-17T15:19:49.330Z",
+    "status": "initializing",
+    "persistent": true,
+    "performance": {
+      "decisions": 0,
+      "averageDecisionTime": 0,
+      "coordinationEvents": 0,
+      "claudeInteractions": 0,
+      "lastActivity": "2025-08-17T14:19:49.331Z"
+    }
+  }
+}

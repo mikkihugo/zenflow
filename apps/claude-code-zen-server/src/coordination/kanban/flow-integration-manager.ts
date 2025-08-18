@@ -5,7 +5,7 @@
  * unified flow monitoring, control coordination, and performance validation.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import type {
   PerformanceMetrics,
   QueueConfig,

@@ -2,18 +2,20 @@
  * @file Coordination system: emergency-protocol-handler
  */
 
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger(
-  'coordination-load-balancing-optimization-emergency-protocol-handler'
-);
+// Simple console logger to avoid circular dependencies
+const logger = {
+  debug: (message: string, meta?: unknown) => console.log(`[DEBUG] ${message}`, meta || ''),
+  info: (message: string, meta?: unknown) => console.log(`[INFO] ${message}`, meta || ''),
+  warn: (message: string, meta?: unknown) => console.warn(`[WARN] ${message}`, meta || ''),
+  error: (message: string, meta?: unknown) => console.error(`[ERROR] ${message}`, meta || ''),
+};
 
 /**
  * Emergency Protocol Handler.
  * Advanced emergency response and load shedding system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { EmergencyHandler } from '../interfaces';
 
 interface EmergencyProtocol {
@@ -196,7 +198,7 @@ export class EmergencyProtocolHandler
   private async executeAction(action: EmergencyAction): Promise<void> {
     switch (action.type) {
       case 'load_shed':
-        await this.shedLoad(action.parameters.percentage);
+        await this.shedLoad(action.parameters.percentage as number);
         break;
       case 'scale_up':
         break;
@@ -204,12 +206,12 @@ export class EmergencyProtocolHandler
         await this.activateFailover();
         break;
       case 'throttle':
-        await this.throttleRequests(action.parameters.rate);
+        await this.throttleRequests(action.parameters.rate as number);
         break;
       case 'alert':
         await this.sendAlert(
-          action.parameters.message,
-          action.parameters.recipients
+          action.parameters.message as string,
+          action.parameters.recipients as string[]
         );
         break;
       default:

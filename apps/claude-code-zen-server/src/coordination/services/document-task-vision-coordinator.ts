@@ -6,7 +6,7 @@
  * and provides comprehensive project coordination.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type {
   BaseDocumentEntity,
   TaskDocumentEntity,
@@ -19,7 +19,7 @@ import {
   StrategicVisionService,
 } from './strategic-vision-service';
 
-const logger = createLogger('coordination-services-document-task-vision');
+const logger = getLogger('coordination-services-document-task-vision');
 
 export interface StrategicTask {
   id: string;

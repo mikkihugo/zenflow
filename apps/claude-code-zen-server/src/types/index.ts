@@ -90,9 +90,9 @@ export {
 export * from './client-types';
 export * from './events-types';
 export * from './knowledge-types';
-export * from './neural-types';
+// Neural types now available via @claude-zen/brain package - no need to export
 export * from './protocol-types';
 export * from './services-types';
 export * from './singletons';
-export * from './workflow-types';
+// Workflow types now available via @claude-zen/workflows package - no need to export
 export * from './logger';

@@ -70,7 +70,6 @@ declare module '$env/static/private' {
 	export const ARCHITECT_URL: string;
 	export const ERL_FLAGS: string;
 	export const HEX_CACHE_CLEANUP: string;
-	export const npm_config_recursive: string;
 	export const npm_config_global_dir: string;
 	export const CLAUDECODE: string;
 	export const MOTD_SHOWN: string;
@@ -108,6 +107,7 @@ declare module '$env/static/private' {
 	export const XDG_SESSION_CLASS: string;
 	export const SELINUX_ROLE_REQUESTED: string;
 	export const TERM: string;
+	export const npm_config_overrides: string;
 	export const LESS_TERMCAP_mb: string;
 	export const npm_package_name: string;
 	export const SHELL_UPGRADED: string;
@@ -187,7 +187,6 @@ declare module '$env/static/private' {
 	export const npm_node_execpath: string;
 	export const npm_config_engine_strict: string;
 	export const OLDPWD: string;
-	export const npm_package_engines_node: string;
 	export const MODULES_CMD: string;
 	export const TERM_PROGRAM: string;
 	export const CF_API_TOKEN: string;
@@ -267,7 +266,6 @@ declare module '$env/dynamic/private' {
 		ARCHITECT_URL: string;
 		ERL_FLAGS: string;
 		HEX_CACHE_CLEANUP: string;
-		npm_config_recursive: string;
 		npm_config_global_dir: string;
 		CLAUDECODE: string;
 		MOTD_SHOWN: string;
@@ -305,6 +303,7 @@ declare module '$env/dynamic/private' {
 		XDG_SESSION_CLASS: string;
 		SELINUX_ROLE_REQUESTED: string;
 		TERM: string;
+		npm_config_overrides: string;
 		LESS_TERMCAP_mb: string;
 		npm_package_name: string;
 		SHELL_UPGRADED: string;
@@ -384,7 +383,6 @@ declare module '$env/dynamic/private' {
 		npm_node_execpath: string;
 		npm_config_engine_strict: string;
 		OLDPWD: string;
-		npm_package_engines_node: string;
 		MODULES_CMD: string;
 		TERM_PROGRAM: string;
 		CF_API_TOKEN: string;

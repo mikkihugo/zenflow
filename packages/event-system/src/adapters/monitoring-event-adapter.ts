@@ -109,7 +109,7 @@ const createLogger = (name: string): Logger => ({
   ) => logger.error(`[ERROR] ${name}: ${message}`, { ...meta, error }),
 });
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 /**
  * Monitoring event adapter configuration extending UEL EventManagerConfig.
@@ -509,7 +509,6 @@ export class MonitoringEventAdapter implements EventManager {
     this.logger.info(`Creating monitoring event adapter: ${this.name}`);
 
     // Set max listeners to handle many monitoring components
-    this.eventEmitter.setMaxListeners(3000);
   }
 
   // ============================================

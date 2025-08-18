@@ -1,0 +1,72 @@
+{
+  "name": "@claude-zen/agent-manager",
+  "version": "1.0.1",
+  "description": "Ephemeral swarm orchestrator for claude-code-zen with CLI and MCP server",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "agent-manager": "./dist/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./cli": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js"
+    },
+    "./mcp-server": {
+      "types": "./dist/mcp-server.d.ts",
+      "import": "./dist/mcp-server.js"
+    },
+    "./wasm-loader": {
+      "types": "./dist/wasm-loader.d.ts",
+      "import": "./dist/wasm-loader.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist",
+    "start:mcp": "node dist/mcp-server.js"
+  },
+  "keywords": [
+    "agent",
+    "swarm",
+    "coordination",
+    "claude",
+    "ai",
+    "lifecycle",
+    "mcp",
+    "cli",
+    "ruvswarm",
+    "ephemeral",
+    "cognitive-diversity"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "file:../foundation",
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.2",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

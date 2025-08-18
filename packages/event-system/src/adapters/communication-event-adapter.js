@@ -14,7 +14,7 @@ import { getLogger } from '../../../config/logging-config';
 const logger = getLogger('interfaces-events-adapters-communication-event-adapter');
 import { EventManagerTypes } from '../core/interfaces';
 import { EventPriorityMap } from '../types';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 /**
  * Unified Communication Event Adapter.
  *

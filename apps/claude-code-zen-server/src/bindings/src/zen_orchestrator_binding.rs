@@ -1090,7 +1090,6 @@ impl NeuralServicesCoordinator {
         if self.config.enable_zen_compute {
             services.extend([
                 "compute-execute".to_string(),
-                "gpu-acceleration".to_string(),
                 "wasm-compilation".to_string(),
             ]);
         }

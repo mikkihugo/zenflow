@@ -15,7 +15,7 @@
  * @file Application coordination system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 import { MemoryManager } from '../memory/index';
 import { DocumentDrivenSystem } from './document-driven-system';

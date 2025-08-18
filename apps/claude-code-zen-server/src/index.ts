@@ -21,7 +21,7 @@ export * as Utils from './utils/index';
 // Coordination System - All swarm and orchestration functionality
 export * as Coordination from './coordination/index';
 // SPARC Methodology System - Systematic development workflow
-export * as SPARC from './coordination/swarm/sparc/index';
+export * as SPARC from '@claude-zen/sparc';
 
 /**
  * Database System - Complete data persistence and storage management.
@@ -249,8 +249,9 @@ export * as Integration from './integration/index';
 // } from './coordination/public-api';
 export * from './coordination/public-api';
 
-// Utils and core services
-export * from './core/logger';
+// Utils and core services - use foundation instead of custom logger
+export { getLogger } from '@claude-zen/foundation';
+export type { Logger } from '@claude-zen/foundation';
 
 // Terminal Interface (CLI and TUI unified)
 
@@ -541,7 +542,7 @@ export async function initializeClaudeZen(
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig?.sparc?.enabled) {
-    const { SPARC } = await import('./coordination/swarm/sparc/index');
+    const { SPARC } = await import('@claude-zen/sparc');
     const _sparcEngine = SPARC.getEngine();
   }
 

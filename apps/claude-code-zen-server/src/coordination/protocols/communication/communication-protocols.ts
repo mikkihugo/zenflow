@@ -8,7 +8,7 @@
  */
 
 import { createHash, randomBytes } from 'node:crypto';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { gunzipSync, gzipSync } from 'node:zlib';
 import type { Logger } from '../../../core/interfaces/base-interfaces';
 import type { EventBusInterface as EventBus } from '../../core/event-bus';

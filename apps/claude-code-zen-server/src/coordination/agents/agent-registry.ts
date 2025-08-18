@@ -8,8 +8,8 @@
  * @file Coordination system: agent-registry.
  */
 
-import { EventEmitter } from 'node:events';
-import { SharedFACTCapable } from '../shared-fact-system';
+import { EventEmitter } from 'eventemitter3';
+import { FactCapable } from '../universal-fact-mixin';
 import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
 import type {
   AgentCapabilities,

@@ -6,14 +6,14 @@
  */
 
 import { nanoid } from 'nanoid';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type {
   ADRDocumentEntity,
   ProjectEntity,
 } from '../../database/entities/document-entities';
 import { HybridDocumentManager } from './hybrid-document-service';
 
-const logger = createLogger('adr-manager-hybrid');
+const logger = getLogger('adr-manager-hybrid');
 
 export interface ADRCreateOptions {
   title: string;

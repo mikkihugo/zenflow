@@ -6,8 +6,10 @@
  * @file Coordination system: auto-scaling-strategy
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { AutoScaler } from '../interfaces';
+import { AgentStatus } from '../types';
+import type { AutoScalingConfig, LoadMetrics, Agent } from '../types';
 
 interface ScalingDecision {
   action: 'scale_up' | 'scale_down' | 'no_action';
@@ -63,7 +65,7 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
         id: agentId,
         name: `Auto-scaled Agent ${agentId}`,
         capabilities: ['general', 'auto-scaled'],
-        status: 'healthy',
+        status: AgentStatus.HEALTHY,
         endpoint: `http://auto-agent-${agentId}:8080`,
         lastHealthCheck: new Date(),
         metadata: {

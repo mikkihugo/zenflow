@@ -2,7 +2,7 @@
  * @file Memory management: memory-integration.
  */
 
-import { getLogger } from '../core/logger';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-memory-memory-integration');
 
@@ -14,12 +14,12 @@ const logger = getLogger('src-memory-memory-integration');
  */
 
 import type { DALFactory } from '../database/factory';
-import { DIContainer } from '../di/container/di-container';
-import {
-  CORE_TOKENS,
-  DATABASE_TOKENS,
-  MEMORY_TOKENS,
-} from '../di/tokens/core-tokens';
+import { DIContainer, TOKENS, createContainer } from '@claude-zen/foundation';
+
+// Use foundation tokens instead of local ones
+const CORE_TOKENS = TOKENS;
+const DATABASE_TOKENS = TOKENS;
+const MEMORY_TOKENS = TOKENS;
 import type { MemoryConfig } from '../memory/interfaces';
 import { MemoryController } from './controllers/memory-controller';
 import { MemoryProviderFactory } from './providers/memory-providers';
@@ -289,7 +289,7 @@ export async function initializeMemorySystem(
 export function createMemoryContainer(
   customConfigs?: Parameters<typeof registerMemoryProviders>[1]
 ): DIContainer {
-  const container = new DIContainer();
+  const container = createContainer('memory-integration');
 
   // Register core services (would normally come from main app)
   container.register(CORE_TOKENS.Logger, {

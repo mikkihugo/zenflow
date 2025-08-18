@@ -16,7 +16,7 @@
  * - Performance optimized for production workloads
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
 import type {
@@ -723,7 +723,6 @@ export class TypeSafeEventBus extends EventEmitter implements EventBus {
     private readonly systemDomainValidator?: DomainBoundaryValidator
   ) {
     super();
-    this.setMaxListeners(0); // Unlimited listeners
 
     this.config = {
       maxHandlers: config.maxHandlers ?? 1000,

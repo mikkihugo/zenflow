@@ -9,9 +9,9 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -19,11 +19,17 @@
     "README.md"
   ],
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "build": "tsc --build",
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "test": "vitest",
     "lint": "eslint .",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "pnpm run build",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "keywords": [
     "workflows",
@@ -38,15 +44,23 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/event-system": "workspace:*"
+    "@claude-zen/event-system": "file:../event-system",
+    "@claude-zen/foundation": "file:../foundation",
+    "async": "^3.2.6",
+    "eventemitter3": "^5.0.1",
+    "expr-eval": "^2.0.2",
+    "mermaid": "^11.9.0",
+    "node-cron": "^4.2.1",
+    "p-limit": "^7.0.0",
+    "xstate": "^5.20.2"
   },
   "devDependencies": {
-    "@types/node": "^20.0.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "eslint": "^8.0.0"
+    "@types/async": "^3.2.25",
+    "@types/node": "^22.17.2",
+    "eslint": "^9.33.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "engines": {
     "node": ">=18.0.0"

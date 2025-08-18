@@ -12,7 +12,7 @@
  * @file TypeScript type definitions for interfaces.
  */
 
-export type ClientType = 'http' | 'websocket' | 'knowledge' | 'mcp' | 'generic';
+export type ClientType = 'http' | 'websocket' | 'knowledge' | 'mcpclient' | 'generic';
 
 /**
  * Supported protocol types.
@@ -74,9 +74,9 @@ export type KnowledgeQueryType =
   | 'hybrid';
 
 /**
- * MCP message types.
+ * MCP Client message types.
  */
-export type McpMessageType = 'request' | 'response' | 'notification' | 'error';
+export type McpClientMessageType = 'request' | 'response' | 'notification' | 'error';
 
 /**
  * Client status types.
@@ -153,7 +153,7 @@ export const ClientTypes = {
   HTTP: 'http' as const,
   WEBSOCKET: 'websocket' as const,
   KNOWLEDGE: 'knowledge' as const,
-  MCP: 'mcp' as const,
+  MCPCLIENT: 'mcpclient' as const,
   GENERIC: 'generic' as const,
 } as const;
 
@@ -256,7 +256,7 @@ export const ClientConfigs = {
     },
   },
 
-  [ClientTypes['MCP']]: {
+  [ClientTypes['MCPCLIENT']]: {
     timeout: 10000,
     retry: {
       maxRetries: 3,
@@ -291,7 +291,7 @@ export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
   wss: ClientTypes['WEBSOCKET'],
   tcp: ClientTypes['GENERIC'],
   udp: ClientTypes['GENERIC'],
-  stdio: ClientTypes['MCP'],
+  stdio: ClientTypes['MCPCLIENT'],
   ipc: ClientTypes['GENERIC'],
   custom: ClientTypes['GENERIC'],
 } as const;
@@ -369,9 +369,9 @@ export const ClientErrorCodes = {
 } as const;
 
 /**
- * MCP protocol constants.
+ * MCP Client protocol constants.
  */
-export const McpConstants = {
+export const McpClientConstants = {
   PROTOCOL_VERSION: '2024-11-05',
   DEFAULT_TIMEOUT: 30000,
   JSONRPC_VERSION: '2.0',
@@ -459,7 +459,7 @@ export default {
   HttpStatusCodes,
   WebSocketCloseCodes,
   ClientErrorCodes,
-  McpConstants,
+  McpClientConstants,
   KnowledgeConstants,
   TypeGuards,
 } as const;

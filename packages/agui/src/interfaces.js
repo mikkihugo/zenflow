@@ -2,7 +2,7 @@
  * AGUI Interfaces - Self-contained interface definitions
  * Copied from /src/interfaces/agui/ to make package self-contained
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import * as readline from 'node:readline';
 import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('AGUIAdapter');

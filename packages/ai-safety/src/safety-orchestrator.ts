@@ -5,24 +5,27 @@
  * Manages real-time deception detection and intervention protocols.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
+import { 
+  getLogger, 
+  type Logger,
+  ContextError,
+  withRetry,
+  createCircuitBreaker,
+  Storage,
+  getDatabaseAccess,
+  getConfig,
+  recordMetric,
+  withTrace,
+  safeAsync
+} from '@claude-zen/foundation';
 import {
   AIDeceptionDetector,
   type AIInteractionData,
   type DeceptionAlert,
 } from './ai-deception-detector';
 
-// Simple console logger to avoid circular dependencies
-const logger = {
-  debug: (message: string, meta?: unknown) =>
-    console.log(`[DEBUG] ${message}`, meta || ''),
-  info: (message: string, meta?: unknown) =>
-    console.log(`[INFO] ${message}`, meta || ''),
-  warn: (message: string, meta?: unknown) =>
-    console.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: unknown) =>
-    console.error(`[ERROR] ${message}`, meta || ''),
-};
+const logger = getLogger('ai-safety-orchestrator');
 
 /**
  * Safety orchestration result.
@@ -79,7 +82,7 @@ interface HumanEscalationResult {
  *
  * @example
  */
-interface SafetyMetrics {
+export interface SafetyMetrics {
   totalInteractions: number;
   deceptionDetected: number;
   interventionsSuccessful: number;
@@ -104,6 +107,7 @@ export class AISafetyOrchestrator extends EventEmitter {
   private metrics: SafetyMetrics;
   private _config: unknown;
   private interventionHistory: Map<string, DeceptionAlert[]>;
+  private detectionCircuitBreaker: any;
 
   constructor() {
     super();
@@ -113,10 +117,29 @@ export class AISafetyOrchestrator extends EventEmitter {
     this.interventionHistory = new Map();
     this.setupConfiguration();
     this.setupEventHandlers();
+    this.setupCircuitBreakers();
 
     logger.info(
       '🛡️ AI Safety Orchestrator initialized with 3-phase coordination'
     );
+  }
+
+  /**
+   * Setup circuit breakers for safety operations.
+   */
+  private setupCircuitBreakers(): void {
+    this.detectionCircuitBreaker = createCircuitBreaker(
+      async (data: AIInteractionData) => {
+        return await this.deceptionDetector.detectDeception(data);
+      },
+      {
+        timeout: 5000,
+        errorThresholdPercentage: 20,
+        resetTimeout: 30000
+      }
+    );
+
+    logger.info('🔌 Circuit breakers configured for safety operations');
   }
 
   /**
@@ -320,37 +343,74 @@ export class AISafetyOrchestrator extends EventEmitter {
   }
 
   /**
-   * Analyze AI interaction for deception (main entry point).
+   * Analyze AI interaction for deception (main entry point) with foundation error handling.
    *
    * @param interactionData
    */
   async analyzeInteraction(
     interactionData: AIInteractionData
   ): Promise<DeceptionAlert[]> {
-    this.metrics.totalInteractions++;
+    return withTrace('ai-safety-analysis', async (span) => {
+      span?.setAttributes({
+        'agent.id': interactionData.agentId,
+        'interaction.toolCalls': interactionData.toolCalls.length,
+        'interaction.responseLength': interactionData.response.length
+      });
 
-    const alerts =
-      await this.deceptionDetector.detectDeception(interactionData);
+      this.metrics.totalInteractions++;
 
-    if (alerts.length > 0) {
-      this.metrics.deceptionDetected++;
+      // Use circuit breaker for deception detection
+      const result = await safeAsync(async () => {
+        return await this.detectionCircuitBreaker.fire(interactionData);
+      });
 
-      // Store in intervention history
-      const existing =
-        this.interventionHistory.get(interactionData.agentId) || [];
-      this.interventionHistory.set(interactionData.agentId, [
-        ...existing,
-        ...alerts,
-      ]);
-
-      // Trigger immediate orchestration if critical
-      const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');
-      if (criticalAlerts.length > 0) {
-        await this.orchestrateSafetyMonitoring();
+      if (result.isErr()) {
+        logger.error('Deception detection failed', { 
+          error: result.error.message,
+          agentId: interactionData.agentId 
+        });
+        recordMetric('ai_safety_detection_errors', 1, {
+          agentId: interactionData.agentId,
+          error: result.error.message
+        });
+        return [];
       }
-    }
 
-    return alerts;
+      const alerts = result.value;
+
+      if (alerts.length > 0) {
+        this.metrics.deceptionDetected++;
+
+        // Store in intervention history
+        const existing =
+          this.interventionHistory.get(interactionData.agentId) || [];
+        this.interventionHistory.set(interactionData.agentId, [
+          ...existing,
+          ...alerts,
+        ]);
+
+        // Record metrics
+        recordMetric('ai_safety_alerts_generated', alerts.length, {
+          agentId: interactionData.agentId
+        });
+
+        // Trigger immediate orchestration if critical
+        const criticalAlerts = alerts.filter((a) => a.severity === 'CRITICAL');
+        if (criticalAlerts.length > 0) {
+          recordMetric('ai_safety_critical_alerts', criticalAlerts.length, {
+            agentId: interactionData.agentId
+          });
+          await this.orchestrateSafetyMonitoring();
+        }
+
+        span?.setAttributes({
+          'alerts.total': alerts.length,
+          'alerts.critical': criticalAlerts.length
+        });
+      }
+
+      return alerts;
+    });
   }
 
   /**
@@ -437,7 +497,13 @@ export class AISafetyOrchestrator extends EventEmitter {
     });
 
     this.deceptionDetector.on('deception:escalation', (data: unknown) => {
-      this.handleEscalation(data);
+      // Type-safe escalation data with defaults
+      const escalationData = {
+        agentId: (data as any)?.agentId || 'unknown',
+        totalInterventions: (data as any)?.totalInterventions || 0,
+        recentAlerts: (data as any)?.recentAlerts || []
+      };
+      this.handleEscalation(escalationData);
     });
   }
 
@@ -479,7 +545,7 @@ export class AISafetyOrchestrator extends EventEmitter {
    *
    * @param data
    */
-  private async handleEscalation(data: unknown): Promise<void> {
+  private async handleEscalation(data: { agentId: string; totalInterventions: number; recentAlerts: any[] }): Promise<void> {
     logger.error(`🚨 ESCALATION for agent ${data.agentId}:`, {
       totalInterventions: data.totalInterventions,
       recentAlerts: data.recentAlerts.length,
@@ -546,6 +612,118 @@ export class AISafetyOrchestrator extends EventEmitter {
     this.metrics = this.initializeMetrics();
     this.interventionHistory.clear();
     logger.info('🔄 Safety metrics reset');
+  }
+
+  /**
+   * Validate safety of a command or action (replaces hook system).
+   * 
+   * @param context - Context containing command, agent info, and environment
+   * @returns Safety validation result with recommendations
+   */
+  async validateSafety(context: {
+    command?: string;
+    agentId?: string;
+    toolCalls?: Array<{ tool: string; parameters: unknown }>;
+    environment?: string;
+  }): Promise<{
+    safe: boolean;
+    riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+    warnings: string[];
+    recommendations: string[];
+    blocked?: boolean;
+  }> {
+    return withTrace('safety-validation', async (span) => {
+      span?.setAttributes({
+        'command': context.command || 'unknown',
+        'agentId': context.agentId || 'unknown',
+        'toolCallsCount': context.toolCalls?.length || 0
+      });
+
+      // Basic safety checks
+      const warnings: string[] = [];
+      const recommendations: string[] = [];
+      let riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL' = 'LOW';
+      let blocked = false;
+
+      // Check for dangerous commands
+      if (context.command) {
+        const dangerousPatterns = [
+          /rm\s+-rf\s+\/(?!tmp|var\/tmp)/i,  // Dangerous rm commands
+          /sudo\s+(?!which|type)/i,           // Sudo commands (except safe ones)
+          /curl.*\|\s*(?:sh|bash)/i,          // Piping curl to shell
+          /wget.*\|\s*(?:sh|bash)/i,          // Piping wget to shell
+          /eval\s*\(/i,                       // Eval statements
+        ];
+
+        for (const pattern of dangerousPatterns) {
+          if (pattern.test(context.command)) {
+            warnings.push(`Potentially dangerous command detected: ${context.command}`);
+            riskLevel = 'HIGH';
+            recommendations.push('Review command before execution');
+            blocked = true;
+            break;
+          }
+        }
+      }
+
+      // Check tool call safety
+      if (context.toolCalls) {
+        for (const toolCall of context.toolCalls) {
+          if (toolCall.tool === 'Bash' && typeof toolCall.parameters === 'object') {
+            const params = toolCall.parameters as any;
+            if (params?.command) {
+              const subValidation = await this.validateSafety({
+                command: params.command,
+                agentId: context.agentId
+              });
+              
+              if (!subValidation.safe) {
+                warnings.push(...subValidation.warnings);
+                recommendations.push(...subValidation.recommendations);
+                riskLevel = subValidation.riskLevel;
+                blocked = blocked || subValidation.blocked || false;
+              }
+            }
+          }
+        }
+      }
+
+      const result = {
+        safe: !blocked && riskLevel !== 'CRITICAL',
+        riskLevel,
+        warnings,
+        recommendations,
+        blocked
+      };
+
+      // Record metrics
+      recordMetric('safety_validations_total', 1, {
+        agentId: context.agentId || 'unknown',
+        riskLevel,
+        blocked: blocked ? 'true' : 'false'
+      });
+
+      if (blocked) {
+        recordMetric('safety_validations_blocked', 1, {
+          agentId: context.agentId || 'unknown',
+          reason: warnings[0] || 'unknown'
+        });
+        logger.warn('🛡️ Safety validation BLOCKED command', {
+          command: context.command,
+          agentId: context.agentId,
+          riskLevel,
+          warnings: warnings.length
+        });
+      } else {
+        logger.debug('✅ Safety validation PASSED', {
+          agentId: context.agentId,
+          riskLevel,
+          warnings: warnings.length
+        });
+      }
+
+      return result;
+    });
   }
 }
 

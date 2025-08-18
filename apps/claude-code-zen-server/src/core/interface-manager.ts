@@ -20,7 +20,7 @@
  * @file Interface management system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { config } from '../config';
 import { getLogger } from '../config/logging-config';
 

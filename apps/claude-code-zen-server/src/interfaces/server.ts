@@ -12,25 +12,12 @@ import helmet from 'helmet';
 import { createServer } from 'http';
 import path from 'path';
 import type { Server as SocketIOServer } from 'socket.io';
-// Configuration system
-import { config } from '../config/config';
+// Foundation package - unified interface for all shared utilities
+import { Logger, Config } from '@claude-zen/foundation';
 import type { SystemConfiguration } from '../config/types';
-// LogTape integration
-import {
-  createAppLogger,
-  createExpressErrorLoggingMiddleware,
-  createExpressLoggingMiddleware,
-  initializeLogging,
-  logServerEvent,
-} from '../config/logging-config';
 
-// Route handlers (to be created)
-// import { mcpRoutes } from './routes/mcp-routes';
-// import { apiRoutes } from './routes/api-routes';
-// import { webRoutes } from './routes/web-routes';
-// import { monitoringRoutes } from './routes/monitoring-routes';
-
-const logger = createAppLogger();
+const logger = new Logger('interfaces-server');
+const config = new Config();
 
 // Server-specific configuration interface
 interface ServerConfig {
@@ -65,8 +52,8 @@ export class UnifiedClaudeZenServer {
   }
 
   private buildServerConfig(): ServerConfig {
-    // Get the full system configuration
-    const systemConfig = config.getAll();
+    // Get the full system configuration using foundation Config
+    const systemConfig = config.has('system') ? config.get<SystemConfiguration>('system') : null;
 
     // Default fallback configuration if system config is not available
     const defaultConfig: ServerConfig = {
@@ -120,10 +107,9 @@ export class UnifiedClaudeZenServer {
   }
 
   async initialize(): Promise<void> {
-    // Initialize logging first
+    // Initialize using foundation logger
     if (this.config.middleware.logging) {
-      await initializeLogging();
-      logServerEvent(logger, 'initializing', {
+      logger.info('Initializing unified server', {
         port: this.config.port,
         features: this.config.features,
       });
@@ -179,9 +165,21 @@ export class UnifiedClaudeZenServer {
     this.app.use(express.json({ limit: '10mb' }));
     this.app.use(express.urlencoded({ extended: true }));
 
-    // LogTape request/response logging
+    // Request/response logging using foundation logger
     if (this.config.middleware.logging) {
-      this.app.use(createExpressLoggingMiddleware());
+      this.app.use((req, res, next) => {
+        const start = Date.now();
+        res.on('finish', () => {
+          const duration = Date.now() - start;
+          logger.info('Request processed', {
+            method: req.method,
+            url: req.url,
+            status: res.statusCode,
+            duration: `${duration}ms`
+          });
+        });
+        next();
+      });
     }
 
     // Static files for web dashboard
@@ -270,9 +268,17 @@ export class UnifiedClaudeZenServer {
       this.setupWebSocket();
     }
 
-    // Error handling middleware
+    // Error handling middleware using foundation logger
     if (this.config.middleware.logging) {
-      this.app.use(createExpressErrorLoggingMiddleware());
+      this.app.use((err: any, req: any, res: any, next: any) => {
+        logger.error('Express error middleware', {
+          error: err.message,
+          stack: err.stack,
+          url: req.url,
+          method: req.method
+        });
+        next(err);
+      });
     }
 
     // Global error handler
@@ -410,7 +416,7 @@ export class UnifiedClaudeZenServer {
 
     return new Promise((resolve, reject) => {
       this.server!.listen(this.config.port, this.config.host, () => {
-        logServerEvent(logger, 'started', {
+        logger.info('Server started successfully', {
           port: this.config.port,
           host: this.config.host,
           features: this.config.features,
@@ -434,7 +440,7 @@ export class UnifiedClaudeZenServer {
         );
 
         resolve();
-      }).on('error', (err: unknown) => {
+      }).on('error', (err: any) => {
         logger.error('Server failed to start', {
           error: err.message,
           stack: err.stack,
@@ -446,10 +452,10 @@ export class UnifiedClaudeZenServer {
 
   async stop(): Promise<void> {
     return new Promise((resolve) => {
-      logServerEvent(logger, 'stopping', { port: this.config.port });
+      logger.info('Server stopping', { port: this.config.port });
 
       this.server!.close(() => {
-        logServerEvent(logger, 'stopped', { port: this.config.port });
+        logger.info('Server stopped successfully', { port: this.config.port });
         console.log('🛑 Unified Claude-Zen Server stopped');
         resolve();
       });

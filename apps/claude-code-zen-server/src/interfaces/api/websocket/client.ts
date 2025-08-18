@@ -6,7 +6,7 @@
  * @file Interface implementation: client.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 // Use Node.js WebSocket API when available, fallback to DOM types
 

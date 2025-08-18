@@ -542,8 +542,8 @@ export class GEPA extends Teleprompter {
 
     // Create base program from current instructions
     const base_program: Record<string, string> = {};
-    for (const [name, pred] of Object.entries(student.named_predictors())) {
-      base_program[name] = pred.signature.instruction || '';
+    for (const [name, pred] of student.namedPredictors()) {
+      base_program[name] = (pred as any).signature?.instruction || '';
     }
 
     // Run GEPA optimization

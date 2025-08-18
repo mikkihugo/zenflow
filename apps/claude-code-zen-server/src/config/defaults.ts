@@ -265,11 +265,10 @@ export const DEFAULT_CONFIG: SystemConfiguration = {
   },
 
   optimization: {
-    enablePerformanceMonitoring: true,
-    enableResourceOptimization: true,
-    enableMemoryOptimization: true,
-    enableNetworkOptimization: false,
-    benchmarkInterval: 60000, // 1 minute
+    autoScale: true,
+    maxWorkers: 4,
+    memoryThreshold: 0.8,
+    cpuThreshold: 0.8,
   },
 };
 
@@ -679,8 +678,8 @@ export class URLBuilder {
    */
   getWebDashboardURL(overrides: Partial<URLBuilderConfig> = {}): string {
     const protocol = overrides.protocol || this.getProtocol();
-    const host = overrides.host || this.config.interfaces.web.host;
-    const port = overrides.port || this.config.interfaces.web.port;
+    const host = overrides.host || (this.config as any).interfaces?.web?.host || this.config.host || 'localhost';
+    const port = overrides.port || (this.config as any).interfaces?.web?.port || this.config.port || 3000;
     const path = overrides.path || '';
 
     return this.buildURL(protocol, host, port, path);
@@ -693,8 +692,8 @@ export class URLBuilder {
    */
   getMonitoringDashboardURL(overrides: Partial<URLBuilderConfig> = {}): string {
     const protocol = overrides.protocol || this.getProtocol();
-    const host = overrides.host || this.config.monitoring.dashboard.host;
-    const port = overrides.port || this.config.monitoring.dashboard.port;
+    const host = overrides.host || (this.config as any).monitoring?.dashboard?.host || this.config.host || 'localhost';
+    const port = overrides.port || (this.config as any).monitoring?.dashboard?.port || ((this.config.port || 3000) + 1);
     const path = overrides.path || '';
 
     return this.buildURL(protocol, host, port, path);
@@ -707,7 +706,7 @@ export class URLBuilder {
     const protocol = this.getProtocol();
     const webURL = this.getWebDashboardURL({ protocol });
     const monitoringURL = this.getMonitoringDashboardURL({ protocol });
-    const configuredOrigins = this.config.interfaces.web.corsOrigins || [];
+    const configuredOrigins = (this.config as any).interfaces?.web?.corsOrigins || [];
 
     const updatedOrigins = configuredOrigins.map((origin) => {
       if (origin.includes('localhost') && !origin.startsWith('http')) {
@@ -778,10 +777,10 @@ export class URLBuilder {
     if (process.env['FORCE_HTTP'] === 'true') {
       return 'http';
     }
-    if (this.config.interfaces.web.enableHttps) {
+    if ((this.config as any).interfaces?.web?.enableHttps) {
       return 'https';
     }
-    return this.config.environment.isProduction ? 'https' : 'http';
+    return (this.config as any).environment?.isProduction ? 'https' : 'http';
   }
 
   /**

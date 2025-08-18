@@ -10,7 +10,7 @@
  */
 
 import { type ChildProcess, execSync, spawn } from 'child_process';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import fs from 'fs';
 import path from 'path';
 import { getConsoleReplacementLogger } from './config/logging-config';

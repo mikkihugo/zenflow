@@ -92,8 +92,8 @@ export class TaskAgentMatcher {
   private calculatePerformanceMatch(_task: Task, agent: Agent): number {
     // In practice, this would use historical performance data
     // For now, return a score based on agent metadata
-    const reliability = agent.metadata?.reliability || 0.8;
-    const avgLatency = agent.metadata?.averageLatency || 1000;
+    const reliability = (agent.metadata?.reliability as number) || 0.8;
+    const avgLatency = (agent.metadata?.averageLatency as number) || 1000;
 
     // Lower latency is better
     const latencyScore = Math.max(0, 1 - avgLatency / 5000);

@@ -7,7 +7,7 @@ import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-integration-adapter-system');
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 // Core protocol interfaces
 export interface ProtocolMessage {

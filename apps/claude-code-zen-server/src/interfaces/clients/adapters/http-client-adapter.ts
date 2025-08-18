@@ -83,7 +83,7 @@
  * ```
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import axios, {
   type AxiosError,
   type AxiosInstance,

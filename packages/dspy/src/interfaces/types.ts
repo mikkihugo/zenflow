@@ -250,7 +250,7 @@ export class DSPyError extends Error {
     super(message);
     this.name = 'DSPyError';
     this.code = code;
-    this.metadata = metadata;
+    this.metadata = metadata ?? {};
   }
 }
 

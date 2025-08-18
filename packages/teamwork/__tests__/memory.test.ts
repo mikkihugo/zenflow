@@ -1,34 +1,19 @@
-import type { AgentId } from '../types';
-import { ConversationMemoryImpl } from '../memory';
-import type { ConversationSession, ConversationStatus } from '../types';
+import type { AgentId } from '../src/types';
+import { TeamworkStorage } from '../src/storage';
+import type { ConversationSession } from '../src/types';
 
-describe('ConversationMemoryImpl - Classical TDD', () => {
-  let memory: ConversationMemoryImpl;
+describe('TeamworkStorage - Classical TDD', () => {
+  let storage: TeamworkStorage;
   let mockBackend: unknown;
 
   const sampleAgents: AgentId[] = [
-    'agent-1',
-    'agent-2',
+    { id: 'agent-1', swarmId: 'test-swarm', type: 'coder', instance: 0 },
+    { id: 'agent-2', swarmId: 'test-swarm', type: 'reviewer', instance: 0 },
   ];
 
   beforeEach(() => {
-    // Create a mock backend that simulates actual storage
-    const storage = new Map<string, any>();
-
-    mockBackend = {
-      save: vi.fn().mockImplementation(async (key: string, value: unknown) => {
-        storage.set(key, JSON.parse(JSON.stringify(value))); // Deep clone to simulate persistence
-      }),
-      get: vi.fn().mockImplementation(async (key: string) => {
-        const value = storage.get(key);
-        return value ? JSON.parse(JSON.stringify(value)) : null; // Deep clone to simulate retrieval
-      }),
-      delete: vi.fn().mockImplementation(async (key: string) => {
-        storage.delete(key);
-      }),
-    };
-
-    memory = new ConversationMemoryImpl(mockBackend);
+    // Use actual TeamworkStorage implementation
+    storage = new TeamworkStorage();
   });
 
   describe('💾 Store and Retrieve Conversation', () => {
@@ -92,8 +77,8 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       };
 
       // Act
-      await memory.storeConversation(conversation);
-      const retrieved = await memory.getConversation('conv-123');
+      await storage.storeSession(conversation);
+      const retrieved = await storage.getSession('conv-123');
 
       // Assert - Verify exact data integrity
       expect(retrieved).not.toBeNull();
@@ -140,7 +125,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
     it('should return null for non-existent conversation', async () => {
       // Act
-      const result = await memory.getConversation('non-existent');
+      const result = await storage.getSession('non-existent');
 
       // Assert
       expect(result).toBeNull();
@@ -227,11 +212,11 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       // Store all conversations
       for (const conv of conversations) {
-        await memory.storeConversation(conv);
+        await storage.storeSession(conv);
       }
 
       // Act - Search for agent-1's conversations
-      const agent1Conversations = await memory.searchConversations({
+      const agent1Conversations = await storage.searchConversations({
         agentId: 'agent-1',
       });
 
@@ -280,16 +265,16 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       // Store all conversations
       for (const conv of manyConversations) {
-        await memory.storeConversation(conv);
+        await storage.storeSession(conv);
       }
 
       // Act - Test pagination
-      const firstPage = await memory.searchConversations({
+      const firstPage = await storage.searchConversations({
         agentId: 'agent-1',
         limit: 3,
         offset: 0,
       });
-      const secondPage = await memory.searchConversations({
+      const secondPage = await storage.searchConversations({
         agentId: 'agent-1',
         limit: 3,
         offset: 3,
@@ -365,11 +350,11 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
 
       // Store conversations
       for (const conv of conversations) {
-        await memory.storeConversation(conv);
+        await storage.storeSession(conv);
       }
 
       // Act
-      const reviewConversations = await memory.searchConversations({
+      const reviewConversations = await storage.searchConversations({
         pattern: 'code-review',
       });
 
@@ -423,7 +408,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         },
       };
 
-      await memory.storeConversation(originalConversation);
+      await storage.storeSession(originalConversation);
 
       // Act - Update status and add a message
       const updates: Partial<ConversationSession> = {
@@ -453,11 +438,11 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         },
       };
 
-      await memory.updateConversation('conv-update-test', updates);
+      await storage.updateSession('conv-update-test', updates);
 
       // Assert
       const updatedConversation =
-        await memory.getConversation('conv-update-test');
+        await storage.getSession('conv-update-test');
 
       expect(updatedConversation).not.toBeNull();
       expect(updatedConversation?.status).toBe('completed');
@@ -484,7 +469,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     it('should throw error when updating non-existent conversation', async () => {
       // Act & Assert
       await expect(
-        memory.updateConversation('non-existent', { status: 'completed' })
+        storage.updateSession('non-existent', { status: 'completed' })
       ).rejects.toThrow('Conversation non-existent not found');
     });
   });
@@ -517,21 +502,21 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
         },
       };
 
-      await memory.storeConversation(conversation);
+      await storage.storeSession(conversation);
 
       // Verify it exists
-      const beforeDelete = await memory.getConversation('conv-delete-test');
+      const beforeDelete = await storage.getSession('conv-delete-test');
       expect(beforeDelete).not.toBeNull();
 
       // Act
-      await memory.deleteConversation('conv-delete-test');
+      await storage.deleteSession('conv-delete-test');
 
       // Assert
-      const afterDelete = await memory.getConversation('conv-delete-test');
+      const afterDelete = await storage.getSession('conv-delete-test');
       expect(afterDelete).toBeNull();
 
       // Verify it's removed from agent indexes
-      const agent1Conversations = await memory.searchConversations({
+      const agent1Conversations = await storage.searchConversations({
         agentId: 'agent-1',
       });
       const deletedConvExists = agent1Conversations.some(
@@ -543,7 +528,7 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
     it('should handle deletion of non-existent conversation gracefully', async () => {
       // Act & Assert - Should not throw
       await expect(
-        memory.deleteConversation('non-existent')
+        storage.deleteSession('non-existent')
       ).resolves.toBeUndefined();
     });
   });
@@ -577,18 +562,18 @@ describe('ConversationMemoryImpl - Classical TDD', () => {
       };
 
       // Act - Perform multiple operations
-      await memory.storeConversation(conversation);
+      await storage.storeSession(conversation);
 
-      const retrieved1 = await memory.getConversation('conv-consistency-test');
+      const retrieved1 = await storage.getSession('conv-consistency-test');
 
-      await memory.updateConversation('conv-consistency-test', {
+      await storage.updateSession('conv-consistency-test', {
         status: 'paused',
         metrics: { ...conversation.metrics, messageCount: 5 },
       });
 
-      const retrieved2 = await memory.getConversation('conv-consistency-test');
+      const retrieved2 = await storage.getSession('conv-consistency-test');
 
-      const searchResults = await memory.searchConversations({
+      const searchResults = await storage.searchConversations({
         agentId: 'agent-1',
       });
 

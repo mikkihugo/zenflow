@@ -10,7 +10,7 @@
  * between business logic and transport protocols.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import { LLMIntegrationService } from '../../coordination/services/llm-integration.service';
 import {

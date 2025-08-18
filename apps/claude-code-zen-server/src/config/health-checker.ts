@@ -128,8 +128,8 @@
  * @see {@link SystemConfiguration} System configuration interface
  */
 
-import { EventEmitter } from 'node:events';
-import { logRepoConfigStatus } from './default-repo-config';
+import { EventEmitter } from 'eventemitter3';
+// import { logRepoConfigStatus } from './default-repo-config'; // Temporarily disabled
 import { configManager } from './manager';
 import type {
   ConfigHealthReport,
@@ -219,11 +219,34 @@ export class ConfigHealthChecker extends EventEmitter {
   > {
     const config = configManager?.getConfig();
     const healthReport = this.validator.getHealthReport(config);
+    const validation = this.validator.validateEnhanced(config);
 
     const report: ConfigHealthReport = {
-      ...healthReport,
+      isHealthy: healthReport.status === 'healthy',
       timestamp: Date.now(),
       environment: this.environment,
+      status: healthReport.status,
+      score: healthReport.score,
+      details: healthReport.details,
+      recommendations: healthReport.recommendations,
+      checks: {
+        configuration: {
+          isValid: validation.valid || false,
+          errors: validation.errors || [],
+          warnings: validation.warnings || [],
+          securityIssues: validation.securityIssues || [],
+          portConflicts: validation.portConflicts || [],
+          performanceWarnings: validation.performanceWarnings || [],
+          productionReady: validation.productionReady || false,
+          failsafeApplied: validation.failsafeApplied || []
+        }
+      },
+      summary: {
+        total: 1,
+        passed: validation.valid ? 1 : 0,
+        failed: validation.valid ? 0 : 1,
+        warnings: (validation.warnings?.length || 0) + (validation.performanceWarnings?.length || 0)
+      }
     };
 
     this.lastHealthReport = report;
@@ -501,7 +524,7 @@ export class ConfigHealthChecker extends EventEmitter {
       // Log detailed repo config status for diagnostics (wired up!)
       if ((currentReport as any)?.configuration) {
         try {
-          logRepoConfigStatus((currentReport as any).configuration as any);
+          // logRepoConfigStatus((currentReport as any).configuration as any); // Temporarily disabled
         } catch (error) {
           // Silently continue if logging fails - don't break health checks
           console.debug('Config status logging failed:', error);

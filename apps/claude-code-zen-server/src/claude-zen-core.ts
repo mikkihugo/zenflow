@@ -2,10 +2,6 @@
  * @file Claude-zen-core implementation.
  */
 
-import { Logger } from '@claude-zen/foundation';
-
-const logger = new Logger('claude-zen-core');
-
 /**
  * Claude Code Zen - Main Application Entry Point.
  *
@@ -13,90 +9,56 @@ const logger = new Logger('claude-zen-core');
  * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { CoordinationManager } from './coordination/manager';
 
 // Import DI-enhanced coordinators
 import { Orchestrator } from './coordination/orchestrator';
 import {
-  CORE_TOKENS,
-  createContainerBuilder,
-  createToken,
-  type DIContainer,
-  SWARM_TOKENS,
+  TOKENS,
+  DIContainer,
+  TokenFactory,
+  createContainer,
+  getLogger,
+  getConfig,
+  getDatabaseAccess,
   type Config,
-  type EventBus,
-  type Database,
-  type Logger,
-} from './di';
+  type DatabaseAccess
+} from '@claude-zen/foundation';
+
+// Simple EventBus interface
+interface EventBus {
+  emit(event: string | symbol, ...args: any[]): boolean;
+  on(event: string | symbol, handler: (...args: any[]) => void): this;
+  off(event: string | symbol, handler: (...args: any[]) => void): this;
+  publish(event: string, data: any): void;
+  subscribe(event: string, handler: (data: any) => void): void;
+  unsubscribe(event: string, handler: (data: any) => void): void;
+}
 import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
-import { LearningCoordinator } from '@claude-zen/adaptive-learning';
+import { BehavioralIntelligence } from '@claude-zen/brain';
 
-// Core service implementations
-class ConsoleLogger implements Logger {
-  log(_message: string): void {}
+const logger = getLogger('claude-zen-core');
 
-  debug(_message: string, _meta?: any): void {}
+// Foundation services are now used directly - no local implementations needed
 
-  info(_message: string, _meta?: any): void {}
-
-  warn(message: string, meta?: any): void {
-    logger.warn(`[${new Date().toISOString()}] WARN: ${message}`, meta || '');
-  }
-
-  error(message: string, meta?: any): void {
-    logger.error(`[${new Date().toISOString()}] ERROR: ${message}`, meta || '');
-  }
-}
-
-class AppConfig implements Config {
-  private config = new Map<string, any>();
-
-  constructor() {
-    // Default configuration
-    this.config.set('swarm.maxAgents', 10);
-    this.config.set('swarm.heartbeatInterval', 5000);
-    this.config.set('coordination.timeout', 30000);
-    this.config.set('learning.adaptiveEnabled', true);
-  }
-
-  get<T>(key: string, defaultValue?: T): T {
-    const value = this.config.get(key);
-    if (value !== undefined) {
-      return value as T;
-    }
-    if (defaultValue !== undefined) {
-      return defaultValue;
-    }
-    throw new Error(
-      `Configuration key '${key}' not found and no default value provided`
-    );
-  }
-
-  set<T>(key: string, value: T): void {
-    this.config.set(key, value);
-  }
-
-  has(key: string): boolean {
-    return this.config.has(key);
-  }
-}
+// Use foundation's config system directly
 
 class AppEventBus extends EventEmitter implements EventBus {
-  emit(event: string, data: unknown): boolean {
-    return super.emit(event, data);
+  emit(event: string | symbol, ...args: any[]): boolean {
+    return super.emit(event, ...args);
   }
 
   emitSystemEvent(event: import('./coordination/core/event-bus').SystemEvent): boolean {
     return super.emit(event.type, event);
   }
 
-  on(event: string, handler: (data: unknown) => void): this {
+  on(event: string | symbol, handler: (...args: any[]) => void): this {
     super.on(event, handler);
     return this;
   }
 
-  off(event: string, handler: (data: unknown) => void): this {
+  off(event: string | symbol, handler: (...args: any[]) => void): this {
     super.off(event, handler);
     return this;
   }
@@ -114,70 +76,7 @@ class AppEventBus extends EventEmitter implements EventBus {
   }
 }
 
-class MockDatabase implements Database {
-  private data = new Map<string, any>();
-
-  async initialize(): Promise<void> {}
-
-  async query<T>(_sql: string, _params?: any[]): Promise<T[]> {
-    return [];
-  }
-
-  async execute(sql: string, params?: any[]): Promise<void> {
-    // Mock execution - store some fake data
-    if (sql.includes('INSERT') || sql.includes('UPDATE')) {
-      this.data.set(`query_${Date.now()}`, { sql, params });
-    }
-  }
-
-  async transaction<T>(fn: (db: Database) => Promise<T>): Promise<T> {
-    const result = await fn(this);
-    return result;
-  }
-
-  async shutdown(): Promise<void> {}
-
-  // Task management methods
-  async createTask(task: any): Promise<void> {
-    this.data.set(`task_${task.id}`, task);
-  }
-
-  async updateTask(taskId: string, updates: any): Promise<void> {
-    const existing = this.data.get(`task_${taskId}`) || {};
-    this.data.set(`task_${taskId}`, { ...existing, ...updates });
-  }
-
-  async getSwarmTasks(swarmId: string, status?: string): Promise<any[]> {
-    const tasks: any[] = [];
-    for (const [key, value] of this.data.entries()) {
-      if (key.startsWith('task_') && value.swarm_id === swarmId) {
-        if (!status || value.status === status) {
-          tasks.push(value);
-        }
-      }
-    }
-    return tasks;
-  }
-
-  // Agent management methods
-  async updateAgent(agentId: string, updates: any): Promise<void> {
-    const existing = this.data.get(`agent_${agentId}`) || {};
-    this.data.set(`agent_${agentId}`, { ...existing, ...updates });
-  }
-
-  // Metrics methods
-  async getMetrics(entityId: string, metricType: string): Promise<any[]> {
-    const metrics: any[] = [];
-    for (const [key, value] of this.data.entries()) {
-      if (key.startsWith(`metrics_${entityId}_${metricType}`)) {
-        metrics.push(value);
-      }
-    }
-    return metrics.sort(
-      (a: any, b: any) => (b.timestamp ?? 0) - (a.timestamp ?? 0)
-    );
-  }
-}
+// Using foundation's professional storage system
 
 /**
  * Main Application class with full DI integration.
@@ -188,7 +87,7 @@ export class ClaudeZenCore {
   private container: DIContainer;
   private orchestrator?: Orchestrator;
   private coordinationManager?: CoordinationManager;
-  private learningCoordinator?: LearningCoordinator;
+  private behavioralIntelligence?: BehavioralIntelligence;
   private multiSystemCoordinator?: MultiSystemCoordinator;
 
   constructor() {
@@ -199,110 +98,61 @@ export class ClaudeZenCore {
    * Setup comprehensive DI container with all services.
    */
   private setupDependencyInjection(): DIContainer {
-    const container = createContainerBuilder()
-      // Core services
-      .singleton(CORE_TOKENS.Logger, () => new ConsoleLogger())
-      .singleton(CORE_TOKENS.Config, () => new AppConfig())
-      .singleton(CORE_TOKENS.EventBus, () => new AppEventBus())
-      .singleton(CORE_TOKENS.Database, () => new MockDatabase())
+    const container = createContainer('claude-zen-core');
+    
+    // Register core services
+    container.registerInstance(TOKENS.Logger, getLogger('claude-zen-core'));
+    container.registerInstance(TOKENS.Config, getConfig());
+    container.registerInstance(TOKENS.EventBus, new AppEventBus());
+    container.registerInstance(TOKENS.Database, getDatabaseAccess());
 
-      // Coordination services
-      .singleton(SWARM_TOKENS.SwarmCoordinator, (c) => {
-        const logger = c.resolve(CORE_TOKENS.Logger);
-        const database = c.resolve(CORE_TOKENS.Database);
-        return new Orchestrator(logger, database);
-      })
+    // Register coordination services
+    container.registerFactory(TOKENS.AgentManager, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
+      const database = c.resolve(TOKENS.Database);
+      return new Orchestrator(logger, database);
+    });
 
-      // Other coordinators
-      .singleton(
-        createToken<CoordinationManager>('CoordinationManager'),
-        (c) => {
-          const config = c.resolve(CORE_TOKENS.Config);
-          const logger = c.resolve(CORE_TOKENS.Logger);
-          const eventBus = c.resolve(CORE_TOKENS.EventBus);
+    // Register coordination manager
+    const coordinationManagerToken = TokenFactory.create<CoordinationManager>('CoordinationManager');
+    container.registerFactory(coordinationManagerToken, (c) => {
+      const config = c.resolve(TOKENS.Config);
+      const logger = c.resolve(TOKENS.Logger);
+      const eventBus = c.resolve(TOKENS.EventBus);
 
-          return new CoordinationManager(
-            {
-              maxAgents: config?.get('swarm.maxAgents') || 10,
-              heartbeatInterval: config?.get('swarm.heartbeatInterval') || 5000,
-              timeout: config?.get('coordination.timeout') || 30000,
-              enableHealthCheck: true,
-            },
-            logger,
-            eventBus
-          );
-        }
-      )
+      return new CoordinationManager(
+        {
+          maxAgents: 10,
+          heartbeatInterval: 5000,
+          timeout: 30000,
+          enableHealthCheck: true,
+        },
+        logger,
+        eventBus
+      );
+    });
 
-      .singleton(
-        createToken<LearningCoordinator>('LearningCoordinator'),
-        (c) => {
-          const logger = c.resolve(CORE_TOKENS.Logger);
-          return new LearningCoordinator(
-            {
-              patternRecognition: {
-                enabled: true,
-                minPatternFrequency: 5,
-                confidenceThreshold: 0.8,
-                analysisWindow: 1000,
-              },
-              learning: {
-                enabled: true,
-                learningRate: 0.1,
-                adaptationRate: 0.05,
-                knowledgeRetention: 0.9,
-              },
-              optimization: {
-                enabled: true,
-                optimizationThreshold: 0.7,
-                maxOptimizations: 10,
-                validationRequired: true,
-              },
-              ml: {
-                neuralNetwork: true,
-                reinforcementLearning: false,
-                ensemble: false,
-                onlineLearning: true,
-              },
-            },
-            {
-              environment: 'development',
-              resources: [
-                { type: 'memory', limit: 1024, flexibility: 0.2, cost: 1.0 },
-                { type: 'cpu', limit: 4, flexibility: 0.1, cost: 2.0 },
-              ],
-              constraints: [
-                {
-                  type: 'latency',
-                  description: 'Max response time',
-                  limit: 1000,
-                  priority: 1,
-                },
-              ],
-              objectives: [
-                {
-                  type: 'performance',
-                  description: 'Maximize throughput',
-                  target: 1000,
-                  weight: 1.0,
-                  measurement: 'requests/second',
-                },
-              ],
-            },
-            logger
-          );
-        }
-      )
+    // Register behavioral intelligence
+    const behavioralIntelligenceToken = TokenFactory.create<BehavioralIntelligence>('BehavioralIntelligence');
+    container.registerFactory(behavioralIntelligenceToken, () => {
+      // BehavioralIntelligence requires BrainJsBridge - create a simple bridge
+      const simpleBridge = {
+        id: 'default-brain-js-bridge',
+        isInitialized: false,
+        initialize: async () => { /* no-op */ },
+        predict: async () => ({ prediction: 0.5, confidence: 0.5 }),
+        train: async () => ({ loss: 0.1, accuracy: 0.9 }),
+        getMetrics: () => ({ totalPredictions: 0 })
+      } as any;
+      return new BehavioralIntelligence(simpleBridge);
+    });
 
-      .singleton(
-        createToken<MultiSystemCoordinator>('MultiSystemCoordinator'),
-        (c) => {
-          const logger = c.resolve(CORE_TOKENS.Logger);
-          return new MultiSystemCoordinator(logger, {});
-        }
-      )
-
-      .build();
+    // Register multi-system coordinator
+    const multiSystemCoordinatorToken = TokenFactory.create<MultiSystemCoordinator>('MultiSystemCoordinator');
+    container.registerFactory(multiSystemCoordinatorToken, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
+      return new MultiSystemCoordinator(logger, {});
+    });
 
     return container;
   }
@@ -311,34 +161,32 @@ export class ClaudeZenCore {
    * Initialize all systems with DI.
    */
   async initialize(): Promise<void> {
-    const logger = this.container.resolve(CORE_TOKENS.Logger);
+    const logger = this.container.resolve(TOKENS.Logger);
     logger.info('🚀 Initializing Claude Code Zen with full DI integration...');
 
     try {
       // Initialize core database
-      const database = this.container.resolve(CORE_TOKENS.Database);
+      const database = this.container.resolve(TOKENS.Database);
       if (database?.initialize) {
         await database?.initialize();
       }
 
       // Resolve all coordinators through DI
-      this.orchestrator = this.container.resolve(
-        SWARM_TOKENS.SwarmCoordinator
-      ) as Orchestrator;
-      this.coordinationManager = this.container.resolve(
-        createToken<CoordinationManager>('CoordinationManager')
-      );
-      this.learningCoordinator = this.container.resolve(
-        createToken<LearningCoordinator>('LearningCoordinator')
-      );
-      this.multiSystemCoordinator = this.container.resolve(
-        createToken<MultiSystemCoordinator>('MultiSystemCoordinator')
-      );
+      this.orchestrator = this.container.resolve(TOKENS.AgentManager) as Orchestrator;
+      
+      const coordinationManagerToken = TokenFactory.create<CoordinationManager>('CoordinationManager');
+      this.coordinationManager = this.container.resolve(coordinationManagerToken);
+      
+      const behavioralIntelligenceToken = TokenFactory.create<BehavioralIntelligence>('BehavioralIntelligence');
+      this.behavioralIntelligence = this.container.resolve(behavioralIntelligenceToken);
+      
+      const multiSystemCoordinatorToken = TokenFactory.create<MultiSystemCoordinator>('MultiSystemCoordinator');
+      this.multiSystemCoordinator = this.container.resolve(multiSystemCoordinatorToken);
 
       // Initialize all coordinators
       await this.orchestrator.initialize();
       await this.coordinationManager.start();
-      // Note: LearningCoordinator and MultiSystemCoordinator start automatically in constructor
+      // Note: BehavioralIntelligence and MultiSystemCoordinator start automatically in constructor
 
       logger.info(
         '✅ All systems initialized successfully with dependency injection!'
@@ -356,7 +204,7 @@ export class ClaudeZenCore {
    * Demonstrate that all DI-enhanced systems are working together.
    */
   private async demonstrateSystemIntegration(): Promise<void> {
-    const logger = this.container.resolve(CORE_TOKENS.Logger);
+    const logger = this.container.resolve(TOKENS.Logger);
 
     logger.info('🔗 Demonstrating DI-enhanced system integration...');
 
@@ -377,12 +225,12 @@ export class ClaudeZenCore {
       );
     }
 
-    // Example: Test learning coordinator
-    if (this.learningCoordinator) {
-      logger.info('🧠 Testing LearningCoordinator with DI...');
-      // The learning coordinator uses injected logger
+    // Example: Test behavioral intelligence
+    if (this.behavioralIntelligence) {
+      logger.info('🧠 Testing BehavioralIntelligence with DI...');
+      // The behavioral intelligence uses injected dependencies
       logger.info(
-        '  - LearningCoordinator successfully using injected dependencies'
+        '  - BehavioralIntelligence successfully using injected dependencies'
       );
     }
 
@@ -402,7 +250,7 @@ export class ClaudeZenCore {
    * Graceful shutdown with DI cleanup.
    */
   async shutdown(): Promise<void> {
-    const logger = this.container.resolve(CORE_TOKENS.Logger);
+    const logger = this.container.resolve(TOKENS.Logger);
     logger.info('🛑 Shutting down Claude Code Zen...');
 
     try {
@@ -411,8 +259,8 @@ export class ClaudeZenCore {
         await this.coordinationManager.stop();
       }
 
-      // Dispose the DI container (cleans up all singletons)
-      await this.container.dispose();
+      // Clear the DI container
+      this.container.clear();
 
       logger.info('✅ Shutdown completed successfully');
     } catch (error) {

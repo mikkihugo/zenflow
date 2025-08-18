@@ -9,7 +9,7 @@
  *
  * @file Task approval system with AGUI integration.
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '@claude-zen/foundation';
 const logger = getLogger('TaskApprovalSystem');
 /**

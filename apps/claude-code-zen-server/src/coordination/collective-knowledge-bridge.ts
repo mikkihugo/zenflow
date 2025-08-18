@@ -8,14 +8,18 @@
  * - Real-time knowledge distribution with bidirectional learning.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 import type { SessionMemoryStore } from '../memory/index';
 import {
-  getCollectiveFACT,
-  type CollectiveFACTSystem,
-  type UniversalFact,
-} from './collective-fact-integration';
+  getCoordinationFactSystem,
+  initializeCoordinationFactSystem,
+  searchCoordinationFacts,
+  queryCoordinationFacts,
+  storeCoordinationFact,
+  type CoordinationFact as UniversalFact,
+  type CoordinationFactQuery as FactQuery,
+} from '@claude-zen/knowledge';
 import type { CollectiveSwarmCoordinator } from './swarm-synchronization';
 
 interface SwarmContext {

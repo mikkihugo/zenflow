@@ -9,7 +9,7 @@ const logger = getLogger('interfaces-web-system-metrics-dashboard');
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 // URL builders - using direct URL construction since url-builder module doesn't exist
 // import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 import {

@@ -7,6 +7,7 @@
  */
 
 import type { CapacityManager, RoutingEngine } from '../interfaces';
+import { EventEmitter } from 'eventemitter3';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
 import type {
   Agent,
@@ -15,6 +16,8 @@ import type {
   RoutingResult,
   Task,
 } from '../types';
+import { taskPriorityToNumber } from '../types';
+import { AgentStatus } from '../types';
 import { FailoverManager } from './failover-manager';
 import { TaskAgentMatcher } from './task-agent-matcher';
 
@@ -53,7 +56,7 @@ interface RoutingMetrics {
   qosViolations: number;
 }
 
-export class IntelligentRoutingEngine implements RoutingEngine {
+export class IntelligentRoutingEngine extends EventEmitter implements RoutingEngine {
   private routingTable: Map<string, RoutingTable> = new Map();
   private taskAgentMatcher: TaskAgentMatcher;
   private failoverManager: FailoverManager;
@@ -82,6 +85,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   };
 
   constructor(capacityManager: CapacityManager) {
+    super();
     this.capacityManager = capacityManager;
     this.taskAgentMatcher = new TaskAgentMatcher();
     this.failoverManager = new FailoverManager();
@@ -239,7 +243,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
         id: agentId,
         name: `Agent-${agentId}`,
         capabilities: [], // Would be populated from actual agent data
-        status: routingEntry.reliability > 0.8 ? 'healthy' : 'degraded',
+        status: routingEntry.reliability > 0.8 ? AgentStatus.HEALTHY : AgentStatus.DEGRADED,
         endpoint: `http://agent-${agentId}:8080`,
         lastHealthCheck: routingEntry.lastUpdate,
         metadata: {
@@ -311,32 +315,24 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
     if (!agentLocation) return routes;
 
-    // Find optimal paths using network topology
-    const optimalPaths = await this.networkOptimizer.selectOptimalPath(
+    // Find optimal path using network topology
+    const optimalPath = await this.networkOptimizer.selectOptimalPath(
       'source', // Would be actual source location
       agent.id
     );
 
-    for (const path of optimalPaths) {
-      const latency = (await this.calculatePathLatency(
-        path
-      )) as any as any as any as any;
-      const bandwidth = (await this.calculatePathBandwidth(
-        path
-      )) as any as any as any as any;
-      const reliability = this.calculatePathReliability(
-        path
-      ) as any as any as any as any;
+    const latency = await this.calculatePathLatency(optimalPath);
+    const bandwidth = await this.calculatePathBandwidth(optimalPath);
+    const reliability = this.calculatePathReliability(optimalPath);
 
-      routes.push({
-        destination: agent.id,
-        latency,
-        bandwidth,
-        reliability,
-        qosLevel: this.calculateQoSLevel(latency, bandwidth, reliability),
-        path,
-      });
-    }
+    routes.push({
+      destination: agent.id,
+      latency,
+      bandwidth,
+      reliability,
+      qosLevel: this.calculateQoSLevel(latency, bandwidth, reliability),
+      path: optimalPath,
+    });
 
     return routes;
   }
@@ -351,7 +347,13 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     task: Task,
     candidates: Agent[]
   ): Promise<RoutingDecision> {
-    const routingOptions = [];
+    const routingOptions: Array<{
+      agent: Agent;
+      routingEntry: RoutingTable;
+      score: number;
+      estimatedLatency: number;
+      confidence: number;
+    }> = [];
 
     for (const candidate of candidates) {
       const routingEntry = this.routingTable.get(candidate.id);
@@ -476,7 +478,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     const qosScore = route.qosLevel / 5; // Normalize QoS level
 
     // Priority adjustment
-    const priorityMultiplier = task.priority >= 4 ? 1.2 : 1.0;
+    const priorityMultiplier = taskPriorityToNumber(task.priority) >= 4 ? 1.2 : 1.0;
 
     return (
       (latencyScore * weights.latency +
@@ -512,7 +514,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
   private async redistributeRoutes(failedAgentId: string): Promise<void> {
     // Implement route redistribution logic
     // This would involve updating routes that went through the failed agent
-    const affectedRoutes = [];
+    const affectedRoutes: string[] = [];
 
     for (const [agentId, routingEntry] of this.routingTable) {
       const updatedRoutes = routingEntry.routes.filter(
@@ -528,7 +530,7 @@ export class IntelligentRoutingEngine implements RoutingEngine {
     // Recalculate routes for affected agents
     for (const agentId of affectedRoutes) {
       // Trigger route recalculation for affected agent
-      await this.recalculateRouteForAgent(agentId);
+      await this.updateAgentRoute({ id: agentId } as Agent);
       this.emit('route:recalculated', { agentId, timestamp: Date.now() });
     }
   }
@@ -541,25 +543,23 @@ export class IntelligentRoutingEngine implements RoutingEngine {
 
     // Use network optimizer to find better paths
     for (const [agentId, routingEntry] of this.routingTable) {
-      const optimizedPaths = await this.networkOptimizer.selectOptimalPath(
+      const optimizedPath = await this.networkOptimizer.selectOptimalPath(
         'source',
         agentId
       );
 
-      // Update routes with optimized paths
-      const optimizedRoutes = await Promise.all(
-        optimizedPaths.map(async (path) => ({
-          destination: agentId,
-          latency: await this.calculatePathLatency(path),
-          bandwidth: await this.calculatePathBandwidth(path),
-          reliability: this.calculatePathReliability(path),
-          qosLevel: 1,
-          path,
-        }))
-      );
+      // Update routes with optimized path
+      const optimizedRoute = {
+        destination: agentId,
+        latency: await this.calculatePathLatency(optimizedPath),
+        bandwidth: await this.calculatePathBandwidth(optimizedPath),
+        reliability: this.calculatePathReliability(optimizedPath),
+        qosLevel: 1,
+        path: optimizedPath,
+      };
 
       // Merge with existing routes
-      routingEntry.routes = [...routingEntry.routes, ...optimizedRoutes] as any;
+      routingEntry.routes = [...routingEntry.routes, optimizedRoute];
     }
   }
 

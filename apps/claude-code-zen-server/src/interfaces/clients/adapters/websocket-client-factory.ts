@@ -2,9 +2,9 @@
  * @file Interface implementation: websocket-client-factory.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 
-const logger = getLogger(
+const logger = new Logger(
   'interfaces-clients-adapters-websocket-client-factory'
 );
 

@@ -1,7 +1,7 @@
 {
   "name": "@claude-zen/brain",
-  "version": "1.0.0-alpha.1", 
-  "description": "Focused neural brain coordination system for claude-code-zen: core neural networks, cognitive patterns, and brain-specific coordination",
+  "version": "1.0.0",
+  "description": "Comprehensive neural brain system for claude-code-zen: neural networks, behavioral intelligence, cognitive patterns, adaptive learning, and brain coordination",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,35 +12,78 @@
   ],
   "scripts": {
     "build": "tsc --project tsconfig.json",
-    "build:watch": "tsc --project tsconfig.json --watch", 
+    "build:watch": "tsc --project tsconfig.json --watch",
     "build:wasm": "cd rust/wasm-api && ./build.sh",
     "build:rust": "cd rust/core && cargo build --release",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:integration": "npx tsx test-wasm-integration.ts",
+    "test:integration": "pnpm tsx test-wasm-integration.ts",
+    "test:brain-js": "pnpm tsx test-brain-js-integration.ts",
+    "test:hybrid": "pnpm tsx examples/hybrid-neural-example.ts",
     "test:rust": "cd rust/core && cargo test",
     "clean": "rm -rf dist/ && cd rust/core && cargo clean",
-    "dev": "concurrently \"npm run build:watch\" \"npm run test:watch\"",
-    "lint": "eslint . --ext .ts --fix"
+    "dev": "concurrently \"pnpm run build:watch\" \"pnpm run test:watch\"",
+    "lint": "eslint . --ext .ts --fix",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/database": "workspace:*",
-    "@claude-zen/dspy": "workspace:*"
+    "@claude-zen/foundation": "file:../foundation",
+    "@claude-zen/dspy": "file:../dspy",
+    "@tensorflow/tfjs": "^4.22.0",
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "brain.js": "^2.0.0-beta.24",
+    "ml-matrix": "^6.12.0",
+    "ml-kmeans": "^6.0.0",
+    "simple-statistics": "^7.8.5",
+    "eventemitter3": "^5.0.1",
+    "zod": "^4.0.17",
+    "d3-array": "^3.2.4",
+    "ml-stat": "^1.3.3",
+    "fft-js": "^0.0.12",
+    "regression": "^2.0.1",
+    "ml-random-forest": "^2.1.0",
+    "ml-hclust": "^3.1.0",
+    "density-clustering": "^1.3.0",
+    "ml-distance": "^4.0.1",
+    "moving-averages": "^4.0.6",
+    "trendyways": "^1.0.1",
+    "ml-pca": "^4.1.1",
+    "ml5": "^0.12.2",
+    "natural": "^8.0.1",
+    "synaptic": "^1.1.4"
   },
+  "optionalDependencies": {
+    "@claude-zen/neural-ml": "file:../neural-ml",
+    "@claude-zen/agent-monitoring": "file:../agent-monitoring",
+    "@claude-zen/load-balancing": "file:../load-balancing"
+  },
+  "_comment_neural_ml": "neural-ml is a private implementation detail - only brain package should access it",
+  "_comment_dspy": "dspy is a private implementation detail - only brain package should access it",
+  "_comment_agent_monitoring": "agent-monitoring is a private implementation detail - only brain package should access it",
+  "_comment_load_balancing": "load-balancing is a private implementation detail - only brain package should access it",
   "devDependencies": {
-    "typescript": "^5.7.3",
-    "vitest": "^2.1.5",
-    "tsx": "^4.19.2",
-    "concurrently": "^9.1.0",
-    "eslint": "^9.16.0"
+    "@types/node": "^22.17.2",
+    "@vitest/ui": "^3.2.4",
+    "concurrently": "^9.2.0",
+    "eslint": "^9.33.0",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "keywords": [
     "brain",
-    "neural-coordination", 
+    "neural-coordination",
     "cognitive-patterns",
     "neural-networks",
-    "fann",
+    "brain.js",
+    "behavioral-intelligence",
+    "adaptive-learning",
+    "tensorflow",
     "wasm",
     "rust",
     "claude-zen",
@@ -58,9 +101,33 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./neural-bridge": {
-      "types": "./dist/neural-bridge.d.ts", 
+    "./coordinator": {
+      "types": "./dist/brain-coordinator.d.ts",
+      "import": "./dist/brain-coordinator.js"
+    },
+    "./neural": {
+      "types": "./dist/neural-bridge.d.ts",
       "import": "./dist/neural-bridge.js"
+    },
+    "./brain-js": {
+      "types": "./dist/brain-js-bridge.d.ts",
+      "import": "./dist/brain-js-bridge.js"
+    },
+    "./behavioral": {
+      "types": "./dist/behavioral-intelligence.d.ts",
+      "import": "./dist/behavioral-intelligence.js"
+    },
+    "./adaptive": {
+      "types": "./dist/adaptive-learning.d.ts",
+      "import": "./dist/adaptive-learning.js"
+    },
+    "./coordination": {
+      "types": "./dist/coordination/index.d.ts",
+      "import": "./dist/coordination/index.js"
+    },
+    "./models": {
+      "types": "./dist/models/index.d.ts",
+      "import": "./dist/models/index.js"
     },
     "./types": {
       "types": "./dist/types.d.ts",

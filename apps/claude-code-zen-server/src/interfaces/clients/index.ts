@@ -44,7 +44,7 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 import {
   globalClientManager as actualGlobalClientManager,
   type ClientManager,
@@ -1046,7 +1046,7 @@ export const UACLHelpers = {
 
       return clients;
     } catch (error) {
-      const logger = getLogger('uacl-setup');
+      const logger = new Logger('uacl-setup');
       logger.error('Failed to setup common clients', {
         error: error instanceof Error ? error.message : String(error),
         stack: error instanceof Error ? error.stack : undefined,

@@ -1,236 +1,262 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { page } from '$app/stores';
-  import '$lib/styles/app.css';
-  import CommandPalette from '$components/CommandPalette.svelte';
-  
-  let commandPaletteOpen = false;
-  
-  // Initialize WebSocket connection on app load
-  onMount(() => {
-    // Connect to existing WebSocket system
-    console.log('🚀 Svelte dashboard initialized');
-  });
-  
-  // Handle command palette events
-  function handleCommandPaletteClose() {
-    commandPaletteOpen = false;
-  }
-  
-  function handleFileNew() {
-    console.log('🆕 Creating new file...');
-    // Implement file creation logic
-  }
+	import '../app.postcss';
+	import { AppShell, AppBar, AppRail, AppRailTile, popup } from '@skeletonlabs/skeleton';
+	import { page } from '$app/stores';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
+	import { apiClient, type Project } from '../lib/api';
+
+	// Highlight JS
+	import hljs from 'highlight.js/lib/core';
+	import 'highlight.js/styles/github-dark.css';
+	import { storeHighlightJs } from '@skeletonlabs/skeleton';
+	import xml from 'highlight.js/lib/languages/xml'; // for HTML
+	import css from 'highlight.js/lib/languages/css';
+	import javascript from 'highlight.js/lib/languages/javascript';
+	import typescript from 'highlight.js/lib/languages/typescript';
+
+	hljs.registerLanguage('xml', xml); // for HTML
+	hljs.registerLanguage('css', css);
+	hljs.registerLanguage('javascript', javascript);
+	hljs.registerLanguage('typescript', typescript);
+	storeHighlightJs.set(hljs);
+
+	// Floating UI for Popups
+	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
+	import { storePopup } from '@skeletonlabs/skeleton';
+	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
+
+	// Admin navigation items
+	const navItems = [
+		{ href: '/', icon: '🏠', label: 'Dashboard', title: 'Dashboard Overview' },
+		{ href: '/swarm', icon: '🐝', label: 'Swarm', title: 'Advanced Swarm Management' },
+		{ href: '/agents', icon: '🤖', label: 'Agents', title: 'Agent Management' },
+		{ href: '/tasks', icon: '✅', label: 'Tasks', title: 'Task Management' },
+		{ href: '/roadmap', icon: '🗺️', label: 'Roadmap', title: 'Strategic Roadmap Tasks' },
+		{ href: '/memory', icon: '💾', label: 'Memory', title: 'Memory Management' },
+		{ href: '/database', icon: '🗃️', label: 'Database', title: 'Database Management' },
+		{ href: '/performance', icon: '📊', label: 'Analytics', title: 'Performance Analytics' },
+		{ href: '/logs', icon: '📝', label: 'Logs', title: 'System Logs' },
+		{ href: '/settings', icon: '⚙️', label: 'Settings', title: 'System Settings' },
+	];
+
+	// Get current tile value based on route
+	$: currentTile = navItems.findIndex(item => $page.url.pathname === item.href) ?? 0;
+
+	// Project management with real API data
+	let projects: Project[] = [];
+	let currentProject: Project | null = null;
+	let projectsLoading = true;
+	let projectsError: string | null = null;
+
+	// Project dropdown popup settings
+	const projectPopup: PopupSettings = {
+		event: 'click',
+		target: 'projectDropdown',
+		placement: 'bottom-end'
+	};
+
+	// Load projects from real API
+	onMount(async () => {
+		try {
+			projectsLoading = true;
+			projects = await apiClient.getProjects();
+			currentProject = projects[0] || null;
+			console.log('📁 Loaded projects from API:', projects.length);
+		} catch (error) {
+			projectsError = error instanceof Error ? error.message : 'Failed to load projects';
+			console.error('❌ Failed to load projects:', error);
+		} finally {
+			projectsLoading = false;
+		}
+	});
+
+	function selectProject(project: Project) {
+		currentProject = project;
+		// Update API client with new project context
+		apiClient.setProjectContext(project.id.toString());
+		console.log('🔄 Switched to project:', project.name, 'ID:', project.id);
+		
+		// Trigger a custom event that other components can listen to
+		// This will allow the dashboard to refresh its data
+		window.dispatchEvent(new CustomEvent('projectChanged', {
+			detail: { project, projectId: project.id.toString() }
+		}));
+	}
+
+	function getStatusColor(status: string): string {
+		switch (status) {
+			case 'active': return 'success';
+			case 'paused': return 'warning';
+			case 'completed': return 'secondary';
+			default: return 'surface';
+		}
+	}
+
+	function getStatusIcon(status: string): string {
+		switch (status) {
+			case 'active': return '🟢';
+			case 'paused': return '⏸️';
+			case 'completed': return '✅';
+			default: return '⚪';
+		}
+	}
 </script>
 
-<div class="app">
-  <header class="header">
-    <div class="header-content">
-      <h1>🧠 claude-code-zen</h1>
-      <p>AI-Powered Development Toolkit</p>
-      <div class="status-indicator">
-        <span class="status-dot active"></span>
-        Real-time Dashboard
-      </div>
-    </div>
-  </header>
+<!-- Admin Dashboard Shell -->
+<AppShell regionPage="overflow-y-auto" slotSidebarLeft="bg-surface-50-900-token w-56">
+	<svelte:fragment slot="header">
+		<!-- Top App Bar -->
+		<AppBar>
+			<svelte:fragment slot="lead">
+				<div class="flex items-center gap-3">
+					<strong class="text-xl text-primary-500">🧠 Claude Code Zen</strong>
+					<span class="badge variant-soft-secondary text-xs">Admin Portal</span>
+				</div>
+			</svelte:fragment>
+			<svelte:fragment slot="trail">
+				<div class="flex items-center gap-4">
+					<!-- Project Selector Dropdown -->
+					<div class="relative">
+						{#if projectsLoading}
+							<div class="btn variant-soft-surface flex items-center gap-2 min-w-[240px] animate-pulse">
+								<span>📁</span>
+								<div class="flex-1 text-left">
+									<div class="font-medium text-sm">Loading projects...</div>
+									<div class="text-xs opacity-75">Please wait</div>
+								</div>
+								<div class="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+							</div>
+						{:else if projectsError}
+							<div class="btn variant-soft-error flex items-center gap-2 min-w-[240px]">
+								<span>❌</span>
+								<div class="flex-1 text-left">
+									<div class="font-medium text-sm">Failed to load</div>
+									<div class="text-xs opacity-75">Check API connection</div>
+								</div>
+							</div>
+						{:else if currentProject}
+							<button
+								class="btn variant-soft-surface flex items-center gap-2 min-w-[240px]"
+								use:popup={projectPopup}
+							>
+								<span>📁</span>
+								<div class="flex-1 text-left">
+									<div class="font-medium text-sm">{currentProject.name}</div>
+									<div class="text-xs opacity-75">{currentProject.currentPhase} • {currentProject.progress}%</div>
+								</div>
+								<div class="flex items-center gap-2">
+									<span class="text-sm">{getStatusIcon(currentProject.status)}</span>
+									<span class="text-xs">▼</span>
+								</div>
+							</button>
+						{:else}
+							<div class="btn variant-soft-surface flex items-center gap-2 min-w-[240px] opacity-50">
+								<span>📁</span>
+								<div class="flex-1 text-left">
+									<div class="font-medium text-sm">No projects</div>
+									<div class="text-xs opacity-75">Create a project</div>
+								</div>
+							</div>
+						{/if}
 
-  <nav class="nav">
-    <a href="/" class:active={$page.url.pathname === '/'}>
-      <span class="icon">🏠</span>
-      Dashboard
-    </a>
-    <a href="/workspace" class:active={$page.url.pathname === '/workspace'}>
-      <span class="icon">🗂️</span>
-      Workspace
-    </a>
-    <a href="/status" class:active={$page.url.pathname === '/status'}>
-      <span class="icon">⚡</span>
-      System Status
-    </a>
-    <a href="/swarm" class:active={$page.url.pathname === '/swarm'}>
-      <span class="icon">🐝</span>
-      Swarm Management
-    </a>
-    <a href="/performance" class:active={$page.url.pathname === '/performance'}>
-      <span class="icon">📊</span>
-      Performance
-    </a>
-    <a href="/logs" class:active={$page.url.pathname === '/logs'}>
-      <span class="icon">📝</span>
-      Live Logs
-    </a>
-    <a href="/dev-communication" class:active={$page.url.pathname === '/dev-communication'}>
-      <span class="icon">💬</span>
-      Dev Communication
-    </a>
-    <a href="/agu" class:active={$page.url.pathname === '/agu' || $page.url.pathname.startsWith('/agu/')}>
-      <span class="icon">🛡️</span>
-      AGU
-    </a>
-    <a href="/matron" class:active={$page.url.pathname === '/matron' || $page.url.pathname.startsWith('/matron/')}>
-      <span class="icon">🧙‍♀️</span>
-      Matron Advisory
-    </a>
-    <a href="/roadmap" class:active={$page.url.pathname === '/roadmap' || $page.url.pathname.startsWith('/roadmap/')}>
-      <span class="icon">🗺️</span>
-      Visionary Roadmap
-    </a>
-    <a href="/settings" class:active={$page.url.pathname === '/settings'}>
-      <span class="icon">⚙️</span>
-      Settings
-    </a>
-  </nav>
+						<!-- Project Dropdown Menu -->
+						<div class="card p-4 w-80 shadow-xl z-10" data-popup="projectDropdown">
+							<div class="arrow bg-surface-100-800-token" />
+							<header class="pb-3">
+								<h3 class="h6 text-surface-600-300-token">Switch Project</h3>
+							</header>
+							
+							<div class="space-y-2 max-h-64 overflow-y-auto">
+								{#each projects as project}
+									<button
+										class="btn w-full text-left p-3"
+										class:variant-filled-primary={currentProject.id === project.id}
+										class:variant-soft-surface={currentProject.id !== project.id}
+										on:click={() => selectProject(project)}
+									>
+										<div class="flex flex-col w-full gap-1">
+											<div class="flex justify-between items-center">
+												<span class="font-medium text-sm">{project.name}</span>
+												<span class="badge variant-soft-{getStatusColor(project.status)} text-xs">
+													{getStatusIcon(project.status)} {project.status}
+												</span>
+											</div>
+											<div class="text-xs opacity-75">{project.description}</div>
+											<div class="flex justify-between items-center text-xs opacity-75">
+												<span>{project.currentPhase}</span>
+												<span>{project.progress}% complete</span>
+											</div>
+											<!-- Progress bar -->
+											<div class="w-full bg-surface-300-600-token rounded-full h-1 mt-1">
+												<div 
+													class="bg-{getStatusColor(project.status)}-500 h-1 rounded-full transition-all duration-300" 
+													style="width: {project.progress}%"
+												></div>
+											</div>
+										</div>
+									</button>
+								{/each}
+							</div>
 
-  <main class="main">
-    <slot />
-  </main>
+							<hr class="opacity-50 my-3" />
+							<button class="btn variant-ghost-success w-full">
+								<span>➕</span>
+								<span>Create New Project</span>
+							</button>
+						</div>
+					</div>
 
-  <footer class="footer">
-    <p>claude-code-zen v2.0.0 | Svelte Dashboard | Press <kbd>Ctrl+Shift+P</kbd> for Command Palette</p>
-  </footer>
-</div>
+					<!-- Status Indicator -->
+					<div class="badge variant-soft-success flex items-center gap-2">
+						<div class="w-2 h-2 rounded-full bg-success-500 animate-pulse"></div>
+						Online
+					</div>
 
-<!-- Command Palette Component -->
-<CommandPalette 
-  bind:isOpen={commandPaletteOpen}
-  on:close={handleCommandPaletteClose}
-  on:file-new={handleFileNew}
-/>
+					<!-- User Menu -->
+					<button class="btn btn-sm variant-ghost-surface">
+						<span>👤</span>
+						<span class="hidden md:inline">Admin</span>
+					</button>
+				</div>
+			</svelte:fragment>
+		</AppBar>
+	</svelte:fragment>
 
-<style>
-  .app {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-  }
+	<svelte:fragment slot="sidebarLeft">
+		<!-- Admin Navigation Sidebar -->
+		<div class="h-full flex flex-col">
+			<!-- Navigation Header -->
+			<div class="p-4 border-b border-surface-300-600-token">
+				<h3 class="h6 text-surface-600-300-token font-semibold">Navigation</h3>
+			</div>
+			
+			<!-- Navigation Rail -->
+			<AppRail bind:value={currentTile} class="flex-1">
+				{#each navItems as item, i}
+					<AppRailTile bind:group={currentTile} name="nav" value={i} title={item.title}>
+						<svelte:fragment slot="lead">
+							<a href={item.href} class="flex flex-col items-center gap-1 p-2 rounded-lg hover:bg-surface-200-700-token transition-colors">
+								<span class="text-lg">{item.icon}</span>
+								<span class="text-sm font-medium">{item.label}</span>
+							</a>
+						</svelte:fragment>
+					</AppRailTile>
+				{/each}
+			</AppRail>
 
-  .header {
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-primary);
-    padding: 1rem 2rem;
-  }
+			<!-- Footer -->
+			<div class="p-4 border-t border-surface-300-600-token">
+				<div class="text-xs text-surface-600-300-token text-center">
+					<div>v2.0.0 Alpha</div>
+					<div>Admin Portal</div>
+				</div>
+			</div>
+		</div>
+	</svelte:fragment>
 
-  .header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    text-align: center;
-  }
-
-  .header h1 {
-    font-size: 2.5rem;
-    color: var(--accent-primary);
-    margin: 0 0 0.5rem 0;
-    font-weight: 600;
-  }
-
-  .header p {
-    color: var(--text-secondary);
-    margin: 0 0 1rem 0;
-    font-size: 1.1rem;
-  }
-
-  .status-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    background: var(--bg-tertiary);
-    border-radius: 20px;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent-success);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
-
-  .nav {
-    background: var(--bg-secondary);
-    border-bottom: 1px solid var(--border-primary);
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.25rem;
-    padding: 0 2rem;
-  }
-
-  .nav a {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
-    text-decoration: none;
-    color: var(--text-secondary);
-    border-radius: 8px 8px 0 0;
-    border: 1px solid transparent;
-    border-bottom: none;
-    transition: all 0.2s ease;
-    position: relative;
-    top: 1px;
-  }
-
-  .nav a:hover {
-    background: var(--bg-tertiary);
-    color: var(--text-primary);
-  }
-
-  .nav a.active {
-    background: var(--bg-primary);
-    color: var(--accent-primary);
-    border-color: var(--border-primary);
-    border-bottom: 1px solid var(--bg-primary);
-  }
-
-  .icon {
-    font-size: 1rem;
-  }
-
-  .main {
-    flex: 1;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .footer {
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-primary);
-    padding: 1rem 2rem;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.875rem;
-  }
-
-  @media (max-width: 768px) {
-    .header {
-      padding: 1rem;
-    }
-    
-    .header h1 {
-      font-size: 1.8rem;
-    }
-    
-    .nav {
-      padding: 0 1rem;
-      justify-content: flex-start;
-      overflow-x: auto;
-    }
-    
-    .main {
-      padding: 1rem;
-    }
-  }
-</style>
+	<!-- Main Content Area -->
+	<div class="p-6 space-y-6">
+		<slot />
+	</div>
+</AppShell>

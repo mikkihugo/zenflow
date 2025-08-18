@@ -1190,3 +1190,43 @@ export const EventTypeGuards = {
 export type { SystemEvent as BaseSystemEvent } from '../observer-system';
 
 // Event types are exported from core/type-safe-event-system.ts to avoid conflicts
+
+// Add missing interface exports for index.ts compatibility
+export interface EventBusConfig {
+  name: string;
+  maxListeners?: number;
+  enableLogging?: boolean;
+  enablePersistence?: boolean;
+}
+
+export interface EventBusMetrics {
+  eventsProcessed: number;
+  subscriptionCount: number;
+  averageLatency: number;
+  eventsFailed: number;
+}
+
+export interface EventSystemOptions {
+  enableValidation?: boolean;
+  enableCompatibility?: boolean;
+  healthMonitoring?: boolean;
+}
+
+export interface UELConfig {
+  autoRegisterFactories?: boolean;
+  enableValidation?: boolean;
+  enableCompatibility?: boolean;
+  healthMonitoring?: boolean;
+}
+
+export interface ValidationResult {
+  valid: boolean;
+  errors?: string[];
+  warnings?: string[];
+}
+
+export interface DomainBoundary {
+  name: string;
+  events: string[];
+  policies: Record<string, any>;
+}

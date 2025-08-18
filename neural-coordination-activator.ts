@@ -12,7 +12,7 @@ import { getLogger } from './src/config/logging-config.js';
 import { SessionMemoryStore } from './src/memory/memory.js';
 import { Phase3DataBridge } from './src/coordination/swarm/integration/phase3-data-bridge.js';
 import { Phase3IntegratorService } from './src/coordination/swarm/integration/phase3-integrator-service.js';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('NeuralCoordinationActivator');
 

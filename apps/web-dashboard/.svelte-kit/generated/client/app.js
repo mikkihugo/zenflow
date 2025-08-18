@@ -8,20 +8,18 @@ export const nodes = [
 	() => import('./nodes/4'),
 	() => import('./nodes/5'),
 	() => import('./nodes/6'),
-	() => import('./nodes/7'),
-	() => import('./nodes/8')
+	() => import('./nodes/7')
 ];
 
 export const server_loads = [];
 
 export const dictionary = {
 		"/": [2],
-		"/agu": [3],
-		"/agu/task/[id]": [4],
-		"/dev-communication": [5],
-		"/matron": [6],
-		"/roadmap": [7],
-		"/workspace": [8]
+		"/agui": [3],
+		"/database": [4],
+		"/memory": [5],
+		"/roadmap": [6],
+		"/swarm": [7]
 	};
 
 export const hooks = {
@@ -37,4 +35,4 @@ export const hash = false;
 
 export const decode = (type, value) => decoders[type](value);
 
-export { default as root } from '../root.js';
+export { default as root } from '../root.svelte';

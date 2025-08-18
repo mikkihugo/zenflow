@@ -54,7 +54,7 @@ import type { Config } from '@claude-zen/foundation';
 
 // Foundation DI system integration
 import 'reflect-metadata';
-import { DIContainer, injectable, inject, CORE_TOKENS, DATABASE_TOKENS } from '@claude-zen/foundation';
+import { DIContainer, injectable, inject, TOKENS } from '@claude-zen/foundation';
 
 // Database config types
 interface DatabaseConfig {
@@ -272,11 +272,11 @@ export interface EntityTypeRegistry {
  * ```typescript
  * import { DALFactory } from './factory';
  * import { DIContainer } from '../di/container/di-container';
- * import { CORE_TOKENS } from '../di/tokens/core-tokens';
+ * import { TOKENS } from '../di/tokens/core-tokens';
  *
  * const container = new DIContainer();
- * container.register(CORE_TOKENS.Logger, () => logger);
- * container.register(CORE_TOKENS.Config, () => config);
+ * container.register(TOKENS.Logger, () => logger);
+ * container.register(TOKENS.Config, () => config);
  *
  * const factory = container.resolve(DALFactory);
  *
@@ -314,8 +314,8 @@ export class DALFactory {
   private entityRegistry: EntityTypeRegistry = {};
 
   constructor(
-    @inject(CORE_TOKENS.Logger) private _logger: Logger,
-    @inject(CORE_TOKENS.Config) private _config: Config,
+    @inject(TOKENS.Logger) private _logger: Logger,
+    @inject(TOKENS.Config) private _config: Config,
     private databaseProviderFactory: DatabaseProviderFactory,
   ) {
     this.initializeEntityRegistry();

@@ -24,7 +24,7 @@ const logger = getLogger('coordination-diagnostics-health-monitor');
  */
 
 import { randomUUID } from 'node:crypto';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { performance } from 'node:perf_hooks';
 
 export interface HealthMonitorOptions {

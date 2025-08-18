@@ -231,7 +231,7 @@ export class LiveAPIConnector {
       const targetVersion = version || packageData.latest_stable_version || packageData.latest_version;
       
       // Fetch specific version data if available
-      let versionData = null;
+      let versionData: any = null;
       if (targetVersion) {
         try {
           const versionUrl = `${this.hexApiBase}/packages/${encodeURIComponent(packageName)}/releases/${targetVersion}`;
@@ -416,7 +416,7 @@ export class LiveAPIConnector {
       // Fetch specific version data
       const versionUrl = `${this.cratesApiBase}/crates/${encodeURIComponent(crateName)}/${targetVersion}`;
       const versionResponse = await fetch(versionUrl);
-      const versionData = versionResponse.ok ? await versionResponse.json() : null;
+      const versionData: any = versionResponse.ok ? await versionResponse.json() : null;
       
       return {
         name: crate.name,
@@ -479,7 +479,7 @@ export class LiveAPIConnector {
       
       // Get module content from pkg.go.dev API (unofficial)
       const pkgUrl = `https://api.pkg.go.dev/${encodeURIComponent(modulePath)}@${moduleInfo.Version}`;
-      let pkgData = null;
+      let pkgData: any = null;
       try {
         const pkgResponse = await fetch(pkgUrl);
         if (pkgResponse.ok) {

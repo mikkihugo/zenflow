@@ -1,199 +1,73 @@
 /**
- * @fileoverview Extracted DI Container Setup from legacy claude-zen-core.ts
+ * @fileoverview Modern DI Container Setup Using Foundation Package Directly
  *
- * This module preserves the valuable dependency injection patterns while
- * making them reusable across the new architecture.
+ * Uses foundation's DI system directly without wrapper layers for better performance
+ * and cleaner architecture. Foundation package provides all needed infrastructure.
  */
 
-import { EventEmitter } from 'node:events';
 import { getLogger } from '../config/logging-config';
 import {
-  CORE_TOKENS,
-  createContainerBuilder,
-  createToken,
-  type DIContainer,
-  type Config,
-  type Database,
-  type EventBus,
-  type Logger,
-  SWARM_TOKENS,
-} from '../di/index';
+  DIContainer,
+  TOKENS as CORE_TOKENS,
+  TokenFactory,
+  createContainer,
+  getDatabaseAccess,
+  type DatabaseAccess,
+} from '@claude-zen/foundation';
 
 const logger = getLogger('DIContainer');
 
-/**
- * Console Logger Implementation
- * Preserved from claude-zen-core.ts
- */
-export class ConsoleLogger implements Logger {
-  private logger = getLogger('ConsoleLogger');
-
-  log(message: string): void {
-    this.logger.info(message);
-  }
-
-  debug(message: string, meta?: unknown): void {
-    this.logger.debug(message, meta);
-  }
-
-  info(message: string, meta?: unknown): void {
-    this.logger.info(message, meta);
-  }
-
-  warn(message: string, meta?: unknown): void {
-    this.logger.warn(message, meta);
-  }
-
-  error(message: string, meta?: unknown): void {
-    this.logger.error(message, meta);
-  }
-}
+// Domain-specific tokens for claude-code-zen
+export const APP_TOKENS = {
+  SwarmCoordinator: TokenFactory.create<any>('SwarmCoordinator'),
+  AgentManager: TokenFactory.create<any>('AgentManager'), 
+  TaskOrchestrator: TokenFactory.create<any>('TaskOrchestrator'),
+  QueenCoordinator: TokenFactory.create<any>('QueenCoordinator'),
+  CubeMatron: TokenFactory.create<any>('CubeMatron'),
+};
 
 /**
- * Application Configuration Implementation
- * Preserved from claude-zen-core.ts
- */
-export class AppConfig implements Config {
-  private config = new Map<string, any>();
-
-  constructor() {
-    // Default configuration - preserved from original
-    this.config.set('swarm.maxAgents', 10);
-    this.config.set('swarm.heartbeatInterval', 5000);
-    this.config.set('coordination.timeout', 30000);
-    this.config.set('learning.adaptiveEnabled', true);
-
-    // Load from environment
-    this.loadFromEnvironment();
-  }
-
-  private loadFromEnvironment(): void {
-    // Port configuration
-    if (process.env['PORT']) {
-      this.config.set('server.port', Number.parseInt(process.env['PORT'], 10));
-    }
-
-    // Log level
-    if (process.env['LOG_LEVEL']) {
-      this.config.set('logging.level', process.env['LOG_LEVEL']);
-    }
-  }
-
-  get<T>(key: string, defaultValue?: T): T {
-    const value = this.config.get(key);
-    if (value !== undefined) {
-      return value as T;
-    }
-    if (defaultValue !== undefined) {
-      return defaultValue;
-    }
-    throw new Error(
-      `Configuration key '${key}' not found and no default value provided`
-    );
-  }
-
-  set<T>(key: string, value: T): void {
-    this.config.set(key, value);
-  }
-
-  has(key: string): boolean {
-    return this.config.has(key);
-  }
-}
-
-/**
- * Application Event Bus Implementation
- * Preserved from claude-zen-core.ts
- */
-export class AppEventBus extends EventEmitter implements EventBus {
-  emit(event: string | symbol, ...args: unknown[]): boolean {
-    logger.debug(`Event emitted: ${String(event)}`);
-    return super.emit(event, ...args);
-  }
-
-  on(event: string | symbol, listener: (...args: unknown[]) => void): this {
-    logger.debug(`Event listener registered: ${String(event)}`);
-    return super.on(event, listener);
-  }
-}
-
-/**
- * Mock Database Implementation
- * Preserved from claude-zen-core.ts
- */
-export class MockDatabase implements Database {
-  private data = new Map<string, any>();
-  private initialized = false;
-
-  async initialize(): Promise<void> {
-    if (this.initialized) return;
-
-    logger.info('Initializing mock database...');
-    // Simulate initialization
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    this.initialized = true;
-    logger.info('✅ Mock database initialized');
-  }
-
-  async get<T>(key: string): Promise<T | undefined> {
-    return this.data.get(key) as T | undefined;
-  }
-
-  async set<T>(key: string, value: T): Promise<void> {
-    this.data.set(key, value);
-  }
-
-  async delete(key: string): Promise<boolean> {
-    return this.data.delete(key);
-  }
-
-  async close(): Promise<void> {
-    this.data.clear();
-    this.initialized = false;
-    logger.info('✅ Mock database closed');
-  }
-}
-
-/**
- * Create and configure comprehensive DI container
- * Preserves the exact setup from claude-zen-core.ts
+ * Create and configure DI container using foundation package directly
  */
 export function createClaudeZenDIContainer(): DIContainer {
-  logger.info('Creating Claude Code Zen DI container...');
+  logger.info('Creating Claude Code Zen DI container using foundation...');
 
-  const container = createContainerBuilder()
-    // Core services - preserved from original
-    .singleton(CORE_TOKENS.Logger, () => new ConsoleLogger())
-    .singleton(CORE_TOKENS.Config, () => new AppConfig())
-    .singleton(CORE_TOKENS.EventBus, () => new AppEventBus())
-    .singleton(CORE_TOKENS.Database, () => new MockDatabase())
-    // Additional tokens for future expansion
-    .build();
+  // Use foundation's createContainer directly - no wrapper layers
+  const container = createContainer('claude-zen-server');
 
-  logger.info('✅ DI container created successfully');
+  // Register core services from foundation (foundation provides these automatically)
+  // Only register domain-specific services for claude-code-zen
+
+  // Database access via foundation
+  container.registerFactory(
+    CORE_TOKENS.Database,
+    () => getDatabaseAccess(),
+    { lifecycle: 'Singleton' }
+  );
+
+  logger.info('✅ DI container created successfully with foundation');
   return container;
 }
 
 /**
- * Initialize core services in the DI container
+ * Initialize core services using foundation's built-in patterns
  */
 export async function initializeDIServices(
   container: DIContainer
 ): Promise<void> {
-  logger.info('🔧 Starting DI services initialization...');
+  logger.info('🔧 Starting DI services initialization with foundation...');
 
   try {
-    logger.info('🗃️ Resolving database from container...');
-    // Initialize database
-    const database = container.resolve(CORE_TOKENS.Database);
-    logger.info('✅ Database resolved from container');
+    // Foundation's DatabaseAccess handles initialization automatically
+    const database = container.resolve(CORE_TOKENS.Database) as DatabaseAccess;
+    logger.info('✅ Database access resolved from foundation');
     
-    if (database && typeof database.initialize === 'function') {
-      logger.info('🚀 Calling database.initialize()...');
-      await database.initialize();
-      logger.info('✅ Database initialization completed');
+    // Test database connectivity
+    const isHealthy = await database.healthCheck();
+    if (isHealthy) {
+      logger.info('✅ Database health check passed');
     } else {
-      logger.info('ℹ️ Database does not have initialize method or is null');
+      logger.warn('⚠️ Database health check failed but continuing');
     }
 
     logger.info('✅ All DI services initialized successfully');
@@ -204,25 +78,17 @@ export async function initializeDIServices(
 }
 
 /**
- * Graceful shutdown of DI container
- * Preserves the cleanup pattern from claude-zen-core.ts
+ * Graceful shutdown using foundation's disposal patterns
  */
 export async function shutdownDIContainer(
   container: DIContainer
 ): Promise<void> {
-  logger.info('Shutting down DI container...');
+  logger.info('Shutting down DI container using foundation...');
 
   try {
-    // Close database connection
-    const database = container.resolve(CORE_TOKENS.Database);
-    if (database && typeof database.close === 'function') {
-      await database.close();
-    }
-
-    // Dispose container (cleans up all singletons)
+    // Foundation handles database cleanup through dispose()
     await container.dispose();
-
-    logger.info('✅ DI container shutdown complete');
+    logger.info('✅ DI container shutdown complete via foundation');
   } catch (error) {
     logger.error('❌ Error during DI container shutdown:', error);
     throw error;

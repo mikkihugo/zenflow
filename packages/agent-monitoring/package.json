@@ -1,7 +1,8 @@
 {
   "name": "@claude-zen/agent-monitoring",
   "version": "1.0.0",
-  "description": "Agent monitoring system with health tracking, performance analytics, and predictive behavior analysis",
+  "description": "INTERNAL: Agent monitoring system - Private implementation detail of @claude-zen/brain",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -9,9 +10,15 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "keywords": [
     "agent-monitoring",
@@ -29,17 +36,15 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^5.0.0"
-  },
-  "peerDependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/adaptive-learning": "workspace:*",
-    "@claude-zen/brain": "workspace:*"
+    "@claude-zen/brain": "file:../brain",
+    "@claude-zen/foundation": "file:../foundation",
+    "nanoid": "^5.1.5"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "vitest": "^1.1.0",
-    "@types/node": "^20.10.6"
+    "@types/node": "^22.17.2",
+    "@vitest/ui": "^3.2.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "exports": {
     ".": {

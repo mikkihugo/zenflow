@@ -272,7 +272,7 @@ class HybridFixer {
 
     // Add common missing imports
     const commonImports = new Map([
-      ['EventEmitter', "import { EventEmitter } from 'events';"],
+      ['EventEmitter', "import { EventEmitter } from 'eventemitter3';"],
       ['Buffer', "import { Buffer } from 'buffer';"],
       ['URL', "import { URL } from 'url';"],
       ['setTimeout', '// setTimeout is global'],

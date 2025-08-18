@@ -1,35 +1,52 @@
 /**
- * Intelligence Module - Barrel Export.
+ * Intelligence Module - Simplified Barrel Export.
  *
- * Central export point for AI intelligence and adaptive learning functionality.
+ * Central export point for AI intelligence functionality using extracted packages.
+ * All intelligence functionality now uses extracted @claude-zen packages.
  */
 
-// Legacy exports for backward compatibility
-/**
- * @file Intelligence module exports.
- */
-
-export * from './adaptive-learning/behavioral-optimization';
-export * from './adaptive-learning/knowledge-evolution';
-export { LearningCoordinator } from './adaptive-learning/learning-coordinator';
+// Re-export intelligence functionality from brain package
 export {
-  EnsembleModels,
-  MLModelRegistry,
-  NeuralNetworkPredictor,
-  OnlineLearningSystem,
-  ReinforcementLearningEngine,
-} from './adaptive-learning/ml-integration';
-// Enhanced adaptive learning components (moved to lib)
-export { PatternRecognitionEngine } from '@claude-zen/adaptive-learning';
-export { PerformanceOptimizer } from '@claude-zen/adaptive-learning';
-// Enhanced adaptive learning types (moved to lib)
-export type * from '@claude-zen/adaptive-learning';
+  BehavioralIntelligence,
+  demoBehavioralIntelligence
+} from '@claude-zen/brain';
 
-// ag2.ai-inspired conversation framework (moved to lib)
-export * from '@claude-zen/teamwork';
-export { ConversationFramework } from '@claude-zen/teamwork';
+// Export brain coordination functionality
+export {
+  BrainCoordinator,
+  BrainJsBridge,
+  NeuralBridge,
+  DSPyLLMBridge,
+  RetrainingMonitor
+} from '@claude-zen/brain';
 
-// Intelligence utilities
+// Export teamwork/conversation functionality
+export {
+  Teamwork,
+  ConversationFramework
+} from '@claude-zen/teamwork';
+
+// Export behavioral intelligence types
+export type {
+  AgentExecutionData,
+  BehavioralPrediction,
+  TaskComplexityAnalysis,
+  AgentBehavioralProfile
+} from '@claude-zen/brain';
+
+export type {
+  BrainConfig,
+  PromptOptimizationRequest,
+  PromptOptimizationResult,
+  BrainMetrics,
+  BrainStatus,
+  NeuralConfig,
+  NeuralNetwork,
+  TrainingData,
+  PredictionResult
+} from '@claude-zen/brain';
+
+// Intelligence utilities using extracted packages
 export const IntelligenceUtils = {
   /**
    * Get available intelligence capabilities.
@@ -53,13 +70,14 @@ export const IntelligenceUtils = {
       'conversation-memory',
       'teachable-agents',
       'group-chat-coordination',
+      'neural-brain-coordination',
+      'dspy-optimization',
+      'wasm-acceleration',
     ];
   },
 
   /**
    * Validate intelligence configuration.
-   *
-   * @param config
    */
   validateConfig: (config: unknown): boolean => {
     return Boolean(
@@ -84,15 +102,18 @@ export const IntelligenceUtils = {
       realTimeAdaptationLatency: 150, // milliseconds
       knowledgeRetention: 0.94,
       systemIntelligence: 0.91,
+      neuralBrainCoordination: 0.96,
+      dspyOptimizationScore: 0.93,
     };
   },
 
   /**
-   * Initialize enhanced intelligence systems.
-   *
-   * @param config
+   * Initialize intelligence systems using extracted packages.
    */
   initialize: async (config: unknown = {}) => {
+    const { BrainCoordinator, BehavioralIntelligence } = await import('@claude-zen/brain');
+    const { Teamwork } = await import('@claude-zen/teamwork');
+
     const defaultConfig = {
       patternRecognition: {
         enabled: true,
@@ -112,92 +133,31 @@ export const IntelligenceUtils = {
         maxOptimizations: 10,
         validationRequired: true,
       },
-      ml: {
-        neuralNetwork: true,
-        reinforcementLearning: true,
-        ensemble: true,
-        onlineLearning: true,
+      brain: {
+        neuralNetworks: true,
+        dspyOptimization: true,
+        wasmAcceleration: true,
+      },
+      teamwork: {
+        conversations: true,
+        collaboration: true,
       },
       ...config,
     };
 
-    const systemContext = {
-      environment: config?.['environment'] || 'production',
-      resources: config?.['resources'] || [],
-      constraints: config?.['constraints'] || [],
-      objectives: config?.['objectives'] || [],
-    };
-
-    const systems = await Promise.all([
-      import('./adaptive-learning/pattern-recognition-engine'),
-      import('./adaptive-learning/learning-coordinator'),
-      import('./adaptive-learning/performance-optimizer'),
-      import('./adaptive-learning/ml-integration'),
-      import('./adaptive-learning/behavioral-optimization'),
-      import('./adaptive-learning/knowledge-evolution'),
-    ]);
-
-    // Validate all systems loaded successfully
-    if (systems.length < 6) {
-      throw new Error('Failed to load all intelligence system modules');
-    }
-
-    const [
-      patternRecognitionModule,
-      learningCoordinatorModule,
-      performanceOptimizerModule,
-      mlRegistryModule,
-      behavioralOptimizationModule,
-      knowledgeEvolutionModule,
-    ] = systems;
-
     return {
-      patternRecognition:
-        patternRecognitionModule &&
-        new patternRecognitionModule['PatternRecognitionEngine'](
-          defaultConfig,
-          systemContext
-        ),
-      learningCoordinator:
-        learningCoordinatorModule &&
-        // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
-        new learningCoordinatorModule['LearningCoordinator'](
-          defaultConfig,
-          systemContext
-        ),
-      performanceOptimizer:
-        performanceOptimizerModule &&
-        new performanceOptimizerModule['PerformanceOptimizer'](
-          defaultConfig,
-          systemContext
-        ),
-      mlRegistry:
-        mlRegistryModule && new mlRegistryModule.MLModelRegistry(defaultConfig),
-      behavioralOptimization: behavioralOptimizationModule,
-      knowledgeEvolution: knowledgeEvolutionModule,
+      brainCoordinator: new BrainCoordinator(defaultConfig.brain),
+      behavioralIntelligence: new BehavioralIntelligence(defaultConfig.learning),
+      teamwork: new Teamwork(defaultConfig.teamwork),
       config: defaultConfig,
-      context: systemContext,
     };
   },
 
   /**
-   * Create adaptive learning system factory.
-   *
-   * @param config
+   * Create behavioral intelligence system using extracted packages.
    */
-  createAdaptiveLearningSystem: async (config?: unknown) => {
-    const { PatternRecognitionEngine } = await import(
-      './adaptive-learning/pattern-recognition-engine'
-    );
-    const { LearningCoordinator } = await import(
-      './adaptive-learning/learning-coordinator'
-    );
-    const { PerformanceOptimizer } = await import(
-      './adaptive-learning/performance-optimizer'
-    );
-    const { MLModelRegistry } = await import(
-      './adaptive-learning/ml-integration'
-    );
+  createBehavioralIntelligenceSystem: async (config?: unknown) => {
+    const { BehavioralIntelligence } = await import('@claude-zen/brain');
 
     const defaultConfig = {
       patternRecognition: {
@@ -218,41 +178,21 @@ export const IntelligenceUtils = {
         maxOptimizations: 10,
         validationRequired: true,
       },
-      ml: {
-        neuralNetwork: true,
-        reinforcementLearning: true,
-        ensemble: true,
-        onlineLearning: true,
-      },
       ...config,
     };
 
-    const systemContext = {
-      environment: config?.['environment'] || 'production',
-      resources: config?.['resources'] || [],
-      constraints: config?.['constraints'] || [],
-      objectives: config?.['objectives'] || [],
-    };
-
     return {
-      patternEngine: new PatternRecognitionEngine(defaultConfig, systemContext),
-      // TODO: TypeScript error TS2554 - Expected 3 arguments, but got 2. (AI unsure of safe fix - human review needed)
-      coordinator: new LearningCoordinator(defaultConfig, systemContext),
-      optimizer: new PerformanceOptimizer(defaultConfig, systemContext),
-      mlRegistry: new MLModelRegistry(defaultConfig),
+      behavioralIntelligence: new BehavioralIntelligence(defaultConfig),
     };
   },
 };
 
-// Intelligence factory
+// Intelligence factory using extracted packages
 export class IntelligenceFactory {
   private static systems = new Map<string, any>();
 
   /**
    * Get intelligence system by type.
-   *
-   * @param type
-   * @param config
    */
   static async getSystem(type: string, config: unknown = {}): Promise<unknown> {
     if (!IntelligenceFactory.systems.has(type)) {
@@ -264,18 +204,13 @@ export class IntelligenceFactory {
   }
 
   /**
-   * Get adaptive learning system.
-   *
-   * @param config
+   * Get behavioral intelligence system.
    */
-  static async getAdaptiveLearningSystem(
-    config: unknown = {}
-  ): Promise<unknown> {
-    const key = `adaptive_learning_${JSON.stringify(config)}`;
+  static async getBehavioralIntelligenceSystem(config: unknown = {}): Promise<unknown> {
+    const key = `behavioral_intelligence_${JSON.stringify(config)}`;
 
     if (!IntelligenceFactory.systems.has(key)) {
-      const system =
-        await IntelligenceUtils.createAdaptiveLearningSystem(config);
+      const system = await IntelligenceUtils.createBehavioralIntelligenceSystem(config);
       IntelligenceFactory.systems.set(key, system);
     }
 

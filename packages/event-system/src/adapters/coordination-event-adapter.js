@@ -13,7 +13,7 @@
 /**
  * @file Coordination-event adapter implementation.
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../../config/logging-config';
 import { EventEmissionError, EventManagerTypes, EventTimeoutError, } from '../core/interfaces';
 import { EventPriorityMap } from '../types';

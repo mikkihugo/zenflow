@@ -10,7 +10,7 @@
 /**
  * @file Interface implementation: communication-event-factory.
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../../config/logging-config';
 import { CommunicationEventAdapter, createDefaultCommunicationEventAdapterConfig, } from './communication-event-adapter';
 /**

@@ -2,7 +2,7 @@
  * @fileoverview Interface implementation: enhanced-websocket-client.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type {
   ClientMetrics,
   ClientResponse,

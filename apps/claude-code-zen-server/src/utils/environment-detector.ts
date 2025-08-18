@@ -6,7 +6,7 @@
  */
 
 import { exec } from 'node:child_process';
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { access, readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';

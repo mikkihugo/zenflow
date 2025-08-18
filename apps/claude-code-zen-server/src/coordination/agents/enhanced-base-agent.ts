@@ -8,13 +8,23 @@
 
 import { BaseAgent } from './agent';
 import {
-  withUniversalFACT,
-  type UniversalFACTCapabilities,
+  withFactCapabilities,
+  type FactCapable,
 } from '../universal-fact-mixin';
 import { getLogger } from '../../config/logging-config';
 import type { AgentConfig } from '../types';
 
 const logger = getLogger('Enhanced-Base-Agent');
+
+// Create an adapter to bridge id -> agentId for the mixin
+class BaseAgentAdapter extends BaseAgent {
+  get agentId(): string {
+    return this.id;
+  }
+}
+
+// Create a FactCapable version of BaseAgent
+const FactCapableBaseAgent = withFactCapabilities(BaseAgentAdapter);
 
 /**
  * Enhanced Base Agent with Universal FACT capabilities.
@@ -22,7 +32,7 @@ const logger = getLogger('Enhanced-Base-Agent');
  * This agent automatically has access to the shared FACT system
  * and can perform knowledge operations like any other hierarchy level.
  */
-export class EnhancedBaseAgent extends BaseAgent implements UniversalFACTCapabilities
+export class EnhancedBaseAgent extends FactCapableBaseAgent
 {
   protected hierarchyLevel: 'Agent' = 'Agent';
   private _sharedFactSystem: any = null;
@@ -37,8 +47,8 @@ export class EnhancedBaseAgent extends BaseAgent implements UniversalFACTCapabil
   /** Get shared FACT system access */
   async getSharedFACTSystem(): Promise<any> {
     if (!this._sharedFactSystem) {
-      const { getUniversalFACTAccess } = await import('../shared-fact-access');
-      this._sharedFactSystem = await getUniversalFACTAccess(this.hierarchyLevel);
+      const { coordinationFactAccess } = await import('../shared-fact-access');
+      this._sharedFactSystem = coordinationFactAccess;
     }
     return this._sharedFactSystem;
   }
@@ -154,7 +164,7 @@ export class EnhancedBaseAgent extends BaseAgent implements UniversalFACTCapabil
       }
 
       // Gather knowledge from shared FACT system
-      const knowledgeResults = [];
+      const knowledgeResults: Array<{ query: string; result: any }> = [];
       for (const query of knowledgeQueries) {
         try {
           const [type, subject] = query.split(':', 2);

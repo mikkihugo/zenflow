@@ -444,6 +444,7 @@ export async function runStartupValidation(
       environment,
       timestamp: startTime,
       validationDetails: {
+        isValid: false,
         valid: false,
         errors: [errorMessage],
         warnings: [],

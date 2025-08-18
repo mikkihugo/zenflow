@@ -14,6 +14,7 @@ import type {
   RoutingResult,
   Task,
 } from '../types';
+import { taskPriorityToNumber } from '../types';
 
 interface ResourceProfile {
   agentId: string;
@@ -390,7 +391,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
     // Base estimation logic - in practice, this would use historical data
     // or task metadata to make better predictions
 
-    const priorityMultiplier = task.priority / 3; // Scale by priority
+    const priorityMultiplier = taskPriorityToNumber(task.priority) / 3; // Scale by priority
     const durationMultiplier = Math.min(2, task.estimatedDuration / 60000); // Scale by duration
 
     return {
@@ -421,7 +422,12 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       bottleneck?: string;
     }>
   > {
-    const scored = [];
+    const scored: Array<{
+      agent: Agent;
+      score: number;
+      canHandle: boolean;
+      bottleneck?: string;
+    }> = [];
 
     for (const agent of agents) {
       const profile = this.getOrCreateResourceProfile(agent.id);

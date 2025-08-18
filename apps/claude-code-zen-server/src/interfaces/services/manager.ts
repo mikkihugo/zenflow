@@ -67,7 +67,7 @@
  * ```
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { CoordinationServiceAdapterConfig } from './adapters/coordination-service-adapter';

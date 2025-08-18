@@ -7,6 +7,7 @@
  */
 
 import type { NetworkOptimizer } from '../interfaces';
+import type { QoSRequirement } from '../types';
 
 export class NetworkLatencyOptimizer implements NetworkOptimizer {
   private bandwidthMeasurements: Map<string, number> = new Map();

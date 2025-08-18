@@ -27,26 +27,20 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/agu" | "/agu/task" | "/agu/task/[id]" | "/api" | "/api/workspace" | "/api/workspace/files" | "/api/workspace/files/content" | "/dev-communication" | "/matron" | "/roadmap" | "/workspace";
+		RouteId(): "/" | "/agui" | "/database" | "/memory" | "/roadmap" | "/swarm";
 		RouteParams(): {
-			"/agu/task/[id]": { id: string }
+			
 		};
 		LayoutParams(): {
-			"/": { id?: string };
-			"/agu": { id?: string };
-			"/agu/task": { id?: string };
-			"/agu/task/[id]": { id: string };
-			"/api": Record<string, never>;
-			"/api/workspace": Record<string, never>;
-			"/api/workspace/files": Record<string, never>;
-			"/api/workspace/files/content": Record<string, never>;
-			"/dev-communication": Record<string, never>;
-			"/matron": Record<string, never>;
+			"/": Record<string, never>;
+			"/agui": Record<string, never>;
+			"/database": Record<string, never>;
+			"/memory": Record<string, never>;
 			"/roadmap": Record<string, never>;
-			"/workspace": Record<string, never>
+			"/swarm": Record<string, never>
 		};
-		Pathname(): "/" | "/agu" | "/agu/task" | `/agu/task/${string}` & {} | "/api" | "/api/workspace" | "/api/workspace/files" | "/api/workspace/files/content" | "/dev-communication" | "/matron" | "/roadmap" | "/workspace";
+		Pathname(): "/" | "/agui" | "/database" | "/memory" | "/roadmap" | "/swarm";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): never;
+		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf";
 	}
 }

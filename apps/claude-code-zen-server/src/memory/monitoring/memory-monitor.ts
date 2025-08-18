@@ -3,7 +3,7 @@
  * Comprehensive monitoring and analytics for memory operations.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { MemoryCoordinator } from '../core/memory-coordinator';
 import type { BackendInterface } from '../core/memory-system';
 import type { PerformanceOptimizer } from '../optimization/performance-optimizer';

@@ -8,7 +8,7 @@
  * @file Export management system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { getLogger } from '../config/logging-config';

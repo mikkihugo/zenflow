@@ -1,32 +1,46 @@
 /**
- * @file @zen-ai/event-system - Main Export File
+ * @fileoverview Event System Package - Simplified Entry Point
  * 
- * Type-safe event system with domain validation, unified event layer (UEL), 
- * and advanced coordination capabilities.
- * 
- * Features:
- * - Type-safe event system with runtime validation
- * - Domain boundary validation integration  
- * - UEL (Unified Event Layer) with multiple adapters
- * - Event factories, registries, and managers
- * - Comprehensive validation framework
- * - Migration helpers and compatibility layers
- * - Health monitoring and metrics
- * - Cross-domain event coordination
- * 
- * @author Zen AI Team
- * @version 1.0.0
- * @license MIT
+ * A simplified, battle-tested event system with minimal dependencies.
+ * This package provides type-safe event handling for the claude-code-zen system.
  */
 
-// Core event system exports
-export * from './core/type-safe-event-system';
-export * from './core/event-bus';
+// =============================================================================
+// MAIN EXPORTS - Core functionality from src/main
+// =============================================================================
+export {
+  EventBus,
+  TypedEventBus,
+  createTypedEventBus,
+  createHighPerformanceEventBus,
+  createValidatedEventBus,
+  TypeSafeEventBus,
+  createTypeSafeEventBus,
+  uel,
+  createUEL
+} from './main';
 
-// UEL (Unified Event Layer) exports - Main interface
-export * from './core/uel-singleton';
+// Import for internal use
+import { EventBus } from './main';
 
-// Core interfaces and types - selective exports to avoid conflicts
+// =============================================================================
+// NEURAL INTEGRATION - AI-powered event processing
+// =============================================================================
+export {
+  NeuralEventProcessor,
+  createNeuralEventProcessor,
+  createHighPerformanceNeuralProcessor,
+  createFullNeuralProcessor
+} from './neural-integration';
+
+export type {
+  NeuralEventConfig,
+  EventClassification
+} from './neural-integration';
+
+// =============================================================================
+// CORE TYPES - Essential interfaces
+// =============================================================================
 export type {
   EventManagerConfig,
   EventManagerStatus,
@@ -37,35 +51,69 @@ export type {
   EventSubscription,
   EventManager,
   EventManagerFactory,
-  EventManagerRegistry
-} from './core/interfaces';
+  EventManagerRegistry,
+  EventBusConfig,
+  EventBusMetrics,
+  EventSystemOptions,
+  UELConfig,
+  ValidationResult,
+  DomainBoundary,
+  TypedEventBusConfig,
+  TypedEventMap,
+  TypedEventHandler,
+  WildcardHandler,
+  EventMiddleware,
+  EventContext,
+  BaseEvent,
+  CoordinationEvent,
+  WorkflowEvent,
+  InterfaceEvent,
+  CoreEvent,
+  EventTypeFromSchema,
+  AllEventTypes
+} from './main';
+
+// =============================================================================
+// VALIDATION FRAMEWORK
+// =============================================================================
 export {
-  EventManagerTypes,
-  EventManagerPresets,
-  EventTypeGuards
-} from './core/interfaces';
+  EventValidator,
+  DomainValidator,
+  ValidationChain,
+  createValidationChain,
+  BaseEventSchema,
+  EventSchemas
+} from './main';
 
-// Event adapters - remove duplicate exports
-// Note: neural-event-factory temporarily excluded due to complex type conflicts
+// =============================================================================
+// MIDDLEWARE SYSTEM
+// =============================================================================
+export {
+  createLoggingMiddleware,
+  createTimingMiddleware,
+  createValidationMiddleware,
+  createErrorHandlingMiddleware,
+  createRateLimitingMiddleware,
+  createConditionalMiddleware,
+  createEventTypeMiddleware,
+  createAsyncMiddleware
+} from './main';
 
-// Event factories and registry
-export * from './factories';
-export * from './registry';
+// =============================================================================
+// UTILITY FUNCTIONS
+// =============================================================================
 
-// Event manager
-export * from './manager';
+/**
+ * Create a basic event system for simple use cases.
+ */
+export function createEventSystem(config?: any) {
+  return new EventBus(config || {});
+}
 
-// Validation framework
-export * from './validation/index';
+/**
+ * Package information
+ */
+export const VERSION = '1.0.1';
+export const DESCRIPTION = 'Type-safe event system with neural intelligence';
 
-// Compatibility and migration helpers
-export * from './compatibility/index';
-
-// System integrations
-export * from './system-integrations/index';
-
-// Observer system (legacy compatibility)
-export * from './observer-system';
-
-// Default export - UEL singleton for convenience
-export { uel as default } from './core/uel-singleton';
+export default createEventSystem;

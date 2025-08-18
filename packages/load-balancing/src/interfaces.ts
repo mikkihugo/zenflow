@@ -14,6 +14,7 @@ import type {
   RoutingResult,
   Task,
 } from './types';
+import { EventEmitter } from 'eventemitter3';
 
 export interface LoadBalancingAlgorithm {
   name: string;
@@ -24,6 +25,11 @@ export interface LoadBalancingAlgorithm {
   ): Promise<RoutingResult>;
   updateConfiguration(config: Record<string, unknown>): Promise<void>;
   getPerformanceMetrics(): Promise<Record<string, number>>;
+  
+  // Optional methods that some algorithms may implement
+  onTaskComplete?(agentId: string, task: Task, duration: number, success: boolean): Promise<void>;
+  updateWeights?(agents: Agent[], agentMetrics: Map<string, LoadMetrics>): Promise<void>;
+  onAgentFailure?(agentId: string, error: Error): Promise<void>;
 }
 
 export interface CapacityManager {
@@ -65,7 +71,7 @@ export interface PredictionEngine {
   getAccuracy(): Promise<number>;
 }
 
-export interface HealthChecker {
+export interface HealthChecker extends EventEmitter {
   checkHealth(agent: Agent): Promise<boolean>;
   startHealthChecks(agents: Agent[]): Promise<void>;
   stopHealthChecks(): Promise<void>;
@@ -116,7 +122,7 @@ export interface NetworkOptimizer {
   adjustQoS(requirements: QoSRequirement): Promise<void>;
 }
 
-export interface AutoScaler {
+export interface AutoScaler extends EventEmitter {
   shouldScaleUp(metrics: Map<string, LoadMetrics>): Promise<boolean>;
   shouldScaleDown(metrics: Map<string, LoadMetrics>): Promise<boolean>;
   scaleUp(count: number): Promise<Agent[]>;
@@ -126,7 +132,7 @@ export interface AutoScaler {
   >;
 }
 
-export interface EmergencyHandler {
+export interface EmergencyHandler extends EventEmitter {
   handleEmergency(
     type: string,
     severity: 'low' | 'medium' | 'high' | 'critical'

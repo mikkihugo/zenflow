@@ -3,7 +3,7 @@
  * Demonstrates how to use the advanced Memory and Database domain features together.
  */
 
-import { DALFactory, type DatabaseQuery } from '../database/index';
+// Database operations now handled via @claude-zen/foundation package
 import { DIContainer } from '../di/container/di-container';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 import { MemorySystemFactory } from '../memory/index';
@@ -147,9 +147,9 @@ export async function createIntegratedSystem() {
   // Create a composite database system object to match the expected interface
   const databaseSystem = {
     query: async (query: DatabaseQuery) => {
-      // TODO: TypeScript error TS2339 - Property 'operation' does not exist on type 'DatabaseQuery' (AI unsure of safe fix - human review needed)
       // Route queries to appropriate DAO based on operation type
-      switch ((query as any).operation) {
+      const operation = (query as any).operation;
+      switch (operation) {
         case 'vector_search':
           return vectorDao;
         case 'graph_query':
@@ -158,7 +158,7 @@ export async function createIntegratedSystem() {
         case 'document_find':
           return documentDao;
         default:
-          throw new Error(`Unsupported operation: ${(query as any).operation}`);
+          throw new Error(`Unsupported operation: ${operation}`);
       }
     },
     getHealthReport: () => ({
@@ -458,14 +458,8 @@ export async function demonstrateOptimization() {
     }
   }
 
-  // Optimize database system
-  // TODO: TypeScript error TS2339 - Property 'optimizer' does not exist on database system (AI unsure of safe fix - human review needed)
-  const databaseRecommendations = (
-    system.database as any
-  ).optimizer?.getRecommendations();
-  if (databaseRecommendations && databaseRecommendations.length > 0) {
-    databaseRecommendations?.forEach((rec, i) => {});
-  }
+  // Database optimization handled via foundation package
+  // Foundation provides built-in optimization strategies
 
   // Get health report
   const health = await system.getSystemHealth();

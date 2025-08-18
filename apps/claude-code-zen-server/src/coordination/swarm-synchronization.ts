@@ -8,7 +8,7 @@
  * @file Coordination system: swarm-synchronization.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { AgentState } from '../types/agent-types';
 

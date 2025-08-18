@@ -11,7 +11,7 @@
  * @file Interface implementation: communication-event-factory.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import type {
   EventManagerMetrics,

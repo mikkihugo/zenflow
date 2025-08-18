@@ -11,7 +11,7 @@
  * management for system events across Claude-Zen.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '@claude-zen/foundation';
 // Import logger (using relative path)
 import { getLogger } from '@claude-zen/foundation';
@@ -292,7 +292,6 @@ export class SystemEventAdapter implements EventManager {
     this.logger.info(`Creating system event adapter: ${this.name}`);
 
     // Set max listeners to handle many system components
-    this.eventEmitter.setMaxListeners(1000);
   }
 
   // ============================================
@@ -1265,8 +1264,8 @@ export class SystemEventAdapter implements EventManager {
       try {
         // Restore original methods if they were wrapped
         wrapped.originalMethods.forEach((originalMethod, methodName) => {
-          if (wrapped.component?.[methodName]) {
-            wrapped.component[methodName] = originalMethod;
+          if (wrapped.component && methodName in wrapped.component) {
+            (wrapped.component as any)[methodName] = originalMethod;
           }
         });
 

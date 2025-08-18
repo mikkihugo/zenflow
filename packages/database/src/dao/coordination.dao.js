@@ -7,7 +7,7 @@
 /**
  * @file Database layer: coordination.dao.
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { BaseDao } from '../base.dao';
 /**
  * Coordination repository implementation with distributed coordination capabilities.

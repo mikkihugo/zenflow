@@ -15,7 +15,7 @@
  * - Integration with multi-level orchestration
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { MemorySystem } from '../../core/memory-system';
@@ -24,7 +24,7 @@ import {
   createEvent,
   EventPriority,
 } from '../../core/type-safe-event-system';
-import type { MultiLevelOrchestrationManager } from '../orchestration/multi-level-orchestration-manager';
+import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';

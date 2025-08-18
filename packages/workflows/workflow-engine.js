@@ -10,7 +10,7 @@
  * - Memory and database integration optional
  * - Clean separation of concerns with focused methods
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 const logger = getLogger('WorkflowEngine');
 // ============================================================================

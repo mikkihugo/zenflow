@@ -2,7 +2,7 @@
  * @file The primary orchestrator for the AI swarm, with full strategic capabilities and persistence.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../core/interfaces/base-interfaces';
 import type { Database } from '../di/tokens/core-tokens';
 import type { SwarmCoordinator } from '../di/tokens/swarm-tokens';

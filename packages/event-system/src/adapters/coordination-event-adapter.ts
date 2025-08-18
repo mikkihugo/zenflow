@@ -14,7 +14,7 @@
  * @file Coordination-event adapter implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 
 // Generic interfaces for coordination components - library should not import external dependencies
@@ -400,7 +400,6 @@ export class CoordinationEventAdapter implements EventManager {
     this.logger.info(`Creating coordination event adapter: ${this.name}`);
 
     // Set max listeners to handle many coordination components
-    this.eventEmitter.setMaxListeners(2000);
   }
 
   // ============================================

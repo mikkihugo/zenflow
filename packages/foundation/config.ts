@@ -1,55 +1,284 @@
 /**
- * @fileoverview Shared Configuration System for ZEN Environment Variables
+ * @fileoverview Modern Configuration System using Convict + Dotenv
  * 
- * Simple configuration loading focused on ZEN_ environment variables used
- * throughout the standalone libraries. Provides consistent access to common
- * configuration without the complexity of the full configuration loader.
+ * Professional configuration management with schema validation, environment coercion,
+ * and structured configuration loading. Replaces custom ZEN environment variable system.
+ * 
+ * Features:
+ * - JSON schema validation with convict
+ * - Automatic environment variable loading with dotenv
+ * - Type-safe configuration with TypeScript
+ * - Documentation generation from schema
+ * - Environment-specific configuration files
+ * 
+ * @author Claude Code Zen Team
+ * @since 2.0.0
+ * @version 2.0.0
  */
 
-import { getLogger } from './logging';
+import convict from 'convict';
+import * as dotenv from 'dotenv';
+import { getLogger } from './src/logging';
 
-const logger = getLogger('shared-config');
+const logger = getLogger('modern-config');
+
+// Load environment variables
+dotenv.config();
 
 /**
- * ZEN environment variable mappings with types
+ * Configuration schema definition with convict
  */
-export const ZEN_ENV_MAPPINGS = {
+const configSchema = {
   // Logging configuration
-  ZEN_LOG_LEVEL: { type: 'string' as const, default: 'info' },
-  ZEN_LOG_CONSOLE: { type: 'boolean' as const, default: true },
-  ZEN_LOG_FILE: { type: 'boolean' as const, default: false },
-  ZEN_LOG_TIMESTAMP: { type: 'boolean' as const, default: true },
-  ZEN_LOG_FORMAT: { type: 'string' as const, default: 'text' },
-  
-  // Metrics and monitoring
-  ZEN_ENABLE_METRICS: { type: 'boolean' as const, default: false },
-  ZEN_METRICS_INTERVAL: { type: 'number' as const, default: 60000 },
-  
-  // Memory and storage
-  ZEN_MEMORY_BACKEND: { type: 'string' as const, default: 'memory' },
-  ZEN_MEMORY_DIR: { type: 'string' as const, default: './data/memory' },
-  ZEN_DB_PATH: { type: 'string' as const, default: './data/zen.db' },
-  
-  // Neural and AI features
-  ZEN_NEURAL_LEARNING: { type: 'boolean' as const, default: true },
-  ZEN_NEURAL_CACHE_SIZE: { type: 'number' as const, default: 1000 },
-  
-  // Performance settings
-  ZEN_MAX_CONCURRENT: { type: 'number' as const, default: 5 },
-  ZEN_TIMEOUT_MS: { type: 'number' as const, default: 300000 },
-  
-  // Development settings
-  ZEN_DEBUG_MODE: { type: 'boolean' as const, default: false },
-  ZEN_VERBOSE_ERRORS: { type: 'boolean' as const, default: false },
-} as const;
+  logging: {
+    level: {
+      doc: 'The logging level',
+      format: ['error', 'warn', 'info', 'debug', 'trace'],
+      default: 'info',
+      env: 'ZEN_LOG_LEVEL'
+    },
+    console: {
+      doc: 'Enable console logging',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_LOG_CONSOLE'
+    },
+    file: {
+      doc: 'Enable file logging',
+      format: Boolean,
+      default: false,
+      env: 'ZEN_LOG_FILE'
+    },
+    timestamp: {
+      doc: 'Include timestamps in logs',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_LOG_TIMESTAMP'
+    },
+    format: {
+      doc: 'Log format',
+      format: ['text', 'json'],
+      default: 'text',
+      env: 'ZEN_LOG_FORMAT'
+    }
+  },
 
-export type ZenConfigKey = keyof typeof ZEN_ENV_MAPPINGS;
-export type ZenConfigValue = string | number | boolean;
+  // Metrics and monitoring
+  metrics: {
+    enabled: {
+      doc: 'Enable metrics collection',
+      format: Boolean,
+      default: false,
+      env: 'ZEN_ENABLE_METRICS'
+    },
+    interval: {
+      doc: 'Metrics collection interval in milliseconds',
+      format: 'int',
+      default: 60000,
+      env: 'ZEN_METRICS_INTERVAL'
+    }
+  },
+
+  // Telemetry configuration
+  telemetry: {
+    serviceName: {
+      doc: 'Service name for telemetry data',
+      format: String,
+      default: 'claude-code-zen',
+      env: 'ZEN_TELEMETRY_SERVICE_NAME'
+    },
+    serviceVersion: {
+      doc: 'Service version for telemetry data',
+      format: String,
+      default: '1.0.0',
+      env: 'ZEN_TELEMETRY_SERVICE_VERSION'
+    },
+    enableTracing: {
+      doc: 'Enable distributed tracing',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_TELEMETRY_ENABLE_TRACING'
+    },
+    enableMetrics: {
+      doc: 'Enable telemetry metrics collection',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_TELEMETRY_ENABLE_METRICS'
+    },
+    enableAutoInstrumentation: {
+      doc: 'Enable automatic instrumentation',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_TELEMETRY_ENABLE_AUTO_INSTRUMENTATION'
+    },
+    traceSamplingRatio: {
+      doc: 'Trace sampling ratio (0.0 to 1.0)',
+      format: Number,
+      default: 1.0,
+      env: 'ZEN_TELEMETRY_SAMPLING_RATIO'
+    },
+    metricsInterval: {
+      doc: 'Telemetry metrics collection interval in milliseconds',
+      format: 'int',
+      default: 5000,
+      env: 'ZEN_TELEMETRY_METRICS_INTERVAL'
+    },
+    prometheusEndpoint: {
+      doc: 'Prometheus metrics endpoint path',
+      format: String,
+      default: '/metrics',
+      env: 'ZEN_TELEMETRY_PROMETHEUS_ENDPOINT'
+    },
+    prometheusPort: {
+      doc: 'Prometheus metrics port',
+      format: 'int',
+      default: 9090,
+      env: 'ZEN_TELEMETRY_PROMETHEUS_PORT'
+    },
+    jaegerEndpoint: {
+      doc: 'Jaeger exporter endpoint',
+      format: String,
+      default: 'http://localhost:14268/api/traces',
+      env: 'ZEN_TELEMETRY_JAEGER_ENDPOINT'
+    },
+    enableConsoleExporters: {
+      doc: 'Enable console exporters for development',
+      format: Boolean,
+      default: false,
+      env: 'ZEN_TELEMETRY_ENABLE_CONSOLE_EXPORTERS'
+    }
+  },
+
+  // Storage configuration
+  storage: {
+    backend: {
+      doc: 'Storage backend type',
+      format: ['memory', 'sqlite', 'lancedb', 'kuzu'],
+      default: 'memory',
+      env: 'ZEN_MEMORY_BACKEND'
+    },
+    memoryDir: {
+      doc: 'Memory storage directory',
+      format: String,
+      default: './data/memory',
+      env: 'ZEN_MEMORY_DIR'
+    },
+    dbPath: {
+      doc: 'Database file path',
+      format: String,
+      default: './data/zen.db',
+      env: 'ZEN_DB_PATH'
+    }
+  },
+
+  // Project and workspace
+  project: {
+    configDir: {
+      doc: 'Project configuration directory',
+      format: String,
+      default: '.claude-zen',
+      env: 'ZEN_PROJECT_CONFIG_DIR'
+    },
+    workspaceDbPath: {
+      doc: 'Workspace database path',
+      format: String,
+      default: '.claude-zen/workspace.db',
+      env: 'ZEN_WORKSPACE_DB_PATH'
+    },
+    storeInUserHome: {
+      doc: 'Store configuration in user home directory',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_STORE_CONFIG_IN_USER_HOME'
+    }
+  },
+
+  // Neural and AI features
+  neural: {
+    learning: {
+      doc: 'Enable neural learning features',
+      format: Boolean,
+      default: true,
+      env: 'ZEN_NEURAL_LEARNING'
+    },
+    cacheSize: {
+      doc: 'Neural cache size',
+      format: 'int',
+      default: 1000,
+      env: 'ZEN_NEURAL_CACHE_SIZE'
+    }
+  },
+
+  // Performance settings
+  performance: {
+    maxConcurrent: {
+      doc: 'Maximum concurrent operations',
+      format: 'int',
+      default: 5,
+      env: 'ZEN_MAX_CONCURRENT'
+    },
+    timeoutMs: {
+      doc: 'Operation timeout in milliseconds',
+      format: 'int',
+      default: 300000,
+      env: 'ZEN_TIMEOUT_MS'
+    }
+  },
+
+  // Development settings
+  development: {
+    debug: {
+      doc: 'Enable debug mode',
+      format: Boolean,
+      default: false,
+      env: 'ZEN_DEBUG_MODE'
+    },
+    verboseErrors: {
+      doc: 'Enable verbose error reporting',
+      format: Boolean,
+      default: false,
+      env: 'ZEN_VERBOSE_ERRORS'
+    }
+  }
+};
 
 /**
- * Shared configuration interface for libs
+ * Create and validate configuration
  */
-export interface SharedConfig {
+const config = convict(configSchema);
+
+// Load environment-specific configuration files if they exist
+const env = process.env['NODE_ENV'] || 'development';
+const configFiles = [
+  `config/${env}.json`,
+  `config/${env}.js`,
+  `.claude-zen/config.json`,
+  `.claude-zen/${env}.json`
+];
+
+for (const file of configFiles) {
+  try {
+    config.loadFile(file);
+    logger.debug(`Loaded configuration from ${file}`);
+  } catch (error) {
+    // File doesn't exist or can't be loaded - this is normal
+    logger.debug(`Configuration file ${file} not found or invalid`);
+  }
+}
+
+// Validate configuration
+try {
+  config.validate({ allowed: 'strict' });
+  logger.debug('Configuration validation successful');
+} catch (error) {
+  logger.error('Configuration validation failed:', error);
+  throw error;
+}
+
+/**
+ * Type-safe configuration interface
+ */
+export interface Config {
   logging: {
     level: string;
     console: boolean;
@@ -61,10 +290,28 @@ export interface SharedConfig {
     enabled: boolean;
     interval: number;
   };
+  telemetry: {
+    serviceName: string;
+    serviceVersion: string;
+    enableTracing: boolean;
+    enableMetrics: boolean;
+    enableAutoInstrumentation: boolean;
+    traceSamplingRatio: number;
+    metricsInterval: number;
+    prometheusEndpoint: string;
+    prometheusPort: number;
+    jaegerEndpoint: string;
+    enableConsoleExporters: boolean;
+  };
   storage: {
     backend: string;
     memoryDir: string;
     dbPath: string;
+  };
+  project: {
+    configDir: string;
+    workspaceDbPath: string;
+    storeInUserHome: boolean;
   };
   neural: {
     learning: boolean;
@@ -78,481 +325,173 @@ export interface SharedConfig {
     debug: boolean;
     verboseErrors: boolean;
   };
-  
-  // Extended methods for event system compatibility
+
+  // Compatibility methods for legacy code
   get(key: string, defaultValue?: any): any;
   set(key: string, value: any): void;
   has(key: string): boolean;
 }
 
 /**
- * Parse environment variable value based on type
+ * Configuration implementation with compatibility layer
  */
-function parseEnvValue(value: string, type: 'string' | 'number' | 'boolean'): ZenConfigValue {
-  switch (type) {
-    case 'boolean':
-      return value.toLowerCase() === 'true' || value === '1';
-    case 'number':
-      const parsed = Number(value);
-      if (Number.isNaN(parsed)) {
-        throw new Error(`Invalid number value: ${value}`);
-      }
-      return parsed;
-    case 'string':
-    default:
-      return value;
-  }
-}
+class ConfigImplementation implements Config {
+  get logging() { return config.get('logging'); }
+  get metrics() { return config.get('metrics'); }
+  get telemetry() { return config.get('telemetry'); }
+  get storage() { return config.get('storage'); }
+  get project() { return config.get('project'); }
+  get neural() { return config.get('neural'); }
+  get performance() { return config.get('performance'); }
+  get development() { return config.get('development'); }
 
-/**
- * Load ZEN environment variables with defaults and NODE_ENV hierarchy
- */
-function loadZenEnvironment(): Record<ZenConfigKey, ZenConfigValue> {
-  const config: Record<string, ZenConfigValue> = {};
-  const nodeEnv = (process.env['NODE_ENV'] || 'development') as keyof typeof ENV_DEFAULTS;
-  const envDefaults = ENV_DEFAULTS[nodeEnv] || ENV_DEFAULTS.development;
-  
-  for (const [key, spec] of Object.entries(ZEN_ENV_MAPPINGS)) {
-    const envValue = process.env[key];
-    
-    if (envValue !== undefined) {
-      try {
-        config[key] = parseEnvValue(envValue, spec.type);
-      } catch (error) {
-        logger.warn(`Invalid ${key} value: ${envValue}, using default: ${spec.default}`);
-        config[key] = spec.default;
-      }
-    } else {
-      // Check for NODE_ENV specific default first
-      const envSpecificDefault = envDefaults[key as keyof typeof envDefaults];
-      config[key] = envSpecificDefault !== undefined ? envSpecificDefault : spec.default;
+  get(key: string, defaultValue?: any): any {
+    try {
+      return config.get(key as any);
+    } catch {
+      return defaultValue;
     }
   }
-  
-  return config as Record<ZenConfigKey, ZenConfigValue>;
-}
 
-/**
- * Configuration schema for validation
- */
-export const CONFIG_SCHEMA = {
-  logging: {
-    level: ['debug', 'info', 'warn', 'error'],
-    format: ['text', 'json']
-  },
-  metrics: {
-    interval: { min: 1000, max: 3600000 }
-  },
-  performance: {
-    timeoutMs: { min: 1000, max: 600000 },
-    maxConcurrent: { min: 1, max: 100 }
-  },
-  neural: {
-    cacheSize: { min: 100, max: 10000 }
+  set(key: string, value: any): void {
+    config.set(key as any, value);
   }
-} as const;
 
-/**
- * Environment-specific defaults based on NODE_ENV
- */
-const ENV_DEFAULTS = {
-  development: {
-    ZEN_DEBUG_MODE: true,
-    ZEN_LOG_LEVEL: 'debug',
-    ZEN_VERBOSE_ERRORS: true
-  },
-  production: {
-    ZEN_DEBUG_MODE: false,
-    ZEN_LOG_LEVEL: 'info',
-    ZEN_VERBOSE_ERRORS: false
-  },
-  test: {
-    ZEN_DEBUG_MODE: false,
-    ZEN_LOG_LEVEL: 'warn',
-    ZEN_VERBOSE_ERRORS: false
-  }
-} as const;
-
-/**
- * Configuration manager for shared lib usage
- */
-class SharedConfigManager {
-  private static instance: SharedConfigManager;
-  private config: SharedConfig;
-  private envConfig: Record<ZenConfigKey, ZenConfigValue>;
-  private pathCache = new Map<string, string[]>();
-  private watchCallbacks = new Set<() => void>();
-  
-  private constructor() {
-    this.envConfig = loadZenEnvironment();
-    this.config = this.createSharedConfig();
-  }
-  
-  static getInstance(): SharedConfigManager {
-    if (!SharedConfigManager.instance) {
-      SharedConfigManager.instance = new SharedConfigManager();
-    }
-    return SharedConfigManager.instance;
-  }
-  
-  private createSharedConfig(): SharedConfig {
-    const baseConfig = {
-      logging: {
-        level: this.envConfig.ZEN_LOG_LEVEL as string,
-        console: this.envConfig.ZEN_LOG_CONSOLE as boolean,
-        file: this.envConfig.ZEN_LOG_FILE as boolean,
-        timestamp: this.envConfig.ZEN_LOG_TIMESTAMP as boolean,
-        format: this.envConfig.ZEN_LOG_FORMAT as string,
-      },
-      metrics: {
-        enabled: this.envConfig.ZEN_ENABLE_METRICS as boolean,
-        interval: this.envConfig.ZEN_METRICS_INTERVAL as number,
-      },
-      storage: {
-        backend: this.envConfig.ZEN_MEMORY_BACKEND as string,
-        memoryDir: this.envConfig.ZEN_MEMORY_DIR as string,
-        dbPath: this.envConfig.ZEN_DB_PATH as string,
-      },
-      neural: {
-        learning: this.envConfig.ZEN_NEURAL_LEARNING as boolean,
-        cacheSize: this.envConfig.ZEN_NEURAL_CACHE_SIZE as number,
-      },
-      performance: {
-        maxConcurrent: this.envConfig.ZEN_MAX_CONCURRENT as number,
-        timeoutMs: this.envConfig.ZEN_TIMEOUT_MS as number,
-      },
-      development: {
-        debug: this.envConfig.ZEN_DEBUG_MODE as boolean,
-        verboseErrors: this.envConfig.ZEN_VERBOSE_ERRORS as boolean,
-      },
-    };
-
-    // Add methods to make it a full SharedConfig
-    return Object.assign(baseConfig, {
-      get: (key: string, defaultValue?: any): any => this.getConfig().get(key, defaultValue),
-      set: (key: string, value: any): void => this.getConfig().set(key, value),
-      has: (key: string): boolean => this.getConfig().has(key)
-    }) as SharedConfig;
-  }
-  
-  /**
-   * Get the shared configuration
-   */
-  getConfig(): SharedConfig {
-    const config = { ...this.config };
-    
-    // Add get/set/has methods to the returned config object
-    return Object.assign(config, {
-      get: (key: string, defaultValue?: any): any => {
-        // Use cached path parts for performance
-        let keyParts = this.pathCache.get(key);
-        if (!keyParts) {
-          keyParts = key.split('.');
-          this.pathCache.set(key, keyParts);
-        }
-        
-        let value: any = config;
-        
-        for (const part of keyParts) {
-          value = value?.[part];
-          if (value === undefined) {
-            logger.debug(`Config key not found: ${key}, using default: ${defaultValue}`);
-            return defaultValue;
-          }
-        }
-        
-        return value;
-      },
-      
-      set: (key: string, value: any): void => {
-        logger.warn(
-          `Attempted to set config key '${key}' to '${value}'. ` +
-          `SharedConfig is readonly. Consider using environment variables instead.`
-        );
-      },
-      
-      has: (key: string): boolean => {
-        // Use cached path parts for performance
-        let keyParts = this.pathCache.get(key);
-        if (!keyParts) {
-          keyParts = key.split('.');
-          this.pathCache.set(key, keyParts);
-        }
-        
-        let value: any = config;
-        
-        for (const part of keyParts) {
-          value = value?.[part];
-          if (value === undefined) {
-            return false;
-          }
-        }
-        
-        return value !== undefined;
-      }
-    });
-  }
-  
-  /**
-   * Get specific environment variable value
-   */
-  getEnv<K extends ZenConfigKey>(key: K): ZenConfigValue {
-    return this.envConfig[key];
-  }
-  
-  /**
-   * Check if debug mode is enabled
-   */
-  isDebugMode(): boolean {
-    return this.config.development.debug;
-  }
-  
-  /**
-   * Check if metrics are enabled
-   */
-  areMetricsEnabled(): boolean {
-    return this.config.metrics.enabled;
-  }
-  
-  /**
-   * Get storage configuration
-   */
-  getStorageConfig(): SharedConfig['storage'] {
-    return { ...this.config.storage };
-  }
-  
-  /**
-   * Get neural learning configuration
-   */
-  getNeuralConfig(): SharedConfig['neural'] {
-    return { ...this.config.neural };
-  }
-  
-  /**
-   * Reload configuration from environment
-   */
-  reload(): void {
-    this.envConfig = loadZenEnvironment();
-    this.config = this.createSharedConfig();
-    this.pathCache.clear(); // Clear cache after reload
-    logger.info('Shared configuration reloaded from environment');
-    this.notifyWatchers();
-  }
-  
-  /**
-   * Validate configuration using schema
-   */
-  validate(): { isValid: boolean; issues: string[] } {
-    const issues: string[] = [];
-    
-    // Validate using schema
-    this.validateWithSchema(this.config, CONFIG_SCHEMA, '', issues);
-    
-    return {
-      isValid: issues.length === 0,
-      issues,
-    };
-  }
-  
-  /**
-   * Recursive schema validation helper
-   */
-  private validateWithSchema(
-    value: any,
-    schema: any,
-    path: string,
-    issues: string[]
-  ): void {
-    for (const [key, schemaValue] of Object.entries(schema)) {
-      const currentPath = path ? `${path}.${key}` : key;
-      const currentValue = value?.[key];
-      
-      if (currentValue === undefined) continue;
-      
-      if (Array.isArray(schemaValue)) {
-        // Enum validation
-        if (!schemaValue.includes(currentValue)) {
-          issues.push(`Invalid ${currentPath}: ${currentValue}. Must be one of: ${schemaValue.join(', ')}`);
-        }
-      } else if (typeof schemaValue === 'object' && schemaValue !== null && 'min' in schemaValue && 'max' in schemaValue) {
-        // Range validation
-        if (typeof currentValue === 'number') {
-          const minValue = schemaValue.min as number;
-          const maxValue = schemaValue.max as number;
-          if (currentValue < minValue) {
-            issues.push(`${currentPath} too small: ${currentValue}. Minimum: ${minValue}`);
-          }
-          if (currentValue > maxValue) {
-            issues.push(`${currentPath} too large: ${currentValue}. Maximum: ${maxValue}`);
-          }
-        }
-      } else if (typeof schemaValue === 'object') {
-        // Nested object validation
-        this.validateWithSchema(currentValue, schemaValue, currentPath, issues);
-      }
+  has(key: string): boolean {
+    try {
+      config.get(key as any);
+      return true;
+    } catch {
+      return false;
     }
   }
-  
+
   /**
-   * Watch for configuration changes
+   * Get the raw convict config for advanced usage
    */
-  watch(callback: () => void): () => void {
-    this.watchCallbacks.add(callback);
+  getRawConfig() {
+    return config;
+  }
+
+  /**
+   * Get configuration as plain object
+   */
+  toObject() {
+    return config.getProperties();
+  }
+
+  /**
+   * Get configuration schema documentation
+   */
+  getSchema() {
+    return config.getSchema();
+  }
+
+  /**
+   * Reload configuration from environment and files
+   */
+  reload() {
+    // Re-load environment variables
+    dotenv.config();
     
-    // Return unwatch function
-    return () => {
-      this.watchCallbacks.delete(callback);
-    };
-  }
-  
-  /**
-   * Notify watchers of configuration changes
-   */
-  private notifyWatchers(): void {
-    this.watchCallbacks.forEach(callback => {
-      try {
-        callback();
-      } catch (error) {
-        logger.error('Error in config watch callback:', error);
-      }
-    });
+    // Re-validate
+    config.validate({ allowed: 'strict' });
+    
+    logger.info('Configuration reloaded');
   }
 }
 
-// Singleton instance
-const configManager = SharedConfigManager.getInstance();
+// Global configuration instance
+let globalConfig: ConfigImplementation | null = null;
 
 /**
- * Get shared configuration for standalone libs
+ * Get the global configuration instance
  */
-export function getSharedConfig(): SharedConfig {
-  return configManager.getConfig();
+export function getConfig(): Config {
+  if (!globalConfig) {
+    globalConfig = new ConfigImplementation();
+  }
+  return globalConfig;
 }
 
 /**
- * Get specific ZEN environment variable
+ * Reload configuration from environment and files
  */
-export function getZenEnv<K extends ZenConfigKey>(key: K): ZenConfigValue {
-  return configManager.getEnv(key);
+export function reloadConfig(): void {
+  if (globalConfig) {
+    globalConfig.reload();
+  }
 }
 
 /**
  * Check if debug mode is enabled
  */
 export function isDebugMode(): boolean {
-  return configManager.isDebugMode();
+  return getConfig().development.debug;
 }
 
 /**
  * Check if metrics are enabled
  */
 export function areMetricsEnabled(): boolean {
-  return configManager.areMetricsEnabled();
+  return getConfig().metrics.enabled;
 }
 
 /**
  * Get storage configuration
  */
-export function getStorageConfig(): SharedConfig['storage'] {
-  return configManager.getStorageConfig();
+export function getStorageConfig() {
+  return getConfig().storage;
 }
 
 /**
  * Get neural configuration
  */
-export function getNeuralConfig(): SharedConfig['neural'] {
-  return configManager.getNeuralConfig();
+export function getNeuralConfig() {
+  return getConfig().neural;
 }
 
 /**
- * Reload configuration from environment
+ * Get telemetry configuration
  */
-export function reloadSharedConfig(): void {
-  configManager.reload();
+export function getTelemetryConfig() {
+  return getConfig().telemetry;
 }
 
 /**
- * Validate shared configuration
+ * Validate current configuration
  */
-export function validateSharedConfig(): { isValid: boolean; issues: string[] } {
-  return configManager.validate();
+export function validateConfig(): void {
+  if (!globalConfig) {
+    globalConfig = new ConfigImplementation();
+  }
+  
+  try {
+    globalConfig.getRawConfig().validate({ allowed: 'strict' });
+    logger.info('Configuration validation successful');
+  } catch (error) {
+    logger.error('Configuration validation failed:', error);
+    throw error;
+  }
 }
 
 /**
- * Watch for configuration changes
- */
-export function watchSharedConfig(callback: () => void): () => void {
-  return configManager.watch(callback);
-}
-
-/**
- * Component-specific configuration helpers
+ * Configuration helpers for backward compatibility
  */
 export const configHelpers = {
-  /**
-   * Get logging configuration for a component
-   */
-  getLoggingConfig: (componentName?: string): SharedConfig['logging'] => {
-    const config = getSharedConfig();
-    // Check for component-specific log level override
-    const componentLogLevel = process.env[`ZEN_LOG_COMPONENT_${componentName?.toUpperCase()}`];
-    if (componentLogLevel) {
-      return { ...config.logging, level: componentLogLevel };
-    }
-    return config.logging;
-  },
-  
-  /**
-   * Get timeout for a specific operation type
-   */
-  getTimeout: (operationType: 'llm' | 'storage' | 'network' | 'general' = 'general'): number => {
-    const config = getSharedConfig();
-    const baseTimeout = config.performance.timeoutMs;
-    
-    // Adjust timeout based on operation type
-    switch (operationType) {
-      case 'llm':
-        return baseTimeout; // Full timeout for LLM operations
-      case 'storage':
-        return Math.min(baseTimeout / 4, 30000); // Shorter for storage
-      case 'network':
-        return Math.min(baseTimeout / 2, 60000); // Medium for network
-      case 'general':
-      default:
-        return baseTimeout;
-    }
-  },
-  
-  /**
-   * Check if a feature is enabled
-   */
-  isFeatureEnabled: (feature: 'metrics' | 'neural' | 'debug'): boolean => {
-    const config = getSharedConfig();
-    switch (feature) {
-      case 'metrics':
-        return config.metrics.enabled;
-      case 'neural':
-        return config.neural.learning;
-      case 'debug':
-        return config.development.debug;
-      default:
-        return false;
-    }
-  },
+  get: (key: string, defaultValue?: any) => getConfig().get(key, defaultValue),
+  set: (key: string, value: any) => getConfig().set(key, value),
+  has: (key: string) => getConfig().has(key),
+  reload: () => reloadConfig(),
+  validate: () => validateConfig(),
+  isDebug: () => isDebugMode(),
+  areMetricsEnabled: () => areMetricsEnabled(),
+  getStorageConfig: () => getStorageConfig(),
+  getNeuralConfig: () => getNeuralConfig(),
+  getTelemetryConfig: () => getTelemetryConfig(),
+  toObject: () => globalConfig?.toObject() || {},
+  getSchema: () => globalConfig?.getSchema() || {}
 };
 
-// Default export for convenience
-export default {
-  getSharedConfig,
-  getZenEnv,
-  isDebugMode,
-  areMetricsEnabled,
-  getStorageConfig,
-  getNeuralConfig,
-  reloadSharedConfig,
-  validateSharedConfig,
-  watchSharedConfig,
-  configHelpers,
-  ZEN_ENV_MAPPINGS,
-  CONFIG_SCHEMA,
-};
+// Export the global config as default
+export default getConfig();

@@ -3,7 +3,7 @@
  * Provides advanced coordination capabilities for distributed memory management.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 // BackendInterface type for compatibility - matches core memory-system.ts
 export interface BackendInterface {

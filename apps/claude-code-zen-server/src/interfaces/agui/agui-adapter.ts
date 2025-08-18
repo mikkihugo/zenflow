@@ -8,7 +8,7 @@
  * @file Agui adapter implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import * as readline from 'node:readline';
 import { getLogger } from '../../config/logging-config';
 

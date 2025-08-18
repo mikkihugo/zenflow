@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "composite": true,
     "rootDir": "./",
     "outDir": "dist",
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
     "types": ["node"],
     "skipLibCheck": true,
     "declaration": true,
@@ -34,7 +35,9 @@
     "verbatimModuleSyntax": false
   },
   "include": [
-    "./*.ts"
+    "index.ts",
+    "src/**/*.ts",
+    "src/**/*.d.ts"
   ],
   "exclude": [
     "node_modules",

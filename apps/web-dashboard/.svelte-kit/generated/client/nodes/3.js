@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/agu/+page.svelte";
+export { default as component } from "../../../../src/routes/agui/+page.svelte";

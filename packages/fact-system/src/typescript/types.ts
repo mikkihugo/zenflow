@@ -47,6 +47,9 @@ export interface FactSearchQuery {
   /** Fact types to search within */
   factTypes?: ('npm-package' | 'github-repo' | 'security-advisory' | 'hex-package' | 'api-docs' | 'rust-crate' | 'go-module' | 'perl-package' | 'java-package' | 'gitlab-repo' | 'bitbucket-repo')[];
   
+  /** Data sources to search within */
+  sources?: string[];
+  
   /** Maximum results to return */
   limit?: number;
   
@@ -474,9 +477,9 @@ export interface FactCacheEntry {
   accessCount: number;
 }
 
-/**
- * Export all types
- */
+// =============================================================================
+// EXPORT ALL TYPES - Comprehensive fact system types
+// =============================================================================
 /**
  * Rust crate fact result (from crates.io)
  */
@@ -901,23 +904,22 @@ export interface BitbucketRepoFactResult {
   timestamp: number;
 }
 
-export type {
-  FactSystemConfig,
-  FactSearchQuery,
-  FactSearchResult,
-  FactQuery,
-  FactResult,
-  NPMFactResult,
-  GitHubFactResult,
-  SecurityFactResult,
-  HexFactResult,
-  APIDocumentationFactResult,
-  RustCrateFactResult,
-  GoModuleFactResult,
-  PerlPackageFactResult,
-  JavaPackageFactResult,
-  GitLabRepoFactResult,
-  BitbucketRepoFactResult,
-  FactSystemStats,
-  FactCacheEntry
-};
+// =============================================================================
+// MISSING TYPES - Add placeholder types for missing exports
+// =============================================================================
+
+export type FactSourceType = 'npm' | 'github' | 'rust' | 'go' | 'api' | 'security';
+
+export interface FactProcessingOptions {
+  parallel?: boolean;
+  timeout?: number;
+  retries?: number;
+  cacheResults?: boolean;
+}
+
+export interface RustEngineConfig {
+  enabled: boolean;
+  maxWorkers?: number;
+  memoryLimit?: number;
+  wasmPath?: string;
+}

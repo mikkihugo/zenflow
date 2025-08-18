@@ -1,0 +1,40 @@
+[Unit]
+Description=Claude Code Zen - AI Swarm Orchestration Platform
+Documentation=https://github.com/zen-neural/claude-code-zen
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=mhugo
+Group=mhugo
+WorkingDirectory=/home/mhugo/code/claude-code-zen
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=HOST=0.0.0.0
+ExecStartPre=/bin/bash -c 'sudo ss -tlnp | grep :3000 | grep -o "pid=[0-9]*" | cut -d"=" -f2 | xargs -r sudo kill -9 || true'
+ExecStart=/home/mhugo/.local/share/mise/installs/node/22.17.1/bin/node apps/claude-code-zen-server/scripts/dev-runner.js
+ExecReload=/bin/kill -SIGUSR2 $MAINPID
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Graceful shutdown
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=false
+ProtectHome=false
+ReadWritePaths=/home/mhugo/code/claude-code-zen
+PrivateTmp=false
+
+# Resource limits
+LimitNOFILE=65536
+LimitNPROC=32768
+
+[Install]
+WantedBy=multi-user.target

@@ -83,11 +83,15 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
       selectedAgent = availableAgents[0] as any;
     }
 
+    if (!selectedAgent) {
+      throw new Error('No agent selected by weighted round robin');
+    }
+
     // Decrease the current weight of selected agent
-    const selectedWeight = this.weights.get(
-      selectedAgent?.id
-    )! as any as any as any as any;
-    selectedWeight.currentWeight -= totalWeight;
+    const selectedWeight = this.weights.get(selectedAgent.id);
+    if (selectedWeight) {
+      selectedWeight.currentWeight -= totalWeight;
+    }
 
     // Calculate confidence and alternatives
     const confidence = this.calculateConfidence(
@@ -104,7 +108,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     return {
       selectedAgent,
       confidence,
-      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight})`,
+      reasoning: `Selected based on weighted round robin (weight: ${selectedWeight?.effectiveWeight || 'unknown'})`,
       alternativeAgents: alternatives,
       estimatedLatency: this.estimateLatency(selectedAgent, metrics),
       expectedQuality: this.estimateQuality(selectedAgent, metrics),

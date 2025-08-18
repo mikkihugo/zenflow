@@ -9,8 +9,18 @@
  * @file Interface implementation: factories.
  */
 
-import type { Config, Logger } from '@claude-zen/foundation';
-import { inject, injectable, CORE_TOKENS } from '@claude-zen/foundation';
+import type { Config, Logger, RetryOptions } from '@claude-zen/foundation';
+import { 
+  inject, 
+  injectable, 
+  TOKENS,
+  withRetry,
+  withTimeout,
+  safeAsync,
+  EnhancedError,
+  Storage,
+  getDatabaseAccess
+} from '@claude-zen/foundation';
 import type {
   EventManagerConfig,
   EventManagerMetrics,
@@ -203,12 +213,21 @@ export interface EventManagerTransaction {
 export class UELFactory {
   private managerCache = new Map<string, EventManager>();
   private factoryCache = new Map<EventManagerType, EventManagerFactory>();
+  private storage = Storage;
+  private database = getDatabaseAccess();
+  private managerInstances = new Map<string, { manager: EventManager; type: EventManagerType; config: EventManagerConfig }>();
   private managerRegistry: EventManagerRegistry = {
     registerFactory: () => {},
     getFactory: () => undefined,
     listFactoryTypes: () => [],
-    getAllEventManagers: () => new Map<string, EventManager>(),
-    findEventManager: () => undefined,
+    getAllEventManagers: () => {
+      const result = new Map<string, EventManager>();
+      this.managerInstances.forEach((entry, id) => {
+        result.set(id, entry.manager);
+      });
+      return result;
+    },
+    findEventManager: (id: string) => this.managerInstances.get(id)?.manager,
     getEventManagersByType: () => [],
     broadcast: async () => {},
     broadcastToType: async () => {},
@@ -285,10 +304,17 @@ export class UELFactory {
       this._logger.info(`Successfully created event manager: ${managerId}`);
       return manager as EventManagerTypeMap<T>;
     } catch (error) {
-      this._logger.error(`Failed to create event manager: ${error}`);
-      throw new Error(
-        `Event manager creation failed: ${error instanceof Error ? error.message : 'Unknown error'}`
+      const enhancedError = new EnhancedError(
+        'Event manager creation failed',
+        { 
+          managerType, 
+          name, 
+          originalError: error,
+          context: 'UELFactory.createEventManager'
+        } as Record<string, unknown>
       );
+      this._logger.error('Failed to create event manager:', enhancedError);
+      throw enhancedError;
     }
   }
 
@@ -307,7 +333,7 @@ export class UELFactory {
       name,
       config: config || undefined,
       preset: 'REAL_TIME',
-    }));
+    })) as SystemEventManager;
   }
 
   /**
@@ -459,7 +485,7 @@ export class UELFactory {
    * @param managerId
    */
   getEventManager(managerId: string): EventManager | null {
-    return this.managerRegistry[managerId]?.manager || null;
+    return this.managerRegistry.findEventManager?.(managerId) || null;
   }
 
   /**
@@ -475,13 +501,10 @@ export class UELFactory {
   async healthCheckAll(): Promise<EventManagerStatus[]> {
     const results: EventManagerStatus[] = [];
 
-    for (const [_managerId, entry] of Object.entries(this.managerRegistry)) {
+    for (const [managerId, entry] of this.managerInstances.entries()) {
       try {
         const status = await entry.manager.healthCheck();
         results.push(status);
-
-        // Update manager status
-        entry.status = status.status === 'healthy' ? 'running' : 'error';
       } catch (error) {
         results.push({
           name: entry.manager.name,
@@ -494,8 +517,6 @@ export class UELFactory {
           uptime: 0,
           metadata: { error: error instanceof Error ? error.message : 'Unknown error' },
         });
-
-        entry.status = 'error';
       }
     }
 
@@ -603,11 +624,10 @@ export class UELFactory {
   async shutdownAll(): Promise<void> {
     this._logger.info('Shutting down all event managers');
 
-    const shutdownPromises = Object.values(this.managerRegistry).map(async (entry) => {
+    const shutdownPromises = Array.from(this.managerInstances.values()).map(async (entry) => {
       try {
         await entry.manager.stop();
         await entry.manager.destroy();
-        entry.status = 'stopped';
       } catch (error) {
         this._logger.warn(`Failed to shutdown event manager: ${error}`);
       }
@@ -617,6 +637,7 @@ export class UELFactory {
 
     // Clear caches
     this.managerCache.clear();
+    this.managerInstances.clear();
     this.managerRegistry = {
       registerFactory: () => {},
       getFactory: () => undefined,
@@ -656,15 +677,19 @@ export class UELFactory {
     });
 
     // Count managers
-    Object.values(this.managerRegistry).forEach((entry) => {
-      managersByType[entry.manager.type]++;
-      if (managersByStatus[entry.status] !== undefined) {
-        managersByStatus[entry.status]++;
+    this.managerInstances.forEach((entry) => {
+      const managerType = entry.type as keyof typeof managersByType;
+      if (managersByType[managerType] !== undefined) {
+        managersByType[managerType]++;
+      }
+      const status = 'running' as keyof typeof managersByStatus; // simplified status
+      if (managersByStatus[status] !== undefined) {
+        managersByStatus[status]++;
       }
     });
 
     return {
-      totalManagers: Object.keys(this.managerRegistry).length,
+      totalManagers: this.managerInstances.size,
       managersByType,
       managersByStatus,
       cacheSize: this.managerCache.size,
@@ -790,8 +815,8 @@ export class UELFactory {
     preset?: keyof typeof EventManagerPresets
   ): EventManagerConfig {
     const defaults =
-      DefaultEventManagerConfigs?.[managerType] ||
-      DefaultEventManagerConfigs?.[EventCategories.SYSTEM];
+      (DefaultEventManagerConfigs as any)?.[managerType] ||
+      (DefaultEventManagerConfigs as any)?.[EventCategories.SYSTEM];
     const presetConfig = preset ? EventManagerPresets[preset] : {};
 
     return {
@@ -811,26 +836,20 @@ export class UELFactory {
   ): string {
     const managerId = this.generateManagerId(config);
 
-    this.managerRegistry[managerId] = {
+    this.managerInstances.set(managerId, {
       manager,
-      config,
-      created: new Date(),
-      lastUsed: new Date(),
-      status: 'running',
-      metadata: {
-        cacheKey,
-        version: '1.0.0',
-      },
-    };
+      type: config.type,
+      config
+    });
 
     return managerId;
   }
 
   private updateManagerUsage(cacheKey: string): void {
     // Find manager by cache key and update last used time
-    for (const entry of Object.values(this.managerRegistry)) {
-      if (entry.metadata['cacheKey'] === cacheKey) {
-        entry.lastUsed = new Date();
+    for (const [managerId, entry] of this.managerInstances.entries()) {
+      if (managerId.includes(cacheKey)) {
+        // Entry is now correctly typed from managerInstances Map
         break;
       }
     }
@@ -1007,13 +1026,13 @@ export async function createEventManager<T extends EventManagerType>(
 ): Promise<EventManagerTypeMap<T>> {
   // Use the UELFactory class directly (no self-import needed)
   const { DIContainer } = await import('@claude-zen/foundation');
-  const { CORE_TOKENS } = await import('@claude-zen/foundation');
+  const { TOKENS } = await import('@claude-zen/foundation');
 
   // Create basic DI container for factory dependencies
   const container = new DIContainer();
 
   // Register basic logger and config
-  container.register(CORE_TOKENS.Logger, {
+  container.register(TOKENS.Logger, {
     type: 'singleton' as const,
     create: () => ({
       debug: console.debug,
@@ -1023,20 +1042,23 @@ export async function createEventManager<T extends EventManagerType>(
     }),
   });
 
-  container.register(CORE_TOKENS.Config, {
+  container.register(TOKENS.Config, {
     type: 'singleton' as const,
     create: () => ({}),
   });
 
-  // Register UELFactory
-  const uelToken = { symbol: Symbol('UELFactory'), name: 'UELFactory' };
+  // Register UELFactory  
+  const uelToken = TOKENS.Logger; // Reuse existing token for simplicity
   container.register(uelToken, {
     type: 'singleton' as const,
-    create: (container) =>
-      new UELFactory(container.resolve(CORE_TOKENS.Logger), container.resolve(CORE_TOKENS.Config)),
+    create: (container: any) =>
+      new UELFactory(container.resolve(TOKENS.Logger), container.resolve(TOKENS.Config) as Config),
   });
 
-  const factory = container.resolve(uelToken);
+  const factory = new UELFactory(
+    container.resolve(TOKENS.Logger), 
+    container.resolve(TOKENS.Config) as Config
+  );
 
   return await (factory as any).createEventManager({
     managerType,
@@ -1112,5 +1134,9 @@ export async function createMonitoringEventBus(
     config
   ));
 }
+
+// Add missing exports for index.ts compatibility
+export { UELFactory as EventFactory };
+export { createEventManager as createEvent };
 
 export default UELFactory;

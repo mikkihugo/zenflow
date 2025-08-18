@@ -12,7 +12,7 @@
  * MPORTANT: "Collective" = per workspace, "FACT" = global documentation database
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { access, readdir, readFile, stat } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
 import EnvironmentDetector, {
@@ -63,6 +63,28 @@ export interface WorkspaceFactStats {
   cacheHitRate: number;
   // Reference to separate RAG system (not part of FACT system)
   ragSystemAvailable?: boolean;
+  ragEnabled?: boolean;
+}
+
+export interface ToolKnowledge {
+  documentation?: unknown;
+  snippets?: unknown[];
+  examples?: unknown[];
+  available?: boolean;
+  version?: string;
+  name?: string;
+  processToolKnowledge?: unknown;
+  searchTemplates?: unknown;
+}
+
+export interface ProjectStructure {
+  directories: number;
+  files: number;
+  srcDirectory: boolean;
+  testDirectory: boolean;
+  docsDirectory: boolean;
+  configFiles: number;
+  mainLanguage: string;
 }
 
 /**
@@ -73,9 +95,14 @@ export interface WorkspaceFactStats {
 export class WorkspaceCollectiveSystem extends EventEmitter {
   private facts = new Map<string, WorkspaceFact>();
   private envDetector: EnvironmentDetector;
-  private refreshTimer: NodeJS.Timer | null = null;
+  private refreshTimer: NodeJS.Timeout | null = null;
   private isInitialized = false;
-  private globalFactDatabase?: unknown; // Reference to global FACT system if available
+  private globalFactDatabase?: { 
+    initialize(): Promise<void>; 
+    processToolKnowledge(toolName: string, version: string, queryType: string): Promise<ToolKnowledge>;
+    searchTemplates(query: string): Promise<any[]>;
+    [key: string]: any;
+  } | null; // Reference to global FACT system if available
 
   constructor(
     private workspaceId: string,
@@ -119,7 +146,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         });
 
         // Initialize the Rust FACT bridge
-        await this.globalFactDatabase.initialize();
+        await this.globalFactDatabase?.initialize();
         console.log(
           '✅ Rust FACT system initialized for workspace:',
           this.workspaceId
@@ -387,7 +414,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
-      ragEnabled: !!this.workspaceVectorDB,
+      ragEnabled: !!this.globalFactDatabase,
     };
   }
 
@@ -402,7 +429,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     toolName: string,
     version: string,
     queryType: string = 'docs'
-  ): Promise<unknown> {
+  ): Promise<ToolKnowledge | null> {
     if (!this.globalFactDatabase) {
       return null;
     }
@@ -436,7 +463,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
     try {
       // Use Rust FACT's powerful template search system
-      const templates = await this.globalFactDatabase.searchTemplates([query]);
+      const templates = await this.globalFactDatabase.searchTemplates(query);
 
       return templates.map((template) => ({
         tool: template.name.split(' ')[0].toLowerCase(),
@@ -455,7 +482,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
    * Check which tools have version-specific documentation in global FACT database
    */
   private async getToolsWithDocumentation(
-    tools: unknown[]
+    tools: EnvironmentTool[]
   ): Promise<{ name: string; version?: string; hasDocumentation: boolean }[]> {
     const toolsWithDocs: {
       name: string;
@@ -584,7 +611,12 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       }
     >
   > {
-    const allKnowledge: Record<string, unknown> = {};
+    const allKnowledge: Record<string, {
+      tool: string;
+      version: string;
+      knowledge: unknown;
+      hasDocumentation: boolean;
+    }> = {};
     const envSnapshot = this.envDetector.getSnapshot();
 
     if (!(this.globalFactDatabase && envSnapshot?.tools)) {
@@ -632,7 +664,12 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       category: string;
     }[]
   > {
-    const suggestions: unknown[] = [];
+    const suggestions: {
+      tool: string;
+      versions: string[];
+      hasDocumentation: boolean;
+      category: string;
+    }[] = [];
 
     if (!this.globalFactDatabase) {
       return suggestions;
@@ -1150,7 +1187,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   /**
    * Analyze project structure
    */
-  private async analyzeProjectStructure(): Promise<unknown> {
+  private async analyzeProjectStructure(): Promise<ProjectStructure> {
     const structure = {
       directories: 0,
       files: 0,

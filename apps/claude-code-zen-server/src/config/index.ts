@@ -1,125 +1,53 @@
 /**
- * @fileoverview Unified Configuration System - Central export point and convenience API
+ * @fileoverview Main App Configuration - Re-exports from @claude-zen/foundation
  * 
- * This module provides a comprehensive, unified interface to the entire Claude Code Zen
- * configuration system. It serves as the central export point for all configuration
- * functionality, offering both direct exports and a convenient object-based API for
- * common configuration operations.
+ * This module re-exports the configuration system from @claude-zen/foundation
+ * and provides app-specific configuration extensions for the claude-code-zen server.
  * 
- * **Key Features:**
- * - **Unified Exports**: Single import point for all configuration functionality
- * - **Convenience API**: Object-based API with common operations (config.get, config.set)
- * - **Health Monitoring**: Built-in configuration health checking and validation
- * - **Production Readiness**: Production deployment validation and port conflict detection
- * - **Type Safety**: Full TypeScript support with comprehensive type exports
- * - **Event Handling**: Configuration change listeners and event management
- * - **Multiple Formats**: JSON/YAML export capabilities for configuration data
- * 
- * **Configuration Categories:**
- * - Repository configuration with intelligent defaults
- * - System constants and URL building utilities
- * - Health checking and deployment readiness validation
- * - Configuration loading and management
- * - Startup validation and CLI tools
- * - Type definitions and validation schemas
- * 
- * @example Basic Configuration Usage
- * ```typescript
- * import { config } from './config';
- * 
- * // Initialize configuration system
- * await config.init(['./config.json', './local.config.json']);
- * 
- * // Get configuration values
- * const port = config.get<number>('core.port');
- * const dbConfig = config.getSection('database');
- * 
- * // Update configuration
- * config.set('core.logLevel', 'debug');
- * 
- * // Listen for changes
- * config.onChange((event) => {
- *   console.log('Configuration changed:', event);
- * });
- * ```
- * 
- * @example Repository Configuration
- * ```typescript
- * import { createRepoConfig, validateRepoConfig, logRepoConfigStatus } from './config';
- * 
- * // Create optimized repository configuration
- * const repoConfig = createRepoConfig('/path/to/project', {
- *   enableMLOptimization: true,
- *   dsyIntegration: {
- *     enabled: true,
- *     neuralEnhancement: true
- *   }
- * });
- * 
- * // Validate and log status
- * const validation = validateRepoConfig(repoConfig);
- * if (validation.valid) {
- *   logRepoConfigStatus(repoConfig);
- * }
- * ```
- * 
- * @example Health Monitoring
- * ```typescript
- * import { config } from './config';
- * 
- * // Check overall system health
- * const healthReport = await config.getHealthReport();
- * console.log(`System health: ${healthReport.status} (${healthReport.score}/100)`);
- * 
- * // Validate production readiness
- * const isReady = await config.isProductionReady();
- * if (!isReady) {
- *   console.error('System not ready for production deployment');
- * }
- * 
- * // Check for port conflicts
- * const portCheck = await config.checkPorts();
- * if (portCheck.conflicts.length > 0) {
- *   console.warn('Port conflicts detected:', portCheck.conflicts);
- * }
- * ```
- * 
- * @example Advanced Usage with Direct Exports
- * ```typescript
- * import {
- *   ConfigurationManager,
- *   ConfigHealthChecker,
- *   ConfigValidator,
- *   runStartupValidation
- * } from './config';
- * 
- * // Create custom configuration manager
- * const customManager = new ConfigurationManager();
- * await customManager.initialize(['./custom-config.json']);
- * 
- * // Perform startup validation
- * const validation = await runStartupValidation({
- *   validateProduction: true,
- *   checkPorts: true,
- *   logResults: true
- * });
- * ```
+ * REFACTORED: Replaced duplicate config implementation with @claude-zen/foundation imports
  * 
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.43
  * @version 2.1.0
- * 
- * @see {@link ConfigurationManager} Core configuration management
- * @see {@link ConfigHealthChecker} Health monitoring and validation
- * @see {@link RepoConfig} Repository configuration interface
- * @see {@link SystemConfiguration} System configuration interface
  */
 
-// Import the configManager instance for use in convenience functions
-import { configManager } from './manager';
-import type { SystemConfiguration } from '../types/config-types';
+// ============================================================================
+// CORE CONFIG - Use @claude-zen/foundation instead of duplicate implementation
+// ============================================================================
 
-// Repository configuration
+// Import foundation config system
+import { 
+  getConfig, 
+  reloadConfig, 
+  isDebugMode, 
+  areMetricsEnabled,
+  getStorageConfig,
+  getNeuralConfig,
+  getTelemetryConfig,
+  validateConfig,
+  configHelpers,
+  type Config
+} from '@claude-zen/foundation';
+
+// Re-export foundation config
+export { 
+  getConfig, 
+  reloadConfig, 
+  isDebugMode, 
+  areMetricsEnabled,
+  getStorageConfig,
+  getNeuralConfig,
+  getTelemetryConfig,
+  validateConfig,
+  configHelpers,
+  type Config
+};
+
+// ============================================================================
+// APP-SPECIFIC CONFIG EXTENSIONS
+// ============================================================================
+
+// Repository configuration (app-specific)
 export {
   createRepoConfig,
   defaultRepoConfig,
@@ -127,7 +55,8 @@ export {
   type RepoConfig,
   validateRepoConfig,
 } from './default-repo-config';
-// Constants and defaults
+
+// App-specific constants and URL builders
 export {
   createURLBuilder,
   DEFAULT_CONFIG,
@@ -137,12 +66,12 @@ export {
   getMonitoringDashboardURL,
   getWebDashboardURL,
   PRODUCTION_VALIDATION_SCHEMA,
-  // URL Builder functionality (consolidated from url-builder.ts)
   URLBuilder,
   type URLBuilderConfig,
   VALIDATION_RULES,
 } from './defaults';
-// Health checking and monitoring
+
+// App-specific health checking
 export {
   ConfigHealthChecker,
   configHealthChecker,
@@ -150,20 +79,17 @@ export {
   createDeploymentReadinessEndpoint,
   initializeConfigHealthChecker,
 } from './health-checker';
-export { ConfigurationLoader } from './loader';
-// Core exports
-export { ConfigurationManager, configManager } from './manager';
-export type {
-  StartupValidationOptions,
-  StartupValidationResult,
-} from './startup-validator';
-// Startup validation
+
+// App-specific startup validation
 export {
   cli as runStartupValidationCLI,
   runStartupValidation,
   validateAndExit,
+  type StartupValidationOptions,
+  type StartupValidationResult,
 } from './startup-validator';
-// Types
+
+// App-specific types
 export type {
   ConfigChangeEvent,
   ConfigHealthReport,
@@ -174,6 +100,7 @@ export type {
   DatabaseConfig,
   EnvironmentMappings,
   InterfaceConfig,
+  MCPConfig,
   MemoryConfig,
   NeuralConfig,
   OptimizationConfig,
@@ -182,98 +109,94 @@ export type {
   ValidationResult,
   WebConfig,
 } from '../types/config-types';
-// Validation system
-export { ConfigValidator } from './validator';
 
-// Convenience functions
+// ============================================================================
+// CONVENIENCE API - Uses foundation config system
+// ============================================================================
+
+/**
+ * Convenience configuration API that uses @claude-zen/foundation
+ * instead of duplicate implementation.
+ */
 export const config = {
   /**
-   * Initialize configuration system.
-   *
-   * @param configPaths
+   * Get configuration value using foundation config.
    */
-  async init(configPaths?: string[]) {
-    return configManager?.initialize(configPaths);
+  get<T = any>(path: string, defaultValue?: T): T {
+    return getConfig().get(path, defaultValue);
   },
 
   /**
-   * Get configuration value.
-   *
-   * @param path
+   * Set configuration value using foundation config.
    */
-  get<T = any>(path: string): T | undefined {
-    return configManager?.get<T>(path);
+  set(path: string, value: any): void {
+    getConfig().set(path, value);
   },
 
   /**
-   * Get configuration section.
-   *
-   * @param section
+   * Check if configuration has a key.
    */
-  getSection<K extends keyof SystemConfiguration>(
-    section: K
-  ): SystemConfiguration[K] {
-    return configManager?.getSection(section);
+  has(path: string): boolean {
+    return getConfig().has(path);
   },
 
   /**
-   * Update configuration value.
-   *
-   * @param path
-   * @param value
+   * Get all configuration as object.
    */
-  set(path: string, value: unknown) {
-    return configManager?.update(path, value);
+  getAll() {
+    return configHelpers.toObject();
   },
 
   /**
-   * Get full configuration.
+   * Reload configuration from environment and files.
    */
-  getAll(): SystemConfiguration {
-    return configManager?.getConfig();
+  reload(): void {
+    reloadConfig();
   },
 
   /**
-   * Validate configuration.
+   * Validate current configuration.
    */
-  validate() {
-    return configManager?.validate();
+  validate(): void {
+    validateConfig();
   },
 
   /**
-   * Reload from sources.
+   * Check if debug mode is enabled.
    */
-  reload() {
-    return configManager?.reload();
+  isDebug(): boolean {
+    return isDebugMode();
   },
 
   /**
-   * Export configuration.
-   *
-   * @param format
+   * Check if metrics are enabled.
    */
-  export(format: 'json' | 'yaml' = 'json'): string {
-    return configManager?.export(format);
+  areMetricsEnabled(): boolean {
+    return areMetricsEnabled();
   },
 
   /**
-   * Listen for configuration changes.
-   *
-   * @param callback
+   * Get storage configuration.
    */
-  onChange(callback: (event: unknown) => void) {
-    configManager?.on('config:changed', callback);
+  getStorageConfig() {
+    return getStorageConfig();
   },
 
   /**
-   * Remove change listener.
-   *
-   * @param callback
+   * Get neural configuration.
    */
-  removeListener(callback: (event: unknown) => void) {
-    configManager?.off('config:changed', callback);
+  getNeuralConfig() {
+    return getNeuralConfig();
   },
 
+  /**
+   * Get telemetry configuration.
+   */
+  getTelemetryConfig() {
+    return getTelemetryConfig();
+  },
+
+  // App-specific extensions for health checking
   /**
    * Get configuration health report.
    */
@@ -301,18 +224,12 @@ export const config = {
 
   /**
    * Run startup validation.
-   *
-   * @param options - Startup validation options
    */
   async validateStartup(options?: unknown) {
     const { runStartupValidation } = await import('./startup-validator');
     return runStartupValidation(options as any);
   },
 };
-
-// Legacy compatibility with old config manager
-import type { ConfigurationManager } from './manager';
-export type ConfigManager = ConfigurationManager;
 
 // Default export for convenience
 export default config;

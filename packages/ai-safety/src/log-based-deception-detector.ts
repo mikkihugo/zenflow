@@ -5,9 +5,9 @@
  * Cross-references AI claims with actual logged tool usage.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import { getLogger } from '../../../config/logging-config';
+import { getLogger, safeAsync, Result } from '@claude-zen/foundation';
+import * as fs from 'fs/promises';
 
 export interface LogAnalysisResult {
   toolCallsFound: string[];
@@ -77,23 +77,32 @@ export class LogBasedDeceptionDetector {
   }
 
   /**
-   * Read log file safely.
+   * Read log file safely using foundation error handling.
    *
    * @param filename
    */
   private async readLogFile(filename: string): Promise<string> {
     const filepath = path.join(this.logDir, filename);
-    try {
-      if (fs.existsSync(filepath)) {
+    
+    const result = await safeAsync(async () => {
+      try {
+        await fs.access(filepath);
+        const content = await fs.readFile(filepath, 'utf8');
         // Read last 1000 lines (recent activity)
-        const content = fs.readFileSync(filepath, 'utf8');
         return content.split('\n').slice(-1000).join('\n');
+      } catch {
+        return '';
       }
-      return '';
-    } catch (error) {
-      this.logger.warn(`Failed to read log file ${filename}`, { error });
+    });
+
+    if (result.isErr()) {
+      this.logger.warn(`Failed to read log file ${filename}`, { 
+        error: result.error.message 
+      });
       return '';
     }
+
+    return result.value;
   }
 
   /**

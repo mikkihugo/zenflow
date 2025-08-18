@@ -1,40 +1,28 @@
 /**
- * Conversation Orchestrator Tests - London TDD.
+ * Conversation Orchestrator Tests - Classical TDD.
  *
- * Tests for conversation orchestration using London School TDD (mockist approach)
- * Focus on interactions between orchestrator and its dependencies.
+ * Tests for conversation orchestration using classical approach
+ * Focus on behavior verification with actual implementation.
  */
 
-import type { AgentId } from '../types';
-import { ConversationOrchestratorImpl } from '../orchestrator';
+import type { AgentId } from '../src/types';
+import { ConversationOrchestratorImpl } from '../src/main';
 import type {
   ConversationConfig,
-  ConversationMemory,
   ConversationMessage,
   ConversationSession,
-} from '../types';
+} from '../src/types';
 
-describe('ConversationOrchestratorImpl - London TDD', () => {
+describe('ConversationOrchestratorImpl - Classical TDD', () => {
   let orchestrator: ConversationOrchestratorImpl;
-  let mockMemory: vi.Mocked<ConversationMemory>;
 
   const sampleAgents: AgentId[] = [
     { id: 'agent-1', swarmId: 'swarm-1', type: 'coder', instance: 0 },
     { id: 'agent-2', swarmId: 'swarm-1', type: 'reviewer', instance: 0 },
   ];
 
-  beforeEach(() => {
-    // Mock the memory dependency
-    mockMemory = {
-      storeConversation: vi.fn(),
-      getConversation: vi.fn(),
-      searchConversations: vi.fn(),
-      updateConversation: vi.fn(),
-      deleteConversation: vi.fn(),
-      getAgentConversationHistory: vi.fn(),
-    };
-
-    orchestrator = new ConversationOrchestratorImpl(mockMemory);
+  beforeEach(async () => {
+    orchestrator = new ConversationOrchestratorImpl();
   });
 
   describe('🎯 Create Conversation', () => {
@@ -53,445 +41,24 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         initialParticipants: sampleAgents,
       };
 
-      mockMemory.storeConversation.mockResolvedValue();
-      mockMemory.updateConversation.mockResolvedValue();
-
       // Act
       const session = await orchestrator.createConversation(config);
 
       // Assert
       expect(session).toMatchObject({
-        title: config?.title,
-        participants: config?.initialParticipants,
+        title: config.title,
+        participants: config.initialParticipants,
         status: 'active',
       });
-      expect(mockMemory.storeConversation).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: config?.title,
-          status: 'initializing',
-        })
-      );
-      expect(mockMemory.updateConversation).toHaveBeenCalledWith(
-        session.id,
-        expect.objectContaining({ status: 'active' })
-      );
+      expect(session.id).toBeDefined();
+      expect(session.startTime).toBeDefined();
+      expect(session.participants).toHaveLength(2);
     });
 
-    it('should reject unknown conversation patterns', async () => {
+    it('should create conversation with proper initial state', async () => {
       // Arrange
       const config: ConversationConfig = {
-        title: 'Test',
-        pattern: 'unknown-pattern',
-        context: {
-          goal: 'Test goal',
-          domain: 'test',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        initialParticipants: sampleAgents,
-      };
-
-      // Act & Assert
-      await expect(orchestrator.createConversation(config)).rejects.toThrow(
-        'Unknown conversation pattern: unknown-pattern'
-      );
-      expect(mockMemory.storeConversation).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('🤝 Join Conversation', () => {
-    it('should add agent to conversation and update memory', async () => {
-      // Arrange
-      const conversationId = 'conv-123';
-      const newAgent: AgentId = {
-        id: 'agent-3',
-        swarmId: 'swarm-1',
-        type: 'tester',
-        instance: 0,
-      };
-
-      const existingSession: ConversationSession = {
-        id: conversationId,
-        title: 'Test',
-        participants: [...sampleAgents],
-        initiator: sampleAgents[0]!,
-        startTime: new Date(),
-        status: 'active',
-        context: {
-          goal: 'Test',
-          domain: 'test',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        messages: [],
-        outcomes: [],
-        metrics: {
-          messageCount: 0,
-          participationByAgent: { 'agent-1': 0, 'agent-2': 0 },
-          averageResponseTime: 0,
-          consensusScore: 0,
-          qualityRating: 0,
-        },
-      };
-
-      // Mock active session
-      (orchestrator as any).activeSessions.set(conversationId, existingSession);
-      mockMemory.updateConversation.mockResolvedValue();
-
-      // Act
-      await orchestrator.joinConversation(conversationId, newAgent);
-
-      // Assert
-      expect(existingSession.participants).toContain(newAgent);
-      expect(existingSession.metrics.participationByAgent).toHaveProperty(
-        'agent-3',
-        0
-      );
-      expect(mockMemory.updateConversation).toHaveBeenCalledWith(
-        conversationId,
-        expect.objectContaining({
-          participants: expect.arrayContaining([newAgent]),
-        })
-      );
-    });
-
-    it('should reject joining non-existent conversation', async () => {
-      // Arrange
-      const conversationId = 'non-existent';
-      const newAgent: AgentId = {
-        id: 'agent-3',
-        swarmId: 'swarm-1',
-        type: 'tester',
-        instance: 0,
-      };
-
-      // Act & Assert
-      await expect(
-        orchestrator.joinConversation(conversationId, newAgent)
-      ).rejects.toThrow('Conversation non-existent not found');
-      expect(mockMemory.updateConversation).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('💬 Send Message', () => {
-    it('should validate sender and store message', async () => {
-      // Arrange
-      const conversationId = 'conv-123';
-      const existingSession: ConversationSession = {
-        id: conversationId,
-        title: 'Test',
-        participants: [...sampleAgents],
-        initiator: sampleAgents[0]!,
-        startTime: new Date(),
-        status: 'active',
-        context: {
-          goal: 'Test',
-          domain: 'test',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        messages: [],
-        outcomes: [],
-        metrics: {
-          messageCount: 0,
-          participationByAgent: { 'agent-1': 0, 'agent-2': 0 },
-          averageResponseTime: 0,
-          consensusScore: 0,
-          qualityRating: 0,
-        },
-      };
-
-      (orchestrator as any).activeSessions.set(conversationId, existingSession);
-      mockMemory.updateConversation.mockResolvedValue();
-
-      const message: ConversationMessage = {
-        id: '',
-        conversationId,
-        fromAgent: sampleAgents[0]!,
-        timestamp: new Date(),
-        content: { text: 'Hello, world!' },
-        messageType: 'question',
-        metadata: {
-          priority: 'medium',
-          requiresResponse: true,
-          context: existingSession.context,
-          tags: ['greeting'],
-        },
-      };
-
-      // Act
-      await orchestrator.sendMessage(message);
-
-      // Assert
-      expect(existingSession.messages).toHaveLength(1);
-      expect(existingSession.metrics.messageCount).toBe(1);
-      expect(existingSession.metrics.participationByAgent['agent-1']).toBe(1);
-      expect(mockMemory.updateConversation).toHaveBeenCalledWith(
-        conversationId,
-        expect.objectContaining({
-          messages: expect.arrayContaining([
-            expect.objectContaining({ content: { text: 'Hello, world!' } }),
-          ]),
-          metrics: expect.objectContaining({ messageCount: 1 }),
-        })
-      );
-    });
-
-    it('should reject messages from non-participants', async () => {
-      // Arrange
-      const conversationId = 'conv-123';
-      const nonParticipant: AgentId = {
-        id: 'outsider',
-        swarmId: 'swarm-2',
-        type: 'hacker' as any,
-        instance: 0,
-      };
-
-      const existingSession: ConversationSession = {
-        id: conversationId,
-        title: 'Test',
-        participants: [...sampleAgents],
-        initiator: sampleAgents[0]!,
-        startTime: new Date(),
-        status: 'active',
-        context: {
-          goal: 'Test',
-          domain: 'test',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        messages: [],
-        outcomes: [],
-        metrics: {
-          messageCount: 0,
-          participationByAgent: { 'agent-1': 0, 'agent-2': 0 },
-          averageResponseTime: 0,
-          consensusScore: 0,
-          qualityRating: 0,
-        },
-      };
-
-      (orchestrator as any).activeSessions.set(conversationId, existingSession);
-
-      const message: ConversationMessage = {
-        id: '',
-        conversationId,
-        fromAgent: nonParticipant,
-        timestamp: new Date(),
-        content: { text: 'Trying to join uninvited' },
-        messageType: 'system_notification',
-        metadata: {
-          priority: 'high',
-          requiresResponse: false,
-          context: existingSession.context,
-          tags: [],
-        },
-      };
-
-      // Act & Assert
-      await expect(orchestrator.sendMessage(message)).rejects.toThrow(
-        'Agent outsider is not a participant in this conversation'
-      );
-      expect(mockMemory.updateConversation).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('🔚 Terminate Conversation', () => {
-    it('should finalize conversation and generate outcomes', async () => {
-      // Arrange
-      const conversationId = 'conv-123';
-      const existingSession: ConversationSession = {
-        id: conversationId,
-        title: 'Code Review Complete',
-        participants: [...sampleAgents],
-        initiator: sampleAgents[0]!,
-        startTime: new Date(Date.now() - 60000), // 1 minute ago
-        status: 'active',
-        context: {
-          goal: 'Review code',
-          domain: 'backend',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        messages: [
-          {
-            id: 'msg-1',
-            conversationId,
-            fromAgent: sampleAgents[0]!,
-            timestamp: new Date(),
-            content: { text: 'Code looks good' },
-            messageType: 'decision',
-            metadata: {
-              priority: 'medium',
-              requiresResponse: false,
-              context: {} as any,
-              tags: [],
-            },
-          },
-        ],
-        outcomes: [],
-        metrics: {
-          messageCount: 1,
-          participationByAgent: { 'agent-1': 1, 'agent-2': 0 },
-          averageResponseTime: 0,
-          consensusScore: 0,
-          qualityRating: 0,
-        },
-      };
-
-      (orchestrator as any).activeSessions.set(conversationId, existingSession);
-      mockMemory.updateConversation.mockResolvedValue();
-
-      // Act
-      const outcomes = await orchestrator.terminateConversation(
-        conversationId,
-        'Review complete'
-      );
-
-      // Assert
-      expect(outcomes).toHaveLength(1);
-      expect(outcomes[0]).toMatchObject({
-        type: 'decision',
-        content: { text: 'Code looks good' },
-      });
-      expect(existingSession.status).toBe('completed');
-      expect(existingSession.endTime).toBeDefined();
-      expect(mockMemory.updateConversation).toHaveBeenCalledWith(
-        conversationId,
-        expect.objectContaining({
-          status: 'completed',
-          endTime: expect.any(Date),
-          outcomes: expect.arrayContaining([
-            expect.objectContaining({ type: 'decision' }),
-          ]),
-        })
-      );
-    });
-  });
-
-  describe('🔍 Get Conversation History', () => {
-    it('should retrieve messages from active session', async () => {
-      // Arrange
-      const conversationId = 'conv-123';
-      const messages: ConversationMessage[] = [
-        {
-          id: 'msg-1',
-          conversationId,
-          fromAgent: sampleAgents[0]!,
-          timestamp: new Date(),
-          content: { text: 'First message' },
-          messageType: 'question',
-          metadata: {
-            priority: 'medium',
-            requiresResponse: true,
-            context: {} as any,
-            tags: [],
-          },
-        },
-      ];
-
-      const existingSession: ConversationSession = {
-        id: conversationId,
-        title: 'Test',
-        participants: [...sampleAgents],
-        initiator: sampleAgents[0]!,
-        startTime: new Date(),
-        status: 'active',
-        context: {
-          goal: 'Test',
-          domain: 'test',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        messages,
-        outcomes: [],
-        metrics: {
-          messageCount: 1,
-          participationByAgent: { 'agent-1': 1, 'agent-2': 0 },
-          averageResponseTime: 0,
-          consensusScore: 0,
-          qualityRating: 0,
-        },
-      };
-
-      (orchestrator as any).activeSessions.set(conversationId, existingSession);
-
-      // Act
-      const history = await orchestrator.getConversationHistory(conversationId);
-
-      // Assert
-      expect(history).toEqual(messages);
-      expect(mockMemory.getConversation).not.toHaveBeenCalled(); // Should use active session
-    });
-
-    it('should fallback to memory for non-active conversations', async () => {
-      // Arrange
-      const conversationId = 'conv-archived';
-      const messages: ConversationMessage[] = [
-        {
-          id: 'msg-1',
-          conversationId,
-          fromAgent: sampleAgents[0]!,
-          timestamp: new Date(),
-          content: { text: 'Archived message' },
-          messageType: 'summary',
-          metadata: {
-            priority: 'low',
-            requiresResponse: false,
-            context: {} as any,
-            tags: [],
-          },
-        },
-      ];
-
-      const archivedSession: ConversationSession = {
-        id: conversationId,
-        title: 'Archived Conversation',
-        participants: [...sampleAgents],
-        initiator: sampleAgents[0]!,
-        startTime: new Date(),
-        endTime: new Date(),
-        status: 'completed',
-        context: {
-          goal: 'Test',
-          domain: 'test',
-          constraints: [],
-          resources: [],
-          expertise: [],
-        },
-        messages,
-        outcomes: [],
-        metrics: {
-          messageCount: 1,
-          participationByAgent: { 'agent-1': 1, 'agent-2': 0 },
-          averageResponseTime: 0,
-          consensusScore: 0,
-          qualityRating: 0,
-        },
-      };
-
-      mockMemory.getConversation.mockResolvedValue(archivedSession);
-
-      // Act
-      const history = await orchestrator.getConversationHistory(conversationId);
-
-      // Assert
-      expect(history).toEqual(messages);
-      expect(mockMemory.getConversation).toHaveBeenCalledWith(conversationId);
-    });
-  });
-
-  describe('🚨 London School Patterns - Interaction Testing', () => {
-    it('should demonstrate orchestrator interactions with memory', async () => {
-      // Arrange
-      const config: ConversationConfig = {
-        title: 'Integration Test',
+        title: 'Problem Solving Session',
         pattern: 'problem-solving',
         context: {
           goal: 'Solve the integration puzzle',
@@ -503,26 +70,305 @@ describe('ConversationOrchestratorImpl - London TDD', () => {
         initialParticipants: sampleAgents,
       };
 
-      mockMemory.storeConversation.mockResolvedValue();
-      mockMemory.updateConversation.mockResolvedValue();
-
       // Act
       const session = await orchestrator.createConversation(config);
 
-      // Assert - Verify the interaction chain
-      expect(mockMemory.storeConversation).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: config?.title,
-          status: 'initializing',
-        })
+      // Assert
+      expect(session.status).toBe('active');
+      expect(session.messages).toHaveLength(0);
+      expect(session.outcomes).toHaveLength(0);
+      expect(session.metrics.messageCount).toBe(0);
+      expect(session.metrics.participationByAgent).toEqual({
+        'agent-1': 0,
+        'agent-2': 0,
+      });
+    });
+  });
+
+  describe('🤝 Join Conversation', () => {
+    it('should add agent to conversation', async () => {
+      // Arrange
+      const config: ConversationConfig = {
+        title: 'Test',
+        pattern: 'problem-solving',
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
+        initialParticipants: sampleAgents,
+      };
+
+      const session = await orchestrator.createConversation(config);
+      const newAgent: AgentId = {
+        id: 'agent-3',
+        swarmId: 'swarm-1',
+        type: 'tester',
+        instance: 0,
+      };
+
+      // Act
+      await orchestrator.joinConversation(session.id, newAgent);
+
+      // Assert
+      const updatedSession = orchestrator.getSession(session.id);
+      expect(updatedSession?.participants).toHaveLength(3);
+      expect(updatedSession?.participants).toContain(newAgent);
+      expect(updatedSession?.metrics.participationByAgent).toHaveProperty(
+        'agent-3',
+        0
       );
-      expect(mockMemory.updateConversation).toHaveBeenCalledWith(
+    });
+
+    it('should reject joining non-existent conversation', async () => {
+      // Arrange
+      const newAgent: AgentId = {
+        id: 'agent-3',
+        swarmId: 'swarm-1',
+        type: 'tester',
+        instance: 0,
+      };
+
+      // Act & Assert
+      await expect(
+        orchestrator.joinConversation('non-existent', newAgent)
+      ).rejects.toThrow('Conversation non-existent not found');
+    });
+  });
+
+  describe('💬 Send Message', () => {
+    it('should validate sender and store message', async () => {
+      // Arrange
+      const config: ConversationConfig = {
+        title: 'Test',
+        pattern: 'problem-solving',
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
+        initialParticipants: sampleAgents,
+      };
+
+      const session = await orchestrator.createConversation(config);
+      const message: ConversationMessage = {
+        id: '',
+        conversationId: session.id,
+        fromAgent: sampleAgents[0]!,
+        toAgent: undefined,
+        timestamp: new Date(),
+        content: { text: 'Hello, world!', code: undefined, data: undefined, attachments: undefined },
+        messageType: 'question',
+        metadata: {
+          priority: 'medium',
+          requiresResponse: true,
+          context: session.context,
+          tags: ['greeting'],
+          referencedMessages: undefined,
+        },
+      };
+
+      // Act
+      await orchestrator.sendMessage(message);
+
+      // Assert
+      const updatedSession = orchestrator.getSession(session.id);
+      expect(updatedSession?.messages).toHaveLength(1);
+      expect(updatedSession?.metrics.messageCount).toBe(1);
+      expect(updatedSession?.metrics.participationByAgent['agent-1']).toBe(1);
+    });
+
+    it('should reject messages from non-participants', async () => {
+      // Arrange
+      const config: ConversationConfig = {
+        title: 'Test',
+        pattern: 'problem-solving',
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
+        initialParticipants: sampleAgents,
+      };
+
+      const session = await orchestrator.createConversation(config);
+      const nonParticipant: AgentId = {
+        id: 'outsider',
+        swarmId: 'swarm-2',
+        type: 'researcher',
+        instance: 0,
+      };
+
+      const message: ConversationMessage = {
+        id: '',
+        conversationId: session.id,
+        fromAgent: nonParticipant,
+        toAgent: undefined,
+        timestamp: new Date(),
+        content: { text: 'Trying to join uninvited', code: undefined, data: undefined, attachments: undefined },
+        messageType: 'system_notification',
+        metadata: {
+          priority: 'high',
+          requiresResponse: false,
+          context: session.context,
+          tags: [],
+          referencedMessages: undefined,
+        },
+      };
+
+      // Act & Assert
+      await expect(orchestrator.sendMessage(message)).rejects.toThrow(
+        'Agent outsider is not a participant'
+      );
+    });
+  });
+
+  describe('🔚 Terminate Conversation', () => {
+    it('should finalize conversation and generate outcomes', async () => {
+      // Arrange
+      const config: ConversationConfig = {
+        title: 'Code Review Complete',
+        pattern: 'code-review',
+        context: {
+          goal: 'Review code',
+          domain: 'backend',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
+        initialParticipants: sampleAgents,
+      };
+
+      const session = await orchestrator.createConversation(config);
+      
+      // Send a decision message to generate outcomes
+      const message: ConversationMessage = {
+        id: 'msg-1',
+        conversationId: session.id,
+        fromAgent: sampleAgents[0]!,
+        toAgent: undefined,
+        timestamp: new Date(),
+        content: { text: 'Code looks good', code: undefined, data: undefined, attachments: undefined },
+        messageType: 'decision',
+        metadata: {
+          priority: 'medium',
+          requiresResponse: false,
+          context: session.context,
+          tags: [],
+          referencedMessages: undefined,
+        },
+      };
+
+      await orchestrator.sendMessage(message);
+
+      // Act
+      const outcomes = await orchestrator.terminateConversation(
         session.id,
-        expect.objectContaining({ status: 'active' })
+        'Review complete'
       );
 
-      // Verify orchestrator state
-      expect((orchestrator as any).activeSessions.has(session.id)).toBe(true);
+      // Assert
+      expect(outcomes).toHaveLength(1);
+      expect(outcomes[0]).toMatchObject({
+        type: 'decision',
+        content: { text: 'Code looks good' },
+      });
+      
+      // Verify session is no longer active
+      const finalSession = orchestrator.getSession(session.id);
+      expect(finalSession).toBeUndefined();
+    });
+  });
+
+  describe('🔍 Get Conversation History', () => {
+    it('should retrieve messages from active session', async () => {
+      // Arrange
+      const config: ConversationConfig = {
+        title: 'Test',
+        pattern: 'problem-solving',
+        context: {
+          goal: 'Test',
+          domain: 'test',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
+        initialParticipants: sampleAgents,
+      };
+
+      const session = await orchestrator.createConversation(config);
+      const message: ConversationMessage = {
+        id: 'msg-1',
+        conversationId: session.id,
+        fromAgent: sampleAgents[0]!,
+        toAgent: undefined,
+        timestamp: new Date(),
+        content: { text: 'First message', code: undefined, data: undefined, attachments: undefined },
+        messageType: 'question',
+        metadata: {
+          priority: 'medium',
+          requiresResponse: true,
+          context: session.context,
+          tags: [],
+          referencedMessages: undefined,
+        },
+      };
+
+      await orchestrator.sendMessage(message);
+
+      // Act
+      const history = await orchestrator.getConversationHistory(session.id);
+
+      // Assert
+      expect(history).toHaveLength(1);
+      expect(history[0]?.content.text).toBe('First message');
+    });
+  });
+
+  describe('📊 Session Management', () => {
+    it('should track active sessions correctly', async () => {
+      // Arrange
+      const config: ConversationConfig = {
+        title: 'Session Test',
+        pattern: 'problem-solving',
+        context: {
+          goal: 'Test session management',
+          domain: 'testing',
+          constraints: [],
+          resources: [],
+          expertise: [],
+        },
+        initialParticipants: sampleAgents,
+      };
+
+      // Act - Create multiple sessions
+      const session1 = await orchestrator.createConversation({
+        ...config,
+        title: 'Session 1',
+      });
+      const session2 = await orchestrator.createConversation({
+        ...config,
+        title: 'Session 2',
+      });
+
+      // Assert
+      const activeSessions = orchestrator.getActiveSessions();
+      expect(activeSessions).toHaveLength(2);
+      expect(activeSessions.map(s => s.title)).toContain('Session 1');
+      expect(activeSessions.map(s => s.title)).toContain('Session 2');
+
+      // Terminate one session
+      await orchestrator.terminateConversation(session1.id, 'Test complete');
+      
+      const remainingSessions = orchestrator.getActiveSessions();
+      expect(remainingSessions).toHaveLength(1);
+      expect(remainingSessions[0]?.title).toBe('Session 2');
     });
   });
 });

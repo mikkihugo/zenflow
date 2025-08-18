@@ -7,8 +7,8 @@
  * @file Task-distribution processing engine.
  */
 
-import { EventEmitter } from 'node:events';
-import type { Logger } from '../../../core/logger';
+import { EventEmitter } from 'eventemitter3';
+import type { Logger } from '@claude-zen/foundation';
 import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core types for task distribution

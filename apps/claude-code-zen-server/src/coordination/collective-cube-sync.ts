@@ -10,7 +10,7 @@
  * @file THE COLLECTIVE coordination system: collective-cube-sync.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { CollectiveFACTSystemInterface } from './shared-types';
 
@@ -45,7 +45,7 @@ export interface CollectiveRegistry {
 }
 
 // Import CollectiveFACT from integration module
-import { initializeCollectiveFACT } from './collective-fact-integration';
+import { initializeCoordinationFactSystem as initializeCollectiveFACT } from './shared-fact-system';
 
 /**
  * Central COLLECTIVE synchronization coordinator.

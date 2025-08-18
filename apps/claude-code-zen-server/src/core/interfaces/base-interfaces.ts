@@ -7,13 +7,19 @@
  * @file Core base interfaces for cross-domain compatibility.
  */
 
-// Re-export core token interfaces for consistency
-export {
-  Config,
-  Database,
-  EventBus,
+// Re-export core foundation interfaces for consistency
+export type {
+  SharedConfig as Config,
+  DatabaseAccess as Database,
   Logger,
-} from '../tokens';
+} from '@claude-zen/foundation';
+
+// EventBus interface (will need to be defined or imported from event-system package)
+export interface EventBus {
+  emit(event: string, data?: any): void;
+  on(event: string, handler: (data?: any) => void): void;
+  off(event: string, handler: (data?: any) => void): void;
+}
 
 /**
  * Base database adapter interface that all database implementations must follow.

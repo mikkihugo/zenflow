@@ -60,7 +60,7 @@
  * ```
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 /**
  * Recovery strategy configuration interface.

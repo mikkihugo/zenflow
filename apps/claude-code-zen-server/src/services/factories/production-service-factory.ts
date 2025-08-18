@@ -7,12 +7,12 @@
 
 import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import { DALFactory } from '../../database/dal/dal-factory';
 import { HybridDocumentManager } from '../coordination/hybrid-document-service';
 import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
 
-const logger = createLogger('production-hybrid-factory');
+const logger = getLogger('production-hybrid-factory');
 
 export interface ProductionHybridSystemConfig {
   dataDir?: string;

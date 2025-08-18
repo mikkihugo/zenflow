@@ -1,7 +1,8 @@
 {
   "name": "@claude-zen/fact-system",
   "version": "1.0.0",
-  "description": "High-performance FACT (Fast Augmented Context Tools) system combining TypeScript coordination with Rust processing engine",
+  "description": "INTERNAL: FACT system with Rust engine - Private implementation detail of @claude-zen/knowledge",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -9,22 +10,28 @@
     "fact-tools": "dist/cli.js"
   },
   "scripts": {
-    "build": "tsc && npm run build:rust",
+    "build": "tsc && pnpm run build:rust",
     "build:rust": "cd src/rust && cargo build --release",
     "build:wasm": "cd src/rust && wasm-pack build --target nodejs --out-dir ../../wasm",
     "dev": "tsc --watch",
     "clean": "rm -rf dist wasm target",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:rust": "cd src/rust && cargo test",
     "bench": "cd src/rust && cargo bench",
-    "cli": "node dist/cli.js"
+    "cli": "node dist/cli.js",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "keywords": [
     "fact-system",
     "context-processing",
-    "github-integration", 
+    "github-integration",
     "knowledge-management",
     "rust-engine",
     "typescript-api",
@@ -36,24 +43,42 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^5.0.0"
-  },
-  "peerDependencies": {
-    "@claude-zen/database": "workspace:*",
-    "@claude-zen/foundation": "workspace:*"
+    "@claude-zen/database": "file:../database",
+    "@claude-zen/foundation": "file:../foundation",
+    "nanoid": "^5.1.5"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "vitest": "^1.1.0",
-    "@types/node": "^20.10.6"
+    "@types/node": "^22.17.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./cli": {
       "import": "./dist/cli.js"
+    },
+    "./client": {
+      "types": "./dist/src/typescript/fact-client.d.ts",
+      "import": "./dist/src/typescript/fact-client.js"
+    },
+    "./bridge": {
+      "types": "./dist/src/typescript/fact-bridge.d.ts",
+      "import": "./dist/src/typescript/fact-bridge.js"
+    },
+    "./cache": {
+      "types": "./dist/src/typescript/intelligent-cache.d.ts",
+      "import": "./dist/src/typescript/intelligent-cache.js"
+    },
+    "./connectors": {
+      "types": "./dist/src/typescript/connectors/index.d.ts",
+      "import": "./dist/src/typescript/connectors/index.js"
+    },
+    "./processors": {
+      "types": "./dist/src/typescript/processors/index.d.ts",
+      "import": "./dist/src/typescript/processors/index.js"
     }
   },
   "files": [

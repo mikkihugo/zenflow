@@ -62,7 +62,7 @@
  * @since 1.0.0
  */
 
-import { getLogger, type Logger, type SharedConfig } from '@claude-zen/foundation';
+import { getLogger, type Logger, type Config } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
@@ -653,7 +653,7 @@ export class DatabaseEventManagerFactory
 
   constructor(
     private logger: Logger,
-    private config: SharedConfig
+    private config: Config
   ) {
     this.logger.debug('DatabaseEventManagerFactory initialized');
   }

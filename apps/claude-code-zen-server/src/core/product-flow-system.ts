@@ -10,7 +10,7 @@
  * @file Product-flow-system implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
 import { getLogger } from '../config/logging-config';
 import type { DocumentManager } from "../services/document/document-service"

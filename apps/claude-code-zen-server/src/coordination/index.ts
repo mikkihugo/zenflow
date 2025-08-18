@@ -15,6 +15,6 @@ export { Orchestrator } from './orchestrator';
 // Export public API for external access
 export * from './public-api';
 export { ZenSwarmStrategy } from './strategies/zen-swarm.strategy';
-// Export SPARC methodology for swarm implementation
-export * from './swarm/sparc/index';
+// Export SPARC methodology from extracted package
+export * from '@claude-zen/sparc';
 export * from './types';

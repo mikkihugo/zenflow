@@ -8,7 +8,7 @@ const createLogger = (name) => ({
     warn: (message, meta) => logger.warn(`[WARN] ${name}: ${message}`, meta),
     error: (message, meta, error) => logger.error(`[ERROR] ${name}: ${message}`, meta, error),
 });
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 /**
  * Unified Monitoring Event Adapter.
  *

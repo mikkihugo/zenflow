@@ -9,7 +9,7 @@
  */
 
 import { nanoid } from 'nanoid';
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import { DALFactory } from '../../database/dal/dal-factory';
 import type {
   ADRDocumentEntity,
@@ -29,7 +29,7 @@ import type {
   Repository,
 } from '../../database/interfaces/repository-interfaces';
 
-const logger = createLogger('hybrid-document-manager');
+const logger = getLogger('hybrid-document-manager');
 
 export interface DocumentEmbedding {
   id: string;

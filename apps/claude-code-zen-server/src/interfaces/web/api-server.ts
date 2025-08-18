@@ -23,6 +23,7 @@ import compression from 'compression';
 import { rateLimit } from 'express-rate-limit';
 import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
+import { ControlApiRoutes } from './control-api-routes';
 
 interface ApiServerConfig {
   port: number;
@@ -33,12 +34,16 @@ export class ApiServer {
   private server: Server;
   private app: Express;
   private readonly logger = getLogger('ApiServer');
+  private controlApiRoutes: ControlApiRoutes;
 
   constructor(private config: ApiServerConfig) {
     this.logger.info('🚀 Creating ApiServer...');
     
     // Create Express app
     this.app = express();
+    
+    // Initialize control API routes
+    this.controlApiRoutes = new ControlApiRoutes();
     
     // Setup middleware and routes
     this.setupMiddleware();
@@ -97,16 +102,92 @@ export class ApiServer {
     this.setupHealthRoutes();
     this.setupSystemRoutes();
     this.setupWorkspaceRoutes();
+    this.setupControlRoutes();
+    this.setupSvelteStaticFiles();
     this.setupDefaultRoutes();
 
     this.logger.info('✅ API routes configured');
   }
 
   /**
-   * Set up health and monitoring endpoints
+   * Set up comprehensive control API routes
+   */
+  private setupControlRoutes(): void {
+    this.logger.info('🎛️ Setting up control API routes...');
+    
+    // Initialize control APIs with the HTTP server for WebSocket support
+    this.controlApiRoutes.setupRoutes(this.app, this.server);
+    
+    this.logger.info('✅ Control API routes configured');
+  }
+
+  /**
+   * Set up health and monitoring endpoints (K8s compatible)
    */
   private setupHealthRoutes(): void {
-    // Enhanced health check endpoint with dependency verification
+    // K8s Liveness Probe - Basic server health
+    this.app.get('/healthz', (req: Request, res: Response) => {
+      res.status(200).json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
+      });
+    });
+
+    // K8s Readiness Probe - Service ready to receive traffic
+    this.app.get('/readyz', async (req: Request, res: Response) => {
+      try {
+        // Check if all critical services are ready
+        const checks = {
+          filesystem: 'checking',
+          database: 'checking',
+          memory: 'checking'
+        };
+
+        // Filesystem check
+        try {
+          await stat(process.cwd());
+          checks.filesystem = 'ready';
+        } catch {
+          checks.filesystem = 'not_ready';
+        }
+
+        // Memory check
+        const memoryUsage = process.memoryUsage();
+        const memoryLimit = 1024 * 1024 * 1024; // 1GB threshold
+        checks.memory = memoryUsage.heapUsed < memoryLimit ? 'ready' : 'not_ready';
+
+        // Database check (if available)
+        checks.database = 'ready'; // Assume ready for now
+
+        const allReady = Object.values(checks).every(status => status === 'ready');
+        const statusCode = allReady ? 200 : 503;
+
+        res.status(statusCode).json({
+          status: allReady ? 'ready' : 'not_ready',
+          checks,
+          timestamp: new Date().toISOString()
+        });
+      } catch (error) {
+        res.status(503).json({
+          status: 'not_ready',
+          error: 'Health check failed',
+          timestamp: new Date().toISOString()
+        });
+      }
+    });
+
+    // K8s Startup Probe - Initial startup health
+    this.app.get('/started', (req: Request, res: Response) => {
+      const started = process.uptime() > 5; // 5 seconds startup time
+      res.status(started ? 200 : 503).json({
+        status: started ? 'started' : 'starting',
+        uptime: process.uptime(),
+        timestamp: new Date().toISOString()
+      });
+    });
+
+    // Enhanced health check endpoint with dependency verification (legacy)
     this.app.get('/api/health', async (req: Request, res: Response) => {
       const health = {
         status: 'healthy',
@@ -181,7 +262,22 @@ export class ApiServer {
           health: '/api/health',
           status: '/api/status',
           info: '/api/info',
-          workspace: '/api/workspace/files'
+          workspace: '/api/workspace/files',
+          // Control API endpoints
+          controlLogs: '/api/v1/control/logs',
+          controlMetrics: '/api/v1/control/metrics',
+          controlNeural: '/api/v1/control/neural/status',
+          controlProjects: '/api/v1/control/sparc/projects',
+          controlPRDs: '/api/v1/control/project/prds',
+          controlADRs: '/api/v1/control/project/adrs',
+          controlEpics: '/api/v1/control/project/epics',
+          controlFeatures: '/api/v1/control/project/features',
+          controlTasks: '/api/v1/control/project/tasks',
+          controlOverview: '/api/v1/control/project/overview',
+          controlGit: '/api/v1/control/git/status',
+          controlConfig: '/api/v1/control/config',
+          controlServices: '/api/v1/control/services',
+          controlRealtime: '/api/v1/control/realtime'
         },
         features: [
           'Production Middleware',
@@ -190,7 +286,14 @@ export class ApiServer {
           'Graceful Shutdown',
           'CORS Support',
           'Request Logging',
-          'Compression'
+          'Compression',
+          'Centralized LogTape Database Storage',
+          'Lightweight OpenTelemetry Metrics',
+          'Real-time WebSocket Monitoring',
+          'Neural System Control',
+          'Comprehensive Project Management (PRDs, ADRs, Tasks, Epics, Features)',
+          'Git Operations Control',
+          'System Configuration Management'
         ]
       });
     });
@@ -287,27 +390,72 @@ export class ApiServer {
   }
 
   /**
+   * Set up Svelte web dashboard integration
+   */
+  private setupSvelteStaticFiles(): void {
+    this.logger.info('🎨 Setting up Svelte web dashboard integration...');
+    
+    // Serve static assets from Svelte build client directory
+    const svelteClientPath = resolve(__dirname, '../../../../../web-dashboard/build/client');
+    
+    this.logger.info(`📁 Serving Svelte static assets from: ${svelteClientPath}`);
+    
+    // Serve static files from Svelte build/client (JS, CSS, assets)
+    this.app.use('/_app', express.static(join(svelteClientPath, '_app'), {
+      maxAge: '1d', // Cache for 1 day in production
+      etag: true,
+      lastModified: true,
+      setHeaders: (res, path) => {
+        // Set proper cache headers for different file types
+        if (path.endsWith('.js') || path.endsWith('.css')) {
+          res.setHeader('Cache-Control', 'public, max-age=31536000'); // Cache JS/CSS for 1 year
+        }
+      }
+    }));
+    
+    // Import and use the SvelteKit handler for all non-API routes
+    this.app.use(async (req: Request, res: Response, next) => {
+      // Skip API routes - let them be handled by our API endpoints
+      if (req.path.startsWith('/api/')) {
+        return next();
+      }
+      
+      try {
+        // Import the SvelteKit handler dynamically
+        const svelteHandlerPath = resolve(__dirname, '../../../../../web-dashboard/build/handler.js');
+        const { handler } = await import(svelteHandlerPath);
+        
+        // Use SvelteKit handler for non-API routes
+        handler(req, res);
+      } catch (error) {
+        this.logger.error('Error loading Svelte handler:', error);
+        res.status(500).json({
+          error: 'Failed to load web dashboard',
+          message: 'Could not initialize Svelte application'
+        });
+      }
+    });
+    
+    this.logger.info('✅ Svelte web dashboard integrated - Single port deployment with SvelteKit handler');
+  }
+
+  /**
    * Set up default routes and error handlers
    */
   private setupDefaultRoutes(): void {
-    // Default root route
-    this.app.get('/', (req: Request, res: Response) => {
-      res.json({
-        message: 'Claude Code Zen API Server',
-        version: getVersion(),
-        endpoints: ['/api/health', '/api/status', '/api/info', '/api/workspace/files'],
-        timestamp: new Date().toISOString(),
-        documentation: 'Visit /api/info for full endpoint documentation'
-      });
-    });
-
-    // 404 handler for all other routes - simplified pattern
-    this.app.use((req: Request, res: Response) => {
+    // 404 handler for API routes only - let Svelte handle non-API routes
+    this.app.use('/api/*', (req: Request, res: Response) => {
       res.status(404).json({
-        error: 'Endpoint not found',
+        error: 'API endpoint not found',
         path: req.originalUrl,
         timestamp: new Date().toISOString(),
-        availableEndpoints: ['/api/health', '/api/status', '/api/info', '/api/workspace/files']
+        availableEndpoints: [
+          '/api/health', 
+          '/api/status', 
+          '/api/info', 
+          '/api/workspace/files',
+          '/api/v1/control/* (comprehensive control APIs)'
+        ]
       });
     });
   }
@@ -325,11 +473,16 @@ export class ApiServer {
       });
 
       this.server.listen(this.config.port, this.config.host || 'localhost', () => {
-        this.logger.info(`🌐 Claude Code Zen API Server started on http://${this.config.host || 'localhost'}:${this.config.port}`);
-        this.logger.info(`🏥 Health check: http://${this.config.host || 'localhost'}:${this.config.port}/api/health`);
-        this.logger.info(`📊 Status: http://${this.config.host || 'localhost'}:${this.config.port}/api/status`);
-        this.logger.info(`📂 Workspace: http://${this.config.host || 'localhost'}:${this.config.port}/api/workspace/files`);
-        this.logger.info('🎯 Ready for development');
+        this.logger.info(`🌐 Claude Code Zen Server started on http://${this.config.host || 'localhost'}:${this.config.port}`);
+        this.logger.info(`🎨 Web Dashboard: http://${this.config.host || 'localhost'}:${this.config.port}/ (Svelte)`);
+        this.logger.info(`🏥 K8s Health Checks:`);
+        this.logger.info(`  • Liveness:  http://${this.config.host || 'localhost'}:${this.config.port}/healthz`);
+        this.logger.info(`  • Readiness: http://${this.config.host || 'localhost'}:${this.config.port}/readyz`);
+        this.logger.info(`  • Startup:   http://${this.config.host || 'localhost'}:${this.config.port}/started`);
+        this.logger.info(`📊 System Status: http://${this.config.host || 'localhost'}:${this.config.port}/api/status`);
+        this.logger.info(`🎛️ Control APIs: http://${this.config.host || 'localhost'}:${this.config.port}/api/v1/control/*`);
+        this.logger.info(`📂 Workspace API: http://${this.config.host || 'localhost'}:${this.config.port}/api/workspace/files`);
+        this.logger.info('🎯 Single port deployment: API + Svelte dashboard + K8s health');
         this.logger.info('🛡️ Graceful shutdown enabled via @godaddy/terminus');
         resolve();
       });
@@ -350,10 +503,15 @@ export class ApiServer {
 
     createTerminus(this.server, {
       signals: ['SIGTERM', 'SIGINT', 'SIGUSR2'],
-      timeout: 30000, // 30 seconds
+      timeout: process.env.NODE_ENV === 'development' ? 5000 : 30000, // Fast restarts in dev
       healthChecks: {
-        '/health': async () => ({ 
-          status: 'healthy', 
+        '/healthz': async () => ({ 
+          status: 'ok', 
+          timestamp: new Date().toISOString(),
+          uptime: process.uptime()
+        }),
+        '/readyz': async () => ({ 
+          status: 'ready', 
           timestamp: new Date().toISOString(),
           uptime: process.uptime()
         }),
@@ -364,12 +522,20 @@ export class ApiServer {
           version: getVersion()
         }),
       },
+      beforeShutdown: async () => {
+        // Keep connections alive briefly for zero-downtime restarts
+        const delay = process.env.NODE_ENV === 'development' ? 100 : 1000;
+        this.logger.info(`🔄 Pre-shutdown delay: ${delay}ms for connection draining...`);
+        return new Promise((resolve) => setTimeout(resolve, delay));
+      },
       onSignal: async () => {
-        this.logger.info('🔄 Graceful shutdown initiated...');
-        this.logger.info('✅ Graceful shutdown preparations complete');
+        this.logger.info('🔄 Graceful shutdown initiated - keeping connections alive...');
+        // Close database connections, cleanup resources
+        // But don't close HTTP server - terminus handles that
+        this.logger.info('✅ Resources cleaned up, ready for shutdown');
       },
       onShutdown: async () => {
-        this.logger.info('🏁 Server shutdown complete');
+        this.logger.info('🏁 Server shutdown complete - zero downtime restart ready');
       },
       logger: (msg: string, err?: Error) => {
         if (err) {

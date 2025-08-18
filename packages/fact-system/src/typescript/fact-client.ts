@@ -10,8 +10,15 @@
  * @version 1.0.0
  */
 
-import { getDatabaseAccess } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
+import { 
+  getDatabaseAccess, 
+  getLogger,
+  type Logger,
+  ContextError,
+  withRetry,
+  Storage,
+  getConfig
+} from '@claude-zen/foundation';
 import { FactBridge } from './fact-bridge';
 import type {
   FactSearchQuery,
@@ -53,7 +60,7 @@ export class FactClient {
 
     this.database = config.database;
     this.bridge = new FactBridge({
-      useRustEngine: this.config.useRustEngine,
+      useRustEngine: this.config.useRustEngine || false,
       database: this.database
     });
   }
@@ -176,7 +183,7 @@ export class FactClient {
     
     return {
       ...stats,
-      rustEngineActive: this.config.useRustEngine
+      rustEngineActive: this.config.useRustEngine || false
     };
   }
 

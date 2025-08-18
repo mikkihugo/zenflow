@@ -7,7 +7,8 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
+import type { Agent, LoadMetrics, RoutingResult, Task, TaskPriority } from '../types';
+import { taskPriorityToNumber } from '../types';
 
 interface AdaptiveStrategy {
   name: string;
@@ -141,7 +142,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     if (config?.explorationRate !== undefined) {
       this.config.explorationRate = Math.max(
         this.config.minExplorationRate,
-        config?.explorationRate
+        config.explorationRate as number
       );
     }
   }
@@ -320,7 +321,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    *
    * @param context
    */
-  private detectPattern(context: PatternContext): LearningPattern | null {
+  private detectPattern(context: PatternContext): LearningPattern | undefined {
     // Generate pattern key
     const patternKey = this.generatePatternKey(context);
 
@@ -329,7 +330,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
 
     if (!pattern) {
       // Look for similar patterns
-      pattern = this.findSimilarPattern(context) as any;
+      pattern = this.findSimilarPattern(context) || undefined;
     }
 
     return pattern;
@@ -343,7 +344,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
    */
   private async selectStrategy(
     _context: PatternContext,
-    detectedPattern?: LearningPattern | null
+    detectedPattern?: LearningPattern | undefined
   ): Promise<string> {
     // If pattern detected, use its optimal strategy with high probability
     if (detectedPattern && Math.random() > this.config.explorationRate) {
@@ -549,7 +550,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     }
 
     // Priority bonus
-    if (task.priority >= 4 && success) {
+    if (taskPriorityToNumber(task.priority) >= 4 && success) {
       reward += 25; // Bonus for handling high priority tasks well
     }
 
@@ -619,7 +620,7 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
       agentId: result?.selectedAgent?.id,
       strategy,
       features: {
-        taskPriority: task.priority,
+        taskPriority: taskPriorityToNumber(task.priority),
         timeOfDay: context.timeOfDay,
         systemLoad: context.systemLoad,
         agentCount: context.agentCount,
@@ -816,8 +817,8 @@ export class AdaptiveLearningAlgorithm implements LoadBalancingAlgorithm {
     return `${timeSlot}_${context.dayOfWeek}_${loadLevel}_${context.taskType}_${context.agentCount}`;
   }
 
-  private findSimilarPattern(context: PatternContext): LearningPattern | null {
-    let bestMatch: LearningPattern | null = null;
+  private findSimilarPattern(context: PatternContext): LearningPattern | undefined {
+    let bestMatch: LearningPattern | undefined = undefined;
     let bestSimilarity = 0;
 
     for (const pattern of this.patterns.values()) {

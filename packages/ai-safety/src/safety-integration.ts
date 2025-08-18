@@ -146,8 +146,8 @@ export async function runSafetyMode(): Promise<void> {
       totalInteractions: metrics.totalInteractions,
       deceptionDetected: metrics.deceptionDetected,
       humanEscalations: metrics.humanEscalations,
-      totalAlerts: metrics.detectorStats.totalAlerts,
-      criticalAlerts: metrics.detectorStats.criticalAlerts,
+      interventionsSuccessful: metrics.interventionsSuccessful,
+      falsePositives: metrics.falsePositives,
     });
   }, 10000);
 

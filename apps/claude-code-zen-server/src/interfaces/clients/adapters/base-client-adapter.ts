@@ -4,7 +4,7 @@
  *               Ensures consistent client management and interoperability across the system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { Logger } from '@claude-zen/foundation';
 import type { 
   ClientConfig, 

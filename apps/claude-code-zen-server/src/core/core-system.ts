@@ -129,14 +129,25 @@
  * The API maintains compatibility while providing a much cleaner internal architecture.
  */
 
-import { EventEmitter } from 'node:events';
-import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
+import { getLogger, recordMetric, withTrace, createCircuitBreaker } from '@claude-zen/foundation';
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
 import { MemorySystem } from './memory-system';
 import { WorkflowEngine } from '../workflows/workflow-engine';
+
+// 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
+import { ChaosEngineering } from '@claude-zen/foundation';
+import { 
+  initializeCoordinationFactSystem,
+  getCoordinationFactSystem,
+  storeCoordinationFact
+} from '@claude-zen/knowledge';
+import { NeuralML } from '@claude-zen/brain';
+import { AgentMonitoring } from '@claude-zen/foundation';
+import { TypedEventBus, createEventBus } from '@claude-zen/event-system';
 
 /**
  * Export options interface for system state serialization.
@@ -433,6 +444,18 @@ export class System extends EventEmitter {
   private exportManager!: ExportManager;
   private documentationManager!: DocumentationManager;
   private interfaceManager!: InterfaceManager;
+  
+  // 🧠 AI-POWERED ENHANCEMENTS: Advanced coordination systems
+  private chaosEngineering?: ChaosEngineering;
+  private factSystemInitialized = false;
+  private neuralML?: NeuralML;
+  private agentMonitoring?: AgentMonitoring;
+  private aiEventBus?: TypedEventBus;
+  private systemCircuitBreaker = createCircuitBreaker({
+    timeout: 30000,
+    errorThresholdPercentage: 50,
+    resetTimeout: 60000
+  });
 
   private initialized = false;
 
@@ -450,7 +473,7 @@ export class System extends EventEmitter {
   }
 
   /**
-   * Initialize all core components with proper dependency injection.
+   * Initialize all core components with proper dependency injection and AI enhancements.
    */
   private initializeComponents(): void {
     // Memory system - foundation component
@@ -497,8 +520,51 @@ export class System extends EventEmitter {
       webPort: this.config.interface?.webPort || 3456,
       coreSystem: this, // Provide access to all systems
     });
+    
+    // 🧠 AI-POWERED ENHANCEMENTS: Initialize advanced coordination systems
+    this.initializeAIEnhancements();
 
-    logger.info('Core components initialized with clean architecture');
+    logger.info('Core components initialized with clean architecture and AI enhancements');
+  }
+  
+  /**
+   * Initialize AI-powered enhancements for the core system.
+   */
+  private initializeAIEnhancements(): void {
+    try {
+      // Event bus for AI coordination
+      this.aiEventBus = createEventBus();
+      
+      // Chaos engineering for system resilience
+      this.chaosEngineering = new ChaosEngineering({
+        enabled: true,
+        resilience: { failureInjection: true, recoveryTesting: true }
+      });
+      
+      // Initialize knowledge system with high-performance Rust bridge
+      await initializeCoordinationFactSystem();
+      this.factSystemInitialized = true;
+      logger.info('✅ Knowledge system initialized with Rust bridge + TypeScript fallback');
+      
+      // Neural ML for document processing optimization
+      this.neuralML = new NeuralML({
+        enableRustBackend: true,
+        enableGPUAcceleration: false // Safe default
+      });
+      
+      // Agent monitoring for system health
+      this.agentMonitoring = new AgentMonitoring({
+        healthMonitoring: true,
+        performancePrediction: true,
+        taskPrediction: false // Not needed for core system
+      });
+      
+      logger.info('🧠 AI enhancements initialized: chaos engineering, fact system, neural ML, agent monitoring');
+      
+    } catch (error) {
+      logger.warn('Failed to initialize some AI enhancements:', error);
+      // Continue without AI enhancements if they fail
+    }
   }
 
   /**
@@ -577,6 +643,10 @@ export class System extends EventEmitter {
 
       logger.info('Initializing interface manager...');
       await this.interfaceManager.initialize();
+      
+      // 🧠 Initialize AI enhancements with circuit breaker protection
+      logger.info('🧠 Initializing AI enhancement systems...');
+      await this.initializeAISystemsAsync();
 
       this.status = 'ready';
       this.initialized = true;
@@ -714,6 +784,10 @@ export class System extends EventEmitter {
     this.emit('status:changed', this.status);
 
     try {
+      // Shutdown AI enhancements first
+      logger.info('🧠 Shutting down AI enhancement systems...');
+      await this.shutdownAISystemsAsync();
+      
       // Shutdown components in reverse order
       await this.interfaceManager?.shutdown();
       await this.documentationManager?.shutdown();
@@ -742,6 +816,12 @@ export class System extends EventEmitter {
       export: this.exportManager,
       documentation: this.documentationManager,
       interface: this.interfaceManager,
+      // 🧠 AI-POWERED ENHANCEMENTS
+      chaosEngineering: this.chaosEngineering,
+      factSystemInitialized: this.factSystemInitialized,
+      neuralML: this.neuralML,
+      agentMonitoring: this.agentMonitoring,
+      aiEventBus: this.aiEventBus,
     };
   }
 
@@ -763,6 +843,186 @@ export class System extends EventEmitter {
     const system = new System(config);
     await system.initialize();
     return system;
+  }
+
+  /**
+   * Initialize AI enhancement systems asynchronously with resilience.
+   */
+  private async initializeAISystemsAsync(): Promise<void> {
+    try {
+      await withTrace('ai-systems-initialization', async () => {
+        await this.systemCircuitBreaker.fire(async () => {
+          const initPromises: Promise<void>[] = [];
+          
+          if (this.chaosEngineering) {
+            initPromises.push(this.chaosEngineering.initialize());
+          }
+          
+          // Knowledge system already initialized during main initialization
+          
+          if (this.neuralML) {
+            initPromises.push(this.neuralML.initialize());
+          }
+          
+          if (this.agentMonitoring) {
+            initPromises.push(this.agentMonitoring.initialize());
+          }
+          
+          await Promise.all(initPromises);
+          
+          // Setup AI event monitoring
+          this.setupAIEventHandlers();
+          
+          recordMetric('core_system_ai_initialized', 1, {
+            systems: ['chaos-engineering', 'fact-system', 'neural-ml', 'agent-monitoring'].join(','),
+            timestamp: Date.now()
+          });
+        });
+      });
+      
+      logger.info('✅ AI enhancement systems initialized successfully');
+      
+    } catch (error) {
+      logger.warn('Some AI enhancement systems failed to initialize:', error);
+      // Continue without failing the entire system
+    }
+  }
+  
+  /**
+   * Setup AI-powered event handlers for enhanced coordination.
+   */
+  private setupAIEventHandlers(): void {
+    if (!this.aiEventBus) return;
+    
+    // Document processing with fact validation
+    this.aiEventBus.on('document:processed', async (data: any) => {
+      if (this.factSystemInitialized) {
+        try {
+          // Store document fact via knowledge system
+          await storeCoordinationFact({
+            type: 'document_processed',
+            data: {
+              content: data.content,
+              source: data.documentPath
+            },
+            source: 'core-system',
+            confidence: 1.0,
+            tags: ['document', 'processed']
+          });
+          logger.debug(`Document processed and stored in knowledge system`);
+        } catch (error) {
+          logger.warn('Knowledge system storage failed:', error);
+        }
+      }
+    });
+    
+    // Neural optimization for workflow performance
+    this.aiEventBus.on('workflow:performance', async (data: any) => {
+      if (this.neuralML) {
+        try {
+          const optimization = await this.neuralML.optimizeWorkflow({
+            workflowType: data.workflowType,
+            performanceMetrics: data.metrics,
+            historicalData: data.history
+          });
+          logger.debug(`Neural workflow optimization: ${optimization.improvementFactor}x faster`);
+        } catch (error) {
+          logger.warn('Neural optimization failed:', error);
+        }
+      }
+    });
+    
+    logger.info('🔍 AI event handlers configured');
+  }
+  
+  /**
+   * Shutdown AI enhancement systems gracefully.
+   */
+  private async shutdownAISystemsAsync(): Promise<void> {
+    try {
+      const shutdownPromises: Promise<void>[] = [];
+      
+      if (this.agentMonitoring) {
+        shutdownPromises.push(this.agentMonitoring.shutdown());
+      }
+      
+      if (this.neuralML) {
+        shutdownPromises.push(this.neuralML.shutdown());
+      }
+      
+      // Knowledge system handles shutdown automatically
+      
+      if (this.chaosEngineering) {
+        shutdownPromises.push(this.chaosEngineering.shutdown());
+      }
+      
+      await Promise.all(shutdownPromises);
+      
+      recordMetric('core_system_ai_shutdown', 1, {
+        timestamp: Date.now()
+      });
+      
+      logger.info('✅ AI enhancement systems shutdown gracefully');
+      
+    } catch (error) {
+      logger.error('Error shutting down AI enhancement systems:', error);
+      // Continue with shutdown even if AI systems fail
+    }
+  }
+  
+  /**
+   * Run chaos engineering test on the core system.
+   */
+  async runSystemChaosTest(): Promise<{ success: boolean; results?: any; error?: string }> {
+    if (!this.chaosEngineering) {
+      return { success: false, error: 'Chaos engineering not available' };
+    }
+    
+    try {
+      const results = await this.chaosEngineering.runExperiment({
+        name: 'core-system-resilience-test',
+        target: 'core-system',
+        duration: 30000,
+        intensity: 'low'
+      });
+      
+      logger.info('🔥 Core system chaos test completed:', results);
+      return { success: true, results };
+      
+    } catch (error) {
+      logger.error('❌ Core system chaos test failed:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
+  }
+  
+  /**
+   * Get AI system status for monitoring.
+   */
+  async getAISystemStatus(): Promise<{
+    chaosEngineering: boolean;
+    factSystem: boolean;
+    neuralML: boolean;
+    agentMonitoring: boolean;
+    overallHealth: 'healthy' | 'degraded' | 'unavailable';
+  }> {
+    const status = {
+      chaosEngineering: !!this.chaosEngineering,
+      factSystemInitialized: this.factSystemInitialized,
+      neuralML: !!this.neuralML,
+      agentMonitoring: !!this.agentMonitoring,
+      overallHealth: 'healthy' as const
+    };
+    
+    const availableSystems = Object.values(status).filter(Boolean).length - 1;
+    const totalSystems = 4;
+    
+    if (availableSystems === 0) {
+      status.overallHealth = 'unavailable';
+    } else if (availableSystems < totalSystems * 0.75) {
+      status.overallHealth = 'degraded';
+    }
+    
+    return status;
   }
 
   /**

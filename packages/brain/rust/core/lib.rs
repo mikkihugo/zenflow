@@ -12,10 +12,19 @@ pub use network::{Network, NetworkBuilder, NetworkError};
 pub use neuron::Neuron;
 
 // Re-export training types
-pub use training::{
+pub use training_types::{
     ParallelTrainingOptions, TrainingAlgorithm as TrainingAlgorithmTrait, TrainingData,
-    TrainingError, TrainingState,
+    TrainingError, TrainingState, IncrementalBackprop,
 };
+
+// Re-export training with battle-tested crates
+pub use training::{ModernTrainer};
+
+#[cfg(feature = "burn-backend")]
+pub use training::{BurnTrainer, BurnNeuralNet};
+
+#[cfg(feature = "smartcore-backend")]
+pub use training::{SmartCoreTrainer, SmartCoreClassifierType};
 
 /// Enumeration of available training algorithms
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -44,22 +53,18 @@ pub mod layer;
 pub mod memory_manager;
 pub mod network;
 pub mod neuron;
+pub mod training_types;
 pub mod training;
 
 // Optional I/O module
 #[cfg(feature = "io")]
 pub mod io;
 
-// WebGPU acceleration module
-pub mod webgpu;
-
 // SIMD acceleration module (CPU optimizations)
 #[cfg(feature = "parallel")]
 pub mod simd;
 
-// Test module
-#[cfg(test)]
-mod tests;
+// Tests are in individual modules
 
 // Mock types for testing
 pub mod mock_types;

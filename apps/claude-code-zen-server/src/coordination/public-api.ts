@@ -48,12 +48,10 @@ export interface PublicSwarmCoordinator {
 export async function createPublicSwarmCoordinator(
   config?: SwarmConfig
 ): Promise<PublicSwarmCoordinator> {
-  // Dynamically import to avoid circular dependencies
-  const { SwarmCoordinator } = await import(
-    './swarm/core/swarm-coordinator'
-  );
+  // Import from the extracted package
+  const { AgentManager } = await import('@claude-zen/agent-manager');
 
-  const coordinator = new SwarmCoordinator();
+  const coordinator = new AgentManager();
   await coordinator.initialize(config);
 
   // Return limited public interface

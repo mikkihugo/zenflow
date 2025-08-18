@@ -143,7 +143,7 @@ export abstract class BaseLM implements LMInterface {
   };
 
   constructor(model?: string) {
-    this.model = model;
+    this.model = model ?? 'unknown';
   }
 
   abstract generate(prompt: string, options?: GenerationOptions): Promise<string>;
@@ -163,6 +163,9 @@ export abstract class BaseLM implements LMInterface {
 
     // Track daily usage
     const today = new Date().toISOString().split('T')[0];
+    if (!today) {
+      throw new Error('Failed to get today\'s date');
+    }
     if (!this.usage.daily_usage) {
       this.usage.daily_usage = {};
     }
@@ -175,11 +178,14 @@ export abstract class BaseLM implements LMInterface {
       };
     }
     
-    this.usage.daily_usage[today].input_tokens += inputTokens;
-    this.usage.daily_usage[today].output_tokens += outputTokens;
-    this.usage.daily_usage[today].api_calls += 1;
-    if (cost !== undefined) {
-      this.usage.daily_usage[today].cost = (this.usage.daily_usage[today].cost || 0) + cost;
+    const dayUsage = this.usage.daily_usage[today];
+    if (dayUsage) {
+      dayUsage.input_tokens += inputTokens;
+      dayUsage.output_tokens += outputTokens;
+      dayUsage.api_calls += 1;
+      if (cost !== undefined) {
+        dayUsage.cost = (dayUsage.cost || 0) + cost;
+      }
     }
   }
 

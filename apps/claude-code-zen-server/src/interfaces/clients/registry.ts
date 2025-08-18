@@ -7,7 +7,7 @@
  * @file Centralized client type management system.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { APIClient } from '../api/http/client';
 import type { WebSocketClient } from '../api/websocket/client';
 import type { FACTIntegration } from '../knowledge/knowledge-client';

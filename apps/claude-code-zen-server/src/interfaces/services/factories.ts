@@ -35,7 +35,7 @@
  * ```
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger, type Logger } from '../../config/logging-config';
 import type {
   Service,

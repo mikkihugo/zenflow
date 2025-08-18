@@ -7,7 +7,7 @@
  * @file Backward Compatibility Implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '@claude-zen/foundation';
 import type {
   EventManagerType,
@@ -43,7 +43,6 @@ export class UELCompatibleEventEmitter extends EventEmitter {
     this.logger = options?.logger;
 
     // Set higher max listeners for compatibility
-    this.setMaxListeners(1000);
   }
 
   /**
@@ -416,7 +415,6 @@ export class EventEmitterMigrationHelper {
       }
 
       // Copy properties
-      compatibleEmitter.setMaxListeners(originalEmitter.getMaxListeners());
 
       await compatibleEmitter.enableUEL(uelManager, {
         migrateExistingListeners: true,
@@ -484,7 +482,8 @@ export class EventEmitterMigrationHelper {
       );
     }
 
-    if (emitter.getMaxListeners() > 100) {
+    const maxListeners = (emitter as any)._maxListeners || 10; // EventEmitter3 default
+    if (maxListeners > 20) {
       recommendations.push('High max listeners - UEL provides better scaling');
       complexity = 'high';
     }
@@ -492,7 +491,7 @@ export class EventEmitterMigrationHelper {
     return {
       eventTypes,
       listenerCounts,
-      maxListeners: emitter.getMaxListeners(),
+      maxListeners,
       recommendations,
       migrationComplexity: complexity,
     };

@@ -2,9 +2,9 @@
  * @file WebSocket client adapter implementing the UACL Client interface for real-time communication.
  */
 
-import { getLogger } from '../config/logging-config';
+import { Logger } from '@claude-zen/foundation';
 
-const logger = getLogger(
+const logger = new Logger(
   'interfaces-clients-adapters-websocket-client-adapter'
 );
 
@@ -157,7 +157,7 @@ const logger = getLogger(
  * ```
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type {
   AuthenticationConfig,
   ClientConfig,

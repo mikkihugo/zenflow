@@ -10,7 +10,9 @@ const logger = getLogger('coordination-agents-agent');
  * Agent implementation and wrappers.
  */
 
-import { generateId, getDefaultCognitiveProfile } from '../swarm/core/utils';
+// Local utility functions (replacing deleted swarm utils)
+const generateId = () => `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const getDefaultCognitiveProfile = () => ({ learning: true, adaptation: 0.5, memory: 0.8 });
 import type {
   Agent,
   AgentCapabilities,
@@ -51,13 +53,13 @@ export class BaseAgent implements Agent {
   }
 
   constructor(config: AgentConfig) {
-    this.id = config?.id || generateId('agent');
+    this.id = config?.id || generateId();
     this.type = config?.type;
     this.config = {
       ...config,
       id: this.id,
       cognitiveProfile:
-        config?.cognitiveProfile || getDefaultCognitiveProfile(config?.type),
+        config?.cognitiveProfile || getDefaultCognitiveProfile(),
     };
 
     // Initialize metrics

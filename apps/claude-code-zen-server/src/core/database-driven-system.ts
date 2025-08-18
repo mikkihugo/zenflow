@@ -9,7 +9,7 @@
  * @file Database-driven-system implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
 import { getLogger } from '@claude-zen/foundation';
 import type {
@@ -23,7 +23,7 @@ import type {
   VisionDocumentEntity,
 } from '../database/entities/product-entities';
 import type { DocumentManager } from "../services/document/document-service"
-import type { DocumentType } from '../types/workflow-types';
+import type { DocumentType } from '@claude-zen/workflows';
 import type { WorkflowEngine } from './workflow-engine';
 
 const logger = getLogger('DatabaseDriven');

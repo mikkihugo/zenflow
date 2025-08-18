@@ -6,7 +6,7 @@
  * Does not re-import documents already saved to repo.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import type {
   BaseDocumentEntity,
   EpicDocumentEntity,
@@ -16,7 +16,7 @@ import type {
 import { DocumentManager } from "../../services/document/document-service"
 import type { DocumentType } from '../../workflows/types';
 
-const logger = createLogger('coordination-services-strategic-vision');
+const logger = getLogger('coordination-services-strategic-vision');
 
 export interface StrategicVisionAnalysis {
   projectId: string;

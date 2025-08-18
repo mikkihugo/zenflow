@@ -7,7 +7,7 @@
  * @file Centralized client lifecycle management.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 // Import actual client implementations
 import { createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';

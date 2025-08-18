@@ -6,7 +6,7 @@
  */
 
 import { ChildProcess, spawn } from 'child_process';
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import { join } from 'path';
 
 export interface RustFactConfig {

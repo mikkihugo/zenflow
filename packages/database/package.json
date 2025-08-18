@@ -1,7 +1,8 @@
 {
   "name": "@claude-zen/database",
-  "version": "1.0.0",
-  "description": "Multi-database abstraction layer with dependency injection support",
+  "version": "1.0.1",
+  "description": "INTERNAL: Multi-database abstraction layer - Private implementation detail of @claude-zen/foundation",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -10,41 +11,60 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./adapters/*": {
-      "types": "./dist/adapters/*.d.ts",
-      "import": "./dist/adapters/*.js"
+    "./adapters/sqlite": {
+      "types": "./dist/adapters/sqlite-adapter.d.ts",
+      "import": "./dist/adapters/sqlite-adapter.js"
     },
-    "./dao/*": {
-      "types": "./dist/dao/*.d.ts", 
-      "import": "./dist/dao/*.js"
+    "./adapters/lancedb": {
+      "types": "./dist/adapters/lancedb-adapter.d.ts",
+      "import": "./dist/adapters/lancedb-adapter.js"
     },
-    "./core/*": {
-      "types": "./dist/core/*.d.ts",
-      "import": "./dist/core/*.js"
+    "./adapters/kuzu": {
+      "types": "./dist/adapters/kuzu-adapter.d.ts",
+      "import": "./dist/adapters/kuzu-adapter.js"
     },
-    "./types/*": {
-      "types": "./dist/types/*.d.ts",
-      "import": "./dist/types/*.js"
+    "./dao/relational": {
+      "types": "./dist/dao/relational.dao.d.ts",
+      "import": "./dist/dao/relational.dao.js"
+    },
+    "./dao/vector": {
+      "types": "./dist/dao/vector.dao.d.ts",
+      "import": "./dist/dao/vector.dao.js"
+    },
+    "./dao/graph": {
+      "types": "./dist/dao/graph.dao.d.ts",
+      "import": "./dist/dao/graph.dao.js"
+    },
+    "./types": {
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
     }
   },
   "dependencies": {
+    "@claude-zen/foundation": "file:../foundation",
+    "@lancedb/lancedb": "^0.21.3",
     "better-sqlite3": "^12.2.0",
-    "@lancedb/lancedb": "^0.21.2",
-    "kuzu": "^0.10.0",
-    "@claude-zen/foundation": "workspace:*",
+    "eventemitter3": "^5.0.1",
+    "kuzu": "^0.11.1",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "@types/node": "^22.17.1", 
     "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.17.2",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
   "keywords": [
@@ -52,7 +72,7 @@
     "sqlite",
     "postgresql",
     "mysql",
-    "lancedb", 
+    "lancedb",
     "kuzu",
     "graph-database",
     "vector-database",

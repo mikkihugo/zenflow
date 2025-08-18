@@ -236,7 +236,7 @@ export class UACLFactory {
   }
 
   /**
-   * Create MCP client for Model Context Protocol.
+   * Create MCP client for Model Context Protocol (Context7, etc).
    *
    * @param url
    * @param config
@@ -532,13 +532,25 @@ export class UACLFactory {
         break;
       }
 
-      case ClientTypes.MCP: {
-        // TODO NEEDS_HUMAN: MCP client factory not found - needs implementation
-        throw new Error('MCP client factory not yet implemented');
+      case ClientTypes.MCPCLIENT: {
+        const { McpClientFactory } = await import(
+          './adapters/mcp-client-adapter'
+        );
+        FactoryClass = McpClientFactory as unknown as new (
+          ...args: unknown[]
+        ) => ClientFactory;
+        break;
       }
+      case ClientTypes.GENERIC:
       default: {
-        // TODO NEEDS_HUMAN: Generic client factory not found - needs implementation
-        throw new Error('Generic client factory not yet implemented');
+        // Use generic HTTP-based client factory as fallback
+        const { HTTPClientFactory } = await import(
+          './factories/http-client-factory'
+        );
+        FactoryClass = HTTPClientFactory as unknown as new (
+          ...args: unknown[]
+        ) => ClientFactory;
+        break;
       }
     }
 
@@ -930,7 +942,7 @@ export async function createMcpClient<T = any>(
   }
 
   return (await createClient<T>(
-    ClientTypes.MCP,
+    ClientTypes.MCPCLIENT,
     protocol,
     url,
     config

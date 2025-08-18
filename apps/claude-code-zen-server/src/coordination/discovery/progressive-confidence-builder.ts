@@ -4,14 +4,14 @@
  * Integrates with HiveFACT for online research and MCP memory for persistence.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '../../memory/memory';
 import {
-  type CollectiveFACTSystem,
-  getCollectiveFACT,
-} from '../collective-fact-integration';
+  type SharedFactSystem as CollectiveFACTSystem,
+  sharedFactSystem as collectiveFACT,
+} from '../shared-fact-system';
 
 // Break circular dependency - use interface instead
 interface DomainDiscoveryBridgeLike {

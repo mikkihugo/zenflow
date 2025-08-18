@@ -223,10 +223,77 @@ export declare class AGUIError extends Error {
     readonly context?: Record<string, unknown> | undefined;
     constructor(message: string, code: string, context?: Record<string, unknown> | undefined);
 }
+/**
+ * Specialized error class for timeout-related failures in AGUI operations.
+ *
+ * This error is thrown when an AGUI operation exceeds its configured timeout period,
+ * such as when waiting for user input or response. It extends the base AGUIError
+ * with timeout-specific information.
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   const response = await agui.askQuestion({
+ *     id: 'approval',
+ *     type: 'approval',
+ *     question: 'Do you approve this action?',
+ *     timeout: 5000,
+ *     confidence: 0.8
+ *   });
+ * } catch (error) {
+ *   if (error instanceof AGUITimeoutError) {
+ *     console.log(`Operation timed out after ${error.timeoutMs}ms`);
+ *   }
+ * }
+ * ```
+ *
+ * @public
+ * @extends AGUIError
+ */
 export declare class AGUITimeoutError extends AGUIError {
     readonly timeoutMs: number;
     constructor(message: string, timeoutMs: number, context?: Record<string, unknown>);
 }
+/**
+ * Specialized error class for input validation failures in AGUI operations.
+ *
+ * This error is thrown when user input fails validation checks, such as when
+ * the input doesn't match expected patterns, contains invalid characters, or
+ * fails custom validation logic. It extends the base AGUIError with validation-specific
+ * information, including the invalid input that caused the error.
+ *
+ * @example
+ * ```typescript
+ * const emailValidator = (input: string) => {
+ *   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+ *   if (!emailRegex.test(input)) {
+ *     throw new AGUIValidationError(
+ *       'Invalid email format',
+ *       input,
+ *       { expectedFormat: 'email' }
+ *     );
+ *   }
+ *   return true;
+ * };
+ *
+ * try {
+ *   await agui.askQuestion({
+ *     id: 'email',
+ *     type: 'input',
+ *     question: 'Enter your email address:',
+ *     validator: emailValidator,
+ *     confidence: 0.9
+ *   });
+ * } catch (error) {
+ *   if (error instanceof AGUIValidationError) {
+ *     console.log(`Invalid input: ${error.input}`);
+ *   }
+ * }
+ * ```
+ *
+ * @public
+ * @extends AGUIError
+ */
 export declare class AGUIValidationError extends AGUIError {
     readonly input: string;
     constructor(message: string, input: string, context?: Record<string, unknown>);

@@ -37,6 +37,7 @@ import type {
   DSPyPromptVariation,
   DSPyMetrics 
 } from '../types/interfaces.js';
+import { getDSPyService } from './service.js';
 
 // Simple logging for standalone mode
 const logger = {
@@ -106,80 +107,46 @@ export class DSPyEngine {
   }
 
   /**
-   * Initialize storage (lazy loading)
-   * Automatically uses @claude-zen/foundation storage if available, falls back to in-memory
+   * Initialize storage (foundation integration)
    */
   private async getKV(): Promise<DSPyKV> {
     if (!this.kv) {
-      // Try to detect if @claude-zen/foundation is available
-      if (await this.isSharedAvailable()) {
-        try {
-          const sharedModule = await this.loadSharedModule();
-          this.kv = await sharedModule.storage.getLibKV('dspy');
-          logger.info('DSPy storage initialized with @claude-zen/foundation');
-        } catch (error) {
-          this.kv = new InMemoryDSPyKV();
-          logger.info('DSPy storage fallback to in-memory (shared import failed)');
-        }
-      } else {
+      try {
+        const dspyService = await getDSPyService();
+        const storage = await dspyService.getStorage();
+        this.kv = storage; // Foundation storage already implements DSPyKV interface
+        logger.info('DSPy storage initialized with @claude-zen/foundation');
+      } catch (error) {
+        logger.error('Failed to initialize foundation storage:', error);
+        // Use in-memory fallback only if foundation fails
         this.kv = new InMemoryDSPyKV();
-        logger.info('DSPy storage initialized with in-memory backend');
+        logger.warn('DSPy storage fallback to in-memory (foundation failed)');
       }
     }
     return this.kv!;
   }
 
-  /**
-   * Check if @claude-zen/foundation is available without importing it
-   */
-  private async isSharedAvailable(): Promise<boolean> {
-    try {
-      // Try to resolve without importing - safer for compilation
-      return typeof (globalThis as any)['@claude-zen/foundation'] !== 'undefined' ||
-             (typeof require !== 'undefined' && typeof require.resolve === 'function');
-    } catch {
-      return false;
-    }
-  }
 
   /**
-   * Load shared module dynamically
-   */
-  private async loadSharedModule(): Promise<any> {
-    // Use eval to hide the import from TypeScript compiler
-    const importPath = '@claude-zen/foundation';
-    return new Function('path', 'return import(path)')(importPath);
-  }
-
-  /**
-   * Get LLM service (shared or fallback)
+   * Get LLM service (foundation integration)
    */
   private async getLLMService(): Promise<any> {
     if (!this.llmService) {
-      if (await this.isSharedAvailable()) {
-        try {
-          const sharedModule = await this.loadSharedModule();
-          this.llmService = await sharedModule.llm.createLLMProvider();
-          logger.info('DSPy LLM initialized with @claude-zen/foundation');
-        } catch (error) {
-          // Fallback to mock/simple implementation
-          this.llmService = {
-            async analyze(prompt: string): Promise<string> {
-              logger.warn('Using mock LLM service for DSPy');
-              return `Mock response for: ${prompt.substring(0, 50)}...`;
-            }
-          };
-          logger.info('DSPy LLM fallback to mock implementation');
-        }
-      } else {
-        // Simple fallback
+      try {
+        const dspyService = await getDSPyService();
         this.llmService = {
           async analyze(prompt: string): Promise<string> {
-            logger.warn('Using mock LLM service for DSPy');
-            return `Mock response for: ${prompt.substring(0, 50)}...`;
+            return await dspyService.executePrompt(prompt, {
+              temperature: 0.1,
+              maxTokens: 16384, // 16K for DSPy optimization work
+              role: 'analyst'
+            });
           }
         };
-        logger.info('DSPy LLM initialized with mock backend');
+        logger.info('DSPy LLM initialized with @claude-zen/foundation');
+      } catch (error) {
+        logger.error('Failed to initialize foundation LLM service:', error);
+        throw new Error('DSPy requires @claude-zen/foundation for LLM services');
       }
     }
     return this.llmService;

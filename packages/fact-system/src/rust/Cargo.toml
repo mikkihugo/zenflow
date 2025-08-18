@@ -2,7 +2,7 @@
 name = "fact-tools"
 version = "1.1.0"
 authors = ["mikkihugo"]
-edition = "2024"
+edition = "2021"
 description = "FACT (Fast Augmented Context Tools) - High-performance context processing engine for AI applications"
 homepage = "https://github.com/mikkihugo/claude-code-zen"
 repository = "https://github.com/mikkihugo/claude-code-zen"
@@ -79,7 +79,7 @@ tempfile = "3.8"
 mockall = "0.12"
 
 [features]
-default = ["cli", "progress", "color"]
+default = ["cli", "progress", "color", "storage", "auto"]
 cli = []
 progress = ["indicatif"]
 color = ["colored"]

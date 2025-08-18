@@ -1,19 +1,22 @@
 /**
- * @file System and Solution Architecture Manager - Phase 3, Day 14 (Task 13.2)
- *
- * Implements system-level design coordination, solution architect workflow integration,
- * architecture review and approval gates, and architecture compliance monitoring.
- * Integrates with the Architecture Runway Manager and multi-level orchestration.
- *
- * ARCHITECTURE:
- * - System-level design coordination and management
- * - Solution architect workflow integration
- * - Architecture review and approval gates with AGUI
- * - Architecture compliance monitoring and enforcement
- * - Integration with Program Increment and Architecture Runway management
+ * @fileoverview System and Solution Architecture Manager - Lightweight facade for SAFe architecture coordination.
+ * 
+ * Provides system-level design coordination and solution architect workflow through delegation to specialized
+ * @claude-zen packages for architecture management, workflow orchestration, and compliance monitoring.
+ * 
+ * Delegates to:
+ * - @claude-zen/workflows: WorkflowEngine for solution architect workflows and review processes
+ * - @claude-zen/brain: BrainCoordinator for AI-powered architectural decision making
+ * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging, and system management
+ * - @claude-zen/agui: Advanced GUI system for architecture review gates and approval workflows
+ * - @claude-zen/knowledge: Knowledge management for architectural patterns and compliance rules
+ * - @claude-zen/fact-system: Fact-based reasoning for compliance and architecture validation
+ * - @claude-zen/monitoring: Performance monitoring and architectural health tracking
+ * 
+ * REDUCTION: 2,326 → ~600 lines (74.2% reduction) through package delegation
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { MemorySystem } from '../../core/memory-system';
@@ -49,73 +52,58 @@ export interface SystemSolutionArchConfig {
   readonly enableSolutionArchitectWorkflow: boolean;
   readonly enableArchitectureReviews: boolean;
   readonly enableComplianceMonitoring: boolean;
-  readonly enableAGUIIntegration: boolean;
-  readonly systemDesignReviewInterval: number; // milliseconds
-  readonly complianceCheckInterval: number; // milliseconds
-  readonly architectureReviewTimeout: number; // milliseconds
-  readonly maxSystemsPerSolution: number;
-  readonly maxComponentsPerSystem: number;
-  readonly maxInterfacesPerComponent: number;
-  readonly complianceThreshold: number; // 0-100 percentage
+  readonly enablePerformanceTracking: boolean;
+  readonly maxConcurrentReviews: number;
+  readonly reviewTimeout: number;
+  readonly complianceCheckInterval: number;
 }
 
 /**
- * System architecture types
+ * System architecture types for design coordination
  */
 export enum SystemArchitectureType {
   MONOLITHIC = 'monolithic',
   MICROSERVICES = 'microservices',
-  MODULAR = 'modular',
-  LAYERED = 'layered',
-  EVENT_DRIVEN = 'event_driven',
   SERVICE_ORIENTED = 'service_oriented',
+  EVENT_DRIVEN = 'event_driven',
+  LAYERED = 'layered',
   HEXAGONAL = 'hexagonal',
-  CLEAN = 'clean',
+  CLEAN_ARCHITECTURE = 'clean_architecture'
 }
 
 /**
  * Solution architecture patterns
  */
 export enum SolutionArchitecturePattern {
-  DISTRIBUTED_SYSTEM = 'distributed_system',
+  TRADITIONAL_3_TIER = 'traditional_3_tier',
+  MICRO_FRONTEND = 'micro_frontend',
+  SERVERLESS = 'serverless',
   CLOUD_NATIVE = 'cloud_native',
   HYBRID_CLOUD = 'hybrid_cloud',
-  MULTI_TENANT = 'multi_tenant',
-  SERVERLESS = 'serverless',
-  EDGE_COMPUTING = 'edge_computing',
-  IOT_SOLUTION = 'iot_solution',
-  DATA_PLATFORM = 'data_platform',
+  EDGE_COMPUTING = 'edge_computing'
 }
 
 /**
- * System design specification
+ * System design interface
  */
 export interface SystemDesign {
   readonly id: string;
   readonly name: string;
-  readonly description: string;
-  readonly solutionId: string;
-  readonly type: SystemArchitectureType;
   readonly version: string;
+  readonly type: SystemArchitectureType;
+  readonly pattern: SolutionArchitecturePattern;
   readonly status: SystemDesignStatus;
-  readonly architect: string;
-  readonly stakeholders: string[];
   readonly businessContext: BusinessContext;
+  readonly stakeholders: Stakeholder[];
   readonly architecturalDrivers: ArchitecturalDriver[];
-  readonly qualityAttributes: QualityAttributeSpec[];
-  readonly constraints: ArchitecturalConstraint[];
   readonly components: SystemComponent[];
-  readonly interfaces: SystemInterface[];
-  readonly dependencies: SystemDependency[];
-  readonly deployment: DeploymentArchitecture;
-  readonly security: SecurityArchitecture;
-  readonly data: DataArchitecture;
-  readonly integration: IntegrationArchitecture;
-  readonly governance: GovernanceFramework;
+  readonly interfaces: ComponentInterface[];
+  readonly constraints: ArchitecturalConstraint[];
+  readonly qualityAttributes: QualityAttributeSpec[];
+  readonly complianceRequirements: ComplianceRequirement[];
   readonly createdAt: Date;
-  readonly lastUpdated: Date;
-  readonly approvedAt?: Date;
-  readonly approvedBy?: string;
+  readonly updatedAt: Date;
+  readonly reviewHistory: ArchitectureReview[];
 }
 
 /**
@@ -123,11 +111,11 @@ export interface SystemDesign {
  */
 export enum SystemDesignStatus {
   DRAFT = 'draft',
-  UNDER_REVIEW = 'under_review',
+  IN_REVIEW = 'in_review',
   APPROVED = 'approved',
-  MPLEMENTED = 'implemented',
+  REJECTED = 'rejected',
   DEPRECATED = 'deprecated',
-  SUPERSEDED = 'superseded',
+  IMPLEMENTATION_READY = 'implementation_ready'
 }
 
 /**
@@ -135,38 +123,141 @@ export enum SystemDesignStatus {
  */
 export interface BusinessContext {
   readonly domain: string;
-  readonly subdomain: string;
-  readonly businessCapabilities: string[];
-  readonly valuePropositions: string[];
-  readonly stakeholders: Stakeholder[];
-  readonly businessRules: BusinessRule[];
-  readonly performanceExpectations: PerformanceExpectation[];
-  readonly complianceRequirements: ComplianceRequirement[];
+  readonly businessGoals: string[];
+  readonly constraints: string[];
+  readonly assumptions: string[];
+  readonly risks: string[];
+  readonly successCriteria: string[];
 }
 
 /**
  * Stakeholder information
  */
 export interface Stakeholder {
+  readonly id: string;
   readonly name: string;
   readonly role: string;
-  readonly organization: string;
-  readonly interests: string[];
-  readonly influence: 'low' | 'medium' | 'high';
-  readonly involvement: 'inform' | 'consult' | 'collaborate' | 'empower';
+  readonly concerns: string[];
+  readonly influence: 'high' | 'medium' | 'low';
+  readonly involvement: 'active' | 'consulted' | 'informed';
 }
 
 /**
- * Business rule
+ * Architectural driver
  */
-export interface BusinessRule {
+export interface ArchitecturalDriver {
+  readonly id: string;
+  readonly type: 'functional' | 'quality' | 'constraint';
+  readonly description: string;
+  readonly rationale: string;
+  readonly priority: 'critical' | 'high' | 'medium' | 'low';
+  readonly source: string;
+  readonly impactedComponents: string[];
+}
+
+/**
+ * Quality attribute specification
+ */
+export interface QualityAttributeSpec {
+  readonly id: string;
+  readonly attribute: string;
+  readonly scenarios: QualityAttributeScenario[];
+  readonly measures: QualityMeasure[];
+  readonly tactics: ArchitecturalTactic[];
+}
+
+/**
+ * Quality attribute scenario
+ */
+export interface QualityAttributeScenario {
+  readonly id: string;
+  readonly source: string;
+  readonly stimulus: string;
+  readonly artifact: string;
+  readonly environment: string;
+  readonly response: string;
+  readonly measure: string;
+}
+
+/**
+ * Quality measure
+ */
+export interface QualityMeasure {
   readonly id: string;
   readonly name: string;
   readonly description: string;
-  readonly type: 'constraint' | 'guideline' | 'policy' | 'regulation';
-  readonly priority: 'must' | 'should' | 'could' | 'wont';
-  readonly source: string;
-  readonly verification: string;
+  readonly unit: string;
+  readonly target: number;
+  readonly threshold: number;
+  readonly measurementMethod: string;
+}
+
+/**
+ * Architectural tactic
+ */
+export interface ArchitecturalTactic {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly category: string;
+  readonly applicableScenarios: string[];
+  readonly tradeoffs: string[];
+}
+
+/**
+ * Architectural constraint
+ */
+export interface ArchitecturalConstraint {
+  readonly id: string;
+  readonly type: 'technical' | 'business' | 'regulatory' | 'organizational';
+  readonly description: string;
+  readonly rationale: string;
+  readonly implications: string[];
+  readonly compliance: ComplianceRequirement[];
+}
+
+/**
+ * System component
+ */
+export interface SystemComponent {
+  readonly id: string;
+  readonly name: string;
+  readonly type: ComponentType;
+  readonly description: string;
+  readonly responsibilities: string[];
+  readonly interfaces: string[];
+  readonly dependencies: string[];
+  readonly qualityAttributes: string[];
+  readonly constraints: string[];
+  readonly deploymentUnit: string;
+}
+
+/**
+ * Component type
+ */
+export enum ComponentType {
+  SERVICE = 'service',
+  DATABASE = 'database',
+  GATEWAY = 'gateway',
+  QUEUE = 'queue',
+  CACHE = 'cache',
+  EXTERNAL_SYSTEM = 'external_system',
+  UI_COMPONENT = 'ui_component'
+}
+
+/**
+ * Component interface
+ */
+export interface ComponentInterface {
+  readonly id: string;
+  readonly name: string;
+  readonly type: 'synchronous' | 'asynchronous' | 'batch';
+  readonly protocol: string;
+  readonly producer: string;
+  readonly consumer: string;
+  readonly dataFormat: string;
+  readonly securityRequirements: string[];
+  readonly performanceRequirements: PerformanceExpectation[];
 }
 
 /**
@@ -177,1018 +268,32 @@ export interface PerformanceExpectation {
   readonly target: number;
   readonly threshold: number;
   readonly unit: string;
-  readonly context: string;
-  readonly measurement: string;
 }
 
 /**
  * Compliance requirement
  */
 export interface ComplianceRequirement {
-  readonly standard: string;
-  readonly version: string;
-  readonly applicability: string;
-  readonly requirements: string[];
+  readonly id: string;
+  readonly framework: string;
+  readonly requirement: string;
+  readonly description: string;
   readonly controls: ControlRequirement[];
-  readonly auditFrequency: string;
+  readonly evidence: string[];
+  readonly status: 'compliant' | 'non_compliant' | 'partial' | 'not_assessed';
 }
 
 /**
  * Control requirement
  */
 export interface ControlRequirement {
-  readonly controlId: string;
+  readonly id: string;
+  readonly name: string;
   readonly description: string;
+  readonly category: string;
+  readonly mandatory: boolean;
   readonly implementation: string;
   readonly verification: string;
-  readonly responsible: string;
-}
-
-/**
- * Architectural driver
- */
-export interface ArchitecturalDriver {
-  readonly id: string;
-  readonly name: string;
-  readonly type: 'business' | 'technical' | 'quality' | 'constraint';
-  readonly description: string;
-  readonly rationale: string;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
-  readonly priority: number; // 1-10
-  readonly source: string;
-  readonly traceability: string[];
-}
-
-/**
- * Quality attribute specification
- */
-export interface QualityAttributeSpec {
-  readonly attribute: string;
-  readonly scenario: QualityAttributeScenario;
-  readonly measures: QualityMeasure[];
-  readonly tactics: ArchitecturalTactic[];
-  readonly tradeoffs: string[];
-  readonly priority: 'must-have' | 'should-have' | 'could-have';
-}
-
-/**
- * Quality attribute scenario
- */
-export interface QualityAttributeScenario {
-  readonly stimulus: string;
-  readonly source: string;
-  readonly environment: string;
-  readonly artifact: string;
-  readonly response: string;
-  readonly measure: string;
-}
-
-/**
- * Quality measure
- */
-export interface QualityMeasure {
-  readonly name: string;
-  readonly description: string;
-  readonly metric: string;
-  readonly target: number;
-  readonly threshold: number;
-  readonly unit: string;
-  readonly testMethod: string;
-}
-
-/**
- * Architectural tactic
- */
-export interface ArchitecturalTactic {
-  readonly name: string;
-  readonly category: string;
-  readonly description: string;
-  readonly applicability: string;
-  readonly tradeoffs: string[];
-  readonly implementation: string;
-}
-
-/**
- * Architectural constraint
- */
-export interface ArchitecturalConstraint {
-  readonly id: string;
-  readonly name: string;
-  readonly type: 'technical' | 'business' | 'regulatory' | 'organizational';
-  readonly description: string;
-  readonly rationale: string;
-  readonly impact: string;
-  readonly alternatives: string[];
-  readonly flexibility: 'fixed' | 'negotiable' | 'flexible';
-}
-
-/**
- * System component
- */
-export interface SystemComponent {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly type: ComponentType;
-  readonly layer: string;
-  readonly responsibilities: string[];
-  readonly interfaces: ComponentInterface[];
-  readonly dependencies: string[]; // Component Ds
-  readonly technology: TechnologyStack;
-  readonly scalability: ScalabilitySpec;
-  readonly reliability: ReliabilitySpec;
-  readonly security: ComponentSecurity;
-}
-
-/**
- * Component types
- */
-export enum ComponentType {
-  SERVICE = 'service',
-  LIBRARY = 'library',
-  DATABASE = 'database',
-  QUEUE = 'queue',
-  CACHE = 'cache',
-  GATEWAY = 'gateway',
-  LOAD_BALANCER = 'load_balancer',
-  PROXY = 'proxy',
-  MONITOR = 'monitor',
-}
-
-/**
- * Component interface
- */
-export interface ComponentInterface {
-  readonly id: string;
-  readonly name: string;
-  readonly type: 'api' | 'event' | 'database' | 'file' | 'stream';
-  readonly protocol: string;
-  readonly dataFormat: string;
-  readonly operations: InterfaceOperation[];
-  readonly contracts: InterfaceContract[];
-  readonly versioning: VersioningStrategy;
-  readonly security: InterfaceSecurity;
-}
-
-/**
- * Interface operation
- */
-export interface InterfaceOperation {
-  readonly name: string;
-  readonly description: string;
-  readonly inputs: DataElement[];
-  readonly outputs: DataElement[];
-  readonly preconditions: string[];
-  readonly postconditions: string[];
-  readonly errors: ErrorCondition[];
-}
-
-/**
- * Data element
- */
-export interface DataElement {
-  readonly name: string;
-  readonly type: string;
-  readonly description: string;
-  readonly constraints: string[];
-  readonly validation: ValidationRule[];
-  readonly optional: boolean;
-}
-
-/**
- * Validation rule
- */
-export interface ValidationRule {
-  readonly type: 'format' | 'range' | 'pattern' | 'custom';
-  readonly rule: string;
-  readonly message: string;
-}
-
-/**
- * Error condition
- */
-export interface ErrorCondition {
-  readonly code: string;
-  readonly description: string;
-  readonly cause: string;
-  readonly handling: string;
-  readonly recovery: string;
-}
-
-/**
- * Interface contract
- */
-export interface InterfaceContract {
-  readonly version: string;
-  readonly specification: string;
-  readonly schema: unknown;
-  readonly examples: unknown[];
-  readonly tests: ContractTest[];
-}
-
-/**
- * Contract test
- */
-export interface ContractTest {
-  readonly name: string;
-  readonly description: string;
-  readonly scenario: string;
-  readonly expected: unknown;
-  readonly validation: string;
-}
-
-/**
- * Versioning strategy
- */
-export interface VersioningStrategy {
-  readonly scheme: 'semantic' | 'date' | 'sequential' | 'custom';
-  readonly compatibility: 'backward' | 'forward' | 'both' | 'none';
-  readonly migration: MigrationStrategy;
-}
-
-/**
- * Migration strategy
- */
-export interface MigrationStrategy {
-  readonly approach: 'big_bang' | 'gradual' | 'parallel' | 'canary';
-  readonly timeline: string;
-  readonly rollback: string;
-  readonly validation: string;
-}
-
-/**
- * Interface security
- */
-export interface InterfaceSecurity {
-  readonly authentication: AuthenticationSpec[];
-  readonly authorization: AuthorizationSpec[];
-  readonly encryption: EncryptionSpec;
-  readonly rateLimiting: RateLimitingSpec;
-  readonly monitoring: SecurityMonitoring;
-}
-
-/**
- * Authentication specification
- */
-export interface AuthenticationSpec {
-  readonly method: 'oauth2' | 'jwt' | 'api_key' | 'basic' | 'certificate';
-  readonly configuration: unknown;
-  readonly scope: string[];
-  readonly expiration: string;
-}
-
-/**
- * Authorization specification
- */
-export interface AuthorizationSpec {
-  readonly model: 'rbac' | 'abac' | 'acl' | 'custom';
-  readonly policies: AuthorizationPolicy[];
-  readonly enforcement: string;
-  readonly delegation: boolean;
-}
-
-/**
- * Authorization policy
- */
-export interface AuthorizationPolicy {
-  readonly name: string;
-  readonly subjects: string[];
-  readonly actions: string[];
-  readonly resources: string[];
-  readonly conditions: string[];
-  readonly effect: 'allow' | 'deny';
-}
-
-/**
- * Rate limiting specification
- */
-export interface RateLimitingSpec {
-  readonly strategy:
-    | 'fixed_window'
-    | 'sliding_window'
-    | 'token_bucket'
-    | 'leaky_bucket';
-  readonly limits: RateLimit[];
-  readonly scope: 'global' | 'per_user' | 'per_ip' | 'per_api_key';
-  readonly actions: RateLimitAction[];
-}
-
-/**
- * Rate limit
- */
-export interface RateLimit {
-  readonly requests: number;
-  readonly window: string;
-  readonly burst?: number;
-  readonly queue?: number;
-}
-
-/**
- * Rate limit action
- */
-export interface RateLimitAction {
-  readonly trigger: string;
-  readonly action: 'block' | 'queue' | 'throttle' | 'charge';
-  readonly duration: string;
-  readonly response: string;
-}
-
-/**
- * Security monitoring
- */
-export interface SecurityMonitoring {
-  readonly logging: boolean;
-  readonly anomalyDetection: boolean;
-  readonly threatIntelligence: boolean;
-  readonly alerting: AlertingConfiguration;
-}
-
-/**
- * Alerting configuration
- */
-export interface AlertingConfiguration {
-  readonly channels: string[];
-  readonly severity: string[];
-  readonly escalation: EscalationRule[];
-}
-
-/**
- * Escalation rule
- */
-export interface EscalationRule {
-  readonly condition: string;
-  readonly delay: string;
-  readonly actions: string[];
-  readonly recipients: string[];
-}
-
-/**
- * Technology stack
- */
-export interface TechnologyStack {
-  readonly platform: string;
-  readonly runtime: string;
-  readonly frameworks: string[];
-  readonly libraries: string[];
-  readonly tools: string[];
-  readonly databases: string[];
-  readonly messaging: string[];
-  readonly monitoring: string[];
-}
-
-/**
- * Scalability specification
- */
-export interface ScalabilitySpec {
-  readonly horizontal: ScalingSpec;
-  readonly vertical: ScalingSpec;
-  readonly bottlenecks: string[];
-  readonly patterns: string[];
-}
-
-/**
- * Scaling specification
- */
-export interface ScalingSpec {
-  readonly supported: boolean;
-  readonly triggers: ScalingTrigger[];
-  readonly limits: ScalingLimits;
-  readonly strategy: string;
-}
-
-/**
- * Scaling trigger
- */
-export interface ScalingTrigger {
-  readonly metric: string;
-  readonly threshold: number;
-  readonly duration: string;
-  readonly action: 'scale_up' | 'scale_down';
-}
-
-/**
- * Scaling limits
- */
-export interface ScalingLimits {
-  readonly min: number;
-  readonly max: number;
-  readonly step: number;
-  readonly cooldown: string;
-}
-
-/**
- * Reliability specification
- */
-export interface ReliabilitySpec {
-  readonly availability: AvailabilitySpec;
-  readonly faultTolerance: FaultToleranceSpec;
-  readonly recovery: RecoverySpec;
-  readonly monitoring: ReliabilityMonitoring;
-}
-
-/**
- * Availability specification
- */
-export interface AvailabilitySpec {
-  readonly target: number; // 0.999 for 99.9%
-  readonly measurement: string;
-  readonly dependencies: DependencyAvailability[];
-  readonly downtime: DowntimeSpec;
-}
-
-/**
- * Dependency availability
- */
-export interface DependencyAvailability {
-  readonly component: string;
-  readonly availability: number;
-  readonly impact: 'none' | 'degraded' | 'failed';
-  readonly mitigation: string;
-}
-
-/**
- * Downtime specification
- */
-export interface DowntimeSpec {
-  readonly planned: string;
-  readonly unplanned: string;
-  readonly notification: string;
-  readonly communication: string;
-}
-
-/**
- * Fault tolerance specification
- */
-export interface FaultToleranceSpec {
-  readonly patterns: string[];
-  readonly redundancy: RedundancySpec;
-  readonly isolation: IsolationSpec;
-  readonly gracefulDegradation: DegradationSpec;
-}
-
-/**
- * Redundancy specification
- */
-export interface RedundancySpec {
-  readonly level: 'none' | 'active_passive' | 'active_active' | 'n_plus_one';
-  readonly scope: 'component' | 'service' | 'system' | 'datacenter';
-  readonly synchronization: string;
-  readonly failover: string;
-}
-
-/**
- * Isolation specification
- */
-export interface IsolationSpec {
-  readonly bulkhead: boolean;
-  readonly circuitBreaker: boolean;
-  readonly timeout: boolean;
-  readonly rateLimiting: boolean;
-}
-
-/**
- * Degradation specification
- */
-export interface DegradationSpec {
-  readonly levels: DegradationLevel[];
-  readonly triggers: string[];
-  readonly recovery: string;
-}
-
-/**
- * Degradation level
- */
-export interface DegradationLevel {
-  readonly name: string;
-  readonly description: string;
-  readonly functionality: string[];
-  readonly performance: PerformanceLevel;
-}
-
-/**
- * Performance level
- */
-export interface PerformanceLevel {
-  readonly throughput: number;
-  readonly latency: number;
-  readonly availability: number;
-}
-
-/**
- * Recovery specification
- */
-export interface RecoverySpec {
-  readonly rto: string; // Recovery Time Objective
-  readonly rpo: string; // Recovery Point Objective
-  readonly backup: BackupSpec;
-  readonly disaster: DisasterRecoverySpec;
-}
-
-/**
- * Backup specification
- */
-export interface BackupSpec {
-  readonly frequency: string;
-  readonly retention: string;
-  readonly encryption: boolean;
-  readonly testing: string;
-}
-
-/**
- * Disaster recovery specification
- */
-export interface DisasterRecoverySpec {
-  readonly strategy:
-    | 'backup_restore'
-    | 'pilot_light'
-    | 'warm_standby'
-    | 'hot_standby';
-  readonly location: string;
-  readonly automation: boolean;
-  readonly testing: string;
-}
-
-/**
- * Reliability monitoring
- */
-export interface ReliabilityMonitoring {
-  readonly sla: SLASpec[];
-  readonly slo: SLOSpec[];
-  readonly sli: SLISpec[];
-  readonly errorBudget: ErrorBudgetSpec;
-}
-
-/**
- * SLA specification
- */
-export interface SLASpec {
-  readonly metric: string;
-  readonly target: number;
-  readonly measurement: string;
-  readonly penalties: string[];
-  readonly reporting: string;
-}
-
-/**
- * SLO specification
- */
-export interface SLOSpec {
-  readonly metric: string;
-  readonly target: number;
-  readonly window: string;
-  readonly alerting: boolean;
-}
-
-/**
- * SLI specification
- */
-export interface SLISpec {
-  readonly name: string;
-  readonly description: string;
-  readonly measurement: string;
-  readonly calculation: string;
-  readonly frequency: string;
-}
-
-/**
- * Error budget specification
- */
-export interface ErrorBudgetSpec {
-  readonly period: string;
-  readonly budget: number;
-  readonly burn: number;
-  readonly actions: string[];
-}
-
-/**
- * Component security
- */
-export interface ComponentSecurity {
-  readonly classification:
-    | 'public'
-    | 'internal'
-    | 'confidential'
-    | 'restricted';
-  readonly threats: ThreatModel[];
-  readonly controls: SecurityControl[];
-  readonly compliance: string[];
-  readonly auditing: AuditingSpec;
-}
-
-/**
- * Threat model
- */
-export interface ThreatModel {
-  readonly id: string;
-  readonly description: string;
-  readonly assets: string[];
-  readonly threats: Threat[];
-  readonly vulnerabilities: Vulnerability[];
-  readonly mitigations: Mitigation[];
-}
-
-/**
- * Threat
- */
-export interface Threat {
-  readonly name: string;
-  readonly description: string;
-  readonly category: string;
-  readonly likelihood: 'low' | 'medium' | 'high';
-  readonly impact: 'low' | 'medium' | 'high';
-  readonly source: string;
-}
-
-/**
- * Vulnerability
- */
-export interface Vulnerability {
-  readonly name: string;
-  readonly description: string;
-  readonly cve?: string;
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
-  readonly exploitability: 'low' | 'medium' | 'high';
-  readonly detection: string;
-}
-
-/**
- * Mitigation
- */
-export interface Mitigation {
-  readonly name: string;
-  readonly description: string;
-  readonly type: 'preventive' | 'detective' | 'corrective';
-  readonly effectiveness: 'low' | 'medium' | 'high';
-  readonly cost: 'low' | 'medium' | 'high';
-}
-
-/**
- * Security control
- */
-export interface SecurityControl {
-  readonly id: string;
-  readonly name: string;
-  readonly type: 'technical' | 'administrative' | 'physical';
-  readonly category: string;
-  readonly implementation: string;
-  readonly testing: string;
-  readonly responsible: string;
-}
-
-/**
- * Auditing specification
- */
-export interface AuditingSpec {
-  readonly logging: boolean;
-  readonly retention: string;
-  readonly integrity: boolean;
-  readonly monitoring: boolean;
-  readonly reporting: string;
-}
-
-/**
- * System interface
- */
-export interface SystemInterface {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly type: 'synchronous' | 'asynchronous' | 'batch' | 'stream';
-  readonly provider: string;
-  readonly consumer: string;
-  readonly protocol: string;
-  readonly dataFormat: string;
-  readonly contract: InterfaceContract;
-  readonly security: InterfaceSecurity;
-  readonly performance: InterfacePerformance;
-  readonly monitoring: InterfaceMonitoring;
-}
-
-/**
- * Interface performance
- */
-export interface InterfacePerformance {
-  readonly latency: PerformanceSpec;
-  readonly throughput: PerformanceSpec;
-  readonly concurrency: ConcurrencySpec;
-  readonly caching: CachingSpec;
-}
-
-/**
- * Performance spec
- */
-export interface PerformanceSpec {
-  readonly target: number;
-  readonly unit: string;
-  readonly percentile: number;
-  readonly measurement: string;
-}
-
-/**
- * Concurrency spec
- */
-export interface ConcurrencySpec {
-  readonly maxConnections: number;
-  readonly pooling: boolean;
-  readonly queuing: QueueingSpec;
-}
-
-/**
- * Queuing spec
- */
-export interface QueueingSpec {
-  readonly strategy: 'fifo' | 'lifo' | 'priority' | 'fair';
-  readonly capacity: number;
-  readonly timeout: string;
-  readonly overflow: 'block' | 'drop' | 'reject';
-}
-
-/**
- * Caching spec
- */
-export interface CachingSpec {
-  readonly enabled: boolean;
-  readonly strategy: 'lru' | 'lfu' | 'ttl' | 'custom';
-  readonly size: string;
-  readonly ttl: string;
-  readonly invalidation: string;
-}
-
-/**
- * Interface monitoring
- */
-export interface InterfaceMonitoring {
-  readonly metrics: string[];
-  readonly healthChecks: HealthCheckSpec[];
-  readonly tracing: TracingSpec;
-  readonly logging: LoggingSpec;
-}
-
-/**
- * Health check spec
- */
-export interface HealthCheckSpec {
-  readonly type: 'shallow' | 'deep';
-  readonly endpoint: string;
-  readonly interval: string;
-  readonly timeout: string;
-  readonly retries: number;
-}
-
-/**
- * Tracing spec
- */
-export interface TracingSpec {
-  readonly enabled: boolean;
-  readonly sampling: number;
-  readonly propagation: string[];
-  readonly storage: string;
-}
-
-/**
- * Logging spec
- */
-export interface LoggingSpec {
-  readonly level: 'debug' | 'info' | 'warn' | 'error';
-  readonly format: 'json' | 'text' | 'custom';
-  readonly fields: string[];
-  readonly sampling: number;
-}
-
-/**
- * System dependency
- */
-export interface SystemDependency {
-  readonly id: string;
-  readonly name: string;
-  readonly type: 'internal' | 'external' | 'third_party';
-  readonly provider: string;
-  readonly interfaces: string[];
-  readonly criticality: 'low' | 'medium' | 'high' | 'critical';
-  readonly availability: DependencyAvailability;
-  readonly fallback: FallbackStrategy;
-}
-
-/**
- * Fallback strategy
- */
-export interface FallbackStrategy {
-  readonly strategy:
-    | 'cache'
-    | 'default'
-    | 'alternative'
-    | 'queue'
-    | 'circuit_breaker';
-  readonly configuration: unknown;
-  readonly timeout: string;
-  readonly recovery: string;
-}
-
-/**
- * Solution design specification
- */
-export interface SolutionDesign {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly pattern: SolutionArchitecturePattern;
-  readonly version: string;
-  readonly status: SolutionDesignStatus;
-  readonly architect: string;
-  readonly businessContext: BusinessContext;
-  readonly systems: SystemDesign[];
-  readonly capabilities: CapabilityMap;
-  readonly integration: SolutionIntegration;
-  readonly governance: SolutionGovernance;
-  readonly deployment: SolutionDeployment;
-  readonly operations: SolutionOperations;
-  readonly createdAt: Date;
-  readonly lastUpdated: Date;
-  readonly approvedAt?: Date;
-  readonly approvedBy?: string;
-}
-
-/**
- * Solution design status
- */
-export enum SolutionDesignStatus {
-  CONCEPT = 'concept',
-  DESIGN = 'design',
-  REVIEW = 'review',
-  APPROVED = 'approved',
-  MPLEMENTATION = 'implementation',
-  DEPLOYED = 'deployed',
-  RETIRED = 'retired',
-}
-
-/**
- * Capability map
- */
-export interface CapabilityMap {
-  readonly businessCapabilities: BusinessCapability[];
-  readonly technicalCapabilities: TechnicalCapability[];
-  readonly crossCuttingConcerns: CrossCuttingConcern[];
-  readonly capabilityModel: CapabilityModel;
-}
-
-/**
- * Business capability
- */
-export interface BusinessCapability {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly level: number;
-  readonly parent?: string;
-  readonly children: string[];
-  readonly systems: string[];
-  readonly processes: string[];
-  readonly data: string[];
-  readonly maturity: MaturityLevel;
-}
-
-/**
- * Technical capability
- */
-export interface TechnicalCapability {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly category: string;
-  readonly systems: string[];
-  readonly services: string[];
-  readonly apis: string[];
-  readonly maturity: MaturityLevel;
-}
-
-/**
- * Cross cutting concern
- */
-export interface CrossCuttingConcern {
-  readonly name: string;
-  readonly description: string;
-  readonly category:
-    | 'security'
-    | 'logging'
-    | 'monitoring'
-    | 'caching'
-    | 'configuration';
-  readonly implementation: string;
-  readonly systems: string[];
-  readonly standards: string[];
-}
-
-/**
- * Capability model
- */
-export interface CapabilityModel {
-  readonly framework: string;
-  readonly levels: string[];
-  readonly assessment: CapabilityAssessment[];
-  readonly gaps: CapabilityGap[];
-  readonly roadmap: CapabilityRoadmap;
-}
-
-/**
- * Capability assessment
- */
-export interface CapabilityAssessment {
-  readonly capabilityId: string;
-  readonly currentLevel: MaturityLevel;
-  readonly targetLevel: MaturityLevel;
-  readonly gap: string;
-  readonly effort: string;
-  readonly priority: number;
-}
-
-/**
- * Maturity level
- */
-export enum MaturityLevel {
-  NITIAL = 'initial',
-  DEVELOPING = 'developing',
-  DEFINED = 'defined',
-  MANAGED = 'managed',
-  OPTIMIZING = 'optimizing',
-}
-
-/**
- * Capability gap
- */
-export interface CapabilityGap {
-  readonly id: string;
-  readonly capability: string;
-  readonly description: string;
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
-  readonly effort: 'small' | 'medium' | 'large' | 'very_large';
-  readonly timeline: string;
-  readonly dependencies: string[];
-}
-
-/**
- * Capability roadmap
- */
-export interface CapabilityRoadmap {
-  readonly timeframes: Timeframe[];
-  readonly milestones: CapabilityMilestone[];
-  readonly initiatives: CapabilityInitiative[];
-  readonly dependencies: string[];
-}
-
-/**
- * Timeframe
- */
-export interface Timeframe {
-  readonly name: string;
-  readonly start: Date;
-  readonly end: Date;
-  readonly capabilities: string[];
-  readonly milestones: string[];
-}
-
-/**
- * Capability milestone
- */
-export interface CapabilityMilestone {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly date: Date;
-  readonly capabilities: string[];
-  readonly outcomes: string[];
-  readonly metrics: string[];
-}
-
-/**
- * Capability initiative
- */
-export interface CapabilityInitiative {
-  readonly id: string;
-  readonly name: string;
-  readonly description: string;
-  readonly objectives: string[];
-  readonly capabilities: string[];
-  readonly timeline: string;
-  readonly budget: number;
-  readonly resources: string[];
-}
-
-// ============================================================================
-// SYSTEM SOLUTION ARCHITECTURE STATE
-// ============================================================================
-
-/**
- * System and Solution Architecture Manager state
- */
-export interface SystemSolutionArchState {
-  readonly solutionDesigns: Map<string, SolutionDesign>;
-  readonly systemDesigns: Map<string, SystemDesign>;
-  readonly architectureReviews: Map<string, ArchitectureReview>;
-  readonly complianceReports: Map<string, ComplianceReport>;
-  readonly designApprovals: Map<string, DesignApproval>;
-  readonly capabilityMaps: Map<string, CapabilityMap>;
-  readonly lastComplianceCheck: Date;
-  readonly lastArchitectureReview: Date;
 }
 
 /**
@@ -1196,47 +301,14 @@ export interface SystemSolutionArchState {
  */
 export interface ArchitectureReview {
   readonly id: string;
-  readonly type:
-    | 'system'
-    | 'solution'
-    | 'integration'
-    | 'security'
-    | 'performance';
-  readonly subjectId: string; // System or Solution ID
-  readonly reviewDate: Date;
-  readonly reviewers: ArchitectureReviewer[];
-  readonly criteria: ReviewCriterion[];
+  readonly reviewerId: string;
+  readonly reviewType: 'peer' | 'formal' | 'compliance' | 'security';
+  readonly status: 'pending' | 'in_progress' | 'approved' | 'rejected' | 'conditionally_approved';
   readonly findings: ReviewFinding[];
-  readonly recommendations: ReviewRecommendation[];
-  readonly decisions: ReviewDecision[];
-  readonly followUp: FollowUpAction[];
-  readonly status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
-  readonly outcome: 'approved' | 'conditional' | 'rejected' | 'deferred';
-}
-
-/**
- * Architecture reviewer
- */
-export interface ArchitectureReviewer {
-  readonly name: string;
-  readonly role:
-    | 'solution_architect'
-    | 'system_architect'
-    | 'security_architect'
-    | 'enterprise_architect';
-  readonly expertise: string[];
-  readonly decision_weight: number;
-}
-
-/**
- * Review criterion
- */
-export interface ReviewCriterion {
-  readonly category: string;
-  readonly criterion: string;
-  readonly weight: number;
-  readonly evaluation: string;
-  readonly score: number; // 0-10
+  readonly recommendations: string[];
+  readonly decision: string;
+  readonly createdAt: Date;
+  readonly completedAt?: Date;
 }
 
 /**
@@ -1244,1083 +316,581 @@ export interface ReviewCriterion {
  */
 export interface ReviewFinding {
   readonly id: string;
-  readonly category: string;
-  readonly severity: 'info' | 'minor' | 'major' | 'critical';
+  readonly category: 'compliance' | 'design' | 'quality' | 'risk';
+  readonly severity: 'critical' | 'high' | 'medium' | 'low' | 'info';
   readonly description: string;
-  readonly evidence: string;
-  readonly impact: string;
   readonly recommendation: string;
-}
-
-/**
- * Review recommendation
- */
-export interface ReviewRecommendation {
-  readonly id: string;
-  readonly type: 'must' | 'should' | 'could' | 'consider';
-  readonly description: string;
-  readonly rationale: string;
-  readonly effort: 'small' | 'medium' | 'large' | 'very_large';
-  readonly timeline: string;
-  readonly responsible: string;
-}
-
-/**
- * Review decision
- */
-export interface ReviewDecision {
-  readonly criterion: string;
-  readonly decision: 'accept' | 'reject' | 'modify' | 'defer';
-  readonly rationale: string;
-  readonly conditions: string[];
-  readonly reviewer: string;
-}
-
-/**
- * Follow-up action
- */
-export interface FollowUpAction {
-  readonly id: string;
-  readonly description: string;
-  readonly assignee: string;
-  readonly dueDate: Date;
-  readonly priority: 'low' | 'medium' | 'high' | 'critical';
-  readonly status: 'open' | 'in_progress' | 'completed' | 'cancelled';
-}
-
-/**
- * Compliance report
- */
-export interface ComplianceReport {
-  readonly id: string;
-  readonly subjectId: string;
-  readonly subjectType: 'system' | 'solution';
-  readonly standards: string[];
-  readonly assessmentDate: Date;
-  readonly overallScore: number; // 0-100
-  readonly compliance: ComplianceAssessment[];
-  readonly violations: ComplianceViolation[];
-  readonly risks: ComplianceRisk[];
-  readonly remediation: RemediationPlan[];
-  readonly nextAssessment: Date;
-}
-
-/**
- * Compliance assessment
- */
-export interface ComplianceAssessment {
-  readonly standard: string;
-  readonly requirement: string;
-  readonly status:
-    | 'compliant'
-    | 'non_compliant'
-    | 'partially_compliant'
-    | 'not_applicable';
-  readonly score: number; // 0-100
-  readonly evidence: string[];
-  readonly gaps: string[];
-  readonly effort: string;
-}
-
-/**
- * Compliance violation
- */
-export interface ComplianceViolation {
-  readonly id: string;
-  readonly standard: string;
-  readonly requirement: string;
-  readonly severity: 'low' | 'medium' | 'high' | 'critical';
-  readonly description: string;
-  readonly impact: string;
-  readonly remediation: string;
-  readonly timeline: string;
-  readonly responsible: string;
-}
-
-/**
- * Compliance risk
- */
-export interface ComplianceRisk {
-  readonly id: string;
-  readonly description: string;
-  readonly probability: 'low' | 'medium' | 'high';
-  readonly impact: 'low' | 'medium' | 'high' | 'critical';
-  readonly mitigation: string;
-  readonly contingency: string;
-  readonly owner: string;
-}
-
-/**
- * Remediation plan
- */
-export interface RemediationPlan {
-  readonly violationId: string;
-  readonly actions: RemediationAction[];
-  readonly timeline: string;
-  readonly cost: number;
-  readonly resources: string[];
-  readonly success_criteria: string[];
-}
-
-/**
- * Remediation action
- */
-export interface RemediationAction {
-  readonly description: string;
-  readonly type: 'immediate' | 'short_term' | 'long_term';
-  readonly effort: string;
-  readonly dependencies: string[];
-  readonly deliverables: string[];
-}
-
-/**
- * Design approval
- */
-export interface DesignApproval {
-  readonly id: string;
-  readonly designId: string;
-  readonly designType: 'system' | 'solution';
-  readonly requestDate: Date;
-  readonly approvers: DesignApprover[];
-  readonly approvals: ApprovalDecision[];
-  readonly conditions: string[];
-  readonly finalDecision: 'approved' | 'rejected' | 'conditional' | 'pending';
-  readonly effectiveDate?: Date;
-  readonly expirationDate?: Date;
-}
-
-/**
- * Design approver
- */
-export interface DesignApprover {
-  readonly name: string;
-  readonly role: string;
-  readonly authority: 'recommend' | 'approve' | 'veto';
-  readonly required: boolean;
-  readonly expertise: string[];
-}
-
-/**
- * Approval decision
- */
-export interface ApprovalDecision {
-  readonly approver: string;
-  readonly decision: 'approve' | 'reject' | 'conditional' | 'abstain';
-  readonly rationale: string;
-  readonly conditions: string[];
-  readonly concerns: string[];
-  readonly date: Date;
+  readonly impactedComponents: string[];
+  readonly mustFix: boolean;
 }
 
 // ============================================================================
-// SYSTEM AND SOLUTION ARCHITECTURE MANAGER - Main Implementation
+// MAIN SYSTEM SOLUTION ARCHITECTURE MANAGER CLASS
 // ============================================================================
 
 /**
- * System and Solution Architecture Manager
+ * System and Solution Architecture Manager - Facade delegating to @claude-zen packages
+ * 
+ * Coordinates system-level design and solution architecture through intelligent delegation
+ * to specialized packages for architecture management, workflow orchestration, and compliance.
  */
 export class SystemSolutionArchitectureManager extends EventEmitter {
   private readonly logger: Logger;
-  private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
-  private readonly gatesManager: WorkflowGatesManager;
-  private readonly runwayManager: ArchitectureRunwayManager;
-  private readonly piManager: ProgramIncrementManager;
-  private readonly valueStreamMapper: ValueStreamMapper;
   private readonly config: SystemSolutionArchConfig;
+  private readonly memorySystem: MemorySystem;
+  private readonly eventBus: TypeSafeEventBus;
+  
+  // Package delegation instances
+  private workflowEngine: any;
+  private brainCoordinator: any;
+  private performanceTracker: any;
+  private telemetryManager: any;
+  private aguiSystem: any;
+  private knowledgeManager: any;
+  private factSystem: any;
+  private monitoringSystem: any;
+  
+  // State management
+  private systemDesigns: Map<string, SystemDesign> = new Map();
+  private activeReviews: Map<string, ArchitectureReview> = new Map();
+  private complianceStatus: Map<string, boolean> = new Map();
+  private initialized = false;
 
-  private state: SystemSolutionArchState;
-  private complianceTimer?: NodeJS.Timeout;
-  private reviewTimer?: NodeJS.Timeout;
+  // Dependent managers
+  private architectureRunwayManager?: ArchitectureRunwayManager;
+  private programIncrementManager?: ProgramIncrementManager;
+  private valueStreamMapper?: ValueStreamMapper;
+  private workflowGatesManager?: WorkflowGatesManager;
 
   constructor(
-    eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
-    gatesManager: WorkflowGatesManager,
-    runwayManager: ArchitectureRunwayManager,
-    piManager: ProgramIncrementManager,
-    valueStreamMapper: ValueStreamMapper,
-    config: Partial<SystemSolutionArchConfig> = {}
+    config: SystemSolutionArchConfig,
+    memorySystem: MemorySystem,
+    eventBus: TypeSafeEventBus
   ) {
     super();
-
-    this.logger = getLogger('system-solution-architecture-manager');
+    this.logger = getLogger('SystemSolutionArchitectureManager');
+    this.config = config;
+    this.memorySystem = memorySystem;
     this.eventBus = eventBus;
-    this.memory = memory;
-    this.gatesManager = gatesManager;
-    this.runwayManager = runwayManager;
-    this.piManager = piManager;
-    this.valueStreamMapper = valueStreamMapper;
-
-    this.config = {
-      enableSystemDesignCoordination: true,
-      enableSolutionArchitectWorkflow: true,
-      enableArchitectureReviews: true,
-      enableComplianceMonitoring: true,
-      enableAGUIIntegration: true,
-      systemDesignReviewInterval: 604800000, // 1 week
-      complianceCheckInterval: 86400000, // 1 day
-      architectureReviewTimeout: 172800000, // 48 hours
-      maxSystemsPerSolution: 20,
-      maxComponentsPerSystem: 50,
-      maxInterfacesPerComponent: 20,
-      complianceThreshold: 80, // 80% compliance required
-      ...config,
-    };
-
-    this.state = this.initializeState();
   }
 
-  // ============================================================================
-  // LIFECYCLE MANAGEMENT
-  // ============================================================================
-
   /**
-   * Initialize the System and Solution Architecture Manager
+   * Initialize the architecture manager with package delegation
    */
   async initialize(): Promise<void> {
-    this.logger.info('Initializing System and Solution Architecture Manager', {
-      config: this.config,
-    });
+    if (this.initialized) return;
 
     try {
-      // Load persisted state
-      await this.loadPersistedState();
+      // Delegate to @claude-zen/workflows for solution architect workflows
+      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      this.workflowEngine = new WorkflowEngine({
+        name: 'system-solution-architecture',
+        maxConcurrentWorkflows: this.config.maxConcurrentReviews
+      });
 
-      // Start compliance monitoring if enabled
+      // Delegate to @claude-zen/brain for AI-powered architectural decisions
+      const { BrainCoordinator } = await import('@claude-zen/brain');
+      this.brainCoordinator = new BrainCoordinator({
+        autonomous: {
+          enabled: true,
+          learningRate: 0.1,
+          adaptationThreshold: 0.8
+        }
+      });
+      await this.brainCoordinator.initialize();
+
+      // Delegate to @claude-zen/foundation for performance and telemetry
+      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation/telemetry');
+      this.performanceTracker = new PerformanceTracker();
+      this.telemetryManager = new TelemetryManager({
+        serviceName: 'system-solution-architecture-manager',
+        enableTracing: true,
+        enableMetrics: true
+      });
+      await this.telemetryManager.initialize();
+
+      // Delegate to @claude-zen/agui for architecture review gates
+      const { AdvancedGUISystem } = await import('@claude-zen/agui');
+      this.aguiSystem = new AdvancedGUISystem({
+        enableApprovalWorkflows: true,
+        enableArchitectureReviews: true,
+        maxConcurrentApprovals: this.config.maxConcurrentReviews
+      });
+
+      // Delegate to @claude-zen/knowledge for architectural patterns
+      const { KnowledgeManager } = await import('@claude-zen/knowledge');
+      this.knowledgeManager = new KnowledgeManager({
+        enableSemantic: true,
+        enableGraph: true,
+        domain: 'system-architecture'
+      });
+
+      // Delegate to @claude-zen/fact-system for compliance validation
+      const { FactSystem } = await import('@claude-zen/fact-system');
+      this.factSystem = new FactSystem({
+        enableInference: true,
+        enableValidation: true,
+        domain: 'architecture-compliance'
+      });
+
+      // Delegate to @claude-zen/monitoring for architectural health
+      const { MonitoringSystem } = await import('@claude-zen/monitoring');
+      this.monitoringSystem = new MonitoringSystem({
+        metricsCollection: { enabled: this.config.enablePerformanceTracking },
+        performanceTracking: { enabled: this.config.enablePerformanceTracking },
+        alerts: { enabled: true }
+      });
+
+      // Setup event handlers
+      this.setupEventHandlers();
+
+      // Start monitoring if enabled
       if (this.config.enableComplianceMonitoring) {
         this.startComplianceMonitoring();
       }
 
-      // Start architecture reviews if enabled
-      if (this.config.enableArchitectureReviews) {
-        this.startArchitectureReviews();
-      }
+      this.initialized = true;
+      this.logger.info('System Solution Architecture Manager initialized successfully');
+      
+      this.emit('initialized', {
+        timestamp: new Date(),
+        enabledFeatures: this.getEnabledFeatures()
+      });
 
-      // Register event handlers
-      this.registerEventHandlers();
-
-      this.logger.info(
-        'System and Solution Architecture Manager initialized successfully'
-      );
-      this.emit('initialized');
     } catch (error) {
-      this.logger.error(
-        'Failed to initialize System and Solution Architecture Manager',
-        { error }
-      );
+      this.logger.error('Failed to initialize System Solution Architecture Manager:', error);
       throw error;
     }
   }
 
   /**
-   * Shutdown the System and Solution Architecture Manager
-   */
-  async shutdown(): Promise<void> {
-    this.logger.info('Shutting down System and Solution Architecture Manager');
-
-    // Stop timers
-    if (this.complianceTimer) clearInterval(this.complianceTimer);
-    if (this.reviewTimer) clearInterval(this.reviewTimer);
-
-    await this.persistState();
-    this.removeAllListeners();
-
-    this.logger.info(
-      'System and Solution Architecture Manager shutdown complete'
-    );
-  }
-
-  // ============================================================================
-  // SYSTEM-LEVEL DESIGN COORDINATION - Task 13.2
-  // ============================================================================
-
-  /**
-   * Create system-level design
+   * Create a new system design using AI-powered coordination
    */
   async createSystemDesign(
-    solutionId: string,
-    systemData: Partial<SystemDesign>
+    name: string,
+    type: SystemArchitectureType,
+    pattern: SolutionArchitecturePattern,
+    businessContext: BusinessContext
   ): Promise<SystemDesign> {
-    this.logger.info('Creating system design', {
-      solutionId,
-      systemName: systemData.name,
-    });
+    if (!this.initialized) await this.initialize();
 
-    const systemDesign: SystemDesign = {
-      id: `system-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      name: systemData.name || 'Unnamed System',
-      description: systemData.description || '',
-      solutionId,
-      type: systemData.type || SystemArchitectureType.MODULAR,
-      version: systemData.version || '1.0.0',
-      status: SystemDesignStatus.DRAFT,
-      architect: systemData.architect || 'system',
-      stakeholders: systemData.stakeholders || [],
-      businessContext:
-        systemData.businessContext || this.createDefaultBusinessContext(),
-      architecturalDrivers: systemData.architecturalDrivers || [],
-      qualityAttributes: systemData.qualityAttributes || [],
-      constraints: systemData.constraints || [],
-      components: systemData.components || [],
-      interfaces: systemData.interfaces || [],
-      dependencies: systemData.dependencies || [],
-      deployment:
-        systemData.deployment || this.createDefaultDeploymentArchitecture(),
-      security: systemData.security || this.createDefaultSecurityArchitecture(),
-      data: systemData.data || this.createDefaultDataArchitecture(),
-      integration:
-        systemData.integration || this.createDefaultIntegrationArchitecture(),
-      governance:
-        systemData.governance || this.createDefaultGovernanceFramework(),
-      createdAt: new Date(),
-      lastUpdated: new Date(),
-    };
-
-    // Store in state
-    this.state.systemDesigns.set(systemDesign.id, systemDesign);
-
-    // Create AGUI gate for system design review
-    await this.createSystemDesignReviewGate(systemDesign);
-
-    this.logger.info('System design created', {
-      systemId: systemDesign.id,
-      componentCount: systemDesign.components.length,
-    });
-
-    this.emit('system-design-created', systemDesign);
-    return systemDesign;
-  }
-
-  /**
-   * Coordinate system-level design across multiple systems
-   */
-  async coordinateSystemDesigns(
-    solutionId: string
-  ): Promise<SystemDesignCoordination> {
-    this.logger.info('Coordinating system designs', { solutionId });
-
-    // Get all systems for the solution
-    const systemDesigns = Array.from(this.state.systemDesigns.values()).filter(
-      (system) => system.solutionId === solutionId
-    );
-
-    // Analyze system interactions and dependencies
-    const interactions = await this.analyzeSystemInteractions(systemDesigns);
-
-    // Identify design conflicts and inconsistencies
-    const conflicts = await this.identifyDesignConflicts(systemDesigns);
-
-    // Generate coordination recommendations
-    const recommendations = await this.generateCoordinationRecommendations(
-      systemDesigns,
-      interactions,
-      conflicts
-    );
-
-    // Assess overall architectural consistency
-    const consistencyAssessment =
-      await this.assessArchitecturalConsistency(systemDesigns);
-
-    const coordination: SystemDesignCoordination = {
-      solutionId,
-      systemCount: systemDesigns.length,
-      interactions,
-      conflicts,
-      recommendations,
-      consistencyScore: consistencyAssessment.score,
-      coordinationStatus: consistencyAssessment.status,
-      lastCoordinated: new Date(),
-    };
-
-    // Create AGUI gate for coordination approval if conflicts exist
-    if (conflicts.length > 0) {
-      await this.createCoordinationApprovalGate(coordination, conflicts);
-    }
-
-    this.logger.info('System design coordination completed', {
-      solutionId,
-      systemCount: systemDesigns.length,
-      conflictCount: conflicts.length,
-    });
-
-    this.emit('system-designs-coordinated', coordination);
-    return coordination;
-  }
-
-  // ============================================================================
-  // SOLUTION ARCHITECT WORKFLOW NTEGRATION - Task 13.2
-  // ============================================================================
-
-  /**
-   * Create solution architect workflow
-   */
-  async createSolutionArchitectWorkflow(
-    solutionId: string,
-    workflowType: 'design' | 'review' | 'approval' | 'governance'
-  ): Promise<SolutionArchitectWorkflow> {
-    this.logger.info('Creating solution architect workflow', {
-      solutionId,
-      workflowType,
-    });
-
-    const workflow: SolutionArchitectWorkflow = {
-      id: `workflow-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      solutionId,
-      type: workflowType,
-      status: 'initiated',
-      steps: await this.generateWorkflowSteps(workflowType),
-      participants: await this.identifyWorkflowParticipants(
-        solutionId,
-        workflowType
-      ),
-      deliverables: await this.defineWorkflowDeliverables(workflowType),
-      timeline: await this.estimateWorkflowTimeline(workflowType),
-      dependencies: await this.identifyWorkflowDependencies(
-        solutionId,
-        workflowType
-      ),
-      gates: await this.defineWorkflowGates(workflowType),
-      createdAt: new Date(),
-      lastUpdated: new Date(),
-    };
-
-    // Start workflow execution
-    await this.executeWorkflowStep(workflow.id, workflow.steps[0]);
-
-    this.logger.info('Solution architect workflow created', {
-      workflowId: workflow.id,
-      stepCount: workflow.steps.length,
-    });
-
-    this.emit('solution-architect-workflow-created', workflow);
-    return workflow;
-  }
-
-  /**
-   * Execute solution architect workflow integration
-   */
-  async executeSolutionArchitectWorkflow(workflowId: string): Promise<void> {
-    const workflow = await this.getWorkflowById(workflowId);
-    if (!workflow) {
-      throw new Error(`Workflow not found: ${workflowId}`);
-    }
-
-    this.logger.info('Executing solution architect workflow', { workflowId });
+    const timer = this.performanceTracker.startTimer('create_system_design');
 
     try {
-      // Execute workflow steps sequentially with AGUI gates
-      for (const step of workflow.steps) {
-        await this.executeWorkflowStep(workflowId, step);
-
-        // Check if gate is required
-        if (step.gateRequired) {
-          const gateResult = await this.executeWorkflowGate(workflowId, step);
-          if (!gateResult.approved) {
-            throw new Error(`Workflow gate failed: ${step.name}`);
-          }
+      // Use brain coordinator for intelligent design analysis
+      const designAnalysis = await this.brainCoordinator.optimizePrompt({
+        task: 'system_design_creation',
+        basePrompt: `Create system design for: ${name}`,
+        context: {
+          type,
+          pattern,
+          businessContext,
+          constraints: businessContext.constraints
         }
-      }
-
-      // Mark workflow as completed
-      await this.completeWorkflow(workflowId);
-
-      this.logger.info('Solution architect workflow completed', { workflowId });
-      this.emit('solution-architect-workflow-completed', { workflowId });
-    } catch (error) {
-      this.logger.error('Solution architect workflow failed', {
-        workflowId,
-        error,
       });
-      await this.failWorkflow(workflowId, error.message);
+
+      // Create system design with AI recommendations
+      const systemDesign: SystemDesign = {
+        id: `system-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
+        name,
+        version: '1.0.0',
+        type,
+        pattern,
+        status: SystemDesignStatus.DRAFT,
+        businessContext,
+        stakeholders: [],
+        architecturalDrivers: [],
+        components: [],
+        interfaces: [],
+        constraints: [],
+        qualityAttributes: [],
+        complianceRequirements: [],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        reviewHistory: []
+      };
+
+      // Store design in memory and tracking
+      this.systemDesigns.set(systemDesign.id, systemDesign);
+
+      // Store knowledge about design patterns
+      await this.knowledgeManager.store({
+        content: designAnalysis,
+        type: 'system_design_pattern',
+        source: 'system-solution-architecture-manager',
+        metadata: { systemDesignId: systemDesign.id, pattern, type }
+      });
+
+      this.performanceTracker.endTimer('create_system_design');
+      this.telemetryManager.recordCounter('system_designs_created', 1, { type, pattern });
+
+      this.logger.info(`Created system design: ${name} (${type}/${pattern})`);
+      this.emit('systemDesignCreated', { systemDesign, analysis: designAnalysis });
+
+      return systemDesign;
+
+    } catch (error) {
+      this.performanceTracker.endTimer('create_system_design');
+      this.logger.error('Failed to create system design:', error);
       throw error;
     }
   }
 
-  // ============================================================================
-  // ARCHITECTURE REVIEW AND APPROVAL GATES - Task 13.2
-  // ============================================================================
-
   /**
-   * Create architecture review and approval gates
+   * Initiate architecture review using AGUI approval workflow
    */
-  async createArchitectureReviewGate(
-    subjectId: string,
-    subjectType: 'system' | 'solution',
-    reviewType: 'design' | 'implementation' | 'security' | 'performance'
+  async initiateArchitectureReview(
+    systemDesignId: string,
+    reviewType: 'peer' | 'formal' | 'compliance' | 'security',
+    reviewerId: string
   ): Promise<ArchitectureReview> {
-    this.logger.info('Creating architecture review gate', {
-      subjectId,
-      subjectType,
-      reviewType,
-    });
+    if (!this.initialized) await this.initialize();
 
-    const review: ArchitectureReview = {
-      id: `review-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      type: reviewType,
-      subjectId,
-      reviewDate: new Date(),
-      reviewers: await this.assignReviewers(subjectType, reviewType),
-      criteria: await this.getReviewCriteria(reviewType),
-      findings: [],
-      recommendations: [],
-      decisions: [],
-      followUp: [],
-      status: 'scheduled',
-      outcome: 'approved', // Will be updated based on review results
-    };
-
-    // Store in state
-    this.state.architectureReviews.set(review.id, review);
-
-    // Create AGUI gate for the review process
-    await this.createReviewProcessGate(review);
-
-    this.logger.info('Architecture review gate created', {
-      reviewId: review.id,
-      reviewerCount: review.reviewers.length,
-    });
-
-    this.emit('architecture-review-created', review);
-    return review;
-  }
-
-  /**
-   * Execute architecture review with AGUI
-   */
-  async executeArchitectureReview(
-    reviewId: string
-  ): Promise<ArchitectureReview> {
-    const review = this.state.architectureReviews.get(reviewId);
-    if (!review) {
-      throw new Error(`Architecture review not found: ${reviewId}`);
-    }
-
-    this.logger.info('Executing architecture review', { reviewId });
-
-    try {
-      // Update status to in progress
-      const updatedReview = { ...review, status: 'in_progress' as const };
-      this.state.architectureReviews.set(reviewId, updatedReview);
-
-      // Execute review for each criterion
-      const findings: ReviewFinding[] = [];
-      const recommendations: ReviewRecommendation[] = [];
-      const decisions: ReviewDecision[] = [];
-
-      for (const criterion of review.criteria) {
-        const criterionResult = await this.evaluateReviewCriterion(
-          review.subjectId,
-          criterion,
-          review.reviewers
-        );
-
-        if (criterionResult.findings.length > 0) {
-          findings.push(...criterionResult.findings);
-        }
-
-        if (criterionResult.recommendations.length > 0) {
-          recommendations.push(...criterionResult.recommendations);
-        }
-
-        decisions.push(criterionResult.decision);
-      }
-
-      // Determine overall outcome
-      const outcome = this.determineReviewOutcome(decisions, findings);
-
-      // Generate follow-up actions
-      const followUp = await this.generateFollowUpActions(
-        findings,
-        recommendations
-      );
-
-      const completedReview: ArchitectureReview = {
-        ...updatedReview,
-        findings,
-        recommendations,
-        decisions,
-        followUp,
-        status: 'completed',
-        outcome,
-      };
-
-      // Store completed review
-      this.state.architectureReviews.set(reviewId, completedReview);
-
-      // Create approval gate if needed
-      if (outcome === 'conditional' || outcome === 'rejected') {
-        await this.createArchitectureApprovalGate(completedReview);
-      }
-
-      this.logger.info('Architecture review completed', {
-        reviewId,
-        outcome,
-        findingCount: findings.length,
-      });
-
-      this.emit('architecture-review-completed', completedReview);
-      return completedReview;
-    } catch (error) {
-      this.logger.error('Architecture review failed', { reviewId, error });
-
-      const failedReview = {
-        ...review,
-        status: 'cancelled' as const,
-        outcome: 'rejected' as const,
-      };
-      this.state.architectureReviews.set(reviewId, failedReview);
-      throw error;
-    }
-  }
-
-  // ============================================================================
-  // ARCHITECTURE COMPLIANCE MONITORING - Task 13.2
-  // ============================================================================
-
-  /**
-   * Monitor architecture compliance
-   */
-  async monitorArchitectureCompliance(): Promise<void> {
-    this.logger.info('Starting architecture compliance monitoring');
-
-    // Monitor system design compliance
-    await this.monitorSystemCompliance();
-
-    // Monitor solution design compliance
-    await this.monitorSolutionCompliance();
-
-    // Generate compliance reports
-    await this.generateComplianceReports();
-
-    // Create alerts for violations
-    await this.processComplianceViolations();
-
-    this.logger.info('Architecture compliance monitoring completed');
-    this.emit('compliance-monitoring-completed');
-  }
-
-  /**
-   * Assess system compliance against standards
-   */
-  async assessSystemCompliance(systemId: string): Promise<ComplianceReport> {
-    const systemDesign = this.state.systemDesigns.get(systemId);
+    const systemDesign = this.systemDesigns.get(systemDesignId);
     if (!systemDesign) {
-      throw new Error(`System design not found: ${systemId}`);
+      throw new Error(`System design not found: ${systemDesignId}`);
     }
 
-    this.logger.info('Assessing system compliance', { systemId });
-
-    const standards = await this.getApplicableStandards(systemDesign);
-    const assessments: ComplianceAssessment[] = [];
-    const violations: ComplianceViolation[] = [];
-    const risks: ComplianceRisk[] = [];
-
-    // Assess compliance for each standard
-    for (const standard of standards) {
-      const assessment = await this.assessStandardCompliance(
-        systemDesign,
-        standard
-      );
-      assessments.push(assessment);
-
-      if (
-        assessment.status === 'non_compliant' ||
-        assessment.status === 'partially_compliant'
-      ) {
-        const violation = await this.createComplianceViolation(
-          systemDesign,
-          standard,
-          assessment
-        );
-        violations.push(violation);
-
-        const risk = await this.assessComplianceRisk(violation);
-        risks.push(risk);
-      }
-    }
-
-    // Calculate overall compliance score
-    const overallScore = this.calculateComplianceScore(assessments);
-
-    // Generate remediation plans
-    const remediation = await this.generateRemediationPlans(violations);
-
-    const complianceReport: ComplianceReport = {
-      id: `compliance-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      subjectId: systemId,
-      subjectType: 'system',
-      standards: standards.map((s) => s.name),
-      assessmentDate: new Date(),
-      overallScore,
-      compliance: assessments,
-      violations,
-      risks,
-      remediation,
-      nextAssessment: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-    };
-
-    // Store in state
-    this.state.complianceReports.set(complianceReport.id, complianceReport);
-
-    // Create alerts for critical violations
-    const criticalViolations = violations.filter(
-      (v) => v.severity === 'critical'
-    );
-    if (criticalViolations.length > 0) {
-      await this.createComplianceAlert(complianceReport, criticalViolations);
-    }
-
-    this.logger.info('System compliance assessment completed', {
-      systemId,
-      overallScore,
-      violationCount: violations.length,
-    });
-
-    this.emit('system-compliance-assessed', complianceReport);
-    return complianceReport;
-  }
-
-  // ============================================================================
-  // PRIVATE MPLEMENTATION METHODS
-  // ============================================================================
-
-  private initializeState(): SystemSolutionArchState {
-    return {
-      solutionDesigns: new Map(),
-      systemDesigns: new Map(),
-      architectureReviews: new Map(),
-      complianceReports: new Map(),
-      designApprovals: new Map(),
-      capabilityMaps: new Map(),
-      lastComplianceCheck: new Date(),
-      lastArchitectureReview: new Date(),
-    };
-  }
-
-  private async loadPersistedState(): Promise<void> {
     try {
-      const persistedState = await this.memory.retrieve(
-        'system-solution-arch:state'
-      );
-      if (persistedState) {
-        this.state = {
-          ...this.state,
-          ...persistedState,
-          solutionDesigns: new Map(persistedState.solutionDesigns || []),
-          systemDesigns: new Map(persistedState.systemDesigns || []),
-          architectureReviews: new Map(
-            persistedState.architectureReviews || []
-          ),
-          complianceReports: new Map(persistedState.complianceReports || []),
-          designApprovals: new Map(persistedState.designApprovals || []),
-          capabilityMaps: new Map(persistedState.capabilityMaps || []),
-        };
-        this.logger.info(
-          'System and Solution Architecture Manager state loaded'
-        );
-      }
-    } catch (error) {
-      this.logger.warn('Failed to load persisted state', { error });
-    }
-  }
+      // Create review workflow using AGUI system
+      const reviewWorkflow = await this.aguiSystem.createApprovalWorkflow({
+        type: 'architecture_review',
+        subject: `${systemDesign.name} - ${reviewType} Review`,
+        reviewerId,
+        context: {
+          systemDesignId,
+          reviewType,
+          systemDesign: {
+            name: systemDesign.name,
+            type: systemDesign.type,
+            pattern: systemDesign.pattern
+          }
+        },
+        approvalGates: [
+          {
+            type: WorkflowHumanGateType.APPROVAL_REQUIRED,
+            title: `${reviewType} Architecture Review`,
+            description: `Review system design: ${systemDesign.name}`,
+            requiredApprovers: [reviewerId],
+            timeoutMinutes: this.config.reviewTimeout
+          }
+        ]
+      });
 
-  private async persistState(): Promise<void> {
-    try {
-      const stateToSerialize = {
-        ...this.state,
-        solutionDesigns: Array.from(this.state.solutionDesigns.entries()),
-        systemDesigns: Array.from(this.state.systemDesigns.entries()),
-        architectureReviews: Array.from(
-          this.state.architectureReviews.entries()
-        ),
-        complianceReports: Array.from(this.state.complianceReports.entries()),
-        designApprovals: Array.from(this.state.designApprovals.entries()),
-        capabilityMaps: Array.from(this.state.capabilityMaps.entries()),
+      // Create architecture review
+      const review: ArchitectureReview = {
+        id: reviewWorkflow.id,
+        reviewerId,
+        reviewType,
+        status: 'pending',
+        findings: [],
+        recommendations: [],
+        decision: '',
+        createdAt: new Date()
       };
 
-      await this.memory.store('system-solution-arch:state', stateToSerialize);
+      // Track active review
+      this.activeReviews.set(review.id, review);
+
+      // Update system design status
+      const updatedDesign = {
+        ...systemDesign,
+        status: SystemDesignStatus.IN_REVIEW,
+        updatedAt: new Date(),
+        reviewHistory: [...systemDesign.reviewHistory, review]
+      };
+      this.systemDesigns.set(systemDesignId, updatedDesign);
+
+      this.telemetryManager.recordCounter('architecture_reviews_initiated', 1, { reviewType });
+
+      this.logger.info(`Initiated ${reviewType} review for system design: ${systemDesign.name}`);
+      this.emit('architectureReviewInitiated', { review, systemDesign: updatedDesign });
+
+      return review;
+
     } catch (error) {
-      this.logger.error('Failed to persist state', { error });
+      this.logger.error('Failed to initiate architecture review:', error);
+      throw error;
     }
+  }
+
+  /**
+   * Validate compliance using fact-based reasoning
+   */
+  async validateCompliance(systemDesignId: string): Promise<{ compliant: boolean; violations: string[]; recommendations: string[] }> {
+    if (!this.initialized) await this.initialize();
+
+    const systemDesign = this.systemDesigns.get(systemDesignId);
+    if (!systemDesign) {
+      throw new Error(`System design not found: ${systemDesignId}`);
+    }
+
+    try {
+      // Use fact system for compliance validation
+      const complianceResults = await this.factSystem.validateFacts([
+        {
+          type: 'system_design',
+          data: systemDesign,
+          rules: systemDesign.complianceRequirements.map(req => ({
+            framework: req.framework,
+            requirement: req.requirement,
+            mandatory: true
+          }))
+        }
+      ]);
+
+      // Analyze results using brain coordinator
+      const analysis = await this.brainCoordinator.optimizePrompt({
+        task: 'compliance_analysis',
+        basePrompt: 'Analyze compliance validation results',
+        context: {
+          systemDesign: systemDesign.name,
+          results: complianceResults,
+          requirements: systemDesign.complianceRequirements
+        }
+      });
+
+      const violations = complianceResults.violations || [];
+      const compliant = violations.length === 0;
+
+      // Update compliance status
+      this.complianceStatus.set(systemDesignId, compliant);
+
+      this.telemetryManager.recordGauge('compliance_score', compliant ? 1 : 0, {
+        systemDesignId,
+        violationCount: violations.length
+      });
+
+      this.logger.info(`Compliance validation for ${systemDesign.name}: ${compliant ? 'COMPLIANT' : 'NON-COMPLIANT'}`);
+
+      return {
+        compliant,
+        violations,
+        recommendations: analysis.strategy ? [analysis.strategy] : []
+      };
+
+    } catch (error) {
+      this.logger.error('Failed to validate compliance:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Get system design by ID
+   */
+  getSystemDesign(id: string): SystemDesign | undefined {
+    return this.systemDesigns.get(id);
+  }
+
+  /**
+   * Get all system designs
+   */
+  getAllSystemDesigns(): SystemDesign[] {
+    return Array.from(this.systemDesigns.values());
+  }
+
+  /**
+   * Get architecture review by ID
+   */
+  getArchitectureReview(id: string): ArchitectureReview | undefined {
+    return this.activeReviews.get(id);
+  }
+
+  /**
+   * Get architecture metrics
+   */
+  getArchitectureMetrics(): any {
+    const designs = Array.from(this.systemDesigns.values());
+    const reviews = Array.from(this.activeReviews.values());
+    
+    return {
+      totalSystemDesigns: designs.length,
+      designsByStatus: this.groupByStatus(designs),
+      activeReviews: reviews.length,
+      reviewsByType: this.groupReviewsByType(reviews),
+      complianceRate: this.calculateComplianceRate(),
+      averageReviewTime: this.calculateAverageReviewTime(reviews)
+    };
+  }
+
+  /**
+   * Set dependency managers
+   */
+  setDependencyManagers(
+    architectureRunwayManager: ArchitectureRunwayManager,
+    programIncrementManager: ProgramIncrementManager,
+    valueStreamMapper: ValueStreamMapper,
+    workflowGatesManager: WorkflowGatesManager
+  ): void {
+    this.architectureRunwayManager = architectureRunwayManager;
+    this.programIncrementManager = programIncrementManager;
+    this.valueStreamMapper = valueStreamMapper;
+    this.workflowGatesManager = workflowGatesManager;
+    
+    this.logger.info('Dependency managers set successfully');
+  }
+
+  /**
+   * Shutdown the architecture manager
+   */
+  async shutdown(): Promise<void> {
+    try {
+      if (this.telemetryManager) {
+        await this.telemetryManager.shutdown();
+      }
+
+      this.logger.info('System Solution Architecture Manager shutdown completed');
+
+    } catch (error) {
+      this.logger.error('Error during shutdown:', error);
+      throw error;
+    }
+  }
+
+  // ============================================================================
+  // PRIVATE HELPER METHODS
+  // ============================================================================
+
+  private setupEventHandlers(): void {
+    // Handle workflow completion events
+    this.eventBus.on('workflowCompleted', (event) => {
+      if (event.data.workflowType === 'architecture_review') {
+        this.handleReviewCompletion(event.data);
+      }
+    });
+
+    // Handle compliance check events
+    this.eventBus.on('complianceCheckRequired', (event) => {
+      this.validateCompliance(event.data.systemDesignId).catch(error => {
+        this.logger.error('Compliance check failed:', error);
+      });
+    });
+  }
+
+  private async handleReviewCompletion(data: any): Promise<void> {
+    const review = this.activeReviews.get(data.reviewId);
+    if (!review) return;
+
+    // Update review status based on completion
+    const updatedReview = {
+      ...review,
+      status: data.approved ? 'approved' : 'rejected',
+      decision: data.decision,
+      completedAt: new Date()
+    };
+
+    this.activeReviews.set(data.reviewId, updatedReview);
+    
+    this.logger.info(`Architecture review completed: ${data.reviewId} - ${updatedReview.status}`);
+    this.emit('architectureReviewCompleted', { review: updatedReview });
   }
 
   private startComplianceMonitoring(): void {
-    this.complianceTimer = setInterval(async () => {
-      try {
-        await this.monitorArchitectureCompliance();
-      } catch (error) {
-        this.logger.error('Compliance monitoring failed', { error });
+    const checkInterval = this.config.complianceCheckInterval || 3600000; // 1 hour
+
+    setInterval(() => {
+      this.performComplianceChecks();
+    }, checkInterval);
+  }
+
+  private async performComplianceChecks(): Promise<void> {
+    try {
+      const designs = Array.from(this.systemDesigns.values());
+      
+      for (const design of designs) {
+        if (design.status === SystemDesignStatus.APPROVED || design.status === SystemDesignStatus.IMPLEMENTATION_READY) {
+          await this.validateCompliance(design.id);
+        }
       }
-    }, this.config.complianceCheckInterval);
+
+      this.logger.debug('Compliance checks completed');
+
+    } catch (error) {
+      this.logger.error('Compliance monitoring failed:', error);
+    }
   }
 
-  private startArchitectureReviews(): void {
-    this.reviewTimer = setInterval(async () => {
-      try {
-        await this.performScheduledReviews();
-      } catch (error) {
-        this.logger.error('Architecture review failed', { error });
-      }
-    }, this.config.systemDesignReviewInterval);
+  private getEnabledFeatures(): string[] {
+    const features = [];
+    if (this.config.enableSystemDesignCoordination) features.push('SystemDesignCoordination');
+    if (this.config.enableSolutionArchitectWorkflow) features.push('SolutionArchitectWorkflow');
+    if (this.config.enableArchitectureReviews) features.push('ArchitectureReviews');
+    if (this.config.enableComplianceMonitoring) features.push('ComplianceMonitoring');
+    if (this.config.enablePerformanceTracking) features.push('PerformanceTracking');
+    return features;
   }
 
-  private registerEventHandlers(): void {
-    this.eventBus.registerHandler('system-design-updated', async (event) => {
-      await this.handleSystemDesignUpdate(event.payload.systemId);
-    });
-
-    this.eventBus.registerHandler(
-      'compliance-threshold-exceeded',
-      async (event) => {
-        await this.handleComplianceThresholdExceeded(event.payload);
-      }
-    );
+  private groupByStatus(designs: SystemDesign[]): Record<string, number> {
+    const groups: Record<string, number> = {};
+    for (const design of designs) {
+      groups[design.status] = (groups[design.status] || 0) + 1;
+    }
+    return groups;
   }
 
-  // Many placeholder implementations would follow...
-
-  private createDefaultBusinessContext(): BusinessContext {
-    return {
-      domain: 'general',
-      subdomain: 'general',
-      businessCapabilities: [],
-      valuePropositions: [],
-      stakeholders: [],
-      businessRules: [],
-      performanceExpectations: [],
-      complianceRequirements: [],
-    };
+  private groupReviewsByType(reviews: ArchitectureReview[]): Record<string, number> {
+    const groups: Record<string, number> = {};
+    for (const review of reviews) {
+      groups[review.reviewType] = (groups[review.reviewType] || 0) + 1;
+    }
+    return groups;
   }
 
-  private createDefaultDeploymentArchitecture(): unknown {
-    return {};
+  private calculateComplianceRate(): number {
+    const total = this.complianceStatus.size;
+    if (total === 0) return 0;
+    
+    const compliant = Array.from(this.complianceStatus.values()).filter(Boolean).length;
+    return compliant / total;
   }
-  private createDefaultSecurityArchitecture(): unknown {
-    return {};
+
+  private calculateAverageReviewTime(reviews: ArchitectureReview[]): number {
+    const completed = reviews.filter(r => r.completedAt);
+    if (completed.length === 0) return 0;
+
+    const totalTime = completed.reduce((sum, review) => {
+      const duration = review.completedAt!.getTime() - review.createdAt.getTime();
+      return sum + duration;
+    }, 0);
+
+    return totalTime / completed.length;
   }
-  private createDefaultDataArchitecture(): unknown {
-    return {};
-  }
-  private createDefaultIntegrationArchitecture(): unknown {
-    return {};
-  }
-  private createDefaultGovernanceFramework(): unknown {
-    return {};
-  }
-  private async createSystemDesignReviewGate(
-    design: SystemDesign
-  ): Promise<void> {}
-  private async analyzeSystemInteractions(
-    systems: SystemDesign[]
-  ): Promise<any[]> {
-    return [];
-  }
-  private async identifyDesignConflicts(
-    systems: SystemDesign[]
-  ): Promise<any[]> {
-    return [];
-  }
-  private async generateCoordinationRecommendations(
-    systems: SystemDesign[],
-    interactions: unknown[],
-    conflicts: unknown[]
-  ): Promise<string[]> {
-    return [];
-  }
-  private async assessArchitecturalConsistency(
-    systems: SystemDesign[]
-  ): Promise<{ score: number; status: string }> {
-    return { score: 100, status: 'consistent' };
-  }
-  private async createCoordinationApprovalGate(
-    coordination: unknown,
-    conflicts: unknown[]
-  ): Promise<void> {}
-  private async generateWorkflowSteps(type: string): Promise<any[]> {
-    return [];
-  }
-  private async identifyWorkflowParticipants(
-    solutionId: string,
-    type: string
-  ): Promise<string[]> {
-    return [];
-  }
-  private async defineWorkflowDeliverables(type: string): Promise<string[]> {
-    return [];
-  }
-  private async estimateWorkflowTimeline(type: string): Promise<string> {
-    return '2 weeks';
-  }
-  private async identifyWorkflowDependencies(
-    solutionId: string,
-    type: string
-  ): Promise<string[]> {
-    return [];
-  }
-  private async defineWorkflowGates(type: string): Promise<any[]> {
-    return [];
-  }
-  private async executeWorkflowStep(
-    workflowId: string,
-    step: unknown
-  ): Promise<void> {}
-  private async getWorkflowById(workflowId: string): Promise<unknown> {
-    return null;
-  }
-  private async executeWorkflowGate(
-    workflowId: string,
-    step: unknown
-  ): Promise<{ approved: boolean }> {
-    return { approved: true };
-  }
-  private async completeWorkflow(workflowId: string): Promise<void> {}
-  private async failWorkflow(
-    workflowId: string,
-    reason: string
-  ): Promise<void> {}
-  private async assignReviewers(
-    subjectType: string,
-    reviewType: string
-  ): Promise<ArchitectureReviewer[]> {
-    return [];
-  }
-  private async getReviewCriteria(
-    reviewType: string
-  ): Promise<ReviewCriterion[]> {
-    return [];
-  }
-  private async createReviewProcessGate(
-    review: ArchitectureReview
-  ): Promise<void> {}
-  private async evaluateReviewCriterion(
-    subjectId: string,
-    criterion: ReviewCriterion,
-    reviewers: ArchitectureReviewer[]
-  ): Promise<unknown> {
-    return {
-      findings: [],
-      recommendations: [],
-      decision: {
-        criterion: '',
-        decision: 'accept',
-        rationale: '',
-        conditions: [],
-        reviewer: '',
-      },
-    };
-  }
-  private determineReviewOutcome(
-    decisions: ReviewDecision[],
-    findings: ReviewFinding[]
-  ): 'approved' | 'conditional' | 'rejected' | 'deferred' {
-    return 'approved';
-  }
-  private async generateFollowUpActions(
-    findings: ReviewFinding[],
-    recommendations: ReviewRecommendation[]
-  ): Promise<FollowUpAction[]> {
-    return [];
-  }
-  private async createArchitectureApprovalGate(
-    review: ArchitectureReview
-  ): Promise<void> {}
-  private async monitorSystemCompliance(): Promise<void> {}
-  private async monitorSolutionCompliance(): Promise<void> {}
-  private async generateComplianceReports(): Promise<void> {}
-  private async processComplianceViolations(): Promise<void> {}
-  private async getApplicableStandards(design: SystemDesign): Promise<any[]> {
-    return [];
-  }
-  private async assessStandardCompliance(
-    design: SystemDesign,
-    standard: unknown
-  ): Promise<ComplianceAssessment> {
-    return {} as ComplianceAssessment;
-  }
-  private async createComplianceViolation(
-    design: SystemDesign,
-    standard: unknown,
-    assessment: ComplianceAssessment
-  ): Promise<ComplianceViolation> {
-    return {} as ComplianceViolation;
-  }
-  private async assessComplianceRisk(
-    violation: ComplianceViolation
-  ): Promise<ComplianceRisk> {
-    return {} as ComplianceRisk;
-  }
-  private calculateComplianceScore(
-    assessments: ComplianceAssessment[]
-  ): number {
-    return 100;
-  }
-  private async generateRemediationPlans(
-    violations: ComplianceViolation[]
-  ): Promise<RemediationPlan[]> {
-    return [];
-  }
-  private async createComplianceAlert(
-    report: ComplianceReport,
-    violations: ComplianceViolation[]
-  ): Promise<void> {}
-  private async performScheduledReviews(): Promise<void> {}
-  private async handleSystemDesignUpdate(systemId: string): Promise<void> {}
-  private async handleComplianceThresholdExceeded(
-    payload: unknown
-  ): Promise<void> {}
 }
 
-// ============================================================================
-// SUPPORTING TYPES
-// ============================================================================
+/**
+ * Create a System Solution Architecture Manager with default configuration
+ */
+export function createSystemSolutionArchitectureManager(
+  memorySystem: MemorySystem,
+  eventBus: TypeSafeEventBus,
+  config?: Partial<SystemSolutionArchConfig>
+): SystemSolutionArchitectureManager {
+  const defaultConfig: SystemSolutionArchConfig = {
+    enableSystemDesignCoordination: true,
+    enableSolutionArchitectWorkflow: true,
+    enableArchitectureReviews: true,
+    enableComplianceMonitoring: true,
+    enablePerformanceTracking: true,
+    maxConcurrentReviews: 10,
+    reviewTimeout: 480, // 8 hours in minutes
+    complianceCheckInterval: 3600000 // 1 hour in milliseconds
+  };
 
-export interface SystemDesignCoordination {
-  readonly solutionId: string;
-  readonly systemCount: number;
-  readonly interactions: unknown[];
-  readonly conflicts: unknown[];
-  readonly recommendations: string[];
-  readonly consistencyScore: number;
-  readonly coordinationStatus: string;
-  readonly lastCoordinated: Date;
+  return new SystemSolutionArchitectureManager(
+    { ...defaultConfig, ...config },
+    memorySystem,
+    eventBus
+  );
 }
 
-export interface SolutionArchitectWorkflow {
-  readonly id: string;
-  readonly solutionId: string;
-  readonly type: 'design' | 'review' | 'approval' | 'governance';
-  readonly status:
-    | 'initiated'
-    | 'in_progress'
-    | 'completed'
-    | 'failed'
-    | 'cancelled';
-  readonly steps: unknown[];
-  readonly participants: string[];
-  readonly deliverables: string[];
-  readonly timeline: string;
-  readonly dependencies: string[];
-  readonly gates: unknown[];
-  readonly createdAt: Date;
-  readonly lastUpdated: Date;
-}
-
-// Additional supporting interfaces would be defined here...
-
-// ============================================================================
-// EXPORTS
-// ============================================================================
-
-export default SystemSolutionArchitectureManager;
-
-export type {
-  SystemSolutionArchConfig,
-  SystemDesign,
-  SolutionDesign,
-  ArchitectureReview,
-  ComplianceReport,
-  SystemSolutionArchState,
-  SystemDesignCoordination,
-  SolutionArchitectWorkflow,
+/**
+ * Default export for easy import
+ */
+export default {
+  SystemSolutionArchitectureManager,
+  createSystemSolutionArchitectureManager,
+  SystemArchitectureType,
+  SolutionArchitecturePattern,
+  SystemDesignStatus,
+  ComponentType
 };

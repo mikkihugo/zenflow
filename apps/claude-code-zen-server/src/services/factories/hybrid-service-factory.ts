@@ -5,12 +5,12 @@
  * without singleton dependencies or circular imports.
  */
 
-import { createLogger } from '../../core/logger';
+import { getLogger } from '../../config/logging-config';
 import { DALFactory } from '../../database/dal/dal-factory';
 import { HybridDocumentManager } from '../coordination/hybrid-document-service';
 import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
 
-const logger = createLogger('hybrid-factory');
+const logger = getLogger('hybrid-factory');
 
 export interface HybridSystemConfig {
   dataDir?: string;

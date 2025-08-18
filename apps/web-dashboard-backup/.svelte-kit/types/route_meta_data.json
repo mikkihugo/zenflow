@@ -1,0 +1,15 @@
+{
+	"/": [],
+	"/agu": [],
+	"/agu/task/[id]": [],
+	"/api/workspace/files": [
+		"src/routes/api/workspace/files/+server.ts"
+	],
+	"/api/workspace/files/content": [
+		"src/routes/api/workspace/files/content/+server.ts"
+	],
+	"/dev-communication": [],
+	"/matron": [],
+	"/roadmap": [],
+	"/workspace": []
+}

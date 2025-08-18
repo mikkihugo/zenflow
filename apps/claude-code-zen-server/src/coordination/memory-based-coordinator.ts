@@ -5,7 +5,7 @@
  * Agents coordinate by storing/retrieving progress, decisions, and results via MCP memory tools.
  */
 
-import { EventEmitter } from 'events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../core/types';
 import { getLogger } from '../config/logging-config';
 import type { AgentConfig, SwarmConfig, TaskOrchestrationConfig } from '../types/swarm-types';

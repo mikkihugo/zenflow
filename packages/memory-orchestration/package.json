@@ -1,0 +1,59 @@
+{
+  "name": "@claude-zen/memory-orchestration",
+  "version": "1.0.0",
+  "description": "Advanced memory coordination and orchestration system with intelligent memory management",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./coordinators": {
+      "types": "./dist/coordinators/index.d.ts",
+      "import": "./dist/coordinators/index.js"
+    },
+    "./systems": {
+      "types": "./dist/systems/index.d.ts",
+      "import": "./dist/systems/index.js"
+    },
+    "./strategies": {
+      "types": "./dist/strategies/index.d.ts",
+      "import": "./dist/strategies/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
+    "@claude-zen/database": "workspace:*",
+    "@claude-zen/coordination-core": "workspace:*",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "memory-orchestration",
+    "memory-coordination",
+    "unified-memory",
+    "memory-management",
+    "coordination",
+    "caching-strategies"
+  ],
+  "author": "Claude-Zen Team",
+  "license": "MIT"
+}

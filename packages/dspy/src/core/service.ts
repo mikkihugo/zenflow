@@ -8,7 +8,19 @@
  * @version 2.0.0
  */
 
-// Shared module interfaces
+// Direct foundation imports for proper integration
+import {
+  getGlobalLLM,
+  type LLMProvider,
+  getDatabaseAccess,
+  type DatabaseAccess,
+  getLogger,
+  type Logger,
+  getConfig,
+  type Config
+} from '@claude-zen/foundation';
+
+// Legacy interfaces for backward compatibility
 interface SharedLLMService {
   analyze(prompt: string, options?: any): Promise<string>;
   createLLMProvider(): Promise<any>;
@@ -25,94 +37,129 @@ interface SharedLogger {
   error(message: string, ...args: any[]): void;
 }
 
-interface SharedConfig {
-  get(key: string): any;
-  set(key: string, value: any): void;
-}
-
 interface SharedModule {
   llm: SharedLLMService;
   storage: SharedStorage;
   logger: SharedLogger;
-  config: SharedConfig;
+  config: Config;
 }
+
+// Types exported at end of file
 
 /**
  * DSPy Service - Central coordinator for @claude-zen/foundation integration
  */
 export class DSPyService {
-  private shared: SharedModule | null = null;
-  private llmService: SharedLLMService | null = null;
-  private storage: any = null;
-  private logger: SharedLogger;
+  private llmProvider: LLMProvider | null = null;
+  private dbAccess: DatabaseAccess | null = null;
+  private logger: Logger;
+  private config: Config | null = null;
+  private initialized = false;
 
   constructor() {
-    // Initialize with fallback logger
-    this.logger = {
-      debug: (msg: string, ...args: any[]) => console.debug(`[DSPy DEBUG] ${msg}`, ...args),
-      info: (msg: string, ...args: any[]) => console.info(`[DSPy INFO] ${msg}`, ...args),
-      warn: (msg: string, ...args: any[]) => console.warn(`[DSPy WARN] ${msg}`, ...args),
-      error: (msg: string, ...args: any[]) => console.error(`[DSPy ERROR] ${msg}`, ...args),
-    };
+    // Initialize with foundation logger
+    this.logger = getLogger('dspy-service');
+    this.logger.info('DSPy Service initializing with @claude-zen/foundation integration');
   }
 
   /**
    * Initialize DSPy service with @claude-zen/foundation
    */
   async initialize(): Promise<void> {
+    if (this.initialized) {
+      this.logger.debug('DSPy service already initialized');
+      return;
+    }
+
     try {
-      // Try to load @claude-zen/foundation
-      this.shared = await this.loadSharedModule();
+      // Initialize foundation components
+      this.llmProvider = getGlobalLLM();
+      this.dbAccess = getDatabaseAccess();
+      this.config = getConfig();
       
-      if (this.shared) {
-        this.logger = this.shared.logger;
-        this.logger.info('DSPy service initialized with @claude-zen/foundation');
-      } else {
-        this.logger.info('DSPy service initialized in standalone mode');
-      }
+      this.initialized = true;
+      this.logger.info('DSPy service successfully initialized with @claude-zen/foundation');
     } catch (error) {
-      this.logger.warn('Failed to initialize @claude-zen/foundation, using fallback mode:', error);
+      this.logger.error('Failed to initialize DSPy service with foundation:', error);
+      throw error;
     }
   }
 
   /**
-   * Get LLM service for DSPy operations
+   * Get LLM provider for DSPy operations
    */
-  async getLLMService(): Promise<SharedLLMService> {
-    if (!this.llmService) {
-      if (this.shared) {
-        try {
-          this.llmService = this.shared.llm;
-          this.logger.info('DSPy LLM service initialized with @claude-zen/foundation');
-        } catch (error) {
-          this.logger.warn('Failed to get shared LLM service, using fallback');
-          this.llmService = this.createFallbackLLM();
-        }
-      } else {
-        this.llmService = this.createFallbackLLM();
-      }
+  async getLLMProvider(): Promise<LLMProvider> {
+    if (!this.initialized) {
+      await this.initialize();
     }
-    return this.llmService;
+    
+    if (!this.llmProvider) {
+      throw new Error('LLM provider not available - foundation not properly initialized');
+    }
+    
+    return this.llmProvider;
+  }
+
+  /**
+   * Execute DSPy prompt with foundation LLM
+   */
+  async executePrompt(prompt: string, options: {
+    temperature?: number;
+    maxTokens?: number;
+    role?: 'user' | 'analyst' | 'architect';
+  } = {}): Promise<string> {
+    const llm = await this.getLLMProvider();
+    
+    // DSPy should use 'analyst' role by default (not 'coder' which is for tool access)
+    // DSPy is pure LLM operations for prompt optimization, no tool access needed
+    const dspyRole = options.role || 'analyst';
+    llm.setRole(dspyRole);
+    
+    this.logger.debug('Executing DSPy prompt via foundation LLM', { 
+      promptLength: prompt.length,
+      role: dspyRole,
+      options 
+    });
+    
+    try {
+      const result = await llm.complete(prompt, {
+        temperature: options.temperature || 0.7,
+        maxTokens: options.maxTokens || 16384 // 16K default for DSPy operations
+      });
+      
+      this.logger.debug('DSPy prompt execution completed', {
+        resultLength: result.length,
+        role: dspyRole
+      });
+      
+      return result;
+    } catch (error) {
+      this.logger.error('DSPy prompt execution failed:', error);
+      throw error;
+    }
   }
 
   /**
    * Get storage for DSPy operations
    */
   async getStorage(): Promise<any> {
-    if (!this.storage) {
-      if (this.shared) {
-        try {
-          this.storage = await this.shared.storage.getLibKV('dspy');
-          this.logger.info('DSPy storage initialized with @claude-zen/foundation');
-        } catch (error) {
-          this.logger.warn('Failed to get shared storage, using in-memory fallback');
-          this.storage = this.createFallbackStorage();
-        }
-      } else {
-        this.storage = this.createFallbackStorage();
-      }
+    if (!this.initialized) {
+      await this.initialize();
     }
-    return this.storage;
+    
+    if (!this.dbAccess) {
+      throw new Error('Database access not available - foundation not properly initialized');
+    }
+    
+    try {
+      // Get DSPy-specific KV storage from foundation
+      const kvStorage = await this.dbAccess.getKV('dspy');
+      this.logger.debug('DSPy storage initialized via foundation database access');
+      return kvStorage;
+    } catch (error) {
+      this.logger.error('Failed to get DSPy storage from foundation:', error);
+      throw error;
+    }
   }
 
   /**
@@ -123,90 +170,41 @@ export class DSPyService {
   }
 
   /**
-   * Get configuration
+   * Get LLM service (backward compatibility wrapper)
    */
-  getConfig(): SharedConfig {
-    if (this.shared?.config) {
-      return this.shared.config;
-    }
+  async getLLMService(): Promise<SharedLLMService> {
+    const llmProvider = await this.getLLMProvider();
     
-    // Fallback config
-    const config = new Map<string, any>();
-    return {
-      get: (key: string) => config.get(key),
-      set: (key: string, value: any) => config.set(key, value)
-    };
-  }
-
-  /**
-   * Check if @claude-zen/foundation is available
-   */
-  async isSharedAvailable(): Promise<boolean> {
-    try {
-      return typeof (globalThis as any)['@claude-zen/foundation'] !== 'undefined' ||
-             (typeof require !== 'undefined' && typeof require.resolve === 'function');
-    } catch {
-      return false;
-    }
-  }
-
-  /**
-   * Load @claude-zen/foundation module dynamically
-   */
-  private async loadSharedModule(): Promise<SharedModule | null> {
-    try {
-      if (await this.isSharedAvailable()) {
-        // Use eval to hide the import from TypeScript compiler
-        const importPath = '@claude-zen/foundation';
-        return new Function('path', 'return import(path)')(importPath);
-      }
-      return null;
-    } catch (error) {
-      this.logger.warn('Failed to load @claude-zen/foundation module:', error);
-      return null;
-    }
-  }
-
-  /**
-   * Create fallback LLM service
-   */
-  private createFallbackLLM(): SharedLLMService {
     return {
       async analyze(prompt: string, options?: any): Promise<string> {
-        // Fallback implementation - in production would integrate with Claude API directly
-        return `Mock DSPy response for: ${prompt.substring(0, 50)}...`;
+        return llmProvider.complete(prompt, {
+          temperature: options?.temperature || 0.7,
+          maxTokens: options?.maxTokens || 16384 // 16K for backward compatibility
+        });
       },
       
       async createLLMProvider(): Promise<any> {
-        return this; // Return self as fallback
+        return llmProvider;
       }
     };
   }
 
   /**
-   * Create fallback storage
+   * Get configuration
    */
-  private createFallbackStorage(): any {
-    const data = new Map<string, any>();
+  getConfig(): Config {
+    if (!this.initialized) {
+      throw new Error('DSPy service not initialized - call initialize() first');
+    }
     
-    return {
-      async get(key: string): Promise<any> {
-        return data.get(key);
-      },
-      
-      async set(key: string, value: any): Promise<void> {
-        data.set(key, value);
-      },
-      
-      async delete(key: string): Promise<boolean> {
-        return data.delete(key);
-      },
-      
-      async keys(): Promise<string[]> {
-        return Array.from(data.keys());
-      }
-    };
+    if (this.config) {
+      return this.config;
+    }
+    
+    // If config not available, throw error - DSPy requires foundation
+    throw new Error('Configuration not available - foundation not properly initialized');
   }
+
 }
 
 /**
@@ -239,6 +237,6 @@ export type {
   SharedLLMService,
   SharedStorage,
   SharedLogger,
-  SharedConfig,
+  Config,
   SharedModule
 };

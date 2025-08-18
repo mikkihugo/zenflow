@@ -7,13 +7,15 @@
  * Borg Architecture: THE COLLECTIVE → DEV-CUBE-MATRON → Queen Coordinators → Drone Swarms
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
-import { SharedFACTCapable } from '../shared-fact-system';
+// Note: SharedFACTCapable removed - using knowledge package directly
+import { storeCoordinationFact, queryCoordinationFacts } from '@claude-zen/knowledge';
 import type {
   EventBus,
   Logger,
 } from '../../core/interfaces/base-interfaces';
+import type { SPARCProject, SPARCPhase } from '@claude-zen/sparc';
 import type {
   CollectiveConfig,
   CubeInfo,
@@ -62,7 +64,7 @@ export interface StrategicRequirement {
  * "Code perfection through systematic optimization. Your bugs will be assimilated."
  */
 export class DevCubeMatron
-  extends SharedFACTCapable
+  extends EventEmitter
   implements DesignateMatron
 {
   public readonly id: string;
@@ -93,7 +95,7 @@ export class DevCubeMatron
   private sparcEngine?: unknown;
 
   constructor(id: string, eventBus: EventBus, config: CollectiveConfig) {
-    super(); // Initialize SharedFACTCapable (includes EventEmitter)
+    super(); // Initialize EventEmitter
     this.id = id;
     this.designation = `Matron-${id.slice(-4)}`;
     this.logger = getLogger(`DEV-CUBE-Matron-${this.designation}`);
@@ -141,8 +143,7 @@ export class DevCubeMatron
       this.logger.warn('SPARC Engine not available, continuing without it');
     }
 
-    // Initialize SHARED FACT system access
-    this.initializeSharedFACT();
+    // Note: Fact system now accessed via knowledge package methods directly
 
     this.setupEventHandlers();
     this.logger.info(

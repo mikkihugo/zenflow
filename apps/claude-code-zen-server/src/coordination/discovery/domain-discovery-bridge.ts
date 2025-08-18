@@ -35,7 +35,7 @@
  * @file Coordination system: domain-discovery-bridge.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { basename } from 'node:path';
 import { getLogger } from '../../config/logging-config';
 

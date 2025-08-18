@@ -5,7 +5,7 @@
  * Extracted from collective-fact-integration and collective-cube-sync to break circular imports.
  */
 
-import type { EventEmitter } from 'node:events';
+import type { EventEmitter } from 'eventemitter3';
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,

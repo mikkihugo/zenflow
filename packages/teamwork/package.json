@@ -9,15 +9,21 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build",
+    "prepublishOnly": "pnpm run clean && pnpm run build",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "keywords": [
     "teamwork",
     "multi-agent",
     "collaborative-problem-solving",
-    "sequential-thinking", 
+    "sequential-thinking",
     "agent-coordination",
     "cross-agent-communication",
     "collaborative-decision-making",
@@ -30,35 +36,31 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "nanoid": "^5.0.0"
-  },
-  "peerDependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/database": "workspace:*",
-    "@claude-zen/brain": "workspace:*",
-    "@claude-zen/adaptive-learning": "workspace:*"
+    "@claude-zen/brain": "file:../brain",
+    "@claude-zen/foundation": "file:../foundation",
+    "nanoid": "^5.1.5"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "vitest": "^1.1.0",
-    "@types/node": "^20.10.6"
+    "@types/node": "^22.17.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
     "./orchestrator": {
-      "import": "./dist/orchestrator.js",
-      "types": "./dist/orchestrator.d.ts"
+      "types": "./dist/orchestrator.d.ts",
+      "import": "./dist/orchestrator.js"
     },
     "./storage": {
-      "import": "./dist/storage.js",
-      "types": "./dist/storage.d.ts"
+      "types": "./dist/storage.d.ts",
+      "import": "./dist/storage.js"
     },
     "./types": {
-      "import": "./dist/types.js",
-      "types": "./dist/types.d.ts"
+      "types": "./dist/types.d.ts",
+      "import": "./dist/types.js"
     }
   },
   "files": [

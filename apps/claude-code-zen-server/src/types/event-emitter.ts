@@ -5,7 +5,7 @@
  * for properties like 'on', 'code', and other event-related functionality.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 /**
  * Base error interface with common error properties

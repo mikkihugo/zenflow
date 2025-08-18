@@ -14,7 +14,7 @@ export type {
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-} from '../types/workflow-types';
+} from '@claude-zen/workflows';
 export type {
   SystemConfig as CoreSystemConfig,
   SystemStatus,
@@ -48,14 +48,8 @@ export type {
   InterfaceStats,
 } from './interface-manager';
 export { InterfaceManager } from './interface-manager';
-export type {
-  BackendStats,
-  BackendType,
-  JSONValue,
-  MemoryConfig,
-  StorageResult,
-} from './memory-system';
-export { MemorySystem } from './memory-system';
+// Memory types now available via @claude-zen/foundation package  
+// Memory functionality now available via @claude-zen/foundation Storage and getDatabaseAccess
 // Core processing engines
 export { WorkflowEngine } from '../workflows/workflow-engine';
 
@@ -84,8 +78,6 @@ export {
   NetworkError,
   RAGError,
   SwarmError,
-  SystemError,
-  WASMError,
 } from './errors';
 // Core utilities
 export { EventBus } from './event-bus';

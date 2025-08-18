@@ -21,7 +21,7 @@ import {
 } from '../../../coordination/schemas';
 
 const logger = getLogger('swarm-api-routes');
-const router = express.Router();
+const router: express.Router = express.Router();
 
 // Shared service instance (same as stdio MCP uses)
 const swarmService = new SwarmService();

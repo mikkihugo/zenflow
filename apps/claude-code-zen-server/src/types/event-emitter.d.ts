@@ -4,7 +4,7 @@
  * Type definitions for event emitters and error objects with proper typing
  * for properties like 'on', 'code', and other event-related functionality.
  */
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 /**
  * Base error interface with common error properties
  */

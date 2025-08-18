@@ -7,7 +7,7 @@
  * Borg Architecture: THE COLLECTIVE → OPS-CUBE-MATRON → Queen Coordinators → Drone Swarms
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type {
   EventBus,

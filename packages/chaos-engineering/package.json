@@ -1,13 +1,20 @@
 {
   "name": "@claude-zen/chaos-engineering",
   "version": "1.0.0",
-  "description": "Production-ready chaos engineering framework for system resilience testing",
+  "description": "INTERNAL: Chaos engineering framework - Private implementation detail of @claude-zen/ai-safety",
+  "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
-    ".": "./dist/index.js",
-    "./chaos-engineering": "./dist/chaos-engineering.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./chaos-engineering": {
+      "types": "./dist/chaos-engineering.d.ts",
+      "import": "./dist/chaos-engineering.js"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -16,18 +23,23 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "biome check .",
-    "lint:fix": "biome check --apply ."
+    "lint:fix": "biome check --apply .",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*"
+    "@claude-zen/foundation": "file:../foundation",
+    "eventemitter3": "^5.0.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "@types/node": "^22.17.2",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
-    "@biomejs/biome": "^2.1.4"
-  },
-  "peerDependencies": {
-    "@claude-zen/foundation": "workspace:*"
+    "vitest": "^3.2.4"
   },
   "keywords": [
     "chaos-engineering",

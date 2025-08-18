@@ -54,7 +54,7 @@ interface RustFactEngine {
  * Bridge between TypeScript and Rust fact processing engine
  */
 export class FactBridge {
-  private rustEngine?: RustFactEngine;
+  private rustEngine?: RustFactEngine | null;
   private database: DatabaseAccess;
   private useRustEngine: boolean;
   private initialized = false;
@@ -337,18 +337,20 @@ export class FactBridge {
    */
   private async loadRustEngine(): Promise<void> {
     try {
-      // Try to load WASM version first
+      // Try to load WASM version first (optional - may not exist in dev)
       const wasmModule = await import('../../wasm/fact_tools');
       this.rustEngine = wasmModule as unknown as RustFactEngine;
       logger.info('Loaded Rust engine via WASM');
     } catch (wasmError) {
       try {
-        // Try to load N-API version
-        const nativeModule = await import('../../src/rust/target/release/fact-tools.node');
+        // Try to load N-API version (optional - may not exist in dev)
+        // Use dynamic import to handle missing files gracefully
+        const nativeModule = await eval(`import('../../src/rust/target/release/fact-tools.node')`);
         this.rustEngine = nativeModule as unknown as RustFactEngine;
         logger.info('Loaded Rust engine via N-API');
       } catch (nativeError) {
-        throw new Error(`Failed to load Rust engine: WASM error: ${wasmError}, Native error: ${nativeError}`);
+        logger.warn('No Rust engine available, using TypeScript fallback');
+        this.rustEngine = null; // Will use TypeScript implementation
       }
     }
   }
@@ -616,8 +618,13 @@ export class FactBridge {
         const servers = openApiSpec.servers || [];
         const paths = openApiSpec.paths || {};
         
-        // Extract endpoints from paths
-        const endpoints = [];
+        // Extract endpoints from paths  
+        const endpoints: Array<{
+          path: string;
+          method: string;
+          description: string;
+          parameters: Record<string, any>;
+        }> = [];
         for (const [pathStr, pathObj] of Object.entries(paths)) {
           if (typeof pathObj === 'object' && pathObj !== null) {
             for (const [method, methodObj] of Object.entries(pathObj)) {

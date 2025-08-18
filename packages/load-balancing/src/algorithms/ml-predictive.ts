@@ -2,11 +2,13 @@
  * @file Coordination system: ml-predictive
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '@claude-zen/foundation';
 
-const logger = getLogger(
-  'coordination-load-balancing-algorithms-ml-predictive'
-);
+// Direct brain.js import for practical neural networks
+const brain = require('brain.js');
+
+// Foundation-optimized logging
+const logger = getLogger('MLPredictiveAlgorithm');
 
 /**
  * Machine Learning Predictive Load Balancing Algorithm.
@@ -25,6 +27,7 @@ import type {
   RoutingResult,
   Task,
 } from '../types';
+import { taskPriorityToNumber } from '../types';
 
 interface MLFeatures {
   agentId: string;
@@ -51,6 +54,18 @@ interface PredictionResult {
   featureImportance: Record<string, number>;
 }
 
+interface BrainJsNetworkConfig {
+  latencyNetwork: any;
+  successNetwork: any;
+  initialized: boolean;
+  lastTrainingSize: number;
+}
+
+interface BrainJsTrainingData {
+  input: number[];
+  output: number[];
+}
+
 interface ModelPerformance {
   accuracy: number;
   precision: number;
@@ -67,6 +82,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   private historicalData: HistoricalData[] = [];
   private modelPerformance: Map<string, ModelPerformance> = new Map();
   private predictionEngine: PredictionEngine;
+  private brainJsConfig: BrainJsNetworkConfig;
   private config = {
     modelTypes: ['linear', 'neural', 'ensemble'] as const,
     maxHistorySize: 10000,
@@ -85,6 +101,12 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
   constructor(predictionEngine?: PredictionEngine) {
     this.predictionEngine = predictionEngine || new DefaultPredictionEngine();
+    this.brainJsConfig = {
+      latencyNetwork: null,
+      successNetwork: null,
+      initialized: false,
+      lastTrainingSize: 0
+    };
     this.initializeModels();
   }
 
@@ -258,9 +280,10 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Initialize ML models.
+   * Initialize ML models including brain.js neural networks.
    */
   private async initializeModels(): Promise<void> {
+    // Initialize traditional models
     for (const modelType of this.config.modelTypes) {
       const model: PredictionModel = {
         modelType,
@@ -281,6 +304,38 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         lastEvaluated: new Date(),
         sampleSize: 0,
       });
+    }
+
+    // Initialize brain.js models
+    await this.initializeBrainJsModels();
+  }
+
+  /**
+   * Initialize brain.js neural networks for agent prediction.
+   */
+  private async initializeBrainJsModels(): Promise<void> {
+    try {
+      if (!brain) {
+        logger.warn('brain.js not available, skipping neural network initialization');
+        return;
+      }
+
+      // Create latency prediction network
+      this.brainJsConfig.latencyNetwork = new brain.NeuralNetwork({
+        hiddenLayers: [16, 8], // Two hidden layers for complex patterns
+        learningRate: 0.1
+      });
+
+      // Create success rate prediction network  
+      this.brainJsConfig.successNetwork = new brain.NeuralNetwork({
+        hiddenLayers: [12, 6], // Smaller network for binary classification
+        learningRate: 0.2
+      });
+
+      this.brainJsConfig.initialized = true;
+      logger.info('Brain.js neural networks initialized successfully');
+    } catch (error) {
+      logger.error('Error initializing brain.js models:', error);
     }
   }
 
@@ -331,7 +386,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     return {
       agentId: agent.id,
       taskType: task.type,
-      taskPriority: task.priority,
+      taskPriority: taskPriorityToNumber(task.priority),
       estimatedDuration: task.estimatedDuration,
       timeOfDay: now.getHours(),
       dayOfWeek: now.getDay(),
@@ -347,7 +402,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
-   * Predict agent performance using ensemble of models.
+   * Predict agent performance using ensemble of models including brain.js.
    *
    * @param features
    */
@@ -360,7 +415,13 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     const predictions = new Map<string, any>();
     const weights = this.config.modelEnsembleWeights;
 
-    // Get predictions from each model
+    // Get brain.js predictions if available
+    const brainJsPrediction = await this.getBrainJsPrediction(features);
+    if (brainJsPrediction) {
+      predictions.set('brainjs', brainJsPrediction);
+    }
+
+    // Get predictions from traditional models
     for (const [modelType, _model] of this.models) {
       try {
         const prediction = await this.predictionEngine.predict(
@@ -377,13 +438,19 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
       return this.heuristicPrediction(features);
     }
 
-    // Weighted ensemble prediction
+    // Enhanced ensemble with brain.js prioritization
     let weightedLatency = 0;
     let weightedSuccessRate = 0;
     let totalWeight = 0;
 
     for (const [modelType, prediction] of predictions) {
-      const weight = weights[modelType as keyof typeof weights] || 0;
+      let weight = weights[modelType as keyof typeof weights] || 0;
+      
+      // Give brain.js higher weight if it's available and confident
+      if (modelType === 'brainjs' && prediction.confidence > 0.7) {
+        weight = 0.6; // Higher weight for confident brain.js predictions
+      }
+      
       weightedLatency += prediction.latency * weight;
       weightedSuccessRate += prediction.successRate * weight;
       totalWeight += weight;
@@ -409,6 +476,57 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
   }
 
   /**
+   * Get prediction from brain.js neural networks.
+   */
+  private async getBrainJsPrediction(features: MLFeatures): Promise<any | null> {
+    if (!this.brainJsConfig.initialized) {
+      return null;
+    }
+
+    try {
+      const normalizedFeatures = this.normalizeFeatures(features);
+      const featureVector = [
+        normalizedFeatures.taskPriority,
+        normalizedFeatures.estimatedDuration,
+        normalizedFeatures.timeOfDay,
+        normalizedFeatures.currentLoad,
+        normalizedFeatures.avgResponseTime,
+        normalizedFeatures.errorRate,
+        normalizedFeatures.cpuUsage,
+        normalizedFeatures.memoryUsage,
+        normalizedFeatures.historicalSuccessRate,
+        normalizedFeatures.agentCapability
+      ];
+
+      // Get latency prediction
+      const latencyOutput = this.brainJsConfig.latencyNetwork.run(featureVector);
+      
+      // Get success rate prediction
+      const successOutput = this.brainJsConfig.successNetwork.run(featureVector);
+
+      if (latencyOutput && successOutput) {
+        // Denormalize predictions
+        const predictedLatency = Math.max(100, (Array.isArray(latencyOutput) ? latencyOutput[0] : latencyOutput) * 10000); // Scale back to ms
+        const predictedSuccessRate = Math.max(0.1, Math.min(1.0, Array.isArray(successOutput) ? successOutput[0] : successOutput));
+
+        // Calculate confidence based on output consistency
+        const confidence = 0.8; // Static confidence for now
+
+        return {
+          latency: predictedLatency,
+          successRate: predictedSuccessRate,
+          confidence,
+          source: 'brainjs'
+        };
+      }
+    } catch (error) {
+      logger.warn('Brain.js prediction failed:', error);
+    }
+
+    return null;
+  }
+
+  /**
    * Calculate composite score for agent selection.
    *
    * @param prediction
@@ -419,8 +537,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     task: Task
   ): number {
     // Weight factors based on task priority
-    const latencyWeight = task.priority > 3 ? 0.6 : 0.4;
-    const successWeight = task.priority > 3 ? 0.3 : 0.4;
+    const latencyWeight = taskPriorityToNumber(task.priority) > 3 ? 0.6 : 0.4;
+    const successWeight = taskPriorityToNumber(task.priority) > 3 ? 0.3 : 0.4;
     const confidenceWeight = 0.1;
 
     // Normalize latency (lower is better)
@@ -443,6 +561,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
 
     const trainingData = this.prepareTrainingData();
 
+    // Retrain traditional models
     for (const [modelType, model] of this.models) {
       try {
         await this.predictionEngine.train(trainingData);
@@ -457,6 +576,89 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
         logger.error(`Failed to retrain model ${modelType}:`, error);
       }
     }
+
+    // Retrain brain.js models
+    await this.retrainBrainJsModels();
+  }
+
+  /**
+   * Retrain brain.js neural networks with historical data.
+   */
+  private async retrainBrainJsModels(): Promise<void> {
+    if (!this.brainJsConfig.initialized || this.historicalData.length < 50) {
+      return; // Need at least 50 samples for neural network training
+    }
+
+    try {
+      // Prepare training data for brain.js
+      const brainJsData = this.prepareBrainJsTrainingData();
+      
+      if (brainJsData.latencyData.length === 0 || brainJsData.successData.length === 0) {
+        logger.warn('Insufficient data for brain.js retraining');
+        return;
+      }
+
+      // Train latency prediction network
+      const latencyStats = this.brainJsConfig.latencyNetwork.train(brainJsData.latencyData, {
+        iterations: 1000,
+        errorThreshold: 0.01,
+        logPeriod: 100
+      });
+
+      // Train success rate prediction network
+      const successStats = this.brainJsConfig.successNetwork.train(brainJsData.successData, {
+        iterations: 800,
+        errorThreshold: 0.01,
+        logPeriod: 100
+      });
+
+      this.brainJsConfig.lastTrainingSize = this.historicalData.length;
+      logger.info('Brain.js models retrained successfully', {
+        latencyStats,
+        successStats,
+        dataSize: this.historicalData.length
+      });
+    } catch (error) {
+      logger.error('Error retraining brain.js models:', error);
+    }
+  }
+
+  /**
+   * Prepare training data specifically for brain.js networks.
+   */
+  private prepareBrainJsTrainingData(): {
+    latencyData: BrainJsTrainingData[];
+    successData: BrainJsTrainingData[];
+  } {
+    const latencyData: BrainJsTrainingData[] = [];
+    const successData: BrainJsTrainingData[] = [];
+
+    for (const entry of this.historicalData) {
+      const features = this.extractFeaturesFromHistorical(entry);
+      const featureVector = [
+        features.timeOfDay,
+        features.dayOfWeek,
+        features.duration,
+        features.cpuUsage,
+        features.memoryUsage,
+        features.activeTasks
+      ];
+
+      // Prepare latency training data (normalized)
+      const normalizedLatency = Math.min(1.0, entry.duration / 10000); // Normalize to 0-1
+      latencyData.push({
+        input: featureVector,
+        output: [normalizedLatency]
+      });
+
+      // Prepare success rate training data
+      successData.push({
+        input: featureVector,
+        output: [entry.success ? 1 : 0]
+      });
+    }
+
+    return { latencyData, successData };
   }
 
   /**
@@ -753,6 +955,8 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
  * @example
  */
 class DefaultPredictionEngine implements PredictionEngine {
+  private model: any = { trained: false, dataSize: 0 };
+
   async predict(features: Record<string, number>): Promise<number> {
     // Simple linear model for demonstration
     const weights = {

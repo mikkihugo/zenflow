@@ -148,7 +148,7 @@ import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('src-config-manager') as any; // Use any to allow flexible logger interface
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { DEFAULT_CONFIG } from './defaults';
@@ -369,11 +369,16 @@ export class ConfigurationManager extends EventEmitter {
 
     // Emit change event
     const changeEvent: ConfigChangeEvent = {
+      type: 'updated',
       path,
       oldValue,
       newValue: value,
-      source: 'runtime',
       timestamp: Date.now(),
+      source: {
+        type: 'override',
+        priority: 999,
+        data: { [path]: value }
+      }
     };
 
     this.emit('config:changed', changeEvent);

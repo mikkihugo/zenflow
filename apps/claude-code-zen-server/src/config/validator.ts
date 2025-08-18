@@ -179,9 +179,20 @@ export class ConfigValidator {
     }
 
     return {
+      isValid: errors.length === 0,
       valid: errors.length === 0,
       errors,
       warnings,
+      securityIssues: [],
+      portConflicts: [],
+      performanceWarnings: [],
+      productionReady: errors.length === 0,
+      failsafeApplied: [],
+      source: {
+        type: 'default',
+        priority: 0
+      },
+      affectedPaths: []
     };
   }
 
@@ -340,13 +351,8 @@ export class ConfigValidator {
       errors.push('LanceDB backend selected but lancedb configuration missing');
     }
 
-    // MCP tool dependencies
-    if (
-      config?.interfaces?.mcp?.tools?.enableAll &&
-      config?.interfaces?.mcp?.tools?.disabledTools?.length > 0
-    ) {
-      warnings.push('enableAll is true but some tools are disabled');
-    }
+    // MCP functionality not implemented in this system
+    // Validation skipped for MCP-related configuration
 
     // Security dependencies
     if (
@@ -382,7 +388,7 @@ export class ConfigValidator {
     // Port conflicts
     const ports = [
       config?.interfaces?.web?.port,
-      config?.interfaces?.mcp?.http?.port,
+      // MCP not implemented in this system
     ].filter(Boolean);
 
     const uniquePorts = new Set(ports);
@@ -416,7 +422,7 @@ export class ConfigValidator {
     // Timeout constraints
     const timeouts = [
       config?.interfaces?.terminal?.timeout,
-      config?.interfaces?.mcp?.http?.timeout,
+      // MCP not implemented in this system
       config?.coordination?.timeout,
     ].filter(Boolean);
 
@@ -483,9 +489,20 @@ export class ConfigValidator {
     }
 
     return {
+      isValid: errors.length === 0,
       valid: errors.length === 0,
       errors,
       warnings,
+      securityIssues: [],
+      portConflicts: [],
+      performanceWarnings: [],
+      productionReady: errors.length === 0,
+      failsafeApplied: [],
+      source: {
+        type: 'default',
+        priority: 0
+      },
+      affectedPaths: []
     };
   }
 
@@ -518,7 +535,7 @@ export class ConfigValidator {
     // Check port conflicts
     const ports = [
       config?.interfaces?.web?.port,
-      config?.interfaces?.mcp?.http?.port,
+      // MCP not implemented in this system
       config?.monitoring?.dashboard?.port,
     ].filter((port): port is number => typeof port === 'number');
 
@@ -543,15 +560,16 @@ export class ConfigValidator {
 
     // Check production readiness
     const productionReady =
-      basicResult?.valid &&
+      (basicResult?.valid || false) &&
       securityIssues.length === 0 &&
       portConflicts.length === 0 &&
-      config?.core?.security?.enableSandbox === true;
+      (config?.core?.security?.enableSandbox === true);
 
     const result: ValidationResult = {
-      valid: basicResult?.valid,
-      errors: basicResult?.errors,
-      warnings: basicResult?.warnings,
+      isValid: basicResult?.valid || false,
+      valid: basicResult?.valid || false,
+      errors: basicResult?.errors || [],
+      warnings: basicResult?.warnings || [],
       productionReady,
       securityIssues,
       portConflicts,

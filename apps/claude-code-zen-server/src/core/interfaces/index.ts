@@ -39,7 +39,7 @@
  *
  * @see {@link WasmBindingInterface}
  */
-export { WasmBindingInterface } from '../../bindings/wasm-binding-interface';
+// export { WasmBindingInterface } from '../../bindings/wasm-binding-interface'; // Temporarily disabled
 /**
  * Swarm coordination and agent management interfaces.
  *

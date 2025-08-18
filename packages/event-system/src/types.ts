@@ -337,6 +337,127 @@ export interface WorkflowEvent extends SystemEvent {
   };
 }
 
+// ============================================================================
+// ORCHESTRATION EVENTS - Multi-level orchestration events
+// ============================================================================
+
+/**
+ * Multi-level orchestration events for Portfolio → Program → Swarm execution.
+ */
+export interface OrchestrationEvent extends SystemEvent {
+  type:
+    | 'orchestration:portfolio'
+    | 'orchestration:program' 
+    | 'orchestration:execution'
+    | 'orchestration:flow'
+    | 'orchestration:bottleneck';
+  operation:
+    | 'plan'
+    | 'execute'
+    | 'monitor'
+    | 'optimize'
+    | 'escalate'
+    | 'delegate'
+    | 'coordinate'
+    | 'sync';
+  level: 'portfolio' | 'program' | 'execution';
+  details?: {
+    orchestrationId?: string;
+    parentId?: string;
+    wipLimit?: number;
+    flowRate?: number;
+    bottleneckDetected?: boolean;
+    escalationReason?: string;
+    resourceAllocation?: Record<string, number>;
+    metrics?: {
+      throughput: number;
+      cycleTime: number;
+      leadTime: number;
+      efficiency: number;
+    };
+  };
+}
+
+// ============================================================================
+// SAFE FRAMEWORK EVENTS - SAFe methodology events
+// ============================================================================
+
+/**
+ * SAFe (Scaled Agile Framework) events for enterprise agile coordination.
+ */
+export interface SafeEvent extends SystemEvent {
+  type:
+    | 'safe:portfolio'
+    | 'safe:pi'
+    | 'safe:value_stream'
+    | 'safe:planning'
+    | 'safe:execution';
+  operation:
+    | 'epic_created'
+    | 'epic_prioritized'
+    | 'epic_approved'
+    | 'epic_funded'
+    | 'epic_completed'
+    | 'pi_planning'
+    | 'pi_execution'
+    | 'pi_review'
+    | 'value_stream_mapped'
+    | 'objective_set';
+  details?: {
+    epicId?: string;
+    piId?: string;
+    valueStreamId?: string;
+    businessValue?: number;
+    confidence?: number;
+    phase?: 'preparation' | 'day1' | 'day2' | 'finalization';
+    investmentHorizon?: 'near' | 'mid' | 'long';
+    budgetAllocation?: number;
+    piObjectives?: Array<{
+      id: string;
+      description: string;
+      businessValue: number;
+      confidence: number;
+    }>;
+  };
+}
+
+// ============================================================================
+// MEMORY ORCHESTRATION EVENTS - Advanced memory coordination events
+// ============================================================================
+
+/**
+ * Memory orchestration events for advanced memory coordination across systems.
+ */
+export interface MemoryOrchestrationEvent extends SystemEvent {
+  type:
+    | 'memory_orchestration:sync'
+    | 'memory_orchestration:coordination'
+    | 'memory_orchestration:cache'
+    | 'memory_orchestration:consistency'
+    | 'memory_orchestration:optimization';
+  operation:
+    | 'sync_initiated'
+    | 'sync_completed'
+    | 'coordination_updated'
+    | 'cache_populated'
+    | 'cache_invalidated'
+    | 'cache_refreshed'
+    | 'cache_migrated'
+    | 'consistency_check'
+    | 'optimization_applied';
+  details?: {
+    systemId?: string;
+    cacheId?: string;
+    syncType?: 'full' | 'incremental' | 'delta';
+    dataSize?: number;
+    keyPattern?: string;
+    consistencyLevel?: 'eventual' | 'strong' | 'weak';
+    optimizationStrategy?: 'lru' | 'lfu' | 'ttl' | 'adaptive';
+    memoryPools?: string[];
+    crossSystemSync?: boolean;
+  };
+}
+
 /**
  * Union type for all UEL events.
  */
@@ -349,7 +470,10 @@ export type UELEvent =
   | NeuralEvent
   | DatabaseEvent
   | MemoryEvent
-  | WorkflowEvent;
+  | WorkflowEvent
+  | OrchestrationEvent
+  | SafeEvent
+  | MemoryOrchestrationEvent;
 
 /**
  * Event category mappings for organization.
@@ -364,6 +488,9 @@ export const EventCategories = {
   DATABASE: 'database' as const,
   MEMORY: 'memory' as const,
   WORKFLOW: 'workflow' as const,
+  ORCHESTRATION: 'orchestration' as const,
+  SAFE: 'safe' as const,
+  MEMORY_ORCHESTRATION: 'memory_orchestration' as const,
 } as const;
 
 /**
@@ -417,6 +544,26 @@ export const EventTypePatterns = {
   WORKFLOW_ALL: 'workflow:*',
   WORKFLOW_EXECUTION: 'workflow:execution',
   WORKFLOW_TASKS: 'workflow:task',
+
+  // Orchestration events
+  ORCHESTRATION_ALL: 'orchestration:*',
+  ORCHESTRATION_PORTFOLIO: 'orchestration:portfolio',
+  ORCHESTRATION_PROGRAM: 'orchestration:program',
+  ORCHESTRATION_EXECUTION: 'orchestration:execution',
+  ORCHESTRATION_FLOW: 'orchestration:flow',
+
+  // SAFe events
+  SAFE_ALL: 'safe:*',
+  SAFE_PORTFOLIO: 'safe:portfolio',
+  SAFE_PI: 'safe:pi',
+  SAFE_VALUE_STREAM: 'safe:value_stream',
+  SAFE_PLANNING: 'safe:planning',
+
+  // Memory orchestration events
+  MEMORY_ORCHESTRATION_ALL: 'memory_orchestration:*',
+  MEMORY_ORCHESTRATION_SYNC: 'memory_orchestration:sync',
+  MEMORY_ORCHESTRATION_CACHE: 'memory_orchestration:cache',
+  MEMORY_ORCHESTRATION_CONSISTENCY: 'memory_orchestration:consistency',
 } as const;
 
 /**
@@ -605,6 +752,73 @@ export const DefaultEventManagerConfigs = {
       enableProfiling: true,
     },
   },
+
+  [EventCategories.ORCHESTRATION]: {
+    maxListeners: 500,
+    processing: {
+      strategy: 'queued' as const,
+      queueSize: 5000,
+    },
+    retry: {
+      attempts: 3,
+      delay: 1000,
+      backoff: 'exponential' as const,
+      maxDelay: 10000,
+    },
+    monitoring: {
+      enabled: true,
+      metricsInterval: 3000,
+      trackLatency: true,
+      trackThroughput: true,
+      trackErrors: true,
+      enableProfiling: true,
+    },
+  },
+
+  [EventCategories.SAFE]: {
+    maxListeners: 200,
+    processing: {
+      strategy: 'queued' as const,
+      queueSize: 2000,
+    },
+    retry: {
+      attempts: 2,
+      delay: 2000,
+      backoff: 'linear' as const,
+      maxDelay: 10000,
+    },
+    monitoring: {
+      enabled: true,
+      metricsInterval: 10000,
+      trackLatency: true,
+      trackThroughput: false,
+      trackErrors: true,
+      enableProfiling: false,
+    },
+  },
+
+  [EventCategories.MEMORY_ORCHESTRATION]: {
+    maxListeners: 300,
+    processing: {
+      strategy: 'batched' as const,
+      batchSize: 25,
+      queueSize: 3000,
+    },
+    retry: {
+      attempts: 3,
+      delay: 1500,
+      backoff: 'exponential' as const,
+      maxDelay: 8000,
+    },
+    monitoring: {
+      enabled: true,
+      metricsInterval: 5000,
+      trackLatency: true,
+      trackThroughput: true,
+      trackErrors: true,
+      enableProfiling: true,
+    },
+  },
 } as const;
 
 /**
@@ -663,6 +877,27 @@ export const EventPriorityMap: Record<string, EventPriority> = {
   'workflow:task': 'medium',
   'workflow:condition': 'low',
   'workflow:trigger': 'high',
+
+  // Orchestration events - high priority for coordination
+  'orchestration:portfolio': 'high',
+  'orchestration:program': 'high',
+  'orchestration:execution': 'medium',
+  'orchestration:flow': 'medium',
+  'orchestration:bottleneck': 'high',
+
+  // SAFe events - medium to high priority
+  'safe:portfolio': 'high',
+  'safe:pi': 'high',
+  'safe:value_stream': 'medium',
+  'safe:planning': 'medium',
+  'safe:execution': 'medium',
+
+  // Memory orchestration events - medium priority
+  'memory_orchestration:sync': 'medium',
+  'memory_orchestration:coordination': 'medium',
+  'memory_orchestration:cache': 'low',
+  'memory_orchestration:consistency': 'high',
+  'memory_orchestration:optimization': 'low',
 } as const;
 
 /**
@@ -719,6 +954,27 @@ export const EventSources = {
   WORKFLOW_SCHEDULER: 'workflow:scheduler',
   WORKFLOW_EXECUTOR: 'workflow:executor',
   WORKFLOW_MONITOR: 'workflow:monitor',
+
+  // Orchestration sources
+  ORCHESTRATION_PORTFOLIO_MANAGER: 'orchestration:portfolio-manager',
+  ORCHESTRATION_PROGRAM_COORDINATOR: 'orchestration:program-coordinator',
+  ORCHESTRATION_EXECUTION_ENGINE: 'orchestration:execution-engine',
+  ORCHESTRATION_FLOW_MONITOR: 'orchestration:flow-monitor',
+  ORCHESTRATION_BOTTLENECK_DETECTOR: 'orchestration:bottleneck-detector',
+
+  // SAFe sources
+  SAFE_PORTFOLIO_MANAGER: 'safe:portfolio-manager',
+  SAFE_PI_PLANNER: 'safe:pi-planner',
+  SAFE_VALUE_STREAM_MAPPER: 'safe:value-stream-mapper',
+  SAFE_EPIC_MANAGER: 'safe:epic-manager',
+  SAFE_OBJECTIVE_TRACKER: 'safe:objective-tracker',
+
+  // Memory orchestration sources
+  MEMORY_ORCHESTRATION_COORDINATOR: 'memory_orchestration:coordinator',
+  MEMORY_ORCHESTRATION_SYNC_MANAGER: 'memory_orchestration:sync-manager',
+  MEMORY_ORCHESTRATION_CACHE_COORDINATOR: 'memory_orchestration:cache-coordinator',
+  MEMORY_ORCHESTRATION_CONSISTENCY_CHECKER: 'memory_orchestration:consistency-checker',
+  MEMORY_ORCHESTRATION_OPTIMIZER: 'memory_orchestration:optimizer',
 } as const;
 
 /**
@@ -761,6 +1017,18 @@ export const UELTypeGuards = {
 
   isWorkflowEvent: (event: SystemEvent): event is WorkflowEvent => {
     return event.type.startsWith('workflow:');
+  },
+
+  isOrchestrationEvent: (event: SystemEvent): event is OrchestrationEvent => {
+    return event.type.startsWith('orchestration:');
+  },
+
+  isSafeEvent: (event: SystemEvent): event is SafeEvent => {
+    return event.type.startsWith('safe:');
+  },
+
+  isMemoryOrchestrationEvent: (event: SystemEvent): event is MemoryOrchestrationEvent => {
+    return event.type.startsWith('memory_orchestration:');
   },
 
   isUELEvent: (event: SystemEvent): event is UELEvent => {

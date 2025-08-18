@@ -56,7 +56,11 @@ export class SeededRNG {
       throw new Error("Cannot choose from empty array");
     }
     const index = Math.floor(this.random() * array.length);
-    return array[index];
+    const item = array[index];
+    if (item === undefined) {
+      throw new Error("Array access returned undefined");
+    }
+    return item;
   }
 
   /**
@@ -70,7 +74,12 @@ export class SeededRNG {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(this.random() * (i + 1));
-      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      const temp = shuffled[i];
+      const swapItem = shuffled[j];
+      if (temp !== undefined && swapItem !== undefined) {
+        shuffled[i] = swapItem;
+        shuffled[j] = temp;
+      }
     }
     
     return shuffled.slice(0, k);
@@ -83,7 +92,12 @@ export class SeededRNG {
     const result = [...array];
     for (let i = result.length - 1; i > 0; i--) {
       const j = Math.floor(this.random() * (i + 1));
-      [result[i], result[j]] = [result[j], result[i]];
+      const temp = result[i];
+      const swapItem = result[j];
+      if (temp !== undefined && swapItem !== undefined) {
+        result[i] = swapItem;
+        result[j] = temp;
+      }
     }
     return result;
   }

@@ -6,7 +6,7 @@
  * @file Error-monitoring implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../core/interfaces/base-interfaces';
 
 export interface ErrorContext {

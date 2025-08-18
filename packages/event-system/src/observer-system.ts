@@ -7,7 +7,7 @@ import { getLogger, type Logger } from '@claude-zen/foundation';
 
 const logger = getLogger('interfaces-events-observer-system');
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 // Event type definitions with strong typing
 export interface SystemEvent {
@@ -512,7 +512,6 @@ export class SystemEventManager extends EventEmitter {
 
   constructor(private logger?: Logger) {
     super();
-    this.setMaxListeners(1000);
     this.startEventProcessing();
   }
 
@@ -863,4 +862,16 @@ export class EventBuilder {
       dataSize: options?.dataSize,
     };
   }
+}
+
+// Add missing exports for index.ts compatibility
+export interface ObserverEvent extends SystemEvent {
+  observerType: string;
+  priority: 'critical' | 'high' | 'medium' | 'low';
+}
+
+export interface ObserverConfig {
+  enableLogging?: boolean;
+  priorityThreshold?: 'critical' | 'high' | 'medium' | 'low';
+  bufferSize?: number;
 }

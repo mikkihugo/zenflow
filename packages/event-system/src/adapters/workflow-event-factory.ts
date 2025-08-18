@@ -62,7 +62,7 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import type { SharedConfig } from '@claude-zen/foundation';
+import type { Config } from '@claude-zen/foundation';
 import { BaseEventManager } from '../core/base-event-manager';
 import type {
   EventManagerConfig,
@@ -641,7 +641,7 @@ export class WorkflowEventManagerFactory
 {
   constructor(
     private logger: Logger,
-    private config: SharedConfig
+    private config: Config
   ) {
     this.logger.debug('WorkflowEventManagerFactory initialized');
   }

@@ -2,7 +2,7 @@
  * @file Event bus for coordinating system-wide events and messaging
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 
 export interface SystemEvent {
   id: string;

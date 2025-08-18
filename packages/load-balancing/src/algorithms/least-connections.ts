@@ -7,6 +7,8 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
+import type { Task, Agent, LoadMetrics, RoutingResult } from '../types';
+import { taskPriorityToNumber } from '../types';
 
 interface ConnectionState {
   agentId: string;
@@ -249,7 +251,12 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       capacity: number;
     }>
   > {
-    const scored = [];
+    const scored: Array<{
+      agent: Agent;
+      score: number;
+      connections: number;
+      capacity: number;
+    }> = [];
 
     for (const agent of agents) {
       const state = this.getOrCreateConnectionState(agent.id);
@@ -271,7 +278,7 @@ export class LeastConnectionsAlgorithm implements LoadBalancingAlgorithm {
       score += utilizationRatio * 100; // Penalty for high utilization
 
       // Adjust for task priority
-      if (task.priority > 3) {
+      if (taskPriorityToNumber(task.priority) > 3) {
         score *= 0.8; // Prefer this agent for high priority tasks
       }
 

@@ -5,6 +5,9 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
+import { 
+  TOKENS 
+} from '@claude-zen/foundation';
 import type { CompatibilityFactory } from '../compatibility';
 import type { UELFactory, UELRegistry } from '../factories';
 import type { EventManager } from '../manager';
@@ -57,8 +60,6 @@ export class UEL {
     const { UELValidationFramework } = await import('../validation');
     const { CompatibilityFactory } = await import('../compatibility');
     const { DIContainer } = await import('@claude-zen/foundation');
-    const { CORE_TOKENS } = await import('@claude-zen/foundation');
-    const { SingletonProvider } = await import('@claude-zen/foundation');
 
     const container = new DIContainer();
 
@@ -70,10 +71,12 @@ export class UEL {
       error: (message: string, meta?: unknown) => console.error(message, meta),
     };
 
-    container.register(CORE_TOKENS.Logger, new SingletonProvider(() => logger));
-    container.register(
-      CORE_TOKENS.Config,
-      new SingletonProvider(() => {
+    // Simplified registration without SingletonProvider
+    // TODO: Implement proper DI container registration when Foundation DI is ready
+    (container as any).register(TOKENS.Logger, logger);
+    (container as any).register(
+      TOKENS.Config,
+      (() => {
         const configData = config?.config || {};
         return {
           get: <T>(key: string, defaultValue?: T): T => {
@@ -391,3 +394,21 @@ export class UEL {
 
 // Global UEL instance for convenience
 export const uel = UEL.getInstance();
+
+/**
+ * Factory function to create a new UEL instance.
+ * @param config - Optional configuration for the UEL instance
+ * @returns A new UEL instance
+ */
+export async function createUEL(config?: {
+  logger?: Console | { debug: Function; info: Function; warn: Function; error: Function };
+  config?: Record<string, unknown>;
+  autoRegisterFactories?: boolean;
+  enableValidation?: boolean;
+  enableCompatibility?: boolean;
+  healthMonitoring?: boolean;
+}): Promise<UEL> {
+  const instance = UEL.getInstance();
+  await instance.initialize(config);
+  return instance;
+}

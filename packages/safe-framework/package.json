@@ -1,0 +1,60 @@
+{
+  "name": "@claude-zen/safe-framework",
+  "version": "1.0.0",
+  "description": "SAFe (Scaled Agile Framework) integration with portfolio management, program increments, and value streams",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./managers": {
+      "types": "./dist/managers/index.d.ts",
+      "import": "./dist/managers/index.js"
+    },
+    "./pipelines": {
+      "types": "./dist/pipelines/index.d.ts",
+      "import": "./dist/pipelines/index.js"
+    },
+    "./events": {
+      "types": "./dist/events/index.d.ts",
+      "import": "./dist/events/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
+    "@claude-zen/coordination-core": "workspace:*",
+    "@claude-zen/multi-level-orchestration": "workspace:*",
+    "eventemitter3": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "safe",
+    "scaled-agile",
+    "portfolio-management",
+    "program-increment",
+    "value-stream",
+    "enterprise-agile",
+    "continuous-delivery"
+  ],
+  "author": "Claude-Zen Team",
+  "license": "MIT"
+}

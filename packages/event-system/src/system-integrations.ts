@@ -10,7 +10,7 @@
  * @file System Integration and Migration Implementation.
  */
 
-import { EventEmitter } from 'node:events';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import {
   EventEmitterMigrationHelper,
@@ -71,7 +71,6 @@ export class UELEnhancedEventBus extends EventEmitter {
     super();
 
     this.logger = options?.logger || getLogger('UELEnhancedEventBus');
-    this.setMaxListeners(options?.maxListeners || 100);
 
     if (options?.enableUEL && options?.uelIntegration?.eventManager) {
       this.initializeUELIntegration({
@@ -186,9 +185,11 @@ export class UELEnhancedEventBus extends EventEmitter {
       0
     );
 
+    const maxListeners = (this as any)._maxListeners || 10; // EventEmitter3 default
+
     return {
       eventEmitter: {
-        maxListeners: this.getMaxListeners(),
+        maxListeners,
         eventNames,
         listenerCount,
       },
@@ -771,7 +772,6 @@ export class UELEnhancedObserverSystem extends EventEmitter {
    */
   createObserver(name: string, type: string = 'custom'): EventEmitter {
     const observer = new EventEmitter();
-    observer.setMaxListeners(50);
 
     // Wrap with UEL integration if available
     if (this.uelEventManager) {
@@ -1050,7 +1050,7 @@ export async function enhanceWithUEL<T extends EventEmitter>(
   managerType: EventManagerType = EventManagerTypes.SYSTEM,
   logger?: Logger
 ): Promise<UELCompatibleEventEmitter> {
-  const migrationHelper = new EventEmitterMigrationHelper(eventManager, logger);
+  const migrationHelper = new EventEmitterMigrationHelper(eventManager as any, logger);
   return await migrationHelper.wrapEventEmitter(
     originalInstance,
     name,
@@ -1078,7 +1078,7 @@ export function analyzeSystemEventEmitterUsage(
   overallComplexity: 'low' | 'medium' | 'high';
 } {
   const migrationHelper = new EventEmitterMigrationHelper(null as any, logger);
-  const systemAnalyses: { [key: string]: unknown } = {};
+  const systemAnalyses: { [key: string]: { eventTypes: string[]; listenerCounts: Record<string, number>; maxListeners: number; recommendations: string[]; migrationComplexity: "high" | "medium" | "low"; } } = {};
   const migrationRecommendations: string[] = [];
 
   let totalListeners = 0;
@@ -1088,7 +1088,7 @@ export function analyzeSystemEventEmitterUsage(
   for (const [systemName, system] of Object.entries(systems)) {
     try {
       const analysis = migrationHelper.analyzeEventEmitter(system);
-      systemAnalyses[systemName] = analysis;
+      systemAnalyses[systemName] = analysis as any;
 
       totalListeners += Object.values(analysis.listenerCounts).reduce(
         (sum, count) => sum + count,

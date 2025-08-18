@@ -55,23 +55,6 @@ mcp_servers:
     timeout: 30000
     retry_attempts: 3
 
-# Local MCP server for internal coordination
-local_mcp:
-  claude_zen:
-    command: "npx"
-    args: ["tsx", "src/interfaces/mcp/start-server.ts"]
-    env:
-      MCP_PORT: "3000"
-      MCP_HOST: "localhost"
-      MCP_LOG_LEVEL: "info"
-    description: "Claude-Zen internal coordination and swarm management"
-    capabilities:
-      - swarm_coordination
-      - agent_management
-      - neural_processing
-      - memory_management
-      - monitoring
-
 # Copilot integration settings
 copilot:
   enable_external_mcp: true
@@ -83,11 +66,10 @@ copilot:
   # Tool preference order for overlapping capabilities
   tool_preference:
     research: ["context7", "deepwiki"]
-    code_analysis: ["semgrep", "claude_zen"]
-    git_operations: ["gitmcp", "claude_zen"]
+    code_analysis: ["semgrep"]
+    git_operations: ["gitmcp"]
     documentation: ["deepwiki", "context7"]
     security: ["semgrep"]
-    coordination: ["claude_zen"]
 
 # Error handling and reliability
 error_handling:
