@@ -1,3 +1,5 @@
+import { testFunction } from '@claude-zen/foundation';
+
 /**
  * @fileoverview GitCommander - AI-Powered Git System at Commander Level
  * 
@@ -100,7 +102,7 @@ export interface ConflictResolution {
 
 export interface ConflictSuggestion {
   file: string;
-  conflicts: Array<{
+  conflicts: Array<{ 
     section: string;
     ourVersion: string;
     theirVersion: string;
@@ -232,6 +234,8 @@ export class GitCommander extends Commander {
       intelligentBranching: this.config.intelligentBranching,
       automatedMaintenance: this.config.automatedMaintenance
     });
+
+    console.log(testFunction());
   }
 
   /**
@@ -923,12 +927,12 @@ Respond in JSON format:
   /**
    * Parse git conflict markers from file content
    */
-  private parseConflictMarkers(content: string): Array<{
+  private parseConflictMarkers(content: string): Array<{ 
     section: string;
     ourVersion: string;
     theirVersion: string;
   }> {
-    const conflicts: Array<{
+    const conflicts: Array<{ 
       section: string;
       ourVersion: string;
       theirVersion: string;
