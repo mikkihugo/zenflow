@@ -1,7 +1,7 @@
 {
   "name": "@claude-zen/kanban",
   "version": "1.0.0",
-  "private": false,
+  "private": true,
   "description": "Professional workflow coordination engine with XState-powered state management",
   "type": "module",
   "main": "./dist/index.cjs",

@@ -67,7 +67,7 @@
 
 #### **✅ Complete Package Structure (22 Total)**
 
-**🔓 Public Packages (15 total) - Publishable to npm:**
+**🔓 Public Packages (13 total) - Publishable to npm:**
 1. **`@claude-zen/foundation`** - Common utilities, logging, DI container, LLM provider interfaces
 2. **`@claude-zen/event-system`** - Comprehensive type-safe event system with domain validation  
 3. **`@claude-zen/brain`** - Neural brain coordination and intelligent processing
@@ -79,19 +79,20 @@
 9. **`@claude-zen/agent-manager`** - Agent lifecycle management
 10. **`@claude-zen/coordination-core`** - Core coordination logic
 11. **`@claude-zen/sparc`** - SPARC methodology implementation
-12. **`@claude-zen/multi-level-orchestration`** - Portfolio→Program→Swarm orchestration
-13. **`@claude-zen/safe-framework`** - SAFe enterprise framework
-14. **`@claude-zen/memory-orchestration`** - Memory coordination
-15. **`@claude-zen/llm-routing`** - LLM provider routing
+12. **`@claude-zen/safe-framework`** - SAFe enterprise framework
+13. **`@claude-zen/llm-routing`** - LLM provider routing
 
-**🔒 Private Packages (7 total) - Internal use only in `/packages/private-packages/`:**
-16. **`@claude-zen/database`** - Multi-database abstraction layer (**private: true**)
-17. **`@claude-zen/load-balancing`** - Advanced load balancing and resource optimization (**private: true**)
-18. **`@claude-zen/agent-monitoring`** - Comprehensive agent health monitoring (**private: true**)
-19. **`@claude-zen/chaos-engineering`** - System resilience testing (**private: true**)
-20. **`@claude-zen/dspy`** - DSPy Stanford implementation (**private: true**)
-21. **`@claude-zen/fact-system`** - Fact-based reasoning (**private: true**)
-22. **`@claude-zen/neural-ml`** - ML integration and neural processing (**private: true**)
+**🔒 Private Packages (9 total) - Internal use only in `/packages/private-packages/`:**
+14. **`@claude-zen/database`** - Multi-database abstraction layer (**private: true**)
+15. **`@claude-zen/load-balancing`** - Advanced load balancing and resource optimization (**private: true**)
+16. **`@claude-zen/agent-monitoring`** - Comprehensive agent health monitoring (**private: true**)
+17. **`@claude-zen/memory`** - Advanced memory coordination and orchestration (**private: true**)
+18. **`@claude-zen/kanban`** - Professional workflow coordination engine (**private: true**)
+19. **`@claude-zen/monitoring`** - Monitoring and observability facade (**private: true**)
+20. **`@claude-zen/chaos-engineering`** - System resilience testing (**private: true**)
+21. **`@claude-zen/dspy`** - DSPy Stanford implementation (**private: true**)
+22. **`@claude-zen/fact-system`** - Fact-based reasoning (**private: true**)
+23. **`@claude-zen/neural-ml`** - ML integration and neural processing (**private: true**)
 
 ### **📊 Current Monorepo Structure: ACTIVE**
 
