@@ -342,8 +342,7 @@ impl<T: Float + Send + Sync> NeuralForecast<T> {
     }
     .map_err(|e| {
       NeuroDivergentError::prediction(format!(
-        "DataFrame creation error: {}",
-        e
+        "DataFrame creation error: {e}"
       ))
     })?;
 
@@ -395,8 +394,7 @@ impl<T: Float + Send + Sync> NeuralForecast<T> {
     }
     .map_err(|e| {
       NeuroDivergentError::prediction(format!(
-        "DataFrame creation error: {}",
-        e
+        "DataFrame creation error: {e}"
       ))
     })?;
 
@@ -439,7 +437,7 @@ impl<T: Float + Send + Sync> NeuralForecast<T> {
         "cutoff" => Vec::<i64>::new(),
     }
     .map_err(|e| {
-      NeuroDivergentError::data(format!("DataFrame creation error: {}", e))
+      NeuroDivergentError::data(format!("DataFrame creation error: {e}"))
     })?;
 
     Ok(CrossValidationDataFrame::new(

@@ -45,7 +45,7 @@
   ],
   "references": [
     {
-      "path": "../foundation"
+      "path": "../../foundation"
     }
   ]
 }

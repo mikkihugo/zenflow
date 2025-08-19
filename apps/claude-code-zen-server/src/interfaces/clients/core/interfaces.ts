@@ -251,11 +251,11 @@ export interface ClientConfig {
 }
 
 /**
- * Client status information.
+ * Client health status information.
  *
  * @example
  */
-export interface ClientStatus {
+export interface ClientHealthStatus {
   name: string;
   status: 'healthy' | 'degraded' | 'unhealthy' | 'disconnected';
   lastCheck: Date;
@@ -421,10 +421,10 @@ export interface Client {
   /**
    * Perform health check and get current status.
    *
-   * @returns {Promise<ClientStatus>} Current health status with metrics.
+   * @returns {Promise<ClientHealthStatus>} Current health status with metrics.
    * @throws {Error} If health check fails.
    */
-  healthCheck(): Promise<ClientStatus>;
+  healthCheck(): Promise<ClientHealthStatus>;
 
   /**
    * Get current performance metrics.
@@ -551,7 +551,7 @@ export interface ClientFactory<TConfig extends ClientConfig = ClientConfig> {
   remove(name: string): Promise<boolean>;
 
   // Batch operations
-  healthCheckAll(): Promise<Map<string, ClientStatus>>;
+  healthCheckAll(): Promise<Map<string, ClientHealthStatus>>;
   getMetricsAll(): Promise<Map<string, ClientMetrics>>;
 
   // Factory management
@@ -581,7 +581,7 @@ export interface ClientRegistry {
   getClientsByType(type: string): Client[];
 
   // Global operations
-  healthCheckAll(): Promise<Map<string, ClientStatus>>;
+  healthCheckAll(): Promise<Map<string, ClientHealthStatus>>;
   shutdownAll(): Promise<void>;
 }
 

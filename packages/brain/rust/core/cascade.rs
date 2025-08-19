@@ -971,7 +971,7 @@ impl<T: Float> CascadeTrainer<T> {
     let expected_outputs = network.num_outputs();
 
     for (i, input) in data.inputs.iter().enumerate() {
-      if input.len() != expected_inputs as usize {
+      if input.len() != expected_inputs {
         return Err(CascadeError::InvalidConfiguration(format!(
           "Input {} has wrong size: expected {}, got {}",
           i,
@@ -982,7 +982,7 @@ impl<T: Float> CascadeTrainer<T> {
     }
 
     for (i, output) in data.outputs.iter().enumerate() {
-      if output.len() != expected_outputs as usize {
+      if output.len() != expected_outputs {
         return Err(CascadeError::InvalidConfiguration(format!(
           "Output {} has wrong size: expected {}, got {}",
           i,

@@ -135,7 +135,7 @@ export class USL extends EventEmitter {
       this.databaseAccess = getDatabaseAccess();
 
       // Delegate to @claude-zen/monitoring for service monitoring
-      const { MonitoringSystem } = await import('@claude-zen/monitoring');
+      const { SystemMonitor } = await import('@claude-zen/foundation');
       this.monitoringSystem = new MonitoringSystem({
         metricsCollection: { enabled: true },
         performanceTracking: { enabled: true },

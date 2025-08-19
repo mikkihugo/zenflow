@@ -94,92 +94,18 @@ import {
 // TYPES AND INTERFACES - Service Integration Layer
 // =============================================================================
 
-/**
- * Service Configuration with Domain Type Integration
- */
-export interface ServiceManagerConfig {
-  factory: {
-    maxConcurrentInits: number;
-    enableDependencyResolution: boolean;
-  };
-  lifecycle: {
-    startupTimeout: number;
-    parallelStartup: boolean;
-    dependencyResolution: boolean;
-  };
-  monitoring: {
-    healthCheckInterval: number;
-    performanceThresholds: {
-      responseTime: number;
-      errorRate: number;
-    };
-  };
-  recovery: {
-    enabled: boolean;
-    maxRetries: number;
-    strategy: 'linear' | 'exponential';
-  };
-}
-
-/**
- * Service Interface with Type Safety
- */
-export interface Service {
-  name: string;
-  type: ServiceType;
-  status: ServiceStatus;
-  dependencies: ServiceDependency[];
-  metrics: ServiceMetrics;
-  start(): Promise<void>;
-  stop(): Promise<void>;
-  restart(): Promise<void>;
-  getHealth(): Promise<ServiceHealth>;
-}
-
-/**
- * Service Creation Request
- */
-export interface ServiceRequest {
-  name: string;
-  type: ServiceType;
-  config?: Record<string, unknown>;
-  dependencies?: ServiceDependency[];
-}
-
-export enum ServiceType {
-  WEB = 'web',
-  DATA = 'data',
-  COORDINATION = 'coordination',
-  INFRASTRUCTURE = 'infrastructure',
-  INTEGRATION = 'integration'
-}
-
-export enum ServiceStatus {
-  CREATED = 'created',
-  STARTING = 'starting',
-  RUNNING = 'running',
-  STOPPING = 'stopping',
-  STOPPED = 'stopped',
-  ERROR = 'error'
-}
-
-export interface ServiceDependency {
-  serviceName: string;
-  required: boolean;
-}
-
-export interface ServiceHealth {
-  status: 'healthy' | 'degraded' | 'unhealthy';
-  checks: Record<string, boolean>;
-  metrics: ServiceMetrics;
-  lastCheck: Date;
-}
-
-export interface BatchServiceRequest {
-  services: ServiceRequest[];
-  parallel: boolean;
-  startImmediately: boolean;
-}
+// Import types from centralized types file
+import type {
+  ServiceManagerConfig,
+  Service,
+  ServiceRequest,
+  ServiceType,
+  ServiceStatus,
+  ServiceDependency,
+  ServiceHealth,
+  BatchServiceRequest
+} from './types';
+import type { ServiceMetrics } from './core/interfaces';
 
 // =============================================================================
 // SERVICE MANAGER - Strategic Package Delegation
@@ -248,8 +174,8 @@ export class ServiceManager extends EventEmitter {
       await this.agentManager.initialize();
 
       // Delegate to @claude-zen/monitoring for health tracking
-      const { HealthMonitor, PerformanceTracker } = await import('@claude-zen/monitoring');
-      this.healthMonitor = new HealthMonitor({
+      const { SystemMonitor, PerformanceTracker } = await import('@claude-zen/foundation');
+      this.healthMonitor = new SystemMonitor({
         healthCheckInterval: this.config.monitoring.healthCheckInterval,
         performanceThresholds: this.config.monitoring.performanceThresholds
       });

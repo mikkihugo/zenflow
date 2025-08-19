@@ -280,7 +280,7 @@ export class SwarmService extends EventEmitter {
 
       // Delegate to @claude-zen/monitoring for performance tracking
       if (this.config.enablePerformanceTracking) {
-        const { PerformanceTracker, HealthMonitor } = await import('@claude-zen/monitoring');
+        const { PerformanceTracker, SystemMonitor } = await import('@claude-zen/foundation');
         this.performanceTracker = new PerformanceTracker({
           enableSwarmMetrics: true,
           enableAgentMetrics: true,

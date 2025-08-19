@@ -369,7 +369,7 @@ export class TechnologyStandardsService extends EventEmitter {
   /**
    * Initialize the service with dependencies
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) return;
 
     try {
@@ -392,7 +392,7 @@ export class TechnologyStandardsService extends EventEmitter {
    * Create new technology standard with comprehensive validation
    */
   async createTechnologyStandard(request: StandardCreationRequest): Promise<TechnologyStandard> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Creating technology standard', {
       name: request.name,
@@ -506,7 +506,7 @@ export class TechnologyStandardsService extends EventEmitter {
    * Monitor standard compliance across the enterprise
    */
   async monitorStandardCompliance(standardId: string, scope: ComplianceScope): Promise<StandardComplianceResult> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Monitoring standard compliance', {
       standardId,
@@ -551,7 +551,7 @@ export class TechnologyStandardsService extends EventEmitter {
       );
 
       // Generate compliance recommendations
-      const recommendations = await this.generateComplianceRecommendations(
+      const recommendations = this.generateComplianceRecommendations(
         standard,
         violations,
         scope
@@ -577,7 +577,7 @@ export class TechnologyStandardsService extends EventEmitter {
       };
 
       // Update standard with compliance metrics
-      await this.updateStandardComplianceMetrics(standard, result);
+      this.updateStandardComplianceMetrics(standard, result);
 
       // Store compliance results
       await this.knowledgeManager.store({
@@ -680,7 +680,7 @@ export class TechnologyStandardsService extends EventEmitter {
   /**
    * Shutdown the service
    */
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     this.logger.info('Shutting down Technology Standards Service');
     this.removeAllListeners();
     this.standards.clear();
@@ -767,11 +767,11 @@ export class TechnologyStandardsService extends EventEmitter {
   /**
    * Generate compliance recommendations
    */
-  private async generateComplianceRecommendations(
+  private generateComplianceRecommendations(
     standard: TechnologyStandard,
     violations: ComplianceViolation[],
     scope: ComplianceScope
-  ): Promise<ComplianceRecommendation[]> {
+  ): ComplianceRecommendation[] {
     const recommendations: ComplianceRecommendation[] = [];
 
     // Group violations by type
@@ -868,10 +868,10 @@ export class TechnologyStandardsService extends EventEmitter {
   /**
    * Update standard compliance metrics
    */
-  private async updateStandardComplianceMetrics(
+  private updateStandardComplianceMetrics(
     standard: TechnologyStandard,
     complianceResult: StandardComplianceResult
-  ): Promise<void> {
+  ): void {
     const updatedStandard = {
       ...standard,
       complianceMetrics: {

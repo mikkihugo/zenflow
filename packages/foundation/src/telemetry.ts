@@ -81,9 +81,9 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
 
 import { register as promRegister, Counter as PromCounter, Histogram as PromHistogram, Gauge as PromGauge } from 'prom-client';
-import { getLogger } from './logging.js';
-import { injectable, singleton } from './di.js';
-import { Result, ok, err } from './error-handling.js';
+import { getLogger } from './logging';
+import { injectable, singleton } from './di';
+import { Result, ok, err } from './error-handling';
 
 // =============================================================================
 // TELEMETRY CONFIGURATION

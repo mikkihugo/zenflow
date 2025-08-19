@@ -35,7 +35,7 @@ pub fn detect_optimal_backend() -> Result<OptimizationBackend> {
     #[cfg(any(target_arch = "x86", target_arch = "x86_64"))]
     {
         if let Ok(backend) = detect_intel_amd() {
-            log::info!("Using Intel/AMD optimization: {:?}", backend);
+            log::info!("Using Intel/AMD optimization: {backend:?}");
             return Ok(backend);
         }
     }
@@ -50,7 +50,7 @@ pub fn detect_optimal_backend() -> Result<OptimizationBackend> {
     
     // Fallback to optimized CPU
     let backend = detect_cpu_optimized();
-    log::info!("Using CPU-optimized fallback: {:?}", backend);
+    log::info!("Using CPU-optimized fallback: {backend:?}");
     Ok(backend)
 }
 
@@ -190,8 +190,10 @@ fn detect_intel_amd() -> Result<OptimizationBackend> {
     }
 }
 
+#[allow(dead_code)]
 fn check_opencl_support() -> bool {
     // Placeholder - would check for OpenCL drivers/devices
+    // TODO: Implement OpenCL detection when OpenCL support is added
     false
 }
 
@@ -217,7 +219,7 @@ fn detect_cpu_optimized() -> OptimizationBackend {
     
     let simd_level = detect_simd_level();
     
-    log::debug!("CPU fallback: {} threads, SIMD level: {}", threads, simd_level);
+    log::debug!("CPU fallback: {threads} threads, SIMD level: {simd_level}");
     
     OptimizationBackend::CpuOptimized {
         threads,

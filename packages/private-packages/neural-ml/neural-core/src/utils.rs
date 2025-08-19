@@ -132,7 +132,7 @@ pub mod math {
     sorted_data: &[T],
     q: f64,
   ) -> Option<T> {
-    if sorted_data.is_empty() || q < 0.0 || q > 1.0 {
+    if sorted_data.is_empty() || !(0.0..=1.0).contains(&q) {
       return None;
     }
 
@@ -234,7 +234,7 @@ pub mod time {
 
     while current <= end {
       dates.push(current);
-      current = current + duration;
+      current += duration;
     }
 
     dates
@@ -249,8 +249,7 @@ pub mod time {
     // Calculate differences between consecutive timestamps
     let mut diffs = Vec::new();
     for window in timestamps.windows(2) {
-      if let Some(diff) =
-        window[1].signed_duration_since(window[0]).to_std().ok()
+      if let Ok(diff) = window[1].signed_duration_since(window[0]).to_std()
       {
         diffs.push(diff);
       }
@@ -285,7 +284,7 @@ pub mod time {
           28..=31 => Some(Frequency::Monthly),
           90..=93 => Some(Frequency::Quarterly),
           365..=366 => Some(Frequency::Yearly),
-          _ => Some(Frequency::Custom(format!("{}D", days))),
+          _ => Some(Frequency::Custom(format!("{days}D"))),
         }
       }
     }
@@ -419,7 +418,7 @@ pub mod preprocessing {
   }
 
   /// Fill missing values using forward fill
-  pub fn forward_fill<T: Float + Copy>(data: &mut Vec<Option<T>>) {
+  pub fn forward_fill<T: Float + Copy>(data: &mut [Option<T>]) {
     let mut last_valid = None;
 
     for value in data.iter_mut() {
@@ -432,7 +431,7 @@ pub mod preprocessing {
   }
 
   /// Fill missing values using backward fill
-  pub fn backward_fill<T: Float + Copy>(data: &mut Vec<Option<T>>) {
+  pub fn backward_fill<T: Float + Copy>(data: &mut [Option<T>]) {
     let mut next_valid = None;
 
     for value in data.iter_mut().rev() {
@@ -445,7 +444,7 @@ pub mod preprocessing {
   }
 
   /// Interpolate missing values linearly
-  pub fn linear_interpolate<T: Float + Copy>(data: &mut Vec<Option<T>>) {
+  pub fn linear_interpolate<T: Float + Copy>(data: &mut [Option<T>]) {
     let mut changes = Vec::new();
     let mut start_idx = None;
 
@@ -515,8 +514,7 @@ pub mod validation {
       let null_count = unique_id_col.null_count();
       if null_count > 0 {
         report.add_warning(format!(
-          "Found {} null values in unique ID column",
-          null_count
+          "Found {null_count} null values in unique ID column"
         ));
       }
     }
@@ -525,8 +523,7 @@ pub mod validation {
       let null_count = ds_col.null_count();
       if null_count > 0 {
         report.add_warning(format!(
-          "Found {} null values in date/time column",
-          null_count
+          "Found {null_count} null values in date/time column"
         ));
       }
     }
@@ -535,8 +532,7 @@ pub mod validation {
       let null_count = y_col.null_count();
       if null_count > 0 {
         report.add_warning(format!(
-          "Found {} null values in target column",
-          null_count
+          "Found {null_count} null values in target column"
         ));
       }
     }
@@ -554,8 +550,7 @@ pub mod validation {
 
       if length_issues > 0 {
         report.add_warning(format!(
-          "{} time series have fewer than 10 observations",
-          length_issues
+          "{length_issues} time series have fewer than 10 observations"
         ));
       }
     }

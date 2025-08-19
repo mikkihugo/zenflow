@@ -556,7 +556,7 @@ export class GovernanceDecisionService extends EventEmitter {
   /**
    * Initialize the service with dependencies
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) return;
 
     try {
@@ -579,7 +579,7 @@ export class GovernanceDecisionService extends EventEmitter {
    * Initiate new governance decision with comprehensive workflow
    */
   async initiateGovernanceDecision(request: GovernanceDecisionRequest): Promise<GovernanceDecision> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Initiating governance decision', {
       type: request.type,
@@ -597,7 +597,7 @@ export class GovernanceDecisionService extends EventEmitter {
         description: request.description,
         requesterId: request.requesterId,
         requesterRole: request.requesterRole,
-        decisionMakers: await this.resolveDecisionMakers(request.decisionMakers, request.type),
+        decisionMakers: this.resolveDecisionMakers(request.decisionMakers, request.type),
         artifacts: request.artifacts.map(a => ({
           ...a,
           id: `artifact-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -629,7 +629,7 @@ export class GovernanceDecisionService extends EventEmitter {
         approvalDeadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days
         version: '1.0.0',
         context: request.context,
-        workflow: await this.createDecisionWorkflow(request),
+        workflow: this.createDecisionWorkflow(request),
         auditTrail: [{
           id: `audit-${Date.now()}`,
           timestamp: new Date(),
@@ -644,7 +644,7 @@ export class GovernanceDecisionService extends EventEmitter {
       this.decisions.set(decision.id, decision);
 
       // Store in knowledge management
-      await this.knowledgeManager.store({
+      this.knowledgeManager.store({
         content: decision,
         type: 'governance_decision',
         source: 'governance-decision-service',
@@ -657,7 +657,7 @@ export class GovernanceDecisionService extends EventEmitter {
       });
 
       // Store facts for decision analysis
-      await this.factSystem.storeFact({
+      this.factSystem.storeFact({
         type: 'governance_decision',
         entity: decision.id,
         properties: {
@@ -672,7 +672,7 @@ export class GovernanceDecisionService extends EventEmitter {
       });
 
       // Start decision workflow
-      const workflowId = await this.workflowEngine.startWorkflow({
+      const workflowId = this.workflowEngine.startWorkflow({
         workflowType: 'governance_decision_approval',
         entityId: decision.id,
         participants: decision.decisionMakers.map(dm => dm.userId),
@@ -694,7 +694,7 @@ export class GovernanceDecisionService extends EventEmitter {
       this.decisions.set(decision.id, updatedDecision);
 
       // Set up AGUI interface for decision review
-      await this.setupDecisionReviewInterface(updatedDecision);
+      this.setupDecisionReviewInterface(updatedDecision);
 
       this.emit('governance-decision-initiated', {
         decisionId: decision.id,
@@ -781,7 +781,7 @@ export class GovernanceDecisionService extends EventEmitter {
 
     this.decisions.set(decisionId, updatedDecision);
 
-    await this.factSystem.updateFact(decisionId, {
+    this.factSystem.updateFact(decisionId, {
       status,
       lastUpdated: new Date().toISOString()
     });
@@ -797,7 +797,7 @@ export class GovernanceDecisionService extends EventEmitter {
   /**
    * Shutdown the service
    */
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     this.logger.info('Shutting down Governance Decision Service');
     this.removeAllListeners();
     this.decisions.clear();
@@ -811,10 +811,10 @@ export class GovernanceDecisionService extends EventEmitter {
   /**
    * Resolve decision makers based on decision type and organizational matrix
    */
-  private async resolveDecisionMakers(
+  private resolveDecisionMakers(
     requestedMakers: string[],
     decisionType: DecisionType
-  ): Promise<DecisionMaker[]> {
+  ): DecisionMaker[] {
     const decisionMakers: DecisionMaker[] = [];
 
     for (const makerId of requestedMakers) {
@@ -862,7 +862,7 @@ export class GovernanceDecisionService extends EventEmitter {
   /**
    * Create decision workflow based on type and priority
    */
-  private async createDecisionWorkflow(request: GovernanceDecisionRequest): Promise<DecisionWorkflow> {
+  private createDecisionWorkflow(request: GovernanceDecisionRequest): DecisionWorkflow {
     const stages: WorkflowStage[] = [
       {
         stageId: 'initial-review',
@@ -957,8 +957,8 @@ export class GovernanceDecisionService extends EventEmitter {
   /**
    * Set up AGUI interface for decision review
    */
-  private async setupDecisionReviewInterface(decision: GovernanceDecision): Promise<void> {
-    await this.aguiSystem.createInterface({
+  private setupDecisionReviewInterface(decision: GovernanceDecision): void {
+    this.aguiSystem.createInterface({
       type: 'decision_review',
       entityId: decision.id,
       title: `Review: ${decision.title}`,
@@ -997,7 +997,7 @@ export class GovernanceDecisionService extends EventEmitter {
    */
   private createWorkflowEngineFallback() {
     return {
-      startWorkflow: async (workflow: any) => {
+      startWorkflow: (workflow: any) => {
         this.logger.debug('Workflow started (fallback)', { type: workflow.workflowType });
         return `workflow-${Date.now()}`;
       }
@@ -1006,7 +1006,7 @@ export class GovernanceDecisionService extends EventEmitter {
 
   private createAGUISystemFallback() {
     return {
-      createInterface: async (config: any) => {
+      createInterface: (config: any) => {
         this.logger.debug('AGUI interface created (fallback)', { type: config.type });
       }
     };
@@ -1014,10 +1014,10 @@ export class GovernanceDecisionService extends EventEmitter {
 
   private createFactSystemFallback() {
     return {
-      storeFact: async (fact: any) => {
+      storeFact: (fact: any) => {
         this.logger.debug('Fact stored (fallback)', { type: fact.type });
       },
-      updateFact: async (entityId: string, updates: any) => {
+      updateFact: (entityId: string, updates: any) => {
         this.logger.debug('Fact updated (fallback)', { entityId });
       }
     };
@@ -1025,7 +1025,7 @@ export class GovernanceDecisionService extends EventEmitter {
 
   private createKnowledgeManagerFallback() {
     return {
-      store: async (data: any) => {
+      store: (data: any) => {
         this.logger.debug('Knowledge stored (fallback)', { type: data.type });
       }
     };

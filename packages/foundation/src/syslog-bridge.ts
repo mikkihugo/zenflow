@@ -10,7 +10,7 @@
  */
 
 import { spawn } from 'child_process';
-import { getLogger, type Logger } from './logging.js';
+import { getLogger, type Logger } from './logging';
 
 export interface SyslogEntry {
   timestamp: string;
@@ -77,7 +77,7 @@ export class LogTapeSyslogBridge {
    * Format message for syslog consumption
    */
   private formatSyslogMessage(entry: SyslogEntry): string {
-    const { timestamp, level, component, message, metadata, sessionId, traceId } = entry;
+    const { component, message, metadata, sessionId, traceId } = entry;
     
     let formatted = `[${component}]`;
     
@@ -142,7 +142,8 @@ export class LogTapeSyslogBridge {
    * Log via LogTape for database persistence
    */
   private logViaLogTape(entry: SyslogEntry): void {
-    const logMethod = this.logger[entry.level] || this.logger.info;
+    // Map to LogTape methods (no 'fatal' method)
+    const logMethod = entry.level === 'fatal' ? this.logger.error : this.logger[entry.level] || this.logger.info;
     logMethod.call(this.logger, entry.message, {
       component: entry.component,
       metadata: entry.metadata,

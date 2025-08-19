@@ -12,8 +12,8 @@
 // Import Claude Code SDK directly from the compiled module to avoid type issues
 // @ts-ignore - bypassing problematic type definitions
 import { query } from '@anthropic-ai/claude-code/sdk.mjs';
-import { getLogger } from './logging.js';
-import { withRetry, type RetryOptions } from './error-handling.js';
+import { getLogger } from './logging';
+import { withRetry, type RetryOptions } from './error-handling';
 import * as path from 'path';
 import * as fs from 'fs';
 

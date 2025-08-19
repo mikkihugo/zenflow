@@ -361,7 +361,7 @@ export class PIExecutionService extends EventEmitter {
 
     try {
       // Gather execution data from multiple sources
-      const executionData = await this.gatherExecutionData(piId);
+      const executionData = this.gatherExecutionData(piId);
 
       // Use brain coordinator for intelligent metrics calculation
       const intelligentMetrics = await this.brainCoordinator.calculatePIMetrics({
@@ -662,7 +662,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Gather execution data from multiple sources
    */
-  private async gatherExecutionData(piId: string): Promise<any> {
+  private gatherExecutionData(piId: string): any {
     // In practice, this would gather data from:
     // - Agile tools (Jira, Azure DevOps, etc.)
     // - Version control systems
@@ -1323,7 +1323,7 @@ export class PIExecutionService extends EventEmitter {
    */
   private createBrainCoordinatorFallback() {
     return {
-      calculatePIMetrics: async (config: any) => {
+      calculatePIMetrics: (config: any) => {
         this.logger.debug('PI metrics calculated (fallback)', { piId: config.piId });
         return {
           confidence: 0.85,
@@ -1353,10 +1353,10 @@ export class PIExecutionService extends EventEmitter {
 
   private createFactSystemFallback() {
     return {
-      storeFact: async (fact: any) => {
+      storeFact: (fact: any) => {
         this.logger.debug('Fact stored (fallback)', { type: fact.type });
       },
-      getPIHistory: async (piId: string) => {
+      getPIHistory: (piId: string) => {
         this.logger.debug('PI history retrieved (fallback)', { piId });
         return { metrics: [], trends: [], benchmarks: [] };
       }

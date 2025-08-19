@@ -21,7 +21,9 @@ use cudarc::{
 pub struct CudaOptimizedOps {
     #[cfg(feature = "cuda-support")]
     device: Option<std::sync::Arc<CudaDevice>>,
+    #[allow(dead_code)] // TODO: Use for capability-aware operation selection  
     compute_capability: String,
+    #[allow(dead_code)] // TODO: Use for memory management decisions
     memory_gb: f32,
 }
 
@@ -286,7 +288,7 @@ impl OptimizedOps<f32> for CudaOptimizedOps {
         }
         
         // Fallback to parallel matrix multiplication
-        log::debug!("Used parallel fallback for {}x{}x{} matrix multiply", m, n, k);
+        log::debug!("Used parallel fallback for {m}x{n}x{k} matrix multiply");
         super::simple_matrix::matrix_multiply_parallel(a, b, m, n, k)
     }
 
@@ -369,7 +371,7 @@ impl OptimizedOps<f32> for CudaOptimizedOps {
             }
             ActivationType::Gelu => {
                 values.par_iter().map(|&x| {
-                    0.5 * x * (1.0 + (0.7978845608 * (x + 0.044715 * x.powi(3))).tanh())
+                    0.5 * x * (1.0 + (0.797_884_6 * (x + 0.044715 * x.powi(3))).tanh())
                 }).collect()
             }
         }

@@ -18,7 +18,7 @@
  * @version 1.0.0
  */
 
-import { getLogger } from './logging.js';
+import { getLogger } from './logging';
 
 const logger = getLogger('prompt-validation');
 

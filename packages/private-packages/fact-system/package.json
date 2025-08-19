@@ -39,7 +39,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "file:../../foundation",
+    "@claude-zen/foundation": "workspace:*",
     "nanoid": "^5.1.5"
   },
   "devDependencies": {
@@ -83,9 +83,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/zen-neural/claude-code-zen.git",
-    "directory": "packages/fact-system"
-  },
-  "publishConfig": {
-    "access": "public"
+    "directory": "packages/private-packages/fact-system"
   }
 }

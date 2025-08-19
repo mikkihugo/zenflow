@@ -135,8 +135,8 @@ export class DocumentManager extends EventEmitter {
       this.performanceTracker = new PerformanceTracker();
 
       // Delegate to @claude-zen/monitoring for service observability
-      const { MonitoringSystem } = await import('@claude-zen/monitoring');
-      this.monitoringSystem = new MonitoringSystem({
+      const { SystemMonitor } = await import('@claude-zen/foundation');
+      this.monitoringSystem = new SystemMonitor({
         serviceName: 'document-service',
         metricsCollection: { enabled: true },
         performanceTracking: { enabled: true }

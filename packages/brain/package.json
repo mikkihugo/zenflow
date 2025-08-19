@@ -34,9 +34,11 @@
   "dependencies": {
     "@claude-zen/foundation": "file:../foundation",
     "@claude-zen/dspy": "file:../private-packages/dspy",
+    "@xenova/transformers": "^3.2.0",
     "@tensorflow/tfjs": "^4.22.0",
     "@tensorflow/tfjs-node": "^4.22.0",
     "brain.js": "^2.0.0-beta.24",
+    "onnxruntime-node": "^1.20.1",
     "ml-matrix": "^6.12.0",
     "ml-kmeans": "^6.0.0",
     "simple-statistics": "^7.8.5",
@@ -62,7 +64,8 @@
     "simple-statistics": "^7.8.3"
   },
   "optionalDependencies": {
-    "@claude-zen/neural-ml": "file:../private-packages/neural-ml"
+    "@claude-zen/neural-ml": "file:../private-packages/neural-ml",
+    "openai": "^4.68.4"
   },
   "_comment_neural_ml": "neural-ml is a private implementation detail - only brain package should access it",
   "_comment_dspy": "dspy is a private implementation detail - only brain package should access it",

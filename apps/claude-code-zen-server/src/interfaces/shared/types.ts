@@ -14,8 +14,8 @@
 
 // Re-export types from foundation packages
 export type {
-  ComponentStatus
-} from '@claude-zen/monitoring';
+  PerformanceMetrics
+} from '@claude-zen/foundation';
 
 export type {
   WebServerConfig,

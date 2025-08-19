@@ -69,10 +69,9 @@ import type {
 } from '@claude-zen/workflows';
 
 import type {
-  HealthMonitor,
-  MetricsCollector,
+  SystemMonitor,
   PerformanceTracker
-} from '@claude-zen/monitoring';
+} from '@claude-zen/foundation';
 
 import type {
   WebMiddleware,
@@ -138,7 +137,7 @@ export class WebApiRoutes {
   // Strategic delegation instances
   private advancedGUI: AdvancedGUI | null = null;
   private workflowEngine: WorkflowEngine | null = null;
-  private healthMonitor: HealthMonitor | null = null;
+  private healthMonitor: SystemMonitor | null = null;
   private webMiddleware: WebMiddleware | null = null;
   private collaborationEngine: CollaborationEngine | null = null;
   private documentationManager: DocumentationManager | null = null;
@@ -180,8 +179,8 @@ export class WebApiRoutes {
       await this.workflowEngine.initialize();
 
       // Delegate to @claude-zen/monitoring for health and metrics
-      const { HealthMonitor } = await import('@claude-zen/monitoring');
-      this.healthMonitor = new HealthMonitor({
+      const { SystemMonitor } = await import('@claude-zen/foundation');
+      this.healthMonitor = new SystemMonitor({
         enableWebEndpoints: true,
         enableMetricsCollection: true
       });

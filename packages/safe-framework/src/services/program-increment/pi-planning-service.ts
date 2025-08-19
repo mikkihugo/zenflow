@@ -239,7 +239,7 @@ export class PIPlanningService extends EventEmitter {
   /**
    * Initialize the service with dependencies
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) return;
 
     try {
@@ -267,7 +267,7 @@ export class PIPlanningService extends EventEmitter {
     architecturalVision: ArchitecturalVision,
     participants: PlanningParticipant[]
   ): Promise<PIPlanningEventConfig> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Creating PI planning event', {
       artId,
@@ -279,7 +279,7 @@ export class PIPlanningService extends EventEmitter {
       const piId = `pi-${artId}-${Date.now()}`;
 
       // Generate comprehensive planning agenda
-      const agenda = await this.generatePlanningAgenda(businessContext, architecturalVision);
+      const agenda = this.generatePlanningAgenda(businessContext, architecturalVision);
 
       // Create planning event configuration
       const planningEvent: PIPlanningEventConfig = {
@@ -339,7 +339,7 @@ export class PIPlanningService extends EventEmitter {
   async executePIPlanningWorkflow(
     planningEvent: PIPlanningEventConfig
   ): Promise<PIPlanningResult> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Executing PI planning workflow', {
       eventId: planningEvent.eventId,
@@ -525,7 +525,7 @@ export class PIPlanningService extends EventEmitter {
   /**
    * Shutdown the service
    */
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     this.logger.info('Shutting down PI Planning Service');
     this.removeAllListeners();
     this.planningEvents.clear();
@@ -540,10 +540,10 @@ export class PIPlanningService extends EventEmitter {
   /**
    * Generate comprehensive planning agenda
    */
-  private async generatePlanningAgenda(
+  private generatePlanningAgenda(
     businessContext: BusinessContext,
     architecturalVision: ArchitecturalVision
-  ): Promise<PlanningAgendaItem[]> {
+  ): PlanningAgendaItem[] {
     // Standard SAFe PI planning agenda with AGUI integration points
     return [
       {
@@ -1005,7 +1005,7 @@ export class PIPlanningService extends EventEmitter {
    */
   private createWorkflowEngineFallback() {
     return {
-      startWorkflow: async (workflow: any) => {
+      startWorkflow: (workflow: any) => {
         this.logger.debug('Workflow started (fallback)', { type: workflow.workflowType });
         return `workflow-${Date.now()}`;
       }
@@ -1014,7 +1014,7 @@ export class PIPlanningService extends EventEmitter {
 
   private createAGUISystemFallback() {
     return {
-      createInterface: async (config: any) => {
+      createInterface: (config: any) => {
         this.logger.debug('AGUI interface created (fallback)', { type: config.type });
         return { interfaceId: `interface-${Date.now()}` };
       }
@@ -1023,7 +1023,7 @@ export class PIPlanningService extends EventEmitter {
 
   private createTeamworkOrchestratorFallback() {
     return {
-      coordinateActivity: async (activity: any) => {
+      coordinateActivity: (activity: any) => {
         this.logger.debug('Activity coordinated (fallback)', { activityId: activity.activityId });
         return {
           success: true,
@@ -1039,7 +1039,7 @@ export class PIPlanningService extends EventEmitter {
 
   private createKnowledgeManagerFallback() {
     return {
-      store: async (data: any) => {
+      store: (data: any) => {
         this.logger.debug('Knowledge stored (fallback)', { type: data.type });
       }
     };

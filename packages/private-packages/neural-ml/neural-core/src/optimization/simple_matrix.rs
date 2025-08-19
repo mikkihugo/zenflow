@@ -72,7 +72,7 @@ pub fn neural_activation(input: &[f32], activation_type: ActivationType) -> Vec<
         ActivationType::Sigmoid => input.par_iter().map(|&x| 1.0 / (1.0 + (-x).exp())).collect(),
         ActivationType::Tanh => input.par_iter().map(|&x| x.tanh()).collect(),
         ActivationType::Gelu => input.par_iter().map(|&x| {
-            0.5 * x * (1.0 + (x * 0.7978845608 * (1.0 + 0.044715 * x * x)).tanh())
+            0.5 * x * (1.0 + (x * 0.797_884_6 * (1.0 + 0.044715 * x * x)).tanh())
         }).collect(),
     }
 }

@@ -25,6 +25,7 @@ pub struct AppleOptimizedOps {
     metal_device: Option<Device>,
     #[cfg(feature = "apple-acceleration")]
     command_queue: Option<CommandQueue>,
+    #[allow(dead_code)] // TODO: Use for runtime capability checks
     accelerate_available: bool,
 }
 
@@ -213,7 +214,7 @@ impl OptimizedOps<f32> for AppleOptimizedOps {
         }
         
         // Fallback to parallel matrix multiplication
-        log::debug!("Used parallel fallback for {}x{}x{} matrix multiply", m, n, k);
+        log::debug!("Used parallel fallback for {m}x{n}x{k} matrix multiply");
         super::simple_matrix::matrix_multiply_parallel(a, b, m, n, k)
     }
 
@@ -327,13 +328,13 @@ impl OptimizedOps<f32> for AppleOptimizedOps {
         for i in 0..chunks {
             let base = i * 4;
             let chunk = Vec4::new(values[base], values[base+1], values[base+2], values[base+3]);
-            sum = sum + chunk;
+            sum += chunk;
         }
         
         let mut total = sum.x + sum.y + sum.z + sum.w;
         
-        for i in (chunks * 4)..values.len() {
-            total += values[i];
+        for value in values.iter().skip(chunks * 4) {
+            total += *value;
         }
         
         total
@@ -374,7 +375,7 @@ impl OptimizedOps<f32> for AppleOptimizedOps {
             }
             ActivationType::Gelu => {
                 values.iter().map(|&x| {
-                    0.5 * x * (1.0 + (0.7978845608 * (x + 0.044715 * x.powi(3))).tanh())
+                    0.5 * x * (1.0 + (0.797_884_6 * (x + 0.044715 * x.powi(3))).tanh())
                 }).collect()
             }
         }

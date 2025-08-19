@@ -222,7 +222,7 @@ export class ValueStreamMappingService {
       const valueStreams = new Map<string, ValueStream>();
 
       // Get workflow data from orchestration manager
-      const workflows = await this.getWorkflowsFromOrchestration(orchestrationManager);
+      const workflows = this.getWorkflowsFromOrchestration(orchestrationManager);
 
       // Use brain coordinator for intelligent mapping strategy
       const mappingStrategy = await this.brainCoordinator.optimizeMappingStrategy({
@@ -232,7 +232,7 @@ export class ValueStreamMappingService {
       });
 
       // Map program-level workflows to value streams
-      const programValueStreams = await this.mapProgramToValueStreams(
+      const programValueStreams = this.mapProgramToValueStreams(
         workflows.program || [],
         mappingStrategy
       );
@@ -241,7 +241,7 @@ export class ValueStreamMappingService {
       }
 
       // Map swarm-level workflows to value streams
-      const swarmValueStreams = await this.mapSwarmToValueStreams(
+      const swarmValueStreams = this.mapSwarmToValueStreams(
         workflows.swarm || [],
         mappingStrategy
       );
@@ -250,7 +250,7 @@ export class ValueStreamMappingService {
       }
 
       // Map portfolio-level workflows to value streams
-      const portfolioValueStreams = await this.mapPortfolioToValueStreams(
+      const portfolioValueStreams = this.mapPortfolioToValueStreams(
         workflows.portfolio || [],
         mappingStrategy
       );
@@ -259,7 +259,7 @@ export class ValueStreamMappingService {
       }
 
       // Validate mappings with AI analysis
-      await this.validateMappingsWithAI(valueStreams, mappingStrategy);
+      this.validateMappingsWithAI(valueStreams, mappingStrategy);
 
       this.performanceTracker.endTimer('map_workflows_to_value_streams');
 
@@ -307,8 +307,8 @@ export class ValueStreamMappingService {
         id: `vs-${workflowId}-${Date.now()}`,
         name: streamDesign.name || `Value Stream for ${workflowId}`,
         description: streamDesign.description || 'AI-optimized value stream',
-        steps: await this.createOptimizedFlowSteps(streamDesign, context),
-        metrics: await this.createFlowMetrics(streamDesign, context),
+        steps: this.createOptimizedFlowSteps(streamDesign, context),
+        metrics: this.createFlowMetrics(streamDesign, context),
         stakeholders: context.stakeholderContext.primaryStakeholders,
         owner: streamDesign.recommendedOwner || 'product-owner',
         createdAt: new Date(),
@@ -316,7 +316,7 @@ export class ValueStreamMappingService {
       };
 
       // Validate value stream design
-      const validation = await this.validateValueStreamDesign(valueStream, context);
+      const validation = this.validateValueStreamDesign(valueStream, context);
       
       if (!validation.isValid && validation.approvalRequired) {
         // Create AGUI task for manual review
@@ -340,7 +340,7 @@ export class ValueStreamMappingService {
         mappingType: streamDesign.mappingType || 'direct',
         confidence: streamDesign.confidence || 0.8,
         mappingReason: streamDesign.reason || 'AI-optimized mapping',
-        steps: await this.createWorkflowStepMappings(workflowId, valueStream),
+        steps: this.createWorkflowStepMappings(workflowId, valueStream),
         validatedAt: new Date()
       };
 
@@ -448,9 +448,9 @@ export class ValueStreamMappingService {
   // PRIVATE IMPLEMENTATION METHODS
   // ============================================================================
 
-  private async getWorkflowsFromOrchestration(
+  private getWorkflowsFromOrchestration(
     orchestrationManager: MultiLevelOrchestrationManager
-  ): Promise<any> {
+  ): any {
     // Extract workflows from orchestration manager
     return {
       program: [], // Would be populated from orchestrationManager
@@ -459,54 +459,54 @@ export class ValueStreamMappingService {
     };
   }
 
-  private async mapProgramToValueStreams(
+  private mapProgramToValueStreams(
     workflows: any[],
     strategy: any
-  ): Promise<Map<string, ValueStream>> {
+  ): Map<string, ValueStream> {
     // Create program-level value streams
     return new Map();
   }
 
-  private async mapSwarmToValueStreams(
+  private mapSwarmToValueStreams(
     workflows: any[],
     strategy: any
-  ): Promise<Map<string, ValueStream>> {
+  ): Map<string, ValueStream> {
     // Create swarm-level value streams
     return new Map();
   }
 
-  private async mapPortfolioToValueStreams(
+  private mapPortfolioToValueStreams(
     workflows: any[],
     strategy: any
-  ): Promise<Map<string, ValueStream>> {
+  ): Map<string, ValueStream> {
     // Create portfolio-level value streams
     return new Map();
   }
 
-  private async validateMappingsWithAI(
+  private validateMappingsWithAI(
     valueStreams: Map<string, ValueStream>,
     strategy: any
-  ): Promise<void> {
+  ): void {
     // Validate mappings using AI analysis
     this.logger.debug('Validating value stream mappings with AI', {
       streamCount: valueStreams.size
     });
   }
 
-  private async createOptimizedFlowSteps(design: any, context: ValueStreamCreationContext): Promise<any[]> {
+  private createOptimizedFlowSteps(design: any, context: ValueStreamCreationContext): any[] {
     // Create optimized flow steps based on design and context
     return [];
   }
 
-  private async createFlowMetrics(design: any, context: ValueStreamCreationContext): Promise<any> {
+  private createFlowMetrics(design: any, context: ValueStreamCreationContext): any {
     // Create appropriate flow metrics for the value stream
     return {};
   }
 
-  private async validateValueStreamDesign(
+  private validateValueStreamDesign(
     valueStream: ValueStream,
     context: ValueStreamCreationContext
-  ): Promise<MappingValidationResult> {
+  ): MappingValidationResult {
     // Validate the value stream design
     return {
       isValid: true,
@@ -518,10 +518,10 @@ export class ValueStreamMappingService {
     };
   }
 
-  private async createWorkflowStepMappings(
+  private createWorkflowStepMappings(
     workflowId: string,
     valueStream: ValueStream
-  ): Promise<WorkflowStepMapping[]> {
+  ): WorkflowStepMapping[] {
     // Create mappings between workflow steps and value stream steps
     return [];
   }

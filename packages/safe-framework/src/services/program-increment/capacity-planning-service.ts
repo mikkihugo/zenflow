@@ -344,7 +344,7 @@ export class CapacityPlanningService extends EventEmitter {
     teamCapacities: TeamCapacity[],
     features: FeatureAllocationRequest[]
   ): Promise<CapacityPlanningResult> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Implementing capacity planning', {
       teamCount: teamCapacities.length,
@@ -436,7 +436,7 @@ export class CapacityPlanningService extends EventEmitter {
         : 0;
 
       // Identify capacity risks
-      planningResult.capacityRisks = await this.identifyCapacityRisks(
+      planningResult.capacityRisks = this.identifyCapacityRisks(
         teamCapacities,
         planningResult.teamAllocations,
         planningResult.unallocatedFeatures
@@ -450,7 +450,7 @@ export class CapacityPlanningService extends EventEmitter {
       );
 
       // Calculate comprehensive analytics
-      planningResult.analytics = await this.calculateCapacityAnalytics(
+      planningResult.analytics = this.calculateCapacityAnalytics(
         teamCapacities,
         planningResult
       );
@@ -518,7 +518,7 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Shutdown the service
    */
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     this.logger.info('Shutting down Capacity Planning Service');
     this.removeAllListeners();
     this.teamCapacities.clear();
@@ -741,10 +741,10 @@ export class CapacityPlanningService extends EventEmitter {
     const allocationId = `alloc-${feature.featureId}-${team.teamId}-${Date.now()}`;
 
     // Calculate skill matches
-    const skillMatches = await this.calculateSkillMatches(feature.requiredSkills, team.skills);
+    const skillMatches = this.calculateSkillMatches(feature.requiredSkills, team.skills);
 
     // Assess allocation risks
-    const risks = await this.assessAllocationRisks(feature, team, skillMatches);
+    const risks = this.assessAllocationRisks(feature, team, skillMatches);
 
     // Create allocation
     const allocation: TeamAllocation = {
@@ -774,10 +774,10 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Calculate skill matches between feature requirements and team capabilities
    */
-  private async calculateSkillMatches(
+  private calculateSkillMatches(
     requiredSkills: string[],
     teamSkills: TeamSkill[]
-  ): Promise<SkillMatch[]> {
+  ): SkillMatch[] {
     const skillMatches: SkillMatch[] = [];
 
     for (const requiredSkill of requiredSkills) {
@@ -836,11 +836,11 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Assess allocation risks
    */
-  private async assessAllocationRisks(
+  private assessAllocationRisks(
     feature: FeatureAllocationRequest,
     team: TeamCapacity,
     skillMatches: SkillMatch[]
-  ): Promise<AllocationRisk[]> {
+  ): AllocationRisk[] {
     const risks: AllocationRisk[] = [];
 
     // Skill gap risks
@@ -886,11 +886,11 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Identify capacity risks across the entire planning result
    */
-  private async identifyCapacityRisks(
+  private identifyCapacityRisks(
     teamCapacities: TeamCapacity[],
     allocations: TeamAllocation[],
     unallocatedFeatures: FeatureAllocationRequest[]
-  ): Promise<CapacityRisk[]> {
+  ): CapacityRisk[] {
     const risks: CapacityRisk[] = [];
 
     // Overallocation risk
@@ -985,19 +985,19 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Calculate comprehensive capacity analytics
    */
-  private async calculateCapacityAnalytics(
+  private calculateCapacityAnalytics(
     teamCapacities: TeamCapacity[],
     planningResult: CapacityPlanningResult
-  ): Promise<CapacityAnalytics> {
+  ): CapacityAnalytics {
     const analytics: CapacityAnalytics = {
       totalTeams: teamCapacities.length,
       totalFeatures: planningResult.teamAllocations.length + planningResult.unallocatedFeatures.length,
       allocationSuccess: (planningResult.teamAllocations.length / (planningResult.teamAllocations.length + planningResult.unallocatedFeatures.length)) * 100,
       averageUtilization: planningResult.utilizationRate * 100,
-      skillCoverage: await this.analyzeSkillCoverage(teamCapacities, planningResult.teamAllocations),
+      skillCoverage: this.analyzeSkillCoverage(teamCapacities, planningResult.teamAllocations),
       teamDistribution: this.analyzeTeamDistribution(teamCapacities, planningResult.teamAllocations),
       riskDistribution: this.analyzeRiskDistribution(planningResult.capacityRisks),
-      forecastAccuracy: await this.calculateForecastAccuracy(teamCapacities)
+      forecastAccuracy: this.calculateForecastAccuracy(teamCapacities)
     };
 
     return analytics;
@@ -1006,10 +1006,10 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Analyze skill coverage across teams
    */
-  private async analyzeSkillCoverage(
+  private analyzeSkillCoverage(
     teamCapacities: TeamCapacity[],
     allocations: TeamAllocation[]
-  ): Promise<SkillCoverageAnalysis> {
+  ): SkillCoverageAnalysis {
     const allSkills = new Set<string>();
     const skillTeamCount = new Map<string, number>();
 
@@ -1099,7 +1099,7 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Calculate forecast accuracy based on historical data
    */
-  private async calculateForecastAccuracy(teamCapacities: TeamCapacity[]): Promise<ForecastAccuracy> {
+  private calculateForecastAccuracy(teamCapacities: TeamCapacity[]): ForecastAccuracy {
     // In practice, this would analyze historical forecasting accuracy
     const avgCommitmentReliability = teamCapacities.reduce((sum, t) => sum + t.commitmentReliability, 0) / teamCapacities.length;
 
@@ -1162,11 +1162,11 @@ export class CapacityPlanningService extends EventEmitter {
    */
   private createLoadBalancerFallback() {
     return {
-      createAllocationStrategy: async (config: any) => {
+      createAllocationStrategy: (config: any) => {
         this.logger.debug('Allocation strategy created (fallback)');
         return { strategy: 'simple_priority' };
       },
-      findBestMatch: async (config: any) => {
+      findBestMatch: (config: any) => {
         this.logger.debug('Best match found (fallback)', { workloadId: config.workload.featureId });
         return {
           team: config.resources[0],
@@ -1181,7 +1181,7 @@ export class CapacityPlanningService extends EventEmitter {
 
   private createBrainCoordinatorFallback() {
     return {
-      analyzeCapacity: async (config: any) => {
+      analyzeCapacity: (config: any) => {
         this.logger.debug('Capacity analyzed (fallback)', { teamId: config.team.id });
         return {
           historicalVelocity: 30,
@@ -1190,11 +1190,11 @@ export class CapacityPlanningService extends EventEmitter {
           confidence: 0.8
         };
       },
-      prioritizeFeatures: async (config: any) => {
+      prioritizeFeatures: (config: any) => {
         this.logger.debug('Features prioritized (fallback)', { featureCount: config.features.length });
         return { orderedFeatures: config.features };
       },
-      generateRecommendations: async (config: any) => {
+      generateRecommendations: (config: any) => {
         this.logger.debug('Recommendations generated (fallback)');
         return { recommendations: [] };
       }
@@ -1214,10 +1214,10 @@ export class CapacityPlanningService extends EventEmitter {
 
   private createFactSystemFallback() {
     return {
-      storeFact: async (fact: any) => {
+      storeFact: (fact: any) => {
         this.logger.debug('Fact stored (fallback)', { type: fact.type });
       },
-      getTeamHistory: async (teamId: string) => {
+      getTeamHistory: (teamId: string) => {
         this.logger.debug('Team history retrieved (fallback)', { teamId });
         return { velocity: [], capacity: [], reliability: [] };
       }

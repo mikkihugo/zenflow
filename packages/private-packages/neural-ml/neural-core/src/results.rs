@@ -77,30 +77,27 @@ impl TimeSeriesSchema {
 
     // Check required columns
     for col in self.required_columns() {
-      if !df_columns.contains(&col) {
+      if !df_columns.contains(col) {
         return Err(NeuroDivergentError::data(format!(
-          "Required column '{}' not found in DataFrame",
-          col
+          "Required column '{col}' not found in DataFrame"
         )));
       }
     }
 
     // Check static features
     for col in &self.static_features {
-      if !df_columns.contains(&col) {
+      if !df_columns.contains(col) {
         return Err(NeuroDivergentError::data(format!(
-          "Static feature column '{}' not found in DataFrame",
-          col
+          "Static feature column '{col}' not found in DataFrame"
         )));
       }
     }
 
     // Check exogenous features
     for col in &self.exogenous_features {
-      if !df_columns.contains(&col) {
+      if !df_columns.contains(col) {
         return Err(NeuroDivergentError::data(format!(
-          "Exogenous feature column '{}' not found in DataFrame",
-          col
+          "Exogenous feature column '{col}' not found in DataFrame"
         )));
       }
     }
@@ -155,11 +152,11 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     let df = CsvReadOptions::default()
       .try_into_reader_with_file_path(Some(path.as_ref().to_path_buf()))
       .map_err(|e| {
-        NeuroDivergentError::data(format!("CSV reader creation error: {}", e))
+        NeuroDivergentError::data(format!("CSV reader creation error: {e}"))
       })?
       .finish()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("CSV read error: {}", e))
+        NeuroDivergentError::data(format!("CSV read error: {e}"))
       })?;
 
     Self::from_polars(df, schema, frequency)
@@ -178,7 +175,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
         schema.y_col.as_str() => Vec::<f64>::new(),
     }
     .map_err(|e| {
-      NeuroDivergentError::data(format!("DataFrame creation failed: {}", e))
+      NeuroDivergentError::data(format!("DataFrame creation failed: {e}"))
     })?;
 
     Self::from_polars(df, schema, frequency)
@@ -189,15 +186,15 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     let ids = self
       .data
       .column(&self.schema.unique_id_col)
-      .map_err(|e| NeuroDivergentError::data(format!("Column error: {}", e)))?
+      .map_err(|e| NeuroDivergentError::data(format!("Column error: {e}")))?
       .as_series()
       .ok_or_else(|| {
         NeuroDivergentError::data("Column is not a series".to_string())
       })?
       .unique()
-      .map_err(|e| NeuroDivergentError::data(format!("Unique error: {}", e)))?
+      .map_err(|e| NeuroDivergentError::data(format!("Unique error: {e}")))?
       .cast(&DataType::String)
-      .map_err(|e| NeuroDivergentError::data(format!("Cast error: {}", e)))?
+      .map_err(|e| NeuroDivergentError::data(format!("Cast error: {e}")))?
       .str()
       .map_err(|_| {
         NeuroDivergentError::data("Failed to convert to string iterator")
@@ -226,7 +223,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       )
       .collect()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Date filter error: {}", e))
+        NeuroDivergentError::data(format!("Date filter error: {e}"))
       })?;
 
     Self::from_polars(filtered, self.schema.clone(), self.frequency.clone())
@@ -241,7 +238,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       .filter(col(&self.schema.unique_id_col).eq(lit(id)))
       .collect()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("ID filter error: {}", e))
+        NeuroDivergentError::data(format!("ID filter error: {e}"))
       })?;
 
     Self::from_polars(filtered, self.schema.clone(), self.frequency.clone())
@@ -263,7 +260,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
         JoinArgs::new(JoinType::Left),
         None,
       )
-      .map_err(|e| NeuroDivergentError::data(format!("Join error: {}", e)))?;
+      .map_err(|e| NeuroDivergentError::data(format!("Join error: {e}")))?;
 
     self.data = joined;
     Ok(self)
@@ -281,7 +278,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     let ds_col = self
       .data
       .column(&self.schema.ds_col)
-      .map_err(|e| NeuroDivergentError::data(format!("Column error: {}", e)))?;
+      .map_err(|e| NeuroDivergentError::data(format!("Column error: {e}")))?;
 
     let min_ts = ds_col
       .as_series()
@@ -290,7 +287,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       })?
       .min::<i64>()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Min calculation error: {}", e))
+        NeuroDivergentError::data(format!("Min calculation error: {e}"))
       })?
       .ok_or_else(|| {
         NeuroDivergentError::data(
@@ -305,7 +302,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
       })?
       .max::<i64>()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Max calculation error: {}", e))
+        NeuroDivergentError::data(format!("Max calculation error: {e}"))
       })?
       .ok_or_else(|| {
         NeuroDivergentError::data(
@@ -342,7 +339,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     CsvWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        NeuroDivergentError::data(format!("CSV write error: {}", e))
+        NeuroDivergentError::data(format!("CSV write error: {e}"))
       })?;
     Ok(())
   }
@@ -356,7 +353,7 @@ impl<T: Float> TimeSeriesDataFrame<T> {
     ParquetWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Parquet write error: {}", e))
+        NeuroDivergentError::data(format!("Parquet write error: {e}"))
       })?;
     Ok(())
   }
@@ -414,8 +411,7 @@ impl<T: Float> ForecastDataFrame<T> {
 
     if model_cols.is_empty() {
       return Err(NeuroDivergentError::prediction(format!(
-        "No forecasts found for model '{}'",
-        model_name
+        "No forecasts found for model '{model_name}'"
       )));
     }
 
@@ -430,10 +426,10 @@ impl<T: Float> ForecastDataFrame<T> {
       .data
       .clone()
       .lazy()
-      .select(select_cols.iter().map(|s| col(s)).collect::<Vec<_>>())
+      .select(select_cols.iter().map(col).collect::<Vec<_>>())
       .collect()
       .map_err(|e| {
-        NeuroDivergentError::prediction(format!("Model filter error: {}", e))
+        NeuroDivergentError::prediction(format!("Model filter error: {e}"))
       })?;
 
     Ok(filtered)
@@ -471,7 +467,7 @@ impl<T: Float> ForecastDataFrame<T> {
       .data
       .clone()
       .lazy()
-      .select(point_cols.iter().map(|s| col(s)).collect::<Vec<_>>())
+      .select(point_cols.iter().map(col).collect::<Vec<_>>())
       .collect()
       .unwrap_or_else(|_| self.data.clone())
   }
@@ -510,7 +506,7 @@ impl<T: Float> ForecastDataFrame<T> {
       .data
       .clone()
       .lazy()
-      .select(select_cols.iter().map(|s| col(s)).collect::<Vec<_>>())
+      .select(select_cols.iter().map(col).collect::<Vec<_>>())
       .collect()
       .ok()
   }
@@ -521,7 +517,7 @@ impl<T: Float> ForecastDataFrame<T> {
     CsvWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        NeuroDivergentError::data(format!("CSV write error: {}", e))
+        NeuroDivergentError::data(format!("CSV write error: {e}"))
       })?;
     Ok(())
   }
@@ -535,7 +531,7 @@ impl<T: Float> ForecastDataFrame<T> {
     ParquetWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Parquet write error: {}", e))
+        NeuroDivergentError::data(format!("Parquet write error: {e}"))
       })?;
     Ok(())
   }
@@ -601,7 +597,7 @@ impl<T: Float> CrossValidationDataFrame<T> {
       .filter(col("cutoff").eq(lit(cutoff_ts)))
       .collect()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Cutoff filter error: {}", e))
+        NeuroDivergentError::data(format!("Cutoff filter error: {e}"))
       })?;
 
     Ok(filtered)
@@ -630,10 +626,10 @@ impl<T: Float> CrossValidationDataFrame<T> {
       .data
       .clone()
       .lazy()
-      .select(model_cols.iter().map(|s| col(s)).collect::<Vec<_>>())
+      .select(model_cols.iter().map(col).collect::<Vec<_>>())
       .collect()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Model filter error: {}", e))
+        NeuroDivergentError::data(format!("Model filter error: {e}"))
       })?;
 
     Ok(filtered)
@@ -657,7 +653,7 @@ impl<T: Float> CrossValidationDataFrame<T> {
       ])
       .collect()
       .map_err(|e| {
-        NeuroDivergentError::data(format!("Summary stats error: {}", e))
+        NeuroDivergentError::data(format!("Summary stats error: {e}"))
       })?;
 
     Ok(summary)
@@ -669,7 +665,7 @@ impl<T: Float> CrossValidationDataFrame<T> {
     CsvWriter::new(&mut file)
       .finish(&mut self.data.clone())
       .map_err(|e| {
-        NeuroDivergentError::data(format!("CSV write error: {}", e))
+        NeuroDivergentError::data(format!("CSV write error: {e}"))
       })?;
     Ok(())
   }
@@ -723,7 +719,7 @@ impl<T: Float> AccuracyMetrics<T> {
 
   /// Get all metric names
   pub fn metric_names(&self) -> Vec<String> {
-    let mut names = vec!["mae", "mse", "rmse", "mape", "smape"]
+    let mut names = ["mae", "mse", "rmse", "mape", "smape"]
       .iter()
       .map(|s| s.to_string())
       .collect::<Vec<_>>();

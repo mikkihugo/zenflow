@@ -17,9 +17,9 @@
     "docs:fix": "node scripts/fix-tsdoc.mjs"
   },
   "dependencies": {
-    "@claude-zen/foundation": "file:../../foundation",
-    "@claude-zen/brain": "file:../../brain",
-    "@claude-zen/event-system": "file:../../event-system"
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/brain": "workspace:*",
+    "@claude-zen/event-system": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.17.2",

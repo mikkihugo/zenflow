@@ -30,7 +30,7 @@ import {
   instanceCachingFactory,
   instancePerContainerCachingFactory
 } from 'tsyringe';
-import { getLogger } from './logging.js';
+import { getLogger } from './logging';
 
 const logger = getLogger('di');
 

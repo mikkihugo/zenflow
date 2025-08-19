@@ -113,14 +113,14 @@ impl OptimizedOps<f32> for Avx512Ops {
                 values[base], values[base+1], values[base+2], values[base+3],
                 values[base+4], values[base+5], values[base+6], values[base+7]
             ]);
-            sum = sum + chunk;
+            sum += chunk;
         }
         
         let mut total = sum.to_array().iter().sum::<f32>();
         
         // Add remaining elements
-        for i in (chunks * 8)..values.len() {
-            total += values[i];
+        for value in values.iter().skip(chunks * 8) {
+            total += *value;
         }
         
         total
@@ -139,7 +139,7 @@ impl OptimizedOps<f32> for Avx512Ops {
             }
             ActivationType::Gelu => {
                 values.iter().map(|&x| {
-                    0.5 * x * (1.0 + (0.7978845608 * (x + 0.044715 * x.powi(3))).tanh())
+                    0.5 * x * (1.0 + (0.797_884_6 * (x + 0.044715 * x.powi(3))).tanh())
                 }).collect()
             }
         }
@@ -270,13 +270,13 @@ impl Avx2Ops {
                 values[base], values[base+1], values[base+2], values[base+3],
                 values[base+4], values[base+5], values[base+6], values[base+7]
             ]);
-            sum = sum + chunk;
+            sum += chunk;
         }
         
         let mut total = sum.to_array().iter().sum::<f32>();
         
-        for i in (chunks * 8)..values.len() {
-            total += values[i];
+        for value in values.iter().skip(chunks * 8) {
+            total += *value;
         }
         
         total
@@ -351,13 +351,13 @@ impl OptimizedOps<f32> for NeonOps {
         for i in 0..chunks {
             let base = i * 4;
             let chunk = Vec4::new(values[base], values[base+1], values[base+2], values[base+3]);
-            sum = sum + chunk;
+            sum += chunk;
         }
         
         let mut total = sum.x + sum.y + sum.z + sum.w;
         
-        for i in (chunks * 4)..values.len() {
-            total += values[i];
+        for value in values.iter().skip(chunks * 4) {
+            total += *value;
         }
         
         total
@@ -378,7 +378,7 @@ impl OptimizedOps<f32> for NeonOps {
             }
             ActivationType::Gelu => {
                 values.iter().map(|&x| {
-                    0.5 * x * (1.0 + (0.7978845608 * (x + 0.044715 * x.powi(3))).tanh())
+                    0.5 * x * (1.0 + (0.797_884_6 * (x + 0.044715 * x.powi(3))).tanh())
                 }).collect()
             }
         }
@@ -440,7 +440,7 @@ impl OptimizedOps<f32> for FallbackOps {
             }
             ActivationType::Gelu => {
                 values.par_iter().map(|&x| {
-                    0.5 * x * (1.0 + (0.7978845608 * (x + 0.044715 * x.powi(3))).tanh())
+                    0.5 * x * (1.0 + (0.797_884_6 * (x + 0.044715 * x.powi(3))).tanh())
                 }).collect()
             }
         }

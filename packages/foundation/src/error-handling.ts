@@ -21,7 +21,7 @@
 import { Result, ok, err, ResultAsync, errAsync, okAsync } from 'neverthrow';
 import pRetry, { AbortError, Options as PRetryOptions } from 'p-retry';
 import CircuitBreaker, { Options as CircuitBreakerOptions } from 'opossum';
-import { getLogger } from './logging.js';
+import { getLogger } from './logging';
 
 const logger = getLogger('error-handling');
 

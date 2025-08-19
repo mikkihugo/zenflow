@@ -255,7 +255,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/monitoring for performance validation
       if (this.config.scopes.performance) {
-        const { HealthValidator } = await import('@claude-zen/monitoring');
+        const { SystemMonitor } = await import('@claude-zen/foundation');
         this.healthValidator = new HealthValidator({
           thresholds: this.config.thresholds,
           timeouts: this.config.timeouts,

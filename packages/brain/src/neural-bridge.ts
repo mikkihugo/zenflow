@@ -1,6 +1,7 @@
 /**
  * @file Neural Network Bridge
  * Integrates neural network components with Claude-Zen system.
+ * Enhanced with SmartNeuralCoordinator for intelligent neural backend system.
  */
 
 import { 
@@ -14,6 +15,12 @@ import {
   TOKENS, 
   type Logger 
 } from '@claude-zen/foundation';
+import { 
+  SmartNeuralCoordinator,
+  type NeuralBackendConfig,
+  type NeuralEmbeddingRequest,
+  type NeuralEmbeddingResult
+} from './smart-neural-coordinator';
 
 // Foundation-optimized logging with DI support
 const logger = getLogger('Neural');

@@ -52,7 +52,7 @@ pub enum Frequency {
 
 impl Frequency {
   /// Parse frequency from string (pandas/NeuralForecast compatible)
-  pub fn from_str(s: &str) -> NeuroDivergentResult<Self> {
+  pub fn parse_frequency(s: &str) -> NeuroDivergentResult<Self> {
     match s.to_uppercase().as_str() {
       "NS" => Ok(Self::Nanosecond),
       "US" => Ok(Self::Microsecond),
@@ -71,7 +71,17 @@ impl Frequency {
       _ => Ok(Self::Custom(s.to_string())),
     }
   }
+}
 
+impl std::str::FromStr for Frequency {
+  type Err = crate::error::NeuralError;
+  
+  fn from_str(s: &str) -> Result<Self, Self::Err> {
+    Self::parse_frequency(s).map_err(|e| crate::error::NeuralError::ConfigError(e.to_string()))
+  }
+}
+
+impl Frequency {
   /// Convert to pandas-compatible frequency string
   pub fn to_pandas_str(&self) -> &str {
     match self {
@@ -198,8 +208,7 @@ impl PredictionIntervals {
     for &level in &confidence_levels {
       if level <= 0.0 || level >= 1.0 {
         return Err(NeuroDivergentError::config(format!(
-          "Confidence level must be in (0, 1), got {}",
-          level
+          "Confidence level must be in (0, 1), got {level}"
         )));
       }
     }
@@ -211,13 +220,24 @@ impl PredictionIntervals {
   }
 
   /// Default prediction intervals (80%, 90%, 95%)
-  pub fn default() -> Self {
+  pub fn default_intervals() -> Self {
     Self {
       confidence_levels: vec![0.8, 0.9, 0.95],
       method: IntervalMethod::Quantile,
     }
   }
+}
 
+impl Default for PredictionIntervals {
+  fn default() -> Self {
+    Self {
+      confidence_levels: vec![0.8, 0.9, 0.95],
+      method: IntervalMethod::Quantile,
+    }
+  }
+}
+
+impl PredictionIntervals {
   /// Get quantile levels from confidence levels
   pub fn quantile_levels(&self) -> Vec<f64> {
     let mut quantiles = Vec::new();
@@ -226,7 +246,7 @@ impl PredictionIntervals {
       quantiles.push(alpha / 2.0); // Lower quantile
       quantiles.push(1.0 - alpha / 2.0); // Upper quantile
     }
-    quantiles.sort_by(|a, b| a.partial_cmp(b).unwrap());
+    quantiles.sort_by(|a: &f64, b| a.partial_cmp(b).unwrap());
     quantiles
   }
 }
@@ -297,7 +317,7 @@ impl fmt::Display for LossFunction {
       Self::Huber => "huber",
       Self::Quantile => "quantile",
     };
-    write!(f, "{}", name)
+    write!(f, "{name}")
   }
 }
 
@@ -343,7 +363,7 @@ impl fmt::Display for OptimizerType {
       Self::RMSprop => "rmsprop",
       Self::Adagrad => "adagrad",
     };
-    write!(f, "{}", name)
+    write!(f, "{name}")
   }
 }
 
@@ -414,10 +434,21 @@ impl<T: Float> EarlyStoppingConfig<T> {
   }
 
   /// Default early stopping configuration
-  pub fn default() -> Self
+  pub fn default_config() -> Self
   where
     T: From<f32>,
   {
+    Self {
+      monitor: "val_loss".to_string(),
+      patience: 10,
+      min_delta: NumCast::from(0.001f64).unwrap(),
+      mode: EarlyStoppingMode::Min,
+    }
+  }
+}
+
+impl<T: Float + From<f32>> Default for EarlyStoppingConfig<T> {
+  fn default() -> Self {
     Self {
       monitor: "val_loss".to_string(),
       patience: 10,
@@ -459,7 +490,7 @@ impl fmt::Display for Device {
   fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
     match self {
       Self::CPU => write!(f, "cpu"),
-      Self::GPU(id) => write!(f, "gpu:{}", id),
+      Self::GPU(id) => write!(f, "gpu:{id}"),
     }
   }
 }

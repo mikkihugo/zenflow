@@ -19,12 +19,12 @@ import type {
   Priority,
   Status,
   Entity,
-  Result,
+  OperationResult as Result,
   ValidationError,
   Optional,
   NonEmptyArray,
-  Brand
-} from '@claude-zen/foundation/types';
+  Branded as Brand
+} from '@claude-zen/foundation';
 
 // =============================================================================
 // CORE EVENT SYSTEM TYPES

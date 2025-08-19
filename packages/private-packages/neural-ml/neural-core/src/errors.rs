@@ -181,21 +181,21 @@ impl NeuroDivergentError {
 // Integration with polars errors
 impl From<PolarsError> for NeuroDivergentError {
   fn from(err: PolarsError) -> Self {
-    Self::DataError(format!("Polars error: {}", err))
+    Self::DataError(format!("Polars error: {err}"))
   }
 }
 
 // Integration with serde errors
 impl From<serde_json::Error> for NeuroDivergentError {
   fn from(err: serde_json::Error) -> Self {
-    Self::SerializationError(format!("JSON error: {}", err))
+    Self::SerializationError(format!("JSON error: {err}"))
   }
 }
 
 // Integration with chrono errors
 impl From<chrono::ParseError> for NeuroDivergentError {
   fn from(err: chrono::ParseError) -> Self {
-    Self::TimeSeriesError(format!("Date parsing error: {}", err))
+    Self::TimeSeriesError(format!("Date parsing error: {err}"))
   }
 }
 
@@ -209,7 +209,7 @@ impl From<chrono::ParseError> for NeuroDivergentError {
 // Integration with ndarray errors
 impl From<ndarray::ShapeError> for NeuroDivergentError {
   fn from(err: ndarray::ShapeError) -> Self {
-    Self::MathError(format!("Array shape error: {}", err))
+    Self::MathError(format!("Array shape error: {err}"))
   }
 }
 
@@ -236,7 +236,7 @@ impl<T> ErrorContext<T> for NeuroDivergentResult<T> {
 
   fn context(self, message: &'static str) -> NeuroDivergentResult<T> {
     self.map_err(|err| NeuroDivergentError::Generic {
-      message: format!("{}: {}", message, err),
+      message: format!("{message}: {err}"),
     })
   }
 }

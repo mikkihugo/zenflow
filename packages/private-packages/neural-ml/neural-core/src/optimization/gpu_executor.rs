@@ -411,7 +411,7 @@ impl OptimizedOps<f32> for GpuExecutor {
                     return result;
                 }
                 Err(e) => {
-                    log::warn!("GPU matrix multiply failed, falling back to CPU: {}", e);
+                    log::warn!("GPU matrix multiply failed, falling back to CPU: {e}");
                 }
             }
         }
@@ -454,7 +454,7 @@ impl OptimizedOps<f32> for GpuExecutor {
             }
             ActivationType::Gelu => {
                 values.par_iter().map(|&x| {
-                    0.5 * x * (1.0 + (0.7978845608 * (x + 0.044715 * x.powi(3))).tanh())
+                    0.5 * x * (1.0 + (0.797_884_6 * (x + 0.044715 * x.powi(3))).tanh())
                 }).collect()
             }
         }

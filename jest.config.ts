@@ -71,6 +71,10 @@ const config: Config = {
     '^@claude-zen/knowledge$': '<rootDir>/packages/knowledge/src/index.ts',
     '^@claude-zen/teamwork/(.*)$': '<rootDir>/packages/teamwork/src/$1',
     '^@claude-zen/teamwork$': '<rootDir>/packages/teamwork/src/index.ts',
+    '^@claude-zen/database/(.*)$': '<rootDir>/packages/database/src/$1',
+    '^@claude-zen/database$': '<rootDir>/packages/database/src/index.ts',
+    '^@claude-zen/agui/(.*)$': '<rootDir>/packages/agui/src/$1',
+    '^@claude-zen/agui$': '<rootDir>/packages/agui/src/index.ts',
   },
 
   // ESM and file extension handling
@@ -142,6 +146,16 @@ const config: Config = {
   
   // Module resolution improvements
   resolver: undefined, // Use default resolver with enhanced moduleNameMapper
+  
+  // Transform ignore for faster processing
+  transformIgnorePatterns: [
+    'node_modules/(?!(.*\\.mjs$))',
+  ],
+  
+  // Additional Jest configuration for package testing
+  testEnvironmentOptions: {
+    customExportConditions: ['node', 'node-addons'],
+  },
   
   // Remove deprecated globals config
   

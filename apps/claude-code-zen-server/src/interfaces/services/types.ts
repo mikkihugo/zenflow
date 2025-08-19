@@ -5,7 +5,7 @@
  * in the Claude-Zen ecosystem.
  */
 
-import type { ServiceConfig } from './core/interfaces';
+import type { ServiceConfig, ServiceMetrics } from './core/interfaces';
 
 /**
  * Service type enumeration for all supported service categories.
@@ -67,6 +67,97 @@ export enum ServiceType {
 
   // Custom service type
   CUSTOM = 'custom',
+}
+
+/**
+ * Service status enumeration
+ */
+export enum ServiceStatus {
+  CREATED = 'created',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  STOPPING = 'stopping',
+  STOPPED = 'stopped',
+  ERROR = 'error'
+}
+
+/**
+ * Service dependency specification
+ */
+export interface ServiceDependency {
+  serviceName: string;
+  required: boolean;
+}
+
+/**
+ * Service health information
+ */
+export interface ServiceHealth {
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  checks: Record<string, boolean>;
+  metrics: ServiceMetrics;
+  lastCheck: Date;
+}
+
+/**
+ * Service creation request
+ */
+export interface ServiceRequest {
+  name: string;
+  type: ServiceType;
+  config?: Record<string, unknown>;
+  dependencies?: ServiceDependency[];
+}
+
+/**
+ * Batch service request for multiple services
+ */
+export interface BatchServiceRequest {
+  services: ServiceRequest[];
+  parallel: boolean;
+  startImmediately: boolean;
+}
+
+/**
+ * Service manager configuration
+ */
+export interface ServiceManagerConfig {
+  factory: {
+    maxConcurrentInits: number;
+    enableDependencyResolution: boolean;
+  };
+  lifecycle: {
+    startupTimeout: number;
+    parallelStartup: boolean;
+    dependencyResolution: boolean;
+  };
+  monitoring: {
+    healthCheckInterval: number;
+    performanceThresholds: {
+      responseTime: number;
+      errorRate: number;
+    };
+  };
+  recovery: {
+    enabled: boolean;
+    maxRetries: number;
+    strategy: 'linear' | 'exponential';
+  };
+}
+
+/**
+ * Service interface definition
+ */
+export interface Service {
+  name: string;
+  type: ServiceType;
+  status: ServiceStatus;
+  dependencies: ServiceDependency[];
+  metrics: ServiceMetrics;
+  start(): Promise<void>;
+  stop(): Promise<void>;
+  restart(): Promise<void>;
+  getHealth(): Promise<ServiceHealth>;
 }
 
 /**

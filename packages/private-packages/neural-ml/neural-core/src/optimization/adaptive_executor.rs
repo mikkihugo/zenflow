@@ -16,7 +16,7 @@ use std::collections::HashMap;
 
 /// Performance statistics for different backends
 #[derive(Debug, Clone)]
-struct BackendStats {
+pub struct BackendStats {
     operations_count: u64,
     total_time_ms: u64,
     success_count: u64,
@@ -76,33 +76,33 @@ impl AdaptiveExecutor<f32> {
         match backend {
             OptimizationBackend::AppleSilicon { metal_available, .. } => {
                 if *metal_available && operation_size > 1_000_000 {
-                    log::debug!("Selected Apple Metal for large operation ({})", operation_size);
+                    log::debug!("Selected Apple Metal for large operation ({operation_size})");
                 } else {
-                    log::debug!("Selected Apple Accelerate/NEON for operation ({})", operation_size);
+                    log::debug!("Selected Apple Accelerate/NEON for operation ({operation_size})");
                 }
             }
             OptimizationBackend::NvidiaCuda { memory_gb, .. } => {
                 let memory_needed_gb = (operation_size * std::mem::size_of::<f32>()) as f32 / (1024.0 * 1024.0 * 1024.0);
                 if memory_needed_gb < memory_gb * 0.8 && operation_size > 100_000 {
-                    log::debug!("Selected CUDA for large operation ({}, {:.2}GB needed)", operation_size, memory_needed_gb);
+                    log::debug!("Selected CUDA for large operation ({operation_size}, {memory_needed_gb:.2}GB needed)");
                 } else {
                     log::debug!("Selected CPU fallback for CUDA backend (insufficient memory or small operation)");
                 }
             }
             OptimizationBackend::IntelAmd { avx512, avx2, .. } => {
                 if *avx512 && operation_size > 50_000 {
-                    log::debug!("Selected AVX-512 for operation ({})", operation_size);
+                    log::debug!("Selected AVX-512 for operation ({operation_size})");
                 } else if *avx2 && operation_size > 10_000 {
-                    log::debug!("Selected AVX2 for operation ({})", operation_size);
+                    log::debug!("Selected AVX2 for operation ({operation_size})");
                 } else {
-                    log::debug!("Selected scalar SIMD for small operation ({})", operation_size);
+                    log::debug!("Selected scalar SIMD for small operation ({operation_size})");
                 }
             }
             OptimizationBackend::ArmNeon { .. } => {
-                log::debug!("Selected ARM NEON for operation ({})", operation_size);
+                log::debug!("Selected ARM NEON for operation ({operation_size})");
             }
             OptimizationBackend::CpuOptimized { threads, .. } => {
-                log::debug!("Selected CPU-optimized with {} threads for operation ({})", threads, operation_size);
+                log::debug!("Selected CPU-optimized with {threads} threads for operation ({operation_size})");
             }
         }
 
@@ -119,7 +119,7 @@ impl AdaptiveExecutor<f32> {
         let backend = match self.get_optimal_backend(operation_size) {
             Ok(backend) => backend,
             Err(e) => {
-                log::error!("Failed to get optimal backend: {}", e);
+                log::error!("Failed to get optimal backend: {e}");
                 return vec![0.0; m * n];
             }
         };
@@ -140,7 +140,7 @@ impl AdaptiveExecutor<f32> {
         let backend = match self.get_optimal_backend(operation_size) {
             Ok(backend) => backend,
             Err(e) => {
-                log::error!("Failed to get optimal backend: {}", e);
+                log::error!("Failed to get optimal backend: {e}");
                 return vec![0.0; a.len()];
             }
         };
@@ -160,7 +160,7 @@ impl AdaptiveExecutor<f32> {
         let backend = match self.get_optimal_backend(operation_size) {
             Ok(backend) => backend,
             Err(e) => {
-                log::error!("Failed to get optimal backend: {}", e);
+                log::error!("Failed to get optimal backend: {e}");
                 return vec![0.0; a.len()];
             }
         };
@@ -184,7 +184,7 @@ impl AdaptiveExecutor<f32> {
             None => "unknown",
         };
 
-        let key = format!("{}_{}", backend_name, operation);
+        let key = format!("{backend_name}_{operation}");
         let elapsed_ms = elapsed.as_millis() as u64;
         
         if let Ok(mut stats) = self.backend_stats.write() {
@@ -235,7 +235,7 @@ impl AdaptiveExecutor<f32> {
                 }
                 OptimizationBackend::NvidiaCuda { memory_gb, .. } => {
                     if *memory_gb < 8.0 {
-                        recommendations.push(format!("GPU memory is limited ({:.1}GB) - consider batch size optimization", memory_gb));
+                        recommendations.push(format!("GPU memory is limited ({memory_gb:.1}GB) - consider batch size optimization"));
                     }
                 }
                 OptimizationBackend::IntelAmd { avx512, avx2, .. } => {
@@ -245,7 +245,7 @@ impl AdaptiveExecutor<f32> {
                 }
                 OptimizationBackend::CpuOptimized { threads, .. } => {
                     if *threads < 4 {
-                        recommendations.push(format!("Limited CPU parallelism ({} threads) - consider upgrading hardware", threads));
+                        recommendations.push(format!("Limited CPU parallelism ({threads} threads) - consider upgrading hardware"));
                     }
                 }
                 _ => {}
@@ -256,7 +256,7 @@ impl AdaptiveExecutor<f32> {
         if let Ok(stats) = self.backend_stats.read() {
             for (operation, stat) in stats.iter() {
                 if stat.failure_count > stat.success_count / 10 {
-                    recommendations.push(format!("High failure rate for {} - consider investigating", operation));
+                    recommendations.push(format!("High failure rate for {operation} - consider investigating"));
                 }
                 
                 if stat.avg_throughput < self.performance_threshold {
@@ -286,7 +286,7 @@ impl AdaptiveExecutor<f32> {
             let _ = self.vector_add_adaptive(&a, &b);
             let elapsed = start.elapsed();
             
-            log::debug!("Size {}: vector_add took {:?}", size, elapsed);
+            log::debug!("Size {size}: vector_add took {elapsed:?}");
             
             // Benchmark matrix operations (smaller sizes for matrices)
             if size <= 1000 {
@@ -299,7 +299,7 @@ impl AdaptiveExecutor<f32> {
                     let _ = self.matrix_multiply_adaptive(&a_mat, &b_mat, dim, dim, dim);
                     let elapsed = start.elapsed();
                     
-                    log::debug!("Size {}x{}: matrix_multiply took {:?}", dim, dim, elapsed);
+                    log::debug!("Size {dim}x{dim}: matrix_multiply took {elapsed:?}");
                 }
             }
         }
@@ -328,7 +328,7 @@ impl OptimizedOps<f32> for AdaptiveExecutor<f32> {
         let backend = match self.get_optimal_backend(values.len()) {
             Ok(backend) => backend,
             Err(e) => {
-                log::error!("Failed to get optimal backend: {}", e);
+                log::error!("Failed to get optimal backend: {e}");
                 return 0.0;
             }
         };
@@ -347,7 +347,7 @@ impl OptimizedOps<f32> for AdaptiveExecutor<f32> {
         let backend = match self.get_optimal_backend(values.len()) {
             Ok(backend) => backend,
             Err(e) => {
-                log::error!("Failed to get optimal backend: {}", e);
+                log::error!("Failed to get optimal backend: {e}");
                 return vec![0.0; values.len()];
             }
         };

@@ -29,8 +29,8 @@ export type {
 } from '@claude-zen/foundation';
 
 export type {
-  Metrics
-} from '@claude-zen/monitoring';
+  MetricData
+} from '@claude-zen/foundation';
 
 export type {
   EventData

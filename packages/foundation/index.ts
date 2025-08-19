@@ -82,6 +82,12 @@
  */
 
 // =============================================================================
+// FOUNDATION TYPES - Shared primitives and patterns
+// =============================================================================
+// Re-export foundation types for other packages
+export * from './src/types';
+
+// =============================================================================
 // LOGGING SYSTEM - Central logging foundation
 // =============================================================================
 export {
@@ -317,30 +323,7 @@ export type {
 } from './src/main';
 
 // =============================================================================
-// DATABASE SYSTEM - Internal multi-database abstraction (formerly @claude-zen/database)
+// DATABASE ACCESS - Simple interface to @claude-zen/database package
 // =============================================================================
-
-export {
-  DatabaseAdapter,
-  SQLiteAdapter,
-  LanceDBAdapter,
-  KuzuAdapter,
-  RelationalDAO,
-  VectorDAO,
-  GraphDAO,
-  createDatabaseAdapter,
-  createSQLiteAdapter,
-  createLanceDBAdapter,
-  createKuzuAdapter
-} from './src/database/index';
-
-export type {
-  DatabaseConfig,
-  ConnectionOptions,
-  QueryResult,
-  Transaction,
-  VectorQuery,
-  GraphQuery,
-  DatabaseType,
-  AdapterCapabilities
-} from './src/database/types';
+// Note: Full database functionality is now in the separate @claude-zen/database package
+// This provides a simple access interface for foundation consumers

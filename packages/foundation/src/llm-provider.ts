@@ -6,7 +6,7 @@
  */
 
 // Use the real Claude Code SDK integration
-import { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk.js';
+import { executeClaudeTask, type ClaudeSDKOptions } from './claude-sdk';
 
 export interface LLMMessage {
   role: 'system' | 'user' | 'assistant';

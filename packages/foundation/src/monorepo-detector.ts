@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { findWorkspaces } from 'find-workspaces';
 import { findRoot } from '@manypkg/find-root';
-import { getLogger } from './logging.js';
+import { getLogger } from './logging';
 
 const logger = getLogger('monorepo-detector');
 
@@ -214,13 +214,13 @@ export class WorkspaceDetector {
       // Check dependencies for framework indicators
       const deps = { ...packageJson.dependencies, ...packageJson.devDependencies };
       
-      if (deps['next']) return 'Next.js';
+      if (deps['next']) return 'Next';
       if (deps['react-native']) return 'React Native';
       if (deps['expo']) return 'Expo';
       if (deps['@angular/core']) return 'Angular';
-      if (deps['vue']) return 'Vue.js';
+      if (deps['vue']) return 'Vue';
       if (deps['svelte']) return 'Svelte';
-      if (deps['nuxt']) return 'Nuxt.js';
+      if (deps['nuxt']) return 'Nuxt';
       if (deps['gatsby']) return 'Gatsby';
       if (deps['react']) return 'React';
       if (deps['express']) return 'Express';

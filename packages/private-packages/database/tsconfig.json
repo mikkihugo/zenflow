@@ -19,25 +19,10 @@
   "exclude": [
     "dist", 
     "node_modules", 
-    "**/*.test.ts",
-    "src/providers/**/*",
-    "src/controllers/**/*",
-    "src/coordinators/**/*",
-    "src/strategies/**/*",
-    "src/systems/**/*",
-    "src/context-manager.ts",
-    "src/memory-integration.ts",
-    "src/core/memory-coordinator.ts",
-    "src/error-handling/**/*",
-    "src/monitoring/**/*",
-    "src/safe-memory-store.ts",
-    "src/backends/foundation-adapter.ts",
-    "src/backends/factory.ts"
+    "**/*.test.ts"
   ],
   "references": [
     { "path": "../../foundation" },
-    { "path": "../../event-system" },
-    { "path": "../../private-packages/database" },
-    { "path": "../../coordination-core" }
+    { "path": "../../event-system" }
   ]
 }
