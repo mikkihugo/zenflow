@@ -30,6 +30,7 @@ export interface NeuralConfig {
   gpuAcceleration?: boolean;
   modelPath?: string;
   enableTraining?: boolean;
+  smartNeuralBackend?: NeuralBackendConfig;
 }
 
 export interface NeuralNetwork {
@@ -99,6 +100,7 @@ export class NeuralBridge {
   private initialized = false;
   private wasmModule: any = null; // Will hold the WASM module
   private dbAccess: DatabaseAccess | null = null; // Foundation database access
+  private smartNeuralCoordinator: SmartNeuralCoordinator | null = null; // Smart neural backend
 
   constructor(
     @inject(TOKENS.Logger) private foundationLogger: Logger,
@@ -133,6 +135,15 @@ export class NeuralBridge {
       // Initialize database access for model persistence
       this.dbAccess = getDatabaseAccess();
       
+      // Initialize SmartNeuralCoordinator for intelligent neural backend
+      if (this.config.smartNeuralBackend !== false) {
+        this.smartNeuralCoordinator = new SmartNeuralCoordinator(
+          this.config.smartNeuralBackend || {}
+        );
+        await this.smartNeuralCoordinator.initialize();
+        this.foundationLogger.info('✅ SmartNeuralCoordinator integrated successfully');
+      }
+      
       // Load WASM module if available
       if (this.config.wasmPath) {
         await this.loadWasmModule();
@@ -147,7 +158,7 @@ export class NeuralBridge {
       await this.initializeDatabaseSchema();
 
       this.initialized = true;
-      this.foundationLogger.info('Neural Bridge initialized successfully with database and metrics integration');
+      this.foundationLogger.info('Neural Bridge initialized successfully with database, metrics, and smart neural backend integration');
     } catch (error) {
       this.foundationLogger.error('Failed to initialize Neural Bridge:', error);
       throw error;
@@ -440,10 +451,75 @@ export class NeuralBridge {
   }
 
   /**
+   * Generate neural embeddings using SmartNeuralCoordinator
+   * 
+   * @param text - Text to generate embeddings for
+   * @param options - Optional embedding configuration
+   * @returns Promise with embedding result
+   */
+  async generateEmbedding(
+    text: string, 
+    options?: {
+      context?: string;
+      priority?: 'low' | 'medium' | 'high';
+      qualityLevel?: 'basic' | 'standard' | 'premium';
+    }
+  ): Promise<NeuralEmbeddingResult> {
+    if (!this.smartNeuralCoordinator) {
+      throw new Error('SmartNeuralCoordinator not initialized. Enable smartNeuralBackend in config.');
+    }
+
+    const request: NeuralEmbeddingRequest = {
+      text,
+      context: options?.context,
+      priority: options?.priority || 'medium',
+      qualityLevel: options?.qualityLevel || 'standard'
+    };
+
+    return await this.smartNeuralCoordinator.generateEmbedding(request);
+  }
+
+  /**
+   * Get SmartNeuralCoordinator statistics
+   */
+  getSmartNeuralStats(): any {
+    if (!this.smartNeuralCoordinator) {
+      return {
+        available: false,
+        reason: 'SmartNeuralCoordinator not initialized'
+      };
+    }
+
+    return {
+      available: true,
+      stats: this.smartNeuralCoordinator.getCoordinatorStats()
+    };
+  }
+
+  /**
+   * Clear SmartNeuralCoordinator cache
+   */
+  async clearSmartNeuralCache(): Promise<void> {
+    if (!this.smartNeuralCoordinator) {
+      this.foundationLogger.warn('SmartNeuralCoordinator not available for cache clearing');
+      return;
+    }
+
+    await this.smartNeuralCoordinator.clearCache();
+    this.foundationLogger.info('SmartNeuralCoordinator cache cleared');
+  }
+
+  /**
    * Shutdown neural bridge.
    */
   async shutdown(): Promise<void> {
     this.foundationLogger.info('Shutting down Neural Bridge...');
+
+    // Shutdown SmartNeuralCoordinator
+    if (this.smartNeuralCoordinator) {
+      await this.smartNeuralCoordinator.shutdown();
+      this.smartNeuralCoordinator = null;
+    }
 
     // Stop all training processes by updating metadata
     for (const metadata of this.networkMetadata.values()) {

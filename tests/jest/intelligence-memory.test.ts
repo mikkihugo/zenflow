@@ -124,8 +124,10 @@ describe('ConversationMemoryImpl - Classical TDD (Jest)', () => {
         .mockImplementation(async (pattern: string, namespace?: string) => {
           const results: Record<string, unknown> = {};
           const prefix = namespace ? `${namespace}:` : '';
+          
+          // Return all stored conversations for searching
           for (const [key, value] of storage.entries()) {
-            if (key.startsWith(prefix) && key.includes(pattern)) {
+            if (key.startsWith('conversation:')) {
               results[key] = structuredClone(value); // Preserve date objects
             }
           }

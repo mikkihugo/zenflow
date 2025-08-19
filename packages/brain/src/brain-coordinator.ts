@@ -46,6 +46,7 @@ import {
 import { DSPyLLMBridge, type CoordinationTask, type CoordinationResult } from './coordination/dspy-llm-bridge';
 import { RetrainingMonitor } from './coordination/retraining-monitor';
 import { NeuralBridge } from './neural-bridge';
+import { SmartNeuralCoordinator, type NeuralBackendConfig } from './smart-neural-coordinator';
 // Adaptive learning functionality is now part of BehavioralIntelligence
 import { BehavioralIntelligence } from './behavioral-intelligence.js';
 // Autonomous optimization engine for intelligent decision making
@@ -67,6 +68,7 @@ export interface BrainConfig {
     rustAcceleration: boolean;
     gpuAcceleration: boolean;
     parallelProcessing: number;
+    smartBackend?: NeuralBackendConfig;
   };
 }
 
@@ -206,9 +208,31 @@ export class BrainCoordinator {
           await telemetry.initialize();
         }
 
-        // Initialize neural bridge for WASM neural networks
+        // Initialize neural bridge for WASM neural networks with smart backend
         await withAsyncTrace('neural-bridge-init', async () => {
-          this.neuralBridge = new NeuralBridge(this.logger);
+          const neuralConfig = {
+            smartNeuralBackend: this.config.neural?.smartBackend || {
+              primaryModel: 'all-mpnet-base-v2' as const,
+              enableFallbacks: true,
+              cache: {
+                maxSize: 5000,
+                ttlMs: 1800000, // 30 minutes
+                performanceBasedEviction: true
+              },
+              loading: {
+                timeoutMs: 30000,
+                retryAttempts: 3,
+                lazyLoading: true
+              },
+              performance: {
+                batchSize: 16,
+                maxConcurrency: 2,
+                enableProfiling: true
+              }
+            }
+          };
+          
+          this.neuralBridge = new NeuralBridge(this.logger, neuralConfig);
           await this.neuralBridge.initialize();
           recordEvent('neural-bridge-initialized');
         });
@@ -1186,6 +1210,156 @@ export class BrainCoordinator {
 
     // Simulate training time
     await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  // =============================================================================
+  // SMART NEURAL BACKEND API
+  // =============================================================================
+
+  /**
+   * Generate neural embeddings using the smart neural backend system.
+   * 
+   * This method provides high-quality neural embeddings through intelligent model selection,
+   * smart caching, and graceful fallback chains.
+   * 
+   * @param text - Text to generate embeddings for
+   * @param options - Optional embedding configuration
+   * @returns Promise with embedding result
+   */
+  async generateEmbedding(
+    text: string, 
+    options?: {
+      context?: string;
+      priority?: 'low' | 'medium' | 'high';
+      qualityLevel?: 'basic' | 'standard' | 'premium';
+    }
+  ): Promise<{
+    embedding: number[];
+    confidence: number;
+    model: string;
+    processingTime: number;
+    fromCache: boolean;
+    qualityScore: number;
+    fallbacksUsed?: string[];
+  }> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
+    if (!this.neuralBridge) {
+      throw new Error('Neural bridge not available for embedding generation');
+    }
+
+    return withAsyncTrace('brain-coordinator-generate-embedding', async (span: Span) => {
+      const embeddingTimer = this.performanceTracker.startTimer('neural-embedding');
+      
+      try {
+        span.setAttributes({
+          'brain.embedding.text_length': text.length,
+          'brain.embedding.priority': options?.priority || 'medium',
+          'brain.embedding.quality_level': options?.qualityLevel || 'standard',
+          'brain.embedding.has_context': Boolean(options?.context)
+        });
+
+        const result = await this.neuralBridge.generateEmbedding(text, options);
+        const { duration } = this.performanceTracker.endTimer('neural-embedding');
+
+        // Record embedding metrics
+        recordMetric('brain_coordinator_embedding_generated', 1, {
+          model: result.model,
+          cache_hit: String(result.fromCache),
+          quality_level: options?.qualityLevel || 'standard',
+          status: 'success'
+        });
+
+        recordHistogram('brain_coordinator_embedding_duration_ms', duration, {
+          model: result.model,
+          cache_hit: String(result.fromCache)
+        });
+
+        recordGauge('brain_coordinator_embedding_quality', result.qualityScore, {
+          model: result.model
+        });
+
+        // Track in ML monitor
+        this.mlMonitor.trackPrediction('brain-neural-embedding', {
+          confidence: result.confidence,
+          latency: duration,
+          timestamp: new Date()
+        });
+
+        span.setAttributes({
+          'brain.embedding.model': result.model,
+          'brain.embedding.confidence': result.confidence,
+          'brain.embedding.quality_score': result.qualityScore,
+          'brain.embedding.from_cache': result.fromCache,
+          'brain.embedding.processing_time_ms': duration,
+          'brain.embedding.fallbacks_used': result.fallbacksUsed?.length || 0,
+          'brain.embedding.embedding_dimensions': result.embedding.length
+        });
+
+        this.logger.info(`🧠 Generated embedding: ${result.embedding.length}D, model: ${result.model}, quality: ${result.qualityScore.toFixed(2)}`);
+
+        recordEvent('brain-coordinator-embedding-generated', {
+          model: result.model,
+          quality_score: String(result.qualityScore),
+          dimensions: String(result.embedding.length),
+          processing_time_ms: String(duration)
+        });
+
+        return result;
+
+      } catch (error) {
+        this.performanceTracker.endTimer('neural-embedding');
+        
+        recordMetric('brain_coordinator_embedding_generated', 1, {
+          model: 'error',
+          status: 'error',
+          error_type: error instanceof Error ? error.constructor.name : 'unknown'
+        });
+
+        span.setAttributes({
+          'brain.embedding.error': true,
+          'brain.embedding.error_message': error instanceof Error ? error.message : String(error)
+        });
+
+        this.logger.error('❌ Failed to generate neural embedding:', error);
+        throw error;
+      }
+    });
+  }
+
+  /**
+   * Get comprehensive smart neural backend statistics.
+   */
+  getSmartNeuralStats(): {
+    available: boolean;
+    stats?: any;
+    reason?: string;
+  } {
+    if (!this.neuralBridge) {
+      return {
+        available: false,
+        reason: 'Neural bridge not initialized'
+      };
+    }
+
+    return this.neuralBridge.getSmartNeuralStats();
+  }
+
+  /**
+   * Clear smart neural backend cache.
+   */
+  async clearSmartNeuralCache(): Promise<void> {
+    if (!this.neuralBridge) {
+      this.logger.warn('Neural bridge not available for cache clearing');
+      return;
+    }
+
+    await this.neuralBridge.clearSmartNeuralCache();
+    this.logger.info('🗑️ Smart neural cache cleared');
+
+    recordEvent('brain-coordinator-neural-cache-cleared');
   }
 }
 

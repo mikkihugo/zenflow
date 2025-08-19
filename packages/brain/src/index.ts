@@ -706,6 +706,18 @@ export { NeuralBridge } from './main';
 export { createNeuralNetwork, trainNeuralNetwork, predictWithNetwork } from './main';
 
 // =============================================================================
+// SMART NEURAL COORDINATION SYSTEM - Intelligent Neural Backend
+// =============================================================================
+export { SmartNeuralCoordinator } from './smart-neural-coordinator';
+export type {
+  NeuralBackendConfig,
+  NeuralEmbeddingRequest,
+  NeuralEmbeddingResult,
+  CacheEntry,
+  ModelStatus
+} from './smart-neural-coordinator';
+
+// =============================================================================
 // GPU ACCELERATION AND COORDINATION SYSTEMS
 // =============================================================================
 export { 

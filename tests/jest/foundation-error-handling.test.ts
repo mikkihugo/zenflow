@@ -48,7 +48,7 @@ import {
   safe,
   withTimeout,
   withRetry,
-  CircuitBreaker,
+  CircuitBreakerWithMonitoring as CircuitBreaker,
   
   // Bulk operations
   executeAll,
