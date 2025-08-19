@@ -242,7 +242,7 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Initialize the service with dependencies
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) return;
 
     try {
@@ -265,7 +265,7 @@ export class CapacityPlanningService extends EventEmitter {
    * Calculate comprehensive team capacities with intelligent analysis
    */
   async calculateTeamCapacities(teams: any[]): Promise<TeamCapacity[]> {
-    if (!this.initialized) await this.initialize();
+    if (!this.initialized) this.initialize();
 
     this.logger.info('Calculating team capacities', { teamCount: teams.length });
 
@@ -289,7 +289,7 @@ export class CapacityPlanningService extends EventEmitter {
           availableCapacity: this.calculateAvailableCapacity(team.members, capacityAnalysis),
           velocity: capacityAnalysis.historicalVelocity || this.estimateVelocity(team),
           members: this.processTeamMembers(team.members),
-          skills: await this.analyzeTeamSkills(team.members),
+          skills: this.analyzeTeamSkills(team.members),
           commitmentReliability: capacityAnalysis.commitmentReliability || 0.85,
           focusFactor: capacityAnalysis.focusFactor || 0.7,
           innovationCapacity: this.calculateInnovationCapacity(team),
@@ -597,7 +597,7 @@ export class CapacityPlanningService extends EventEmitter {
   /**
    * Analyze team skills and capabilities
    */
-  private async analyzeTeamSkills(members: any[]): Promise<TeamSkill[]> {
+  private analyzeTeamSkills(members: any[]): TeamSkill[] {
     const skillMap = new Map<string, { count: number; capacity: number; proficiencies: string[] }>();
 
     // Aggregate skills across team members

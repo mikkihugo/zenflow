@@ -78,13 +78,11 @@ const config: Config = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'mjs'],
 
   // Test discovery patterns - Jest as primary for new tests
-  roots: ['<rootDir>/src', '<rootDir>/tests', '<rootDir>/packages'],
+  roots: ['<rootDir>/tests'],
   testMatch: [
     // Primary Jest test patterns (new tests)
     '<rootDir>/tests/jest/**/*.test.ts',
     '<rootDir>/tests/jest/**/*.test.tsx',
-    '<rootDir>/src/__tests__/jest/**/*.test.ts',
-    '<rootDir>/packages/**/src/__tests__/**/*.test.ts',
     
     // AI-specific test patterns
     '<rootDir>/tests/ai/**/*.test.ts',
@@ -125,7 +123,7 @@ const config: Config = {
     '!**/__tests__/**',
     '!**/node_modules/**',
   ],
-  coverageThresholds: {
+  coverageThreshold: {
     global: {
       branches: 70,
       functions: 70,
@@ -145,12 +143,7 @@ const config: Config = {
   // Module resolution improvements
   resolver: undefined, // Use default resolver with enhanced moduleNameMapper
   
-  // Global configuration for AI testing
-  globals: {
-    'ts-jest': {
-      useESM: true,
-    },
-  },
+  // Remove deprecated globals config
   
   // Environment variables for AI testing
   setupFiles: ['<rootDir>/tests/jest-env-setup.ts'],

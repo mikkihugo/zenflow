@@ -372,35 +372,35 @@ export class PIExecutionService extends EventEmitter {
       });
 
       // Calculate burnup data
-      const burnupData = await this.calculateBurnupData(piId, executionData);
+      const burnupData = this.calculateBurnupData(piId, executionData);
 
       // Analyze velocity trends
-      const velocityTrend = await this.analyzeVelocityTrend(piId, executionData);
+      const velocityTrend = this.analyzeVelocityTrend(piId, executionData);
 
       // Calculate predictability metrics
-      const predictabilityMetrics = await this.calculatePredictabilityMetrics(
+      const predictabilityMetrics = this.calculatePredictabilityMetrics(
         piId,
         executionData,
         intelligentMetrics
       );
 
       // Assess quality metrics
-      const qualityMetrics = await this.assessQualityMetrics(piId, executionData);
+      const qualityMetrics = this.assessQualityMetrics(piId, executionData);
 
       // Track risk burndown
-      const riskBurndown = await this.trackRiskBurndown(piId, executionData);
+      const riskBurndown = this.trackRiskBurndown(piId, executionData);
 
       // Monitor dependency health
-      const dependencyHealth = await this.monitorDependencyHealth(piId, executionData);
+      const dependencyHealth = this.monitorDependencyHealth(piId, executionData);
 
       // Calculate team metrics
-      const teamMetrics = await this.calculateTeamExecutionMetrics(piId, executionData);
+      const teamMetrics = this.calculateTeamExecutionMetrics(piId, executionData);
 
       // Generate execution alerts
-      const alerts = await this.generateExecutionAlerts(piId, executionData, intelligentMetrics);
+      const alerts = this.generateExecutionAlerts(piId, executionData, intelligentMetrics);
 
       // Create execution forecast
-      const forecastToCompletion = await this.createExecutionForecast(
+      const forecastToCompletion = this.createExecutionForecast(
         piId,
         executionData,
         intelligentMetrics
@@ -455,7 +455,7 @@ export class PIExecutionService extends EventEmitter {
 
       // Trigger automated actions if needed
       if (this.config.enableAutomatedAlerts) {
-        await this.processExecutionAlerts(piId, alerts);
+        this.processExecutionAlerts(piId, alerts);
       }
 
       this.performanceTracker.endTimer('pi_progress_tracking');
@@ -487,7 +487,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Start continuous PI monitoring
    */
-  async startContinuousMonitoring(piId: string): Promise<void> {
+  startContinuousMonitoring(piId: string): void {
     if (!this.config.enableRealTimeTracking) {
       this.logger.info('Real-time tracking disabled', { piId });
       return;
@@ -515,7 +515,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Stop continuous PI monitoring
    */
-  async stopContinuousMonitoring(piId: string): Promise<void> {
+  stopContinuousMonitoring(piId: string): void {
     const timer = this.executionTimers.get(piId);
     if (timer) {
       clearInterval(timer);
@@ -543,7 +543,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Acknowledge execution alert
    */
-  async acknowledgeAlert(piId: string, alertId: string, assignee?: string): Promise<void> {
+  acknowledgeAlert(piId: string, alertId: string, assignee?: string): void {
     const metrics = this.piMetrics.get(piId);
     if (!metrics) {
       throw new Error(`PI metrics not found: ${piId}`);
@@ -640,7 +640,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Shutdown the service
    */
-  async shutdown(): Promise<void> {
+  shutdown(): void {
     this.logger.info('Shutting down PI Execution Service');
 
     // Stop all continuous monitoring
@@ -672,21 +672,21 @@ export class PIExecutionService extends EventEmitter {
     // - Team reporting systems
 
     return {
-      features: await this.getFeatureData(piId),
-      teams: await this.getTeamData(piId),
-      iterations: await this.getIterationData(piId),
-      quality: await this.getQualityData(piId),
-      risks: await this.getRiskData(piId),
-      dependencies: await this.getDependencyData(piId),
-      scope: await this.getScopeData(piId),
-      capacity: await this.getCapacityData(piId)
+      features: this.getFeatureData(piId),
+      teams: this.getTeamData(piId),
+      iterations: this.getIterationData(piId),
+      quality: this.getQualityData(piId),
+      risks: this.getRiskData(piId),
+      dependencies: this.getDependencyData(piId),
+      scope: this.getScopeData(piId),
+      capacity: this.getCapacityData(piId)
     };
   }
 
   /**
    * Get feature execution data
    */
-  private async getFeatureData(piId: string): Promise<any[]> {
+  private getFeatureData(piId: string): any[] {
     // Simulate feature data retrieval
     return [
       { id: 'feature-1', status: 'completed', progress: 100, quality: 95 },
@@ -698,7 +698,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get team execution data
    */
-  private async getTeamData(piId: string): Promise<any[]> {
+  private getTeamData(piId: string): any[] {
     // Simulate team data retrieval
     return [
       { id: 'team-1', velocity: 32, capacity: 40, utilization: 80 },
@@ -710,7 +710,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get iteration data
    */
-  private async getIterationData(piId: string): Promise<any[]> {
+  private getIterationData(piId: string): any[] {
     // Simulate iteration data retrieval
     return [
       { iteration: 1, planned: 90, completed: 88, quality: 92 },
@@ -722,7 +722,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get quality data
    */
-  private async getQualityData(piId: string): Promise<any> {
+  private getQualityData(piId: string): any {
     // Simulate quality data retrieval
     return {
       testCoverage: 85,
@@ -736,7 +736,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get risk data
    */
-  private async getRiskData(piId: string): Promise<any[]> {
+  private getRiskData(piId: string): any[] {
     // Simulate risk data retrieval
     return [
       { id: 'risk-1', status: 'open', impact: 'high', probability: 0.6 },
@@ -748,7 +748,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get dependency data
    */
-  private async getDependencyData(piId: string): Promise<any[]> {
+  private getDependencyData(piId: string): any[] {
     // Simulate dependency data retrieval
     return [
       { id: 'dep-1', status: 'resolved', impact: 'medium' },
@@ -760,7 +760,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get scope data
    */
-  private async getScopeData(piId: string): Promise<any> {
+  private getScopeData(piId: string): any {
     // Simulate scope data retrieval
     return {
       originalScope: 100,
@@ -773,7 +773,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Get capacity data
    */
-  private async getCapacityData(piId: string): Promise<any> {
+  private getCapacityData(piId: string): any {
     // Simulate capacity data retrieval
     return {
       totalCapacity: 400,
@@ -786,7 +786,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Calculate burnup data points
    */
-  private async calculateBurnupData(piId: string, executionData: any): Promise<BurnupDataPoint[]> {
+  private calculateBurnupData(piId: string, executionData: any): BurnupDataPoint[] {
     const burnupData: BurnupDataPoint[] = [];
 
     for (let i = 0; i < executionData.iterations.length; i++) {
@@ -810,7 +810,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Analyze velocity trend
    */
-  private async analyzeVelocityTrend(piId: string, executionData: any): Promise<VelocityTrend> {
+  private analyzeVelocityTrend(piId: string, executionData: any): VelocityTrend {
     const velocityHistory: VelocityDataPoint[] = [];
     let totalVelocity = 0;
 
@@ -856,11 +856,11 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Calculate predictability metrics
    */
-  private async calculatePredictabilityMetrics(
+  private calculatePredictabilityMetrics(
     piId: string,
     executionData: any,
     intelligentMetrics: any
-  ): Promise<PredictabilityMetrics> {
+  ): PredictabilityMetrics {
     // Calculate commitment reliability
     const commitmentReliability = executionData.iterations.reduce((sum: number, iter: any) => {
       return sum + (iter.completed / iter.planned);
@@ -910,7 +910,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Assess quality metrics
    */
-  private async assessQualityMetrics(piId: string, executionData: any): Promise<QualityMetrics> {
+  private assessQualityMetrics(piId: string, executionData: any): QualityMetrics {
     const qualityData = executionData.quality;
     
     // Calculate quality trend
@@ -965,7 +965,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Track risk burndown
    */
-  private async trackRiskBurndown(piId: string, executionData: any): Promise<RiskBurndown> {
+  private trackRiskBurndown(piId: string, executionData: any): RiskBurndown {
     const risks = executionData.risks;
     const openRisks = risks.filter((r: any) => r.status === 'open').length;
     const mitigatedRisks = risks.filter((r: any) => r.status === 'mitigating').length;
@@ -1023,7 +1023,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Monitor dependency health
    */
-  private async monitorDependencyHealth(piId: string, executionData: any): Promise<DependencyHealth> {
+  private monitorDependencyHealth(piId: string, executionData: any): DependencyHealth {
     const dependencies = executionData.dependencies;
     const resolvedDependencies = dependencies.filter((d: any) => d.status === 'resolved').length;
     const blockedDependencies = dependencies.filter((d: any) => d.status === 'blocked').length;
@@ -1073,7 +1073,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Calculate team execution metrics
    */
-  private async calculateTeamExecutionMetrics(piId: string, executionData: any): Promise<TeamExecutionMetrics[]> {
+  private calculateTeamExecutionMetrics(piId: string, executionData: any): TeamExecutionMetrics[] {
     return executionData.teams.map((team: any) => ({
       teamId: team.id,
       teamName: team.name || `Team ${team.id}`,
@@ -1095,11 +1095,11 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Generate execution alerts based on thresholds and intelligent analysis
    */
-  private async generateExecutionAlerts(
+  private generateExecutionAlerts(
     piId: string,
     executionData: any,
     intelligentMetrics: any
-  ): Promise<ExecutionAlert[]> {
+  ): ExecutionAlert[] {
     const alerts: ExecutionAlert[] = [];
 
     // Velocity decline alert
@@ -1173,11 +1173,11 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Create execution forecast
    */
-  private async createExecutionForecast(
+  private createExecutionForecast(
     piId: string,
     executionData: any,
     intelligentMetrics: any
-  ): Promise<ExecutionForecast> {
+  ): ExecutionForecast {
     const currentProgress = executionData.scope.completedScope / executionData.scope.currentScope;
     const remainingWork = executionData.scope.currentScope - executionData.scope.completedScope;
     const averageVelocity = executionData.teams.reduce((sum: number, team: any) => sum + team.velocity, 0);
@@ -1296,7 +1296,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Process execution alerts and trigger automated actions
    */
-  private async processExecutionAlerts(piId: string, alerts: ExecutionAlert[]): Promise<void> {
+  private processExecutionAlerts(piId: string, alerts: ExecutionAlert[]): void {
     const criticalAlerts = alerts.filter(a => a.severity === 'critical');
     
     for (const alert of criticalAlerts) {

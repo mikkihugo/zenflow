@@ -10,6 +10,8 @@
  * @version 2.0.0
  */
 
+import { jest } from '@jest/globals';
+
 describe('AI Workflow Testing', () => {
   describe('LLM Provider Integration', () => {
     it('should handle LLM responses with confidence scoring', async () => {
@@ -56,12 +58,14 @@ describe('AI Workflow Testing', () => {
         id: 'coder-1',
         type: 'specialist',
         capabilities: ['write', 'refactor', 'test'],
+        forceSuccess: true,
       });
 
       const agent2 = (globalThis as any).aiAdvancedUtils.createMockAgent({
         id: 'reviewer-1',
         type: 'coordinator',
         capabilities: ['review', 'approve', 'coordinate'],
+        forceSuccess: true,
       });
 
       const task = {

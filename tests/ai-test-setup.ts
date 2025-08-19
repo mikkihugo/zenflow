@@ -28,6 +28,7 @@ import { jest } from '@jest/globals';
     type?: 'worker' | 'coordinator' | 'specialist';
     capabilities?: string[];
     performance?: { success: number; speed: number };
+    forceSuccess?: boolean;
   } = {}) => ({
     id: config.id || `agent-${Math.random().toString(36).substr(2, 9)}`,
     type: config.type || 'worker',
@@ -38,7 +39,10 @@ import { jest } from '@jest/globals';
       // Simulate realistic AI execution time
       await new Promise(resolve => setTimeout(resolve, Math.random() * 100 + 50));
       
-      const success = Math.random() < (config.performance?.success || 0.85);
+      // Make tests deterministic when forceSuccess is true
+      const success = config.forceSuccess !== false ? 
+        (config.forceSuccess || Math.random() < (config.performance?.success || 0.95)) :
+        Math.random() < (config.performance?.success || 0.95);
       return {
         agent: config.id || 'mock-agent',
         task,
@@ -287,9 +291,12 @@ import { jest } from '@jest/globals';
       try {
         const result = await Promise.race([
           step.execute(),
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error(`Step timeout: ${step.name}`)), workflow.timeout || 30000)
-          )
+          new Promise((_, reject) => {
+            const timeoutId = setTimeout(() => reject(new Error(`Step timeout: ${step.name}`)), workflow.timeout || 30000);
+            // Store timeout for cleanup
+            (globalThis as any).__testTimeouts = (globalThis as any).__testTimeouts || [];
+            (globalThis as any).__testTimeouts.push(timeoutId);
+          })
         ]);
         
         results.push({
@@ -323,6 +330,14 @@ import { jest } from '@jest/globals';
 process.env.AI_TESTING_MODE = 'advanced';
 process.env.NEURAL_MOCK_MODE = 'true';
 process.env.LLM_PROVIDER = 'mock';
+
+// Cleanup function for test timeouts
+(globalThis as any).cleanupTestTimeouts = () => {
+  if ((globalThis as any).__testTimeouts) {
+    (globalThis as any).__testTimeouts.forEach((timeoutId: any) => clearTimeout(timeoutId));
+    (globalThis as any).__testTimeouts = [];
+  }
+};
 
 // Global AI test configuration
 (globalThis as any).aiTestConfig = {

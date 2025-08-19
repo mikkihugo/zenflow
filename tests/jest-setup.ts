@@ -91,19 +91,22 @@ expect.extend({
    * Test if a promise resolves within AI operation timeout
    */
   async toResolveWithinAITimeout(received: Promise<any>, timeoutMs: number = 60000) {
+    let timeoutId: NodeJS.Timeout;
     try {
       const result = await Promise.race([
         received,
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('AI operation timeout')), timeoutMs)
-        )
+        new Promise((_, reject) => {
+          timeoutId = setTimeout(() => reject(new Error('AI operation timeout')), timeoutMs);
+        })
       ]);
       
+      clearTimeout(timeoutId);
       return {
         message: () => `expected promise not to resolve within ${timeoutMs}ms`,
         pass: true,
       };
     } catch (error) {
+      if (timeoutId) clearTimeout(timeoutId);
       return {
         message: () => `expected promise to resolve within ${timeoutMs}ms but got: ${error}`,
         pass: false,
@@ -151,6 +154,8 @@ expect.extend({
     generateText: jest.fn().mockImplementation(() => Promise.resolve({
       text: responses[0] || 'Mock AI response',
       confidence: 0.9,
+      reasoning: 'AI analysis complete with high confidence',
+      data: { analysis: responses[0] || 'Mock AI response' },
       usage: { inputTokens: 100, outputTokens: 50 },
     })),
     generateStream: jest.fn().mockImplementation(async function*() {
@@ -301,6 +306,11 @@ jest.setTimeout(60000);
 afterEach(() => {
   // Clear all mocks
   jest.clearAllMocks();
+  
+  // Clean up any test timeouts
+  if ((globalThis as any).cleanupTestTimeouts) {
+    (globalThis as any).cleanupTestTimeouts();
+  }
   
   // Reset modules for fresh imports in each test
   // jest.resetModules(); // Uncomment if needed for isolation
