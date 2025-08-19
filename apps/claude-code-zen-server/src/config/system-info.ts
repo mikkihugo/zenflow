@@ -5,6 +5,10 @@
  * for optimal adaptive configuration.
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
+const logger = getLogger('SystemInfo');
+
 export interface SystemInfo {
   totalMemoryGB: number;
   totalMemoryMB: number;
@@ -30,15 +34,13 @@ export function detectSystemMemory(): number {
 
     // Validate reasonable range (1GB to 2TB)
     if (totalGB < 1 || totalGB > 2048) {
-      console.warn(
-        `⚠️ Unusual system memory detected: ${totalGB}GB, using 8GB default`
-      );
+      logger.warn(`⚠️ Unusual system memory detected: ${totalGB}GB, using 8GB default`);
       return 8;
     }
 
     return totalGB;
   } catch (error) {
-    console.warn('⚠️ Could not detect system memory, using 8GB default:', error);
+    logger.warn('⚠️ Could not detect system memory, using 8GB default:', error);
     return 8;
   }
 }
@@ -58,7 +60,7 @@ export function getSystemInfo(): SystemInfo {
     platform = os.platform();
     cpuCores = os.cpus().length;
   } catch (error) {
-    console.warn('⚠️ Could not detect system platform/CPU info');
+    logger.warn('⚠️ Could not detect system platform/CPU info');
   }
 
   // Calculate safe available memory (reserve 50% for system)
@@ -97,29 +99,18 @@ export function getSystemInfo(): SystemInfo {
 export function logSystemInfo(): void {
   const info = getSystemInfo();
 
-  console.log('🖥️  System Information:');
-  console.log(
-    `   Total Memory: ${info.totalMemoryGB}GB (${info.totalMemoryMB}MB)`
-  );
-  console.log(
-    `   Available Memory: ${info.availableMemoryGB}GB (conservative estimate)`
-  );
-  console.log(`   Platform: ${info.platform}`);
-  console.log(`   CPU Cores: ${info.cpuCores}`);
-  console.log('');
-  console.log('🎯 Recommended Stream Limits (Ultra-Conservative):');
-  console.log(
-    `   Portfolio: ${info.recommendedConfig.maxPortfolioStreams} streams max`
-  );
-  console.log(
-    `   Program: ${info.recommendedConfig.maxProgramStreams} streams max`
-  );
-  console.log(
-    `   Swarm: ${info.recommendedConfig.maxSwarmStreams} streams max`
-  );
-  console.log(
-    `   Conservative Mode: ${info.recommendedConfig.conservative ? 'YES' : 'NO'}`
-  );
+  logger.info('🖥️  System Information:', {
+    totalMemory: `${info.totalMemoryGB}GB (${info.totalMemoryMB}MB)`,
+    availableMemory: `${info.availableMemoryGB}GB (conservative estimate)`,
+    platform: info.platform,
+    cpuCores: info.cpuCores,
+    recommendedConfig: {
+      portfolio: `${info.recommendedConfig.maxPortfolioStreams} streams max`,
+      program: `${info.recommendedConfig.maxProgramStreams} streams max`,
+      swarm: `${info.recommendedConfig.maxSwarmStreams} streams max`,
+      conservativeMode: info.recommendedConfig.conservative ? 'YES' : 'NO'
+    }
+  });
 }
 
 /**

@@ -13,12 +13,12 @@ export interface SystemEvent {
 }
 
 export interface EventBusInterface {
-  emit(eventName: string, ...args: unknown[]): boolean;
+  emit(eventName: string | symbol, ...args: unknown[]): boolean;
   emitSystemEvent(event: SystemEvent): boolean;
-  on(eventType: string, handler: (event: SystemEvent) => void): this;
-  off(eventType: string, handler: (event: SystemEvent) => void): this;
-  once(eventType: string, handler: (event: SystemEvent) => void): this;
-  removeAllListeners(eventType?: string): this;
+  on(eventType: string | symbol, handler: (...args: any[]) => void): this;
+  off(eventType: string | symbol, handler: (...args: any[]) => void): this;
+  once(eventType: string | symbol, handler: (...args: any[]) => void): this;
+  removeAllListeners(eventType?: string | symbol): this;
 }
 
 export class EventBus extends EventEmitter implements EventBusInterface {
@@ -28,7 +28,7 @@ export class EventBus extends EventEmitter implements EventBusInterface {
 
   constructor() {
     super();
-    this.setMaxListeners(100); // Support many listeners
+    // Support many listeners - EventEmitter3 handles this internally
   }
 
   static getInstance(): EventBus {
@@ -49,22 +49,22 @@ export class EventBus extends EventEmitter implements EventBusInterface {
     return super.emit(event.type, event);
   }
 
-  override on(eventType: string, handler: (event: SystemEvent) => void): this {
+  override on(eventType: string | symbol, handler: (...args: any[]) => void): this {
     return super.on(eventType, handler);
   }
 
-  override off(eventType: string, handler: (event: SystemEvent) => void): this {
+  override off(eventType: string | symbol, handler: (...args: any[]) => void): this {
     return super.off(eventType, handler);
   }
 
   override once(
-    eventType: string,
-    handler: (event: SystemEvent) => void
+    eventType: string | symbol,
+    handler: (...args: any[]) => void
   ): this {
     return super.once(eventType, handler);
   }
 
-  override removeAllListeners(eventType?: string): this {
+  override removeAllListeners(eventType?: string | symbol): this {
     return super.removeAllListeners(eventType);
   }
 

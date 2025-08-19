@@ -5,3 +5,4 @@ packages:
 
 overrides:
   '@claude-zen/agui': link:packages/agui
+  '@claude-zen/kanban': link:packages/kanban

@@ -39,6 +39,7 @@ export interface PerformancePrediction {
   readonly agentId: string;
   readonly predictedCompletionTime: number;
   readonly predictedSuccessRate: number;
+  readonly predictedScore?: number; // Overall predicted performance score
   readonly confidence: number;
   readonly loadForecast: number; // Expected load in next time window
   readonly recommendedTaskCount: number;
@@ -168,10 +169,14 @@ export class AgentPerformancePredictor {
       // Identify risk factors
       const riskFactors = this.identifyRiskFactors(agentId, relevantData);
 
+      // Calculate overall predicted score
+      const predictedScore = predictedSuccessRate * (1 / (predictedCompletionTime / 1000 + 1)) * confidence;
+
       const prediction: PerformancePrediction = {
         agentId,
         predictedCompletionTime,
         predictedSuccessRate,
+        predictedScore,
         confidence,
         loadForecast,
         recommendedTaskCount,
@@ -248,6 +253,45 @@ export class AgentPerformancePredictor {
         predictedBottlenecks: [],
         optimizationSuggestions: []
       };
+    }
+  }
+
+  /**
+   * Update performance data for continuous learning
+   */
+  async updatePerformanceData(data: {
+    agentId: string;
+    taskType: string;
+    duration: number;
+    success: boolean;
+    efficiency: number;
+    complexity?: number;
+    resourceUsage?: number;
+    errorCount?: number;
+  }): Promise<void> {
+    try {
+      logger.debug(`📊 Updating performance data for agent ${data.agentId}`);
+
+      // Convert to AgentPerformanceData format
+      const performanceData: AgentPerformanceData = {
+        agentId: data.agentId,
+        timestamp: Date.now(),
+        taskType: data.taskType,
+        complexity: data.complexity || 0.5,
+        completionTime: data.duration,
+        successRate: data.success ? 1.0 : 0.0,
+        errorRate: data.success ? 0.0 : 1.0,
+        cpuUsage: data.resourceUsage || 0.5,
+        memoryUsage: data.resourceUsage || 0.5,
+        concurrentTasks: 1 // Default to 1 if not provided
+      };
+
+      // Record the performance data
+      await this.recordPerformance(performanceData);
+
+      logger.debug(`✅ Performance data updated for agent ${data.agentId}`);
+    } catch (error) {
+      logger.error(`❌ Failed to update performance data for agent ${data.agentId}:`, error);
     }
   }
 
@@ -431,6 +475,7 @@ export class AgentPerformancePredictor {
       agentId,
       predictedCompletionTime: 5000, // 5 seconds default
       predictedSuccessRate: 0.7, // 70% default
+      predictedScore: 0.35, // Default score: 0.7 * (1/(5+1)) * 0.1 ≈ 0.35
       confidence: 0.1, // Very low confidence
       loadForecast: 0.5, // Moderate load
       recommendedTaskCount: 1,

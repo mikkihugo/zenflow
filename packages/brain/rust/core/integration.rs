@@ -228,7 +228,7 @@ impl<T: Float + Send + Default> IntegrationTestSuite<T> {
         let mut outputs = Vec::new();
 
         for _ in 0..100 {
-            let input: Vec<T> = (0..4).map(|_| T::from(rng.gen::<f64>()).unwrap()).collect();
+            let input: Vec<T> = (0..4).map(|_| T::from(rng.r#gen::<f64>()).unwrap()).collect();
 
             // Simple classification rule
             let class = if input[0] > T::from(0.5).unwrap() {

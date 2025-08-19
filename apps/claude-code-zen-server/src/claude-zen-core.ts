@@ -135,16 +135,8 @@ export class ClaudeZenCore {
     // Register behavioral intelligence
     const behavioralIntelligenceToken = TokenFactory.create<BehavioralIntelligence>('BehavioralIntelligence');
     container.registerFactory(behavioralIntelligenceToken, () => {
-      // BehavioralIntelligence requires BrainJsBridge - create a simple bridge
-      const simpleBridge = {
-        id: 'default-brain-js-bridge',
-        isInitialized: false,
-        initialize: async () => { /* no-op */ },
-        predict: async () => ({ prediction: 0.5, confidence: 0.5 }),
-        train: async () => ({ loss: 0.1, accuracy: 0.9 }),
-        getMetrics: () => ({ totalPredictions: 0 })
-      } as any;
-      return new BehavioralIntelligence(simpleBridge);
+      // BehavioralIntelligence has optional BrainJsBridge parameter - will use mock bridge if not provided
+      return new BehavioralIntelligence();
     });
 
     // Register multi-system coordinator

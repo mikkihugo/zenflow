@@ -359,6 +359,48 @@ export async function initializeGPUAcceleration(config?: Record<string, unknown>
   };
 }
 
+// Demo function for behavioral intelligence
+export async function demoBehavioralIntelligence(config?: {
+  agentCount?: number;
+  taskTypes?: string[];
+  simulationDuration?: string;
+  learningEnabled?: boolean;
+}): Promise<{
+  agents: any[];
+  predictionAccuracy: number;
+  learningRate: number;
+  keyInsights: string[];
+}> {
+  const defaults = {
+    agentCount: 10,
+    taskTypes: ['coding', 'analysis', 'optimization'],
+    simulationDuration: '1d',
+    learningEnabled: true,
+    ...config
+  };
+
+  logger.debug('Running behavioral intelligence demo with config:', defaults);
+
+  // Simulate behavioral intelligence capabilities
+  const agents = Array.from({ length: defaults.agentCount }, (_, i) => ({
+    id: `agent-${i}`,
+    type: defaults.taskTypes[i % defaults.taskTypes.length],
+    performance: 0.7 + Math.random() * 0.3,
+    learningProgress: defaults.learningEnabled ? Math.random() * 0.5 : 0
+  }));
+
+  return {
+    agents,
+    predictionAccuracy: 0.85 + Math.random() * 0.1,
+    learningRate: defaults.learningEnabled ? 0.15 + Math.random() * 0.1 : 0,
+    keyInsights: [
+      'Agents show improved performance with continuous learning',
+      'Task complexity affects learning rate adaptation',
+      'Behavioral patterns emerge after sustained interaction'
+    ]
+  };
+}
+
 // Import and export missing autonomous optimization classes
 export { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
 export { TaskComplexityEstimator } from './task-complexity-estimator';
@@ -373,7 +415,8 @@ export default {
   trainNeuralNetwork,
   predictWithNetwork,
   detectGPUCapabilities,
-  initializeGPUAcceleration
+  initializeGPUAcceleration,
+  demoBehavioralIntelligence
 };
 
 // Export orchestrator types and classes

@@ -310,22 +310,22 @@ export class AIRuleGenerator {
 
     switch (strategy) {
       case 'pattern-based':
-        return this.generatePatternBasedRules(analysisResults, context);
+        return await this.generatePatternBasedRules(analysisResults, context);
 
       case 'statistical':
-        return this.generateStatisticalRules(analysisResults, context);
+        return await this.generateStatisticalRules(analysisResults, context);
 
       case 'context-aware':
-        return this.generateContextAwareRules(analysisResults, context);
+        return await this.generateContextAwareRules(analysisResults, context);
 
       case 'collaborative':
-        return this.generateCollaborativeRules(analysisResults, context);
+        return await this.generateCollaborativeRules(analysisResults, context);
 
       case 'evolutionary':
-        return this.generateEvolutionaryRules(analysisResults, context);
+        return await this.generateEvolutionaryRules(analysisResults, context);
 
       case 'creative':
-        return this.generateCreativeRules(analysisResults, context);
+        return await this.generateCreativeRules(analysisResults, context);
 
       default:
         this.logger.warn(`Unknown generation strategy: ${strategy}`);
@@ -373,6 +373,7 @@ export class AIRuleGenerator {
   /**
    * Generate rules based on codebase statistics
    */
+  // eslint-disable-next-line require-await -- Future implementation will use async Claude analysis
   private async generateStatisticalRules(
     analysisResults: AIAnalysisResult[],
     context: RuleGenerationContext
@@ -385,19 +386,19 @@ export class AIRuleGenerator {
     // Generate rules for outliers and anomalies
     if (stats.averageComplexity > 15) {
       rules.push(
-        await this.createComplexityRule(stats.averageComplexity * 0.8)
+        this.createComplexityRule(stats.averageComplexity * 0.8)
       );
     }
 
     if (stats.typeAnnotationCoverage < 0.7) {
       rules.push(
-        await this.createTypeAnnotationRule(stats.typeAnnotationCoverage)
+        this.createTypeAnnotationRule(stats.typeAnnotationCoverage)
       );
     }
 
     if (stats.duplicatedCodePercentage > 0.1) {
       rules.push(
-        await this.createDuplicationRule(stats.duplicatedCodePercentage)
+        this.createDuplicationRule(stats.duplicatedCodePercentage)
       );
     }
 
@@ -592,6 +593,7 @@ export class AIRuleGenerator {
     };
   }
 
+  // eslint-disable-next-line require-await -- Future integration with Claude for pattern analysis
   private async generateRuleFromPatterns(
     patternType: string,
     patterns: CodePattern[],
@@ -616,7 +618,7 @@ export class AIRuleGenerator {
     };
   }
 
-  private async createComplexityRule(threshold: number): Promise<BiomeRule> {
+  private createComplexityRule(threshold: number): BiomeRule {
     return {
       name: 'ai-complexity-limit',
       category: 'complexity',
@@ -634,7 +636,7 @@ export class AIRuleGenerator {
     };
   }
 
-  private async createTypeAnnotationRule(coverage: number): Promise<BiomeRule> {
+  private createTypeAnnotationRule(coverage: number): BiomeRule {
     return {
       name: 'ai-type-annotation-coverage',
       category: 'suspicious',
@@ -652,7 +654,7 @@ export class AIRuleGenerator {
     };
   }
 
-  private async createDuplicationRule(percentage: number): Promise<BiomeRule> {
+  private createDuplicationRule(percentage: number): BiomeRule {
     return {
       name: 'ai-code-duplication-limit',
       category: 'style',
@@ -709,21 +711,25 @@ export class AIRuleGenerator {
   }
 
   // Placeholder methods for advanced functionality
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateLibrarySpecificRules(
     context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateWebAppRules(
     context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateAPIRules(
     context: RuleGenerationContext
   ): Promise<BiomeRule[]> {
     return [];
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateCategorySpecificRules(
     category: LintingCategory,
     analysisResults: AIAnalysisResult[],
@@ -731,6 +737,7 @@ export class AIRuleGenerator {
   ): Promise<BiomeRule[]> {
     return [];
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async improveRule(
     ruleName: string,
     feedback: RuleFeedback,
@@ -738,12 +745,14 @@ export class AIRuleGenerator {
   ): Promise<BiomeRule | null> {
     return null;
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateRuleFromSuggestion(
     suggestion: string,
     context: RuleGenerationContext
   ): Promise<BiomeRule | null> {
     return null;
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async evolveRule(
     ruleName: string,
     effectiveness: RuleEffectiveness,
@@ -751,6 +760,7 @@ export class AIRuleGenerator {
   ): Promise<BiomeRule | null> {
     return null;
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async generateRuleVariants(
     ruleName: string,
     effectiveness: RuleEffectiveness,
@@ -758,12 +768,14 @@ export class AIRuleGenerator {
   ): Promise<BiomeRule[]> {
     return [];
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async requestCreativeRules(
     analysisResults: AIAnalysisResult[],
     context: RuleGenerationContext
   ): Promise<string[]> {
     return [];
   }
+  // eslint-disable-next-line require-await -- These are placeholder methods for future AI rule generation
   private async implementCreativeRule(
     suggestion: string,
     context: RuleGenerationContext

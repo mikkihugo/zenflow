@@ -1,0 +1,482 @@
+/**
+ * @fileoverview SAFe Framework Integration
+ * 
+ * Comprehensive Scaled Agile Framework (SAFe) integration providing:
+ * - Portfolio management with lean portfolio management
+ * - Program Increment (PI) planning and execution
+ * - Value stream mapping and optimization
+ */
+
+// ============================================================================
+// TYPES - SAFe framework type definitions
+// ============================================================================
+
+// Epic management types
+export type * from './types/epic-management';
+
+// Product management types  
+export type * from './types/product-management';
+
+export type {
+  // Portfolio types
+  PortfolioEpic,
+  InvestmentHorizon,
+  ValueStream,
+  
+  // Program types  
+  ProgramIncrement,
+  PIObjective,
+  
+  // Configuration types
+  SafeConfiguration,
+  PIConfiguration,
+  PortfolioConfiguration,
+  
+  // SAFe Framework entities
+  AgileReleaseTrain,
+  ARTTeam,
+  TeamMember,
+  TeamCapacity,
+  Feature,
+  Story,
+  Task,
+  Enabler,
+  Risk,
+  Dependency,
+  SystemDemo,
+  DemoFeedback,
+  InspectAndAdapt,
+  Improvement,
+  ProblemSolvingItems,
+  SharedService
+} from './types';
+
+// Export enums
+export {
+  PIStatus,
+  FeatureStatus,
+  ObjectiveStatus,
+  StoryStatus,
+  EnablerStatus
+} from './types';
+
+// ============================================================================
+// EVENTS - SAFe-specific event management
+// ============================================================================
+export type {
+  SafeEvent,
+  PortfolioEpicEvent,
+  PIPlanningEvent,
+  SafeEventType
+} from './events/safe-events';
+
+export {
+  isPortfolioEvent,
+  isPIEvent
+} from './events/safe-events';
+
+// ============================================================================
+// MANAGERS - Core SAFe management components
+// ============================================================================
+
+// Value Stream Management
+export { default as ValueStreamMapper } from './managers/value-stream-mapper';
+export { default as ValueStreamOptimizationEngine } from './managers/value-stream-optimization-engine';
+
+// Continuous Delivery Pipeline Management
+export { default as ContinuousDeliveryPipelineManager } from './managers/continuous-delivery-pipeline';
+
+// Program Increment Management
+export { default as ProgramIncrementManager } from './managers/program-increment-manager';
+
+// Enterprise Architecture Management
+export { default as EnterpriseArchitectureManager } from './managers/enterprise-architecture-manager';
+export { createEnterpriseArchitectureManager } from './managers/enterprise-architecture-manager';
+
+// System Solution Architecture Management
+export { default as SystemSolutionArchitectureManager } from './managers/system-solution-architecture-manager';
+export { createSystemSolutionArchitectureManager } from './managers/system-solution-architecture-manager';
+
+// SAFe Events Management
+export { default as SAFeEventsManager } from './managers/safe-events-manager';
+
+// Architecture Runway Management
+export { default as ArchitectureRunwayManager } from './managers/architecture-runway-manager';
+
+// Epic Owner Management
+export { default as EpicOwnerManager } from './managers/epic-owner-manager';
+
+// Release Train Engineer Management
+export { default as ReleaseTrainEngineerManager } from './managers/release-train-engineer-manager';
+
+// Product Management
+export { default as ProductManagementManager } from './managers/product-management-manager';
+
+// DevSecOps Management
+export { default as DevSecOpsManager } from './managers/devsecops-manager';
+export { createDevSecOpsManager } from './managers/devsecops-manager';
+
+// ============================================================================
+// XSTATE & BATTLE-TESTED INTEGRATIONS - Modern State Management
+// ============================================================================
+
+// XState State Machines for SAFe workflows
+export {
+  epicKanbanMachine,
+  createEpicKanbanMachine,
+  type EpicKanbanMachineActor,
+  type EpicKanbanContext,
+  type EpicKanbanEvent
+} from './state-machines/epic-kanban-machine';
+
+export {
+  piPlanningMachine,
+  createPIPlanningMachine,
+  type PIPlanningMachineActor,
+  type PIPlanningContext,
+  type PIPlanningEvent
+} from './state-machines/pi-planning-machine';
+
+// SAFe-Kanban Integration (battle-tested @claude-zen/kanban with XState)
+export {
+  createSafePortfolioKanban,
+  createSafeProgramKanban,
+  createSafeTeamKanban,
+  portfolioEpicToKanbanTask,
+  featureToKanbanTask,
+  storyToKanbanTask,
+  type SafePortfolioKanbanState,
+  type SafeProgramKanbanState,
+  type SafeTeamKanbanState,
+  type SafeSolutionKanbanState
+} from './integrations/kanban-integration';
+
+// Value Stream Types
+export type {
+  ValueStreamMapperConfig,
+  ValueStreamFlowAnalysis,
+  FlowStepAnalysis,
+  FlowBottleneck,
+  BottleneckImpact,
+  DetailedFlowMetrics,
+  FlowOptimizationRecommendation,
+  ExpectedImpact,
+  ImplementationPlan,
+  ValueDeliveryTracking,
+  ContinuousImprovement,
+  DateRange
+} from './managers/value-stream-mapper';
+
+// Optimization Engine Types
+export type {
+  OptimizationEngineConfig,
+  AdvancedBottleneckAnalysis,
+  AIOptimizationRecommendation,
+  AutomatedKaizenCycle,
+  ValueDeliveryPrediction,
+  OptimizationEngineState
+} from './managers/value-stream-optimization-engine';
+
+// Continuous Delivery Pipeline Types
+export type {
+  CDPipelineConfig,
+  CDPipelineStage,
+  QualityGate,
+  QualityGateCriterion,
+  StageAutomation,
+  PipelineExecutionContext,
+  PipelineExecution,
+  QualityGateResult,
+  PipelineMetrics,
+  CDPipelineState,
+  RetryPolicy,
+  RollbackPolicy,
+  SPARCPhase,
+  StageType,
+  QualityGateType,
+  AutomationType,
+  PipelineStatus,
+  StageStatus
+} from './managers/continuous-delivery-pipeline';
+
+// Program Increment Manager Types
+export type {
+  PIManagerConfig,
+  PIPlanningEventConfig,
+  PlanningParticipant,
+  ArchitecturalVision,
+  PIExecutionMetrics,
+  PIManagerState,
+  PIPlanningResult,
+  CapacityPlanningResult,
+  PICompletionReport,
+  VelocityTrend,
+  VelocityForecast,
+  PredictabilityMetrics,
+  QualityMetrics,
+  RiskBurndown,
+  DependencyHealth,
+  TeamMetrics,
+  QualityAttribute,
+  ArchitecturalDecision,
+  RunwayItem,
+  PlanningAdjustment,
+  PlanningAgendaItem,
+  TeamAllocation,
+  CapacityRisk
+} from './managers/program-increment-manager';
+
+// Release Train Engineer Manager Types
+export type {
+  RTEManagerConfig,
+  FacilitationConfig,
+  ScrumOfScrumsConfig,
+  ProgramImpediment,
+  ImpedimentCategory,
+  ImpedimentSeverity,
+  ImpedimentStatus,
+  ImpedimentEscalationLevel,
+  ProgramPredictability,
+  PredictabilityTrend,
+  ProgramSynchronization,
+  MultiARTCoordination,
+  BusinessImpactAssessment,
+  QualityImpactLevel,
+  CustomerImpactLevel,
+  MoraleImpactLevel
+} from './managers/release-train-engineer-manager';
+
+// Enterprise Architecture Manager Types
+export type {
+  EnterpriseArchConfig,
+  ArchitecturePrinciple,
+  TechnologyStandard,
+  GovernanceDecision,
+  ArchitectureHealthMetrics,
+  ComplianceValidationResult
+} from './types';
+
+// System Solution Architecture Manager Types (includes BusinessContext)
+export type {
+  SystemSolutionArchConfig,
+  SystemDesign,
+  BusinessContext,
+  Stakeholder,
+  ArchitecturalDriver,
+  QualityAttributeSpec,
+  QualityAttributeScenario,
+  QualityMeasure,
+  ArchitecturalTactic,
+  ArchitecturalConstraint,
+  SystemComponent,
+  ComponentInterface,
+  PerformanceExpectation,
+  ComplianceRequirement,
+  ControlRequirement,
+  ArchitectureReview,
+  ReviewFinding
+} from './types';
+
+export {
+  WorkflowHumanGateType,
+  SystemArchitectureType,
+  SolutionArchitecturePattern,
+  SystemDesignStatus,
+  ComponentType
+} from './types';
+
+/**
+ * Placeholder for SAFe portfolio manager - to be implemented
+ */
+export class SafePortfolioManager {
+  public readonly id: string;
+  
+  constructor(config: SafeConfiguration) {
+    this.id = `safe-portfolio-${Date.now()}`;
+    // Implementation to be added
+  }
+  
+  async initialize(): Promise<void> {
+    // Implementation to be added
+  }
+}
+
+// ============================================================================
+// UTILITIES AND FACTORIES
+// ============================================================================
+
+/**
+ * Create a SAFe framework integration
+ */
+export function createSafeFramework(config: SafeConfiguration) {
+  return new SafePortfolioManager(config);
+}
+
+// Types are now exported from ./types/epic-management and ./types/product-management above
+  CommunicationPlan,
+  StakeholderGroup,
+  CommunicationChannel,
+  MessageFramework,
+  CommunicationTimeline,
+  TrainingPlan,
+  TrainingProgram,
+  TrainingMaterial,
+  CompetencyFramework,
+  Competency,
+  RoleCompetency,
+  ProficiencyLevel,
+  SupportPlan,
+  SupportChannel,
+  ResponseTime,
+  StaffingRequirement,
+  EscalationLevel,
+  KnowledgeBaseSpec,
+  ContentCreationPlan,
+  MaintenancePlan,
+  SupportPerformanceTarget,
+  ResourcePlan,
+  TeamRole,
+  SkillRequirement,
+  BudgetAllocation,
+  BudgetCategory,
+  ApprovalLimit,
+  ToolingRequirement,
+  VendorEngagement,
+  ServiceLevelAgreement,
+  TimelineEstimate,
+  Milestone,
+  CriticalPathItem,
+  DependencyPlan,
+  InternalDependency,
+  ExternalDependency,
+  DependencyMap,
+  DependencyNode,
+  DependencyEdge,
+  DependencyMitigationStrategy,
+  QualityPlan,
+  QualityObjective,
+  MeasurableTarget,
+  TestingStrategy,
+  TestType,
+  TestEnvironment,
+  AutomationStrategy,
+  PerformanceTestPlan,
+  PerformanceScenario,
+  SecurityTestPlan,
+  ThreatModel,
+  SecurityThreat,
+  SecurityControl,
+  SecurityTestType,
+  AcceptanceCriteria,
+  QualityMetric,
+  SuccessMetric,
+  SuccessThreshold,
+  StakeholderImpact,
+  ApprovalRecord,
+  EpicSplittingPlan,
+  SplittingCriterion,
+  FeatureSplit,
+  DependencyImpact,
+  ValuePreservationPlan,
+  ValueElement,
+  ImplementationSequence,
+  SequencePhase,
+  CoordinationPoint,
+  ValueRealizationTracking,
+  RealizationPlan,
+  PlannedBenefit,
+  RealizationMilestone,
+  MeasurementPlan,
+  BenefitMeasurement,
+  DataCollectionMethod,
+  ReportingSchedule,
+  ValidationMethod,
+  BaselineMetric,
+  ActualPerformance,
+  PerformanceMetric,
+  BenefitRealization,
+  TimelinePerformance,
+  CostPerformance,
+  CostCategoryPerformance,
+  CostOverrun,
+  VarianceAnalysis,
+  SignificantVariance,
+  RootCauseAnalysis,
+  RootCause,
+  ImpactAssessment,
+  ImpactArea,
+  StakeholderVarianceImpact,
+  VarianceRecommendation,
+  CorrectionAction,
+  LearningCapture,
+  EpicOwnerManagerState,
+  StakeholderEngagement,
+  EngagementActivity,
+  CommunicationRecord,
+  StakeholderFeedback,
+  StakeholderRelationship,
+  EpicOwnerMetrics
+} from './managers/epic-owner-manager';
+
+// DevSecOps Manager Types
+export type {
+  DevSecOpsManagerConfig,
+  ComplianceConfig,
+  SecurityConfig,
+  ComplianceFramework,
+  ComplianceRequirement,
+  ValidationRule,
+  EvidenceRequirement,
+  SecurityStandard,
+  SecurityControl,
+  SecurityTool,
+  SecurityToolType,
+  SecurityAssessment,
+  SecurityAssessmentType,
+  AssessmentScope,
+  SecurityFinding,
+  SecuritySeverity,
+  SecurityCategory,
+  CVSSScore,
+  FindingLocation,
+  SecurityImpact,
+  ImpactLevel,
+  SecurityLikelihood,
+  RemediationGuidance,
+  FindingStatus,
+  ComplianceStatus,
+  ComplianceLevel,
+  FrameworkComplianceStatus,
+  ComplianceGap,
+  ComplianceRecommendation,
+  SecurityRecommendation,
+  ImplementationGuidance,
+  SecurityMetrics,
+  MetricsPeriod,
+  VulnerabilityMetrics,
+  ComplianceMetrics,
+  IncidentMetrics,
+  TrainingMetrics,
+  PipelineSecurityMetrics,
+  TrendData,
+  CategoryCount,
+  FrameworkScore,
+  PhishingResults,
+  TrainingSchedule,
+  SecurityIncident,
+  IncidentSeverity,
+  IncidentCategory,
+  IncidentStatus,
+  IncidentImpact,
+  IncidentTimelineEntry,
+  IncidentEvidence,
+  CustodyEntry,
+  IncidentResponse,
+  ResponseAction,
+  CommunicationAction,
+  LessonsLearned,
+  DevSecOpsManagerState
+} from './managers/devsecops-manager';
+
+// Re-export types
+import type { SafeConfiguration } from './types';

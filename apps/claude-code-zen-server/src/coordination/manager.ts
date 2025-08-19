@@ -6,8 +6,8 @@
  * Integrates comprehensive @claude-zen packages for enhanced coordination:
  * - @claude-zen/foundation: Core infrastructure, logging, telemetry
  * - @claude-zen/event-system: Type-safe event-driven coordination
- * - @claude-zen/load-balancing: Intelligent agent selection and resource optimization
- * - @claude-zen/agent-monitoring: Agent health monitoring and task prediction
+ * - @claude-zen/brain: Intelligent agent selection and resource optimization
+ * - @claude-zen/brain: Agent health monitoring and task prediction
  * - @claude-zen/neural-ml: High-performance neural computing for agent optimization
  * - @claude-zen/ai-safety: Safety protocols and deception detection
  * - @claude-zen/teamwork: Multi-agent collaboration patterns

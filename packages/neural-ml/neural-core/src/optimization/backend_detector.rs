@@ -9,6 +9,7 @@
  */
 
 use super::{OptimizationBackend, Result};
+#[allow(unused_imports)]  // TODO: Use for thread-safe backend sharing in multi-threaded ML operations
 use std::sync::Arc;
 
 /// Detect the optimal backend for this machine

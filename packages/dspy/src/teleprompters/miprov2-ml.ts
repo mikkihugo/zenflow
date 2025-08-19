@@ -20,9 +20,9 @@
 
 import { EventEmitter } from 'node:events';
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '../../../config/logging-config';
-import { Teleprompter } from '../core/teleprompter';
-import { DSPyModule } from '../core/module';
+import { getLogger } from '@claude-zen/foundation';
+import { Teleprompter } from './teleprompter';
+import { DSPyModule } from '../primitives/module';
 import type { 
   MLEngine,
   BayesianOptimizer,
@@ -35,7 +35,7 @@ import type {
   Pattern,
   HypothesisTest,
   StatisticalResult
-} from '../../neural-ml/src/ml-interfaces';
+} from '@claude-zen/neural-ml';
 
 // MIPROv2 ML-specific configuration
 export interface MIPROv2MLConfig {
@@ -117,6 +117,7 @@ export interface MIPROv2MLResult {
  * using battle-tested Rust crates and npm packages for optimization and analysis.
  */
 export class MIPROv2ML extends Teleprompter {
+  private eventEmitter: EventEmitter = new EventEmitter();
   private logger: Logger;
   private config: MIPROv2MLConfig;
   private initialized: boolean = false;
@@ -181,34 +182,37 @@ export class MIPROv2ML extends Teleprompter {
   /**
    * Initialize ML components with battle-tested libraries
    */
-  async initialize(): Promise<void> {
+  async initialize() : Promise<void> {
     if (this.initialized) return;
 
     try {
       this.logger.info('Initializing MIPROv2ML with battle-tested ML libraries...');
       
       // Dynamically import ML engine (lazy loading)
-      const { createMLEngine } = await import('../../neural-ml/src/ml-engine');
+      const { createMLEngine } = await import('@claude-zen/neural-ml');
       
-      this.mlEngine = await createMLEngine({
-        backend: 'rust',
-        enableGPU: false, // CPU-optimized for now
-        maxConcurrency: this.config.maxConcurrency,
-        cacheSize: 1000
-      });
-
-      await this.mlEngine.initialize({
-        backend: 'rust',
-        enableGPU: false,
-        maxConcurrency: this.config.maxConcurrency,
-        cacheSize: 1000
+      this.mlEngine = createMLEngine({
+        enableTelemetry: true,
+        optimizationLevel: 'aggressive',
+        parallelExecution: true
       }, this.logger);
 
-      // Extract individual ML components
-      this.bayesianOptimizer = this.mlEngine.bayesianOptimizer;
-      this.multiObjectiveOptimizer = this.mlEngine.multiObjectiveOptimizer;
-      this.patternLearner = this.mlEngine.patternLearner;
-      this.statisticalAnalyzer = this.mlEngine.statisticalAnalyzer;
+      // Create individual ML components
+      const { createBayesianOptimizer } = await import('@claude-zen/neural-ml');
+      const { createMultiObjectiveOptimizer } = await import('@claude-zen/neural-ml');
+      const { createPatternLearner } = await import('@claude-zen/neural-ml');
+      const { createStatisticalAnalyzer } = await import('@claude-zen/neural-ml');
+      
+      this.bayesianOptimizer = createBayesianOptimizer({
+        lower: [0.001, 0.1, 0.5, 10, 0.1],
+        upper: [0.1, 2.0, 0.99, 100, 1.0]
+      });
+      this.multiObjectiveOptimizer = createMultiObjectiveOptimizer({
+        lower: [0.001, 0.1, 0.5, 10, 0.1],
+        upper: [0.1, 2.0, 0.99, 100, 1.0]
+      });
+      this.patternLearner = createPatternLearner({});
+      this.statisticalAnalyzer = createStatisticalAnalyzer();
 
       // Configure Bayesian optimizer with battle-tested settings
       await this.bayesianOptimizer.configure({
@@ -245,9 +249,32 @@ export class MIPROv2ML extends Teleprompter {
   }
 
   /**
-   * Compile DSPy module with ML-enhanced optimization
+   * Emit events through internal EventEmitter
    */
-  async compile(student: DSPyModule, options: any = {}): Promise<MIPROv2MLResult> {
+  private emit(event: string, data?: any): void {
+    this.eventEmitter.emit(event, data);
+  }
+
+  /**
+   * Compile the module with base interface compatibility
+   */
+  async compile(
+    student: DSPyModule,
+    config: {
+      trainset: any[];
+      teacher?: DSPyModule | null;
+      valset?: any[] | null;
+      [key: string]: any;
+    }
+  ): Promise<DSPyModule> {
+    const result = await this.compileML(student, config);
+    return result.optimizedModule;
+  }
+
+  /**
+   * ML-enhanced compilation with detailed results
+   */
+  async compileML(student: DSPyModule, options: any = {}) : Promise<MIPROv2MLResult> {
     if (!this.initialized) {
       await this.initialize();
     }
@@ -316,7 +343,7 @@ export class MIPROv2ML extends Teleprompter {
   private async performMultiObjectiveOptimization(
     student: DSPyModule, 
     options: any
-  ): Promise<{ bestSolution: any; paretoFront: ParetoFront }> {
+  ) : Promise<{ bestSolution: any; paretoFront: ParetoFront }> {
     this.logger.info('Performing multi-objective optimization with NSGA-II algorithm...');
     
     // Define parameter bounds for MIPROv2
@@ -332,7 +359,7 @@ export class MIPROv2ML extends Teleprompter {
       async (params: number[]) => await this.evaluateMemoryUsage(student, params, options)
     ];
 
-    const result = await this.multiObjectiveOptimizer!.optimize(objectives, bounds);
+    const result = await this.multiObjectiveOptimizer!.optimize(objectives);
     
     if (!result || result.solutions.length === 0) {
       throw new Error('Multi-objective optimization failed to find solutions');
@@ -356,7 +383,7 @@ export class MIPROv2ML extends Teleprompter {
   private async performBayesianOptimization(
     student: DSPyModule,
     initialSolution: any
-  ): Promise<OptimizationResult> {
+  ) : Promise<OptimizationResult> {
     this.logger.info('Performing Bayesian optimization with Gaussian Process...');
     
     const bounds: OptimizationBounds = {
@@ -381,7 +408,7 @@ export class MIPROv2ML extends Teleprompter {
       return accuracy;
     };
 
-    const result = await this.bayesianOptimizer!.optimize(objectiveFunction, bounds);
+    const result = await this.bayesianOptimizer!.optimize(objectiveFunction);
     
     this.logger.info(`Bayesian optimization completed after ${result.iterations} iterations`);
     
@@ -391,7 +418,7 @@ export class MIPROv2ML extends Teleprompter {
   /**
    * Analyze optimization patterns using clustering and pattern recognition
    */
-  private async analyzeOptimizationPatterns(): Promise<Pattern[]> {
+  private async analyzeOptimizationPatterns() : Promise<Pattern[]> {
     if (!this.config.usePatternAnalysis || this.optimizationHistory.length < 10) {
       return [];
     }
@@ -407,7 +434,7 @@ export class MIPROv2ML extends Teleprompter {
     ]);
 
     // Convert to embeddings for pattern learning
-    const embeddings = trajectoryFeatures.map(features => new Float32Array(features));
+    const embeddings = trajectoryFeatures.map(features => [features]);
     
     const trainingExamples = embeddings.map((embedding, i) => ({
       text: `optimization_point_${i}`,
@@ -419,7 +446,8 @@ export class MIPROv2ML extends Teleprompter {
       }
     }));
 
-    const patterns = await this.patternLearner!.trainPatterns(trainingExamples);
+    const patternResult = await this.patternLearner!.trainPatterns(trainingExamples);
+    const patterns = Array.isArray(patternResult) ? patternResult : patternResult.patterns || [];
     
     this.logger.info(`Detected ${patterns.length} optimization patterns`);
     
@@ -429,7 +457,7 @@ export class MIPROv2ML extends Teleprompter {
   /**
    * Statistical validation using t-tests, ANOVA, and regression analysis
    */
-  private async performStatisticalValidation(): Promise<HypothesisTest[]> {
+  private async performStatisticalValidation() : Promise<HypothesisTest[]> {
     if (!this.config.useStatisticalValidation || this.optimizationHistory.length < this.config.minimumSampleSize) {
       return [];
     }
@@ -462,7 +490,8 @@ export class MIPROv2ML extends Teleprompter {
         pValue: 0.001, // Mock p-value - would be calculated from regression
         critical: 0.95,
         significant: regression.rSquared > 0.95,
-        effectSize: regression.rSquared
+        effectSize: regression.rSquared,
+        confidenceInterval: [regression.rSquared - 0.05, regression.rSquared + 0.05] as [number, number]
       });
     }
     
@@ -494,7 +523,7 @@ export class MIPROv2ML extends Teleprompter {
     return bestSolution;
   }
 
-  private async evaluateAccuracy(student: DSPyModule, params: number[], options: any): Promise<number> {
+  private async evaluateAccuracy(student: DSPyModule, params: number[], options: any) : Promise<number> {
     // Mock accuracy evaluation - replace with actual DSPy evaluation
     const baseAccuracy = 0.7;
     const paramInfluence = params.reduce((sum, p, i) => sum + p * (0.1 / (i + 1)), 0);
@@ -503,7 +532,7 @@ export class MIPROv2ML extends Teleprompter {
     return Math.max(0, Math.min(1, baseAccuracy + paramInfluence + noise));
   }
 
-  private async evaluateSpeed(student: DSPyModule, params: number[], options: any): Promise<number> {
+  private async evaluateSpeed(student: DSPyModule, params: number[], options: any) : Promise<number> {
     // Mock speed evaluation (inversely related to some parameters)
     const baseSpeed = 0.8;
     const paramPenalty = params.reduce((sum, p, i) => sum + p * (0.05 / (i + 1)), 0);
@@ -511,7 +540,7 @@ export class MIPROv2ML extends Teleprompter {
     return Math.max(0.1, Math.min(1, baseSpeed - paramPenalty));
   }
 
-  private async evaluateMemoryUsage(student: DSPyModule, params: number[], options: any): Promise<number> {
+  private async evaluateMemoryUsage(student: DSPyModule, params: number[], options: any) : Promise<number> {
     // Mock memory efficiency (higher is better, less memory usage)
     const baseMemoryEff = 0.6;
     const paramImpact = params.reduce((sum, p, i) => sum + (p > 0.5 ? -0.05 : 0.03), 0);
@@ -536,12 +565,13 @@ export class MIPROv2ML extends Teleprompter {
     
     // Apply optimized configuration to student module
     // (This is a mock implementation - actual implementation would modify the DSPy module)
-    const optimizedModule = { ...student, config: optimizedConfig };
+    const optimizedModule = Object.assign({}, student);
+    (optimizedModule as any).config = optimizedConfig;
     
     return optimizedModule;
   }
 
-  private async evaluateFinalPerformance(module: DSPyModule, options: any): Promise<{ accuracy: number; speed: number; memory: number }> {
+  private async evaluateFinalPerformance(module: DSPyModule, options: any) : Promise<{ accuracy: number; speed: number; memory: number }> {
     // Final comprehensive evaluation
     return {
       accuracy: 0.85 + Math.random() * 0.1, // Mock final accuracy
@@ -555,7 +585,7 @@ export class MIPROv2ML extends Teleprompter {
     
     // Pattern-based recommendations
     if (patterns.length > 0) {
-      const highQualityPatterns = patterns.filter(p => p.quality > 0.7);
+      const highQualityPatterns = patterns.filter(p => (p as any).quality > 0.7);
       if (highQualityPatterns.length > 0) {
         recommendations.push(`Found ${highQualityPatterns.length} high-quality optimization patterns - consider pattern-based initialization for future runs`);
       }
@@ -602,12 +632,12 @@ export class MIPROv2ML extends Teleprompter {
     return insights;
   }
 
-  private async getCurrentMemoryUsage(): Promise<number> {
+  private async getCurrentMemoryUsage() : Promise<number> {
     // Mock memory usage calculation - would use actual process.memoryUsage() or similar
     return Math.floor(Math.random() * 1000 + 500); // MB
   }
 
-  private async analyzeConvergence(): Promise<StatisticalResult> {
+  private async analyzeConvergence() : Promise<StatisticalResult> {
     if (this.optimizationHistory.length === 0) {
       throw new Error('No optimization history available for convergence analysis');
     }
@@ -624,10 +654,4 @@ export function createMIPROv2ML(config?: Partial<MIPROv2MLConfig>): MIPROv2ML {
   return new MIPROv2ML(config);
 }
 
-// Export all types and classes
-export {
-  MIPROv2ML,
-  createMIPROv2ML,
-  type MIPROv2MLConfig,
-  type MIPROv2MLResult
-};
+// Export all types and classes - removed to avoid duplicates

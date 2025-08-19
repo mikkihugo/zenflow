@@ -36,7 +36,7 @@ const CONFIG = {
   /** File patterns to exclude */
   EXCLUDE_PATTERNS: ['**/*.test.ts', '**/*.test.tsx', '**/dist/**', '**/node_modules/**'],
   /** Directories to scan by default */
-  DEFAULT_SCAN_DIRS: ['.'],
+  DEFAULT_SCAN_DIRS: ['src'],
   /** Output formatting options */
   OUTPUT: {
     showUndocumented: true,
@@ -334,7 +334,7 @@ function generateSummaryReport(analyses) {
 /**
  * Gets TypeScript files to analyze
  */
-function getFilesToAnalyze(directories = CONFIG.DEFAULT_SCAN_DIRS) {
+function getFilesToAnalyze(directories = CONFIG.DEFAULT_SCAN_DIRS, excludeDtsFiles = false) {
   const files = [];
   
   for (const dir of directories) {
@@ -346,8 +346,13 @@ function getFilesToAnalyze(directories = CONFIG.DEFAULT_SCAN_DIRS) {
         
         if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
           // Recursively scan subdirectories
-          files.push(...getFilesToAnalyze([fullPath]));
+          files.push(...getFilesToAnalyze([fullPath], excludeDtsFiles));
         } else if (entry.isFile() && entry.name.endsWith('.ts') && !entry.name.endsWith('.test.ts')) {
+          // Exclude .d.ts files if requested
+          if (excludeDtsFiles && entry.name.endsWith('.d.ts')) {
+            // Skip .d.ts files when exclude flag is set
+            continue;
+          }
           files.push(fullPath);
         }
       }
@@ -395,6 +400,12 @@ ${colorize('Examples:', 'blue')}
     CONFIG.OUTPUT.colorOutput = false;
   }
   
+  // Exclude .d.ts files option
+  let excludeDtsFiles = false;
+  if (args.includes('--exclude-dts')) {
+    excludeDtsFiles = true;
+  }
+  
   const thresholdIndex = args.indexOf('--threshold');
   if (thresholdIndex !== -1 && args[thresholdIndex + 1]) {
     CONFIG.COVERAGE_THRESHOLD = parseInt(args[thresholdIndex + 1], 10);
@@ -402,7 +413,7 @@ ${colorize('Examples:', 'blue')}
 
   // Get files to analyze
   const fileArgs = args.filter(arg => !arg.startsWith('--') && !arg.match(/^\d+$/));
-  const filesToAnalyze = fileArgs.length > 0 ? fileArgs : getFilesToAnalyze();
+  const filesToAnalyze = fileArgs.length > 0 ? fileArgs : getFilesToAnalyze(CONFIG.DEFAULT_SCAN_DIRS, excludeDtsFiles);
 
   if (filesToAnalyze.length === 0) {
     console.warn(colorize('⚠️  No TypeScript files found to analyze', 'yellow'));

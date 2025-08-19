@@ -9,8 +9,8 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import { FactCapable } from '../universal-fact-mixin';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+
+// import type { MemoryCoordinator } from '@claude-zen/memory'; // TODO: Fix memory package build
 import type {
   AgentCapabilities,
   AgentId,
@@ -89,14 +89,14 @@ export interface AgentSelectionCriteria {
  * @example
  */
 export class AgentRegistry extends EventEmitter {
-  private memory: MemoryCoordinator;
+  private memory: any; // MemoryCoordinator type when package is fixed
   private namespace: string;
   private agents = new Map<AgentId, RegisteredAgent>();
   private lastUpdate = new Map<AgentId, Date>();
   private healthCheckInterval?: NodeJS.Timeout;
   private initialized = false;
 
-  constructor(memory: MemoryCoordinator, namespace: string = 'agent-registry') {
+  constructor(memory: any, namespace: string = 'agent-registry') {
     super();
     this.memory = memory;
     this.namespace = namespace;

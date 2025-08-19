@@ -315,3 +315,32 @@ export type {
   MetricData,
   PerformanceMetrics
 } from './src/main';
+
+// =============================================================================
+// DATABASE SYSTEM - Internal multi-database abstraction (formerly @claude-zen/database)
+// =============================================================================
+
+export {
+  DatabaseAdapter,
+  SQLiteAdapter,
+  LanceDBAdapter,
+  KuzuAdapter,
+  RelationalDAO,
+  VectorDAO,
+  GraphDAO,
+  createDatabaseAdapter,
+  createSQLiteAdapter,
+  createLanceDBAdapter,
+  createKuzuAdapter
+} from './src/database/index';
+
+export type {
+  DatabaseConfig,
+  ConnectionOptions,
+  QueryResult,
+  Transaction,
+  VectorQuery,
+  GraphQuery,
+  DatabaseType,
+  AdapterCapabilities
+} from './src/database/types';

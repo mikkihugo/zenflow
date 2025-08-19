@@ -38,7 +38,7 @@ export interface ValidationQuestion {
 export interface AGUIInterface {
   askQuestion(question: ValidationQuestion): Promise<string>;
   askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]>;
-  showProgress(progress: unknown): Promise<void>;
+  showProgress(progress: any): Promise<void>;
   showMessage(
     message: string,
     type?: 'info' | 'warning' | 'error' | 'success'
@@ -160,7 +160,7 @@ export class TerminalAGUI extends EventEmitter implements AGUIInterface {
     return answers;
   }
 
-  async showProgress(progress: unknown): Promise<void> {
+  async showProgress(progress: any): Promise<void> {
     if (typeof progress === 'object' && progress !== null) {
       const prog = progress as any;
       
@@ -276,7 +276,7 @@ export class MockAGUI implements AGUIInterface {
     );
   }
 
-  async showProgress(progress: unknown): Promise<void> {
+  async showProgress(progress: any): Promise<void> {
     logger.debug('Mock AGUI Progress:', progress);
   }
 

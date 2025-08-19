@@ -120,14 +120,16 @@
  * @see {@link cli} CLI entry point for validation
  */
 
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('src-config-startup-validator') as any; // Use any to allow flexible logger interface
-
 import * as process from 'node:process';
+
+import { getLogger } from '../config/logging-config'; // Use any to allow flexible logger interface
+import type { ValidationResult } from '../types/config-types';
+
 import { configHealthChecker } from './health-checker';
 import { configManager } from './manager';
-import type { ValidationResult } from '../types/config-types';
+
+
+const logger = getLogger('src-config-startup-validator') as any;
 
 /**
  * Startup validation options for configuring validation behavior.
@@ -363,7 +365,7 @@ export async function runStartupValidation(
         process.stdout.write('🌍 Validating environment variables... ');
       }
 
-      const envIssues = await validateEnvironmentVariables(
+      const envIssues = validateEnvironmentVariables(
         environment === 'production'
       );
       if (envIssues.errors.length > 0) {
@@ -474,16 +476,16 @@ export async function runStartupValidation(
  * 
  * @example Environment Validation
  * ```typescript
- * const { errors, warnings } = await validateEnvironmentVariables(true);
+ * const { errors, warnings } = validateEnvironmentVariables(true);
  * if (errors.length > 0) {
  *   console.error('Environment validation failed:', errors);
  * }
  * ```
  */
-async function validateEnvironmentVariables(isProduction: boolean): Promise<{
+function validateEnvironmentVariables(isProduction: boolean): {
   errors: string[];
   warnings: string[];
-}> {
+} {
   const errors: string[] = [];
   const warnings: string[] = [];
 

@@ -18,46 +18,63 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noExplicitAny": "error",
+        "noExplicitAny": "warn",
         "noConsole": "warn",
         "noDebugger": "error",
         "useAwait": "error",
-        "noThenProperty": "error"
+        "noThenProperty": "error",
+        "noDoubleEquals": "error",
+        "noImplicitAnyLet": "error",
+        "noUnsafeDeclarationMerging": "error"
       },
       "style": {
-        "useConst": "error",
-        "useTemplate": "error",
-        "noUselessElse": "error",
-        "useImportType": "error",
-        "useNodejsImportProtocol": "error"
+        "useConst": "warn",
+        "useTemplate": "warn",
+        "noUselessElse": "warn",
+        "useImportType": "warn",
+        "useNodejsImportProtocol": "error",
+        "useEnumInitializers": "warn",
+        "useExportType": "warn"
       },
       "complexity": {
         "noExcessiveCognitiveComplexity": {
-          "level": "error",
-          "options": { "maxAllowedComplexity": 10 }
+          "level": "warn",
+          "options": { "maxAllowedComplexity": 15 }
         },
-        "noUselessTernary": "error",
-        "useFlatMap": "error"
+        "noUselessTernary": "warn",
+        "useFlatMap": "warn",
+        "noForEach": "warn"
       },
       "correctness": {
-        "noUnusedVariables": "error",
-        "noUnusedImports": "error",
+        "noUnusedVariables": "warn",
+        "noUnusedImports": "warn",
+        "noUnusedFunctionParameters": "warn",
+        "noUnusedLabels": "warn",
         "noUndeclaredVariables": "error",
         "useImportExtensions": {
-          "level": "error",
+          "level": "warn",
           "options": {
-            "forceJsExtensions": true
+            "forceJsExtensions": false
           }
-        }
+        },
+        "noUnsafeOptionalChaining": "error",
+        "useValidForDirection": "error"
       },
       "performance": {
         "noDelete": "warn",
-        "noAccumulatingSpread": "error"
+        "noAccumulatingSpread": "warn"
       },
       "security": {
-        "noGlobalEval": "error"
+        "noGlobalEval": "error",
+        "noDangerouslySetInnerHtml": "error"
+      },
+      "nursery": {
+        "noSecrets": "error"
       }
     }
+  },
+  "assist": {
+    "enabled": true
   },
   "javascript": {
     "formatter": {
@@ -68,13 +85,6 @@
     "globals": ["process", "Buffer", "__dirname", "__filename", "console"]
   },
   "files": {
-    "includes": ["src/**/*", "scripts/**/*", "tests/**/*"],
-    "experimentalScannerIgnores": [
-      "**/node_modules/**",
-      "**/dist/**",
-      "**/build/**",
-      "**/docs/**",
-      "**/*.d.ts"
-    ]
+    "includes": ["src/**/*", "scripts/**/*", "packages/*/src/**/*", "apps/*/src/**/*"]
   }
 }

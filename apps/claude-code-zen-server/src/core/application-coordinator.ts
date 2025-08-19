@@ -22,7 +22,7 @@ import { DocumentDrivenSystem } from './document-driven-system';
 import { DocumentationLinker } from './documentation-linker';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceLauncher } from './interface-launcher';
-import { MemorySystem } from './memory-system';
+import { MemorySystem } from '@claude-zen/memory';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 const logger = getLogger('ApplicationCoordinator');

@@ -60,7 +60,7 @@ export class EnhancedBaseAgent extends FactCapableBaseAgent
   }
 
   /** Store fact in shared system */
-  async storeSharedFact(fact: unknown): Promise<void> {
+  async storeSharedFact(fact: any): Promise<void> {
     const factSystem = await this.getSharedFACTSystem();
     await factSystem?.storeFact(fact);
   }
@@ -174,10 +174,11 @@ export class EnhancedBaseAgent extends FactCapableBaseAgent
             case 'npm-package':
               factResult = await this.getSharedNPMFacts(subject);
               break;
-            case 'github-repo':
+            case 'github-repo': {
               const [owner, repo] = subject.split('/');
               factResult = await this.getSharedGitHubFacts(owner, repo);
               break;
+            }
             case 'api-docs':
               factResult = await this.getSharedAPIFacts(subject);
               break;

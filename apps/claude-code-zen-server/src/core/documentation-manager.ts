@@ -21,7 +21,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { Logger } from '@claude-zen/foundation';
-import type { MemorySystem } from '../memory/memory-system';
+import type { MemorySystem } from '@claude-zen/memory';
 
 const logger = new Logger('DocumentationManager');
 
@@ -94,7 +94,7 @@ export class DocumentationManager extends EventEmitter {
     logger.info('Documentation manager ready');
   }
 
-  async indexDocument(document: unknown): Promise<void> {
+  async indexDocument(document: any): Promise<void> {
     await this.ensureInitialized();
 
     // Index the document

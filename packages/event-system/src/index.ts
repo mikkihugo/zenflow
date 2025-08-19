@@ -74,6 +74,72 @@ export type {
 } from './main';
 
 // =============================================================================
+// EVENT SYSTEM DOMAIN TYPES - Comprehensive event domain types
+// =============================================================================
+
+export type {
+  // Core event system types
+  EventPriority,
+  SystemEvent,
+  ProcessingStrategy,
+  BackoffStrategy,
+  ReliabilityLevel,
+  
+  // Configuration types
+  EventManagerConfig as EventManagerDomainConfig,
+  ProcessingConfig,
+  RetryConfig,
+  HealthConfig,
+  MonitoringConfig,
+  
+  // Event types by domain
+  SystemLifecycleEvent,
+  CoordinationEvent as CoordinationDomainEvent,
+  CommunicationEvent,
+  MonitoringEvent,
+  InterfaceEvent as InterfaceDomainEvent,
+  NeuralEvent,
+  DatabaseEvent,
+  MemoryEvent,
+  WorkflowEvent as WorkflowDomainEvent,
+  OrchestrationEvent,
+  SafeEvent,
+  MemoryOrchestrationEvent,
+  
+  // Unified event types
+  UELEvent,
+  
+  // Coordination types
+  CoordinationTopology,
+  CommunicationProtocol,
+  
+  // Processing types
+  ProcessingStatus,
+  SubscriptionInfo,
+  
+  // Error types
+  EventError,
+  ProcessingError,
+  SubscriptionError,
+  
+  // Result types
+  EventResult,
+  EventProcessingResult,
+  EventSubscriptionResult
+} from './types/index';
+
+// Export constants and type guards
+export {
+  EventCategories,
+  EventTypePatterns,
+  EventPriorityMap,
+  EventConstants,
+  UELTypeGuards
+} from './types/index';
+
+// Export enums (avoiding duplicate exports - these are already exported as types above)
+
+// =============================================================================
 // VALIDATION FRAMEWORK
 // =============================================================================
 export {

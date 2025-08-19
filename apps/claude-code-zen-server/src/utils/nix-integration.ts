@@ -8,6 +8,7 @@ import { exec } from 'node:child_process';
 import { access, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
+import { getLogger } from '@claude-zen/foundation';
 
 const execAsync = promisify(exec);
 
@@ -29,6 +30,7 @@ export interface NixEnvironment {
 }
 
 export class NixIntegration {
+  private logger = getLogger('NixIntegration');
   private cachePath: string;
   private cacheExpiry = 5 * 60 * 1000; // 5 minutes
 
@@ -71,7 +73,7 @@ export class NixIntegration {
       await this.saveCache(environment);
       return environment;
     } catch (error) {
-      console.error('Failed to detect Nix environment:', error);
+      this.logger.error('Failed to detect Nix environment:', error);
       return {
         nixAvailable: false,
         flakesEnabled: false,
@@ -241,7 +243,7 @@ export class NixIntegration {
           installed,
         });
       } catch (error) {
-        console.error(`Failed to check package ${pkg.name}:`, error);
+        this.logger.error(`Failed to check package ${pkg.name}:`, error);
         packages.push({
           name: pkg.name,
           description: pkg.description,
@@ -513,7 +515,7 @@ export class NixIntegration {
 
       await writeFile(this.cachePath, JSON.stringify(cache, null, 2));
     } catch (error) {
-      console.error('Failed to save Nix cache:', error);
+      this.logger.error('Failed to save Nix cache:', error);
     }
   }
 

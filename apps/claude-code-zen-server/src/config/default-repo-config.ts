@@ -71,13 +71,17 @@
  * @see {@link validateRepoConfig} Configuration validation system
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
 import type { ClaudeZenCoreConfig } from '../types/core-config';
+
+
+
 // Memory optimization utilities (temporary fallback)
 const calculateOptimalStreams = (memoryMB: number) => Math.min(4, Math.floor(memoryMB / 1024));
 const memory8GBConfig = { maxStreams: 4, bufferSize: 1024 * 1024 };
-import {
-  runStartupValidation,
-} from './startup-validator';
+
+const logger = getLogger('DefaultRepoConfig');
 
 /**
  * Repository Configuration Interface - Complete configuration structure for claude-code-zen repositories
@@ -462,28 +466,29 @@ export function createRepoConfig(
     ...overrides,
   };
 
-  console.log(`🔒 Ultra-safe startup: Conservative settings for any system`);
+  logger.info('🔒 Ultra-safe startup: Conservative settings for any system');
   
   // Type-safe access to maxParallelStreams
   const streams = optimizedConfig.maxParallelStreams;
   if (typeof streams === 'object' && streams !== null) {
-    console.log(
-      `🎯 Initial streams: Portfolio=${streams.portfolio}, Program=${streams.program}, Swarm=${streams.swarm}`
-    );
+    logger.info('🎯 Initial streams:', {
+      portfolio: streams.portfolio,
+      program: streams.program,
+      swarm: streams.swarm
+    });
   } else {
-    console.log(`🎯 Initial streams: ${streams} (simple configuration)`);
+    logger.info(`🎯 Initial streams: ${streams} (simple configuration)`);
   }
-  console.log('🚀 System will auto-scale based on performance metrics');
+  logger.info('🚀 System will auto-scale based on performance metrics');
 
   // Validate configuration before returning (wired up!)
   const repoValidation = validateRepoConfig(optimizedConfig);
   if (repoValidation.valid) {
-    console.log('✅ Repository configuration validated successfully');
+    logger.info('✅ Repository configuration validated successfully');
   } else {
-    console.warn(
-      '⚠️ Repository configuration validation warnings:',
-      repoValidation.errors
-    );
+    logger.warn('⚠️ Repository configuration validation warnings:', {
+      errors: repoValidation.errors
+    });
     // Continue with warnings but don't fail - configs might have acceptable issues
   }
 
@@ -659,59 +664,26 @@ export function validateRepoConfig(config: RepoConfig): {
  * @since 1.0.0-alpha.43
  */
 export function logRepoConfigStatus(config: RepoConfig): void {
-  const logger = console;
-
-  logger.log('🚀 Repository Configuration:');
-  logger.log(`   Repository: ${config.repoName} (${config.repoPath})`);
-  logger.log(
-    `   Advanced Kanban Flow: ${config.enableAdvancedKanbanFlow ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   ML Optimization: ${config.enableMLOptimization ? '✅ ENABLED' : '❌ DISABLED'} (Level: ${config.mlOptimizationLevel})`
-  );
-  logger.log(
-    `   Bottleneck Detection: ${config.enableBottleneckDetection ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   Predictive Analytics: ${config.enablePredictiveAnalytics ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   Real-Time Monitoring: ${config.enableRealTimeMonitoring ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   Resource Management: ${config.enableIntelligentResourceManagement ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   AGUI Gates: ${config.enableAGUIGates ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   Cross-Level Optimization: ${config.enableCrossLevelOptimization ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   DSPy Neural Enhancement: ${config.dsyIntegration.enabled ? '✅ ENABLED' : '❌ DISABLED'}`
-  );
-  logger.log(
-    `   Auto-Discovery: ${config.autoDiscovery.enabled ? '✅ ENABLED' : '❌ DISABLED'} (Confidence: ${config.autoDiscovery.confidenceThreshold})`
-  );
-  logger.log(
-    `   Knowledge Systems: FACT=${config.knowledgeSystems.factEnabled ? '✅' : '❌'}, RAG=${config.knowledgeSystems.ragEnabled ? '✅' : '❌'}, WASM=${config.knowledgeSystems.wasmAcceleration ? '✅' : '❌'}`
-  );
-  logger.log(`   Flow Topology: ${config.flowTopology}`);
-  
-  // Type-safe parallel streams logging
-  if (config.maxParallelStreams && typeof config.maxParallelStreams === 'object') {
-    logger.log(
-      `   Parallel Streams: Portfolio=${config.maxParallelStreams.portfolio}, Program=${config.maxParallelStreams.program}, Swarm=${config.maxParallelStreams.swarm}`
-    );
-  } else {
-    logger.log(`   Parallel Streams: ${config.maxParallelStreams} (simple configuration)`);
-  }
-  logger.log(
-    '✅ All advanced features enabled with adaptive 8GB base configuration!'
-  );
-  logger.log(
-    '🔄 System will auto-scale based on detected memory and performance!'
-  );
+  logger.info('🚀 Repository Configuration:', {
+    repository: `${config.repoName} (${config.repoPath})`,
+    advancedKanbanFlow: config.enableAdvancedKanbanFlow ? '✅ ENABLED' : '❌ DISABLED',
+    mlOptimization: `${config.enableMLOptimization ? '✅ ENABLED' : '❌ DISABLED'} (Level: ${config.mlOptimizationLevel})`,
+    bottleneckDetection: config.enableBottleneckDetection ? '✅ ENABLED' : '❌ DISABLED',
+    predictiveAnalytics: config.enablePredictiveAnalytics ? '✅ ENABLED' : '❌ DISABLED',
+    realTimeMonitoring: config.enableRealTimeMonitoring ? '✅ ENABLED' : '❌ DISABLED',
+    resourceManagement: config.enableIntelligentResourceManagement ? '✅ ENABLED' : '❌ DISABLED',
+    aguiGates: config.enableAGUIGates ? '✅ ENABLED' : '❌ DISABLED',
+    crossLevelOptimization: config.enableCrossLevelOptimization ? '✅ ENABLED' : '❌ DISABLED',
+    dsyNeuralEnhancement: config.dsyIntegration.enabled ? '✅ ENABLED' : '❌ DISABLED',
+    autoDiscovery: `${config.autoDiscovery.enabled ? '✅ ENABLED' : '❌ DISABLED'} (Confidence: ${config.autoDiscovery.confidenceThreshold})`,
+    knowledgeSystems: `FACT=${config.knowledgeSystems.factEnabled ? '✅' : '❌'}, RAG=${config.knowledgeSystems.ragEnabled ? '✅' : '❌'}, WASM=${config.knowledgeSystems.wasmAcceleration ? '✅' : '❌'}`,
+    flowTopology: config.flowTopology,
+    parallelStreams: config.maxParallelStreams && typeof config.maxParallelStreams === 'object'
+      ? `Portfolio=${config.maxParallelStreams.portfolio}, Program=${config.maxParallelStreams.program}, Swarm=${config.maxParallelStreams.swarm}`
+      : `${config.maxParallelStreams} (simple configuration)`,
+    status: 'All advanced features enabled with adaptive 8GB base configuration',
+    autoScaling: 'System will auto-scale based on detected memory and performance'
+  });
 }
 
 export default defaultRepoConfig;

@@ -189,11 +189,14 @@ async function main() {
 
     // Keep process alive
     if (!options?.daemon) {
+      // Running in foreground mode - process will stay alive naturally
+      logger.info('Running in foreground mode');
     }
 
-    // Keep the process running
+    // Keep the process running with health checks
     setInterval(() => {
       // Application heartbeat - could add health checks here
+      logger.debug('Application heartbeat');
     }, 10000);
   } catch (error) {
     logger.error('❌ Failed to start Claude Code Zen Integrated:', error);
@@ -203,7 +206,11 @@ async function main() {
 
 // Start the application if this file is run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
+  main().catch((error) => {
+    const logger = getLogger('ClaudeZenIntegrated');
+    logger.error('Fatal error in main:', error);
+    process.exit(1);
+  });
 }
 
 // Default export removed - use named export: import { ClaudeZenIntegrated } js

@@ -25,7 +25,7 @@ import type {
   EventBus,
   Logger,
 } from '../../core/interfaces/base-interfaces';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+// import type { MemoryCoordinator } from '@claude-zen/memory'; // TODO: Fix memory package build
 import {
   getCoordinationFactSystem,
   initializeCoordinationFactSystem as initializeCollectiveFACT,
@@ -119,7 +119,7 @@ export interface ConversationDecision {
 export class SwarmCommander extends EventEmitter {
   private readonly logger: Logger;
   private readonly config: SwarmCommanderConfig;
-  private readonly memoryCoordinator: MemoryCoordinator;
+  private readonly memoryCoordinator: any; // MemoryCoordinator type when package is fixed
   private readonly eventBus?: EventBus;
 
   // Package delegation instances
@@ -147,7 +147,7 @@ export class SwarmCommander extends EventEmitter {
 
   constructor(
     config: SwarmCommanderConfig,
-    memoryCoordinator: MemoryCoordinator,
+    memoryCoordinator: any,
     eventBus?: EventBus
   ) {
     super();
@@ -207,9 +207,7 @@ export class SwarmCommander extends EventEmitter {
 
       // Delegate to @claude-zen/foundation for swarm health monitoring  
       const { createAgentMonitor } = await import('@claude-zen/foundation');
-      this.monitoringSystem = createAgentMonitor({
-        serviceName: `swarm-${this.config.swarmId}`
-      });
+      this.monitoringSystem = createAgentMonitor();
 
       // Delegate to @claude-zen/brain for neural ML capabilities (per CLAUDE.md)
       if (this.config.learningEnabled) {
@@ -691,7 +689,7 @@ export class SwarmCommander extends EventEmitter {
  */
 export function createSwarmCommander(
   config: Partial<SwarmCommanderConfig> & { swarmId: string },
-  memoryCoordinator: MemoryCoordinator,
+  memoryCoordinator: any,
   eventBus?: EventBus
 ): SwarmCommander {
   const defaultConfig: SwarmCommanderConfig = {

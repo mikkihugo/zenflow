@@ -135,7 +135,7 @@ import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
-import { MemorySystem } from './memory-system';
+import { MemorySystem } from '@claude-zen/memory';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration

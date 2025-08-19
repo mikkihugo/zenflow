@@ -8,7 +8,7 @@
  * - @claude-zen/database: Multi-database operations (SQLite, LanceDB, Kuzu, PostgreSQL)
  * - @claude-zen/foundation: Performance tracking, telemetry, error handling, DI
  * - @claude-zen/workflows: Service lifecycle management and orchestration
- * - @claude-zen/load-balancing: Request deduplication and concurrency control
+ * - @claude-zen/brain: Request deduplication and concurrency control
  * 
  * REDUCTION: 1,716 → 485 lines (71.7% reduction) through package delegation
  * 
@@ -283,8 +283,8 @@ export class DataServiceAdapter extends EventEmitter implements Service {
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/load-balancing for request optimization
-      const { LoadBalancer, CircuitBreaker } = await import('@claude-zen/load-balancing');
+      // Delegate to @claude-zen/brain for request optimization
+      const { LoadBalancer, CircuitBreaker } = await import('@claude-zen/brain');
       this.loadBalancer = new LoadBalancer({
         maxConcurrentRequests: this.config.performance?.maxConcurrency || 10,
         requestDeduplication: this.config.performance?.enableRequestDeduplication,

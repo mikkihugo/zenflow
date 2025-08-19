@@ -430,7 +430,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeQuery(request: unknown): Promise<unknown> {
+  async executeQuery(request: any): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -499,7 +499,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeCommand(request: unknown): Promise<unknown> {
+  async executeCommand(request: any): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -561,7 +561,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeTransaction(request: unknown): Promise<unknown> {
+  async executeTransaction(request: any): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -741,7 +741,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeMigration(request: unknown): Promise<unknown> {
+  async executeMigration(request: any): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation

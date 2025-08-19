@@ -246,6 +246,91 @@ export class AutonomousOptimizationEngine {
   }
 
   /**
+   * Record optimization result for continuous learning
+   */
+  async recordOptimizationResult(result: {
+    context: OptimizationContext;
+    actualPerformance: number;
+    actualSuccessRate: number;
+    actualDuration: number;
+    feedback?: string;
+  }): Promise<void> {
+    try {
+      logger.debug(`📊 Recording optimization result for continuous learning`);
+
+      // Convert to feedback format and learn from it
+      const feedback: OptimizationFeedback = {
+        actualSuccessRate: result.actualSuccessRate,
+        actualResponseTime: result.actualDuration,
+        userSatisfaction: result.actualPerformance,
+        taskCompleted: result.actualSuccessRate > 0.5,
+        errorOccurred: result.actualSuccessRate < 0.3
+      };
+
+      // Find recent optimization to learn from
+      const recentOptimization = this.optimizationHistory.find(opt => 
+        opt.context.task === result.context.task &&
+        Math.abs(opt.timestamp - Date.now()) < 3600000 // Within last hour
+      );
+
+      if (recentOptimization) {
+        await this.learnFromFeedback(result.context, recentOptimization.result, feedback);
+      }
+
+      logger.debug(`✅ Optimization result recorded and learned from`);
+    } catch (error) {
+      logger.error('❌ Failed to record optimization result:', error);
+    }
+  }
+
+  /**
+   * Enable continuous optimization learning
+   */
+  async enableContinuousOptimization(config: {
+    learningRate?: number;
+    adaptationThreshold?: number;
+    evaluationInterval?: number;
+    autoTuning?: boolean;
+  }): Promise<void> {
+    try {
+      logger.info(`🔄 Enabling continuous optimization with config:`, config);
+
+      // Update learning parameters
+      if (config.learningRate) {
+        // Store in private field (we'll need to make learningRate mutable)
+        Object.defineProperty(this, 'learningRate', { 
+          value: config.learningRate, 
+          writable: true 
+        });
+      }
+
+      if (config.adaptationThreshold) {
+        Object.defineProperty(this, 'adaptationThreshold', { 
+          value: config.adaptationThreshold, 
+          writable: true 
+        });
+      }
+
+      // Set up evaluation interval if provided
+      if (config.evaluationInterval && config.autoTuning) {
+        setInterval(async () => {
+          try {
+            await this.adaptSelectionStrategy();
+            logger.debug('🔄 Continuous optimization evaluation completed');
+          } catch (error) {
+            logger.error('❌ Continuous optimization evaluation failed:', error);
+          }
+        }, config.evaluationInterval);
+      }
+
+      logger.info('✅ Continuous optimization enabled successfully');
+    } catch (error) {
+      logger.error('❌ Failed to enable continuous optimization:', error);
+      throw error;
+    }
+  }
+
+  /**
    * Get autonomous optimization insights
    */
   getAutonomousInsights(): {

@@ -14,7 +14,7 @@
  * Learning Integration:
  * - Uses @claude-zen/brain for behavioral intelligence and adaptive learning
  * - Leverages @claude-zen/neural-ml for pattern recognition and prediction
- * - Integrates with @claude-zen/agent-monitoring for performance tracking
+ * - Integrates with @claude-zen/brain for performance tracking
  * - Utilizes @claude-zen/database for persistent learning storage
  */
 
@@ -194,7 +194,7 @@ export class SwarmMigrationSystem extends EventEmitter {
       enableMetrics: true
     });
     this.safetyOrchestrator = new AISafetyOrchestrator();
-    this.agentMonitor = createAgentMonitor({ serviceName: `migration-${id}` });
+    this.agentMonitor = createAgentMonitor();
     this.optimizationEngine = new AutonomousOptimizationEngine();
     this.complexityEstimator = new TaskComplexityEstimator();
     this.performancePredictor = new AgentPerformancePredictor();
@@ -538,9 +538,15 @@ export class SwarmMigrationSystem extends EventEmitter {
 
       // Store in behavioral intelligence for future learning
       await this.behavioralIntelligence.recordBehavior({
-        context: 'swarm-adaptation',
-        action: adaptation.change,
-        outcome: effectiveness,
+        agentId: swarmData.swarmId,
+        behaviorType: 'swarm-adaptation',
+        context: {
+          adaptation: adaptation.change,
+          trigger: adaptation.trigger,
+          swarmId: swarmData.swarmId
+        },
+        timestamp: Date.now(),
+        success: effectiveness > 0.5,
         metadata: {
           trigger: adaptation.trigger,
           swarmId: swarmData.swarmId
@@ -621,8 +627,10 @@ export class SwarmMigrationSystem extends EventEmitter {
       await this.performancePredictor.updatePerformanceData({
         agentId: data.agentId,
         taskType: data.task,
-        performance: data.performance,
-        context: data.context
+        duration: 1000, // Default duration
+        success: data.performance > 0.5,
+        efficiency: data.performance,
+        complexity: 0.5 // Default complexity
       });
     }
 
@@ -630,7 +638,7 @@ export class SwarmMigrationSystem extends EventEmitter {
     const predictedFuturePerformance = await this.performancePredictor.predictPerformance(
       swarmData.queens[0]?.queenId || 'unknown',
       'coordination-task',
-      { complexity: 0.7 }
+      0.7
     );
 
     return {
@@ -694,13 +702,15 @@ export class SwarmMigrationSystem extends EventEmitter {
     // Use AutonomousOptimizationEngine to validate and enhance optimizations
     for (const optimization of learnedOptimizations) {
       await this.optimizationEngine.recordOptimizationResult({
-        strategy: optimization.optimization,
-        context: { swarmId: swarmData.swarmId },
-        performance: optimization.impact,
-        feedback: {
-          success: optimization.impact > 0,
-          improvements: optimization.conditions
-        }
+        context: {
+          task: optimization.optimization,
+          basePrompt: `Optimize ${optimization.optimization}`,
+          priority: 'medium'
+        },
+        actualPerformance: optimization.impact,
+        actualSuccessRate: optimization.impact > 0 ? 0.8 : 0.2,
+        actualDuration: 1000,
+        feedback: `Optimization applied: ${optimization.conditions.join(', ')}`
       });
     }
 
@@ -733,7 +743,7 @@ export class SwarmMigrationSystem extends EventEmitter {
         'expert'
       );
 
-      const newRole = this.determineOptimalQueenRole(queen.specialization, complexity.complexity, swarmData.domainExpertise);
+      const newRole = this.determineOptimalQueenRole(queen.specialization, complexity.estimatedComplexity, swarmData.domainExpertise);
       
       suggestedQueenRoles.push({
         queenId: queen.queenId,
@@ -819,9 +829,14 @@ export class SwarmMigrationSystem extends EventEmitter {
     // Store behavioral patterns
     for (const [collaboration, effectiveness] of Object.entries(learning.behavioralPatterns.queenCollaboration)) {
       await this.behavioralIntelligence.recordBehavior({
-        context: 'queen-collaboration',
-        action: collaboration,
-        outcome: effectiveness,
+        agentId: swarmId,
+        behaviorType: 'queen-collaboration',
+        context: {
+          collaboration: collaboration,
+          type: 'collaboration-pattern'
+        },
+        timestamp: Date.now(),
+        success: effectiveness > 0.5,
         metadata: { swarmId, type: 'collaboration-pattern' }
       });
     }
@@ -829,18 +844,29 @@ export class SwarmMigrationSystem extends EventEmitter {
     // Store optimization discoveries
     for (const optimization of learning.optimizationDiscoveries.learnedOptimizations) {
       await this.behavioralIntelligence.recordBehavior({
-        context: 'swarm-optimization',
-        action: optimization.optimization,
-        outcome: optimization.impact,
+        agentId: swarmId,
+        behaviorType: 'swarm-optimization',
+        context: {
+          optimization: optimization.optimization,
+          conditions: optimization.conditions
+        },
+        timestamp: Date.now(),
+        success: optimization.impact > 0,
         metadata: { swarmId, conditions: optimization.conditions }
       });
     }
 
     // Store performance insights
     await this.behavioralIntelligence.recordBehavior({
-      context: 'swarm-performance',
-      action: 'overall-effectiveness',
-      outcome: learning.performanceInsights.averageEffectiveness,
+      agentId: swarmId,
+      behaviorType: 'swarm-performance',
+      context: {
+        action: 'overall-effectiveness',
+        outcome: learning.performanceInsights.averageEffectiveness,
+        type: 'performance-insight'
+      },
+      timestamp: Date.now(),
+      success: learning.performanceInsights.averageEffectiveness > 0.5,
       metadata: { 
         swarmId, 
         peakFactors: learning.performanceInsights.peakPerformanceFactors,
@@ -1123,14 +1149,14 @@ export class SwarmMigrationSystem extends EventEmitter {
     await this.behavioralIntelligence.enableContinuousLearning({
       learningRate: 0.1,
       adaptationThreshold: 0.05,
-      maxMemory: 10000
+      maxMemorySize: 10000
     });
 
     // Configure autonomous optimization engine
     await this.optimizationEngine.enableContinuousOptimization({
-      optimizationInterval: 60000, // 1 minute
-      performanceThreshold: 0.8,
-      maxOptimizations: 100
+      evaluationInterval: 60000, // 1 minute
+      adaptationThreshold: 0.8,
+      autoTuning: true
     });
 
     this.logger.info(`🧠 Configured adaptive learning for capability mesh`);

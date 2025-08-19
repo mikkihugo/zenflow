@@ -1,42 +1,48 @@
 /**
- * Utility Types Stub
- * Compatibility stub for utility type tests
+ * @fileoverview Utility Types - REMOVED - Delegated to Foundation
+ * 
+ * **TYPES MOVED TO @claude-zen/foundation**
+ * 
+ * All utility types have been moved to their appropriate foundation packages:
+ * - Result<T, E> → @claude-zen/foundation/types/result  
+ * - Logger → @claude-zen/foundation/logging/logger
+ * - Config → @claude-zen/foundation/config/types
+ * - Metrics → @claude-zen/monitoring/metrics/types 
+ * - EventData → @claude-zen/event-system/types
+ * - AsyncResult<T> → @claude-zen/foundation/types/async
+ * - Optional<T> → @claude-zen/foundation/types/optional
+ * - DeepPartial<T> → @claude-zen/foundation/types/utility
+ * - Disposable → @claude-zen/foundation/lifecycle/disposable
+ * 
+ * **FILE MARKED FOR REMOVAL - All types delegated to specialized packages**
  */
 
-export type Result<T, E = Error> = 
-  | { success: true; data: T }
-  | { success: false; error: E };
+// Re-export types from foundation packages
+export type {
+  Result,
+  Logger,
+  Config,
+  AsyncResult,
+  Optional,
+  DeepPartial,
+  Disposable
+} from '@claude-zen/foundation';
 
-export interface Logger {
-  debug(message: string, ...args: any[]): void;
-  info(message: string, ...args: any[]): void;
-  warn(message: string, ...args: any[]): void;
-  error(message: string, ...args: any[]): void;
-}
+export type {
+  Metrics
+} from '@claude-zen/monitoring';
 
-export interface Config {
-  [key: string]: any;
-}
+export type {
+  EventData
+} from '@claude-zen/event-system';
 
-export interface Metrics {
-  timestamp: number;
-  values: Record<string, number>;
-}
-
-export interface EventData {
-  type: string;
-  payload: any;
-  timestamp: number;
-}
-
-export type AsyncResult<T> = Promise<Result<T>>;
-
-export type Optional<T> = T | null | undefined;
-
-export type DeepPartial<T> = {
-  [P in keyof T]?: T[P] extends object ? DeepPartial<T[P]> : T[P];
-};
-
-export interface Disposable {
-  dispose(): void | Promise<void>;
-}
+/**
+ * DEPRECATION NOTICE:
+ * This file should be removed once all imports are updated to use foundation packages directly.
+ * 
+ * **Migration Path:**
+ * ```typescript
+ * // Old: import { Result } from '../utils/types';
+ * // New: import { Result } from '@claude-zen/foundation';
+ * ```
+ */

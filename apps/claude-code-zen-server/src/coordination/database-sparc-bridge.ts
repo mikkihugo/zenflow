@@ -17,15 +17,34 @@ import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 import type { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { generateId } from '../core/helpers';
-import type {
-  FeatureDocumentEntity,
-  TaskDocumentEntity,
-} from '../database/entities/product-entities';
-import type { DocumentManager } from "../services/document/document-service"
-import type {
-  SPARCSwarmCoordinator,
-  SPARCTask,
-} from './swarm/core/sparc-swarm-coordinator';
+// TODO: Import proper types when available
+interface FeatureDocumentEntity {
+  id: string;
+  title: string;
+  description: string;
+}
+
+interface TaskDocumentEntity {
+  id: string;
+  title: string;
+  description: string;
+  featureId: string;
+}
+
+interface DocumentManager {
+  getDocument(id: string): Promise<any>;
+}
+
+interface SPARCSwarmCoordinator {
+  processTask(task: SPARCTask): Promise<any>;
+}
+
+interface SPARCTask {
+  id: string;
+  type: string;
+  phase: string;
+  data: any;
+}
 
 const logger = getLogger('DatabaseSPARCBridge');
 

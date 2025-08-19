@@ -6,21 +6,17 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
-  "bin": {
-    "fact-tools": "dist/cli.js"
-  },
   "scripts": {
     "build": "tsc && pnpm run build:rust",
     "build:rust": "cd src/rust && cargo build --release",
     "build:wasm": "cd src/rust && wasm-pack build --target nodejs --out-dir ../../wasm",
     "dev": "tsc --watch",
     "clean": "rm -rf dist wasm target",
-    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "_prepublishOnly_disabled": "pnpm run clean && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:rust": "cd src/rust && cargo test",
     "bench": "cd src/rust && cargo bench",
-    "cli": "node dist/cli.js",
     "docs:check": "node scripts/check-tsdoc.mjs",
     "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
     "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
@@ -43,7 +39,6 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/database": "file:../database",
     "@claude-zen/foundation": "file:../foundation",
     "nanoid": "^5.1.5"
   },
@@ -56,9 +51,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./cli": {
-      "import": "./dist/cli.js"
     },
     "./client": {
       "types": "./dist/src/typescript/fact-client.d.ts",

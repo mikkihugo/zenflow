@@ -203,8 +203,8 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/agent-monitoring for service health monitoring
-      const { AgentMonitor } = await import('@claude-zen/agent-monitoring');
+      // Delegate to @claude-zen/brain for service health monitoring
+      const { CompleteIntelligenceSystem: AgentMonitor } = await import('@claude-zen/brain');
       this.monitoringSystem = await AgentMonitor.create({
         serviceName: 'coordination-service',
         metricsCollection: { enabled: this.config.performance?.enableMetricsCollection !== false },

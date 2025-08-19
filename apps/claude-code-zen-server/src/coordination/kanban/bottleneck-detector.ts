@@ -1,14 +1,14 @@
 /**
- * @file Bottleneck Detection Engine - Lightweight facade using @claude-zen/load-balancing
+ * @file Bottleneck Detection Engine - Lightweight facade using @claude-zen/brain
  *
  * This file provides a lightweight facade for bottleneck detection functionality,
- * delegating to the comprehensive LoadBalancingManager from @claude-zen/load-balancing package.
+ * delegating to the comprehensive LoadBalancingManager from @claude-zen/brain package.
  * The package includes ML-predictive routing, bottleneck detection, resource optimization,
  * auto-scaling capabilities, and emergency protocols.
  *
  * ARCHITECTURE:
  * - Facade pattern maintaining API compatibility
- * - Delegates to @claude-zen/load-balancing LoadBalancingManager
+ * - Delegates to @claude-zen/brain LoadBalancingManager
  * - Leverages existing bottleneck detection through capacity management
  * - Uses ML-predictive routing and real-time health monitoring
  * - Integrates with auto-scaling and emergency protocols
@@ -175,7 +175,7 @@ export interface BottleneckDetectionResult {
  *
  * This facade maintains API compatibility while delegating bottleneck detection,
  * resource optimization, and ML-predictive routing to the comprehensive
- * LoadBalancingManager from @claude-zen/load-balancing package.
+ * LoadBalancingManager from @claude-zen/brain package.
  * 
  * Key features provided by LoadBalancingManager:
  * - ML-predictive routing with TensorFlow.js

@@ -62,7 +62,7 @@ import {
 import { FactCapable } from '../universal-fact-mixin';
 import type { EventBus } from '../types/interfaces';
 import type { Logger } from '../types/interfaces';
-import type { MemoryCoordinator } from '../../memory/core/memory-coordinator';
+// import type { MemoryCoordinator } from '@claude-zen/memory'; // TODO: Fix memory package build
 import type { AgentPool } from './agent';
 import type { SPARCPhase } from '@claude-zen/sparc';
 
@@ -272,7 +272,7 @@ export interface SwarmPerformanceProfile {
 export class QueenCommander extends EventEmitter {
   private logger: Logger;
   private eventBus: EventBus;
-  private memory: MemoryCoordinator;
+  private memory: any; // MemoryCoordinator type when package is fixed
   private config: ExtendedQueenCommanderConfig;
 
   // Core coordination system (delegates to coordination-core)
@@ -320,7 +320,7 @@ export class QueenCommander extends EventEmitter {
     config: Partial<ExtendedQueenCommanderConfig>,
     logger: Logger,
     eventBus: EventBus,
-    memory: MemoryCoordinator
+    memory: any
   ) {
     super();
     this.logger = logger;
@@ -714,7 +714,7 @@ export class QueenCommander extends EventEmitter {
   /**
    * Perform coordination learning cycle.
    */
-  private async performCoordinationLearningCycle(data: unknown): Promise<void> {
+  private async performCoordinationLearningCycle(data: any): Promise<void> {
     try {
       // Adaptive resource allocation
       if (this.coordinationLearningConfig.adaptiveResourceAllocation) {
@@ -1172,7 +1172,7 @@ export class QueenCommander extends EventEmitter {
     const template = agent.template;
     
     // Simple process spawn for compatibility
-    const process = spawn(template.runtime === 'deno' ? 'deno' : 'node', ['--version'], {
+    const childProcess = spawn(template.runtime === 'deno' ? 'deno' : 'node', ['--version'], {
       stdio: 'pipe',
       env: {
         ...process.env,
@@ -1181,12 +1181,12 @@ export class QueenCommander extends EventEmitter {
       }
     });
 
-    process.on('exit', (code) => {
+    childProcess.on('exit', (code) => {
       this.logger.info(`Agent process ${agent.id} exited with code ${code}`);
       agent.status = 'terminated';
     });
 
-    return process;
+    return childProcess;
   }
 }
 

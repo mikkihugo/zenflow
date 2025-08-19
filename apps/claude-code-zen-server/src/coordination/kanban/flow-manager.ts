@@ -1615,9 +1615,9 @@ export class AdvancedFlowManager extends EventEmitter {
   private async performOptimizationAnalysis(): Promise<void> {}
   private async retrainMLModels(): Promise<void> {}
   private async updateFlowVisualization(): Promise<void> {}
-  private async handleWorkItemStarted(payload: unknown): Promise<void> {}
-  private async handleWorkItemCompleted(payload: unknown): Promise<void> {}
-  private async handleBottleneckDetected(payload: unknown): Promise<void> {}
+  private async handleWorkItemStarted(payload: any): Promise<void> {}
+  private async handleWorkItemCompleted(payload: any): Promise<void> {}
+  private async handleBottleneckDetected(payload: any): Promise<void> {}
 }
 
 // ============================================================================

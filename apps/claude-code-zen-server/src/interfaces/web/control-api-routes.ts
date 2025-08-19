@@ -15,9 +15,8 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { getLogger, getTelemetry, recordMetric, withTrace, getDatabaseAccess, Storage } from '@claude-zen/foundation';
+import { getLogger, getTelemetry, recordMetric, withTrace, getDatabaseAccess, Storage, syslogBridge } from '@claude-zen/foundation';
 import { EventBus, createEventBus } from '@claude-zen/event-system';
-import { syslogBridge } from '../../utils/logtape-syslog-bridge';
 import { WebSocketServer } from 'ws';
 import { createServer } from 'http';
 import type { Server } from 'http';

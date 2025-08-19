@@ -798,7 +798,7 @@ export class TopologyManager extends EventEmitter {
     }
   }
 
-  private async handleNodeMetricsUpdate(data: unknown): Promise<void> {
+  private async handleNodeMetricsUpdate(data: any): Promise<void> {
     const node = this.nodes.get(data?.nodeId);
     if (node) {
       node.metrics = { ...node?.metrics, ...data?.metrics };
@@ -807,7 +807,7 @@ export class TopologyManager extends EventEmitter {
     }
   }
 
-  private async handleConnectionQualityChange(data: unknown): Promise<void> {
+  private async handleConnectionQualityChange(data: any): Promise<void> {
     const node = this.nodes.get(data?.nodeId);
     const connection = node?.connections.get(data?.targetId);
 
@@ -817,13 +817,13 @@ export class TopologyManager extends EventEmitter {
     }
   }
 
-  private async handleNetworkFault(data: unknown): Promise<void> {
+  private async handleNetworkFault(data: any): Promise<void> {
     this.logger.warn('Network fault detected', data);
     await this.faultDetector.handleFault(data, this.nodes);
     this.emit('fault:handled', data);
   }
 
-  private async handleWorkloadPatternChange(data: unknown): Promise<void> {
+  private async handleWorkloadPatternChange(data: any): Promise<void> {
     this.logger.info('Workload pattern changed', data);
     await this.scheduleTopologyOptimization();
   }

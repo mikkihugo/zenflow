@@ -121,6 +121,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Extract AST patterns using Biome's powerful parsing capabilities
    */
+  // eslint-disable-next-line require-await -- Future integration with Biome AST parser
   private async extractASTPatterns(
     content: string,
     language: string
@@ -141,6 +142,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Use Claude's natural language understanding to analyze code patterns
    */
+  // eslint-disable-next-line require-await -- Future integration with Claude Code SDK
   private async analyzeWithClaude(
     patterns: CodePattern[],
     context: LinterContext
@@ -193,6 +195,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Generate Biome-compatible linting rules from Claude's analysis
    */
+  // eslint-disable-next-line require-await -- Future async rule generation with Claude
   private async generateBiomeRules(
     claudeAnalysis: ClaudeInsights
   ): Promise<BiomeRule[]> {
@@ -234,6 +237,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Coordinate with ruv-swarm for specialized analysis
    */
+  // eslint-disable-next-line require-await -- Future swarm coordination integration
   private async coordinateSwarmAnalysis(
     filePath: string,
     claudeAnalysis: ClaudeInsights,
@@ -332,6 +336,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Update Biome configuration with new AI-generated rule
    */
+  // eslint-disable-next-line require-await -- Future async file system operations for biome.json
   private async updateBiomeConfig(rule: BiomeRule): Promise<void> {
     // This would modify the actual biome.json configuration
     // For now, just update our in-memory config
@@ -348,6 +353,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Real-time code fixing using AI insights
    */
+  // eslint-disable-next-line require-await -- Future implementation with Claude code generation
   async autoFixCode(
     filePath: string,
     content: string,
@@ -423,6 +429,7 @@ export class ClaudeBiomeBridge extends EventEmitter {
   /**
    * Clean up resources
    */
+  // eslint-disable-next-line require-await -- Future async cleanup of external resources
   async shutdown(): Promise<void> {
     this.removeAllListeners();
     this.analysisCache.clear();

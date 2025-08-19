@@ -554,7 +554,7 @@ export class SwarmSynchronizer extends EventEmitter {
     }
   }
 
-  private async applyStateChange(change: unknown): Promise<void> {
+  private async applyStateChange(change: any): Promise<void> {
     // Implementation would depend on change type
     this.logger?.debug('Applying state change', { change });
   }

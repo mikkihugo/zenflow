@@ -135,7 +135,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle deployment requests with Borg efficiency
    */
-  private async handleDeploymentRequest(request: unknown): Promise<void> {
+  private async handleDeploymentRequest(request: any): Promise<void> {
     this.logger.info(`Processing deployment request: ${request.id}`);
 
     // Borg-style deployment coordination
@@ -154,7 +154,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle incident alerts with immediate response
    */
-  private async handleIncidentAlert(incident: unknown): Promise<void> {
+  private async handleIncidentAlert(incident: any): Promise<void> {
     this.logger.warn(
       `Incident detected: ${incident.type} - Severity: ${incident.severity}`
     );
@@ -173,7 +173,7 @@ export class OpsCubeMatron extends EventEmitter implements DesignateMatron {
   /**
    * Handle scaling requests
    */
-  private async handleScalingRequest(request: unknown): Promise<void> {
+  private async handleScalingRequest(request: any): Promise<void> {
     this.logger.info(
       `Scaling request received: ${request.direction} by ${request.amount}`
     );

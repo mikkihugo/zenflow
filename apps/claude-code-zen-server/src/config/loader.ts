@@ -100,19 +100,21 @@
  * @see {@link ENV_MAPPINGS} Environment variable mappings
  */
 
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('ConfigLoader') as any; // Use any to allow flexible logger interface
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults';
+
+import { getLogger } from '../config/logging-config'; // Use any to allow flexible logger interface
 import type {
   ConfigurationSource,
   ConfigValidationResult,
   SystemConfiguration,
 } from '../types/config-types';
+
+import { DEFAULT_CONFIG, ENV_MAPPINGS } from './defaults';
 import { ConfigValidator } from './validator';
+
+const logger = getLogger('ConfigLoader') as any;
 
 /**
  * Configuration loader with multi-source support and priority management.
@@ -268,11 +270,7 @@ export class ConfigurationLoader {
             parsedValue = value.toLowerCase() === 'true' || value === '1';
             break;
           case 'array':
-            if (mapping.parser) {
-              parsedValue = mapping.parser(value);
-            } else {
-              parsedValue = value.split(',').map((v) => v.trim());
-            }
+            parsedValue = mapping.parser ? mapping.parser(value) : value.split(',').map((v) => v.trim());
             break;
           default:
             parsedValue = value;
@@ -361,18 +359,12 @@ export class ConfigurationLoader {
     const result = { ...(target as any) };
 
     for (const key in source as any) {
-      if (
-        (source as any)[key] &&
+      result[key] = (source as any)[key] &&
         typeof (source as any)[key] === 'object' &&
-        !Array.isArray((source as any)[key])
-      ) {
-        result[key] = this.deepMerge(
+        !Array.isArray((source as any)[key]) ? this.deepMerge(
           (result as any)?.[key] || {},
           (source as any)[key]
-        );
-      } else {
-        result[key] = (source as any)[key];
-      }
+        ) : (source as any)[key];
     }
 
     return result;

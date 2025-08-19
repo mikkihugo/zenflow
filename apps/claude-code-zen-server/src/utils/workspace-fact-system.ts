@@ -15,6 +15,7 @@
 import { EventEmitter } from 'eventemitter3';
 import { access, readdir, readFile, stat } from 'node:fs/promises';
 import { basename, extname, join } from 'node:path';
+import { getLogger } from '@claude-zen/foundation';
 import EnvironmentDetector, {
   type EnvironmentSnapshot,
   type EnvironmentTool,
@@ -61,7 +62,22 @@ export interface WorkspaceFactStats {
   environmentFacts: number;
   lastUpdated: number;
   cacheHitRate: number;
-  // Reference to separate RAG system (not part of FACT system)
+  // Enhanced knowledge system tagging
+  knowledgeSources: {
+    facts: {
+      available: boolean;
+      count: number;
+      reliability: 'high'; // FACT system is always high reliability
+      sources: string[]; // ['tool-docs', 'api-specs', 'best-practices']
+    };
+    rag: {
+      available: boolean;
+      count: number;
+      reliability: 'variable'; // RAG can have variable reliability
+      sources: string[]; // ['documents', 'web-crawl', 'user-notes']
+    };
+  };
+  // Legacy fields for compatibility
   ragSystemAvailable?: boolean;
   ragEnabled?: boolean;
 }
@@ -75,6 +91,18 @@ export interface ToolKnowledge {
   name?: string;
   processToolKnowledge?: unknown;
   searchTemplates?: unknown;
+  // Enhanced source tagging for agent decision making
+  sourceReliability: {
+    type: 'fact' | 'rag' | 'hybrid';
+    confidence: number; // 0.0 to 1.0
+    sources: Array<{
+      name: string;
+      type: 'structured' | 'unstructured';
+      lastVerified?: number;
+      reliability: 'high' | 'medium' | 'low' | 'unknown';
+    }>;
+    warnings?: string[]; // Any caveats about the information
+  };
 }
 
 export interface ProjectStructure {
@@ -93,6 +121,7 @@ export interface ProjectStructure {
  * Links to global FACT database for documentation/manuals when available
  */
 export class WorkspaceCollectiveSystem extends EventEmitter {
+  private logger = getLogger('WorkspaceCollectiveSystem');
   private facts = new Map<string, WorkspaceFact>();
   private envDetector: EnvironmentDetector;
   private refreshTimer: NodeJS.Timeout | null = null;
@@ -101,6 +130,14 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     initialize(): Promise<void>; 
     processToolKnowledge(toolName: string, version: string, queryType: string): Promise<ToolKnowledge>;
     searchTemplates(query: string): Promise<any[]>;
+    getTaggedStatistics?(): Promise<{
+      structuredKnowledge?: Record<string, number>;
+      unstructuredKnowledge?: Record<string, number>;
+      combinedKnowledge?: Record<string, number>;
+      factSystemConnected?: boolean;
+      ragSystemConnected?: boolean;
+      lastUpdate?: number;
+    }>;
     [key: string]: any;
   } | null; // Reference to global FACT system if available
 
@@ -147,7 +184,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
         // Initialize the Rust FACT bridge
         await this.globalFactDatabase?.initialize();
-        console.log(
+        this.logger.info(
           '✅ Rust FACT system initialized for workspace:',
           this.workspaceId
         );
@@ -160,7 +197,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       try {
         await this.envDetector.detectEnvironment();
       } catch (error) {
-        console.warn(
+        this.logger.warn(
           'Environment detection failed, using minimal setup:',
           error
         );
@@ -170,7 +207,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       try {
         await this.gatherWorkspaceFacts();
       } catch (error) {
-        console.warn(
+        this.logger.warn(
           'Failed to gather workspace facts, using minimal setup:',
           error
         );
@@ -190,7 +227,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     } catch (error) {
       // Even if initialization fails, mark as initialized to prevent loops
       this.isInitialized = true;
-      console.warn('Workspace fact system initialization failed:', error);
+      this.logger.warn('Workspace fact system initialization failed:', error);
       this.emit('initialized');
     }
   }
@@ -378,21 +415,48 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Get RAG document statistics (separate from FACT system)
+   * Get comprehensive knowledge system statistics with source tagging
    */
-  private async getRAGDocumentStats(): Promise<Record<string, number>> {
-    // This would integrate with the separate RAG database system
-    // RAG is completely separate from FACT system
+  private async getKnowledgeSystemStats(): Promise<{
+    facts: Record<string, number>;
+    rag: Record<string, number>;
+    combined: Record<string, number>;
+    reliability: {
+      factSystemAvailable: boolean;
+      ragSystemAvailable: boolean;
+      lastUpdate: number;
+    };
+  }> {
     try {
-      // Placeholder - would connect to actual RAG vector database
+      // Use unified knowledge package for both facts and RAG
+      const { KnowledgeManager } = await import('@claude-zen/knowledge');
+      const knowledgeManager = new KnowledgeManager();
+      await knowledgeManager.initialize();
+
+      // Get tagged knowledge statistics (structured vs unstructured)
+      const taggedStats = await knowledgeManager.getTaggedStatistics();
       return {
-        README: 5,
-        ADR: 12,
-        specifications: 8,
-        documentation: 15,
+        facts: taggedStats?.structuredKnowledge || {},
+        rag: taggedStats?.unstructuredKnowledge || {},
+        combined: taggedStats?.combinedKnowledge || {},
+        reliability: {
+          factSystemAvailable: !!taggedStats?.factSystemConnected,
+          ragSystemAvailable: !!taggedStats?.ragSystemConnected,
+          lastUpdate: taggedStats?.lastUpdate || Date.now()
+        }
       };
-    } catch {
-      return {};
+    } catch (error) {
+      this.logger.warn('Failed to fetch knowledge system stats:', error);
+      return {
+        facts: {},
+        rag: {},
+        combined: {},
+        reliability: {
+          factSystemAvailable: false,
+          ragSystemAvailable: false,
+          lastUpdate: Date.now()
+        }
+      };
     }
   }
 
@@ -419,7 +483,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Get knowledge from global FACT database for detected tools
+   * Get knowledge from global FACT database for detected tools with proper source tagging
    * FACT system is VERSION-SPECIFIC - different versions have different APIs/features
    * @param toolName Tool name (e.g., "nix", "elixir", "react")
    * @param version REQUIRED version (e.g., "1.11.1", "15.0.0", "18.2.0")
@@ -442,9 +506,29 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         queryType as 'docs' | 'snippets' | 'examples' | 'best-practices'
       );
 
-      return knowledge;
+      // Enhanced: Tag with source reliability information for agent decision making
+      const taggedKnowledge: ToolKnowledge = {
+        ...knowledge,
+        sourceReliability: {
+          type: 'fact', // This is from structured FACT system
+          confidence: 0.95, // FACT system is highly reliable
+          sources: [
+            {
+              name: `${toolName}-official-docs`,
+              type: 'structured',
+              lastVerified: Date.now(),
+              reliability: 'high'
+            }
+          ],
+          warnings: version !== 'latest' 
+            ? [`Version-specific knowledge for ${toolName}@${version} - may not apply to other versions`]
+            : undefined
+        }
+      };
+
+      return taggedKnowledge;
     } catch (error) {
-      console.warn(
+      this.logger.warn(
         `Failed to get knowledge for ${toolName}@${version}:`,
         error
       );
@@ -453,10 +537,25 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Search global FACT database for snippets/examples
+   * Search global FACT database for snippets/examples with proper source tagging
    * @param query Search query (e.g., "nix shell", "elixir genserver", "react hook")
    */
-  async searchGlobalFacts(query: string): Promise<any[]> {
+  async searchGlobalFacts(query: string): Promise<Array<{
+    tool: string;
+    version: string;
+    type: string;
+    content: string;
+    relevance: number;
+    sourceReliability: {
+      type: 'fact' | 'rag' | 'hybrid';
+      confidence: number;
+      sources: Array<{
+        name: string;
+        type: 'structured' | 'unstructured';
+        reliability: 'high' | 'medium' | 'low';
+      }>;
+    };
+  }>> {
     if (!this.globalFactDatabase) {
       return [];
     }
@@ -471,11 +570,176 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         type: 'template',
         content: template.description,
         relevance: template.relevanceScore || 0.5,
+        // Tag as FACT - structured, reliable information
+        sourceReliability: {
+          type: 'fact' as const,
+          confidence: 0.9, // FACT templates are very reliable
+          sources: [
+            {
+              name: 'fact-template-database',
+              type: 'structured',
+              reliability: 'high' as const
+            }
+          ]
+        }
       }));
     } catch (error) {
-      console.warn(`Failed to search global FACT database:`, error);
+      this.logger.warn(`Failed to search global FACT database:`, error);
       return [];
     }
+  }
+
+  /**
+   * UNIFIED KNOWLEDGE QUERY - Combines FACT and RAG with proper source tagging
+   * This is the main method agents should use to get knowledge with reliability indicators
+   * 
+   * @param query Search query
+   * @param options Query options
+   * @returns Tagged results showing whether info is from FACT (reliable) or RAG (variable)
+   */
+  async queryUnifiedKnowledge(
+    query: string,
+    options: {
+      preferFacts?: boolean; // Prioritize FACT results over RAG
+      includeRAG?: boolean; // Include RAG results (default: true)
+      maxResults?: number; // Maximum results to return (default: 10)
+      minConfidence?: number; // Minimum confidence threshold (0.0-1.0)
+    } = {}
+  ): Promise<Array<{
+    content: string;
+    relevance: number;
+    source: {
+      type: 'fact' | 'rag'; // Clear tagging for agent decision making
+      confidence: number; // 0.0-1.0
+      reliability: 'high' | 'medium' | 'low' | 'unknown';
+      system: string; // 'rust-fact-db', 'vector-rag', etc.
+      warnings?: string[]; // Important caveats for agents
+    };
+    metadata: {
+      tool?: string;
+      version?: string;
+      category?: string;
+      lastVerified?: number;
+    };
+  }>> {
+    const results: Array<{
+      content: string;
+      relevance: number;
+      source: {
+        type: 'fact' | 'rag';
+        confidence: number;
+        reliability: 'high' | 'medium' | 'low' | 'unknown';
+        system: string;
+        warnings?: string[];
+      };
+      metadata: {
+        tool?: string;
+        version?: string;
+        category?: string;
+        lastVerified?: number;
+      };
+    }> = [];
+
+    const {
+      preferFacts = true,
+      includeRAG = true,
+      maxResults = 10,
+      minConfidence = 0.0
+    } = options;
+
+    try {
+      // 1. FACT System Results (Structured, High Reliability)
+      const factResults = await this.searchGlobalFacts(query);
+      
+      for (const factResult of factResults) {
+        if (factResult.sourceReliability.confidence >= minConfidence) {
+          results.push({
+            content: factResult.content,
+            relevance: factResult.relevance,
+            source: {
+              type: 'fact', // Clearly tagged as FACT
+              confidence: factResult.sourceReliability.confidence,
+              reliability: 'high', // FACT system is always high reliability
+              system: 'rust-fact-database',
+              warnings: [`FACT: Structured knowledge from ${factResult.tool} documentation`]
+            },
+            metadata: {
+              tool: factResult.tool,
+              version: factResult.version,
+              category: factResult.type,
+              lastVerified: Date.now()
+            }
+          });
+        }
+      }
+
+      // 2. RAG System Results (Unstructured, Variable Reliability)
+      if (includeRAG) {
+        try {
+          const { KnowledgeManager } = await import('@claude-zen/knowledge');
+          const knowledgeManager = new KnowledgeManager();
+          await knowledgeManager.initialize();
+
+          // Query RAG system for unstructured knowledge
+          const ragResults = await knowledgeManager.queryRAG(query, {
+            limit: maxResults - results.length
+          });
+
+          for (const ragResult of ragResults || []) {
+            if ((ragResult.confidence || 0.5) >= minConfidence) {
+              results.push({
+                content: ragResult.content || ragResult.text || '',
+                relevance: ragResult.similarity || ragResult.score || 0.5,
+                source: {
+                  type: 'rag', // Clearly tagged as RAG
+                  confidence: ragResult.confidence || 0.5,
+                  reliability: this.assessRAGReliability(ragResult.confidence || 0.5),
+                  system: 'vector-rag-database',
+                  warnings: [
+                    'RAG: General knowledge from documents - verify before using',
+                    'Content may be context-dependent or outdated'
+                  ]
+                },
+                metadata: {
+                  category: ragResult.type || 'document',
+                  lastVerified: ragResult.timestamp || Date.now()
+                }
+              });
+            }
+          }
+        } catch (error) {
+          this.logger.warn('RAG system query failed:', error);
+          // Continue with FACT results only
+        }
+      }
+
+      // 3. Sort and limit results
+      let sortedResults = results.sort((a, b) => {
+        if (preferFacts) {
+          // Prioritize FACT results, then by relevance
+          if (a.source.type !== b.source.type) {
+            return a.source.type === 'fact' ? -1 : 1;
+          }
+        }
+        return b.relevance - a.relevance;
+      });
+
+      return sortedResults.slice(0, maxResults);
+
+    } catch (error) {
+      this.logger.error('Unified knowledge query failed:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Assess RAG result reliability based on confidence score
+   */
+  private assessRAGReliability(confidence: number): 'high' | 'medium' | 'low' | 'unknown' {
+    if (confidence >= 0.8) return 'high';
+    if (confidence >= 0.6) return 'medium';
+    if (confidence >= 0.3) return 'low';
+    return 'unknown';
   }
 
   /**
@@ -522,17 +786,81 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }
 
   /**
-   * Check if workspace RAG system is available (separate system)
+   * Check if FACT system is available via knowledge package
    */
-  isRAGSystemAvailable(): boolean {
-    // This would check if the separate workspace RAG system is initialized
-    // The RAG system is separate from the FACT system
+  isFactSystemAvailable(): boolean {
     try {
-      // Placeholder check - would connect to actual workspace RAG system
-      return true; // Assume available for now
-    } catch {
+      // Check if knowledge package is available and can be imported
+      require.resolve('@claude-zen/knowledge');
+      return true;
+    } catch (error) {
+      this.logger.debug('FACT system (knowledge package) not available:', error);
       return false;
     }
+  }
+
+  /**
+   * Get quick knowledge summary with reliability indicators
+   * Useful for agents to understand what knowledge is available and how reliable it is
+   */
+  async getKnowledgeAvailability(): Promise<{
+    fact: {
+      available: boolean;
+      toolsWithDocs: number;
+      reliability: 'high';
+      lastUpdate: number;
+    };
+    rag: {
+      available: boolean;
+      documentsCount: number;
+      reliability: 'variable';
+      lastUpdate: number;
+    };
+    recommendations: {
+      preferFacts: boolean;
+      ragWarnings: string[];
+    };
+  }> {
+    const factAvailable = !!this.globalFactDatabase;
+    let ragAvailable = false;
+    let documentsCount = 0;
+
+    try {
+      const { KnowledgeManager } = await import('@claude-zen/knowledge');
+      const knowledgeManager = new KnowledgeManager();
+      await knowledgeManager.initialize();
+      ragAvailable = true;
+      const ragStats = await knowledgeManager.getRAGStatistics?.() || {};
+      documentsCount = ragStats.totalDocuments || 0;
+    } catch {
+      // RAG not available
+    }
+
+    const envSnapshot = this.envDetector.getSnapshot();
+    const toolsWithDocs = envSnapshot?.tools?.filter(t => t.available && t.version).length || 0;
+
+    return {
+      fact: {
+        available: factAvailable,
+        toolsWithDocs,
+        reliability: 'high', // FACT is always high reliability
+        lastUpdate: Date.now()
+      },
+      rag: {
+        available: ragAvailable,
+        documentsCount,
+        reliability: 'variable', // RAG has variable reliability
+        lastUpdate: Date.now()
+      },
+      recommendations: {
+        preferFacts: factAvailable, // Prefer FACT when available
+        ragWarnings: [
+          'RAG results should be verified before use',
+          'RAG may contain outdated or context-specific information',
+          'For critical decisions, prefer FACT system results'
+        ]
+      }
+    };
   }
 
   /**
@@ -644,7 +972,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
             hasDocumentation,
           };
         } catch (error) {
-          console.warn(`Failed to get FACT knowledge for ${toolKey}:`, error);
+          this.logger.warn(`Failed to get FACT knowledge for ${toolKey}:`, error);
         }
       }
     }
@@ -712,7 +1040,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         }
       }
     } catch (error) {
-      console.warn('Failed to get suggested tools from FACT:', error);
+      this.logger.warn('Failed to get suggested tools from FACT:', error);
     }
 
     return suggestions;
@@ -888,7 +1216,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
       this.facts.set(fact.id, fact);
     } catch (error) {
-      console.error('Failed to analyze project structure:', error);
+      this.logger.error('Failed to analyze project structure:', error);
     }
   }
 
@@ -1226,7 +1554,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         }
       }
     } catch (error) {
-      console.error('Failed to analyze directory structure:', error);
+      this.logger.error('Failed to analyze directory structure:', error);
     }
 
     return structure;

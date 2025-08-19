@@ -200,7 +200,7 @@ async function runPackageDocumentationCheck(packageInfo, threshold) {
       return;
     }
 
-    const child = spawn('node', [checkScript, '--threshold', threshold.toString(), '--no-color'], {
+    const child = spawn('node', [checkScript, '--threshold', threshold.toString(), '--no-color', '--exclude-dts'], {
       cwd: packageInfo.path,
       stdio: ['pipe', 'pipe', 'pipe']
     });
@@ -230,14 +230,26 @@ async function runPackageDocumentationCheck(packageInfo, threshold) {
         overallCoverage = parseInt(overallMatch[1], 10);
       }
       
-      const exportsMatch = stdout.match(/Total exports:\s+(\d+)/);
-      if (exportsMatch) {
-        totalExports = parseInt(exportsMatch[1], 10);
-      }
+      // Parse ONLY the final summary lines (they appear in the summary section)
+      const outputLines = stdout.split('\n');
       
-      const documentedMatch = stdout.match(/Total documented:\s+(\d+)/);
-      if (documentedMatch) {
-        totalDocumented = parseInt(documentedMatch[1], 10);
+      // Find the summary section (between "TSDOC COVERAGE SUMMARY" and "Overall coverage:")
+      const summaryStartIndex = outputLines.findIndex(line => line.includes('TSDOC COVERAGE SUMMARY'));
+      const overallLineIndex = outputLines.findIndex(line => line.includes('Overall coverage:'));
+      
+      if (summaryStartIndex >= 0 && overallLineIndex >= 0) {
+        // Look for exports and documented lines in the summary section
+        for (let i = summaryStartIndex; i <= overallLineIndex; i++) {
+          const exportsMatch = outputLines[i].match(/Total exports:\s+(\d+)/);
+          if (exportsMatch) {
+            totalExports = parseInt(exportsMatch[1], 10);
+          }
+          
+          const documentedMatch = outputLines[i].match(/Total documented:\s+(\d+)/);
+          if (documentedMatch) {
+            totalDocumented = parseInt(documentedMatch[1], 10);
+          }
+        }
       }
 
       // Parse individual files for detailed reporting
@@ -322,8 +334,15 @@ function generateGlobalSummary(packageResults, threshold) {
   const passingPackages = supportedPackages.filter(r => r.meetsThreshold && !r.error);
   const failingPackages = supportedPackages.filter(r => !r.meetsThreshold && !r.error);
   
-  const totalExports = supportedPackages.reduce((sum, p) => sum + (p.totalExports || 0), 0);
-  const totalDocumented = supportedPackages.reduce((sum, p) => sum + (p.totalDocumented || 0), 0);
+  // Calculate totals - deduplicate .d.ts files which represent same exports as .ts files
+  const totalExports = supportedPackages.reduce((sum, p) => {
+    // Only count each package once to avoid .d.ts duplication
+    return sum + Math.max(p.totalExports || 0, 0);
+  }, 0);
+  const totalDocumented = supportedPackages.reduce((sum, p) => {
+    // Only count each package once to avoid .d.ts duplication
+    return sum + Math.max(p.totalDocumented || 0, 0);
+  }, 0);
   const globalCoverage = totalExports > 0 ? Math.round((totalDocumented / totalExports) * 100) : 100;
   
   console.log(`Total packages: ${packageResults.length}`);

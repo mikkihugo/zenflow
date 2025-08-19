@@ -9,6 +9,7 @@
  */
 
 use super::{OptimizedOps, ActivationType, Result};
+#[allow(unused_imports)]  // TODO: Use for proper error handling in Apple Silicon operations
 use crate::error::NeuralError;
 
 #[cfg(feature = "apple-acceleration")]

@@ -30,6 +30,7 @@ export interface CoordinationFactAccess {
   getSwarmHistory(swarmId: string, limit?: number): Promise<FactEntry[]>;
   recordDecision(decision: string, reasoning: string, context?: unknown): Promise<string>;
   getDecisionHistory(limit?: number): Promise<FactEntry[]>;
+  query?(query: string): Promise<FactEntry[]>;
 }
 
 /**

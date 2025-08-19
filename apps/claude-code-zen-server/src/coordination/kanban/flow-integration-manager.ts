@@ -14,7 +14,7 @@ import type {
 } from '../workflows/types';
 import { BottleneckDetectionEngine } from './bottleneck-detector';
 // Import all Kanban flow components
-import { AdvancedFlowManager } from './flow-manager';
+import { AdvancedFlowManager } from './flow-manager-facade';
 import { AdvancedMetricsTracker } from './metrics-tracker';
 import { DynamicResourceManager } from './resource-manager';
 

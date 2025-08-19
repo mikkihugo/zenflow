@@ -93,7 +93,7 @@ export class DomainAnalysisEngine implements DomainAnalyzer {
     return [
       {
         name: 'core',
-        files: analysis.files.map((f: unknown) => f.path || ''),
+        files: analysis.files.map((f: any) => f?.path || String(f) || ''),
         dependencies: [],
       },
     ];

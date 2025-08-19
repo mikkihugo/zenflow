@@ -30,11 +30,15 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/event-system": "workspace:*",
-    "@claude-zen/coordination-core": "workspace:*",
-    "@claude-zen/multi-level-orchestration": "workspace:*",
-    "eventemitter3": "^5.0.1"
+    "@claude-zen/event-system": "file:../event-system",
+    "@claude-zen/foundation": "file:../foundation", 
+    "@claude-zen/kanban": "file:../kanban",
+    "eventemitter3": "^5.0.1",
+    "xstate": "^5.20.2",
+    "lodash-es": "^4.17.21",
+    "date-fns": "^4.1.0",
+    "zod": "^3.24.1",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

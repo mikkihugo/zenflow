@@ -1079,11 +1079,11 @@ export class TaskDistributionEngine extends EventEmitter {
   }
 
   // Event handlers
-  private async handleAgentRegistration(data: unknown): Promise<void> {
+  private async handleAgentRegistration(data: any): Promise<void> {
     this.logger.debug('Agent registration event received', data);
   }
 
-  private async handleAgentCapabilitiesUpdate(data: unknown): Promise<void> {
+  private async handleAgentCapabilitiesUpdate(data: any): Promise<void> {
     const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
       agent.capabilities = data?.capabilities;
@@ -1091,18 +1091,18 @@ export class TaskDistributionEngine extends EventEmitter {
     }
   }
 
-  private async handleAgentPerformanceUpdate(data: unknown): Promise<void> {
+  private async handleAgentPerformanceUpdate(data: any): Promise<void> {
     const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
       agent.performance = { ...agent.performance, ...data?.performance };
     }
   }
 
-  private async handleTaskProgressUpdate(data: unknown): Promise<void> {
+  private async handleTaskProgressUpdate(data: any): Promise<void> {
     this.emit('task:progress', data);
   }
 
-  private async handleTaskCompletion(data: unknown): Promise<void> {
+  private async handleTaskCompletion(data: any): Promise<void> {
     const assignment = this.assignments.get(data?.taskId);
     if (assignment) {
       const agent = this.agentCapabilities.get(assignment.agentId);
@@ -1117,7 +1117,7 @@ export class TaskDistributionEngine extends EventEmitter {
     this.emit('task:completed', data);
   }
 
-  private async handleTaskFailure(data: unknown): Promise<void> {
+  private async handleTaskFailure(data: any): Promise<void> {
     const assignment = this.assignments.get(data?.taskId);
     if (assignment) {
       const agent = this.agentCapabilities.get(assignment.agentId);
@@ -1140,7 +1140,7 @@ export class TaskDistributionEngine extends EventEmitter {
     this.emit('task:failed', data);
   }
 
-  private async handleAgentUnavailable(data: unknown): Promise<void> {
+  private async handleAgentUnavailable(data: any): Promise<void> {
     const agent = this.agentCapabilities.get(data?.agentId);
     if (agent) {
       agent.availability.currentStatus = 'offline';

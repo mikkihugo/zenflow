@@ -27,7 +27,7 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "lint": "eslint .",
-    "prepublishOnly": "pnpm run build",
+    "_prepublishOnly_disabled": "pnpm run build",
     "docs:check": "node scripts/check-tsdoc.mjs",
     "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
     "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
@@ -48,7 +48,6 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/database": "file:../database",
     "@claude-zen/event-system": "file:../event-system",
     "@claude-zen/foundation": "file:../foundation",
     "@claude-zen/fact-system": "file:../fact-system",

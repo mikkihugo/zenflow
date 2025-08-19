@@ -141,10 +141,10 @@ impl<T: Float> Layer<T> {
 
             // Connect from each neuron in this layer
             for (j, _) in self.neurons.iter().enumerate() {
-                let random_val = T::from(rng.gen::<f64>()).unwrap();
+                let random_val = T::from(rng.r#gen::<f64>()).unwrap();
                 if should_connect || random_val < connection_rate {
                     // Random weight between -0.1 and 0.1
-                    let weight_val: f64 = rng.gen::<f64>() * 0.2 - 0.1;
+                    let weight_val: f64 = rng.r#gen::<f64>() * 0.2 - 0.1;
                     let weight = T::from(weight_val).unwrap();
                     next_neuron.add_connection(j, weight);
                 }

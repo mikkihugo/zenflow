@@ -32,14 +32,8 @@
  * ```
  */
 
-// Neural interfaces
-/**
- * WebAssembly binding interface for neural network operations.
- * Provides high-performance neural computation capabilities.
- *
- * @see {@link WasmBindingInterface}
- */
-// export { WasmBindingInterface } from '../../bindings/wasm-binding-interface'; // Temporarily disabled
+// Neural interfaces handled by @claude-zen/brain package
+// Server delegates neural operations to brain package instead of direct WASM bindings
 /**
  * Swarm coordination and agent management interfaces.
  *

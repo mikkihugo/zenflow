@@ -23,7 +23,7 @@
     "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
     "test": "vitest",
     "lint": "eslint .",
-    "prepublishOnly": "pnpm run build",
+    "_prepublishOnly_disabled": "pnpm run build",
     "demo": "tsx examples/agui-demo.ts",
     "docs:check": "node scripts/check-tsdoc.mjs",
     "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",

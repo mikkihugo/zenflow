@@ -68,7 +68,7 @@
  * }
  * 
  * // Check for port conflicts
- * const portCheck = await healthChecker.checkPortConflicts();
+ * const portCheck = healthChecker.checkPortConflicts();
  * if (portCheck.conflicts.length > 0) {
  *   console.warn('Port conflicts detected:', portCheck.conflicts);
  * }
@@ -129,13 +129,15 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-// import { logRepoConfigStatus } from './default-repo-config'; // Temporarily disabled
-import { configManager } from './manager';
+
 import type {
   ConfigHealthReport,
   SystemConfiguration,
   ValidationResult,
 } from '../types/config-types';
+
+import { logRepoConfigStatus } from './default-repo-config';
+import { configManager } from './manager';
 import { ConfigValidator } from './validator';
 
 /**
@@ -207,16 +209,15 @@ export class ConfigHealthChecker extends EventEmitter {
    * @param includeDetails - Include detailed validation information.
    */
   async getHealthReport(): Promise<ConfigHealthReport>;
-  async getHealthReport(
+  getHealthReport(
     includeDetails: true
-  ): Promise<ConfigHealthReport & { validationDetails: ValidationResult }>;
-  async getHealthReport(includeDetails: false): Promise<ConfigHealthReport>;
-  async getHealthReport(
+  ): ConfigHealthReport & { validationDetails: ValidationResult };
+  getHealthReport(includeDetails: false): ConfigHealthReport;
+  getHealthReport(
     includeDetails = false
-  ): Promise<
+  ):
     | ConfigHealthReport
-    | (ConfigHealthReport & { validationDetails: ValidationResult })
-  > {
+    | (ConfigHealthReport & { validationDetails: ValidationResult }) {
     const config = configManager?.getConfig();
     const healthReport = this.validator.getHealthReport(config);
     const validation = this.validator.validateEnhanced(config);
@@ -267,12 +268,12 @@ export class ConfigHealthChecker extends EventEmitter {
    *
    * @param config - Configuration to validate (optional, uses current if not provided).
    */
-  async validateForProduction(config?: SystemConfiguration): Promise<{
+  validateForProduction(config?: SystemConfiguration): {
     deploymentReady: boolean;
     blockers: string[];
     warnings: string[];
     recommendations: string[];
-  }> {
+  } {
     const configToValidate = config || configManager?.getConfig();
     const result = this.validator.validateEnhanced(configToValidate);
 
@@ -334,14 +335,14 @@ export class ConfigHealthChecker extends EventEmitter {
   /**
    * Check for port conflicts across all services.
    */
-  async checkPortConflicts(): Promise<{
+  checkPortConflicts(): {
     conflicts: Array<{
       port: number;
       services: string[];
       severity: 'error' | 'warning';
     }>;
     recommendations: string[];
-  }> {
+  } {
     const config = configManager?.getConfig();
     const conflicts: Array<{
       port: number;
@@ -503,8 +504,7 @@ export class ConfigHealthChecker extends EventEmitter {
       const currentReport = await this.getHealthReport();
 
       // Compare with previous report
-      if (this.lastHealthReport) {
-        if (this.lastHealthReport.status !== currentReport?.status) {
+      if (this.lastHealthReport && this.lastHealthReport.status !== currentReport?.status) {
           this.emit('health:changed', currentReport);
 
           if (currentReport?.status === 'critical') {
@@ -516,7 +516,6 @@ export class ConfigHealthChecker extends EventEmitter {
             this.emit('health:recovered', currentReport);
           }
         }
-      }
 
       this.emit('health:checked', currentReport);
       this.lastHealthReport = currentReport;
@@ -524,10 +523,9 @@ export class ConfigHealthChecker extends EventEmitter {
       // Log detailed repo config status for diagnostics (wired up!)
       if ((currentReport as any)?.configuration) {
         try {
-          // logRepoConfigStatus((currentReport as any).configuration as any); // Temporarily disabled
+          logRepoConfigStatus((currentReport as any).configuration as any);
         } catch (error) {
           // Silently continue if logging fails - don't break health checks
-          console.debug('Config status logging failed:', error);
         }
       }
     } catch (error) {
@@ -655,7 +653,7 @@ export function createDeploymentReadinessEndpoint() {
     try {
       const deploymentCheck =
         await configHealthChecker?.validateForProduction();
-      const portCheck = await configHealthChecker?.checkPortConflicts();
+      const portCheck = configHealthChecker?.checkPortConflicts();
 
       const statusCode =
         deploymentCheck.deploymentReady && portCheck.conflicts.length === 0

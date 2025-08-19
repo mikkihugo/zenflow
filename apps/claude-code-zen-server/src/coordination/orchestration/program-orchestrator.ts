@@ -976,10 +976,6 @@ export class ProgramOrchestrator extends EventEmitter {
   }
 
   // Many more placeholder implementations would follow...
-  private async setupCrossTeamCoordination(
-    epicId: string,
-    assignedTeams: string[]
-  ): Promise<void> {}
   private async analyzeDependencies(
     epicId: string,
     dependencies: ProgramDependency[]

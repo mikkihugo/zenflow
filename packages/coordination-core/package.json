@@ -25,7 +25,7 @@
     "@claude-zen/foundation": "workspace:*",
     "@claude-zen/event-system": "workspace:*",
     "@claude-zen/agent-manager": "workspace:*",
-    "@claude-zen/agent-monitoring": "workspace:*"
+    "@claude-zen/brain": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.6.3",

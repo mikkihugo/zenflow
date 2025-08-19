@@ -6,9 +6,10 @@
  */
 
 // =============================================================================
-// LOGGING SYSTEM - Professional logging with @logtape/logtape
+// LOGGING SYSTEM - Professional logging with @logtape/logtape + syslog bridge
 // =============================================================================
 export * from './logging';
+export * from './syslog-bridge';
 
 // =============================================================================
 // TELEMETRY & MONITORING SYSTEM - OpenTelemetry + Prometheus + comprehensive monitoring
@@ -56,3 +57,10 @@ export * from './project-manager';
 // TEST UTIL
 // =============================================================================
 export * from './test-util';
+
+// =============================================================================
+// FOUNDATION TYPES - Shared primitives, patterns, and error handling
+// =============================================================================
+// NOTE: Import from ./types/index specifically to avoid conflicts with existing error-handling.ts
+// Use: import type { ... } from '@claude-zen/foundation/types' for foundation types
+// Use: import { ... } from '@claude-zen/foundation/error-handling' for neverthrow utilities

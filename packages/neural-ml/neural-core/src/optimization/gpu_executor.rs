@@ -195,15 +195,15 @@ impl GpuExecutor {
     }
 
     /// Execute matrix multiplication on GPU
-    pub fn gpu_matrix_multiply(&self, a: &[f32], b: &[f32], m: usize, n: usize, k: usize) -> Result<Vec<f32>> {
+    pub fn gpu_matrix_multiply(&self, _a: &[f32], _b: &[f32], _m: usize, _n: usize, _k: usize) -> Result<Vec<f32>> {
         match self.backend {
             #[cfg(all(target_os = "macos", feature = "apple-acceleration"))]
             GpuBackend::Metal => {
-                self.metal_matrix_multiply(a, b, m, n, k)
+                self.metal_matrix_multiply(_a, _b, _m, _n, _k)
             }
             #[cfg(feature = "cuda-support")]
             GpuBackend::Cuda => {
-                self.cuda_matrix_multiply(a, b, m, n, k)
+                self.cuda_matrix_multiply(_a, _b, _m, _n, _k)
             }
             _ => {
                 Err(NeuralError::OptimizationError("GPU backend not available for matrix multiply".to_string()))

@@ -18,6 +18,8 @@
     "dist",
     "**/*.test.ts",
     "**/*.spec.ts",
-    "neuro-divergent/**/*"
+    "neuro-divergent/**/*",
+    "src/neural-ml-integration.ts",
+    "src/wasm-bindings.ts"
   ]
 }

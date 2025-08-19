@@ -4,8 +4,8 @@
  * MIGRATION COMPLETE: 4,099 lines → 200 lines (95% reduction)
  * 
  * Replaces massive custom implementation with extracted package integration:
- * - @claude-zen/agent-monitoring: TaskPredictor + PerformanceTracker + IntelligenceSystem
- * - @claude-zen/load-balancing: Resource monitoring and optimization
+ * - @claude-zen/brain: TaskPredictor + PerformanceTracker + IntelligenceSystem
+ * - @claude-zen/brain: Resource monitoring and optimization
  * - @claude-zen/foundation: Logging and storage infrastructure
  * 
  * This file now serves as a lightweight facade that:
@@ -42,12 +42,14 @@ import {
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
 import type {
   AdvancedFlowManager,
+  PerformanceThreshold
+} from './flow-manager-facade';
+import type {
   FlowMetrics,
-  FlowStage,
-  FlowState,
-  FlowWorkItem,
+  TaskState,
+  WorkflowTask,
   WIPLimits,
-} from './flow-manager';
+} from '@claude-zen/kanban';
 
 const logger = getLogger('metrics-tracker');
 
@@ -196,9 +198,9 @@ export interface AdvancedMetricsTrackerState {
  * Advanced Metrics Tracker - Package Integration Facade
  * 
  * MIGRATION: 4,099 lines → ~200 lines using extracted packages:
- * - Intelligence System from @claude-zen/agent-monitoring
- * - Performance Tracker from @claude-zen/agent-monitoring
- * - Task Predictor from @claude-zen/agent-monitoring
+ * - Intelligence System from @claude-zen/brain
+ * - Performance Tracker from @claude-zen/brain
+ * - Task Predictor from @claude-zen/brain
  * 
  * This maintains API compatibility while delegating to battle-tested packages.
  */
@@ -258,7 +260,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
 
     logger.info('AdvancedMetricsTracker initialized with package integration', {
       config: this.config,
-      packagesUsed: ['@claude-zen/agent-monitoring']
+      packagesUsed: ['@claude-zen/brain']
     });
   }
 

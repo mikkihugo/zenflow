@@ -166,25 +166,25 @@ export * as Interfaces from './interfaces/index';
 // =============================================================================
 
 /**
- * Bindings System - Native code integration and WASM binding management.
+ * Neural System - Direct integration with @claude-zen/brain package.
  *
- * Handles Rust/WASM bindings, native module loading, performance-critical
- * operations, and provides fallback mechanisms for different runtime
- * environments with automatic binding detection and loading.
+ * The BrainCoordinator automatically handles neural orchestration, task routing,
+ * and intelligent delegation to neural-ml for heavy operations. No wrapper needed.
  *
  * @example
  * ```typescript
- * import { Bindings } from 'claude-code-zen';
+ * import { BrainCoordinator } from 'claude-code-zen';
  *
- * const binding = await Bindings.BindingFactory.getInstance();
- * const available = Bindings.BindingsUtils.getBindingType();
+ * const brain = new BrainCoordinator();
+ * await brain.initialize();
+ * const result = await brain.processNeuralTask(task);
  * ```
  *
- * @namespace Bindings
- * @see {@link ./bindings/index.ts} - Binding system implementation
+ * @namespace Neural
+ * @see {@link @claude-zen/brain} - Intelligent neural coordinator
  * @since 1.0.0-alpha.43
  */
-export * as Bindings from './bindings/index';
+export { BrainCoordinator } from './neural/neural-interface';
 
 /**
  * Integration System - External system integration and interoperability.
@@ -498,13 +498,15 @@ export async function initializeClaudeZen(
     // Store coordinator reference for shutdown orchestration
     (global as any).swarmCoordinator = swarmCoordinator;
 
-    console.log('✅ Swarm coordination system initialized', {
+    const logger = getLogger('SystemInitializer');
+    logger.info('✅ Swarm coordination system initialized', {
       id: swarmCoordinator.getSwarmId(),
       state: swarmCoordinator.getState(),
       agentCount: swarmCoordinator.getAgentCount(),
     });
   } catch (error) {
-    console.log('⚠️ SwarmOrchestrator initialization failed:', error);
+    const logger = getLogger('SystemInitializer');
+    logger.warn('⚠️ SwarmOrchestrator initialization failed:', error);
     // Gracefully continue without swarm coordination
   }
 
@@ -524,12 +526,13 @@ export async function initializeClaudeZen(
     // Store reference for shutdown orchestration and health checks
     (global as any).memorySystem = memorySystem;
 
-    console.log(
-      '✅ Memory system initialized with',
-      finalConfig?.persistence?.provider || 'sqlite'
-    );
+    const logger = getLogger('SystemInitializer');
+    logger.info('✅ Memory system initialized with', {
+      provider: finalConfig?.persistence?.provider || 'sqlite'
+    });
   } catch (error) {
-    console.error('⚠️ Memory system initialization failed:', error);
+    const logger = getLogger('SystemInitializer');
+    logger.error('⚠️ Memory system initialization failed:', error);
     // Continue without memory system - some features may be limited
   }
 
@@ -560,7 +563,8 @@ export async function initializeClaudeZen(
  * @example
  */
 export async function shutdownClaudeZen(): Promise<void> {
-  console.log('🔄 Initiating Claude-Zen system shutdown...');
+  const logger = getLogger('SystemShutdown');
+  logger.info('🔄 Initiating Claude-Zen system shutdown...');
 
   const shutdownResults: Array<{
     component: string;
@@ -578,14 +582,14 @@ export async function shutdownClaudeZen(): Promise<void> {
           component: 'SwarmCoordinator',
           status: 'success',
         });
-        console.log('✅ Swarm coordinator shutdown complete');
+        logger.info('✅ Swarm coordinator shutdown complete');
       } catch (error) {
         shutdownResults.push({
           component: 'SwarmCoordinator',
           status: 'error',
           error: (error as Error).message,
         });
-        console.error('❌ Swarm coordinator shutdown failed:', error);
+        logger.error('❌ Swarm coordinator shutdown failed:', error);
       }
     }
 
@@ -596,7 +600,7 @@ export async function shutdownClaudeZen(): Promise<void> {
       if (neuralBridge && typeof neuralBridge.shutdown === 'function') {
         await neuralBridge.shutdown();
         shutdownResults.push({ component: 'NeuralBridge', status: 'success' });
-        console.log('✅ Neural bridge shutdown complete');
+        logger.info('✅ Neural bridge shutdown complete');
       }
     } catch (error) {
       shutdownResults.push({
@@ -604,7 +608,7 @@ export async function shutdownClaudeZen(): Promise<void> {
         status: 'error',
         error: (error as Error).message,
       });
-      console.error('❌ Neural bridge shutdown failed:', error);
+      logger.error('❌ Neural bridge shutdown failed:', error);
     }
 
     // Shutdown memory systems
@@ -616,7 +620,7 @@ export async function shutdownClaudeZen(): Promise<void> {
       ) {
         await (global as any).memorySystem.shutdown();
         shutdownResults.push({ component: 'MemorySystem', status: 'success' });
-        console.log('✅ Memory system shutdown complete');
+        logger.info('✅ Memory system shutdown complete');
       }
     } catch (error) {
       shutdownResults.push({
@@ -624,7 +628,7 @@ export async function shutdownClaudeZen(): Promise<void> {
         status: 'error',
         error: (error as Error).message,
       });
-      console.error('❌ Memory system shutdown failed:', error);
+      logger.error('❌ Memory system shutdown failed:', error);
     }
 
     // Clean up global references
@@ -638,18 +642,15 @@ export async function shutdownClaudeZen(): Promise<void> {
       (r) => r.status === 'error'
     ).length;
 
-    console.log(
-      `🏁 Claude-Zen shutdown complete: ${successCount} components shutdown successfully, ${errorCount} errors`
-    );
+    logger.info(`🏁 Claude-Zen shutdown complete: ${successCount} components shutdown successfully, ${errorCount} errors`);
 
     if (errorCount > 0) {
-      console.warn(
-        '⚠️ Some components failed to shutdown gracefully:',
-        shutdownResults.filter((r) => r.status === 'error')
-      );
+      logger.warn('⚠️ Some components failed to shutdown gracefully:', {
+        errors: shutdownResults.filter((r) => r.status === 'error')
+      });
     }
   } catch (error) {
-    console.error('❌ Critical error during shutdown orchestration:', error);
+    logger.error('❌ Critical error during shutdown orchestration:', error);
     throw error;
   }
 }
@@ -900,7 +901,7 @@ export default {
   SPARC,
   Interfaces,
   Integration,
-  Bindings,
+  BrainCoordinator,
   Workflows,
   Optimization,
   Utils,

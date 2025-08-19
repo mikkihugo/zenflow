@@ -6,6 +6,7 @@
     "declaration": true,
     "declarationMap": true,
     "skipLibCheck": true,
+    "moduleResolution": "bundler",
     "noEmitOnError": false,
     "noImplicitAny": false,
     "strictNullChecks": false,
@@ -50,6 +51,11 @@
     { "path": "../../packages/llm-routing" },
     { "path": "../../packages/workflows" },
     { "path": "../../packages/sparc" },
-    { "path": "../../packages/multi-level-orchestration" }
+    { "path": "../../packages/multi-level-orchestration" },
+    { "path": "../../packages/memory" },
+    { "path": "../../packages/coordination-core" },
+    { "path": "../../packages/monitoring" },
+    { "path": "../../packages/neural-ml" },
+    { "path": "../../packages/safe-framework" }
   ]
 }

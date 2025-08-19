@@ -401,7 +401,7 @@ export class CommunicationProtocols extends EventEmitter {
    * @param key
    * @param data
    */
-  async startGossip(key: string, data: unknown): Promise<void> {
+  async startGossip(key: string, data: any): Promise<void> {
     const state: GossipState = {
       version: Date.now(),
       data,
@@ -705,7 +705,7 @@ export class CommunicationProtocols extends EventEmitter {
     this.updateMessageMetrics(message);
   }
 
-  private async handleIncomingMessage(data: unknown): Promise<void> {
+  private async handleIncomingMessage(data: any): Promise<void> {
     try {
       const message: Message = data?.message;
 

@@ -6,7 +6,7 @@
  * 
  * Delegates to:
  * - @claude-zen/brain: BrainCoordinator for AI-powered decision making
- * - @claude-zen/load-balancing: LoadBalancer for intelligent resource allocation
+ * - @claude-zen/brain: LoadBalancer for intelligent resource allocation
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging, and system management
  * - @claude-zen/workflows: WorkflowEngine for process coordination
  * - @claude-zen/teamwork: ConversationOrchestrator for collaborative discussions
@@ -172,8 +172,8 @@ export class ServiceDomainQueenImpl extends EventEmitter implements ServiceDomai
       });
       await this.brainCoordinator.initialize();
 
-      // Delegate to @claude-zen/load-balancing for resource management
-      const { LoadBalancer } = await import('@claude-zen/load-balancing');
+      // Delegate to @claude-zen/brain for resource management
+      const { LoadBalancer } = await import('@claude-zen/brain');
       this.loadBalancer = new LoadBalancer({
         algorithm: 'resource-aware' as any,
         healthCheckInterval: 5000,

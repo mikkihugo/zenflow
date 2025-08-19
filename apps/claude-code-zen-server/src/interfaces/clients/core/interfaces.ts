@@ -137,7 +137,7 @@ export interface AuthenticationConfig {
   password?: string;
 
   /** Custom authentication handler function */
-  customAuth?: (request: unknown) => any;
+  customAuth?: (request: any) => any;
 }
 
 /**

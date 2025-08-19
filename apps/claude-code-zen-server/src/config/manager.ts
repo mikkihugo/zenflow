@@ -144,21 +144,23 @@
  * @see {@link ConfigChangeEvent} Configuration change event interface
  */
 
-import { getLogger } from '../config/logging-config';
-
-const logger = getLogger('src-config-manager') as any; // Use any to allow flexible logger interface
-
-import { EventEmitter } from 'eventemitter3';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_CONFIG } from './defaults';
-import { ConfigurationLoader } from './loader';
+
+import { EventEmitter } from 'eventemitter3';
+
+import { getLogger } from '../config/logging-config'; // Use any to allow flexible logger interface
 import type {
   ConfigChangeEvent,
   ConfigValidationResult,
   SystemConfiguration,
 } from '../types/config-types';
+
+import { DEFAULT_CONFIG } from './defaults';
+import { ConfigurationLoader } from './loader';
 import { ConfigValidator } from './validator';
+
+const logger = getLogger('src-config-manager') as any;
 
 /**
  * Unified Configuration Manager with comprehensive configuration management capabilities.
@@ -390,7 +392,7 @@ export class ConfigurationManager extends EventEmitter {
    * Reload configuration from sources.
    */
   async reload(): Promise<ConfigValidationResult> {
-    return this.initialize(this.configPaths);
+    return await this.initialize(this.configPaths);
   }
 
   /**

@@ -8,6 +8,7 @@
 import {
   executeClaudeTask,
   filterMessagesForClaudeCode,
+  getLogger,
   type ClaudeSDKOptions,
   type ClaudeMessage
 } from '@claude-zen/foundation';
@@ -146,6 +147,7 @@ export function withRetry(config: {
  */
 export class ClaudeCodeHandler implements ApiHandler {
   private options: ClaudeCodeHandlerOptions;
+  private logger = getLogger('ClaudeCodeHandler');
 
   constructor(options: ClaudeCodeHandlerOptions) {
     this.options = options;
@@ -197,8 +199,7 @@ export class ClaudeCodeHandler implements ApiHandler {
 
     let isPaidUsage = true;
 
-    try {
-      const claudeMessages = await executeClaudeTask(prompt, claudeOptions);
+    const claudeMessages = await executeClaudeTask(prompt, claudeOptions);
       
       for (const chunk of claudeMessages) {
       if (typeof chunk === 'string') {
@@ -266,7 +267,7 @@ export class ClaudeCodeHandler implements ApiHandler {
               } as ApiStreamReasoningChunk;
               break;
             case 'tool_use':
-              console.error(
+              this.logger.error(
                 `tool_use is not supported yet. Received: ${JSON.stringify(content)}`
               );
               break;
@@ -290,9 +291,6 @@ export class ClaudeCodeHandler implements ApiHandler {
 
         yield usage;
       }
-    }
-    } catch (error) {
-      throw error;
     }
   }
 

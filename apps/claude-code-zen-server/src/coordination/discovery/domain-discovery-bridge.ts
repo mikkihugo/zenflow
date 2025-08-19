@@ -1393,7 +1393,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    *
    * @param event - Document processed event.
    */
-  private async onDocumentProcessed(event: unknown): Promise<void> {
+  private async onDocumentProcessed(event: any): Promise<void> {
     const { document } = event;
 
     // Analyze relevance
@@ -1411,7 +1411,7 @@ export class DomainDiscoveryBridge extends EventEmitter {
    *
    * @param event - Workspace loaded event.
    */
-  private async onWorkspaceLoaded(event: unknown): Promise<void> {
+  private async onWorkspaceLoaded(event: any): Promise<void> {
     const { workspaceId, documentCount } = event;
 
     if (documentCount > 0) {

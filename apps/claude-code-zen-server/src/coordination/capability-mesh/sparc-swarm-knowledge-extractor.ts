@@ -15,7 +15,7 @@
  * SPARC Knowledge Integration:
  * - Uses @claude-zen/foundation for storage abstraction and performance tracking
  * - Leverages @claude-zen/brain for behavioral intelligence and adaptive learning
- * - Integrates with @claude-zen/agent-monitoring for performance tracking
+ * - Integrates with @claude-zen/brain for performance tracking
  * - Utilizes @claude-zen/sparc for methodology patterns
  * - Connects with DatabaseSPARCBridge for implementation data
  */

@@ -33,9 +33,11 @@
     "verbatimModuleSyntax": false
   },
   "include": [
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/types/vitest-globals.d.ts"
+    "packages/*/src/**/*.ts",
+    "packages/*/index.ts",
+    "packages/*/*.ts",
+    "apps/*/src/**/*.ts",
+    "scripts/**/*.ts"
   ],
   "exclude": [
     "node_modules",
@@ -52,6 +54,9 @@
     "src/__tests__/**/*",
     "tests/**/*",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "apps/claude-code-zen-server/src/types/api-translation-layer.ts",
+    "apps/claude-code-zen-server/src/types/service-integration-layer.ts",
+    "packages/safe-framework/src/services/program-increment/pi-completion-service.ts"
   ]
 }

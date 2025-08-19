@@ -309,7 +309,7 @@ export class Orchestrator extends EventEmitter implements SwarmCoordinator {
   }
 
   // SwarmCoordinator interface implementation
-  async initializeSwarm(options: unknown): Promise<void> {
+  async initializeSwarm(options: any): Promise<void> {
     this['_logger']?.info('Initializing swarm with options', options);
     await this.initialize();
   }

@@ -9,7 +9,7 @@
  * - @claude-zen/database: DatabaseManager for data operations
  * - @claude-zen/workflows: WorkflowOrchestrator for infrastructure workflows
  * - @claude-zen/monitoring: MetricsCollector for infrastructure monitoring
- * - @claude-zen/load-balancing: ResourceOptimizer for performance optimization
+ * - @claude-zen/brain: ResourceOptimizer for performance optimization
  */
 
 import { EventEmitter } from 'eventemitter3';
@@ -181,7 +181,7 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
       const { ServiceManager, MetricsCollector } = await import('@claude-zen/foundation');
       const { DatabaseManager } = await import('@claude-zen/database');
       const { WorkflowOrchestrator } = await import('@claude-zen/workflows');
-      const { ResourceOptimizer } = await import('@claude-zen/load-balancing');
+      const { ResourceOptimizer } = await import('@claude-zen/brain');
 
       this.serviceManager = new ServiceManager({
         name: this.name,

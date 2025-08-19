@@ -501,6 +501,9 @@ export {
   vectorAddAdaptive
 } from './src/main';
 
+// Export comprehensive ML interfaces for DSPy teleprompters
+export * from './src/index';
+
 // Export commonly used Foundation types for convenience
 export type {
   Result,

@@ -7,6 +7,13 @@
  */
 
 // Re-export all provider configuration from the llm-routing package
+// Default export for backward compatibility (static import)
+import { 
+  LLM_PROVIDER_CONFIG, 
+  ROUTING_STRATEGY, 
+  getOptimalProvider as getOptimal 
+} from '@claude-zen/llm-routing';
+
 export {
   LLM_PROVIDER_CONFIG,
   ROUTING_STRATEGY,
@@ -26,13 +33,6 @@ export {
 export {
   LLM_PROVIDER_CONFIG as providers,
   ROUTING_STRATEGY as routing,
-} from '@claude-zen/llm-routing';
-
-// Default export for backward compatibility (static import)
-import { 
-  LLM_PROVIDER_CONFIG, 
-  ROUTING_STRATEGY, 
-  getOptimalProvider as getOptimal 
 } from '@claude-zen/llm-routing';
 
 export default {

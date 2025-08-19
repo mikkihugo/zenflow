@@ -5,13 +5,13 @@
  * Hooks into all agent communications for comprehensive deception detection.
  */
 
-import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { 
   SafetyGuard as AISafetyOrchestrator,
   AIDeceptionDetector,
   type AIInteractionData,
   type DeceptionAlert 
 } from '@claude-zen/ai-safety';
+import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 
 export interface AgentInteraction {
@@ -260,7 +260,7 @@ export class AgentInteractionPipeline extends EventEmitter {
 
     // Agent type-specific validation
     switch (interaction.agentType) {
-      case 'queen':
+      case 'queen': {
         // Queens coordinate multiple swarms, repos, and SPARC phases
         // They should NOT directly implement code, but CAN coordinate implementation across swarms
         const directImplementationPatterns = [
@@ -280,6 +280,7 @@ export class AgentInteractionPipeline extends EventEmitter {
         // Queens legitimately coordinate multiple repos/swarms - this is NOT deception
         // Multi-repo coordination, cross-swarm communication, and parallel SPARC phases are valid
         break;
+      }
 
       case 'commander':
       case 'swarm':

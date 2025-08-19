@@ -48,7 +48,6 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/database": "file:../database",
     "@anthropic-ai/claude-code": "^1.0.83",
     "@logtape/logtape": "^1.0.4",
     "@manypkg/find-root": "^3.1.0",
@@ -70,9 +69,12 @@
     "p-retry": "^6.2.1",
     "prom-client": "^15.1.3",
     "reflect-metadata": "^0.2.2",
-    "tsyringe": "^4.10.0"
+    "tsyringe": "^4.10.0",
+    "@lancedb/lancedb": "^0.21.3",
+    "better-sqlite3": "^12.2.0",
+    "kuzu": "^0.11.1"
   },
-  "_comment_database": "database is a private implementation detail - only foundation package should access it",
+  "_comment_database": "database is now integrated directly into foundation package",
   "devDependencies": {
     "@types/node": "^22.17.2",
     "typescript": "^5.9.2",
@@ -111,6 +113,10 @@
     "./telemetry": {
       "import": "./dist/telemetry.js",
       "types": "./dist/telemetry.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types/index.js",
+      "types": "./dist/types/index.d.ts"
     }
   },
   "files": [

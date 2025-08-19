@@ -111,9 +111,9 @@ export { SwarmMigrationSystem } from './swarm-migration-system';
  * **COMPREHENSIVE AI INTEGRATION:**
  * - @claude-zen/brain: Autonomous decision-making and behavioral intelligence
  * - @claude-zen/neural-ml: 27+ neural models for learning and prediction
- * - @claude-zen/agent-monitoring: Health monitoring and performance prediction
+ * - @claude-zen/brain: Health monitoring and performance prediction
  * - @claude-zen/ai-safety: Deception detection and safety protocols
- * - @claude-zen/load-balancing: Intelligent resource optimization
+ * - @claude-zen/brain: Intelligent resource optimization
  * - @claude-zen/workflows: Process coordination and orchestration
  * - @claude-zen/teamwork: Collaborative discussions and consensus building
  * - @claude-zen/database: Multi-backend persistent storage
@@ -161,9 +161,9 @@ export const CAPABILITY_MESH_INFO = {
   integrations: [
     '@claude-zen/brain',
     '@claude-zen/neural-ml', 
-    '@claude-zen/agent-monitoring',
+    '@claude-zen/brain',
     '@claude-zen/ai-safety',
-    '@claude-zen/load-balancing',
+    '@claude-zen/brain',
     '@claude-zen/workflows',
     '@claude-zen/teamwork',
     '@claude-zen/database'

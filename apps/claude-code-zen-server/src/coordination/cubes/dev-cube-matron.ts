@@ -48,14 +48,31 @@ export interface StrategicRequirement {
   title: string;
   businessObjective: string;
   priority: 'low' | 'medium' | 'high' | 'critical';
-  resourceAllocation: number;
-  timeline: {
+}
+
+export interface ProjectSpecification {
+  name: string;
+  domain: string;
+  requirements: string[];
+  complexity: 'simple' | 'moderate' | 'complex' | 'enterprise';
+  constraints: string[];
+}
+
+export interface CodeRequest {
+  id: string;
+  type: string;
+  complexity?: number;
+  component?: string;
+  scope?: string;
+  coverage?: number;
+  resourceAllocation?: number;
+  timeline?: {
     startDate: Date;
     targetDate: Date;
   };
-  stakeholders: string[];
-  successCriteria: string[];
-  assignedQueens: string[];
+  stakeholders?: string[];
+  successCriteria?: string[];
+  assignedQueens?: string[];
 }
 
 /**
@@ -92,7 +109,8 @@ export class DevCubeMatron
   // Strategic Business Planning (No Technical Implementation)
   private strategicRequirements = new Map<string, StrategicRequirement>();
   // SPARC Integration will be added when we find the import
-  private sparcEngine?: unknown;
+  private sparcEngine?: any;
+  private activeProjects = new Map<string, any>();
 
   constructor(id: string, eventBus: EventBus, config: CollectiveConfig) {
     super(); // Initialize EventEmitter
@@ -170,7 +188,7 @@ export class DevCubeMatron
   /**
    * Handle code generation requests with Borg precision
    */
-  private async handleCodeRequest(request: unknown): Promise<void> {
+  private async handleCodeRequest(request: CodeRequest): Promise<void> {
     this.logger.info(
       `Processing code request: ${request.type} - ${request.id}`
     );
@@ -192,7 +210,7 @@ export class DevCubeMatron
   /**
    * Handle architecture reviews
    */
-  private async handleArchitectureReview(review: unknown): Promise<void> {
+  private async handleArchitectureReview(review: any): Promise<void> {
     this.logger.info(`Architecture review requested: ${review.component}`);
 
     const analysis = {
@@ -215,7 +233,7 @@ export class DevCubeMatron
   /**
    * Handle testing requirements
    */
-  private async handleTestingRequest(request: unknown): Promise<void> {
+  private async handleTestingRequest(request: any): Promise<void> {
     this.logger.info(
       `Testing request: ${request.scope} - Coverage target: ${request.coverage || '95%'}`
     );
@@ -578,7 +596,7 @@ export class DevCubeMatron
    * Determine project complexity based on request
    */
   private determineComplexity(
-    request: unknown
+    request: any
   ): 'simple' | 'moderate' | 'complex' | 'enterprise' {
     if (request.type === 'bug-fix') return 'simple';
     if (request.type === 'feature' && request.priority === 'low')

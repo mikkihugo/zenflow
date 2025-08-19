@@ -10,6 +10,7 @@ import { EventEmitter } from 'eventemitter3';
 import { access, readdir, stat } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
+import { getLogger } from '@claude-zen/foundation';
 
 const execAsync = promisify(exec);
 
@@ -70,6 +71,7 @@ export class EnvironmentDetector extends EventEmitter {
   private snapshot: EnvironmentSnapshot | null = null;
   private detectionInterval: NodeJS.Timer | null = null;
   private isDetecting = false;
+  private logger = getLogger('EnvironmentDetector');
 
   constructor(
     private projectRoot: string = process.cwd(),
@@ -463,7 +465,7 @@ export class EnvironmentDetector extends EventEmitter {
       // Remove duplicates
       context.languages = [...new Set(context.languages)];
     } catch (error) {
-      console.error('Failed to detect project context:', error);
+      this.logger.error('Failed to detect project context:', error);
     }
 
     return context;
@@ -475,8 +477,8 @@ export class EnvironmentDetector extends EventEmitter {
   private async scanForLanguages(): Promise<string[]> {
     const languages: string[] = [];
     const extensionMap: Record<string, string> = {
-      '': 'JavaScript',
-      '': 'TypeScript',
+      '.js': 'JavaScript',
+      '.ts': 'TypeScript',
       '.jsx': 'React',
       '.tsx': 'React TypeScript',
       '.py': 'Python',

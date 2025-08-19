@@ -10,7 +10,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
-import type { SessionMemoryStore } from '../memory/index';
+// import type { SessionMemoryStore } from '@claude-zen/memory'; // TODO: Fix memory package build
 import {
   getCoordinationFactSystem,
   initializeCoordinationFactSystem,
@@ -20,7 +20,7 @@ import {
   type CoordinationFact as UniversalFact,
   type CoordinationFactQuery as FactQuery,
 } from '@claude-zen/knowledge';
-import type { CollectiveSwarmCoordinator } from './swarm-synchronization';
+import type CollectiveSwarmCoordinator from './swarm-synchronization';
 
 interface SwarmContext {
   relevanceScore: number;
@@ -92,9 +92,9 @@ export interface KnowledgeDistributionUpdate {
  * @example
  */
 export class CollectiveKnowledgeBridge extends EventEmitter {
-  private collectiveFact?: CollectiveFACTSystem;
+  private collectiveFact?: any; // Type from @claude-zen/knowledge internal system
   private hiveCoordinator?: CollectiveSwarmCoordinator;
-  private memoryStore?: SessionMemoryStore;
+  private memoryStore?: any; // SessionMemoryStore type when package is fixed
   private subscribedSwarms = new Map<string, Set<string>>(); // swarmId -> domains
   private pendingRequests = new Map<string, KnowledgeRequest>();
   private contributionQueue = new Map<string, SwarmContribution[]>();
@@ -102,7 +102,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
 
   constructor(
     hiveCoordinator?: CollectiveSwarmCoordinator,
-    memoryStore?: SessionMemoryStore
+    memoryStore?: any
   ) {
     super();
     if (hiveCoordinator !== undefined) {
@@ -123,10 +123,10 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       logger.info('Initializing Hive Knowledge Bridge...');
 
       // Get or wait for CollectiveFACT system
-      const fact = getCollectiveFACT();
+      const fact = getCoordinationFactSystem();
       if (!fact) {
         throw new Error(
-          'CollectiveFACT system not available. Initialize CollectiveSwarmCoordinator first.'
+          'Coordination fact system not available. Initialize coordination system first.'
         );
       }
       this.collectiveFact = fact;
@@ -223,7 +223,9 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
 
       // Update response metadata
       if (response) {
-        response.metadata.timestamp = Date.now();
+        if (response && response.metadata) {
+          response.metadata.timestamp = Date.now();
+        }
       }
 
       // Clean up pending request
@@ -315,7 +317,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
         timestamp: Date.now(),
         confidence: this.calculateAverageConfidence(searchResults ?? []),
         cacheHit:
-          searchResults?.some((r: unknown) => (r.accessCount ?? 0) > 1) ??
+          searchResults?.some((r: any) => (r?.accessCount ?? 0) > 1) ??
           false,
       },
     };
@@ -387,16 +389,18 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   ): Promise<KnowledgeResponse> {
     const updateData = request.payload.knowledge;
 
-    if (!(updateData && updateData?.factId)) {
+    if (!(updateData && (updateData as any)?.factId)) {
       throw new Error('Fact ID is required for knowledge update');
     }
+
+    const typedUpdateData = updateData as any;
 
     // This would typically validate the update and apply it to CollectiveFACT
     // For now, we'll emit an event for processing
     this.emit('knowledge:update-requested', {
       swarmId: request.swarmId,
-      factId: updateData?.factId,
-      updates: updateData?.updates,
+      factId: typedUpdateData?.factId,
+      updates: typedUpdateData?.updates,
       timestamp: Date.now(),
     });
 
@@ -406,7 +410,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       success: true,
       data: {
         status: 'update-queued',
-        factId: updateData?.factId,
+        factId: typedUpdateData?.factId,
       },
       metadata: {
         source: 'swarm-contribution',
@@ -468,11 +472,14 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     > = [];
 
     for (const fact of results) {
+      const swarmAccess = (fact as any)?.swarmAccess;
+      const hasUsedBefore = swarmAccess && swarmAccess.has && swarmAccess.has(swarmId);
+      
       const enhanced = {
         ...fact,
         swarmContext: {
           relevanceScore: this.calculateSwarmRelevance(fact, swarmId),
-          usageHistory: fact.swarmAccess.has(swarmId)
+          usageHistory: hasUsedBefore
             ? ('previously-used' as const)
             : ('new' as const),
           agentCompatibility: agentId
@@ -499,20 +506,23 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     fact: UniversalFact,
     swarmId: string
   ): number {
-    let relevance = fact.metadata.confidence;
+    let relevance = (fact as any)?.metadata?.confidence ?? 0.5;
 
     // Boost if previously used by this swarm
-    if (fact.swarmAccess.has(swarmId)) {
+    const swarmAccess = (fact as any)?.swarmAccess;
+    if (swarmAccess && swarmAccess.has && swarmAccess.has(swarmId)) {
       relevance += 0.2;
     }
 
     // Boost if used by similar/related swarms
     const relatedSwarms = this.findRelatedSwarms(swarmId);
-    const usedByRelated = Array.from(fact.swarmAccess).some((id) =>
-      relatedSwarms.includes(id)
-    );
-    if (usedByRelated) {
-      relevance += 0.1;
+    if (swarmAccess && swarmAccess.values) {
+      const usedByRelated = Array.from(swarmAccess.values()).some((id: any) =>
+        relatedSwarms.includes(String(id))
+      );
+      if (usedByRelated) {
+        relevance += 0.1;
+      }
     }
 
     return Math.min(1.0, relevance);
@@ -552,7 +562,7 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
   private calculateAverageConfidence(results: UniversalFact[]): number {
     if (results.length === 0) return 0;
     const total = results.reduce(
-      (sum, fact) => sum + fact.metadata.confidence,
+      (sum, fact) => sum + ((fact as any)?.metadata?.confidence ?? 0.5),
       0
     );
     return total / results.length;
@@ -565,23 +575,25 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     // Listen for CollectiveFACT updates
     if (this.collectiveFact) {
       this.collectiveFact.on('fact-updated', (data: unknown) => {
+        const typedData = data as any;
         this.distributeKnowledgeUpdate({
           updateId: `fact-update-${Date.now()}`,
           type: 'fact-updated',
-          domain: data?.type,
+          domain: typedData?.type || 'unknown',
           priority: 'medium',
-          content: data?.fact,
+          content: typedData?.fact,
           timestamp: Date.now(),
         });
       });
 
       this.collectiveFact.on('fact-refreshed', (data: unknown) => {
+        const typedData = data as any;
         this.distributeKnowledgeUpdate({
           updateId: `fact-refresh-${Date.now()}`,
           type: 'fact-updated',
-          domain: data?.fact?.type,
+          domain: typedData?.fact?.type || 'unknown',
           priority: 'low',
-          content: data?.fact,
+          content: typedData?.fact,
           timestamp: Date.now(),
         });
       });
@@ -590,8 +602,9 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
     // Listen for hive coordinator events
     if (this.hiveCoordinator) {
       this.hiveCoordinator.on('swarm:registered', (data: unknown) => {
-        this.registerSwarm(data?.swarmId, []).catch((error) => {
-          logger.error(`Failed to register swarm ${data?.swarmId}:`, error);
+        const typedData = data as any;
+        this.registerSwarm(typedData?.swarmId || '', []).catch((error) => {
+          logger.error(`Failed to register swarm ${typedData?.swarmId}:`, error);
         });
       });
     }
@@ -657,9 +670,8 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       return;
     }
 
-    // Convert contribution to universal fact format
-    const fact: Partial<UniversalFact> = {
-      type: 'general',
+    // Convert contribution to coordination fact format  
+    const fact: any = {
       subject: contribution.content.title,
       content: {
         type: contribution.contributionType,
@@ -673,11 +685,9 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
           timestamp: contribution.timestamp,
         },
       },
-      metadata: {
-        source: `swarm-${contribution.swarmId}`,
-        timestamp: contribution.timestamp,
-        confidence: contribution.confidence,
-      },
+      source: `swarm-${contribution.swarmId}`,
+      timestamp: contribution.timestamp,
+      confidence: contribution.confidence,
     };
 
     // Store in memory for later integration with CollectiveFACT

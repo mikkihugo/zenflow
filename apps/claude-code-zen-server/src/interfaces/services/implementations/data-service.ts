@@ -590,7 +590,7 @@ export class DataService extends BaseService implements Service {
     };
   }
 
-  private async storeDataToSource(key: string, _value: unknown): Promise<void> {
+  private async storeDataToSource(key: string, _value: any): Promise<void> {
     // Simulate data storage to database
     await new Promise((resolve) => setTimeout(resolve, Math.random() * 50));
     this.logger.debug(`Stored data for key ${key} to data source`);

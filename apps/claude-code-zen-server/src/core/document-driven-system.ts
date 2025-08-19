@@ -412,17 +412,17 @@ export class DocumentDrivenSystem extends EventEmitter {
     this.on('document:deleted', this.handleDocumentDeleted.bind(this));
   }
 
-  private async handleDocumentCreated(event: unknown): Promise<void> {
+  private async handleDocumentCreated(event: any): Promise<void> {
     logger.debug(`Document created: ${event.path}`);
     await this.processVisionaryDocument(event.workspaceId, event.path);
   }
 
-  private async handleDocumentUpdated(event: unknown): Promise<void> {
+  private async handleDocumentUpdated(event: any): Promise<void> {
     logger.debug(`Document updated: ${event.path}`);
     await this.processVisionaryDocument(event.workspaceId, event.path);
   }
 
-  private async handleDocumentDeleted(event: unknown): Promise<void> {
+  private async handleDocumentDeleted(event: any): Promise<void> {
     logger.debug(`Document deleted: ${event.path}`);
     const context = this.workspaces.get(event.workspaceId);
     if (context) {

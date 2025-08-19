@@ -919,12 +919,80 @@ export type {
   LLMBridgeOptions
 } from './coordination/dspy-llm-bridge';
 
+// =============================================================================
+// NEURAL & AI DOMAIN TYPES - Comprehensive brain domain types
+// =============================================================================
+
 export type {
+  // Core neural network types
   NeuralModelType,
+  ActivationFunction,
+  LossFunction,
+  OptimizerType,
+  NeuralNetworkConfig,
+  NetworkArchitecture,
+  LayerConfig,
+  TrainingConfiguration,
+  OptimizationConfig,
+  
+  // Neural agent types
+  NeuralAgent,
+  AgentType,
+  CognitivePattern,
+  ReasoningStyle,
+  CollaborationStyle,
+  AgentCapabilities,
+  SkillType,
+  LearningAbility,
+  
+  // Learning and adaptation types
+  LearningConfiguration,
+  LearningStrategy,
+  PerformanceMetrics,
+  AgentPerformance,
+  MetricType,
+  
+  // Coordination and communication types
+  BrainCoordinationConfig,
+  CoordinationTopology,
+  CommunicationProtocol,
+  AgentMessage,
+  MessageType,
+  MessagePayload,
+  
+  // Utility types
+  AgentState,
+  AgentStatus,
+  HealthStatus,
+  ResourceUsage,
+  
+  // Training and dataset types
+  TrainingDataset,
+  DatasetType,
+  DataFormat,
+  
+  // Error types for brain domain
+  NeuralError,
+  TrainingError,
+  CoordinationError,
+  
+  // Type guards and result types
+  NeuralAgentResult,
+  TrainingResult,
+  CoordinationResult,
+  
+  // Legacy compatibility types
   ModelPresetConfig,
   TrainingParameters,
   ModelMetrics
-} from './types';
+} from './types/index';
+
+// Type guards for runtime type checking
+export {
+  isNeuralAgent,
+  isNeuralNetworkConfig,
+  isAgentMessage
+} from './types/index';
 
 // =============================================================================
 // AUTONOMOUS SYSTEM TYPE DEFINITIONS - Types for autonomous decision-making
@@ -1149,3 +1217,57 @@ export type {
   NeuralResult, 
   NeuralData
 } from './neural-orchestrator';
+
+// =============================================================================
+// MONITORING SYSTEM - Internal agent monitoring (formerly @claude-zen/agent-monitoring)
+// =============================================================================
+
+export {
+  CompleteIntelligenceSystem,
+  createIntelligenceSystem,
+  createBasicIntelligenceSystem,
+  createProductionIntelligenceSystem,
+  SimpleTaskPredictor,
+  createTaskPredictor,
+  isHighConfidencePrediction,
+  getPredictionSummary
+} from './monitoring/main';
+
+export type {
+  TaskPredictor
+} from './monitoring/task-predictor';
+
+export type {
+  IntelligenceSystemConfig,
+  PerformanceMetrics,
+  SystemHealth
+} from './monitoring/types';
+
+// =============================================================================
+// LOAD BALANCING SYSTEM - Internal load balancing (formerly @claude-zen/load-balancing)
+// =============================================================================
+
+export {
+  LoadBalancer,
+  createLoadBalancer,
+  CapacityManager,
+  createCapacityManager,
+  ResourceOptimizer,
+  createResourceOptimizer,
+  RoutingStrategy,
+  createRoutingStrategy,
+  AlgorithmSelector,
+  createAlgorithmSelector
+} from './load-balancing/main';
+
+export type {
+  LoadBalancerConfig,
+  LoadBalancerMetrics,
+  LoadBalancerStrategy,
+  RoutingDecision,
+  NodeHealth,
+  ResourceAllocation,
+  CapacityMetrics,
+  OptimizationResult,
+  PerformanceMetrics as LoadBalancingPerformanceMetrics
+} from './load-balancing/types';

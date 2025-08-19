@@ -102,12 +102,13 @@
  * @see {@link VALIDATION_RULES} Configuration validation rules
  */
 
-import { VALIDATION_RULES } from './defaults';
 import type {
   ConfigValidationResult,
   SystemConfiguration,
   ValidationResult,
 } from '../types/config-types';
+
+import { VALIDATION_RULES } from './defaults';
 
 /**
  * Configuration validator with comprehensive validation and health assessment capabilities.
@@ -298,13 +299,11 @@ export class ConfigValidator {
       }
 
       // Enum validation
-      if ('enum' in rule && rule.enum && Array.isArray(rule.enum)) {
-        if (!rule.enum.includes(value as never)) {
+      if ('enum' in rule && rule.enum && Array.isArray(rule.enum) && !rule.enum.includes(value as never)) {
           errors.push(
             `${path} must be one of: ${rule.enum.join(', ')}, got ${value}`
           );
         }
-      }
 
       // Range validation
       if (rule.type === 'number' && typeof value === 'number') {
@@ -402,14 +401,12 @@ export class ConfigValidator {
     if (
       config?.storage?.memory?.maxMemorySize &&
       config?.storage?.memory?.cacheSize
-    ) {
-      if (
+     && 
         config?.storage?.memory?.cacheSize >
         config?.storage?.memory?.maxMemorySize
       ) {
         errors.push('Cache size cannot be larger than max memory size');
       }
-    }
 
     // Agent constraints
     if (

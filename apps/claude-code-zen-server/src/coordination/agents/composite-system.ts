@@ -6,7 +6,7 @@
  * 
  * Delegates to:
  * - @claude-zen/teamwork: Multi-agent conversation and collaboration patterns
- * - @claude-zen/load-balancing: Intelligent task routing and resource optimization  
+ * - @claude-zen/brain: Intelligent task routing and resource optimization  
  * - @claude-zen/brain: Neural coordination and adaptive learning
  * - @claude-zen/foundation: Performance tracking, telemetry, logging
  * - @claude-zen/agent-manager: Agent lifecycle and health monitoring
@@ -256,8 +256,8 @@ export class Agent extends EventEmitter implements AgentComponent {
       this.teamworkCoordinator = new ConversationOrchestrator();
       await this.teamworkCoordinator.initialize();
 
-      // Delegate to @claude-zen/load-balancing for intelligent task routing
-      const { LoadBalancer } = await import('@claude-zen/load-balancing');
+      // Delegate to @claude-zen/brain for intelligent task routing
+      const { LoadBalancer } = await import('@claude-zen/brain');
       this.loadBalancer = new LoadBalancer({
         algorithm: 'ml_predictive' as any, // LoadBalancingAlgorithmType.ML_PREDICTIVE
         healthCheckInterval: config.healthCheckInterval || 5000,
@@ -515,25 +515,20 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   async initialize(config: AgentConfig): Promise<void> {
     if (this.initialized) return;
 
-    try {
-      // Delegate to @claude-zen/teamwork for group coordination
-      const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
-      this.teamworkCoordinator = new ConversationOrchestrator();
-      await this.teamworkCoordinator.initialize();
+    // Delegate to @claude-zen/teamwork for group coordination
+    const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
+    this.teamworkCoordinator = new ConversationOrchestrator();
+    await this.teamworkCoordinator.initialize();
 
-      // Delegate to @claude-zen/load-balancing for task distribution
-      const { LoadBalancer } = await import('@claude-zen/load-balancing');
-      this.loadBalancer = new LoadBalancer({
-        algorithm: 'weighted_round_robin' as any, // LoadBalancingAlgorithmType.WEIGHTED_ROUND_ROBIN
-        healthCheckInterval: 5000
-      });
-      await this.loadBalancer.initialize();
+    // Delegate to @claude-zen/brain for task distribution
+    const { LoadBalancer } = await import('@claude-zen/brain');
+    this.loadBalancer = new LoadBalancer({
+      algorithm: 'weighted_round_robin' as any, // LoadBalancingAlgorithmType.WEIGHTED_ROUND_ROBIN
+      healthCheckInterval: 5000
+    });
+    await this.loadBalancer.initialize();
 
-      this.initialized = true;
-
-    } catch (error) {
-      throw error;
-    }
+    this.initialized = true;
   }
 
   getId(): string {

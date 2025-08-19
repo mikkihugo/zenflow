@@ -8,9 +8,12 @@
  * - Fallback: Optimized scalar operations with rayon
  */
 
-use super::{OptimizedOps, ActivationType, Result, simple_matrix};
+use super::{OptimizedOps, ActivationType, simple_matrix};
 use wide::f32x8;
+#[allow(unused_imports)]  // TODO: Use Mat4 for 4x4 matrix transformations in neural networks
 use ultraviolet::{Vec4, Mat4};
+
+// Note: Result import removed from super - using std::result::Result directly
 
 /// AVX-512 optimized operations (Intel/AMD)
 pub struct Avx512Ops;
@@ -19,6 +22,19 @@ impl Avx512Ops {
     pub fn new() -> Self {
         log::info!("Initializing AVX-512 SIMD operations");
         Self
+    }
+
+    /// Optimized 4x4 matrix multiplication using ultraviolet Mat4 SIMD
+    pub fn matrix_multiply_4x4(&self, a: &[f32], b: &[f32]) -> Vec<f32> {
+        assert_eq!(a.len(), 16, "Matrix A must be 4x4 (16 elements)");
+        assert_eq!(b.len(), 16, "Matrix B must be 4x4 (16 elements)");
+        
+        // Convert arrays to Mat4 using from_array (4x4 matrix as 16 elements)
+        let mat_a = Mat4::from([a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15]]);
+        let mat_b = Mat4::from([b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15]]);
+        let result = mat_a * mat_b;
+        
+        result.as_array().to_vec()
     }
 }
 
@@ -137,6 +153,19 @@ impl Avx2Ops {
     pub fn new() -> Self {
         log::info!("Initializing AVX2 SIMD operations");
         Self
+    }
+
+    /// Optimized 4x4 matrix multiplication using ultraviolet Mat4 SIMD
+    pub fn matrix_multiply_4x4(&self, a: &[f32], b: &[f32]) -> Vec<f32> {
+        assert_eq!(a.len(), 16, "Matrix A must be 4x4 (16 elements)");
+        assert_eq!(b.len(), 16, "Matrix B must be 4x4 (16 elements)");
+        
+        // Convert arrays to Mat4 using from_array (4x4 matrix as 16 elements)
+        let mat_a = Mat4::from([a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9], a[10], a[11], a[12], a[13], a[14], a[15]]);
+        let mat_b = Mat4::from([b[0], b[1], b[2], b[3], b[4], b[5], b[6], b[7], b[8], b[9], b[10], b[11], b[12], b[13], b[14], b[15]]);
+        let result = mat_a * mat_b;
+        
+        result.as_array().to_vec()
     }
 }
 

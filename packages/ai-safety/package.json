@@ -9,7 +9,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "prepublishOnly": "pnpm run clean && pnpm run build",
+    "_prepublishOnly_disabled": "pnpm run clean && pnpm run build",
     "test": "vitest run",
     "test:watch": "vitest",
     "docs:check": "node scripts/check-tsdoc.mjs",

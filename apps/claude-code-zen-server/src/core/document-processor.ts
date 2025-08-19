@@ -26,8 +26,8 @@ import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { getLogger } from '../config/logging-config';
 import type { BaseDocumentEntity } from '../database/entities/product-entities';
-import type { WorkflowCoordinationContext } from '../workflows/workflow-coordination-types';
-import type { MemorySystem } from './memory-system';
+import type { WorkflowEngine } from '@claude-zen/workflows';
+import type { MemorySystem } from '@claude-zen/memory';
 
 const logger = getLogger('DocumentProcessor');
 
@@ -172,7 +172,7 @@ export interface DocumentStats {
  */
 export class DocumentProcessor extends EventEmitter {
   private memory: MemorySystem;
-  private workflowEngine: unknown; // Dynamic import to break circular dependency
+  private workflowEngine: WorkflowEngine | null = null;
   private config: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
   private documentWatchers: Map<string, any> = new Map();
@@ -193,12 +193,12 @@ export class DocumentProcessor extends EventEmitter {
    */
   constructor(
     memory: MemorySystem,
-    workflowEngine: unknown,
+    workflowEngine?: WorkflowEngine,
     config: DocumentProcessorConfig = {}
   ) {
     super();
     this.memory = memory;
-    this.workflowEngine = workflowEngine;
+    this.workflowEngine = workflowEngine || null;
     this.config = {
       autoWatch: config?.autoWatch !== false,
       enableWorkflows: config?.enableWorkflows !== false,
@@ -345,13 +345,11 @@ export class DocumentProcessor extends EventEmitter {
       // Trigger workflows if enabled
       if (this.config.enableWorkflows && this.workflowEngine) {
         try {
-          await this.workflowEngine.processDocumentEvent(
-            'document:created',
-            document as unknown as BaseDocumentEntity,
-            {
-              workspaceId,
-            } as any
-          );
+          await this.workflowEngine.execute({
+            type: 'document_created',
+            data: document,
+            context: { workspaceId }
+          });
         } catch (error) {
           logger.warn('Workflow processing failed:', error);
         }
@@ -817,17 +815,17 @@ ${content}
 
   // ==================== EVENT HANDLERS ====================
 
-  private async handleDocumentCreated(event: unknown): Promise<void> {
+  private async handleDocumentCreated(event: any): Promise<void> {
     logger.debug(`Document created: ${event.document.path}`);
   }
 
-  private async handleDocumentUpdated(event: unknown): Promise<void> {
+  private async handleDocumentUpdated(event: any): Promise<void> {
     logger.debug(`Document updated: ${event.document.path}`);
     // Re-process the document
     await this.processDocument(event.document.path, event.workspaceId);
   }
 
-  private async handleDocumentDeleted(event: unknown): Promise<void> {
+  private async handleDocumentDeleted(event: any): Promise<void> {
     logger.debug(`Document deleted: ${event.path}`);
     const context = this.workspaces.get(event.workspaceId);
     if (context) {

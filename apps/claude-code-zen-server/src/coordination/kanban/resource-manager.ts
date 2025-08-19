@@ -4,8 +4,8 @@
  * MIGRATION COMPLETE: 4,006 lines → 250 lines (94% reduction)
  * 
  * Replaces massive custom implementation with extracted package integration:
- * - @claude-zen/load-balancing: LoadBalancingManager + ML-predictive routing + auto-scaling
- * - @claude-zen/agent-monitoring: Agent health monitoring + performance tracking
+ * - @claude-zen/brain: LoadBalancingManager + ML-predictive routing + auto-scaling
+ * - @claude-zen/brain: Agent health monitoring + performance tracking
  * - @claude-zen/foundation: Logging and storage infrastructure
  * 
  * This file now serves as a lightweight facade that:
@@ -166,9 +166,9 @@ export interface PerformanceTracking {
  * Dynamic Resource Manager - Package Integration Facade
  * 
  * MIGRATION: 4,006 lines → ~250 lines using extracted packages:
- * - LoadBalancingManager from @claude-zen/load-balancing (ML-predictive, auto-scaling)
- * - Intelligence System from @claude-zen/agent-monitoring (health monitoring)
- * - Performance Tracker from @claude-zen/agent-monitoring (performance tracking)
+ * - LoadBalancingManager from @claude-zen/brain (ML-predictive, auto-scaling)
+ * - Intelligence System from @claude-zen/brain (health monitoring)
+ * - Performance Tracker from @claude-zen/brain (performance tracking)
  * 
  * This maintains API compatibility while delegating to battle-tested packages.
  */
@@ -247,7 +247,7 @@ export class DynamicResourceManager extends EventEmitter {
 
     logger.info('DynamicResourceManager initialized with package integration', {
       config,
-      packagesUsed: ['@claude-zen/load-balancing', '@claude-zen/agent-monitoring']
+      packagesUsed: ['@claude-zen/brain', '@claude-zen/brain']
     });
   }
 
