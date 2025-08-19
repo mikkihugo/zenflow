@@ -175,7 +175,7 @@ impl fmt::Display for ScalerType {
       Self::RobustScaler => "robust",
       Self::IdentityScaler => "identity",
     };
-    write!(f, "{}", name)
+    write!(f, "{name}")
   }
 }
 

@@ -70,7 +70,7 @@
 **🔓 Public Packages (15 total) - Publishable to npm:**
 1. **`@claude-zen/foundation`** - Common utilities, logging, DI container, LLM provider interfaces
 2. **`@claude-zen/event-system`** - Comprehensive type-safe event system with domain validation  
-3. **`@claude-zen/brain`** - Neural brain coordination with Rust/WASM integration and FANN neural networks
+3. **`@claude-zen/brain`** - Neural brain coordination and intelligent processing
 4. **`@claude-zen/ai-safety`** - AI safety protocols, deception detection, and safety monitoring
 5. **`@claude-zen/knowledge`** - Knowledge management and semantic understanding (**private: false**)
 6. **`@claude-zen/agui`** - Advanced GUI and task approval workflows (**private: false**) ✅ **INTEGRATED INTO SVELTE**
@@ -84,11 +84,14 @@
 14. **`@claude-zen/memory-orchestration`** - Memory coordination
 15. **`@claude-zen/llm-routing`** - LLM provider routing
 
-**🔒 Private Packages (4 total) - Internal use only:**
-16. **`@claude-zen/chaos-engineering`** - System resilience testing (**private: true**)
-17. **`@claude-zen/dspy`** - DSPy Stanford implementation - used via brain (**private: true**)
-18. **`@claude-zen/fact-system`** - Fact-based reasoning (**private: true**)
-19. **`@claude-zen/neural-ml`** - ML integration, adaptive learning & neural forecasting - used via brain (**private: true**)
+**🔒 Private Packages (7 total) - Internal use only in `/packages/private-packages/`:**
+16. **`@claude-zen/database`** - Multi-database abstraction layer (**private: true**)
+17. **`@claude-zen/load-balancing`** - Advanced load balancing and resource optimization (**private: true**)
+18. **`@claude-zen/agent-monitoring`** - Comprehensive agent health monitoring (**private: true**)
+19. **`@claude-zen/chaos-engineering`** - System resilience testing (**private: true**)
+20. **`@claude-zen/dspy`** - DSPy Stanford implementation (**private: true**)
+21. **`@claude-zen/fact-system`** - Fact-based reasoning (**private: true**)
+22. **`@claude-zen/neural-ml`** - ML integration and neural processing (**private: true**)
 
 ### **📊 Current Monorepo Structure: ACTIVE**
 

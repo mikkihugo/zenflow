@@ -330,7 +330,7 @@ export class PIExecutionService extends EventEmitter {
   /**
    * Initialize the service with dependencies
    */
-  async initialize(): Promise<void> {
+  initialize(): void {
     if (this.initialized) return;
 
     try {
