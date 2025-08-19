@@ -50,7 +50,7 @@
   "dependencies": {
     "@claude-zen/event-system": "file:../event-system",
     "@claude-zen/foundation": "file:../foundation",
-    "@claude-zen/fact-system": "file:../fact-system",
+    "@claude-zen/fact-system": "file:../private-packages/fact-system",
     "eventemitter3": "^5.0.1"
   },
   "_comment_fact_system": "fact-system is a private implementation detail - only knowledge package should access it",

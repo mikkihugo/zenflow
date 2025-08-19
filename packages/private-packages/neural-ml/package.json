@@ -24,7 +24,7 @@
     "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
   },
   "dependencies": {
-    "@claude-zen/foundation": "file:../foundation"
+    "@claude-zen/foundation": "file:../../foundation"
   },
   "optionalDependencies": {
     "@tensorflow/tfjs-node-gpu": "^4.22.0",

@@ -39,7 +39,7 @@
     "@claude-zen/foundation": "file:../foundation",
     "eventemitter3": "^5.0.1",
     "nanoid": "^5.1.5",
-    "@claude-zen/chaos-engineering": "file:../chaos-engineering"
+    "@claude-zen/chaos-engineering": "file:../private-packages/chaos-engineering"
   },
   "_comment_chaos_engineering": "chaos-engineering is a private implementation detail - only ai-safety package should access it",
   "devDependencies": {

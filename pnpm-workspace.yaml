@@ -6,4 +6,5 @@ packages:
 
 overrides:
   '@claude-zen/agui': link:packages/agui
-  '@claude-zen/kanban': link:packages/kanban
+  '@claude-zen/kanban': link:packages/private-packages/kanban
+  '@claude-zen/memory': link:packages/private-packages/memory

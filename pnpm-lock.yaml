@@ -6,7 +6,8 @@ settings:
 
 overrides:
   '@claude-zen/agui': link:packages/agui
-  '@claude-zen/kanban': link:packages/kanban
+  '@claude-zen/kanban': link:packages/private-packages/kanban
+  '@claude-zen/memory': link:packages/private-packages/memory
 
 importers:
 
@@ -417,25 +418,25 @@ importers:
         version: link:../../packages/brain
       '@claude-zen/chaos-engineering':
         specifier: workspace:*
-        version: link:../../packages/chaos-engineering
+        version: link:../../packages/private-packages/chaos-engineering
       '@claude-zen/coordination-core':
         specifier: workspace:*
         version: link:../../packages/coordination-core
       '@claude-zen/dspy':
         specifier: workspace:*
-        version: link:../../packages/dspy
+        version: link:../../packages/private-packages/dspy
       '@claude-zen/event-system':
         specifier: workspace:*
         version: link:../../packages/event-system
       '@claude-zen/fact-system':
         specifier: workspace:*
-        version: link:../../packages/fact-system
+        version: link:../../packages/private-packages/fact-system
       '@claude-zen/foundation':
         specifier: workspace:*
         version: link:../../packages/foundation
       '@claude-zen/kanban':
-        specifier: link:../../packages/kanban
-        version: link:../../packages/kanban
+        specifier: link:../../packages/private-packages/kanban
+        version: link:../../packages/private-packages/kanban
       '@claude-zen/knowledge':
         specifier: workspace:*
         version: link:../../packages/knowledge
@@ -443,17 +444,17 @@ importers:
         specifier: workspace:*
         version: link:../../packages/llm-routing
       '@claude-zen/memory':
-        specifier: workspace:*
-        version: link:../../packages/memory
+        specifier: link:../../packages/private-packages/memory
+        version: link:../../packages/private-packages/memory
       '@claude-zen/monitoring':
         specifier: workspace:*
-        version: link:../../packages/monitoring
+        version: link:../../packages/private-packages/monitoring
       '@claude-zen/multi-level-orchestration':
         specifier: workspace:*
         version: link:../../packages/multi-level-orchestration
       '@claude-zen/neural-ml':
         specifier: workspace:*
-        version: link:../../packages/neural-ml
+        version: link:../../packages/private-packages/neural-ml
       '@claude-zen/safe-framework':
         specifier: workspace:*
         version: link:../../packages/safe-framework
@@ -831,8 +832,8 @@ importers:
         specifier: file:../brain
         version: file:packages/brain(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13)))(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(apache-arrow@15.0.2)(encoding@0.1.13)(gpu.js@2.16.0)(seedrandom@3.0.5)
       '@claude-zen/chaos-engineering':
-        specifier: file:../chaos-engineering
-        version: link:../chaos-engineering
+        specifier: file:../private-packages/chaos-engineering
+        version: link:../private-packages/chaos-engineering
       '@claude-zen/foundation':
         specifier: file:../foundation
         version: link:../foundation
@@ -856,8 +857,8 @@ importers:
   packages/brain:
     dependencies:
       '@claude-zen/dspy':
-        specifier: file:../dspy
-        version: file:packages/dspy(@claude-zen/foundation@file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13))
+        specifier: file:../private-packages/dspy
+        version: file:packages/private-packages/dspy(@claude-zen/foundation@file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13))
       '@claude-zen/foundation':
         specifier: file:../foundation
         version: link:../foundation
@@ -960,30 +961,8 @@ importers:
         version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
     optionalDependencies:
       '@claude-zen/neural-ml':
-        specifier: file:../neural-ml
-        version: link:../neural-ml
-
-  packages/chaos-engineering:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: file:../foundation
-        version: link:../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
-    devDependencies:
-      '@biomejs/biome':
-        specifier: ^2.2.0
-        version: 2.2.0
-      '@types/node':
-        specifier: ^22.17.2
-        version: 22.17.2
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+        specifier: file:../private-packages/neural-ml
+        version: link:../private-packages/neural-ml
 
   packages/coordination-core:
     dependencies:
@@ -1006,34 +985,6 @@ importers:
       vitest:
         specifier: ^2.1.5
         version: 2.1.9(@types/node@24.3.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(jsdom@26.1.0)
-
-  packages/dspy:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../foundation
-      '@claude-zen/neural-ml':
-        specifier: workspace:*
-        version: link:../neural-ml
-      seedrandom:
-        specifier: ^3.0.5
-        version: 3.0.5
-      zod:
-        specifier: ^4.0.17
-        version: 4.0.17
-    devDependencies:
-      '@types/node':
-        specifier: ^22.0.0
-        version: 22.17.2
-      '@types/seedrandom':
-        specifier: ^3.0.8
-        version: 3.0.8
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
 
   packages/event-system:
     dependencies:
@@ -1065,25 +1016,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^3.2.4
         version: 3.2.4(vitest@3.2.4)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
-
-  packages/fact-system:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: file:../foundation
-        version: link:../foundation
-      nanoid:
-        specifier: ^5.1.5
-        version: 5.1.5
-    devDependencies:
-      '@types/node':
-        specifier: ^22.17.2
-        version: 22.17.2
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -1179,45 +1111,14 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
 
-  packages/kanban:
-    dependencies:
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
-      immer:
-        specifier: ^10.1.1
-        version: 10.1.1
-      xstate:
-        specifier: ^5.20.2
-        version: 5.20.2
-      zod:
-        specifier: ^4.0.17
-        version: 4.0.17
-    devDependencies:
-      '@biomejs/biome':
-        specifier: ^1.9.4
-        version: 1.9.4
-      '@types/node':
-        specifier: ^22.17.2
-        version: 22.17.2
-      tsup:
-        specifier: ^8.5.0
-        version: 8.5.0(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)(yaml@2.8.1)
-      typescript:
-        specifier: ^5.9.2
-        version: 5.9.2
-      vitest:
-        specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
-
   packages/knowledge:
     dependencies:
       '@claude-zen/event-system':
         specifier: file:../event-system
         version: file:packages/event-system(typescript@5.9.2)
       '@claude-zen/fact-system':
-        specifier: file:../fact-system
-        version: link:../fact-system
+        specifier: file:../private-packages/fact-system
+        version: link:../private-packages/fact-system
       '@claude-zen/foundation':
         specifier: file:../foundation
         version: link:../foundation
@@ -1266,38 +1167,6 @@ importers:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
 
-  packages/memory:
-    dependencies:
-      '@claude-zen/coordination-core':
-        specifier: workspace:*
-        version: link:../coordination-core
-      '@claude-zen/event-system':
-        specifier: workspace:*
-        version: link:../event-system
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../foundation
-      eventemitter3:
-        specifier: ^5.0.1
-        version: 5.0.1
-    devDependencies:
-      typescript:
-        specifier: ^5.6.3
-        version: 5.9.2
-      vitest:
-        specifier: ^2.1.5
-        version: 2.1.9(@types/node@24.3.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(jsdom@26.1.0)
-
-  packages/monitoring:
-    dependencies:
-      '@claude-zen/foundation':
-        specifier: workspace:*
-        version: link:../foundation
-    devDependencies:
-      typescript:
-        specifier: ^5.7.3
-        version: 5.9.2
-
   packages/multi-level-orchestration:
     dependencies:
       '@claude-zen/coordination-core':
@@ -1323,11 +1192,215 @@ importers:
         specifier: ^2.1.5
         version: 2.1.9(@types/node@24.3.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(jsdom@26.1.0)
 
-  packages/neural-ml:
+  packages/private-packages/agent-monitoring:
+    dependencies:
+      '@claude-zen/brain':
+        specifier: file:../../brain
+        version: file:packages/brain(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13)))(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(apache-arrow@15.0.2)(encoding@0.1.13)(gpu.js@2.16.0)(seedrandom@3.0.5)
+      '@claude-zen/event-system':
+        specifier: file:../../event-system
+        version: file:packages/event-system(typescript@5.9.2)
+      '@claude-zen/foundation':
+        specifier: file:../../foundation
+        version: link:../../foundation
+    devDependencies:
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/chaos-engineering:
     dependencies:
       '@claude-zen/foundation':
-        specifier: file:../foundation
-        version: link:../foundation
+        specifier: file:../../foundation
+        version: link:../../foundation
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^2.2.0
+        version: 2.2.0
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/database:
+    dependencies:
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../foundation
+      '@lancedb/lancedb':
+        specifier: ^0.21.3
+        version: 0.21.3(apache-arrow@15.0.2)
+      better-sqlite3:
+        specifier: ^11.3.0
+        version: 11.10.0
+      kuzu:
+        specifier: ^0.11.1
+        version: 0.11.1
+    devDependencies:
+      '@types/better-sqlite3':
+        specifier: ^7.6.11
+        version: 7.6.13
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.17.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/dspy:
+    dependencies:
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../foundation
+      '@claude-zen/neural-ml':
+        specifier: workspace:*
+        version: link:../neural-ml
+      seedrandom:
+        specifier: ^3.0.5
+        version: 3.0.5
+      zod:
+        specifier: ^4.0.17
+        version: 4.0.17
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.17.2
+      '@types/seedrandom':
+        specifier: ^3.0.8
+        version: 3.0.8
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/fact-system:
+    dependencies:
+      '@claude-zen/foundation':
+        specifier: file:../../foundation
+        version: link:../../foundation
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
+    devDependencies:
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/kanban:
+    dependencies:
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      xstate:
+        specifier: ^5.20.2
+        version: 5.20.2
+      zod:
+        specifier: ^4.0.17
+        version: 4.0.17
+    devDependencies:
+      '@biomejs/biome':
+        specifier: ^1.9.4
+        version: 1.9.4
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(jiti@1.21.7)(postcss@8.5.6)(tsx@4.20.4)(typescript@5.9.2)(yaml@2.8.1)
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/load-balancing:
+    dependencies:
+      '@claude-zen/brain':
+        specifier: file:../../brain
+        version: file:packages/brain(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13)))(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(apache-arrow@15.0.2)(encoding@0.1.13)(gpu.js@2.16.0)(seedrandom@3.0.5)
+      '@claude-zen/event-system':
+        specifier: file:../../event-system
+        version: file:packages/event-system(typescript@5.9.2)
+      '@claude-zen/foundation':
+        specifier: file:../../foundation
+        version: link:../../foundation
+    devDependencies:
+      '@types/node':
+        specifier: ^22.17.2
+        version: 22.17.2
+      typescript:
+        specifier: ^5.9.2
+        version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.17.2)(@vitest/ui@3.2.4)(happy-dom@18.0.1)(jiti@1.21.7)(jsdom@26.1.0)(tsx@4.20.4)(yaml@2.8.1)
+
+  packages/private-packages/memory:
+    dependencies:
+      '@claude-zen/coordination-core':
+        specifier: workspace:*
+        version: link:../../coordination-core
+      '@claude-zen/event-system':
+        specifier: workspace:*
+        version: link:../../event-system
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../foundation
+      eventemitter3:
+        specifier: ^5.0.1
+        version: 5.0.1
+    devDependencies:
+      typescript:
+        specifier: ^5.6.3
+        version: 5.9.2
+      vitest:
+        specifier: ^2.1.5
+        version: 2.1.9(@types/node@24.3.0)(@vitest/ui@3.2.4(vitest@3.2.4))(happy-dom@18.0.1)(jsdom@26.1.0)
+
+  packages/private-packages/monitoring:
+    dependencies:
+      '@claude-zen/foundation':
+        specifier: workspace:*
+        version: link:../../foundation
+    devDependencies:
+      typescript:
+        specifier: ^5.7.3
+        version: 5.9.2
+
+  packages/private-packages/neural-ml:
+    dependencies:
+      '@claude-zen/foundation':
+        specifier: file:../../foundation
+        version: link:../../foundation
     devDependencies:
       '@types/node':
         specifier: ^22.17.2
@@ -1376,8 +1449,8 @@ importers:
         specifier: file:../foundation
         version: link:../foundation
       '@claude-zen/kanban':
-        specifier: link:../kanban
-        version: link:../kanban
+        specifier: link:../private-packages/kanban
+        version: link:../private-packages/kanban
       date-fns:
         specifier: ^4.1.0
         version: 4.1.0
@@ -2014,8 +2087,8 @@ packages:
     resolution: {directory: packages/brain, type: directory}
     engines: {node: '>=18.0.0'}
 
-  '@claude-zen/dspy@file:packages/dspy':
-    resolution: {directory: packages/dspy, type: directory}
+  '@claude-zen/dspy@file:packages/private-packages/dspy':
+    resolution: {directory: packages/private-packages/dspy, type: directory}
     peerDependencies:
       '@claude-zen/foundation': workspace:*
 
@@ -2028,8 +2101,8 @@ packages:
   '@claude-zen/foundation@file:packages/foundation':
     resolution: {directory: packages/foundation, type: directory}
 
-  '@claude-zen/neural-ml@file:packages/neural-ml':
-    resolution: {directory: packages/neural-ml, type: directory}
+  '@claude-zen/neural-ml@file:packages/private-packages/neural-ml':
+    resolution: {directory: packages/private-packages/neural-ml, type: directory}
 
   '@cnakazawa/watch@1.0.4':
     resolution: {integrity: sha512-v9kIhKwjeZThiWrLmj0y17CWoyddASLj9O2yvbZkbvw/N3rWOYy9zkV66ursAoVr0mV15bL8g0c4QZUE6cdDoQ==}
@@ -4960,6 +5033,9 @@ packages:
 
   before-after-hook@4.0.0:
     resolution: {integrity: sha512-q6tR3RPqIB1pMiTRMFcZwuG5T8vwp+vUvEG0vuI6B+Rikh5BfPp2fQ82c925FOs+b0lcFQ8CFrL+KbilfZFhOQ==}
+
+  better-sqlite3@11.10.0:
+    resolution: {integrity: sha512-EwhOpyXiOEL/lKzHz9AW1msWFNzGc/z+LzeB3/jnFJpxu+th2yqvzsSWas1v9jgs9+xiXJcD5A8CJxAG2TaghQ==}
 
   better-sqlite3@12.2.0:
     resolution: {integrity: sha512-eGbYq2CT+tos1fBwLQ/tkBt9J5M3JEHjku4hbvQUePCckkvVf14xWj+1m7dGoK81M/fOjFT7yM9UMeKT/+vFLQ==}
@@ -11376,7 +11452,7 @@ snapshots:
 
   '@claude-zen/brain@file:packages/brain(@tensorflow/tfjs-converter@4.22.0(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13)))(@tensorflow/tfjs-core@4.22.0(encoding@0.1.13))(apache-arrow@15.0.2)(encoding@0.1.13)(gpu.js@2.16.0)(seedrandom@3.0.5)':
     dependencies:
-      '@claude-zen/dspy': file:packages/dspy(@claude-zen/foundation@file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13))
+      '@claude-zen/dspy': file:packages/private-packages/dspy(@claude-zen/foundation@file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13))
       '@claude-zen/foundation': file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13)
       '@tensorflow/tfjs': 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
       '@tensorflow/tfjs-node': 4.22.0(encoding@0.1.13)(seedrandom@3.0.5)
@@ -11404,7 +11480,7 @@ snapshots:
       trendyways: 1.0.1
       zod: 4.0.17
     optionalDependencies:
-      '@claude-zen/neural-ml': file:packages/neural-ml(apache-arrow@15.0.2)(encoding@0.1.13)(seedrandom@3.0.5)
+      '@claude-zen/neural-ml': file:packages/private-packages/neural-ml(apache-arrow@15.0.2)(encoding@0.1.13)(seedrandom@3.0.5)
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
       - '@mongodb-js/zstd'
@@ -11425,10 +11501,10 @@ snapshots:
       - socks
       - supports-color
 
-  '@claude-zen/dspy@file:packages/dspy(@claude-zen/foundation@file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13))':
+  '@claude-zen/dspy@file:packages/private-packages/dspy(@claude-zen/foundation@file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13))':
     dependencies:
       '@claude-zen/foundation': file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13)
-      '@claude-zen/neural-ml': link:packages/neural-ml
+      '@claude-zen/neural-ml': link:packages/private-packages/neural-ml
       seedrandom: 3.0.5
       zod: 4.0.17
 
@@ -11474,7 +11550,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@claude-zen/neural-ml@file:packages/neural-ml(apache-arrow@15.0.2)(encoding@0.1.13)(seedrandom@3.0.5)':
+  '@claude-zen/neural-ml@file:packages/private-packages/neural-ml(apache-arrow@15.0.2)(encoding@0.1.13)(seedrandom@3.0.5)':
     dependencies:
       '@claude-zen/foundation': file:packages/foundation(apache-arrow@15.0.2)(encoding@0.1.13)
     optionalDependencies:
@@ -14966,6 +15042,11 @@ snapshots:
       safe-buffer: 5.1.2
 
   before-after-hook@4.0.0: {}
+
+  better-sqlite3@11.10.0:
+    dependencies:
+      bindings: 1.5.0
+      prebuild-install: 7.1.3
 
   better-sqlite3@12.2.0:
     dependencies:

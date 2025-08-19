@@ -39,7 +39,7 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/foundation": "file:../foundation",
+    "@claude-zen/foundation": "file:../../foundation",
     "nanoid": "^5.1.5"
   },
   "devDependencies": {

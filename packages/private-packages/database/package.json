@@ -36,7 +36,7 @@
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
     "better-sqlite3": "^11.3.0",
-    "@lancedb/lancedb": "^0.8.4",
+    "@lancedb/lancedb": "^0.21.3",
     "kuzu": "^0.11.1"
   },
   "devDependencies": {

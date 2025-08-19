@@ -32,7 +32,7 @@
   "dependencies": {
     "@claude-zen/event-system": "file:../event-system",
     "@claude-zen/foundation": "file:../foundation", 
-    "@claude-zen/kanban": "file:../kanban",
+    "@claude-zen/kanban": "file:../private-packages/kanban",
     "eventemitter3": "^5.0.1",
     "xstate": "^5.20.2",
     "lodash-es": "^4.17.21",
