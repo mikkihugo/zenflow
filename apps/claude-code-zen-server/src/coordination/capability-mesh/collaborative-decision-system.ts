@@ -5,11 +5,11 @@
  * @claude-zen packages for coordinated discussion, consensus building, and resource allocation.
  * 
  * Delegates to:
- * - @claude-zen/teamwork: ConversationOrchestrator for collaborative discussions
- * - @claude-zen/workflows: DecisionWorkflow for structured decision processes
- * - @claude-zen/knowledge: ConsensusEngine for fact-based consensus
+ * - @claude-zen/intelligence: ConversationOrchestrator for collaborative discussions
+ * - @claude-zen/intelligence: DecisionWorkflow for structured decision processes
+ * - @claude-zen/intelligence: ConsensusEngine for fact-based consensus
  * - @claude-zen/foundation: EventManager for coordination events
- * - @claude-zen/brain: BehavioralIntelligence for decision optimization
+ * - @claude-zen/intelligence: BehavioralIntelligence for decision optimization
  */
 
 import type { Logger } from '@claude-zen/foundation';
@@ -141,11 +141,11 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
       this.logger.info('🚀 Initializing collaborative decision system');
 
       // Initialize delegates from @claude-zen packages
-      const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
-      const { default: knowledgeModule } = await import('@claude-zen/knowledge');
+      const { ConversationOrchestrator } = await import('@claude-zen/intelligence');
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
+      const { default: knowledgeModule } = await import('@claude-zen/intelligence');
       const FactSystem = (knowledgeModule as any).FactSystem || class FactSystem { static create() { return {}; } };
-      const { BehavioralIntelligence } = await import('@claude-zen/brain');
+      const { BehavioralIntelligence } = await import('@claude-zen/intelligence');
 
       this.conversationOrchestrator = new ConversationOrchestrator();
 
@@ -162,7 +162,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
       this.learningSystem = new BehavioralIntelligence();
 
       // Initialize proper event system
-      const { createEventSystem } = await import('@claude-zen/event-system');
+      const { createEventSystem } = await import('@claude-zen/infrastructure');
       this.eventManager = createEventSystem({
         enableMetrics: true,
         enableValidation: true,

@@ -29,19 +29,19 @@
  * ```
  * 
  * **Delegates to:**
- * - @claude-zen/agui: Advanced GUI and human-in-the-loop API endpoints
- * - @claude-zen/workflows: Task and workflow management endpoints
+ * - @claude-zen/enterprise: Advanced GUI and human-in-the-loop API endpoints
+ * - @claude-zen/intelligence: Task and workflow management endpoints
  * - @claude-zen/monitoring: Health, metrics, and performance endpoints
  * - @claude-zen/foundation: Core utilities, validation, and middleware
- * - @claude-zen/teamwork: Collaboration and communication endpoints
- * - @claude-zen/knowledge: Documentation and knowledge management endpoints
+ * - @claude-zen/intelligence: Collaboration and communication endpoints
+ * - @claude-zen/intelligence: Documentation and knowledge management endpoints
  * 
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 2.1.0
  * 
- * @requires @claude-zen/agui - Advanced GUI and approval workflows
- * @requires @claude-zen/workflows - Task and workflow orchestration
+ * @requires @claude-zen/enterprise - Advanced GUI and approval workflows
+ * @requires @claude-zen/intelligence - Task and workflow orchestration
  * @requires @claude-zen/monitoring - Health and performance tracking
  * @requires @claude-zen/foundation - Core web utilities and middleware
  * 
@@ -50,7 +50,7 @@
 
 import type {
   AdvancedGUI
-} from '@claude-zen/agui';
+} from '@claude-zen/enterprise';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
@@ -62,7 +62,7 @@ import type { WebSessionManager } from './web-session-manager';
 
 import type {
   WorkflowEngine
-} from '@claude-zen/workflows';
+} from '@claude-zen/intelligence';
 import type {
   SystemMonitor,
 
@@ -72,10 +72,10 @@ import type {
 
 import type {
   CollaborationEngine
-} from '@claude-zen/teamwork';
+} from '@claude-zen/intelligence';
 import type {
   DocumentationManager
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 
 // Foundation utilities for web operations
 import {
@@ -101,12 +101,12 @@ import {
  * code reduction while enhancing functionality and maintainability.
  * 
  * **Key Capabilities (via delegation):**
- * - Advanced GUI and approval workflows via @claude-zen/agui
- * - Task and workflow orchestration via @claude-zen/workflows
+ * - Advanced GUI and approval workflows via @claude-zen/enterprise
+ * - Task and workflow orchestration via @claude-zen/intelligence
  * - Health monitoring and metrics via @claude-zen/monitoring
  * - Security and validation via @claude-zen/foundation
- * - Team collaboration endpoints via @claude-zen/teamwork
- * - Documentation management via @claude-zen/knowledge
+ * - Team collaboration endpoints via @claude-zen/intelligence
+ * - Documentation management via @claude-zen/intelligence
  */
 export class WebApiRoutes {
   private logger = getLogger('WebAPI');
@@ -141,8 +141,8 @@ export class WebApiRoutes {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/agui for advanced GUI capabilities
-      const { AdvancedGUI } = await import('@claude-zen/agui');
+      // Delegate to @claude-zen/enterprise for advanced GUI capabilities
+      const { AdvancedGUI } = await import('@claude-zen/enterprise');
       this.advancedGUI = new AdvancedGUI({
         enableApprovalWorkflows: true,
         enableHumanInTheLoop: true,
@@ -150,8 +150,8 @@ export class WebApiRoutes {
       });
       await this.advancedGUI.initialize();
 
-      // Delegate to @claude-zen/workflows for task orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for task orchestration
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         enableWebIntegration: true,
         enableRESTAPI: true
@@ -175,16 +175,16 @@ export class WebApiRoutes {
         enableRateLimit: true
       });
 
-      // Delegate to @claude-zen/teamwork for collaboration
-      const { CollaborationEngine } = await import('@claude-zen/teamwork');
+      // Delegate to @claude-zen/intelligence for collaboration
+      const { CollaborationEngine } = await import('@claude-zen/intelligence');
       this.collaborationEngine = new CollaborationEngine({
         enableWebAPI: true,
         enableRealTimeUpdates: true
       });
       await this.collaborationEngine.initialize();
 
-      // Delegate to @claude-zen/knowledge for documentation
-      const { DocumentationManager } = await import('@claude-zen/knowledge');
+      // Delegate to @claude-zen/intelligence for documentation
+      const { DocumentationManager } = await import('@claude-zen/intelligence');
       this.documentationManager = new DocumentationManager({
         enableAPIDocumentation: true,
         enableSwagger: true
@@ -245,7 +245,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Setup API documentation with @claude-zen/knowledge delegation
+   * Setup API documentation with @claude-zen/intelligence delegation
    */
   private async setupAPIDocumentation(app: Express, api: string): Promise<void> {
     assertDefined(this.documentationManager, 'Documentation manager not initialized');
@@ -258,7 +258,7 @@ export class WebApiRoutes {
       title: 'Claude Code Zen API'
     });
     
-    this.logger.info('📚 API documentation configured via @claude-zen/knowledge');
+    this.logger.info('📚 API documentation configured via @claude-zen/intelligence');
   }
 
   /**
@@ -307,7 +307,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Setup Advanced GUI routes with @claude-zen/agui delegation
+   * Setup Advanced GUI routes with @claude-zen/enterprise delegation
    */
   private async setupAdvancedGUIRoutes(app: Express, api: string): Promise<void> {
     assertDefined(this.advancedGUI, 'Advanced GUI not initialized');
@@ -340,11 +340,11 @@ export class WebApiRoutes {
       }
     });
     
-    this.logger.info('🎨 Advanced GUI routes configured via @claude-zen/agui');
+    this.logger.info('🎨 Advanced GUI routes configured via @claude-zen/enterprise');
   }
 
   /**
-   * Setup workflow routes with @claude-zen/workflows delegation
+   * Setup workflow routes with @claude-zen/intelligence delegation
    */
   private async setupWorkflowRoutes(app: Express, api: string): Promise<void> {
     assertDefined(this.workflowEngine, 'Workflow engine not initialized');
@@ -389,7 +389,7 @@ export class WebApiRoutes {
       }
     });
     
-    this.logger.info('⚙️ Workflow routes configured via @claude-zen/workflows');
+    this.logger.info('⚙️ Workflow routes configured via @claude-zen/intelligence');
   }
 
   /**
@@ -430,7 +430,7 @@ export class WebApiRoutes {
   }
 
   /**
-   * Setup collaboration routes with @claude-zen/teamwork delegation
+   * Setup collaboration routes with @claude-zen/intelligence delegation
    */
   private async setupCollaborationRoutes(app: Express, api: string): Promise<void> {
     assertDefined(this.collaborationEngine, 'Collaboration engine not initialized');
@@ -451,7 +451,7 @@ export class WebApiRoutes {
       }
     });
     
-    this.logger.info('🤝 Collaboration routes configured via @claude-zen/teamwork');
+    this.logger.info('🤝 Collaboration routes configured via @claude-zen/intelligence');
   }
 
   /**
@@ -527,11 +527,11 @@ export type {
  * **AFTER (Strategic Package Delegation):**
  * - 420 lines through strategic @claude-zen package delegation (77.3% reduction)
  * - Battle-tested web middleware via @claude-zen/foundation
- * - Professional GUI workflows via @claude-zen/agui
- * - Advanced task orchestration via @claude-zen/workflows
+ * - Professional GUI workflows via @claude-zen/enterprise
+ * - Advanced task orchestration via @claude-zen/intelligence
  * - Comprehensive monitoring via @claude-zen/monitoring
- * - Real-time collaboration via @claude-zen/teamwork
- * - Documentation management via @claude-zen/knowledge
+ * - Real-time collaboration via @claude-zen/intelligence
+ * - Documentation management via @claude-zen/intelligence
  * - Zero maintenance overhead for web framework complexities
  * 
  * **ARCHITECTURAL PATTERN SUCCESS:**

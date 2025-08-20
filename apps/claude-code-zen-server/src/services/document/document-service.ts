@@ -5,10 +5,10 @@
  * 
  * Delegates document management functionality to specialized @claude-zen packages:
  * - @claude-zen/foundation: Multi-database document storage and repository management
- * - @claude-zen/workflows: Document workflow orchestration and state management
+ * - @claude-zen/intelligence: Document workflow orchestration and state management
  * - @claude-zen/foundation: Performance tracking, telemetry, and core utilities
  * - @claude-zen/monitoring: Document service observability and metrics
- * - @claude-zen/knowledge: Document search, indexing, and semantic understanding
+ * - @claude-zen/intelligence: Document search, indexing, and semantic understanding
  * 
  * PERFORMANCE BENEFITS:
  * - Battle-tested document management patterns
@@ -117,8 +117,8 @@ export class DocumentManager extends EventEmitter {
       this.relationshipRepository = await createRepository('DocumentRelationship', this.databaseType);
       this.workflowRepository = await createRepository('DocumentWorkflowState', this.databaseType);
 
-      // Delegate to @claude-zen/workflows for document workflows
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for document workflows
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 100,
@@ -139,8 +139,8 @@ export class DocumentManager extends EventEmitter {
         performanceTracking: { enabled: true }
       });
 
-      // Delegate to @claude-zen/knowledge for document search and indexing
-      const { KnowledgeManager } = await import('@claude-zen/knowledge');
+      // Delegate to @claude-zen/intelligence for document search and indexing
+      const { KnowledgeManager } = await import('@claude-zen/intelligence');
       this.knowledgeManager = new KnowledgeManager({
         enableSemantic: true,
         enableGraph: true,

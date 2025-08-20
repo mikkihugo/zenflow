@@ -7,9 +7,9 @@
  * Delegates to:
  * - @claude-zen/foundation: Multi-database operations (SQLite, LanceDB, Kuzu)
  * - @claude-zen/foundation: Logging, telemetry, and database access
- * - @claude-zen/workflows: Document workflow state management
- * - @claude-zen/knowledge: Search and semantic understanding
- * - @claude-zen/agui: Human approval workflows
+ * - @claude-zen/intelligence: Document workflow state management
+ * - @claude-zen/intelligence: Search and semantic understanding
+ * - @claude-zen/enterprise: Human approval workflows
  * 
  * REDUCTION: 1,916 → 485 lines (74.7% reduction) through package delegation
  * 
@@ -126,9 +126,9 @@ export class DocumentManager extends EventEmitter {
       this.vectorDao = new VectorDao(this.databaseAccess.lancedb);
       this.graphDao = new GraphDao(this.databaseAccess.kuzu);
 
-      // Delegate to @claude-zen/workflows for workflow management
+      // Delegate to @claude-zen/intelligence for workflow management
       if (this.config.enableWorkflow) {
-        const { WorkflowEngine } = await import('@claude-zen/workflows');
+        const { WorkflowEngine } = await import('@claude-zen/intelligence');
         this.workflowEngine = new WorkflowEngine({
           persistWorkflows: true,
           enableVisualization: false
@@ -136,9 +136,9 @@ export class DocumentManager extends EventEmitter {
         await this.workflowEngine.initialize();
       }
 
-      // Delegate to @claude-zen/knowledge for search capabilities
+      // Delegate to @claude-zen/intelligence for search capabilities
       if (this.config.enableSearch) {
-        const { KnowledgeManager } = await import('@claude-zen/knowledge');
+        const { KnowledgeManager } = await import('@claude-zen/intelligence');
         this.knowledgeManager = new KnowledgeManager({
           enableSemanticSearch: true,
           enableFullTextSearch: true

@@ -320,16 +320,16 @@ export class ProjectModeManager extends EventEmitter {
     };
   }
   
-  // TODO: Initialize Agile mode when @claude-zen/safe-framework is available
+  // TODO: Initialize Agile mode when @claude-zen/enterprise is available
   // private async initializeAgileMode(projectId: string): Promise<void> {
-  //   // Will integrate with @claude-zen/safe-framework (Agile subset)
+  //   // Will integrate with @claude-zen/enterprise (Agile subset)
   //   // Initialize sprints, epics, stories, backlog management
   //   // Enable Kanban-Agile integration
   // }
   
-  // TODO: Initialize SAFe mode when @claude-zen/safe-framework is available  
+  // TODO: Initialize SAFe mode when @claude-zen/enterprise is available  
   // private async initializeSAFeMode(projectId: string): Promise<void> {
-  //   // Will integrate with @claude-zen/safe-framework (full)
+  //   // Will integrate with @claude-zen/enterprise (full)
   //   // Initialize Program Increments, ARTs, Value Streams
   //   // Enable enterprise architecture features
   // }
@@ -368,9 +368,9 @@ export class ProjectModeManager extends EventEmitter {
     return this.schemaVersions.get(version) || null;
   }
   
-  // TODO: AGI enhancement methods - will be added when @claude-zen/brain is available
+  // TODO: AGI enhancement methods - will be added when @claude-zen/intelligence is available
   // async enableAGIEnhancements(projectId: string, currentMode: ProjectMode, agiConfig: AGIEnhancementConfig) {
-  //   // Will integrate with @claude-zen/brain package
+  //   // Will integrate with @claude-zen/intelligence package
   //   // Enable autonomous planning, predictive analytics, collective intelligence
   //   // Apply mode-specific AGI enhancements (Kanban, Agile, SAFe)
   // }
@@ -392,9 +392,9 @@ export class ProjectModeManager extends EventEmitter {
       case ProjectMode.KANBAN:
         return 'Base workflow engine with continuous flow, WIP limits, and flow metrics. Uses @claude-zen/kanban package.';
       case ProjectMode.AGILE:
-        return 'Kanban + Sprint-based development with backlog management and retrospectives. Uses @claude-zen/kanban + @claude-zen/safe-framework (Agile subset).';
+        return 'Kanban + Sprint-based development with backlog management and retrospectives. Uses @claude-zen/kanban + @claude-zen/enterprise (Agile subset).';
       case ProjectMode.SAFE:
-        return 'Kanban + Agile + Scaled enterprise framework with Program Increments, ARTs, and Value Streams. Uses @claude-zen/kanban + @claude-zen/safe-framework (full).';
+        return 'Kanban + Agile + Scaled enterprise framework with Program Increments, ARTs, and Value Streams. Uses @claude-zen/kanban + @claude-zen/enterprise (full).';
       default:
         return 'Unknown project mode';
     }

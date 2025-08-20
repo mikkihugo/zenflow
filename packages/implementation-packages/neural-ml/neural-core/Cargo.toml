@@ -1,0 +1,283 @@
+[package]
+name = "claude-zen-neural-ml"
+version = "0.1.0"
+edition = "2021"
+authors = ["Claude Code <noreply@anthropic.com>"]
+description = "High-performance neural machine learning library providing comprehensive ML capabilities with 27+ models, built on ruv-FANN foundation"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/your-org/ruv-FANN"
+homepage = "https://github.com/your-org/ruv-FANN"
+documentation = "https://docs.rs/claude-zen-neural-ml"
+keywords = ["neural-network", "machine-learning", "deep-learning", "time-series", "forecasting", "classification", "rust"]
+categories = ["science", "algorithms", "mathematics"]
+readme = "README.md"
+
+# No workspace - this is a standalone package
+
+# Note: Remaining vulnerabilities are low-severity transitive dependencies
+# These require upstream fixes in polars ecosystem
+
+[lib]
+name = "claude_zen_neural_ml"
+path = "src/lib.rs"
+
+[dependencies]
+# Core numeric traits and operations
+num-traits = "0.2"
+num-complex = "0.4"
+
+# Data structures and manipulation 
+polars = { version = "0.50", features = ["lazy", "temporal", "csv", "parquet", "json"] }
+ndarray = "0.16"
+csv = "1.3"
+
+# Serialization and configuration
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+# Error handling
+thiserror = "2.0"
+anyhow = "1.0"
+
+# Date and time handling
+chrono = { version = "0.4", features = ["serde"] }
+
+# Parallel processing
+rayon = "1.10"
+
+# Async support
+tokio = { version = "1.0", features = ["full"], optional = true }
+futures = { version = "0.3", optional = true }
+
+# GPU and Advanced Computing Support
+candle-core = { version = "0.9", optional = true }
+candle-nn = { version = "0.9", optional = true }
+burn = { version = "0.15", optional = true }
+burn-core = { version = "0.15", optional = true }
+burn-tensor = { version = "0.15", optional = true }
+burn-autodiff = { version = "0.15", optional = true }
+wgpu = { version = "23.0", optional = true }
+
+# Direct GPU execution (complementing brain's coordination) - use tch 0.15 to match burn
+tch = { version = "0.15", optional = true }  # PyTorch bindings with CUDA - aligned with burn version
+
+# High-Performance Linear Algebra
+faer = { version = "0.19", optional = true }
+wide = { version = "0.7", optional = true }
+ultraviolet = { version = "0.9", optional = true }
+
+# Advanced Neural Architectures
+ort = { version = "2.0.0-rc.10", optional = true }   # ONNX Runtime GPU
+tract-onnx = { version = "0.21", optional = true }
+
+# Model Optimization
+half = { version = "2.3", optional = true }
+
+# Enhanced Data Processing
+arrow = "53.0"
+
+# CPU Auto-Detection & Optimization
+cpu-time = { version = "1.0", optional = true }
+raw-cpuid = { version = "11.5", optional = true }
+target-lexicon = { version = "0.13", optional = true }
+
+# CUDA Support (optional - cutting edge 2024/2025)
+cudarc = { version = "0.15", optional = true, features = ["f16"] }
+cuda-runtime-sys = { version = "0.3.0-alpha.1", optional = true }
+
+# Advanced SIMD & Performance
+simba = { version = "0.9", optional = true }  # Generic SIMD math functions
+packed_simd = { version = "0.3.9", optional = true }  # Portable SIMD
+pulp = { version = "0.18", optional = true }  # Runtime feature detection
+
+# Multi-threading & Parallelism Enhancement  
+crossbeam-channel = { version = "0.5", optional = true }
+crossbeam-deque = { version = "0.8", optional = true }
+thread_local = { version = "1.1", optional = true }
+log = "0.4"
+
+# Apple Silicon / ARM64 / macOS Optimization
+[target.'cfg(target_os = "macos")'.dependencies]
+accelerate-src = { version = "0.3", optional = true }  # Apple Accelerate Framework
+metal = { version = "0.30", optional = true }          # Apple Metal GPU
+core-foundation = { version = "0.10", optional = true }
+
+# [target.'cfg(target_arch = "aarch64")'.dependencies]  
+# aarch64-neon = { version = "0.1", optional = true }    # ARM NEON SIMD (not available)
+# arm-gic = { version = "0.1", optional = true }         # ARM-specific optimizations (not available)
+
+# GPU Acceleration Integration (moved to brain package)
+# Note: GPU acceleration now handled via @claude-zen/brain package integration
+
+# Logging and monitoring
+log = "0.4"
+tracing = { version = "0.1", optional = true }
+
+# WASM dependencies
+wasm-bindgen = { version = "0.2.93", optional = true }
+js-sys = { version = "0.3.70", optional = true }
+console_error_panic_hook = { version = "0.1.7", optional = true }
+wasm-logger = { version = "0.2.0", optional = true }
+serde-wasm-bindgen = { version = "0.6.5", optional = true }
+getrandom = { version = "0.2", features = ["js"], optional = true }
+
+[dependencies.web-sys]
+version = "0.3.70"
+optional = true
+features = [
+  "console",
+  "Performance",
+  "Window"
+]
+
+# Internal neuro-divergent crates (commented out - standalone package)
+# claude-zen-neural-core = { path = "./claude-zen-neural-core" } 
+# claude-zen-neural-models = { path = "./claude-zen-neural-models", optional = true }
+# claude-zen-neural-registry = { path = "./claude-zen-neural-registry", optional = true }
+
+# ruv-FANN dependency - using published version
+ruv-fann = "0.1.6"
+
+# Advanced ML algorithms for DSPy teleprompter optimization
+smartcore = { version = "0.4", optional = true }  # Comprehensive ML library
+linfa = { version = "0.7", optional = true }  # ML toolkit core
+linfa-bayes = { version = "0.7", optional = true }  # Bayesian methods
+linfa-clustering = { version = "0.7", optional = true }  # Clustering algorithms
+linfa-linear = { version = "0.7", optional = true }  # Linear models
+linfa-reduction = { version = "0.7", optional = true }  # Dimensionality reduction
+argmin = { version = "0.10", optional = true }  # Optimization algorithms
+statrs = { version = "0.17", optional = true }  # Statistics and distributions
+rustlearn = { version = "0.5", optional = true }  # Additional ML algorithms
+optimization = { version = "0.2", optional = true }  # Multi-objective optimization
+distances = { version = "1.8", optional = true }  # Distance metrics
+kdtree = { version = "0.7", optional = true }  # K-d tree for nearest neighbors
+
+[dev-dependencies]
+approx = "0.5"
+tempfile = "3.14"
+criterion = { version = "0.5", features = ["html_reports"] }
+proptest = "1.6"
+rand = "0.9"
+rand_distr = "0.4"
+serde_json = "1.0"
+quickcheck = "1.0"
+arbitrary = { version = "1.3", features = ["derive"] }
+crossbeam = "0.8"
+plotly = "0.13"
+csv = "1.3"
+tokio-test = "0.4"
+futures = "0.3"
+thiserror = "2.0"
+toml = "0.8"
+
+# For benchmarking - minimal for security
+pprof = { version = "0.15", features = ["flamegraph"] }
+
+# For memory profiling - minimal for security  
+stats_alloc = "0.1"
+
+[features]
+default = ["std", "simd-acceleration", "wasm", "full-acceleration"]
+std = []
+async = ["tokio", "futures"]
+gpu = ["candle-core", "candle-nn", "wgpu"]
+burn-backend = ["burn", "burn-core", "burn-tensor", "burn-autodiff"]
+onnx = ["ort", "tract-onnx"]
+tracing = ["dep:tracing"]
+# models = ["dep:claude-zen-neural-models"]  # Commented out - standalone package
+# registry = ["dep:claude-zen-neural-registry"]  # Commented out - standalone package
+python-compat = []  # Enable Python-specific compatibility features
+advanced-gpu = ["gpu", "burn-backend"]
+production = ["onnx", "half"]
+simd-acceleration = ["faer", "wide", "ultraviolet", "simba", "pulp"]
+cuda-support = ["cudarc", "cuda-runtime-sys"]
+portable-simd = ["packed_simd"]
+enhanced-parallelism = ["crossbeam-channel", "crossbeam-deque", "thread_local"]
+cpu-optimization = ["raw-cpuid", "target-lexicon", "cpu-time"]
+apple-acceleration = ["accelerate-src", "metal", "core-foundation"]
+# arm-optimization = ["aarch64-neon", "arm-gic"]  # Commented out - dependencies not available
+
+# DSPy teleprompter optimization features
+ml-optimization = ["smartcore", "linfa", "linfa-bayes", "argmin", "statrs"]
+bayesian-optimization = ["linfa-bayes", "statrs", "argmin"]
+multi-objective = ["optimization", "argmin"]
+pattern-learning = ["smartcore", "linfa-clustering", "distances", "kdtree"]
+statistical-analysis = ["statrs", "linfa", "smartcore"]
+dspy-ml = ["ml-optimization", "bayesian-optimization", "multi-objective", "pattern-learning", "statistical-analysis"]
+
+advanced-acceleration = ["advanced-gpu", "simd-acceleration", "production", "cuda-support", "portable-simd", "enhanced-parallelism", "cpu-optimization", "apple-acceleration"]
+full-acceleration = ["advanced-acceleration", "dspy-ml"]
+
+# WASM support - native neural-ml implementation
+wasm = ["wasm-bindgen", "js-sys", "web-sys", "console_error_panic_hook", "wasm-logger", "serde-wasm-bindgen", "getrandom"]
+no_std = []
+
+
+[[test]]
+name = "memory_tests"
+path = "tests/performance/memory_tests.rs"
+
+[[test]]
+name = "scaling_tests"
+path = "tests/performance/scaling_tests.rs"
+
+[[example]]
+name = "basic_usage"
+path = "examples/basic_usage.rs"
+
+[[example]]
+name = "lstm_forecasting"
+path = "examples/lstm_forecasting.rs"
+
+[[example]]
+name = "multiple_models"
+path = "examples/multiple_models.rs"
+
+[[example]]
+name = "cross_validation"
+path = "examples/cross_validation.rs"
+
+[[example]]
+name = "complete_workflow"
+path = "examples/complete_workflow.rs"
+
+[[example]]
+name = "ensemble_forecasting"
+path = "examples/ensemble_forecasting.rs"
+
+[[example]]
+name = "advanced_features"
+path = "examples/advanced_features.rs"
+
+[[test]]
+name = "integration"
+path = "tests/integration/mod.rs"
+
+[[test]]
+name = "model_registry_integration"
+path = "tests/integration/model_registry.rs"
+
+[[test]]
+name = "cross_crate_communication"
+path = "tests/integration/cross_crate_communication.rs"
+
+[[test]]
+name = "error_propagation"
+path = "tests/integration/error_propagation.rs"
+
+[[test]]
+name = "performance_integration"
+path = "tests/integration/performance_integration.rs"
+
+[[test]]
+name = "cli_integration"
+path = "tests/integration/cli_integration.rs"
+
+[[test]]
+name = "real_world_scenarios"
+path = "tests/integration/real_world_scenarios.rs"
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]

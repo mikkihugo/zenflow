@@ -10,7 +10,7 @@ import {
   TaskApprovalSystem,
   type ApprovalRequest,
   type AGUIInterface 
-} from '@claude-zen/agui';
+} from '@claude-zen/enterprise';
 import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 

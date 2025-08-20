@@ -1,0 +1,56 @@
+{
+  "name": "@claude-zen/telemetry",
+  "version": "1.0.0",
+  "description": "Core telemetry infrastructure for claude-code-zen - OpenTelemetry, metrics, and distributed tracing",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "telemetry",
+    "opentelemetry",
+    "metrics",
+    "tracing",
+    "observability",
+    "monitoring",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@opentelemetry/api": "^1.7.0",
+    "@opentelemetry/sdk-node": "^0.45.0",
+    "@opentelemetry/semantic-conventions": "^1.17.0",
+    "@opentelemetry/exporter-jaeger": "^1.17.0",
+    "@opentelemetry/exporter-prometheus": "^0.45.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.40.0",
+    "prom-client": "^15.1.0"
+  },
+  "optionalDependencies": {
+    "@claude-zen/otel-collector": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  }
+}

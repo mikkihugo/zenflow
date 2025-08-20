@@ -60,7 +60,6 @@
     "opossum": "^9.0.0",
     "p-retry": "^6.2.1",
     "reflect-metadata": "^0.2.2",
-    "@claude-zen/monitoring": "workspace:*",
     "tsyringe": "^4.10.0",
     "@lancedb/lancedb": "^0.21.3",
     "better-sqlite3": "^12.2.0",
@@ -68,7 +67,8 @@
   },
   "_comment_database": "database is now integrated directly into foundation package",
   "optionalDependencies": {
-    "@logtape/otel": "^1.0.4"
+    "@logtape/otel": "^1.0.4",
+    "@claude-zen/otel-collector": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.17.2",
@@ -88,6 +88,10 @@
     "./error-handling": {
       "import": "./dist/src/error-handling.js",
       "types": "./dist/src/error-handling.d.ts"
+    },
+    "./logging": {
+      "import": "./dist/src/logging.js",
+      "types": "./dist/src/logging.d.ts"
     },
     "./di": {
       "import": "./dist/di/index.js",

@@ -46,12 +46,12 @@ import type {
   ApiHealthResponse,
   ApiSystemStatusResponse,
   
-  // Swarm management (delegates to @claude-zen/brain)
+  // Swarm management (delegates to @claude-zen/intelligence)
   ApiSwarmResponse,
   ApiCreateSwarmRequest,
   ApiSwarmMetricsResponse,
   
-  // Task management (delegates to @claude-zen/workflows)
+  // Task management (delegates to @claude-zen/intelligence)
   ApiTaskResponse,
   ApiCreateTaskRequest,
   ApiTaskExecutionResponse,

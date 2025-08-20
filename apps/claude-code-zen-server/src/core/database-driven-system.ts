@@ -23,7 +23,7 @@ import type {
 } from '../database/entities/product-entities';
 import type { DocumentManager } from "../services/document/document-service"
 
-import type { DocumentType } from '@claude-zen/workflows';
+import type { DocumentType } from '@claude-zen/intelligence';
 
 import type { WorkflowEngine } from './workflow-engine';
 

@@ -7,9 +7,9 @@
  * Delegates to:
  * - @claude-zen/foundation: ServiceManager for core infrastructure lifecycle
  * - @claude-zen/foundation: DatabaseManager for data operations
- * - @claude-zen/workflows: WorkflowOrchestrator for infrastructure workflows
+ * - @claude-zen/intelligence: WorkflowOrchestrator for infrastructure workflows
  * - @claude-zen/monitoring: MetricsCollector for infrastructure monitoring
- * - @claude-zen/brain: ResourceOptimizer for performance optimization
+ * - @claude-zen/intelligence: ResourceOptimizer for performance optimization
  */
 
 import { EventEmitter } from 'eventemitter3';
@@ -179,8 +179,8 @@ export class InfrastructureServiceAdapter extends EventEmitter implements Servic
       // Initialize delegates from @claude-zen packages
       const { ServiceManager, MetricsCollector } = await import('@claude-zen/foundation');
       const { DatabaseManager } = await import('@claude-zen/foundation');
-      const { WorkflowOrchestrator } = await import('@claude-zen/workflows');
-      const { ResourceOptimizer } = await import('@claude-zen/brain');
+      const { WorkflowOrchestrator } = await import('@claude-zen/intelligence');
+      const { ResourceOptimizer } = await import('@claude-zen/intelligence');
 
       this.serviceManager = new ServiceManager({
         name: this.name,

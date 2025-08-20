@@ -4,8 +4,8 @@
  * MIGRATION COMPLETE: 4,099 lines → 200 lines (95% reduction)
  * 
  * Replaces massive custom implementation with extracted package integration:
- * - @claude-zen/brain: TaskPredictor + PerformanceTracker + IntelligenceSystem
- * - @claude-zen/brain: Resource monitoring and optimization
+ * - @claude-zen/intelligence: TaskPredictor + PerformanceTracker + IntelligenceSystem
+ * - @claude-zen/intelligence: Resource monitoring and optimization
  * - @claude-zen/foundation: Logging and storage infrastructure
  * 
  * This file now serves as a lightweight facade that:
@@ -33,7 +33,7 @@ import {
 
 import type { BrainCoordinator } from '../../core/memory-coordinator';
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 
 
 
@@ -193,9 +193,9 @@ export interface AdvancedMetricsTrackerState {
  * Advanced Metrics Tracker - Package Integration Facade
  * 
  * MIGRATION: 4,099 lines → ~200 lines using extracted packages:
- * - Intelligence System from @claude-zen/brain
- * - Performance Tracker from @claude-zen/brain
- * - Task Predictor from @claude-zen/brain
+ * - Intelligence System from @claude-zen/intelligence
+ * - Performance Tracker from @claude-zen/intelligence
+ * - Task Predictor from @claude-zen/intelligence
  * 
  * This maintains API compatibility while delegating to battle-tested packages.
  */
@@ -255,7 +255,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
 
     logger.info('AdvancedMetricsTracker initialized with package integration', {
       config: this.config,
-      packagesUsed: ['@claude-zen/brain']
+      packagesUsed: ['@claude-zen/intelligence']
     });
   }
 
@@ -425,32 +425,4 @@ export class AdvancedMetricsTracker extends EventEmitter {
 
 export default AdvancedMetricsTracker;
 
-// Re-export all types for compatibility
-export type {
-  // Configuration types
-  AdvancedMetricsTrackerConfig,
-  
-  // Metrics types
-  ComprehensiveFlowMetrics,
-  DetailedFlowMetrics,
-  QualityMetrics,
-  ResourceUtilization,
-  PredictiveInsights,
-  
-  // Optimization types  
-  PerformanceOptimizationResult,
-  OptimizationRecommendation,
-  
-  // Testing types
-  ABTest,
-  ABTestResults,
-  
-  // Forecasting types
-  FlowForecast,
-  DeliveryPrediction,
-  CapacityPlanningAnalytics,
-  FlowDisruptionRisk,
-  
-  // State types
-  AdvancedMetricsTrackerState,
-};
+// All types already exported at their definitions above

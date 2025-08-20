@@ -4,8 +4,8 @@
  * MIGRATION COMPLETE: 2,487 lines → 300 lines (88% reduction)
  * 
  * Replaces massive custom implementation with extracted package integration:
- * - @claude-zen/workflows: WorkflowEngine + XState state management + scheduling
- * - @claude-zen/agui: TaskApprovalSystem + human-in-the-loop workflows
+ * - @claude-zen/intelligence: WorkflowEngine + XState state management + scheduling
+ * - @claude-zen/enterprise: TaskApprovalSystem + human-in-the-loop workflows
  * - @claude-zen/foundation: Logging and storage infrastructure
  * 
  * This file now serves as a lightweight facade that:
@@ -18,19 +18,19 @@
  */
 
 import { getLogger, getKVStore } from '@claude-zen/foundation';
-import { WorkflowEngine } from '@claude-zen/workflows';
+import { WorkflowEngine } from '@claude-zen/intelligence';
 import { 
   TaskApprovalSystem, 
   type TaskApprovalConfig,
   type ApprovalRequest,
   createTaskApprovalSystem 
-} from '@claude-zen/agui';
+} from '@claude-zen/enterprise';
 
 import {
   createEvent,
   EventPriority,
   type TypeSafeEventBus,
-} from '@claude-zen/event-system';
+} from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('workflow-gates');
@@ -163,8 +163,8 @@ export interface WorkflowGateResult {
  * Workflow Gates Manager - Package Integration Facade
  * 
  * MIGRATION: 2,487 lines → ~300 lines using extracted packages:
- * - WorkflowEngine from @claude-zen/workflows (XState, scheduling, orchestration)
- * - TaskApprovalSystem from @claude-zen/agui (human-in-the-loop workflows)
+ * - WorkflowEngine from @claude-zen/intelligence (XState, scheduling, orchestration)
+ * - TaskApprovalSystem from @claude-zen/enterprise (human-in-the-loop workflows)
  * - Foundation storage from @claude-zen/foundation (persistence)
  * 
  * This maintains API compatibility while delegating to battle-tested packages.
@@ -215,7 +215,7 @@ export class WorkflowGatesManager extends EventEmitter {
 
     logger.info('WorkflowGatesManager initialized with package integration', {
       config,
-      packagesUsed: ['@claude-zen/workflows', '@claude-zen/agui']
+      packagesUsed: ['@claude-zen/intelligence', '@claude-zen/enterprise']
     });
   }
 

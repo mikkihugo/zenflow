@@ -1,0 +1,50 @@
+{
+  "name": "@claude-zen/system-monitoring",
+  "version": "1.0.0",
+  "description": "System and infrastructure monitoring for claude-code-zen - CPU, memory, performance tracking",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "system-monitoring",
+    "infrastructure",
+    "performance",
+    "cpu",
+    "memory",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/telemetry": "workspace:*",
+    "systeminformation": "^5.21.0",
+    "pidusage": "^3.0.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "@types/node": "^20.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/telemetry": "workspace:*"
+  }
+}

@@ -16,7 +16,19 @@
     "noImplicitThis": false,
     "downlevelIteration": true,
     "paths": {
-      "@claude-zen/*": ["../../packages/*/dist", "../../packages/*/src"],
+      "@claude-zen/foundation": ["../../packages/foundation/src", "../../packages/foundation/dist"],
+      "@claude-zen/infrastructure": ["../../packages/strategic-facades/infrastructure/src", "../../packages/strategic-facades/infrastructure/dist"],
+      "@claude-zen/intelligence": ["../../packages/strategic-facades/intelligence/src", "../../packages/strategic-facades/intelligence/dist"],
+      "@claude-zen/enterprise": ["../../packages/strategic-facades/enterprise/src", "../../packages/strategic-facades/enterprise/dist"],
+      "@claude-zen/operations": ["../../packages/strategic-facades/operations/src", "../../packages/strategic-facades/operations/dist"],
+      "@claude-zen/*": [
+        "../../packages/implementation-packages/*/src", 
+        "../../packages/implementation-packages/*/dist",
+        "../../packages/strategic-facades/*/src",
+        "../../packages/strategic-facades/*/dist",
+        "../../packages/foundation/src",
+        "../../packages/foundation/dist"
+      ],
       "$lib/*": ["./src/lib/*"],
       "$components/*": ["./src/components/*"],
       "$stores/*": ["./src/stores/*"],
@@ -31,30 +43,26 @@
     "dist",
     "node_modules",
     "**/*.test.ts",
-    "**/*.spec.ts"
+    "**/*.spec.ts",
+    "src/__tests__/**/*"
   ],
   "references": [
+    // Foundation Layer
     { "path": "../../packages/foundation" },
-    { "path": "../../packages/event-system" },
-    { "path": "../../packages/private-packages/database" },
-    { "path": "../../packages/brain" },
-    { "path": "../../packages/private-packages/fact-system" },
-    { "path": "../../packages/private-packages/agent-monitoring" },
-    { "path": "../../packages/teamwork" },
-    { "path": "../../packages/ai-safety" },
-    { "path": "../../packages/knowledge" },
-    { "path": "../../packages/private-packages/chaos-engineering" },
-    { "path": "../../packages/agent-manager" },
-    { "path": "../../packages/private-packages/dspy" },
-    { "path": "../../packages/llm-routing" },
-    { "path": "../../packages/workflows" },
-    { "path": "../../packages/sparc" },
-    { "path": "../../packages/multi-level-orchestration" },
-    { "path": "../../packages/private-packages/memory" },
-    { "path": "../../packages/coordination-core" },
-    { "path": "../../packages/private-packages/monitoring" },
-    { "path": "../../packages/private-packages/neural-ml" },
-    { "path": "../../packages/safe-framework" },
-    { "path": "../../packages/agui" }
+    
+    // Strategic Facades (4 interface packages)
+    { "path": "../../packages/strategic-facades/infrastructure" },
+    { "path": "../../packages/strategic-facades/intelligence" },
+    { "path": "../../packages/strategic-facades/enterprise" },
+    { "path": "../../packages/strategic-facades/operations" },
+    
+    // Implementation Packages (selected core ones used directly)
+    { "path": "../../packages/implementation-packages/database" },
+    { "path": "../../packages/implementation-packages/memory" },
+    { "path": "../../packages/implementation-packages/neural-ml" },
+    { "path": "../../packages/implementation-packages/fact-system" },
+    { "path": "../../packages/implementation-packages/chaos-engineering" },
+    { "path": "../../packages/implementation-packages/dspy" },
+    { "path": "../../packages/implementation-packages/llm-routing" }
   ]
 }

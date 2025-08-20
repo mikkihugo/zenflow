@@ -11,14 +11,15 @@
  * AFTER: Multi-level parallel streams with AGUI gates and coordination
  */
 
-import type { BaseEvent } from '@claude-zen/event-system';
+import type { BaseEvent } from '@claude-zen/infrastructure';
 import type { Domain } from '../../core/domain-boundary-validator';
 
 
+// SPARC methodology integration via enterprise strategic facade
 import type {
   SPARCPhase,
   SPARCProject,
-} from '../swarm/sparc/types/sparc-types';
+} from '@claude-zen/enterprise';
 
 
 

@@ -57,13 +57,14 @@ import {
   CoordinationEventBus,
   type QueenConfig,
   type CoordinationMetrics
-} from '@claude-zen/coordination-core';
+} from '@claude-zen/enterprise';
 
 import type { EventBus , Logger } from '../types/interfaces';
 
-// import type { MemoryCoordinator } from '@claude-zen/brain'; // TODO: Fix memory package build
+// import type { MemoryCoordinator } from '@claude-zen/intelligence'; // TODO: Fix memory package build
 
-import type { SPARCPhase } from '@claude-zen/sparc';
+// SPARC methodology integration via enterprise strategic facade
+import type { SPARCPhase } from '@claude-zen/enterprise';
 
 // Legacy type compatibility exports
 export interface QueenState {

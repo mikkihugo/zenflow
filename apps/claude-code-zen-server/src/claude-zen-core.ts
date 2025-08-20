@@ -19,12 +19,12 @@ import {
   DIContainer,
   TokenFactory,
   createContainer,
-  getLogger,
-  getConfig,
-  getDatabaseAccess
+  getLogger
 } from '@claude-zen/foundation';
+import { getConfig } from '@claude-zen/infrastructure';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
-import { BehavioralIntelligence } from '@claude-zen/brain';
+import { BehavioralIntelligence } from '@claude-zen/intelligence';
 
 // Simple EventBus interface
 interface EventBus {

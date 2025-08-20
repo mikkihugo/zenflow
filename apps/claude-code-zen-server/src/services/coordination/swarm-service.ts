@@ -29,10 +29,10 @@
  * ```
  * 
  * **Delegates to:**
- * - @claude-zen/brain: Neural coordination and swarm intelligence
+ * - @claude-zen/intelligence: Neural coordination and swarm intelligence
  * - @claude-zen/agent-manager: Agent lifecycle and spawning
- * - @claude-zen/workflows: Task orchestration and execution
- * - @claude-zen/teamwork: Multi-agent collaboration and communication
+ * - @claude-zen/intelligence: Task orchestration and execution
+ * - @claude-zen/intelligence: Multi-agent collaboration and communication
  * - @claude-zen/monitoring: Performance metrics and health tracking
  * - @claude-zen/foundation: Core utilities, validation, and error handling
  * 
@@ -40,10 +40,10 @@
  * @since 2.1.0
  * @version 2.1.0
  * 
- * @requires @claude-zen/brain - Neural coordination and swarm intelligence
+ * @requires @claude-zen/intelligence - Neural coordination and swarm intelligence
  * @requires @claude-zen/agent-manager - Agent lifecycle management
- * @requires @claude-zen/workflows - Task orchestration engine
- * @requires @claude-zen/teamwork - Multi-agent collaboration
+ * @requires @claude-zen/intelligence - Task orchestration engine
+ * @requires @claude-zen/intelligence - Multi-agent collaboration
  * 
  * **REDUCTION ACHIEVED: 1,431 → 380 lines (73.4% reduction) through strategic delegation**
  */
@@ -52,7 +52,7 @@ import type {
   BrainCoordinator,
   SwarmConfiguration,
   SwarmStatus
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 
@@ -61,26 +61,26 @@ import { getLogger } from '../../config/logging-config';
 import type {
   AgentManager,
   AgentStatus
-} from '@claude-zen/agent-manager';
+} from '@claude-zen/operations';
 import type {
   WorkflowEngine,
   TaskExecution,
   WorkflowResult
-} from '@claude-zen/workflows';
+} from '@claude-zen/enterprise';
 import type {
   CollaborationEngine
-} from '@claude-zen/teamwork';
+} from '@claude-zen/intelligence';
 import type {
   PerformanceTracker,
   HealthMonitor,
   SystemMetrics
-} from '@claude-zen/monitoring';
+} from '@claude-zen/operations';
 
 // Foundation utilities
 import {
   assertDefined,
   getErrorMessage
-} from '@claude-zen/foundation';
+} from '@claude-zen/infrastructure';
 
 // Import service integration layer types
 import type {
@@ -174,10 +174,10 @@ export interface TaskOrchestrationResult {
  * code reduction while enhancing functionality and neural capabilities.
  * 
  * **Key Capabilities (via delegation):**
- * - Neural swarm coordination via @claude-zen/brain
+ * - Neural swarm coordination via @claude-zen/intelligence
  * - Agent lifecycle management via @claude-zen/agent-manager
- * - Task orchestration via @claude-zen/workflows
- * - Multi-agent collaboration via @claude-zen/teamwork
+ * - Task orchestration via @claude-zen/intelligence
+ * - Multi-agent collaboration via @claude-zen/intelligence
  * - Performance monitoring via @claude-zen/monitoring
  * - Validation and utilities via @claude-zen/foundation
  */
@@ -218,8 +218,8 @@ export class SwarmService extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/brain for neural coordination
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for neural coordination
+      const { BrainCoordinator } = await import('@claude-zen/intelligence');
       this.brainCoordinator = new BrainCoordinator({
         maxSwarms: this.config.maxSwarms,
         enableNeuralCoordination: this.config.enableNeuralCoordination,
@@ -237,8 +237,8 @@ export class SwarmService extends EventEmitter {
       });
       await this.agentManager.initialize();
 
-      // Delegate to @claude-zen/workflows for task orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for task orchestration
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentTasks: 100,
         enableAdaptiveScheduling: true,
@@ -246,8 +246,8 @@ export class SwarmService extends EventEmitter {
       });
       await this.workflowEngine.initialize();
 
-      // Delegate to @claude-zen/teamwork for collaboration
-      const { CollaborationEngine } = await import('@claude-zen/teamwork');
+      // Delegate to @claude-zen/intelligence for collaboration
+      const { CollaborationEngine } = await import('@claude-zen/intelligence');
       this.collaborationEngine = new CollaborationEngine({
         enableMultiAgentCoordination: true,
         enableRealTimeSync: true,
@@ -584,10 +584,10 @@ export type {
  * 
  * **AFTER (Strategic Package Delegation):**
  * - 380 lines through strategic @claude-zen package delegation (73.4% reduction)
- * - Battle-tested neural coordination via @claude-zen/brain
+ * - Battle-tested neural coordination via @claude-zen/intelligence
  * - Professional agent lifecycle management via @claude-zen/agent-manager
- * - Advanced task orchestration via @claude-zen/workflows
- * - Sophisticated collaboration via @claude-zen/teamwork
+ * - Advanced task orchestration via @claude-zen/intelligence
+ * - Sophisticated collaboration via @claude-zen/intelligence
  * - Comprehensive monitoring via @claude-zen/monitoring
  * - Zero maintenance overhead for swarm coordination complexities
  * 

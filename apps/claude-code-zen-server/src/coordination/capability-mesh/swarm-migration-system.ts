@@ -12,13 +12,13 @@
  * - Validate new dynamic swarms perform better than permanent predecessors
  * 
  * Learning Integration:
- * - Uses @claude-zen/brain for behavioral intelligence and adaptive learning
+ * - Uses @claude-zen/intelligence for behavioral intelligence and adaptive learning
  * - Leverages @claude-zen/neural-ml for pattern recognition and prediction
- * - Integrates with @claude-zen/brain for performance tracking
+ * - Integrates with @claude-zen/intelligence for performance tracking
  * - Utilizes @claude-zen/foundation for persistent learning storage
  */
 
-import { queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/knowledge';
+import { queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 // Note: SharedFACTCapable removed - using knowledge package directly
@@ -34,7 +34,7 @@ import {
   AutonomousOptimizationEngine,
   TaskComplexityEstimator,
   AgentPerformancePredictor
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 // Foundation tools and utilities  
 import { 
@@ -45,7 +45,7 @@ import {
 // AI Safety systems
 import { 
   AISafetyOrchestrator
-} from '@claude-zen/ai-safety';
+} from '@claude-zen/intelligence';
 
 // Agent monitoring capabilities
 import {
@@ -509,7 +509,7 @@ export class SwarmMigrationSystem extends EventEmitter {
   }
 
   /**
-   * Analyze behavioral patterns using BehavioralIntelligence from @claude-zen/brain
+   * Analyze behavioral patterns using BehavioralIntelligence from @claude-zen/intelligence
    */
   private async analyzeBehavioralPatterns(swarmData: PermanentSwarmData): Promise<ExtractedLearning['behavioralPatterns']> {
     this.logger.debug(`🔍 Analyzing behavioral patterns for ${swarmData.swarmId}`);

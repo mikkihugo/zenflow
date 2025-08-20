@@ -12,10 +12,14 @@ export * from './logging';
 export * from './syslog-bridge';
 
 // =============================================================================
-// TELEMETRY & MONITORING SYSTEM - OpenTelemetry + Prometheus + comprehensive monitoring
+// TELEMETRY SYSTEM - Moved to @claude-zen/infrastructure package
 // =============================================================================
-export * from './telemetry';
-export * from './telemetry-integration';
+// Note: Telemetry exports have been moved to @claude-zen/infrastructure
+
+// =============================================================================
+// SYSTEM METRICS ONLY - Basic metrics for foundation use
+// =============================================================================
+export * from './monitoring/system-metrics';
 
 // =============================================================================
 // CONFIGURATION SYSTEM - Schema validation with convict + dotenv
@@ -33,9 +37,9 @@ export * from './llm-provider';
 export * from './claude-sdk';
 
 // =============================================================================
-// STORAGE SYSTEM - Database abstraction (SQLite, LanceDB, Kuzu)
+// STORAGE SYSTEM - Moved to @claude-zen/infrastructure package
 // =============================================================================
-export * from './storage';
+// Note: Storage exports have been moved to @claude-zen/infrastructure
 
 // =============================================================================
 // DEPENDENCY INJECTION - TSyringe DI container and decorators
@@ -64,3 +68,27 @@ export * from './test-util';
 // NOTE: Import from ./types/index specifically to avoid conflicts with existing error-handling.ts
 // Use: import type { ... } from '@claude-zen/foundation/types' for foundation types
 // Use: import { ... } from '@claude-zen/foundation/error-handling' for neverthrow utilities
+
+// Export foundation types separately to avoid Result type conflict
+export type {
+  ID,
+  UUID,
+  Timestamp,
+  Status,
+  Priority,
+  Timestamped,
+  Identifiable,
+  Entity,
+  Paginated,
+  PaginationOptions,
+  AsyncOperationResult,
+  QueryCriteria,
+  AuditEntry
+} from './types';
+
+// Export Result types with different names to avoid conflicts with neverthrow Result
+export type {
+  SuccessResult as FoundationSuccessResult,
+  ErrorResult as FoundationErrorResult,
+  Result as FoundationResult
+} from './types';

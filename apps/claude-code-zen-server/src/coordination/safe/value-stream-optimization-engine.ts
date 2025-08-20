@@ -1,13 +1,13 @@
 /**
- * @fileoverview Value Stream Optimization Engine - Lightweight facade for @claude-zen/safe-framework
+ * @fileoverview Value Stream Optimization Engine - Lightweight facade for @claude-zen/enterprise
  * 
  * This file provides a lightweight facade that delegates to the extracted
- * ValueStreamOptimizationEngine from @claude-zen/safe-framework package.
+ * ValueStreamOptimizationEngine from @claude-zen/enterprise package.
  * 
  * EXTRACTION: 1,331 → 32 lines (97.6% reduction) through package delegation
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: ValueStreamOptimizationEngine for advanced optimization capabilities
+ * - @claude-zen/enterprise: ValueStreamOptimizationEngine for advanced optimization capabilities
  * 
  * REDUCTION: 1,331 → 32 lines (97.6% reduction) through package delegation
  */
@@ -21,7 +21,7 @@ export {
   type AutomatedKaizenCycle,
   type ValueDeliveryPrediction,
   type OptimizationEngineState
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 // Re-export supporting types
 export type {
@@ -31,7 +31,7 @@ export type {
   ExpectedImpact,
   ContinuousImprovement,
   DateRange
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 // Default export
-export { ValueStreamOptimizationEngine as default } from '@claude-zen/safe-framework';
+export { ValueStreamOptimizationEngine as default } from '@claude-zen/enterprise';

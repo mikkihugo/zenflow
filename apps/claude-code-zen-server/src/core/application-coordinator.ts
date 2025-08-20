@@ -15,7 +15,7 @@
  * @file Application coordination system.
  */
 
-import { BrainCoordinator } from '@claude-zen/brain';
+import { BrainCoordinator } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 import { MemoryManager } from '../memory/index';

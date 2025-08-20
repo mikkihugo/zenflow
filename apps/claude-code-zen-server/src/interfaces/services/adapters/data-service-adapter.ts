@@ -7,8 +7,8 @@
  * Delegates to:
  * - @claude-zen/foundation: Multi-database operations (SQLite, LanceDB, Kuzu, PostgreSQL)
  * - @claude-zen/foundation: Performance tracking, telemetry, error handling, DI
- * - @claude-zen/workflows: Service lifecycle management and orchestration
- * - @claude-zen/brain: Request deduplication and concurrency control
+ * - @claude-zen/intelligence: Service lifecycle management and orchestration
+ * - @claude-zen/intelligence: Request deduplication and concurrency control
  * 
  * REDUCTION: 1,716 → 485 lines (71.7% reduction) through package delegation
  * 
@@ -276,8 +276,8 @@ export class DataServiceAdapter extends EventEmitter implements Service {
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/brain for request optimization
-      const { LoadBalancer, CircuitBreaker } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for request optimization
+      const { LoadBalancer, CircuitBreaker } = await import('@claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         maxConcurrentRequests: this.config.performance?.maxConcurrency || 10,
         requestDeduplication: this.config.performance?.enableRequestDeduplication,
@@ -290,8 +290,8 @@ export class DataServiceAdapter extends EventEmitter implements Service {
         recoveryTimeout: this.config.health?.timeout || 60000
       });
 
-      // Delegate to @claude-zen/workflows for service lifecycle
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for service lifecycle
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         enableServiceLifecycle: true

@@ -90,44 +90,67 @@ class LoggingConfigurationManager {
   private async initializeLogTape(): Promise<void> {
     if (this.initialized) return;
     
-    // Check if OTEL is available and enabled
-    let otelSink = null;
-    let useOtelSink = false;
+    // Check if internal OTEL collector should be used
+    let internalCollectorSink = null;
+    let useInternalCollector = false;
     
     try {
-      // Check for OTEL environment variables
-      const otelLogsExporter = process.env['OTEL_LOGS_EXPORTER'];
+      // Check for internal collector configuration
+      const useInternalOtelCollector = process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== 'false'; // Default true
       const zenOtelEnabled = process.env['ZEN_OTEL_ENABLED'];
-      const otelEndpoint = process.env['OTEL_EXPORTER_OTLP_LOGS_ENDPOINT'] || 'http://localhost:4318/v1/logs';
+      const internalCollectorEndpoint = process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || 'http://localhost:4318';
       
-      if (otelLogsExporter === 'otlp' || zenOtelEnabled === 'true') {
-        useOtelSink = true;
-        
-        // Try to load LogTape OTEL integration (optional dependency)
-        const otelModule = await import('@logtape/otel').catch(() => null);
-        if (!otelModule?.getOpenTelemetrySink) {
-          throw new Error('OTEL module not available');
-        }
-        const { getOpenTelemetrySink } = otelModule;
-        
-        otelSink = getOpenTelemetrySink({
-          serviceName: 'claude-zen-foundation',
-          otlpExporterConfig: {
-            url: otelEndpoint,
-            headers: {
-              'Content-Type': 'application/json',
+      if (useInternalOtelCollector && (zenOtelEnabled !== 'false')) {
+        // Try to use internal OTEL collector
+        try {
+          const internalCollectorModule = await import('@claude-zen/otel-collector').catch(() => null);
+          if (internalCollectorModule) {
+            // Create a custom sink that sends to internal collector
+            internalCollectorSink = this.createInternalCollectorSink(internalCollectorEndpoint);
+            useInternalCollector = true;
+            
+            console.log('✅ Foundation LogTape initialized with internal OTEL collector');
+            console.log(`   Internal Collector: ${internalCollectorEndpoint}/ingest`);
+            console.log(`   Service: claude-zen-foundation`);
+          } else {
+            throw new Error('Internal OTEL collector not available');
+          }
+        } catch (collectorError) {
+          console.log('⚠️  Internal OTEL collector unavailable, trying external OTEL...');
+          
+          // Fallback to external OTEL if internal collector fails
+          const otelLogsExporter = process.env['OTEL_LOGS_EXPORTER'];
+          const otelEndpoint = process.env['OTEL_EXPORTER_OTLP_LOGS_ENDPOINT'] || 'http://localhost:4318/v1/logs';
+          
+          if (otelLogsExporter === 'otlp' || zenOtelEnabled === 'true') {
+            // Try to load LogTape OTEL integration (optional dependency)
+            const otelModule = await import('@logtape/otel').catch(() => null);
+            if (!otelModule?.getOpenTelemetrySink) {
+              throw new Error('External OTEL module not available');
             }
-          },
-          diagnostics: process.env['ZEN_OTEL_DIAGNOSTICS'] === 'true'
-        });
-        
-        console.log('✅ Foundation LogTape initialized with OTEL sink');
-        console.log(`   OTEL Endpoint: ${otelEndpoint}`);
-        console.log(`   Service: claude-zen-foundation`);
+            const { getOpenTelemetrySink } = otelModule;
+            
+            internalCollectorSink = getOpenTelemetrySink({
+              serviceName: 'claude-zen-foundation',
+              otlpExporterConfig: {
+                url: otelEndpoint,
+                headers: {
+                  'Content-Type': 'application/json',
+                }
+              },
+              diagnostics: process.env['ZEN_OTEL_DIAGNOSTICS'] === 'true'
+            });
+            
+            useInternalCollector = true;
+            console.log('✅ Foundation LogTape fallback to external OTEL');
+            console.log(`   OTEL Endpoint: ${otelEndpoint}`);
+            console.log(`   Service: claude-zen-foundation`);
+          }
+        }
       }
     } catch (error) {
       console.log('📝 Foundation LogTape using console-only (OTEL unavailable)');
-      useOtelSink = false;
+      useInternalCollector = false;
     }
     
     // Configure LogTape with OTEL if available
@@ -152,28 +175,28 @@ class LoggingConfigurationManager {
       },
     } as any;
     
-    // Add OTEL sink if available
-    if (useOtelSink && otelSink) {
-      sinkConfig.otel = otelSink;
+    // Add internal collector sink if available
+    if (useInternalCollector && internalCollectorSink) {
+      sinkConfig.collector = internalCollectorSink;
     }
 
     await configure({
       sinks: sinkConfig,
       loggers: [
-        // Foundation components with OTEL if available
+        // Foundation components with internal collector if available
         { 
           category: ['foundation'], 
-          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          sinks: useInternalCollector ? ['console', 'collector'] : ['console'], 
           lowestLevel: this.config.level 
         },
         { 
           category: ['claude-code-sdk-integration'], 
-          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          sinks: useInternalCollector ? ['console', 'collector'] : ['console'], 
           lowestLevel: this.config.level 
         },
         { 
           category: ['SyslogBridge'], 
-          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          sinks: useInternalCollector ? ['console', 'collector'] : ['console'], 
           lowestLevel: this.config.level 
         },
         
@@ -183,13 +206,80 @@ class LoggingConfigurationManager {
         // Everything else
         { 
           category: [], 
-          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          sinks: useInternalCollector ? ['console', 'collector'] : ['console'], 
           lowestLevel: 'info' 
         },
       ],
     });
     
     this.initialized = true;
+  }
+
+  /**
+   * Create a custom sink that sends logs to the internal OTEL collector
+   */
+  private createInternalCollectorSink(collectorEndpoint: string) {
+    return async (record: any) => {
+      try {
+        // Convert LogTape record to our internal telemetry format
+        const telemetryData = {
+          timestamp: record.timestamp,
+          type: 'logs' as const,
+          service: {
+            name: 'claude-zen-foundation',
+            version: '1.0.0',
+            instance: process.env['HOSTNAME'] || 'localhost'
+          },
+          data: {
+            logs: [{
+              timestamp: record.timestamp,
+              level: record.level.toLowerCase(),
+              message: record.message.join(''),
+              body: record.message.join(''),
+              category: record.category.join('.'),
+              properties: record.properties,
+              severity: this.mapLogLevelToSeverity(record.level)
+            }]
+          },
+          attributes: {
+            'log.logger': record.category.join('.'),
+            'log.level': record.level.toLowerCase(),
+            'service.name': 'claude-zen-foundation',
+            ...record.properties
+          }
+        };
+
+        // Send to internal collector via HTTP POST
+        await fetch(`${collectorEndpoint}/ingest`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(telemetryData)
+        }).catch((fetchError) => {
+          // Silently ignore fetch errors to avoid logging loops
+          console.debug('Failed to send log to internal collector:', fetchError.message);
+        });
+
+      } catch (error) {
+        // Silently ignore errors to avoid logging loops
+        console.debug('Internal collector sink error:', error);
+      }
+    };
+  }
+
+  /**
+   * Map LogTape log levels to OpenTelemetry severity numbers
+   */
+  private mapLogLevelToSeverity(level: string): number {
+    const severityMap: Record<string, number> = {
+      'debug': 5,    // DEBUG
+      'info': 9,     // INFO
+      'warning': 13, // WARN
+      'error': 17,   // ERROR
+      'critical': 21 // FATAL
+    };
+    return severityMap[level.toLowerCase()] || 9;
   }
 
   getLogger(name: string): Logger {

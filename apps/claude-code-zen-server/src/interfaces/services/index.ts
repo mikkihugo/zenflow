@@ -5,10 +5,10 @@
  * 
  * Delegates USL functionality to specialized @claude-zen packages for maximum efficiency:
  * - @claude-zen/foundation: Core service management, DI, monitoring, telemetry  
- * - @claude-zen/workflows: Workflow orchestration and service lifecycle management
+ * - @claude-zen/intelligence: Workflow orchestration and service lifecycle management
  * - @claude-zen/foundation: Multi-database service abstraction and storage
  * - @claude-zen/monitoring: Advanced monitoring, metrics, and observability
- * - @claude-zen/teamwork: Multi-service coordination and collaboration
+ * - @claude-zen/intelligence: Multi-service coordination and collaboration
  * 
  * PERFORMANCE BENEFITS:
  * - Battle-tested npm dependencies
@@ -118,8 +118,8 @@ export class USL extends EventEmitter {
       });
       this.performanceTracker = new PerformanceTracker();
 
-      // Delegate to @claude-zen/workflows for service lifecycle
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for service lifecycle
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: 50
@@ -138,8 +138,8 @@ export class USL extends EventEmitter {
         alerts: { enabled: true }
       });
 
-      // Delegate to @claude-zen/teamwork for multi-service coordination
-      const { TeamworkCoordinator } = await import('@claude-zen/teamwork');
+      // Delegate to @claude-zen/intelligence for multi-service coordination
+      const { TeamworkCoordinator } = await import('@claude-zen/intelligence');
       this.teamworkCoordinator = new TeamworkCoordinator({
         enableCollaboration: true,
         maxTeamSize: 10

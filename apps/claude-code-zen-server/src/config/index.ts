@@ -15,7 +15,7 @@
 // CORE CONFIG - Use @claude-zen/foundation instead of duplicate implementation
 // ============================================================================
 
-// Import foundation config system
+// Import config system from infrastructure strategic facade
 import { 
   getConfig, 
   reloadConfig, 
@@ -27,7 +27,7 @@ import {
   validateConfig,
   configHelpers,
   type Config
-} from '@claude-zen/foundation';
+} from '@claude-zen/infrastructure';
 
 // Re-export foundation config
 export { 
@@ -144,7 +144,7 @@ export const config = {
    * Get all configuration as object.
    */
   getAll() {
-    return configHelpers.toObject();
+    return getConfig().toObject();
   },
 
   /**
@@ -202,7 +202,7 @@ export const config = {
    */
   async getHealthReport() {
     const { configHealthChecker } = await import('./health-checker');
-    return configHealthChecker?.getHealthReport();
+    return configHealthChecker?.getHealthReport(false);
   },
 
   /**

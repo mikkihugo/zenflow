@@ -5,7 +5,7 @@
  * organization and reusability across the claude-code-zen ecosystem.
  */
 
-// Re-export from the llm-routing package
+// Re-export from the intelligence strategic facade
 export {
   LLMStatsService,
   type LLMCallRecord,
@@ -16,7 +16,7 @@ export {
   type LLMAnalytics,
   type AnalysisRequest,
   type AnalysisResult,
-} from '@claude-zen/llm-routing';
+} from '@claude-zen/intelligence';
 
 // Export default for backward compatibility
-export { LLMStatsService as default } from '@claude-zen/llm-routing';
+export { LLMStatsService as default } from '@claude-zen/intelligence';

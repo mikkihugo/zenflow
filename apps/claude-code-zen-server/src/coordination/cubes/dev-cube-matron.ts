@@ -15,7 +15,8 @@ import type {
   Logger,
 } from '../../core/interfaces/base-interfaces';
 
-import type { SPARCProject, SPARCPhase } from '@claude-zen/sparc';
+// SPARC methodology integration via enterprise strategic facade
+import type { SPARCProject, SPARCPhase } from '@claude-zen/enterprise';
 
 import type {
   CollectiveConfig,

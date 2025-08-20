@@ -32,7 +32,7 @@
  * ```
  */
 
-// Neural interfaces handled by @claude-zen/brain package
+// Neural interfaces handled by @claude-zen/intelligence package
 // Server delegates neural operations to brain package instead of direct WASM bindings
 /**
  * Swarm coordination and agent management interfaces.

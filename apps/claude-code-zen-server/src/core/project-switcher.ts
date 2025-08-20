@@ -22,7 +22,7 @@ import {
   getCurrentProject, 
   getDataStoragePaths,
   ensureDataDirectories 
-} from '@claude-zen/foundation/config';
+} from '@claude-zen/infrastructure';
 import { initializeClaudeZen, shutdownClaudeZen } from '../index';
 
 const logger = getLogger('ProjectSwitcher');

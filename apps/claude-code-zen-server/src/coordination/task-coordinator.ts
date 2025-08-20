@@ -7,12 +7,12 @@ import type {
   TaskDocumentEntity,
 } from '../database/entities/product-entities';
 import type { AgentType } from '../types/agent-types';
-import type { DatabaseSPARCBridge } from './database-sparc-bridge';
+import type { DatabaseSPARCBridge } from '@claude-zen/enterprise';
 import {
   generateSubAgentConfig,
   mapToClaudeSubAgent,
 } from './sub-agent-generator';
-import type { SPARCSwarmCoordinator } from './swarm/core/sparc-swarm-coordinator';
+// Note: SPARC coordination is now handled via enterprise strategic facade
 
 export interface TaskConfig {
   description: string;

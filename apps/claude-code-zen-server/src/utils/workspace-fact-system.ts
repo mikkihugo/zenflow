@@ -444,7 +444,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }> {
     try {
       // Use unified knowledge package for both facts and RAG
-      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+      const { BasicKnowledgeManager } = await import('@claude-zen/intelligence');
       const knowledgeManager = new BasicKnowledgeManager();
       await knowledgeManager.initialize();
 
@@ -705,7 +705,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       // 2. RAG System Results (Unstructured, Variable Reliability)
       if (includeRAG) {
         try {
-          const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+          const { BasicKnowledgeManager } = await import('@claude-zen/intelligence');
           const knowledgeManager = new BasicKnowledgeManager();
           await knowledgeManager.initialize();
 
@@ -820,7 +820,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   isFactSystemAvailable(): boolean {
     try {
       // Check if knowledge package is available and can be imported
-      require.resolve('@claude-zen/knowledge');
+      require.resolve('@claude-zen/intelligence');
       return true;
     } catch (error) {
       this.logger.debug('FACT system (knowledge package) not available:', error);
@@ -855,7 +855,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     let documentsCount = 0;
 
     try {
-      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+      const { BasicKnowledgeManager } = await import('@claude-zen/intelligence');
       const knowledgeManager = new BasicKnowledgeManager();
       await knowledgeManager.initialize();
       ragAvailable = true;

@@ -109,13 +109,13 @@ export { SwarmMigrationSystem } from './swarm-migration-system';
  * - Structured discussion patterns with workflow coordination
  * 
  * **COMPREHENSIVE AI INTEGRATION:**
- * - @claude-zen/brain: Autonomous decision-making and behavioral intelligence
+ * - @claude-zen/intelligence: Autonomous decision-making and behavioral intelligence
  * - @claude-zen/neural-ml: 27+ neural models for learning and prediction
- * - @claude-zen/brain: Health monitoring and performance prediction
+ * - @claude-zen/intelligence: Health monitoring and performance prediction
  * - @claude-zen/ai-safety: Deception detection and safety protocols
- * - @claude-zen/brain: Intelligent resource optimization
- * - @claude-zen/workflows: Process coordination and orchestration
- * - @claude-zen/teamwork: Collaborative discussions and consensus building
+ * - @claude-zen/intelligence: Intelligent resource optimization
+ * - @claude-zen/intelligence: Process coordination and orchestration
+ * - @claude-zen/intelligence: Collaborative discussions and consensus building
  * - @claude-zen/foundation: Multi-backend persistent storage
  * 
  * **SELF-OPTIMIZATION:**
@@ -159,13 +159,13 @@ export const CAPABILITY_MESH_INFO = {
     'Migration with learning preservation'
   ],
   integrations: [
-    '@claude-zen/brain',
+    '@claude-zen/intelligence',
     '@claude-zen/neural-ml', 
-    '@claude-zen/brain',
+    '@claude-zen/intelligence',
     '@claude-zen/ai-safety',
-    '@claude-zen/brain',
-    '@claude-zen/workflows',
-    '@claude-zen/teamwork',
+    '@claude-zen/intelligence',
+    '@claude-zen/intelligence',
+    '@claude-zen/intelligence',
     '@claude-zen/foundation'
   ]
 } as const;

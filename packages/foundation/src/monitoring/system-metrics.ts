@@ -29,7 +29,6 @@ import { cpus, totalmem, freemem, loadavg } from 'os';
 import { cpuUsage, memoryUsage } from 'process';
 import type { Logger } from '../logging';
 import { getLogger } from '../logging';
-import { BaseError } from '../error-handling';
 
 // ============================================================================
 // FOUNDATION-INTEGRATED SYSTEM METRICS TYPES
@@ -53,7 +52,7 @@ export interface MemoryMetrics {
   rss_mb: number;
 }
 
-export interface PerformanceTracker {
+export interface SystemPerformanceTracker {
   start_time: number;
   end_time?: number;
   duration_ms?: number;
@@ -70,9 +69,10 @@ export interface SystemHealth {
   recommendations: string[];
 }
 
-export class SystemMetricsError extends BaseError {
+export class SystemMetricsError extends Error {
   constructor(message: string, public readonly metric?: string) {
-    super('SYSTEM_METRICS_ERROR', message, 'SystemMetricsError');
+    super(message);
+    this.name = 'SystemMetricsError';
   }
 }
 
@@ -84,7 +84,7 @@ export class SystemMetricsCollector {
   private static instance: SystemMetricsCollector;
   private cpuBaseline: NodeJS.CpuUsage;
   private lastCpuCheck: number;
-  private performanceTrackers = new Map<string, PerformanceTracker>();
+  private performanceTrackers = new Map<string, SystemPerformanceTracker>();
   private logger: Logger;
 
   private constructor(logger?: Logger) {
@@ -162,7 +162,7 @@ export class SystemMetricsCollector {
   /**
    * End performance tracking and get results
    */
-  public endPerformanceTracking(operationId: string): PerformanceTracker | null {
+  public endPerformanceTracking(operationId: string): SystemPerformanceTracker | null {
     const tracker = this.performanceTrackers.get(operationId);
     if (!tracker) {
       this.logger.warn(`No performance tracker found for: ${operationId}`);
@@ -220,7 +220,7 @@ export class SystemMetricsCollector {
     const memoryPressure = memory.used_mb / memory.total_mb;
     const memoryHealth = memoryPressure > 0.95 ? 'critical' : memoryPressure > 0.8 ? 'high' : 'good';
 
-    const loadAvg1Min = cpu.load_average[0] / cpu.cores;
+    const loadAvg1Min = (cpu.load_average[0] ?? 0) / cpu.cores;
     const loadHealth = loadAvg1Min > 2 ? 'critical' : loadAvg1Min > 1 ? 'high' : 'good';
 
     // Overall status

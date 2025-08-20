@@ -420,7 +420,7 @@ export class ConfigHealthChecker extends EventEmitter {
     message: string;
     timestamp: number;
   }> {
-    const report = await this.getHealthReport();
+    const report = await this.getHealthReport(false);
 
     let message = '';
     switch (report.status) {
@@ -500,7 +500,7 @@ export class ConfigHealthChecker extends EventEmitter {
    */
   private async performHealthCheck(): Promise<void> {
     try {
-      const currentReport = await this.getHealthReport();
+      const currentReport = await this.getHealthReport(false);
 
       // Compare with previous report
       if (this.lastHealthReport && this.lastHealthReport.status !== currentReport?.status) {

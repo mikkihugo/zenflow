@@ -232,28 +232,28 @@ export abstract class BaseClaudeZenError extends Error {
 }
 
 // ===============================
-// FACT System Errors - Domain-Specific (Moved to @claude-zen/knowledge)
+// FACT System Errors - Domain-Specific (Moved to @claude-zen/intelligence)
 // ===============================
 
-// FACT errors moved to @claude-zen/knowledge package where FACT integration lives
+// FACT errors moved to @claude-zen/intelligence package where FACT integration lives
 export {
   FACTError,
   FACTStorageError,
   FACTGatheringError,
   FACTProcessingError
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 
 // ===============================
-// RAG System Errors - Domain-Specific (Moved to @claude-zen/knowledge)
+// RAG System Errors - Domain-Specific (Moved to @claude-zen/intelligence)
 // ===============================
 
-// RAG errors moved to @claude-zen/knowledge package where RAG integration lives
+// RAG errors moved to @claude-zen/intelligence package where RAG integration lives
 export {
   RAGError,
   RAGVectorError,
   RAGEmbeddingError,
   RAGRetrievalError
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 
 // ===============================
 // Swarm Coordination Errors

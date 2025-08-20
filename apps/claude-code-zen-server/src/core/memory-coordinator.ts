@@ -1,15 +1,15 @@
 /**
- * @fileoverview Memory Coordinator - Lightweight facade for @claude-zen/brain.
+ * @fileoverview Memory Coordinator - Lightweight facade for @claude-zen/intelligence.
  * 
  * Provides unified memory management through delegation to specialized
  * @claude-zen packages for advanced coordination, optimization, and lifecycle management.
  * 
  * Delegates to:
- * - @claude-zen/brain: MemoryCoordinator for distributed coordination
- * - @claude-zen/brain: BrainCoordinatorFactory for backend management
- * - @claude-zen/brain: SwarmKnowledgeExtractor for intelligent pattern recognition
- * - @claude-zen/brain: CacheEvictionStrategy for advanced caching
- * - @claude-zen/brain: DataLifecycleManager for lifecycle management
+ * - @claude-zen/intelligence: MemoryCoordinator for distributed coordination
+ * - @claude-zen/intelligence: BrainCoordinatorFactory for backend management
+ * - @claude-zen/intelligence: SwarmKnowledgeExtractor for intelligent pattern recognition
+ * - @claude-zen/intelligence: CacheEvictionStrategy for advanced caching
+ * - @claude-zen/intelligence: DataLifecycleManager for lifecycle management
  * - @claude-zen/foundation: Database access instead of custom DAL
  * 
  * REDUCTION: 823 → ~350 lines (57.5% reduction) through package delegation
@@ -85,24 +85,24 @@ interface BackendInterface {
   close?(): Promise<void>;
 }
 
-// Facade implementation delegates to @claude-zen/brain - backend creation removed
+// Facade implementation delegates to @claude-zen/intelligence - backend creation removed
 
-// SQLite backend creation delegated to @claude-zen/brain factory
+// SQLite backend creation delegated to @claude-zen/intelligence factory
 
-// JSON backend creation delegated to @claude-zen/brain factory
+// JSON backend creation delegated to @claude-zen/intelligence factory
 
 /**
- * Memory System - Facade for @claude-zen/brain coordination.
+ * Memory System - Facade for @claude-zen/intelligence coordination.
  *
  * Lightweight facade that delegates all functionality to specialized
- * @claude-zen/brain packages while preserving the original API.
+ * @claude-zen/intelligence packages while preserving the original API.
  */
 export class BrainCoordinator extends EventEmitter {
   private logger: Logger;
   private config: MemoryConfig;
   private initialized = false;
   
-  // Delegated components from @claude-zen/brain
+  // Delegated components from @claude-zen/intelligence
   private memoryCoordinator: any;
   private memorySystemFactory: any;
   private swarmKnowledgeExtractor: any;
@@ -120,18 +120,18 @@ export class BrainCoordinator extends EventEmitter {
   }
 
   /**
-   * Initialize with @claude-zen/brain delegation - LAZY LOADING
+   * Initialize with @claude-zen/intelligence delegation - LAZY LOADING
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
     this.logger.info(
-      `Initializing memory system with ${this.config.backend} backend via @claude-zen/brain`
+      `Initializing memory system with ${this.config.backend} backend via @claude-zen/intelligence`
     );
 
     try {
-      // Delegate to @claude-zen/brain for advanced system creation
-      const { BrainCoordinatorFactory } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for advanced system creation
+      const { BrainCoordinatorFactory } = await import('@claude-zen/intelligence');
       
       // Map legacy backend types to foundation types
       const backendType = this.mapLegacyBackendType(this.config.backend);
@@ -199,7 +199,7 @@ export class BrainCoordinator extends EventEmitter {
 
       this.initialized = true;
       this.emit('initialized', { backend: this.config.backend });
-      this.logger.info('Memory system ready with @claude-zen/brain delegation');
+      this.logger.info('Memory system ready with @claude-zen/intelligence delegation');
 
     } catch (error) {
       this.logger.error('Failed to initialize memory system:', error);
@@ -208,12 +208,12 @@ export class BrainCoordinator extends EventEmitter {
   }
 
   /**
-   * Initialize specialized @claude-zen/brain components
+   * Initialize specialized @claude-zen/intelligence components
    */
   private async initializeSpecializedComponents(): Promise<void> {
     try {
       // Delegate to SwarmKnowledgeExtractor for intelligent pattern recognition
-      const { SwarmKnowledgeExtractor } = await import('@claude-zen/brain');
+      const { SwarmKnowledgeExtractor } = await import('@claude-zen/intelligence');
       this.swarmKnowledgeExtractor = new SwarmKnowledgeExtractor({
         enabled: true,
         strategies: {
@@ -231,7 +231,7 @@ export class BrainCoordinator extends EventEmitter {
       await this.swarmKnowledgeExtractor.initialize();
 
       // Delegate to CacheEvictionStrategy for advanced caching
-      const { CacheEvictionStrategy } = await import('@claude-zen/brain');
+      const { CacheEvictionStrategy } = await import('@claude-zen/intelligence');
       this.cacheEvictionStrategy = new CacheEvictionStrategy({
         enabled: true,
         algorithm: 'adaptive',
@@ -245,7 +245,7 @@ export class BrainCoordinator extends EventEmitter {
       await this.cacheEvictionStrategy.initialize();
 
       // Delegate to DataLifecycleManager for lifecycle management
-      const { DataLifecycleManager } = await import('@claude-zen/brain');
+      const { DataLifecycleManager } = await import('@claude-zen/intelligence');
       this.dataLifecycleManager = new DataLifecycleManager({
         enabled: true,
         stages: {
@@ -261,7 +261,7 @@ export class BrainCoordinator extends EventEmitter {
       });
       await this.dataLifecycleManager.initialize();
 
-      this.logger.info('Specialized @claude-zen/brain components initialized');
+      this.logger.info('Specialized @claude-zen/intelligence components initialized');
 
     } catch (error) {
       this.logger.error('Failed to initialize specialized components:', error);
@@ -288,7 +288,7 @@ export class BrainCoordinator extends EventEmitter {
   }
 
   /**
-   * Create backend configuration for @claude-zen/brain
+   * Create backend configuration for @claude-zen/intelligence
    */
   private createBackendConfig(): Record<string, unknown> {
     const baseConfig = {
@@ -588,7 +588,7 @@ export class BrainCoordinator extends EventEmitter {
   }
 
   // =================================================================
-  // ENHANCED CAPABILITIES - NEW from @claude-zen/brain
+  // ENHANCED CAPABILITIES - NEW from @claude-zen/intelligence
   // =================================================================
 
   /**

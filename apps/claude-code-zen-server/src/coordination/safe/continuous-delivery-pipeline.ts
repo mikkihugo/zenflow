@@ -2,17 +2,17 @@
  * @fileoverview Continuous Delivery Pipeline - Lightweight Facade
  * 
  * Provides SPARC-integrated continuous delivery pipeline management through
- * delegation to @claude-zen/safe-framework package for production-grade CD automation.
+ * delegation to @claude-zen/enterprise package for production-grade CD automation.
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: ContinuousDeliveryPipelineManager for full CD functionality
- * - @claude-zen/safe-framework: All pipeline types and interfaces
- * - @claude-zen/event-system: Type-safe event coordination
+ * - @claude-zen/enterprise: ContinuousDeliveryPipelineManager for full CD functionality
+ * - @claude-zen/enterprise: All pipeline types and interfaces
+ * - @claude-zen/infrastructure: Type-safe event coordination
  * 
  * REDUCTION: 1,090 → 51 lines (95.3% reduction) through package delegation
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
@@ -21,7 +21,7 @@ import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-executio
 
 import type { ValueStreamMapper } from './value-stream-mapper';
 
-// Re-export all types from @claude-zen/safe-framework
+// Re-export all types from @claude-zen/enterprise
 export type {
   CDPipelineConfig,
   CDPipelineStage,
@@ -41,10 +41,10 @@ export type {
   AutomationType,
   PipelineStatus,
   StageStatus
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 /**
- * Continuous Delivery Pipeline Manager - Lightweight facade for @claude-zen/safe-framework
+ * Continuous Delivery Pipeline Manager - Lightweight facade for @claude-zen/enterprise
  */
 export class ContinuousDeliveryPipelineManager extends EventEmitter {
   private logger: Logger;
@@ -68,15 +68,15 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   private initParams: any;
 
   /**
-   * Initialize with @claude-zen/safe-framework delegation
+   * Initialize with @claude-zen/enterprise delegation
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/safe-framework
+      // Delegate to @claude-zen/enterprise
       const { ContinuousDeliveryPipelineManager: SafeCDPipelineManager } = 
-        await import('@claude-zen/safe-framework');
+        await import('@claude-zen/enterprise');
       
       this.pipelineManager = new SafeCDPipelineManager(
         this.initParams.eventBus,
@@ -89,7 +89,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
       await this.pipelineManager.initialize();
       this.initialized = true;
 
-      this.logger.info('CD Pipeline facade initialized with @claude-zen/safe-framework delegation');
+      this.logger.info('CD Pipeline facade initialized with @claude-zen/enterprise delegation');
     } catch (error) {
       this.logger.error('Failed to initialize CD Pipeline facade:', error);
       throw error;
@@ -97,7 +97,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
   }
 
   /**
-   * Delegate all public methods to @claude-zen/safe-framework
+   * Delegate all public methods to @claude-zen/enterprise
    */
   async shutdown(): Promise<void> {
     if (!this.initialized) return;

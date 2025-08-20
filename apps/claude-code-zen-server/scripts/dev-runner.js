@@ -6,15 +6,22 @@ import { readFileSync, watch } from 'fs';
 import { join } from 'path';
 import chalk from 'chalk';
 
-// Import LogTape syslog bridge for system-wide logging
-let syslogBridge;
+// LogTape syslog bridge - optional feature
+let syslogBridge = null;
 try {
+  // Try to import syslog bridge if available
   const syslogModule = await import('../src/utils/logtape-syslog-bridge');
   syslogBridge = syslogModule.syslogBridge;
   console.log('✅ LogTape syslog bridge loaded successfully');
 } catch (error) {
-  console.warn('⚠️ LogTape syslog bridge not available:', error.message);
-  syslogBridge = null;
+  console.log('ℹ️ LogTape syslog bridge not available (optional feature)');
+  // Provide a simple null implementation
+  syslogBridge = {
+    info: () => {},
+    error: () => {},
+    warn: () => {},
+    debug: () => {}
+  };
 }
 
 const PORT = process.env.PORT || 3000;
@@ -166,9 +173,9 @@ function runTypeCheck() {
   return new Promise((resolve, reject) => {
     console.log(`${colors.blue}🔍 Running TypeScript type check...${colors.reset}`);
     
-    const tsc = spawn('npx', ['tsc', '--noEmit', '--project', 'apps/claude-code-zen-server/tsconfig.json'], {
+    const tsc = spawn('npx', ['tsc', '--noEmit', '--project', './tsconfig.json'], {
       stdio: 'pipe',
-      cwd: process.cwd()
+      cwd: path.join(process.cwd(), 'apps/claude-code-zen-server')
     });
     
     let stdout = '';
@@ -213,9 +220,9 @@ function startMainServer() {
   return new Promise((resolve, reject) => {
     console.log(`${colors.green}🚀 Starting main server...${colors.reset}`);
     
-    mainServer = spawn('npx', ['tsx', 'apps/claude-code-zen-server/src/main.ts'], {
+    mainServer = spawn('npx', ['tsx', './src/main.ts'], {
       stdio: ['inherit', 'inherit', 'pipe'],
-      cwd: process.cwd(),
+      cwd: path.join(process.cwd(), 'apps/claude-code-zen-server'),
       env: { ...process.env, NODE_ENV: 'development' }
     });
     
@@ -284,8 +291,11 @@ function startFileWatcher() {
   
   console.log(`${colors.blue}👁️ Watching for TypeScript file changes...${colors.reset}`);
   
-  // Watch TypeScript files for changes  
-  fileWatcher = watch('./apps/claude-code-zen-server/src', { recursive: true }, (eventType, filename) => {
+  // Watch TypeScript files for changes from the server directory
+  const serverDir = path.join(process.cwd(), 'apps/claude-code-zen-server');
+  const srcDir = path.join(serverDir, 'src');
+  
+  fileWatcher = watch(srcDir, { recursive: true }, (eventType, filename) => {
     if (filename && filename.endsWith('.ts') && !isCheckingTypes) {
       console.log(`${colors.cyan}📁 File changed: ${filename}${colors.reset}`);
       

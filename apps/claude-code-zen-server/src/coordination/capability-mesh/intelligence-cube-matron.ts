@@ -16,11 +16,11 @@ import type {
 // Neural and learning integration
 import { 
   BehavioralIntelligence
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 import { 
   AISafetyOrchestrator
-} from '@claude-zen/ai-safety';
+} from '@claude-zen/intelligence';
 
 import { 
   AgentMonitor

@@ -21,7 +21,7 @@
 
 import { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
-import type { BrainCoordinator } from '@claude-zen/brain';
+import type { BrainCoordinator } from '@claude-zen/intelligence';
 
 const logger = new Logger('DocumentationManager');
 

@@ -56,10 +56,10 @@
  * 
  * @requires ./api-translation-layer - API types with domain delegation
  * @requires @claude-zen/foundation - Foundation types and utilities
- * @requires @claude-zen/brain - Neural coordination domain types
- * @requires @claude-zen/workflows - Workflow orchestration domain types
+ * @requires @claude-zen/intelligence - Neural coordination domain types
+ * @requires @claude-zen/intelligence - Workflow orchestration domain types
  * @requires @claude-zen/foundation - Database operation domain types
- * @requires @claude-zen/event-system - Event coordination domain types
+ * @requires @claude-zen/infrastructure - Event coordination domain types
  */
 
 // =============================================================================
@@ -83,7 +83,7 @@ import type {
   SwarmConfiguration,
   BrainMetrics,
   SwarmIntelligence
-} from '@claude-zen/brain/types';
+} from '@claude-zen/intelligence';
 
 // Workflow Domain Types - Layer 2 process orchestration
 import type {
@@ -91,7 +91,7 @@ import type {
   WorkflowExecution,
   WorkflowMetrics,
   ExecutionResult
-} from '@claude-zen/workflows/types';
+} from '@claude-zen/enterprise';
 
 // Database Domain Types - Layer 2 data persistence
 
@@ -213,7 +213,7 @@ export interface ValidationTranslationError extends ValidationError {
  * Swarm Service Integration
  * 
  * Handles API ↔ Domain translation for swarm management operations
- * Delegates to @claude-zen/brain domain types for business logic
+ * Delegates to @claude-zen/intelligence domain types for business logic
  */
 export interface SwarmServiceIntegration {
   /**
@@ -341,7 +341,7 @@ export interface SwarmTranslationUtils {
  * Task Service Integration
  * 
  * Handles API ↔ Domain translation for task management operations
- * Delegates to @claude-zen/workflows domain types for business logic
+ * Delegates to @claude-zen/intelligence domain types for business logic
  */
 export interface TaskServiceIntegration {
   /**

@@ -1,19 +1,19 @@
 /**
  * @file Shared Fact System - Migration Compatibility Layer
  * 
- * DEPRECATED: This file now re-exports from @claude-zen/knowledge package.
+ * DEPRECATED: This file now re-exports from @claude-zen/intelligence package.
  * 
  * The shared fact system has been moved to the knowledge package as a private
  * implementation. This file maintains backward compatibility for existing code.
  * 
- * New code should import directly from @claude-zen/knowledge:
+ * New code should import directly from @claude-zen/intelligence:
  * ```typescript
  * import {
  *   getCoordinationFactSystem,
  *   storeCoordinationFact,
  *   queryCoordinationFacts,
  *   searchCoordinationFacts,
- * } from '@claude-zen/knowledge';
+ * } from '@claude-zen/intelligence';
  * ```
  */
 
@@ -24,7 +24,7 @@ import {
   initializeCoordinationFactSystem,
   storeCoordinationEvent,
   getCoordinationFacts,
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 
 export {
   // Main API functions
@@ -46,13 +46,13 @@ export {
   // Types
   type CoordinationFact as FactEntry,
   type CoordinationFactQuery as FactQuery,
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 
 // Compatibility class for legacy code
 export class SharedFactSystem {
   /**
    * Get the coordination fact system instance (compatibility)
-   * @deprecated Use getCoordinationFactSystem() from @claude-zen/knowledge instead
+   * @deprecated Use getCoordinationFactSystem() from @claude-zen/intelligence instead
    */
   static getInstance() {
     return getCoordinationFactSystem();
@@ -82,16 +82,16 @@ const legacyCompatibility = {
 };
 
 /**
- * @deprecated Use getCoordinationFactSystem() from @claude-zen/knowledge instead
+ * @deprecated Use getCoordinationFactSystem() from @claude-zen/intelligence instead
  */
 export const sharedFactSystem = legacyCompatibility;
 
 /**
- * @deprecated Use initializeCoordinationFactSystem from @claude-zen/knowledge instead
+ * @deprecated Use initializeCoordinationFactSystem from @claude-zen/intelligence instead
  */
 export const initializeCoordinationFactSystem = initializeCoordinationFactSystem;
 
 /**
- * @deprecated Import directly from @claude-zen/knowledge instead
+ * @deprecated Import directly from @claude-zen/intelligence instead
  */
 export { storeCoordinationEvent, getCoordinationFacts };

@@ -11,10 +11,10 @@
 import {
   getCoordinationFactSystem,
   type CoordinationFact as UniversalFact,
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
-// import type { SessionMemoryStore } from '@claude-zen/brain'; // TODO: Fix memory package build
+// import type { SessionMemoryStore } from '@claude-zen/intelligence'; // TODO: Fix memory package build
 import type CollectiveSwarmCoordinator from './swarm-synchronization';
 
 interface SwarmContext {
@@ -87,7 +87,7 @@ export interface KnowledgeDistributionUpdate {
  * @example
  */
 export class CollectiveKnowledgeBridge extends EventEmitter {
-  private collectiveFact?: any; // Type from @claude-zen/knowledge internal system
+  private collectiveFact?: any; // Type from @claude-zen/intelligence internal system
   private hiveCoordinator?: CollectiveSwarmCoordinator;
   private memoryStore?: any; // SessionMemoryStore type when package is fixed
   private subscribedSwarms = new Map<string, Set<string>>(); // swarmId -> domains

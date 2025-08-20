@@ -45,7 +45,7 @@
  * 
  * // API types delegate to comprehensive domain types
  * const swarmResponse: ApiSwarmResponse = {
- *   // Uses @claude-zen/brain domain types internally
+ *   // Uses @claude-zen/intelligence domain types internally
  *   id: 'swarm-123',
  *   status: 'active',
  *   agents: [...] // Full domain type safety
@@ -57,10 +57,10 @@
  * @version 2.1.0
  * 
  * @requires @claude-zen/foundation - Foundation types and utilities
- * @requires @claude-zen/brain - Neural coordination domain types
- * @requires @claude-zen/workflows - Workflow orchestration domain types  
+ * @requires @claude-zen/intelligence - Neural coordination domain types
+ * @requires @claude-zen/intelligence - Workflow orchestration domain types  
  * @requires @claude-zen/foundation - Database operation domain types
- * @requires @claude-zen/event-system - Event coordination domain types
+ * @requires @claude-zen/infrastructure - Event coordination domain types
  */
 
 // =============================================================================
@@ -75,7 +75,7 @@ import type {
   AgentCapability,
   BrainMetrics,
   SwarmIntelligence
-} from '@claude-zen/brain/types';
+} from '@claude-zen/intelligence';
 import type {
   BaseEntity,
   EntityStatus,
@@ -101,7 +101,7 @@ import type {
   StepStatus,
   WorkflowMetrics,
   ExecutionResult
-} from '@claude-zen/workflows/types';
+} from '@claude-zen/enterprise';
 
 // Database domain types - Data persistence and querying
 
@@ -247,7 +247,7 @@ export interface ApiSystemStatusResponse {
 /**
  * API Swarm Response
  * 
- * Strategic delegation to @claude-zen/brain domain types
+ * Strategic delegation to @claude-zen/intelligence domain types
  * with API-specific enhancements
  */
 export interface ApiSwarmResponse extends BaseEntity {
@@ -345,7 +345,7 @@ export interface ApiSwarmMetricsResponse {
 /**
  * API Task Response
  * 
- * Strategic delegation to @claude-zen/workflows domain types
+ * Strategic delegation to @claude-zen/intelligence domain types
  */
 export interface ApiTaskResponse extends TimestampedEntity {
   /** Task identifier */
@@ -860,10 +860,10 @@ export const DEFAULT_PAGINATION = {
  * - **Result**: Lightweight translation layer with full type safety
  * 
  * **DOMAIN TYPE DELEGATION:**
- * - **@claude-zen/brain**: Swarm coordination, agent intelligence, neural processing
- * - **@claude-zen/workflows**: Task orchestration, execution strategies, metrics
+ * - **@claude-zen/intelligence**: Swarm coordination, agent intelligence, neural processing
+ * - **@claude-zen/intelligence**: Task orchestration, execution strategies, metrics
  * - **@claude-zen/foundation**: Data persistence, queries, health monitoring
- * - **@claude-zen/event-system**: Event coordination, messaging, system events
+ * - **@claude-zen/infrastructure**: Event coordination, messaging, system events
  * - **@claude-zen/foundation**: Shared primitives, utilities, system configuration
  * 
  * **MAINTAINED CAPABILITIES:**
@@ -887,10 +887,10 @@ export const API_TRANSLATION_INFO = {
   architecture: 'Sophisticated 4-layer type architecture',
   compatibility: 'Full OpenAPI 3.0 compliance',
   delegation: [
-    '@claude-zen/brain - Neural coordination domain types',
-    '@claude-zen/workflows - Process orchestration domain types', 
+    '@claude-zen/intelligence - Neural coordination domain types',
+    '@claude-zen/intelligence - Process orchestration domain types', 
     '@claude-zen/foundation - Data persistence domain types',
-    '@claude-zen/event-system - Event coordination domain types',
+    '@claude-zen/infrastructure - Event coordination domain types',
     '@claude-zen/foundation - Shared primitives and utilities'
   ],
   benefits: [

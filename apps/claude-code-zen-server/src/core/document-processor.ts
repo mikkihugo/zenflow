@@ -24,8 +24,8 @@ import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { getLogger } from '../config/logging-config';
-import type { WorkflowEngine } from '@claude-zen/workflows';
-import type { BrainCoordinator } from '@claude-zen/brain';
+import type { WorkflowEngine } from '@claude-zen/intelligence';
+import type { BrainCoordinator } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('DocumentProcessor');

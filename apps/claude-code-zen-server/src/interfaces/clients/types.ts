@@ -10,9 +10,9 @@
  * 
  * **DELEGATES TO:**
  * - @claude-zen/foundation: Core types, HTTP methods, error codes
- * - @claude-zen/event-system: WebSocket event types  
- * - @claude-zen/knowledge: Knowledge query types
- * - @claude-zen/teamwork: MCP client types
+ * - @claude-zen/infrastructure: WebSocket event types  
+ * - @claude-zen/intelligence: Knowledge query types
+ * - @claude-zen/intelligence: MCP client types
  * 
  * **REDUCTION ACHIEVED: 466 → 89 lines (80.9% reduction) through strategic delegation**
  */
@@ -30,15 +30,15 @@ import type {
 
 import type {
   WebSocketEventType
-} from '@claude-zen/event-system';
+} from '@claude-zen/infrastructure';
 
 import type {
   KnowledgeQueryType
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 
 import type {
   McpClientMessageType
-} from '@claude-zen/teamwork';
+} from '@claude-zen/intelligence';
 
 // Type guards using foundation delegation
 import { isString } from '@claude-zen/foundation';

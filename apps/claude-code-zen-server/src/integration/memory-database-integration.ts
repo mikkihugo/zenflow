@@ -1,7 +1,7 @@
 /**
  * @fileoverview Enhanced Memory-Database Integration - Production-Grade Implementation
  * 
- * This module demonstrates comprehensive integration between the @claude-zen/brain package
+ * This module demonstrates comprehensive integration between the @claude-zen/intelligence package
  * and @claude-zen/foundation systems, leveraging the latest features including:
  * 
  * - SwarmKnowledgeExtractor for intelligent data extraction
@@ -22,7 +22,7 @@
  * const health = await system.getSystemHealth();
  * ```
  * 
- * @requires @claude-zen/brain - Advanced memory management system
+ * @requires @claude-zen/intelligence - Advanced memory management system
  * @requires @claude-zen/foundation - Multi-database abstraction layer
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  */
@@ -30,14 +30,14 @@
 // Database operations handled via @claude-zen/foundation package
 import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
-// Core Memory System - Delegated to @claude-zen/brain neural coordination
+// Core Memory System - Delegated to @claude-zen/intelligence neural coordination
 
 
 
-// Advanced Coordination - Delegated to @claude-zen/brain coordination systems
+// Advanced Coordination - Delegated to @claude-zen/intelligence coordination systems
 // Memory coordination now handled through neural orchestration
 
-// Optimization Strategies - Delegated to @claude-zen/brain optimization engines
+// Optimization Strategies - Delegated to @claude-zen/intelligence optimization engines
 // Memory optimization now handled through autonomous optimization system
 
 // Error Handling and Recovery - Delegated to @claude-zen/foundation
@@ -1094,7 +1094,7 @@ export async function demonstrateErrorHandling() {
 
   } catch (error) {
     // Import error handling classes from memory package
-    const { MemoryError, MemoryErrorClassifier } = await import('@claude-zen/brain');
+    const { MemoryError, MemoryErrorClassifier } = await import('@claude-zen/intelligence');
 
     // Enhanced error handling with recovery strategies
     if (error instanceof MemoryError) {

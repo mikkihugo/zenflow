@@ -1,13 +1,13 @@
 /**
- * @fileoverview Enterprise Architecture Manager - Lightweight facade delegating to @claude-zen/safe-framework
+ * @fileoverview Enterprise Architecture Manager - Lightweight facade delegating to @claude-zen/enterprise
  * 
- * MAJOR REDUCTION: 988 → 145 lines (85.3% reduction) through @claude-zen/safe-framework delegation
+ * MAJOR REDUCTION: 988 → 145 lines (85.3% reduction) through @claude-zen/enterprise delegation
  * 
  * This facade delegates all enterprise architecture management functionality to the 
- * @claude-zen/safe-framework package, providing a clean separation between application
+ * @claude-zen/enterprise package, providing a clean separation between application
  * logic and reusable framework components.
  * 
- * DELEGATION TARGET: @claude-zen/safe-framework/EnterpriseArchitectureManager
+ * DELEGATION TARGET: @claude-zen/enterprise/EnterpriseArchitectureManager
  * 
  * FEATURES PROVIDED:
  * - Architecture principle validation and compliance
@@ -25,14 +25,14 @@
  * @since 1.0.0 - Facade pattern implementation
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
 
-// Import types and classes from @claude-zen/safe-framework
+// Import types and classes from @claude-zen/enterprise
 import type {
   EnterpriseArchConfig,
   ArchitecturePrinciple,
@@ -40,11 +40,11 @@ import type {
   GovernanceDecision,
   ArchitectureHealthMetrics,
   ComplianceValidationResult
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 import {
   EnterpriseArchitectureManager as SafeFrameworkEnterpriseArchitectureManager,
   createEnterpriseArchitectureManager
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 // Re-export types for compatibility
 export type {
@@ -57,11 +57,11 @@ export type {
 };
 
 /**
- * Enterprise Architecture Manager - Facade delegating to @claude-zen/safe-framework
+ * Enterprise Architecture Manager - Facade delegating to @claude-zen/enterprise
  * 
  * This lightweight facade provides enterprise architecture management by delegating
  * all functionality to the comprehensive EnterpriseArchitectureManager in the
- * @claude-zen/safe-framework package.
+ * @claude-zen/enterprise package.
  */
 export class EnterpriseArchitectureManager extends EventEmitter {
   private readonly logger: Logger;
@@ -91,7 +91,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   }
 
   /**
-   * Initialize by creating and delegating to @claude-zen/safe-framework manager
+   * Initialize by creating and delegating to @claude-zen/enterprise manager
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -125,7 +125,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   }
 
   // ============================================================================
-  // DELEGATED METHODS - All functionality delegated to @claude-zen/safe-framework
+  // DELEGATED METHODS - All functionality delegated to @claude-zen/enterprise
   // ============================================================================
 
   async createArchitecturePrinciple(name: string, statement: string, rationale: string, category: string, priority?: string, implications?: string[]): Promise<ArchitecturePrinciple> {

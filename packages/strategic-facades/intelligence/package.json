@@ -1,0 +1,73 @@
+{
+  "name": "@claude-zen/intelligence",
+  "version": "1.0.0",
+  "description": "Strategic Intelligence Interface Delegation - AI/Neural/ML systems coordination",
+  "private": false,
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "claude-zen",
+    "intelligence",
+    "ai",
+    "strategic-interface",
+    "delegation",
+    "brain",
+    "safety"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/brain": "workspace:*",
+    "@claude-zen/ai-safety": "workspace:*",
+    "@claude-zen/fact-system": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@claude-zen/brain": {
+      "optional": false
+    },
+    "@claude-zen/ai-safety": {
+      "optional": true
+    },
+    "@claude-zen/fact-system": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

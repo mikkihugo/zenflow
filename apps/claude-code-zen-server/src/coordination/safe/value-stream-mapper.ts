@@ -2,18 +2,18 @@
  * @fileoverview Value Stream Mapper - Lightweight facade for SAFe value stream mapping.
  * 
  * Provides value stream mapping and bottleneck detection through delegation to specialized
- * @claude-zen/safe-framework packages for comprehensive SAFe integration.
+ * @claude-zen/enterprise packages for comprehensive SAFe integration.
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: ValueStreamMapper for core value stream mapping functionality
+ * - @claude-zen/enterprise: ValueStreamMapper for core value stream mapping functionality
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging
- * - @claude-zen/event-system: Type-safe event coordination and workflow integration
+ * - @claude-zen/infrastructure: Type-safe event coordination and workflow integration
  * 
  * REDUCTION: 1,093 → 287 lines (73.7% reduction) through package delegation facade
  * 
- * @deprecated Import directly from @claude-zen/safe-framework for new implementations:
+ * @deprecated Import from @claude-zen/enterprise strategic facade for new implementations:
  * ```typescript
- * import { ValueStreamMapper } from '@claude-zen/safe-framework';
+ * import { ValueStreamMapper } from '@claude-zen/enterprise';
  * ```
  */
 
@@ -21,10 +21,10 @@ import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 
 
-import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
+import type { MultiLevelOrchestrationManager } from '@claude-zen/enterprise';
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
@@ -41,7 +41,7 @@ import type {
   ValueDeliveryTracking,
   ContinuousImprovement,
   DateRange
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 // Re-export types from the package for backward compatibility
 export type {
@@ -57,10 +57,10 @@ export type {
   ValueDeliveryTracking,
   ContinuousImprovement,
   DateRange
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 /**
- * Value Stream Mapper facade - delegates to @claude-zen/safe-framework
+ * Value Stream Mapper facade - delegates to @claude-zen/enterprise
  * 
  * Provides SAFe value stream mapping through intelligent package delegation.
  * 
@@ -108,7 +108,7 @@ export class ValueStreamMapper extends EventEmitter {
     this.config = config;
 
     // Show deprecation warning
-    this.logger.warn('ValueStreamMapper facade is deprecated. Import directly from @claude-zen/safe-framework for new implementations.');
+    this.logger.warn('ValueStreamMapper facade is deprecated. Import directly from @claude-zen/enterprise for new implementations.');
   }
 
   /**
@@ -118,15 +118,15 @@ export class ValueStreamMapper extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // TODO: Enable package delegation when @claude-zen/safe-framework is properly built
+      // TODO: Enable package delegation when @claude-zen/enterprise is properly built
       // For now, implement minimal functionality
       this.logger.info('ValueStreamMapper facade initialized in compatibility mode');
 
       // Initialize performance tracking (optional)
       try {
-        const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+        const { PerformanceTracker, BasicTelemetryManager } = await import('@claude-zen/foundation');
         this.performanceTracker = new PerformanceTracker();
-        this.telemetryManager = new TelemetryManager({
+        this.telemetryManager = new BasicTelemetryManager({
           serviceName: 'value-stream-mapper',
           enableTracing: true,
           enableMetrics: true

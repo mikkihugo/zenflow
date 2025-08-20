@@ -2,14 +2,14 @@
  * @fileoverview Memory-Based Swarm Coordination System - Intelligent Facade
  * 
  * Provides enhanced agent coordination through delegation to specialized
- * @claude-zen/brain packages for intelligent swarm coordination.
+ * @claude-zen/intelligence packages for intelligent swarm coordination.
  * 
  * Delegates to:
- * - @claude-zen/brain: MemoryCoordinationSystem for distributed coordination
- * - @claude-zen/brain: SwarmKnowledgeExtractor for agent intelligence and pattern recognition
- * - @claude-zen/brain: DataLifecycleManager for swarm session management
- * - @claude-zen/brain: CacheEvictionStrategy for intelligent agent communication caching
- * - @claude-zen/brain: PerformanceTuningStrategy for swarm optimization
+ * - @claude-zen/intelligence: MemoryCoordinationSystem for distributed coordination
+ * - @claude-zen/intelligence: SwarmKnowledgeExtractor for agent intelligence and pattern recognition
+ * - @claude-zen/intelligence: DataLifecycleManager for swarm session management
+ * - @claude-zen/intelligence: CacheEvictionStrategy for intelligent agent communication caching
+ * - @claude-zen/intelligence: PerformanceTuningStrategy for swarm optimization
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager for monitoring
  * 
  * REDUCTION: 358 → ~180 lines (50% reduction) through intelligent delegation
@@ -70,7 +70,7 @@ export interface CoordinationInstructions {
  * Memory-based swarm coordination system with intelligent delegation.
  * 
  * Enhanced coordination system that delegates complex swarm coordination to
- * specialized @claude-zen/brain packages while maintaining API compatibility.
+ * specialized @claude-zen/intelligence packages while maintaining API compatibility.
  * Features intelligent pattern recognition, consensus mechanisms, and optimization.
  */
 export class SwarmMemoryCoordinator extends EventEmitter {
@@ -102,8 +102,8 @@ export class SwarmMemoryCoordinator extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/brain for distributed coordination
-      const { MemoryCoordinationSystem } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for distributed coordination
+      const { MemoryCoordinationSystem } = await import('@claude-zen/intelligence');
       this.memoryCoordinator = new MemoryCoordinationSystem({
         enabled: true,
         strategy: 'intelligent',
@@ -112,8 +112,8 @@ export class SwarmMemoryCoordinator extends EventEmitter {
       });
       await this.memoryCoordinator.initialize();
 
-      // Delegate to @claude-zen/brain for swarm intelligence
-      const { SwarmKnowledgeExtractor } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for swarm intelligence
+      const { SwarmKnowledgeExtractor } = await import('@claude-zen/intelligence');
       this.swarmKnowledgeExtractor = new SwarmKnowledgeExtractor({
         enabled: true,
         patterns: { enabled: true, threshold: 0.7 },
@@ -122,8 +122,8 @@ export class SwarmMemoryCoordinator extends EventEmitter {
       });
       await this.swarmKnowledgeExtractor.initialize();
 
-      // Delegate to @claude-zen/brain for session management
-      const { DataLifecycleManager } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for session management
+      const { DataLifecycleManager } = await import('@claude-zen/intelligence');
       this.dataLifecycleManager = new DataLifecycleManager({
         enabled: true,
         stages: {
@@ -133,8 +133,8 @@ export class SwarmMemoryCoordinator extends EventEmitter {
         }
       });
 
-      // Delegate to @claude-zen/brain for intelligent caching
-      const { CacheEvictionStrategy } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for intelligent caching
+      const { CacheEvictionStrategy } = await import('@claude-zen/intelligence');
       this.cacheEvictionStrategy = new CacheEvictionStrategy({
         enabled: true,
         algorithm: 'adaptive',        // Combines LRU, LFU, and size factors
@@ -146,8 +146,8 @@ export class SwarmMemoryCoordinator extends EventEmitter {
       });
       await this.cacheEvictionStrategy.initialize();
 
-      // Delegate to @claude-zen/brain for optimization
-      const { PerformanceTuningStrategy } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for optimization
+      const { PerformanceTuningStrategy } = await import('@claude-zen/intelligence');
       this.performanceTuningStrategy = new PerformanceTuningStrategy({
         enabled: true,
         mode: 'balanced',
@@ -160,9 +160,9 @@ export class SwarmMemoryCoordinator extends EventEmitter {
       });
 
       // Delegate to @claude-zen/foundation for telemetry
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+      const { PerformanceTracker, BasicTelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      this.telemetryManager = new BasicTelemetryManager({
         serviceName: 'swarm-memory-coordinator',
         enableTracing: true,
         enableMetrics: true

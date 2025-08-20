@@ -5,12 +5,12 @@
  * 
  * Integrates comprehensive @claude-zen packages for enhanced coordination:
  * - @claude-zen/foundation: Core infrastructure, logging, telemetry
- * - @claude-zen/event-system: Type-safe event-driven coordination
- * - @claude-zen/brain: Intelligent agent selection and resource optimization
- * - @claude-zen/brain: Agent health monitoring and task prediction
+ * - @claude-zen/infrastructure: Type-safe event-driven coordination
+ * - @claude-zen/intelligence: Intelligent agent selection and resource optimization
+ * - @claude-zen/intelligence: Agent health monitoring and task prediction
  * - @claude-zen/neural-ml: High-performance neural computing for agent optimization
  * - @claude-zen/ai-safety: Safety protocols and deception detection
- * - @claude-zen/teamwork: Multi-agent collaboration patterns
+ * - @claude-zen/intelligence: Multi-agent collaboration patterns
  * - @claude-zen/chaos-engineering: System resilience testing
  */
 /**
@@ -31,7 +31,7 @@ import { CORE_TOKENS, inject, injectable } from '../di/index';
 // 🔧 FOUNDATION: Core infrastructure with telemetry and resilience
 
 // ⚡ EVENT SYSTEM: Type-safe event-driven coordination
-import { TypedEventBus, createEventBus } from '@claude-zen/event-system';
+import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
 
 // 🔄 LOAD BALANCING: Intelligent agent selection and resource optimization
 import { LoadBalancer, type LoadBalancingStrategy } from '@claude-zen/foundation';
@@ -48,23 +48,19 @@ import {
   NeuralML, 
   AdaptiveOptimizer,
   NeuralForecastingEngine
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 // 🛡️ AI SAFETY: Safety protocols and deception detection
 import { 
   AISafetyOrchestrator,
   SafetyProtocols
-} from '@claude-zen/ai-safety';
+} from '@claude-zen/intelligence';
 
 // 🤝 TEAMWORK: Multi-agent collaboration patterns
-import { 
-  Teamwork,
-  ConversationOrchestrator,
-  TeamworkSystem
-} from '@claude-zen/teamwork';
+import { getTeamworkAccess } from '@claude-zen/intelligence';
 
 // 🔥 CHAOS ENGINEERING: System resilience testing
-import { ChaosEngineering } from '@claude-zen/foundation';
+import { getChaosEngine } from '@claude-zen/operations';
 
 export interface CoordinationConfig {
   maxAgents: number;
@@ -137,7 +133,7 @@ export class CoordinationManager extends EventEmitter {
   private teamwork: Teamwork;
   private conversationOrchestrator: ConversationOrchestrator;
   private teamworkSystem: TeamworkSystem;
-  private chaosEngineering: ChaosEngineering;
+  private chaosEngineering: any;
   private circuitBreaker = createCircuitBreaker({
     timeout: 30000,
     errorThresholdPercentage: 50,
@@ -260,13 +256,18 @@ export class CoordinationManager extends EventEmitter {
         ]);
       }
       
-      // Initialize chaos engineering for resilience testing
+      // Initialize chaos engineering for resilience testing via operations facade
       if (this.config.enableChaosEngineering) {
-        this.chaosEngineering = new ChaosEngineering({
-          enabled: true,
-          resilience: { failureInjection: true, recoveryTesting: true }
-        });
-        await this.chaosEngineering.initialize();
+        try {
+          this.chaosEngineering = await getChaosEngine({
+            enableChaosExperiments: true,
+            enableResilienceTesting: true,
+            enableFailureSimulation: true
+          });
+        } catch (error) {
+          this.logger.warn('Chaos engineering not available, continuing without it', error);
+          this.chaosEngineering = null;
+        }
       }
       
       this.foundationLogger.info('✅ All AI coordination systems initialized successfully');
@@ -355,7 +356,11 @@ export class CoordinationManager extends EventEmitter {
         const shutdownPromises: Promise<void>[] = [];
         
         if (this.chaosEngineering) {
-          shutdownPromises.push(this.chaosEngineering.shutdown());
+          try {
+            shutdownPromises.push(this.chaosEngineering.shutdown());
+          } catch (error) {
+            this.logger.warn('Chaos engineering shutdown failed', error);
+          }
         }
         
         if (this.teamworkSystem) {
@@ -919,11 +924,20 @@ export class CoordinationManager extends EventEmitter {
    * Trigger chaos engineering test if enabled.
    */
   async runChaosTest(): Promise<{ success: boolean; results?: any; error?: string }> {
-    if (!this.config.enableChaosEngineering || !this.chaosEngineering) {
-      return { success: false, error: 'Chaos engineering not enabled' };
-    }
-    
     try {
+      // Initialize chaos engineering if not already done
+      if (!this.chaosEngineering && this.config.enableChaosEngineering) {
+        this.chaosEngineering = await getChaosEngine({
+          enableChaosExperiments: true,
+          enableResilienceTesting: true,
+          enableFailureSimulation: true
+        });
+      }
+      
+      if (!this.chaosEngineering) {
+        return { success: false, error: 'Chaos engineering not available' };
+      }
+      
       const results = await this.chaosEngineering.runExperiment({
         name: 'coordination-resilience-test',
         target: 'coordination-manager',
@@ -936,7 +950,7 @@ export class CoordinationManager extends EventEmitter {
       
     } catch (error) {
       this.foundationLogger.error('❌ Chaos engineering test failed:', error);
-      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+      return { success: false, error: error instanceof Error ? error.message : 'Chaos engineering not available' };
     }
   }
 }

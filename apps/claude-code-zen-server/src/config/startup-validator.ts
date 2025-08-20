@@ -609,7 +609,7 @@ async function outputValidationResults(
   }
 
   // Health score
-  const healthReport = await configHealthChecker?.getHealthReport();
+  const healthReport = await configHealthChecker?.getHealthReport(false);
   logger.info(
     `\n💯 Configuration Health Score: ${healthReport.score}/100 (${healthReport.status.toUpperCase()})`
   );

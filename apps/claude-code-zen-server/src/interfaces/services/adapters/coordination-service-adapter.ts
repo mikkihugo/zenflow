@@ -4,11 +4,11 @@
  * MAJOR REDUCTION: 2,166 → ~550 lines (74.6% reduction) through package delegation
  *
  * Delegates coordination operations to specialized @claude-zen packages:
- * - @claude-zen/teamwork: Multi-agent collaboration and conversation orchestration
+ * - @claude-zen/intelligence: Multi-agent collaboration and conversation orchestration
  * - @claude-zen/foundation: Core service management, performance tracking, and logging
- * - @claude-zen/workflows: Workflow orchestration for coordination processes
+ * - @claude-zen/intelligence: Workflow orchestration for coordination processes
  * - @claude-zen/monitoring: Service health monitoring and performance metrics
- * - @claude-zen/brain: Neural learning and adaptive patterns via BrainCoordinator
+ * - @claude-zen/intelligence: Neural learning and adaptive patterns via BrainCoordinator
  *
  * PERFORMANCE BENEFITS:
  * - Battle-tested multi-agent coordination patterns from Microsoft AutoGen/ag2.ai
@@ -172,14 +172,14 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
       this._status = 'starting';
       this.emit('statusChanged', { status: this._status });
 
-      // Delegate to @claude-zen/teamwork for multi-agent coordination
-      const { TeamworkSystem, ConversationOrchestrator } = await import('@claude-zen/teamwork');
+      // Delegate to @claude-zen/intelligence for multi-agent coordination
+      const { TeamworkSystem, ConversationOrchestrator } = await import('@claude-zen/intelligence');
       this.teamworkSystem = await TeamworkSystem.create();
       this.conversationOrchestrator = this.teamworkSystem.orchestrator;
       this.logger.info('Teamwork system initialized with conversation orchestration');
 
-      // Delegate to @claude-zen/workflows for coordination processes
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for coordination processes
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         name: 'coordination-service-workflows',
         persistWorkflows: true,
@@ -197,8 +197,8 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/brain for service health monitoring
-      const { CompleteIntelligenceSystem: AgentMonitor } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for service health monitoring
+      const { CompleteIntelligenceSystem: AgentMonitor } = await import('@claude-zen/intelligence');
       this.monitoringSystem = await AgentMonitor.create({
         serviceName: 'coordination-service',
         metricsCollection: { enabled: this.config.performance?.enableMetricsCollection !== false },
@@ -206,9 +206,9 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
         alerts: { enabled: true }
       });
 
-      // Delegate to @claude-zen/brain for neural ML capabilities (per CLAUDE.md)
+      // Delegate to @claude-zen/intelligence for neural ML capabilities (per CLAUDE.md)
       if (this.config.performance?.enableLearning !== false) {
-        const { BrainCoordinator } = await import('@claude-zen/brain');
+        const { BrainCoordinator } = await import('@claude-zen/intelligence');
         this.adaptiveLearning = new BrainCoordinator({
           autonomous: { 
             enabled: true, 

@@ -1,0 +1,72 @@
+{
+  "name": "@claude-zen/safe-framework",
+  "version": "1.0.0",
+  "description": "SAFe (Scaled Agile Framework) integration with portfolio management, program increments, and value streams",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./managers": {
+      "types": "./dist/managers/index.d.ts",
+      "import": "./dist/managers/index.js"
+    },
+    "./pipelines": {
+      "types": "./dist/pipelines/index.d.ts",
+      "import": "./dist/pipelines/index.js"
+    },
+    "./events": {
+      "types": "./dist/events/index.d.ts",
+      "import": "./dist/events/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@claude-zen/event-system": "file:../event-system",
+    "@claude-zen/foundation": "file:../../foundation", 
+    "@claude-zen/kanban": "file:../kanban",
+    "@claude-zen/ai-safety": "file:../ai-safety",
+    "@claude-zen/brain": "file:../brain",
+    "@claude-zen/sparc": "file:../sparc",
+    "@claude-zen/teamwork": "file:../teamwork",
+    "@claude-zen/workflows": "file:../workflows",
+    "@claude-zen/fact-system": "file:../fact-system",
+    "@claude-zen/telemetry": "workspace:*",
+    "@claude-zen/knowledge": "file:../knowledge",
+    "eventemitter3": "^5.0.1",
+    "xstate": "^5.20.2",
+    "lodash-es": "^4.17.21",
+    "date-fns": "^4.1.0",
+    "zod": "^3.24.1",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.5"
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "safe",
+    "scaled-agile",
+    "portfolio-management",
+    "program-increment",
+    "value-stream",
+    "enterprise-agile",
+    "continuous-delivery"
+  ],
+  "author": "Claude-Zen Team",
+  "license": "MIT"
+}

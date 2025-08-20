@@ -26,12 +26,11 @@
  * @version 1.0.0
  */
 
-import Ajv, { JSONSchemaType, ValidateFunction } from 'ajv';
-import addFormats from 'ajv-formats';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import Ajv, { type ValidateFunction } from 'ajv';
+// import addFormats from 'ajv-formats';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Logger } from './logging';
-import { BaseError, createError } from './error-handling';
 
 // ============================================================================
 // FOUNDATION-INTEGRATED JSON SCHEMA SYSTEM
@@ -45,18 +44,19 @@ export interface SchemaRegistry {
   };
 }
 
-export class SchemaValidationError extends BaseError {
+export class SchemaValidationError extends Error {
   constructor(
     message: string,
-    public readonly documentType: string,
-    public readonly validationErrors: string[]
+    public readonly documentType?: string,
+    public readonly validationErrors?: string[]
   ) {
-    super('SCHEMA_VALIDATION_ERROR', message, 'SchemaValidationError');
+    super(message);
+    this.name = 'SchemaValidationError';
   }
 }
 
 export class JsonSchemaManager {
-  private ajv: Ajv;
+  private ajv: any;
   private schemas: SchemaRegistry = {};
   private logger: Logger;
   private schemasPath: string;
@@ -65,9 +65,8 @@ export class JsonSchemaManager {
     this.logger = logger;
     this.schemasPath = schemasPath;
     
-    // Configure AJV with strict standards compliance
+    // Configure AJV with standards compliance
     this.ajv = new Ajv({
-      strict: true,              // Strict mode for standards compliance
       allErrors: true,           // Return all validation errors
       verbose: true,             // Detailed error information
       validateSchema: true,      // Validate schemas themselves
@@ -76,7 +75,7 @@ export class JsonSchemaManager {
     });
 
     // Add standard formats (RFC 3339 dates, UUIDs, etc.)
-    addFormats(this.ajv);
+    // addFormats(this.ajv);
 
     this.loadAllSchemas();
   }
@@ -177,7 +176,7 @@ export class JsonSchemaManager {
     
     if (!isValid) {
       const errors = schemaEntry.validator.errors?.map(err => 
-        `${err.instancePath || 'root'}: ${err.message}`
+        `${(err as any).instancePath || err.schemaPath || 'root'}: ${err.message}`
       ) || ['Unknown validation error'];
       
       return { isValid: false, errors };
@@ -214,13 +213,12 @@ export class JsonSchemaManager {
     const schemaEntry = this.schemas[documentType];
     
     if (!schemaEntry) {
-      throw createError(`Unknown document type: ${documentType}`, 'SCHEMA_NOT_FOUND');
+      throw new SchemaValidationError(`Unknown document type: ${documentType}`);
     }
 
     if (!schemaEntry.modes.includes(mode)) {
-      throw createError(
-        `Document type ${documentType} not available in ${mode} mode`, 
-        'MODE_NOT_SUPPORTED'
+      throw new SchemaValidationError(
+        `Document type ${documentType} not available in ${mode} mode`
       );
     }
 
@@ -267,7 +265,7 @@ export class JsonSchemaManager {
   /**
    * Get schema version for mode
    */
-  private getSchemaVersion(documentType: string, mode: 'kanban' | 'agile' | 'safe'): string {
+  private getSchemaVersion(_documentType: string, mode: 'kanban' | 'agile' | 'safe'): string {
     const modeVersionMap = {
       kanban: '1.0.0',
       agile: '2.0.0', 

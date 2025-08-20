@@ -37,7 +37,13 @@ src/**/*.js
 target 
 dist/
 build/
-bin/
+# Keep essential bin scripts but ignore large build artifacts
+bin/bundle/
+bin/yao/
+bin/pkg/
+bin/wasm/
+bin/working/
+bin/ncc/build/
 *.exe
 *.bin
 
@@ -49,9 +55,12 @@ packages/**/*.js.map
 !packages/**/*.config.js
 !packages/**/src/**/*
 
-# Rust/Cargo artifacts
+# Rust/Cargo artifacts - prevent massive target directories
 Cargo.lock
 **/target/
+packages/*/rust/*/target/
+packages/private-packages/*/neural-core/target/
+packages/private-packages/*/src/rust/target/
 
 # Environment and config
 .env
@@ -69,6 +78,7 @@ node_modules
 *.swp
 *.swo
 *.bak
+*.backup
 *.tmp
 *.pid
 *.orig
@@ -77,14 +87,22 @@ node_modules
 *.swo
 *.swn
 .venv/
+# Package-specific backup files
+packages/**/*.backup
+packages/**/*.bak
+apps/**/*.backup
+apps/**/*.bak
 
-# Database files
+# Database files and vector storage
 *.db
 *.sqlite
 *.sqlite3
 claude-zen-memory.db
 tasks.db
 qdrant_storage/
+# Test and development databases
+test-data/
+.ai-learning-data.json
 
 # Coverage and test reports
 coverage/
@@ -95,6 +113,9 @@ test-results/
 .jest-cache/
 jest-cache/
 **/jest-cache/
+# Package-specific coverage
+packages/*/coverage/
+apps/*/coverage/
 
 # Lint and cache files
 .eslintcache
@@ -106,6 +127,8 @@ node_modules/.cache/
 # TypeScript build artifacts
 .tsbuildinfo
 *.tsbuildinfo
+apps/**/.tsbuildinfo
+packages/**/.tsbuildinfo
 
 # IDE and editor files
 *.swp
@@ -134,6 +157,9 @@ merge_script.sh
 .hive-mind/
 .ruv-swarm/
 .claude-zen/
+# Svelte build artifacts
+.svelte-kit/
+apps/**/.svelte-kit/
 .nx/workspace-data/
 .genaiscript/
 coverage/
@@ -149,6 +175,9 @@ memory_tasks.json
 analyze-imports.js
 enhanced-issue-*.md
 event-payload-demo.ts
+# Package development backups
+packages/*/backup/
+packages/private-packages/*/backup/
 
 # Additional build artifacts and debug files
 build-*.txt

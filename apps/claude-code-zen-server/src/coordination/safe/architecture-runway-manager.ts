@@ -2,10 +2,10 @@
  * @fileoverview Architecture Runway Manager - Lightweight facade for SAFe architecture management.
  * 
  * Provides comprehensive SAFe architecture runway management through delegation to specialized
- * @claude-zen/safe-framework package for enterprise-grade architecture governance.
+ * @claude-zen/enterprise package for enterprise-grade architecture governance.
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: Complete Architecture Runway Manager implementation
+ * - @claude-zen/enterprise: Complete Architecture Runway Manager implementation
  * - @claude-zen/foundation: Performance tracking, telemetry, logging
  * 
  * REDUCTION: 569 → 135 lines (76.3% reduction) through package delegation
@@ -18,7 +18,7 @@
  * - Integration with Program Increment and Value Stream management
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
@@ -32,13 +32,13 @@ export type {
   ArchitectureDecisionRecord,
   ArchitectureCapability,
   CapabilityKPI
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 /**
  * Architecture Runway Manager - Lightweight facade for SAFe architecture management.
  * 
  * Delegates all functionality to the comprehensive Architecture Runway Manager
- * in @claude-zen/safe-framework package while maintaining API compatibility.
+ * in @claude-zen/enterprise package while maintaining API compatibility.
  */
 export class ArchitectureRunwayManager extends EventEmitter {
   private logger: Logger;
@@ -65,8 +65,8 @@ export class ArchitectureRunwayManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/safe-framework
-      const { ArchitectureRunwayManager: ArchitectureRunwayManagerImpl } = await import('@claude-zen/safe-framework');
+      // Delegate to @claude-zen/enterprise
+      const { ArchitectureRunwayManager: ArchitectureRunwayManagerImpl } = await import('@claude-zen/enterprise');
       this.architectureRunwayManager = new ArchitectureRunwayManagerImpl(...arguments);
       await this.architectureRunwayManager.initialize();
 

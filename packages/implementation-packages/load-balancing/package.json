@@ -1,0 +1,68 @@
+{
+  "name": "@claude-zen/load-balancing",
+  "version": "1.0.0",
+  "description": "Advanced load balancing and resource optimization for claude-code-zen swarm coordination",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./main": {
+      "import": "./dist/main.js",
+      "types": "./dist/main.d.ts"
+    },
+    "./types": {
+      "import": "./dist/types.js",
+      "types": "./dist/types.d.ts"
+    }
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "dev": "tsc --watch --project tsconfig.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist/",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/event-system": "workspace:*",
+    "@claude-zen/neural-ml": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.2",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "@claude-zen/brain": "workspace:*"
+  },
+  "keywords": [
+    "load-balancing",
+    "resource-optimization", 
+    "agent-coordination",
+    "performance",
+    "swarm-intelligence",
+    "claude-zen"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/implementation-packages/load-balancing"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

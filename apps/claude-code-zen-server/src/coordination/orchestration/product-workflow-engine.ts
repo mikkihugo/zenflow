@@ -5,9 +5,9 @@
  * @claude-zen packages for workflow orchestration and SPARC methodology.
  * 
  * Delegates to:
- * - @claude-zen/workflows: WorkflowEngine for process orchestration
+ * - @claude-zen/intelligence: WorkflowEngine for process orchestration
  * - @claude-zen/sparc: SPARCCommander for technical methodology
- * - @claude-zen/agui: TaskApprovalSystem for human-in-the-loop workflows
+ * - @claude-zen/enterprise: TaskApprovalSystem for human-in-the-loop workflows
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging
  * - @claude-zen/foundation: Document management and persistence
  * 
@@ -27,7 +27,7 @@ import { nanoid } from 'nanoid';
 import { getLogger } from '../../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -269,8 +269,8 @@ export class ProductWorkflowEngine extends EventEmitter {
     try {
       this.logger.info('Initializing Product Workflow Engine with package delegation');
 
-      // Delegate to @claude-zen/workflows for workflow orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for workflow orchestration
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: this.config.enablePersistence,
         enableVisualization: true,
@@ -278,15 +278,15 @@ export class ProductWorkflowEngine extends EventEmitter {
       });
       await this.workflowEngine.initialize();
 
-      // Delegate to @claude-zen/sparc for SPARC methodology
-      const { SPARCCommander, SPARCEngineCore } = await import('@claude-zen/sparc');
-      this.sparcCommander = new SPARCCommander();
-      this.sparcEngine = new SPARCEngineCore();
+      // Delegate to SPARC methodology via enterprise strategic facade
+      const { createSPARCCommander, SPARCMethodology } = await import('@claude-zen/enterprise');
+      this.sparcCommander = createSPARCCommander();
+      this.sparcEngine = new SPARCMethodology();
       await this.sparcCommander.initialize();
 
-      // Delegate to @claude-zen/agui for human-in-the-loop workflows
+      // Delegate to @claude-zen/enterprise for human-in-the-loop workflows
       if (this.aguiAdapter) {
-        const { TaskApprovalSystem } = await import('@claude-zen/agui');
+        const { TaskApprovalSystem } = await import('@claude-zen/enterprise');
         this.taskApprovalSystem = new TaskApprovalSystem({
           enableRichPrompts: true,
           enableDecisionLogging: true,
@@ -296,9 +296,9 @@ export class ProductWorkflowEngine extends EventEmitter {
       }
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+      const { PerformanceTracker, BasicTelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      this.telemetryManager = new BasicTelemetryManager({
         serviceName: 'product-workflow-engine',
         enableTracing: true,
         enableMetrics: this.config.enableMetrics
@@ -330,7 +330,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     const timer = this.performanceTracker.startTimer('start_product_workflow');
     
     try {
-      // Delegate workflow execution to @claude-zen/workflows
+      // Delegate workflow execution to @claude-zen/intelligence
       const workflowId = `product-workflow-${Date.now()}-${nanoid()}`;
       
       const result = await this.workflowEngine.startWorkflow({
@@ -410,7 +410,7 @@ export class ProductWorkflowEngine extends EventEmitter {
     const timer = this.performanceTracker.startTimer('request_approval');
     
     try {
-      // Delegate approval request to @claude-zen/agui
+      // Delegate approval request to @claude-zen/enterprise
       const approval = await this.taskApprovalSystem.requestApproval({
         id: gateId,
         title: context.title || 'Product Workflow Approval',

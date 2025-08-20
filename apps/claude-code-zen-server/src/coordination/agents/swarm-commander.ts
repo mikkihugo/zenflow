@@ -4,11 +4,11 @@
  * MAJOR REDUCTION: 2,128 → ~650 lines (69.5% reduction) through package delegation
  *
  * Delegates swarm command and SPARC implementation leadership to specialized @claude-zen packages:
- * - @claude-zen/teamwork: Multi-agent conversation orchestration and team collaboration
- * - @claude-zen/workflows: SPARC methodology workflow orchestration
- * - @claude-zen/knowledge: Coordination facts and learning from development patterns
+ * - @claude-zen/intelligence: Multi-agent conversation orchestration and team collaboration
+ * - @claude-zen/intelligence: SPARC methodology workflow orchestration
+ * - @claude-zen/intelligence: Coordination facts and learning from development patterns
  * - @claude-zen/foundation: Performance tracking, telemetry, and core utilities
- * - @claude-zen/brain: Neural learning and adaptive patterns via BrainCoordinator
+ * - @claude-zen/intelligence: Neural learning and adaptive patterns via BrainCoordinator
  * - @claude-zen/monitoring: Swarm health monitoring and performance metrics
  *
  * PERFORMANCE BENEFITS:
@@ -23,14 +23,14 @@ import {
   getCoordinationFactSystem,
   initializeCoordinationFactSystem as initializeCollectiveFACT,
   storeCoordinationFact,
-} from '@claude-zen/knowledge';
+} from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type {
   EventBus,
   Logger,
 } from '../../core/interfaces/base-interfaces';
-// import type { MemoryCoordinator } from '@claude-zen/brain'; // TODO: Fix memory package build
+// import type { MemoryCoordinator } from '@claude-zen/intelligence'; // TODO: Fix memory package build
 import type { AgentType } from '../../types/agent-types';
 
 // ============================================================================
@@ -162,14 +162,14 @@ export class SwarmCommander extends EventEmitter {
     try {
       this.logger.info(`Initializing Swarm Commander for swarm: ${this.config.swarmId}`);
 
-      // Delegate to @claude-zen/teamwork for conversation orchestration and team leadership
-      const { TeamworkSystem, ConversationOrchestrator } = await import('@claude-zen/teamwork');
-      this.teamworkSystem = await TeamworkSystem.create();
+      // Delegate to @claude-zen/intelligence for conversation orchestration and team leadership
+      const { teamworkSystem } = await import('@claude-zen/intelligence');
+      this.teamworkSystem = await teamworkSystem.getAccess();
       this.conversationOrchestrator = this.teamworkSystem.orchestrator;
       this.logger.info('Teamwork system initialized for swarm leadership');
 
-      // Delegate to @claude-zen/workflows for SPARC methodology orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for SPARC methodology orchestration
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         maxConcurrentWorkflows: this.config.maxAgents
@@ -178,8 +178,8 @@ export class SwarmCommander extends EventEmitter {
 
       // Initialize SPARC engine if enabled
       if (this.config.sparcEnabled) {
-        const { SPARCEngineCore } = await import('@claude-zen/sparc');
-        this.sparcEngine = new SPARCEngineCore({
+        const { SPARCMethodology } = await import('@claude-zen/enterprise');
+        this.sparcEngine = new SPARCMethodology({
           maxProjects: 10,
           enableMetrics: true,
           defaultTimeout: 30000
@@ -187,14 +187,14 @@ export class SwarmCommander extends EventEmitter {
         await this.sparcEngine.initialize();
       }
 
-      // Delegate to @claude-zen/knowledge for coordination facts and learning
+      // Delegate to @claude-zen/intelligence for coordination facts and learning
       this.knowledgeManager = getCoordinationFactSystem();
       await initializeCollectiveFACT();
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
-      this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      const { getPerformanceTracker, getTelemetryManager } = await import('@claude-zen/infrastructure');
+      this.performanceTracker = await getPerformanceTracker();
+      this.telemetryManager = await getTelemetryManager({
         serviceName: `swarm-commander-${this.config.swarmId}`,
         enableTracing: true,
         enableMetrics: this.config.performanceMetrics.enabled
@@ -202,12 +202,12 @@ export class SwarmCommander extends EventEmitter {
       await this.telemetryManager.initialize();
 
       // Delegate to @claude-zen/foundation for swarm health monitoring  
-      const { createAgentMonitor } = await import('@claude-zen/foundation');
+      const { createAgentMonitor } = await import('@claude-zen/infrastructure');
       this.monitoringSystem = createAgentMonitor();
 
-      // Delegate to @claude-zen/brain for neural ML capabilities (per CLAUDE.md)
+      // Delegate to @claude-zen/intelligence for neural ML capabilities (per CLAUDE.md)
       if (this.config.learningEnabled) {
-        const { BrainCoordinator } = await import('@claude-zen/brain');
+        const { BrainCoordinator } = await import('@claude-zen/intelligence');
         this.adaptiveLearning = new BrainCoordinator({
           autonomous: { 
             enabled: true, 

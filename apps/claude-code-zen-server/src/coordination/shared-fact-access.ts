@@ -3,7 +3,7 @@
  * 
  * Provides streamlined access patterns for coordination layer components
  * to interact with the foundation fact system. This module serves as an
- * abstraction layer that leverages @claude-zen/knowledge capabilities.
+ * abstraction layer that leverages @claude-zen/intelligence capabilities.
  */
 
 import { getLogger } from '@claude-zen/foundation';

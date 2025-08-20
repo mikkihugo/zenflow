@@ -6,17 +6,17 @@
  * with additional providers and used across the claude-code-zen ecosystem.
  */
 
-// Re-export all provider configuration from the llm-routing package
-// Default export for backward compatibility (static import)
+// Re-export all provider configuration from the operations strategic facade
+// LLM routing is operational infrastructure, not AI intelligence
 import { 
-  LLM_PROVIDER_CONFIG, 
-  ROUTING_STRATEGY, 
+  getLLMProviderConfig, 
+  getRoutingStrategy, 
   getOptimalProvider as getOptimal 
-} from '@claude-zen/llm-routing';
+} from '@claude-zen/operations';
 
 export {
-  LLM_PROVIDER_CONFIG,
-  ROUTING_STRATEGY,
+  getLLMProviderConfig,
+  getRoutingStrategy,
   getOptimalProvider,
   addProvider,
   removeProvider,
@@ -27,16 +27,17 @@ export {
   type ProviderConfig,
   type RoutingStrategy,
   type ProviderRoutingContext,
-} from '@claude-zen/llm-routing';
+} from '@claude-zen/operations';
 
-// Additional exports for backward compatibility
-export {
-  LLM_PROVIDER_CONFIG as providers,
-  ROUTING_STRATEGY as routing,
-} from '@claude-zen/llm-routing';
+// Additional exports for backward compatibility - async functions for lazy loading
+export const LLM_PROVIDER_CONFIG = getLLMProviderConfig;
+export const ROUTING_STRATEGY = getRoutingStrategy;
+
+export const providers = getLLMProviderConfig;
+export const routing = getRoutingStrategy;
 
 export default {
-  providers: LLM_PROVIDER_CONFIG,
-  routing: ROUTING_STRATEGY,
+  providers: getLLMProviderConfig,
+  routing: getRoutingStrategy,
   getOptimalProvider: getOptimal,
 };

@@ -15,14 +15,14 @@
  * - Integration with multi-level orchestration
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
 
 
-import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
+import type { MultiLevelOrchestrationManager } from '@claude-zen/enterprise';
 
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
@@ -1621,16 +1621,4 @@ export class AdvancedFlowManager extends EventEmitter {
 
 export default AdvancedFlowManager;
 
-export type {
-  AdvancedFlowManagerConfig,
-  IntelligentWIPLimits,
-  WIPLimits,
-  FlowState,
-  FlowWorkItem,
-  FlowMetrics,
-  FlowBottleneck,
-  FlowHealthIndicator,
-  PredictiveInsight,
-  FlowRecommendation,
-  AdvancedFlowManagerState,
-};
+// All types already exported at their definitions above

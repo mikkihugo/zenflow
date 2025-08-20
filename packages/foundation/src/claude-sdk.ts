@@ -14,6 +14,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
+// @ts-ignore - bypassing problematic type definitions for Claude Code SDK
 import { query } from '@anthropic-ai/claude-code/sdk.mjs';
 
 import { withRetry, type RetryOptions } from './error-handling';

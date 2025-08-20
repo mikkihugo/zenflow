@@ -16,7 +16,7 @@
 
 import { getLogger, getTelemetry, recordMetric, getDatabaseAccess, Storage, syslogBridge } from '@claude-zen/foundation';
 import type { Express, Request, Response } from 'express';
-import { EventBus, createEventBus } from '@claude-zen/event-system';
+import { EventBus, createEventBus } from '@claude-zen/infrastructure';
 import { WebSocketServer } from 'ws';
 
 import type { Server } from 'http';

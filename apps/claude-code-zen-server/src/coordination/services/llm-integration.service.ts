@@ -2,7 +2,7 @@
  * @fileoverview LLM Integration Service - Foundation + Brain Package Integration
  *
  * This service provides a unified interface for LLM operations using the
- * @claude-zen/foundation and @claude-zen/brain packages. Features AI-powered
+ * @claude-zen/foundation and @claude-zen/intelligence packages. Features AI-powered
  * prompt optimization, pattern recognition, and adaptive learning.
  *
  * Key Features:
@@ -41,7 +41,7 @@ import { promisify } from 'util';
 import { 
   BrainCoordinator,
   type PromptOptimizationRequest
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 import { 
   getLogger,
   LLMProvider,

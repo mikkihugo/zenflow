@@ -509,7 +509,7 @@ export type QueenStatus = AgentStatus;
  * Event Bus and Logger interfaces
  * Re-export from event-system package for better integration
  */
-export type { SystemEvent } from '@claude-zen/event-system';
+export type { SystemEvent } from '@claude-zen/infrastructure';
 
 // Use the comprehensive EventBus from event-system package instead of basic interface
 export interface EventBus {

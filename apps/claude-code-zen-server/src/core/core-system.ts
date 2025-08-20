@@ -136,16 +136,16 @@ import { DocumentationManager } from './documentation-manager';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
 
-import { BrainCoordinator , NeuralML } from '@claude-zen/brain';
+import { BrainCoordinator , NeuralML } from '@claude-zen/intelligence';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
-import { ChaosEngineering } from '@claude-zen/foundation';
+import { getChaosEngine } from '@claude-zen/operations';
 import { 
   initializeCoordinationFactSystem,
   storeCoordinationFact
-} from '@claude-zen/knowledge';
-import { TypedEventBus, createEventBus } from '@claude-zen/event-system';
+} from '@claude-zen/intelligence';
+import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
 
 /**
  * Export options interface for system state serialization.
@@ -444,7 +444,7 @@ export class System extends EventEmitter {
   private interfaceManager!: InterfaceManager;
   
   // 🧠 AI-POWERED ENHANCEMENTS: Advanced coordination systems
-  private chaosEngineering?: ChaosEngineering;
+  private chaosEngineering?: any;
   private factSystemInitialized = false;
   private neuralML?: NeuralML;
   private agentMonitoring?: AgentMonitoring;
@@ -533,11 +533,7 @@ export class System extends EventEmitter {
       // Event bus for AI coordination
       this.aiEventBus = createEventBus();
       
-      // Chaos engineering for system resilience
-      this.chaosEngineering = new ChaosEngineering({
-        enabled: true,
-        resilience: { failureInjection: true, recoveryTesting: true }
-      });
+      // Chaos engineering for system resilience - initialized lazily via operations facade
       
       // Initialize knowledge system with high-performance Rust bridge
       await initializeCoordinationFactSystem();
@@ -852,8 +848,16 @@ export class System extends EventEmitter {
         await this.systemCircuitBreaker.fire(async () => {
           const initPromises: Promise<void>[] = [];
           
-          if (this.chaosEngineering) {
-            initPromises.push(this.chaosEngineering.initialize());
+          // Initialize chaos engineering lazily via operations facade
+          try {
+            this.chaosEngineering = await getChaosEngine({
+              enableChaosExperiments: true,
+              enableResilienceTesting: true,
+              enableFailureSimulation: true
+            });
+          } catch (error) {
+            this.logger.warn('Chaos engineering not available, continuing without it', error);
+            this.chaosEngineering = null;
           }
           
           // Knowledge system already initialized during main initialization
@@ -951,7 +955,11 @@ export class System extends EventEmitter {
       // Knowledge system handles shutdown automatically
       
       if (this.chaosEngineering) {
-        shutdownPromises.push(this.chaosEngineering.shutdown());
+        try {
+          shutdownPromises.push(this.chaosEngineering.shutdown());
+        } catch (error) {
+          this.logger.warn('Chaos engineering shutdown failed', error);
+        }
       }
       
       await Promise.all(shutdownPromises);
@@ -972,11 +980,16 @@ export class System extends EventEmitter {
    * Run chaos engineering test on the core system.
    */
   async runSystemChaosTest(): Promise<{ success: boolean; results?: any; error?: string }> {
-    if (!this.chaosEngineering) {
-      return { success: false, error: 'Chaos engineering not available' };
-    }
-    
     try {
+      // Initialize chaos engineering if not already done
+      if (!this.chaosEngineering) {
+        this.chaosEngineering = await getChaosEngine({
+          enableChaosExperiments: true,
+          enableResilienceTesting: true,
+          enableFailureSimulation: true
+        });
+      }
+      
       const results = await this.chaosEngineering.runExperiment({
         name: 'core-system-resilience-test',
         target: 'core-system',

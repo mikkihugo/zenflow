@@ -29,18 +29,18 @@
  * ```
  * 
  * **Delegates to:**
- * - @claude-zen/workflows: Service orchestration and lifecycle management
+ * - @claude-zen/intelligence: Service orchestration and lifecycle management
  * - @claude-zen/agent-manager: Service factory patterns and registration
  * - @claude-zen/foundation: Health checks, metrics, and performance tracking
  * - @claude-zen/foundation: Core utilities, logging, and error handling
- * - @claude-zen/teamwork: Service coordination and communication
- * - @claude-zen/brain: Resource optimization and scaling
+ * - @claude-zen/intelligence: Service coordination and communication
+ * - @claude-zen/intelligence: Resource optimization and scaling
  * 
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 2.1.0
  * 
- * @requires @claude-zen/workflows - Service orchestration engine
+ * @requires @claude-zen/intelligence - Service orchestration engine
  * @requires @claude-zen/agent-manager - Service lifecycle management
  * @requires @claude-zen/foundation - Health and performance tracking
  * @requires @claude-zen/foundation - Core utilities and logging
@@ -50,7 +50,7 @@
 
 import type {
   WorkflowEngine
-} from '@claude-zen/workflows';
+} from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
@@ -59,7 +59,7 @@ import { getLogger } from '../../config/logging-config';
 
 import type {
   AgentManager
-} from '@claude-zen/agent-manager';
+} from '@claude-zen/enterprise';
 import type {
   HealthMonitor,
   PerformanceTracker,
@@ -67,10 +67,10 @@ import type {
 } from '@claude-zen/foundation';
 import type {
   LoadBalancer
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 import type {
   ServiceCoordinator
-} from '@claude-zen/teamwork';
+} from '@claude-zen/intelligence';
 
 // Foundation utilities
 import {
@@ -106,11 +106,11 @@ import type {
  * code reduction while enhancing functionality.
  * 
  * **Key Capabilities (via delegation):**
- * - Complete service lifecycle management via @claude-zen/workflows
+ * - Complete service lifecycle management via @claude-zen/intelligence
  * - Automatic dependency resolution via @claude-zen/agent-manager
  * - Real-time health monitoring via @claude-zen/foundation
- * - Automated recovery via @claude-zen/brain
- * - Service coordination via @claude-zen/teamwork
+ * - Automated recovery via @claude-zen/intelligence
+ * - Service coordination via @claude-zen/intelligence
  * - Performance optimization via @claude-zen/foundation
  */
 export class ServiceManager extends EventEmitter {
@@ -141,8 +141,8 @@ export class ServiceManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/workflows for service orchestration
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for service orchestration
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentServices: this.config.factory.maxConcurrentInits,
         enableDependencyResolution: this.config.lifecycle.dependencyResolution,
@@ -167,15 +167,15 @@ export class ServiceManager extends EventEmitter {
       this.performanceTracker = new PerformanceTracker();
       await this.healthMonitor.initialize();
 
-      // Delegate to @claude-zen/brain for resource optimization
-      const { LoadBalancer } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for resource optimization
+      const { LoadBalancer } = await import('@claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         recovery: this.config.recovery
       });
       await this.loadBalancer.initialize();
 
-      // Delegate to @claude-zen/teamwork for service coordination
-      const { ServiceCoordinator } = await import('@claude-zen/teamwork');
+      // Delegate to @claude-zen/intelligence for service coordination
+      const { ServiceCoordinator } = await import('@claude-zen/intelligence');
       this.serviceCoordinator = new ServiceCoordinator();
       await this.serviceCoordinator.initialize();
 
@@ -440,10 +440,10 @@ export type {
  * 
  * **AFTER (Strategic Package Delegation):**
  * - 350 lines through strategic @claude-zen package delegation (80.4% reduction)
- * - Battle-tested service orchestration via @claude-zen/workflows
+ * - Battle-tested service orchestration via @claude-zen/intelligence
  * - Comprehensive health monitoring via @claude-zen/foundation
  * - Professional lifecycle management via @claude-zen/agent-manager
- * - Advanced coordination via @claude-zen/teamwork
+ * - Advanced coordination via @claude-zen/intelligence
  * - Zero maintenance overhead for core service management logic
  * 
  * **ARCHITECTURAL PATTERN SUCCESS:**

@@ -1,10 +1,10 @@
 /**
- * @fileoverview Program Increment Manager Facade - Lightweight delegation to @claude-zen/safe-framework
+ * @fileoverview Program Increment Manager Facade - Lightweight delegation to @claude-zen/enterprise
  * 
  * FACADE PATTERN: Delegates all Program Increment (PI) management functionality to the extracted
- * @claude-zen/safe-framework package while maintaining API compatibility.
+ * @claude-zen/enterprise package while maintaining API compatibility.
  * 
- * REDUCTION: 1,044 → ~150 lines (85.6% reduction) through @claude-zen/safe-framework delegation
+ * REDUCTION: 1,044 → ~150 lines (85.6% reduction) through @claude-zen/enterprise delegation
  * 
  * Provides:
  * - PI planning workflow with 8-12 week cycles 
@@ -14,21 +14,21 @@
  * - Integration with Program and Swarm orchestrators
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: ProgramIncrementManager for all PI management logic
- * - @claude-zen/event-system: TypeSafeEventBus for event coordination
+ * - @claude-zen/enterprise: ProgramIncrementManager for all PI management logic
+ * - @claude-zen/infrastructure: TypeSafeEventBus for event coordination
  * - Application memory: BrainCoordinator for persistence 
  * 
  * INTEGRATION: Maintains compatibility with existing coordinator workflows while 
- * leveraging battle-tested @claude-zen/safe-framework for PI management operations.
+ * leveraging battle-tested @claude-zen/enterprise for PI management operations.
  */
 
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 
-// Import types and classes from @claude-zen/safe-framework
+// Import types and classes from @claude-zen/enterprise
 import type {
   PIManagerConfig,
   BusinessContext,
@@ -40,9 +40,9 @@ import type {
   PIObjective,
   Feature,
   TeamCapacity,
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
-import { ProgramIncrementManager as CoreProgramIncrementManager } from '@claude-zen/safe-framework';
+import { ProgramIncrementManager as CoreProgramIncrementManager } from '@claude-zen/enterprise';
 
 // Import remaining types from local safe framework
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
@@ -58,13 +58,13 @@ export type {
   PIExecutionMetrics,
   PICompletionReport,
   CapacityPlanningResult,
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 /**
- * Program Increment Manager Facade - Delegates to @claude-zen/safe-framework
+ * Program Increment Manager Facade - Delegates to @claude-zen/enterprise
  * 
  * Maintains API compatibility while delegating all implementation to the extracted
- * @claude-zen/safe-framework package for battle-tested PI management functionality.
+ * @claude-zen/enterprise package for battle-tested PI management functionality.
  */
 export class ProgramIncrementManager extends EventEmitter {
   private readonly logger: Logger;
@@ -83,7 +83,7 @@ export class ProgramIncrementManager extends EventEmitter {
 
     this.logger = getLogger('program-increment-manager-facade');
     
-    // Delegate to @claude-zen/safe-framework ProgramIncrementManager
+    // Delegate to @claude-zen/enterprise ProgramIncrementManager
     this.coreManager = new CoreProgramIncrementManager(
       eventBus,
       memory,
@@ -98,7 +98,7 @@ export class ProgramIncrementManager extends EventEmitter {
     this.coreManager.on('pi-progress-updated', (data) => this.emit('pi-progress-updated', data));
     this.coreManager.on('pi-completed', (data) => this.emit('pi-completed', data));
 
-    this.logger.info('Program Increment Manager facade initialized with @claude-zen/safe-framework delegation');
+    this.logger.info('Program Increment Manager facade initialized with @claude-zen/enterprise delegation');
   }
 
   // ============================================================================
@@ -106,7 +106,7 @@ export class ProgramIncrementManager extends EventEmitter {
   // ============================================================================
 
   /**
-   * Initialize the PI Manager - Delegates to @claude-zen/safe-framework
+   * Initialize the PI Manager - Delegates to @claude-zen/enterprise
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
@@ -125,7 +125,7 @@ export class ProgramIncrementManager extends EventEmitter {
   }
 
   /**
-   * Shutdown the PI Manager - Delegates to @claude-zen/safe-framework  
+   * Shutdown the PI Manager - Delegates to @claude-zen/enterprise  
    */
   async shutdown(): Promise<void> {
     this.logger.info('Shutting down Program Increment Manager facade');
@@ -141,7 +141,7 @@ export class ProgramIncrementManager extends EventEmitter {
   // ============================================================================
 
   /**
-   * Plan Program Increment - Delegates to @claude-zen/safe-framework
+   * Plan Program Increment - Delegates to @claude-zen/enterprise
    */
   async planProgramIncrement(
     artId: string,
@@ -151,7 +151,7 @@ export class ProgramIncrementManager extends EventEmitter {
   ): Promise<ProgramIncrement> {
     if (!this.initialized) await this.initialize();
     
-    this.logger.info('Delegating PI planning to @claude-zen/safe-framework', { artId });
+    this.logger.info('Delegating PI planning to @claude-zen/enterprise', { artId });
     
     return this.coreManager.planProgramIncrement(
       artId,
@@ -162,7 +162,7 @@ export class ProgramIncrementManager extends EventEmitter {
   }
 
   /**
-   * Implement capacity planning - Delegates to @claude-zen/safe-framework
+   * Implement capacity planning - Delegates to @claude-zen/enterprise
    */
   async implementCapacityPlanning(
     teamCapacities: TeamCapacity[],
@@ -183,7 +183,7 @@ export class ProgramIncrementManager extends EventEmitter {
   // ============================================================================
 
   /**
-   * Start PI execution - Delegates to @claude-zen/safe-framework
+   * Start PI execution - Delegates to @claude-zen/enterprise
    */
   async startPIExecution(piId: string): Promise<void> {
     if (!this.initialized) await this.initialize();
@@ -192,7 +192,7 @@ export class ProgramIncrementManager extends EventEmitter {
   }
 
   /**
-   * Track PI progress - Delegates to @claude-zen/safe-framework
+   * Track PI progress - Delegates to @claude-zen/enterprise
    */
   async trackPIProgress(piId: string): Promise<PIExecutionMetrics> {
     if (!this.initialized) await this.initialize();
@@ -201,7 +201,7 @@ export class ProgramIncrementManager extends EventEmitter {
   }
 
   /**
-   * Complete Program Increment - Delegates to @claude-zen/safe-framework
+   * Complete Program Increment - Delegates to @claude-zen/enterprise
    */
   async completeProgramIncrement(piId: string): Promise<PICompletionReport> {
     if (!this.initialized) await this.initialize();
@@ -244,7 +244,7 @@ export class ProgramIncrementManager extends EventEmitter {
 // ============================================================================
 
 // Re-export key types from safe framework and local imports for API compatibility
-export type { ProgramIncrement, PIObjective, Feature, TeamCapacity } from '@claude-zen/safe-framework';
+export type { ProgramIncrement, PIObjective, Feature, TeamCapacity } from '@claude-zen/enterprise';
 
 // Re-export local orchestrator types for existing integrations  
 export type { ProgramOrchestrator } from '../orchestration/program-orchestrator';

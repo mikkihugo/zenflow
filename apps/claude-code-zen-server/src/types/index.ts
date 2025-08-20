@@ -18,7 +18,7 @@ export type {
   WASMNeuralAccelerator,
   WASMNeuralConfig,
   WASMPerformanceMetrics,
-} from '@claude-zen/brain/types';
+} from '@claude-zen/intelligence';
 // Export specific types from agent-types with unique names to avoid conflicts
 export type {
   AgentCapabilities,
@@ -90,9 +90,9 @@ export {
 export * from './client-types';
 export * from './events-types';
 export * from './knowledge-types';
-// Neural types now available via @claude-zen/brain package - no need to export
+// Neural types now available via @claude-zen/intelligence package - no need to export
 export * from './protocol-types';
 export * from './services-types';
 export * from './singletons';
-// Workflow types now available via @claude-zen/workflows package - no need to export
+// Workflow types now available via @claude-zen/intelligence package - no need to export
 export * from './logger';

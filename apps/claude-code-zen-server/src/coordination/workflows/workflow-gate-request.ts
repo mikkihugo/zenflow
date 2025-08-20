@@ -1,15 +1,15 @@
 /**
- * @file Workflow Gate Request - Lightweight facade using @claude-zen/workflows + @claude-zen/agui
+ * @file Workflow Gate Request - Lightweight facade using @claude-zen/intelligence + @claude-zen/enterprise
  *
  * This file provides a lightweight facade for workflow gate request functionality,
  * delegating to the comprehensive WorkflowEngine and TaskApprovalSystem from 
- * @claude-zen/workflows and @claude-zen/agui packages. The packages include XState
+ * @claude-zen/intelligence and @claude-zen/enterprise packages. The packages include XState
  * state management, escalation chains, approval workflows, and human-in-the-loop integration.
  *
  * ARCHITECTURE:
  * - Facade pattern maintaining API compatibility
- * - Delegates to @claude-zen/workflows WorkflowEngine with XState
- * - Uses @claude-zen/agui TaskApprovalSystem for human-in-the-loop workflows
+ * - Delegates to @claude-zen/intelligence WorkflowEngine with XState
+ * - Uses @claude-zen/enterprise TaskApprovalSystem for human-in-the-loop workflows
  * - Leverages existing workflow orchestration through comprehensive packages
  * - Integrates escalation chains and approval management
  * - Type-safe workflow gate processing with mermaid visualization
@@ -38,12 +38,12 @@ import {
   EventPriority,
   type HumanValidationCompletedEvent,
   type TypeSafeEventBus,
-} from '@claude-zen/event-system';
+} from '@claude-zen/infrastructure';
 
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 
-import { WorkflowEngine } from '@claude-zen/workflows';
-import { TaskApprovalSystem } from '@claude-zen/agui';
+import { WorkflowEngine } from '@claude-zen/intelligence';
+import { TaskApprovalSystem } from '@claude-zen/enterprise';
 
 const logger = getLogger('workflow-gate-request');
 
@@ -712,7 +712,7 @@ export const WorkflowGateRequestSchema: TypeSchema<WorkflowGateRequest> = {
  *
  * This facade maintains API compatibility while delegating workflow gate request processing,
  * escalation chain management, and approval workflows to the comprehensive
- * WorkflowEngine and TaskApprovalSystem from @claude-zen/workflows and @claude-zen/agui packages.
+ * WorkflowEngine and TaskApprovalSystem from @claude-zen/intelligence and @claude-zen/enterprise packages.
  * 
  * Key features provided by packages:
  * - WorkflowEngine with XState state management and Mermaid visualization

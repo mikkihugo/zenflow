@@ -1,0 +1,72 @@
+{
+  "name": "@claude-zen/agui",
+  "version": "1.0.1",
+  "private": false,
+  "description": "Task approval and human-in-the-loop interaction system for autonomous workflows",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "test": "vitest",
+    "lint": "eslint .",
+    "_prepublishOnly_disabled": "pnpm run build",
+    "demo": "tsx examples/agui-demo.ts",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
+  },
+  "keywords": [
+    "agui",
+    "terminal",
+    "cli",
+    "human-in-the-loop",
+    "autonomous",
+    "task-approval",
+    "ui",
+    "interaction"
+  ],
+  "author": "Claude-Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "file:../../foundation",
+    "chalk": "^5.6.0",
+    "eventemitter3": "^5.0.1",
+    "nanoid": "^5.1.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.17.2",
+    "eslint": "^9.33.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/agui"
+  },
+  "publishConfig": {
+    "registry": "http://localhost:4873"
+  }
+}

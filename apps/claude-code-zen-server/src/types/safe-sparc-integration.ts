@@ -3,11 +3,11 @@
  * 
  * **APPLICATION-SPECIFIC INTEGRATION TYPES**
  * 
- * This file extends the base SAFe-SPARC integration types from @claude-zen/safe-framework
+ * This file extends the base SAFe-SPARC integration types from @claude-zen/enterprise
  * with Claude Code Zen specific business logic, workflows, and agent behaviors.
  * 
  * **ARCHITECTURE PATTERN:**
- * - Base types: @claude-zen/safe-framework (reusable across organizations)
+ * - Base types: @claude-zen/enterprise (reusable across organizations)
  * - Extensions: This file (Claude Code Zen specific business logic)
  * - Implementation: Various coordination services use these extended types
  */
@@ -18,8 +18,8 @@ import type {
   IntegrationConfiguration,
   QualityGate,
   IntegratedMetrics
-} from '@claude-zen/safe-framework/types/integration-bridge';
-import type { AgentType, ConversationPattern } from '@claude-zen/teamwork';
+} from '@claude-zen/enterprise';
+import type { AgentType, ConversationPattern } from '@claude-zen/intelligence';
 
 // ============================================================================
 // CLAUDE-ZEN SPECIFIC AGENT EXTENSIONS

@@ -1,15 +1,15 @@
 /**
- * @fileoverview Knowledge Client - Lightweight facade using @claude-zen/knowledge
+ * @fileoverview Knowledge Client - Lightweight facade using @claude-zen/intelligence
  * 
  * Provides knowledge management functionality through delegation to specialized
- * @claude-zen/knowledge package for semantic understanding and fact-based reasoning.
+ * @claude-zen/intelligence package for semantic understanding and fact-based reasoning.
  * 
  * REDUCTION: New lightweight implementation using @claude-zen packages
  * 
  * Delegates to:
- * - @claude-zen/knowledge: Knowledge management and semantic understanding  
+ * - @claude-zen/intelligence: Knowledge management and semantic understanding  
  * - @claude-zen/foundation: Logging and telemetry
- * - @claude-zen/knowledge: Fact-based reasoning (includes private fact-system)
+ * - @claude-zen/intelligence: Fact-based reasoning (includes private fact-system)
  * 
  * @author Claude Code Zen Team
  * @since 1.0.0-alpha.44
@@ -65,7 +65,7 @@ export interface KnowledgeResponse {
 /**
  * FACT Integration - Lightweight facade for knowledge management.
  * 
- * Delegates to @claude-zen/knowledge package for semantic understanding
+ * Delegates to @claude-zen/intelligence package for semantic understanding
  * and fact-based reasoning with intelligent caching and query optimization.
  */
 export class FACTIntegration {
@@ -87,8 +87,8 @@ export class FACTIntegration {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/knowledge for knowledge management
-      const { KnowledgeManager } = await import('@claude-zen/knowledge');
+      // Delegate to @claude-zen/intelligence for knowledge management
+      const { KnowledgeManager } = await import('@claude-zen/intelligence');
       this.knowledgeManager = new KnowledgeManager({
         repoPath: this.config.factRepoPath,
         apiKey: this.config.anthropicApiKey,
@@ -97,8 +97,8 @@ export class FACTIntegration {
       });
       await this.knowledgeManager.initialize();
 
-      // Delegate to @claude-zen/knowledge for fact-based reasoning (includes fact-system)
-      const { FactSystem } = await import('@claude-zen/knowledge');
+      // Delegate to @claude-zen/intelligence for fact-based reasoning (includes fact-system)
+      const { FactSystem } = await import('@claude-zen/intelligence');
       this.factSystem = new FactSystem({
         knowledgeBase: this.knowledgeManager,
         enableInference: true,

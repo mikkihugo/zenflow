@@ -14,7 +14,7 @@ export type {
   WorkflowDefinition,
   WorkflowEngineConfig,
   WorkflowState,
-} from '@claude-zen/workflows';
+} from '@claude-zen/intelligence';
 export type {
   SystemConfig as CoreSystemConfig,
   SystemStatus,

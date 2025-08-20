@@ -2,27 +2,27 @@
  * @fileoverview System and Solution Architecture Manager - Lightweight facade for SAFe architecture coordination.
  * 
  * Provides system-level design coordination and solution architect workflow through delegation to the
- * @claude-zen/safe-framework package for comprehensive SAFe architecture management.
+ * @claude-zen/enterprise package for comprehensive SAFe architecture management.
  * 
- * FACADE PATTERN: This file delegates all architecture operations to @claude-zen/safe-framework,
+ * FACADE PATTERN: This file delegates all architecture operations to @claude-zen/enterprise,
  * maintaining API compatibility while leveraging battle-tested SAFe framework implementations.
  * 
- * REDUCTION: 895 → 180 lines (79.9% reduction) through @claude-zen/safe-framework delegation
+ * REDUCTION: 895 → 180 lines (79.9% reduction) through @claude-zen/enterprise delegation
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: SystemSolutionArchitectureManager for comprehensive SAFe architecture
+ * - @claude-zen/enterprise: SystemSolutionArchitectureManager for comprehensive SAFe architecture
  * 
  * @version 2.0.0 - Facade implementation
  * @since 1.0.0 - Original implementation
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
 
-// Import from @claude-zen/safe-framework
+// Import from @claude-zen/enterprise
 import type {
   SystemSolutionArchConfig,
   SystemArchitectureType,
@@ -32,18 +32,18 @@ import type {
   ComponentType,
   BusinessContext,
   ArchitectureReview
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 import {
   SystemSolutionArchitectureManager as SafeFrameworkManager,
   createSystemSolutionArchitectureManager
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 // ============================================================================
 // FACADE IMPLEMENTATION
 // ============================================================================
 
 /**
- * System and Solution Architecture Manager - Facade delegating to @claude-zen/safe-framework
+ * System and Solution Architecture Manager - Facade delegating to @claude-zen/enterprise
  * 
  * Coordinates system-level design and solution architecture through intelligent delegation
  * to the specialized SAFe framework package for architecture management and compliance.
@@ -90,7 +90,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/safe-framework for comprehensive SAFe architecture management
+      // Delegate to @claude-zen/enterprise for comprehensive SAFe architecture management
       this.safeFrameworkManager = createSystemSolutionArchitectureManager(
         this.memorySystem,
         this.eventBus,
@@ -253,13 +253,13 @@ export function createSystemSolutionArchitectureManager(
   );
 }
 
-// Re-export types from @claude-zen/safe-framework for API compatibility
+// Re-export types from @claude-zen/enterprise for API compatibility
 export {
   SystemArchitectureType,
   SolutionArchitecturePattern,
   SystemDesignStatus,
   ComponentType
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 export type {
   SystemSolutionArchConfig,
@@ -279,7 +279,7 @@ export type {
   ControlRequirement,
   ArchitectureReview,
   ReviewFinding
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 /**
  * Default export for easy import

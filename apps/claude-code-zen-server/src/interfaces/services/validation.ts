@@ -32,9 +32,9 @@
  * - @claude-zen/foundation: Core validation utilities and type checking
  * - @claude-zen/foundation: Performance validation and health checks
  * - @claude-zen/ai-safety: Security and safety validation
- * - @claude-zen/brain: Performance and stress testing validation
+ * - @claude-zen/intelligence: Performance and stress testing validation
  * - @claude-zen/chaos-engineering: Failover and resilience testing
- * - @claude-zen/teamwork: Integration and compatibility validation
+ * - @claude-zen/intelligence: Integration and compatibility validation
  * 
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -43,7 +43,7 @@
  * @requires @claude-zen/foundation - Core validation utilities
  * @requires @claude-zen/foundation - Performance validation
  * @requires @claude-zen/ai-safety - Security validation
- * @requires @claude-zen/brain - Load testing
+ * @requires @claude-zen/intelligence - Load testing
  * 
  * **REDUCTION ACHIEVED: 1,423 → 340 lines (76.1% reduction) through strategic delegation**
  */
@@ -60,19 +60,15 @@ import type {
 
 import type {
   SecurityValidator
-} from '@claude-zen/ai-safety';
+} from '@claude-zen/intelligence';
 
 import type {
   LoadTester
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
-import type {
-  ChaosValidator
-} from '@claude-zen/chaos-engineering';
-
-import type {
-  IntegrationValidator
-} from '@claude-zen/teamwork';
+// Strategic facade imports for validation
+import type { getChaosEngine } from '@claude-zen/operations';
+import type { getTeamworkAccess } from '@claude-zen/intelligence';
 
 // Foundation utilities for validation operations
 import {
@@ -188,9 +184,9 @@ export interface ValidationSectionResult {
  * - Core validation utilities via @claude-zen/foundation
  * - Performance validation via @claude-zen/foundation
  * - Security validation via @claude-zen/ai-safety
- * - Load testing via @claude-zen/brain
+ * - Load testing via @claude-zen/intelligence
  * - Resilience testing via @claude-zen/chaos-engineering
- * - Integration validation via @claude-zen/teamwork
+ * - Integration validation via @claude-zen/intelligence
  */
 export class USLValidationFramework {
   private readonly logger: Logger;
@@ -201,8 +197,8 @@ export class USLValidationFramework {
   private healthValidator: HealthValidator | null = null;
   private securityValidator: SecurityValidator | null = null;
   private loadTester: LoadTester | null = null;
-  private chaosValidator: ChaosValidator | null = null;
-  private integrationValidator: IntegrationValidator | null = null;
+  private chaosValidator: any | null = null;
+  private integrationValidator: any | null = null;
   
   private initialized = false;
 
@@ -241,7 +237,7 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/ai-safety for security validation
       if (this.config.scopes.security) {
-        const { SecurityValidator } = await import('@claude-zen/ai-safety');
+        const { SecurityValidator } = await import('@claude-zen/intelligence');
         this.securityValidator = new SecurityValidator({
           enableThreatDetection: true,
           enableComplianceCheck: true,
@@ -250,9 +246,9 @@ export class USLValidationFramework {
         await this.securityValidator.initialize();
       }
 
-      // Delegate to @claude-zen/brain for load testing
+      // Delegate to @claude-zen/intelligence for load testing
       if (this.config.testScenarios.loadTest.enabled || this.config.testScenarios.stressTest.enabled) {
-        const { LoadTester } = await import('@claude-zen/brain');
+        const { LoadTester } = await import('@claude-zen/intelligence');
         this.loadTester = new LoadTester({
           maxConcurrentUsers: this.config.testScenarios.loadTest.concurrentUsers,
           maxLoad: this.config.testScenarios.stressTest.maxLoad,
@@ -263,8 +259,8 @@ export class USLValidationFramework {
 
       // Delegate to @claude-zen/chaos-engineering for failover testing
       if (this.config.testScenarios.failoverTest.enabled) {
-        const { ChaosValidator } = await import('@claude-zen/chaos-engineering');
-        this.chaosValidator = new ChaosValidator({
+        const { getChaosEngine } = await import('@claude-zen/operations');
+        this.chaosValidator = await getChaosEngine({
           scenarios: this.config.testScenarios.failoverTest.scenarios,
           enableResilienceValidation: true,
           enableFailureInjection: true
@@ -272,10 +268,10 @@ export class USLValidationFramework {
         await this.chaosValidator.initialize();
       }
 
-      // Delegate to @claude-zen/teamwork for integration validation
+      // Delegate to @claude-zen/intelligence for integration validation
       if (this.config.scopes.integration || this.config.scopes.compatibility) {
-        const { IntegrationValidator } = await import('@claude-zen/teamwork');
-        this.integrationValidator = new IntegrationValidator({
+        const { getTeamworkAccess } = await import('@claude-zen/enterprise');
+        this.integrationValidator = await getTeamworkAccess({
           enableCompatibilityCheck: this.config.scopes.compatibility,
           enableIntegrationTesting: this.config.scopes.integration
         });
@@ -676,9 +672,9 @@ export type {
  * - Battle-tested validation utilities via @claude-zen/foundation
  * - Professional performance validation via @claude-zen/foundation
  * - Advanced security validation via @claude-zen/ai-safety
- * - Comprehensive load testing via @claude-zen/brain
+ * - Comprehensive load testing via @claude-zen/intelligence
  * - Sophisticated resilience testing via @claude-zen/chaos-engineering
- * - Integration validation via @claude-zen/teamwork
+ * - Integration validation via @claude-zen/intelligence
  * - Zero maintenance overhead for validation complexities
  * 
  * **ARCHITECTURAL PATTERN SUCCESS:**

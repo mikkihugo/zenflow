@@ -8,7 +8,7 @@
  * - Logger → @claude-zen/foundation/logging/logger
  * - Config → @claude-zen/foundation/config/types
  * - Metrics → @claude-zen/monitoring/metrics/types 
- * - EventData → @claude-zen/event-system/types
+ * - EventData → @claude-zen/infrastructure/types
  * - AsyncResult<T> → @claude-zen/foundation/types/async
  * - Optional<T> → @claude-zen/foundation/types/optional
  * - DeepPartial<T> → @claude-zen/foundation/types/utility
@@ -39,7 +39,7 @@ export type {
 
 export type {
   EventData
-} from '@claude-zen/event-system';
+} from '@claude-zen/infrastructure';
 
 /**
  * DEPRECATION NOTICE:

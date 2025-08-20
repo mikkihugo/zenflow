@@ -18,7 +18,7 @@ import {
   getCurrentProject, 
   getDataStoragePaths,
   cleanupProjectRegistry 
-} from '@claude-zen/foundation/config';
+} from '@claude-zen/infrastructure';
 
 /**
  * Create project management routes.

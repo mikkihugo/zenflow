@@ -9,7 +9,7 @@
 export {
   BehavioralIntelligence,
   demoBehavioralIntelligence
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 // Export brain coordination functionality
 export {
@@ -18,13 +18,14 @@ export {
   NeuralBridge,
   DSPyLLMBridge,
   RetrainingMonitor
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 // Export teamwork/conversation functionality
 export {
-  Teamwork,
-  ConversationFramework
-} from '@claude-zen/teamwork';
+  ConversationOrchestrator,
+  ConversationManager,
+  CollaborationEngine
+} from '@claude-zen/intelligence';
 
 // Export behavioral intelligence types
 export type {
@@ -32,7 +33,7 @@ export type {
   BehavioralPrediction,
   TaskComplexityAnalysis,
   AgentBehavioralProfile
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 export type {
   BrainConfig,
@@ -44,7 +45,7 @@ export type {
   NeuralNetwork,
   TrainingData,
   PredictionResult
-} from '@claude-zen/brain';
+} from '@claude-zen/intelligence';
 
 // Intelligence utilities using extracted packages
 export const IntelligenceUtils = {
@@ -111,8 +112,8 @@ export const IntelligenceUtils = {
    * Initialize intelligence systems using extracted packages.
    */
   initialize: async (config: unknown = {}) => {
-    const { BrainCoordinator, BehavioralIntelligence } = await import('@claude-zen/brain');
-    const { Teamwork } = await import('@claude-zen/teamwork');
+    const { BrainCoordinator, BehavioralIntelligence } = await import('@claude-zen/intelligence');
+    const { ConversationOrchestrator } = await import('@claude-zen/intelligence');
 
     const defaultConfig = {
       patternRecognition: {
@@ -148,7 +149,7 @@ export const IntelligenceUtils = {
     return {
       brainCoordinator: new BrainCoordinator(defaultConfig.brain),
       behavioralIntelligence: new BehavioralIntelligence(defaultConfig.learning),
-      teamwork: new Teamwork(defaultConfig.teamwork),
+      teamwork: new ConversationOrchestrator(defaultConfig.teamwork),
       config: defaultConfig,
     };
   },
@@ -157,7 +158,7 @@ export const IntelligenceUtils = {
    * Create behavioral intelligence system using extracted packages.
    */
   createBehavioralIntelligenceSystem: async (config?: unknown) => {
-    const { BehavioralIntelligence } = await import('@claude-zen/brain');
+    const { BehavioralIntelligence } = await import('@claude-zen/intelligence');
 
     const defaultConfig = {
       patternRecognition: {

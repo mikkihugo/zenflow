@@ -20,8 +20,8 @@ export * as Utils from './utils/index';
 
 // Coordination System - All swarm and orchestration functionality
 export * as Coordination from './coordination/index';
-// SPARC Methodology System - Systematic development workflow
-export * as SPARC from '@claude-zen/sparc';
+// SPARC Methodology System - Systematic development workflow via strategic facades
+export * as SPARC from '@claude-zen/enterprise';
 
 /**
  * Database System - Complete data persistence and storage management.
@@ -166,7 +166,7 @@ export * as Interfaces from './interfaces/index';
 // =============================================================================
 
 /**
- * Neural System - Direct integration with @claude-zen/brain package.
+ * Neural System - Direct integration with @claude-zen/intelligence package.
  *
  * The BrainCoordinator automatically handles neural orchestration, task routing,
  * and intelligent delegation to neural-ml for heavy operations. No wrapper needed.
@@ -181,7 +181,7 @@ export * as Interfaces from './interfaces/index';
  * ```
  *
  * @namespace Neural
- * @see {@link @claude-zen/brain} - Intelligent neural coordinator
+ * @see {@link @claude-zen/intelligence} - Intelligent neural coordinator
  * @since 1.0.0-alpha.43
  */
 export { BrainCoordinator } from './neural/neural-interface';
@@ -249,9 +249,9 @@ export * as Integration from './integration/index';
 // } from './coordination/public-api';
 export * from './coordination/public-api';
 
-// Utils and core services - use foundation instead of custom logger
-export { getLogger } from '@claude-zen/foundation';
-export type { Logger } from '@claude-zen/foundation';
+// Utils and core services - use strategic facades
+export { getLogger } from '@claude-zen/infrastructure';
+export type { Logger } from '@claude-zen/infrastructure';
 
 // Terminal Interface (CLI and TUI unified)
 
@@ -498,14 +498,14 @@ export async function initializeClaudeZen(
     // Store coordinator reference for shutdown orchestration
     (global as any).swarmCoordinator = swarmCoordinator;
 
-    const logger = getLogger('SystemInitializer');
+    const logger = await (await import('@claude-zen/infrastructure')).getLogger('SystemInitializer');
     logger.info('✅ Swarm coordination system initialized', {
       id: swarmCoordinator.getSwarmId(),
       state: swarmCoordinator.getState(),
       agentCount: swarmCoordinator.getAgentCount(),
     });
   } catch (error) {
-    const logger = getLogger('SystemInitializer');
+    const logger = await (await import('@claude-zen/infrastructure')).getLogger('SystemInitializer');
     logger.warn('⚠️ SwarmOrchestrator initialization failed:', error);
     // Gracefully continue without swarm coordination
   }
@@ -526,12 +526,12 @@ export async function initializeClaudeZen(
     // Store reference for shutdown orchestration and health checks
     (global as any).memorySystem = memorySystem;
 
-    const logger = getLogger('SystemInitializer');
+    const logger = await (await import('@claude-zen/infrastructure')).getLogger('SystemInitializer');
     logger.info('✅ Memory system initialized with', {
       provider: finalConfig?.persistence?.provider || 'sqlite'
     });
   } catch (error) {
-    const logger = getLogger('SystemInitializer');
+    const logger = await (await import('@claude-zen/infrastructure')).getLogger('SystemInitializer');
     logger.error('⚠️ Memory system initialization failed:', error);
     // Continue without memory system - some features may be limited
   }
@@ -545,7 +545,7 @@ export async function initializeClaudeZen(
 
   // Initialize SPARC methodology system if enabled
   if (finalConfig?.sparc?.enabled) {
-    const { SPARC } = await import('@claude-zen/sparc');
+    const { SPARC } = await import('@claude-zen/enterprise');
     const _sparcEngine = SPARC.getEngine();
   }
 
@@ -563,7 +563,7 @@ export async function initializeClaudeZen(
  * @example
  */
 export async function shutdownClaudeZen(): Promise<void> {
-  const logger = getLogger('SystemShutdown');
+  const logger = await (await import('@claude-zen/infrastructure')).getLogger('SystemShutdown');
   logger.info('🔄 Initiating Claude-Zen system shutdown...');
 
   const shutdownResults: Array<{

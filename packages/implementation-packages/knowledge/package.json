@@ -1,0 +1,72 @@
+{
+  "name": "@claude-zen/knowledge",
+  "version": "1.0.0",
+  "private": false,
+  "description": "Advanced knowledge management system with distributed learning, reasoning, and storage backends",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./errors": {
+      "import": "./dist/errors.js",
+      "require": "./dist/errors.js",
+      "types": "./dist/errors.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint .",
+    "_prepublishOnly_disabled": "pnpm run build",
+    "docs:check": "node scripts/check-tsdoc.mjs",
+    "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
+    "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
+    "docs:fix": "node scripts/fix-tsdoc.mjs",
+    "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
+  },
+  "keywords": [
+    "knowledge-management",
+    "distributed-learning",
+    "reasoning-engine",
+    "knowledge-storage",
+    "context-analysis",
+    "intelligence-coordination",
+    "knowledge-systems",
+    "collaborative-reasoning"
+  ],
+  "author": "Claude-Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/event-system": "file:../event-system",
+    "@claude-zen/foundation": "file:../../foundation",
+    "@claude-zen/fact-system": "file:../fact-system",
+    "eventemitter3": "^5.0.1"
+  },
+  "_comment_fact_system": "fact-system is a private implementation detail - only knowledge package should access it",
+  "devDependencies": {
+    "@types/node": "^22.17.2",
+    "eslint": "^9.33.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/knowledge"
+  }
+}

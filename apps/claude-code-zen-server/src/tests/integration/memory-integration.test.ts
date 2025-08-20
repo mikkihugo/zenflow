@@ -1,7 +1,7 @@
 /**
- * @fileoverview Memory Integration Tests - Comprehensive testing of @claude-zen/brain integration
+ * @fileoverview Memory Integration Tests - Comprehensive testing of @claude-zen/intelligence integration
  * 
- * Tests the complete integration between the main application and @claude-zen/brain package,
+ * Tests the complete integration between the main application and @claude-zen/intelligence package,
  * verifying that the facade pattern implementation works correctly and provides expected
  * functionality with enhanced capabilities.
  * 
@@ -162,7 +162,7 @@ describe('Memory Integration Tests', () => {
       expect(stats).toHaveProperty('performance');
       expect(stats).toHaveProperty('health');
       expect(stats).toHaveProperty('timestamp');
-      expect(stats).toHaveProperty('source', '@claude-zen/brain');
+      expect(stats).toHaveProperty('source', '@claude-zen/intelligence');
 
       expect(stats.memory).toHaveProperty('totalKeys');
       expect(stats.memory).toHaveProperty('memoryUsage');
@@ -205,7 +205,7 @@ describe('Memory Integration Tests', () => {
     });
   });
 
-  describe('Integration with @claude-zen/brain Package', () => {
+  describe('Integration with @claude-zen/intelligence Package', () => {
     test('should properly initialize memory system components', async () => {
       // This test verifies that the lazy loading initialization works
       const response = await request(app)
@@ -228,8 +228,8 @@ describe('Memory Integration Tests', () => {
       expect(stats.health).toHaveProperty('overall');
       expect(stats.health).toHaveProperty('score');
       
-      // Should be sourced from @claude-zen/brain
-      expect(stats.source).toBe('@claude-zen/brain');
+      // Should be sourced from @claude-zen/intelligence
+      expect(stats.source).toBe('@claude-zen/intelligence');
     });
 
     test('should handle errors gracefully', async () => {
@@ -285,7 +285,7 @@ describe('Memory System Migration Verification', () => {
 
     const capabilities = service.getCapabilities();
     
-    // Should have all enhanced capabilities from @claude-zen/brain
+    // Should have all enhanced capabilities from @claude-zen/intelligence
     expect(capabilities).toContain('intelligent-storage');
     expect(capabilities).toContain('session-management');
     expect(capabilities).toContain('performance-optimization');

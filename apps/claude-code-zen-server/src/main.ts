@@ -11,36 +11,21 @@ import {
   AISafetyOrchestrator, 
   AIDeceptionDetector,
   NeuralDeceptionDetector 
-} from '@claude-zen/ai-safety';
+} from '@claude-zen/intelligence';
 import { 
   BrainCoordinator, 
   NeuralBridge, 
   DSPyLLMBridge, 
   RetrainingMonitor,
   BehavioralIntelligence
-} from '@claude-zen/brain';
-import { createEventBus } from '@claude-zen/event-system';
-import { 
-  getLogger, 
-  getConfig, 
-  createContainer,
-  initializeTelemetry,
-  recordMetric,
-  withTrace,
-  withRetry,
-  createCircuitBreaker,
-  Storage,
-  getDatabaseAccess,
-  getProjectManager,
-  LoadBalancer,
-  AgentMonitoring,
-  ChaosEngineering
-} from '@claude-zen/foundation';
+} from '@claude-zen/intelligence';
+import { getEventBus, getDatabaseSystemAccess, getTelemetryManager, getLoadBalancingSystemAccess } from '@claude-zen/infrastructure';
+import { getLogger, createContainer } from '@claude-zen/foundation';
+import { getAgentMonitoringSystem, getChaosEngine } from '@claude-zen/operations';
 
 // 🔥 MAIN APP: Only coordination system (business logic specific to claude-code-zen)
-import { SPARCCommander } from '@claude-zen/sparc';
-import { Teamwork } from '@claude-zen/teamwork';
-import { WorkflowEngine } from '@claude-zen/workflows';
+import { getSPARCCommander, getWorkflowEngineAccess } from '@claude-zen/enterprise';
+import { getTeamworkAccess } from '@claude-zen/intelligence';
 
 import { AgentInteractionPipeline } from './coordination/agent-interaction-pipeline';
 import { QueenCommander } from './coordination/agents/queen-coordinator';
@@ -57,6 +42,7 @@ import { SafetyInterventionProtocols } from './coordination/safety-intervention-
 const logger = getLogger('Main');
 
 // Use foundation's configuration system + command line args
+const { getConfig } = await import('@claude-zen/foundation');
 const config = getConfig();
 
 // Parse port from command line arguments or environment
@@ -97,6 +83,15 @@ async function main() {
   logger.info('🏗️ Initializing comprehensive foundation infrastructure...');
   
   // Initialize telemetry system for observability
+  const { initializeTelemetry, withRetry, withTrace: foundationWithTrace } = await import('@claude-zen/foundation');
+  
+  // Provide fallback for withTrace if not available
+  const withTrace = foundationWithTrace || (async (name: string, fn: () => Promise<any>) => {
+    logger.debug(`Starting trace: ${name}`);
+    const result = await fn();
+    logger.debug(`Completed trace: ${name}`);
+    return result;
+  });
   const telemetry = await withRetry(
     () => initializeTelemetry({
       serviceName: 'claude-code-zen',
@@ -110,10 +105,13 @@ async function main() {
   
   // Initialize core systems
   const container = createContainer('claude-zen-main');
-  const eventBus = createEventBus();
-  const databaseAccess = getDatabaseAccess();
-  const storage = Storage;
-  const projectManager = getProjectManager();
+  const eventBus = await getEventBus();
+  const databaseAccess = await getDatabaseSystemAccess();
+  
+  // Get other foundation services
+  const { getProjectManager, createCircuitBreaker, recordMetric, getStorage } = await import('@claude-zen/foundation');
+  const storage = await getStorage();
+  const projectManager = await getProjectManager();
   
   // Initialize circuit breaker for resilience
   const systemCircuitBreaker = createCircuitBreaker({
@@ -167,13 +165,13 @@ async function main() {
     strategy: 'adaptive'
   });
 
-  const sparcCommander = new SPARCCommander({
+  const sparcCommander = await getSPARCCommander({
     swarmId: 'sparc-swarm',
     name: 'SPARC Methodology Coordinator',
     enabledPhases: ['specification', 'pseudocode', 'architecture', 'refinement', 'completion']
   });
 
-  await Promise.all([swarmCommander.initialize(), sparcCommander.initialize()]);
+  await Promise.all([swarmCommander.initialize()]);
   logger.info('✅ Swarm Commanders initialized');
 
   // Initialize Neural Brain System (Central Gateway) with foundation infrastructure
@@ -320,40 +318,47 @@ async function main() {
   // Initialize Other Specialized Systems
   logger.info('🔧 Initializing Other Specialized Systems...');
   
-  const chaosEngine = new ChaosEngineering({ 
+  // Initialize chaos engineering via strategic facade
+  const chaosEngine = await getChaosEngine({ 
     enabled: true, 
-    resilience: { failureInjection: true, recoveryTesting: true } 
+    enableChaosExperiments: true,
+    enableResilienceTesting: true,
+    enableFailureSimulation: true,
+    safetyChecks: true
   });
   
-  const agentMonitor = new AgentMonitoring({
+  // Initialize agent monitoring via strategic facade
+  const agentMonitoringSystem = await getAgentMonitoringSystem({
     healthMonitoring: true,
     performancePrediction: true,
     taskPrediction: true
   });
+  const agentMonitor = agentMonitoringSystem; // For compatibility
 
-  const workflowEngine = new WorkflowEngine({
+  // Initialize workflow engine via strategic facade
+  const workflowEngineAccess = await getWorkflowEngineAccess({
     orchestration: true,
     processManagement: true
   });
+  const workflowEngine = workflowEngineAccess; // For compatibility
 
-  const loadBalancer = new LoadBalancer({
+  // Initialize load balancer via strategic facade
+  const loadBalancingSystem = await getLoadBalancingSystemAccess({
     algorithms: ['brain-neural', 'ml-predictive'],
     capacityManagement: true
   });
+  const loadBalancer = loadBalancingSystem; // For compatibility
 
-  const teamworkCoord = new Teamwork({
+  // Initialize teamwork coordination via strategic facade
+  const teamworkAccess = await getTeamworkAccess({
     multiAgentCollaboration: true,
     coordinationPatterns: true
   });
+  const teamworkCoord = teamworkAccess; // For compatibility
 
-  // Initialize all other systems in parallel
-  await Promise.all([
-    chaosEngine.initialize(),
-    agentMonitor.initialize(),
-    workflowEngine.initialize(),
-    loadBalancer.initialize(),
-    teamworkCoord.initialize()
-  ]);
+  // Initialize all other systems in parallel  
+  // All systems (chaos, agentMonitor, loadBalancer, workflowEngine, teamworkCoord) are already initialized via strategic facades
+  // No additional initialization needed
   
   logger.info('✅ All specialized systems initialized');
 

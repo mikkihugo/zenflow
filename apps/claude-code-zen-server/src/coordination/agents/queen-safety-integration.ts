@@ -10,8 +10,9 @@ import {
   AIDeceptionDetector,
   type AIInteractionData,
   type DeceptionAlert 
-} from '@claude-zen/ai-safety';
-import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
+} from '@claude-zen/intelligence';
+import { getLogger } from '@claude-zen/foundation';
+import { recordMetric, withTrace } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 
 export interface QueenSafetyConfig {

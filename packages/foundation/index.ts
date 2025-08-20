@@ -148,24 +148,10 @@ export {
 export type { LLMMessage, LLMRequest, LLMResponse, SwarmAgentRole } from './src/main';
 
 // =============================================================================
-// STORAGE SYSTEM - Professional database abstraction
+// STORAGE SYSTEM - Moved to @claude-zen/infrastructure package
 // =============================================================================
-export {
-  getDatabaseAccess,
-  getKVStore,
-  StorageError,
-  DatabaseConnectionError
-} from './src/main';
-export type {
-  KeyValueStore,
-  DatabaseAccess,
-  KeyValueStorage,
-  AllStorageTypes,
-  HybridStorage
-} from './src/main';
-
-// Professional storage object with proper naming
-export { storage as Storage } from './src/main';
+// Note: Storage functionality has been moved to @claude-zen/infrastructure
+// Import from: import { getDatabaseAccess, getKVStore } from '@claude-zen/infrastructure';
 
 // =============================================================================
 // MODERN DEPENDENCY INJECTION - TSyringe
@@ -250,52 +236,25 @@ export type {
 } from './src/main';
 
 // =============================================================================
-// COMPREHENSIVE TELEMETRY & MONITORING SYSTEM - OpenTelemetry + Prometheus + Monitoring
+// TELEMETRY SYSTEM - Moved to @claude-zen/infrastructure package
+// =============================================================================
+// Note: Telemetry functionality has been moved to @claude-zen/infrastructure
+// Import from: import { getTelemetryAccess, getTelemetryManager } from '@claude-zen/infrastructure';
+
+// =============================================================================
+// SYSTEM METRICS ONLY - Basic metrics for foundation use
 // =============================================================================
 export {
-  TelemetryManager,
-  getTelemetry,
-  initializeTelemetry,
-  shutdownTelemetry,
-  recordMetric,
-  recordHistogram,
-  recordGauge,
-  startTrace,
-  withTrace,
-  withAsyncTrace,
-  recordEvent,
-  setTraceAttributes,
-  traced,
-  tracedAsync,
-  metered,
-  SpanKind,
-  SpanStatusCode,
-  // Comprehensive Monitoring Classes
-  SystemMonitor,
-  PerformanceTracker,
-  AgentMonitor,
-  MLMonitor,
-  // Factory Functions for Monitoring
-  createSystemMonitor,
-  createPerformanceTracker,
-  createAgentMonitor,
-  createMLMonitor,
-  createMonitoringSystem
+  SystemMetricsCollector,
+  createSystemMetricsCollector,
+  SYSTEM_METRICS_COLLECTOR_TOKEN
 } from './src/main';
 export type {
-  TelemetryConfig,
-  MetricDefinition,
-  SpanOptions,
-  TelemetryEvent,
-  MetricType,
-  Span,
-  Tracer,
-  Meter,
-  Attributes,
-  // Monitoring Types
-  MonitoringConfig,
-  MetricData,
-  PerformanceMetrics
+  CpuMetrics,
+  MemoryMetrics,
+  SystemPerformanceTracker,
+  SystemHealth,
+  SystemMetricsError
 } from './src/main';
 
 // =============================================================================

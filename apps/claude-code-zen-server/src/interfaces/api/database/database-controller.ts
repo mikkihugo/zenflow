@@ -7,8 +7,8 @@
  * Delegates to:
  * - @claude-zen/foundation: Multi-database adapters (SQLite, LanceDB, Kuzu)
  * - @claude-zen/foundation: Performance tracking, telemetry, logging, DI container
- * - @claude-zen/brain: Health monitoring and diagnostics
- * - @claude-zen/brain: Resource optimization and scaling
+ * - @claude-zen/intelligence: Health monitoring and diagnostics
+ * - @claude-zen/intelligence: Resource optimization and scaling
  * 
  * REDUCTION: 1,893 → 425 lines (77.5% reduction) through package delegation
  * 
@@ -194,16 +194,16 @@ export class DatabaseController extends EventEmitter {
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/brain for health monitoring
-      const { CompleteIntelligenceSystem: HealthMonitor } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for health monitoring
+      const { CompleteIntelligenceSystem: HealthMonitor } = await import('@claude-zen/intelligence');
       this.healthMonitor = new HealthMonitor({
         checkInterval: 30000,
         enableDetailedMetrics: true
       });
       await this.healthMonitor.initialize();
 
-      // Delegate to @claude-zen/brain for resource optimization
-      const { LoadBalancer } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for resource optimization
+      const { LoadBalancer } = await import('@claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         strategy: 'resource-aware',
         enablePredictiveScaling: true

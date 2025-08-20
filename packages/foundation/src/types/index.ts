@@ -95,325 +95,82 @@
 // PRIMITIVES - Basic types and identifiers
 // =============================================================================
 
-export type {
-  // Basic identifiers
-  ID,
-  StringID,
-  NumericID,
-  UUID,
-  Timestamp,
-  ISODateString,
-  
-  // Common enums
-  Priority,
-  Status,
-  LogLevel,
-  Environment,
-  
-  // Utility types
-  Optional,
-  RequiredFields,
-  NonEmptyArray,
-  ReadonlyNonEmptyArray,
-  ArrayElement,
-  DeepReadonly,
-  DeepPartial,
-  Nullable,
-  Primitive,
-  
-  // Branded types
-  Branded,
-  Email,
-  URL,
-  FilePath,
-  JSONString,
-  Base64String,
-  HexString
-} from './primitives';
+// Basic primitive types - universally reusable across all packages
+export type ID = string | number;
+export type UUID = string;
+export type Timestamp = number;
 
-// Export primitives enums as values (not just types)
-export { 
-  Priority as PriorityEnum, 
-  Status as StatusEnum, 
-  LogLevel as LogLevelEnum, 
-  Environment as EnvironmentEnum 
-} from './primitives';
+// Status and priority enums
+export type Status = 'pending' | 'in_progress' | 'completed' | 'failed' | 'cancelled';
+export type Priority = 'low' | 'medium' | 'high' | 'critical' | 'urgent';
 
-// Export type guards and utility functions
-export {
-  isUUID,
-  isTimestamp,
-  isISODateString,
-  isEmail,
-  isNonEmptyArray,
-  isPrimitive,
-  brand,
-  unbrand,
-  generateUUID,
-  now,
-  timestampFromDate,
-  dateFromTimestamp,
-  isoStringFromTimestamp
-} from './primitives';
+// Basic entity patterns
+export interface Timestamped {
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+}
 
-// =============================================================================
-// PATTERNS - Structural patterns and interfaces
-// =============================================================================
+export interface Identifiable<T = UUID> {
+  id: T;
+}
 
-export type {
-  // Temporal patterns
-  Timestamped,
-  TimestampedWithDeletion,
-  ISOTimestamped,
-  DateTimestamped,
-  
-  // Versioning patterns
-  Versioned,
-  VersionedWithRevision,
-  SemanticVersioned,
-  
-  // Identification patterns
-  Identifiable,
-  UUIDIdentifiable,
-  Named,
-  Described,
-  
-  // Pagination patterns
-  Paginated,
-  PaginationMetadata,
-  CursorPaginated,
-  CursorPaginationMetadata,
-  
-  // Result patterns
-  OperationResult,
-  AsyncOperationResult,
-  ValidationResult,
-  
-  // Filtering and searching
-  FilterCriteria,
-  SearchCriteria,
-  SortCriteria,
-  QueryCriteria,
-  
-  // Configuration patterns
-  EnvironmentConfig,
-  FeatureFlag,
-  ConfigSection,
-  
-  // Audit patterns
-  AuditEntry,
-  Auditable,
-  
-  // Entity pattern
-  Entity
-} from './patterns';
+export interface Entity extends Timestamped, Identifiable<UUID> {
+  name: string;
+  version: number;
+  isActive: boolean;
+}
 
-// Export pattern utility functions
-export {
-  createPaginationMetadata,
-  createPaginated,
-  createSuccessResult,
-  createErrorResult,
-  isSuccessResult,
-  isErrorResult
-} from './patterns';
+// Generic utility patterns
+export interface Paginated<T> {
+  items: T[];
+  totalItems: number;
+  totalPages: number;
+  currentPage: number;
+  pageSize: number;
+}
 
-// =============================================================================
-// ERRORS - Error types and handling patterns
-// =============================================================================
+export interface PaginationOptions {
+  page?: number;
+  limit?: number;
+  offset?: number;
+}
 
-export type {
-  // Base error interfaces
-  BaseError,
-  ValidationError,
-  ConfigurationError,
-  SystemError,
-  NetworkError,
-  ResourceError,
-  PermissionError,
-  BusinessLogicError,
-  TimeoutError,
-  RateLimitError,
-  
-  // Error metadata and classification
-  ErrorMetadata,
-  ValidationViolation,
-  
-  // Result pattern types
-  Result,
-  SuccessResult,
-  ErrorResult,
-  AsyncResult,
-  
-  // Error handler types
-  ErrorHandler,
-  ErrorRecovery,
-  ErrorTransform,
-  ErrorFilter,
-  ErrorHandlingConfig
-} from './errors';
+// Result pattern for error handling
+export interface SuccessResult<T> {
+  success: true;
+  data: T;
+}
 
-// Export error enums as values  
-export { 
-  ErrorSeverity as ErrorSeverityEnum, 
-  ErrorCategory as ErrorCategoryEnum 
-} from './errors';
+export interface ErrorResult<E> {
+  success: false;
+  error: E;
+}
 
-// Export error utility functions
-export {
-  createValidationError,
-  createSystemError,
-  createNetworkError,
-  createResourceError,
-  createSuccess,
-  createError,
-  isSuccess,
-  isError,
-  isValidationError,
-  isSystemError,
-  isNetworkError,
-  isResourceError,
-  isRetryableError,
-  isBaseError
-} from './errors';
+export type Result<T, E = Error> = SuccessResult<T> | ErrorResult<E>;
 
-// =============================================================================
-// TYPE GOVERNANCE DOCUMENTATION
-// =============================================================================
+// Async operation results
+export type AsyncOperationResult<T, E = Error> = Promise<Result<T, E>>;
 
-/**
- * TYPE GOVERNANCE RULES
- * =====================
- * 
- * This section documents what types belong in @claude-zen/foundation vs
- * domain-specific packages. Follow these rules to maintain clean separation.
- */
+// Query patterns
+export interface QueryCriteria {
+  filters?: Record<string, unknown>;
+  sort?: { field: string; direction: 'asc' | 'desc' }[];
+  pagination?: PaginationOptions;
+}
 
-/**
- * ✅ FOUNDATION TYPES (Belong Here)
- * =================================
- * 
- * CRITERIA: Universal, domain-agnostic, reusable across ALL packages
- * 
- * Categories that belong in foundation:
- * - Basic primitives: ID, UUID, Timestamp, basic enums
- * - Structural patterns: Timestamped, Versioned, Paginated, Identifiable
- * - Error handling: BaseError, ValidationError, Result patterns
- * - Utility types: Optional, Required, NonEmptyArray, DeepReadonly
- * - Standard patterns: Configuration, FeatureFlag, AuditEntry
- * 
- * Examples:
- * ```typescript
- * // ✅ Good - Universal identifier
- * export type UUID = string & { readonly __brand: 'UUID' };
- * 
- * // ✅ Good - Universal structural pattern  
- * export interface Timestamped {
- *   readonly createdAt: Timestamp;
- *   updatedAt: Timestamp;
- * }
- * 
- * // ✅ Good - Universal error pattern
- * export interface BaseError extends Error {
- *   readonly type: string;
- *   readonly code: string;
- * }
- * ```
- */
+// Audit and versioning
+export interface AuditEntry extends Timestamped {
+  id: UUID;
+  entityId: UUID;
+  entityType: string;
+  action: string;
+  changes: Record<string, unknown>;
+  userId?: UUID;
+  metadata?: Record<string, unknown>;
+}
 
-/**
- * ❌ NON-FOUNDATION TYPES (Belong in Domain Packages)
- * ==================================================
- * 
- * CRITERIA: Domain-specific, business logic, implementation details
- * 
- * Categories that DON'T belong in foundation:
- * - Memory system types: MemoryEntry, MemoryProvider → @claude-zen/memory/types
- * - Coordination types: Agent, Task, Swarm → @claude-zen/coordination-core/types
- * - Workflow types: WorkflowStep, Process → @claude-zen/workflows/types
- * - AI/ML types: Model, Training → @claude-zen/brain/types
- * - Database types: Query, Schema → @claude-zen/database/types
- * - Event types: EventPayload, Handler → @claude-zen/event-system/types
- * 
- * Examples:
- * ```typescript
- * // ❌ Wrong - Memory-specific, belongs in @claude-zen/memory/types
- * export interface MemoryEntry {
- *   content: string;
- *   embedding: number[];
- * }
- * 
- * // ❌ Wrong - Coordination-specific, belongs in @claude-zen/coordination-core/types
- * export interface Agent {
- *   type: 'researcher' | 'coder';
- *   status: 'active' | 'idle';
- * }
- * 
- * // ❌ Wrong - Workflow-specific, belongs in @claude-zen/workflows/types
- * export interface WorkflowStep {
- *   action: string;
- *   conditions: string[];
- * }
- * ```
- */
+// Additional utility types needed by brain package
+export type NonEmptyArray<T> = [T, ...T[]];
 
-/**
- * 🎯 DECISION FRAMEWORK
- * ====================
- * 
- * When deciding if a type belongs in foundation, ask:
- * 
- * 1. **Universality**: Would ALL packages potentially use this type?
- *    - Yes → Foundation
- *    - No → Domain package
- * 
- * 2. **Domain Knowledge**: Does this type contain domain-specific concepts?
- *    - Yes → Domain package  
- *    - No → Foundation
- * 
- * 3. **Stability**: Is this type unlikely to change based on business logic?
- *    - Yes → Foundation
- *    - No → Domain package
- * 
- * 4. **Coupling**: Does this type depend on other domain-specific types?
- *    - Yes → Domain package
- *    - No → Foundation
- * 
- * Examples:
- * - `Timestamp` → Universal, no domain knowledge, stable → ✅ Foundation
- * - `MemoryEmbedding` → Not universal, AI domain-specific → ❌ Memory package
- * - `Paginated<T>` → Universal pattern, no domain knowledge → ✅ Foundation
- * - `SwarmConfiguration` → Coordination domain-specific → ❌ Coordination package
- */
+export type LogLevel = 'debug' | 'info' | 'warn' | 'error' | 'fatal';
 
-/**
- * 📦 PACKAGE IMPORT STRATEGY
- * =========================
- * 
- * Recommended import patterns for consuming packages:
- * 
- * ```typescript
- * // Import foundation types (always safe)
- * import type { 
- *   UUID, 
- *   Timestamped, 
- *   Paginated, 
- *   Result,
- *   ValidationError 
- * } from '@claude-zen/foundation/types';
- * 
- * // Import domain types from appropriate packages
- * import type { MemoryEntry } from '@claude-zen/memory/types';
- * import type { Agent, Task } from '@claude-zen/coordination-core/types';
- * import type { WorkflowStep } from '@claude-zen/workflows/types';
- * 
- * // Combine foundation and domain types
- * interface UserTask extends Timestamped {
- *   id: UUID;
- *   agent: Agent;        // Domain-specific
- *   workflow: WorkflowStep[]; // Domain-specific
- * }
- * 
- * type UserTaskList = Paginated<UserTask>; // Foundation pattern
- * ```
- */

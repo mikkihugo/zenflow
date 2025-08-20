@@ -5,12 +5,12 @@
  * @claude-zen packages for AI-powered organizational coordination.
  * 
  * Delegates to:
- * - @claude-zen/brain: BrainCoordinator for AI-powered decision making
- * - @claude-zen/brain: LoadBalancer for intelligent resource allocation
+ * - @claude-zen/intelligence: BrainCoordinator for AI-powered decision making
+ * - @claude-zen/intelligence: LoadBalancer for intelligent resource allocation
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging, and system management
- * - @claude-zen/workflows: WorkflowEngine for process coordination
- * - @claude-zen/teamwork: ConversationOrchestrator for collaborative discussions
- * - @claude-zen/knowledge: Knowledge management and fact coordination
+ * - @claude-zen/intelligence: WorkflowEngine for process coordination
+ * - @claude-zen/intelligence: ConversationOrchestrator for collaborative discussions
+ * - @claude-zen/intelligence: Knowledge management and fact coordination
  * 
  * REDUCTION: 2,909 → ~500 lines (82.8% reduction) through package delegation
  */
@@ -162,8 +162,8 @@ export class ServiceDomainQueenImpl extends EventEmitter implements ServiceDomai
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/brain for AI coordination
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for AI coordination
+      const { BrainCoordinator } = await import('@claude-zen/intelligence');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: {
           enabled: true,
@@ -173,8 +173,8 @@ export class ServiceDomainQueenImpl extends EventEmitter implements ServiceDomai
       });
       await this.brainCoordinator.initialize();
 
-      // Delegate to @claude-zen/brain for resource management
-      const { LoadBalancer } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for resource management
+      const { LoadBalancer } = await import('@claude-zen/intelligence');
       this.loadBalancer = new LoadBalancer({
         algorithm: 'resource-aware' as any,
         healthCheckInterval: 5000,
@@ -211,17 +211,17 @@ export class ServiceDomainQueenImpl extends EventEmitter implements ServiceDomai
       });
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+      const { PerformanceTracker, BasicTelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      this.telemetryManager = new BasicTelemetryManager({
         serviceName: `service-domain-queen-${this.id}`,
         enableTracing: true,
         enableMetrics: true
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/workflows for process coordination
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for process coordination
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         maxConcurrentWorkflows: 5,
         persistWorkflows: true,
@@ -229,12 +229,12 @@ export class ServiceDomainQueenImpl extends EventEmitter implements ServiceDomai
         retryDelay: 1000
       });
 
-      // Delegate to @claude-zen/teamwork for collaboration
-      const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
+      // Delegate to @claude-zen/intelligence for collaboration
+      const { ConversationOrchestrator } = await import('@claude-zen/intelligence');
       this.conversationOrchestrator = new ConversationOrchestrator();
 
-      // Delegate to @claude-zen/knowledge for knowledge management
-      const { default: knowledgeModule } = await import('@claude-zen/knowledge');
+      // Delegate to @claude-zen/intelligence for knowledge management
+      const { default: knowledgeModule } = await import('@claude-zen/intelligence');
       const KnowledgeStore = (knowledgeModule as any).KnowledgeStore || class KnowledgeStore { constructor() {} };
       this.knowledgeManager = new KnowledgeStore();
 
@@ -553,8 +553,8 @@ export class ServiceDomainQueenRegistry extends EventEmitter {
 
     try {
       // Delegate to @claude-zen/foundation for telemetry
-      const { TelemetryManager } = await import('@claude-zen/foundation');
-      this.telemetryManager = new TelemetryManager({
+      const { BasicTelemetryManager } = await import('@claude-zen/foundation');
+      this.telemetryManager = new BasicTelemetryManager({
         serviceName: 'service-domain-queen-registry',
         enableTracing: true,
         enableMetrics: true

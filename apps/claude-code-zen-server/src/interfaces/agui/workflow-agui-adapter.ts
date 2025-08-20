@@ -19,7 +19,7 @@ import {
   createCorrelationId,
   createEvent,
   type TypeSafeEventBus,
-} from '@claude-zen/event-system';
+} from '@claude-zen/infrastructure';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type {

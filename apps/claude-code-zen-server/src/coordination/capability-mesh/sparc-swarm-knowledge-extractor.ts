@@ -14,8 +14,8 @@
  * 
  * SPARC Knowledge Integration:
  * - Uses @claude-zen/foundation for storage abstraction and performance tracking
- * - Leverages @claude-zen/brain for behavioral intelligence and adaptive learning
- * - Integrates with @claude-zen/brain for performance tracking
+ * - Leverages @claude-zen/intelligence for behavioral intelligence and adaptive learning
+ * - Integrates with @claude-zen/intelligence for performance tracking
  * - Utilizes @claude-zen/sparc for methodology patterns
  * - Connects with DatabaseSPARCBridge for implementation data
  */
@@ -38,12 +38,17 @@ import type { DatabaseAccess, KeyValueStore } from '@claude-zen/foundation';
 // Brain coordination for learning
 import { 
   BrainCoordinator
-} from '@claude-zen/brain/coordinator';
+} from '@claude-zen/intelligence';
 
-// SPARC methodology integration - using proper @claude-zen/sparc package types
-import type { 
-  SPARCPhase 
-} from '@claude-zen/sparc';
+// SPARC methodology integration via enterprise facade
+import { 
+  createSPARCWorkflow,
+  createSPARCCommander,
+  type SPARCPhase,
+  type SPARCResult,
+  type SPARCConfig,
+  type SPARCProject
+} from '@claude-zen/enterprise';
 
 const logger = getLogger('sparc-swarm-knowledge-extractor');
 

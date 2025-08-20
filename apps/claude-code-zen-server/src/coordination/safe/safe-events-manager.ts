@@ -2,10 +2,10 @@
  * @fileoverview SAFe Events Manager - Lightweight facade for SAFe ceremony orchestration.
  * 
  * Provides comprehensive SAFe events and ceremonies management through delegation to specialized
- * @claude-zen/safe-framework package for enterprise-grade event coordination.
+ * @claude-zen/enterprise package for enterprise-grade event coordination.
  * 
  * Delegates to:
- * - @claude-zen/safe-framework: Complete SAFe Events Manager implementation
+ * - @claude-zen/enterprise: Complete SAFe Events Manager implementation
  * - @claude-zen/foundation: Performance tracking, telemetry, logging
  * 
  * REDUCTION: 660 → 115 lines (82.6% reduction) through package delegation
@@ -19,7 +19,7 @@
  * - Human-facilitated ceremony integration
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
@@ -38,13 +38,13 @@ export type {
   ActionItem,
   ParticipantFeedback,
   EventMetrics
-} from '@claude-zen/safe-framework';
+} from '@claude-zen/enterprise';
 
 /**
  * SAFe Events Manager - Lightweight facade for SAFe ceremony orchestration.
  * 
  * Delegates all functionality to the comprehensive SAFe Events Manager
- * in @claude-zen/safe-framework package while maintaining API compatibility.
+ * in @claude-zen/enterprise package while maintaining API compatibility.
  */
 export class SAFeEventsManager extends EventEmitter {
   private logger: Logger;
@@ -72,8 +72,8 @@ export class SAFeEventsManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/safe-framework
-      const { SAFeEventsManager: SafeEventsManagerImpl } = await import('@claude-zen/safe-framework');
+      // Delegate to @claude-zen/enterprise
+      const { SAFeEventsManager: SafeEventsManagerImpl } = await import('@claude-zen/enterprise');
       this.safeEventsManager = new SafeEventsManagerImpl(...arguments);
       await this.safeEventsManager.initialize();
 

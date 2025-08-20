@@ -46,6 +46,7 @@
     "../../**/*.test.ts",
     "../../**/*.spec.ts",
     "di/examples/**/*.ts",
+    "examples/**/*.ts",
     "./test-new-systems.ts",
     "./di-new.ts"
   ]

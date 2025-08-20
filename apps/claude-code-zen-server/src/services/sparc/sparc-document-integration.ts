@@ -20,11 +20,11 @@
  * - Full SAFe hierarchy traceability: Business Epic → Program Epic → Feature → Story → Tasks
  */
 
-// SPARC imports - Direct Story-level execution
-import { SPARCCommander } from '@claude-zen/sparc';
-import type { SPARCProject, MethodologyResult, SPARCConfiguration } from '@claude-zen/sparc';
-import { DatabaseSPARCBridge } from '@claude-zen/safe-framework';
-import type { WorkAssignment, ImplementationResult } from '@claude-zen/safe-framework';
+// SPARC methodology integration via enterprise strategic facade
+import { createSPARCCommander } from '@claude-zen/enterprise';
+import type { SPARCProject } from '@claude-zen/enterprise';
+import { DatabaseSPARCBridge } from '@claude-zen/enterprise';
+import type { WorkAssignment, ImplementationResult } from '@claude-zen/enterprise';
 import type { 
   ClaudeZenIntegrationConfig,
   AIOrchestrationConfig,
@@ -105,7 +105,7 @@ export class SPARCDocumentIntegration extends EventEmitter<SPARCDocumentEvents> 
     methodologyResult?: MethodologyResult;
     workAssignment: WorkAssignment;
     implementation?: ImplementationResult;
-  }>>();
+  }>();
   
   constructor(
     documentManager: DocumentManager, 
@@ -386,7 +386,11 @@ export class SPARCDocumentIntegration extends EventEmitter<SPARCDocumentEvents> 
 
     } catch (error) {
       this.logger.error('Failed to execute SPARC methodology:', error);
-      this.emit('sparc:project:failed', { story, feature, error: error as Error });
+      const activeProject = this.activeProjects.get(story.id);
+      const feature = activeProject?.feature;
+      if (feature) {
+        this.emit('sparc:project:failed', { story, feature, error: error as Error });
+      }
       throw error;
     }
   }

@@ -16,7 +16,7 @@
  * **PACKAGE INTEGRATION:**
  * - **@claude-zen/kanban**: XState-powered workflow coordination with intelligent WIP management ✅
  * - **@claude-zen/foundation**: Logging, utilities, and error handling ✅
- * - **@claude-zen/event-system**: Type-safe event coordination ✅
+ * - **@claude-zen/infrastructure**: Type-safe event coordination ✅
  * 
  * **BENEFITS ACHIEVED:**
  * - 81.0% code reduction through professional package delegation
@@ -55,7 +55,7 @@
  * 
  * @requires @claude-zen/kanban - XState-powered workflow coordination
  * @requires @claude-zen/foundation - Foundation utilities
- * @requires @claude-zen/event-system - Type-safe event system
+ * @requires @claude-zen/infrastructure - Type-safe event system
  * 
  * **REDUCTION ACHIEVED: 1,641 → 312 lines (81.0% reduction) through kanban package delegation**
  */
@@ -64,26 +64,19 @@
 // STRATEGIC IMPORTS: Battle-Tested Package Integration
 // =============================================================================
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
 
-// Strategic delegation to @claude-zen/kanban - Battle-tested XState workflow coordination
+// Strategic delegation to @claude-zen/kanban via enterprise facade
 import {
-  WorkflowKanban,
   createWorkflowKanban,
-  type WorkflowKanbanConfig,
-  type WorkflowTask,
-  type TaskState,
-  type FlowMetrics,
-  type BottleneckReport,
-  type HealthCheckResult,
-  type WIPLimits,
-  type TaskMovementResult
-} from '@claude-zen/kanban';
-import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
+  getKanbanManager,
+  getFlowManager
+} from '@claude-zen/enterprise';
+import type { MultiLevelOrchestrationManager } from '@claude-zen/enterprise';
 
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
@@ -559,7 +552,7 @@ export const FLOW_MANAGER_FACADE_INFO = {
   packageIntegration: [
     '@claude-zen/kanban: XState-powered workflow coordination engine',
     '@claude-zen/foundation: Logging, utilities, and error handling',
-    '@claude-zen/event-system: Type-safe event coordination'
+    '@claude-zen/infrastructure: Type-safe event coordination'
   ],
   migrationStrategy: 'Preserve legacy API while delegating implementation'
 } as const;

@@ -6,11 +6,11 @@
  * epic investment planning, value stream funding, and Lean-Agile budgeting.
  * 
  * Delegates to:
- * - @claude-zen/workflows: WorkflowEngine for process coordination and step execution
- * - @claude-zen/brain: BrainCoordinator for AI-powered portfolio decision making
+ * - @claude-zen/intelligence: WorkflowEngine for process coordination and step execution
+ * - @claude-zen/intelligence: BrainCoordinator for AI-powered portfolio decision making
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging infrastructure
- * - @claude-zen/safe-framework: SafePortfolioManager for SAFe methodology integration
- * - @claude-zen/event-system: EventEmitter patterns and domain validation
+ * - @claude-zen/enterprise: SafePortfolioManager for SAFe methodology integration
+ * - @claude-zen/infrastructure: EventEmitter patterns and domain validation
  * 
  * REDUCTION: 1,672 → 699 lines (58% reduction) through package delegation
  * 
@@ -23,7 +23,7 @@
  * - Cost center integration and tracking → Foundation storage + PerformanceTracker
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
@@ -31,7 +31,7 @@ import type { BrainCoordinator } from '../../core/memory-coordinator';
 import {
   createEvent,
   EventPriority,
-} from '@claude-zen/event-system';
+} from '@claude-zen/infrastructure';
 
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
@@ -224,8 +224,8 @@ export class PortfolioManager extends EventEmitter {
     });
 
     try {
-      // Delegate to @claude-zen/workflows for process coordination
-      const { WorkflowEngine } = await import('@claude-zen/workflows');
+      // Delegate to @claude-zen/intelligence for process coordination
+      const { WorkflowEngine } = await import('@claude-zen/intelligence');
       this.workflowEngine = new WorkflowEngine({
         persistWorkflows: true,
         enableVisualization: true,
@@ -233,8 +233,8 @@ export class PortfolioManager extends EventEmitter {
       });
       await this.workflowEngine.initialize();
 
-      // Delegate to @claude-zen/brain for AI-powered portfolio decisions
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for AI-powered portfolio decisions
+      const { BrainCoordinator } = await import('@claude-zen/intelligence');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { 
           enabled: true, 
@@ -251,17 +251,17 @@ export class PortfolioManager extends EventEmitter {
       await this.brainCoordinator.initialize();
 
       // Delegate to @claude-zen/foundation for telemetry and performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
+      const { PerformanceTracker, BasicTelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      this.telemetryManager = new BasicTelemetryManager({
         serviceName: 'portfolio-manager',
         enableTracing: true,
         enableMetrics: true
       });
       await this.telemetryManager.initialize();
 
-      // Delegate to @claude-zen/safe-framework for SAFe methodology
-      const { SafePortfolioManager } = await import('@claude-zen/safe-framework');
+      // Delegate to @claude-zen/enterprise for SAFe methodology
+      const { SafePortfolioManager } = await import('@claude-zen/enterprise');
       this.safePortfolioManager = new SafePortfolioManager(this.config);
       await this.safePortfolioManager.initialize();
 

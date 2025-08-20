@@ -5,9 +5,9 @@
  * @claude-zen packages for teamwork, load balancing, resource management, and neural coordination.
  * 
  * Delegates to:
- * - @claude-zen/teamwork: Multi-agent conversation and collaboration patterns
- * - @claude-zen/brain: Intelligent task routing and resource optimization  
- * - @claude-zen/brain: Neural coordination and adaptive learning
+ * - @claude-zen/intelligence: Multi-agent conversation and collaboration patterns
+ * - @claude-zen/intelligence: Intelligent task routing and resource optimization  
+ * - @claude-zen/intelligence: Neural coordination and adaptive learning
  * - @claude-zen/foundation: Performance tracking, telemetry, logging
  * - @claude-zen/agent-manager: Agent lifecycle and health monitoring
  * 
@@ -250,31 +250,32 @@ export class Agent extends EventEmitter implements AgentComponent {
       const logger = getLogger(`Agent:${this.name}`);
       logger.info(`Initializing agent with package delegation: ${this.name}`);
 
-      // Delegate to @claude-zen/teamwork for multi-agent coordination
-      const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
-      this.teamworkCoordinator = new ConversationOrchestrator();
+      // Delegate to @claude-zen/intelligence for multi-agent coordination
+      const { ConversationOrchestratorImpl, InMemoryConversationMemory } = await import('@claude-zen/intelligence');
+      const memory = new InMemoryConversationMemory();
+      this.teamworkCoordinator = new ConversationOrchestratorImpl(memory);
       await this.teamworkCoordinator.initialize();
 
-      // Delegate to @claude-zen/brain for intelligent task routing
-      const { LoadBalancer } = await import('@claude-zen/brain');
-      this.loadBalancer = new LoadBalancer({
+      // Delegate to @claude-zen/intelligence for intelligent task routing
+      const { getLoadBalancer } = await import('@claude-zen/infrastructure');
+      this.loadBalancer = await getLoadBalancer({
         algorithm: 'ml_predictive' as any, // LoadBalancingAlgorithmType.ML_PREDICTIVE
         healthCheckInterval: config.healthCheckInterval || 5000,
         adaptiveLearning: true
       });
       await this.loadBalancer.initialize();
 
-      // Delegate to @claude-zen/brain for neural coordination
-      const { BrainCoordinator } = await import('@claude-zen/brain');
+      // Delegate to @claude-zen/intelligence for neural coordination
+      const { BrainCoordinator } = await import('@claude-zen/intelligence');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
       });
       await this.brainCoordinator.initialize();
 
       // Delegate to @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
-      this.performanceTracker = new PerformanceTracker();
-      this.telemetryManager = new TelemetryManager({
+      const { getPerformanceTracker, getTelemetryManager } = await import('@claude-zen/infrastructure');
+      this.performanceTracker = await getPerformanceTracker();
+      this.telemetryManager = await getTelemetryManager({
         serviceName: `agent-${this.name}`,
         enableTracing: true,
         enableMetrics: true
@@ -514,14 +515,15 @@ export class AgentGroup extends EventEmitter implements AgentComponent {
   async initialize(config: AgentConfig): Promise<void> {
     if (this.initialized) return;
 
-    // Delegate to @claude-zen/teamwork for group coordination
-    const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
-    this.teamworkCoordinator = new ConversationOrchestrator();
+    // Delegate to @claude-zen/intelligence for group coordination
+    const { ConversationOrchestratorImpl, InMemoryConversationMemory } = await import('@claude-zen/intelligence');
+    const memory = new InMemoryConversationMemory();
+    this.teamworkCoordinator = new ConversationOrchestratorImpl(memory);
     await this.teamworkCoordinator.initialize();
 
-    // Delegate to @claude-zen/brain for task distribution
-    const { LoadBalancer } = await import('@claude-zen/brain');
-    this.loadBalancer = new LoadBalancer({
+    // Delegate to @claude-zen/intelligence for task distribution
+    const { getLoadBalancer } = await import('@claude-zen/infrastructure');
+    this.loadBalancer = await getLoadBalancer({
       algorithm: 'weighted_round_robin' as any, // LoadBalancingAlgorithmType.WEIGHTED_ROUND_ROBIN
       healthCheckInterval: 5000
     });
