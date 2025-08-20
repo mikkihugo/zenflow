@@ -18,6 +18,9 @@
 
 import convict from 'convict';
 import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as os from 'os';
+import * as fs from 'fs';
 
 import { getLogger } from './src/logging';
 
@@ -237,23 +240,47 @@ export interface Config {
  */
 const config = convict(configSchema);
 
-// Load environment-specific configuration files if they exist
+// Load configuration files from .claude-zen directory (user home or per-repo)
 const env = process.env['NODE_ENV'] || 'development';
-const configFiles = [
-  `config/${env}.json`,
-  `config/${env}.js`,
-  `.claude-zen/config.json`,
-  `.claude-zen/${env}.json`
-];
 
+// Check environment variable or default to user home mode
+const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+
+// Build configuration file paths based on mode
+const configFiles: string[] = [];
+
+if (storeInUserHome) {
+  // Mode 1: User directory mode (default)
+  const userConfigDir = path.join(os.homedir(), '.claude-zen');
+  configFiles.push(
+    `${userConfigDir}/config.json`,           // Main user config
+    `${userConfigDir}/${env}.json`,           // Environment-specific user config
+  );
+} 
+
+// Always check for per-repo overrides (even in user mode)
+configFiles.push(
+  `.claude-zen/config.json`,                  // Local repo config
+  `.claude-zen/${env}.json`                   // Local repo environment config
+);
+
+// Load configuration files in priority order
 for (const file of configFiles) {
   try {
-    config.loadFile(file);
-    logger.debug(`Loaded configuration from ${file}`);
+    if (fs.existsSync(file)) {
+      config.loadFile(file);
+      logger.debug(`Loaded configuration from ${file}`);
+    }
   } catch (error) {
-    // File doesn't exist or can't be loaded - this is normal
-    logger.debug(`Configuration file ${file} not found or invalid`);
+    // File exists but can't be loaded - this is an error
+    logger.warn(`Configuration file ${file} exists but couldn't be loaded:`, error);
   }
+}
+
+// Log the configuration mode for debugging
+logger.debug(`Configuration mode: ${storeInUserHome ? 'User directory (~/.claude-zen)' : 'Per-repository (./.claude-zen)'}`);
+if (storeInUserHome) {
+  logger.debug(`User config directory: ${path.join(os.homedir(), '.claude-zen')}`);
 }
 
 // Validate configuration
@@ -380,11 +407,20 @@ export function getNeuralConfig(): NeuralConfig {
  * Get telemetry configuration (for backward compatibility)
  */
 export function getTelemetryConfig() {
+  const config = getConfig();
   return {
     serviceName: 'claude-code-zen',
-    enableTracing: getConfig().metrics.enabled,
-    enableMetrics: getConfig().metrics.enabled,
-    enableLogging: getConfig().logging.console || getConfig().logging.file
+    serviceVersion: '1.0.0',
+    enableTracing: config.metrics.enabled,
+    enableMetrics: config.metrics.enabled,
+    enableLogging: config.logging.console || config.logging.file,
+    enableAutoInstrumentation: config.metrics.enabled,
+    traceSamplingRatio: 1.0,
+    metricsInterval: config.metrics.interval,
+    prometheusEndpoint: '/metrics',
+    prometheusPort: 9090,
+    jaegerEndpoint: 'http://localhost:14268/api/traces',
+    enableConsoleExporters: config.development.debug
   };
 }
 
