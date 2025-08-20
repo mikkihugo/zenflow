@@ -354,6 +354,56 @@ temp/
 }
 
 /**
+ * Ensure .claude-zen directory is ignored in repository .gitignore
+ */
+function ensureRepoGitignore(): void {
+  try {
+    const gitignorePath = '.gitignore';
+    const zenIgnoreEntry = '.claude-zen/';
+    
+    let gitignoreContent = '';
+    let needsUpdate = false;
+    
+    if (fs.existsSync(gitignorePath)) {
+      gitignoreContent = fs.readFileSync(gitignorePath, 'utf8');
+      // Check if .claude-zen is already ignored (exact match or with comments)
+      const lines = gitignoreContent.split('\n');
+      const hasZenIgnore = lines.some(line => 
+        line.trim() === zenIgnoreEntry || 
+        line.trim() === '.claude-zen' ||
+        line.trim() === '.claude-zen/'
+      );
+      
+      if (!hasZenIgnore) {
+        needsUpdate = true;
+      }
+    } else {
+      // Create new .gitignore
+      needsUpdate = true;
+    }
+    
+    if (needsUpdate) {
+      const zenSection = `
+# Claude Zen Configuration Directory
+# Contains project-specific claude-zen settings and may include sensitive data
+.claude-zen/
+`;
+      
+      if (gitignoreContent && !gitignoreContent.endsWith('\n')) {
+        gitignoreContent += '\n';
+      }
+      
+      gitignoreContent += zenSection;
+      fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
+      logger.debug('Added .claude-zen/ to repository .gitignore');
+    }
+  } catch (error) {
+    // Don't fail configuration loading if .gitignore update fails
+    logger.warn('Failed to update repository .gitignore:', error);
+  }
+}
+
+/**
  * Create and validate configuration
  */
 const config = convict(configSchema);
@@ -386,6 +436,11 @@ if (storeInUserHome) {
 
 // Ensure config directory exists and has .gitignore
 ensureConfigDirectory(configDir, storeInUserHome);
+
+// For repo mode, ensure .claude-zen is ignored in repository .gitignore
+if (!storeInUserHome) {
+  ensureRepoGitignore();
+}
 
 // Load configuration files in priority order
 for (const file of configFiles) {
@@ -564,6 +619,26 @@ export function validateConfig(): void {
 }
 
 /**
+ * Initialize configuration directories (can be called manually)
+ */
+export function initializeConfigDirectories(): void {
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  const env = process.env['NODE_ENV'] || 'development';
+  
+  let configDir: string;
+  if (storeInUserHome) {
+    configDir = path.join(os.homedir(), '.claude-zen');
+  } else {
+    configDir = '.claude-zen';
+    // Ensure repo .gitignore includes .claude-zen/
+    ensureRepoGitignore();
+  }
+  
+  ensureConfigDirectory(configDir, storeInUserHome);
+  logger.info(`Configuration directory initialized: ${configDir}`);
+}
+
+/**
  * Configuration helpers for backward compatibility
  */
 export const configHelpers = {
@@ -577,7 +652,8 @@ export const configHelpers = {
   getStorageConfig: () => getStorageConfig(),
   getNeuralConfig: () => getNeuralConfig(),
   toObject: () => globalConfig?.toObject() || {},
-  getSchema: () => globalConfig?.getSchema() || {}
+  getSchema: () => globalConfig?.getSchema() || {},
+  initDirectories: () => initializeConfigDirectories()
 };
 
 // Export the global config as default
