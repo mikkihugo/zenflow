@@ -11,11 +11,13 @@ import {
   type DeadCodeDecision,
   type DeadCodeScanResult,
 } from '../ai-agents/core/automated-dead-code-manager';
-import type { AGUIInterface ,
+import type { 
+  AGUIInterface,
   WorkflowContext,
   WorkflowDefinition,
   WorkflowStep,
-, WorkflowEngine } from '../types/interfaces';
+  WorkflowEngine 
+} from '../types/interfaces';
 
 const logger = getLogger('dead-code-workflow');
 

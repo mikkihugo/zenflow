@@ -21,7 +21,7 @@ import * as dotenv from 'dotenv';
 
 import { getLogger } from './src/logging';
 
-const logger = getLogger('modern-config');
+const logger = getLogger('config');
 
 // Load environment variables
 dotenv.config();
@@ -63,7 +63,7 @@ const configSchema = {
       env: 'ZEN_LOG_FORMAT'
     }
   },
-
+  
   // Metrics and monitoring
   metrics: {
     enabled: {
@@ -79,77 +79,7 @@ const configSchema = {
       env: 'ZEN_METRICS_INTERVAL'
     }
   },
-
-  // Telemetry configuration
-  telemetry: {
-    serviceName: {
-      doc: 'Service name for telemetry data',
-      format: String,
-      default: 'claude-code-zen',
-      env: 'ZEN_TELEMETRY_SERVICE_NAME'
-    },
-    serviceVersion: {
-      doc: 'Service version for telemetry data',
-      format: String,
-      default: '1.0.0',
-      env: 'ZEN_TELEMETRY_SERVICE_VERSION'
-    },
-    enableTracing: {
-      doc: 'Enable distributed tracing',
-      format: Boolean,
-      default: true,
-      env: 'ZEN_TELEMETRY_ENABLE_TRACING'
-    },
-    enableMetrics: {
-      doc: 'Enable telemetry metrics collection',
-      format: Boolean,
-      default: true,
-      env: 'ZEN_TELEMETRY_ENABLE_METRICS'
-    },
-    enableAutoInstrumentation: {
-      doc: 'Enable automatic instrumentation',
-      format: Boolean,
-      default: true,
-      env: 'ZEN_TELEMETRY_ENABLE_AUTO_INSTRUMENTATION'
-    },
-    traceSamplingRatio: {
-      doc: 'Trace sampling ratio (0.0 to 1.0)',
-      format: Number,
-      default: 1.0,
-      env: 'ZEN_TELEMETRY_SAMPLING_RATIO'
-    },
-    metricsInterval: {
-      doc: 'Telemetry metrics collection interval in milliseconds',
-      format: 'int',
-      default: 5000,
-      env: 'ZEN_TELEMETRY_METRICS_INTERVAL'
-    },
-    prometheusEndpoint: {
-      doc: 'Prometheus metrics endpoint path',
-      format: String,
-      default: '/metrics',
-      env: 'ZEN_TELEMETRY_PROMETHEUS_ENDPOINT'
-    },
-    prometheusPort: {
-      doc: 'Prometheus metrics port',
-      format: 'int',
-      default: 9090,
-      env: 'ZEN_TELEMETRY_PROMETHEUS_PORT'
-    },
-    jaegerEndpoint: {
-      doc: 'Jaeger exporter endpoint',
-      format: String,
-      default: 'http://localhost:14268/api/traces',
-      env: 'ZEN_TELEMETRY_JAEGER_ENDPOINT'
-    },
-    enableConsoleExporters: {
-      doc: 'Enable console exporters for development',
-      format: Boolean,
-      default: false,
-      env: 'ZEN_TELEMETRY_ENABLE_CONSOLE_EXPORTERS'
-    }
-  },
-
+  
   // Storage configuration
   storage: {
     backend: {
@@ -171,7 +101,7 @@ const configSchema = {
       env: 'ZEN_DB_PATH'
     }
   },
-
+  
   // Project and workspace
   project: {
     configDir: {
@@ -193,7 +123,7 @@ const configSchema = {
       env: 'ZEN_STORE_CONFIG_IN_USER_HOME'
     }
   },
-
+  
   // Neural and AI features
   neural: {
     learning: {
@@ -209,7 +139,7 @@ const configSchema = {
       env: 'ZEN_NEURAL_CACHE_SIZE'
     }
   },
-
+  
   // Performance settings
   performance: {
     maxConcurrent: {
@@ -225,7 +155,7 @@ const configSchema = {
       env: 'ZEN_TIMEOUT_MS'
     }
   },
-
+  
   // Development settings
   development: {
     debug: {
@@ -242,6 +172,65 @@ const configSchema = {
     }
   }
 };
+
+/**
+ * TypeScript interfaces for configuration
+ */
+export interface LoggingConfig {
+  level: 'error' | 'warn' | 'info' | 'debug' | 'trace';
+  console: boolean;
+  file: boolean;
+  timestamp: boolean;
+  format: 'text' | 'json';
+}
+
+export interface MetricsConfig {
+  enabled: boolean;
+  interval: number;
+}
+
+export interface StorageConfig {
+  backend: 'memory' | 'sqlite' | 'lancedb' | 'kuzu';
+  memoryDir: string;
+  dbPath: string;
+}
+
+export interface ProjectConfig {
+  configDir: string;
+  workspaceDbPath: string;
+  storeInUserHome: boolean;
+}
+
+export interface NeuralConfig {
+  learning: boolean;
+  cacheSize: number;
+}
+
+export interface PerformanceConfig {
+  maxConcurrent: number;
+  timeoutMs: number;
+}
+
+export interface DevelopmentConfig {
+  debug: boolean;
+  verboseErrors: boolean;
+}
+
+export interface Config {
+  logging: LoggingConfig;
+  metrics: MetricsConfig;
+  storage: StorageConfig;
+  project: ProjectConfig;
+  neural: NeuralConfig;
+  performance: PerformanceConfig;
+  development: DevelopmentConfig;
+  get(key: string, defaultValue?: any): any;
+  set(key: string, value: any): void;
+  has(key: string): boolean;
+  toObject(): Record<string, any>;
+  getSchema(): any;
+  reload(): void;
+}
 
 /**
  * Create and validate configuration
@@ -277,74 +266,16 @@ try {
 }
 
 /**
- * Type-safe configuration interface
- */
-export interface Config {
-  logging: {
-    level: string;
-    console: boolean;
-    file: boolean;
-    timestamp: boolean;
-    format: string;
-  };
-  metrics: {
-    enabled: boolean;
-    interval: number;
-  };
-  telemetry: {
-    serviceName: string;
-    serviceVersion: string;
-    enableTracing: boolean;
-    enableMetrics: boolean;
-    enableAutoInstrumentation: boolean;
-    traceSamplingRatio: number;
-    metricsInterval: number;
-    prometheusEndpoint: string;
-    prometheusPort: number;
-    jaegerEndpoint: string;
-    enableConsoleExporters: boolean;
-  };
-  storage: {
-    backend: string;
-    memoryDir: string;
-    dbPath: string;
-  };
-  project: {
-    configDir: string;
-    workspaceDbPath: string;
-    storeInUserHome: boolean;
-  };
-  neural: {
-    learning: boolean;
-    cacheSize: number;
-  };
-  performance: {
-    maxConcurrent: number;
-    timeoutMs: number;
-  };
-  development: {
-    debug: boolean;
-    verboseErrors: boolean;
-  };
-
-  // Compatibility methods for legacy code
-  get(key: string, defaultValue?: any): any;
-  set(key: string, value: any): void;
-  has(key: string): boolean;
-}
-
-/**
  * Configuration implementation with compatibility layer
  */
 class ConfigImplementation implements Config {
-  get logging() { return config.get('logging'); }
-  get metrics() { return config.get('metrics'); }
-  get telemetry() { return config.get('telemetry'); }
-  get storage() { return config.get('storage'); }
-  get project() { return config.get('project'); }
-  get neural() { return config.get('neural'); }
-  get performance() { return config.get('performance'); }
-  get development() { return config.get('development'); }
+  get logging(): LoggingConfig { return config.get('logging') as LoggingConfig; }
+  get metrics(): MetricsConfig { return config.get('metrics') as MetricsConfig; }
+  get storage(): StorageConfig { return config.get('storage') as StorageConfig; }
+  get project(): ProjectConfig { return config.get('project') as ProjectConfig; }
+  get neural(): NeuralConfig { return config.get('neural') as NeuralConfig; }
+  get performance(): PerformanceConfig { return config.get('performance') as PerformanceConfig; }
+  get development(): DevelopmentConfig { return config.get('development') as DevelopmentConfig; }
 
   get(key: string, defaultValue?: any): any {
     try {
@@ -368,30 +299,23 @@ class ConfigImplementation implements Config {
   }
 
   /**
-   * Get the raw convict config for advanced usage
-   */
-  getRawConfig() {
-    return config;
-  }
-
-  /**
    * Get configuration as plain object
    */
-  toObject() {
+  toObject(): Record<string, any> {
     return config.getProperties();
   }
 
   /**
    * Get configuration schema documentation
    */
-  getSchema() {
+  getSchema(): any {
     return config.getSchema();
   }
 
   /**
    * Reload configuration from environment and files
    */
-  reload() {
+  reload(): void {
     // Re-load environment variables
     dotenv.config();
     
@@ -441,22 +365,27 @@ export function areMetricsEnabled(): boolean {
 /**
  * Get storage configuration
  */
-export function getStorageConfig() {
+export function getStorageConfig(): StorageConfig {
   return getConfig().storage;
 }
 
 /**
  * Get neural configuration
  */
-export function getNeuralConfig() {
+export function getNeuralConfig(): NeuralConfig {
   return getConfig().neural;
 }
 
 /**
- * Get telemetry configuration
+ * Get telemetry configuration (for backward compatibility)
  */
 export function getTelemetryConfig() {
-  return getConfig().telemetry;
+  return {
+    serviceName: 'claude-code-zen',
+    enableTracing: getConfig().metrics.enabled,
+    enableMetrics: getConfig().metrics.enabled,
+    enableLogging: getConfig().logging.console || getConfig().logging.file
+  };
 }
 
 /**
@@ -466,9 +395,8 @@ export function validateConfig(): void {
   if (!globalConfig) {
     globalConfig = new ConfigImplementation();
   }
-  
   try {
-    globalConfig.getRawConfig().validate({ allowed: 'strict' });
+    config.validate({ allowed: 'strict' });
     logger.info('Configuration validation successful');
   } catch (error) {
     logger.error('Configuration validation failed:', error);
@@ -489,7 +417,6 @@ export const configHelpers = {
   areMetricsEnabled: () => areMetricsEnabled(),
   getStorageConfig: () => getStorageConfig(),
   getNeuralConfig: () => getNeuralConfig(),
-  getTelemetryConfig: () => getTelemetryConfig(),
   toObject: () => globalConfig?.toObject() || {},
   getSchema: () => globalConfig?.getSchema() || {}
 };
