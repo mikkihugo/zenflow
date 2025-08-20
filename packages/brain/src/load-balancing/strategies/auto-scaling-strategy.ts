@@ -7,6 +7,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { AutoScaler } from '../interfaces';
 import { AgentStatus } from '../types';
 import type { AutoScalingConfig, LoadMetrics, Agent } from '../types';
@@ -129,11 +130,10 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
     const agentCount = metrics.size;
 
     // Scale up conditions
-    if (
+    if ((
       avgUtilization > this.config.scaleUpThreshold ||
       maxUtilization > 0.95
-    ) {
-      if (agentCount < this.config.maxAgents) {
+    ) && agentCount < this.config.maxAgents) {
         const targetCount = Math.min(
           this.config.maxAgents,
           Math.ceil(agentCount * 1.5) // Scale by 50%
@@ -147,14 +147,12 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
           urgency: maxUtilization > 0.95 ? 'critical' : 'high',
         };
       }
-    }
 
     // Scale down conditions
     if (
       avgUtilization < this.config.scaleDownThreshold &&
       maxUtilization < 0.6
-    ) {
-      if (agentCount > this.config.minAgents) {
+     && agentCount > this.config.minAgents) {
         const targetCount = Math.max(
           this.config.minAgents,
           Math.floor(agentCount * 0.8) // Scale down by 20%
@@ -168,7 +166,6 @@ export class AutoScalingStrategy extends EventEmitter implements AutoScaler {
           urgency: 'low',
         };
       }
-    }
 
     return {
       action: 'no_action',

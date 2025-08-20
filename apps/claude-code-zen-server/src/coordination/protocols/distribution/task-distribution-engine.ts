@@ -7,8 +7,8 @@
  * @file Task-distribution processing engine.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core types for task distribution
@@ -639,15 +639,12 @@ export class TaskDistributionEngine extends EventEmitter {
     if (suitableAgents.length === 0) return null;
 
     // Use ML-based assignment optimization
-    const optimizedAssignment =
-      await this.assignmentOptimizer.findOptimalAssignment(
+    return await this.assignmentOptimizer.findOptimalAssignment(
         task,
         suitableAgents,
         this.assignments,
         this.metrics
       );
-
-    return optimizedAssignment;
   }
 
   private isAgentSuitable(
@@ -671,11 +668,8 @@ export class TaskDistributionEngine extends EventEmitter {
     if (agent.trustScore < 0.5) return false; // Minimum trust threshold
 
     // Check resource requirements (simplified)
-    const canHandleResources =
-      task.requirements.resourceRequirements.cpu <= 1.0 && // Assume normalized values
+    return task.requirements.resourceRequirements.cpu <= 1.0 && // Assume normalized values
       task.requirements.resourceRequirements.memory <= 1.0;
-
-    return canHandleResources;
   }
 
   private async assignTask(
@@ -774,7 +768,7 @@ export class TaskDistributionEngine extends EventEmitter {
     task: TaskDefinition,
     primaryAgent: AgentCapability
   ): Promise<string[]> {
-    const alternatives = Array.from(this.agentCapabilities.values())
+    return Array.from(this.agentCapabilities.values())
       .filter(
         (agent) =>
           agent.agentId !== primaryAgent.agentId &&
@@ -787,8 +781,6 @@ export class TaskDistributionEngine extends EventEmitter {
       })
       .slice(0, 3) // Top 3 alternatives
       .map((agent) => agent.agentId);
-
-    return alternatives;
   }
 
   private calculateCapabilityMatch(

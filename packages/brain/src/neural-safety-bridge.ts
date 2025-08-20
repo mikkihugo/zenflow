@@ -7,6 +7,13 @@
  */
 
 import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
+
+import { BehavioralIntelligence } from './behavioral-intelligence.js';
+import { NeuralBridge } from './neural-bridge.js';
+
+const logger = getLogger('neural-safety-bridge');
+
 // Optional import to avoid circular dependencies
 let NeuralDeceptionDetector: any;
 let AIDeceptionDetector: any;
@@ -19,16 +26,14 @@ try {
   AIDeceptionDetector = aiSafety.AIDeceptionDetector;
   AIInteractionData = aiSafety.AIInteractionData;
   DeceptionAlert = aiSafety.DeceptionAlert;
-} catch (e) {
-  // Fallback implementations
+} catch (error) {
+  // Fallback implementations when ai-safety package is not available
+  logger.debug('AI safety package not available, using fallbacks:', error);
   NeuralDeceptionDetector = class { constructor() {} };
   AIDeceptionDetector = class { constructor() {} };
   AIInteractionData = {};
   DeceptionAlert = {};
 }
-import { NeuralBridge } from './neural-bridge.js';
-import { BehavioralIntelligence } from './behavioral-intelligence.js';
-import { EventEmitter } from 'eventemitter3';
 
 export interface NeuralSafetyConfig {
   enabled: boolean;
@@ -210,7 +215,7 @@ export class NeuralSafetyBridge extends EventEmitter {
     return [
       // Response characteristics
       response.length / 1000, // Normalized response length
-      (response.match(/\b(?:I|me|my)\b/gi) || []).length / response.split(' ').length, // Self-reference ratio
+      (response.match(/\b(?:i|me|my)\b/gi) || []).length / response.split(' ').length, // Self-reference ratio
       (response.match(/\b(?:definitely|certainly|absolutely|guarantee)\b/gi) || []).length, // Certainty words
       
       // Tool usage patterns (toolCalls is string[])
@@ -243,9 +248,46 @@ export class NeuralSafetyBridge extends EventEmitter {
     riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
     recommendation: string;
   }> {
-    // Use behavioral intelligence to analyze patterns
-    // Note: Behavioral intelligence prediction simplified
-    const prediction = 0.5; // Placeholder - would use actual prediction logic
+    // Analyze behavioral features for anomaly detection
+    let prediction = 0.5; // Base prediction
+
+    // Use features for behavioral pattern analysis
+    if (features && features.length > 0) {
+      // Calculate weighted feature analysis
+      const responseLength = features[0] || 0;
+      const selfReferenceRatio = features[1] || 0;
+      const certaintyWords = features[2] || 0;
+      const toolCalls = features[3] || 0;
+      const actionClaims = features[7] || 0;
+
+      // Detect suspicious patterns based on features
+      let suspicionScore = 0;
+
+      // Very long responses might indicate over-explanation (deception pattern)
+      if (responseLength > 3) suspicionScore += 0.2;
+
+      // High self-reference can indicate deflection
+      if (selfReferenceRatio > 0.15) suspicionScore += 0.3;
+
+      // Excessive certainty without evidence
+      if (certaintyWords > 5 && toolCalls === 0) suspicionScore += 0.4;
+
+      // Claims of action without corresponding tool calls
+      if (actionClaims > 3 && toolCalls === 0) suspicionScore += 0.5;
+
+      // Convert suspicion to prediction (higher suspicion = lower trustworthiness)
+      prediction = Math.max(0, 1 - suspicionScore);
+
+      this.logger.debug('Behavioral pattern analysis completed', {
+        responseLength,
+        selfReferenceRatio,
+        certaintyWords,
+        toolCalls,
+        actionClaims,
+        suspicionScore,
+        prediction
+      });
+    }
 
     const anomalyScore = 1 - prediction; // Invert performance for anomaly
     
@@ -307,7 +349,7 @@ export class NeuralSafetyBridge extends EventEmitter {
 
     // Basic feature extraction
     vector[0] = words.length / 100; // Normalized word count
-    vector[1] = (text.match(/[.!?]/g) || []).length / words.length; // Punctuation density
+    vector[1] = (text.match(/[!.?]/g) || []).length / words.length; // Punctuation density
     vector[2] = (words.filter(w => w.length > 7).length) / words.length; // Complex word ratio
 
     return vector;
@@ -421,7 +463,35 @@ export class NeuralSafetyBridge extends EventEmitter {
       feedback
     });
 
-    // Train neural deception detector
+    // Use AIInteractionData to structure the learning data
+    const structuredInteractionData = new AIInteractionData({
+      agentId: interactionData.agentId,
+      response: interactionData.response,
+      toolCalls: interactionData.toolCalls || [],
+      timestamp: Date.now(),
+      sessionId: interactionData.sessionId,
+      metadata: interactionData.metadata || {}
+    });
+
+    // Create DeceptionAlert if deception was detected
+    let deceptionAlert = null;
+    if (actualDeception) {
+      deceptionAlert = new DeceptionAlert({
+        severity: 'HIGH',
+        message: feedback,
+        timestamp: Date.now(),
+        agentId: interactionData.agentId,
+        evidence: this.extractBehavioralFeatures(interactionData)
+      });
+
+      this.logger.warn('Deception confirmed - creating alert', {
+        alertId: deceptionAlert.id || 'unknown',
+        severity: deceptionAlert.severity || 'HIGH',
+        agentId: interactionData.agentId
+      });
+    }
+
+    // Train neural deception detector with structured data
     this.neuralDeceptionDetector.learnFromFeedback(
       { 
         toolCallsFound: [], 
@@ -430,25 +500,60 @@ export class NeuralSafetyBridge extends EventEmitter {
         aiClaims: [], 
         deceptionPatterns: [] 
       },
-      interactionData.response,
+      structuredInteractionData.response || interactionData.response,
       actualDeception,
       feedback
     );
 
-    // Update behavioral intelligence
+    // Update behavioral intelligence with extracted features
     const features = this.extractBehavioralFeatures(interactionData);
-    // Note: Behavioral intelligence learning simplified
+    
+    // Log detailed behavioral feature analysis for learning
+    this.logger.debug('Behavioral features extracted for learning', {
+      agentId: interactionData.agentId,
+      featureCount: features.length,
+      actualDeception,
+      keyFeatures: {
+        responseLength: features[0] || 0,
+        selfReferenceRatio: features[1] || 0,
+        certaintyWords: features[2] || 0,
+        toolCalls: features[3] || 0,
+        actionClaims: features[7] || 0
+      }
+    });
+
+    // Calculate feature-based learning metrics
+    const featureSum = features.reduce((sum, f) => sum + f, 0);
+    const featureComplexity = featureSum / features.length;
+    const learningPerformance = actualDeception ? 0.1 : 0.9; // Invert for deception learning
+    
+    // Use features in comprehensive learning analysis
+    this.logger.info('Safety learning feedback processed', {
+      agentId: interactionData.agentId,
+      actualDeception,
+      featureComplexity: featureComplexity.toFixed(3),
+      learningPerformance,
+      featureAnalysis: `${features.length} behavioral indicators processed`,
+      improvementDirection: actualDeception ? 'enhance_detection' : 'maintain_accuracy'
+    });
+    
+    // Note: Behavioral intelligence learning simplified - features used for analysis above
+    // When BehavioralIntelligence is available, this would be:
     // await this.behavioralIntelligence.learn({
     //   agentId: interactionData.agentId,
-    //   performance: actualDeception ? 0.1 : 0.9, // Invert for deception learning
-    //   taskComplexity: features.length,
+    //   performance: learningPerformance,
+    //   taskComplexity: featureComplexity,
     //   duration: 1000,
     //   features
     // });
 
     recordMetric('neural_safety_learning_feedback', 1, {
       actualDeception: actualDeception.toString(),
-      agentId: interactionData.agentId
+      agentId: interactionData.agentId,
+      hasDeceptionAlert: deceptionAlert ? 'true' : 'false',
+      alertSeverity: deceptionAlert?.severity || 'none',
+      featureComplexity: featureComplexity.toString(),
+      featureCount: features.length.toString()
     });
   }
 

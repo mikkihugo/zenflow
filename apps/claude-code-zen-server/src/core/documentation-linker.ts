@@ -8,11 +8,11 @@
  * @file Documentation-linker implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { existsSync } from 'node:fs';
 import { readdir, readFile, stat, writeFile } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('UnifiedDocLinker');
 
@@ -267,8 +267,8 @@ export class DocumentationLinker extends EventEmitter {
         // Find TODO comments
         if (line) {
           const todoMatch =
-            line.match(/\/\/\s*TODO:?\s*(.+)/i) ||
-            line.match(/#\s*TODO:?\s*(.+)/i);
+            line.match(/\/\/\s*todo:?\s*(.+)/i) ||
+            line.match(/#\s*todo:?\s*(.+)/i);
           if (todoMatch && todoMatch?.[1]) {
             await this.addCodeReference({
               file: filePath,
@@ -693,7 +693,7 @@ export class DocumentationLinker extends EventEmitter {
       extname(filePath),
       ''
     );
-    return filename.split('/').pop()?.replace(/[-_]/g, ' ') || 'Untitled';
+    return filename.split('/').pop()?.replace(/[_-]/g, ' ') || 'Untitled';
   }
 
   private determineDocumentType(
@@ -770,11 +770,9 @@ export class DocumentationLinker extends EventEmitter {
             content: '',
           };
         }
-      } else if (currentSection) {
-        if (currentSection) {
+      } else if (currentSection && currentSection) {
           currentSection.content += `${line}\n`;
         }
-      }
     }
 
     // Save last section
@@ -797,9 +795,9 @@ export class DocumentationLinker extends EventEmitter {
     }> = [];
 
     // Markdown links
-    const markdownLinks = content.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
+    const markdownLinks = content.match(/\[([^\]]+)]\(([^)]+)\)/g) || [];
     for (const link of markdownLinks) {
-      const match = link.match(/\[([^\]]+)\]\(([^)]+)\)/);
+      const match = link.match(/\[([^\]]+)]\(([^)]+)\)/);
       if (match && match?.[1] && match?.[2]) {
         const text = match?.[1];
         const target = match?.[2];

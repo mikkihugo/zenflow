@@ -494,9 +494,10 @@ export class TechnologyStandardsService extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Failed to create technology standard:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('standard-creation-failed', {
         name: request.name,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
@@ -610,9 +611,10 @@ export class TechnologyStandardsService extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Standard compliance monitoring failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('standard-compliance-failed', {
         standardId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }

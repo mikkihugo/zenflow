@@ -19,6 +19,42 @@ import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
 
 /**
+ * Incident Severity Levels
+ */
+export enum IncidentSeverity {
+  LOW = 'low',
+  MEDIUM = 'medium',
+  HIGH = 'high',
+  CRITICAL = 'critical'
+}
+
+/**
+ * Incident Categories
+ */
+export enum IncidentCategory {
+  VULNERABILITY = 'vulnerability',
+  DATA_BREACH = 'data-breach',
+  UNAUTHORIZED_ACCESS = 'unauthorized-access',
+  MALWARE = 'malware',
+  DENIAL_OF_SERVICE = 'denial-of-service',
+  INSIDER_THREAT = 'insider-threat',
+  COMPLIANCE_VIOLATION = 'compliance-violation',
+  OTHER = 'other'
+}
+
+/**
+ * Incident Status
+ */
+export enum IncidentStatus {
+  REPORTED = 'reported',
+  ACKNOWLEDGED = 'acknowledged',
+  INVESTIGATING = 'investigating',
+  CONTAINED = 'contained',
+  RESOLVED = 'resolved',
+  CLOSED = 'closed'
+}
+
+/**
  * DevSecOps Manager configuration
  */
 export interface DevSecOpsManagerConfig {
@@ -280,9 +316,6 @@ export interface ComplianceStatus {
 // Re-export types from services for backward compatibility
 export type {
   SecurityIncident,
-  IncidentSeverity,
-  IncidentCategory,
-  IncidentStatus,
   IncidentPriority
 } from '../services/devsecops/security-incident-response-service';
 

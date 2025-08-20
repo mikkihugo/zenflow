@@ -13,6 +13,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import type {
@@ -28,6 +29,7 @@ import {
   ServiceOperationError,
 } from '../core/interfaces';
 import { ServiceType } from '../types';
+
 import {
   createDataServiceAdapter,
   createDefaultDataServiceAdapterConfig,

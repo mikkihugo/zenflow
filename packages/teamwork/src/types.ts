@@ -117,6 +117,8 @@ export interface ConversationContext {
   deadline: Date | undefined;
   domain: string;
   expertise: string[];
+  solutionId?: string;
+  impedimentId?: string;
 }
 
 export interface ConversationOutcome {
@@ -211,6 +213,7 @@ export interface PatternConstraint {
  */
 export interface ConversationOrchestrator {
   createConversation(config: ConversationConfig): Promise<ConversationSession>;
+  startConversation(config: ConversationConfig | string): Promise<ConversationSession>;
   joinConversation(conversationId: string, agent: AgentId): Promise<void>;
   leaveConversation(conversationId: string, agent: AgentId): Promise<void>;
   sendMessage(message: ConversationMessage): Promise<void>;
@@ -328,6 +331,7 @@ export interface ConversationTools {
 // Add missing exports for index.ts compatibility
 export interface ConversationParticipant {
   id: string;
+  name: string;
   role: string;
   status: 'active' | 'inactive' | 'busy';
   capabilities: string[];
@@ -349,4 +353,16 @@ export interface TeamworkConfig {
   enableLogging?: boolean;
   timeout?: number;
   patterns?: DialoguePattern[];
+}
+
+export interface ConversationSummary {
+  id: string;
+  title: string;
+  participantCount: number;
+  messageCount: number;
+  duration?: number;
+  status: ConversationStatus;
+  outcome?: string;
+  keyDecisions: string[];
+  timestamp: Date;
 }

@@ -12,10 +12,10 @@
  * MPORTANT: "Collective" = per workspace, "FACT" = global documentation database
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { access, readdir, readFile, stat } from 'node:fs/promises';
-import { basename, extname, join } from 'node:path';
+import { access, readdir, readFile } from 'node:fs/promises';
+import { extname, join } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 import EnvironmentDetector, {
   type EnvironmentSnapshot,
   type EnvironmentTool,
@@ -714,7 +714,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       }
 
       // 3. Sort and limit results
-      let sortedResults = results.sort((a, b) => {
+      const sortedResults = results.sort((a, b) => {
         if (preferFacts) {
           // Prioritize FACT results, then by relevance
           if (a.source.type !== b.source.type) {
@@ -891,7 +891,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       envSnapshot?.tools || []
     );
 
-    const summary = {
+    return {
       tools: {
         available: envSnapshot?.tools.filter((t) => t.available).length || 0,
         total: envSnapshot?.tools.length || 0,
@@ -905,8 +905,6 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       suggestions: envSnapshot?.suggestions || [],
       toolsWithDocs,
     };
-
-    return summary;
   }
 
   /**
@@ -1346,7 +1344,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
             .split('\n')
             .map((line) => line.trim())
             .filter((line) => line && !line.startsWith('#'))
-            .map((line) => line.split(/[=<>]/)[0]);
+            .map((line) => line.split(/[<=>]/)[0]);
 
         case 'Cargo.toml': {
           // Simple regex parsing for Cargo.toml dependencies
@@ -1392,9 +1390,9 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     // Look for deps function with Hex packages
     // Pattern: {:package_name, "~> version"} or {:package_name, "~> version", [options]}
     const depPatterns = [
-      /\{:(\w+),\s*['"~>]+([^'"]+)['"]/g, // {:phoenix, "~> 1.7.0"}
-      /\{:(\w+),\s*['"]+([^'"]+)['"]/g, // {:phoenix, "1.7.0"}
-      /\{:(\w+),\s*github:/g, // {:phoenix, github: "phoenixframework/phoenix"}
+      /{:(\w+),\s*["'>~]+([^"']+)["']/g, // {:phoenix, "~> 1.7.0"}
+      /{:(\w+),\s*["']+([^"']+)["']/g, // {:phoenix, "1.7.0"}
+      /{:(\w+),\s*github:/g, // {:phoenix, github: "phoenixframework/phoenix"}
     ];
 
     for (const pattern of depPatterns) {
@@ -1417,7 +1415,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     const deps: string[] = [];
 
     // Pattern: "package_name": {:hex, :package_name, "version", ...}
-    const lockPattern = /"(\w+)":\s*\{:hex,/g;
+    const lockPattern = /"(\w+)":\s*{:hex,/g;
 
     let match;
     while ((match = lockPattern.exec(content)) !== null) {
@@ -1455,7 +1453,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         }
 
         if (inDepsSection && trimmed.includes('=')) {
-          const packageName = trimmed.split('=')[0].trim().replace(/['"]/g, '');
+          const packageName = trimmed.split('=')[0].trim().replace(/["']/g, '');
           if (packageName && !deps.includes(packageName)) {
             deps.push(packageName);
           }
@@ -1479,7 +1477,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     const deps: string[] = [];
 
     // Pattern: {package_name, "version"} or {package_name, {git, "url"}}
-    const depPattern = /\{(\w+),/g;
+    const depPattern = /{(\w+),/g;
 
     let match;
     while ((match = depPattern.exec(content)) !== null) {
@@ -1499,7 +1497,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     const deps: string[] = [];
 
     // Pattern similar to mix.lock but for Erlang
-    const lockPattern = /\{<<"(\w+)">>/g;
+    const lockPattern = /{<<"(\w+)">>/g;
 
     let match;
     while ((match = lockPattern.exec(content)) !== null) {

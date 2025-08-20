@@ -15,13 +15,13 @@
  * - Uses @claude-zen/brain for behavioral intelligence and adaptive learning
  * - Leverages @claude-zen/neural-ml for pattern recognition and prediction
  * - Integrates with @claude-zen/brain for performance tracking
- * - Utilizes @claude-zen/database for persistent learning storage
+ * - Utilizes @claude-zen/foundation for persistent learning storage
  */
 
+import { queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/knowledge';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 // Note: SharedFACTCapable removed - using knowledge package directly
-import { storeCoordinationFact, queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/knowledge';
 import type {
   EventBus,
   Logger,
@@ -986,11 +986,9 @@ export class SwarmMigrationSystem extends EventEmitter {
   private async validateCapabilityRetention(learning: ExtractedLearning): Promise<number> {
     // Ensure all capabilities are mapped to new roles
     const suggestedRoles = learning.transitionRecommendations.suggestedQueenRoles;
-    const avgConfidence = suggestedRoles.length > 0
+    return suggestedRoles.length > 0
       ? suggestedRoles.reduce((sum, role) => sum + role.confidence, 0) / suggestedRoles.length
       : 0.5;
-    
-    return avgConfidence;
   }
 
   /**

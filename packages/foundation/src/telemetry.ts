@@ -71,19 +71,18 @@ import {
   type UpDownCounter,
   type Attributes
 } from '@opentelemetry/api';
-
-import { NodeSDK } from '@opentelemetry/sdk-node';
-import { Resource } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 // import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 // import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
-
+import { Resource } from '@opentelemetry/resources';
+import { NodeSDK } from '@opentelemetry/sdk-node';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import { register as promRegister, Counter as PromCounter, Histogram as PromHistogram, Gauge as PromGauge } from 'prom-client';
-import { getLogger } from './logging';
+
 import { injectable, singleton } from './di';
 import { Result, ok, err } from './error-handling';
+import { getLogger } from './logging';
 
 // =============================================================================
 // TELEMETRY CONFIGURATION
@@ -277,7 +276,7 @@ export class TelemetryManager {
    */
   async initialize(): Promise<Result<void, Error>> {
     if (this.initialized) {
-      return ok(undefined);
+      return ok();
     }
 
     try {
@@ -307,7 +306,7 @@ export class TelemetryManager {
       this.initialized = true;
       this.logger.info('✅ Telemetry system initialized successfully');
       
-      return ok(undefined);
+      return ok();
     } catch (error) {
       this.logger.error('Failed to initialize telemetry system', { error });
       return err(error instanceof Error ? error : new Error(String(error)));
@@ -390,7 +389,7 @@ export class TelemetryManager {
       this.initialized = false;
       this.logger.info('Telemetry system shutdown successfully');
       
-      return ok(undefined);
+      return ok();
     } catch (error) {
       this.logger.error('Failed to shutdown telemetry system', { error });
       return err(error instanceof Error ? error : new Error(String(error)));
@@ -425,7 +424,7 @@ export class TelemetryManager {
       if (!promCounter) {
         const labelNames = attributes ? Object.keys(attributes) : [];
         promCounter = new PromCounter({
-          name: name.replace(/[^a-zA-Z0-9_]/g, '_'),
+          name: name.replace(/\W/g, '_'),
           help: `Counter metric: ${name}`,
           labelNames,
           registers: [promRegister],
@@ -467,7 +466,7 @@ export class TelemetryManager {
       if (!promHistogram) {
         const labelNames = attributes ? Object.keys(attributes) : [];
         promHistogram = new PromHistogram({
-          name: name.replace(/[^a-zA-Z0-9_]/g, '_'),
+          name: name.replace(/\W/g, '_'),
           help: `Histogram metric: ${name}`,
           labelNames,
           registers: [promRegister],
@@ -509,7 +508,7 @@ export class TelemetryManager {
       if (!promGauge) {
         const labelNames = attributes ? Object.keys(attributes) : [];
         promGauge = new PromGauge({
-          name: name.replace(/[^a-zA-Z0-9_]/g, '_'),
+          name: name.replace(/\W/g, '_'),
           help: `Gauge metric: ${name}`,
           labelNames,
           registers: [promRegister],
@@ -716,7 +715,7 @@ export async function shutdownTelemetry(): Promise<Result<void, Error>> {
     globalTelemetryManager = null;
     return result;
   }
-  return ok(undefined);
+  return ok();
 }
 
 // =============================================================================

@@ -4,10 +4,6 @@
 
 import { Logger } from '@claude-zen/foundation';
 
-const logger = new Logger(
-  'interfaces-clients-adapters-websocket-client-factory'
-);
-
 /**
  * WebSocket Client Factory for UACL.
  *
@@ -24,7 +20,6 @@ import type {
 } from '../core/interfaces';
 import { EnhancedWebSocketClient } from './enhanced-websocket-client';
 import {
-  createWebSocketClient,
   WebSocketClientAdapter,
 } from './websocket-client-adapter';
 
@@ -33,6 +28,10 @@ import type {
   WebSocketConnectionInfo,
   WebSocketMetrics,
 } from './websocket-types';
+
+const logger = new Logger(
+  'interfaces-clients-adapters-websocket-client-factory'
+);
 
 /**
  * WebSocket Client Factory implementing UACL ClientFactory interface.

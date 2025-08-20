@@ -316,6 +316,7 @@ pub struct ErrorLogger {
   #[cfg(feature = "logging")]
   log_level: log::Level,
   #[cfg(not(feature = "logging"))]
+  #[allow(dead_code)]
   log_level: u8, // Simple placeholder when log feature is disabled
   structured_logging: bool,
   performance_tracking: bool,
@@ -434,10 +435,10 @@ impl ErrorLogger {
 
   fn log_simple_error(
     &self,
-    error: &RuvFannError,
+    _error: &RuvFannError,
     context: Option<&ErrorContext>,
   ) {
-    let context_str = context
+    let _context_str = context
       .map(|c| format!(" [{}]", c.operation))
       .unwrap_or_default();
 

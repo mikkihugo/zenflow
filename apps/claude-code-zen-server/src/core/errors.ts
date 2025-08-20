@@ -10,21 +10,8 @@
 
 import { 
   getLogger,
-  ContextError,
   ValidationError,
-  ConfigurationError,
-  NetworkError,
-  TimeoutError,
-  ResourceError,
-  EnhancedError,
-  withContext,
-  ensureError,
-  isError,
-  isErrorWithContext,
-  safeAsync,
-  safe,
-  withRetry,
-  createCircuitBreaker
+  ConfigurationError
 } from '@claude-zen/foundation';
 
 const logger = getLogger('ErrorSystem');

@@ -14,6 +14,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger } from '../config/logging-config';
 import type { DatabaseDrivenSystem } from '../core/database-driven-system';
 import { generateId } from '../core/helpers';
@@ -314,11 +315,7 @@ class DatabaseSPARCBridge extends EventEmitter {
     };
 
     // Save to database
-    if (assignment.type === 'feature') {
-      await this.documentService.updateDocument(document.id, updatedDocument);
-    } else {
-      await this.documentService.updateDocument(document.id, updatedDocument);
-    }
+    await (assignment.type === 'feature' ? this.documentService.updateDocument(document.id, updatedDocument) : this.documentService.updateDocument(document.id, updatedDocument));
 
     logger.info(`📝 Updated document ${document.id} with SPARC results`);
   }

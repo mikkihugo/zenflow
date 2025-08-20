@@ -16,8 +16,9 @@
  */
 
 import { EventEmitter } from 'node:events';
-import { getLogger } from '../../config/logging-config';
+
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../../config/logging-config';
 
 // =============================================================================
 // SERVICE AND CAPABILITY DOMAINS

@@ -30,7 +30,7 @@
  * 
  * **Delegates to:**
  * - @claude-zen/foundation: Core validation utilities and type checking
- * - @claude-zen/monitoring: Performance validation and health checks
+ * - @claude-zen/foundation: Performance validation and health checks
  * - @claude-zen/ai-safety: Security and safety validation
  * - @claude-zen/brain: Performance and stress testing validation
  * - @claude-zen/chaos-engineering: Failover and resilience testing
@@ -41,70 +41,45 @@
  * @version 2.1.0
  * 
  * @requires @claude-zen/foundation - Core validation utilities
- * @requires @claude-zen/monitoring - Performance validation
+ * @requires @claude-zen/foundation - Performance validation
  * @requires @claude-zen/ai-safety - Security validation
  * @requires @claude-zen/brain - Load testing
  * 
  * **REDUCTION ACHIEVED: 1,423 → 340 lines (76.1% reduction) through strategic delegation**
  */
 
-import { getLogger, type Logger } from '../../config/logging-config';
 
 // Strategic imports from @claude-zen packages
 import type {
-  ValidationEngine,
-  ValidationRule,
-  ValidationResult as CoreValidationResult,
-  ValidationConfig as CoreValidationConfig
+  ValidationEngine
 } from '@claude-zen/foundation';
 
 import type {
-  HealthValidator,
-  PerformanceValidator,
-  MetricsValidator,
-  SystemHealthResult
-} from '@claude-zen/monitoring';
+  HealthValidator
+} from '@claude-zen/foundation';
 
 import type {
-  SecurityValidator,
-  SafetyValidator,
-  ComplianceChecker,
-  SecurityValidationResult
+  SecurityValidator
 } from '@claude-zen/ai-safety';
 
 import type {
-  LoadTester,
-  StressTester,
-  PerformanceTester,
-  LoadTestResult
+  LoadTester
 } from '@claude-zen/brain';
 
 import type {
-  ChaosValidator,
-  ResilienceValidator,
-  FailoverTester,
-  ChaosTestResult
+  ChaosValidator
 } from '@claude-zen/chaos-engineering';
 
 import type {
-  IntegrationValidator,
-  CompatibilityChecker,
-  TeamworkValidator,
-  IntegrationResult
+  IntegrationValidator
 } from '@claude-zen/teamwork';
 
 // Foundation utilities for validation operations
 import {
-  isString,
-  isNumber,
-  isObject,
-  isDefined,
   assertDefined,
-  getErrorMessage,
-  hasProperty,
-  hasNumberProperty,
-  validateSchema
+  getErrorMessage
 } from '@claude-zen/foundation';
+import { getLogger, type Logger } from '../../config/logging-config';
 
 // =============================================================================
 // TYPES AND INTERFACES - Service Integration Layer
@@ -211,7 +186,7 @@ export interface ValidationSectionResult {
  * 
  * **Key Capabilities (via delegation):**
  * - Core validation utilities via @claude-zen/foundation
- * - Performance validation via @claude-zen/monitoring
+ * - Performance validation via @claude-zen/foundation
  * - Security validation via @claude-zen/ai-safety
  * - Load testing via @claude-zen/brain
  * - Resilience testing via @claude-zen/chaos-engineering
@@ -253,7 +228,7 @@ export class USLValidationFramework {
       });
       await this.validationEngine.initialize();
 
-      // Delegate to @claude-zen/monitoring for performance validation
+      // Delegate to @claude-zen/foundation for performance validation
       if (this.config.scopes.performance) {
         const { SystemMonitor } = await import('@claude-zen/foundation');
         this.healthValidator = new HealthValidator({
@@ -699,7 +674,7 @@ export type {
  * **AFTER (Strategic Package Delegation):**
  * - 340 lines through strategic @claude-zen package delegation (76.1% reduction)
  * - Battle-tested validation utilities via @claude-zen/foundation
- * - Professional performance validation via @claude-zen/monitoring
+ * - Professional performance validation via @claude-zen/foundation
  * - Advanced security validation via @claude-zen/ai-safety
  * - Comprehensive load testing via @claude-zen/brain
  * - Sophisticated resilience testing via @claude-zen/chaos-engineering

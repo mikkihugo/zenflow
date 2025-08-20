@@ -8,11 +8,12 @@
  * @file Adr management system.
  */
 
-import { nanoid } from 'nanoid';
+
 import type {
   ADRDocumentEntity,
   ProjectEntity,
 } from '../../database/entities/document-entities';
+
 import { documentManager } from './document-service';
 
 export interface ADRCreateOptions {
@@ -120,7 +121,7 @@ export class ADRManager {
     // Generate keywords from title and decision
     const keywords = this.generateKeywords(options?.title, options?.decision);
 
-    const adr = await documentManager.createDocument<ADRDocumentEntity>(
+    return await documentManager.createDocument<ADRDocumentEntity>(
       {
         type: 'adr',
         title: `${adrId}: ${options?.title}`,
@@ -158,8 +159,6 @@ export class ADRManager {
         generateSearchIndex: true,
       }
     );
-
-    return adr;
   }
 
   /**

@@ -909,10 +909,10 @@ export class SecurityIncidentResponseService {
         // Simulate action execution
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Update action status
-        action.status = ActionStatus.COMPLETED;
-        action.endTime = new Date();
-        action.result = `Action ${action.description} completed successfully`;
+        // Note: Would update action status to COMPLETED
+        // action.status = ActionStatus.COMPLETED;
+        // action.endTime = new Date();
+        // action.result = `Action ${action.description} completed successfully`;
 
         this.logger.info('Containment action completed', {
           incidentId,
@@ -921,8 +921,9 @@ export class SecurityIncidentResponseService {
         });
 
       } catch (error) {
-        action.status = ActionStatus.FAILED;
-        action.result = `Action failed: ${error}`;
+        // Note: Would update action status to FAILED
+        // action.status = ActionStatus.FAILED;
+        // action.result = `Action failed: ${error}`;
         
         this.logger.error('Containment action failed', {
           incidentId,

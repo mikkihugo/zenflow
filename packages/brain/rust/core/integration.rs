@@ -689,6 +689,7 @@ impl<T: Float + Send + Default> IntegrationTestSuite<T> {
 /// FANN compatibility validator
 pub struct FannCompatibilityValidator<T: Float> {
     compatibility_tests: Vec<CompatibilityTest<T>>,
+    #[allow(dead_code)]
     api_coverage: HashMap<String, bool>,
 }
 
@@ -731,9 +732,9 @@ impl<T: Float> FannCompatibilityValidator<T> {
         for test in &self.compatibility_tests {
             match (test.test_fn)() {
                 Ok(()) => passed += 1,
-                Err(e) => {
+                Err(_e) => {
                     #[cfg(feature = "logging")]
-                    warn!("FANN compatibility test '{}' failed: {}", test.name, e);
+                    warn!("FANN compatibility test '{}' failed: {}", test.name, _e);
                 }
             }
         }

@@ -26,6 +26,8 @@ export interface FactSystemConfig {
     enableRealTimeAPIs?: boolean;
     /** Enable Hex.pm (Elixir package manager) integration */
     enableHexPM?: boolean;
+    /** Enable AI-powered inference and reasoning capabilities */
+    enableInference?: boolean;
 }
 /**
  * SQL-based fact search query (like ruvnet/FACT)

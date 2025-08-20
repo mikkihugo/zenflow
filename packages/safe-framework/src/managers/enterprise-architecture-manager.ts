@@ -293,8 +293,9 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       return principle;
 
     } catch (error) {
-      this.logger.error('Failed to create architecture principle:', error);
-      this.emit('architecture-principle-failed', { name, error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error('Failed to create architecture principle:', errorMessage);
+      this.emit('architecture-principle-failed', { name, error: errorMessage });
       throw error;
     }
   }
@@ -375,8 +376,9 @@ export class EnterpriseArchitectureManager extends EventEmitter {
       return result;
 
     } catch (error) {
-      this.logger.error('Principle compliance validation failed:', error);
-      this.emit('principle-validation-failed', { principleId, error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error('Principle compliance validation failed:', errorMessage);
+      this.emit('principle-validation-failed', { principleId, error: errorMessage });
       throw error;
     }
   }
@@ -495,7 +497,8 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Failed to create technology standard:', error);
-      this.emit('technology-standard-failed', { name, error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.emit('technology-standard-failed', { name, error: errorMessage });
       throw error;
     }
   }
@@ -652,7 +655,8 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Failed to initiate governance decision:', error);
-      this.emit('governance-decision-failed', { type, title, error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.emit('governance-decision-failed', { type, title, error: errorMessage });
       throw error;
     }
   }
@@ -684,7 +688,8 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Failed to calculate architecture health metrics:', error);
-      this.emit('architecture-health-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.emit('architecture-health-failed', { error: errorMessage });
       throw error;
     }
   }

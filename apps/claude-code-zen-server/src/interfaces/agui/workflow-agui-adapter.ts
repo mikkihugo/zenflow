@@ -13,17 +13,21 @@
  * - Production-grade performance and audit trail
  */
 
-import { EventEmitter } from 'eventemitter3';
+import {
+  type AGUIGateClosedEvent,
+  type AGUIGateOpenedEvent,
+  createCorrelationId,
+  createEvent,
+  type TypeSafeEventBus,
+} from '@claude-zen/event-system';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 import type {
-  ApprovalRecord,
   EscalationChain,
   EscalationRecord,
   GateEscalationLevel,
   WorkflowContext,
   WorkflowGateRequest,
-  WorkflowGateResult,
 } from '../../coordination/workflows/workflow-gate-request';
 import {
   Domain,
@@ -32,18 +36,6 @@ import {
   type Result,
 } from '../../core/domain-boundary-validator';
 import {
-  type AGUIGateClosedEvent,
-  type AGUIGateOpenedEvent,
-  createCorrelationId,
-  createEvent,
-  EventPriority,
-  type HumanValidationCompletedEvent,
-  type HumanValidationRequestedEvent,
-  type TypeSafeEventBus,
-} from '@claude-zen/event-system';
-import {
-  AGUIInterface,
-  type EventHandlerConfig,
   TerminalAGUI,
   type ValidationQuestion,
 } from './agui-adapter';
@@ -970,11 +962,9 @@ export class WorkflowAGUIAdapter extends TerminalAGUI {
       record.correlationId,
     ]);
 
-    const csvContent = [headers, ...rows]
+    return [headers, ...rows]
       .map((row) => row.map((cell) => `"${cell}"`).join(','))
       .join('\n');
-
-    return csvContent;
   }
 
   /**

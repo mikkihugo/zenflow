@@ -7,13 +7,14 @@
  */
 
 import * as express from 'express';
+
 import { getLogger } from "../../../config/logging-config";
-import { SwarmService } from '../../../services/coordination/swarm-service';
 import type {
   AgentConfig,
   SwarmConfig,
   TaskOrchestrationConfig,
 } from '../../../coordination/types/interfaces';
+import { SwarmService } from '../../../services/coordination/swarm-service';
 import {
   AgentConfigSchema,
   SwarmConfigSchema,

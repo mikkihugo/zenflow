@@ -8,6 +8,19 @@
 
 // 🔧 FOUNDATION: Comprehensive infrastructure (includes database via Storage)
 import { 
+  AISafetyOrchestrator, 
+  AIDeceptionDetector,
+  NeuralDeceptionDetector 
+} from '@claude-zen/ai-safety';
+import { 
+  BrainCoordinator, 
+  NeuralBridge, 
+  DSPyLLMBridge, 
+  RetrainingMonitor,
+  BehavioralIntelligence
+} from '@claude-zen/brain';
+import { createEventBus } from '@claude-zen/event-system';
+import { 
   getLogger, 
   getConfig, 
   createContainer,
@@ -18,43 +31,28 @@ import {
   createCircuitBreaker,
   Storage,
   getDatabaseAccess,
-  LLMProvider,
-  getTelemetry,
-  ProjectManager,
-  getProjectManager
+  getProjectManager,
+  LoadBalancer,
+  AgentMonitoring,
+  ChaosEngineering
 } from '@claude-zen/foundation';
-import { EventBus, createEventBus } from '@claude-zen/event-system';
 
 // 🔥 MAIN APP: Only coordination system (business logic specific to claude-code-zen)
+import { SPARCCommander } from '@claude-zen/sparc';
+import { Teamwork } from '@claude-zen/teamwork';
+import { WorkflowEngine } from '@claude-zen/workflows';
+
+import { AgentInteractionPipeline } from './coordination/agent-interaction-pipeline';
 import { QueenCommander } from './coordination/agents/queen-coordinator';
+import { QueenSafetyIntegration } from './coordination/agents/queen-safety-integration';
 import { SwarmCommander } from './coordination/agents/swarm-commander';
 import { DevCubeMatron } from './coordination/cubes/dev-cube-matron';
 import { OpsCubeMatron } from './coordination/cubes/ops-cube-matron';
-import { SPARCCommander } from '@claude-zen/sparc';
-import { QueenSafetyIntegration } from './coordination/agents/queen-safety-integration';
-import { AgentInteractionPipeline } from './coordination/agent-interaction-pipeline';
 import { SafetyInterventionProtocols } from './coordination/safety-intervention-protocols';
 
 // ✅ EXTRACTED PACKAGES: All specialized systems from standalone libraries
-import { ChaosEngineering } from '@claude-zen/foundation';
-import { WorkflowEngine } from '@claude-zen/workflows';
-import { LoadBalancer } from '@claude-zen/foundation';
-import { Teamwork } from '@claude-zen/teamwork';
-import { 
-  AISafetyOrchestrator, 
-  AIDeceptionDetector,
-  NeuralDeceptionDetector 
-} from '@claude-zen/ai-safety';
-import { AgentMonitoring } from '@claude-zen/foundation';
 
 // 🧠 BRAIN PACKAGE: Central neural gateway (includes DSPy, behavioral intelligence, neural networks, WASM)
-import { 
-  BrainCoordinator, 
-  NeuralBridge, 
-  DSPyLLMBridge, 
-  RetrainingMonitor,
-  BehavioralIntelligence
-} from '@claude-zen/brain';
 
 const logger = getLogger('Main');
 

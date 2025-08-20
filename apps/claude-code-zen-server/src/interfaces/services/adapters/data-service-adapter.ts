@@ -5,7 +5,7 @@
  * @claude-zen packages for database operations, caching, monitoring, and service management.
  * 
  * Delegates to:
- * - @claude-zen/database: Multi-database operations (SQLite, LanceDB, Kuzu, PostgreSQL)
+ * - @claude-zen/foundation: Multi-database operations (SQLite, LanceDB, Kuzu, PostgreSQL)
  * - @claude-zen/foundation: Performance tracking, telemetry, error handling, DI
  * - @claude-zen/workflows: Service lifecycle management and orchestration
  * - @claude-zen/brain: Request deduplication and concurrency control
@@ -21,30 +21,20 @@
  * - Service lifecycle management
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
-import type {
-  DocumentCreateOptions,
-  DocumentQueryOptions,
-  DocumentSearchOptions,
-} from "../services/document/document-service"
 import { DocumentService } from '../../../database/services/document-service';
 import type {
-  CommandResult,
   DocumentData,
-  SwarmData,
   SystemStatusData,
-  TaskData,
 } from '../../../interfaces/web/web-data-service';
 import { WebDataService } from '../../../interfaces/web/web-data-service';
-import type { DocumentType } from '../../../types/workflow-types';
 import type {
   Service,
   ServiceConfig,
   ServiceDependencyConfig,
-  ServiceError,
   ServiceEvent,
   ServiceEventType,
   ServiceLifecycleStatus,
@@ -53,8 +43,11 @@ import type {
   ServiceOperationResponse,
   ServiceStatus,
 } from '../../core/interfaces';
-import type { DataServiceConfig } from '../types';
-import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';
+import type {
+  DocumentCreateOptions,
+  DocumentQueryOptions,
+} from "../services/document/document-service"
+import { ServiceEnvironment, ServicePriority } from '../types';
 
 // ============================================================================
 // CONFIGURATION INTERFACES
@@ -261,8 +254,8 @@ export class DataServiceAdapter extends EventEmitter implements Service {
         Object.assign(this.config, config);
       }
 
-      // Delegate to @claude-zen/database for multi-database operations
-      const { DatabaseFactory, RelationalDao, VectorDao, GraphDao } = await import('@claude-zen/database');
+      // Delegate to @claude-zen/foundation for multi-database operations
+      const { DatabaseFactory, RelationalDao, VectorDao, GraphDao } = await import('@claude-zen/foundation');
       this.databaseFactory = new DatabaseFactory({
         sqlite: { path: './data/app.db', enableWAL: true },
         lancedb: { path: './data/vectors', dimensions: 1536 },

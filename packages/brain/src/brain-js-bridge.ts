@@ -30,15 +30,12 @@
  * @version 1.0.0
  */
 
-const brain = require('brain.js');
 import { 
   getLogger, 
   getDatabaseAccess, 
   type DatabaseAccess 
-} from '@claude-zen/foundation';
-import { 
+, 
   injectable, 
-  inject, 
   type Logger 
 } from '@claude-zen/foundation';
 import {
@@ -51,15 +48,13 @@ import {
   ValidationError,
   ConfigurationError
 } from '@claude-zen/foundation';
+
 import type {
-  NeuralModelType,
-  TrainingParameters,
   ModelMetrics,
   ActivationFunction
-} from './types';
+} from './types/index';
 
-// Foundation-optimized logging with DI support
-const logger = getLogger('BrainJsBridge');
+const brain = require('brain.js');
 
 /**
  * Configuration for brain.js neural networks
@@ -232,13 +227,21 @@ export class BrainJsBridge {
       memoryOptimization: true,
       ...config
     };
+    
+    // Use foundationLogger for consistent logging throughout the bridge
+    this.foundationLogger.debug('BrainJsBridge initialized with config', {
+      learningRate: this.config.learningRate,
+      iterations: this.config.iterations,
+      errorThreshold: this.config.errorThreshold,
+      gpuEnabled: this.config.gpu
+    });
   }
 
   /**
    * Initialize the brain.js bridge
    */
   async initialize(): Promise<Result<void, ContextError>> {
-    if (this.initialized) return ok(undefined);
+    if (this.initialized) return ok();
 
     return safeAsync(async () => {
       this.foundationLogger.info('Initializing Brain.js Bridge with Foundation integration...');
@@ -489,9 +492,10 @@ export class BrainJsBridge {
       const metrics: ModelMetrics = {
         accuracy: 1 - stats.error, // Convert error to accuracy
         loss: stats.error,
-        trainingTime,
-        // epoch: stats.iterations, // Epoch not part of ModelMetrics interface
-        // parameters: this.estimateParameterCount(networkInstance) // Parameters not part of ModelMetrics
+        time: trainingTime,
+        iterations: stats.iterations,
+        errorRate: stats.error,
+        convergence: stats.error < trainingOptions.errorThreshold
       };
 
       this.foundationLogger.info(

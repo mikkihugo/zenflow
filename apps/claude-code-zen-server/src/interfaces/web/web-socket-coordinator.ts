@@ -9,6 +9,7 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
+
 import { getLogger } from '../../config/logging-config';
 
 export interface WebSession {

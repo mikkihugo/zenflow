@@ -22,16 +22,15 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
+import type { ConnectionStats, Logger } from '../../core/interfaces/base-interfaces';
 import { inject } from '../../di/decorators/inject';
 import { injectable } from '../../di/decorators/injectable';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../../di/tokens/core-tokens';
-import type { ConnectionStats, Logger } from '../../core/interfaces/base-interfaces';
 import type {
   DatabaseAdapter,
-  DatabaseConfig,
   DatabaseProviderFactory,
   GraphDatabaseAdapter,
-  IndexConfig,
   VectorData,
   VectorDatabaseAdapter,
 } from '../providers/database-providers';

@@ -23,29 +23,26 @@
  * - Cost center integration and tracking → Foundation storage + PerformanceTracker
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import {
   createEvent,
   EventPriority,
 } from '@claude-zen/event-system';
+
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
-import { WorkflowHumanGateType } from '../orchestration/workflow-gates';
+
+import type { ProgramIncrementManager } from './program-increment-manager';
 import type {
-  Epic,
-  EpicStatus,
   Portfolio,
   PortfolioBacklog,
   PortfolioBudget,
-  SAFeIntegrationConfig,
   StrategicTheme,
-  ValueStream,
 } from './index';
-import type { ProgramIncrementManager } from './program-increment-manager';
 import type { ValueStreamMapper } from './value-stream-mapper';
 
 // ============================================================================
@@ -152,7 +149,7 @@ export interface PortfolioMetrics {
 export class PortfolioManager extends EventEmitter {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly gatesManager: WorkflowGatesManager;
   private readonly portfolioOrchestrator: PortfolioOrchestrator;
   private readonly valueStreamMapper: ValueStreamMapper;
@@ -174,7 +171,7 @@ export class PortfolioManager extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     gatesManager: WorkflowGatesManager,
     portfolioOrchestrator: PortfolioOrchestrator,
     valueStreamMapper: ValueStreamMapper,

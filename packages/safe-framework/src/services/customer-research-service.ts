@@ -27,7 +27,6 @@ import {
 import type {
   CustomerSegment,
   CustomerNeed,
-  CustomerNeedPriority,
   CompetitorSatisfaction,
   BuyingBehavior,
   DecisionMaker,
@@ -39,6 +38,7 @@ import type {
   MarketTrend
 } from '../types/product-management';
 import type { Logger } from '../types';
+import { CustomerNeedPriority } from '../types/product-management';
 
 /**
  * Customer research service configuration

@@ -17,18 +17,15 @@
  * New file: Lightweight integration layer using extracted packages
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '@claude-zen/foundation';
-// Import comprehensive load balancing capabilities
-import { LoadBalancingManager } from '@claude-zen/foundation';
-import {
+import { getLogger ,
   CompleteIntelligenceSystem,
   PerformanceTracker,
-  type AgentHealth,
-  type SystemHealthSummary,
   createIntelligenceSystem,
   createPerformanceTracker
 } from '@claude-zen/foundation';
+// Import comprehensive load balancing capabilities
+import { LoadBalancingManager } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('resource-manager');
 

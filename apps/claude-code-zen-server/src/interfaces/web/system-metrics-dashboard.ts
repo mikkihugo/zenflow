@@ -4,8 +4,6 @@
 
 import { getLogger } from '../../config/logging-config';
 
-const logger = getLogger('interfaces-web-system-metrics-dashboard');
-
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */
 
@@ -21,11 +19,13 @@ import type { Repository } from '../../database/interfaces';
 // Import UACL for unified client management
 import { UACLHelpers, uacl } from '../clients/index';
 
+import type EnhancedMemory from '../../memory/memory';
+
+const logger = getLogger('interfaces-web-system-metrics-dashboard');
+
 // MCP performance metrics - using generic type since module doesn't exist
 // import type MCPPerformanceMetrics from '../mcp/performance-metrics';
 type MCPPerformanceMetrics = any;
-
-import type EnhancedMemory from '../../memory/memory';
 
 interface DashboardConfig {
   refreshInterval?: number;

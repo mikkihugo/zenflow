@@ -500,9 +500,10 @@
 // ConversationFramework is defined in this file, exported at the bottom
 
 // =============================================================================
-// ORCHESTRATION - Conversation orchestration and coordination
+// ORCHESTRATION - Conversation orchestration and coordination  
 // =============================================================================
 export { ConversationOrchestratorImpl as ConversationOrchestrator } from './src/main';
+export { ConversationOrchestratorImpl as TeamCoordinator } from './src/main';
 
 // =============================================================================
 // BRAIN INTELLIGENCE - Brain-enhanced meeting intelligence
@@ -523,14 +524,23 @@ export { getConversationStorage, conversationStorage } from './src/storage';
 // =============================================================================
 export type {
   ConversationOrchestrator as IConversationOrchestrator,
+  ConversationOrchestrator as ITeamCoordinator,
   ConversationConfig,
+  ConversationConfig as TeamConfig,
   ConversationParticipant,
+  ConversationParticipant as TeamMember,
   ConversationMessage,
+  ConversationMessage as TeamMessage,
   ConversationPattern,
+  ConversationPattern as TeamPattern,
   ConversationContext,
+  ConversationContext as TeamContext,
   ConversationOutcome,
+  ConversationOutcome as TeamOutcome,
   ConversationMetrics,
+  ConversationMetrics as TeamMetrics,
   ConversationRole,
+  ConversationRole as TeamRole,
   DialoguePattern,
   TeamworkConfig
 } from './src/types';
@@ -665,8 +675,9 @@ class ConversationFramework {
 // =============================================================================
 export { ConversationFramework };
 
-// Add the primary entry point exports at the end 
+// Add the primary entry point exports at the end - STANDARDIZED NAMES
 export { ConversationFramework as TeamworkSystem };
+export { ConversationFramework as TeamFramework };
 export { ConversationFramework as default };
 
 /**

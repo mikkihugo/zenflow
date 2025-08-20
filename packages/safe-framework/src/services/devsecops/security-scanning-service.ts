@@ -25,15 +25,77 @@ import {
   maxBy,
   countBy 
 } from 'lodash-es';
-import type {
-  Logger,
-  SecurityAssessment,
-  SecurityFinding,
-  SecurityTool,
-  SecurityStandard,
-  SecuritySeverity,
-  CVSSScore
-} from '../../types';
+import type { Logger } from '../../types';
+
+// Define security types locally as they're not being resolved from types module
+export interface SecurityAssessment {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly assessmentType: SecurityAssessmentType;
+  readonly findings: SecurityFinding[];
+  readonly overallRisk: 'low' | 'medium' | 'high' | 'critical';
+}
+
+export type SecurityAssessmentType = 
+  | 'vulnerability_scan'
+  | 'penetration_test'
+  | 'code_review'
+  | 'compliance_audit'
+  | 'risk_assessment';
+
+export interface SecurityFinding {
+  readonly id: string;
+  readonly title: string;
+  readonly description: string;
+  readonly severity: SecuritySeverity;
+  readonly category: string;
+  readonly status: 'open' | 'in_progress' | 'resolved' | 'false_positive';
+  readonly cwe?: string;
+  readonly cvssScore?: CVSSScore;
+  readonly location?: {
+    readonly filePath: string;
+    readonly lineNumber: number;
+    readonly columnNumber: number;
+    readonly snippet: string;
+  };
+  readonly impact?: {
+    readonly confidentiality: string;
+    readonly integrity: string;
+    readonly availability: string;
+    readonly businessImpact: string;
+  };
+  readonly remediation?: string;
+  readonly references?: string[];
+  readonly toolId?: string;
+  readonly discoveredDate?: Date;
+  readonly lastSeenDate?: Date;
+  readonly falsePositive?: boolean;
+}
+
+export interface SecurityTool {
+  readonly id: string;
+  readonly name: string;
+  readonly type: 'static' | 'dynamic' | 'interactive' | 'manual';
+  readonly capabilities: string[];
+}
+
+export interface SecurityStandard {
+  readonly id: string;
+  readonly name: string;
+  readonly version: string;
+  readonly requirements: string[];
+}
+
+export type SecuritySeverity = 'low' | 'medium' | 'high' | 'critical' | 'informational';
+
+export interface CVSSScore {
+  readonly version: '2.0' | '3.0' | '3.1';
+  readonly baseScore: number;
+  readonly temporalScore?: number;
+  readonly environmentalScore?: number;
+  readonly vector: string;
+}
 
 /**
  * Security scanning configuration
@@ -363,7 +425,7 @@ export class SecurityScanningService {
     const uniqueFindings: SecurityFinding[] = [];
 
     for (const finding of findings) {
-      const fingerprint = `${finding.title}-${finding.location.filePath}-${finding.location.lineNumber}`;
+      const fingerprint = `${finding.title}-${finding.location?.filePath || 'unknown'}-${finding.location?.lineNumber || 0}`;
       
       if (!seen.has(fingerprint)) {
         seen.add(fingerprint);

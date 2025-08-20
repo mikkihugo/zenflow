@@ -13,7 +13,7 @@ try {
     module.exports.DSPyPrediction = dspy.Prediction;
     module.exports.DSPyModule = dspy.DSPyModule;
   }
-} catch (e) {
+} catch {
   // DSPy not available - provide fallback types
 }
 

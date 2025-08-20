@@ -8,6 +8,9 @@
 // =============================================================================
 // MAIN EXPORTS - Core functionality from src/main
 // =============================================================================
+// Import for internal use
+import { EventBus } from './main';
+
 export {
   EventBus,
   TypedEventBus,
@@ -19,9 +22,6 @@ export {
   uel,
   createUEL
 } from './main';
-
-// Import for internal use
-import { EventBus } from './main';
 
 // =============================================================================
 // NEURAL INTEGRATION - AI-powered event processing

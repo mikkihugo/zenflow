@@ -8,6 +8,7 @@ import { getLogger } from '../config/logging-config';
 // TerminalManager removed - no longer needed in TypeScript integration
 import { MemoryManager } from '../memory/index';
 import type { CoordinationProvider } from '../types/shared-types';
+
 import { EventBus } from './event-bus';
 import { Orchestrator } from './orchestrator';
 
@@ -51,7 +52,7 @@ export function createOrchestratorInstance(
     customCoordinationProvider || coordinationProvider;
 
   // Create orchestrator with proper coordination configuration  
-  const orchestrator = new Orchestrator(
+  return new Orchestrator(
     coordinationConfig, // Use coordination config instead of empty object
     // HTTPMCPServer and TerminalManager removed - direct TypeScript integration used instead
     memoryManager,
@@ -59,8 +60,6 @@ export function createOrchestratorInstance(
     eventBus,
     logger
   );
-
-  return orchestrator;
 }
 
 /**

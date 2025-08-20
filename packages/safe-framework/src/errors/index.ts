@@ -10,72 +10,62 @@
  */
 
 // Re-export all error handling from @claude-zen/foundation
-export * from '@claude-zen/foundation/errors';
+export * from '@claude-zen/foundation';
 
-// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
-export { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation/telemetry';
+// Re-export infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)  
+export { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
 
 // Re-export safety monitoring from @claude-zen/ai-safety
-export { SafetyMonitor, DeceptionDetector } from '@claude-zen/ai-safety';
+export { AIDeceptionDetector } from '@claude-zen/ai-safety';
 
 // SAFe-specific error types (minimal extensions)
-import { BaseError, ErrorSeverity } from '@claude-zen/foundation/errors';
+import { createValidationError, createSystemError } from '@claude-zen/foundation';
+// Define error types locally since not exported from foundation
+type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
 
 /**
- * Epic lifecycle error (extends foundation BaseError)
+ * Epic lifecycle error (using foundation error patterns)
  */
-export class EpicLifecycleError extends BaseError {
+export class EpicLifecycleError extends Error {
   public readonly epicId: string;
   public readonly currentState: string;
 
   constructor(message: string, epicId: string, currentState: string, cause?: Error) {
-    super(message, {
-      category: 'business',
-      severity: 'medium' as ErrorSeverity,
-      context: { epicId, currentState },
-      recoverable: true,
-      cause
-    });
+    super(message);
+    this.name = 'EpicLifecycleError';
     this.epicId = epicId;
     this.currentState = currentState;
+    this.cause = cause;
   }
 }
 
 /**
  * Business case validation error
  */
-export class BusinessCaseError extends BaseError {
+export class BusinessCaseError extends Error {
   public readonly businessCaseId: string;
 
   constructor(message: string, businessCaseId: string, cause?: Error) {
-    super(message, {
-      category: 'business',
-      severity: 'high' as ErrorSeverity,
-      context: { businessCaseId },
-      recoverable: true,
-      cause
-    });
+    super(message);
+    this.name = 'BusinessCaseError';
     this.businessCaseId = businessCaseId;
+    this.cause = cause;
   }
 }
 
 /**
  * Portfolio Kanban state transition error
  */
-export class KanbanTransitionError extends BaseError {
+export class KanbanTransitionError extends Error {
   public readonly fromState: string;
   public readonly toState: string;
 
   constructor(message: string, fromState: string, toState: string, cause?: Error) {
-    super(message, {
-      category: 'operational',
-      severity: 'medium' as ErrorSeverity,  
-      context: { fromState, toState },
-      recoverable: true,
-      cause
-    });
+    super(message);
+    this.name = 'KanbanTransitionError';
     this.fromState = fromState;
     this.toState = toState;
+    this.cause = cause;
   }
 }
 

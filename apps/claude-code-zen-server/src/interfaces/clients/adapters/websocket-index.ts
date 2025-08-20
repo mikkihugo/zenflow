@@ -4,6 +4,16 @@
 
 import { getLogger } from '../config/logging-config';
 
+// Import for internal use
+import {
+  FailoverWebSocketClient,
+  LoadBalancedWebSocketClient,
+  WebSocketClientFactory,
+} from './websocket-client-factory';
+
+// Import types for internal use
+import type { WebSocketClientConfig } from './websocket-types';
+
 const logger = getLogger('interfaces-clients-adapters-websocket-index');
 
 /**
@@ -42,16 +52,6 @@ export {
   LoadBalancedWebSocketClient,
   WebSocketClientFactory,
 } from './websocket-client-factory';
-
-// Import for internal use
-import {
-  FailoverWebSocketClient,
-  LoadBalancedWebSocketClient,
-  WebSocketClientFactory,
-} from './websocket-client-factory';
-
-// Import types for internal use
-import type { WebSocketClientConfig } from './websocket-types';
 
 // WebSocket types and utilities
 export {
@@ -124,7 +124,7 @@ export async function createOptimalWebSocketClient(
     const configs = options?.loadBalancing?.urls?.map((url) => ({
       ...config,
       url,
-      name: `${config?.name || 'ws'}-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
+      name: `${config?.name || 'ws'}-${url.split('://')[1]?.replace(/[.:]/g, '-')}`,
     }));
 
     return factory.createLoadBalanced(
@@ -138,7 +138,7 @@ export async function createOptimalWebSocketClient(
     const fallbackConfigs = options?.failover?.fallbackUrls?.map((url) => ({
       ...config,
       url,
-      name: `${config?.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[:.]/g, '-')}`,
+      name: `${config?.name || 'ws'}-fallback-${url.split('://')[1]?.replace(/[.:]/g, '-')}`,
     }));
 
     const primaryClient = await factory.create(config);

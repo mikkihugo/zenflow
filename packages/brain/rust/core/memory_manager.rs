@@ -24,8 +24,10 @@ pub struct MemoryPool<T: Float> {
   /// Count of currently allocated buffers
   allocated_count: usize,
   /// Buffer size for this pool
+  #[allow(dead_code)]
   buffer_size: usize,
   /// Pool name
+  #[allow(dead_code)]
   name: String,
 }
 

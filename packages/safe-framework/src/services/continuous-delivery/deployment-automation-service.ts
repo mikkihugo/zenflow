@@ -5,7 +5,7 @@
  * rollback capabilities, environment management, and comprehensive deployment monitoring.
  * 
  * Integrates with:
- * - @claude-zen/load-balancing: LoadBalancer for intelligent deployment strategies
+ * - @claude-zen/brain: LoadBalancer for intelligent deployment strategies
  * - @claude-zen/brain: BrainCoordinator for deployment decision making
  * - @claude-zen/foundation: Performance tracking and telemetry
  * - @claude-zen/agui: Human-in-loop approvals for production deployments
@@ -574,8 +574,8 @@ export class DeploymentAutomationService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/load-balancing for deployment strategies
-      const { LoadBalancer } = await import('@claude-zen/load-balancing');
+      // Lazy load @claude-zen/brain for LoadBalancer - deployment strategies
+      const { LoadBalancer } = await import('@claude-zen/brain');
       this.loadBalancer = new LoadBalancer({
         strategy: 'intelligent',
         enableHealthChecks: true,
@@ -584,7 +584,7 @@ export class DeploymentAutomationService {
       });
       await this.loadBalancer.initialize();
 
-      // Lazy load @claude-zen/brain for intelligent deployment decisions
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent deployment decisions
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -596,13 +596,16 @@ export class DeploymentAutomationService {
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/agui for deployment approvals
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: 1800000 // 30 minutes
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiResult = await AGUISystem({
+        aguiType: 'terminal',
+        taskApprovalConfig: {
+          enableRichDisplay: true,
+          enableBatchMode: false,
+          requireRationale: true
+        }
       });
-      await this.aguiService.initialize();
+      this.aguiService = aguiResult.agui;
 
       // Initialize deployment strategies
       this.initializeDeploymentStrategies();
@@ -782,7 +785,8 @@ export class DeploymentAutomationService {
       this.verifyRollbackSuccess(execution);
 
       // Update deployment status
-      execution.status = DeploymentStatus.ROLLED_BACK;
+      const updatedExecution = { ...execution, status: DeploymentStatus.ROLLED_BACK };
+      this.activeDeployments.set(executionId, updatedExecution);
 
       this.performanceTracker.endTimer('deployment_rollback');
 

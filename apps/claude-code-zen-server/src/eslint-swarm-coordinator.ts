@@ -11,7 +11,6 @@
 
 import { type ChildProcess, execSync, spawn } from 'child_process';
 import { EventEmitter } from 'eventemitter3';
-import fs from 'fs';
 import path from 'path';
 import { getConsoleReplacementLogger } from './config/logging-config';
 import type { logger } from './core/logger';

@@ -17,11 +17,25 @@
 // TYPES - SAFe framework type definitions
 // ============================================================================
 
-// Epic management types
-export type * from './types/epic-management';
+// Epic management types (only export types that actually exist)
+export type {
+  WSJFScore,
+  EpicLifecycleStage,
+  GateCriterion,
+  EpicBlocker,
+  EpicBusinessCase,
+  EpicOwnerManagerConfig,
+  QualityGate as EpicQualityGate
+} from './types/epic-management';
 
 // Product management types  
 export type * from './types/product-management';
+
+// SAFe-SPARC Integration Bridge types (only export types that actually exist)
+export type {
+  QualityGate as IntegrationQualityGate,
+  QualityGateSettings
+} from './types/integration-bridge';
 
 // Core SAFe types
 export type {

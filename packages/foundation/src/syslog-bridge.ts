@@ -10,6 +10,7 @@
  */
 
 import { spawn } from 'child_process';
+
 import { getLogger, type Logger } from './logging';
 
 export interface SyslogEntry {

@@ -9,13 +9,12 @@
  * @since 2025-08-14
  */
 
-import { parseArgs } from 'node:util';
 import { mkdirSync, existsSync } from 'node:fs';
+import { parseArgs } from 'node:util';
 import { join } from 'node:path';
-import type { Logger } from './types/interfaces';
-import type { DIContainer } from './types/interfaces';
+
 import { QueenCommander } from './agents/queen-coordinator';
-import { getLogger } from '../config/logging-config';
+import type { Logger , DIContainer } from './types/interfaces';
 
 export interface QueenCommanderLaunchConfig {
   maxQueens?: number;

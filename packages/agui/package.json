@@ -2,7 +2,7 @@
   "name": "@claude-zen/agui",
   "version": "1.0.1",
   "private": false,
-  "description": "Autonomous Graphical User Interface library for human-in-the-loop interactions in autonomous systems",
+  "description": "Task approval and human-in-the-loop interaction system for autonomous workflows",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

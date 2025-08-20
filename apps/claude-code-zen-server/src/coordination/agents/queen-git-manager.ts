@@ -27,11 +27,11 @@
 // import { SimpleGitSandbox, type SandboxEnvironment } from '../swarm/sparc/simple-git-sandbox';
 
 // Temporary type definition until standalone git utils are created
+import { getLogger } from '../../config/logging-config';
+import * as path from 'path';
 interface SandboxEnvironment {
   [key: string]: string;
 }
-import { getLogger } from '../../config/logging-config';
-import * as path from 'path';
 
 const logger = getLogger('queen-git-manager');
 

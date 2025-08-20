@@ -25,13 +25,47 @@ import {
   countBy,
   uniqBy
 } from 'lodash-es';
-import type {
-  Logger,
-  ComplianceFramework,
-  ComplianceRequirement,
-  ValidationRule,
-  EvidenceRequirement
-} from '../../types';
+import type { Logger } from '../../types';
+
+// Define compliance types locally as they're not being resolved from types module
+export interface ComplianceFramework {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly version: string;
+  readonly validationRules: ValidationRule[];
+  readonly evidenceRequirements: EvidenceRequirement[];
+  readonly requirements: ComplianceRequirement[];
+}
+
+export interface ComplianceRequirement {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly category: string;
+  readonly priority: 'low' | 'medium' | 'high' | 'critical';
+  readonly assessmentFrequency?: number; // days
+  readonly validationRules: ValidationRule[];
+  readonly evidenceRequirements: EvidenceRequirement[];
+}
+
+export interface ValidationRule {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly ruleType: 'automated' | 'manual' | 'hybrid';
+  readonly severity: 'low' | 'medium' | 'high' | 'critical';
+  readonly category: string;
+}
+
+export interface EvidenceRequirement {
+  readonly id: string;
+  readonly name: string;
+  readonly description: string;
+  readonly type: 'document' | 'artifact' | 'screenshot' | 'log' | 'report';
+  readonly required: boolean;
+  readonly source: string;
+}
 
 /**
  * Compliance monitoring configuration

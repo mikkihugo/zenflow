@@ -14,16 +14,11 @@
 import { 
   getDatabaseAccess,
   type DatabaseAccess,
-  executeClaudeTask,
   getGlobalLLM,
   areMetricsEnabled
-} from '@claude-zen/foundation';
-import { 
-  injectable, 
-  inject, 
+, 
   getLogger,
-  type Logger,
-  type Config
+  type Logger
 } from '@claude-zen/foundation';
 
 export interface RetrainingConfig {
@@ -269,7 +264,7 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
       try {
         parsedPlan = JSON.parse(retrainingPlan);
       } catch (error) {
-        this.logger.warn('Failed to parse retraining plan JSON, using defaults');
+        this.logger.warn('Failed to parse retraining plan JSON, using defaults:', error);
         parsedPlan = { approach: 'default', epochs: 100, batchSize: 32 };
       }
 
@@ -471,7 +466,14 @@ Format as JSON with keys: approach, epochs, batchSize, successCriteria, risks`;
         ...feedback
       };
       
-      this.logger.info(`Prompt feedback recorded for ${promptId}`);
+      // Log feedback record details for monitoring
+      this.logger.info(`Prompt feedback recorded for ${promptId}`, {
+        promptId: feedbackRecord.promptId,
+        success: feedbackRecord.success,
+        accuracy: feedbackRecord.accuracy,
+        userSatisfaction: feedbackRecord.userSatisfaction,
+        timestamp: feedbackRecord.timestamp
+      });
       
       // Check if feedback pattern indicates need for retraining
       if (!feedback.success && feedback.accuracy && feedback.accuracy < 0.7) {

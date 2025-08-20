@@ -59,7 +59,7 @@
  * @requires @claude-zen/foundation - Foundation types and utilities
  * @requires @claude-zen/brain - Neural coordination domain types
  * @requires @claude-zen/workflows - Workflow orchestration domain types  
- * @requires @claude-zen/database - Database operation domain types
+ * @requires @claude-zen/foundation - Database operation domain types
  * @requires @claude-zen/event-system - Event coordination domain types
  */
 
@@ -69,60 +69,45 @@
 
 // Foundation types - Shared primitives and utilities
 import type {
+  SwarmConfiguration,
+  SwarmStatus,
+  AgentStatus,
+  AgentCapability,
+  BrainMetrics,
+  SwarmIntelligence
+} from '@claude-zen/brain/types';
+import type {
   BaseEntity,
   EntityStatus,
   TimestampedEntity,
   Metrics,
   ResourceUsage,
-  Logger,
   SystemConfiguration
 } from '@claude-zen/foundation/types';
 
 // Brain domain types - Neural coordination and intelligence  
-import type {
-  SwarmConfiguration,
-  SwarmStatus,
-  AgentConfiguration,
-  AgentStatus,
-  AgentCapability,
-  NeuralConfiguration,
-  BrainMetrics,
-  SwarmCoordinationEvent,
-  TaskDistributionStrategy,
-  SwarmIntelligence
-} from '@claude-zen/brain/types';
 
 // Workflow domain types - Process orchestration and execution
+import type {
+  DatabaseConfig,
+  DatabaseStats,
+  HealthCheck as DatabaseHealthCheck
+} from '@claude-zen/foundation/types';
 import type {
   WorkflowDefinition,
   WorkflowStatus,
   WorkflowExecution,
   ExecutionStrategy,
-  WorkflowStep,
   StepStatus,
   WorkflowMetrics,
-  ExecutionResult,
-  WorkflowTemplate
+  ExecutionResult
 } from '@claude-zen/workflows/types';
 
 // Database domain types - Data persistence and querying
-import type {
-  DatabaseConfig,
-  QueryResult,
-  DatabaseStats,
-  ConnectionStats,
-  BackupResult,
-  HealthCheck as DatabaseHealthCheck
-} from '@claude-zen/database/types';
 
 // Event system domain types - Event coordination and messaging
-import type {
-  EventType,
-  EventPayload,
-  EventMetadata,
-  SystemEvent,
-  CoordinationEvent
-} from '@claude-zen/event-system/types';
+
+
 
 // =============================================================================
 // API RESPONSE ENVELOPE - Consistent API structure
@@ -877,7 +862,7 @@ export const DEFAULT_PAGINATION = {
  * **DOMAIN TYPE DELEGATION:**
  * - **@claude-zen/brain**: Swarm coordination, agent intelligence, neural processing
  * - **@claude-zen/workflows**: Task orchestration, execution strategies, metrics
- * - **@claude-zen/database**: Data persistence, queries, health monitoring
+ * - **@claude-zen/foundation**: Data persistence, queries, health monitoring
  * - **@claude-zen/event-system**: Event coordination, messaging, system events
  * - **@claude-zen/foundation**: Shared primitives, utilities, system configuration
  * 
@@ -904,7 +889,7 @@ export const API_TRANSLATION_INFO = {
   delegation: [
     '@claude-zen/brain - Neural coordination domain types',
     '@claude-zen/workflows - Process orchestration domain types', 
-    '@claude-zen/database - Data persistence domain types',
+    '@claude-zen/foundation - Data persistence domain types',
     '@claude-zen/event-system - Event coordination domain types',
     '@claude-zen/foundation - Shared primitives and utilities'
   ],

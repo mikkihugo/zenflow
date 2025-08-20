@@ -30,6 +30,7 @@ import type {
   BusinessHypothesis,
   MarketAnalysis,
   FinancialProjection,
+  FinancialViability,
   RiskAssessment,
   ImplementationPlan,
   SuccessMetric,
@@ -67,20 +68,6 @@ export interface BusinessCaseAnalysis {
   readonly recommendation: BusinessRecommendation;
   readonly sensitivityAnalysis: SensitivityAnalysis;
   readonly competitivePosition: CompetitivePosition;
-}
-
-/**
- * Financial viability assessment
- */
-export interface FinancialViability {
-  readonly isViable: boolean;
-  readonly roi: number;
-  readonly npv: number;
-  readonly paybackPeriod: number;
-  readonly breakEvenPoint: number; // months
-  readonly confidence: number; // 0-100%
-  readonly strengths: string[];
-  readonly concerns: string[];
 }
 
 /**
@@ -246,6 +233,7 @@ export class BusinessCaseService {
       implementationPlan,
       successMetrics,
       alternativeSolutions,
+      financialViability: this.calculateFinancialViability(financialProjection),
       recommendedAction: 'proceed', // Will be determined by analysis
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -528,11 +516,11 @@ export class BusinessCaseService {
    */
   private performRiskAssessment(risks: Omit<EpicRisk, 'id' | 'identifiedAt' | 'status'>[]): RiskAssessment {
     const epicRisks: EpicRisk[] = risks.map(risk => ({
+      ...risk,
       id: `risk-${nanoid(8)}`,
       identifiedAt: new Date(),
       status: 'identified',
-      riskScore: risk.probability * risk.impact,
-      ...risk
+      riskScore: risk.probability * risk.impact
     }));
 
     const overallRiskScore = meanBy(epicRisks, 'riskScore');
@@ -629,13 +617,15 @@ export class BusinessCaseService {
 
     return {
       isViable,
-      roi: financial.roiCalculation.roi,
+      netPresentValue: financial.netPresentValue,
       npv: financial.netPresentValue,
+      returnOnInvestment: financial.roiCalculation.roi,
+      roi: financial.roiCalculation.roi,
       paybackPeriod: financial.paybackPeriod,
       breakEvenPoint: financial.paybackPeriod,
-      confidence: 75,
-      strengths: isViable ? ['Strong ROI', 'Positive NPV'] : [],
-      concerns: !isViable ? ['Low ROI', 'Long payback period'] : []
+      riskAdjustedReturn: financial.roiCalculation.roi * 0.85, // Apply risk adjustment
+      confidenceLevel: 75,
+      financialScore: isViable ? 85 : 45
     };
   }
 
@@ -753,6 +743,30 @@ export class BusinessCaseService {
     const confidenceScore = analysis.recommendation.confidence;
     
     return (financialScore * 0.4 + riskScore * 0.3 + confidenceScore * 0.3);
+  }
+
+  /**
+   * Calculate financial viability based on financial projection
+   */
+  private calculateFinancialViability(projection: FinancialProjection): FinancialViability {
+    const isViable = projection.netPresentValue > 0 && projection.internalRateReturn > 15;
+    const riskAdjustedReturn = projection.internalRateReturn * 0.85; // 15% risk discount
+    const financialScore = Math.max(0, Math.min(100, 
+      (projection.netPresentValue / 1000000 * 20) + (projection.internalRateReturn * 2)
+    ));
+    
+    return {
+      isViable,
+      roi: projection.internalRateReturn,
+      npv: projection.netPresentValue,
+      netPresentValue: projection.netPresentValue,
+      returnOnInvestment: projection.internalRateReturn,
+      paybackPeriod: 24, // Simplified - 24 months
+      breakEvenPoint: 18, // Simplified - 18 months
+      riskAdjustedReturn,
+      confidenceLevel: 80, // 80% confidence
+      financialScore
+    };
   }
 }
 

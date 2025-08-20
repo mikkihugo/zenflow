@@ -17,11 +17,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { kmeans } from 'ml-kmeans';
-import * as clustering from 'density-clustering';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
-import { sma, ema } from 'moving-averages';
 
 const logger = getLogger('TaskComplexityEstimator');
 
@@ -409,7 +406,7 @@ export class TaskComplexityEstimator {
 
       // Check context key matches
       const contextMatches = pattern.contextKeys.filter(key =>
-        context.hasOwnProperty(key)
+        Object.prototype.hasOwnProperty.call(context, key)
       ).length;
 
       if (contextMatches > 0) {
@@ -532,7 +529,7 @@ export class TaskComplexityEstimator {
     return factors.slice(0, 5); // Limit to top 5 factors
   }
 
-  private async initializeComplexityPatterns(): Promise<void> {
+  private initializeComplexityPatterns(): void {
     this.complexityPatterns = [
       {
         keywords: ['machine learning', 'neural network', 'ai', 'model training'],
@@ -574,7 +571,7 @@ export class TaskComplexityEstimator {
     logger.debug(`📋 Initialized ${this.complexityPatterns.length} complexity patterns`);
   }
 
-  private async initializeKeywordWeights(): Promise<void> {
+  private initializeKeywordWeights(): void {
     // Initialize with domain knowledge weights
     const initialWeights = new Map([
       ['machine learning', 0.9],
@@ -597,7 +594,7 @@ export class TaskComplexityEstimator {
     logger.debug(`🏷️ Initialized ${this.keywordWeights.size} keyword weights`);
   }
 
-  private async updateComplexityModels(): Promise<void> {
+  private updateComplexityModels(): void {
     if (this.complexityHistory.length < 10) return;
 
     try {
@@ -610,9 +607,10 @@ export class TaskComplexityEstimator {
         });
 
       if (trainingData.length >= 5) {
-        // Simple linear regression for now
-        const points: [number, number][] = trainingData.map(([features, complexity], index) => [
-          index, complexity
+        // Simple linear regression using feature averages as predictors
+        const points: [number, number][] = trainingData.map(([features, complexity]) => [
+          features.reduce((sum, val) => sum + val, 0) / features.length, // Average feature value
+          complexity
         ]);
 
         this.complexityRegressor = regression.linear(points);
@@ -623,7 +621,7 @@ export class TaskComplexityEstimator {
     }
   }
 
-  private async updateKeywordWeights(prompt: string, actualComplexity: number): Promise<void> {
+  private updateKeywordWeights(prompt: string, actualComplexity: number): void {
     // Simple weight adjustment based on correlation
     const words = prompt.toLowerCase().split(/\s+/);
     

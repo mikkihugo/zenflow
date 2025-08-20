@@ -14,14 +14,14 @@
 
 import { getWebDashboardURL } from '../../config/config';
 
+// Import WebSocketClient for internal use in this file
+import { WebSocketClient } from './websocket/client';
+
 // HTTP API (REST/GraphQL - consolidated from src/api/)
 export * from './http/index';
 
 // WebSocket API (real-time communication)
 export * from './websocket/index';
-
-// Import WebSocketClient for internal use in this file
-import { WebSocketClient } from './websocket/client';
 export { WebSocketClient };
 
 // API interface configuration

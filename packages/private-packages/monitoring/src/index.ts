@@ -57,3 +57,6 @@ export type {
 
 // Default export for convenience
 export { TelemetryManager as default } from '@claude-zen/foundation';
+
+// Alias for MonitoringSystem (facade for TelemetryManager)
+export { TelemetryManager as MonitoringSystem } from '@claude-zen/foundation';

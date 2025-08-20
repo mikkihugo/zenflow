@@ -21,13 +21,13 @@
  */
 
 import { getLogger } from '../../config/logging-config';
-import { WorkflowEngine } from '../../workflows/workflow-engine';
 import { DocumentProcessor } from '../../core/document-processor';
 import { EventBus } from '../core/event-bus';
-import { MemorySystem } from '../../core/memory-coordinator';
+import { BrainCoordinator } from '../../core/memory-coordinator';
 import { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../../tools/domain-splitting/analyzers/domain-analyzer';
+import { WorkflowEngine } from '../../workflows/workflow-engine';
 import { DomainDiscoveryBridge } from './domain-discovery-bridge';
 
 const logger = getLogger('DomainDiscoveryTest');
@@ -40,7 +40,7 @@ const logger = getLogger('DomainDiscoveryTest');
 async function testDomainDiscovery(projectPath: string = process.cwd()) {
   try {
     // Create memory system
-    const memorySystem = new MemorySystem({
+    const memorySystem = new BrainCoordinator({
       backend: 'json',
       persistPath: './.claude/cache/domain-discovery-test',
     });
@@ -149,10 +149,8 @@ async function testDomainDiscovery(projectPath: string = process.cwd()) {
 
     // Step 7: Monorepo information
     const monorepoInfo = projectAnalyzer.getMonorepoInfo();
-    if (monorepoInfo && monorepoInfo.type !== 'none') {
-      if (monorepoInfo.packages) {
+    if (monorepoInfo && monorepoInfo.type !== 'none' && monorepoInfo.packages) {
       }
-    }
     const stats = await documentProcessor.getStats();
     Object.entries(stats.byType).forEach(([type, count]) => {
       if (count > 0) {

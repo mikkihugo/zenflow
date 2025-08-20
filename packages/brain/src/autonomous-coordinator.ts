@@ -19,13 +19,11 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { BehavioralIntelligence } from './behavioral-intelligence';
-import type { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
-import { kmeans } from 'ml-kmeans';
-import * as clustering from 'density-clustering';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
-import { sma, ema } from 'moving-averages';
+
+import type { AutonomousOptimizationEngine } from './autonomous-optimization-engine';
+import type { BehavioralIntelligence } from './behavioral-intelligence';
 
 const logger = getLogger('AutonomousCoordinator');
 
@@ -197,15 +195,20 @@ export class AutonomousCoordinator {
     const memoryPressure = this.calculatePressureLevel(metrics.memoryUsage, memory);
     const timePressure = this.calculateResponseTimePressure(metrics.averageResponseTime);
 
+    // Analyze response time against thresholds for resource decisions
+    const responseTimeAnalysis = this.analyzeResponseTimeMetrics(metrics.averageResponseTime, responseTime);
+
     // Make autonomous resource decisions
-    if (cpuPressure === 'critical' || memoryPressure === 'critical') {
+    if (cpuPressure === 'critical' || memoryPressure === 'critical' || timePressure === 'poor') {
       return {
         type: 'resource_allocation',
         action: 'emergency_resource_reallocation',
         reasoning: [
           `Critical resource pressure detected`,
-          `CPU: ${(metrics.cpuUsage * 100).toFixed(1)}%`,
-          `Memory: ${(metrics.memoryUsage * 100).toFixed(1)}%`,
+          `CPU: ${(metrics.cpuUsage * 100).toFixed(1)}% (${cpuPressure})`,
+          `Memory: ${(metrics.memoryUsage * 100).toFixed(1)}% (${memoryPressure})`,
+          `Response time: ${metrics.averageResponseTime}ms (${timePressure})`,
+          `Response time analysis: ${responseTimeAnalysis.category} (${responseTimeAnalysis.severity})`,
           `Initiating emergency resource reallocation`
         ],
         confidence: 0.95,
@@ -214,6 +217,7 @@ export class AutonomousCoordinator {
         parameters: {
           cpuPressure,
           memoryPressure,
+          timePressure,
           redistributeLoad: true,
           prioritizeHigh: true
         }
@@ -257,12 +261,22 @@ export class AutonomousCoordinator {
       // Analyze routing efficiency
       const routingEfficiency = await this.analyzeRoutingEfficiency(metrics, agentProfiles);
 
+      // Use agent stats to identify optimization opportunities
+      const totalAgents = agentStats.totalAgents;
+      const averagePerformance = agentStats.averagePerformance;
+      
+      // Calculate high performance agents based on performance trends
+      const highPerformanceAgents = Object.entries(agentStats.performanceTrends)
+        .filter(([_, trend]) => trend === 'improving' || trend === 'excellent').length;
+
       if (routingEfficiency < 0.6) {
         return {
           type: 'agent_routing',
           action: 'optimize_agent_routing',
           reasoning: [
             `Routing efficiency below threshold: ${(routingEfficiency * 100).toFixed(1)}%`,
+            `Total agents: ${totalAgents}, High performers: ${highPerformanceAgents}`,
+            `Average performance: ${averagePerformance.toFixed(3)}`,
             `Implementing ML-based routing optimization`,
             `Using behavioral patterns for intelligent routing`
           ],
@@ -273,6 +287,9 @@ export class AutonomousCoordinator {
             routingStrategy: 'behavioral_ml',
             efficiency: routingEfficiency,
             agentCount: agentProfiles.size,
+            totalAgents,
+            highPerformanceAgents,
+            averagePerformance,
             usePerformanceTrends: true
           }
         };
@@ -312,6 +329,9 @@ export class AutonomousCoordinator {
    * Autonomous performance tuning
    */
   private async autonomousPerformanceTuning(metrics: SystemMetrics): Promise<AutonomousDecision | null> {
+    // Add current metrics to history for analysis
+    this.systemMetricsHistory.push(metrics);
+    
     // Analyze performance trends
     const recentMetrics = this.systemMetricsHistory.slice(-10);
     if (recentMetrics.length < 5) return null;
@@ -418,13 +438,21 @@ export class AutonomousCoordinator {
     // Get optimization insights
     const insights = this.optimizationEngine.getAutonomousInsights();
 
+    // Check if current system performance indicates need for optimization
+    const needsOptimization = metrics.cpuUsage > 0.8 || 
+                             metrics.averageResponseTime > 1000 || 
+                             metrics.errorRate > 0.05;
+
     // Decide if system-wide optimization is needed
-    if (insights.adaptationRate < 0.1 && insights.totalOptimizations > 20) {
+    if ((insights.adaptationRate < 0.1 && insights.totalOptimizations > 20) || needsOptimization) {
       return {
         type: 'optimization',
         action: 'system_wide_optimization',
         reasoning: [
           `Low adaptation rate detected: ${(insights.adaptationRate * 100).toFixed(1)}%`,
+          `Current CPU usage: ${(metrics.cpuUsage * 100).toFixed(1)}%`,
+          `Current response time: ${metrics.averageResponseTime}ms`,
+          `Current error rate: ${(metrics.errorRate * 100).toFixed(2)}%`,
           `Best performing method: ${insights.bestMethod}`,
           `Implementing autonomous system optimization`,
           `Focusing on proven optimization strategies`
@@ -683,6 +711,29 @@ export class AutonomousCoordinator {
   private async startAutonomousMonitoring(): Promise<void> {
     // This would start background monitoring in a real implementation
     logger.debug('🔄 Autonomous monitoring started');
+  }
+
+  /**
+   * Analyze response time metrics against thresholds for resource decisions
+   */
+  private analyzeResponseTimeMetrics(currentResponseTime: number, thresholds: any): {
+    category: string;
+    severity: 'low' | 'medium' | 'high' | 'critical';
+    improvementNeeded: boolean;
+  } {
+    const { excellent, good, acceptable, poor } = thresholds;
+
+    if (currentResponseTime <= excellent) {
+      return { category: 'optimal', severity: 'low', improvementNeeded: false };
+    } else if (currentResponseTime <= good) {
+      return { category: 'satisfactory', severity: 'low', improvementNeeded: false };
+    } else if (currentResponseTime <= acceptable) {
+      return { category: 'acceptable', severity: 'medium', improvementNeeded: true };
+    } else if (currentResponseTime <= poor) {
+      return { category: 'concerning', severity: 'high', improvementNeeded: true };
+    } else {
+      return { category: 'critical', severity: 'critical', improvementNeeded: true };
+    }
   }
 }
 

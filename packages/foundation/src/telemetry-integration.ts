@@ -6,10 +6,11 @@
  */
 
 import { getTelemetryConfig } from '../config';
-import { TelemetryManager, type TelemetryConfig } from './telemetry';
+
 import { getGlobalContainer, TOKENS } from './di';
-import { getLogger } from './logging';
 import { Result, ok, err } from './error-handling';
+import { getLogger } from './logging';
+import { TelemetryManager, type TelemetryConfig } from './telemetry';
 
 const logger = getLogger('telemetry-integration');
 
@@ -74,7 +75,7 @@ export async function autoConfigureTelemetry(): Promise<Result<void, Error>> {
   // Only auto-configure if telemetry is enabled
   if (!config.enableTracing && !config.enableMetrics) {
     logger.debug('Telemetry disabled in configuration, skipping auto-configuration');
-    return ok(undefined);
+    return ok();
   }
   
   const result = await initializeAndRegisterTelemetry();
@@ -83,7 +84,7 @@ export async function autoConfigureTelemetry(): Promise<Result<void, Error>> {
   }
   
   logger.info('Telemetry auto-configuration completed successfully');
-  return ok(undefined);
+  return ok();
 }
 
 /**
@@ -118,16 +119,14 @@ export async function shutdownAndCleanupTelemetry(): Promise<Result<void, Error>
       
       // Clean up DI registration
       const container = getGlobalContainer();
-      if (container.isRegistered(TOKENS.TelemetryManager)) {
-        // Note: TSyringe doesn't have direct unregister, but clearing instances works
-        if (typeof container.clear === 'function') {
+      if (container.isRegistered(TOKENS.TelemetryManager) && // Note: TSyringe doesn't have direct unregister, but clearing instances works
+        typeof container.clear === 'function') {
           container.clear();
         }
-      }
     }
     
     logger.info('Telemetry shutdown and cleanup completed');
-    return ok(undefined);
+    return ok();
   } catch (error) {
     logger.error('Failed to shutdown and cleanup telemetry', { error });
     return err(error instanceof Error ? error : new Error(String(error)));

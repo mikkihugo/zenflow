@@ -16,11 +16,11 @@
  * @since 1.0.0 - Original implementation
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 
 // Import from @claude-zen/safe-framework
 import type {
@@ -33,7 +33,6 @@ import type {
   BusinessContext,
   ArchitectureReview
 } from '@claude-zen/safe-framework';
-
 import {
   SystemSolutionArchitectureManager as SafeFrameworkManager,
   createSystemSolutionArchitectureManager
@@ -65,7 +64,7 @@ import {
 export class SystemSolutionArchitectureManager extends EventEmitter {
   private readonly logger: Logger;
   private readonly config: SystemSolutionArchConfig;
-  private readonly memorySystem: MemorySystem;
+  private readonly memorySystem: BrainCoordinator;
   private readonly eventBus: TypeSafeEventBus;
 
   // Delegation instance
@@ -74,7 +73,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
 
   constructor(
     config: SystemSolutionArchConfig,
-    memorySystem: MemorySystem,
+    memorySystem: BrainCoordinator,
     eventBus: TypeSafeEventBus
   ) {
     super();
@@ -232,7 +231,7 @@ export class SystemSolutionArchitectureManager extends EventEmitter {
  * Create a System Solution Architecture Manager with default configuration
  */
 export function createSystemSolutionArchitectureManager(
-  memorySystem: MemorySystem,
+  memorySystem: BrainCoordinator,
   eventBus: TypeSafeEventBus,
   config?: Partial<SystemSolutionArchConfig>
 ): SystemSolutionArchitectureManager {

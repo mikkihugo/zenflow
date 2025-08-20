@@ -15,6 +15,7 @@
  * @file Application coordination system.
  */
 
+import { BrainCoordinator } from '@claude-zen/brain';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 import { MemoryManager } from '../memory/index';
@@ -22,7 +23,6 @@ import { DocumentDrivenSystem } from './document-driven-system';
 import { DocumentationLinker } from './documentation-linker';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceLauncher } from './interface-launcher';
-import { MemorySystem } from '@claude-zen/memory';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 const logger = getLogger('ApplicationCoordinator');
@@ -103,7 +103,7 @@ export class ApplicationCoordinator extends EventEmitter {
   private workflowEngine!: WorkflowEngine;
   private exportSystem!: ExportManager;
   private documentationLinker!: DocumentationLinker;
-  private memorySystem!: MemorySystem;
+  private memorySystem!: BrainCoordinator;
   private memoryManager!: MemoryManager;
 
   // State
@@ -127,7 +127,7 @@ export class ApplicationCoordinator extends EventEmitter {
    */
   private initializeComponents(): void {
     // Memory system (existing)
-    this.memorySystem = new MemorySystem({
+    this.memorySystem = new BrainCoordinator({
       backend: 'json', // Default to JSON backend
       path: this.config.memory?.directory || './data/memory',
     });

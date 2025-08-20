@@ -12,12 +12,13 @@
  * REDUCTION: 1,090 → 51 lines (95.3% reduction) through package delegation
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
+
 import type { ValueStreamMapper } from './value-stream-mapper';
 
 // Re-export all types from @claude-zen/safe-framework
@@ -52,7 +53,7 @@ export class ContinuousDeliveryPipelineManager extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     swarmOrchestrator: SwarmExecutionOrchestrator,
     valueStreamMapper: ValueStreamMapper,
     config: Partial<any> = {}

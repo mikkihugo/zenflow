@@ -10,7 +10,7 @@ import { getLogger as getLogTapeLogger } from '@logtape/logtape';
 export enum LoggingLevel {
   DEBUG = 'debug',
   INFO = 'info', 
-  WARN = 'warn',
+  WARN = 'warning',
   ERROR = 'error',
 }
 
@@ -40,12 +40,14 @@ class LoggingConfigurationManager {
 
   private constructor() {
     this.config = this.loadConfiguration();
-    this.initializeLogTape();
+    // Initialize LogTape asynchronously - will be handled by getInstance
   }
 
   static getInstance(): LoggingConfigurationManager {
     if (!LoggingConfigurationManager.instance) {
       LoggingConfigurationManager.instance = new LoggingConfigurationManager();
+      // Initialize LogTape asynchronously when needed
+      LoggingConfigurationManager.instance.initializeLogTape().catch(console.error);
     }
     return LoggingConfigurationManager.instance;
   }
@@ -85,10 +87,108 @@ class LoggingConfigurationManager {
     return config;
   }
 
-  private initializeLogTape(): void {
+  private async initializeLogTape(): Promise<void> {
     if (this.initialized) return;
-    // LogTape will be configured by the main application
-    // For standalone usage, use default LogTape configuration
+    
+    // Check if OTEL is available and enabled
+    let otelSink = null;
+    let useOtelSink = false;
+    
+    try {
+      // Check for OTEL environment variables
+      const otelLogsExporter = process.env['OTEL_LOGS_EXPORTER'];
+      const zenOtelEnabled = process.env['ZEN_OTEL_ENABLED'];
+      const otelEndpoint = process.env['OTEL_EXPORTER_OTLP_LOGS_ENDPOINT'] || 'http://localhost:4318/v1/logs';
+      
+      if (otelLogsExporter === 'otlp' || zenOtelEnabled === 'true') {
+        useOtelSink = true;
+        
+        // Try to load LogTape OTEL integration (optional dependency)
+        const otelModule = await import('@logtape/otel').catch(() => null);
+        if (!otelModule?.getOpenTelemetrySink) {
+          throw new Error('OTEL module not available');
+        }
+        const { getOpenTelemetrySink } = otelModule;
+        
+        otelSink = getOpenTelemetrySink({
+          serviceName: 'claude-zen-foundation',
+          otlpExporterConfig: {
+            url: otelEndpoint,
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          },
+          diagnostics: process.env['ZEN_OTEL_DIAGNOSTICS'] === 'true'
+        });
+        
+        console.log('✅ Foundation LogTape initialized with OTEL sink');
+        console.log(`   OTEL Endpoint: ${otelEndpoint}`);
+        console.log(`   Service: claude-zen-foundation`);
+      }
+    } catch (error) {
+      console.log('📝 Foundation LogTape using console-only (OTEL unavailable)');
+      useOtelSink = false;
+    }
+    
+    // Configure LogTape with OTEL if available
+    const { configure } = await import('@logtape/logtape');
+    
+    const sinkConfig = {
+      // Console sink for local visibility
+      console: (record: any) => {
+        if (!this.config.enableConsole) return;
+        
+        const timestamp = this.config.timestamp 
+          ? `[${new Date(record.timestamp).toISOString()}] `
+          : '';
+        const level = record.level.toUpperCase().padStart(5);
+        const category = record.category.join('.');
+        const message = record.message.join('');
+        const props = Object.keys(record.properties).length > 0 
+          ? ` ${JSON.stringify(record.properties)}` 
+          : '';
+        
+        console.log(`${timestamp}${level} [${category}] ${message}${props}`);
+      },
+    } as any;
+    
+    // Add OTEL sink if available
+    if (useOtelSink && otelSink) {
+      sinkConfig.otel = otelSink;
+    }
+
+    await configure({
+      sinks: sinkConfig,
+      loggers: [
+        // Foundation components with OTEL if available
+        { 
+          category: ['foundation'], 
+          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          lowestLevel: this.config.level 
+        },
+        { 
+          category: ['claude-code-sdk-integration'], 
+          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          lowestLevel: this.config.level 
+        },
+        { 
+          category: ['SyslogBridge'], 
+          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          lowestLevel: this.config.level 
+        },
+        
+        // LogTape meta logs to console only
+        { category: ['logtape', 'meta'], sinks: ['console'], lowestLevel: 'warning' },
+        
+        // Everything else
+        { 
+          category: [], 
+          sinks: useOtelSink ? ['console', 'otel'] : ['console'], 
+          lowestLevel: 'info' 
+        },
+      ],
+    });
+    
     this.initialized = true;
   }
 
@@ -116,7 +216,7 @@ class LoggingConfigurationManager {
         }
       },
       warn: (message: string, meta?: unknown) => {
-        if (this.shouldLog('warn', componentLevel)) {
+        if (this.shouldLog('warning', componentLevel)) {
           logTapeLogger.warn(this.formatMessage(message, meta));
         }
       },
@@ -142,7 +242,7 @@ class LoggingConfigurationManager {
   }
 
   private shouldLog(messageLevel: string, componentLevel: LoggingLevel): boolean {
-    const levels = ['debug', 'info', 'warn', 'error'];
+    const levels = ['debug', 'info', 'warning', 'error'];
     const messageLevelIndex = levels.indexOf(messageLevel);
     const componentLevelIndex = levels.indexOf(componentLevel);
     return messageLevelIndex >= componentLevelIndex;
@@ -166,7 +266,7 @@ class LoggingConfigurationManager {
     this.config = { ...this.config, ...newConfig };
     // Reinitialize LogTape with new config
     this.initialized = false;
-    this.initializeLogTape();
+    this.initializeLogTape().catch(console.error);
     // Clear cached loggers to pick up new config
     this.loggers.clear();
   }

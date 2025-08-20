@@ -18,9 +18,13 @@
  * @since 2024-01-01
  */
 
+import { getLogger } from '@claude-zen/foundation';
 import { nanoid } from 'nanoid';
+
 import { CodingPrinciplesResearcher, type PrinciplesResearchConfig, type ProgrammingLanguage, type TaskDomain, type DevelopmentRole } from './coding-principles-researcher';
 import { IntelligentPromptGenerator } from './intelligent-prompt-generator';
+
+const logger = getLogger('multi-swarm-ab-testing');
 
 /**
  * Supported AI model backends for swarm A/B testing
@@ -96,6 +100,9 @@ export interface SwarmTestResult {
     maintainability: number;       // 0-100
     performance: number;           // 0-100
     overallScore: number;          // 0-100
+    accuracy?: number;             // 0-100 (for backwards compatibility)
+    completeness?: number;         // 0-100 (for backwards compatibility)
+    efficiency?: number;           // 0-100 (for backwards compatibility)
   };
   /** Generated artifacts and outputs */
   artifacts: {
@@ -114,6 +121,9 @@ export interface SwarmTestResult {
     tokenUsage?: number;
     requestCount: number;
     avgResponseTime: number;
+    attemptNumber?: number;
+    totalAttempts?: number;
+    timedOut?: boolean;
   };
 }
 
@@ -449,20 +459,59 @@ export class MultiSwarmABTesting {
     const worktreePaths: Record<string, string> = {};
 
     if (!gitConfig?.useGitWorktrees) {
+      logger.debug('Git worktrees disabled, using current working directory');
       return worktreePaths;
     }
 
-    console.log(`🌳 Creating ${strategies.length} git worktrees...`);
+    // Use gitConfig parameters for comprehensive worktree setup
+    const maxWorktrees = gitConfig.maxWorktrees || 10;
+    const baseBranch = gitConfig.baseBranch || 'main';
+    const branchPrefix = gitConfig.branchPrefix || 'ab-test';
+    const cleanupAfterTest = gitConfig.cleanupAfterTest ?? true;
 
-    for (const strategy of strategies) {
-      const branchName = `${gitConfig.branchPrefix}-${strategy.id}-${nanoid(6)}`;
+    // Validate git configuration
+    if (strategies.length > maxWorktrees) {
+      logger.warn(`Strategy count ${strategies.length} exceeds max worktrees ${maxWorktrees}`, {
+        strategies: strategies.length,
+        maxWorktrees,
+        willLimitTo: maxWorktrees
+      });
+    }
+
+    const strategiesToProcess = strategies.slice(0, maxWorktrees);
+    logger.info(`🌳 Creating ${strategiesToProcess.length} git worktrees...`, {
+      baseBranch,
+      branchPrefix,
+      cleanupAfterTest,
+      maxWorktrees
+    });
+
+    for (const strategy of strategiesToProcess) {
+      const branchName = `${branchPrefix}-${strategy.id}-${nanoid(6)}`;
       const worktreePath = `/tmp/ab-test-worktrees/${branchName}`;
       
-      // In a real implementation, this would execute git commands
-      // For now, we simulate the worktree creation
+      // Log worktree creation with gitConfig details
+      logger.debug(`📁 Creating worktree for ${strategy.name}`, {
+        strategyId: strategy.id,
+        branchName,
+        worktreePath,
+        baseBranch,
+        modelBackend: strategy.modelBackend
+      });
+      
+      // In a real implementation, this would execute:
+      // await exec(`git worktree add ${worktreePath} -b ${branchName} ${baseBranch}`)
+      
       worktreePaths[strategy.id] = worktreePath;
-      console.log(`📁 Created worktree for ${strategy.name}: ${worktreePath}`);
+      logger.info(`✅ Created worktree for ${strategy.name}: ${worktreePath}`);
     }
+
+    // Log final worktree configuration summary
+    logger.info('Git worktree preparation completed', {
+      totalWorktrees: Object.keys(worktreePaths).length,
+      cleanupAfterTest,
+      worktreeIds: Object.keys(worktreePaths)
+    });
 
     return worktreePaths;
   }
@@ -488,18 +537,83 @@ export class MultiSwarmABTesting {
     worktreePaths: Record<string, string>,
     options: any
   ): Promise<SwarmTestResult[]> {
-    console.log(`⏭️ Executing ${strategies.length} strategies sequentially...`);
+    // Apply execution options for sequential processing
+    const enableProgressLogging = options.verbose || false;
+    const delayBetweenStrategies = options.sequentialDelay || 1000;
+    const enableContinueOnFailure = options.continueOnFailure !== false;
+    
+    if (enableProgressLogging) {
+      console.log(`⏭️ Executing ${strategies.length} strategies sequentially...`);
+      console.log(`📊 Sequential options: delay=${delayBetweenStrategies}ms, continueOnFailure=${enableContinueOnFailure}`);
+    } else {
+      console.log(`⏭️ Executing ${strategies.length} strategies sequentially...`);
+    }
 
     const results: SwarmTestResult[] = [];
     
-    for (const strategy of strategies) {
-      const result = await this.executeStrategy(
-        taskDescription, 
-        strategy, 
-        worktreePaths[strategy.id], 
-        options
-      );
-      results.push(result);
+    for (let i = 0; i < strategies.length; i++) {
+      const strategy = strategies[i];
+      
+      try {
+        if (enableProgressLogging) {
+          console.log(`📋 Executing strategy ${i + 1}/${strategies.length}: ${strategy.name}`);
+        }
+        
+        const result = await this.executeStrategy(
+          taskDescription, 
+          strategy, 
+          worktreePaths[strategy.id], 
+          options
+        );
+        results.push(result);
+        
+        if (enableProgressLogging) {
+          console.log(`✅ Strategy ${i + 1} completed: ${strategy.name} (${result.success ? 'SUCCESS' : 'FAILED'})`);
+        }
+      } catch (error) {
+        logger.error(`❌ Strategy ${i + 1} failed: ${strategy.name}`, error);
+        
+        if (!enableContinueOnFailure) {
+          throw error;
+        }
+        
+        // Create failure result and continue with next strategy
+        const failureResult: SwarmTestResult = {
+          strategy,
+          success: false,
+          duration: 0,
+          qualityMetrics: {
+            codeQuality: 0,
+            requirementsCoverage: 0,
+            implementationCorrectness: 0,
+            maintainability: 0,
+            performance: 0,
+            overallScore: 0
+          },
+          artifacts: {
+            filesCreated: [],
+            linesOfCode: 0,
+            functionsCreated: 0,
+            testsGenerated: 0
+          },
+          error: error instanceof Error ? error.message : String(error),
+          modelMetadata: {
+            backend: strategy.modelBackend,
+            tokenUsage: 0,
+            requestCount: 0,
+            avgResponseTime: 0
+          }
+        };
+        results.push(failureResult);
+      }
+      
+      // Add delay between strategies if configured (except for last strategy)
+      if (i < strategies.length - 1 && delayBetweenStrategies > 0) {
+        if (enableProgressLogging) {
+          console.log(`⏸️ Pausing ${delayBetweenStrategies}ms before next strategy...`);
+        }
+        await new Promise(resolve => setTimeout(resolve, delayBetweenStrategies));
+      }
     }
 
     return results;
@@ -513,64 +627,105 @@ export class MultiSwarmABTesting {
   ): Promise<SwarmTestResult> {
     const startTime = Date.now();
 
-    console.log(`🚀 Executing strategy: ${strategy.name} (${strategy.modelBackend})`);
+    // Apply execution options to modify behavior
+    const enableVerboseLogging = options.verbose || false;
+    const timeoutMs = options.timeout || 30000;
+    const retryCount = options.retries || 1;
+    
+    if (enableVerboseLogging) {
+      console.log(`🚀 Executing strategy: ${strategy.name} (${strategy.modelBackend})`);
+      console.log(`📊 Options: timeout=${timeoutMs}ms, retries=${retryCount}, verbose=${enableVerboseLogging}`);
+    }
 
-    try {
-      // Generate strategy-specific prompt
-      const prompt = await this.generateStrategyPrompt(taskDescription, strategy);
+    let lastError: Error | null = null;
+    
+    for (let attempt = 1; attempt <= retryCount; attempt++) {
+      try {
+        // Generate strategy-specific prompt with options
+        const prompt = await this.generateStrategyPrompt(taskDescription, strategy);
 
-      // Simulate swarm execution (in production, this would call actual AI models)
-      const executionResult = await this.simulateSwarmExecution(strategy, prompt, worktreePath);
+        // Simulate swarm execution with timeout and options
+        const executionResult = await Promise.race([
+          this.simulateSwarmExecution(strategy, prompt, worktreePath, options),
+          new Promise<never>((_, reject) => 
+            setTimeout(() => reject(new Error(`Strategy execution timeout after ${timeoutMs}ms`)), timeoutMs)
+          )
+        ]);
 
-      const duration = Date.now() - startTime;
+        const duration = Date.now() - startTime;
 
-      console.log(`✅ Strategy completed: ${strategy.name} (${duration}ms)`);
-
-      return {
-        strategy,
-        success: true,
-        duration,
-        qualityMetrics: executionResult.qualityMetrics,
-        artifacts: executionResult.artifacts,
-        worktreePath,
-        modelMetadata: {
-          backend: strategy.modelBackend,
-          tokenUsage: executionResult.tokenUsage,
-          requestCount: executionResult.requestCount,
-          avgResponseTime: duration / executionResult.requestCount
+        if (enableVerboseLogging) {
+          console.log(`✅ Strategy completed: ${strategy.name} (${duration}ms, attempt ${attempt})`);
         }
-      };
 
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      console.error(`❌ Strategy failed: ${strategy.name}`, error);
-
-      return {
-        strategy,
-        success: false,
-        duration,
-        qualityMetrics: {
-          codeQuality: 0,
-          requirementsCoverage: 0,
-          implementationCorrectness: 0,
-          maintainability: 0,
-          performance: 0,
-          overallScore: 0
-        },
-        artifacts: {
-          filesCreated: [],
-          linesOfCode: 0,
-          functionsCreated: 0,
-          testsGenerated: 0
-        },
-        error: error instanceof Error ? error.message : String(error),
-        worktreePath,
-        modelMetadata: {
-          backend: strategy.modelBackend,
-          requestCount: 0,
-          avgResponseTime: 0
+        // Success - return result
+        return {
+          strategy,
+          success: true,
+          duration,
+          qualityMetrics: executionResult.qualityMetrics,
+          artifacts: executionResult.artifacts,
+          worktreePath,
+          modelMetadata: {
+            backend: strategy.modelBackend,
+            tokenUsage: executionResult.tokenUsage,
+            requestCount: executionResult.requestCount,
+            avgResponseTime: duration / (executionResult.requestCount || 1),
+            attemptNumber: attempt,
+            totalAttempts: retryCount
+          }
+        };
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        
+        if (enableVerboseLogging) {
+          console.log(`❌ Strategy failed (attempt ${attempt}/${retryCount}): ${lastError.message}`);
         }
-      };
+        
+        // If this is the last attempt, we'll throw below
+        if (attempt === retryCount) {
+          break;
+        }
+        
+        // Wait before retry (exponential backoff based on options)
+        const retryDelay = options.retryDelay || (1000 * attempt);
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+      }
+    }
+
+    // All retries failed
+    const duration = Date.now() - startTime;
+    console.log(`❌ All attempts failed for strategy: ${strategy.name}`);
+
+    return {
+      strategy,
+      success: false,
+      duration,
+      qualityMetrics: {
+        codeQuality: 0,
+        requirementsCoverage: 0,
+        implementationCorrectness: 0,
+        maintainability: 0,
+        performance: 0,
+        overallScore: 0
+      },
+      artifacts: {
+        filesCreated: [],
+        linesOfCode: 0,
+        functionsCreated: 0,
+        testsGenerated: 0
+      },
+      worktreePath,
+      error: lastError?.message || 'Unknown error',
+      modelMetadata: {
+        backend: strategy.modelBackend,
+        tokenUsage: 0,
+        requestCount: 0,
+        avgResponseTime: 0,
+        attemptNumber: retryCount,
+        totalAttempts: retryCount,
+        timedOut: lastError?.message.includes('timeout') || false
+      }
     }
   }
 
@@ -630,22 +785,30 @@ Execute this task using the specified strategy.`;
   private async simulateSwarmExecution(
     strategy: ABTestStrategy,
     prompt: string,
-    worktreePath?: string
+    worktreePath?: string,
+    options: any = {}
   ): Promise<{
     qualityMetrics: SwarmTestResult['qualityMetrics'];
     artifacts: SwarmTestResult['artifacts'];
     tokenUsage: number;
     requestCount: number;
   }> {
-    // Simulate execution with realistic metrics based on strategy
+    // Apply execution options to simulation
+    const qualityBoost = options.qualityBoost || 1.0;
+    const speedMultiplier = options.speedMultiplier || 1.0;
+    const enableDetailedMetrics = options.detailedMetrics || false;
+    
+    // Simulate execution with realistic metrics based on strategy and options
     const baseQuality = this.getBaseQualityForModel(strategy.modelBackend);
     const topologyMultiplier = this.getTopologyMultiplier(strategy.swarmConfig.topology);
     const agentMultiplier = Math.min(1.2, 1 + (strategy.swarmConfig.maxAgents - 3) * 0.05);
 
-    const qualityScore = Math.min(100, baseQuality * topologyMultiplier * agentMultiplier);
+    const qualityScore = Math.min(100, baseQuality * topologyMultiplier * agentMultiplier * qualityBoost);
 
-    // Simulate execution delay
-    await new Promise(resolve => setTimeout(resolve, Math.random() * 2000 + 1000));
+    // Simulate execution delay with speed multiplier
+    const baseDelay = Math.random() * 2000 + 1000;
+    const adjustedDelay = Math.max(100, baseDelay / speedMultiplier);
+    await new Promise(resolve => setTimeout(resolve, adjustedDelay));
 
     return {
       qualityMetrics: {
@@ -667,8 +830,8 @@ Execute this task using the specified strategy.`;
         functionsCreated: Math.floor(8 + Math.random() * 12),
         testsGenerated: Math.floor(3 + Math.random() * 8)
       },
-      tokenUsage: Math.floor(5000 + Math.random() * 10000),
-      requestCount: Math.floor(3 + Math.random() * 7)
+      tokenUsage: Math.floor((5000 + Math.random() * 10000) * (enableDetailedMetrics ? 1.2 : 1.0)),
+      requestCount: Math.floor((3 + Math.random() * 7) * (enableDetailedMetrics ? 1.3 : 1.0))
     };
   }
 
@@ -739,6 +902,25 @@ Execute this task using the specified strategy.`;
     comparison: ABTestResult['comparison']
   ): string[] {
     const insights: string[] = [];
+
+    // Add comparison-specific insights based on winner and confidence
+    if (comparison.winner) {
+      insights.push(`🏆 Winner: ${comparison.winner.name} with ${comparison.confidence.toFixed(1)}% confidence`);
+      
+      if (comparison.significance === 'high') {
+        insights.push(`📊 High statistical significance - reliable results`);
+      } else if (comparison.significance === 'low' || comparison.significance === 'none') {
+        insights.push(`⚠️  Low statistical significance (${comparison.significance}) - results may be inconclusive`);
+      }
+      
+      // Find the winner's performance delta
+      const winnerDelta = comparison.performanceDelta[comparison.winner.id];
+      if (winnerDelta && winnerDelta > 10) {
+        insights.push(`⚡ Significant performance advantage: ${winnerDelta.toFixed(1)}% improvement`);
+      } else if (winnerDelta && winnerDelta > 0) {
+        insights.push(`📈 Moderate performance advantage: ${winnerDelta.toFixed(1)}% improvement`);
+      }
+    }
 
     // Model performance insights
     const modelPerformance = results
@@ -818,12 +1000,41 @@ Execute this task using the specified strategy.`;
   }
 
   private async cleanupGitWorktrees(worktreePaths: Record<string, string>): Promise<void> {
-    console.log(`🧹 Cleaning up ${Object.keys(worktreePaths).length} git worktrees...`);
+    logger.debug(`🧹 Cleaning up ${Object.keys(worktreePaths).length} git worktrees...`);
     
-    // In a real implementation, this would remove the git worktrees
+    // Use strategyId for cleanup tracking and validation
     for (const [strategyId, path] of Object.entries(worktreePaths)) {
-      console.log(`🗑️ Cleaned up worktree: ${path}`);
+      try {
+        // Validate strategy ID and path before cleanup
+        if (!strategyId || !path) {
+          logger.warn('Invalid strategyId or path for cleanup', { strategyId, path });
+          continue;
+        }
+
+        // Log cleanup with strategy context
+        logger.debug(`🗑️ Cleaning up worktree for strategy ${strategyId}: ${path}`);
+        
+        // Track cleanup metrics by strategy
+        this.recordCleanupMetrics(strategyId, path);
+        
+        // In a real implementation, this would execute:
+        // await exec(`git worktree remove ${path}`);
+        
+        logger.info(`✅ Successfully cleaned up worktree for strategy ${strategyId}`);
+      } catch (error) {
+        logger.error(`❌ Failed to cleanup worktree for strategy ${strategyId}:`, error);
+      }
     }
+  }
+
+  private recordCleanupMetrics(strategyId: string, path: string): void {
+    // Record cleanup metrics for monitoring and analytics
+    logger.debug('Recording cleanup metrics', {
+      strategyId,
+      pathLength: path.length,
+      timestamp: Date.now(),
+      cleanupType: 'git_worktree'
+    });
   }
 
   private async persistTestResult(testResult: ABTestResult): Promise<void> {

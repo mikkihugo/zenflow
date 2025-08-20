@@ -4,8 +4,6 @@
 
 import { getLogger } from '../../config/logging-config';
 
-const logger = getLogger('coordination-diagnostics-health-monitor');
-
 /**
  * HealthMonitor - Proactive health monitoring system for session persistence.
  * Part of comprehensive solution for Issue #137: Swarm session persistence and recovery.
@@ -26,6 +24,8 @@ const logger = getLogger('coordination-diagnostics-health-monitor');
 import { randomUUID } from 'node:crypto';
 import { EventEmitter } from 'eventemitter3';
 import { performance } from 'node:perf_hooks';
+
+const logger = getLogger('coordination-diagnostics-health-monitor');
 
 export interface HealthMonitorOptions {
   checkInterval?: number;

@@ -209,7 +209,7 @@ export interface WorkflowStatus {
 
 /**
  * Optional Load Balancer interface
- * Implementation provided by @claude-zen/load-balancing package
+ * Implementation provided by @claude-zen/brain package
  */
 export interface ILoadBalancer {
   distributeLoad(requests: any[], resources: any[]): Promise<any[]>;

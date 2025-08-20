@@ -13,29 +13,57 @@
  * @version 2.0.0
  */
 
-import { BaseError, ErrorCategory, ErrorSeverity } from '@claude-zen/foundation/errors';
-import { SafetyMonitor } from '@claude-zen/ai-safety';
+import type { BaseError, Timestamp, UUID } from '@claude-zen/foundation';
+// Define error types locally since not exported from foundation
+enum ErrorCategory {
+  BUSINESS = 'business',
+  SYSTEM = 'system',
+  VALIDATION = 'validation',
+  INTEGRATION = 'integration',
+  PERFORMANCE = 'performance',
+  SECURITY = 'security'
+}
+
+type ErrorSeverity = 'low' | 'medium' | 'high' | 'critical';
+import type { LogLevel } from '@claude-zen/foundation';
+import { AIDeceptionDetector } from '@claude-zen/ai-safety';
 // Import infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
-import { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation/telemetry';
+import { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
 
 /**
  * SAFe error categories mapped to claude-zen error categories
  */
 export const SAFE_ERROR_CATEGORIES = {
-  PORTFOLIO: 'business' as ErrorCategory,
-  PROGRAM: 'business' as ErrorCategory,
-  TEAM: 'operational' as ErrorCategory,
-  ARCHITECTURE: 'technical' as ErrorCategory,
-  DEVSECOPS: 'security' as ErrorCategory,
-  SYSTEM: 'system' as ErrorCategory
+  PORTFOLIO: ErrorCategory.BUSINESS,
+  PROGRAM: ErrorCategory.BUSINESS,
+  TEAM: ErrorCategory.BUSINESS,
+  ARCHITECTURE: ErrorCategory.SYSTEM,
+  DEVSECOPS: ErrorCategory.SYSTEM,
+  SYSTEM: ErrorCategory.SYSTEM
 } as const;
 
 /**
  * Base SAFe error using @claude-zen/foundation BaseError
  */
-export abstract class SAFeError extends BaseError {
+export abstract class SAFeError extends Error implements BaseError {
   public readonly safeCategory: keyof typeof SAFE_ERROR_CATEGORIES;
   public readonly suggestedActions: string[];
+  
+  // BaseError required properties
+  public readonly type: string;
+  public readonly code: string;
+  public readonly message: string;
+  public readonly timestamp: Timestamp;
+  public readonly errorId: UUID;
+  public readonly context?: Record<string, unknown>;
+  public readonly cause?: Error;
+  public readonly retryable: boolean;
+  public readonly logLevel: LogLevel;
+  
+  // Additional SAFe properties
+  public readonly severity: ErrorSeverity;
+  public readonly category: ErrorCategory;
+  public readonly recoverable: boolean;
 
   constructor(
     message: string,
@@ -48,16 +76,28 @@ export abstract class SAFeError extends BaseError {
       cause?: Error;
     }
   ) {
-    super(message, {
-      category: SAFE_ERROR_CATEGORIES[params.safeCategory],
-      severity: params.severity,
-      context: params.context,
-      recoverable: params.recoverable,
-      cause: params.cause
-    });
+    super(message);
     
+    this.message = message;
+    this.type = this.constructor.name;
+    this.code = `SAFE_${params.safeCategory}_ERROR`;
+    this.timestamp = Date.now() as Timestamp;
+    this.errorId = crypto.randomUUID() as UUID;
+    this.context = params.context;
+    this.cause = params.cause;
+    this.retryable = params.recoverable ?? true;
+    this.logLevel = 'error' as LogLevel;
+    
+    this.severity = params.severity;
+    this.category = SAFE_ERROR_CATEGORIES[params.safeCategory];
+    this.recoverable = params.recoverable ?? true;
     this.safeCategory = params.safeCategory;
     this.suggestedActions = params.suggestedActions || [];
+  }
+  
+  // Helper methods for BaseError compatibility
+  getContext(): Record<string, unknown> {
+    return this.context || {};
   }
 }
 
@@ -351,7 +391,7 @@ export class SAFeErrorHandler implements ErrorHandler {
   /**
    * Handle SAFe errors with comprehensive logging and telemetry
    */
-  handle(error: SAFeError): void {
+  async handle(error: SAFeError): Promise<void> {
     const context = error.getContext();
 
     // Log based on severity

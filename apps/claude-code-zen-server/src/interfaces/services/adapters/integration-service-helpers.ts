@@ -12,6 +12,7 @@
 import { getLogger } from '../../../config/logging-config';
 import type { ArchitectureDesign } from '../../../types/shared-types';
 import type { APIResult } from '../../types/shared-types';
+
 import type {
   IntegrationServiceAdapter,
   IntegrationServiceAdapterConfig,
@@ -172,12 +173,10 @@ export class IntegrationServiceHelper {
         };
       }
 
-      const result = await this.adapter.execute<string>('architecture-save', {
+      return await this.adapter.execute<string>('architecture-save', {
         architecture,
         projectId: config?.projectId,
       });
-
-      return result;
     } catch (error) {
       return {
         success: false,

@@ -58,11 +58,11 @@
  */
 
 // Export main class
-export { AgentManager } from './agent-manager';
-export { default } from './agent-manager';
-
 // Import types for internal use
 import type { AgentType, SwarmAgent } from './types';
+
+export { AgentManager } from './agent-manager';
+export { default } from './agent-manager';
 
 // Export all types
 export type {

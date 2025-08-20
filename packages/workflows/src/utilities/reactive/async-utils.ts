@@ -21,7 +21,7 @@ export class AsyncUtils {
     func: T, 
     wait: number
   ): T & { cancel(): void; flush(): void } {
-    return debounce(func, wait);
+    return debounce(func, wait) as unknown as T & { cancel(): void; flush(): void };
   }
 
   /**
@@ -31,7 +31,7 @@ export class AsyncUtils {
     func: T, 
     wait: number
   ): T & { cancel(): void; flush(): void } {
-    return throttle(func, wait);
+    return throttle(func, wait) as unknown as T & { cancel(): void; flush(): void };
   }
 
   /**

@@ -54,10 +54,10 @@ export class ProductManagementManager extends EventEmitter {
   private state: ProductManagerState;
   private initialized = false;
 
-  // Service delegation
-  private visionService: ProductVisionService;
-  private researchService: CustomerResearchService;
-  private marketService: MarketAnalysisService;
+  // Service delegation - initialized in initialize() method
+  private visionService!: ProductVisionService;
+  private researchService!: CustomerResearchService;
+  private marketService!: MarketAnalysisService;
 
   constructor(
     config: ProductManagerConfig,
@@ -184,10 +184,14 @@ export class ProductManagementManager extends EventEmitter {
     this.logger.info('Analyzing customer segments', { productId });
 
     const analysis = await this.researchService.performResearchAnalysis();
-    const segments = SafeCollectionUtils.filterByPriority(
-      analysis.segmentInsights.map(si => si.segment),
-      ['critical', 'high', 'medium']
-    );
+    // Filter segments by urgency level (immediate, short_term, medium_term are high priority)
+    const segments = analysis.segmentInsights
+      .map(si => si.segment)
+      .filter(segment => 
+        segment.urgency === 'immediate' || 
+        segment.urgency === 'short_term' || 
+        segment.urgency === 'medium_term'
+      );
 
     // Update state
     this.state = {
@@ -269,13 +273,13 @@ export class ProductManagementManager extends EventEmitter {
       businessValue: feature.businessValue || 20,
       urgency: 15, // Mock urgency score
       riskReduction: 10, // Mock risk reduction score
-      size: feature.storyPoints || 8
+      size: feature.stories?.length || 8 // Use story count as size estimate
     }));
 
     const prioritizedFeatures = SafeCollectionUtils.prioritizeByWSJF(featuresWithWSJF);
     
     this.logger.info('Feature prioritization completed', { 
-      topFeature: prioritizedFeatures[0]?.title 
+      topFeature: prioritizedFeatures[0]?.name 
     });
 
     return prioritizedFeatures;

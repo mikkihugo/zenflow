@@ -6,11 +6,12 @@
  */
 
 import { exec } from 'node:child_process';
-import { EventEmitter } from 'eventemitter3';
-import { access, readdir, stat } from 'node:fs/promises';
+
+import { access, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
 import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 
 const execAsync = promisify(exec);
 

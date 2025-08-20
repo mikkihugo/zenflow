@@ -23,7 +23,7 @@ import type {
   ValidationError,
   Optional,
   NonEmptyArray,
-  Brand
+  Branded
 } from '@claude-zen/foundation/types';
 
 // =============================================================================
@@ -107,7 +107,7 @@ export enum WorkflowCategory {
 /**
  * Core workflow definition
  */
-export interface WorkflowDefinition extends Entity {
+export interface WorkflowDefinition extends Omit<Entity, 'version'> {
   name: string;
   description: string;
   category: WorkflowCategory;
@@ -143,11 +143,11 @@ export interface WorkflowStep extends Entity {
   action: StepAction;
   conditions: StepCondition[];
   dependencies: UUID[];
-  retry: Optional<RetryConfig>;
-  timeout: Optional<number>;
-  resources: Optional<ResourceRequirement>;
-  validation: Optional<StepValidation>;
-  rollback: Optional<RollbackConfig>;
+  retry: RetryConfig | undefined;
+  timeout: number | undefined;
+  resources: ResourceRequirement | undefined;
+  validation: StepValidation | undefined;
+  rollback: RollbackConfig | undefined;
 }
 
 /**
@@ -630,7 +630,7 @@ export interface AccessPolicy {
 /**
  * Workflow template for reusable workflows
  */
-export interface WorkflowTemplate extends Entity {
+export interface WorkflowTemplate extends Omit<Entity, 'version'> {
   name: string;
   description: string;
   category: WorkflowCategory;
@@ -827,6 +827,7 @@ export interface WorkflowEngineConfig {
   security: SecurityConfig;
   performance: PerformanceConfig;
   clustering: ClusteringConfig;
+  enableAdvancedOrchestration?: boolean;
 }
 
 /**
@@ -905,9 +906,9 @@ export enum LockType {
 // =============================================================================
 
 // Additional utility types for workflow operations
-export type WorkflowId = Brand<UUID, 'WorkflowId'>;
-export type ExecutionId = Brand<UUID, 'ExecutionId'>;
-export type StepId = Brand<UUID, 'StepId'>;
+export type WorkflowId = Branded<UUID, 'WorkflowId'>;
+export type ExecutionId = Branded<UUID, 'ExecutionId'>;
+export type StepId = Branded<UUID, 'StepId'>;
 
 // Complex type aliases for easier usage
 export type WorkflowEventType = 
@@ -922,6 +923,20 @@ export type WorkflowEventType =
   | 'step.retried';
 
 // Stub definitions for referenced types (to be defined in respective modules)
+export interface WorkflowMetadata { 
+  tags: string[]; 
+  author: string; 
+  created: Timestamp; 
+  modified: Timestamp; 
+  size: number; 
+  complexity: number; 
+}
+export interface MonitoringConfig { 
+  enabled: boolean; 
+  metrics: string[]; 
+  alerting: boolean; 
+  thresholds: Record<string, number>; 
+}
 export interface QueueingConfig { strategy: string; priority: boolean; }
 export interface ThrottlingConfig { enabled: boolean; rate: number; }
 export interface PoolingConfig { size: number; timeout: number; }
@@ -976,7 +991,7 @@ export type StepResult = Result<StepExecution, StepExecutionError>;
 /**
  * Workflow-specific error types
  */
-export interface WorkflowError extends ValidationError {
+export interface WorkflowError extends Omit<ValidationError, 'type'> {
   type: 'WorkflowError';
   category: 'definition' | 'execution' | 'validation' | 'permission' | 'resource';
   workflowId?: UUID;

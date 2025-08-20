@@ -9,16 +9,15 @@
  * - Metrics collection
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
 import { 
-  BrainCoordinator,
-  TaskComplexity,
-  StorageStrategy
+  BrainCoordinator
 } from './main';
 import type { 
   NeuralTask,
   NeuralData
 } from './main';
-import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('test-neural-orchestrator');
 

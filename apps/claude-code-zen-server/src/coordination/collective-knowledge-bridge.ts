@@ -8,18 +8,13 @@
  * - Real-time knowledge distribution with bidirectional learning.
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '../config/logging-config';
-// import type { SessionMemoryStore } from '@claude-zen/memory'; // TODO: Fix memory package build
 import {
   getCoordinationFactSystem,
-  initializeCoordinationFactSystem,
-  searchCoordinationFacts,
-  queryCoordinationFacts,
-  storeCoordinationFact,
   type CoordinationFact as UniversalFact,
-  type CoordinationFactQuery as FactQuery,
 } from '@claude-zen/knowledge';
+import { EventEmitter } from 'eventemitter3';
+import { getLogger } from '../config/logging-config';
+// import type { SessionMemoryStore } from '@claude-zen/brain'; // TODO: Fix memory package build
 import type CollectiveSwarmCoordinator from './swarm-synchronization';
 
 interface SwarmContext {
@@ -222,11 +217,9 @@ export class CollectiveKnowledgeBridge extends EventEmitter {
       }
 
       // Update response metadata
-      if (response) {
-        if (response && response.metadata) {
+      if (response && response && response.metadata) {
           response.metadata.timestamp = Date.now();
         }
-      }
 
       // Clean up pending request
       this.pendingRequests.delete(request.requestId);

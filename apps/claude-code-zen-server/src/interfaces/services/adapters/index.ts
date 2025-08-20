@@ -43,6 +43,21 @@
  */
 
 // Coordination service adapter exports
+import type { ServiceFactory, ServiceConfig } from '../core/interfaces';
+// Integration with global service registry
+import { globalServiceRegistry } from '../factories';
+import { ServiceType } from '../types';
+import { CoordinationServiceAdapter } from './coordination-service-adapter';
+import { coordinationServiceFactory } from './coordination-service-factory';
+// Additional imports for default export
+import { DataServiceAdapter } from './data-service-adapter';
+import { globalDataServiceFactory } from './data-service-factory';
+import { DataServiceHelper, DataServiceUtils } from './data-service-helpers';
+import { InfrastructureServiceAdapter } from './infrastructure-service-adapter';
+import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
+import { IntegrationServiceAdapter } from './integration-service-adapter';
+import { integrationServiceFactory } from './integration-service-factory';
+
 export {
   CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,
@@ -105,21 +120,6 @@ export {
   integrationServiceFactory,
 } from './integration-service-factory';
 export * from './integration-service-helpers';
-
-import type { ServiceFactory, ServiceConfig } from '../core/interfaces';
-// Integration with global service registry
-import { globalServiceRegistry } from '../factories';
-import { ServiceType } from '../types';
-import { CoordinationServiceAdapter } from './coordination-service-adapter';
-import { coordinationServiceFactory } from './coordination-service-factory';
-// Additional imports for default export
-import { DataServiceAdapter } from './data-service-adapter';
-import { globalDataServiceFactory } from './data-service-factory';
-import { DataServiceHelper, DataServiceUtils } from './data-service-helpers';
-import { InfrastructureServiceAdapter } from './infrastructure-service-adapter';
-import { getInfrastructureServiceFactory } from './infrastructure-service-factory';
-import { IntegrationServiceAdapter } from './integration-service-adapter';
-import { integrationServiceFactory } from './integration-service-factory';
 
 /**
  * Register data service factory with global registry.

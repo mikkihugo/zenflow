@@ -8,8 +8,8 @@
  * @file Agui adapter implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import * as readline from 'node:readline';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('AGUIAdapter');
@@ -265,8 +265,7 @@ export class MockAGUI implements AGUIInterface {
 
   async askQuestion(question: ValidationQuestion): Promise<string> {
     logger.debug('Mock AGUI Question:', question);
-    const response = this.responses.get(question.id) || this.defaultResponse;
-    return response;
+    return this.responses.get(question.id) || this.defaultResponse;
   }
 
   async askBatchQuestions(questions: ValidationQuestion[]): Promise<string[]> {

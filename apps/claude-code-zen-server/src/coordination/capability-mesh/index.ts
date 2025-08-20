@@ -116,7 +116,7 @@ export { SwarmMigrationSystem } from './swarm-migration-system';
  * - @claude-zen/brain: Intelligent resource optimization
  * - @claude-zen/workflows: Process coordination and orchestration
  * - @claude-zen/teamwork: Collaborative discussions and consensus building
- * - @claude-zen/database: Multi-backend persistent storage
+ * - @claude-zen/foundation: Multi-backend persistent storage
  * 
  * **SELF-OPTIMIZATION:**
  * - Continuous learning from swarm performance
@@ -166,6 +166,6 @@ export const CAPABILITY_MESH_INFO = {
     '@claude-zen/brain',
     '@claude-zen/workflows',
     '@claude-zen/teamwork',
-    '@claude-zen/database'
+    '@claude-zen/foundation'
   ]
 } as const;

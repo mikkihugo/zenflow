@@ -18,7 +18,6 @@ import type { Logger } from '../config/logging-config';
 import { getLogger } from '../config/logging-config';
 import type { Agent, Task } from '../coordination/types';
 import type {
-  WorkflowContext,
   WorkflowDefinition,
 } from '../workflows/types';
 

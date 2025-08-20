@@ -17,7 +17,10 @@
  * @since 2024-01-01
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
 import type { BehavioralIntelligence } from '../../behavioral-intelligence';
+
 import { CodingPrinciplesResearcher, type ProgrammingLanguage, type TaskDomain, type DevelopmentRole } from './coding-principles-researcher';
 
 /**
@@ -59,6 +62,10 @@ export interface ProjectContext {
   name: string;
   /** Project domain/type */
   domain: string;
+  /** Current phase of the project */
+  currentPhase?: string;
+  /** Domain-specific context */
+  domainSpecific?: Record<string, unknown>;
   /** Current requirements */
   requirements?: string[];
   /** Existing architecture patterns */
@@ -100,6 +107,7 @@ export class IntelligentPromptGenerator {
   private behavioralIntelligence?: BehavioralIntelligence;
   private codingPrinciplesResearcher?: CodingPrinciplesResearcher;
   private defaultConfig: Required<CodingStandardsConfig>;
+  private logger = getLogger('IntelligentPromptGenerator');
 
   constructor(
     behavioralIntelligence?: BehavioralIntelligence,
@@ -594,16 +602,115 @@ Generate a complete, ready-to-use development prompt.`,
       return content;
     }
 
-    // Use behavioral intelligence to adapt the prompt based on historical patterns
-    // This could analyze past project successes and failures to optimize prompts
-    
-    return `${content}
+    try {
+      // Use project context to get relevant behavioral patterns
+      const projectTags = this.extractProjectTags(context);
+      const complexityLevel = this.assessProjectComplexity(context);
+      
+      // Get behavioral insights based on context
+      const agentProfiles = this.behavioralIntelligence.getAllAgentProfiles();
+      const enhancedStats = this.behavioralIntelligence.getEnhancedStats();
+      
+      // Build context-specific recommendations
+      let contextualInsights = '';
+      
+      if (context.currentPhase) {
+        contextualInsights += `- Project phase: ${context.currentPhase} - applying phase-specific patterns\n`;
+      }
+      
+      if (context.domainSpecific) {
+        contextualInsights += `- Domain: ${context.domainSpecific} - leveraging domain expertise\n`;
+      }
+      
+      if (complexityLevel > 0.7) {
+        contextualInsights += `- High complexity detected (${(complexityLevel * 100).toFixed(1)}%) - extra attention needed\n`;
+      }
+      
+      // Include agent performance insights relevant to project type
+      if (enhancedStats.averagePerformance > 0.8) {
+        contextualInsights += `- High-performing agent patterns available (${(enhancedStats.averagePerformance * 100).toFixed(1)}%)\n`;
+      }
+      
+      return `${content}
 
 ## 🧠 AI-Enhanced Recommendations:
-Based on similar projects and patterns, consider these additional insights:
-- Focus on areas where similar projects typically encounter issues
+Based on ${agentProfiles.size} agent profiles and project context analysis:
+${contextualInsights}
+- Focus on areas where similar ${projectTags.join(', ')} projects typically encounter issues
 - Leverage patterns that have proven successful in comparable domains
-- Pay special attention to complexity hotspots identified by behavioral analysis`;
+- Pay special attention to complexity hotspots identified by behavioral analysis
+- Apply lessons from ${enhancedStats.totalAgents} agents' collective experience`;
+      
+    } catch (error) {
+      this.logger.warn('Error enhancing prompt with behavioral intelligence:', error);
+      return content;
+    }
+  }
+
+  /**
+   * Extract project tags from context for behavioral analysis
+   */
+  private extractProjectTags(context: ProjectContext): string[] {
+    const tags: string[] = [];
+    
+    if (context.currentPhase) tags.push(context.currentPhase);
+    if (context.domainSpecific) tags.push(String(context.domainSpecific));
+    
+    // Add additional tags based on context properties
+    if (context.requirements && context.requirements.length > 0) {
+      tags.push(`${context.requirements.length}-requirements`);
+    }
+    
+    if (tags.length === 0) {
+      tags.push('general');
+    }
+    
+    return tags;
+  }
+
+  /**
+   * Assess project complexity based on context
+   */
+  private assessProjectComplexity(context: ProjectContext): number {
+    let complexity = 0.5; // Base complexity
+    
+    // Factor in requirements count
+    if (context.requirements) {
+      complexity += Math.min(context.requirements.length * 0.05, 0.3);
+    }
+    
+    // Factor in phase complexity
+    if (context.currentPhase) {
+      const phaseComplexity: Record<string, number> = {
+        'specification': 0.1,
+        'pseudocode': 0.2,
+        'architecture': 0.4,
+        'refinement': 0.3,
+        'completion': 0.2
+      };
+      complexity += phaseComplexity[context.currentPhase] || 0.2;
+    }
+    
+    // Domain-specific complexity
+    if (context.domainSpecific) {
+      const domainComplexity: Record<string, number> = {
+        'ml': 0.3,
+        'ai': 0.3,
+        'distributed': 0.4,
+        'security': 0.4,
+        'performance': 0.3
+      };
+      
+      const domain = String(context.domainSpecific).toLowerCase();
+      for (const [key, value] of Object.entries(domainComplexity)) {
+        if (domain.includes(key)) {
+          complexity += value;
+          break;
+        }
+      }
+    }
+    
+    return Math.min(complexity, 1.0);
   }
 
   /**

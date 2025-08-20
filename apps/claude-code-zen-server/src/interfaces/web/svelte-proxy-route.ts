@@ -7,6 +7,7 @@
 
 import { type Request, type Response, type NextFunction } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+
 import { getLogger } from '../../config/logging-config';
 
 const logger = getLogger('SvelteProxyRoute');
@@ -40,7 +41,7 @@ export function createSvelteProxyRoute(config: SvelteProxyConfig) {
   logger.info(`Setting up Svelte proxy: ${basePath}/* -> ${proxyTarget}`);
 
   // Create the proxy middleware
-  const proxy = createProxyMiddleware({
+  return createProxyMiddleware({
     target: proxyTarget,
     changeOrigin: true,
     pathRewrite: {
@@ -70,8 +71,6 @@ export function createSvelteProxyRoute(config: SvelteProxyConfig) {
       proxyRes.headers['x-svelte-dashboard'] = 'true';
     }
   });
-
-  return proxy;
 }
 
 /**

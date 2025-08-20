@@ -5,13 +5,12 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger } from '../../config/logging-config';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '../../memory/memory';
-import {
-  type SharedFactSystem as CollectiveFACTSystem,
-  sharedFactSystem as collectiveFACT,
-} from '../shared-fact-system';
+
+
 
 // Break circular dependency - use interface instead
 interface DomainDiscoveryBridgeLike {
@@ -370,11 +369,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
         this.checkpointsReached.add(checkpoint);
 
         // Check if this is an approval checkpoint
-        if (approvalPoints.includes(checkpoint)) {
-          await this.performCheckpointValidation(checkpoint, true);
-        } else {
-          await this.performCheckpointValidation(checkpoint, false);
-        }
+        await (approvalPoints.includes(checkpoint) ? this.performCheckpointValidation(checkpoint, true) : this.performCheckpointValidation(checkpoint, false));
       }
     }
   }
@@ -473,7 +468,7 @@ export class ProgressiveConfidenceBuilder extends EventEmitter {
     if (response && response.toLowerCase() !== 'skip') {
       // Parse document paths
       const paths = response
-        ?.split(/[,\n]/)
+        ?.split(/[\n,]/)
         .map((p: unknown) => p.trim())
         .filter((p: unknown) => p);
 

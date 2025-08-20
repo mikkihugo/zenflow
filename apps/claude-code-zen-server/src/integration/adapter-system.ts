@@ -5,9 +5,9 @@
 
 import { getLogger } from '../config/logging-config';
 
-const logger = getLogger('src-integration-adapter-system');
-
 import { EventEmitter } from 'eventemitter3';
+
+const logger = getLogger('src-integration-adapter-system');
 
 // Core protocol interfaces
 export interface ProtocolMessage {
@@ -92,11 +92,7 @@ export class MCPAdapter implements ProtocolAdapter {
     }
 
     try {
-      if (this.protocol === 'http') {
-        await this.connectHTTP(config);
-      } else {
-        await this.connectStdio(config);
-      }
+      await (this.protocol === 'http' ? this.connectHTTP(config) : this.connectStdio(config));
 
       this.connected = true;
     } catch (error) {
@@ -135,11 +131,7 @@ export class MCPAdapter implements ProtocolAdapter {
     try {
       let response: unknown;
 
-      if (this.protocol === 'http') {
-        response = await this.sendHTTP(message);
-      } else {
-        response = await this.sendStdio(message);
-      }
+      response = await (this.protocol === 'http' ? this.sendHTTP(message) : this.sendStdio(message));
 
       return {
         id: `resp-${Date.now()}`,

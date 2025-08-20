@@ -336,9 +336,10 @@ export class ArchitecturePrincipleService extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Failed to create architecture principle:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('principle-creation-failed', {
         name: request.name,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
@@ -447,9 +448,10 @@ export class ArchitecturePrincipleService extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Principle compliance validation failed:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('principle-validation-failed', {
         principleId: config.principleId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }

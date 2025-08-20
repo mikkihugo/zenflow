@@ -435,8 +435,6 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
 
       // Check if agent can handle the task
       const canHandle = this.canHandleTask(profile, taskRequirements);
-      let bottleneck: string | undefined;
-
       // Calculate resource fitness score
       let score = 0;
       const weights = this.config.resourceWeights;
@@ -478,7 +476,7 @@ export class ResourceAwareAlgorithm implements LoadBalancingAlgorithm {
       };
 
       const minFitness = Math.min(...Object.values(resourceFitness));
-      bottleneck = Object.keys(resourceFitness).find(
+      const bottleneck = Object.keys(resourceFitness).find(
         (key) =>
           resourceFitness[key as keyof typeof resourceFitness] === minFitness
       );

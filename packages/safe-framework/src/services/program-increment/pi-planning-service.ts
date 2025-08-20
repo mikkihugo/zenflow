@@ -394,7 +394,7 @@ export class PIPlanningService extends EventEmitter {
           this.logger.error('Agenda item execution failed', {
             itemId: agendaItem.id,
             activity: agendaItem.activity,
-            error: error.message
+            error: error instanceof Error ? error.message : String(error)
           });
 
           // Create adjustment for failed agenda item
@@ -467,10 +467,11 @@ export class PIPlanningService extends EventEmitter {
       return planningResult;
 
     } catch (error) {
-      this.logger.error('PI planning workflow execution failed:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error('PI planning workflow execution failed:', errorMessage);
       this.emit('planning-workflow-failed', {
         eventId: planningEvent.eventId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }

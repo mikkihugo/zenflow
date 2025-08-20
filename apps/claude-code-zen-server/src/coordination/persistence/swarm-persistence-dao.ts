@@ -8,13 +8,14 @@
  * for persistent storage across restarts with consistent SwarmIDs.
  */
 
-import { join, dirname } from 'node:path';
 import { existsSync, mkdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Logger } from '../../core/interfaces/base-interfaces';
+
 import { getLogger } from '../../config/logging-config';
+import type { Logger } from '../../core/interfaces/base-interfaces';
 import { DatabaseProviderFactory } from '../../database/providers/database-providers';
-import type { DatabaseAdapter, QueryResult } from '../../database/providers/database-providers';
+import type { DatabaseAdapter } from '../../database/providers/database-providers';
 
 /**
  * Swarm state interface for persistence

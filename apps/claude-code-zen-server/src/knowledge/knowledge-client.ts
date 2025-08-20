@@ -16,8 +16,8 @@
  * @version 2.1.0
  */
 
-import { getLogger } from '../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 /**
  * FACT Integration Configuration

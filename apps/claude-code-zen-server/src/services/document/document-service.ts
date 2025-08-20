@@ -4,7 +4,7 @@
  * MAJOR REDUCTION: 2,236 → ~500 lines (77.6% reduction) through package delegation
  * 
  * Delegates document management functionality to specialized @claude-zen packages:
- * - @claude-zen/database: Multi-database document storage and repository management
+ * - @claude-zen/foundation: Multi-database document storage and repository management
  * - @claude-zen/workflows: Document workflow orchestration and state management
  * - @claude-zen/foundation: Performance tracking, telemetry, and core utilities
  * - @claude-zen/monitoring: Document service observability and metrics
@@ -17,15 +17,12 @@
  * - Advanced search and indexing capabilities
  */
 
-import { getLogger } from '../../config/logging-config';
 import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
+import { getLogger } from '../../config/logging-config';
 import type { DocumentType } from '../../workflows/types';
 import type {
   BaseDocumentEntity,
-  DocumentRelationshipEntity,
-  DocumentWorkflowStateEntity,
-  ProjectEntity,
 } from '../../database/entities/document-entities';
 
 const logger = getLogger('services-document-service');
@@ -110,8 +107,8 @@ export class DocumentManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/database for document storage
-      const { getDatabaseAccess, createRepository } = await import('@claude-zen/database');
+      // Delegate to @claude-zen/foundation for document storage
+      const { getDatabaseAccess, createRepository } = await import('@claude-zen/foundation');
       this.databaseAccess = getDatabaseAccess();
       
       // Create repository facades
@@ -241,7 +238,7 @@ export class DocumentManager extends EventEmitter {
 
     try {
       // Get document from repository
-      let document = await this.documentRepository.findById(id);
+      const document = await this.documentRepository.findById(id);
       
       if (!document) {
         this.performanceTracker.endTimer('get_document');

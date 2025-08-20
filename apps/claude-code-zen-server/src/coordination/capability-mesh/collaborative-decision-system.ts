@@ -7,17 +7,16 @@
  * Delegates to:
  * - @claude-zen/teamwork: ConversationOrchestrator for collaborative discussions
  * - @claude-zen/workflows: DecisionWorkflow for structured decision processes
- * - @claude-zen/fact-system: ConsensusEngine for fact-based consensus
+ * - @claude-zen/knowledge: ConsensusEngine for fact-based consensus
  * - @claude-zen/foundation: EventManager for coordination events
  * - @claude-zen/brain: BehavioralIntelligence for decision optimization
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { withFactCapabilities, type FactCapable } from '../universal-fact-mixin';
+import type { Logger } from '@claude-zen/foundation';
+import { withFactCapabilities } from '../universal-fact-mixin';
 import type { EventBus } from '../../core/interfaces/base-interfaces';
 import type { CoordinationFactAccess } from '../shared-fact-access';
 import { getLogger } from '../../config/logging-config';
-import type { Logger } from '@claude-zen/foundation';
 
 // Coordination event type (simplified)
 type CoordinationEvent = any;
@@ -144,7 +143,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
       // Initialize delegates from @claude-zen packages
       const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
       const { WorkflowEngine } = await import('@claude-zen/workflows');
-      const { FactSystem } = await import('@claude-zen/fact-system');
+      const { FactSystem } = await import('@claude-zen/knowledge');
       const { BehavioralIntelligence } = await import('@claude-zen/brain');
 
       this.conversationOrchestrator = new ConversationOrchestrator();

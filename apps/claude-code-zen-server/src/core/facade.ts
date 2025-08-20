@@ -105,6 +105,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { SystemEventManager } from '../interfaces/events/factories';
 import type { MCPCommandQueue } from '../interfaces/mcp/command-system';
 import type {
@@ -1034,7 +1035,7 @@ export class ClaudeZenFacade extends EventEmitter {
         workflowStatus,
       ] = await Promise.allSettled([
         this.getSwarmSystemStatus(),
-        this.getMemorySystemStatus(),
+        this.getBrainCoordinatorStatus(),
         this.getDatabaseSystemStatus(),
         this.getInterfaceSystemStatus(),
         this.getNeuralSystemStatus(),
@@ -1287,7 +1288,7 @@ export class ClaudeZenFacade extends EventEmitter {
   }
 
   private generateProjectId(name: string): string {
-    const sanitized = name.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    const sanitized = name.toLowerCase().replace(/[^\da-z]/g, '-');
     return `proj-${sanitized}-${Date.now()}`;
   }
 
@@ -1413,7 +1414,7 @@ export class ClaudeZenFacade extends EventEmitter {
     }
   }
 
-  private async getMemorySystemStatus(): Promise<ComponentStatus> {
+  private async getBrainCoordinatorStatus(): Promise<ComponentStatus> {
     try {
       const stats = await this.memoryService.getStats();
       const health = Math.min(stats.hitRate, 1 - stats.avgResponseTime / 1000);

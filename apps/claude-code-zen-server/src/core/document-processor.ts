@@ -20,14 +20,13 @@
  * @file Document-processor implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { basename, dirname, join } from 'node:path';
 import { getLogger } from '../config/logging-config';
-import type { BaseDocumentEntity } from '../database/entities/product-entities';
 import type { WorkflowEngine } from '@claude-zen/workflows';
-import type { MemorySystem } from '@claude-zen/memory';
+import type { BrainCoordinator } from '@claude-zen/brain';
+import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('DocumentProcessor');
 
@@ -171,7 +170,7 @@ export interface DocumentStats {
  * @example
  */
 export class DocumentProcessor extends EventEmitter {
-  private memory: MemorySystem;
+  private memory: BrainCoordinator;
   private workflowEngine: WorkflowEngine | null = null;
   private config: Required<DocumentProcessorConfig>;
   private workspaces: Map<string, ProcessingContext> = new Map();
@@ -192,7 +191,7 @@ export class DocumentProcessor extends EventEmitter {
    * @param config - Configuration options.
    */
   constructor(
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     workflowEngine?: WorkflowEngine,
     config: DocumentProcessorConfig = {}
   ) {

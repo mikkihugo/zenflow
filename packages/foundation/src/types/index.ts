@@ -177,7 +177,6 @@ export type {
   UUIDIdentifiable,
   Named,
   Described,
-  Entity,
   
   // Pagination patterns
   Paginated,
@@ -203,7 +202,10 @@ export type {
   
   // Audit patterns
   AuditEntry,
-  Auditable
+  Auditable,
+  
+  // Entity pattern
+  Entity
 } from './patterns';
 
 // Export pattern utility functions

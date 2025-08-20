@@ -60,7 +60,7 @@ export class ImmutableOps {
    * Add item to array immutably
    */
   static addToArray<T>(array: T[], item: T): T[] {
-    return produce(array, draft => {
+    return produce(array, (draft: T[]) => {
       draft.push(item);
     });
   }

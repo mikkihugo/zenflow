@@ -42,6 +42,7 @@ export interface PhaseResult {
   phase: SPARCPhase;
   success: boolean;
   data?: unknown;
+  error?: string;
   duration: number;
   timestamp: number;
 }

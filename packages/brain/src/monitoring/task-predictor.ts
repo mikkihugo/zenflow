@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
 import type { AgentId } from './types';
 
 const logger = getLogger('agent-monitoring-task-predictor');
@@ -171,6 +172,43 @@ export class SimpleTaskPredictor implements TaskPredictor {
     const durations = recentHistory.map(r => r.duration);
     const averageDuration = durations.reduce((sum, d) => sum + d, 0) / durations.length;
     
+    // Apply context factors to adjust prediction
+    let adjustedDuration = averageDuration;
+    const contextAdjustmentFactors: PredictionFactor[] = [];
+    
+    if (contextFactors?.complexity) {
+      const complexityFactor = contextFactors.complexity as number;
+      adjustedDuration *= complexityFactor;
+      contextAdjustmentFactors.push({
+        name: 'Complexity Factor',
+        impact: complexityFactor,
+        confidence: 0.8,
+        description: `Task complexity adjustment: ${complexityFactor}x`
+      });
+    }
+    
+    if (contextFactors?.urgency) {
+      const urgencyFactor = contextFactors.urgency as number;
+      adjustedDuration *= (1 / urgencyFactor); // Higher urgency = faster execution
+      contextAdjustmentFactors.push({
+        name: 'Urgency Factor',
+        impact: urgencyFactor,
+        confidence: 0.7,
+        description: `Urgency-based time pressure: ${urgencyFactor}x`
+      });
+    }
+    
+    if (contextFactors?.resourceLoad) {
+      const resourceFactor = contextFactors.resourceLoad as number;
+      adjustedDuration *= (1 + resourceFactor * 0.5); // Resource contention slows down
+      contextAdjustmentFactors.push({
+        name: 'Resource Load Factor',
+        impact: resourceFactor,
+        confidence: 0.6,
+        description: `Resource contention impact: ${resourceFactor}x`
+      });
+    }
+    
     // Simple confidence based on data consistency
     const variance = this.calculateVariance(durations);
     const mean = this.calculateMean(durations);
@@ -180,18 +218,21 @@ export class SimpleTaskPredictor implements TaskPredictor {
     const prediction: TaskPrediction = {
       agentId: agentId.id,
       taskType,
-      predictedDuration: Math.round(averageDuration),
+      predictedDuration: Math.round(adjustedDuration),
       confidence,
-      factors: [{
-        name: 'Historical Average',
-        impact: 1.0,
-        confidence: confidence,
-        description: `Based on ${recentHistory.length} recent completions`
-      }],
+      factors: [
+        {
+          name: 'Historical Average',
+          impact: 1.0,
+          confidence: confidence,
+          description: `Based on ${recentHistory.length} recent completions`
+        },
+        ...contextAdjustmentFactors
+      ],
       lastUpdated: new Date(),
       metadata: {
         sampleSize: recentHistory.length,
-        algorithm: 'simple_average',
+        algorithm: contextAdjustmentFactors.length > 0 ? 'context_adjusted_average' : 'simple_average',
         trendDirection: this.calculateTrendDirection(durations)
       }
     };

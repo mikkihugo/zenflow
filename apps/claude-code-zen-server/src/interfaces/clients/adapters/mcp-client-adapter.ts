@@ -15,6 +15,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { MCPClient } from 'mcp-client';
+
 import type {
   ClientConfig,
   ClientMetadata,

@@ -101,6 +101,8 @@ export interface PredictionResult {
 export interface PredictionFactor {
   name: string;
   influence: number;
+  impact: number;
+  confidence: number;
   description: string;
 }
 
@@ -332,22 +334,46 @@ export interface MultiHorizonTaskPrediction {
 export interface AgentLearningState {
   agentId: string;
   learningRate: number;
-  adaptationLevel: number;
+  adaptationLevel?: number;
+  adaptationStrategy: string;
   performanceHistory: number[];
-  lastUpdate: Date;
+  knowledgeBase: {
+    domains: string[];
+    expertise: number;
+    lastUpdated: number;
+  };
+  adaptabilityScore: number;
+  currentFocus: string;
+  lastLearningUpdate: number;
+  lastUpdate?: Date;
 }
 
 export interface AgentHealth {
   agentId: string;
-  overallHealth: number;
-  subsystemHealth: {
+  status: 'healthy' | 'warning' | 'critical' | 'offline';
+  overallHealth?: number;
+  overallScore: number;
+  subsystemHealth?: {
     cpu: number;
     memory: number;
     network: number;
     tasks: number;
   };
+  components: {
+    cpu: number;
+    memory: number;
+    network: number;
+    tasks: number;
+  };
+  metrics: {
+    uptime: number;
+    responseTime: number;
+    errorRate: number;
+    throughput: number;
+  };
+  lastChecked: number;
   issues: string[];
-  lastCheck: Date;
+  lastCheck?: Date;
 }
 
 // Export convenience type unions

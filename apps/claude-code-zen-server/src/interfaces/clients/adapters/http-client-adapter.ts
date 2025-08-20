@@ -83,13 +83,13 @@
  * ```
  */
 
-import { EventEmitter } from 'eventemitter3';
 import axios, {
   type AxiosError,
   type AxiosInstance,
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
+import { EventEmitter } from 'eventemitter3';
 import type {
   ClientMetrics,
   ClientResponse,
@@ -103,6 +103,7 @@ import {
   RetryExhaustedError,
   TimeoutError,
 } from '../core/interfaces';
+
 import type {
   HTTPClientCapabilities,
   HTTPClientConfig,

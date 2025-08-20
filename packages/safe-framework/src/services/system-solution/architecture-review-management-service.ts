@@ -136,15 +136,11 @@ export class ArchitectureReviewManagementService {
 
     try {
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: this.config.defaultReviewTimeout * 60000 // convert to ms
-      });
-      await this.aguiService.initialize();
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiResult = await AGUISystem({ aguiType: 'terminal' });
+      this.aguiService = aguiResult.agui;
 
-      // Lazy load @claude-zen/brain for intelligent review analysis
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent review analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -164,17 +160,14 @@ export class ArchitectureReviewManagementService {
       // Lazy load @claude-zen/workflows for review workflow orchestration
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        enableAdvancedOrchestration: true,
-        enableStateTracking: true
+        maxConcurrentWorkflows: 5,
+        enableVisualization: true
       });
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/teamwork for stakeholder collaboration
       const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
-      this.conversationOrchestrator = new ConversationOrchestrator({
-        enableMultiParticipant: true,
-        enableContextualMemory: true
-      });
+      this.conversationOrchestrator = new ConversationOrchestrator();
       await this.conversationOrchestrator.initialize();
 
       this.initialized = true;

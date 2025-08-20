@@ -117,7 +117,7 @@ export class SystemDesignManagementService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/brain for intelligent design analysis
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent design analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -134,19 +134,17 @@ export class SystemDesignManagementService {
       });
       await this.telemetryManager.initialize();
 
-      // Lazy load @claude-zen/knowledge for design pattern knowledge
-      const { KnowledgeManager } = await import('@claude-zen/knowledge');
-      this.knowledgeManager = new KnowledgeManager({
-        enableSemanticSearch: true,
-        enablePatternRecognition: true
-      });
-      await this.knowledgeManager.initialize();
+      // Lazy load knowledge for design pattern knowledge (using package import)
+      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+      this.knowledgeManager = new BasicKnowledgeManager();
+      // BasicKnowledgeManager doesn't have initialize method
+      this.logger.info('Knowledge manager loaded successfully');
 
       // Lazy load @claude-zen/workflows for design workflow orchestration
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        enableAdvancedOrchestration: true,
-        enableStateTracking: true
+        maxConcurrentWorkflows: 5,
+        enableVisualization: true
       });
       await this.workflowEngine.initialize();
 

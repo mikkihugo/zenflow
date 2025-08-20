@@ -37,6 +37,11 @@
 import { spawn } from 'child_process';
 import path from 'path';
 import { promisify } from 'util';
+
+import { 
+  BrainCoordinator,
+  type PromptOptimizationRequest
+} from '@claude-zen/brain';
 import { 
   getLogger,
   LLMProvider,
@@ -44,18 +49,11 @@ import {
   DIContainer,
   getGlobalContainer,
   type Logger,
-  type LLMRequest,
-  type LLMResponse,
-  type LLMMessage
+  type LLMRequest
 } from '@claude-zen/foundation';
 import { v4 as uuidv4 } from 'uuid';
 
 // Brain package - Simple AI coordination and learning
-import { 
-  BrainCoordinator,
-  type PromptOptimizationRequest,
-  type PromptOptimizationResult
-} from '@claude-zen/brain';
 // Foundation package handles all LLM operations
 
 const execAsync = promisify(spawn);

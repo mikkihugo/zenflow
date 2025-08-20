@@ -5,9 +5,10 @@
  * Rust FACT core via Node.js bindings or CLI interface.
  */
 
-import { ChildProcess, spawn } from 'child_process';
-import { EventEmitter } from 'eventemitter3';
+import { spawn } from 'child_process';
+
 import { join } from 'path';
+import { EventEmitter } from 'eventemitter3';
 
 export interface RustFactConfig {
   /** Path to the Rust FACT binary */

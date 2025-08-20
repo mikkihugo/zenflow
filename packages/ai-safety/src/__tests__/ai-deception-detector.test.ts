@@ -1,9 +1,11 @@
 /**
- * @file Tests for comprehensive 25-pattern AI deception detection system.
+ * @file Tests for comprehensive 25-pattern AI deception detection system (Jest Version).
+ * 
+ * CONVERTED FROM VITEST: Uses Jest testing framework
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
-import { AIDeceptionDetector, type AIInteractionData } from '../ai-deception-detector.js';
+import { jest } from '@jest/globals';
+import { AIDeceptionDetector, type AIInteractionData } from '../ai-deception-detector';
 
 describe('AIDeceptionDetector - 25-Pattern System', () => {
   let detector: AIDeceptionDetector;

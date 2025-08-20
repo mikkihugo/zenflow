@@ -9,7 +9,7 @@
  * - @claude-zen/sparc: SPARCCommander for technical methodology
  * - @claude-zen/agui: TaskApprovalSystem for human-in-the-loop workflows
  * - @claude-zen/foundation: PerformanceTracker, TelemetryManager, logging
- * - @claude-zen/database: Document management and persistence
+ * - @claude-zen/foundation: Document management and persistence
  * 
  * REDUCTION: 2,093 → 489 lines (76.6% reduction) through package delegation
  * 
@@ -26,7 +26,7 @@ import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
 import { getLogger } from '../../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
-import type { MemorySystem } from '../../core/memory-coordinator';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import type {
   ADRDocumentEntity,
@@ -39,29 +39,23 @@ import type {
 import type { DocumentManager } from "../services/document/document-service"
 import {
   WorkflowAGUIAdapter,
-  type WorkflowAGUIConfig,
 } from '../../interfaces/agui/workflow-agui-adapter';
 import type {
   StepExecutionResult,
   WorkflowContext,
-  WorkflowData,
   WorkflowDefinition,
   WorkflowEngineConfig,
-  WorkflowState,
 } from '../../workflows/types';
 import type {
-  GateEscalationLevel,
-  WorkflowContext as GateWorkflowContext,
   WorkflowGateRequest,
-  WorkflowGateResult,
 } from '../workflows/workflow-gate-request';
 import type {
   WorkflowGateContext,
-  WorkflowGateData,
   WorkflowGatePriority,
-  WorkflowHumanGate,
-  WorkflowHumanGateType,
 } from './workflow-gates';
+
+// Import WorkflowStep from workflow-types
+import type { WorkflowStep } from '../../workflows/types';
 
 // Define missing types locally
 type WorkflowStatus =
@@ -120,9 +114,6 @@ interface WorkflowStepState {
   status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped';
   attempts: number;
 }
-
-// Import WorkflowStep from workflow-types
-import type { WorkflowStep } from '../../workflows/types';
 
 /**
  * Product Flow Step Types (Business Flow).
@@ -214,7 +205,7 @@ export interface ProductWorkflowConfig extends WorkflowEngineConfig {
  */
 export class ProductWorkflowEngine extends EventEmitter {
   private logger: Logger;
-  private memory: MemorySystem;
+  private memory: BrainCoordinator;
   private documentService: DocumentManager;
   private eventBus: TypeSafeEventBus;
   private config: ProductWorkflowConfig;
@@ -235,7 +226,7 @@ export class ProductWorkflowEngine extends EventEmitter {
   private pendingGates = new Map<string, WorkflowGateRequest>();
 
   constructor(
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     documentService: DocumentManager,
     eventBus: TypeSafeEventBus,
     aguiAdapter?: WorkflowAGUIAdapter,

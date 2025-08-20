@@ -6,6 +6,7 @@
 
 import { getLogger } from '../../config/logging-config';
 import type { AgentType } from '../types';
+
 import type { BatchOperation } from './batch-engine';
 
 const logger = getLogger('SwarmBatch');

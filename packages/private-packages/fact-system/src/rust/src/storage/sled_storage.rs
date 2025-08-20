@@ -6,12 +6,12 @@ use super::{FactData, FactKey, FactStorage, StorageConfig, StorageStats};
 use anyhow::{Context, Result};
 use sled::Db;
 use std::path::PathBuf;
-use std::time::SystemTime;
 use tracing::{debug, info, warn};
 
 /// Sled storage implementation
 pub struct SledStorage {
   db: Db,
+  #[allow(dead_code)]
   config: StorageConfig,
 }
 

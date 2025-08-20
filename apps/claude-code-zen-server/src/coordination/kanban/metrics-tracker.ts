@@ -17,8 +17,8 @@
  * New file: Lightweight integration layer using extracted packages
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 import {
   CompleteIntelligenceSystem,
   PerformanceTracker,
@@ -27,29 +27,24 @@ import {
   createPerformanceTracker,
   type IntelligenceSystemConfig,
   type PerformanceTrackerConfig,
-  type TaskPrediction,
   type PerformanceSnapshot,
-  type AgentHealth,
   type SystemHealthSummary
 } from '@claude-zen/foundation';
 
-import type { MemorySystem } from '../../core/memory-coordinator';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
+
 import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import {
-  createEvent,
-  EventPriority,
-} from '@claude-zen/event-system';
+
+
+
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
+
 import type {
-  AdvancedFlowManager,
-  PerformanceThreshold
+  AdvancedFlowManager
 } from './flow-manager-facade';
-import type {
-  FlowMetrics,
-  TaskState,
-  WorkflowTask,
-  WIPLimits,
-} from '@claude-zen/kanban';
+
+
+
 
 const logger = getLogger('metrics-tracker');
 
@@ -211,7 +206,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
   private readonly config: AdvancedMetricsTrackerConfig;
   
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly gatesManager: WorkflowGatesManager;
   private readonly flowManager: AdvancedFlowManager;
   
@@ -222,7 +217,7 @@ export class AdvancedMetricsTracker extends EventEmitter {
   constructor(
     config: Partial<AdvancedMetricsTrackerConfig> = {},
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     gatesManager: WorkflowGatesManager,
     flowManager: AdvancedFlowManager
   ) {

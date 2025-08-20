@@ -331,7 +331,7 @@ export class ArchitectureDecisionManagementService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/brain for intelligent decision analysis
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent decision analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -351,26 +351,26 @@ export class ArchitectureDecisionManagementService {
       // Lazy load @claude-zen/workflows for decision approval workflows
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        enableAdvancedOrchestration: true,
-        enableStateTracking: true
+        maxConcurrentWorkflows: 10,
+        enableVisualization: true
       });
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: 2700000 // 45 minutes for complex decisions
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiSystemResult = await AGUISystem({
+        aguiType: 'terminal',
+        taskApprovalConfig: {
+          enableRichDisplay: true,
+          enableBatchMode: false,
+          requireRationale: true
+        }
       });
-      await this.aguiService.initialize();
+      this.aguiService = aguiSystemResult.agui;
 
       // Lazy load @claude-zen/teamwork for stakeholder collaboration
       const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
-      this.conversationOrchestrator = new ConversationOrchestrator({
-        enableMultiParticipant: true,
-        enableContextualMemory: true
-      });
+      this.conversationOrchestrator = new ConversationOrchestrator();
       await this.conversationOrchestrator.initialize();
 
       this.initialized = true;
@@ -413,6 +413,7 @@ export class ArchitectureDecisionManagementService {
 
       // Create ADR with AI-enhanced data
       const adr: ArchitectureDecisionRecord = {
+        ...decision,
         id: `adr-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         status: 'draft',
         confidenceLevel,
@@ -428,8 +429,7 @@ export class ArchitectureDecisionManagementService {
         attachments: [],
         metrics: this.generateDecisionMetrics(decision),
         createdAt: new Date(),
-        updatedAt: new Date(),
-        ...decision
+        updatedAt: new Date()
       };
 
       // Check if critical decision requires immediate review
@@ -819,7 +819,16 @@ export class ArchitectureDecisionManagementService {
       impact: this.calculateImpact(option, analysis),
       dependencies: [],
       supersedes: [],
-      tags: []
+      tags: [],
+      reviewCycle: {
+        frequency: 'annually',
+        nextReviewDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        reviewCriteria: ['business_value', 'technical_feasibility', 'compliance'],
+        reviewers: request.stakeholders,
+        escalationPath: ['team_lead', 'architecture_board', 'cto']
+      },
+      attachments: [],
+      metrics: []
     });
   }
 

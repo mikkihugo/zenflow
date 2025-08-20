@@ -6,12 +6,10 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import type {
-  PerformanceMetrics,
-  QueueConfig,
-  WorkflowState,
-  WorkflowStep,
-} from '../workflows/types';
+
+
+
+
 import { BottleneckDetectionEngine } from './bottleneck-detector';
 // Import all Kanban flow components
 import { AdvancedFlowManager } from './flow-manager-facade';

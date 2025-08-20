@@ -3,20 +3,21 @@
  */
 
 // Simple console logger to avoid circular dependencies
-const logger = {
-  debug: (message: string, meta?: unknown) => console.log(`[DEBUG] ${message}`, meta || ''),
-  info: (message: string, meta?: unknown) => console.log(`[INFO] ${message}`, meta || ''),
-  warn: (message: string, meta?: unknown) => console.warn(`[WARN] ${message}`, meta || ''),
-  error: (message: string, meta?: unknown) => console.error(`[ERROR] ${message}`, meta || ''),
-};
-
 /**
  * Emergency Protocol Handler.
  * Advanced emergency response and load shedding system.
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { EmergencyHandler } from '../interfaces';
+
+const logger = {
+  debug: (message: string, meta?: unknown) => console.log(`[DEBUG] ${message}`, meta || ''),
+  info: (message: string, meta?: unknown) => console.log(`[INFO] ${message}`, meta || ''),
+  warn: (message: string, meta?: unknown) => console.warn(`[WARN] ${message}`, meta || ''),
+  error: (message: string, meta?: unknown) => console.error(`[ERROR] ${message}`, meta || ''),
+};
 
 interface EmergencyProtocol {
   name: string;
@@ -53,11 +54,7 @@ export class EmergencyProtocolHandler
     severity: 'low' | 'medium' | 'high' | 'critical'
   ): Promise<void> {
     const protocol = this.activeProtocols.get(type);
-    if (protocol) {
-      await this.executeProtocol(protocol);
-    } else {
-      await this.executeDefaultEmergencyResponse(type, severity);
-    }
+    await (protocol ? this.executeProtocol(protocol) : this.executeDefaultEmergencyResponse(type, severity));
 
     this.recordEmergency(type, severity, 'protocol_executed');
     this.emit('emergency:activated', type, severity);

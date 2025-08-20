@@ -5,7 +5,6 @@
  * instead of managing WASM bindings directly in the server.
  */
 
-import { BrainCoordinator, type BrainConfig } from '@claude-zen/brain';
 import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('NeuralInterface');

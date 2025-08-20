@@ -73,8 +73,9 @@
  */
 
 import { execSync } from 'child_process';
-import { getLogger } from '../config/logging-config';
+
 import type { AGUIInterface } from '@claude-zen/agui';
+import { getLogger } from '../config/logging-config';
 // Use compatible ValidationQuestion interface that matches AGUI expectations
 interface ValidationQuestion {
   question: string;

@@ -4,8 +4,6 @@
 
 import { getLogger } from '../../config/logging-config';
 
-const logger = getLogger('interfaces-api-safe-api-client');
-
 /**
  * Safe API Response Handler.
  *
@@ -21,6 +19,8 @@ import {
   isAPIError,
   isAPISuccess,
 } from '../../utils/type-guards';
+
+const logger = getLogger('interfaces-api-safe-api-client');
 
 export interface APIRequestOptions {
   method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
@@ -175,11 +175,7 @@ export class SafeAPIClient {
             const contentType = response?.headers?.get('content-type');
             let data: T;
 
-            if (contentType?.includes('application/json')) {
-              data = (await response?.json()) as T;
-            } else {
-              data = (await response?.text()) as unknown as T;
-            }
+            data = contentType?.includes('application/json') ? (await response?.json()) as T : (await response?.text()) as unknown as T;
 
             return {
               success: true,

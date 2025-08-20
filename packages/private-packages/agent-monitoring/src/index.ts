@@ -10,6 +10,7 @@ export * from './agent-health-monitor.js';
 export * from './performance-tracker.js'; 
 export * from './health-metrics.js';
 export * from './monitoring-config.js';
+export { CompleteIntelligenceSystem } from './intelligence-system.js';
 
 // Types and interfaces
 export * from './types/index.js';

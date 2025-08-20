@@ -148,7 +148,7 @@ export interface ImprovementRecommendation {
   readonly implementationEffort: 'low' | 'medium' | 'high';
   readonly timeline: string;
   readonly owner: string;
-  readonly success Criteria: string[];
+  readonly successCriteria: string[];
 }
 
 export interface StakeholderFeedback {
@@ -323,26 +323,29 @@ export class PICompletionService extends EventEmitter {
         piId,
         stakeholders
       );
-      completionReport.stakeholderFeedback = stakeholderFeedback;
+      const completionReportWithFeedback = {
+        ...completionReport,
+        stakeholderFeedback
+      };
 
       // Schedule Inspect & Adapt workshops
       await this.scheduleInspectAndAdaptWorkshops(
         workflowConfig.workshops,
-        completionReport
+        completionReportWithFeedback
       );
 
       // Archive PI data for historical analysis
       await this.archivePIDataWithMetadata(
         piId,
-        completionReport,
+        completionReportWithFeedback,
         workflowConfig.archivalRequirements
       );
 
       // Store completion report
-      this.completedPIs.set(piId, completionReport);
+      this.completedPIs.set(piId, completionReportWithFeedback);
 
       // Store lessons learned in fact system
-      await this.storeLessonsLearned(completionReport.lessonsLearned, piId);
+      await this.storeLessonsLearned(completionReportWithFeedback.lessonsLearned, piId);
 
       this.performanceTracker.endTimer('pi_completion');
       this.telemetryManager.recordCounter('pi_completions', 1);
@@ -350,26 +353,27 @@ export class PICompletionService extends EventEmitter {
       this.emit('pi-completion-finished', {
         piId,
         workflowId,
-        successRate: completionReport.overallSuccessRate,
-        achievementCount: completionReport.achievements.length,
-        lessonCount: completionReport.lessonsLearned.length
+        successRate: completionReportWithFeedback.overallSuccessRate,
+        achievementCount: completionReportWithFeedback.achievements.length,
+        lessonCount: completionReportWithFeedback.lessonsLearned.length
       });
 
       this.logger.info('PI completion workflow finished successfully', {
         piId,
-        successRate: completionReport.overallSuccessRate,
-        objectivesAchieved: completionReport.objectivesAchieved,
-        featuresDelivered: completionReport.featuresDelivered
+        successRate: completionReportWithFeedback.overallSuccessRate,
+        objectivesAchieved: completionReportWithFeedback.objectivesAchieved,
+        featuresDelivered: completionReportWithFeedback.featuresDelivered
       });
 
-      return completionReport;
+      return completionReportWithFeedback;
 
     } catch (error) {
       this.performanceTracker.endTimer('pi_completion');
-      this.logger.error('PI completion workflow failed:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      this.logger.error('PI completion workflow failed:', errorMessage);
       this.emit('pi-completion-failed', {
         piId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
@@ -495,15 +499,16 @@ export class PICompletionService extends EventEmitter {
         });
 
       } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
         this.logger.error('Failed to schedule workshop:', {
           workshopId: workshop.id,
-          error: error.message
+          error: errorMessage
         });
 
         this.emit('workshop-scheduling-failed', {
           workshopId: workshop.id,
           piId: completionReport.piId,
-          error: error.message
+          error: errorMessage
         });
       }
     }

@@ -193,7 +193,8 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Bottleneck analysis failed:', error);
-      this.emit('bottleneck-analysis-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('bottleneck-analysis-failed', { error: errorMessage });
       throw error;
     }
   }
@@ -319,7 +320,8 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
 
     } catch (error) {
       this.logger.error('AI optimization recommendations failed:', error);
-      this.emit('optimization-recommendations-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('optimization-recommendations-failed', { error: errorMessage });
       throw error;
     }
   }
@@ -434,7 +436,8 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Automated kaizen cycle failed:', error);
-      this.emit('kaizen-cycle-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('kaizen-cycle-failed', { error: errorMessage });
       throw error;
     }
   }
@@ -595,7 +598,8 @@ export class ValueStreamOptimizationEngine extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Value delivery prediction failed:', error);
-      this.emit('predictions-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('predictions-failed', { error: errorMessage });
       throw error;
     }
   }

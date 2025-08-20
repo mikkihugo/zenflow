@@ -21,6 +21,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { config } from '../config';
 import { getLogger } from '../config/logging-config';
 
@@ -97,11 +98,7 @@ export class InterfaceManager extends EventEmitter {
     logger.info('Initializing interface manager');
 
     // Detect appropriate interface mode if auto
-    if (this.config.defaultMode === 'auto') {
-      this.currentMode = this.detectInterfaceMode();
-    } else {
-      this.currentMode = this.config.defaultMode;
-    }
+    this.currentMode = this.config.defaultMode === 'auto' ? this.detectInterfaceMode() : this.config.defaultMode;
 
     this.initialized = true;
     this.emit('initialized');

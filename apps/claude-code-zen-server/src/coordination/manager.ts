@@ -17,11 +17,6 @@
  * @file Coordination system: manager.
  */
 
-import { EventEmitter } from 'eventemitter3';
-import type { EventBus, Logger } from '../di/index';
-import { CORE_TOKENS, inject, injectable } from '../di/index';
-
-// 🔧 FOUNDATION: Core infrastructure with telemetry and resilience
 import { 
   getLogger, 
   recordMetric, 
@@ -29,6 +24,11 @@ import {
   createCircuitBreaker,
   withRetry
 } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
+import type { EventBus, Logger } from '../di/index';
+import { CORE_TOKENS, inject, injectable } from '../di/index';
+
+// 🔧 FOUNDATION: Core infrastructure with telemetry and resilience
 
 // ⚡ EVENT SYSTEM: Type-safe event-driven coordination
 import { TypedEventBus, createEventBus } from '@claude-zen/event-system';
@@ -569,16 +569,14 @@ export class CoordinationManager extends EventEmitter {
       task.status = status;
       this.emit('taskStatusChanged', { taskId, status });
 
-      if (status === 'completed' || status === 'failed') {
-        // Free up the assigned agent
-        if (task.assignedAgent) {
+      if ((status === 'completed' || status === 'failed') && // Free up the assigned agent
+        task.assignedAgent) {
           const agent = this.agents.get(task.assignedAgent);
           if (agent && agent.status === 'busy') {
             agent.status = 'idle';
             agent.taskCount = Math.max(0, agent.taskCount - 1);
           }
         }
-      }
     }
   }
 
@@ -731,7 +729,7 @@ export class CoordinationManager extends EventEmitter {
     try {
       await withTrace('task-assignment', async () => {
         // Find suitable agents with AI-enhanced filtering
-        let suitableAgents = Array.from(this.agents.values()).filter(
+        const suitableAgents = Array.from(this.agents.values()).filter(
           (agent) =>
             agent.status === 'idle' &&
             (requiredCapabilities.length === 0 ||

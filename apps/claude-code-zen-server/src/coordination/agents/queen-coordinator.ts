@@ -49,21 +49,20 @@
  */
 
 import { type ChildProcess, spawn } from 'node:child_process';
+
 import { EventEmitter } from 'eventemitter3';
-import { getGlobalContainer } from '@claude-zen/foundation';
 import { 
   QueenCoordinator as CoreQueenCoordinator,
   SwarmCommander as CoreSwarmCommander,
   CoordinationEventBus,
   type QueenConfig,
-  type CommanderConfig,
   type CoordinationMetrics
 } from '@claude-zen/coordination-core';
-import { FactCapable } from '../universal-fact-mixin';
-import type { EventBus } from '../types/interfaces';
-import type { Logger } from '../types/interfaces';
-// import type { MemoryCoordinator } from '@claude-zen/memory'; // TODO: Fix memory package build
-import type { AgentPool } from './agent';
+
+import type { EventBus , Logger } from '../types/interfaces';
+
+// import type { MemoryCoordinator } from '@claude-zen/brain'; // TODO: Fix memory package build
+
 import type { SPARCPhase } from '@claude-zen/sparc';
 
 // Legacy type compatibility exports

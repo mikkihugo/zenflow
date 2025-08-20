@@ -5,9 +5,9 @@
 
 import { getLogger } from '../config/logging-config';
 
-const logger = getLogger('src-utils-logger');
-
 import { config } from '../config/config';
+
+const logger = getLogger('src-utils-logger');
 
 // Local Logger interface - matches Logger from core/logger for compatibility
 export interface Logger {

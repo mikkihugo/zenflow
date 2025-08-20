@@ -5,7 +5,6 @@
  * Uses foundation SharedConfig as the base and extends with app-specific config.
  */
 
-import type { Config as FoundationConfig } from '@claude-zen/foundation';
 
 /**
  * Claude Zen Core Configuration - extends foundation Config

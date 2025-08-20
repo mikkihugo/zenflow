@@ -10,8 +10,8 @@
  * @version 2.0.0
  */
 
-import { DIContainer, createContainer, configureDI, Lifecycle } from '@claude-zen/foundation/di';
-import { getLogger } from '@claude-zen/foundation/logging';
+import { DIContainer, createContainer, Lifecycle } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
 import { SAFE_TOKENS, AI_ENHANCEMENT_TOKENS, INTERFACE_TOKENS } from './tokens';
 import type { OptionalAIEnhancements, AIEnhancementConfig } from '../interfaces/ai-enhancements';
 
@@ -137,11 +137,23 @@ export class SafeContainer {
       if (aiConfig.enableBrainCoordinator) {
         try {
           const { BrainCoordinator } = await import('@claude-zen/brain');
-          const brainInstance = new BrainCoordinator(aiConfig.brainConfig || {
-            learningRate: 0.1,
-            adaptationThreshold: 0.7,
-            confidenceThreshold: 0.8
-          });
+          const defaultConfig = {
+            sessionId: 'safe-framework',
+            enableLearning: true,
+            cacheOptimizations: true,
+            logLevel: 'info' as const,
+            autonomous: {
+              enabled: true,
+              learningRate: 0.1,
+              adaptationThreshold: 0.7
+            }
+          };
+          // Ensure brainConfig matches BrainConfig interface
+          const config = aiConfig.brainConfig ? {
+            ...defaultConfig,
+            ...aiConfig.brainConfig
+          } : defaultConfig;
+          const brainInstance = new BrainCoordinator(config);
           await brainInstance.initialize();
           this.container.registerInstance(AI_ENHANCEMENT_TOKENS.BrainCoordinator, brainInstance);
           logger.info('Brain Coordinator registered');
@@ -154,7 +166,7 @@ export class SafeContainer {
       if (aiConfig.enablePerformanceTracking) {
         try {
           const { PerformanceTracker } = await import('@claude-zen/foundation/telemetry');
-          const tracker = new PerformanceTracker(aiConfig.performanceConfig);
+          const tracker = new PerformanceTracker();
           this.container.registerInstance(AI_ENHANCEMENT_TOKENS.PerformanceTracker, tracker);
           logger.info('Performance Tracker registered');
         } catch (error) {
@@ -191,10 +203,10 @@ export class SafeContainer {
         }
       }
 
-      // Optional Load Balancer (from @claude-zen/load-balancing)
+      // Optional Load Balancer (from @claude-zen/brain)
       if (aiConfig.enableLoadBalancing) {
         try {
-          const { LoadBalancer } = await import('@claude-zen/load-balancing');
+          const { LoadBalancer } = await import('@claude-zen/brain');
           const loadBalancer = new LoadBalancer();
           this.container.registerInstance(AI_ENHANCEMENT_TOKENS.LoadBalancer, loadBalancer);
           logger.info('Load Balancer registered');

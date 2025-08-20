@@ -11,11 +11,13 @@
 
 // Import Claude Code SDK directly from the compiled module to avoid type issues
 // @ts-ignore - bypassing problematic type definitions
-import { query } from '@anthropic-ai/claude-code/sdk.mjs';
-import { getLogger } from './logging';
-import { withRetry, type RetryOptions } from './error-handling';
-import * as path from 'path';
 import * as fs from 'fs';
+import * as path from 'path';
+
+import { query } from '@anthropic-ai/claude-code/sdk.mjs';
+
+import { withRetry, type RetryOptions } from './error-handling';
+import { getLogger } from './logging';
 
 const logger = getLogger('claude-code-sdk-integration');
 
@@ -1182,7 +1184,7 @@ export class SlashCommandProcessor {
   private processAtMentions(prompt: string): string {
     // v1.0.82: Support @-mentions in slash command arguments
     // This would typically integrate with file system to resolve paths
-    return prompt.replace(/@([^\s]+)/g, (match, path) => {
+    return prompt.replace(/@(\S+)/g, (match, path) => {
       // For now, just preserve the mention - in real implementation,
       // this would resolve the file path and potentially read the content
       logger.debug(`📎 Processing @-mention: ${path}`);

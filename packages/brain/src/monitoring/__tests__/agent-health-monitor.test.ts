@@ -28,12 +28,6 @@ import {
   AgentHealthMonitor,
   createAgentHealthMonitor,
   DEFAULT_HEALTH_MONITOR_CONFIG,
-  type AgentHealth,
-  type HealthStatus,
-  type HealthTrend,
-  type RecoveryAction,
-  type HealthAlert,
-  type SystemHealthSummary,
 } from '../agent-health-monitor';
 import {
   AgentLearningSystem,

@@ -4,8 +4,6 @@
 
 import { Logger } from '@claude-zen/foundation';
 
-const logger = new Logger('interfaces-clients-factories-http-client-factory');
-
 /**
  * HTTP Client Factory.
  *
@@ -21,6 +19,8 @@ import type {
   Client,
   ClientFactory,
 } from '../core/interfaces';
+
+const logger = new Logger('interfaces-clients-factories-http-client-factory');
 
 /**
  * HTTP Client Factory implementing UACL ClientFactory interface.

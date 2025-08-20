@@ -10,10 +10,9 @@ import { getLogger } from '../../config/logging-config';
 import type {
   BaseDocumentEntity,
   TaskDocumentEntity,
-  VisionDocumentEntity,
 } from '../../database/entities/document-entities';
-import { DocumentManager } from "../services/document/document-service"
 import type { DocumentType } from '../../workflows/types';
+import { DocumentManager } from "../services/document/document-service"
 import {
   type StrategicVisionAnalysis,
   StrategicVisionService,
@@ -603,7 +602,7 @@ export class DocumentTaskVisionCoordinator {
 
     // Suggest tasks for low-coverage areas
     if (
-      documentLinks.filter((link) => link.completionStatus < 0.5).length > 0
+      documentLinks.some((link) => link.completionStatus < 0.5)
     ) {
       suggestedTasks.push({
         title: 'Review and update incomplete document implementations',

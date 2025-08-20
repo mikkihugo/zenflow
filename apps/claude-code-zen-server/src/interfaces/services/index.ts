@@ -6,7 +6,7 @@
  * Delegates USL functionality to specialized @claude-zen packages for maximum efficiency:
  * - @claude-zen/foundation: Core service management, DI, monitoring, telemetry  
  * - @claude-zen/workflows: Workflow orchestration and service lifecycle management
- * - @claude-zen/database: Multi-database service abstraction and storage
+ * - @claude-zen/foundation: Multi-database service abstraction and storage
  * - @claude-zen/monitoring: Advanced monitoring, metrics, and observability
  * - @claude-zen/teamwork: Multi-service coordination and collaboration
  * 
@@ -17,15 +17,11 @@
  * - Professional service lifecycle patterns
  */
 
-import { getLogger } from '../../config/logging-config';
 import { EventEmitter } from 'eventemitter3';
+import { getLogger } from '../../config/logging-config';
 import type {
   Service,
-  ServiceCapability, 
-  ServiceMetrics,
-  ServiceStatus,
 } from './core/interfaces';
-import { ServiceDependencyError } from './core/interfaces';
 import { ServiceType } from './types';
 
 // Re-export legacy types for compatibility
@@ -130,8 +126,8 @@ export class USL extends EventEmitter {
       });
       await this.workflowEngine.initialize();
 
-      // Delegate to @claude-zen/database for storage services
-      const { getDatabaseAccess } = await import('@claude-zen/database');
+      // Delegate to @claude-zen/foundation for storage services
+      const { getDatabaseAccess } = await import('@claude-zen/foundation');
       this.databaseAccess = getDatabaseAccess();
 
       // Delegate to @claude-zen/monitoring for service monitoring

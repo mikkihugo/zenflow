@@ -22,6 +22,7 @@ pub struct CacheStats {
 struct CacheEntry {
   value: serde_json::Value,
   size: usize,
+  #[allow(dead_code)]
   created_at: Instant,
   last_accessed: Instant,
   access_count: u64,

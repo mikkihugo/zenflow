@@ -36,7 +36,9 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger, type Logger } from '../../config/logging-config';
+
 import type {
   Service,
   ServiceCapabilityRegistry,
@@ -822,9 +824,8 @@ export class USLFactory implements ServiceFactory {
         ) {
           errors.push(`Invalid port number: ${config?.server?.port}`);
         }
-      } else if (isCoordinationServiceConfig(config)) {
-        // Validate coordination service specific configuration
-        if (
+      } else if (isCoordinationServiceConfig(config) && // Validate coordination service specific configuration
+        
           config?.coordination?.maxAgents &&
           config?.coordination?.maxAgents < 1
         ) {
@@ -832,7 +833,6 @@ export class USLFactory implements ServiceFactory {
             `Invalid maxAgents value: ${config?.coordination?.maxAgents}`
           );
         }
-      }
       // Add more type-specific validations as needed
 
       return { valid: errors.length === 0, errors };

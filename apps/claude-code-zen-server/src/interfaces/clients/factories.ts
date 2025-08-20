@@ -13,6 +13,7 @@ import type {
   Config,
   Logger,
 } from '../../core/interfaces/base-interfaces';
+
 import type {
   ClientConfig,
   ClientHealthStatus,

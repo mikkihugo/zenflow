@@ -17,24 +17,21 @@
  * New file: Lightweight integration layer using extracted packages
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger, getKVStore } from '@claude-zen/foundation';
-import { WorkflowEngine, type WorkflowDefinition, type WorkflowState, type WorkflowContext } from '@claude-zen/workflows';
+import { WorkflowEngine } from '@claude-zen/workflows';
 import { 
   TaskApprovalSystem, 
   type TaskApprovalConfig,
   type ApprovalRequest,
-  type ApprovalResult,
   createTaskApprovalSystem 
 } from '@claude-zen/agui';
 
 import {
-  type BaseEvent,
-  createCorrelationId,
   createEvent,
   EventPriority,
   type TypeSafeEventBus,
 } from '@claude-zen/event-system';
+import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('workflow-gates');
 const kvStore = getKVStore();

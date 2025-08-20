@@ -10,10 +10,10 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger } from '../../config/logging-config';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '../../memory/memory';
-import type { CollectiveCubeCoordinator } from '../collective-cube-sync';
 import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator';
 
 const logger = getLogger('AutoSwarmFactory');

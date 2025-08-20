@@ -10,6 +10,7 @@ import type {
   AgentStatus,
   AgentType,
 } from './types/interfaces';
+
 export interface CollectiveFACTConfig {
   enableCache?: boolean;
   cacheSize?: number;

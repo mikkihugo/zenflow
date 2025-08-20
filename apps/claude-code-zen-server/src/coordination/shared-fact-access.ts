@@ -3,9 +3,10 @@
  * 
  * Provides streamlined access patterns for coordination layer components
  * to interact with the foundation fact system. This module serves as an
- * abstraction layer that leverages @claude-zen/fact-system capabilities.
+ * abstraction layer that leverages @claude-zen/knowledge capabilities.
  */
 
+import { getLogger } from '@claude-zen/foundation';
 import { 
   sharedFactSystem, 
   storeCoordinationEvent,
@@ -14,7 +15,6 @@ import {
   getGitHubRepoInfo
 } from './shared-fact-system';
 import type { FactEntry, FactQuery } from './shared-fact-system';
-import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('SharedFactAccess');
 

@@ -4,8 +4,6 @@
 
 import { getLogger } from '../config/logging-config';
 
-const logger = getLogger('interfaces-clients-validation');
-
 /**
  * UACL Integration Validation.
  *
@@ -22,6 +20,8 @@ import {
 } from './compatibility';
 import { UACLHelpers, uacl } from './instance';
 import { ClientType } from './types';
+
+const logger = getLogger('interfaces-clients-validation');
 
 export interface ValidationResult {
   component: string;

@@ -12,8 +12,6 @@
 import {
   SYSTEM_LIMITS,
   ERROR_MESSAGES,
-  isValidAgentStatus,
-  isValidCognitivePattern,
 } from '../coordination/types/constants';
 import type {
   AgentConfig,
@@ -54,19 +52,17 @@ export function validateSwarmConfig(config: SwarmConfig): void {
   }
 
   // Validate maxAgents
-  if (config.maxAgents !== undefined) {
-    if (
+  if (config.maxAgents !== undefined && (
       !Number.isInteger(config.maxAgents) ||
       config.maxAgents < SYSTEM_LIMITS.MIN_AGENTS ||
       config.maxAgents > SYSTEM_LIMITS.MAX_AGENTS
-    ) {
+    )) {
       throw new SwarmValidationError(
         ERROR_MESSAGES.INVALID_MAX_AGENTS,
         'maxAgents',
         config.maxAgents
       );
     }
-  }
 
   // Validate strategy
   if (config.strategy) {
@@ -217,19 +213,17 @@ export function validateTaskOrchestrationConfig(
   }
 
   // Validate maxAgents
-  if (config.maxAgents !== undefined) {
-    if (
+  if (config.maxAgents !== undefined && (
       !Number.isInteger(config.maxAgents) ||
       config.maxAgents < SYSTEM_LIMITS.MIN_AGENTS ||
       config.maxAgents > SYSTEM_LIMITS.MAX_TASK_AGENTS
-    ) {
+    )) {
       throw new SwarmValidationError(
         `maxAgents must be between ${SYSTEM_LIMITS.MIN_AGENTS} and ${SYSTEM_LIMITS.MAX_TASK_AGENTS}`,
         'maxAgents',
         config.maxAgents
       );
     }
-  }
 }
 
 /**
@@ -295,29 +289,25 @@ export function validateMonitoringParams(
   duration?: number,
   interval?: number
 ): void {
-  if (duration !== undefined) {
-    if (
+  if (duration !== undefined && (
       !Number.isFinite(duration) ||
       duration <= 0 ||
       duration > SYSTEM_LIMITS.MAX_MONITORING_DURATION_SECONDS
-    ) {
+    )) {
       throw new SwarmValidationError(
         `Monitoring duration must be between 1 and ${SYSTEM_LIMITS.MAX_MONITORING_DURATION_SECONDS} seconds`,
         'duration',
         duration
       );
     }
-  }
 
-  if (interval !== undefined) {
-    if (!Number.isFinite(interval) || interval <= 0 || interval > 60) {
+  if (interval !== undefined && (!Number.isFinite(interval) || interval <= 0 || interval > 60)) {
       throw new SwarmValidationError(
         'Monitoring interval must be between 1 and 60 seconds',
         'interval',
         interval
       );
     }
-  }
 }
 
 /**

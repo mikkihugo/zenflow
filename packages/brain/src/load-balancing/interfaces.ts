@@ -5,6 +5,8 @@
  * @file Coordination system: interfaces
  */
 
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   Agent,
   CapacityMetrics,
@@ -14,7 +16,6 @@ import type {
   RoutingResult,
   Task,
 } from './types';
-import { EventEmitter } from 'eventemitter3';
 
 export interface LoadBalancingAlgorithm {
   name: string;

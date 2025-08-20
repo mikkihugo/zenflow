@@ -56,7 +56,7 @@ export * as Database from './database/index';
  * ```typescript
  * import { Memory } from 'claude-code-zen';
  *
- * const system = await Memory.MemorySystemFactory.createBasicMemorySystem();
+ * const system = await Memory.BrainCoordinatorFactory.createBasicBrainCoordinator();
  * await system.store('session-key', sessionData);
  * const retrieved = await system.retrieve('session-key');
  * ```
@@ -512,8 +512,8 @@ export async function initializeClaudeZen(
 
   // Initialize memory system
   try {
-    const { MemorySystemFactory } = await import('./memory/index');
-    const memorySystem = await MemorySystemFactory.createBasicMemorySystem([
+    const { BrainCoordinatorFactory } = await import('./memory/index');
+    const memorySystem = await BrainCoordinatorFactory.createBasicBrainCoordinator([
       {
         id: 'primary',
         type: finalConfig?.persistence?.provider || 'sqlite',
@@ -613,18 +613,18 @@ export async function shutdownClaudeZen(): Promise<void> {
 
     // Shutdown memory systems
     try {
-      const { MemorySystemFactory } = await import('./memory/index');
+      const { BrainCoordinatorFactory } = await import('./memory/index');
       if (
         (global as any).memorySystem &&
         typeof (global as any).memorySystem.shutdown === 'function'
       ) {
         await (global as any).memorySystem.shutdown();
-        shutdownResults.push({ component: 'MemorySystem', status: 'success' });
+        shutdownResults.push({ component: 'BrainCoordinator', status: 'success' });
         logger.info('✅ Memory system shutdown complete');
       }
     } catch (error) {
       shutdownResults.push({
-        component: 'MemorySystem',
+        component: 'BrainCoordinator',
         status: 'error',
         error: (error as Error).message,
       });
@@ -704,7 +704,7 @@ export async function healthCheck() {
 
   // Check Memory system
   try {
-    const { MemorySystemFactory } = await import('./memory/index');
+    const { BrainCoordinatorFactory } = await import('./memory/index');
     const memorySystem = (global as any).memorySystem;
     if (memorySystem && typeof memorySystem.getHealthReport === 'function') {
       const healthReport = memorySystem.getHealthReport();

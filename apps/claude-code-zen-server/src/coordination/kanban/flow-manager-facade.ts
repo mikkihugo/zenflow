@@ -64,12 +64,11 @@
 // STRATEGIC IMPORTS: Battle-Tested Package Integration
 // =============================================================================
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import { createEvent, EventPriority } from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 
 // Strategic delegation to @claude-zen/kanban - Battle-tested XState workflow coordination
 import {
@@ -79,14 +78,13 @@ import {
   type WorkflowTask,
   type TaskState,
   type FlowMetrics,
-  type WorkflowBottleneck,
   type BottleneckReport,
   type HealthCheckResult,
   type WIPLimits,
   type TaskMovementResult
 } from '@claude-zen/kanban';
-
 import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
+
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
@@ -170,7 +168,7 @@ export class AdvancedFlowManager extends EventEmitter {
   private logger: Logger;
   private config: AdvancedFlowManagerConfig;
   private eventBus?: TypeSafeEventBus;
-  private memorySystem?: MemorySystem;
+  private memorySystem?: BrainCoordinator;
   
   // Strategic delegation to @claude-zen/kanban - Battle-tested workflow coordination
   private workflowKanban: WorkflowKanban | null = null;
@@ -185,7 +183,7 @@ export class AdvancedFlowManager extends EventEmitter {
   constructor(
     config: AdvancedFlowManagerConfig,
     eventBus?: TypeSafeEventBus,
-    memorySystem?: MemorySystem
+    memorySystem?: BrainCoordinator
   ) {
     super();
     
@@ -489,7 +487,7 @@ export class AdvancedFlowManager extends EventEmitter {
 export const createAdvancedFlowManager = (
   config: Partial<AdvancedFlowManagerConfig> = {},
   eventBus?: TypeSafeEventBus,
-  memorySystem?: MemorySystem
+  memorySystem?: BrainCoordinator
 ): AdvancedFlowManager => {
   const defaultConfig: AdvancedFlowManagerConfig = {
     enableIntelligentWIP: true,

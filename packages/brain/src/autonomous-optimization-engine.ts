@@ -17,12 +17,13 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import type { DSPyLLMBridge, CoordinationTask } from './coordination/dspy-llm-bridge';
-import { SmartPromptOptimizer, type SmartOptimizationResult } from './smart-prompt-optimizer';
-import { TaskComplexityEstimator, type ComplexityEstimate } from './task-complexity-estimator';
-import regression from 'regression';
-import * as ss from 'simple-statistics';
 import { ema } from 'moving-averages';
+import * as ss from 'simple-statistics';
+
+import type { DSPyLLMBridge, CoordinationTask } from './coordination/dspy-llm-bridge';
+import { SmartPromptOptimizer } from './smart-prompt-optimizer';
+import { TaskComplexityEstimator, type ComplexityEstimate } from './task-complexity-estimator';
+
 
 const logger = getLogger('AutonomousOptimizationEngine');
 
@@ -528,9 +529,7 @@ export class AutonomousOptimizationEngine {
     const mlResult = await this.executeMLOptimization(context, startTime);
     
     // Step 2: If ML confidence is low and we have time, enhance with DSPy
-    if (mlResult.confidence < 0.7 && (!context.timeConstraint || (Date.now() - startTime) < context.timeConstraint * 0.5)) {
-      
-      if (this.dspyBridge) {
+    if (mlResult.confidence < 0.7 && (!context.timeConstraint || (Date.now() - startTime) < context.timeConstraint * 0.5) && this.dspyBridge) {
         try {
           // Use ML-optimized prompt as input to DSPy
           const enhancedContext = { ...context, basePrompt: mlResult.optimizedPrompt };
@@ -553,7 +552,6 @@ export class AutonomousOptimizationEngine {
           logger.debug('DSPy enhancement failed, using ML result:', error);
         }
       }
-    }
 
     // Return ML result if DSPy enhancement wasn't needed or failed
     return {
@@ -671,6 +669,10 @@ export class AutonomousOptimizationEngine {
   private inferActualComplexity(result: OptimizationResult, context: OptimizationContext): number {
     let complexity = 0;
 
+    // Context-aware complexity inference
+    const contextComplexity = this.analyzeContextComplexity(context);
+    complexity += contextComplexity * 0.2; // Context contributes 20% to complexity
+
     // Processing time indicates complexity
     const timeComplexity = Math.min(result.processingTime / 10000, 0.4); // Normalize to 0-0.4
     complexity += timeComplexity;
@@ -689,6 +691,42 @@ export class AutonomousOptimizationEngine {
     complexity += improvementComplexity;
 
     return Math.max(0, Math.min(1, complexity));
+  }
+
+  /**
+   * Analyze context to determine inherent complexity
+   */
+  private analyzeContextComplexity(context: OptimizationContext): number {
+    let contextComplexity = 0;
+
+    // Analyze task type complexity from task description
+    const task = context.task.toLowerCase();
+    const complexTaskTypes = ['coordination', 'multi-agent', 'neural', 'reasoning'];
+    if (complexTaskTypes.some(type => task.includes(type))) {
+      contextComplexity += 0.3;
+    }
+
+    // Domain complexity from context metadata
+    const domain = context.context?.domain as string;
+    if (domain) {
+      const complexDomains = ['ai', 'ml', 'optimization', 'distributed', 'parallel'];
+      if (complexDomains.some(d => domain.toLowerCase().includes(d))) {
+        contextComplexity += 0.2;
+      }
+    }
+
+    // Priority suggests urgency which can indicate complexity  
+    if (context.priority === 'high') {
+      contextComplexity += 0.1;
+    }
+
+    // Agent count indicates coordination complexity from context
+    const agentCount = context.context?.agentCount as number;
+    if (agentCount && agentCount > 5) {
+      contextComplexity += Math.min(0.2, agentCount * 0.02);
+    }
+
+    return Math.max(0, Math.min(1, contextComplexity));
   }
 }
 

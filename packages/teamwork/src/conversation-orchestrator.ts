@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
 import type {
   ConversationOrchestrator,
   ConversationConfig,
@@ -59,7 +60,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
       title: config.title,
       description: config.description,
       participants: [...config.initialParticipants],
-      initiator: config.initialParticipants[0],
+      initiator: config.initialParticipants[0] || { id: '', swarmId: '', type: 'researcher' as const, instance: 0 } as AgentId,
       orchestrator: config.orchestrator,
       startTime: new Date(),
       endTime: undefined,
@@ -73,7 +74,7 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
           config.initialParticipants.map(agent => [agent.id, 0])
         ),
         averageResponseTime: 0,
-        resolutionTime: undefined,
+        resolutionTime: 0,
         consensusScore: 0,
         qualityRating: 0,
       },
@@ -89,6 +90,28 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     await this.memory.updateConversation(session.id, { status: 'active' });
 
     this.logger.info('Conversation created successfully', { id: session.id });
+    return session;
+  }
+
+  async startConversation(conversationId: string): Promise<ConversationSession> {
+    this.logger.info('Starting conversation', { conversationId });
+
+    const session = this.activeSessions.get(conversationId);
+    if (!session) {
+      throw new Error(`Conversation ${conversationId} not found`);
+    }
+
+    // Update session status to active if not already
+    if (session.status !== 'active') {
+      session.status = 'active';
+      session.startTime = new Date();
+      await this.memory.updateConversation(conversationId, { 
+        status: 'active', 
+        startTime: session.startTime 
+      });
+    }
+
+    this.logger.info('Conversation started successfully', { id: conversationId });
     return session;
   }
 

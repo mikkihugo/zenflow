@@ -6,7 +6,7 @@
  */
 
 import { getLogger, recordMetric } from '@claude-zen/foundation';
-import type { AgentId } from './types';
+
 
 const logger = getLogger('agent-monitoring-performance-tracker');
 

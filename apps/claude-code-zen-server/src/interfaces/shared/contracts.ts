@@ -8,7 +8,7 @@
  * @file Interface implementation: contracts.
  */
 
-import type { InterfaceConfig } from "../../config/config";
+
 import type { CommandResult, ExecutionContext } from './command-interfaces';
 import type { ComponentStatus } from './types';
 

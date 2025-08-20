@@ -11,10 +11,10 @@
  * @file Document-driven-system implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('DocumentDriven');

@@ -16,16 +16,10 @@
  * @file Knowledge-client adapter implementation.
  */
 
+
+
 import { EventEmitter } from 'eventemitter3';
 // Import existing FACT integration.
-import {
-  searchExternalFacts,
-  getNPMPackageInfo,
-  getGitHubRepoInfo,
-  queryCoordinationFacts,
-  type FactSearchResult,
-  type CoordinationFact
-} from '@claude-zen/knowledge';
 import type {
   ClientConfig,
   ClientMetadata,

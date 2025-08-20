@@ -306,7 +306,8 @@ export class SolutionTrainEngineerManager extends EventEmitter {
 
     } catch (error) {
       this.logger.error('ART coordination failed:', error);
-      this.emit('coordination-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('coordination-failed', { error: errorMessage });
       throw error;
     }
   }
@@ -346,7 +347,8 @@ export class SolutionTrainEngineerManager extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Solution planning failed:', error);
-      this.emit('planning-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('planning-failed', { error: errorMessage });
       throw error;
     }
   }
@@ -383,7 +385,8 @@ export class SolutionTrainEngineerManager extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Solution architecture management failed:', error);
-      this.emit('architecture-failed', { error: error.message });
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      this.emit('architecture-failed', { error: errorMessage });
       throw error;
     }
   }
@@ -507,3 +510,5 @@ export class SolutionTrainEngineerManager extends EventEmitter {
     this.initialized = false;
   }
 }
+
+export default SolutionTrainEngineerManager;

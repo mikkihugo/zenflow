@@ -48,65 +48,42 @@
  * **REDUCTION ACHIEVED: 1,431 → 380 lines (73.4% reduction) through strategic delegation**
  */
 
+import type {
+  BrainCoordinator,
+  SwarmConfiguration,
+  SwarmStatus
+} from '@claude-zen/brain';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 
 // Strategic imports from @claude-zen packages
-import type {
-  BrainCoordinator,
-  SwarmIntelligence,
-  NeuralNetwork,
-  SwarmConfiguration,
-  SwarmStatus,
-  BrainMetrics
-} from '@claude-zen/brain';
 
 import type {
   AgentManager,
-  AgentFactory,
-  AgentLifecycleManager,
-  AgentInstance,
   AgentStatus
 } from '@claude-zen/agent-manager';
-
 import type {
   WorkflowEngine,
-  TaskOrchestrator,
-  TaskManager,
   TaskExecution,
   WorkflowResult
 } from '@claude-zen/workflows';
-
 import type {
-  CollaborationEngine,
-  TeamCoordinator,
-  CommunicationProtocol,
-  MultiAgentSystem
+  CollaborationEngine
 } from '@claude-zen/teamwork';
-
 import type {
   PerformanceTracker,
-  MetricsCollector,
   HealthMonitor,
   SystemMetrics
 } from '@claude-zen/monitoring';
 
 // Foundation utilities
 import {
-  isString,
-  isObject,
-  isDefined,
   assertDefined,
-  getErrorMessage,
-  safeJsonParse
+  getErrorMessage
 } from '@claude-zen/foundation';
 
 // Import service integration layer types
 import type {
-  ApiSwarmResponse,
-  ApiCreateSwarmRequest,
-  ApiTaskResponse,
-  ApiCreateTaskRequest,
   ServiceContext,
   ServiceResult,
   TranslationError

@@ -21,10 +21,10 @@ import {
   createContainer,
   getLogger,
   getConfig,
-  getDatabaseAccess,
-  type Config,
-  type DatabaseAccess
+  getDatabaseAccess
 } from '@claude-zen/foundation';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
+import { BehavioralIntelligence } from '@claude-zen/brain';
 
 // Simple EventBus interface
 interface EventBus {
@@ -35,8 +35,6 @@ interface EventBus {
   subscribe(event: string, handler: (data: any) => void): void;
   unsubscribe(event: string, handler: (data: any) => void): void;
 }
-import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
-import { BehavioralIntelligence } from '@claude-zen/brain';
 
 const logger = getLogger('claude-zen-core');
 

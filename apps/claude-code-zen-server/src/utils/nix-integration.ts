@@ -5,9 +5,10 @@
  */
 
 import { exec } from 'node:child_process';
-import { access, readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
+
 import { getLogger } from '@claude-zen/foundation';
 
 const execAsync = promisify(exec);

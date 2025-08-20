@@ -35,7 +35,6 @@ import type {
   AsyncOperationResult,
   QueryCriteria
 } from './index';
-
 import {
   PriorityEnum,
   StatusEnum,
@@ -213,7 +212,7 @@ export class UserServiceImpl implements UserService {
     }
 
     this.users.delete(id);
-    return createSuccess(undefined);
+    return createSuccess();
   }
 
   async findUser(id: UUID): Promise<Result<User | null, ValidationError>> {
@@ -389,14 +388,11 @@ export function resultToApiResponse<T>(
     }
   };
 
-  if (isSuccess(result)) {
-    return {
+  return isSuccess(result) ? {
       success: true,
       data: result.data,
       ...baseResponse
-    };
-  } else {
-    return {
+    } : {
       success: false,
       error: {
         code: result.error.code,
@@ -406,7 +402,6 @@ export function resultToApiResponse<T>(
       },
       ...baseResponse
     };
-  }
 }
 
 // =============================================================================

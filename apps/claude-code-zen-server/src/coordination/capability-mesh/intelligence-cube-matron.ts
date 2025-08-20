@@ -7,7 +7,6 @@
  * Dynamic Architecture: THE COLLECTIVE → CAPABILITY-MESH → SERVICE-DOMAIN-QUEENS → DYNAMIC-SWARMS
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type {
   EventBus,
@@ -19,6 +18,14 @@ import {
   BehavioralIntelligence
 } from '@claude-zen/brain';
 
+import { 
+  AISafetyOrchestrator
+} from '@claude-zen/ai-safety';
+
+import { 
+  AgentMonitor
+} from '@claude-zen/foundation';
+
 // Temporary type placeholders for missing brain exports
 type DevelopmentPhase = any;
 type ProjectContext = any;
@@ -27,18 +34,10 @@ class IntelligentPromptGenerator {
   generatePrompts(): any[] { return []; }
 }
 
-import { 
-  AISafetyOrchestrator
-} from '@claude-zen/ai-safety';
-
 // Temporary placeholder for missing ai-safety exports
 class SafetyMonitor {
   monitor(): any { return {}; }
 }
-
-import { 
-  AgentMonitor
-} from '@claude-zen/foundation';
 
 // Temporary interface definition for TaskPredictor
 interface TaskPredictor {
@@ -311,8 +310,7 @@ export class IntelligenceCubeMatron {
     }
 
     // Query other matrons for Queens with this capability
-    const queryResult = await this.queryOtherMatronsForQueen(service, capability);
-    return queryResult;
+    return await this.queryOtherMatronsForQueen(service, capability);
   }
 
   /**

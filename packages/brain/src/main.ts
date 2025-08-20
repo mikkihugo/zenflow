@@ -12,6 +12,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
+import { type BrainConfig } from './brain-coordinator';
 import { 
   NeuralOrchestrator, 
   TaskComplexity, 
@@ -23,13 +25,12 @@ import type {
   NeuralData 
 } from './neural-orchestrator';
 
-const logger = getLogger('brain-main');
-
 /**
  * Brain coordinator configuration
  */
 // Import unified BrainConfig from brain-coordinator
-import { type BrainConfig } from './brain-coordinator';
+
+const logger = getLogger('brain-main');
 export { type BrainConfig } from './brain-coordinator';
 
 /**

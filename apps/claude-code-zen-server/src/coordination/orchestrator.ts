@@ -3,9 +3,11 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from '../core/interfaces/base-interfaces';
 import type { Database } from '../di/tokens/core-tokens';
 import type { SwarmCoordinator } from '../di/tokens/swarm-tokens';
+
 import { ZenSwarmStrategy } from './strategies/zen-swarm.strategy';
 import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
@@ -65,11 +67,7 @@ export class Orchestrator extends EventEmitter implements SwarmCoordinator {
     this.activeExecutions.set(task.id, execution);
 
     try {
-      if (plan.parallelizable) {
-        await this.executeParallel(task, plan, execution);
-      } else {
-        await this.executeSequential(task, plan, execution);
-      }
+      await (plan.parallelizable ? this.executeParallel(task, plan, execution) : this.executeSequential(task, plan, execution));
       execution.status = 'completed';
       await this.db.updateTask(task.id, {
         status: 'completed',

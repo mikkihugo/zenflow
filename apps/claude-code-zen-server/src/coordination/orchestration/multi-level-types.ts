@@ -11,21 +11,16 @@
  * AFTER: Multi-level parallel streams with AGUI gates and coordination
  */
 
-import type { Domain } from '../../core/domain-boundary-validator';
 import type { BaseEvent } from '@claude-zen/event-system';
-import type {
-  WorkflowContext,
-  WorkflowDefinition,
-} from '../../workflows/types';
+import type { Domain } from '../../core/domain-boundary-validator';
+
+
 import type {
   SPARCPhase,
   SPARCProject,
 } from '../swarm/sparc/types/sparc-types';
-import type { Agent, Task } from '../types';
-import type {
-  WorkflowGateRequest,
-  WorkflowGateResult,
-} from '../workflows/workflow-gate-request';
+
+
 
 // ============================================================================
 // ORCHESTRATION LEVELS - Three-tier architecture

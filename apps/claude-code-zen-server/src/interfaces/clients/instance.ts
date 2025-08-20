@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '../../config/logging-config';
+
 import { ClientManager, type ClientManagerConfig } from './manager';
 
 const logger = getLogger('interfaces-clients-instance');

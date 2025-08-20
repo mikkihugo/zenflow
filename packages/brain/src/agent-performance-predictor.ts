@@ -15,10 +15,9 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { sma, ema, wma } from 'moving-averages';
+import { ema, wma } from 'moving-averages';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
-import { kmeans } from 'ml-kmeans';
 
 const logger = getLogger('AgentPerformancePredictor');
 
@@ -368,6 +367,7 @@ export class AgentPerformancePredictor {
       if (slope < -0.01) return 'declining';
       return 'stable';
     } catch (error) {
+      logger.warn('Error analyzing performance trend:', error);
       return 'stable';
     }
   }

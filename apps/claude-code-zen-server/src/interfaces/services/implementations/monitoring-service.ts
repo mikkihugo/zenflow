@@ -13,6 +13,7 @@ import type {
   MonitoringServiceConfig,
   ServiceOperationOptions,
 } from '../types';
+
 import { BaseService } from './base-service';
 
 /**
@@ -244,13 +245,9 @@ export class MonitoringService extends BaseService implements Service {
     // Return all metrics
     const allMetrics: unknown = {};
     for (const [name, data] of this.metrics.entries()) {
-      if (timeRange) {
-        allMetrics[name] = data?.filter(
+      allMetrics[name] = timeRange ? data?.filter(
           (m) => m.timestamp >= timeRange.start && m.timestamp <= timeRange.end
-        );
-      } else {
-        allMetrics[name] = data;
-      }
+        ) : data;
     }
 
     return allMetrics;

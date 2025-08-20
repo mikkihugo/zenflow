@@ -8,9 +8,9 @@
  * @file Export management system.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('UnifiedExport');
@@ -286,7 +286,7 @@ export class ExportSystem extends EventEmitter {
         const result = await this.exportData(data, format, {
           ...options,
           ...(options?.filename && {
-            filename: `${options?.filename?.replace(/\.[^/.]+$/, '')}.${format}`,
+            filename: `${options?.filename?.replace(/\.[^./]+$/, '')}.${format}`,
           }),
         });
         results.push(result);
@@ -647,7 +647,7 @@ export class ExportSystem extends EventEmitter {
   }
 
   private sanitizeXMLTag(tag: string): string {
-    return tag.replace(/[^a-zA-Z0-9_-]/g, '_');
+    return tag.replace(/[^\w-]/g, '_');
   }
 
   private generateId(): string {

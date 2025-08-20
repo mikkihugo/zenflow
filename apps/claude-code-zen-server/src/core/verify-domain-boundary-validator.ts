@@ -6,7 +6,6 @@
  */
 
 import {
-  CommonSchemas,
   Domain,
   DomainBoundaryValidator,
   getDomainValidator,

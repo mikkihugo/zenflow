@@ -5,13 +5,17 @@
  */
 
 import { createServer, type Server } from 'node:http';
-import { Server as SocketIOServer } from 'socket.io';
+
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import { Server as SocketIOServer } from 'socket.io';
 import { getLogger } from '../../config/logging-config';
 import LLMStatsService from '../../coordination/services/llm-stats-service';
+
 import express from 'express';
+
 import { WebApiRoutes } from './web-api-routes';
 import { createWebConfig } from './web-config';
+
 import { createTerminus } from '@godaddy/terminus';
 
 interface WebDashboardConfig {

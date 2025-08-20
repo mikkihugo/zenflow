@@ -22,7 +22,6 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
-import { storeCoordinationFact, queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/knowledge';
 import type {
   EventBus,
   Logger,
@@ -31,7 +30,6 @@ import type {
 // Foundation storage access (not direct database)
 import { 
   getDatabaseAccess,
-  getLogger as getFoundationLogger,
   TelemetryManager,
   PerformanceTracker
 } from '@claude-zen/foundation';
@@ -39,17 +37,12 @@ import type { DatabaseAccess, KeyValueStore } from '@claude-zen/foundation';
 
 // Brain coordination for learning
 import { 
-  BrainCoordinator,
-  type BrainConfig
+  BrainCoordinator
 } from '@claude-zen/brain/coordinator';
 
 // SPARC methodology integration - using proper @claude-zen/sparc package types
 import type { 
-  SPARCPhase, 
-  SPARCProject,
-  SPARCCommander,
-  SPARCCommanderProject,
-  PhaseResult 
+  SPARCPhase 
 } from '@claude-zen/sparc';
 
 const logger = getLogger('sparc-swarm-knowledge-extractor');

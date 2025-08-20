@@ -17,12 +17,10 @@ import type {
   UUID,
   Timestamp,
   Priority,
-  Status,
   Entity,
   Result,
-  ValidationError,
-  Optional,
-  NonEmptyArray
+  NonEmptyArray,
+  LogLevel
 } from '@claude-zen/foundation/types';
 
 // =============================================================================
@@ -84,6 +82,22 @@ export enum OptimizerType {
   MOMENTUM = 'momentum'
 }
 
+/**
+ * Metric types for evaluation
+ */
+export enum MetricType {
+  ACCURACY = 'accuracy',
+  PRECISION = 'precision',
+  RECALL = 'recall',
+  F1_SCORE = 'f1_score',
+  AUC = 'auc',
+  MSE = 'mse',
+  MAE = 'mae',
+  RMSE = 'rmse',
+  R2 = 'r2',
+  LOSS = 'loss'
+}
+
 // =============================================================================
 // NEURAL NETWORK CONFIGURATION TYPES
 // =============================================================================
@@ -91,6 +105,227 @@ export enum OptimizerType {
 /**
  * Configuration for neural network architecture
  */
+// =============================================================================
+// MISSING TYPE DEFINITIONS - ADDED TO FIX COMPILATION
+// =============================================================================
+
+/**
+ * Network metadata
+ */
+export interface NetworkMetadata {
+  version: string;
+  author?: string;
+  description?: string;
+  tags?: string[];
+  createdAt: Timestamp;
+  lastModified: Timestamp;
+}
+
+/**
+ * Retention policy for memory
+ */
+export interface RetentionPolicy {
+  duration: number;
+  priority: Priority;
+  decayRate: number;
+}
+
+/**
+ * Consolidation strategy for memory
+ */
+export interface ConsolidationStrategy {
+  type: 'immediate' | 'delayed' | 'periodic' | 'threshold';
+  interval?: number;
+  threshold?: number;
+}
+
+/**
+ * Retrieval mechanism for memory
+ */
+export interface RetrievalMechanism {
+  type: 'associative' | 'semantic' | 'episodic' | 'hybrid';
+  similarity: number;
+  context: boolean;
+}
+
+/**
+ * Adaptation configuration
+ */
+export interface AdaptationConfig {
+  enabled: boolean;
+  rate: number;
+  threshold: number;
+  strategy: 'gradual' | 'immediate' | 'batch';
+}
+
+/**
+ * Feedback configuration
+ */
+export interface FeedbackConfig {
+  enabled: boolean;
+  type: 'explicit' | 'implicit' | 'reinforcement';
+  weight: number;
+  delay?: number;
+}
+
+/**
+ * Evaluation criteria
+ */
+export interface EvaluationCriteria {
+  accuracy: number;
+  precision: number;
+  recall: number;
+  f1Score: number;
+  customMetrics?: Record<string, number>;
+}
+
+/**
+ * Benchmark configuration
+ */
+export interface BenchmarkConfig {
+  name: string;
+  version: string;
+  datasets: string[];
+  metrics: string[];
+  baseline: Record<string, number>;
+}
+
+/**
+ * Benchmark comparison
+ */
+export interface BenchmarkComparison {
+  baseline: Record<string, number>;
+  current: Record<string, number>;
+  improvement: Record<string, number>;
+  significance: number;
+}
+
+/**
+ * Learning progress tracking
+ */
+export interface LearningProgress {
+  epoch: number;
+  loss: number;
+  metrics: Record<string, number>;
+  validationLoss?: number;
+  validationMetrics?: Record<string, number>;
+}
+
+/**
+ * Adaptation event
+ */
+export interface AdaptationEvent {
+  type: 'parameter' | 'architecture' | 'strategy';
+  trigger: string;
+  changes: Record<string, any>;
+  timestamp: Timestamp;
+  impact: number;
+}
+
+/**
+ * Consensus algorithm
+ */
+export interface ConsensusAlgorithm {
+  type: 'majority' | 'weighted' | 'unanimous' | 'threshold';
+  threshold?: number;
+  weights?: Record<string, number>;
+}
+
+/**
+ * Synchronization strategy
+ */
+export interface SynchronizationStrategy {
+  type: 'sync' | 'async' | 'eventual' | 'strong';
+  interval?: number;
+  tolerance?: number;
+}
+
+/**
+ * Fault tolerance configuration
+ */
+export interface FaultToleranceConfig {
+  enabled: boolean;
+  retries: number;
+  timeout: number;
+  fallback?: string;
+}
+
+/**
+ * Attachment interface
+ */
+export interface Attachment {
+  id: UUID;
+  type: string;
+  name: string;
+  size: number;
+  url?: string;
+  data?: Buffer;
+}
+
+/**
+ * Feature specification
+ */
+export interface FeatureSpec {
+  name: string;
+  type: 'numeric' | 'categorical' | 'text' | 'image';
+  description?: string;
+  range?: [number, number];
+  categories?: string[];
+}
+
+/**
+ * Label specification
+ */
+export interface LabelSpec {
+  name: string;
+  type: 'binary' | 'multiclass' | 'regression';
+  classes?: string[];
+  range?: [number, number];
+}
+
+/**
+ * Preprocessing configuration
+ */
+export interface PreprocessingConfig {
+  normalization?: 'minmax' | 'zscore' | 'robust';
+  encoding?: 'onehot' | 'label' | 'binary';
+  featureSelection?: 'variance' | 'correlation' | 'mutual_info';
+  dimensionReduction?: 'pca' | 'tsne' | 'umap';
+}
+
+/**
+ * Validation configuration
+ */
+export interface ValidationConfig {
+  method: 'holdout' | 'kfold' | 'stratified' | 'timeseries';
+  splits: number;
+  testSize: number;
+  randomState?: number;
+}
+
+/**
+ * Training metrics
+ */
+export interface TrainingMetrics {
+  loss: number[];
+  accuracy?: number[];
+  precision?: number[];
+  recall?: number[];
+  f1Score?: number[];
+  customMetrics?: Record<string, number[]>;
+}
+
+/**
+ * Coordination response
+ */
+export interface CoordinationResponse {
+  success: boolean;
+  result?: any;
+  error?: string;
+  metrics?: Record<string, number>;
+  timestamp: Timestamp;
+}
+
 export interface NeuralNetworkConfig extends Entity {
   modelType: NeuralModelType;
   architecture: NetworkArchitecture;
@@ -399,15 +634,9 @@ export interface EvaluationConfig {
 }
 
 /**
- * Metric types for evaluation
+ * Metric types for evaluation - Consolidated enum
  */
-export enum MetricType {
-  ACCURACY = 'accuracy',
-  PRECISION = 'precision',
-  RECALL = 'recall',
-  F1_SCORE = 'f1',
-  AUC_ROC = 'auc_roc',
-  LOSS = 'loss',
+export enum MetricTypeExtended {
   PERPLEXITY = 'perplexity',
   BLEU = 'bleu',
   ROUGE = 'rouge',
@@ -820,30 +1049,40 @@ export type CoordinationResult = Result<CoordinationResponse, CoordinationError>
 /**
  * Neural-specific error types
  */
-export interface NeuralError extends ValidationError {
-  type: 'NeuralError';
-  category: 'training' | 'inference' | 'coordination' | 'configuration';
-  modelId?: UUID;
-  agentId?: UUID;
+export interface NeuralError extends Error {
+  readonly type: 'NeuralError';
+  readonly message: string;
+  readonly category: 'training' | 'inference' | 'coordination' | 'configuration';
+  readonly modelId?: UUID;
+  readonly agentId?: UUID;
+  readonly timestamp: Timestamp;
+  readonly code: string;
+  readonly errorId: UUID;
+  readonly context?: Record<string, unknown>;
+  readonly cause?: Error;
+  readonly retryable: boolean;
+  readonly logLevel: LogLevel;
+  readonly name: string;
+  readonly stack?: string;
 }
 
 /**
  * Training-specific error types
  */
 export interface TrainingError extends NeuralError {
-  category: 'training';
-  epochNumber?: number;
-  batchNumber?: number;
-  lossValue?: number;
+  readonly category: 'training';
+  readonly epochNumber?: number;
+  readonly batchNumber?: number;
+  readonly lossValue?: number;
 }
 
 /**
  * Coordination-specific error types
  */
 export interface CoordinationError extends NeuralError {
-  category: 'coordination';
-  topology?: CoordinationTopology;
-  participantCount?: number;
+  readonly category: 'coordination';
+  readonly topology?: CoordinationTopology;
+  readonly participantCount?: number;
 }
 
 // Export all types as the default brain domain types
@@ -873,3 +1112,19 @@ export default {
   isNeuralNetworkConfig,
   isAgentMessage,
 };
+
+// =============================================================================
+// ADDITIONAL EXPORTS FOR COMPATIBILITY
+// =============================================================================
+
+/**
+ * Model metrics interface for brain.js bridge
+ */
+export interface ModelMetrics {
+  accuracy: number;
+  loss: number;
+  iterations: number;
+  time: number;
+  errorRate: number;
+  convergence: boolean;
+}

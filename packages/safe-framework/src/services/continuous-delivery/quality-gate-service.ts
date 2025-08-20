@@ -198,15 +198,11 @@ export class QualityGateService {
 
     try {
       // Lazy load @claude-zen/ai-safety for safety protocols
-      const { AIManager } = await import('@claude-zen/ai-safety');
-      this.aiSafetyManager = new AIManager({
-        safetyLevel: 'strict',
-        enableDeceptionDetection: true,
-        enableBehaviorAnalysis: true
-      });
+      const { AISafetyOrchestrator } = await import('@claude-zen/ai-safety');
+      this.aiSafetyManager = new AISafetyOrchestrator();
       await this.aiSafetyManager.initialize();
 
-      // Lazy load @claude-zen/brain for intelligent optimization
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent optimization
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -218,13 +214,16 @@ export class QualityGateService {
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/agui for human approvals
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: 1800000 // 30 minutes
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiResult = await AGUISystem({
+        aguiType: 'terminal',
+        taskApprovalConfig: {
+          enableRichDisplay: true,
+          enableBatchMode: false,
+          requireRationale: true
+        }
       });
-      await this.aguiService.initialize();
+      this.aguiService = aguiResult.agui;
 
       // Initialize default quality gate templates
       await this.initializeQualityGateTemplates();

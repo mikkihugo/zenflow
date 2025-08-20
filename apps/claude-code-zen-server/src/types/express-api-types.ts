@@ -6,6 +6,7 @@
  */
 
 import type { Request, Response } from 'express';
+
 import type { paths, components } from './api-types';
 
 // Extract all schema types from OpenAPI components

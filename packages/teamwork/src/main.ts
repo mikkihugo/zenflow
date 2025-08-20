@@ -4,15 +4,25 @@
  * Core orchestration for ag2.ai-inspired multi-agent conversations.
  */
 
-import { nanoid } from 'nanoid';
 import { getLogger } from '@claude-zen/foundation';
+import { nanoid } from 'nanoid';
+
 import { getTeamworkStorage } from './storage';
+import type {
+  AgentId,
+  ConversationConfig,
+  ConversationMessage,
+  ConversationOrchestrator,
+  ConversationOutcome,
+  ConversationSession,
+  ModerationAction,
+} from './types';
 
 // Import BrainCoordinator from @claude-zen/brain package (optional fallback)
 let BrainCoordinator: any;
 try {
   BrainCoordinator = require('@claude-zen/brain').BrainCoordinator;
-} catch (e) {
+} catch (error) {
   // Fallback if brain package is not available
   BrainCoordinator = class {
     constructor(config: any) {
@@ -23,15 +33,6 @@ try {
 }
 
 const logger = getLogger('teamwork-orchestrator');
-import type {
-  AgentId,
-  ConversationConfig,
-  ConversationMessage,
-  ConversationOrchestrator,
-  ConversationOutcome,
-  ConversationSession,
-  ModerationAction,
-} from './types';
 
 
 /**
@@ -102,6 +103,31 @@ export class ConversationOrchestratorImpl implements ConversationOrchestrator {
     
     logger.info('Conversation created:', session.id);
 
+    return session;
+  }
+
+  /**
+   * Start an existing conversation.
+   */
+  async startConversation(conversationId: string): Promise<ConversationSession> {
+    logger.info('Starting conversation:', conversationId);
+
+    const session = this.activeSessions.get(conversationId);
+    if (!session) {
+      throw new Error(`Conversation ${conversationId} not found`);
+    }
+
+    // Update session status to active if not already
+    if (session.status !== 'active') {
+      session.status = 'active';
+      session.startTime = new Date();
+      await this.storage.updateSession(conversationId, { 
+        status: 'active', 
+        startTime: session.startTime 
+      });
+    }
+
+    logger.info('Conversation started successfully:', conversationId);
     return session;
   }
 

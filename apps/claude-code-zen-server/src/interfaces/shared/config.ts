@@ -6,9 +6,9 @@
 
 import { getLogger } from '../../config/logging-config';
 
-const logger = getLogger('interfaces-shared-config');
-
 import { config, type InterfaceConfig } from "../../config/config";
+
+const logger = getLogger('interfaces-shared-config');
 
 /**
  * Get interface configuration with fallbacks.
@@ -78,10 +78,10 @@ export const COLOR_SCHEMES = {
  * Common validation patterns.
  */
 export const VALIDATION_PATTERNS = {
-  projectName: /^[a-zA-Z][a-zA-Z0-9-_]*$/,
-  command: /^[a-zA-Z][a-zA-Z0-9-_:]*$/,
-  filePath: /^[a-zA-Z0-9._/-]+$/,
-  swarmId: /^[a-zA-Z0-9-]+$/,
+  projectName: /^[A-Za-z][\w-]*$/,
+  command: /^[A-Za-z][\w:-]*$/,
+  filePath: /^[\w./-]+$/,
+  swarmId: /^[\dA-Za-z-]+$/,
 } as const;
 
 /**

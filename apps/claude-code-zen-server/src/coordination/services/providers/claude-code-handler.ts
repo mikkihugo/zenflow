@@ -9,8 +9,7 @@ import {
   executeClaudeTask,
   filterMessagesForClaudeCode,
   getLogger,
-  type ClaudeSDKOptions,
-  type ClaudeMessage
+  type ClaudeSDKOptions
 } from '@claude-zen/foundation';
 
 // Simple message types - no external SDK dependency needed
@@ -297,7 +296,7 @@ export class ClaudeCodeHandler implements ApiHandler {
   private attemptParse(str: string) {
     try {
       return JSON.parse(str);
-    } catch (err) {
+    } catch (error) {
       return null;
     }
   }

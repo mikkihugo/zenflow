@@ -1292,7 +1292,7 @@ export class PredictiveAnalyticsService {
       return format(weekStart, 'yyyy-MM-dd');
     });
 
-    return Object.values(weeklyData).map(weekData => weekData.length);
+    return Object.values(weeklyData).map(weekData => Array.isArray(weekData) ? weekData.length : 0);
   }
 
   private calculateDataQuality(data: any[]): number {

@@ -9,7 +9,7 @@
  * - @claude-zen/foundation: Performance tracking and telemetry
  * - @claude-zen/workflows: WorkflowEngine for remediation workflows
  * - @claude-zen/agui: Human-in-loop approvals for high-impact debt items
- * - @claude-zen/load-balancing: LoadBalancer for resource optimization
+ * - @claude-zen/brain: LoadBalancer for resource optimization (integrated)
  * 
  * @author Claude-Zen Team
  * @since 1.0.0
@@ -265,7 +265,7 @@ export class TechnicalDebtManagementService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/brain for intelligent prioritization
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -285,22 +285,25 @@ export class TechnicalDebtManagementService {
       // Lazy load @claude-zen/workflows for remediation workflows
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        enableAdvancedOrchestration: true,
-        enableStateTracking: true
+        maxConcurrentWorkflows: 5,
+        enableVisualization: true
       });
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: 1800000 // 30 minutes
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiResult = await AGUISystem({
+        aguiType: 'terminal',
+        taskApprovalConfig: {
+          enableRichDisplay: true,
+          enableBatchMode: false,
+          requireRationale: true
+        }
       });
-      await this.aguiService.initialize();
+      this.aguiService = aguiResult.agui;
 
-      // Lazy load @claude-zen/load-balancing for resource optimization
-      const { LoadBalancer } = await import('@claude-zen/load-balancing');
+      // Lazy load @claude-zen/brain for LoadBalancer - resource optimization (LoadBalancer integrated)
+      const { LoadBalancer } = await import('@claude-zen/brain');
       this.loadBalancer = new LoadBalancer({
         strategy: 'intelligent_distribution',
         enablePredictiveScaling: true

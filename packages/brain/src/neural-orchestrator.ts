@@ -207,6 +207,21 @@ export class NeuralOrchestrator {
     const needsLowLatency = (requirements?.latency || Infinity) < 100;
     const needsGpu = requirements?.gpu === true;
 
+    // Use requirements in complexity calculation
+    let requirementComplexity = TaskComplexity.SIMPLE;
+    if (needsHighAccuracy) {
+      requirementComplexity = TaskComplexity.COMPLEX;
+      logger.debug(`High accuracy required - upgrading complexity to ${requirementComplexity}`);
+    }
+    if (needsLowLatency) {
+      // Low latency favors simpler models for faster processing
+      logger.debug(`Low latency required - considering lightweight processing`);
+    }
+    if (needsGpu) {
+      requirementComplexity = TaskComplexity.HEAVY;
+      logger.debug(`GPU processing required - upgrading complexity to ${requirementComplexity}`);
+    }
+
     // Task type complexity mapping
     const taskTypeComplexity = {
       'prediction': TaskComplexity.SIMPLE,
@@ -226,6 +241,12 @@ export class NeuralOrchestrator {
 
     if (featureCount > 50 || needsHighAccuracy || needsGpu) {
       baseComplexity = this.upgradeComplexity(baseComplexity);
+    }
+
+    // Consider requirement-based complexity
+    if (this.getComplexityLevel(requirementComplexity) > this.getComplexityLevel(baseComplexity)) {
+      baseComplexity = requirementComplexity;
+      logger.debug(`Upgraded complexity based on requirements: ${baseComplexity}`);
     }
 
     // Special cases for heavy ML
@@ -313,9 +334,16 @@ export class NeuralOrchestrator {
     
     const neuralMl = await this.loadNeuralML();
     
-    // Delegate to neural-ml lightweight models
-    // This is a simulation - actual implementation would use neural-ml API
-    const result = await this.simulateNeuralMlProcessing(task, 'light');
+    // Use neural-ml for complex processing with lightweight models
+    let result;
+    if (neuralMl && neuralMl.isAvailable && neuralMl.hasLightweightModels) {
+      logger.debug(`Using neural-ml lightweight models for task ${task.id}`);
+      result = await this.processWithNeuralMl(task, neuralMl, 'light');
+    } else {
+      logger.debug(`Neural-ml not available, falling back to simulation for task ${task.id}`);
+      // Fallback to simulation when neural-ml is not available
+      result = await this.simulateNeuralMlProcessing(task, 'light');
+    }
 
     return {
       taskId: task.id,
@@ -338,8 +366,16 @@ export class NeuralOrchestrator {
     
     const neuralMl = await this.loadNeuralML();
     
-    // Delegate to neural-ml heavy models (LSTM, Transformers, etc.)
-    const result = await this.simulateNeuralMlProcessing(task, 'heavy');
+    // Use neural-ml for heavy processing with full models (LSTM, Transformers, etc.)
+    let result;
+    if (neuralMl && neuralMl.isAvailable && neuralMl.hasHeavyModels) {
+      logger.debug(`Using neural-ml heavy models for task ${task.id}`);
+      result = await this.processWithNeuralMl(task, neuralMl, 'heavy');
+    } else {
+      logger.debug(`Neural-ml heavy models not available, falling back to simulation for task ${task.id}`);
+      // Fallback to simulation when neural-ml heavy models are not available
+      result = await this.simulateNeuralMlProcessing(task, 'heavy');
+    }
 
     return {
       taskId: task.id,
@@ -540,6 +576,41 @@ export class NeuralOrchestrator {
    */
   predictTaskComplexity(task: Omit<NeuralTask, 'id'>): TaskComplexity {
     return this.analyzeTaskComplexity({ ...task, id: 'prediction' });
+  }
+
+  /**
+   * Get numeric complexity level for comparison
+   */
+  private getComplexityLevel(complexity: TaskComplexity): number {
+    switch (complexity) {
+      case TaskComplexity.SIMPLE: return 1;
+      case TaskComplexity.MODERATE: return 2;
+      case TaskComplexity.COMPLEX: return 3;
+      case TaskComplexity.HEAVY: return 4;
+      default: return 1;
+    }
+  }
+
+  /**
+   * Process task using neural-ml when available
+   */
+  private async processWithNeuralMl(task: NeuralTask, neuralMl: any, modelType: 'light' | 'heavy'): Promise<any> {
+    try {
+      // Use neural-ml API for actual processing
+      if (neuralMl.processTask) {
+        return await neuralMl.processTask(task, {
+          modelType,
+          priority: (task.data.metadata as any)?.priority || 'medium',
+          timeout: (task.data.metadata as any)?.timeout || 30000
+        });
+      } else {
+        logger.warn(`Neural-ml loaded but no processTask method available, falling back to simulation`);
+        return await this.simulateNeuralMlProcessing(task, modelType);
+      }
+    } catch (error) {
+      logger.warn(`Neural-ml processing failed, falling back to simulation:`, error);
+      return await this.simulateNeuralMlProcessing(task, modelType);
+    }
   }
 }
 

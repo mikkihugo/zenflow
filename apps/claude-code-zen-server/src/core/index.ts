@@ -58,7 +58,7 @@ export { WorkflowEngine } from '../workflows/workflow-engine';
 export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
 export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
-// export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use MemorySystem
+// export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use BrainCoordinator
 
 // ==================== SHARED UTILITIES ====================
 

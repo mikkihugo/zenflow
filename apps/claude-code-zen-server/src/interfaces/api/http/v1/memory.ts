@@ -2,12 +2,12 @@
  * @fileoverview Memory API v1 Routes - Lightweight facade for memory management.
  * 
  * Provides comprehensive REST API routes for memory management through delegation to 
- * the specialized @claude-zen/memory package for advanced memory operations.
+ * the specialized @claude-zen/brain package for advanced memory operations.
  * 
  * Delegates to:
- * - @claude-zen/memory: MemoryController for API operations
- * - @claude-zen/memory: MemorySystemFactory for system management
- * - @claude-zen/memory: MemoryMonitor for health and analytics
+ * - @claude-zen/brain: MemoryController for API operations
+ * - @claude-zen/brain: BrainCoordinatorFactory for system management
+ * - @claude-zen/brain: MemoryMonitor for health and analytics
  * - @claude-zen/foundation: Logger for structured logging
  * 
  * REDUCTION: 457 → 180 lines (61% reduction) through package delegation
@@ -15,14 +15,14 @@
  * @file Memory management domain API routes.
  */
 
+import type { Logger } from '@claude-zen/foundation';
 import { type Request, type Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
 import { getLogger } from '../../config/logging-config';
-import type { Logger } from '@claude-zen/foundation';
 
 /**
- * Create memory management routes with @claude-zen/memory delegation.
+ * Create memory management routes with @claude-zen/brain delegation.
  * All memory endpoints under /api/v1/memory.
  */
 export const createMemoryRoutes = (): Router => {
@@ -36,17 +36,17 @@ export const createMemoryRoutes = (): Router => {
   let initialized = false;
   
   /**
-   * Initialize @claude-zen/memory components - LAZY LOADING
+   * Initialize @claude-zen/brain components - LAZY LOADING
    */
-  const initializeMemorySystem = async () => {
+  const initializeBrainCoordinator = async () => {
     if (initialized) return;
     
     try {
-      // Delegate to @claude-zen/memory for advanced memory management
-      const { MemorySystemFactory } = await import('@claude-zen/memory');
+      // Delegate to @claude-zen/brain for advanced memory management
+      const { BrainCoordinatorFactory } = await import('@claude-zen/brain');
       
       // Create advanced memory system with intelligent features
-      memorySystem = await MemorySystemFactory.createAdvancedMemorySystem({
+      memorySystem = await BrainCoordinatorFactory.createAdvancedBrainCoordinator({
         coordination: {
           enabled: true,
           consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
@@ -70,7 +70,7 @@ export const createMemoryRoutes = (): Router => {
       memoryMonitor = memorySystem.monitor;
       
       initialized = true;
-      logger.info('Memory system initialized successfully with @claude-zen/memory');
+      logger.info('Memory system initialized successfully with @claude-zen/brain');
       
     } catch (error) {
       logger.error('Failed to initialize memory system:', error);
@@ -78,7 +78,7 @@ export const createMemoryRoutes = (): Router => {
     }
   };
 
-  // ===== MEMORY STORE OPERATIONS - DELEGATED TO @claude-zen/memory =====
+  // ===== MEMORY STORE OPERATIONS - DELEGATED TO @claude-zen/brain =====
 
   /**
    * GET /api/v1/memory/stores - List all memory stores
@@ -86,8 +86,8 @@ export const createMemoryRoutes = (): Router => {
   router.get(
     '/stores',
     asyncHandler(async (req: Request, res: Response) => {
-      await initializeMemorySystem();
-      log(LogLevel.DEBUG, 'Listing memory stores via @claude-zen/memory', req);
+      await initializeBrainCoordinator();
+      log(LogLevel.DEBUG, 'Listing memory stores via @claude-zen/brain', req);
 
       const stats = memorySystem.getStats();
       const health = memorySystem.getHealthReport();
@@ -116,8 +116,8 @@ export const createMemoryRoutes = (): Router => {
   router.post(
     '/stores',
     asyncHandler(async (req: Request, res: Response) => {
-      await initializeMemorySystem();
-      log(LogLevel.INFO, 'Creating memory store via @claude-zen/memory', req);
+      await initializeBrainCoordinator();
+      log(LogLevel.INFO, 'Creating memory store via @claude-zen/brain', req);
 
       const storeId = `${req.body.type}-store-${Date.now()}`;
       
@@ -143,7 +143,7 @@ export const createMemoryRoutes = (): Router => {
   router.get(
     '/stores/:storeId/keys/:key',
     asyncHandler(async (req: Request, res: Response) => {
-      await initializeMemorySystem();
+      await initializeBrainCoordinator();
       const { storeId, key } = req.params;
 
       log(LogLevel.DEBUG, 'Getting memory value via coordinator', req, { storeId, key });
@@ -184,7 +184,7 @@ export const createMemoryRoutes = (): Router => {
   router.put(
     '/stores/:storeId/keys/:key',
     asyncHandler(async (req: Request, res: Response) => {
-      await initializeMemorySystem();
+      await initializeBrainCoordinator();
       const { storeId, key } = req.params;
       const { value, ttl, metadata } = req.body;
 
@@ -234,7 +234,7 @@ export const createMemoryRoutes = (): Router => {
   router.get(
     '/health',
     asyncHandler(async (_req: Request, res: Response) => {
-      await initializeMemorySystem();
+      await initializeBrainCoordinator();
       
       try {
         // Delegate to memory monitor for comprehensive health assessment

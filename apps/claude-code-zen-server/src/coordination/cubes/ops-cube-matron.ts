@@ -8,6 +8,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger } from '../../config/logging-config';
 import type {
   EventBus,

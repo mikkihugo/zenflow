@@ -31,7 +31,7 @@
  * **Delegates to:**
  * - @claude-zen/workflows: Service orchestration and lifecycle management
  * - @claude-zen/agent-manager: Service factory patterns and registration
- * - @claude-zen/monitoring: Health checks, metrics, and performance tracking
+ * - @claude-zen/foundation: Health checks, metrics, and performance tracking
  * - @claude-zen/foundation: Core utilities, logging, and error handling
  * - @claude-zen/teamwork: Service coordination and communication
  * - @claude-zen/brain: Resource optimization and scaling
@@ -42,50 +42,38 @@
  * 
  * @requires @claude-zen/workflows - Service orchestration engine
  * @requires @claude-zen/agent-manager - Service lifecycle management
- * @requires @claude-zen/monitoring - Health and performance tracking
+ * @requires @claude-zen/foundation - Health and performance tracking
  * @requires @claude-zen/foundation - Core utilities and logging
  * 
  * **REDUCTION ACHIEVED: 1,788 → 350 lines (80.4% reduction) through strategic delegation**
  */
 
+import type {
+  WorkflowEngine
+} from '@claude-zen/workflows';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
 
 // Strategic imports from @claude-zen packages
-import type {
-  WorkflowEngine,
-  WorkflowConfig,
-  ServiceOrchestrator
-} from '@claude-zen/workflows';
 
 import type {
-  AgentManager,
-  ServiceFactory,
-  ServiceLifecycleManager
+  AgentManager
 } from '@claude-zen/agent-manager';
-
 import type {
   HealthMonitor,
   PerformanceTracker,
   ServiceMetrics
-} from '@claude-zen/monitoring';
-
+} from '@claude-zen/foundation';
 import type {
-  LoadBalancer,
-  ResourceOptimizer
+  LoadBalancer
 } from '@claude-zen/brain';
-
 import type {
-  ConversationOrchestrator,
   ServiceCoordinator
 } from '@claude-zen/teamwork';
 
 // Foundation utilities
 import {
-  isString,
-  isObject,
-  isDefined,
   assertDefined,
   getErrorMessage
 } from '@claude-zen/foundation';
@@ -95,17 +83,14 @@ import {
 // =============================================================================
 
 // Import types from centralized types file
+import type { ServiceMetrics } from './core/interfaces';
 import type {
   ServiceManagerConfig,
   Service,
   ServiceRequest,
-  ServiceType,
-  ServiceStatus,
-  ServiceDependency,
   ServiceHealth,
   BatchServiceRequest
 } from './types';
-import type { ServiceMetrics } from './core/interfaces';
 
 // =============================================================================
 // SERVICE MANAGER - Strategic Package Delegation
@@ -123,7 +108,7 @@ import type { ServiceMetrics } from './core/interfaces';
  * **Key Capabilities (via delegation):**
  * - Complete service lifecycle management via @claude-zen/workflows
  * - Automatic dependency resolution via @claude-zen/agent-manager
- * - Real-time health monitoring via @claude-zen/monitoring
+ * - Real-time health monitoring via @claude-zen/foundation
  * - Automated recovery via @claude-zen/brain
  * - Service coordination via @claude-zen/teamwork
  * - Performance optimization via @claude-zen/foundation
@@ -173,7 +158,7 @@ export class ServiceManager extends EventEmitter {
       });
       await this.agentManager.initialize();
 
-      // Delegate to @claude-zen/monitoring for health tracking
+      // Delegate to @claude-zen/foundation for health tracking
       const { SystemMonitor, PerformanceTracker } = await import('@claude-zen/foundation');
       this.healthMonitor = new SystemMonitor({
         healthCheckInterval: this.config.monitoring.healthCheckInterval,
@@ -440,7 +425,7 @@ export type {
   ServiceHealth,
   BatchServiceRequest,
   ServiceMetrics
-} from '@claude-zen/monitoring';
+} from '@claude-zen/foundation';
 
 /**
  * SOPHISTICATED TYPE ARCHITECTURE DEMONSTRATION
@@ -456,7 +441,7 @@ export type {
  * **AFTER (Strategic Package Delegation):**
  * - 350 lines through strategic @claude-zen package delegation (80.4% reduction)
  * - Battle-tested service orchestration via @claude-zen/workflows
- * - Comprehensive health monitoring via @claude-zen/monitoring
+ * - Comprehensive health monitoring via @claude-zen/foundation
  * - Professional lifecycle management via @claude-zen/agent-manager
  * - Advanced coordination via @claude-zen/teamwork
  * - Zero maintenance overhead for core service management logic

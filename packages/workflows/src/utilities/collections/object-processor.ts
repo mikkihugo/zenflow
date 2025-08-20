@@ -49,14 +49,14 @@ export class ObjectProcessor {
    * Pick specific properties from object
    */
   static pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
-    return pick(obj, keys);
+    return pick(obj, keys as string[]) as Pick<T, K>;
   }
 
   /**
    * Omit specific properties from object
    */
   static omit<T, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
-    return omit(obj, keys);
+    return omit(obj as Record<string, unknown>, keys as string[]) as Omit<T, K>;
   }
 
   /**

@@ -13,41 +13,33 @@
  * - Integration with WorkflowGatesManager for technical gates
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import {
-  createEvent,
-  EventPriority,
-} from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
+
+
+
 import type {
   AIAssistanceLevel,
   AIRecommendation,
   ComplexityLevel,
   CoordinationInfo,
   CrossLevelDependency,
-  DecisionOutcome,
-  DecisionPoint,
   FlowMetrics,
   HumanOversightLevel,
   OrchestrationLevel,
-  ProgramCheckpoint,
   ProgramDependency,
   ProgramGate,
-  ProgramGateType,
   ProgramItem,
-  ProgramItemStatus,
   ProgramMetrics,
-  ProgramPhase,
   ProgramPriority,
   ProgramTimeline,
   TechnicalSpecification,
   WorkflowStream,
 } from './multi-level-types';
 import type { WorkflowGatesManager } from './workflow-gates';
-import { WorkflowHumanGateType } from './workflow-gates';
 
 // ============================================================================
 // PROGRAM ORCHESTRATOR CONFIGURATION
@@ -240,7 +232,7 @@ export interface ProgramOrchestratorState {
 export class ProgramOrchestrator extends EventEmitter {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly gatesManager: WorkflowGatesManager;
   private readonly config: ProgramOrchestratorConfig;
 
@@ -251,7 +243,7 @@ export class ProgramOrchestrator extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     gatesManager: WorkflowGatesManager,
     config: Partial<ProgramOrchestratorConfig> = {}
   ) {

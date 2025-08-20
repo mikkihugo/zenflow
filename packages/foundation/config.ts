@@ -18,6 +18,7 @@
 
 import convict from 'convict';
 import * as dotenv from 'dotenv';
+
 import { getLogger } from './src/logging';
 
 const logger = getLogger('modern-config');

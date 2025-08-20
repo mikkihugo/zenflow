@@ -1,4 +1,3 @@
-import { getLogger as getFoundationLogger } from '@claude-zen/foundation';
 
 /**
  * @fileoverview GitCommander - AI-Powered Git System at Commander Level
@@ -28,7 +27,11 @@ import { getLogger as getFoundationLogger } from '@claude-zen/foundation';
  * @since 2024-01-01
  */
 
-import simpleGit, { SimpleGit, BranchSummary, StatusResult, LogResult, DiffResult } from 'simple-git';
+import { SimpleGit, BranchSummary } from 'simple-git';
+import { getLogger } from '../../config/logging-config';
+import * as path from 'path';
+import * as fs from 'fs/promises';
+import * as cron from 'node-cron';
 // Simple replacement for SimpleGitSandbox functionality
 interface SandboxEnvironment {
   [key: string]: string;
@@ -92,10 +95,6 @@ class Commander {
     this.commanderId = commanderId;
   }
 }
-import { getLogger } from '../../config/logging-config';
-import * as path from 'path';
-import * as fs from 'fs/promises';
-import * as cron from 'node-cron';
 
 // AI Integration for conflict resolution - TODO: Add when @anthropic/sdk is installed
 // import type { Claude } from '@anthropic/sdk';
@@ -494,11 +493,7 @@ export class GitCommander extends Commander {
       
       await this.sandbox.executeSafeGitOp(sandbox, async (git) => {
         // Create branch
-        if (options.fromBranch) {
-          await git.checkoutBranch(formattedName, options.fromBranch);
-        } else {
-          await git.checkoutLocalBranch(formattedName);
-        }
+        await (options.fromBranch ? git.checkoutBranch(formattedName, options.fromBranch) : git.checkoutLocalBranch(formattedName));
         
         // Push to remote if requested
         if (options.push) {
@@ -952,7 +947,7 @@ Respond in JSON format:
 
         const content = response.content[0];
         if (content.type === 'text') {
-          const jsonMatch = content.text.match(/```json\n([\s\S]*?)\n```/);
+          const jsonMatch = content.text.match(/```json\n([\S\s]*?)\n```/);
           if (jsonMatch) {
             const aiResponse = JSON.parse(jsonMatch[1]);
             

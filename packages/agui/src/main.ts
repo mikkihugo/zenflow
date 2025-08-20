@@ -97,6 +97,7 @@
  */
 export { createAGUISystem as createAGUI } from './create-agui-system';
 export { createAGUISystem as AGUISystem } from './create-agui-system';
+export { createAGUISystem as AGUIService } from './create-agui-system';
 
 // =============================================================================
 // CORE INTERFACES - Basic AGUI components

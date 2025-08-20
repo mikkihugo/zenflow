@@ -8,6 +8,22 @@
  * @file Protocols module exports.
  */
 
+/**
+ * Advanced Coordination System Factory.
+ * Creates and configures integrated coordination systems.
+ */
+import type { Logger } from '@claude-zen/foundation';
+import type { EventBusInterface as EventBus } from '../core/event-bus';
+import { CommunicationProtocols } from './communication/communication-protocols';
+import { TaskDistributionEngine } from './distribution/task-distribution-engine';
+import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
+import { PerformanceOptimizer } from './optimization/performance-optimizer';
+import { CoordinationPatterns } from './patterns/coordination-patterns';
+import {
+  TopologyManager,
+  type TopologyType,
+} from './topology/topology-manager';
+
 export {
   type CommunicationNode,
   CommunicationProtocols,
@@ -93,22 +109,6 @@ export {
   type TopologyDecision,
   TopologyManager,
   type TopologyMetrics,
-  type TopologyType,
-} from './topology/topology-manager';
-
-/**
- * Advanced Coordination System Factory.
- * Creates and configures integrated coordination systems.
- */
-import type { Logger } from '@claude-zen/foundation';
-import type { EventBusInterface as EventBus } from '../core/event-bus';
-import { CommunicationProtocols } from './communication/communication-protocols';
-import { TaskDistributionEngine } from './distribution/task-distribution-engine';
-import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';
-import { PerformanceOptimizer } from './optimization/performance-optimizer';
-import { CoordinationPatterns } from './patterns/coordination-patterns';
-import {
-  TopologyManager,
   type TopologyType,
 } from './topology/topology-manager';
 

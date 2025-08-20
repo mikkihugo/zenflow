@@ -2,13 +2,13 @@
  * @fileoverview Memory Service Implementation - Lightweight facade for memory operations.
  * 
  * Service implementation for memory management, caching, and session storage operations
- * through delegation to the specialized @claude-zen/memory package for advanced functionality.
+ * through delegation to the specialized @claude-zen/brain package for advanced functionality.
  * 
  * Delegates to:
- * - @claude-zen/memory: MemoryManager for core memory operations
- * - @claude-zen/memory: SessionMemoryStore for session-based memory
- * - @claude-zen/memory: MemoryMonitor for health checks and monitoring
- * - @claude-zen/memory: PerformanceOptimizer for optimization and analytics
+ * - @claude-zen/brain: MemoryManager for core memory operations
+ * - @claude-zen/brain: SessionMemoryStore for session-based memory
+ * - @claude-zen/brain: MemoryMonitor for health checks and monitoring
+ * - @claude-zen/brain: PerformanceOptimizer for optimization and analytics
  * - @claude-zen/foundation: Logger for structured logging
  * 
  * REDUCTION: 586 → 160 lines (73% reduction) through package delegation
@@ -16,14 +16,14 @@
  * @file Memory service implementation.
  */
 
+import { getLogger } from '../../config/logging-config';
 import type { Service } from '../core/interfaces';
 import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';
-import { getLogger } from '../../config/logging-config';
 import type { Logger } from '@claude-zen/foundation';
 
 /**
- * Memory service implementation using @claude-zen/memory delegation.
+ * Memory service implementation using @claude-zen/brain delegation.
  * 
  * Provides intelligent memory management through advanced coordination,
  * optimization, monitoring, and lifecycle management capabilities.
@@ -71,10 +71,10 @@ export class MemoryService extends BaseService implements Service {
     this.logger.info(`Initializing memory service: ${this.name}`);
 
     try {
-      // Delegate to @claude-zen/memory for advanced memory management
-      const { MemoryManager, SessionMemoryStore } = await import('@claude-zen/memory');
-      const { MemoryMonitor } = await import('@claude-zen/memory/monitoring/memory-monitor');
-      const { PerformanceOptimizer } = await import('@claude-zen/memory/optimization/performance-optimizer');
+      // Delegate to @claude-zen/brain for advanced memory management
+      const { MemoryManager, SessionMemoryStore } = await import('@claude-zen/brain');
+      const { MemoryMonitor } = await import('@claude-zen/brain/monitoring/memory-monitor');
+      const { PerformanceOptimizer } = await import('@claude-zen/brain/optimization/performance-optimizer');
 
       const config = this.config as MemoryServiceConfig;
 
@@ -137,7 +137,7 @@ export class MemoryService extends BaseService implements Service {
       }
 
       this.initialized = true;
-      this.logger.info(`Memory service ${this.name} initialized with @claude-zen/memory`);
+      this.logger.info(`Memory service ${this.name} initialized with @claude-zen/brain`);
 
     } catch (error) {
       this.logger.error(`Failed to initialize memory service ${this.name}:`, error);
@@ -292,7 +292,7 @@ export class MemoryService extends BaseService implements Service {
         issues: this.monitor?.generateHealthReport?.()?.details?.issues?.length || 0,
       },
       timestamp: new Date().toISOString(),
-      source: '@claude-zen/memory'
+      source: '@claude-zen/brain'
     };
   }
 }

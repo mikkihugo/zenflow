@@ -9,9 +9,11 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getWebDashboardURL } from '../config/defaults';
 import { getLogger } from '../config/logging-config';
 import type { WebConfig } from '../interfaces/web/web-config';
+
 import {
   type InterfaceMode,
   InterfaceModeDetector,

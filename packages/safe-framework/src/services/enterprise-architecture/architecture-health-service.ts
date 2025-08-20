@@ -799,9 +799,10 @@ export class ArchitectureHealthService extends EventEmitter {
       return metrics;
 
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       this.logger.error('Failed to calculate architecture health metrics:', error);
       this.emit('health-calculation-failed', {
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }

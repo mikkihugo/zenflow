@@ -219,7 +219,7 @@ export type HexString = Branded<string, 'HexString'>;
  */
 export function isUUID(value: unknown): value is UUID {
   return typeof value === 'string' && 
-    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value);
 }
 
 /**

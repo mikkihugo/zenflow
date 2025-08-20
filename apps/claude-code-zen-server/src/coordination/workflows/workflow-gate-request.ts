@@ -16,10 +16,11 @@
  * - Battle-tested dependencies (expr-eval, async, p-limit, eventemitter3, xstate, mermaid, node-cron)
  */
 
+import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 import { container } from 'tsyringe';
-import type { Logger } from '@claude-zen/foundation';
 import { getLogger } from '@claude-zen/foundation';
+
 import type { ValidationQuestion } from '../../coordination/discovery/progressive-confidence-builder';
 import {
   Domain,
@@ -27,20 +28,20 @@ import {
   getDomainValidator,
   type Result,
   type TypeSchema,
-  validateCrossDomain,
 } from '../../core/domain-boundary-validator';
+
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
-  type BaseEvent,
   createCorrelationId,
   createEvent,
   EventPriority,
   type HumanValidationCompletedEvent,
-  type HumanValidationRequestedEvent,
   type TypeSafeEventBus,
 } from '@claude-zen/event-system';
+
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
+
 import { WorkflowEngine } from '@claude-zen/workflows';
 import { TaskApprovalSystem } from '@claude-zen/agui';
 

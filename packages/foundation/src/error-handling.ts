@@ -19,22 +19,14 @@
  */
 
 import { Result, ok, err, ResultAsync, errAsync, okAsync } from 'neverthrow';
-import pRetry, { AbortError, Options as PRetryOptions } from 'p-retry';
 import CircuitBreaker, { Options as CircuitBreakerOptions } from 'opossum';
+import pRetry, { AbortError, Options as PRetryOptions } from 'p-retry';
+
 import { getLogger } from './logging';
 
 const logger = getLogger('error-handling');
 
-// Re-export neverthrow types and functions
-export { 
-  Result, 
-  ok, 
-  err, 
-  ResultAsync, 
-  errAsync, 
-  okAsync,
-  AbortError
-};
+// Re-export neverthrow types and functions - removed to avoid duplicates
 export type { PRetryOptions, CircuitBreakerOptions };
 
 /**
@@ -481,11 +473,7 @@ export async function executeAll<T>(
     }
   }
   
-  if (failures.length === 0) {
-    return ok(successes);
-  } else {
-    return err(failures);
-  }
+  return failures.length === 0 ? ok(successes) : err(failures);
 }
 
 /**
@@ -621,6 +609,28 @@ export function createErrorChain(baseError: Error, ...additionalErrors: Error[])
 }
 
 // Export convenience functions
+// Export p-retry and neverthrow directly
+export {
+  AbortError,
+  Result, 
+  ok, 
+  err, 
+  ResultAsync, 
+  errAsync, 
+  okAsync
+};
+
+// Re-export from types for backwards compatibility
+export type { 
+  BaseError
+} from './types/errors';
+
+// Export enums with clear naming to avoid conflicts
+export { 
+  ErrorSeverity as ErrorSeverityEnum, 
+  ErrorCategory as ErrorCategoryEnum 
+} from './types/errors';
+
 export const ErrorHandling = {
   safe,
   safeAsync,

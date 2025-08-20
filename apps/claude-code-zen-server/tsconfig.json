@@ -39,8 +39,6 @@
     { "path": "../../packages/private-packages/database" },
     { "path": "../../packages/brain" },
     { "path": "../../packages/private-packages/fact-system" },
-    { "path": "../../packages/private-packages/load-balancing" },
-    { "path": "../../packages/agui" },
     { "path": "../../packages/private-packages/agent-monitoring" },
     { "path": "../../packages/teamwork" },
     { "path": "../../packages/ai-safety" },
@@ -56,6 +54,7 @@
     { "path": "../../packages/coordination-core" },
     { "path": "../../packages/private-packages/monitoring" },
     { "path": "../../packages/private-packages/neural-ml" },
-    { "path": "../../packages/safe-framework" }
+    { "path": "../../packages/safe-framework" },
+    { "path": "../../packages/agui" }
   ]
 }

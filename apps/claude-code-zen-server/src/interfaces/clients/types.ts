@@ -40,6 +40,9 @@ import type {
   McpClientMessageType
 } from '@claude-zen/teamwork';
 
+// Type guards using foundation delegation
+import { isString } from '@claude-zen/foundation';
+
 // Re-export foundation types
 export type {
   HttpMethod,
@@ -91,9 +94,6 @@ export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
   ipc: ClientTypes.GENERIC,
   custom: ClientTypes.GENERIC,
 } as const;
-
-// Type guards using foundation delegation
-import { isString, isObject } from '@claude-zen/foundation';
 
 export const TypeGuards = {
   isClientType: (value: unknown): value is ClientType => {

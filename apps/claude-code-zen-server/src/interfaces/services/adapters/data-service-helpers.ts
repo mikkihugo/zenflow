@@ -11,6 +11,7 @@
  */
 
 import { getLogger, type Logger } from '../../../config/logging-config';
+
 import type { DataServiceAdapter } from './data-service-adapter';
 
 // Mock types for missing imports
@@ -1356,7 +1357,7 @@ export const DataServiceUtils = {
     target: Record<string, unknown>,
     ...sources: Array<Record<string, unknown>>
   ): Record<string, unknown> {
-    if (!sources.length) return target;
+    if (sources.length === 0) return target;
     const source = sources.shift();
 
     if (typeof target === 'object' && typeof source === 'object') {

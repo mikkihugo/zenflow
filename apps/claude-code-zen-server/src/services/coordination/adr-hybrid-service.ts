@@ -5,12 +5,13 @@
  * HybridDocumentManager for semantic search and graph relationships.
  */
 
-import { nanoid } from 'nanoid';
+
 import { getLogger } from '../../config/logging-config';
 import type {
   ADRDocumentEntity,
   ProjectEntity,
 } from '../../database/entities/document-entities';
+
 import { HybridDocumentManager } from './hybrid-document-service';
 
 const logger = getLogger('adr-manager-hybrid');

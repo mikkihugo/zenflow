@@ -6,8 +6,9 @@
  * @file intelligent-routing processing engine
  */
 
-import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { EventEmitter } from 'eventemitter3';
+
+import type { CapacityManager, RoutingEngine } from '../interfaces';
 import { NetworkLatencyOptimizer } from '../optimization/network-latency-optimizer';
 import type {
   Agent,
@@ -16,8 +17,8 @@ import type {
   RoutingResult,
   Task,
 } from '../types';
-import { taskPriorityToNumber } from '../types';
-import { AgentStatus } from '../types';
+import { taskPriorityToNumber , AgentStatus } from '../types';
+
 import { FailoverManager } from './failover-manager';
 import { TaskAgentMatcher } from './task-agent-matcher';
 

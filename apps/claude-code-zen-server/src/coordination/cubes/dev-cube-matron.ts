@@ -10,12 +10,13 @@
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 // Note: SharedFACTCapable removed - using knowledge package directly
-import { storeCoordinationFact, queryCoordinationFacts } from '@claude-zen/knowledge';
 import type {
   EventBus,
   Logger,
 } from '../../core/interfaces/base-interfaces';
+
 import type { SPARCProject, SPARCPhase } from '@claude-zen/sparc';
+
 import type {
   CollectiveConfig,
   CubeInfo,

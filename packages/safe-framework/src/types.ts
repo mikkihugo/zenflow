@@ -17,6 +17,7 @@ export interface PortfolioEpic {
   readonly description: string;
   readonly businessValue: number;
   readonly status: 'backlog' | 'analyzing' | 'implementing' | 'done';
+  readonly priority: number;
 }
 
 /**
@@ -35,7 +36,31 @@ export interface ValueStream {
   readonly type?: 'operational' | 'development';
   readonly customers?: Customer[];
   readonly valueFlowSteps?: ValueFlowStep[];
+  readonly steps?: ValueStreamStep[];
   readonly metrics?: ValueStreamMetrics;
+}
+
+/**
+ * Value Stream Step definition
+ */
+export interface ValueStreamStep {
+  readonly id: string;
+  readonly name: string;
+  readonly description?: string;
+  readonly duration: number;
+  readonly type: 'process' | 'wait' | 'decision' | 'handoff';
+  readonly owner?: string;
+  readonly metrics?: StepMetrics;
+}
+
+/**
+ * Step-level metrics
+ */
+export interface StepMetrics {
+  readonly processingTime: number;
+  readonly waitTime: number;
+  readonly efficiency: number;
+  readonly defectRate?: number;
 }
 
 /**

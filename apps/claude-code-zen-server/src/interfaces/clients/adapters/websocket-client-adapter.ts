@@ -4,10 +4,6 @@
 
 import { Logger } from '@claude-zen/foundation';
 
-const logger = new Logger(
-  'interfaces-clients-adapters-websocket-client-adapter'
-);
-
 /**
  * WebSocket Client Adapter for UACL (Unified API Client Layer).
  *
@@ -168,6 +164,10 @@ import type {
   RequestOptions,
   RetryConfig,
 } from '../core/interfaces';
+
+const logger = new Logger(
+  'interfaces-clients-adapters-websocket-client-adapter'
+);
 
 /**
  * WebSocket-specific authentication configuration.
@@ -532,12 +532,10 @@ export class WebSocketClientAdapter extends EventEmitter implements Client {
         this.ws = new WebSocket(url, protocols);
 
         // Apply binary type setting
-        if (this.config.binaryType) {
-          // @ts-ignore - Node.js WebSocket might not have this
-          if (this.ws.binaryType !== undefined) {
+        if (this.config.binaryType && // @ts-ignore - Node.js WebSocket might not have this
+          this.ws.binaryType !== undefined) {
             this.ws.binaryType = this.config.binaryType as any;
           }
-        }
 
         const timeout = setTimeout(() => {
           reject(new Error('WebSocket connection timeout'));
@@ -978,11 +976,7 @@ export class WebSocketClientAdapter extends EventEmitter implements Client {
     const maxInterval = this.config.reconnection.maxInterval || 30000;
 
     let delay: number;
-    if (this.config.reconnection.backoff === 'exponential') {
-      delay = Math.min(baseInterval * 2 ** this.reconnectAttempts, maxInterval);
-    } else {
-      delay = baseInterval;
-    }
+    delay = this.config.reconnection.backoff === 'exponential' ? Math.min(baseInterval * 2 ** this.reconnectAttempts, maxInterval) : baseInterval;
 
     this.reconnectTimer = setTimeout(async () => {
       this.reconnectAttempts++;

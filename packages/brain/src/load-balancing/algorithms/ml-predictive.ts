@@ -4,12 +4,6 @@
 
 import { getLogger } from '@claude-zen/foundation';
 
-// Direct brain.js import for practical neural networks
-const brain = require('brain.js');
-
-// Foundation-optimized logging
-const logger = getLogger('MLPredictiveAlgorithm');
-
 /**
  * Machine Learning Predictive Load Balancing Algorithm.
  * Uses ML models to predict optimal agent selection and performance.
@@ -28,6 +22,12 @@ import type {
   Task,
 } from '../types';
 import { taskPriorityToNumber } from '../types';
+
+// Direct brain.js import for practical neural networks
+const brain = require('brain.js');
+
+// Foundation-optimized logging
+const logger = getLogger('MLPredictiveAlgorithm');
 
 interface MLFeatures {
   agentId: string;
@@ -835,10 +835,7 @@ export class MLPredictiveAlgorithm implements LoadBalancingAlgorithm {
     if (values.length === 0) return 0;
 
     const mean = values.reduce((sum, val) => sum + val, 0) / values.length;
-    const variance =
-      values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
-
-    return variance;
+    return values.reduce((sum, val) => sum + (val - mean) ** 2, 0) / values.length;
   }
 
   private calculateFeatureImportance(

@@ -7,8 +7,8 @@
 
 import { getLogger } from '../../config/logging-config';
 import { DALFactory } from '../../database/dal/dal-factory';
-import { HybridDocumentManager } from '../coordination/hybrid-document-service';
 import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
+import { HybridDocumentManager } from '../coordination/hybrid-document-service';
 
 const logger = getLogger('hybrid-factory');
 

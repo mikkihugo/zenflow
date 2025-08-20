@@ -5,7 +5,6 @@
  * and cleaner architecture. Foundation package provides all needed infrastructure.
  */
 
-import { getLogger } from '../config/logging-config';
 import {
   DIContainer,
   TOKENS as CORE_TOKENS,
@@ -14,6 +13,7 @@ import {
   getDatabaseAccess,
   type DatabaseAccess,
 } from '@claude-zen/foundation';
+import { getLogger } from '../config/logging-config';
 
 const logger = getLogger('DIContainer');
 

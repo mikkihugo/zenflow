@@ -6,16 +6,14 @@
  */
 
 import type { EventEmitter } from 'eventemitter3';
+
 import type {
   FACTKnowledgeEntry,
   FACTSearchQuery,
   FACTStorageStats,
 } from '../knowledge/types/fact-types';
+
 import type {
-  CollectiveHealthMetrics,
-  Task as CollectiveTask,
-  CubeInfo,
-  CubePerformanceMetrics,
   GlobalAgentInfo,
   GlobalResourceMetrics,
   UniversalFact,

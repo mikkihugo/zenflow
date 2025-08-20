@@ -7,7 +7,7 @@
  * Integrates with:
  * - @claude-zen/brain: BrainCoordinator for intelligent performance analysis
  * - @claude-zen/foundation: Performance tracking and telemetry
- * - @claude-zen/load-balancing: LoadBalancer for performance optimization
+ * - @claude-zen/brain: LoadBalancer for performance optimization
  * 
  * @author Claude-Zen Team
  * @since 1.0.0
@@ -304,7 +304,7 @@ export class PipelinePerformanceService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/brain for intelligent analysis
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent analysis
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -315,8 +315,8 @@ export class PipelinePerformanceService {
       const { PerformanceTracker } = await import('@claude-zen/foundation/telemetry');
       this.performanceTracker = new PerformanceTracker();
 
-      // Lazy load @claude-zen/load-balancing for optimization
-      const { LoadBalancer } = await import('@claude-zen/load-balancing');
+      // Lazy load @claude-zen/brain for LoadBalancer - optimization
+      const { LoadBalancer } = await import('@claude-zen/brain');
       this.loadBalancer = new LoadBalancer({
         strategy: 'intelligent',
         enableHealthChecks: true,

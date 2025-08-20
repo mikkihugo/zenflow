@@ -1,4 +1,3 @@
-import { getVersion } from '../../config/version';
 /**
  * API Route Handler - RESTful API endpoints.
  *
@@ -11,6 +10,7 @@ import { getVersion } from '../../config/version';
 
 import type { Express, Request, Response } from 'express';
 import { getLogger } from '../../config/logging-config';
+import { getVersion } from '../../config/version';
 import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {

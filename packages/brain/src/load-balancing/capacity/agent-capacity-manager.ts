@@ -8,6 +8,7 @@
 
 import type { CapacityManager } from '../interfaces';
 import type { CapacityMetrics, LoadMetrics, ResourceConstraint } from '../types';
+
 import { CapacityPredictor } from './capacity-predictor';
 import { ResourceMonitor } from './resource-monitor';
 
@@ -754,7 +755,6 @@ export class AgentCapacityManager implements CapacityManager {
 
     if (totalTasks < 10) return 0.5; // Low confidence with few tasks
 
-    const successRate = perf.successfulTasks / totalTasks;
-    return successRate; // Use success rate as consistency measure
+    return perf.successfulTasks / totalTasks; // Use success rate as consistency measure
   }
 }

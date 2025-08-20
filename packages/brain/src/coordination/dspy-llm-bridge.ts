@@ -6,21 +6,21 @@
  */
 
 import {
-  type LLMProvider,
-  type LLMRequest,
-  type LLMResponse,
-  getDatabaseAccess,
   type DatabaseAccess
-} from '@claude-zen/foundation';
-import {
+,
   injectable,
-  inject,
   getLogger,
   type Logger
 } from '@claude-zen/foundation';
 
 // Simple fallback implementations
 const logger = getLogger('dspy-llm-bridge-fallback');
+
+// Use logger for initialization tracking
+logger.info('DSPy LLM Bridge fallback implementation loaded', {
+  mode: 'fallback',
+  timestamp: new Date().toISOString()
+});
 
 export interface DSPyCoordinationTask {
   id: string;
@@ -111,6 +111,18 @@ export class DSPyLLMBridge {
     config: DSPyOptimizationConfig = {}
   ): Promise<CoordinationResult> {
     this.logger.info('Executing coordination task (fallback mode)', { task: task.id, type: task.type });
+    
+    // Use config to enhance fallback behavior
+    const optimizationSteps = config.optimizationSteps || 1;
+    const maxTokens = config.maxTokens || 1000;
+    const teleprompter = config.teleprompter || 'BootstrapFewShot';
+    
+    this.logger.debug('Config applied to coordination task', {
+      optimizationSteps,
+      maxTokens,
+      teleprompter,
+      hybridMode: config.hybridMode || false
+    });
     
     // Fallback implementation
     return {

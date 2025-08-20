@@ -25,13 +25,13 @@ import {
   countBy,
   maxBy
 } from 'lodash-es';
-import type {
+import {
   PortfolioKanbanState,
-  WSJFScore,
-  EpicLifecycleStage,
-  GateCriterion,
-  EpicBlocker,
-  EpicOwnerManagerConfig
+  type WSJFScore,
+  type EpicLifecycleStage,
+  type GateCriterion,
+  type EpicBlocker,
+  type EpicOwnerManagerConfig
 } from '../types/epic-management';
 import type { Logger, PortfolioEpic } from '../types';
 
@@ -138,7 +138,7 @@ export class EpicLifecycleService {
     }
 
     // Update epic state and create new lifecycle stage
-    const updatedEpic = { ...epic, status: targetState };
+    const updatedEpic = { ...epic, status: this.mapKanbanStateToEpicStatus(targetState) };
     this.epics.set(epicId, updatedEpic);
 
     const newStage: EpicLifecycleStage = {
@@ -582,6 +582,24 @@ export class EpicLifecycleService {
     };
 
     return actionsMap[state] || [];
+  }
+
+  /**
+   * Map PortfolioKanbanState to PortfolioEpic status
+   */
+  private mapKanbanStateToEpicStatus(kanbanState: PortfolioKanbanState): 'analyzing' | 'implementing' | 'done' | 'backlog' {
+    switch (kanbanState) {
+      case PortfolioKanbanState.ANALYZING:
+        return 'analyzing';
+      case PortfolioKanbanState.IMPLEMENTING:
+        return 'implementing';
+      case PortfolioKanbanState.DONE:
+        return 'done';
+      case PortfolioKanbanState.PORTFOLIO_BACKLOG:
+      case PortfolioKanbanState.FUNNEL:
+      default:
+        return 'backlog';
+    }
   }
 
   /**

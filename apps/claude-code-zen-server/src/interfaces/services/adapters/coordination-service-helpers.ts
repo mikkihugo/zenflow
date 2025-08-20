@@ -14,6 +14,7 @@ import type { SessionState } from '../../../coordination/swarm/core/session-mana
 import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
 import type { AgentType } from '../../../types/agent-types';
 import type { SwarmTopology } from '../../../types/shared-types';
+
 import type { CoordinationServiceAdapter } from './coordination-service-adapter';
 
 // ============================================

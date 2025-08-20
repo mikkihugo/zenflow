@@ -23,10 +23,7 @@ import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import type {
   Service,
-  ServiceConfig,
   ServiceDependencyConfig,
-  ServiceEvent,
-  ServiceEventType,
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceOperationOptions,
@@ -34,10 +31,7 @@ import type {
   ServiceStatus,
 } from '../core/interfaces';
 import {
-  ServiceDependencyError,
-  ServiceError,
   ServiceOperationError,
-  ServiceTimeoutError,
 } from '../core/interfaces';
 import type { CoordinationServiceConfig } from '../types';
 import { ServiceEnvironment, ServicePriority, ServiceType } from '../types';

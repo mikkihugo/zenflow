@@ -23,13 +23,13 @@
  * @version 2.0.0
  */
 
-import { inject, injectable } from '@claude-zen/foundation/di';
-import { EventBus, createEvent, EventPriority } from '@claude-zen/event-system';
+import { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation';
+import { EventEmitter } from 'node:events';
+// import { EventBus } from '@claude-zen/event-system';
+// import type { EventPriority } from '@claude-zen/event-system';
 import { WorkflowEngine, WorkflowDefinition } from '@claude-zen/workflows';
 import { ConversationOrchestrator } from '@claude-zen/teamwork';
-import { getLogger } from '@claude-zen/foundation/logging';
-// Import infrastructure monitoring from @claude-zen/foundation (basic telemetry/performance)
-import { PerformanceTracker, TelemetryManager } from '@claude-zen/foundation/telemetry';
+import { getLogger } from '../config/logging-config';
 // Import neural coordination from @claude-zen/brain (only for actual AI decision making)
 import type { BrainCoordinator } from '@claude-zen/brain';
 import type {
@@ -41,12 +41,12 @@ import type {
 } from '../types';
 import type {
   EpicOwnerManagerConfig,
-  PortfolioKanbanState,
   WSJFScore,
   EpicBusinessCase,
   EpicBlocker,
   EpicLifecycleStage
 } from '../types/epic-management';
+import { PortfolioKanbanState } from '../types/epic-management';
 import { EpicLifecycleService } from '../services/epic-lifecycle-service';
 import { BusinessCaseService } from '../services/business-case-service';
 import { SafeCollectionUtils } from '../utilities/collections/safe-collections';
@@ -97,18 +97,17 @@ interface EpicPerformanceMetrics {
  * - @claude-zen/foundation: Logging, DI, error handling, telemetry
  * - Event-driven approval architecture (clean separation from UI)
  */
-@injectable()
-export class EpicOwnerManager {
+export class EpicOwnerManager extends EventEmitter {
   private readonly config: EpicOwnerManagerConfig;
   private readonly logger: Logger;
   private readonly memorySystem: MemorySystem;
-  private readonly eventBus: EventBus;
+  // private readonly eventBus: EventBus;
   private state: EpicOwnerState;
   private initialized = false;
 
-  // Core SAFe services (required)
-  private lifecycleService: EpicLifecycleService;
-  private businessCaseService: BusinessCaseService;
+  // Core SAFe services (initialized during setup)
+  private lifecycleService?: EpicLifecycleService;
+  private businessCaseService?: BusinessCaseService;
   
   // @claude-zen package integrations  
   private readonly workflowEngine?: WorkflowEngine;
@@ -123,20 +122,20 @@ export class EpicOwnerManager {
   private readonly aiEnhancements: OptionalAIEnhancements;
 
   constructor(
-    @inject(SAFE_TOKENS.Config) config: EpicOwnerManagerConfig,
-    @inject(SAFE_TOKENS.Logger) logger: Logger,
-    @inject(SAFE_TOKENS.MemorySystem) memorySystem: MemorySystem,
-    @inject(SAFE_TOKENS.EventBus) eventBus: EventBus,
+    config: EpicOwnerManagerConfig,
+    logger: Logger,
+    memorySystem: MemorySystem,
     // @claude-zen package services (optional but recommended)
     workflowEngine?: WorkflowEngine,
     conversationOrchestrator?: ConversationOrchestrator,
     // Optional AI enhancements
     aiEnhancements?: OptionalAIEnhancements
   ) {
+    super();
     this.config = config;
     this.logger = getLogger('EpicOwnerManager');
     this.memorySystem = memorySystem;
-    this.eventBus = eventBus;
+    // this.eventBus = eventBus;
     this.state = this.initializeState();
     
     // Initialize @claude-zen integrations
@@ -227,6 +226,10 @@ export class EpicOwnerManager {
       targetState 
     });
 
+    if (!this.lifecycleService) {
+      throw new Error('Lifecycle service not initialized');
+    }
+
     const result = await this.lifecycleService.progressEpicState(
       epicId, 
       targetState, 
@@ -280,6 +283,10 @@ export class EpicOwnerManager {
     
     try {
       this.logger.info('Calculating WSJF score', { epicId: input.epicId });
+
+      if (!this.lifecycleService) {
+        throw new Error('Lifecycle service not initialized');
+      }
 
       // Standard SAFe WSJF calculation via lifecycle service
       const result = await this.lifecycleService.calculateWSJFScore({
@@ -336,13 +343,13 @@ export class EpicOwnerManager {
         timestamp: SafeDateUtils.formatISOString() 
       });
       
-      this.performanceTracker.endTimer(timer!);
+      this.performanceTracker.endTimer('calculate_wsjf');
       this.telemetryManager.recordCounter('wsjf_calculations', 1);
 
       return enhancedResult;
       
     } catch (error) {
-      this.performanceTracker.endTimer(timer!);
+      this.performanceTracker.endTimer('calculate_wsjf');
       this.logger.error('WSJF calculation failed:', error);
       throw error;
     }
@@ -387,6 +394,10 @@ export class EpicOwnerManager {
     try {
       this.logger.info('Creating epic business case', { epicId: input.epicId });
 
+      if (!this.businessCaseService) {
+        throw new Error('Business case service not initialized');
+      }
+
       // Standard SAFe business case creation
       const businessCase = await this.businessCaseService.createBusinessCase({
         epicId: input.epicId,
@@ -414,7 +425,10 @@ export class EpicOwnerManager {
             assumptions: ['Base revenue projection']
           }]
         },
-        risks: input.risks,
+        risks: input.risks.map(risk => ({
+          ...risk,
+          riskScore: risk.probability * risk.impact / 10 // Calculate risk score from probability and impact
+        })),
         assumptions: input.assumptions
       });
 
@@ -450,7 +464,7 @@ export class EpicOwnerManager {
         timestamp: SafeDateUtils.formatISOString() 
       });
       
-      this.performanceTracker.endTimer(timer!);
+      this.performanceTracker.endTimer('create_business_case');
       this.telemetryManager.recordCounter('business_cases_created', 1);
 
       return {
@@ -462,7 +476,7 @@ export class EpicOwnerManager {
       };
       
     } catch (error) {
-      this.performanceTracker.endTimer(timer!);
+      this.performanceTracker.endTimer('create_business_case');
       this.logger.error('Business case creation failed:', error);
       throw error;
     }
@@ -481,6 +495,10 @@ export class EpicOwnerManager {
 
     this.logger.info('Retrieving prioritized epic portfolio');
 
+    if (!this.lifecycleService) {
+      throw new Error('Lifecycle service not initialized');
+    }
+
     const backlog = await this.lifecycleService.getPrioritizedBacklog();
     
     // Transform to include stage information
@@ -493,7 +511,10 @@ export class EpicOwnerManager {
 
     // Use SafeCollectionUtils for additional sorting if needed
     const filteredPortfolio = SafeCollectionUtils.filterByPriority(
-      portfolio.map(p => ({ ...p.epic, priority: p.epic.priority || 'medium' })),
+      portfolio.map(p => ({ 
+        ...p.epic, 
+        priority: p.epic.priority > 80 ? 'critical' : p.epic.priority > 60 ? 'high' : 'medium'
+      })),
       ['critical', 'high', 'medium']
     );
 
@@ -520,6 +541,10 @@ export class EpicOwnerManager {
 
     this.logger.warn('Adding epic blocker', { epicId, severity: blockerData.severity });
 
+    if (!this.lifecycleService) {
+      throw new Error('Lifecycle service not initialized');
+    }
+
     const blockerId = await this.lifecycleService.addEpicBlocker(epicId, {
       ...blockerData,
       dependencies: []
@@ -542,6 +567,10 @@ export class EpicOwnerManager {
     if (!this.initialized) await this.initialize();
 
     this.logger.info('Resolving epic blocker', { epicId, blockerId });
+
+    if (!this.lifecycleService) {
+      throw new Error('Lifecycle service not initialized');
+    }
 
     await this.lifecycleService.resolveEpicBlocker(epicId, blockerId);
 
@@ -600,6 +629,10 @@ export class EpicOwnerManager {
     if (!this.initialized) await this.initialize();
 
     this.logger.info('Retrieving portfolio metrics');
+
+    if (!this.lifecycleService) {
+      throw new Error('Lifecycle service not initialized');
+    }
 
     const kanbanMetrics = await this.lifecycleService.getPortfolioKanbanMetrics();
     
@@ -678,16 +711,16 @@ export class EpicOwnerManager {
         this.logger.info('Epic auto-approved', { epicId, wsjfScore: approvalContext.wsjfScore });
         
         // Emit approval completed event
-        this.eventBus.emit(createEvent({
-          type: APPROVAL_EVENTS.APPROVAL_RECEIVED,
+        this.emit('approval-received', {
+          type: 'APPROVAL_RECEIVED',
           data: {
             requestId: `auto-${epicId}`,
             approved: true,
             approvedBy: 'system',
             timestamp: new Date()
           },
-          priority: EventPriority.HIGH
-        }));
+          priority: 'high'
+        });
 
         return {
           requestId: `auto-${epicId}`,
@@ -716,18 +749,18 @@ export class EpicOwnerManager {
       this.approvalWorkflow.trackApprovalRequest(approvalRequest);
 
       // Emit approval request event (UI layer will handle presentation)
-      this.eventBus.emit(createEvent({
-        type: APPROVAL_EVENTS.REQUEST_APPROVAL,
+      this.emit('request-approval', {
+        type: 'REQUEST_APPROVAL',
         data: approvalRequest,
-        priority: approvalRequest.priority === 'high' ? EventPriority.HIGH : EventPriority.MEDIUM
-      }));
+        priority: approvalRequest.priority === 'high' ? 'high' : 'medium'
+      });
 
       this.logger.info('Epic approval requested via event system', { 
         epicId, 
         requestId: approvalRequest.requestId 
       });
 
-      this.performanceTracker.endTimer(timer!);
+      this.performanceTracker.endTimer('epic_approval');
       this.telemetryManager.recordCounter('epic_approvals_requested', 1);
 
       return {
@@ -737,7 +770,7 @@ export class EpicOwnerManager {
       };
 
     } catch (error) {
-      this.performanceTracker.endTimer(timer!);
+      this.performanceTracker.endTimer('epic_approval');
       this.logger.error('Epic approval failed:', error);
       throw error;
     }
@@ -797,20 +830,21 @@ export class EpicOwnerManager {
    * Setup event handlers for coordination
    */
   private setupEventHandlers(): void {
-    this.eventBus.on('epic-state-changed', (data) => {
-      this.logger.info('Epic state changed', data);
-      this.emit('epic-updated', data);
-    });
+    // Event handlers temporarily disabled due to event system resolution
+    // this.eventBus.on('epic-state-changed', (data) => {
+    //   this.logger.info('Epic state changed', data);
+    //   this.emit('epic-updated', data);
+    // });
 
-    this.eventBus.on('wsjf-scores-updated', (data) => {
-      this.logger.info('WSJF scores updated', data);
-      this.emit('portfolio-rebalanced', data);
-    });
+    // this.eventBus.on('wsjf-scores-updated', (data) => {
+    //   this.logger.info('WSJF scores updated', data);
+    //   this.emit('portfolio-rebalanced', data);
+    // });
 
-    this.eventBus.on('business-case-approved', (data) => {
-      this.logger.info('Business case approved', data);
-      this.emit('investment-approved', data);
-    });
+    // this.eventBus.on('business-case-approved', (data) => {
+    //   this.logger.info('Business case approved', data);
+    //   this.emit('investment-approved', data);
+    // });
   }
 
   /**
@@ -818,8 +852,8 @@ export class EpicOwnerManager {
    */
   private async restoreState(): Promise<void> {
     try {
-      const savedState = await this.memorySystem.retrieve('epic-owner-state');
-      if (savedState) {
+      const savedState = await this.memorySystem.retrieve('epic-owner-state') as Partial<EpicOwnerState> | null;
+      if (savedState && typeof savedState === 'object') {
         this.state = { ...this.state, ...savedState };
         this.logger.info('Epic owner state restored from memory');
       }

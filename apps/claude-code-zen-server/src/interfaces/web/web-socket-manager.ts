@@ -1,4 +1,3 @@
-import { getVersion } from '../../config/version';
 /**
  * WebSocket Manager - Real-time communication system.
  *
@@ -11,6 +10,7 @@ import { getVersion } from '../../config/version';
 
 import type { Server as SocketIOServer } from 'socket.io';
 import { getLogger } from '../../config/logging-config';
+import { getVersion } from '../../config/version';
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 

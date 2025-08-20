@@ -3,16 +3,6 @@
  */
 
 import { getLogger } from '../../config/logging-config';
-
-const logger = getLogger('coordination-agents-agent');
-
-/**
- * Agent implementation and wrappers.
- */
-
-// Local utility functions (replacing deleted swarm utils)
-const generateId = () => `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-const getDefaultCognitiveProfile = () => ({ learning: true, adaptation: 0.5, memory: 0.8 });
 import type {
   Agent,
   AgentCapabilities,
@@ -26,6 +16,16 @@ import type {
   MessageType,
   Task,
 } from '../types';
+
+const logger = getLogger('coordination-agents-agent');
+
+/**
+ * Agent implementation and wrappers.
+ */
+
+// Local utility functions (replacing deleted swarm utils)
+const generateId = () => `agent-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+const getDefaultCognitiveProfile = () => ({ learning: true, adaptation: 0.5, memory: 0.8 });
 
 export class BaseAgent implements Agent {
   id: string;

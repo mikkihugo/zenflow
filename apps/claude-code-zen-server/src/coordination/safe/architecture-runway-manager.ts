@@ -18,11 +18,11 @@
  * - Integration with Program Increment and Value Stream management
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 
 // Re-export types from safe-framework package
 export type {
@@ -47,7 +47,7 @@ export class ArchitectureRunwayManager extends EventEmitter {
   private initialized = false;
 
   constructor(
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     eventBus: TypeSafeEventBus,
     config: any = {},
     workflowGates?: any,

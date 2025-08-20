@@ -15,16 +15,15 @@
  * - Integration with multi-level orchestration
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import {
-  createEvent,
-  EventPriority,
-} from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
+
+
 import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
+
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
@@ -728,7 +727,7 @@ export interface ActualBenefit {
 export class AdvancedFlowManager extends EventEmitter {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly multilevelOrchestrator: MultiLevelOrchestrationManager;
   private readonly portfolioOrchestrator: PortfolioOrchestrator;
   private readonly programOrchestrator: ProgramOrchestrator;
@@ -744,7 +743,7 @@ export class AdvancedFlowManager extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     multilevelOrchestrator: MultiLevelOrchestrationManager,
     portfolioOrchestrator: PortfolioOrchestrator,
     programOrchestrator: ProgramOrchestrator,
@@ -881,17 +880,13 @@ export class AdvancedFlowManager extends EventEmitter {
 
     // Use ML model if available for WIP optimization
     let optimalLimits: WIPLimits;
-    if (this.config.enableMachineLearning) {
-      optimalLimits = await this.calculateMLOptimizedWIPLimits(
+    optimalLimits = await (this.config.enableMachineLearning ? this.calculateMLOptimizedWIPLimits(
         currentMetrics,
         historicalData
-      );
-    } else {
-      optimalLimits = await this.calculateHeuristicWIPLimits(
+      ) : this.calculateHeuristicWIPLimits(
         currentMetrics,
         historicalData
-      );
-    }
+      ));
 
     // Generate optimization triggers
     const triggers = await this.generateOptimizationTriggers(

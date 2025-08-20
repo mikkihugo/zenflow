@@ -19,6 +19,7 @@ import type {
   ServiceConfig,
 } from '../core/interfaces';
 import type { ServiceType } from '../types';
+
 import {
   createDefaultIntegrationServiceAdapterConfig,
   createIntegrationServiceAdapter,

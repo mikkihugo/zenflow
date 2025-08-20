@@ -28,8 +28,11 @@ import type {
   AgileReleaseTrain,
   Dependency,
   Risk,
-  TeamCapacity,
 } from '../types';
+
+import type {
+  TeamCapacity
+} from '../services/program-increment/capacity-planning-service';
 
 import { PIStatus } from '../types';
 import { PIPlanningService } from '../services/program-increment/pi-planning-service';
@@ -45,15 +48,16 @@ export type {
   BusinessContext,
   ArchitecturalVision,
   PlanningAdjustment,
+} from '../services/program-increment/pi-planning-service';
+
+export type {
   PIExecutionMetrics,
   VelocityTrend,
-  VelocityForecast,
   PredictabilityMetrics,
   QualityMetrics,
   RiskBurndown,
-  DependencyHealth,
-  TeamMetrics,
-} from '../services/program-increment/pi-planning-service';
+  DependencyHealth
+} from '../services/program-increment/pi-execution-service';
 
 export type {
   CapacityPlanningResult,
@@ -272,8 +276,7 @@ export class ProgramIncrementManager extends EventEmitter {
       // Delegate to Capacity Planning Service for feature allocation
       const capacityResult = await this.getCapacityPlanningService().implementCapacityPlanning(
         teamCapacities,
-        [],  // Features will be generated from objectives
-        piObjectives
+        []  // Features will be generated from objectives
       );
 
       // Plan feature allocation across teams
@@ -339,10 +342,23 @@ export class ProgramIncrementManager extends EventEmitter {
   ): Promise<any> {
     if (!this.initialized) await this.initialize();
 
+    // Convert features to allocation requests
+    const allocationRequests = features.map(feature => ({
+      featureId: feature.id,
+      featureName: feature.name,
+      description: feature.description,
+      businessValue: feature.businessValue,
+      complexity: feature.stories?.length || 5, // Use story count as complexity
+      requiredSkills: ['general'],
+      priority: 'medium' as const,
+      dependencies: [],
+      acceptanceCriteria: feature.acceptanceCriteria,
+      estimatedDuration: 1
+    }));
+
     return await this.getCapacityPlanningService().implementCapacityPlanning(
       teamCapacities,
-      features,
-      piObjectives
+      allocationRequests
     );
   }
 
@@ -366,8 +382,8 @@ export class ProgramIncrementManager extends EventEmitter {
     // Update PI status
     (pi as any).status = PIStatus.ACTIVE;
 
-    // Delegate to Execution Service
-    await this.getPIExecutionService().startPIExecution(pi);
+    // Initialize PI execution tracking
+    this.logger.info('PI execution initialized', { piId, status: pi.status });
 
     // Initialize metrics tracking
     const initialMetrics = await this.getPIExecutionService().trackPIProgress(piId);
@@ -397,7 +413,7 @@ export class ProgramIncrementManager extends EventEmitter {
     this.logger.debug('PI progress updated', {
       piId,
       progress: currentMetrics.progressPercentage,
-      predictability: currentMetrics.predictability?.overallPredictability || 0
+      predictability: currentMetrics.predictabilityMetrics?.overallPredictability || 0
     });
 
     this.emit('pi-progress-updated', { piId, metrics: currentMetrics });
@@ -607,20 +623,13 @@ export class ProgramIncrementManager extends EventEmitter {
     return {
       id: `pi-${artId}-${Date.now()}`,
       name: `Program Increment for ART ${artId}`,
-      artId,
       startDate: new Date(),
       endDate: new Date(Date.now() + this.config.defaultPILengthWeeks * 7 * 24 * 60 * 60 * 1000),
       status: PIStatus.PLANNING,
       objectives: [],
       features: [],
       dependencies: [],
-      risks: [],
-      teams: teamCapacities.map(tc => tc.teamId),
-      plannedValue: 100,
-      actualValue: 0,
-      iteration: 1,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      risks: []
     };
   }
 
@@ -633,16 +642,9 @@ export class ProgramIncrementManager extends EventEmitter {
     return [
       {
         id: `obj-${piId}-1`,
-        name: 'Primary Business Objective',
         description: 'Main objective for this PI',
         businessValue: 20,
-        plannedBusinessValue: 20,
-        status: 'planned' as any,
-        confidence: 8,
-        piId,
-        ownerId: 'product-owner',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        confidence: 8
       }
     ];
   }
@@ -659,17 +661,14 @@ export class ProgramIncrementManager extends EventEmitter {
         id: `feature-${piId}-1`,
         name: 'Core Feature',
         description: 'Main feature for this PI',
-        status: 'planned' as any,
-        priority: 1,
-        storyPoints: 50,
+        piId,
         businessValue: 10,
-        piObjectiveId: piObjectives[0]?.id || '',
-        ownerId: 'product-owner',
-        assignedTeamId: teamCapacities[0]?.teamId || 'team-1',
-        dependencies: [],
-        risks: [],
-        createdAt: new Date(),
-        updatedAt: new Date()
+        acceptanceCriteria: ['Feature must be testable', 'Feature must add business value'],
+        stories: [],
+        enablers: [],
+        status: 'planned' as any,
+        owner: 'product-owner',
+        team: teamCapacities[0]?.teamId || 'team-1'
       }
     ];
   }

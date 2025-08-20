@@ -5,7 +5,7 @@
  * @claude-zen packages for database operations, search, and workflow coordination.
  * 
  * Delegates to:
- * - @claude-zen/database: Multi-database operations (SQLite, LanceDB, Kuzu)
+ * - @claude-zen/foundation: Multi-database operations (SQLite, LanceDB, Kuzu)
  * - @claude-zen/foundation: Logging, telemetry, and database access
  * - @claude-zen/workflows: Document workflow state management
  * - @claude-zen/knowledge: Search and semantic understanding
@@ -23,20 +23,14 @@
  * - Advanced analytics and reporting
  */
 
+import { getLogger, getDatabaseAccess } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
-import { getLogger, getDatabaseAccess } from '@claude-zen/foundation';
-import type { Logger, DatabaseAccess } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
+
 import type {
   BaseDocumentEntity,
   DocumentRelationshipEntity,
-  DocumentWorkflowStateEntity,
-  ADRDocumentEntity,
-  EpicDocumentEntity,
-  FeatureDocumentEntity,
-  PRDDocumentEntity,
-  TaskDocumentEntity,
-  VisionDocumentEntity,
 } from '../../database/entities/product-entities';
 import type {
   CreateDocumentInput,
@@ -44,9 +38,6 @@ import type {
   DocumentSearchOptions,
   DocumentSearchResult,
   DocumentAnalytics,
-  BulkOperationResult,
-  DocumentMetrics,
-  WorkflowStateUpdate,
   DocumentRelationshipType,
 } from '../../database/types/document-types';
 
@@ -129,8 +120,8 @@ export class DocumentManager extends EventEmitter {
       this.databaseAccess = getDatabaseAccess();
       await this.databaseAccess.initialize();
 
-      // Delegate to @claude-zen/database for specialized DAOs
-      const { RelationalDao, VectorDao, GraphDao } = await import('@claude-zen/database');
+      // Delegate to @claude-zen/foundation for specialized DAOs
+      const { RelationalDao, VectorDao, GraphDao } = await import('@claude-zen/foundation');
       this.relationalDao = new RelationalDao(this.databaseAccess.sqlite);
       this.vectorDao = new VectorDao(this.databaseAccess.lancedb);
       this.graphDao = new GraphDao(this.databaseAccess.kuzu);

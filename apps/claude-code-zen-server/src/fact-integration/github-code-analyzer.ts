@@ -5,8 +5,8 @@
  * for the FACT knowledge database. Supports BEAM ecosystem and general projects.
  */
 
-import { readFile } from 'node:fs/promises';
-import { basename, extname, join } from 'node:path';
+import { basename, extname } from 'node:path';
+
 import { Octokit } from '@octokit/rest';
 
 export interface GitHubRepoInfo {
@@ -256,7 +256,7 @@ export class GitHubCodeAnalyzer {
       case 'mix.exs': {
         // Pattern: {:package, github: "owner/repo", ref: "branch", subdir: "path"}
         const elixirGitPattern =
-          /\{:(\w+),\s*github:\s*['"]([\w-]+\/([\w-]+))['"]\s*(?:,\s*ref:\s*['"]([^'"]+)['"])?\s*(?:,\s*subdir:\s*['"]([^'"]+)['"])?\s*\}/g;
+          /{:(\w+),\s*github:\s*["']([\w-]+\/([\w-]+))["']\s*(?:,\s*ref:\s*["']([^"']+)["'])?\s*(?:,\s*subdir:\s*["']([^"']+)["'])?\s*}/g;
         let elixirMatch;
         while ((elixirMatch = elixirGitPattern.exec(content)) !== null) {
           githubDeps.push({
@@ -291,7 +291,7 @@ export class GitHubCodeAnalyzer {
       case 'Cargo.toml': {
         // Pattern: package = { git = "https://github.com/owner/repo", branch = "main" }
         const cargoGitPattern =
-          /(\w+)\s*=\s*\{\s*git\s*=\s*['"](https:\/\/github\.com\/([\w-]+\/([\w-]+)))['"]\s*(?:,\s*branch\s*=\s*['"]([^'"]+)['"])?\s*\}/g;
+          /(\w+)\s*=\s*{\s*git\s*=\s*["'](https:\/\/github\.com\/([\w-]+\/([\w-]+)))["']\s*(?:,\s*branch\s*=\s*["']([^"']+)["'])?\s*}/g;
         let cargoMatch;
         while ((cargoMatch = cargoGitPattern.exec(content)) !== null) {
           githubDeps.push({

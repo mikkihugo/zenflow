@@ -13,6 +13,7 @@ import axios, {
   type AxiosRequestConfig,
   type AxiosResponse,
 } from 'axios';
+
 import { getMCPServerURL } from '../../../config/defaults';
 import type {
   Agent,
@@ -21,6 +22,7 @@ import type {
   SwarmConfig,
   Task,
 } from '../../../coordination/schemas';
+
 import type { APIError } from './schemas/common';
 import type {
   NeuralNetwork,

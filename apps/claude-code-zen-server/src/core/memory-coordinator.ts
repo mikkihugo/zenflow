@@ -1,15 +1,15 @@
 /**
- * @fileoverview Memory Coordinator - Lightweight facade for @claude-zen/memory.
+ * @fileoverview Memory Coordinator - Lightweight facade for @claude-zen/brain.
  * 
  * Provides unified memory management through delegation to specialized
  * @claude-zen packages for advanced coordination, optimization, and lifecycle management.
  * 
  * Delegates to:
- * - @claude-zen/memory: MemoryCoordinator for distributed coordination
- * - @claude-zen/memory: MemorySystemFactory for backend management
- * - @claude-zen/memory: SwarmKnowledgeExtractor for intelligent pattern recognition
- * - @claude-zen/memory: CacheEvictionStrategy for advanced caching
- * - @claude-zen/memory: DataLifecycleManager for lifecycle management
+ * - @claude-zen/brain: MemoryCoordinator for distributed coordination
+ * - @claude-zen/brain: BrainCoordinatorFactory for backend management
+ * - @claude-zen/brain: SwarmKnowledgeExtractor for intelligent pattern recognition
+ * - @claude-zen/brain: CacheEvictionStrategy for advanced caching
+ * - @claude-zen/brain: DataLifecycleManager for lifecycle management
  * - @claude-zen/foundation: Database access instead of custom DAL
  * 
  * REDUCTION: 823 → ~350 lines (57.5% reduction) through package delegation
@@ -19,9 +19,9 @@
  * @version 2.1.0
  */
 
+import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
-import type { Logger } from '@claude-zen/foundation';
 
 // Core types preserved for API compatibility
 export type JSONValue =
@@ -85,24 +85,24 @@ interface BackendInterface {
   close?(): Promise<void>;
 }
 
-// Facade implementation delegates to @claude-zen/memory - backend creation removed
+// Facade implementation delegates to @claude-zen/brain - backend creation removed
 
-// SQLite backend creation delegated to @claude-zen/memory factory
+// SQLite backend creation delegated to @claude-zen/brain factory
 
-// JSON backend creation delegated to @claude-zen/memory factory
+// JSON backend creation delegated to @claude-zen/brain factory
 
 /**
- * Memory System - Facade for @claude-zen/memory coordination.
+ * Memory System - Facade for @claude-zen/brain coordination.
  *
  * Lightweight facade that delegates all functionality to specialized
- * @claude-zen/memory packages while preserving the original API.
+ * @claude-zen/brain packages while preserving the original API.
  */
-export class MemorySystem extends EventEmitter {
+export class BrainCoordinator extends EventEmitter {
   private logger: Logger;
   private config: MemoryConfig;
   private initialized = false;
   
-  // Delegated components from @claude-zen/memory
+  // Delegated components from @claude-zen/brain
   private memoryCoordinator: any;
   private memorySystemFactory: any;
   private swarmKnowledgeExtractor: any;
@@ -116,28 +116,28 @@ export class MemorySystem extends EventEmitter {
   constructor(config: MemoryConfig) {
     super();
     this.config = config;
-    this.logger = getLogger('MemorySystem');
+    this.logger = getLogger('BrainCoordinator');
   }
 
   /**
-   * Initialize with @claude-zen/memory delegation - LAZY LOADING
+   * Initialize with @claude-zen/brain delegation - LAZY LOADING
    */
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
     this.logger.info(
-      `Initializing memory system with ${this.config.backend} backend via @claude-zen/memory`
+      `Initializing memory system with ${this.config.backend} backend via @claude-zen/brain`
     );
 
     try {
-      // Delegate to @claude-zen/memory for advanced system creation
-      const { MemorySystemFactory } = await import('@claude-zen/memory');
+      // Delegate to @claude-zen/brain for advanced system creation
+      const { BrainCoordinatorFactory } = await import('@claude-zen/brain');
       
       // Map legacy backend types to foundation types
       const backendType = this.mapLegacyBackendType(this.config.backend);
       
       // Create advanced memory system with all features
-      const advancedSystem = await MemorySystemFactory.createAdvancedMemorySystem({
+      const advancedSystem = await BrainCoordinatorFactory.createAdvancedBrainCoordinator({
         coordination: {
           enabled: true,
           consensus: { quorum: 0.67, timeout: 5000, strategy: 'majority' },
@@ -199,7 +199,7 @@ export class MemorySystem extends EventEmitter {
 
       this.initialized = true;
       this.emit('initialized', { backend: this.config.backend });
-      this.logger.info('Memory system ready with @claude-zen/memory delegation');
+      this.logger.info('Memory system ready with @claude-zen/brain delegation');
 
     } catch (error) {
       this.logger.error('Failed to initialize memory system:', error);
@@ -208,12 +208,12 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Initialize specialized @claude-zen/memory components
+   * Initialize specialized @claude-zen/brain components
    */
   private async initializeSpecializedComponents(): Promise<void> {
     try {
       // Delegate to SwarmKnowledgeExtractor for intelligent pattern recognition
-      const { SwarmKnowledgeExtractor } = await import('@claude-zen/memory');
+      const { SwarmKnowledgeExtractor } = await import('@claude-zen/brain');
       this.swarmKnowledgeExtractor = new SwarmKnowledgeExtractor({
         enabled: true,
         strategies: {
@@ -231,7 +231,7 @@ export class MemorySystem extends EventEmitter {
       await this.swarmKnowledgeExtractor.initialize();
 
       // Delegate to CacheEvictionStrategy for advanced caching
-      const { CacheEvictionStrategy } = await import('@claude-zen/memory');
+      const { CacheEvictionStrategy } = await import('@claude-zen/brain');
       this.cacheEvictionStrategy = new CacheEvictionStrategy({
         enabled: true,
         algorithm: 'adaptive',
@@ -245,7 +245,7 @@ export class MemorySystem extends EventEmitter {
       await this.cacheEvictionStrategy.initialize();
 
       // Delegate to DataLifecycleManager for lifecycle management
-      const { DataLifecycleManager } = await import('@claude-zen/memory');
+      const { DataLifecycleManager } = await import('@claude-zen/brain');
       this.dataLifecycleManager = new DataLifecycleManager({
         enabled: true,
         stages: {
@@ -261,7 +261,7 @@ export class MemorySystem extends EventEmitter {
       });
       await this.dataLifecycleManager.initialize();
 
-      this.logger.info('Specialized @claude-zen/memory components initialized');
+      this.logger.info('Specialized @claude-zen/brain components initialized');
 
     } catch (error) {
       this.logger.error('Failed to initialize specialized components:', error);
@@ -288,7 +288,7 @@ export class MemorySystem extends EventEmitter {
   }
 
   /**
-   * Create backend configuration for @claude-zen/memory
+   * Create backend configuration for @claude-zen/brain
    */
   private createBackendConfig(): Record<string, unknown> {
     const baseConfig = {
@@ -588,7 +588,7 @@ export class MemorySystem extends EventEmitter {
   }
 
   // =================================================================
-  // ENHANCED CAPABILITIES - NEW from @claude-zen/memory
+  // ENHANCED CAPABILITIES - NEW from @claude-zen/brain
   // =================================================================
 
   /**

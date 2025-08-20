@@ -123,7 +123,7 @@ export async function initializeGPUAcceleration(options: GPUOptions = {}): Promi
   }
 
   const capabilities = await detectGPUCapabilities();
-  let selectedBackend = backend === 'auto' ? capabilities.recommendedBackend : backend;
+  const selectedBackend = backend === 'auto' ? capabilities.recommendedBackend : backend;
 
   // Try to initialize the selected backend
   try {
@@ -131,6 +131,13 @@ export async function initializeGPUAcceleration(options: GPUOptions = {}): Promi
       case 'tensorflow-gpu':
         if (capabilities.hasTensorFlowGPU) {
           const tf = await import('@tensorflow/tfjs-node-gpu');
+          
+          // Use tf to configure GPU memory settings
+          logger.debug('TensorFlow GPU module loaded', {
+            version: (tf.version as any)?.['tfjs-core'] || 'unknown',
+            backend: selectedBackend
+          });
+          
           // Configure memory growth to avoid GPU memory issues
           if (memoryFraction < 1.0) {
             logger.info(`TensorFlow GPU initialized with ${memoryFraction * 100}% memory limit`);
@@ -193,7 +200,7 @@ export async function createAcceleratedNeuralNetwork(
       network = tf.sequential(architecture);
       logger.info('Neural network created with TensorFlow GPU acceleration');
     } catch (error) {
-      logger.warn('Failed to create TensorFlow GPU network, falling back to CPU');
+      logger.warn('Failed to create TensorFlow GPU network, falling back to CPU:', error);
       const tf = await import('@tensorflow/tfjs-node');
       network = tf.sequential(architecture);
     }
@@ -203,6 +210,7 @@ export async function createAcceleratedNeuralNetwork(
       const tf = await import('@tensorflow/tfjs-node');
       network = tf.sequential(architecture);
     } catch (error) {
+      logger.warn('TensorFlow not available, falling back to Brain.js:', error);
       const { NeuralNetwork } = await import('brain.js');
       network = new NeuralNetwork(architecture);
     }
@@ -232,7 +240,7 @@ export class GPUMatrix {
       this.gpu = new GPU();
       logger.info('GPU.js matrix operations initialized');
     } catch (error) {
-      logger.warn('GPU.js not available for matrix operations');
+      logger.warn('GPU.js not available for matrix operations:', error);
     }
   }
 

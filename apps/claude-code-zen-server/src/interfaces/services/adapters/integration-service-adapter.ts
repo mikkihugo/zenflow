@@ -7,28 +7,25 @@
  * Delegates to:
  * - @claude-zen/foundation: ServiceManager for core service lifecycle
  * - @claude-zen/workflows: WorkflowEngine for integration workflows  
- * - @claude-zen/database: ConnectionManager for data operations
+ * - @claude-zen/foundation: ConnectionManager for data operations
  * - @claude-zen/teamwork: CollaborationEngine for service coordination
  * - @claude-zen/monitoring: MetricsCollector for performance tracking
  */
 
-import { EventEmitter } from 'eventemitter3';
-import type { Logger, ServiceManager, MetricsCollector } from '@claude-zen/foundation';
+import type { Logger, ServiceManager, MetricsCollector , ConnectionManager } from '@claude-zen/foundation';
 import type { WorkflowEngine } from '@claude-zen/workflows';
-import type { ConnectionManager } from '@claude-zen/foundation';
 import type { CollaborationEngine } from '@claude-zen/teamwork';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../../config/logging-config';
 import type {
   Service,
   ServiceConfig,
   ServiceDependencyConfig,
   ServiceEvent,
-  ServiceEventType,
   ServiceLifecycleStatus,
   ServiceMetrics,
   ServiceOperationOptions,
   ServiceOperationResponse,
-  ServiceRetryConfig,
   ServiceStatus,
 } from '../core/interfaces';
 import type { IntegrationServiceConfig } from '../types';
@@ -163,7 +160,7 @@ export class IntegrationServiceAdapter extends EventEmitter implements Service {
       // Initialize delegates from @claude-zen packages
       const { ServiceManager } = await import('@claude-zen/foundation');
       const { WorkflowEngine } = await import('@claude-zen/workflows');
-      const { ConnectionManager } = await import('@claude-zen/database');
+      const { ConnectionManager } = await import('@claude-zen/foundation');
       const { CollaborationEngine } = await import('@claude-zen/teamwork');
       const { MetricsCollector } = await import('@claude-zen/foundation');
 

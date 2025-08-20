@@ -13,7 +13,7 @@
  * - Team utilization monitoring and recommendations
  * 
  * Integrations:
- * - @claude-zen/load-balancing: Intelligent resource allocation and optimization
+ * - @claude-zen/brain: Intelligent resource allocation and optimization
  * - @claude-zen/brain: AI-powered capacity forecasting and decision making
  * - @claude-zen/foundation: Performance tracking and analytics
  * - @claude-zen/fact-system: Capacity data storage and reasoning

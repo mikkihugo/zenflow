@@ -23,7 +23,7 @@
  * - **Maintainable Design**: Eliminates bloated "unified" classes
  *
  * Component Architecture:
- * - **MemorySystem**: Foundation storage layer with pluggable backends
+ * - **BrainCoordinator**: Foundation storage layer with pluggable backends
  * - **WorkflowEngine**: Document processing pipelines and state management
  * - **DocumentProcessor**: Unified document ingestion and transformation
  * - **ExportManager**: Multi-format data export and serialization
@@ -35,7 +35,7 @@
  * @version 1.0.0-alpha.43
  *
  * @see {@link https://nodejs.org/api/events.html} Node.js EventEmitter
- * @see {@link MemorySystem} Multi-backend memory management
+ * @see {@link BrainCoordinator} Multi-backend memory management
  * @see {@link WorkflowEngine} Document workflow processing
  * @see {@link DocumentProcessor} Document ingestion and transformation
  *
@@ -129,24 +129,22 @@
  * The API maintains compatibility while providing a much cleaner internal architecture.
  */
 
+import { getLogger, recordMetric, withTrace, createCircuitBreaker , AgentMonitoring } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
-import { getLogger, recordMetric, withTrace, createCircuitBreaker } from '@claude-zen/foundation';
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
-import { MemorySystem } from '@claude-zen/memory';
+
+import { BrainCoordinator , NeuralML } from '@claude-zen/brain';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
 import { ChaosEngineering } from '@claude-zen/foundation';
 import { 
   initializeCoordinationFactSystem,
-  getCoordinationFactSystem,
   storeCoordinationFact
 } from '@claude-zen/knowledge';
-import { NeuralML } from '@claude-zen/brain';
-import { AgentMonitoring } from '@claude-zen/foundation';
 import { TypedEventBus, createEventBus } from '@claude-zen/event-system';
 
 /**
@@ -438,7 +436,7 @@ export class System extends EventEmitter {
   private startTime: number;
 
   // Core components with clear responsibilities
-  private memorySystem!: MemorySystem;
+  private memorySystem!: BrainCoordinator;
   private workflowEngine!: WorkflowEngine;
   private documentProcessor!: DocumentProcessor;
   private exportManager!: ExportManager;
@@ -477,7 +475,7 @@ export class System extends EventEmitter {
    */
   private initializeComponents(): void {
     // Memory system - foundation component
-    this.memorySystem = new MemorySystem({
+    this.memorySystem = new BrainCoordinator({
       backend: this.config.memory?.backend || 'json',
       path: this.config.memory?.directory || './data/memory',
     });

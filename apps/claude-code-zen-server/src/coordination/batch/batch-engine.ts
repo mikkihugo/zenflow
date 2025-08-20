@@ -5,6 +5,7 @@
  */
 
 import { getLogger } from '../../config/logging-config';
+
 import type { BatchExecutionSummary } from './performance-monitor';
 
 // TODO: Use dependency injection for logger

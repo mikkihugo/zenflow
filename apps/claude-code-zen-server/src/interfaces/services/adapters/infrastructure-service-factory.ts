@@ -10,9 +10,11 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from '../../../config/logging-config';
 import { getLogger } from '../../../config/logging-config';
 import type { ServiceLifecycleStatus } from '../core/interfaces';
+
 import {
   createDefaultInfrastructureServiceAdapterConfig,
   createInfrastructureServiceAdapter,

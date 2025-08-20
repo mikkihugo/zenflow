@@ -5,15 +5,17 @@
 
 import compression from 'compression';
 import cors from 'cors';
-import { randomUUID } from 'crypto';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+
 import { createServer } from 'http';
 import path from 'path';
+
 import type { Server as SocketIOServer } from 'socket.io';
 // Foundation package - unified interface for all shared utilities
 import { Logger, Config } from '@claude-zen/foundation';
+
 import type { SystemConfiguration } from '../config/types';
 
 const logger = new Logger('interfaces-server');

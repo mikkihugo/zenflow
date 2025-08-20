@@ -5,12 +5,12 @@
  * with real database connections and file persistence.
  */
 
-import { join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
+import { join } from 'path';
 import { getLogger } from '../../config/logging-config';
 import { DALFactory } from '../../database/dal/dal-factory';
-import { HybridDocumentManager } from '../coordination/hybrid-document-service';
 import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
+import { HybridDocumentManager } from '../coordination/hybrid-document-service';
 
 const logger = getLogger('production-hybrid-factory');
 

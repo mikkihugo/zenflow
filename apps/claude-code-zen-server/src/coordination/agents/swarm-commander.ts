@@ -19,22 +19,18 @@
  * - Enhanced swarm coordination and learning capabilities
  */
 
+import {
+  getCoordinationFactSystem,
+  initializeCoordinationFactSystem as initializeCollectiveFACT,
+  storeCoordinationFact,
+} from '@claude-zen/knowledge';
 import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../../config/logging-config';
 import type {
   EventBus,
   Logger,
 } from '../../core/interfaces/base-interfaces';
-// import type { MemoryCoordinator } from '@claude-zen/memory'; // TODO: Fix memory package build
-import {
-  getCoordinationFactSystem,
-  initializeCoordinationFactSystem as initializeCollectiveFACT,
-  storeCoordinationEvent,
-  getCoordinationFacts,
-  queryCoordinationFacts,
-  storeCoordinationFact,
-  searchCoordinationFacts,
-} from '@claude-zen/knowledge';
+// import type { MemoryCoordinator } from '@claude-zen/brain'; // TODO: Fix memory package build
 import type { AgentType } from '../../types/agent-types';
 
 // ============================================================================

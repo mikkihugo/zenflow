@@ -25,17 +25,27 @@
  * @version 1.0.0
  */
 
-const brain = require('brain.js');
 import { getLogger } from '@claude-zen/foundation';
-import type { BrainJsBridge } from './brain-js-bridge';
-import { ActivationFunction } from './types';
-
-// 🧠 Enhanced ML Imports - Using validated API patterns
-import { kmeans } from 'ml-kmeans';
 import * as clustering from 'density-clustering';
+import { kmeans } from 'ml-kmeans';
+import { sma } from 'moving-averages';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
-import { sma, ema, wma } from 'moving-averages';
+
+import type { BrainJsBridge } from './brain-js-bridge';
+import { ActivationFunction } from './types/index';
+
+// 🧠 Enhanced ML Imports - Using validated API patterns
+
+const brain = require('brain.js');
+
+// Validate brain.js availability and capabilities
+const brainCapabilities = {
+  neuralNetworks: typeof brain.NeuralNetwork === 'function',
+  recurrentNetworks: typeof brain.recurrent?.LSTM === 'function',
+  feedForward: typeof brain.FeedForward === 'function',
+  version: brain.version || 'unknown'
+};
 
 // Optional ML packages (API compatibility issues - available for future enhancement)
 // import { RandomForestClassifier } from 'ml-random-forest';
@@ -156,11 +166,18 @@ export class BehavioralIntelligence {
   private createMockBridge(): BrainJsBridge {
     return {
       async createNeuralNet(id: string, type: string, config: any) {
-        logger.debug(`Mock: Creating neural network ${id} of type ${type}`);
+        logger.debug(`Mock: Creating neural network ${id} of type ${type}`, {
+          hiddenLayers: config?.hiddenLayers || 'default',
+          learningRate: config?.learningRate || 'default',
+          activation: config?.activation || 'default'
+        });
         return Promise.resolve();
       },
       async trainNeuralNet(id: string, data: any, options?: any) {
-        logger.debug(`Mock: Training neural network ${id}`);
+        logger.debug(`Mock: Training neural network ${id}`, {
+          dataPoints: Array.isArray(data) ? data.length : 'unknown',
+          options: options ? Object.keys(options) : 'none'
+        });
         return Promise.resolve();
       },
       async predictWithNeuralNet(id: string, input: number[]) {
@@ -184,6 +201,12 @@ export class BehavioralIntelligence {
 
     try {
       logger.info('Initializing Enhanced Behavioral Intelligence with ML algorithms...');
+      
+      // Log brain.js capabilities for initialization validation
+      logger.debug('Brain.js capabilities:', brainCapabilities);
+      if (!brainCapabilities.neuralNetworks) {
+        logger.warn('Brain.js neural networks not available - using fallback mode');
+      }
 
       // Performance prediction network - predicts agent efficiency and duration
       await this.brainJsBridge.createNeuralNet(this.performanceNetworkId, 'feedforward', {
@@ -522,18 +545,28 @@ export class BehavioralIntelligence {
       // Prepare training data for Random Forest
       const agentIds = Array.from(this.agentFeatureVectors.keys());
       const features = agentIds.map(id => this.agentFeatureVectors.get(id)!).filter(f => f.length > 0);
-      const labels = agentIds.map(id => this.classifyAgentType(id));
+      const labels = agentIds.map(id => this.getAgentTypeLabel(this.classifyAgentType(id)));
       
-      if (features.length >= 5) {
-        // Perform DBSCAN clustering for behavioral groups
-        if (this.behaviorClusterer && features.length > 0) {
+      if (features.length >= 5 && // Perform DBSCAN clustering for behavioral groups
+        this.behaviorClusterer && features.length > 0) {
           const clusters = this.behaviorClusterer.run(features, 0.3, 3); // eps=0.3, minPts=3
           logger.info(`✅ DBSCAN clustering identified ${clusters.length} behavioral groups`);
+          
+          // Analyze label distribution across clusters for behavioral insights
+          const labelStats = this.analyzeLabelDistribution(labels, clusters);
+          logger.debug('Agent type distribution across clusters:', labelStats);
         }
-      }
     } catch (error) {
       logger.error('Error training advanced ML models:', error);
     }
+  }
+
+  /**
+   * Convert numeric agent type to string label
+   */
+  private getAgentTypeLabel(agentTypeNum: number): string {
+    const typeLabels = ['unknown', 'generalist', 'adaptive', 'specialist'];
+    return typeLabels[agentTypeNum] || 'unknown';
   }
 
   /**
@@ -934,6 +967,7 @@ export class BehavioralIntelligence {
     
     let reasoning = `Agent ${agentId} for ${taskType}: `;
     
+    // Analyze efficiency prediction
     if (efficiency > 0.7) {
       reasoning += 'High efficiency expected ';
     } else if (efficiency < 0.3) {
@@ -941,12 +975,22 @@ export class BehavioralIntelligence {
     } else {
       reasoning += 'Moderate efficiency expected ';
     }
-    
-    if (profile?.specializations.includes(taskType)) {
-      reasoning += '(specialized in this task type)';
+
+    // Analyze success probability
+    const successProbability = success * 100;
+    reasoning += `(${successProbability.toFixed(0)}% success probability, `;
+
+    // Analyze duration estimate
+    const durationSeconds = duration / 1000;
+    if (durationSeconds < 2) {
+      reasoning += 'quick completion)';
+    } else if (durationSeconds < 10) {
+      reasoning += `${durationSeconds.toFixed(1)}s expected)`;
     } else {
-      reasoning += '(general capability)';
+      reasoning += `${durationSeconds.toFixed(0)}s duration)`;
     }
+    
+    reasoning += profile?.specializations.includes(taskType) ? ' - specialized agent' : ' - general capability';
     
     return reasoning;
   }
@@ -981,6 +1025,49 @@ export class BehavioralIntelligence {
     if (complexity < 0.5) return 'medium';
     if (complexity < 0.75) return 'hard';
     return 'expert';
+  }
+
+  /**
+   * Analyze label distribution across clusters for behavioral insights
+   */
+  private analyzeLabelDistribution(labels: string[], clusters: number[][]): {
+    totalClusters: number;
+    labelsByCluster: Record<number, Record<string, number>>;
+    dominantTypes: string[];
+  } {
+    const labelsByCluster: Record<number, Record<string, number>> = {};
+    const dominantTypes: string[] = [];
+
+    // Initialize cluster label counts
+    clusters.forEach((_, clusterIndex) => {
+      labelsByCluster[clusterIndex] = {};
+    });
+
+    // Count labels per cluster
+    clusters.forEach((cluster, clusterIndex) => {
+      cluster.forEach(pointIndex => {
+        if (pointIndex < labels.length) {
+          const label = labels[pointIndex];
+          labelsByCluster[clusterIndex][label] = (labelsByCluster[clusterIndex][label] || 0) + 1;
+        }
+      });
+
+      // Find dominant type for this cluster
+      const clusterLabels = labelsByCluster[clusterIndex];
+      const dominantType = Object.keys(clusterLabels).reduce((a, b) => 
+        clusterLabels[a] > clusterLabels[b] ? a : b, 
+        Object.keys(clusterLabels)[0]
+      );
+      if (dominantType) {
+        dominantTypes.push(dominantType);
+      }
+    });
+
+    return {
+      totalClusters: clusters.length,
+      labelsByCluster,
+      dominantTypes
+    };
   }
 }
 

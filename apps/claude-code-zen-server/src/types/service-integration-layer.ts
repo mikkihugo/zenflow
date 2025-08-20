@@ -58,7 +58,7 @@
  * @requires @claude-zen/foundation - Foundation types and utilities
  * @requires @claude-zen/brain - Neural coordination domain types
  * @requires @claude-zen/workflows - Workflow orchestration domain types
- * @requires @claude-zen/database - Database operation domain types
+ * @requires @claude-zen/foundation - Database operation domain types
  * @requires @claude-zen/event-system - Event coordination domain types
  */
 
@@ -67,6 +67,39 @@
 // =============================================================================
 
 // API Translation Layer - Layer 3 types
+
+// Foundation Types - Layer 1 shared primitives
+import type {
+  Logger,
+  Result,
+  ServiceError,
+  ValidationError,
+  DatabaseError,
+  SystemError
+} from '@claude-zen/foundation/types';
+
+// Brain Domain Types - Layer 2 neural coordination
+import type {
+  SwarmConfiguration,
+  BrainMetrics,
+  SwarmIntelligence
+} from '@claude-zen/brain/types';
+
+// Workflow Domain Types - Layer 2 process orchestration
+import type {
+  WorkflowDefinition,
+  WorkflowExecution,
+  WorkflowMetrics,
+  ExecutionResult
+} from '@claude-zen/workflows/types';
+
+// Database Domain Types - Layer 2 data persistence
+
+
+
+// Event System Domain Types - Layer 2 event coordination
+
+
 import type {
   ApiResponse,
   PaginatedApiResponse,
@@ -87,68 +120,6 @@ import type {
   ApiUpdateSettingsRequest,
   ApiLLMAnalyticsResponse
 } from './api-translation-layer';
-
-// Foundation Types - Layer 1 shared primitives
-import type {
-  BaseEntity,
-  EntityStatus,
-  TimestampedEntity,
-  Metrics,
-  ResourceUsage,
-  Logger,
-  SystemConfiguration,
-  Result,
-  ServiceError,
-  ValidationError,
-  DatabaseError,
-  SystemError
-} from '@claude-zen/foundation/types';
-
-// Brain Domain Types - Layer 2 neural coordination
-import type {
-  SwarmConfiguration,
-  SwarmStatus,
-  AgentConfiguration,
-  AgentStatus,
-  AgentCapability,
-  NeuralConfiguration,
-  BrainMetrics,
-  SwarmCoordinationEvent,
-  TaskDistributionStrategy,
-  SwarmIntelligence
-} from '@claude-zen/brain/types';
-
-// Workflow Domain Types - Layer 2 process orchestration
-import type {
-  WorkflowDefinition,
-  WorkflowStatus,
-  WorkflowExecution,
-  ExecutionStrategy,
-  WorkflowStep,
-  StepStatus,
-  WorkflowMetrics,
-  ExecutionResult,
-  WorkflowTemplate
-} from '@claude-zen/workflows/types';
-
-// Database Domain Types - Layer 2 data persistence
-import type {
-  DatabaseConfig,
-  QueryResult,
-  DatabaseStats,
-  ConnectionStats,
-  BackupResult,
-  HealthCheck as DatabaseHealthCheck
-} from '@claude-zen/database/types';
-
-// Event System Domain Types - Layer 2 event coordination
-import type {
-  EventType,
-  EventPayload,
-  EventMetadata,
-  SystemEvent,
-  CoordinationEvent
-} from '@claude-zen/event-system/types';
 
 // =============================================================================
 // SERVICE INTEGRATION BASE TYPES - Common patterns
@@ -475,7 +446,7 @@ export interface TaskTranslationUtils {
  * Document Service Integration
  * 
  * Handles API ↔ Domain translation for document management operations
- * Delegates to @claude-zen/database domain types for data persistence
+ * Delegates to @claude-zen/foundation domain types for data persistence
  */
 export interface DocumentServiceIntegration {
   /**

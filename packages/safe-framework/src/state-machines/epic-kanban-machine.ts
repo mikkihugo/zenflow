@@ -21,14 +21,33 @@
  * @version 1.0.0
  */
 
-import { createMachine, assign, type ActorRefFrom } from 'xstate';
+import { createMachine, assign, type ActorRefFrom, fromPromise } from 'xstate';
 import { getLogger } from '../types';
-import type { 
-  PortfolioEpic, 
-  BusinessCase, 
-  WSJFPriority,
-  EpicOwnerManagerConfig 
-} from '../types';
+import type { PortfolioEpic } from '../types';
+
+// Define missing interfaces locally
+interface BusinessCase {
+  businessValue: {
+    totalValue: number;
+  };
+}
+
+interface WSJFPriority {
+  epicId: string;
+  userBusinessValue: number;
+  timeCriticality: number;
+  riskReductionOpportunityEnablement: number;
+  jobSize: number;
+  wsjfScore: number;
+  ranking: number;
+  calculatedAt: Date;
+}
+
+interface EpicOwnerManagerConfig {
+  businessCaseThreshold: number;
+  maxEpicsInImplementation: number;
+  epicTimeboxWeeks: number;
+}
 
 const logger = getLogger('EpicKanbanMachine');
 
@@ -83,14 +102,14 @@ const epicKanbanGuards = {
    * Check if business case meets minimum threshold for analysis
    */
   businessCaseValid: ({ context }: { context: EpicKanbanContext }) => {
-    return context.businessCase?.businessValue.totalValue >= context.config.businessCaseThreshold;
+    return (context.businessCase?.businessValue?.totalValue ?? 0) >= context.config.businessCaseThreshold;
   },
 
   /**
    * Check if WSJF score meets threshold for portfolio backlog
    */
   wsjfScoreAcceptable: ({ context }: { context: EpicKanbanContext }) => {
-    return context.wsjfPriority?.wsjfScore >= 5.0; // Configurable threshold
+    return (context.wsjfPriority?.wsjfScore ?? 0) >= 5.0; // Configurable threshold
   },
 
   /**
@@ -334,12 +353,12 @@ export const epicKanbanMachine = createMachine({
     RETRY: 'funnel',
   },
 }, {
-  guards: epicKanbanGuards,
-  actions: epicKanbanActions,
+  guards: epicKanbanGuards as any,
+  actions: epicKanbanActions as any,
   
   // Services for async operations
   actors: {
-    analyzeBusinessCase: async ({ input }: { input: EpicKanbanContext }) => {
+    analyzeBusinessCase: fromPromise(async ({ input }: { input: EpicKanbanContext }) => {
       // Mock business case analysis - replace with actual implementation
       await new Promise(resolve => setTimeout(resolve, 2000));
       
@@ -355,7 +374,7 @@ export const epicKanbanMachine = createMachine({
       };
       
       return wsjfPriority;
-    },
+    }),
   },
 });
 
@@ -372,14 +391,38 @@ export type EpicKanbanMachineActor = ActorRefFrom<typeof epicKanbanMachine>;
  * Factory function to create epic kanban state machine
  */
 export function createEpicKanbanMachine(epic: PortfolioEpic, config: EpicOwnerManagerConfig) {
-  return epicKanbanMachine.provide({
-    // Provide initial context
-    input: {
+  const contextualMachine = createMachine({
+    ...epicKanbanMachine.config,
+    context: {
       epic,
       config,
       currentCapacityUsage: 0,
       blockers: [],
       stakeholderApprovals: [],
     } as EpicKanbanContext,
+  }, {
+    guards: epicKanbanGuards as any,
+    actions: epicKanbanActions as any,
+    actors: {
+      analyzeBusinessCase: fromPromise(async ({ input }: { input: EpicKanbanContext }) => {
+        // Mock business case analysis - replace with actual implementation
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        const wsjfPriority: WSJFPriority = {
+          epicId: input.epic.id,
+          userBusinessValue: 8,
+          timeCriticality: 6,
+          riskReductionOpportunityEnablement: 7,
+          jobSize: 5,
+          wsjfScore: (8 + 6 + 7) / 5, // WSJF = (Business Value + Time Criticality + RROE) / Job Size
+          ranking: 1,
+          calculatedAt: new Date(),
+        };
+        
+        return wsjfPriority;
+      }),
+    },
   });
+  
+  return contextualMachine;
 }

@@ -7,6 +7,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from '../core/interfaces/base-interfaces';
 
 export interface ErrorContext {
@@ -170,8 +171,8 @@ export class ErrorMonitoring extends EventEmitter {
     components: Record<string, number>;
   } {
     const now = Date.now();
-    const hourly: number[] = Array(24).fill(0);
-    const daily: number[] = Array(7).fill(0);
+    const hourly: number[] = new Array(24).fill(0);
+    const daily: number[] = new Array(7).fill(0);
     const components: Record<string, number> = {};
 
     for (const [key, errors] of Array.from(this.errors)) {
@@ -351,13 +352,11 @@ export class ErrorMonitoring extends EventEmitter {
 
     for (const errors of Array.from(this.errors.values())) {
       for (const error of errors) {
-        if (error.timestamp.getTime() > cutoff) {
-          // Simulate pattern matching (would use actual error data)
-          if (Math.random() < 0.1) {
+        if (error.timestamp.getTime() > cutoff && // Simulate pattern matching (would use actual error data)
+          Math.random() < 0.1) {
             // 10% chance of match for demo
             count++;
           }
-        }
       }
     }
 

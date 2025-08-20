@@ -7,16 +7,15 @@
 
 import { getLogger } from '../../config/logging-config';
 
-const logger = getLogger('interfaces-clients-compatibility');
-
 import { getMCPServerURL } from '../../config/defaults';
 import { FACTIntegration } from '../../knowledge/knowledge-client';
 import { type APIClient, createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
-import { uaclRegistry } from './core/client-registry';
 import type { ClientInstance } from './registry';
 import { ClientTypes } from './types';
+
+const logger = getLogger('interfaces-clients-compatibility');
 
 /**
  * Legacy HTTP Client Factory (Backward Compatible).

@@ -50,6 +50,7 @@ export interface WorkflowGateResult {
 // ============================================================================
 
 export interface WorkflowStep {
+  readonly id?: string;
   readonly type: string;
   readonly name?: string;
   readonly params?: Record<string, unknown>;
@@ -108,6 +109,10 @@ export interface WorkflowEngineConfig {
   readonly persistWorkflows?: boolean;
   readonly persistencePath?: string;
   readonly retryAttempts?: number;
+  readonly enableAdvancedOrchestration?: boolean;
+  readonly orchestrationMode?: 'basic' | 'advanced' | 'intelligent';
+  readonly enableErrorRecovery?: boolean;
+  readonly enablePerformanceTracking?: boolean;
 }
 
 export interface DocumentContent {

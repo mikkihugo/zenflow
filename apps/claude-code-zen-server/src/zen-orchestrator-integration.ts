@@ -14,6 +14,10 @@
 
 import { getLogger } from './config/logging-config';
 
+// Platform-specific binding resolution
+import { platform, arch } from 'os';
+import { resolve } from 'path';
+
 const logger = getLogger('ZenSwarmOrchestrator');
 
 // Native binding interfaces (imported from compiled Rust)
@@ -94,11 +98,6 @@ interface ResourceUsageInfo {
   vector_operations?: number;
   neural_forward_passes?: number;
 }
-
-// Platform-specific binding resolution
-import { platform, arch } from 'os';
-import { resolve, join } from 'path';
-import { existsSync } from 'fs';
 
 // Interface for the native binding
 interface NativeZenSwarmOrchestrator {
@@ -659,11 +658,7 @@ export class ZenOrchestratorIntegration {
       
       // Handle both string (native) and object (fallback) responses
       let statusData;
-      if (typeof statusJson === 'string') {
-        statusData = JSON.parse(statusJson);
-      } else {
-        statusData = statusJson;
-      }
+      statusData = typeof statusJson === 'string' ? JSON.parse(statusJson) : statusJson;
 
       return {
         success: true,
@@ -698,11 +693,7 @@ export class ZenOrchestratorIntegration {
       
       // Handle both string (native) and object (fallback) responses
       let metricsData;
-      if (typeof metricsJson === 'string') {
-        metricsData = JSON.parse(metricsJson);
-      } else {
-        metricsData = metricsJson;
-      }
+      metricsData = typeof metricsJson === 'string' ? JSON.parse(metricsJson) : metricsJson;
 
       return {
         success: true,

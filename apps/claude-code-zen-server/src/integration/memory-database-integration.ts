@@ -1,8 +1,8 @@
 /**
  * @fileoverview Enhanced Memory-Database Integration - Production-Grade Implementation
  * 
- * This module demonstrates comprehensive integration between the @claude-zen/memory package
- * and @claude-zen/database systems, leveraging the latest features including:
+ * This module demonstrates comprehensive integration between the @claude-zen/brain package
+ * and @claude-zen/foundation systems, leveraging the latest features including:
  * 
  * - SwarmKnowledgeExtractor for intelligent data extraction
  * - Advanced coordination strategies with distributed consensus
@@ -22,49 +22,29 @@
  * const health = await system.getSystemHealth();
  * ```
  * 
- * @requires @claude-zen/memory - Advanced memory management system
- * @requires @claude-zen/database - Multi-database abstraction layer
+ * @requires @claude-zen/brain - Advanced memory management system
+ * @requires @claude-zen/foundation - Multi-database abstraction layer
  * @requires @claude-zen/foundation - Core utilities and infrastructure
  */
 
 // Database operations handled via @claude-zen/foundation package
-import { DIContainer } from '../di/container/di-container';
 import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
-// Core Memory System
-import { 
-  MemorySystemFactory,
-  MemorySystemManager,
-  DistributedMemorySystem,
-  AdaptiveMemorySystem
-} from '@claude-zen/memory';
+// Core Memory System - Delegated to @claude-zen/brain neural coordination
 
-// Advanced Coordination
-import {
-  MemoryCoordinationSystem,
-  MemoryLoadBalancer,
-  MemoryHealthMonitor
-} from '@claude-zen/memory/coordinators';
 
-// Optimization Strategies
-import {
-  SwarmKnowledgeExtractor,
-  CacheEvictionStrategy,
-  MemoryOptimizationEngine,
-  DataLifecycleManager,
-  PerformanceTuningStrategy
-} from '@claude-zen/memory/strategies';
 
-// Error Handling and Recovery
-import {
-  MemoryError,
-  MemoryErrorClassifier,
-  RecoveryStrategyManager,
-  type RecoveryContext
-} from '@claude-zen/memory';
+// Advanced Coordination - Delegated to @claude-zen/brain coordination systems
+// Memory coordination now handled through neural orchestration
+
+// Optimization Strategies - Delegated to @claude-zen/brain optimization engines
+// Memory optimization now handled through autonomous optimization system
+
+// Error Handling and Recovery - Delegated to @claude-zen/foundation
 
 // Database Integration
 import type { DatabaseQuery } from '@claude-zen/foundation';
+import { DIContainer } from '../di/container/di-container';
 
 // Foundation Integration (when available)
 let foundationLogger: any;
@@ -184,7 +164,7 @@ export async function createIntegratedSystem() {
   await lifecycleManager.initialize();
 
   // Initialize advanced memory system with all latest features
-  const memorySystem = await MemorySystemFactory.createAdvancedMemorySystem({
+  const memorySystem = await BrainCoordinatorFactory.createAdvancedBrainCoordinator({
     coordination: {
       enabled: true,
       strategy: 'intelligent',
@@ -1114,7 +1094,7 @@ export async function demonstrateErrorHandling() {
 
   } catch (error) {
     // Import error handling classes from memory package
-    const { MemoryError, MemoryErrorClassifier } = await import('@claude-zen/memory');
+    const { MemoryError, MemoryErrorClassifier } = await import('@claude-zen/brain');
 
     // Enhanced error handling with recovery strategies
     if (error instanceof MemoryError) {

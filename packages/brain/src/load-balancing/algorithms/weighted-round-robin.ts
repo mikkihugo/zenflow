@@ -297,11 +297,7 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     const timeSinceUpdate = now.getTime() - weight.lastUpdate.getTime();
 
     // Apply time-based decay to effective weight
-    if (timeSinceUpdate > this.config.performanceWindow) {
-      weight.effectiveWeight = weight.weight * this.config.weightDecayFactor;
-    } else {
-      weight.effectiveWeight = weight.weight;
-    }
+    weight.effectiveWeight = timeSinceUpdate > this.config.performanceWindow ? weight.weight * this.config.weightDecayFactor : weight.weight;
 
     // Consider success/failure ratio
     const totalOperations = weight.successCount + weight.failureCount;
@@ -409,11 +405,8 @@ export class WeightedRoundRobinAlgorithm implements LoadBalancingAlgorithm {
     if (weights.length === 0) return 0;
 
     const mean = weights.reduce((sum, w) => sum + w.weight, 0) / weights.length;
-    const variance =
-      weights.reduce((sum, w) => sum + (w.weight - mean) ** 2, 0) /
+    return weights.reduce((sum, w) => sum + (w.weight - mean) ** 2, 0) /
       weights.length;
-
-    return variance;
   }
 
   /**

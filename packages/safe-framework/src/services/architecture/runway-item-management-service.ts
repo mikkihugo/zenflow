@@ -122,7 +122,7 @@ export class RunwayItemManagementService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/brain for intelligent prioritization
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent prioritization
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -136,19 +136,22 @@ export class RunwayItemManagementService {
       // Lazy load @claude-zen/workflows for approval workflows
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        enableAdvancedOrchestration: true,
-        enableStateTracking: true
+        maxConcurrentWorkflows: 5,
+        enableVisualization: true
       });
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for approval workflows
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: 1800000 // 30 minutes
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiResult = await AGUISystem({
+        aguiType: 'terminal',
+        taskApprovalConfig: {
+          enableRichDisplay: true,
+          enableBatchMode: false,
+          requireRationale: true
+        }
       });
-      await this.aguiService.initialize();
+      this.aguiService = aguiResult.agui;
 
       this.initialized = true;
       this.logger.info('Runway Item Management Service initialized successfully');
@@ -181,12 +184,12 @@ export class RunwayItemManagementService {
 
       // Create runway item with optimized priority
       const runwayItem: ArchitectureRunwayItem = {
+        ...item,
         id: `runway-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         status: 'backlog',
         priority: priorityOptimization.recommendedPriority || item.priority,
         createdAt: new Date(),
-        updatedAt: new Date(),
-        ...item
+        updatedAt: new Date()
       };
 
       // Check if governance approval is needed

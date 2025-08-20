@@ -9,6 +9,9 @@
 
 // Re-export comprehensive AgentType from master registry (140+ types)
 // This prevents "Type X is not assignable" errors in coordination domain
+// Import SwarmAgent type from shared types
+import type { SwarmAgent } from '../types/shared-types';
+
 export type { AgentType } from '../types/agent-types';
 
 // Additional agent-related types
@@ -212,9 +215,6 @@ export interface ExecutionPlan {
   parallelizable: boolean;
   checkpoints: ExecutionCheckpoint[];
 }
-
-// Import SwarmAgent type from shared types
-import type { SwarmAgent } from '../types/shared-types';
 
 // Agent configuration interface (duplicate removed - using main definition above)
 

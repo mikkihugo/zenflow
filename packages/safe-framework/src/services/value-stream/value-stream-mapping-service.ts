@@ -17,14 +17,42 @@
 
 import type { Logger, ValueStream, MultiLevelOrchestrationManager } from '../../types';
 
-// Re-export types from mapper for compatibility
-export type {
-  ValueStreamMapperConfig,
-  ValueStreamFlowAnalysis,
-  FlowStepAnalysis,
-  DetailedFlowMetrics,
-  ValueStreamMapperState
-} from '../../../managers/value-stream-mapper';
+// Define types locally as they don't exist in the manager
+export interface ValueStreamMapperConfig {
+  readonly enableIntelligentMapping: boolean;
+  readonly enableWorkflowIntegration: boolean;
+  readonly enableMultiLevelIntegration: boolean;
+  readonly maxMappingComplexity: number;
+  readonly optimizationThreshold: number;
+  readonly mappingValidationEnabled: boolean;
+}
+
+export interface ValueStreamFlowAnalysis {
+  readonly flowId: string;
+  readonly name: string;
+  readonly stepAnalysis: FlowStepAnalysis[];
+  readonly metrics: DetailedFlowMetrics;
+}
+
+export interface FlowStepAnalysis {
+  readonly stepId: string;
+  readonly name: string;
+  readonly duration: number;
+  readonly type: 'value-added' | 'non-value-added' | 'necessary-non-value-added';
+}
+
+export interface DetailedFlowMetrics {
+  readonly totalLeadTime: number;
+  readonly totalProcessTime: number;
+  readonly flowEfficiency: number;
+  readonly valueAddedRatio: number;
+}
+
+export interface ValueStreamMapperState {
+  readonly status: 'idle' | 'mapping' | 'optimizing' | 'completed';
+  readonly progress: number;
+  readonly currentStep?: string;
+}
 
 // ============================================================================
 // VALUE STREAM MAPPING SERVICE INTERFACES
@@ -169,7 +197,7 @@ export class ValueStreamMappingService {
     if (this.initialized) return;
 
     try {
-      // Lazy load @claude-zen/brain for intelligent mapping optimization
+      // Lazy load @claude-zen/brain for LoadBalancer - intelligent mapping optimization
       const { BrainCoordinator } = await import('@claude-zen/brain');
       this.brainCoordinator = new BrainCoordinator({
         autonomous: { enabled: true, learningRate: 0.1, adaptationThreshold: 0.7 }
@@ -183,19 +211,22 @@ export class ValueStreamMappingService {
       // Lazy load @claude-zen/workflows for workflow integration
       const { WorkflowEngine } = await import('@claude-zen/workflows');
       this.workflowEngine = new WorkflowEngine({
-        enableAdvancedOrchestration: true,
-        enableStateTracking: true
+        maxConcurrentWorkflows: 5,
+        enableVisualization: true
       });
       await this.workflowEngine.initialize();
 
       // Lazy load @claude-zen/agui for mapping approvals
-      const { AGUIService } = await import('@claude-zen/agui');
-      this.aguiService = new AGUIService({
-        enableTaskApproval: true,
-        enableRealTimeCollaboration: true,
-        defaultTimeout: 1800000 // 30 minutes
+      const { AGUISystem } = await import('@claude-zen/agui');
+      const aguiResult = await AGUISystem({
+        aguiType: 'terminal',
+        taskApprovalConfig: {
+          enableRichDisplay: true,
+          enableBatchMode: false,
+          requireRationale: true
+        }
       });
-      await this.aguiService.initialize();
+      this.aguiService = aguiResult.agui;
 
       this.initialized = true;
       this.logger.info('Value Stream Mapping Service initialized successfully');
@@ -308,11 +339,7 @@ export class ValueStreamMappingService {
         name: streamDesign.name || `Value Stream for ${workflowId}`,
         description: streamDesign.description || 'AI-optimized value stream',
         steps: this.createOptimizedFlowSteps(streamDesign, context),
-        metrics: this.createFlowMetrics(streamDesign, context),
-        stakeholders: context.stakeholderContext.primaryStakeholders,
-        owner: streamDesign.recommendedOwner || 'product-owner',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        budget: streamDesign.estimatedBudget || 100000
       };
 
       // Validate value stream design
@@ -352,7 +379,7 @@ export class ValueStreamMappingService {
       this.logger.info('Value stream created successfully', {
         workflowId,
         valueStreamId: valueStream.id,
-        stepCount: valueStream.steps.length,
+        stepCount: valueStream.steps?.length || 0,
         confidence: mapping.confidence
       });
 

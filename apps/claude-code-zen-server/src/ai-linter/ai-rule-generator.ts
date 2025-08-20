@@ -18,11 +18,10 @@
  */
 
 import type { Logger } from '../core/interfaces/base-interfaces';
+
 import type {
   AIAnalysisResult,
-  ClaudeInsights,
   CodePattern,
-  LinterContext,
   LintingCategory,
 } from './types/ai-linter-types';
 import type {

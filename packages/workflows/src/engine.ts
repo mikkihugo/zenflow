@@ -55,6 +55,7 @@ import { createMachine, createActor, type ActorRef } from 'xstate';
 import * as cron from 'node-cron';
 
 export interface WorkflowStep {
+  id?: string;
   type: string;
   name?: string;
   params?: Record<string, unknown>;
@@ -132,6 +133,7 @@ export interface WorkflowEngineConfig {
   stepTimeout?: number;
   retryDelay?: number;
   enableVisualization?: boolean;
+  enableAdvancedOrchestration?: boolean;
 }
 
 @injectable()
@@ -182,6 +184,10 @@ export class WorkflowEngine extends EventEmitter3 {
         config.enableVisualization === undefined
           ? false
           : config?.enableVisualization,
+      enableAdvancedOrchestration:
+        config.enableAdvancedOrchestration === undefined
+          ? true
+          : config?.enableAdvancedOrchestration,
     };
 
     // Enhanced capabilities
@@ -411,7 +417,7 @@ export class WorkflowEngine extends EventEmitter3 {
 
     // Simple object transformation
     if (typeof transformation === 'object') {
-      return ObjectProcessor.mapValues(transformation || {}, (value) => {
+      return ObjectProcessor.mapValues((transformation || {}) as Record<string, unknown>, (value) => {
         if (typeof value === 'string' && value.startsWith('$.')) {
           return this.getContextValue({ data }, value.substring(2));
         } else {
@@ -467,6 +473,16 @@ export class WorkflowEngine extends EventEmitter3 {
     definition: WorkflowDefinition
   ): Promise<void> {
     this.workflowDefinitions.set(name, definition);
+  }
+
+  async createWorkflow(definition: WorkflowDefinition): Promise<string> {
+    const workflowId = SecureIdGenerator.generateWorkflowId();
+    
+    // Register the workflow definition with a unique name
+    const workflowName = `${definition.name}-${workflowId}`;
+    await this.registerWorkflowDefinition(workflowName, definition);
+    
+    return workflowId;
   }
 
   async startWorkflow(
@@ -532,7 +548,7 @@ export class WorkflowEngine extends EventEmitter3 {
     return { success: true, workflowId };
   }
 
-  private async executeWorkflow(workflow: WorkflowState): Promise<void> {
+  async executeWorkflow(workflow: WorkflowState): Promise<void> {
     try {
       workflow.status = 'running';
       await this.saveWorkflow(workflow);
@@ -557,7 +573,7 @@ export class WorkflowEngine extends EventEmitter3 {
     } catch (error) {
       workflow.status = 'failed';
       workflow.error = (error as Error).message;
-      workflow.endTime = DateUtils.formatISOString();
+      workflow.endTime = DateFormatter.formatISOString();
       this.emit('workflow-failed', workflow.id, error);
     } finally {
       await this.saveWorkflow(workflow);
@@ -701,7 +717,7 @@ export class WorkflowEngine extends EventEmitter3 {
     const workflow = this.activeWorkflows.get(workflowId);
     if (workflow && ['running', 'paused'].includes(workflow.status)) {
       workflow.status = 'cancelled';
-      workflow.endTime = DateUtils.formatISOString();
+      workflow.endTime = DateFormatter.formatISOString();
       await this.saveWorkflow(workflow);
       this.emit('workflow-cancelled', workflowId);
       return { success: true };

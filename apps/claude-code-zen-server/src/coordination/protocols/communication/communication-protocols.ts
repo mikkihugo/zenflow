@@ -8,8 +8,9 @@
  */
 
 import { createHash, randomBytes } from 'node:crypto';
-import { EventEmitter } from 'eventemitter3';
+
 import { gunzipSync, gzipSync } from 'node:zlib';
+import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../../core/interfaces/base-interfaces';
 import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
@@ -1001,7 +1002,7 @@ export class CommunicationProtocols extends EventEmitter {
   }
 
   private buildNetworkTopology(): unknown {
-    const topology = {
+    return {
       nodes: Array.from(this.nodes.entries()).map(([id, node]) => ({
         id,
         status: node?.status,
@@ -1015,8 +1016,6 @@ export class CommunicationProtocols extends EventEmitter {
         })
       ),
     };
-
-    return topology;
   }
 
   private selectRandomNodes(nodes: string[], count: number): string[] {

@@ -5,9 +5,9 @@
  * Provides seamless transition between generated HTML and Svelte components.
  */
 
-import { join } from 'node:path';
 import { spawn } from 'node:child_process';
 import { getLogger } from '../../config/logging-config';
+
 import type { WebConfig } from './web-config';
 
 const logger = getLogger('SvelteIntegration');
@@ -119,10 +119,10 @@ export class SvelteIntegration {
             if (this.process) {
               this.process.kill('SIGKILL');
             }
-            resolve(undefined);
+            resolve();
           }, 5000);
         } else {
-          resolve(undefined);
+          resolve();
         }
       });
       

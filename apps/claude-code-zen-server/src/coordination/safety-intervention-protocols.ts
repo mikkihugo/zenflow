@@ -5,14 +5,13 @@
  * system for critical AI safety violations requiring human intervention.
  */
 
-import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { 
   createAGUI,
   TaskApprovalSystem,
   type ApprovalRequest,
-  type TaskApprovalDecision,
   type AGUIInterface 
 } from '@claude-zen/agui';
+import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 
 export interface SafetyInterventionConfig {
@@ -145,11 +144,7 @@ export class SafetyInterventionProtocols extends EventEmitter {
 
       let decision: InterventionDecision;
 
-      if (requiresHumanEscalation) {
-        decision = await this.escalateToHuman(incident);
-      } else {
-        decision = await this.automaticIntervention(incident);
-      }
+      decision = await (requiresHumanEscalation ? this.escalateToHuman(incident) : this.automaticIntervention(incident));
 
       // Record intervention decision
       this.interventionHistory.push(decision);

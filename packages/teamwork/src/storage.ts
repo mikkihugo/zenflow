@@ -6,6 +6,7 @@
  */
 
 import { getLogger, Storage } from '@claude-zen/foundation';
+
 import type { ConversationSession, ConversationMessage } from './types';
 
 const logger = getLogger('teamwork-storage');

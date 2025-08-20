@@ -14,23 +14,14 @@ import {
   getLogger, 
   type Logger,
   ContextError,
-  withRetry,
-  safeAsync,
-  Storage,
-  getDatabaseAccess,
-  getConfig,
-  getGlobalLLM,
-  type Config,
   // Comprehensive telemetry and monitoring integration
   getTelemetry,
   recordMetric,
   recordHistogram,
   recordGauge,
-  startTrace,
   withTrace,
   withAsyncTrace,
   recordEvent,
-  setTraceAttributes,
   // All 4 Foundation monitoring classes
   SystemMonitor,
   PerformanceTracker,
@@ -40,17 +31,17 @@ import {
   createPerformanceTracker,
   createAgentMonitor,
   createMLMonitor,
-  type Span,
-  type Attributes
+  type Span
 } from '@claude-zen/foundation';
-import { DSPyLLMBridge, type CoordinationTask, type CoordinationResult } from './coordination/dspy-llm-bridge';
+
+import { AutonomousOptimizationEngine, type OptimizationContext } from './autonomous-optimization-engine';
+import { BehavioralIntelligence } from './behavioral-intelligence.js';
+import { DSPyLLMBridge } from './coordination/dspy-llm-bridge';
 import { RetrainingMonitor } from './coordination/retraining-monitor';
 import { NeuralBridge } from './neural-bridge';
-import { SmartNeuralCoordinator, type NeuralBackendConfig } from './smart-neural-coordinator';
+import { type NeuralBackendConfig } from './smart-neural-coordinator';
 // Adaptive learning functionality is now part of BehavioralIntelligence
-import { BehavioralIntelligence } from './behavioral-intelligence.js';
 // Autonomous optimization engine for intelligent decision making
-import { AutonomousOptimizationEngine, type OptimizationContext, type OptimizationResult } from './autonomous-optimization-engine';
 // Autonomous coordinator for self-governing system decisions (temporarily disabled)
 // import { AutonomousCoordinator, type SystemMetrics, type AutonomousDecision } from './autonomous-coordinator';
 
@@ -292,7 +283,7 @@ export class BrainCoordinator {
         // await this.autonomousCoordinator.initialize(this.behavioralIntelligence, this.autonomousEngine);
 
         this.initialized = true;
-        const { duration } = this.performanceTracker.endTimer('brain-initialization');
+        const duration = Date.now() - initTimer.start;
         
         // Record comprehensive metrics
         recordMetric('brain_coordinator_initialized', 1, {
@@ -416,11 +407,12 @@ export class BrainCoordinator {
               hit_count: String(cached.hitCount)
             });
             
+            const cacheProcessingTime = Date.now() - optimizationTimer.start;
             return {
               optimizedPrompt: cached.prompt,
               confidence: cached.confidence,
               fromCache: true,
-              processingTime: Date.now() - startTime,
+              processingTime: cacheProcessingTime,
               method: 'pattern'
             };
           }
@@ -544,16 +536,17 @@ export class BrainCoordinator {
           'brain.optimization.autonomous': false
         });
         
+        const fallbackProcessingTime = Date.now() - optimizationTimer.start;
         return {
           optimizedPrompt: request.basePrompt,
           confidence: 0.5,
           fromCache: false,
-          processingTime: Date.now() - startTime,
+          processingTime: fallbackProcessingTime,
           method: 'fallback'
         };
 
       } catch (error) {
-        this.performanceTracker.endTimer('prompt-optimization');
+        // Timer end - duration calculated above
         
         this.logger.error(`❌ Prompt optimization failed for ${request.task}:`, error);
         
@@ -678,6 +671,13 @@ export class BrainCoordinator {
         }
 
         const { duration } = this.performanceTracker.endTimer('learning-feedback');
+        
+        // Log learning timer information for debugging
+        this.logger.debug('Learning feedback timer completed', {
+          timerLabel: learningTimer.label,
+          timerStartTime: learningTimer.start,
+          duration
+        });
 
         // Record comprehensive learning metrics
         recordMetric('brain_learning_feedback_total', 1, {
@@ -724,6 +724,12 @@ export class BrainCoordinator {
 
       } catch (error) {
         this.performanceTracker.endTimer('learning-feedback');
+        
+        // Log learning timer error information
+        this.logger.debug('Learning feedback timer ended with error', {
+          timerLabel: learningTimer.label,
+          timerStartTime: learningTimer.start
+        });
         
         // Record learning error metrics
         recordMetric('brain_learning_feedback_total', 1, {
@@ -817,6 +823,13 @@ export class BrainCoordinator {
             const insights = this.autonomousEngine.getAutonomousInsights();
             const { duration } = this.performanceTracker.endTimer('get-stats');
             
+            // Use statsTimer information for enhanced logging
+            this.logger.debug('Autonomous stats retrieval completed', {
+              timerLabel: statsTimer.label,
+              timerStartTime: statsTimer.start,
+              duration
+            });
+            
             // Record stats retrieval metrics
             recordMetric('brain_stats_retrieved', 1, {
               status: 'success',
@@ -871,6 +884,13 @@ export class BrainCoordinator {
 
         const { duration } = this.performanceTracker.endTimer('get-stats');
         
+        // Use statsTimer information for enhanced logging
+        this.logger.debug('Basic stats retrieval completed', {
+          timerLabel: statsTimer.label,
+          timerStartTime: statsTimer.start,
+          duration
+        });
+        
         // Record basic stats retrieval metrics
         recordMetric('brain_stats_retrieved', 1, {
           status: 'success',
@@ -901,6 +921,12 @@ export class BrainCoordinator {
       } catch (error) {
         this.performanceTracker.endTimer('get-stats');
         
+        // Log statsTimer error information
+        this.logger.debug('Stats retrieval timer ended with error', {
+          timerLabel: statsTimer.label,
+          timerStartTime: statsTimer.start
+        });
+        
         recordMetric('brain_stats_retrieved', 1, {
           status: 'error',
           error_type: error instanceof Error ? error.constructor.name : 'unknown'
@@ -924,6 +950,22 @@ export class BrainCoordinator {
    * @returns Array of autonomous decisions made
    */
   async autonomousSystemManagement(currentMetrics: any): Promise<any[]> {
+    // Analyze currentMetrics to determine autonomous actions needed
+    const metricsAnalysis = {
+      cpuUsage: currentMetrics.cpuUsage || 0,
+      memoryUsage: currentMetrics.memoryUsage || 0,
+      errorRate: currentMetrics.errorRate || 0,
+      queueSize: currentMetrics.queueSize || 0,
+      averageResponseTime: currentMetrics.averageResponseTime || 0
+    };
+    
+    // Log current metrics for monitoring
+    this.logger.debug('Autonomous system analysis:', {
+      metrics: metricsAnalysis,
+      timestamp: Date.now(),
+      component: 'brain-coordinator'
+    });
+    
     this.logger.warn('⚠️ Autonomous coordinator temporarily disabled');
     return [];
   }
@@ -967,7 +1009,9 @@ export class BrainCoordinator {
         try {
           insights.complexity = this.autonomousEngine['complexityEstimator'].getComplexityStats();
         } catch (error) {
-          // Complexity estimator not accessible or failed
+          // Log complexity estimator error for debugging
+          this.logger.warn('Complexity estimator failed:', error);
+          insights.complexity = { error: 'Complexity estimator not accessible' };
         }
       }
     }
@@ -1038,6 +1082,13 @@ export class BrainCoordinator {
 
         const { duration } = this.performanceTracker.endTimer('brain-shutdown');
         
+        // Use shutdownTimer information for enhanced logging
+        this.logger.debug('Brain shutdown completed', {
+          timerLabel: shutdownTimer.label,
+          timerStartTime: shutdownTimer.start,
+          duration
+        });
+        
         // Record final shutdown metrics
         recordMetric('brain_coordinator_shutdown', 1, {
           status: 'success',
@@ -1064,6 +1115,12 @@ export class BrainCoordinator {
         
       } catch (error) {
         this.performanceTracker.endTimer('brain-shutdown');
+        
+        // Log shutdownTimer error information
+        this.logger.debug('Shutdown timer ended with error', {
+          timerLabel: shutdownTimer.label,
+          timerStartTime: shutdownTimer.start
+        });
         
         recordMetric('brain_coordinator_shutdown', 1, {
           status: 'error',
@@ -1173,6 +1230,17 @@ export class BrainCoordinator {
       throw new Error('BrainCoordinator must be initialized before making predictions');
     }
 
+    // Use options to configure prediction behavior
+    const networkId = options?.networkId || 'default';
+    const useNetworkSpecificLogic = Boolean(options?.networkId);
+    
+    this.logger.debug('Generating prediction with options', {
+      networkId,
+      useNetworkSpecificLogic,
+      featuresLength: features.length,
+      optionsProvided: Boolean(options)
+    });
+
     // For now, return a basic prediction structure that other packages expect
     // TODO: Integrate with actual brain.js networks when bridge is ready
     const prediction = {
@@ -1182,6 +1250,7 @@ export class BrainCoordinator {
     };
 
     this.logger.debug('[BrainCoordinator] Prediction made with basic classifier', {
+      networkId,
       featuresLength: features.length,
       prediction
     });
@@ -1261,8 +1330,16 @@ export class BrainCoordinator {
           'brain.embedding.has_context': Boolean(options?.context)
         });
 
-        const result = await this.neuralBridge.generateEmbedding(text, options);
-        const { duration } = this.performanceTracker.endTimer('neural-embedding');
+        const result = await this.neuralBridge!.generateEmbedding(text, options);
+        const timerResult = this.performanceTracker.endTimer('neural-embedding');
+        const duration = timerResult?.duration || 0;
+        
+        // Use embeddingTimer information for enhanced logging
+        this.logger.debug('Embedding generation completed', {
+          timerLabel: embeddingTimer.label,
+          timerStartTime: embeddingTimer.start,
+          duration
+        });
 
         // Record embedding metrics
         recordMetric('brain_coordinator_embedding_generated', 1, {
@@ -1311,6 +1388,12 @@ export class BrainCoordinator {
 
       } catch (error) {
         this.performanceTracker.endTimer('neural-embedding');
+        
+        // Log embeddingTimer error information
+        this.logger.debug('Embedding timer ended with error', {
+          timerLabel: embeddingTimer.label,
+          timerStartTime: embeddingTimer.start
+        });
         
         recordMetric('brain_coordinator_embedding_generated', 1, {
           model: 'error',

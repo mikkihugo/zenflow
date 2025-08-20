@@ -5,13 +5,13 @@
  * workflows for strategic-level safety monitoring and intervention.
  */
 
-import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { 
   AISafetyOrchestrator,
   AIDeceptionDetector,
   type AIInteractionData,
   type DeceptionAlert 
 } from '@claude-zen/ai-safety';
+import { getLogger, recordMetric, withTrace } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 
 export interface QueenSafetyConfig {
@@ -218,15 +218,13 @@ export class QueenSafetyIntegration extends EventEmitter {
     swarmAssignments: Array<{ swarmId: string; tasks: string[]; agents: string[] }>,
     coordinationClaims: string[]
   ): string {
-    const response = [
+    return [
       `Coordinating ${sparcPhase} phase for: ${taskDescription}`,
       `Assigned ${swarmAssignments.length} swarms for execution:`,
       ...swarmAssignments.map(s => `- Swarm ${s.swarmId}: ${s.tasks.length} tasks, ${s.agents.length} agents`),
       `Coordination claims:`,
       ...coordinationClaims.map(claim => `- ${claim}`)
     ].join('\n');
-
-    return response;
   }
 
   /**

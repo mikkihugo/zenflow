@@ -10,8 +10,10 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { findWorkspaces } from 'find-workspaces';
+
 import { findRoot } from '@manypkg/find-root';
+import { findWorkspaces } from 'find-workspaces';
+
 import { getLogger } from './logging';
 
 const logger = getLogger('monorepo-detector');

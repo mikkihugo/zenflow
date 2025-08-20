@@ -704,12 +704,16 @@ export class BottleneckAnalysisService {
   }
 
   private calculateFactorFrequency(bottleneck: DetectedBottleneck): FactorFrequency {
-    return {
-      occurrenceRate: Math.random() * 50 + 25, // 25-75%
-      pattern: 'intermittent',
-      seasonality: false,
-      trends: 'stable'
-    };
+    // Simple classification based on bottleneck severity
+    if (bottleneck.severity === 'critical') {
+      return FactorFrequency.CONSTANT;
+    } else if (bottleneck.severity === 'high') {
+      return FactorFrequency.FREQUENT;
+    } else if (bottleneck.severity === 'medium') {
+      return FactorFrequency.OCCASIONAL;
+    } else {
+      return FactorFrequency.RARE;
+    }
   }
 
   private calculateFactorImpact(bottleneck: DetectedBottleneck): FactorImpact {

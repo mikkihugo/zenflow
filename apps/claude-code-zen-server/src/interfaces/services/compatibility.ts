@@ -10,6 +10,7 @@
  */
 
 import { getLogger, type Logger } from '../../config/logging-config';
+
 import type { Service } from './core/interfaces';
 import { ServiceManager } from './manager';
 import {
@@ -524,7 +525,7 @@ export class USLCompatibilityLayer {
       );
     }
 
-    if (this.migrationLog.filter((log) => log.type === 'warning').length > 0) {
+    if (this.migrationLog.some((log) => log.type === 'warning')) {
       recommendations.push('Address legacy usage warnings');
       recommendations.push(
         'Consider enabling auto-migration for supported patterns'

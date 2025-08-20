@@ -15,8 +15,7 @@ import {
   getNeuralConfig,
   type Config,
   getLogger,
-  areMetricsEnabled,
-  validateConfig
+  areMetricsEnabled
 } from '@claude-zen/foundation';
 
 const logger = getLogger('BrainConfig');
@@ -78,6 +77,13 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
     // Get neural-specific config from shared system  
     const neuralConfig = getNeuralConfig ? getNeuralConfig() || {} : {};
     
+    // Log neural config availability for debugging
+    logger.debug('Neural configuration loaded', {
+      hasNeuralConfig: Object.keys(neuralConfig).length > 0,
+      neuralConfigKeys: Object.keys(neuralConfig),
+      getNeuralConfigAvailable: Boolean(getNeuralConfig)
+    });
+    
     // Get environment-specific settings
     const debugMode = isDebugMode();
     // Use NODE_ENV or fallback to debug mode inference
@@ -88,6 +94,8 @@ export function getBrainConfig(): BrainSpecificConfig & Partial<Config> {
     // Merge configurations with proper precedence
     const brainConfig: BrainSpecificConfig = {
       ...DEFAULT_BRAIN_CONFIG,
+      // Apply neural-specific configuration if available
+      ...(neuralConfig as Partial<BrainSpecificConfig>),
       // Environment-specific overrides
       enableGPU: environment === 'production' ? false : DEFAULT_BRAIN_CONFIG.enableGPU,
       performance: {

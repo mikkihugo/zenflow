@@ -48,6 +48,9 @@
  * **REDUCTION ACHIEVED: 1,854 → 420 lines (77.3% reduction) through strategic delegation**
  */
 
+import type {
+  AdvancedGUI
+} from '@claude-zen/agui';
 import type { Express, Request, Response, NextFunction } from 'express';
 import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
@@ -56,56 +59,33 @@ import type { WebDataService } from './web-data-service';
 import type { WebSessionManager } from './web-session-manager';
 
 // Strategic imports from @claude-zen packages
-import type {
-  AdvancedGUI,
-  ApprovalWorkflow,
-  TaskApprovalSystem
-} from '@claude-zen/agui';
 
 import type {
-  WorkflowEngine,
-  TaskManager,
-  WorkflowOrchestrator
+  WorkflowEngine
 } from '@claude-zen/workflows';
-
 import type {
   SystemMonitor,
-  PerformanceTracker
+
+  WebMiddleware
 } from '@claude-zen/foundation';
 
-import type {
-  WebMiddleware,
-  RouteValidator,
-  SecurityEnforcer
-} from '@claude-zen/foundation';
 
 import type {
-  ConversationManager,
   CollaborationEngine
 } from '@claude-zen/teamwork';
-
 import type {
-  DocumentationManager,
-  KnowledgeEngine
+  DocumentationManager
 } from '@claude-zen/knowledge';
 
 // Foundation utilities for web operations
 import {
-  isString,
-  isObject,
   assertDefined,
-  getErrorMessage,
-  safeJsonParse
+  getErrorMessage
 } from '@claude-zen/foundation';
 
 // Import our API types from the translation layer
-import type {
-  ApiResponse,
-  ApiHealthResponse,
-  ApiSwarmResponse,
-  ApiTaskResponse,
-  ApiDocumentResponse
-} from '../types/api-translation-layer';
+
+
 
 // =============================================================================
 // WEB API ROUTES - Strategic Package Delegation

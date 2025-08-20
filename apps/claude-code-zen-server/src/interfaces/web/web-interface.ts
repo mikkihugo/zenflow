@@ -11,10 +11,12 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
 import { ProcessLifecycleManager } from '../../core/process-lifecycle';
 import type { DIContainer } from '../../di/index';
+
 import { WebApiRoutes } from './web-api-routes';
 // Import modular components
 import { createWebConfig, type WebConfig } from './web-config';

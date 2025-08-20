@@ -8,6 +8,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from '../../../core/interfaces/base-interfaces';
 import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
@@ -415,9 +416,9 @@ export class TopologyManager extends EventEmitter {
   private calculateNetworkDiameter(nodes: NetworkNode[]): number {
     // Implement Floyd-Warshall for all-pairs shortest paths
     const n = nodes.length;
-    const dist = Array(n)
+    const dist = new Array(n)
       .fill(null)
-      .map(() => Array(n).fill(Number.POSITIVE_INFINITY));
+      .map(() => new Array(n).fill(Number.POSITIVE_INFINITY));
     const nodeIds = nodes.map((n) => n.id);
 
     // Initialize distances
@@ -468,9 +469,9 @@ export class TopologyManager extends EventEmitter {
   private calculateAveragePathLength(nodes: NetworkNode[]): number {
     // Implementation similar to diameter but returns average
     const n = nodes.length;
-    const dist = Array(n)
+    const dist = new Array(n)
       .fill(null)
-      .map(() => Array(n).fill(Number.POSITIVE_INFINITY));
+      .map(() => new Array(n).fill(Number.POSITIVE_INFINITY));
     const nodeIds = nodes.map((n) => n.id);
 
     for (let i = 0; i < n; i++) {

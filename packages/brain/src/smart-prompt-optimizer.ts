@@ -15,9 +15,9 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+import { sma, ema } from 'moving-averages';
 import regression from 'regression';
 import * as ss from 'simple-statistics';
-import { sma, ema } from 'moving-averages';
 
 const logger = getLogger('SmartPromptOptimizer');
 
@@ -31,6 +31,13 @@ export interface PromptAnalysisData {
   readonly responseTime: number; // milliseconds
   readonly userSatisfaction: number; // 0-1 scale
   readonly timestamp: number;
+  readonly metadata?: {
+    domain?: string;
+    complexity?: number;
+    taskType?: string;
+  };
+  readonly context?: string;
+  readonly metrics?: Record<string, number>;
 }
 
 export interface OptimizationPattern {
@@ -214,7 +221,7 @@ export class SmartPromptOptimizer {
 
   // Private helper methods
 
-  private async initializeBaselinePatterns(): Promise<void> {
+  private initializeBaselinePatterns(): void {
     // Add baseline optimization patterns
     const patterns: OptimizationPattern[] = [
       {
@@ -268,7 +275,21 @@ export class SmartPromptOptimizer {
         features, 
         this.extractPromptFeatures(data.originalPrompt)
       );
-      return similarity > 0.6; // 60% similarity threshold
+      
+      // Use context to enhance filtering criteria
+      let contextMatch = true;
+      if (context?.domain) {
+        contextMatch = contextMatch && (data.metadata?.domain === context.domain);
+      }
+      if (context?.complexity) {
+        const complexityDiff = Math.abs((data.metadata?.complexity || 1) - context.complexity);
+        contextMatch = contextMatch && (complexityDiff <= 0.3); // Similar complexity
+      }
+      if (context?.taskType) {
+        contextMatch = contextMatch && (data.metadata?.taskType === context.taskType);
+      }
+      
+      return similarity > 0.6 && contextMatch; // 60% similarity + context match
     }).slice(-20); // Recent 20 similar prompts
   }
 
@@ -285,10 +306,10 @@ export class SmartPromptOptimizer {
     return similarity / keys.length;
   }
 
-  private async performRegressionAnalysis(
+  private performRegressionAnalysis(
     features: Record<string, number>,
     similarPrompts: PromptAnalysisData[]
-  ): Promise<any> {
+  ): any {
     if (similarPrompts.length < 3) {
       return { slope: 0, intercept: 0.5, r2: 0 };
     }
@@ -314,10 +335,10 @@ export class SmartPromptOptimizer {
     }
   }
 
-  private async generateOptimizationPatterns(
+  private generateOptimizationPatterns(
     features: Record<string, number>,
     regressionInsights: any
-  ): Promise<OptimizationPattern[]> {
+  ): OptimizationPattern[] {
     const patterns: OptimizationPattern[] = [];
 
     // Length optimization based on regression
@@ -430,13 +451,66 @@ export class SmartPromptOptimizer {
     return Math.min(1, (successRates.length * (1 - standardError)) / 20);
   }
 
-  private async updateOptimizationPatterns(analysisData: PromptAnalysisData): Promise<void> {
+  private updateOptimizationPatterns(analysisData: PromptAnalysisData): void {
     // Update pattern effectiveness based on performance feedback
     const features = this.extractPromptFeatures(analysisData.originalPrompt);
     
-    // This would implement pattern learning logic
+    // Use features to adjust pattern scoring based on prompt characteristics
+    const featuresMap = new Map(Object.entries(features));
+    const featureComplexity = this.calculateFeatureComplexity(featuresMap);
+    
+    // Update pattern scores based on performance
+    for (const pattern of this.optimizationPatterns.values()) {
+      if (pattern.applicableContexts.some((ctx: string) => analysisData.context?.includes(ctx))) {
+        // Adjust confidence based on performance metrics and feature complexity
+        const performanceScore = analysisData.metrics?.qualityScore || 0.5;
+        const complexityAdjustment = 1 - (featureComplexity * 0.1); // High complexity reduces confidence gain
+        
+        // Create updated pattern with new confidence (immutable update)
+        const updatedPattern: OptimizationPattern = {
+          ...pattern,
+          confidence: (pattern.confidence * 0.9) + (performanceScore * complexityAdjustment * 0.1),
+          improvement: performanceScore > 0.7 
+            ? Math.min(pattern.improvement * (1.1 / Math.max(featureComplexity, 1)), 2.0)
+            : performanceScore < 0.3 
+              ? Math.max(pattern.improvement * (0.9 * Math.max(featureComplexity, 1)), 0.5)
+              : pattern.improvement
+        };
+        
+        // Update the pattern in the map
+        for (const [key, mapPattern] of this.optimizationPatterns.entries()) {
+          if (mapPattern === pattern) {
+            this.optimizationPatterns.set(key, updatedPattern);
+            break;
+          }
+        }
+      }
+    }
+    
+    logger.debug('Updated optimization patterns based on performance feedback');
     // For now, just log the learning event
     logger.debug(`🎯 Pattern learning: ${analysisData.successRate > 0.7 ? 'positive' : 'negative'} feedback received`);
+  }
+
+  /**
+   * Calculate complexity score based on prompt features
+   */
+  private calculateFeatureComplexity(features: Map<string, number>): number {
+    let complexity = 1;
+    
+    // Feature count contributes to complexity
+    complexity += features.size * 0.1;
+    
+    // High feature values indicate complexity
+    for (const value of features.values()) {
+      if (value > 0.8) {
+        complexity += 0.2;
+      } else if (value > 0.5) {
+        complexity += 0.1;
+      }
+    }
+    
+    return Math.min(complexity, 5); // Cap complexity at 5x
   }
 }
 

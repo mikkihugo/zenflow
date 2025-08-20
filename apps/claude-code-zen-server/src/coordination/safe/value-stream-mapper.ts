@@ -20,23 +20,28 @@
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import {
-  createEvent,
-  EventPriority,
-} from '@claude-zen/event-system';
+
+
 import type { MultiLevelOrchestrationManager } from '@claude-zen/multi-level-orchestration';
 import type { PortfolioOrchestrator } from '../orchestration/portfolio-orchestrator';
 import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
 import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
 import type {
-  Customer,
-  SAFeIntegrationConfig,
-  ValueFlowStep,
   ValueStream,
-  ValueStreamMetrics,
 } from './index';
+
+// Import types needed for facade
+import type {
+  ValueStreamMapperConfig,
+  ValueStreamFlowAnalysis,
+  FlowBottleneck,
+  FlowOptimizationRecommendation,
+  ValueDeliveryTracking,
+  ContinuousImprovement,
+  DateRange
+} from '@claude-zen/safe-framework';
 
 // Re-export types from the package for backward compatibility
 export type {
@@ -49,17 +54,6 @@ export type {
   FlowOptimizationRecommendation,
   ExpectedImpact,
   ImplementationPlan,
-  ValueDeliveryTracking,
-  ContinuousImprovement,
-  DateRange
-} from '@claude-zen/safe-framework';
-
-// Import types needed for facade
-import type {
-  ValueStreamMapperConfig,
-  ValueStreamFlowAnalysis,
-  FlowBottleneck,
-  FlowOptimizationRecommendation,
   ValueDeliveryTracking,
   ContinuousImprovement,
   DateRange
@@ -81,7 +75,7 @@ import type {
 export class ValueStreamMapper extends EventEmitter {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly multilevelOrchestrator: MultiLevelOrchestrationManager;
   private readonly portfolioOrchestrator: PortfolioOrchestrator;
   private readonly programOrchestrator: ProgramOrchestrator;
@@ -96,7 +90,7 @@ export class ValueStreamMapper extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     multilevelOrchestrator: MultiLevelOrchestrationManager,
     portfolioOrchestrator: PortfolioOrchestrator,
     programOrchestrator: ProgramOrchestrator,

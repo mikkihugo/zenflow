@@ -14,9 +14,6 @@ import { EventEmitter } from 'eventemitter3';
 import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { CollectiveFACTSystemInterface } from './shared-types';
 
-// Type alias for backward compatibility
-type CollectiveFACTSystem = CollectiveFACTSystemInterface;
-
 import type {
   CollectiveHealthMetrics,
   Task as CollectiveTask,
@@ -25,6 +22,12 @@ import type {
   GlobalAgentInfo,
   GlobalResourceMetrics,
 } from './collective-types';
+
+// Import CollectiveFACT from integration module
+import { initializeCoordinationFactSystem as initializeCollectiveFACT } from './shared-fact-system';
+
+// Type alias for backward compatibility
+type CollectiveFACTSystem = CollectiveFACTSystemInterface;
 
 export interface CollectiveRegistry {
   // Global drone registry
@@ -43,9 +46,6 @@ export interface CollectiveRegistry {
   // Collective health
   collectiveHealth: CollectiveHealthMetrics;
 }
-
-// Import CollectiveFACT from integration module
-import { initializeCoordinationFactSystem as initializeCollectiveFACT } from './shared-fact-system';
 
 /**
  * Central COLLECTIVE synchronization coordinator.

@@ -9,6 +9,7 @@
  */
 
 import { getLogger } from '../config/logging-config';
+
 import { isRecoverableError } from './errors';
 
 const logger = getLogger('ErrorRecovery');
@@ -123,12 +124,10 @@ export class CircuitBreaker {
       this.responseTimes = this.responseTimes.slice(-50);
     }
 
-    if (this.state === CircuitBreakerState['HALF_OPEN']) {
-      if (this.successCount >= this.config.successThreshold) {
+    if (this.state === CircuitBreakerState['HALF_OPEN'] && this.successCount >= this.config.successThreshold) {
         this.state = CircuitBreakerState['CLOSED'];
         logger.info(`Circuit breaker [${this.name}] recovered - state: CLOSED`);
       }
-    }
   }
 
   private onFailure(responseTime: number): void {
@@ -138,18 +137,16 @@ export class CircuitBreaker {
     this.responseTimes.push(responseTime);
 
     // Check if we should open the circuit
-    if (
+    if ((
       this.state === CircuitBreakerState['CLOSED'] ||
       this.state === CircuitBreakerState['HALF_OPEN']
-    ) {
-      if (this.shouldOpenCircuit()) {
+    ) && this.shouldOpenCircuit()) {
         this.state = CircuitBreakerState['OPEN'];
         this.nextAttemptTime = Date.now() + this.config.recoveryTimeout;
         logger.warn(
           `Circuit breaker [${this.name}] opened due to failures - next attempt: ${new Date(this.nextAttemptTime).toISOString()}`
         );
       }
-    }
   }
 
   private shouldOpenCircuit(): boolean {

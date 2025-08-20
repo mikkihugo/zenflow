@@ -9,6 +9,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { EventBus, Logger } from '../core/interfaces/base-interfaces';
 import type { AgentType } from '../types/agent-types';
 

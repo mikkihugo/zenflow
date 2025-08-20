@@ -18,6 +18,14 @@
  */
 
 // Re-export everything from the knowledge package for backward compatibility
+// Compatibility export for legacy imports
+import { 
+  getCoordinationFactSystem,
+  initializeCoordinationFactSystem,
+  storeCoordinationEvent,
+  getCoordinationFacts,
+} from '@claude-zen/knowledge';
+
 export {
   // Main API functions
   getCoordinationFactSystem,
@@ -66,17 +74,6 @@ export class SharedFactSystem {
     return getCoordinationFactSystem().getStats();
   }
 }
-
-// Compatibility export for legacy imports
-import { 
-  getCoordinationFactSystem,
-  initializeCoordinationFactSystem,
-  storeCoordinationEvent,
-  getCoordinationFacts,
-  queryCoordinationFacts,
-  searchCoordinationFacts,
-  storeCoordinationFact,
-} from '@claude-zen/knowledge';
 
 // Legacy shared instance
 const legacyCompatibility = {

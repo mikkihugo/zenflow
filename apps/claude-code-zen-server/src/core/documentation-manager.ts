@@ -19,9 +19,9 @@
  * @file Documentation management system.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { Logger } from '@claude-zen/foundation';
-import type { MemorySystem } from '@claude-zen/memory';
+import { EventEmitter } from 'eventemitter3';
+import type { BrainCoordinator } from '@claude-zen/brain';
 
 const logger = new Logger('DocumentationManager');
 
@@ -59,12 +59,12 @@ export interface DocumentationStats {
  * @example
  */
 export class DocumentationManager extends EventEmitter {
-  private memory: MemorySystem;
+  private memory: BrainCoordinator;
   private config: Required<DocumentationManagerConfig>;
   private stats: DocumentationStats;
   private initialized = false;
 
-  constructor(memory: MemorySystem, config: DocumentationManagerConfig = {}) {
+  constructor(memory: BrainCoordinator, config: DocumentationManagerConfig = {}) {
     super();
     this.memory = memory;
     this.config = {

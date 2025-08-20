@@ -25,11 +25,11 @@
  * @since 1.0.0 - Facade pattern implementation
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
 
 // Import types and classes from @claude-zen/safe-framework
@@ -41,7 +41,6 @@ import type {
   ArchitectureHealthMetrics,
   ComplianceValidationResult
 } from '@claude-zen/safe-framework';
-
 import {
   EnterpriseArchitectureManager as SafeFrameworkEnterpriseArchitectureManager,
   createEnterpriseArchitectureManager
@@ -68,7 +67,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
   private readonly logger: Logger;
   private safeFrameworkManager: SafeFrameworkEnterpriseArchitectureManager | null = null;
   private readonly config: EnterpriseArchConfig;
-  private readonly memorySystem: MemorySystem;
+  private readonly memorySystem: BrainCoordinator;
   private readonly eventBus: TypeSafeEventBus;
   private initialized = false;
 
@@ -81,7 +80,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
 
   constructor(
     config: EnterpriseArchConfig,
-    memorySystem: MemorySystem,
+    memorySystem: BrainCoordinator,
     eventBus: TypeSafeEventBus
   ) {
     super();
@@ -228,7 +227,7 @@ export class EnterpriseArchitectureManager extends EventEmitter {
  * Factory function maintaining original API compatibility
  */
 export function createEnterpriseArchitectureManager(
-  memorySystem: MemorySystem,
+  memorySystem: BrainCoordinator,
   eventBus: TypeSafeEventBus,
   config?: Partial<EnterpriseArchConfig>
 ): EnterpriseArchitectureManager {

@@ -29,35 +29,7 @@ import type {
   ValueStreamMetrics,
 } from '../types';
 
-// Re-export all types from the specialized service and original interfaces
-export type {
-  ValueStreamMapperConfig,
-  ValueStreamFlowAnalysis,
-  FlowStepAnalysis,
-  DetailedFlowMetrics,
-  ValueStreamMapperState,
-  FlowBottleneck,
-  BottleneckImpact,
-  CycleTimeMetrics,
-  LeadTimeMetrics,
-  ThroughputMetrics,
-  FlowEfficiencyMetrics,
-  QualityFlowMetrics,
-  PredictabilityFlowMetrics,
-  CustomerValueMetrics,
-  FlowOptimizationRecommendation,
-  ExpectedImpact,
-  ImplementationPlan,
-  ImplementationPhase,
-  ValueDeliveryTracking,
-  ValueDeliveryMetrics,
-  CustomerOutcome,
-  BusinessOutcome,
-  ValueDeliveryTrend,
-  ValueDeliveryAlert,
-  ContinuousImprovement,
-  DateRange
-} from './value-stream-mapper.ts.backup';
+// Note: Types are defined within this file
 
 // Import from specialized service
 export type {
@@ -79,7 +51,7 @@ export type {
 /**
  * Value Stream Mapper configuration
  */
-export interface ValueStreamMapperConfig {
+interface ValueStreamMapperConfig {
   readonly enableBottleneckDetection: boolean;
   readonly enableFlowOptimization: boolean;
   readonly enableValueDeliveryTracking: boolean;

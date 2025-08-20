@@ -16,7 +16,7 @@
  * Delegates to:
  * - @claude-zen/safe-framework: ProgramIncrementManager for all PI management logic
  * - @claude-zen/event-system: TypeSafeEventBus for event coordination
- * - Application memory: MemorySystem for persistence 
+ * - Application memory: BrainCoordinator for persistence 
  * 
  * INTEGRATION: Maintains compatibility with existing coordinator workflows while 
  * leveraging battle-tested @claude-zen/safe-framework for PI management operations.
@@ -25,13 +25,12 @@
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { TypeSafeEventBus } from '@claude-zen/event-system';
 
 // Import types and classes from @claude-zen/safe-framework
 import type {
   PIManagerConfig,
-  PIPlanningEventConfig,
   BusinessContext,
   ArchitecturalVision,
   PIExecutionMetrics,
@@ -45,6 +44,11 @@ import type {
 
 import { ProgramIncrementManager as CoreProgramIncrementManager } from '@claude-zen/safe-framework';
 
+// Import remaining types from local safe framework
+import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
+import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
+import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
+
 // Re-export types for API compatibility
 export type {
   PIManagerConfig,
@@ -55,11 +59,6 @@ export type {
   PICompletionReport,
   CapacityPlanningResult,
 } from '@claude-zen/safe-framework';
-
-// Import remaining types from local safe framework
-import type { ProgramOrchestrator } from '../orchestration/program-orchestrator';
-import type { SwarmExecutionOrchestrator } from '../orchestration/swarm-execution-orchestrator';
-import type { WorkflowGatesManager } from '../orchestration/workflow-gates';
 
 /**
  * Program Increment Manager Facade - Delegates to @claude-zen/safe-framework
@@ -74,7 +73,7 @@ export class ProgramIncrementManager extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     gatesManager: WorkflowGatesManager,
     programOrchestrator: ProgramOrchestrator,
     swarmOrchestrator: SwarmExecutionOrchestrator,

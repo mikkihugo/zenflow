@@ -48,9 +48,9 @@
  * 
  * @example Basic Collective Intelligence Setup
  * ```typescript
- * import { CollectiveIntelligenceCoordinator } from '@claude-zen/knowledge';
+ * import { IntelligenceHub } from '@claude-zen/knowledge';
  * 
- * const coordinator = new CollectiveIntelligenceCoordinator({
+ * const coordinator = new IntelligenceHub({
  *   maxAgents: 10,
  *   consensusThreshold: 0.8,
  *   enableDistributedLearning: true
@@ -134,9 +134,9 @@
  * 
  * @example Knowledge Quality Management
  * ```typescript
- * import { KnowledgeQualityManagementSystem } from '@claude-zen/knowledge';
+ * import { KnowledgeValidator } from '@claude-zen/knowledge';
  * 
- * const qualityManager = new KnowledgeQualityManagementSystem({
+ * const qualityManager = new KnowledgeValidator({
  *   validationRules: ['consistency', 'accuracy', 'relevance'],
  *   qualityThreshold: 0.8,
  *   automaticPruning: true
@@ -159,14 +159,14 @@
  * @example Enterprise Knowledge Management System
  * ```typescript
  * import { 
- *   CollectiveIntelligenceCoordinator,
- *   KnowledgeQualityManagementSystem,
+ *   IntelligenceHub,
+ *   KnowledgeValidator,
  *   IntelligenceCoordinationSystem,
- *   PerformanceOptimizationSystem 
+ *   PerformanceOptimizer 
  * } from '@claude-zen/knowledge';
  * 
  * // Create enterprise knowledge management system
- * const enterpriseKnowledge = new CollectiveIntelligenceCoordinator({
+ * const enterpriseKnowledge = new IntelligenceHub({
  *   maxAgents: 100,
  *   consensusThreshold: 0.9,
  *   enableDistributedLearning: true,
@@ -188,7 +188,7 @@
  * });
  * 
  * // Add quality management layer
- * const qualityManager = new KnowledgeQualityManagementSystem({
+ * const qualityManager = new KnowledgeValidator({
  *   validationRules: ['consistency', 'accuracy', 'relevance', 'freshness'],
  *   qualityThreshold: 0.85,
  *   automaticPruning: true,
@@ -208,7 +208,7 @@
  * });
  * 
  * // Performance optimization layer
- * const perfOptimizer = new PerformanceOptimizationSystem({
+ * const perfOptimizer = new PerformanceOptimizer({
  *   knowledgeCaching: {
  *     strategy: 'lru-with-predictive-prefetch',
  *     size: '10GB',
@@ -333,13 +333,13 @@
  * @example Advanced Knowledge Analytics and Insights
  * ```typescript
  * import { 
- *   KnowledgeQualityManagementSystem,
- *   PerformanceOptimizationSystem,
+ *   KnowledgeValidator,
+ *   PerformanceOptimizer,
  *   IntelligenceCoordinationSystem 
  * } from '@claude-zen/knowledge';
  * 
  * // Create advanced knowledge analytics system
- * const analytics = new KnowledgeQualityManagementSystem({
+ * const analytics = new KnowledgeValidator({
  *   validationRules: [
  *     'consistency', 'accuracy', 'relevance', 'freshness',
  *     'completeness', 'trustworthiness', 'citations'
@@ -363,7 +363,7 @@
  * });
  * 
  * // Performance optimization with intelligent caching
- * const perfOptimizer = new PerformanceOptimizationSystem({
+ * const perfOptimizer = new PerformanceOptimizer({
  *   knowledgeCaching: {
  *     strategy: 'adaptive-lru-with-semantic-clustering',
  *     size: '50GB',
@@ -442,7 +442,7 @@
  * import { 
  *   KnowledgeSwarm,
  *   ProjectContextAnalyzer,
- *   CollaborativeReasoningEngine 
+ *   ReasoningEngine 
  * } from '@claude-zen/knowledge';
  * 
  * // Create knowledge graph construction system
@@ -483,7 +483,7 @@
  * });
  * 
  * // Collaborative reasoning for complex problem solving
- * const reasoningEngine = new CollaborativeReasoningEngine({
+ * const reasoningEngine = new ReasoningEngine({
  *   reasoningStrategies: [
  *     'deductive-reasoning',
  *     'inductive-reasoning',
@@ -595,6 +595,7 @@ export type {
   ProblemDecomposition,
 } from './src/collaborative-reasoning-engine';
 export { CollaborativeReasoningEngine } from './src/collaborative-reasoning-engine';
+export { CollaborativeReasoningEngine as ReasoningEngine } from './src/collaborative-reasoning-engine';
 // Collective Intelligence Types
 export type {
   AgentContribution,
@@ -605,8 +606,9 @@ export type {
   KnowledgePacket,
   WorkDistributionResult,
 } from './src/collective-intelligence-coordinator';
-// Core Collective Intelligence Systems
+// Core Collective Intelligence Systems  
 export { CollectiveIntelligenceCoordinator } from './src/collective-intelligence-coordinator';
+export { CollectiveIntelligenceCoordinator as IntelligenceHub } from './src/collective-intelligence-coordinator';
 // Type Definitions - Main Configuration Types
 // Type Definitions - Result Types
 // Type Definitions - Request Types
@@ -664,6 +666,7 @@ export type {
   ValidationResult,
 } from './src/knowledge-quality-management';
 export { KnowledgeQualityManagementSystem } from './src/knowledge-quality-management';
+export { KnowledgeQualityManagementSystem as KnowledgeValidator } from './src/knowledge-quality-management';
 // export { KnowledgeStorage } from './src/knowledge-storage';
 // Existing Knowledge System Types
 export type {
@@ -683,6 +686,7 @@ export type {
   OptimizedKnowledgeResponse,
 } from './src/performance-optimization-system';
 export { PerformanceOptimizationSystem } from './src/performance-optimization-system';
+export { PerformanceOptimizationSystem as PerformanceOptimizer } from './src/performance-optimization-system';
 export { ProjectContextAnalyzer } from './src/project-context-analyzer';
 // Storage Backends
 export { SQLiteBackend } from './src/storage-backends/sqlite-backend';

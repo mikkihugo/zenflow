@@ -4,6 +4,9 @@
  */
 
 // Model configuration exports - using local presets directory
+// Import for default export
+import { NEURAL_PRESETS } from './presets';
+
 export { NEURAL_PRESETS } from './presets';
 export type { NeuralPreset, NeuralPresetMap } from './presets';
 export * from './presets';
@@ -93,9 +96,6 @@ export class VAEModel {
     return { prediction: 'vae_output' };
   }
 }
-
-// Import for default export
-import { NEURAL_PRESETS } from './presets';
 
 // Default export for backward compatibility
 export default {

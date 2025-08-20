@@ -9,19 +9,14 @@
  */
 
 import { nanoid } from 'nanoid';
+
 import { getLogger } from '../../config/logging-config';
 import { DALFactory } from '../../database/dal/dal-factory';
 import type {
-  ADRDocumentEntity,
   BaseDocumentEntity,
   DocumentRelationshipEntity,
   DocumentWorkflowStateEntity,
-  EpicDocumentEntity,
-  FeatureDocumentEntity,
-  PRDDocumentEntity,
   ProjectEntity,
-  TaskDocumentEntity,
-  VisionDocumentEntity,
 } from '../../database/entities/document-entities';
 import type {
   GraphRepository,
@@ -558,7 +553,7 @@ export class HybridDocumentManager {
   }
 
   private generateSearchableContent(title: string, content: string): string {
-    return `${title} ${content}`.toLowerCase().replace(/[^\w\s]/g, ' ');
+    return `${title} ${content}`.toLowerCase().replace(/[^\s\w]/g, ' ');
   }
 
   private extractKeywords(title: string, content: string): string[] {

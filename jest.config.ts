@@ -81,10 +81,22 @@ const config: Config = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'mjs'],
 
-  // Test discovery patterns - Jest as primary for new tests
-  roots: ['<rootDir>/tests'],
+  // Test discovery patterns - Jest standard __tests__ directories
+  roots: [
+    '<rootDir>/packages',
+    '<rootDir>/apps',
+    '<rootDir>/tests'
+  ],
   testMatch: [
-    // Primary Jest test patterns (new tests)
+    // Jest standard __tests__ directories within packages
+    '<rootDir>/packages/**/src/__tests__/**/*.test.ts',
+    '<rootDir>/packages/**/src/__tests__/**/*.test.tsx',
+    
+    // Jest standard __tests__ directories within apps
+    '<rootDir>/apps/**/src/__tests__/**/*.test.ts',
+    '<rootDir>/apps/**/src/__tests__/**/*.test.tsx',
+    
+    // Legacy test directories (for migration period)
     '<rootDir>/tests/jest/**/*.test.ts',
     '<rootDir>/tests/jest/**/*.test.tsx',
     

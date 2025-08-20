@@ -10,7 +10,9 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger, type Logger } from '../../config/logging-config';
+
 import type {
   Service,
   ServiceFactory,
@@ -337,11 +339,7 @@ export class EnhancedServiceRegistry
   async stopAllServices(): Promise<void> {
     this.logger.info('Stopping all services in reverse dependency order...');
 
-    if (this.dependencyGraph) {
-      await this.stopServicesInOrder();
-    } else {
-      await this.stopServicesParallel();
-    }
+    await (this.dependencyGraph ? this.stopServicesInOrder() : this.stopServicesParallel());
 
     this.logger.info('All services stopped successfully');
   }
@@ -501,11 +499,9 @@ export class EnhancedServiceRegistry
       }
 
       // Filter by health
-      if (criteria.health && discoveryInfo) {
-        if (discoveryInfo.health !== criteria.health) {
+      if (criteria.health && discoveryInfo && discoveryInfo.health !== criteria.health) {
           return false;
         }
-      }
 
       // Filter by tags
       if (criteria.tags && discoveryInfo) {

@@ -8,6 +8,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from '../core/interfaces/base-interfaces';
 import { inject } from '../di/decorators/inject';
 import { injectable } from '../di/decorators/injectable';

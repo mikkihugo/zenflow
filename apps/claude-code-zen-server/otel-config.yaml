@@ -1,0 +1,84 @@
+# OpenTelemetry Collector Configuration for Claude-Zen SAFe-SPARC
+# This collector receives telemetry from Claude SDK and exports to multiple backends
+
+receivers:
+  # OTLP receiver for traces, metrics, and logs
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+        cors:
+          allowed_origins: ["*"]
+          allowed_headers: ["*"]
+
+processors:
+  # Batch processor for efficiency
+  batch:
+    timeout: 1s
+    send_batch_size: 50
+    
+  # Memory limiter to prevent OOM
+  memory_limiter:
+    limit_mib: 512
+    
+  # Add resource attributes
+  resource:
+    attributes:
+      - key: service.name
+        value: claude-zen-safe-sparc
+        action: upsert
+      - key: service.version 
+        value: "2.1.0"
+        action: upsert
+
+exporters:
+  # Console output for immediate feedback
+  logging:
+    loglevel: debug
+    
+  # File output for local analysis
+  file:
+    path: ./otel-output.json
+    
+  # Jaeger for distributed tracing (if available)
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+      
+  # OTLP HTTP endpoint (for custom receivers)
+  otlphttp:
+    endpoint: http://host.docker.internal:8080/v1/traces
+    headers:
+      api-key: "claude-zen-dev"
+    tls:
+      insecure: true
+
+service:
+  # Configure telemetry for the collector itself
+  telemetry:
+    logs:
+      level: info
+    metrics:
+      address: 0.0.0.0:8888
+
+  pipelines:
+    # Traces pipeline
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [logging, file]
+      
+    # Metrics pipeline  
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [logging]
+      
+    # Logs pipeline
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, resource, batch]
+      exporters: [logging, file]

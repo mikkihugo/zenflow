@@ -12,7 +12,7 @@ describe('ReleaseTrainEngineerManager', () => {
   let mockLogger: Logger;
   let mockMemory: MemorySystem;
   let mockEventBus: TypeSafeEventBus;
-  let config: Partial<RTEManagerConfig>;
+  let config: RTEManagerConfig;
 
   beforeEach(() => {
     mockLogger = {
@@ -42,10 +42,29 @@ describe('ReleaseTrainEngineerManager', () => {
       enableProgramSynchronization: true,
       enablePredictabilityMeasurement: true,
       enableRiskAndDependencyManagement: true,
+      enableMultiARTCoordination: true,
+      enableImpedimentTracking: true,
+      scrumOfScrumsFrequency: 'daily',
+      systemDemoFrequency: 'iteration',
+      impedimentEscalationThreshold: 3,
+      programSyncInterval: 60000,
+      predictabilityReportingInterval: 300000,
+      riskReviewInterval: 604800000,
       maxARTsUnderManagement: 3,
+      maxImpedimentsPerTeam: 5,
+      facilitation: {
+        enableTimeboxing: true,
+        enableConflictResolution: true,
+        enableConsensusBuilding: true,
+        enableActionItemTracking: true,
+        facilitationStyle: 'collaborative' as const,
+        timeboxDurationMinutes: 120,
+        breakFrequencyMinutes: 30,
+        participantEngagementTracking: true
+      }
     };
 
-    manager = new ReleaseTrainEngineerManager(mockLogger, mockMemory, mockEventBus, config);
+    manager = new ReleaseTrainEngineerManager(config);
   });
 
   it('should initialize with default configuration', () => {
@@ -87,7 +106,15 @@ describe('ReleaseTrainEngineerManager', () => {
       constraints: ['Constraint 1']
     };
 
-    const result = await manager.facilitatePIPlanning('PI-1', 'ART-1', planningConfig);
+    const result = await manager.facilitatePIPlanning({ 
+      piId: 'PI-1', 
+      artId: 'ART-1', 
+      duration: 2,
+      venue: 'Main Conference Room',
+      facilitators: ['facilitator-1'],
+      objectives: planningConfig.objectives, 
+      features: []
+    });
     
     expect(result).toBeDefined();
     expect(result.piId).toBe('PI-1');
@@ -99,7 +126,7 @@ describe('ReleaseTrainEngineerManager', () => {
   it('should coordinate Scrum of Scrums', async () => {
     await manager.initialize();
     
-    const result = await manager.coordinateScrumOfScrums('ART-1');
+    const result = await manager.coordinateScrumOfScrums('ART-1', []);
     
     expect(result).toBeDefined();
     expect(result.artId).toBe('ART-1');
@@ -121,10 +148,10 @@ describe('ReleaseTrainEngineerManager', () => {
   it('should coordinate ART synchronization', async () => {
     await manager.initialize();
     
-    const result = await manager.coordinateARTSynchronization(['ART-1', 'ART-2']);
+    const result = await manager.coordinateARTSynchronization('ART-1');
     
     expect(result).toBeDefined();
-    expect(result.participatingARTs).toEqual(['ART-1', 'ART-2']);
+    expect(result.artId).toBe('ART-1');
     expect(result.synchronizationDate).toBeInstanceOf(Date);
     expect(result.effectiveness.overallScore).toBe(85);
   });
@@ -132,7 +159,7 @@ describe('ReleaseTrainEngineerManager', () => {
   it('should track program predictability', async () => {
     await manager.initialize();
     
-    const result = await manager.trackProgramPredictability('PI-1', 'ART-1');
+    const result = await manager.trackProgramPredictability('ART-1');
     
     expect(result).toBeDefined();
     expect(result.piId).toBe('PI-1');
@@ -178,7 +205,11 @@ describe('ReleaseTrainEngineerManager', () => {
       }
     ];
 
-    const result = await manager.manageSystemDemo('PI-1', 'ART-1', features);
+    const result = await manager.manageSystemDemo({
+      piId: 'PI-1',
+      artId: 'ART-1',
+      features: features
+    });
     
     expect(result).toBeDefined();
     expect(result.piId).toBe('PI-1');
@@ -194,24 +225,20 @@ describe('ReleaseTrainEngineerManager', () => {
       enableSystemDemoCoordination: false,
     };
 
-    const disabledManager = new ReleaseTrainEngineerManager(
-      mockLogger, 
-      mockMemory, 
-      mockEventBus, 
-      disabledConfig
-    );
+    const disabledManager = new ReleaseTrainEngineerManager({
+      ...config,
+      ...disabledConfig
+    });
 
     expect(disabledManager).toBeDefined();
   });
 
   it('should throw error when trying disabled features', async () => {
     const disabledConfig = { enablePIPlanningFacilitation: false };
-    const disabledManager = new ReleaseTrainEngineerManager(
-      mockLogger,
-      mockMemory,
-      mockEventBus,
-      disabledConfig
-    );
+    const disabledManager = new ReleaseTrainEngineerManager({
+      ...config,
+      enablePIPlanningFacilitation: false
+    });
 
     await disabledManager.initialize();
 
@@ -223,7 +250,14 @@ describe('ReleaseTrainEngineerManager', () => {
       constraints: []
     };
 
-    await expect(disabledManager.facilitatePIPlanning('PI-1', 'ART-1', planningConfig))
-      .rejects.toThrow('PI Planning facilitation is not enabled');
+    await expect(disabledManager.facilitatePIPlanning({
+      piId: 'PI-1',
+      artId: 'ART-1',
+      duration: 480,
+      venue: 'Main Conference Room',
+      facilitators: ['facilitator1'],
+      objectives: [],
+      features: []
+    })).rejects.toThrow('PI Planning facilitation is not enabled');
   });
 });

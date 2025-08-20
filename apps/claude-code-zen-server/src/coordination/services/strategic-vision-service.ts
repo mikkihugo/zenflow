@@ -750,7 +750,7 @@ export class StrategicVisionService {
   private hasStructuredFormat(content: string): boolean {
     // Check for structured elements
     const hasHeaders = /^#{1,6}\s/.test(content);
-    const hasBullets = /^\s*[-*+]\s/.test(content);
+    const hasBullets = /^\s*[*+-]\s/.test(content);
     const hasNumbering = /^\s*\d+\.\s/.test(content);
     const hasCode = /```/.test(content) || /`[^`]+`/.test(content);
 
@@ -761,7 +761,7 @@ export class StrategicVisionService {
     // Simple keyword extraction (could be enhanced with NLP)
     const words = content
       .toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
+      .replace(/[^\s\w]/g, ' ')
       .split(/\s+/)
       .filter((word) => word.length > 3)
       .filter(
@@ -1032,15 +1032,15 @@ export class StrategicVisionService {
             // Extract different types of strategic annotations
             const todoMatches =
               content.match(
-                /\/\/\s*TODO[:\s]*(.*)|\/\*\s*TODO[:\s]*(.*?)\*\//gi
+                /\/\/\s*todo[\s:]*(.*)|\/\*\s*todo[\s:]*(.*?)\*\//gi
               ) || [];
             const strategyMatches =
               content.match(
-                /\/\/\s*STRATEGY[:\s]*(.*)|\/\*\s*STRATEGY[:\s]*(.*?)\*\//gi
+                /\/\/\s*strategy[\s:]*(.*)|\/\*\s*strategy[\s:]*(.*?)\*\//gi
               ) || [];
             const visionMatches =
               content.match(
-                /\/\/\s*VISION[:\s]*(.*)|\/\*\s*VISION[:\s]*(.*?)\*\//gi
+                /\/\/\s*vision[\s:]*(.*)|\/\*\s*vision[\s:]*(.*?)\*\//gi
               ) || [];
 
             todoAnnotations.push(

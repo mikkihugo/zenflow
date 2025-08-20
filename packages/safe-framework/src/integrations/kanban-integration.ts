@@ -36,17 +36,29 @@ import {
 } from '@claude-zen/kanban';
 
 import type { 
-  TypeSafeEventBus,
   Logger 
 } from '@claude-zen/foundation';
+// Use Node.js EventEmitter until event-system is implemented
+import { EventEmitter } from 'node:events';
+
+// Define WSJFPriority type locally since it's not exported yet
+interface WSJFPriority {
+  businessValue: number;
+  urgency: number;
+  riskReduction: number;
+  opportunityEnablement: number;
+  size: number;
+  wsjfScore: number;
+  lastUpdated: Date;
+  confidence: number;
+}
 
 import type {
   PortfolioEpic,
   Feature,
   Story,
   ProgramIncrement,
-  ValueStream,
-  WSJFPriority
+  ValueStream
 } from '../types';
 
 // ============================================================================
@@ -106,7 +118,7 @@ export type SafeSolutionKanbanState =
 /**
  * Create Portfolio Kanban configuration optimized for Epic lifecycle
  */
-export function createSafePortfolioKanbanConfig(eventBus?: TypeSafeEventBus): WorkflowKanbanConfig {
+export function createSafePortfolioKanbanConfig(eventBus?: EventEmitter): WorkflowKanbanConfig {
   return {
     // Portfolio-specific workflow states (maps to Epic lifecycle)
     workflowStates: [
@@ -178,7 +190,7 @@ export function createSafePortfolioKanbanConfig(eventBus?: TypeSafeEventBus): Wo
 /**
  * Create Program Kanban configuration optimized for Feature flow
  */
-export function createSafeProgramKanbanConfig(eventBus?: TypeSafeEventBus): WorkflowKanbanConfig {
+export function createSafeProgramKanbanConfig(eventBus?: EventEmitter): WorkflowKanbanConfig {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow suitable for features
     
@@ -229,7 +241,7 @@ export function createSafeProgramKanbanConfig(eventBus?: TypeSafeEventBus): Work
 /**
  * Create Team Kanban configuration optimized for Story/Task flow  
  */
-export function createSafeTeamKanbanConfig(eventBus?: TypeSafeEventBus): WorkflowKanbanConfig {
+export function createSafeTeamKanbanConfig(eventBus?: EventEmitter): WorkflowKanbanConfig {
   return {
     workflowStates: DEFAULT_WORKFLOW_STATES, // Standard workflow for stories
     
@@ -286,7 +298,7 @@ export function createSafeTeamKanbanConfig(eventBus?: TypeSafeEventBus): Workflo
  */
 export async function createSafePortfolioKanban(
   logger: Logger,
-  eventBus?: TypeSafeEventBus
+  eventBus?: EventEmitter
 ): Promise<WorkflowKanban> {
   const config = createSafePortfolioKanbanConfig(eventBus);
   const kanban = createWorkflowKanban(config);
@@ -310,7 +322,7 @@ export async function createSafePortfolioKanban(
  */
 export async function createSafeProgramKanban(
   logger: Logger,
-  eventBus?: TypeSafeEventBus
+  eventBus?: EventEmitter
 ): Promise<WorkflowKanban> {
   const config = createSafeProgramKanbanConfig(eventBus);
   const kanban = createWorkflowKanban(config);
@@ -331,7 +343,7 @@ export async function createSafeProgramKanban(
  */
 export async function createSafeTeamKanban(
   logger: Logger,
-  eventBus?: TypeSafeEventBus
+  eventBus?: EventEmitter
 ): Promise<WorkflowKanban> {
   const config = createSafeTeamKanbanConfig(eventBus);
   const kanban = createWorkflowKanban(config);
@@ -471,21 +483,21 @@ export function portfolioEpicToKanbanTask(epic: PortfolioEpic, wsjf?: WSJFPriori
     id: epic.id,
     title: epic.title,
     description: epic.description,
-    state: mapPortfolioStateToKanbanState(epic.state),
-    priority: mapEpicPriorityToKanbanPriority(wsjf?.ranking || 5),
-    estimatedEffort: epic.estimatedValue || 1,
-    assignedTo: epic.epicOwner,
-    createdAt: epic.createdAt,
-    updatedAt: epic.lastModified,
-    completedAt: epic.state === 'done' ? epic.lastModified : undefined,
-    dependencies: epic.dependencies?.map(d => d.id) || [],
-    tags: [epic.category || 'epic', ...(epic.themes || [])],
+    state: mapPortfolioStateToKanbanState((epic as any).state || epic.status),
+    priority: mapEpicPriorityToKanbanPriority((wsjf as any)?.ranking || 5),
+    estimatedEffort: (epic as any).estimatedValue || epic.businessValue || 1,
+    assignedTo: (epic as any).epicOwner || 'unassigned',
+    createdAt: (epic as any).createdAt || new Date(),
+    updatedAt: (epic as any).lastModified || new Date(),
+    completedAt: ((epic as any).state || epic.status) === 'done' ? (epic as any).lastModified : undefined,
+    dependencies: (epic as any).dependencies?.map((d: any) => d.id) || [],
+    tags: [(epic as any).category || 'epic', ...((epic as any).themes || [])],
     metadata: {
       wsjfScore: wsjf?.wsjfScore,
       businessValue: epic.businessValue,
-      timeCriticality: epic.timeCriticality,
-      jobSize: epic.jobSize,
-      valueStream: epic.valueStream?.name
+      timeCriticality: (epic as any).timeCriticality || 0,
+      jobSize: (epic as any).jobSize || 1,
+      valueStream: (epic as any).valueStream?.name || 'default'
     }
   };
 }
@@ -496,20 +508,20 @@ export function portfolioEpicToKanbanTask(epic: PortfolioEpic, wsjf?: WSJFPriori
 export function featureToKanbanTask(feature: Feature): WorkflowTask {
   return {
     id: feature.id,
-    title: feature.title,
+    title: (feature as any).title || feature.id,
     description: feature.description,
     state: feature.status as TaskState || 'backlog',
-    priority: feature.priority as TaskPriority || 'medium',
-    estimatedEffort: feature.storyPoints || 1,
-    assignedTo: feature.owner,
-    createdAt: new Date(feature.createdAt),
-    updatedAt: new Date(feature.updatedAt),
-    dependencies: feature.dependencies?.map(d => d.toString()) || [],
-    tags: ['feature', ...(feature.labels || [])],
+    priority: ((feature as any).priority as TaskPriority) || 'medium',
+    estimatedEffort: (feature as any).storyPoints || 1,
+    assignedTo: (feature as any).owner || (feature as any).assignee || 'unassigned',
+    createdAt: new Date((feature as any).createdAt || (feature as any).createdDate || Date.now()),
+    updatedAt: new Date((feature as any).updatedAt || (feature as any).lastModified || Date.now()),
+    dependencies: (feature as any).dependencies?.map((d: any) => d.toString()) || [],
+    tags: ['feature', ...((feature as any).labels || [])],
     metadata: {
-      epicId: feature.epicId,
-      programIncrement: feature.programIncrementId,
-      acceptanceCriteria: feature.acceptanceCriteria
+      epicId: (feature as any).epicId || feature.piId,
+      programIncrement: (feature as any).programIncrementId || 'current',
+      acceptanceCriteria: (feature as any).acceptanceCriteria || []
     }
   };
 }
@@ -520,20 +532,20 @@ export function featureToKanbanTask(feature: Feature): WorkflowTask {
 export function storyToKanbanTask(story: Story): WorkflowTask {
   return {
     id: story.id,
-    title: story.title,
+    title: (story as any).title || story.id,
     description: story.description,
     state: story.status as TaskState || 'backlog',
     priority: story.priority as TaskPriority || 'medium',
     estimatedEffort: story.storyPoints || 1,
-    assignedTo: story.assignee,
-    createdAt: new Date(story.createdDate),
-    updatedAt: new Date(story.lastModified),
-    dependencies: story.dependencies?.map(d => d.toString()) || [],
-    tags: ['story', ...(story.labels || [])],
+    assignedTo: (story as any).assignee || 'unassigned',
+    createdAt: new Date((story as any).createdDate || Date.now()),
+    updatedAt: new Date((story as any).lastModified || Date.now()),
+    dependencies: (story as any).dependencies?.map((d: any) => d.toString()) || [],
+    tags: ['story', ...((story as any).labels || [])],
     metadata: {
       featureId: story.featureId,
       acceptanceCriteria: story.acceptanceCriteria,
-      testCases: story.testCases
+      testCases: (story as any).testCases || []
     }
   };
 }

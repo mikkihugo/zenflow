@@ -32,6 +32,7 @@ export interface EpicOwnerManagerConfig {
   readonly valueRealizationTracking: boolean;
   readonly stakeholderFeedbackCycle: number; // days
   readonly epicAnalysisTimeLimit: number; // days
+  readonly autoApprovalWSJFThreshold: number;
 }
 
 // =============================================================================
@@ -122,6 +123,7 @@ export interface EpicBusinessCase {
   readonly businessHypothesis: BusinessHypothesis;
   readonly marketAnalysis: MarketAnalysis;
   readonly financialProjection: FinancialProjection;
+  readonly financialViability: FinancialViability;
   readonly riskAssessment: RiskAssessment;
   readonly implementationPlan: ImplementationPlan;
   readonly successMetrics: SuccessMetric[];
@@ -131,6 +133,22 @@ export interface EpicBusinessCase {
   readonly updatedAt: Date;
   readonly version: string;
   readonly approvalStatus: ApprovalStatus;
+}
+
+/**
+ * Financial viability assessment
+ */
+export interface FinancialViability {
+  readonly netPresentValue: number;
+  readonly npv: number; // Alias for netPresentValue
+  readonly returnOnInvestment: number;
+  readonly roi: number; // Alias for returnOnInvestment
+  readonly paybackPeriod: number;
+  readonly breakEvenPoint: number;
+  readonly riskAdjustedReturn: number;
+  readonly confidenceLevel: number;
+  readonly financialScore: number;
+  readonly isViable: boolean; // Overall financial viability assessment
 }
 
 /**

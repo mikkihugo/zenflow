@@ -12,33 +12,28 @@
  * - Integration with WorkflowGatesManager for business gates
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import {
-  createEvent,
-  EventPriority,
-} from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
+
+
+
 import type {
   BusinessCase,
   FlowMetrics,
   Milestone,
   OrchestrationLevel,
-  PortfolioGate,
-  PortfolioGateType,
   PortfolioItem,
   PortfolioItemStatus,
   PortfolioMetrics,
   PortfolioPriority,
   PortfolioTimeline,
   ResourceRequirements,
-  SuccessMetric,
   WorkflowStream,
 } from './multi-level-types';
 import type { WorkflowGatesManager } from './workflow-gates';
-import { WorkflowHumanGateType } from './workflow-gates';
 
 // ============================================================================
 // PORTFOLIO ORCHESTRATOR CONFIGURATION
@@ -214,7 +209,7 @@ export interface PortfolioOrchestratorState {
 export class PortfolioOrchestrator extends EventEmitter {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly gatesManager: WorkflowGatesManager;
   private readonly config: PortfolioOrchestratorConfig;
 
@@ -224,7 +219,7 @@ export class PortfolioOrchestrator extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     gatesManager: WorkflowGatesManager,
     config: Partial<PortfolioOrchestratorConfig> = {}
   ) {

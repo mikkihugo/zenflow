@@ -1,3 +1,4 @@
+import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
 /**
  * Web Data Service - Business logic and data management.
@@ -9,7 +10,6 @@ import { getVersion } from '../../config/version';
  * @file Web-data service implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
 
 export interface SystemStatusData {
   system: string;

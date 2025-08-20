@@ -172,14 +172,14 @@ export class BeamLanguageParser {
 
   // Elixir parsing methods
   private extractElixirModuleName(content: string): string | null {
-    const match = content.match(/defmodule\s+([A-Z][A-Za-z0-9._]*)/);
+    const match = content.match(/defmodule\s+([A-Z][\w.]*)/);
     return match ? match[1] : null;
   }
 
   private extractElixirFunctions(content: string): BeamFunction[] {
     const functions: BeamFunction[] = [];
     const defRegex =
-      /(?:def|defp)\s+([a-z_][a-zA-Z0-9_]*(?:\?|!)?)\s*(?:\(([^)]*)\))?/g;
+      /(?:def|defp)\s+([_a-z]\w*[!?]?)\s*(?:\(([^)]*)\))?/g;
     const lines = content.split('\n');
 
     let match;
@@ -207,7 +207,7 @@ export class BeamLanguageParser {
   private extractElixirTypes(content: string): BeamType[] {
     const types: BeamType[] = [];
     const typeRegex =
-      /@type\s+([a-z_][a-zA-Z0-9_]*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
+      /@type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^\n]+)/g;
 
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
@@ -238,19 +238,19 @@ export class BeamLanguageParser {
     const deps: string[] = [];
 
     // Extract use statements
-    const useMatches = content.matchAll(/use\s+([A-Z][A-Za-z0-9._]*)/g);
+    const useMatches = content.matchAll(/use\s+([A-Z][\w.]*)/g);
     for (const match of useMatches) {
       deps.push(match[1]);
     }
 
     // Extract import statements
-    const importMatches = content.matchAll(/import\s+([A-Z][A-Za-z0-9._]*)/g);
+    const importMatches = content.matchAll(/import\s+([A-Z][\w.]*)/g);
     for (const match of importMatches) {
       deps.push(match[1]);
     }
 
     // Extract alias statements
-    const aliasMatches = content.matchAll(/alias\s+([A-Z][A-Za-z0-9._]*)/g);
+    const aliasMatches = content.matchAll(/alias\s+([A-Z][\w.]*)/g);
     for (const match of aliasMatches) {
       deps.push(match[1]);
     }
@@ -260,13 +260,13 @@ export class BeamLanguageParser {
 
   // Erlang parsing methods
   private extractErlangModuleName(content: string): string | null {
-    const match = content.match(/-module\s*\(\s*([a-z][a-zA-Z0-9_]*)\s*\)/);
+    const match = content.match(/-module\s*\(\s*([a-z]\w*)\s*\)/);
     return match ? match[1] : null;
   }
 
   private extractErlangFunctions(content: string): BeamFunction[] {
     const functions: BeamFunction[] = [];
-    const funcRegex = /^([a-z][a-zA-Z0-9_]*)\s*\(([^)]*)\)\s*->/gm;
+    const funcRegex = /^([a-z]\w*)\s*\(([^)]*)\)\s*->/gm;
 
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
@@ -290,7 +290,7 @@ export class BeamLanguageParser {
   private extractErlangTypes(content: string): BeamType[] {
     const types: BeamType[] = [];
     const typeRegex =
-      /-type\s+([a-z_][a-zA-Z0-9_]*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
+      /-type\s+([_a-z]\w*(?:\([^)]*\))?)\s*::\s*([^.]+)\./g;
 
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
@@ -334,7 +334,7 @@ export class BeamLanguageParser {
 
   private extractErlangBehaviours(content: string): string[] {
     const behaviours: string[] = [];
-    const behaviourRegex = /-behaviour\s*\(\s*([a-z][a-zA-Z0-9_]*)\s*\)/g;
+    const behaviourRegex = /-behaviour\s*\(\s*([a-z]\w*)\s*\)/g;
 
     let match;
     while ((match = behaviourRegex.exec(content)) !== null) {
@@ -346,7 +346,7 @@ export class BeamLanguageParser {
 
   private extractErlangExports(content: string): string[] {
     const exports: string[] = [];
-    const exportRegex = /-export\s*\(\s*\[([^\]]+)\]\s*\)/g;
+    const exportRegex = /-export\s*\(\s*\[([^\]]+)]\s*\)/g;
 
     let match;
     while ((match = exportRegex.exec(content)) !== null) {
@@ -360,7 +360,7 @@ export class BeamLanguageParser {
   // Gleam parsing methods
   private extractGleamFunctions(content: string): BeamFunction[] {
     const functions: BeamFunction[] = [];
-    const funcRegex = /(?:pub\s+)?fn\s+([a-z_][a-zA-Z0-9_]*)\s*\(([^)]*)\)/g;
+    const funcRegex = /(?:pub\s+)?fn\s+([_a-z]\w*)\s*\(([^)]*)\)/g;
 
     let match;
     while ((match = funcRegex.exec(content)) !== null) {
@@ -387,7 +387,7 @@ export class BeamLanguageParser {
   private extractGleamTypes(content: string): BeamType[] {
     const types: BeamType[] = [];
     const typeRegex =
-      /(?:pub\s+)?type\s+([A-Z][a-zA-Z0-9_]*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
+      /(?:pub\s+)?type\s+([A-Z]\w*)\s*(?:\([^)]*\))?\s*=\s*([^\n]+)/g;
 
     let match;
     while ((match = typeRegex.exec(content)) !== null) {
@@ -404,7 +404,7 @@ export class BeamLanguageParser {
 
   private extractGleamDocs(content: string): string[] {
     const docs: string[] = [];
-    const docRegex = /\/\/\/\s*(.*)/g;
+    const docRegex = /\/{3}\s*(.*)/g;
 
     let match;
     while ((match = docRegex.exec(content)) !== null) {
@@ -416,7 +416,7 @@ export class BeamLanguageParser {
 
   private extractGleamDependencies(content: string): string[] {
     const deps: string[] = [];
-    const importRegex = /import\s+([a-z][a-zA-Z0-9_/]*)/g;
+    const importRegex = /import\s+([a-z][\w/]*)/g;
 
     let match;
     while ((match = importRegex.exec(content)) !== null) {

@@ -167,6 +167,10 @@ export class WorkflowEngine extends EventEmitter {
       persistWorkflows: config.persistWorkflows ?? false,
       persistencePath: config.persistencePath ?? './workflows',
       retryAttempts: config.retryAttempts ?? 3,
+      enableAdvancedOrchestration: config.enableAdvancedOrchestration ?? false,
+      orchestrationMode: config.orchestrationMode ?? 'basic',
+      enableErrorRecovery: config.enableErrorRecovery ?? true,
+      enablePerformanceTracking: config.enablePerformanceTracking ?? true,
     };
 
     this.documentManager = documentManager;

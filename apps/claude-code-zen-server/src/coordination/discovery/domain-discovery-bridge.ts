@@ -39,6 +39,18 @@ import { EventEmitter } from 'eventemitter3';
 import { basename } from 'node:path';
 import { getLogger } from '../../config/logging-config';
 
+import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
+import type {
+  MonorepoInfo,
+  ProjectContextAnalyzer,
+} from '../../knowledge/project-context-analyzer';
+import type {
+  DomainAnalysis,
+  DomainAnalysisEngine,
+} from '../../tools/domain-splitting/analyzers/domain-analyzer';
+import { NeuralDomainMapper } from './neural-domain-mapper';
+import type { DependencyGraph, Domain } from './types';
+
 // Break circular dependency - use interface instead of direct import
 interface DocumentProcessorLike {
   on: (event: string, listener: (...args: unknown[]) => void) => void;
@@ -56,18 +68,6 @@ export interface Document {
 }
 
 type DocumentType = Document['type'];
-
-import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
-import type {
-  MonorepoInfo,
-  ProjectContextAnalyzer,
-} from '../../knowledge/project-context-analyzer';
-import type {
-  DomainAnalysis,
-  DomainAnalysisEngine,
-} from '../../tools/domain-splitting/analyzers/domain-analyzer';
-import { NeuralDomainMapper } from './neural-domain-mapper';
-import type { DependencyGraph, Domain } from './types';
 
 const logger = getLogger('DomainDiscoveryBridge');
 
@@ -778,13 +778,11 @@ export class DomainDiscoveryBridge extends EventEmitter {
     }
 
     // Enhanced neural analysis with Bazel integration
-    const domainArray = await this.enhanceDomainsWithNeuralAnalysis(
+    return await this.enhanceDomainsWithNeuralAnalysis(
       Array.from(domains.values()),
       domainAnalysis,
       monorepoInfo
     );
-
-    return domainArray;
   }
 
   /**
@@ -1420,8 +1418,8 @@ export class DomainDiscoveryBridge extends EventEmitter {
       );
       // Trigger discovery in background
       setImmediate(() =>
-        this.discoverDomains().catch((err) =>
-          logger.error('Background domain discovery failed:', err)
+        this.discoverDomains().catch((error) =>
+          logger.error('Background domain discovery failed:', error)
         )
       );
     }

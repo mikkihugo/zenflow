@@ -8,13 +8,12 @@ import {
   getLogger, 
   getDatabaseAccess, 
   type DatabaseAccess 
-} from '@claude-zen/foundation';
-import { 
-  injectable, 
+, 
   inject, 
   TOKENS, 
   type Logger 
 } from '@claude-zen/foundation';
+
 import { 
   SmartNeuralCoordinator,
   type NeuralBackendConfig,
@@ -22,8 +21,7 @@ import {
   type NeuralEmbeddingResult
 } from './smart-neural-coordinator';
 
-// Foundation-optimized logging with DI support
-const logger = getLogger('Neural');
+// Foundation-optimized logging via dependency injection - using this.foundationLogger in class
 
 export interface NeuralConfig {
   wasmPath?: string;
@@ -136,7 +134,7 @@ export class NeuralBridge {
       this.dbAccess = getDatabaseAccess();
       
       // Initialize SmartNeuralCoordinator for intelligent neural backend
-      if (this.config.smartNeuralBackend !== false) {
+      if (this.config.smartNeuralBackend !== undefined) {
         this.smartNeuralCoordinator = new SmartNeuralCoordinator(
           this.config.smartNeuralBackend || {}
         );

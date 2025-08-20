@@ -6,13 +6,12 @@
  * This ensures knowledge consistency across the entire hierarchy.
  */
 
-import { BaseAgent } from './agent';
 import {
   withFactCapabilities,
-  type FactCapable,
 } from '../universal-fact-mixin';
 import { getLogger } from '../../config/logging-config';
 import type { AgentConfig } from '../types';
+import { BaseAgent } from './agent';
 
 const logger = getLogger('Enhanced-Base-Agent');
 
@@ -396,12 +395,10 @@ export class EnhancedResearcherAgent extends EnhancedBaseAgent {
 
   protected override async executeTaskByType(task: any): Promise<any> {
     // Automatically gather research knowledge from FACT system
-    if (!task?.requiresFacts) {
-      if (task) {
+    if (!task?.requiresFacts && task) {
         task.requiresFacts = true;
         task.research = true;
       }
-    }
 
     return await super.executeTaskByType(task);
   }
@@ -417,12 +414,10 @@ export class EnhancedCoderAgent extends EnhancedBaseAgent {
 
   protected override async executeTaskByType(task: any): Promise<any> {
     // Automatically gather package and API knowledge
-    if (!task?.requiresFacts) {
-      if (task) {
+    if (!task?.requiresFacts && task) {
         task.requiresFacts = true;
         task.storeInsights = true;
       }
-    }
 
     return await super.executeTaskByType(task);
   }
@@ -438,11 +433,9 @@ export class EnhancedAnalystAgent extends EnhancedBaseAgent {
 
   protected override async executeTaskByType(task: any): Promise<any> {
     // Automatically store analysis insights
-    if (!task?.storeInsights) {
-      if (task) {
+    if (!task?.storeInsights && task) {
         task.storeInsights = true;
       }
-    }
 
     return await super.executeTaskByType(task);
   }

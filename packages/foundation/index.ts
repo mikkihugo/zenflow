@@ -148,30 +148,6 @@ export {
 export type { LLMMessage, LLMRequest, LLMResponse, SwarmAgentRole } from './src/main';
 
 // =============================================================================
-// CLAUDE SDK - Raw Claude Code CLI/SDK bindings (SWARMS & ADVANCED)
-// =============================================================================
-export {
-  executeClaudeTask,
-  executeSwarmCoordinationTask,
-  ClaudeTaskManager,
-  getGlobalClaudeTaskManager,
-  streamClaudeTask,
-  executeParallelClaudeTasks,
-  filterMessagesForClaudeCode,
-  cleanupGlobalInstances
-} from './src/main';
-export type {
-  ClaudeSDKOptions,
-  ClaudeMessage,
-  ClaudeAssistantMessage,
-  ClaudeUserMessage,
-  ClaudeResultMessage,
-  ClaudeSystemMessage,
-  PermissionResult,
-  CanUseTool
-} from './src/main';
-
-// =============================================================================
 // STORAGE SYSTEM - Professional database abstraction
 // =============================================================================
 export {
@@ -327,3 +303,27 @@ export type {
 // =============================================================================
 // Note: Full database functionality is now in the separate @claude-zen/database package
 // This provides a simple access interface for foundation consumers
+
+// =============================================================================
+// CLAUDE SDK - Raw Claude Code CLI/SDK bindings (BOTTOM - ADVANCED USAGE)
+// =============================================================================
+export {
+  executeClaudeTask,
+  executeSwarmCoordinationTask,
+  ClaudeTaskManager,
+  getGlobalClaudeTaskManager,
+  streamClaudeTask,
+  executeParallelClaudeTasks,
+  filterMessagesForClaudeCode,
+  cleanupGlobalInstances
+} from './src/main';
+export type {
+  ClaudeSDKOptions,
+  ClaudeMessage,
+  ClaudeAssistantMessage,
+  ClaudeUserMessage,
+  ClaudeResultMessage,
+  ClaudeSystemMessage,
+  PermissionResult,
+  CanUseTool
+} from './src/main';

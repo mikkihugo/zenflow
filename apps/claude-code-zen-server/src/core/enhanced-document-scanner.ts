@@ -13,16 +13,12 @@
  * @file Enhanced document scanner for code analysis and task generation.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { extname, join, relative } from 'node:path';
+import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '../config/logging-config';
-import type { 
-  BaseDocumentEntity, 
-  TaskDocumentEntity, 
-  FeatureDocumentEntity 
-} from '../database/entities/document-entities';
-import type { DocumentType } from '../database/types/workflow-types';
+
+
 
 const logger = getLogger('EnhancedDocumentScanner');
 
@@ -143,45 +139,45 @@ export class EnhancedDocumentScanner extends EventEmitter {
 
     // TODO pattern detection
     patterns.set('todo', [
-      /(?:\/\/|#|<!--)\s*TODO[:\s](.*?)(?:-->|$)/gi,
-      /(?:\/\*|\*)\s*TODO[:\s](.*?)(?:\*\/|$)/gi,
-      /\b(?:TODO|To-Do|@todo)[:\s](.*?)(?:\n|$)/gi
+      /(?:\/\/|#|<!--)\s*todo[\s:](.*?)(?:-->|$)/gi,
+      /(?:\/\*|\*)\s*todo[\s:](.*?)(?:\*\/|$)/gi,
+      /\b(?:todo|to-do|@todo)[\s:](.*?)(?:\n|$)/gi
     ]);
 
     // FIXME pattern detection  
     patterns.set('fixme', [
-      /(?:\/\/|#|<!--)\s*FIXME[:\s](.*?)(?:-->|$)/gi,
-      /(?:\/\*|\*)\s*FIXME[:\s](.*?)(?:\*\/|$)/gi,
-      /\b(?:FIXME|FIX|@fixme)[:\s](.*?)(?:\n|$)/gi
+      /(?:\/\/|#|<!--)\s*fixme[\s:](.*?)(?:-->|$)/gi,
+      /(?:\/\*|\*)\s*fixme[\s:](.*?)(?:\*\/|$)/gi,
+      /\b(?:fixme|fix|@fixme)[\s:](.*?)(?:\n|$)/gi
     ]);
 
     // HACK pattern detection
     patterns.set('hack', [
-      /(?:\/\/|#|<!--)\s*HACK[:\s](.*?)(?:-->|$)/gi,
-      /(?:\/\*|\*)\s*HACK[:\s](.*?)(?:\*\/|$)/gi,
-      /\b(?:HACK|HACKY|@hack)[:\s](.*?)(?:\n|$)/gi
+      /(?:\/\/|#|<!--)\s*hack[\s:](.*?)(?:-->|$)/gi,
+      /(?:\/\*|\*)\s*hack[\s:](.*?)(?:\*\/|$)/gi,
+      /\b(?:hack|hacky|@hack)[\s:](.*?)(?:\n|$)/gi
     ]);
 
     // Deprecated pattern detection
     patterns.set('deprecated', [
-      /@deprecated[:\s](.*?)(?:\n|$)/gi,
-      /\b(?:DEPRECATED|@deprecated)[:\s](.*?)(?:\n|$)/gi,
-      /(?:\/\/|#)\s*DEPRECATED[:\s](.*?)(?:\n|$)/gi
+      /@deprecated[\s:](.*?)(?:\n|$)/gi,
+      /\b(?:deprecated|@deprecated)[\s:](.*?)(?:\n|$)/gi,
+      /(?:\/\/|#)\s*deprecated[\s:](.*?)(?:\n|$)/gi
     ]);
 
     // Missing implementation patterns
     patterns.set('missing_implementation', [
-      /throw new Error\(['"`]Not implemented['"`]\)/gi,
-      /throw new NotImplementedError/gi,
-      /\/\/ TODO[:\s]*implement/gi,
-      /\/\* TODO[:\s]*implement/gi
+      /throw new error\(["'`]not implemented["'`]\)/gi,
+      /throw new notimplementederror/gi,
+      /\/\/ todo[\s:]*implement/gi,
+      /\/\* todo[\s:]*implement/gi
     ]);
 
     // Empty function patterns
     patterns.set('empty_function', [
-      /function\s+\w+\s*\([^)]*\)\s*\{\s*\}/gi,
-      /\w+\s*=\s*\([^)]*\)\s*=>\s*\{\s*\}/gi,
-      /async\s+function\s+\w+\s*\([^)]*\)\s*\{\s*\}/gi
+      /function\s+\w+\s*\([^)]*\)\s*{\s*}/gi,
+      /\w+\s*=\s*\([^)]*\)\s*=>\s*{\s*}/gi,
+      /async\s+function\s+\w+\s*\([^)]*\)\s*{\s*}/gi
     ]);
 
     return patterns;
@@ -258,13 +254,11 @@ export class EnhancedDocumentScanner extends EventEmitter {
             continue;
           }
           scannedFiles += await this.scanDirectory(fullPath, analysisResults, depth + 1);
-        } else if (stats.isFile()) {
-          // Check if file should be included
-          if (this.shouldIncludeFile(fullPath)) {
+        } else if (stats.isFile() && // Check if file should be included
+          this.shouldIncludeFile(fullPath)) {
             await this.analyzeFile(fullPath, analysisResults);
             scannedFiles++;
           }
-        }
       }
     } catch (error) {
       logger.warn(`Failed to scan directory ${dirPath}:`, error);
@@ -331,7 +325,7 @@ export class EnhancedDocumentScanner extends EventEmitter {
   ): Promise<void> {
     try {
       // Check for empty functions
-      const emptyFunctionMatches = content.matchAll(/(?:function\s+(\w+)|(\w+)\s*=\s*(?:async\s+)?(?:function|\([^)]*\)\s*=>))\s*\([^)]*\)\s*\{\s*(?:\/\/[^\n]*\n\s*)*\}/g);
+      const emptyFunctionMatches = content.matchAll(/(?:function\s+(\w+)|(\w+)\s*=\s*(?:async\s+)?(?:function|\([^)]*\)\s*=>))\s*\([^)]*\)\s*{\s*(?:\/\/[^\n]*\n\s*)*}/g);
       
       for (const match of emptyFunctionMatches) {
         const functionName = match[1] || match[2];
@@ -353,7 +347,7 @@ export class EnhancedDocumentScanner extends EventEmitter {
       }
 
       // Check for missing error handling
-      const asyncFunctionMatches = content.matchAll(/(?:async\s+function\s+\w+|=\s*async\s*\([^)]*\)\s*=>)/g);
+      const asyncFunctionMatches = content.matchAll(/async\s+function\s+\w+|=\s*async\s*\([^)]*\)\s*=>/g);
       for (const match of asyncFunctionMatches) {
         const functionText = this.extractFunctionBody(content, match.index || 0);
         if (functionText && !functionText.includes('try') && !functionText.includes('catch')) {
@@ -411,7 +405,7 @@ export class EnhancedDocumentScanner extends EventEmitter {
     }
 
     // Check for broken internal links
-    const internalLinks = content.matchAll(/\[([^\]]+)\]\(([^)]+)\.md\)/g);
+    const internalLinks = content.matchAll(/\[([^\]]+)]\(([^)]+)\.md\)/g);
     for (const match of internalLinks) {
       const linkText = match[1];
       const linkPath = match[2];

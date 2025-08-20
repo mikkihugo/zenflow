@@ -17,6 +17,8 @@
  * @since 2024-01-01
  */
 
+import { getLogger } from '@claude-zen/foundation';
+
 import type { BehavioralIntelligence } from '../../behavioral-intelligence';
 import type { DSPyLLMBridge } from '../../coordination/dspy-llm-bridge';
 
@@ -124,6 +126,12 @@ export interface CodingPrinciples {
     performance: { metric: string; threshold: number };
   };
   
+  /** Best practices from successful patterns */
+  bestPractices: string[];
+  
+  /** Anti-patterns to avoid */
+  antiPatterns: string[];
+  
   /** Human-reviewable template */
   template: string;
   
@@ -211,6 +219,7 @@ export class CodingPrinciplesResearcher {
   private agentFeedback = new Map<string, AgentExecutionFeedback[]>();
   private promptConfidence = new Map<string, PromptConfidence>();
   private minimumConfidenceThreshold = 0.7; // Minimum confidence before using principles
+  private logger = getLogger('CodingPrinciplesResearcher');
   
   constructor(
     private dspyBridge: DSPyLLMBridge,
@@ -490,13 +499,11 @@ Respond in JSON format with structured guidelines that cover all research areas 
     roleSpecific: string[];
     advanced: string[];
   } {
-    const areas = {
+    return {
       domainSpecific: this.getDomainSpecificResearchAreas(domain),
       roleSpecific: this.getRoleSpecificResearchAreas(role),
       advanced: this.getAdvancedResearchAreas(role, domain)
     };
-
-    return areas;
   }
 
   /**
@@ -837,6 +844,9 @@ Respond in JSON format with structured guidelines that cover all research areas 
           performance: parsed.qualityMetrics?.performance || { metric: 'response_time', threshold: 100 }
         },
         
+        bestPractices: parsed.bestPractices || [],
+        antiPatterns: parsed.antiPatterns || [],
+        
         template: this.generateTemplate(parsed),
         
         researchMetadata: {
@@ -992,6 +1002,8 @@ ${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join('\
         packageManagement: this.getDefaultPackageManagement(config.language),
         buildTools: this.getDefaultBuildTools(config.language)
       },
+      bestPractices: [],
+      antiPatterns: [],
       qualityMetrics: {
         complexity: { metric: 'cyclomatic', threshold: 10 },
         coverage: { metric: 'line', threshold: 80 },
@@ -1023,6 +1035,88 @@ ${principles.languageSpecific.packageManagement.map(item => `- ${item}`).join('\
     // Enhance principles with successful patterns learned from actual projects
     principles.researchMetadata.lastUpdated = new Date();
     principles.researchMetadata.confidence = Math.min(principles.researchMetadata.confidence + 0.1, 1.0);
+    
+    // Analyze patterns to enhance principles
+    if (patterns && typeof patterns === 'object') {
+      try {
+        // Extract successful patterns from the data
+        const patternKeys = Object.keys(patterns);
+        
+        if (patternKeys.length > 0) {
+          // Use patterns to refine principles based on real-world success data
+          const patternSuccessRate = this.calculatePatternSuccessRate(patterns);
+          
+          if (patternSuccessRate > 0.8) {
+            // High success rate patterns enhance confidence
+            principles.researchMetadata.confidence = Math.min(principles.researchMetadata.confidence + 0.2, 1.0);
+            
+            // Extract best practices from successful patterns
+            this.extractBestPracticesFromPatterns(principles, patterns);
+          }
+          
+          // Add pattern insights to research metadata
+          principles.researchMetadata.sources.push(`pattern-analysis-${patternKeys.length}-patterns`);
+        }
+      } catch (error) {
+        this.logger.warn('Error analyzing patterns for principles enhancement:', error);
+      }
+    }
+  }
+
+  /**
+   * Calculate success rate from patterns data
+   */
+  private calculatePatternSuccessRate(patterns: any): number {
+    try {
+      if (Array.isArray(patterns)) {
+        // If patterns is an array of success/failure data
+        const successCount = patterns.filter((p: any) => p.success === true || p.successful === true).length;
+        return patterns.length > 0 ? successCount / patterns.length : 0;
+      } else if (typeof patterns === 'object') {
+        // If patterns has success metrics
+        if (patterns.successRate) return patterns.successRate;
+        if (patterns.success !== undefined && patterns.total !== undefined) {
+          return patterns.total > 0 ? patterns.success / patterns.total : 0;
+        }
+        // Default success rate based on pattern existence and structure
+        const patternCount = Object.keys(patterns).length;
+        return patternCount > 3 ? 0.7 : 0.5; // Heuristic: more patterns indicate higher success
+      }
+      return 0.5; // Default moderate success rate
+    } catch (error) {
+      this.logger.warn('Error calculating pattern success rate:', error);
+      return 0.5;
+    }
+  }
+
+  /**
+   * Extract best practices from successful patterns
+   */
+  private extractBestPracticesFromPatterns(principles: CodingPrinciples, patterns: any): void {
+    try {
+      // Look for common successful patterns to enhance principles
+      if (patterns.commonPatterns) {
+        principles.bestPractices.push(...patterns.commonPatterns.filter((p: string) => 
+          typeof p === 'string' && p.length > 10 && !principles.bestPractices.includes(p)
+        ));
+      }
+      
+      if (patterns.recommendations) {
+        principles.antiPatterns.push(...patterns.recommendations.avoid?.filter((p: string) => 
+          typeof p === 'string' && p.length > 10 && !principles.antiPatterns.includes(p)
+        ) || []);
+      }
+      
+      // Extract quality metrics if available
+      if (patterns.qualityMetrics) {
+        principles.researchMetadata.confidence = Math.min(
+          principles.researchMetadata.confidence + (patterns.qualityMetrics.score || 0) * 0.1,
+          1.0
+        );
+      }
+    } catch (error) {
+      this.logger.warn('Error extracting best practices from patterns:', error);
+    }
   }
 
   /**

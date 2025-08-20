@@ -18,9 +18,10 @@
  */
 
 import { nanoid } from 'nanoid';
-import { MultiSwarmABTesting, type ABTestStrategy, type ABTestResult, type GitTreeConfig } from './multi-swarm-ab-testing';
+
 import { CodingPrinciplesResearcher } from './coding-principles-researcher';
 import { IntelligentPromptGenerator } from './intelligent-prompt-generator';
+import { MultiSwarmABTesting, type ABTestStrategy, type GitTreeConfig } from './multi-swarm-ab-testing';
 
 /**
  * SPARC-specific strategy configuration

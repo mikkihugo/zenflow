@@ -4,8 +4,6 @@
 
 import { getLogger } from '../../../config/logging-config';
 
-const logger = getLogger('interfaces-api-http-index');
-
 /**
  * REST API Layer - Main Entry Point.
  *
@@ -22,6 +20,8 @@ import {
   APIServer,
   type APIServerConfig,
 } from './server';
+
+const logger = getLogger('interfaces-api-http-index');
 
 export type {
   APIClientConfig,

@@ -72,8 +72,8 @@ export async function factoryPatternExample() {
 
     // Connect to both
     await Promise.all([
-      context7.connect().catch(e => console.warn('Context7 connection failed:', e.message)),
-      deepwiki.connect().catch(e => console.warn('Deepwiki connection failed:', e.message))
+      context7.connect().catch(error => console.warn('Context7 connection failed:', error.message)),
+      deepwiki.connect().catch(error => console.warn('Deepwiki connection failed:', error.message))
     ]);
 
     // Check which ones are connected

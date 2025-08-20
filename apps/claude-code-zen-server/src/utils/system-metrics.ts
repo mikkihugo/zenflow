@@ -9,11 +9,10 @@
  * @since 2025-08-14
  */
 
-import { cpuUsage, memoryUsage } from 'process';
 import { cpus, totalmem, freemem, loadavg } from 'os';
+import { cpuUsage, memoryUsage } from 'process';
 import {
   PERFORMANCE_CONSTANTS,
-  SYSTEM_LIMITS,
 } from '../coordination/types/constants';
 
 /**

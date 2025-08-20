@@ -5,10 +5,10 @@
  * for the command palette and file explorer.
  */
 
+import * as path from 'path';
 import type { Express, Request, Response } from 'express';
 import { getLogger } from '../../config/logging-config';
 import * as fs from 'fs-extra';
-import * as path from 'path';
 import { spawn } from 'child_process';
 
 export class WorkspaceApiRoutes {

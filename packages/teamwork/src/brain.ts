@@ -23,8 +23,9 @@
  * @version 1.0.0
  */
 
-import { nanoid } from 'nanoid';
 import { getLogger, type Logger } from '@claude-zen/foundation';
+import { nanoid } from 'nanoid';
+
 import { ConversationOrchestratorImpl } from './main';
 import type { 
   ConversationSession, 

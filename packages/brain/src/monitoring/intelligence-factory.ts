@@ -5,6 +5,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
 import { CompleteIntelligenceSystem } from './intelligence-system';
 import type { IntelligenceSystemConfig } from './types';
 

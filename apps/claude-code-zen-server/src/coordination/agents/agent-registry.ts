@@ -10,7 +10,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 
-// import type { MemoryCoordinator } from '@claude-zen/memory'; // TODO: Fix memory package build
+// import type { MemoryCoordinator } from '@claude-zen/brain'; // TODO: Fix memory package build
 import type {
   AgentCapabilities,
   AgentId,

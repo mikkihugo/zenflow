@@ -62,14 +62,14 @@ export interface PromptIssue {
 const DANGEROUS_PATTERNS = [
   // Output parsing interference patterns
   {
-    pattern: /📁\s*File:\s*[\/\\][^\s]+/gi,
+    pattern: /📁\s*file:\s*[/\\]\S+/gi,
     type: 'parsing' as const,
     severity: 'error' as const,
     message: 'Contains file path patterns that could interfere with output parsing',
     suggestion: 'Use generic file references instead of specific paths with emojis'
   },
   {
-    pattern: /\b[a-zA-Z]:[\/\\][^\s]+\.(ts|js|tsx|jsx|py|java|cpp|c|h|cs|php|rb|go|rs|swift|kt|scala|clj|hs|ml|fs|dart|lua|pl|r|m|sh|bat|ps1)\b/gi,
+    pattern: /\b[a-z]:[/\\]\S+\.(ts|js|tsx|jsx|py|java|cpp|c|h|cs|php|rb|go|rs|swift|kt|scala|clj|hs|ml|fs|dart|lua|pl|r|m|sh|bat|ps1)\b/gi,
     type: 'parsing' as const,
     severity: 'warning' as const,
     message: 'Contains specific file paths that may cause parsing confusion',
@@ -92,7 +92,7 @@ const DANGEROUS_PATTERNS = [
   },
   // Command injection patterns
   {
-    pattern: /[;&|`$(){}[\]]/g,
+    pattern: /[$&();[\]`{|}]/g,
     type: 'safety' as const,
     severity: 'warning' as const,
     message: 'Contains shell metacharacters that could enable command injection',
@@ -293,20 +293,20 @@ export function filterClaudeOutput(output: string, context: 'stderr' | 'stdout' 
       // Progress indicators
       /^(✅|❌|⚠️|🔄|⏳|🚀|📊|📈|📉)\s+/,
       // Conversational patterns
-      /^(I'll|I'm|Let me|Here's|This|The|Based on)/i,
+      /^(i'll|i'm|let me|here's|this|the|based on)/i,
       // Analysis patterns
-      /^(Analysis:|Summary:|Results:|Findings:)/i,
+      /^(analysis:|summary:|results:|findings:)/i,
       // Lists with bullets
-      /^[\s]*[-•]\s+/,
+      /^\s*[•-]\s+/,
       // Numbered lists that are explanatory
-      /^\s*\d+\.\s+(The|This|Here|Based|I)/i,
+      /^\s*\d+\.\s+(the|this|here|based|i)/i,
     ].some(pattern => pattern.test(trimmedLine));
 
     // Special handling for stderr - be more conservative
     if (context === 'stderr') {
       // Only include lines that look like actual error output from tools
       // TypeScript errors: path(line,col): error TSnnnn: message
-      const isActualError = /^[a-zA-Z0-9._/\\-]+\.tsx?\(\d+,\d+\):\s+(error|warning)\s+/i.test(trimmedLine);
+      const isActualError = /^[\w./\\-]+\.tsx?\(\d+,\d+\):\s+(error|warning)\s+/i.test(trimmedLine);
       
       if (isDescriptivePattern && !isActualError) {
         filteredLines.push(line);

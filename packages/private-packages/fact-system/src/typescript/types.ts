@@ -34,6 +34,12 @@ export interface FactSystemConfig {
   
   /** Enable Hex.pm (Elixir package manager) integration */
   enableHexPM?: boolean;
+  
+  /** Enable rule validation and automated compliance checking */
+  enableRuleValidation?: boolean;
+  
+  /** Enable AI-powered inference and reasoning capabilities */
+  enableInference?: boolean;
 }
 
 /**

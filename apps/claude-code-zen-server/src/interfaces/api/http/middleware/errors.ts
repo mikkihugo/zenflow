@@ -9,14 +9,14 @@
 
 import { getLogger } from "../../../config/logging-config";
 
-const logger = getLogger('interfaces-api-http-middleware-errors');
-
 import type {
   ErrorRequestHandler,
   NextFunction,
   Request,
   Response,
 } from 'express';
+
+const logger = getLogger('interfaces-api-http-middleware-errors');
 
 /**
  * Standard API Error Response Structure.

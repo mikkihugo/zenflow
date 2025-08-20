@@ -16,17 +16,15 @@
  * - Real-time health monitoring and automatic failover
  */
 
+import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 import { container } from 'tsyringe';
-import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '@claude-zen/foundation';
-import type { MemorySystem } from '../../core/memory-coordinator';
+import { getLogger , LoadBalancingManager } from '@claude-zen/foundation';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type {
   FlowState,
   FlowStage,
-  WorkflowStream,
 } from '../orchestration/multi-level-types';
-import { LoadBalancingManager } from '@claude-zen/foundation';
 
 // ============================================================================
 // BOTTLENECK DETECTION CONFIGURATION
@@ -188,7 +186,7 @@ export interface BottleneckDetectionResult {
  */
 export class BottleneckDetectionEngine extends EventEmitter {
   private readonly logger: Logger;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly config: BottleneckDetectionConfig;
   private readonly loadBalancer: LoadBalancingManager;
 
@@ -198,7 +196,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   private bottleneckHistory: DetectedBottleneck[] = [];
 
   constructor(
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     config: Partial<BottleneckDetectionConfig> = {}
   ) {
     super();

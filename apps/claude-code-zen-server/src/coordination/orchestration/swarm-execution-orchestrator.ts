@@ -13,42 +13,36 @@
  * - Integration with WorkflowGatesManager for quality gates
  */
 
+import type { TypeSafeEventBus } from '@claude-zen/event-system';
 import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../../config/logging-config';
 import { getLogger } from '../../config/logging-config';
-import type { MemorySystem } from '../../core/memory-coordinator';
-import type { TypeSafeEventBus } from '@claude-zen/event-system';
-import {
-  createEvent,
-  EventPriority,
-} from '@claude-zen/event-system';
+import type { BrainCoordinator } from '../../core/memory-coordinator';
+
+
+
 import type { Agent } from '../agents/agent';
-import type { CollectiveCubeCoordinator } from '../collective-cube-sync';
 import type { SPARCEngineCore } from '../swarm/sparc/sparc-engine-core';
 import type {
   SPARCPhase,
   SPARCProject,
 } from '../swarm/sparc/types/sparc-types';
+
 import type {
   AutomationConfig,
   ComplexityLevel,
-  DeploymentWindow,
   EffortEstimate,
   FlowMetrics,
-  OrchestrationLevel,
   QualityGate,
-  QualityGateType,
   SwarmDependency,
   SwarmExecutionItem,
   SwarmExecutionMetrics,
   SwarmExecutionPriority,
   SwarmExecutionStatus,
   SwarmTimeline,
-  TestingWindow,
   WorkflowStream,
 } from './multi-level-types';
 import type { WorkflowGatesManager } from './workflow-gates';
-import { WorkflowHumanGateType } from './workflow-gates';
 
 // ============================================================================
 // SWARM EXECUTION ORCHESTRATOR CONFIGURATION
@@ -357,7 +351,7 @@ export interface ErrorRecoveryRecord {
 export class SwarmExecutionOrchestrator extends EventEmitter {
   private readonly logger: Logger;
   private readonly eventBus: TypeSafeEventBus;
-  private readonly memory: MemorySystem;
+  private readonly memory: BrainCoordinator;
   private readonly gatesManager: WorkflowGatesManager;
   private readonly sparcEngine: SPARCEngineCore;
   private readonly hiveCoordinator: HiveSwarmCoordinator;
@@ -370,7 +364,7 @@ export class SwarmExecutionOrchestrator extends EventEmitter {
 
   constructor(
     eventBus: TypeSafeEventBus,
-    memory: MemorySystem,
+    memory: BrainCoordinator,
     gatesManager: WorkflowGatesManager,
     sparcEngine: SPARCEngineCore,
     hiveCoordinator: HiveSwarmCoordinator,

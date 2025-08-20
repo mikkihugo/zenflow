@@ -714,9 +714,10 @@ export class GovernanceDecisionService extends EventEmitter {
 
     } catch (error) {
       this.logger.error('Failed to initiate governance decision:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       this.emit('governance-decision-failed', {
         type: request.type,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }

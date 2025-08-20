@@ -863,9 +863,7 @@ export type {
   NeuralConfig,
   NeuralNetwork,
   TrainingData,
-  PredictionResult,
-  NetworkArchitecture,
-  ActivationFunction
+  PredictionResult
 } from './neural-bridge';
 
 export type {
@@ -960,7 +958,6 @@ export type {
   // Learning and adaptation types
   LearningConfiguration,
   LearningStrategy,
-  PerformanceMetrics,
   AgentPerformance,
   MetricType,
   
@@ -990,13 +987,7 @@ export type {
   
   // Type guards and result types
   NeuralAgentResult,
-  TrainingResult,
-  CoordinationResult,
-  
-  // Legacy compatibility types
-  ModelPresetConfig,
-  TrainingParameters,
-  ModelMetrics
+  TrainingResult
 } from './types/index';
 
 // Type guards for runtime type checking
@@ -1015,7 +1006,6 @@ export {
  */
 export type {
   OptimizationContext,
-  OptimizationResult,
   OptimizationFeedback
 } from './autonomous-optimization-engine';
 
@@ -1249,37 +1239,36 @@ export type {
   TaskPredictor
 } from './monitoring/task-predictor';
 
-export type {
-  IntelligenceSystemConfig,
-  PerformanceMetrics,
-  SystemHealth
-} from './monitoring/types';
+// export type {
+//   IntelligenceSystemConfig,
+//   PerformanceMetrics,
+//   SystemHealth
+// } from './monitoring/types';
 
 // =============================================================================
 // LOAD BALANCING SYSTEM - Internal load balancing (formerly @claude-zen/load-balancing)
 // =============================================================================
 
-export {
-  LoadBalancer,
-  createLoadBalancer,
-  CapacityManager,
-  createCapacityManager,
-  ResourceOptimizer,
-  createResourceOptimizer,
-  RoutingStrategy,
-  createRoutingStrategy,
-  AlgorithmSelector,
-  createAlgorithmSelector
-} from './load-balancing/main';
+// export {
+//   LoadBalancer,
+//   createLoadBalancer,
+//   CapacityManager,
+//   createCapacityManager,
+//   ResourceOptimizer,
+//   createResourceOptimizer,
+//   RoutingStrategy,
+//   createRoutingStrategy,
+//   AlgorithmSelector,
+//   createAlgorithmSelector
+// } from './load-balancing/main';
 
-export type {
-  LoadBalancerConfig,
-  LoadBalancerMetrics,
-  LoadBalancerStrategy,
-  RoutingDecision,
-  NodeHealth,
-  ResourceAllocation,
-  CapacityMetrics,
-  OptimizationResult,
-  PerformanceMetrics as LoadBalancingPerformanceMetrics
-} from './load-balancing/types';
+// export type {
+//   LoadBalancerConfig,
+//   LoadBalancerMetrics,
+//   LoadBalancerStrategy,
+//   RoutingDecision,
+//   NodeHealth,
+//   ResourceAllocation,
+//   CapacityMetrics,
+//   PerformanceMetrics as LoadBalancingPerformanceMetrics
+// } from './load-balancing/types';

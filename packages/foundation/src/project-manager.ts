@@ -22,10 +22,13 @@
  */
 
 import * as fs from 'fs';
-import * as path from 'path';
 import * as os from 'os';
-import { getLogger } from './logging';
+import * as path from 'path';
+
 import { getConfig, type Config } from '../config';
+
+import { getLogger } from './logging';
+
 
 const logger = getLogger('project-manager');
 
@@ -766,7 +769,7 @@ Thumbs.db
       const gitConfigPath = path.join(projectPath, '.git', 'config');
       if (fs.existsSync(gitConfigPath)) {
         const gitConfig = fs.readFileSync(gitConfigPath, 'utf8');
-        const remoteMatch = gitConfig.match(/\[remote "origin"\]\s*url = (.+)/);
+        const remoteMatch = gitConfig.match(/\[remote "origin"]\s*url = (.+)/);
         if (remoteMatch && remoteMatch[1]) {
           return remoteMatch[1].trim();
         }

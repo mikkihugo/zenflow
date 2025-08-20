@@ -7,7 +7,7 @@
  */
 
 import type { LoadBalancingAlgorithm } from '../interfaces';
-import type { Agent, LoadMetrics, RoutingResult, Task, TaskPriority } from '../types';
+import type { Agent, LoadMetrics, RoutingResult, Task } from '../types';
 import { taskPriorityToNumber } from '../types';
 
 interface AdaptiveStrategy {

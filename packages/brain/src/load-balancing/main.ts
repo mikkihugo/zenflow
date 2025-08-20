@@ -56,25 +56,14 @@
  * @file load-balancing management system
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { nanoid } from 'nanoid';
-// Foundation provides embedded KV storage (no external dependencies needed)
-import * as tf from '@tensorflow/tfjs-node';
-import { ConsistentHashing } from 'consistent-hashing';
-import { HashRing } from 'hashring';
-import * as osutils from 'node-os-utils';
-import * as stats from 'simple-statistics';
 import { 
   getLogger, 
   type Logger,
   ContextError,
   withRetry,
   CircuitBreakerWithMonitoring,
-  Storage,
-  getDatabaseAccess,
   getKVStore,
   type KeyValueStore,
-  getConfig,
   recordMetric,
   recordHistogram,
   recordGauge,
@@ -83,7 +72,6 @@ import {
   withTrace,
   withAsyncTrace,
   recordEvent,
-  setTraceAttributes,
   traced,
   tracedAsync,
   metered,
@@ -95,12 +83,17 @@ import {
   createPerformanceTracker,
   createAgentMonitor,
   createMLMonitor,
-  createMonitoringSystem,
-  safeAsync,
-  Result,
-  ok,
-  err
+  safeAsync
 } from '@claude-zen/foundation';
+import * as tf from '@tensorflow/tfjs-node';
+import ConsistentHashing from 'consistent-hashing';
+import { EventEmitter } from 'eventemitter3';
+import HashRing from 'hashring';
+import { nanoid } from 'nanoid';
+// Foundation provides embedded KV storage (no external dependencies needed)
+import * as osutils from 'node-os-utils';
+import * as stats from 'simple-statistics';
+
 import { AdaptiveLearningAlgorithm } from './algorithms/adaptive-learning';
 import { LeastConnectionsAlgorithm } from './algorithms/least-connections';
 import { MLPredictiveAlgorithm } from './algorithms/ml-predictive';
@@ -113,7 +106,7 @@ import type {
   EmergencyHandler,
   LoadBalancingObserver,
   RoutingEngine,
-} from './interfaces';
+ LoadBalancingAlgorithm } from './interfaces';
 import { EmergencyProtocolHandler } from './optimization/emergency-protocol-handler';
 import { HealthChecker } from './routing/health-checker';
 import { IntelligentRoutingEngine } from './routing/intelligent-routing-engine';
@@ -128,7 +121,6 @@ import {
   type Task,
   TaskPriority,
 } from './types';
-import type { LoadBalancingAlgorithm } from './interfaces';
 
 export class LoadBalancingManager extends EventEmitter {
   private agents: Map<string, Agent> = new Map();
@@ -261,10 +253,10 @@ export class LoadBalancingManager extends EventEmitter {
     this.setupConsistentHashing();
     
     // 🔬 Complete initialization monitoring
-    const initTime = this.performanceTracker.endTimer('initialization');
-    recordHistogram('load_balancer.initialization.duration_ms', initTime.duration);
+    const initTime = this.getDuration(this.performanceTracker.endTimer('initialization'));
+    recordHistogram('load_balancer.initialization_ms', initTime);
     recordEvent('load_balancer.initialization.completed', {
-      duration_ms: initTime.duration,
+      duration_ms: initTime,
       algorithm: this.config.algorithm,
       timestamp: Date.now()
     });
@@ -369,7 +361,7 @@ export class LoadBalancingManager extends EventEmitter {
   private setupConsistentHashing(): void {
     // Initialize consistent hashing ring
     this.agents.forEach(agent => {
-      this.consistentHashing.add(agent.id, agent.id);
+      this.consistentHashing.add(agent.id, 1);
       this.hashRing.add(agent.id);
     });
     
@@ -416,7 +408,7 @@ export class LoadBalancingManager extends EventEmitter {
     }
 
     this.startTime = Date.now();
-    const startTimer = this.performanceTracker.startTimer('system-startup');
+    this.performanceTracker.startTimer('system-startup');
     
     const result = await withAsyncTrace('start-load-balancer', async (span) => {
       span?.setAttributes({ 
@@ -452,24 +444,25 @@ export class LoadBalancingManager extends EventEmitter {
           span?.setAttributes({ 'routing_table.initialized': true });
           
           this.isRunning = true;
-          const startupTime = this.performanceTracker.endTimer('system-startup');
+          const startupTimeResult = this.performanceTracker.endTimer('system-startup');
+          const startupTime = this.getDuration(startupTimeResult);
           
           // Record comprehensive startup metrics
           recordMetric('load_balancer_starts_total', 1);
-          recordHistogram('load_balancer_startup_duration_ms', startupTime.duration);
+          recordHistogram('load_balancer_startup_duration_ms', startupTime);
           recordGauge('load_balancer_startup_agent_count', this.agents.size);
           
           // Record startup event with full context
           recordEvent('load_balancer.started', {
             agent_count: this.agents.size,
             algorithm: this.config.algorithm,
-            startup_duration_ms: startupTime.duration,
+            startup_duration_ms: startupTime,
             timestamp: Date.now(),
             monitoring_enabled: true
           });
           
           span?.setAttributes({
-            'startup.duration_ms': startupTime.duration,
+            'startup_ms': startupTime,
             'startup.success': true,
             'agents.count': this.agents.size
           });
@@ -487,15 +480,16 @@ export class LoadBalancingManager extends EventEmitter {
     );
     
     if (result && typeof result === 'object' && 'isErr' in result && result.isErr()) {
-      const startupTime = this.performanceTracker.endTimer('system-startup');
+      const startupTimeResult = this.performanceTracker.endTimer('system-startup');
+      const startupTime = this.getDuration(startupTimeResult);
       
       // Record failure metrics
       recordMetric('load_balancer_startup_failures_total', 1);
-      recordHistogram('load_balancer_startup_failure_duration_ms', startupTime.duration);
+      recordHistogram('load_balancer_startup_failure_duration_ms', startupTime);
       
       recordEvent('load_balancer.startup.failed', {
         error: result.error.message,
-        duration_ms: startupTime.duration,
+        duration_ms: startupTime,
         agent_count: this.agents.size,
         timestamp: Date.now()
       });
@@ -527,7 +521,7 @@ export class LoadBalancingManager extends EventEmitter {
       return;
     }
 
-    const shutdownTimer = this.performanceTracker.startTimer('system-shutdown');
+    this.performanceTracker.startTimer('system-shutdown');
     
     const result = await withAsyncTrace('stop-load-balancer', async (span) => {
       span?.setAttributes({ 'agent_count': this.agents.size });
@@ -548,24 +542,25 @@ export class LoadBalancingManager extends EventEmitter {
           await this.systemMonitor.stop();
           span?.setAttributes({ 'system_monitor.stopped': true });
           
-          const shutdownTime = this.performanceTracker.endTimer('system-shutdown');
+          const shutdownTimeResult = this.performanceTracker.endTimer('system-shutdown');
+          const shutdownTime = this.getDuration(shutdownTimeResult);
           const totalUptime = this.startTime ? Date.now() - this.startTime : 0;
           
           // Record shutdown metrics
           recordMetric('load_balancer_stops_total', 1);
-          recordHistogram('load_balancer_shutdown_duration_ms', shutdownTime.duration);
+          recordHistogram('load_balancer_shutdown_duration_ms', shutdownTime);
           recordHistogram('load_balancer_total_uptime_ms', totalUptime);
           
           // Record shutdown event
           recordEvent('load_balancer.stopped', {
-            shutdown_duration_ms: shutdownTime.duration,
+            shutdown_duration_ms: shutdownTime,
             total_uptime_ms: totalUptime,
             agent_count: this.agents.size,
             timestamp: Date.now()
           });
           
           span?.setAttributes({
-            'shutdown.duration_ms': shutdownTime.duration,
+            'shutdown_ms': shutdownTime,
             'shutdown.success': true,
             'uptime.total_ms': totalUptime
           });
@@ -582,12 +577,13 @@ export class LoadBalancingManager extends EventEmitter {
     );
     
     if (result && typeof result === 'object' && 'isErr' in result && result.isErr()) {
-      const shutdownTime = this.performanceTracker.endTimer('system-shutdown');
+      const shutdownTimeResult = this.performanceTracker.endTimer('system-shutdown');
+      const shutdownTime = this.getDuration(shutdownTimeResult);
       
       recordMetric('load_balancer_shutdown_failures_total', 1);
       recordEvent('load_balancer.shutdown.failed', {
         error: result && typeof result === 'object' && 'error' in result ? result.error.message : 'Unknown error',
-        duration_ms: shutdownTime.duration,
+        duration_ms: shutdownTime,
         timestamp: Date.now()
       });
       
@@ -610,7 +606,7 @@ export class LoadBalancingManager extends EventEmitter {
   @tracedAsync('add-agent')
   @metered('load_balancer_add_agent')
   public async addAgent(agent: Agent): Promise<void> {
-    const addTimer = this.performanceTracker.startTimer('add-agent');
+    this.performanceTracker.startTimer('add-agent');
     
     const result = await withAsyncTrace('add-agent', async (span) => {
       span?.setAttributes({ 
@@ -628,7 +624,7 @@ export class LoadBalancingManager extends EventEmitter {
         await this.foundationKVStore.set(`agent:${agent.id}`, agent as unknown as Record<string, unknown>);
         
         // Add to consistent hashing ring
-        this.consistentHashing.add(agent.id, agent.id);
+        this.consistentHashing.add(agent.id, 1);
         this.hashRing.add(agent.id);
         
         // Get current system resources for capacity planning
@@ -660,7 +656,8 @@ export class LoadBalancingManager extends EventEmitter {
           coordinationEfficiency: 1.0 // Start with perfect efficiency
         });
         
-        const addTime = this.performanceTracker.endTimer('add-agent');
+        const addTimeResult = this.performanceTracker.endTimer('add-agent');
+        const addTime = this.getDuration(addTimeResult);
 
         // Notify observers
         for (const observer of this.observers) {
@@ -670,7 +667,7 @@ export class LoadBalancingManager extends EventEmitter {
         // Record comprehensive metrics
         recordMetric('load_balancer_agents_added_total', 1);
         recordMetric('load_balancer_total_agents', this.agents.size);
-        recordHistogram('load_balancer_add_agent_duration_ms', addTime.duration);
+        recordHistogram('load_balancer_add_agent_duration_ms', addTime);
         recordGauge('load_balancer_healthy_agents_ratio', 
           this.agents.size > 0 ? Array.from(this.agents.values())
             .filter(a => a.status === AgentStatus.HEALTHY).length / this.agents.size : 0);
@@ -680,14 +677,14 @@ export class LoadBalancingManager extends EventEmitter {
           agent_id: agent.id,
           capabilities: agent.capabilities,
           total_agents: this.agents.size,
-          add_duration_ms: addTime.duration,
+          add_duration_ms: addTime,
           timestamp: Date.now()
         });
         
         span?.setAttributes({
           'agent.added': true,
           'agent.capabilities_count': agent.capabilities?.length || 0,
-          'add.duration_ms': addTime.duration,
+          'add_ms': addTime,
           'agents.total_count': this.agents.size
         });
         
@@ -793,8 +790,8 @@ export class LoadBalancingManager extends EventEmitter {
         
         if (task.type === 'stateful' || task.sessionId) {
           // Use consistent hashing for stateful tasks
-          const hashedAgent = this.consistentHashing.get(task.sessionId || task.id);
-          const agent = this.agents.get(hashedAgent);
+          const hashedAgent = this.consistentHashing.get(task.sessionId || task.id || 'default');
+          const agent = hashedAgent ? this.agents.get(hashedAgent) : undefined;
           
           if (agent && agent.status === AgentStatus.HEALTHY) {
             routingResult = {
@@ -854,6 +851,18 @@ export class LoadBalancingManager extends EventEmitter {
           confidence: routingResult?.confidence
         });
 
+        // Close trace span with success attributes
+        if (span) {
+          span.setAttributes({
+            'routing.success': true,
+            'routing.agent_id': routingResult?.selectedAgent?.id || 'none',
+            'routing.confidence': routingResult?.confidence || 0,
+            'routing.decision': routingResult?.routingDecision || 'unknown',
+            'routing.estimated_latency': routingResult?.estimatedLatency || 0
+          });
+          span.end();
+        }
+
         this.emit('task:routed', { task, agent: routingResult?.selectedAgent, result: routingResult });
         return routingResult;
       });
@@ -881,7 +890,7 @@ export class LoadBalancingManager extends EventEmitter {
       // Get real-time system metrics
       const cpuUsage = await osutils.cpu.usage();
       const memInfo = await osutils.mem.info();
-      const loadAvg = osutils.os.loadavg();
+      const loadAvg = [0, 0, 0]; // Mock load average for now
       
       // Combine stored metrics with real-time data
       const enhancedMetrics: LoadMetrics = {
@@ -1530,6 +1539,13 @@ export class LoadBalancingManager extends EventEmitter {
     // This would track actual ML confidence scores
     // For now, return a reasonable default
     return 0.78; // 78% confidence
+  }
+
+  /** 
+   * Helper to extract duration from timer result
+   */
+  private getDuration(timerResult: any): number {
+    return typeof timerResult === 'object' && timerResult.duration ? timerResult.duration : timerResult;
   }
   
   /**

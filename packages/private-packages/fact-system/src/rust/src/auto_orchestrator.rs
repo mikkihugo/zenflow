@@ -297,6 +297,7 @@ pub struct KnowledgeStatus {
 
 /// Fully automated FACT orchestrator with version awareness
 pub struct AutoFactOrchestrator {
+  #[allow(dead_code)]
   fact: Fact,
   config: AutoConfig,
   #[cfg(feature = "github")]
@@ -634,6 +635,7 @@ impl AutoFactOrchestrator {
   }
 
   /// Remove recent hits older than 30 days to keep vector manageable
+  #[allow(dead_code)]
   fn cleanup_old_recent_hits(&self, recent_hits: &mut Vec<DateTime<Utc>>) {
     let cutoff = Utc::now() - chrono::Duration::days(30);
     recent_hits.retain(|&hit_time| hit_time > cutoff);
@@ -746,8 +748,8 @@ impl AutoFactOrchestrator {
     info!("🔨 Building FACT: {} (estimated 2-10 seconds)", fact_key);
 
     let fact_key_owned = fact_key.to_string();
-    let tool_name_owned = tool_name.to_string();
-    let version_owned = version.map(|v| v.to_string());
+    let _tool_name_owned = tool_name.to_string();
+    let _version_owned = version.map(|v| v.to_string());
 
     // Background task for FACT building
     tokio::spawn(async move {
@@ -2468,6 +2470,7 @@ impl AutoFactOrchestrator {
   }
 
   /// Populate knowledge for a single dependency
+  #[allow(dead_code)]
   async fn populate_single_dependency(
     &mut self,
     dep_name: &str,

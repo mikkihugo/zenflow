@@ -11,18 +11,21 @@
  * - Performance: Compression, caching headers, optimized middleware
  */
 
-import { createServer, type Server } from 'node:http';
 import { readdir, stat } from 'node:fs/promises';
+import { createServer, type Server } from 'node:http';
 import { join, resolve } from 'node:path';
-import express, { type Express, type Request, type Response } from 'express';
+
 import { createTerminus } from '@godaddy/terminus';
+import express, { type Express, type Request, type Response } from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import cors from 'cors';
 import compression from 'compression';
 import { rateLimit } from 'express-rate-limit';
+
 import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
+
 import { ControlApiRoutes } from './control-api-routes';
 
 interface ApiServerConfig {

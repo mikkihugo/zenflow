@@ -56,7 +56,7 @@ import type {
   ApiCreateTaskRequest,
   ApiTaskExecutionResponse,
   
-  // Document management (delegates to @claude-zen/database)
+  // Document management (delegates to @claude-zen/foundation)
   ApiDocumentResponse,
   ApiFileContentResponse,
   
@@ -69,18 +69,7 @@ import type {
   ApiUpdateSettingsRequest,
   
   // LLM analytics
-  ApiLLMAnalyticsResponse,
-  
-  // Type utilities
-  ApiResponseUnion,
-  ApiRequestUnion,
-  ApiEntityStatus,
-  ApiMetricsUnion,
-  
-  // Constants
-  API_VERSION,
-  HTTP_STATUS,
-  DEFAULT_PAGINATION
+  ApiLLMAnalyticsResponse
 } from './api-translation-layer';
 
 // =============================================================================
