@@ -246,23 +246,23 @@ const env = process.env['NODE_ENV'] || 'development';
 // Check environment variable or default to user home mode
 const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
 
-// Build configuration file paths based on mode
+// Build configuration file paths based on mode (exclusive modes)
 const configFiles: string[] = [];
 
 if (storeInUserHome) {
-  // Mode 1: User directory mode (default)
+  // Mode 1: User directory mode (default) - ONLY user configs, no local repo configs
   const userConfigDir = path.join(os.homedir(), '.claude-zen');
   configFiles.push(
     `${userConfigDir}/config.json`,           // Main user config
     `${userConfigDir}/${env}.json`,           // Environment-specific user config
   );
-} 
-
-// Always check for per-repo overrides (even in user mode)
-configFiles.push(
-  `.claude-zen/config.json`,                  // Local repo config
-  `.claude-zen/${env}.json`                   // Local repo environment config
-);
+} else {
+  // Mode 2: Per-repository mode - ONLY local repo configs, no user configs
+  configFiles.push(
+    `.claude-zen/config.json`,                // Local repo config
+    `.claude-zen/${env}.json`                 // Local repo environment config
+  );
+}
 
 // Load configuration files in priority order
 for (const file of configFiles) {
@@ -278,7 +278,7 @@ for (const file of configFiles) {
 }
 
 // Log the configuration mode for debugging
-logger.debug(`Configuration mode: ${storeInUserHome ? 'User directory (~/.claude-zen)' : 'Per-repository (./.claude-zen)'}`);
+logger.debug(`Configuration mode: ${storeInUserHome ? 'User directory (~/.claude-zen) - exclusive' : 'Per-repository (./.claude-zen) - exclusive'}`);
 if (storeInUserHome) {
   logger.debug(`User config directory: ${path.join(os.homedir(), '.claude-zen')}`);
 }
