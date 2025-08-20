@@ -1,0 +1,234 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://claude-code-zen.com/schemas/business-epic.json",
+  "title": "Business Epic",
+  "description": "SAFe Business Epic with progressive enhancement from Kanban to Agile to SAFe modes",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the business epic"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Business epic title"
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Detailed description of the business epic"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief summary of the business epic"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["todo", "in_progress", "done", "archived"],
+      "default": "todo",
+      "description": "Current status of the business epic"
+    },
+    "priority": {
+      "type": "string", 
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium",
+      "description": "Priority level"
+    },
+    "author": {
+      "type": "string",
+      "default": "product-team",
+      "description": "Author of the business epic"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Associated project identifier"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": ["business", "epic"],
+      "description": "Tags for categorization"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp"
+    },
+    "updated_at": {
+      "type": "string", 
+      "format": "date-time",
+      "description": "Last update timestamp"
+    },
+    "schema_version": {
+      "type": "string",
+      "enum": ["1.0.0", "2.0.0", "3.0.0"],
+      "description": "Schema version for progressive enhancement"
+    },
+    "schema_mode": {
+      "type": "string",
+      "enum": ["kanban", "agile", "safe"],
+      "description": "Operating mode (determines available fields)"
+    },
+    "business_objective": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Primary business objective this epic addresses"
+    },
+    "target_audience": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Target audiences for this epic"
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Requirements list (Kanban mode)"
+    },
+    "user_stories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "acceptance_criteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "story_points": {
+            "type": "integer",
+            "minimum": 0
+          }
+        },
+        "required": ["id", "title", "description", "acceptance_criteria"]
+      },
+      "description": "User stories breakdown (Agile+ modes)"
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Epic-level acceptance criteria (Agile+ modes)"
+    },
+    "definition_of_done": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "Requirements documented and approved",
+        "User stories created and estimated", 
+        "Acceptance criteria defined"
+      ],
+      "description": "Definition of done checklist (Agile+ modes)"
+    },
+    "epic_type": {
+      "type": "string",
+      "enum": ["business", "enabler"],
+      "default": "business",
+      "description": "Type of epic (SAFe mode)"
+    },
+    "epic_owner": {
+      "type": "string",
+      "description": "Epic owner (SAFe mode)"
+    },
+    "portfolio_canvas": {
+      "type": "object",
+      "properties": {
+        "leading_indicators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "success_metrics": {
+          "type": "array", 
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        },
+        "mvp_hypothesis": {
+          "type": "string",
+          "default": ""
+        },
+        "solution_intent": {
+          "type": "string",
+          "default": ""
+        }
+      },
+      "description": "Portfolio canvas (SAFe mode)"
+    },
+    "wsjf_score": {
+      "type": "object",
+      "properties": {
+        "user_business_value": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "time_criticality": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "risk_reduction": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "job_size": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "total_score": {
+          "type": "number"
+        }
+      },
+      "required": ["user_business_value", "time_criticality", "risk_reduction", "job_size", "total_score"],
+      "description": "Weighted Shortest Job First scoring (SAFe mode)"
+    },
+    "program_epics_generated": {
+      "type": "integer",
+      "minimum": 0,
+      "default": 0,
+      "description": "Number of program epics generated from this business epic (SAFe mode)"
+    }
+  },
+  "required": [
+    "id", 
+    "title", 
+    "content", 
+    "business_objective", 
+    "target_audience"
+  ],
+  "additionalProperties": false,
+  "metadata": {
+    "supportedModes": ["kanban", "agile", "safe"],
+    "migrationPath": ["kanban", "agile", "safe"],
+    "erlangCompatible": true,
+    "jsonSchemaVersion": "draft-07"
+  }
+}

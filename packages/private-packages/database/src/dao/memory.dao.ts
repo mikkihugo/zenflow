@@ -10,7 +10,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '../../main';
+import { injectable } from '@claude-zen/foundation';
 import type {
   DatabaseAdapter,
   Logger,

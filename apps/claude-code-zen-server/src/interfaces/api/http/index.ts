@@ -93,8 +93,10 @@ export { APIServer, createAPIServer, DEFAULT_API_CONFIG } from './server';
 // ===== ROUTE CREATORS =====
 export { createCoordinationRoutes } from './v1/coordination';
 export { createDatabaseRoutes } from './v1/database';
+export { createDocumentRoutes } from './v1/documents';
 export { createMemoryRoutes } from './v1/memory';
 export { createNeuralRoutes } from './v1/neural';
+export { createProjectRoutes } from './v1/projects';
 
 // ===== VERSION NFORMATION =====
 export const REST_API_VERSION = '1.0.0' as const;

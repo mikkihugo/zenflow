@@ -18,14 +18,14 @@ async function claudeWithNpmOTEL() {
   // Initialize OTEL SDK
   console.log('🔧 Initializing OTEL SDK...');
   const sdk = new NodeSDK({
-    spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    // spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()), // Commented due to OTEL version mismatch
     instrumentations: [getNodeAutoInstrumentations({
       '@opentelemetry/instrumentation-fs': {
         enabled: false, // Disable noisy file system traces
       },
     })],
-    serviceName: 'claude-zen-safe-sparc',
-    serviceVersion: '2.1.0',
+    serviceName: 'claude-zen-safe-sparc'
+    // serviceVersion: '2.1.0' // Not supported in this OTEL version
   });
 
   sdk.start();
@@ -108,7 +108,7 @@ Provide structured evaluation with decision.`;
 
       if (result && result.length > 0) {
         // Extract decision for OTEL attributes
-        const content = result[0]?.message?.content;
+        const content = (result[0] as any)?.content;
         if (Array.isArray(content) && content[0]?.text) {
           const text = content[0].text;
           const decision = text.toLowerCase().includes('approve') ? 'approve' :

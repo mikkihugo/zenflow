@@ -79,8 +79,8 @@ Keep response concise but thorough.`;
         console.log(`   Message ${index + 1}:`);
         console.log(`     Type: ${msg.type || 'unknown'}`);
         
-        if (msg.message && msg.message.content) {
-          const content = msg.message.content;
+        if (msg && (msg as any).content) {
+          const content = (msg as any).content;
           
           if (Array.isArray(content) && content[0] && content[0].text) {
             const text = content[0].text;

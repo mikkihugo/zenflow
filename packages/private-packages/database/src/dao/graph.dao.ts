@@ -70,7 +70,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '../../main';
+import { injectable } from '@claude-zen/foundation';
 import type {
   CustomQuery,
   GraphNode,
@@ -749,6 +749,8 @@ export class GraphDao<T> extends BaseDao<T> implements GraphRepository<T>, DataA
       await this.adapter.health();
       return {
         healthy: true,
+        isHealthy: true,
+        status: 'healthy',
         score: 100,
         details: { accessible: true },
         lastCheck: new Date()
@@ -756,6 +758,8 @@ export class GraphDao<T> extends BaseDao<T> implements GraphRepository<T>, DataA
     } catch (error) {
       return {
         healthy: false,
+        isHealthy: false,
+        status: 'error',
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),

@@ -27,6 +27,17 @@ export type {
   SPARCWarning
 } from './core/sparc-commander';
 
+// SAFe-SPARC Integration Workflow (Production Implementation)
+export { SafeSparcWorkflow } from './core/safe-sparc-workflow';
+export type {
+  SafeSparcWorkflowConfig,
+  EpicProposal,
+  PortfolioDecision,
+  SparcArtifacts,
+  SparcExecutionContext,
+  SparcExecutionResult
+} from './core/safe-sparc-workflow';
+
 // Types
 export type {
   SPARCProject,

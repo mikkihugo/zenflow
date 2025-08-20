@@ -164,7 +164,7 @@ export abstract class BaseDao<T> implements Repository<T> {
       const query = this.buildFindByQuery(criteria, options);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result?.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Failed to find entities by criteria: ${error}`);
       throw new Error(
@@ -187,7 +187,7 @@ export abstract class BaseDao<T> implements Repository<T> {
       const query = this.buildFindAllQuery(options);
       const result = await this.adapter.query(query.sql, query.params);
 
-      return result?.rows.map((row) => this.mapRowToEntity(row));
+      return result?.rows.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Failed to find all entities: ${error}`);
       throw new Error(
@@ -751,6 +751,8 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
 
       return {
         healthy: true,
+        isHealthy: true,
+        status: 'healthy',
         score: 100,
         details: {
           entityCount: count,
@@ -763,6 +765,8 @@ export abstract class BaseManager<T> implements DataAccessObject<T> {
 
       return {
         healthy: false,
+        isHealthy: false,
+        status: 'error',
         score: 0,
         details: {
           accessible: false,

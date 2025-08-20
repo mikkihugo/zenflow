@@ -337,14 +337,22 @@ export class UnifiedClaudeZenServer {
     }
 
     if (this.config.features.api) {
-      // REST API routes (from api/http/server.ts)
-      this.app.use('/api/v1', (req, res, next) => {
-        // Placeholder - will be replaced with actual API routes
-        res.json({
-          service: 'REST API',
-          status: 'active',
-          message: 'API routes will be migrated here from api/http/server',
-        });
+      // Import route modules
+      const { createCoordinationRoutes } = await import('./api/http/v1/coordination');
+      const { createDatabaseRoutes } = await import('./api/http/v1/database');
+      const { createDocumentRoutes } = await import('./api/http/v1/documents');
+      const { createMemoryRoutes } = await import('./api/http/v1/memory');
+      const { createProjectRoutes } = await import('./api/http/v1/projects');
+
+      // Mount REST API routes
+      this.app.use('/api/v1/coordination', createCoordinationRoutes());
+      this.app.use('/api/v1/database', createDatabaseRoutes());
+      this.app.use('/api/v1/documents', createDocumentRoutes());
+      this.app.use('/api/v1/memory', createMemoryRoutes());
+      this.app.use('/api/v1/projects', createProjectRoutes());
+
+      logger.info('REST API routes mounted', {
+        routes: ['coordination', 'database', 'documents', 'memory', 'projects']
       });
     }
 

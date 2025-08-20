@@ -278,8 +278,8 @@ Decision: APPROVE/REJECT/DEFER with reasoning.`;
       
       // FIXED response extraction (using result[1] not result[0])
       const assistantMessage = result?.find(r => r.type === 'assistant');
-      const responseText = assistantMessage?.message?.content?.[0]?.text || '';
-      const tokenUsage = assistantMessage?.message?.usage;
+      const responseText = (assistantMessage as any)?.content?.[0]?.text || '';
+      const tokenUsage = (assistantMessage as any)?.usage;
       const resultSummary = result?.find(r => r.type === 'result');
       const cost = resultSummary?.total_cost_usd;
       

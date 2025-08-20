@@ -43,34 +43,34 @@ async function debugResponseExtraction() {
       console.log(`   Type: ${typeof firstResult}`);
       console.log(`   Keys: ${Object.keys(firstResult || {})}`);
       
-      if (firstResult?.message) {
+      if (firstResult) {
         console.log(`\n💬 Message structure:`);
-        console.log(`   Message type: ${typeof firstResult.message}`);
-        console.log(`   Message keys: ${Object.keys(firstResult.message || {})}`);
+        console.log(`   Message type: ${typeof firstResult}`);
+        console.log(`   Message keys: ${Object.keys(firstResult || {})}`);
         
-        if (firstResult.message.content) {
+        if ((firstResult as any).content) {
           console.log(`\n📄 Content structure:`);
-          console.log(`   Content type: ${typeof firstResult.message.content}`);
-          console.log(`   Content is array: ${Array.isArray(firstResult.message.content)}`);
-          console.log(`   Content: ${JSON.stringify(firstResult.message.content, null, 2)}`);
+          console.log(`   Content type: ${typeof (firstResult as any).content}`);
+          console.log(`   Content is array: ${Array.isArray((firstResult as any).content)}`);
+          console.log(`   Content: ${JSON.stringify((firstResult as any).content, null, 2)}`);
           
-          if (Array.isArray(firstResult.message.content) && firstResult.message.content[0]?.text) {
-            const text = firstResult.message.content[0].text;
+          if (Array.isArray((firstResult as any).content) && (firstResult as any).content[0]?.text) {
+            const text = (firstResult as any).content[0].text;
             console.log(`\n✅ EXTRACTED TEXT: "${text}"`);
             console.log(`   Text length: ${text.length}`);
           } else {
             console.log(`\n❌ NO TEXT FOUND in content[0].text`);
           }
         } else {
-          console.log(`\n❌ NO CONTENT in message`);
+          console.log(`\n❌ NO CONTENT in result`);
         }
       } else {
         console.log(`\n❌ NO MESSAGE in result[0]`);
       }
       
-      if (firstResult?.usage) {
+      if ((firstResult as any)?.usage) {
         console.log(`\n📊 Usage data found:`);
-        console.log(`   Usage: ${JSON.stringify(firstResult.usage, null, 2)}`);
+        console.log(`   Usage: ${JSON.stringify((firstResult as any).usage, null, 2)}`);
       } else {
         console.log(`\n❌ NO USAGE DATA`);
       }

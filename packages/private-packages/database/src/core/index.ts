@@ -5,7 +5,7 @@
  * across different database adapters.
  */
 
-import type { DatabaseAdapter, QueryResult, ExecuteResult } from '../types/index.js';
+import type { DatabaseAdapter, QueryResult, QueryParams, HealthStatus } from '../interfaces.js';
 import { getLogger, type Logger } from '../logger.js';
 
 /**
@@ -13,7 +13,7 @@ import { getLogger, type Logger } from '../logger.js';
  */
 export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
   protected logger: Logger;
-  protected isConnected = false;
+  private _isConnected = false;
 
   constructor(
     protected config: any,
@@ -24,24 +24,54 @@ export abstract class BaseDatabaseAdapter implements DatabaseAdapter {
 
   abstract connect(): Promise<void>;
   abstract disconnect(): Promise<void>;
-  abstract query(sql: string, params?: any[]): Promise<QueryResult>;
-  abstract execute(sql: string, params?: any[]): Promise<ExecuteResult>;
+  abstract query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
+  abstract execute(sql: string, params?: any[]): Promise<any>;
   abstract transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
   abstract getSchema(): Promise<any>;
   abstract getConnectionStats(): Promise<any>;
 
-  async health(): Promise<boolean> {
+  isConnected(): boolean {
+    return this._isConnected;
+  }
+
+  protected setConnected(connected: boolean): void {
+    this._isConnected = connected;
+  }
+
+  async health(): Promise<HealthStatus> {
     try {
-      if (!this.isConnected) {
-        return false;
+      if (!this._isConnected) {
+        return {
+          healthy: false,
+          isHealthy: false,
+          status: 'disconnected',
+          score: 0,
+          details: { connected: false },
+          lastCheck: new Date()
+        };
       }
       
       // Try a simple query to test connectivity
       await this.query('SELECT 1');
-      return true;
+      return {
+        healthy: true,
+        isHealthy: true,
+        status: 'healthy',
+        score: 100,
+        details: { connected: true },
+        lastCheck: new Date()
+      };
     } catch (error) {
       this.logger.error('Health check failed:', error);
-      return false;
+      return {
+        healthy: false,
+        isHealthy: false,
+        status: 'error',
+        score: 0,
+        details: { error: String(error) },
+        lastCheck: new Date(),
+        errors: [String(error)]
+      };
     }
   }
 

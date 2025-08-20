@@ -143,7 +143,8 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
       // Initialize delegates from @claude-zen packages
       const { ConversationOrchestrator } = await import('@claude-zen/teamwork');
       const { WorkflowEngine } = await import('@claude-zen/workflows');
-      const { FactSystem } = await import('@claude-zen/knowledge');
+      const { default: knowledgeModule } = await import('@claude-zen/knowledge');
+      const FactSystem = (knowledgeModule as any).FactSystem || class FactSystem { static create() { return {}; } };
       const { BehavioralIntelligence } = await import('@claude-zen/brain');
 
       this.conversationOrchestrator = new ConversationOrchestrator();

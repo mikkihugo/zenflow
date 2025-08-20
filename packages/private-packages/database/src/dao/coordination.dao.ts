@@ -15,7 +15,7 @@ import type {
   Logger,
 } from '../interfaces.js';
 import { BaseDao } from '../base.dao';
-import { injectable } from '../../main';
+import { injectable } from '@claude-zen/foundation';
 import type {
   CoordinationChange,
   CoordinationEvent,
@@ -699,6 +699,8 @@ export class CoordinationDao<T>
       await this.adapter.health();
       return {
         healthy: true,
+        isHealthy: true,
+        status: 'healthy',
         score: 100,
         details: { accessible: true, activeLocks: this.locks.size },
         lastCheck: new Date()
@@ -706,6 +708,8 @@ export class CoordinationDao<T>
     } catch (error) {
       return {
         healthy: false,
+        isHealthy: false,
+        status: 'error',
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),

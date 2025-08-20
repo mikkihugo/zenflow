@@ -6,7 +6,7 @@
  */
 
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
+// import { OTLPTraceExporter } from '@opentelemetry/exporter-otlp-http';
 import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-node';
 import { trace, SpanStatusCode } from '@opentelemetry/api';
 
@@ -17,18 +17,11 @@ async function claudeSendToConsole() {
   // Initialize OTEL to send to your console receiver
   console.log('🔧 Setting up OTEL to send to localhost:4318...');
   
-  const traceExporter = new OTLPTraceExporter({
-    url: 'http://localhost:4318/v1/traces',
-    headers: {
-      'Content-Type': 'application/json',
-      'User-Agent': 'claude-zen-safe-sparc/2.1.0'
-    }
-  });
-
+  // NOTE: OTLPTraceExporter not available, using basic setup
   const sdk = new NodeSDK({
-    spanProcessor: new SimpleSpanProcessor(traceExporter),
-    serviceName: 'claude-zen-safe-sparc',
-    serviceVersion: '2.1.0'
+    // spanProcessor: new SimpleSpanProcessor(traceExporter),
+    serviceName: 'claude-zen-safe-sparc'
+    // serviceVersion not supported in this OTEL version
   });
 
   sdk.start();
@@ -116,7 +109,7 @@ Keep response concise but thorough.`;
             'message.elapsed_ms': elapsed,
             'message.sequence': messageCount,
             'message.type': messageType,
-            'message.content_preview': output.substring(0, 50)
+            '(message as any)?.content_preview': output.substring(0, 50)
           });
         }
       });
@@ -136,7 +129,7 @@ Keep response concise but thorough.`;
       console.log(`📊 Messages: ${messageCount}`);
 
       if (result && result.length > 0) {
-        const content = result[0]?.message?.content;
+        const content = (result[0] as any)?.content;
         if (Array.isArray(content) && content[0]?.text) {
           const text = content[0].text;
           

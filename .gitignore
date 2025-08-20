@@ -41,6 +41,14 @@ bin/
 *.exe
 *.bin
 
+# Package build artifacts - prevent committing compiled output
+packages/**/dist/
+packages/**/*.d.ts
+packages/**/*.js
+packages/**/*.js.map
+!packages/**/*.config.js
+!packages/**/src/**/*
+
 # Rust/Cargo artifacts
 Cargo.lock
 **/target/

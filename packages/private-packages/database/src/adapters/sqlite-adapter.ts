@@ -8,8 +8,8 @@ import 'reflect-metadata';
 import Database from 'better-sqlite3';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { getLogger } from '../../main';
-import { injectable } from '../../main';
+import { getLogger } from '@claude-zen/foundation';
+import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('sqlite-adapter');
 
@@ -23,7 +23,7 @@ export interface SQLiteConfig {
   };
 }
 
-import type { DatabaseAdapter } from '../interfaces.js';
+import type { DatabaseAdapter, QueryResult, QueryParams, HealthStatus } from '../interfaces.js';
 
 export class SQLiteAdapter implements DatabaseAdapter {
   private db: Database.Database | null = null;
@@ -73,7 +73,7 @@ export class SQLiteAdapter implements DatabaseAdapter {
     }
   }
 
-  async query(sql: string, params: any[] = []): Promise<any> {
+  async query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>> {
     if (!this.connected) await this.connect();
     if (!this.db) throw new Error('Database not connected');
 
@@ -81,13 +81,13 @@ export class SQLiteAdapter implements DatabaseAdapter {
 
     try {
       const stmt = this.db.prepare(sql);
-      const rows = stmt.all(...params);
+      const paramArray = params ? (Array.isArray(params) ? params : Object.values(params)) : [];
+      const rows = stmt.all(...paramArray);
 
       return {
-        rows: rows || [],
+        rows: (rows || []) as T[],
         rowCount: rows ? rows.length : 0,
-        fields: [],
-        executionTime: 1,
+        fields: []
       };
     } catch (error) {
       logger.error(`Query failed: ${error}`);
@@ -137,14 +137,42 @@ export class SQLiteAdapter implements DatabaseAdapter {
     }
   }
 
-  async health(): Promise<boolean> {
-    if (!this.connected || !this.db) return false;
+  isConnected(): boolean {
+    return this.connected;
+  }
 
+  async health(): Promise<HealthStatus> {
     try {
+      if (!this.connected || !this.db) {
+        return {
+          healthy: false,
+          isHealthy: false,
+          status: 'disconnected',
+          score: 0,
+          details: { connected: false },
+          lastCheck: new Date()
+        };
+      }
+
       this.db.prepare('SELECT 1').get();
-      return true;
-    } catch {
-      return false;
+      return {
+        healthy: true,
+        isHealthy: true,
+        status: 'healthy',
+        score: 100,
+        details: { connected: true, queryTest: true },
+        lastCheck: new Date()
+      };
+    } catch (error) {
+      return {
+        healthy: false,
+        isHealthy: false,
+        status: 'error',
+        score: 0,
+        details: { connected: this.connected, error: String(error) },
+        lastCheck: new Date(),
+        errors: [String(error)]
+      };
     }
   }
 

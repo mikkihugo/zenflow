@@ -309,11 +309,11 @@ impl GitHubAnalyzer {
   pub async fn analyze_hex_package_repos(
     &self,
     package_name: &str,
-    _version: &str,
+    version: &str,
   ) -> Result<HexPackageAnalysis> {
     #[cfg(feature = "github")]
     {
-      let search_query = format!("{} language:elixir", package_name);
+      let search_query = format!("{} {} language:elixir", package_name, version);
 
       let search_result = self
         .client

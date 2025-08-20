@@ -143,7 +143,7 @@ async function debug30SecondDelay() {
     
     // Result analysis
     if (result && result.length > 0) {
-      const content = result[0]?.message?.content;
+      const content = (result[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         console.log(`\n✅ Response received: ${content[0].text}`);
       }

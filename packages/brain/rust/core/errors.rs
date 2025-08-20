@@ -316,7 +316,6 @@ pub struct ErrorLogger {
   #[cfg(feature = "logging")]
   log_level: log::Level,
   #[cfg(not(feature = "logging"))]
-  #[allow(dead_code)]
   log_level: u8, // Simple placeholder when log feature is disabled
   structured_logging: bool,
   performance_tracking: bool,
@@ -341,8 +340,8 @@ impl ErrorLogger {
   }
 
   #[cfg(not(feature = "logging"))]
-  pub fn with_level(self, _level: u8) -> Self {
-    // No-op when logging is disabled
+  pub fn with_level(mut self, level: u8) -> Self {
+    self.log_level = level;
     self
   }
 
@@ -435,15 +434,24 @@ impl ErrorLogger {
 
   fn log_simple_error(
     &self,
-    _error: &RuvFannError,
+    error: &RuvFannError,
     context: Option<&ErrorContext>,
   ) {
-    let _context_str = context
+    let context_str = context
       .map(|c| format!(" [{}]", c.operation))
       .unwrap_or_default();
 
     #[cfg(feature = "logging")]
     log::log!(self.log_level, "Error{context_str}: {error}");
+    
+    #[cfg(not(feature = "logging"))]
+    {
+      // When logging is disabled, respect log level for stderr output
+      // 0=Error, 1=Warn, 2=Info, 3=Debug, 4=Trace
+      if self.log_level <= 1 {
+        eprintln!("Error{context_str}: {error}");
+      }
+    }
   }
 }
 

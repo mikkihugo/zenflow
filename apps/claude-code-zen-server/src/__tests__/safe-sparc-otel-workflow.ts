@@ -229,8 +229,8 @@ Decision: APPROVE/REJECT/DEFER with detailed reasoning following SAFe criteria:
       
       // Extract response using fixed logic
       const assistantMessage = result?.find(r => r.type === 'assistant');
-      const responseText = assistantMessage?.message?.content?.[0]?.text || '';
-      const tokenUsage = assistantMessage?.message?.usage;
+      const responseText = assistantMessage?.content?.[0]?.text || '';
+      const tokenUsage = assistantMessage?.usage;
       const resultSummary = result?.find(r => r.type === 'result');
       const cost = resultSummary?.total_cost_usd;
       
@@ -314,8 +314,8 @@ Focus on detailed, implementable specifications that support the business value.
       const duration = Date.now() - startTime;
       
       const assistantMessage = result?.find(r => r.type === 'assistant');
-      const responseText = assistantMessage?.message?.content?.[0]?.text || '';
-      const tokenUsage = assistantMessage?.message?.usage;
+      const responseText = assistantMessage?.content?.[0]?.text || '';
+      const tokenUsage = assistantMessage?.usage;
       const resultSummary = result?.find(r => r.type === 'result');
       const cost = resultSummary?.total_cost_usd;
       

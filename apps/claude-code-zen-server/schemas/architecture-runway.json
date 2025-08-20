@@ -1,0 +1,202 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://claude-code-zen.com/schemas/architecture-runway.json", 
+  "title": "Architecture Runway",
+  "description": "SAFe Architecture Runway Item with progressive enhancement from Kanban to Agile to SAFe modes",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the architecture runway item"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "description": "Architecture runway item title"
+    },
+    "content": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Generated content from context, decision, and consequences"
+    },
+    "summary": {
+      "type": "string",
+      "description": "Brief summary of the architecture runway item"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["todo", "in_progress", "done", "archived"],
+      "default": "todo", 
+      "description": "Current status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "default": "medium",
+      "description": "Priority level"
+    },
+    "author": {
+      "type": "string",
+      "default": "architecture-team",
+      "description": "Author of the architecture runway item"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Associated project identifier"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": ["architecture", "runway", "technical"],
+      "description": "Tags for categorization"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Creation timestamp"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time", 
+      "description": "Last update timestamp"
+    },
+    "schema_version": {
+      "type": "string",
+      "enum": ["1.0.0", "2.0.0", "3.0.0"],
+      "description": "Schema version for progressive enhancement"
+    },
+    "schema_mode": {
+      "type": "string",
+      "enum": ["kanban", "agile", "safe"],
+      "description": "Operating mode (determines available fields)"
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Context and background for the architecture decision"
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The architecture decision being made"
+    },
+    "consequences": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "description": "Consequences of this architecture decision"
+    },
+    "decision_status": {
+      "type": "string",
+      "enum": ["proposed", "accepted", "deprecated", "superseded"],
+      "default": "proposed",
+      "description": "Status of the architecture decision (Agile+ modes)"
+    },
+    "alternatives_considered": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "pros": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rejected_reason": {
+            "type": "string"
+          }
+        },
+        "required": ["name", "pros", "cons", "rejected_reason"]
+      },
+      "default": [],
+      "description": "Alternative solutions that were considered (Agile+ modes)"
+    },
+    "stakeholders": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Stakeholders involved in this decision (Agile+ modes)"
+    },
+    "runway_number": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Sequential runway item number (SAFe mode)"
+    },
+    "runway_id": {
+      "type": "string",
+      "pattern": "^AR-\\d{3}$",
+      "description": "Formatted runway ID like AR-001, AR-002 (SAFe mode)"
+    },
+    "architecture_impact": {
+      "type": "string",
+      "enum": ["foundation", "system", "solution", "enterprise"],
+      "default": "system",
+      "description": "Level of architecture impact (SAFe mode)"
+    },
+    "implementation_timeline": {
+      "type": "object",
+      "properties": {
+        "start_date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "target_date": {
+          "type": "string", 
+          "format": "date-time"
+        },
+        "dependencies": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": []
+        }
+      },
+      "description": "Implementation timeline and dependencies (SAFe mode)"
+    },
+    "supersedes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Runway items that this supersedes (SAFe mode)"
+    },
+    "superseded_by": {
+      "type": "string",
+      "description": "Runway item that supersedes this one (SAFe mode)"
+    }
+  },
+  "required": [
+    "id",
+    "title", 
+    "context",
+    "decision",
+    "consequences"
+  ],
+  "additionalProperties": false,
+  "metadata": {
+    "supportedModes": ["kanban", "agile", "safe"],
+    "migrationPath": ["kanban", "agile", "safe"],
+    "erlangCompatible": true,
+    "jsonSchemaVersion": "draft-07"
+  }
+}

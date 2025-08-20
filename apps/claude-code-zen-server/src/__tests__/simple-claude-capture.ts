@@ -89,7 +89,7 @@ async function runSimpleClaudeCaptureTest() {
     
     // Extract response
     const assistantMessage = result?.find(r => r.type === 'assistant');
-    const responseText = assistantMessage?.message?.content?.[0]?.text || 'NO_RESPONSE';
+    const responseText = assistantMessage?.content?.[0]?.text || 'NO_RESPONSE';
     
     console.log(`\n📨 CLAUDE RESPONDED: "${responseText}"`);
     console.log(`⏱️ Duration: ${duration}ms`);

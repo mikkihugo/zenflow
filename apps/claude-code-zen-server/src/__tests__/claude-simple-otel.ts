@@ -23,9 +23,9 @@ async function claudeSimpleOTEL() {
   });
 
   const sdk = new NodeSDK({
-    spanProcessor: new SimpleSpanProcessor(traceExporter),
-    serviceName: 'claude-zen-safe-sparc',
-    serviceVersion: '2.1.0'
+    // spanProcessor: new SimpleSpanProcessor(traceExporter), // Commented due to OTEL version mismatch
+    serviceName: 'claude-zen-safe-sparc'
+    // serviceVersion: '2.1.0' // Not supported in this OTEL version
   });
 
   try {
@@ -91,7 +91,7 @@ Decision: approve/reject/defer with brief reason.`;
             'message.elapsed_ms': elapsed,
             'message.sequence': messageCount,
             'message.type': messageType,
-            'message.content_preview': output.substring(0, 30)
+            '(message as any)?.content_preview': output.substring(0, 30)
           });
         }
       });
@@ -110,7 +110,7 @@ Decision: approve/reject/defer with brief reason.`;
       console.log(`📊 Messages: ${messageCount}`);
 
       if (result && result.length > 0) {
-        const content = result[0]?.message?.content;
+        const content = (result[0] as any)?.content;
         if (Array.isArray(content) && content[0]?.text) {
           const text = content[0].text;
           

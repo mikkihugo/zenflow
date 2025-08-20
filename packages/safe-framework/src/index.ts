@@ -178,6 +178,13 @@ export type {
   SafeSolutionKanbanState
 } from './integrations/kanban-integration';
 
+// Database-SPARC Bridge integration
+export { DatabaseSPARCBridge } from './integrations/database-sparc-bridge';
+export type {
+  WorkAssignment,
+  ImplementationResult
+} from './integrations/database-sparc-bridge';
+
 // ============================================================================
 // UTILITIES - SAFe framework utilities
 // ============================================================================

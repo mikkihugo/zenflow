@@ -30,12 +30,34 @@ export interface Logger {
 export interface DatabaseAdapter {
   connect(): Promise<void>;
   disconnect(): Promise<void>;
-  query(sql: string, params?: any[]): Promise<any>;
+  query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>>;
   execute(sql: string, params?: any[]): Promise<any>;
   transaction<T>(fn: (tx: any) => Promise<T>): Promise<T>;
-  health(): Promise<boolean>;
+  isConnected(): boolean;
+  health(): Promise<HealthStatus>;
   getSchema(): Promise<any>;
   getConnectionStats(): Promise<any>;
+}
+
+// Query parameters type
+export type QueryParams = any[] | Record<string, any>;
+
+// Query result type
+export interface QueryResult<T = unknown> {
+  rows: T[];
+  rowCount: number;
+  fields?: any[];
+}
+
+// Health status type
+export interface HealthStatus {
+  healthy: boolean;
+  isHealthy: boolean;
+  status: string;
+  score: number;
+  details: Record<string, any>;
+  lastCheck: Date;
+  errors?: string[];
 }
 
 // Core database types
@@ -487,27 +509,6 @@ export interface DatabaseMetadata {
   config: Record<string, unknown>;
 }
 
-/**
- * Health status.
- *
- * @example
- */
-export interface HealthStatus {
-  /** Is the database healthy */
-  healthy: boolean;
-
-  /** Health score (0-100) */
-  score: number;
-
-  /** Health details */
-  details: Record<string, unknown>;
-
-  /** Last check timestamp */
-  lastCheck: Date;
-
-  /** Any error messages */
-  errors?: string[];
-}
 
 /**
  * Performance metrics.

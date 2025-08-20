@@ -112,7 +112,7 @@ Make your analysis thorough and actionable for executive review.`;
     console.log(`📊 Stream messages: ${messageCount}`);
     
     if (result && result.length > 0) {
-      const content = result[0]?.message?.content;
+      const content = (result[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         const text = content[0].text;
         

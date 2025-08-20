@@ -21,9 +21,9 @@ async function claudeFixedOTEL() {
   });
 
   const sdk = new NodeSDK({
-    spanProcessor: new SimpleSpanProcessor(traceExporter),
-    serviceName: 'claude-zen-safe-sparc',
-    serviceVersion: '2.1.0'
+    // spanProcessor: new SimpleSpanProcessor(traceExporter), // Commented due to OTEL version mismatch
+    serviceName: 'claude-zen-safe-sparc'
+    // serviceVersion not supported in this OTEL version
   });
 
   let result;
@@ -110,7 +110,7 @@ Decision: approve/reject/defer with brief reason.`;
 
     // Extract decision
     if (result && result.length > 0) {
-      const content = result[0]?.message?.content;
+      const content = (result[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         const text = content[0].text;
         

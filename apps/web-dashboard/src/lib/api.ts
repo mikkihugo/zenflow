@@ -384,15 +384,81 @@ class ApiClient {
   // ===== PROJECT MANAGEMENT (Enhanced) =====
 
   async getProjects(): Promise<Project[]> {
-    const response = await this.request<{ projects: Project[]; total: number }>('/v1/coordination/projects');
+    const response = await this.request<{ projects: Project[]; total: number }>('/v1/projects');
     return response.projects || [];
   }
 
+  async getCurrentProject(): Promise<Project> {
+    return await this.request<Project>('/v1/projects/current');
+  }
+
+  async getProject(projectId: string): Promise<Project> {
+    return await this.request<Project>(`/v1/projects/${projectId}`);
+  }
+
+  async switchProject(projectId: string, projectPath?: string): Promise<any> {
+    return await this.request('/v1/projects/switch', {
+      method: 'POST',
+      body: JSON.stringify({ projectId, projectPath }),
+    });
+  }
+
+  async switchToProject(projectId: string): Promise<any> {
+    return await this.request(`/v1/projects/${projectId}/switch`, {
+      method: 'POST',
+    });
+  }
+
+  async getProjectStatus(): Promise<any> {
+    return await this.request('/v1/projects/status');
+  }
+
+  async cleanupProjectRegistry(): Promise<any> {
+    return await this.request('/v1/projects/cleanup', {
+      method: 'POST',
+    });
+  }
+
   async createProject(projectData: Partial<Project>): Promise<Project> {
-    return await this.request<Project>('/v1/coordination/projects', {
+    return await this.request<Project>('/v1/projects', {
       method: 'POST',
       body: JSON.stringify(projectData),
     });
+  }
+
+  // ===== PROJECT MODE MANAGEMENT API =====
+
+  async getProjectModes(projectId: string): Promise<any> {
+    return await this.request(`/v1/projects/${projectId}/modes`);
+  }
+
+  async getModeCapabilities(mode: string): Promise<any> {
+    return await this.request(`/v1/projects/modes/${mode}/capabilities`);
+  }
+
+  async upgradeProjectMode(projectId: string, upgradeData: {
+    toMode: string;
+    preserveData?: boolean;
+    backupBeforeMigration?: boolean;
+    validateAfterMigration?: boolean;
+  }): Promise<any> {
+    return await this.request(`/v1/projects/${projectId}/modes/upgrade`, {
+      method: 'POST',
+      body: JSON.stringify(upgradeData),
+    });
+  }
+
+  async getProjectUpgradePaths(projectId: string): Promise<any> {
+    return await this.request(`/v1/projects/${projectId}/modes/upgrade-paths`);
+  }
+
+  async getSchemaMigrationPath(fromVersion: string, toVersion: string): Promise<any> {
+    const params = new URLSearchParams({ fromVersion, toVersion });
+    return await this.request(`/v1/projects/schema/migration-path?${params}`);
+  }
+
+  async getAllProjectModes(): Promise<any> {
+    return await this.request('/v1/projects/modes');
   }
 
   // ========================================

@@ -21,6 +21,7 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
+import * as crypto from 'crypto';
 
 import { getLogger } from './src/logging';
 
@@ -91,17 +92,47 @@ const configSchema = {
       default: 'memory',
       env: 'ZEN_MEMORY_BACKEND'
     },
-    memoryDir: {
-      doc: 'Memory storage directory',
+    dataDir: {
+      doc: 'Base data directory for all project data',
       format: String,
-      default: './data/memory',
+      default: '.claude-zen/data',
+      env: 'ZEN_DATA_DIR'
+    },
+    memoryDir: {
+      doc: 'Memory storage directory (relative to dataDir)',
+      format: String,
+      default: 'memory',
       env: 'ZEN_MEMORY_DIR'
     },
     dbPath: {
-      doc: 'Database file path',
+      doc: 'Main database file path (relative to dataDir)',
       format: String,
-      default: './data/zen.db',
+      default: 'zen.db',
       env: 'ZEN_DB_PATH'
+    },
+    swarmDir: {
+      doc: 'Swarm data directory (relative to dataDir)',
+      format: String,
+      default: 'swarms',
+      env: 'ZEN_SWARM_DIR'
+    },
+    neuralDir: {
+      doc: 'Neural network data directory (relative to dataDir)', 
+      format: String,
+      default: 'neural',
+      env: 'ZEN_NEURAL_DIR'
+    },
+    cacheDir: {
+      doc: 'Cache directory (relative to dataDir)',
+      format: String,
+      default: 'cache',
+      env: 'ZEN_CACHE_DIR'
+    },
+    logsDir: {
+      doc: 'Log files directory (relative to dataDir)',
+      format: String,
+      default: 'logs',
+      env: 'ZEN_LOGS_DIR'
     }
   },
   
@@ -194,8 +225,13 @@ export interface MetricsConfig {
 
 export interface StorageConfig {
   backend: 'memory' | 'sqlite' | 'lancedb' | 'kuzu';
+  dataDir: string;
   memoryDir: string;
   dbPath: string;
+  swarmDir: string;
+  neuralDir: string;
+  cacheDir: string;
+  logsDir: string;
 }
 
 export interface ProjectConfig {
@@ -575,6 +611,62 @@ export function getStorageConfig(): StorageConfig {
 }
 
 /**
+ * Get project identifier for data isolation in user mode
+ */
+function getProjectIdentifier(): string {
+  // Generate a short hash identifier based on the project path
+  // This ensures consistency across runs for the same project path
+  const projectPath = process.cwd();
+  const pathHash = crypto.createHash('sha256').update(projectPath).digest('hex');
+  
+  // Use first 8 characters as project ID
+  return pathHash.substring(0, 8);
+}
+
+/**
+ * Get absolute data storage paths based on current configuration mode
+ */
+export function getDataStoragePaths(): {
+  dataDir: string;
+  memoryDir: string;
+  dbPath: string;
+  swarmDir: string;
+  neuralDir: string;
+  cacheDir: string;
+  logsDir: string;
+  projectId?: string;
+} {
+  const storage = getStorageConfig();
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  
+  let baseDataDir: string;
+  let projectId: string | undefined;
+  
+  if (storeInUserHome) {
+    // User mode: isolate project data in project-specific subdirectories  
+    projectId = getProjectIdentifier();
+    baseDataDir = path.join(os.homedir(), '.claude-zen', 'projects', projectId);
+  } else {
+    // Repository mode: store data in local .claude-zen directory (no isolation needed)
+    baseDataDir = path.join('.claude-zen');
+  }
+  
+  // Create full data directory path
+  const dataDir = path.join(baseDataDir, storage.dataDir.replace(/^\.claude-zen\//, ''));
+  
+  return {
+    dataDir,
+    memoryDir: path.join(dataDir, storage.memoryDir),
+    dbPath: path.join(dataDir, storage.dbPath),
+    swarmDir: path.join(dataDir, storage.swarmDir),
+    neuralDir: path.join(dataDir, storage.neuralDir),
+    cacheDir: path.join(dataDir, storage.cacheDir),
+    logsDir: path.join(dataDir, storage.logsDir),
+    projectId
+  };
+}
+
+/**
  * Get neural configuration
  */
 export function getNeuralConfig(): NeuralConfig {
@@ -663,7 +755,6 @@ export function checkConfigDirectoryConflicts(): {
  */
 export function initializeConfigDirectories(): void {
   const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
-  const env = process.env['NODE_ENV'] || 'development';
   
   // Check for conflicts first
   const conflicts = checkConfigDirectoryConflicts();
@@ -685,6 +776,215 @@ export function initializeConfigDirectories(): void {
 }
 
 /**
+ * Update global project registry (user mode only)
+ */
+function updateProjectRegistry(projectId: string): void {
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  if (!storeInUserHome) return; // Only for user mode
+  
+  try {
+    const registryPath = path.join(os.homedir(), '.claude-zen', 'projects.json');
+    
+    let registry: { projects: Array<{ id: string; name: string; path: string; lastAccessed: string }> } = {
+      projects: []
+    };
+    
+    // Load existing registry
+    if (fs.existsSync(registryPath)) {
+      registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    }
+    
+    // Get a human-readable project name
+    let projectName = projectId;
+    try {
+      const packageJsonPath = path.resolve('package.json');
+      if (fs.existsSync(packageJsonPath)) {
+        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        if (packageJson.name) {
+          projectName = packageJson.name;
+        }
+      }
+    } catch (error) {
+      // Fallback to directory name
+      projectName = path.basename(process.cwd());
+    }
+    
+    // Current project info
+    const currentProject = {
+      id: projectId,
+      name: projectName,
+      path: process.cwd(),
+      lastAccessed: new Date().toISOString()
+    };
+    
+    // Update or add project
+    const existingIndex = registry.projects.findIndex(p => p.id === projectId);
+    if (existingIndex >= 0) {
+      registry.projects[existingIndex] = currentProject;
+    } else {
+      registry.projects.push(currentProject);
+    }
+    
+    // Sort by last accessed (most recent first)
+    registry.projects.sort((a, b) => new Date(b.lastAccessed).getTime() - new Date(a.lastAccessed).getTime());
+    
+    // Create directory if needed
+    const registryDir = path.dirname(registryPath);
+    if (!fs.existsSync(registryDir)) {
+      fs.mkdirSync(registryDir, { recursive: true });
+    }
+    
+    // Save registry
+    fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2), 'utf8');
+    logger.debug(`Updated project registry: ${projectId}`);
+    
+  } catch (error) {
+    logger.warn('Failed to update project registry:', error);
+  }
+}
+
+/**
+ * Ensure data storage directories exist
+ */
+export function ensureDataDirectories(): void {
+  const dataPaths = getDataStoragePaths();
+  
+  try {
+    // Update project registry in user mode
+    if (dataPaths.projectId) {
+      updateProjectRegistry(dataPaths.projectId);
+    }
+    
+    // Create all data directories
+    const dirsToCreate = [
+      dataPaths.dataDir,
+      dataPaths.memoryDir,
+      dataPaths.swarmDir,
+      dataPaths.neuralDir,
+      dataPaths.cacheDir,
+      dataPaths.logsDir
+    ];
+    
+    for (const dir of dirsToCreate) {
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        logger.debug(`Created data directory: ${dir}`);
+      }
+    }
+    
+    // Create .gitignore in data directory to ignore sensitive files
+    const dataGitignorePath = path.join(dataPaths.dataDir, '.gitignore');
+    if (!fs.existsSync(dataGitignorePath)) {
+      const dataGitignoreContent = `# Claude Zen Data Directory
+# Contains project data and may include sensitive information
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Memory and cache files
+memory/
+cache/
+tmp/
+temp/
+
+# Log files
+*.log
+logs/
+
+# Neural network data
+neural/
+models/
+weights/
+
+# Swarm coordination data
+swarms/
+agents/
+
+# Backup files
+*.bak
+*.backup
+
+# OS generated files
+.DS_Store
+Thumbs.db
+`;
+      
+      fs.writeFileSync(dataGitignorePath, dataGitignoreContent, 'utf8');
+      logger.debug(`Created .gitignore in data directory: ${dataPaths.dataDir}`);
+    }
+    
+    logger.debug(`Data directories ensured: ${dataPaths.dataDir}${dataPaths.projectId ? ` (project: ${dataPaths.projectId})` : ''}`);
+    
+  } catch (error) {
+    // Don't fail if data directory creation fails
+    logger.warn('Failed to ensure data directories:', error);
+  }
+}
+
+/**
+ * Get list of registered projects (user mode only)
+ */
+export function getRegisteredProjects(): Array<{ id: string; name: string; path: string; lastAccessed: string }> {
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  if (!storeInUserHome) return []; // Only for user mode
+  
+  try {
+    const registryPath = path.join(os.homedir(), '.claude-zen', 'projects.json');
+    if (fs.existsSync(registryPath)) {
+      const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+      return registry.projects || [];
+    }
+  } catch (error) {
+    logger.warn('Failed to read project registry:', error);
+  }
+  
+  return [];
+}
+
+/**
+ * Get current project info
+ */
+export function getCurrentProject(): { id: string; name: string; path: string; mode: 'user' | 'repo' } {
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  const dataPaths = getDataStoragePaths();
+  
+  return {
+    id: dataPaths.projectId || 'local',
+    name: dataPaths.projectId || path.basename(process.cwd()),
+    path: process.cwd(),
+    mode: storeInUserHome ? 'user' : 'repo'
+  };
+}
+
+/**
+ * Clean up old projects from registry (removes projects that no longer exist)
+ */
+export function cleanupProjectRegistry(): void {
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  if (!storeInUserHome) return; // Only for user mode
+  
+  try {
+    const registryPath = path.join(os.homedir(), '.claude-zen', 'projects.json');
+    if (!fs.existsSync(registryPath)) return;
+    
+    const registry = JSON.parse(fs.readFileSync(registryPath, 'utf8'));
+    const validProjects = registry.projects.filter((project: any) => {
+      return fs.existsSync(project.path);
+    });
+    
+    if (validProjects.length !== registry.projects.length) {
+      registry.projects = validProjects;
+      fs.writeFileSync(registryPath, JSON.stringify(registry, null, 2), 'utf8');
+      logger.info(`Cleaned up project registry: ${registry.projects.length - validProjects.length} invalid projects removed`);
+    }
+  } catch (error) {
+    logger.warn('Failed to cleanup project registry:', error);
+  }
+}
+
+/**
  * Configuration helpers for backward compatibility
  */
 export const configHelpers = {
@@ -697,6 +997,11 @@ export const configHelpers = {
   areMetricsEnabled: () => areMetricsEnabled(),
   getStorageConfig: () => getStorageConfig(),
   getNeuralConfig: () => getNeuralConfig(),
+  getDataPaths: () => getDataStoragePaths(),
+  ensureDataDirs: () => ensureDataDirectories(),
+  getCurrentProject: () => getCurrentProject(),
+  getProjects: () => getRegisteredProjects(),
+  cleanupProjects: () => cleanupProjectRegistry(),
   toObject: () => globalConfig?.toObject() || {},
   getSchema: () => globalConfig?.getSchema() || {},
   initDirectories: () => initializeConfigDirectories(),

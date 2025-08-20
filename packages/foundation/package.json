@@ -51,14 +51,6 @@
     "@anthropic-ai/claude-code": "^1.0.83",
     "@logtape/logtape": "^1.0.4",
     "@manypkg/find-root": "^3.1.0",
-    "@opentelemetry/api": "^1.9.0",
-    "@opentelemetry/auto-instrumentations-node": "^0.50.0",
-    "@opentelemetry/exporter-jaeger": "^1.25.0",
-    "@opentelemetry/exporter-prometheus": "^0.52.0",
-    "@opentelemetry/resources": "^1.25.0",
-    "@opentelemetry/sdk-metrics": "^1.25.0",
-    "@opentelemetry/sdk-node": "^0.52.0",
-    "@opentelemetry/semantic-conventions": "^1.25.0",
     "@types/convict": "^6.1.6",
     "@types/opossum": "^8.1.9",
     "convict": "^6.2.4",
@@ -67,8 +59,8 @@
     "neverthrow": "^8.2.0",
     "opossum": "^9.0.0",
     "p-retry": "^6.2.1",
-    "prom-client": "^15.1.3",
     "reflect-metadata": "^0.2.2",
+    "@claude-zen/monitoring": "workspace:*",
     "tsyringe": "^4.10.0",
     "@lancedb/lancedb": "^0.21.3",
     "better-sqlite3": "^12.2.0",
@@ -112,10 +104,6 @@
     "./di/tokens/*": {
       "import": "./dist/di/tokens/*.js",
       "types": "./dist/di/tokens/*.d.ts"
-    },
-    "./telemetry": {
-      "import": "./dist/src/telemetry.js",
-      "types": "./dist/src/telemetry.d.ts"
     },
     "./types": {
       "import": "./dist/src/types/index.js",

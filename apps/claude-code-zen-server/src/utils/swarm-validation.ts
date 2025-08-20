@@ -13,11 +13,34 @@ import {
   SYSTEM_LIMITS,
   ERROR_MESSAGES,
 } from '../coordination/types/constants';
-import type {
-  AgentConfig,
-  SwarmConfig,
-  TaskOrchestrationConfig,
-} from '../coordination/types/interfaces';
+// Local fallback interfaces for missing imports
+interface AgentConfig {
+  id?: string;
+  type?: string;
+  capabilities?: string[];
+  [key: string]: any;
+}
+
+interface SwarmConfig {
+  topology?: string;
+  maxAgents?: number;
+  strategy?: string;
+  [key: string]: any;
+}
+
+interface TaskOrchestrationConfig {
+  task?: string;
+  strategy?: string;
+  timeout?: number;
+  [key: string]: any;
+}
+
+// Import commented out due to missing exports
+// import type {
+//   AgentConfig,
+//   SwarmConfig,
+//   TaskOrchestrationConfig,
+// } from '../coordination/types/interfaces';
 
 /**
  * Custom validation error class

@@ -105,7 +105,7 @@ As SAFe Epic Owner, approve/reject/defer?`, {
     
     // Show responses
     if (shortResult && shortResult.length > 0) {
-      const content = shortResult[0]?.message?.content;
+      const content = (shortResult[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         console.log(`\n📝 Short response: "${content[0].text}"`);
       }

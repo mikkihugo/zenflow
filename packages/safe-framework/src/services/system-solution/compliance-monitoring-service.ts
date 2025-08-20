@@ -218,7 +218,7 @@ export class ComplianceMonitoringService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation/telemetry');
+      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
         serviceName: 'compliance-monitoring',

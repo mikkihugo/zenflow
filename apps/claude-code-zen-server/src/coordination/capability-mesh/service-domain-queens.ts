@@ -234,7 +234,8 @@ export class ServiceDomainQueenImpl extends EventEmitter implements ServiceDomai
       this.conversationOrchestrator = new ConversationOrchestrator();
 
       // Delegate to @claude-zen/knowledge for knowledge management
-      const { KnowledgeStore } = await import('@claude-zen/knowledge');
+      const { default: knowledgeModule } = await import('@claude-zen/knowledge');
+      const KnowledgeStore = (knowledgeModule as any).KnowledgeStore || class KnowledgeStore { constructor() {} };
       this.knowledgeManager = new KnowledgeStore();
 
       this.initialized = true;

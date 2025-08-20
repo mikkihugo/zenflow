@@ -182,7 +182,7 @@ export async function executeClaudeTaskWithOTEL(prompt: string, options?: any) {
         stderr: (output) => {
           // Add events to the span
           span.addEvent('claude_message', {
-            'message.content': output.substring(0, 100),
+            '(message as any)?.content': output.substring(0, 100),
             'message.timestamp': Date.now()
           });
           

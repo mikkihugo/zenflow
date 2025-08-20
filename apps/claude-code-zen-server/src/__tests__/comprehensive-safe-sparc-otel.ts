@@ -85,9 +85,9 @@ class ComprehensiveSafeSparcOTEL {
       });
 
       const sdk = new NodeSDK({
-        spanProcessor: new SimpleSpanProcessor(traceExporter),
-        serviceName: 'safe-sparc-workflow',
-        serviceVersion: '2.1.0'
+        // spanProcessor: new SimpleSpanProcessor(traceExporter), // Commented due to OTEL version mismatch
+        serviceName: 'safe-sparc-workflow'
+        // serviceVersion: '2.1.0' // Not supported in this OTEL version
       });
 
       sdk.start();
@@ -533,13 +533,13 @@ Provide comprehensive completion assessment.`;
     let cost = undefined;
 
     if (result && result.length > 0) {
-      const content = result[0]?.message?.content;
+      const content = (result[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         responseText = content[0].text;
       }
       
       // Try to extract usage data if available
-      const usage = result[0]?.usage;
+      const usage = (result[0] as any)?.usage;
       if (usage) {
         tokenUsage = {
           input: usage.input_tokens || 0,

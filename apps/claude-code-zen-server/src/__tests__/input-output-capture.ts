@@ -143,7 +143,7 @@ class InputOutputCapture {
       let tokenUsage = undefined;
       
       if (result && result.length > 0) {
-        const content = result[0]?.message?.content;
+        const content = (result[0] as any)?.content;
         if (Array.isArray(content) && content[0]?.text) {
           responseText = content[0].text;
         }

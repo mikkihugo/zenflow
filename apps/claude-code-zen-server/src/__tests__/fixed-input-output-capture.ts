@@ -2,7 +2,7 @@
 /**
  * @fileoverview Fixed Input/Output Capture for Claude SDK
  * 
- * FIXED: Now correctly extracts responses from result[1].message (assistant) not result[0] (system)
+ * FIXED: Now correctly extracts responses from assistant message not result[0] (system)
  * Provides complete prompt and response capture that Claude Code OTEL doesn't provide.
  */
 
@@ -73,11 +73,11 @@ class FixedInputOutputCapture {
     }
     
     // Find the assistant message (usually result[1])
-    const assistantMessage = result.find(r => r.type === 'assistant' && r.message);
+    const assistantMessage = result.find(r => r.type === 'assistant');
     
     if (assistantMessage) {
       console.log('✅ Found assistant message in result');
-      const content = assistantMessage.message?.content;
+      const content = (assistantMessage as any)?.content;
       
       if (Array.isArray(content) && content[0]?.text) {
         response = content[0].text;
@@ -87,7 +87,7 @@ class FixedInputOutputCapture {
       }
       
       // Get usage data from assistant message
-      const usage = assistantMessage.message?.usage;
+      const usage = (assistantMessage as any)?.usage;
       if (usage) {
         tokenUsage = {
           input: usage.input_tokens || 0,
@@ -367,7 +367,7 @@ Make it comprehensive for executive review.`,
         withResponses: withResponses,
         responseExtractionRate: Math.floor(withResponses/totalInteractions*100),
         captureDirectory: this.captureDir,
-        fixApplied: 'result[1].message extraction instead of result[0]'
+        fixApplied: 'assistant message extraction instead of result[0]'
       },
       interactions: this.interactions
     }, null, 2));

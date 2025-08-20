@@ -47,14 +47,14 @@
  */
 
 // Foundation interfaces for DI
-import type { Logger } from '../../main';
-import type { Config } from '../../main';
+import type { Logger } from '@claude-zen/foundation';
+import type { Config } from '@claude-zen/foundation';
 
 // DatabaseAdapter interface imported from interfaces.js
 
 // Foundation DI system integration
 import 'reflect-metadata';
-import { DIContainer, injectable, inject, TOKENS } from '../../main';
+import { DIContainer, injectable, inject, TOKENS } from '@claude-zen/foundation';
 
 // Database config types
 interface DatabaseConfig {
@@ -314,8 +314,8 @@ export class DALFactory {
   private entityRegistry: EntityTypeRegistry = {};
 
   constructor(
-    @inject(TOKENS.Logger) private _logger: Logger,
-    @inject(TOKENS.Config) private _config: Config,
+    private _logger: Logger,
+    private _config: Config,
     private databaseProviderFactory: DatabaseProviderFactory,
   ) {
     this.initializeEntityRegistry();
@@ -1452,8 +1452,11 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
       this.secondaryDAOs.map((dao) => dao.healthCheck())
     );
 
+    const isHealthy = primary.healthy && secondaries.some((s) => s.status === 'fulfilled');
     return {
-      healthy: primary.healthy && secondaries.some((s) => s.status === 'fulfilled'),
+      healthy: isHealthy,
+      isHealthy,
+      status: isHealthy ? 'healthy' : 'error',
       score: primary.score,
       details: {
         primary,
@@ -1462,7 +1465,7 @@ export class MultiDatabaseDAO<T> implements DataAccessObject<T> {
         ),
       },
       lastCheck: new Date()
-    } as HealthStatus;
+    };
   }
 
   async getMetrics(): Promise<PerformanceMetrics> {

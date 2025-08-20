@@ -35,11 +35,12 @@ const logger = getLogger('DocumentProcessor');
  */
 export type DocumentType =
   | 'vision'
-  | 'adr'
-  | 'prd'
-  | 'epic'
+  | 'architecture_runway'
+  | 'business_epic'
+  | 'program_epic'
   | 'feature'
   | 'task'
+  | 'story'
   | 'spec';
 
 /**

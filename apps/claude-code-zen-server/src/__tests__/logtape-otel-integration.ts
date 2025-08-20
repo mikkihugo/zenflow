@@ -7,7 +7,7 @@
  */
 
 import { configure, getLogger } from '@logtape/logtape';
-import { getTelemetry, initializeTelemetry, withAsyncTrace, recordMetric } from '@claude-zen/foundation/telemetry';
+import { getTelemetry, initializeTelemetry, withAsyncTrace, recordMetric } from '@claude-zen/foundation';
 
 interface SafeSparcLogContext {
   phase: 'SAFE_EPIC_EVAL' | 'SPARC_SPEC' | 'SPARC_PSEUDO' | 'SPARC_ARCH' | 'SPARC_REF' | 'SPARC_COMP';
@@ -220,8 +220,8 @@ Decision: APPROVE/REJECT/DEFER with reasoning.`;
       
       // FIXED response extraction (using result[1] not result[0])
       const assistantMessage = result?.find(r => r.type === 'assistant');
-      const responseText = assistantMessage?.message?.content?.[0]?.text || '';
-      const tokenUsage = assistantMessage?.message?.usage;
+      const responseText = assistantMessage?.content?.[0]?.text || '';
+      const tokenUsage = assistantMessage?.usage;
       const resultSummary = result?.find(r => r.type === 'result');
       const cost = resultSummary?.total_cost_usd;
       

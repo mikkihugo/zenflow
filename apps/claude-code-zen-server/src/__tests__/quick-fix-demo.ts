@@ -39,22 +39,22 @@ async function quickFixDemo() {
     
     // OLD (BROKEN) WAY:
     console.log('\n❌ OLD (BROKEN) EXTRACTION:');
-    const oldWay = result?.[0]?.message?.content?.[0]?.text;
-    console.log(`   result[0].message.content[0].text = "${oldWay || 'undefined'}"`);
+    const oldWay = (result?.[0] as any)?.content?.[0]?.text;
+    console.log(`   (result[0] as any)?.content[0].text = "${oldWay || 'undefined'}"`);
     
     // NEW (FIXED) WAY:  
     console.log('\n✅ NEW (FIXED) EXTRACTION:');
     const assistantMsg = result?.find(r => r.type === 'assistant');
-    const newWay = assistantMsg?.message?.content?.[0]?.text;
+    const newWay = (assistantMsg as any)?.content?.[0]?.text;
     console.log(`   Find assistant message: ${!!assistantMsg}`);
-    console.log(`   assistant.message.content[0].text = "${newWay || 'undefined'}"`);
+    console.log(`   assistant.content[0].text = "${newWay || 'undefined'}"`);
     
     // COST AND USAGE:
     const resultSummary = result?.find(r => r.type === 'result');
     console.log('\n💰 COST & USAGE DATA:');
     console.log(`   Cost: $${resultSummary?.total_cost_usd || 'unknown'}`);
-    console.log(`   Input tokens: ${assistantMsg?.message?.usage?.input_tokens || 0}`);
-    console.log(`   Output tokens: ${assistantMsg?.message?.usage?.output_tokens || 0}`);
+    console.log(`   Input tokens: ${(assistantMsg as any)?.usage?.input_tokens || 0}`);
+    console.log(`   Output tokens: ${(assistantMsg as any)?.usage?.output_tokens || 0}`);
     
     console.log('\n🎯 DEMONSTRATION COMPLETE!');
     console.log(`   Old method result: "${oldWay || 'EMPTY'}"`);

@@ -74,62 +74,62 @@ export interface VisionDocumentEntity extends BaseDocumentEntity {
   };
 
   // Generated from vision
-  generated_adrs: string[]; // ADR document Ds
-  generated_prds: string[]; // PRD document Ds
+  generated_architecture_runways: string[]; // Architecture Runway document IDs
+  generated_business_epics: string[]; // Business Epic document IDs
 }
 
 /**
- * Architecture Decision Record Entity.
- * Technical decisions and rationale.
+ * Architecture Runway Entity.
+ * SAFe Architecture Runway Items - technical decisions and architectural enablers.
  *
  * @example
  */
-export interface ADRDocumentEntity extends BaseDocumentEntity {
-  type: 'adr';
+export interface ArchitectureRunwayDocumentEntity extends BaseDocumentEntity {
+  type: 'architecture_runway';
 
-  // ADR-specific fields
-  decision_number: number;
-  decision_status: 'proposed' | 'accepted' | 'deprecated' | 'superseded';
+  // Architecture Runway specific fields
+  runway_number: number;
+  runway_id: string; // AR-001, AR-002, etc.
   context: string;
   decision: string;
   consequences: string[];
-  alternatives_considered: string[];
+  decision_status: 'proposed' | 'accepted' | 'deprecated' | 'superseded';
+  alternatives_considered: Array<{
+    name: string;
+    pros: string[];
+    cons: string[];
+    rejected_reason: string;
+  }>;
+  stakeholders: string[];
+  architecture_impact: 'foundation' | 'system' | 'solution' | 'enterprise';
+  implementation_timeline: {
+    start_date?: Date;
+    target_date?: Date;
+    dependencies: string[];
+  };
+  supersedes: string[];
+  superseded_by?: string;
 
   // Source and impact
   source_vision_id?: string;
-  impacted_prds: string[]; // PRD document Ds affected
-  supersedes_adr_id?: string;
+  impacted_business_epics: string[]; // Business Epic document IDs affected
 }
 
 /**
- * Product Requirements Document Entity.
- * Detailed feature specifications.
+ * Business Epic Entity.
+ * SAFe Business Epic - high-level business initiatives that drive value.
  *
  * @example
  */
-export interface PRDDocumentEntity extends BaseDocumentEntity {
-  type: 'prd';
+export interface BusinessEpicDocumentEntity extends BaseDocumentEntity {
+  type: 'business_epic';
 
-  // PRD-specific fields
-  functional_requirements: Array<{
-    id: string;
-    description: string;
-    acceptance_criteria: string[];
-    priority: 'must_have' | 'should_have' | 'could_have' | 'wont_have';
-  }>;
-
-  non_functional_requirements: Array<{
-    id: string;
-    type:
-      | 'performance'
-      | 'security'
-      | 'usability'
-      | 'reliability'
-      | 'scalability';
-    description: string;
-    metrics: string;
-  }>;
-
+  // Business Epic specific fields
+  business_objective: string;
+  target_audience: string[];
+  requirements: string[]; // Kanban mode
+  
+  // Agile mode additions
   user_stories: Array<{
     id: string;
     title: string;
@@ -137,25 +137,62 @@ export interface PRDDocumentEntity extends BaseDocumentEntity {
     acceptance_criteria: string[];
     story_points?: number;
   }>;
+  acceptance_criteria: string[];
+  definition_of_done: string[];
+  
+  // SAFe mode additions
+  epic_type: 'business' | 'enabler';
+  epic_owner: string;
+  portfolio_canvas: {
+    leading_indicators: string[];
+    success_metrics: string[];
+    mvp_hypothesis: string;
+    solution_intent: string;
+  };
+  wsjf_score?: {
+    user_business_value: number;
+    time_criticality: number;
+    risk_reduction: number;
+    job_size: number;
+    total_score: number;
+  };
+  program_epics_generated: number;
 
-  // Breakdown and generation
+  // Source and generation
   source_vision_id?: string;
-  related_adrs: string[]; // ADR document Ds
-  generated_epics: string[]; // Epic document Ds
+  related_architecture_runways: string[]; // Architecture Runway document IDs
+  generated_program_epics: string[]; // Program Epic document IDs
 }
 
 /**
- * Epic Document Entity.
- * Large feature groupings.
+ * Program Epic Document Entity.
+ * SAFe Program Epic - portfolio epics broken down for ART execution.
  *
  * @example
  */
-export interface EpicDocumentEntity extends BaseDocumentEntity {
-  type: 'epic';
+export interface ProgramEpicDocumentEntity extends BaseDocumentEntity {
+  type: 'program_epic';
 
-  // Epic-specific fields
-  business_value: string;
-  user_impact: string;
+  // Program Epic specific fields
+  parent_business_epic_id: string;
+  art_id: string; // Agile Release Train
+  program_increment_id?: string;
+  features_generated: number;
+  
+  // SAFe mode additions
+  epic_hypothesis: string;
+  success_criteria: string[];
+  lean_business_case: {
+    epic_description: string;
+    leading_indicators: string[];
+    success_metrics: string[];
+    mvp_definition: string;
+    go_no_go_decision: string;
+  };
+  solution_intent: string;
+  architectural_runway: string[];
+
+  // Effort estimation
   effort_estimation: {
     story_points?: number;
     time_estimate_weeks?: number;
@@ -168,9 +205,8 @@ export interface EpicDocumentEntity extends BaseDocumentEntity {
     actual_completion?: Date;
   };
 
-  // Source and breakdown
-  source_prd_id?: string;
-  feature_ids: string[]; // Feature document Ds
+  // Feature breakdown
+  feature_ids: string[]; // Feature document IDs
 
   // Progress tracking
   features_completed: number;
@@ -208,7 +244,7 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
   };
 
   // Source and breakdown
-  source_epic_id?: string;
+  source_program_epic_id?: string;
   task_ids: string[]; // Task document Ds
 
   // Implementation tracking
@@ -267,6 +303,39 @@ export interface FeatureDocumentEntity extends BaseDocumentEntity {
 }
 
 /**
+ * Story Document Entity.
+ * SAFe User Stories - small, implementable pieces of functionality.
+ *
+ * @example
+ */
+export interface StoryDocumentEntity extends BaseDocumentEntity {
+  type: 'story';
+
+  // Story specific fields
+  parent_feature_id: string;
+  story_type: 'user_story' | 'enabler_story';
+  acceptance_criteria: string[];
+  story_points?: number;
+  
+  // SAFe mode additions
+  sprint_id?: string;
+  iteration_id?: string;
+  assigned_team_id?: string;
+  assigned_user_id?: string;
+  persona?: string; // For user stories
+  enabler_type?: 'infrastructure' | 'architectural' | 'exploration' | 'compliance';
+  business_value?: number;
+  acceptance_criteria_detailed: Array<{
+    id: string;
+    description: string;
+    status: 'pending' | 'in_progress' | 'done' | 'failed';
+    test_scenarios: string[];
+  }>;
+  definition_of_done: string[];
+  tasks_generated: number;
+}
+
+/**
  * Task Document Entity.
  * Granular implementation tasks with SPARC methodology integration.
  *
@@ -300,7 +369,7 @@ export interface TaskDocumentEntity extends BaseDocumentEntity {
   };
 
   // Source and completion
-  source_feature_id?: string;
+  source_story_id?: string;
   assigned_to?: string;
 
   // Code generation
@@ -439,10 +508,11 @@ export interface ProjectEntity {
 
   // Document relationships
   vision_document_ids: string[];
-  adr_document_ids: string[];
-  prd_document_ids: string[];
-  epic_document_ids: string[];
+  architecture_runway_document_ids: string[];
+  business_epic_document_ids: string[];
+  program_epic_document_ids: string[];
   feature_document_ids: string[];
+  story_document_ids: string[];
   task_document_ids: string[];
 
   // Progress
@@ -577,10 +647,11 @@ export const DATABASE_SCHEMAS = {
       
       -- Type-specific JSON fields
       vision_data TEXT, -- JSON for vision-specific fields
-      adr_data TEXT, -- JSON for ADR-specific fields
-      prd_data TEXT, -- JSON for PRD-specific fields
-      epic_data TEXT, -- JSON for epic-specific fields
+      architecture_runway_data TEXT, -- JSON for Architecture Runway-specific fields
+      business_epic_data TEXT, -- JSON for Business Epic-specific fields
+      program_epic_data TEXT, -- JSON for Program Epic-specific fields
       feature_data TEXT, -- JSON for feature-specific fields
+      story_data TEXT, -- JSON for story-specific fields
       task_data TEXT, -- JSON for task-specific fields
       
       FOREIGN KEY (project_id) REFERENCES projects(id),
@@ -654,10 +725,11 @@ export const DATABASE_SCHEMAS = {
       target_completion DATETIME,
       actual_completion DATETIME,
       vision_document_ids TEXT, -- JSON array
-      adr_document_ids TEXT, -- JSON array
-      prd_document_ids TEXT, -- JSON array
-      epic_document_ids TEXT, -- JSON array
+      architecture_runway_document_ids TEXT, -- JSON array
+      business_epic_document_ids TEXT, -- JSON array
+      program_epic_document_ids TEXT, -- JSON array
       feature_document_ids TEXT, -- JSON array
+      story_document_ids TEXT, -- JSON array
       task_document_ids TEXT, -- JSON array
       overall_progress_percentage NTEGER DEFAULT 0,
       phase TEXT DEFAULT 'planning',
@@ -776,22 +848,28 @@ export function isVisionDocument(
   return doc.type === 'vision';
 }
 
-export function isADRDocument(
+export function isArchitectureRunwayDocument(
   doc: BaseDocumentEntity
-): doc is ADRDocumentEntity {
-  return doc.type === 'adr';
+): doc is ArchitectureRunwayDocumentEntity {
+  return doc.type === 'architecture_runway';
 }
 
-export function isPRDDocument(
+export function isBusinessEpicDocument(
   doc: BaseDocumentEntity
-): doc is PRDDocumentEntity {
-  return doc.type === 'prd';
+): doc is BusinessEpicDocumentEntity {
+  return doc.type === 'business_epic';
 }
 
-export function isEpicDocument(
+export function isProgramEpicDocument(
   doc: BaseDocumentEntity
-): doc is EpicDocumentEntity {
-  return doc.type === 'epic';
+): doc is ProgramEpicDocumentEntity {
+  return doc.type === 'program_epic';
+}
+
+export function isStoryDocument(
+  doc: BaseDocumentEntity
+): doc is StoryDocumentEntity {
+  return doc.type === 'story';
 }
 
 export function isFeatureDocument(

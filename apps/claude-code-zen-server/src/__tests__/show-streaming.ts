@@ -34,7 +34,7 @@ As a SAFe Epic Owner, evaluate this proposal and provide:
 Be thorough in your analysis.`;
 
     console.log('🚀 Starting Claude SDK call with streaming output...\n');
-    console.log('=' * 70);
+    console.log('='.repeat(70));
     
     let streamMessageCount = 0;
     const startTime = Date.now();
@@ -53,7 +53,7 @@ Be thorough in your analysis.`;
       }
     });
     
-    console.log('=' * 70);
+    console.log('='.repeat(70));
     const totalTime = Date.now() - startTime;
     console.log(`\n✅ Streaming completed in ${totalTime}ms!`);
     console.log(`📊 Total stream messages: ${streamMessageCount}`);
@@ -62,8 +62,8 @@ Be thorough in your analysis.`;
     if (result && result.length > 0) {
       console.log(`📝 Claude response received: ${result.length} message(s)`);
       
-      if (result[0] && result[0].message && result[0].message.content) {
-        const content = result[0].message.content;
+      if (result[0] && (result[0] as any).content) {
+        const content = (result[0] as any)?.content;
         
         if (Array.isArray(content) && content[0] && content[0].text) {
           const text = content[0].text;

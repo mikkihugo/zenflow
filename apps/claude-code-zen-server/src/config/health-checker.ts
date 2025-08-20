@@ -208,7 +208,6 @@ export class ConfigHealthChecker extends EventEmitter {
    *
    * @param includeDetails - Include detailed validation information.
    */
-  async getHealthReport(): Promise<ConfigHealthReport>;
   getHealthReport(
     includeDetails: true
   ): ConfigHealthReport & { validationDetails: ValidationResult };

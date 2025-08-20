@@ -86,10 +86,10 @@ async function runClaudeSessionOTELTest() {
   console.log('📝 Simple test prompt:', testPrompt);
   console.log('🚀 Capturing Claude session information...\n');
 
+  const startTime = Date.now();
+  
   try {
     const { executeClaudeTask } = await import('@claude-zen/foundation');
-    
-    const startTime = Date.now();
     const testSessionId = `session-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     // Log session start with IDs
@@ -141,8 +141,8 @@ async function runClaudeSessionOTELTest() {
     const assistantMessage = result?.find(r => r.type === 'assistant');
     const systemMessage = result?.find(r => r.type === 'system');
     const resultSummary = result?.find(r => r.type === 'result');
-    const fullResponse = assistantMessage?.message?.content?.[0]?.text || '';
-    const tokenUsage = assistantMessage?.message?.usage;
+    const fullResponse = (assistantMessage as any)?.content?.[0]?.text || '';
+    const tokenUsage = (assistantMessage as any)?.usage;
     const cost = resultSummary?.total_cost_usd;
 
     // Log complete session information
@@ -192,8 +192,8 @@ async function runClaudeSessionOTELTest() {
         'component_index': index,
         'component_type': r.type,
         'component_data': JSON.stringify(r, null, 2).substring(0, 500) + '...',
-        'has_message': !!r.message,
-        'message_content_length': r.message?.content?.[0]?.text?.length || 0
+        'has_message': !!(r as any).message,
+        'message_content_length': (r as any)?.content?.[0]?.text?.length || 0
       });
     });
 

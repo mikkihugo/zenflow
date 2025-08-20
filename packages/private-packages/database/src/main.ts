@@ -256,25 +256,25 @@
 // =============================================================================
 // DATABASE ADAPTERS - Core infrastructure
 // =============================================================================
-export { KuzuAdapter } from './adapters/kuzu-adapter.js';
-export { LanceDBAdapter } from './adapters/lancedb-adapter.js';
-export { SQLiteAdapter } from './adapters/sqlite-adapter.js';
+export { KuzuAdapter } from './adapters/kuzu-adapter';
+export { LanceDBAdapter } from './adapters/lancedb-adapter';
+export { SQLiteAdapter } from './adapters/sqlite-adapter';
 
 // =============================================================================
 // DATA ACCESS OBJECTS - DAO layer
 // =============================================================================
-export { RelationalDao } from './dao/relational.dao.js';
-export { VectorDao } from './dao/vector.dao.js';
-export { GraphDao } from './dao/graph.dao.js';
-export { MemoryDao } from './dao/memory.dao.js';
-export { CoordinationDao } from './dao/coordination.dao.js';
+export { RelationalDao } from './dao/relational.dao';
+export { VectorDao } from './dao/vector.dao';
+export { GraphDao } from './dao/graph.dao';
+export { MemoryDao } from './dao/memory.dao';
+export { CoordinationDao } from './dao/coordination.dao';
 
 // =============================================================================
 // CORE ABSTRACTIONS - Factories and base classes
 // =============================================================================
-export { createDao, createMultiDatabaseSetup } from './core/dao-factory.js';
-export { BaseDao } from './base.dao.js';
-export { default as DatabaseFactory } from './factory.js';
+export { createDao, createMultiDatabaseSetup } from './core/dao-factory';
+export { BaseDao } from './base.dao';
+export { default as DatabaseFactory } from './factory';
 
 // Types and interfaces (selective exports to avoid conflicts)
 export type {
@@ -288,7 +288,7 @@ export type {
   PerformanceMetrics,
   DatabaseConfig,
   EntityType
-} from './types.js';
+} from './types';
 
 export type {
   DatabaseAdapter,
@@ -297,11 +297,11 @@ export type {
   CustomQuery,
   QueryOptions,
   TransactionOperation
-} from './interfaces.js';
+} from './interfaces';
 
 // Providers (with selective exports to avoid conflicts)
 export { 
   DatabaseProviderFactory,
   type GraphDatabaseAdapter,
   type VectorDatabaseAdapter
-} from './providers/database-providers.js';
+} from './providers/database-providers';

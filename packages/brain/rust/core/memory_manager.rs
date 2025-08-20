@@ -24,10 +24,8 @@ pub struct MemoryPool<T: Float> {
   /// Count of currently allocated buffers
   allocated_count: usize,
   /// Buffer size for this pool
-  #[allow(dead_code)]
   buffer_size: usize,
   /// Pool name
-  #[allow(dead_code)]
   name: String,
 }
 
@@ -154,6 +152,14 @@ impl<T: Float> MemoryPool<T> {
 
   /// Allocate a buffer from this pool
   pub fn allocate(&mut self, size: usize) -> Result<Vec<T>, String> {
+    // Warn if allocation size is not optimal for this pool
+    if !self.is_optimal_size(size) {
+      eprintln!(
+        "Warning: Pool '{}' configured for size {}, allocating size {} may be inefficient",
+        self.name, self.buffer_size, size
+      );
+    }
+
     // If we have an available buffer of the right size, reuse it
     if let Some(mut buffer) = self.available.pop() {
       buffer.clear();
@@ -189,6 +195,23 @@ impl<T: Float> MemoryPool<T> {
   /// Get the number of available buffers
   pub fn available_count(&self) -> usize {
     self.available.len()
+  }
+
+  /// Get the pool name
+  pub fn name(&self) -> &str {
+    &self.name
+  }
+
+  /// Get the buffer size for this pool
+  pub fn buffer_size(&self) -> usize {
+    self.buffer_size
+  }
+
+  /// Check if allocation size is optimal for this pool
+  pub fn is_optimal_size(&self, size: usize) -> bool {
+    // Consider allocations within 20% of pool buffer size as optimal
+    let ratio = size as f64 / self.buffer_size as f64;
+    (0.8..=1.2).contains(&ratio)
   }
 }
 

@@ -41,8 +41,8 @@ describe('Claude SDK Integration Tests', () => {
       expect(Array.isArray(result)).toBe(true);
       expect(result.length).toBeGreaterThan(0);
       
-      if (result[0] && result[0].message && result[0].message.content) {
-        const content = result[0].message.content;
+      if (result[0] && result[0](.message && (result[0] as any)?.content) {
+        const content = (result[0] as any)?.content;
         console.log(`📝 Claude response:`, content);
         
         if (Array.isArray(content) && content[0] && content[0].text) {

@@ -13,18 +13,33 @@
  * @version 1.0.0
  */
 
-import type {
-  UUID,
-  Timestamp,
-  Priority,
-  Status,
-  Entity,
-  Result,
-  ValidationError,
-  Optional,
-  NonEmptyArray,
-  Brand
-} from '../../main/types';
+// Core primitive types (self-contained)
+export type UUID = string;
+export type Timestamp = Date;
+export type Priority = 'low' | 'medium' | 'high' | 'critical';
+export type Status = 'active' | 'inactive' | 'pending' | 'error';
+
+export interface Entity {
+  id: UUID;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface Result<T, E> {
+  success: boolean;
+  data?: T;
+  error?: E;
+}
+
+export interface ValidationError {
+  message: string;
+  field?: string;
+  code?: string;
+}
+
+export type Optional<T> = T | undefined;
+export type NonEmptyArray<T> = [T, ...T[]];
+export type Brand<T, B> = T & { __brand: B };
 
 // =============================================================================
 // CORE DATABASE TYPES

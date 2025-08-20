@@ -165,7 +165,7 @@ export class SafeContainer {
       // Optional Performance Tracker (from @claude-zen/foundation)
       if (aiConfig.enablePerformanceTracking) {
         try {
-          const { PerformanceTracker } = await import('@claude-zen/foundation/telemetry');
+          const { PerformanceTracker } = await import('@claude-zen/foundation');
           const tracker = new PerformanceTracker();
           this.container.registerInstance(AI_ENHANCEMENT_TOKENS.PerformanceTracker, tracker);
           logger.info('Performance Tracker registered');
@@ -177,7 +177,7 @@ export class SafeContainer {
       // Optional Telemetry Manager (from @claude-zen/foundation)
       if (aiConfig.enableTelemetry) {
         try {
-          const { TelemetryManager } = await import('@claude-zen/foundation/telemetry');
+          const { TelemetryManager } = await import('@claude-zen/foundation');
           const telemetry = new TelemetryManager(aiConfig.telemetryConfig || {
             serviceName: 'safe-framework',
             enableTracing: true,

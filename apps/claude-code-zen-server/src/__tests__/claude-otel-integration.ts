@@ -112,7 +112,7 @@ Provide structured evaluation with decision.`;
         
         tracer.addEvent(mainSpan, `claude_${messageType}`, {
           'message.elapsed_ms': elapsed,
-          'message.content': output.substring(0, 100), // Truncate for OTEL
+          '(message as any)?.content': output.substring(0, 100), // Truncate for OTEL
           'message.sequence': messageCount
         });
         
@@ -127,7 +127,7 @@ Provide structured evaluation with decision.`;
 
     if (result && result.length > 0) {
       // Extract decision for OTEL attributes
-      const content = result[0]?.message?.content;
+      const content = (result[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         const text = content[0].text;
         const decision = text.toLowerCase().includes('approve') ? 'approve' :

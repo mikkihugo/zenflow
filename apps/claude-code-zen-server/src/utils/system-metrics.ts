@@ -11,9 +11,22 @@
 
 import { cpus, totalmem, freemem, loadavg } from 'os';
 import { cpuUsage, memoryUsage } from 'process';
-import {
-  PERFORMANCE_CONSTANTS,
-} from '../coordination/types/constants';
+// Local fallback for missing constants
+const PERFORMANCE_CONSTANTS = {
+  CPU_WARNING_THRESHOLD: 0.7,
+  MEMORY_WARNING_THRESHOLD: 0.8,
+  RESPONSE_TIME_WARNING: 1000,
+  MAX_CONCURRENT_TASKS: 100,
+  MEMORY_USAGE_DIVISOR: 1024 * 1024, // Convert bytes to MB
+  NEURAL_ACCURACY_DEFAULT: 0.85,
+  NEURAL_EFFICIENCY_DEFAULT: 0.75,
+  NEURAL_PROCESSING_SPEED_MS: 500
+};
+
+// Import commented out due to missing module
+// import {
+//   PERFORMANCE_CONSTANTS,
+// } from '../coordination/types/constants';
 
 /**
  * Interface for real CPU metrics

@@ -57,8 +57,8 @@ Take your time and be thorough in your analysis.`;
       console.log(`   Total stream messages: ${messageCount}`);
       console.log(`   Response messages: ${result.length}`);
       
-      if (result[0] && result[0].message && result[0].message.content) {
-        const content = result[0].message.content;
+      if (result[0] && result[0](.message && (result[0] as any)?.content) {
+        const content = (result[0] as any)?.content;
         console.log(`\n📝 Final Response Preview:`);
         
         if (Array.isArray(content) && content[0] && content[0].text) {

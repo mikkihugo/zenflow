@@ -1,15 +1,14 @@
 /**
- * @fileoverview Monitoring Package - Facade for Foundation Telemetry
+ * @fileoverview Monitoring Package - Comprehensive Telemetry & Observability
  * 
- * Lightweight facade that delegates to @claude-zen/foundation's telemetry system.
- * Created to resolve server package alignment issues - server expects @claude-zen/monitoring
- * but the actual implementation is in foundation's telemetry system.
+ * Professional-grade telemetry integration using OpenTelemetry and Prometheus
+ * for distributed observability across the entire claude-code-zen ecosystem.
  * 
  * @author Claude Code Zen Team  
- * @version 1.0.0
+ * @version 2.0.0 - Now contains actual implementation (moved from foundation)
  */
 
-// Re-export all monitoring functionality from foundation
+// Export all telemetry functionality from our implementation
 export {
   TelemetryManager,
   SystemMonitor,
@@ -37,9 +36,9 @@ export {
   metered,
   SpanKind,
   SpanStatusCode
-} from '@claude-zen/foundation';
+} from './telemetry.js';
 
-// Re-export types
+// Export types
 export type {
   TelemetryConfig,
   MetricDefinition,
@@ -53,10 +52,10 @@ export type {
   MonitoringConfig,
   MetricData,
   PerformanceMetrics
-} from '@claude-zen/foundation';
+} from './telemetry.js';
 
 // Default export for convenience
-export { TelemetryManager as default } from '@claude-zen/foundation';
+export { TelemetryManager as default } from './telemetry.js';
 
-// Alias for MonitoringSystem (facade for TelemetryManager)
-export { TelemetryManager as MonitoringSystem } from '@claude-zen/foundation';
+// Alias for backward compatibility
+export { TelemetryManager as MonitoringSystem } from './telemetry.js';

@@ -116,8 +116,8 @@ async function runFullContentOTELTest() {
     
     // Extract the full response
     const assistantMessage = result?.find(r => r.type === 'assistant');
-    const fullResponse = assistantMessage?.message?.content?.[0]?.text || '';
-    const tokenUsage = assistantMessage?.message?.usage;
+    const fullResponse = assistantMessage?.content?.[0]?.text || '';
+    const tokenUsage = assistantMessage?.usage;
     const resultSummary = result?.find(r => r.type === 'result');
     const cost = resultSummary?.total_cost_usd;
 

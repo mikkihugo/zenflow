@@ -95,11 +95,14 @@ export interface SPARCProject {
   requirements: string[];
   currentPhase: SPARCPhase;
   specification?: any;
+  pseudocode?: any;
   architecture?: any;
+  refinement?: any;
   implementation?: {
     files: string[];
     tests: string[];
     documentation: string[];
+    explanation?: string;
   };
 }
 
@@ -574,7 +577,7 @@ class SPARCEngineStandalone {
       const llm = getGlobalLLM();
       llm.setRole('coder');
       
-      const codeExplanationPrompt = this.buildCodeExplanationPrompt(project, epic);
+      const codeExplanationPrompt = this.buildCodeGenerationPrompt(project, epic);
       const response = await llm.executeAsCoder(codeExplanationPrompt, 'sparc-code-explanation');
       
       // Parse explanation into simulated file structure
@@ -583,7 +586,7 @@ class SPARCEngineStandalone {
       project.implementation = {
         files: simulatedFiles.files,
         tests: simulatedFiles.tests,
-        documentation: simulatedFiles.docs,
+        documentation: simulatedFiles.documentation || (simulatedFiles as any).docs || [],
         explanation: response // Keep full explanation for review
       };
 
@@ -591,7 +594,7 @@ class SPARCEngineStandalone {
       this.logger.info(`   ✅ Completion simulation complete (${duration}ms)`);
       this.logger.info(`   Simulated files: ${simulatedFiles.files.length} files`);
       this.logger.info(`   Simulated tests: ${simulatedFiles.tests.length} tests`);
-      this.logger.info(`   Simulated docs: ${simulatedFiles.docs.length} docs`);
+      this.logger.info(`   Simulated docs: ${(simulatedFiles.documentation || (simulatedFiles as any).docs || []).length} docs`);
       this.logger.info(`   Note: NO ACTUAL FILES CREATED (simulation only)`);
 
     } catch (error) {
@@ -894,6 +897,42 @@ Make it production-ready with proper structure and documentation.
   private extractGeneratedDocs(claudeMessages: any[]): string[] {
     return this.extractGeneratedFiles(claudeMessages)
       .filter(file => file.endsWith('.md') || file.includes('doc'));
+  }
+
+  private parseCodeExplanation(response: string): { files: string[]; tests: string[]; documentation: string[]; explanation?: string } {
+    try {
+      // Try to extract JSON structure if present
+      const jsonMatch = response.match(/{[\S\s]*}/);
+      if (jsonMatch) {
+        const parsed = JSON.parse(jsonMatch[0]);
+        return {
+          files: parsed.files || [],
+          tests: parsed.tests || [],
+          documentation: parsed.documentation || [],
+          explanation: parsed.explanation || response.substring(0, 200)
+        };
+      }
+      
+      // Fallback: extract file patterns from text
+      const fileMatches = response.match(/[\w\-\.\/]+\.(ts|js|tsx|jsx|py|go|rs|java|cpp|c|h)/g) || [];
+      const testMatches = response.match(/[\w\-\.\/]+\.(test|spec)\.(ts|js|tsx|jsx|py|go|rs)/g) || [];
+      const docMatches = response.match(/[\w\-\.\/]+\.(md|txt|rst|adoc)/g) || [];
+      
+      return {
+        files: Array.from(new Set(fileMatches)).slice(0, 10),
+        tests: Array.from(new Set(testMatches)).slice(0, 5),
+        documentation: Array.from(new Set(docMatches)).slice(0, 3),
+        explanation: response.substring(0, 200)
+      };
+    } catch (error) {
+      this.logger.warn('Failed to parse code explanation response:', error);
+      return {
+        files: ['src/main.ts', 'src/service.ts'],
+        tests: ['src/main.test.ts'],
+        documentation: ['README.md'],
+        explanation: 'Default explanation structure'
+      };
+    }
   }
 }
 

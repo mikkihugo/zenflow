@@ -10,7 +10,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '../../main';
+import { injectable } from '@claude-zen/foundation';
 import type {
   ClusteringOptions,
   ClusterResult,
@@ -78,8 +78,8 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
       // Convert results to VectorSearchResult format
       const results: VectorSearchResult<T>[] =
         vectorResult?.matches
-          ?.filter((match) => match?.score >= searchOptions?.threshold)
-          .map((match) => ({
+          ?.filter((match: any) => match?.score >= searchOptions?.threshold)
+          .map((match: any) => ({
             id: match?.id,
             score: match?.score,
             document: this.mapVectorDocumentToEntity(match),
@@ -514,6 +514,8 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
       await this.adapter.health();
       return {
         healthy: true,
+        isHealthy: true,
+        status: 'healthy',
         score: 100,
         details: { accessible: true },
         lastCheck: new Date()
@@ -521,6 +523,8 @@ export class VectorDao<T> extends BaseDao<T> implements VectorRepository<T>, Dat
     } catch (error) {
       return {
         healthy: false,
+        isHealthy: false,
+        status: 'error',
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),

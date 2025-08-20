@@ -19,7 +19,7 @@ async function claudeConsoleOTEL() {
   console.log(`   CLAUDE_CODE_ENABLE_TELEMETRY: ${process.env.CLAUDE_CODE_ENABLE_TELEMETRY}`);
   console.log(`   OTEL_LOGS_EXPORTER: ${process.env.OTEL_LOGS_EXPORTER} ⭐ DIRECT TO CONSOLE`);
   console.log(`   OTEL_METRICS_EXPORTER: ${process.env.OTEL_METRICS_EXPORTER} ⭐ DIRECT TO CONSOLE`);
-  console.log(`   OTEL_LOG_USER_PROMPTS: ${process.env.OTEL_LOG_USER_PROMPTS}\\n`);
+  console.log(`   OTEL_LOG_USER_PROMPTS: ${process.env.OTEL_LOG_USER_PROMPTS}\n`);
 
   try {
     const { executeClaudeTask } = await import('@claude-zen/foundation');
@@ -32,7 +32,7 @@ Value: $400k/year, Cost: $150k, Risk: Low
 Decision: approve/reject/defer with brief reason.`;
 
     console.log('🚀 Making Claude call with CONSOLE OTEL...');
-    console.log('📺 OTEL events should appear directly below in THIS console\\n');
+    console.log('📺 OTEL events should appear directly below in THIS console\n');
     
     console.log('📋 Prompt:');
     console.log('─'.repeat(40));
@@ -59,30 +59,30 @@ Decision: approve/reject/defer with brief reason.`;
     console.log('═'.repeat(80));
     
     const totalTime = Date.now() - startTime;
-    console.log(`\\n⏱️  Execution completed: ${totalTime}ms`);
+    console.log(`\n⏱️  Execution completed: ${totalTime}ms`);
     console.log(`📊 Messages: ${messageCount}`);
     
     if (result && result.length > 0) {
-      const content = result[0]?.message?.content;
+      const content = (result[0] as any)?.content;
       if (Array.isArray(content) && content[0]?.text) {
         const text = content[0].text;
         
-        console.log(`\\n📄 SAFe Decision:`);
+        console.log(`\n📄 SAFe Decision:`);
         console.log('═'.repeat(60));
         console.log(text);
         console.log('═'.repeat(60));
       }
     }
     
-    console.log('\\n⏳ Waiting for final OTEL exports...');
+    console.log('\n⏳ Waiting for final OTEL exports...');
     await new Promise(resolve => setTimeout(resolve, 5000));
     
-    console.log('\\n✅ Console OTEL test completed!');
+    console.log('\n✅ Console OTEL test completed!');
     console.log('💡 If you see OTEL events above, Claude Code telemetry is working');
     console.log('💡 If no OTEL events, there may be a configuration issue');
     
   } catch (error) {
-    console.error('\\n❌ Console OTEL test failed:', error);
+    console.error('\n❌ Console OTEL test failed:', error);
     throw error;
   }
 }

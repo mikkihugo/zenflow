@@ -14,8 +14,11 @@ export * from './di';
 // Export error handling
 export * from './error-handling';
 
-// Export telemetry
-export * from './telemetry';
+// Export monitoring (telemetry and system metrics)
+export * from './monitoring';
+
+// Export telemetry (re-exported from @claude-zen/monitoring)
+export * from '@claude-zen/monitoring';
 
 // Export other utilities
 export * from './storage';
@@ -24,6 +27,10 @@ export * from './claude-sdk';
 export * from './llm-provider';
 export * from './prompt-validation';
 export * from './syslog-bridge';
+
+// Export newly extracted utilities
+export * from './schema-validation';
+export * from './environment-detection';
 
 // Export types selectively to avoid conflicts
 export type { 

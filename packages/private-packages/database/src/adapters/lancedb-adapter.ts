@@ -8,9 +8,9 @@ import 'reflect-metadata';
 import { connect, Connection, Table } from '@lancedb/lancedb';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';
-import { getLogger } from '../../main';
-import type { DatabaseAdapter } from '../interfaces.js';
-import { injectable } from '../../main';
+import { getLogger } from '@claude-zen/foundation';
+import type { DatabaseAdapter, QueryResult, QueryParams, HealthStatus } from '../interfaces.js';
+import { injectable } from '@claude-zen/foundation';
 
 const logger = getLogger('lancedb-adapter');
 
@@ -286,8 +286,12 @@ export class LanceDBAdapter implements DatabaseAdapter {
     }
   }
 
+  isConnected(): boolean {
+    return this.connected;
+  }
+
   // Compatibility methods for database adapter interface
-  async query(sql: string, params: unknown[] = []): Promise<unknown> {
+  async query<T = unknown>(sql: string, params?: QueryParams): Promise<QueryResult<T>> {
     // LanceDB doesn't use SQL, so we interpret common queries
     try {
       if (sql.includes('SELECT') && sql.includes('FROM')) {
@@ -299,18 +303,16 @@ export class LanceDBAdapter implements DatabaseAdapter {
         const results = await table.search([]).limit(100).toArray();
 
         return {
-          rows: results,
+          rows: results as T[],
           rowCount: results.length,
-          fields: [],
-          executionTime: 1,
+          fields: []
         };
       }
 
       return {
-        rows: [],
+        rows: [] as T[],
         rowCount: 0,
-        fields: [],
-        executionTime: 1,
+        fields: []
       };
     } catch (error) {
       logger.error(`Query failed: ${error}`);
@@ -357,15 +359,39 @@ export class LanceDBAdapter implements DatabaseAdapter {
     }
   }
 
-  async health(): Promise<boolean> {
-    if (!this.connected || !this.connection) return false;
-
+  async health(): Promise<HealthStatus> {
     try {
+      if (!this.connected || !this.connection) {
+        return {
+          healthy: false,
+          isHealthy: false,
+          status: 'disconnected',
+          score: 0,
+          details: { connected: false },
+          lastCheck: new Date()
+        };
+      }
+
       // Test connection by listing tables
       await this.connection.tableNames();
-      return true;
-    } catch {
-      return false;
+      return {
+        healthy: true,
+        isHealthy: true,
+        status: 'healthy',
+        score: 100,
+        details: { connected: true, queryTest: true },
+        lastCheck: new Date()
+      };
+    } catch (error) {
+      return {
+        healthy: false,
+        isHealthy: false,
+        status: 'error',
+        score: 0,
+        details: { connected: this.connected, error: String(error) },
+        lastCheck: new Date(),
+        errors: [String(error)]
+      };
     }
   }
 

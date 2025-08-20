@@ -130,7 +130,7 @@ export class RunwayItemManagementService {
       await this.brainCoordinator.initialize();
 
       // Lazy load @claude-zen/foundation for performance tracking
-      const { PerformanceTracker } = await import('@claude-zen/foundation/telemetry');
+      const { PerformanceTracker } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
 
       // Lazy load @claude-zen/workflows for approval workflows

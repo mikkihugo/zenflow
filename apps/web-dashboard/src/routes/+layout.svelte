@@ -1,10 +1,9 @@
 <script lang="ts">
 	import '../app.postcss';
-	import { AppShell, AppBar, AppRail, AppRailTile, popup } from '@skeletonlabs/skeleton';
+	import { AppShell, AppBar, AppRail, AppRailTile } from '@skeletonlabs/skeleton';
 	import { page } from '$app/stores';
-	import type { PopupSettings } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import { apiClient, type Project } from '../lib/api';
+	import ProjectSwitcher from '../lib/components/ProjectSwitcher.svelte';
 
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
@@ -42,65 +41,6 @@
 
 	// Get current tile value based on route
 	$: currentTile = navItems.findIndex(item => $page.url.pathname === item.href) ?? 0;
-
-	// Project management with real API data
-	let projects: Project[] = [];
-	let currentProject: Project | null = null;
-	let projectsLoading = true;
-	let projectsError: string | null = null;
-
-	// Project dropdown popup settings
-	const projectPopup: PopupSettings = {
-		event: 'click',
-		target: 'projectDropdown',
-		placement: 'bottom-end'
-	};
-
-	// Load projects from real API
-	onMount(async () => {
-		try {
-			projectsLoading = true;
-			projects = await apiClient.getProjects();
-			currentProject = projects[0] || null;
-			console.log('📁 Loaded projects from API:', projects.length);
-		} catch (error) {
-			projectsError = error instanceof Error ? error.message : 'Failed to load projects';
-			console.error('❌ Failed to load projects:', error);
-		} finally {
-			projectsLoading = false;
-		}
-	});
-
-	function selectProject(project: Project) {
-		currentProject = project;
-		// Update API client with new project context
-		apiClient.setProjectContext(project.id.toString());
-		console.log('🔄 Switched to project:', project.name, 'ID:', project.id);
-		
-		// Trigger a custom event that other components can listen to
-		// This will allow the dashboard to refresh its data
-		window.dispatchEvent(new CustomEvent('projectChanged', {
-			detail: { project, projectId: project.id.toString() }
-		}));
-	}
-
-	function getStatusColor(status: string): string {
-		switch (status) {
-			case 'active': return 'success';
-			case 'paused': return 'warning';
-			case 'completed': return 'secondary';
-			default: return 'surface';
-		}
-	}
-
-	function getStatusIcon(status: string): string {
-		switch (status) {
-			case 'active': return '🟢';
-			case 'paused': return '⏸️';
-			case 'completed': return '✅';
-			default: return '⚪';
-		}
-	}
 </script>
 
 <!-- Admin Dashboard Shell -->
@@ -116,96 +56,8 @@
 			</svelte:fragment>
 			<svelte:fragment slot="trail">
 				<div class="flex items-center gap-4">
-					<!-- Project Selector Dropdown -->
-					<div class="relative">
-						{#if projectsLoading}
-							<div class="btn variant-soft-surface flex items-center gap-2 min-w-[240px] animate-pulse">
-								<span>📁</span>
-								<div class="flex-1 text-left">
-									<div class="font-medium text-sm">Loading projects...</div>
-									<div class="text-xs opacity-75">Please wait</div>
-								</div>
-								<div class="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
-							</div>
-						{:else if projectsError}
-							<div class="btn variant-soft-error flex items-center gap-2 min-w-[240px]">
-								<span>❌</span>
-								<div class="flex-1 text-left">
-									<div class="font-medium text-sm">Failed to load</div>
-									<div class="text-xs opacity-75">Check API connection</div>
-								</div>
-							</div>
-						{:else if currentProject}
-							<button
-								class="btn variant-soft-surface flex items-center gap-2 min-w-[240px]"
-								use:popup={projectPopup}
-							>
-								<span>📁</span>
-								<div class="flex-1 text-left">
-									<div class="font-medium text-sm">{currentProject.name}</div>
-									<div class="text-xs opacity-75">{currentProject.currentPhase} • {currentProject.progress}%</div>
-								</div>
-								<div class="flex items-center gap-2">
-									<span class="text-sm">{getStatusIcon(currentProject.status)}</span>
-									<span class="text-xs">▼</span>
-								</div>
-							</button>
-						{:else}
-							<div class="btn variant-soft-surface flex items-center gap-2 min-w-[240px] opacity-50">
-								<span>📁</span>
-								<div class="flex-1 text-left">
-									<div class="font-medium text-sm">No projects</div>
-									<div class="text-xs opacity-75">Create a project</div>
-								</div>
-							</div>
-						{/if}
-
-						<!-- Project Dropdown Menu -->
-						<div class="card p-4 w-80 shadow-xl z-10" data-popup="projectDropdown">
-							<div class="arrow bg-surface-100-800-token" />
-							<header class="pb-3">
-								<h3 class="h6 text-surface-600-300-token">Switch Project</h3>
-							</header>
-							
-							<div class="space-y-2 max-h-64 overflow-y-auto">
-								{#each projects as project}
-									<button
-										class="btn w-full text-left p-3"
-										class:variant-filled-primary={currentProject.id === project.id}
-										class:variant-soft-surface={currentProject.id !== project.id}
-										on:click={() => selectProject(project)}
-									>
-										<div class="flex flex-col w-full gap-1">
-											<div class="flex justify-between items-center">
-												<span class="font-medium text-sm">{project.name}</span>
-												<span class="badge variant-soft-{getStatusColor(project.status)} text-xs">
-													{getStatusIcon(project.status)} {project.status}
-												</span>
-											</div>
-											<div class="text-xs opacity-75">{project.description}</div>
-											<div class="flex justify-between items-center text-xs opacity-75">
-												<span>{project.currentPhase}</span>
-												<span>{project.progress}% complete</span>
-											</div>
-											<!-- Progress bar -->
-											<div class="w-full bg-surface-300-600-token rounded-full h-1 mt-1">
-												<div 
-													class="bg-{getStatusColor(project.status)}-500 h-1 rounded-full transition-all duration-300" 
-													style="width: {project.progress}%"
-												></div>
-											</div>
-										</div>
-									</button>
-								{/each}
-							</div>
-
-							<hr class="opacity-50 my-3" />
-							<button class="btn variant-ghost-success w-full">
-								<span>➕</span>
-								<span>Create New Project</span>
-							</button>
-						</div>
-					</div>
+					<!-- Project Switcher Component -->
+					<ProjectSwitcher />
 
 					<!-- Status Indicator -->
 					<div class="badge variant-soft-success flex items-center gap-2">

@@ -133,11 +133,10 @@ async function runComprehensiveDebugOTELTest() {
   console.log('🚀 Testing Claude SDK with FULL DEBUG CAPTURE...\n');
 
   const testPrompt = `Simple test: What is 2 + 2?`;
+  const startTime = Date.now();
 
   try {
     const { executeClaudeTask } = await import('@claude-zen/foundation');
-    
-    const startTime = Date.now();
     
     debugLogger.info('Starting Claude SDK call with full debug capture', {
       prompt: testPrompt,
@@ -167,8 +166,8 @@ async function runComprehensiveDebugOTELTest() {
     
     // Extract response with detailed logging
     const assistantMessage = result?.find(r => r.type === 'assistant');
-    const responseText = assistantMessage?.message?.content?.[0]?.text || '';
-    const tokenUsage = assistantMessage?.message?.usage;
+    const responseText = (assistantMessage as any)?.content?.[0]?.text || '';
+    const tokenUsage = (assistantMessage as any)?.usage;
     const resultSummary = result?.find(r => r.type === 'result');
     const cost = resultSummary?.total_cost_usd;
 
@@ -212,8 +211,8 @@ async function runComprehensiveDebugOTELTest() {
       // Full result structure for debugging
       'debug.full_result_structure': result?.map(r => ({
         type: r.type,
-        hasMessage: !!r.message,
-        messageContentLength: r.message?.content?.[0]?.text?.length || 0
+        hasMessage: !!(r as any).message,
+        messageContentLength: (r as any)?.content?.[0]?.text?.length || 0
       }))
     });
 

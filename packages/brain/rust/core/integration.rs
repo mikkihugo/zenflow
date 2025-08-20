@@ -17,7 +17,7 @@ use crate::{CascadeConfig, CascadeTrainer, Network, NetworkBuilder, TrainingData
 // use rayon::prelude::*;
 
 #[cfg(feature = "logging")]
-use log::{debug, error, info, warn};
+use log::{debug, info, warn};
 
 /// Integration test suite errors
 #[derive(Error, Debug)]

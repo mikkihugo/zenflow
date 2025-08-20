@@ -251,7 +251,7 @@ export class PortfolioManager extends EventEmitter {
       await this.brainCoordinator.initialize();
 
       // Delegate to @claude-zen/foundation for telemetry and performance tracking
-      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation/telemetry');
+      const { PerformanceTracker, TelemetryManager } = await import('@claude-zen/foundation');
       this.performanceTracker = new PerformanceTracker();
       this.telemetryManager = new TelemetryManager({
         serviceName: 'portfolio-manager',

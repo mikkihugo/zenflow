@@ -16,10 +16,11 @@ import { access, readdir, readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
 import { getLogger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
-import EnvironmentDetector, {
+import {
+  EnvironmentDetector,
   type EnvironmentSnapshot,
   type EnvironmentTool,
-} from './environment-detector';
+} from '@claude-zen/foundation';
 
 export interface WorkspaceFact {
   id: string;
@@ -180,7 +181,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
           cacheSize: 50 * 1024 * 1024, // 50MB cache for workspace
           timeout: 10000, // 10 second timeout
           monitoring: true,
-        });
+        }) as any;
 
         // Initialize the Rust FACT bridge
         await this.globalFactDatabase?.initialize();
@@ -385,7 +386,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     let documentTypes: Record<string, number> = {};
 
     try {
-      documentTypes = (await this.getRAGDocumentStats()) || {};
+      documentTypes = (await (this as any).getRAGDocumentStats?.()) || {};
       vectorDocuments = Object.values(documentTypes).reduce(
         (sum, count) => sum + count,
         0
@@ -402,6 +403,20 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
+      knowledgeSources: {
+        facts: {
+          available: globalFactConnection,
+          count: this.facts.size,
+          reliability: 'high' as const,
+          sources: availableFactKnowledge
+        },
+        rag: {
+          available: !!this.globalFactDatabase,
+          count: vectorDocuments || 0,
+          reliability: 'variable' as const,
+          sources: ['documents', 'web-crawl']
+        }
+      },
       // FACT system integration
       globalFactConnection,
       toolsWithFACTDocs,
@@ -429,8 +444,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
   }> {
     try {
       // Use unified knowledge package for both facts and RAG
-      const { KnowledgeManager } = await import('@claude-zen/knowledge');
-      const knowledgeManager = new KnowledgeManager();
+      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+      const knowledgeManager = new BasicKnowledgeManager();
       await knowledgeManager.initialize();
 
       // Get tagged knowledge statistics (structured vs unstructured)
@@ -478,6 +493,20 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         ...Array.from(this.facts.values()).map((f) => f.timestamp)
       ),
       cacheHitRate: 0.85, // Calculated from access patterns
+      knowledgeSources: {
+        facts: {
+          available: true,
+          count: this.facts.size,
+          reliability: 'high' as const,
+          sources: ['workspace-facts']
+        },
+        rag: {
+          available: !!this.globalFactDatabase,
+          count: 0,
+          reliability: 'variable' as const,
+          sources: ['workspace-facts']
+        }
+      },
       ragEnabled: !!this.globalFactDatabase,
     };
   }
@@ -676,8 +705,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
       // 2. RAG System Results (Unstructured, Variable Reliability)
       if (includeRAG) {
         try {
-          const { KnowledgeManager } = await import('@claude-zen/knowledge');
-          const knowledgeManager = new KnowledgeManager();
+          const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+          const knowledgeManager = new BasicKnowledgeManager();
           await knowledgeManager.initialize();
 
           // Query RAG system for unstructured knowledge
@@ -826,8 +855,8 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
     let documentsCount = 0;
 
     try {
-      const { KnowledgeManager } = await import('@claude-zen/knowledge');
-      const knowledgeManager = new KnowledgeManager();
+      const { BasicKnowledgeManager } = await import('@claude-zen/knowledge');
+      const knowledgeManager = new BasicKnowledgeManager();
       await knowledgeManager.initialize();
       ragAvailable = true;
       const ragStats = await knowledgeManager.getRAGStatistics?.() || {};
@@ -1627,7 +1656,7 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
         files.push(fact.subject);
       }
       if (fact.type === 'build-system') {
-        const details = fact.content.details;
+        const details = fact.content.details as any;
         if (details && details.file) {
           files.push(details.file);
         }

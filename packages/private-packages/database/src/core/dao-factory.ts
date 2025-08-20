@@ -144,10 +144,18 @@ export async function createDao<T>(
   const adapter: DatabaseAdapter = {
     connect: async () => {},
     disconnect: async () => {},
-    query: async () => ({ rows: [], rowCount: 0, executionTime: 0 }),
-    execute: async () => ({ affectedRows: 0, executionTime: 0 }),
+    query: async () => ({ rows: [], rowCount: 0 }),
+    execute: async () => ({ affectedRows: 0 }),
     transaction: async (fn) => fn({} as any),
-    health: async () => true,
+    isConnected: () => true,
+    health: async () => ({
+      healthy: true,
+      isHealthy: true,
+      status: 'healthy',
+      score: 100,
+      details: { mock: true },
+      lastCheck: new Date()
+    }),
     getSchema: async () => ({ tables: [], views: [], version: '1.0.0' }),
     getConnectionStats: async () => ({
       total: 1,

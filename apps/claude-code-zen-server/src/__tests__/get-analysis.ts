@@ -39,8 +39,8 @@ Respond in clear, structured format.`;
     
     console.log('✅ Analysis complete!\n');
     
-    if (result && result.length > 0 && result[0] && result[0].message && result[0].message.content) {
-      const content = result[0].message.content;
+    if (result && result.length > 0 && result[0] && (result[0] as any).content) {
+      const content = (result[0] as any).content;
       
       if (Array.isArray(content) && content[0] && content[0].text) {
         const analysis = content[0].text;

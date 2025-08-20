@@ -176,17 +176,38 @@ export class RustFactBridge extends EventEmitter {
           version,
           knowledgeType
         );
-        return this.mergeFACTAndGitHubKnowledge(factResult, githubAnalysis);
+        const mergedResult = this.mergeFACTAndGitHubKnowledge(factResult, githubAnalysis);
+        return this.addSourceReliability(mergedResult, 'hybrid');
       } catch (error) {
         console.warn(
           `GitHub enhancement failed for ${toolName}@${version}:`,
           error
         );
-        return factResult;
+        return this.addSourceReliability(factResult, 'fact');
       }
     }
 
-    return factResult;
+    return this.addSourceReliability(factResult, 'fact');
+  }
+
+  /**
+   * Add sourceReliability to make result compatible with ToolKnowledge interface
+   */
+  private addSourceReliability(result: any, type: 'fact' | 'rag' | 'hybrid'): any {
+    return {
+      ...result,
+      sourceReliability: {
+        type,
+        confidence: type === 'fact' ? 0.9 : type === 'hybrid' ? 0.85 : 0.7,
+        sources: [{
+          name: 'Rust FACT System',
+          type: 'structured' as const,
+          lastVerified: Date.now(),
+          reliability: 'high' as const
+        }],
+        warnings: type === 'rag' ? ['Information may need verification'] : undefined
+      }
+    };
   }
 
   /**

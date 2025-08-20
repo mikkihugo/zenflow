@@ -24,9 +24,14 @@ export type {
   Config,
   AsyncResult,
   Optional,
-  DeepPartial,
-  Disposable
+  DeepPartial
+  // Disposable // Not available in foundation package
 } from '@claude-zen/foundation';
+
+// Local interface for missing Disposable
+export interface Disposable {
+  dispose(): void | Promise<void>;
+}
 
 export type {
   MetricData

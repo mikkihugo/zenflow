@@ -129,8 +129,8 @@ Keep response brief but decisive.`;
       console.log('═'.repeat(80));
       
       result.forEach((msg, index) => {
-        if (msg.message && msg.message.content) {
-          const content = msg.message.content;
+        if (msg && (msg as any).content) {
+          const content = (msg as any).content;
           
           if (Array.isArray(content)) {
             content.forEach((block, blockIndex) => {

@@ -56,7 +56,7 @@
 
 import 'reflect-metadata';
 import { BaseDao } from '../base.dao';
-import { injectable } from '../../main';
+import { injectable } from '@claude-zen/foundation';
 import type { 
   Dao, 
   DataAccessObject,
@@ -372,10 +372,10 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       const whereClause = criteria
         ? this.buildWhereClause(this.mapEntityToRow(criteria))
         : '';
-      const orderClause = this.buildOrderClause(options?.['sort']);
+      const orderClause = this.buildOrderClause((options as any)?.sort);
       const limitClause = this.buildLimitClause(
-        options?.['limit'],
-        options?.['offset']
+        (options as any)?.limit,
+        (options as any)?.offset
       );
 
       const sql = `
@@ -392,7 +392,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
         : [];
       const result = await this.adapter.query(sql, params);
 
-      return result?.rows?.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`JOIN query failed: ${error}`);
       throw new Error(
@@ -864,7 +864,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       const params = [`%${searchTerm}%`];
 
       const result = await this.adapter.query(sql, params);
-      return result?.rows?.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Search failed: ${error}`);
       throw new Error(
@@ -965,10 +965,10 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
     );
 
     try {
-      const orderClause = this.buildOrderClause(options?.['sort']);
+      const orderClause = this.buildOrderClause((options as any)?.sort);
       const limitClause = this.buildLimitClause(
-        options?.['limit'],
-        options?.['offset']
+        (options as any)?.limit,
+        (options as any)?.offset
       );
 
       const sql = `
@@ -981,7 +981,7 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       const params = [startDate.toISOString(), endDate.toISOString()];
       const result = await this.adapter.query(sql, params);
 
-      return result?.rows?.map((row) => this.mapRowToEntity(row));
+      return result?.rows?.map((row: any) => this.mapRowToEntity(row));
     } catch (error) {
       this.logger.error(`Date range query failed: ${error}`);
       throw new Error(
@@ -1069,6 +1069,8 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
       await this.adapter.health();
       return {
         healthy: true,
+        isHealthy: true,
+        status: 'healthy',
         score: 100,
         details: { accessible: true },
         lastCheck: new Date()
@@ -1076,6 +1078,8 @@ export class RelationalDao<T> extends BaseDao<T> implements Dao<T>, DataAccessOb
     } catch (error) {
       return {
         healthy: false,
+        isHealthy: false,
+        status: 'error',
         score: 0,
         details: { accessible: false, error: (error as Error).message },
         lastCheck: new Date(),
