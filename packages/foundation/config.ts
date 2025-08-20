@@ -236,6 +236,124 @@ export interface Config {
 }
 
 /**
+ * Ensure configuration directory exists with proper .gitignore
+ */
+function ensureConfigDirectory(configDir: string, isUserMode: boolean): void {
+  try {
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(configDir)) {
+      fs.mkdirSync(configDir, { recursive: true });
+      logger.debug(`Created config directory: ${configDir}`);
+    }
+
+    // Create .gitignore if it doesn't exist
+    const gitignorePath = path.join(configDir, '.gitignore');
+    if (!fs.existsSync(gitignorePath)) {
+      const gitignoreContent = isUserMode 
+        ? `# Claude Zen User Configuration Directory
+# These files may contain sensitive data and should not be committed
+
+# Configuration files
+*.json
+*.yaml
+*.yml
+*.toml
+
+# Log files
+*.log
+
+# Cache and temporary files
+cache/
+tmp/
+temp/
+
+# Environment files
+.env*
+
+# Backup files
+*.bak
+*.backup
+
+# OS generated files
+.DS_Store
+Thumbs.db
+`
+        : `# Claude Zen Repository Configuration Directory
+# Repository-specific claude-zen configuration
+
+# Configuration files (may contain sensitive data)
+*.json
+*.yaml
+*.yml
+*.toml
+
+# Log files
+*.log
+
+# Cache and temporary files
+cache/
+tmp/
+temp/
+
+# Environment files
+.env*
+
+# Backup files
+*.bak
+*.backup
+`;
+
+      fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
+      logger.debug(`Created .gitignore in ${configDir}`);
+    }
+
+    // Create sample config file if no config exists
+    const sampleConfigPath = path.join(configDir, 'config.sample.json');
+    const mainConfigPath = path.join(configDir, 'config.json');
+    
+    if (!fs.existsSync(sampleConfigPath) && !fs.existsSync(mainConfigPath)) {
+      const sampleConfig = {
+        "$schema": "claude-zen-config",
+        "logging": {
+          "level": "info",
+          "console": true,
+          "file": false,
+          "timestamp": true,
+          "format": "text"
+        },
+        "metrics": {
+          "enabled": false,
+          "interval": 60000
+        },
+        "storage": {
+          "backend": "memory",
+          "memoryDir": "./data/memory",
+          "dbPath": "./data/zen.db"
+        },
+        "neural": {
+          "learning": true,
+          "cacheSize": 1000
+        },
+        "performance": {
+          "maxConcurrent": 5,
+          "timeoutMs": 300000
+        },
+        "development": {
+          "debug": false,
+          "verboseErrors": false
+        }
+      };
+
+      fs.writeFileSync(sampleConfigPath, JSON.stringify(sampleConfig, null, 2), 'utf8');
+      logger.debug(`Created sample config in ${configDir}`);
+    }
+  } catch (error) {
+    // Don't fail configuration loading if directory creation fails
+    logger.warn(`Failed to ensure config directory ${configDir}:`, error);
+  }
+}
+
+/**
  * Create and validate configuration
  */
 const config = convict(configSchema);
@@ -248,21 +366,26 @@ const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false'
 
 // Build configuration file paths based on mode (exclusive modes)
 const configFiles: string[] = [];
+let configDir: string;
 
 if (storeInUserHome) {
   // Mode 1: User directory mode (default) - ONLY user configs, no local repo configs
-  const userConfigDir = path.join(os.homedir(), '.claude-zen');
+  configDir = path.join(os.homedir(), '.claude-zen');
   configFiles.push(
-    `${userConfigDir}/config.json`,           // Main user config
-    `${userConfigDir}/${env}.json`,           // Environment-specific user config
+    `${configDir}/config.json`,           // Main user config
+    `${configDir}/${env}.json`,           // Environment-specific user config
   );
 } else {
   // Mode 2: Per-repository mode - ONLY local repo configs, no user configs
+  configDir = '.claude-zen';
   configFiles.push(
-    `.claude-zen/config.json`,                // Local repo config
-    `.claude-zen/${env}.json`                 // Local repo environment config
+    `${configDir}/config.json`,                // Local repo config
+    `${configDir}/${env}.json`                 // Local repo environment config
   );
 }
+
+// Ensure config directory exists and has .gitignore
+ensureConfigDirectory(configDir, storeInUserHome);
 
 // Load configuration files in priority order
 for (const file of configFiles) {
