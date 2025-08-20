@@ -619,11 +619,57 @@ export function validateConfig(): void {
 }
 
 /**
+ * Check for conflicting .claude-zen directories
+ */
+export function checkConfigDirectoryConflicts(): {
+  hasUserConfig: boolean;
+  hasRepoConfig: boolean;
+  currentMode: 'user' | 'repo';
+  activeConfigDir: string;
+  ignoredConfigDir?: string;
+  warning?: string;
+} {
+  const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
+  const userConfigDir = path.join(os.homedir(), '.claude-zen');
+  const repoConfigDir = '.claude-zen';
+  
+  const hasUserConfig = fs.existsSync(userConfigDir);
+  const hasRepoConfig = fs.existsSync(repoConfigDir);
+  
+  const result = {
+    hasUserConfig,
+    hasRepoConfig,
+    currentMode: storeInUserHome ? 'user' as const : 'repo' as const,
+    activeConfigDir: storeInUserHome ? userConfigDir : repoConfigDir,
+  };
+  
+  // Add warning if both exist
+  if (hasUserConfig && hasRepoConfig) {
+    const ignoredDir = storeInUserHome ? repoConfigDir : userConfigDir;
+    const activeDir = storeInUserHome ? userConfigDir : repoConfigDir;
+    
+    return {
+      ...result,
+      ignoredConfigDir: ignoredDir,
+      warning: `Both .claude-zen directories exist. Using ${activeDir}, ignoring ${ignoredDir}. Consider removing unused directory to avoid confusion.`
+    };
+  }
+  
+  return result;
+}
+
+/**
  * Initialize configuration directories (can be called manually)
  */
 export function initializeConfigDirectories(): void {
   const storeInUserHome = process.env['ZEN_STORE_CONFIG_IN_USER_HOME'] !== 'false';
   const env = process.env['NODE_ENV'] || 'development';
+  
+  // Check for conflicts first
+  const conflicts = checkConfigDirectoryConflicts();
+  if (conflicts.warning) {
+    logger.warn(conflicts.warning);
+  }
   
   let configDir: string;
   if (storeInUserHome) {
@@ -653,7 +699,8 @@ export const configHelpers = {
   getNeuralConfig: () => getNeuralConfig(),
   toObject: () => globalConfig?.toObject() || {},
   getSchema: () => globalConfig?.getSchema() || {},
-  initDirectories: () => initializeConfigDirectories()
+  initDirectories: () => initializeConfigDirectories(),
+  checkConflicts: () => checkConfigDirectoryConflicts()
 };
 
 // Export the global config as default
