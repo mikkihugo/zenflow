@@ -17,8 +17,9 @@
  * - Professional service lifecycle patterns
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   Service,
 } from './core/interfaces';
@@ -80,12 +81,12 @@ export {
  */
 export class USL extends EventEmitter {
   private static instance: USL;
-  private serviceRegistry: any;
-  private workflowEngine: any;
-  private monitoringSystem: any;
-  private databaseAccess: any;
-  private performanceTracker: any;
-  private teamworkCoordinator: any;
+  private serviceRegistry: unknown;
+  private workflowEngine: unknown;
+  private monitoringSystem: unknown;
+  private databaseAccess: unknown;
+  private performanceTracker: unknown;
+  private teamworkCoordinator: unknown;
   private initialized = false;
 
   private services: Map<string, Service> = new Map();

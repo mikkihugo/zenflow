@@ -7,11 +7,11 @@
  * OpenAI, and other AI providers used within the claude-code-zen ecosystem.
  */
 
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { homedir } from 'os';
-import { createInterface } from 'readline';
 import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
+import { homedir } from 'os';
+import { join } from 'path';
+import { createInterface } from 'readline';
 
 import { getLogger } from '@claude-zen/foundation';
 

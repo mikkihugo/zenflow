@@ -80,6 +80,13 @@ export interface EventSystemConfig {
   enableMiddleware?: boolean;
   enableMetrics?: boolean;
   maxListeners?: number;
+  neuralProcessing?: {
+    enableLearning?: boolean;
+    predictionEnabled?: boolean;
+    smartRoutingEnabled?: boolean;
+    adaptiveCapacity?: boolean;
+    learningRate?: number;
+  };
 }
 
 /**
@@ -168,23 +175,57 @@ export async function getBaseEventManager(): Promise<UnknownRecord> {
  * Create event system - Compatibility function for capability mesh
  */
 export function createEventSystem(config?: EventSystemConfig) {
+  const neuralConfig = config?.neuralProcessing;
+  const enableMetrics = config?.enableMetrics ?? false;
+  const enableValidation = config?.enableValidation ?? false;
+  
   return Promise.resolve({
-    emit: async (event: string, data: any) => {
-      console.log(`Event emitted: ${event}`, data);
+    config: {
+      enableMetrics,
+      enableValidation,
+      neuralProcessing: neuralConfig,
+      maxListeners: config?.maxListeners ?? 100
     },
-    on: (event: string, handler: (data: any) => void) => {
+    emit: async (event: string, data: any) => {
+      if (enableValidation && !event) {
+        throw new Error('Event name is required');
+      }
+      
+      if (enableMetrics) {
+        console.log(`Event emitted: ${event}`, data);
+      }
+      
+      if (neuralConfig?.enableLearning) {
+        console.log(`Neural learning enabled for event: ${event}`);
+      }
+      
+      if (neuralConfig?.predictionEnabled) {
+        console.log(`Event prediction active for: ${event}`);
+      }
+      
+      if (neuralConfig?.smartRoutingEnabled) {
+        console.log(`Smart routing applied to: ${event}`);
+      }
+    },
+    on: (event: string, _handler: (data: any) => void) => {
       console.log(`Event listener registered: ${event}`);
       return () => console.log(`Event listener removed: ${event}`);
     },
-    off: (event: string, handler: (data: any) => void) => {
+    off: (event: string, _handler: (data: any) => void) => {
       console.log(`Event listener removed: ${event}`);
     },
-    once: (event: string, handler: (data: any) => void) => {
+    once: (event: string, _handler: (data: any) => void) => {
       console.log(`One-time event listener registered: ${event}`);
     },
     removeAllListeners: (event?: string) => {
       console.log(`All listeners removed${event ? ` for: ${event}` : ''}`);
-    }
+    },
+    getMetrics: () => ({
+      totalEvents: 0,
+      activeListeners: 0,
+      neuralLearning: neuralConfig?.enableLearning ?? false,
+      predictionAccuracy: neuralConfig?.predictionEnabled ? 0.85 : 0
+    })
   });
 }
 

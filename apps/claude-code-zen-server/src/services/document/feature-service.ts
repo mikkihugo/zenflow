@@ -16,11 +16,12 @@
  * @version 1.0.0
  */
 
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
 import type { FeatureEntity, StoryEntity } from '../../entities/document-entities';
 import type { DocumentType } from '../../workflows/types';
+
+import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
 import { DocumentManager } from './document-service';
-import { nanoid } from 'nanoid';
+
 
 // ============================================================================
 // FEATURE INTERFACES
@@ -146,11 +147,7 @@ export class FeatureService extends BaseDocumentService<FeatureEntity> {
     let content = `# ${data.title}\n\n`;
     
     // Feature type indicator
-    if (data.metadata?.enablerType) {
-      content += `*Enabler Feature - ${data.metadata.enablerType}*\n\n`;
-    } else {
-      content += `*Business Feature*\n\n`;
-    }
+    content += data.metadata?.enablerType ? `*Enabler Feature - ${data.metadata.enablerType}*\n\n` : `*Business Feature*\n\n`;
     
     // Description
     content += `## Description\n${data.content || ''}\n\n`;

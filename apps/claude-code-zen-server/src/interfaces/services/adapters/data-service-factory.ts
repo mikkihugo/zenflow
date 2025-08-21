@@ -12,10 +12,11 @@
  * @file Interface implementation: data-service-factory.
  */
 
-import { EventEmitter } from 'eventemitter3';
 
 import type { Logger } from '@claude-zen/foundation'
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   Service,
   ServiceFactory,

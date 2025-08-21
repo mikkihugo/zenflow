@@ -27,7 +27,6 @@ import * as os from 'os';
 import * as path from 'path';
 
 import { getConfig, type Config } from './config';
-
 import { getLogger } from './logging';
 import type { UnknownRecord } from './types/primitives';
 

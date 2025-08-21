@@ -55,6 +55,7 @@ declare module '$env/static/private' {
 	export const __ETC_PROFILE_NIX_SOURCED: string;
 	export const TAVILY_API_KEY: string;
 	export const VULTR_REGISTRY_USERNAME: string;
+	export const npm_config_dedupe_peer_dependents: string;
 	export const EDITOR: string;
 	export const GOBIN: string;
 	export const TABBY_GATEWAY_URL: string;
@@ -62,16 +63,17 @@ declare module '$env/static/private' {
 	export const PWD: string;
 	export const NIX_PROFILES: string;
 	export const OVH_INFERENCE_BASE_URL: string;
+	export const npm_config_save_prefix: string;
 	export const LOGNAME: string;
 	export const JINA_AI_API_KEY: string;
 	export const npm_config__claude_zen_registry: string;
 	export const XDG_SESSION_TYPE: string;
+	export const npm_config_auto_install_peers: string;
 	export const MODULESHOME: string;
 	export const VOYAGE_API_KEY: string;
 	export const ARCHITECT_URL: string;
 	export const ERL_FLAGS: string;
 	export const HEX_CACHE_CLEANUP: string;
-	export const npm_config_recursive: string;
 	export const npm_config_global_dir: string;
 	export const CLAUDECODE: string;
 	export const MOTD_SHOWN: string;
@@ -173,11 +175,13 @@ declare module '$env/static/private' {
 	export const XDG_DATA_DIRS: string;
 	export const PATH: string;
 	export const SELINUX_LEVEL_REQUESTED: string;
+	export const npm_config_node_gyp: string;
 	export const MODULEPATH: string;
 	export const HISTFILESIZE: string;
 	export const DBUS_SESSION_BUS_ADDRESS: string;
 	export const GOOGLE_AI_KEY: string;
 	export const RUST_BACKTRACE: string;
+	export const npm_config_update_notifier: string;
 	export const JWT_SECRET: string;
 	export const MAIL: string;
 	export const SSH_TTY: string;
@@ -212,8 +216,6 @@ declare module '$env/static/public' {
  * This module provides access to runtime environment variables, as defined by the platform you're running on. For example if you're using [`adapter-node`](https://github.com/sveltejs/kit/tree/main/packages/adapter-node) (or running [`vite preview`](https://svelte.dev/docs/kit/cli)), this is equivalent to `process.env`. This module only includes variables that _do not_ begin with [`config.kit.env.publicPrefix`](https://svelte.dev/docs/kit/configuration#env) _and do_ start with [`config.kit.env.privatePrefix`](https://svelte.dev/docs/kit/configuration#env) (if configured).
  * 
  * This module cannot be imported into client-side code.
- * 
- * Dynamic environment variables cannot be used during prerendering.
  * 
  * ```ts
  * import { env } from '$env/dynamic/private';
@@ -253,6 +255,7 @@ declare module '$env/dynamic/private' {
 		__ETC_PROFILE_NIX_SOURCED: string;
 		TAVILY_API_KEY: string;
 		VULTR_REGISTRY_USERNAME: string;
+		npm_config_dedupe_peer_dependents: string;
 		EDITOR: string;
 		GOBIN: string;
 		TABBY_GATEWAY_URL: string;
@@ -260,16 +263,17 @@ declare module '$env/dynamic/private' {
 		PWD: string;
 		NIX_PROFILES: string;
 		OVH_INFERENCE_BASE_URL: string;
+		npm_config_save_prefix: string;
 		LOGNAME: string;
 		JINA_AI_API_KEY: string;
 		npm_config__claude_zen_registry: string;
 		XDG_SESSION_TYPE: string;
+		npm_config_auto_install_peers: string;
 		MODULESHOME: string;
 		VOYAGE_API_KEY: string;
 		ARCHITECT_URL: string;
 		ERL_FLAGS: string;
 		HEX_CACHE_CLEANUP: string;
-		npm_config_recursive: string;
 		npm_config_global_dir: string;
 		CLAUDECODE: string;
 		MOTD_SHOWN: string;
@@ -371,11 +375,13 @@ declare module '$env/dynamic/private' {
 		XDG_DATA_DIRS: string;
 		PATH: string;
 		SELINUX_LEVEL_REQUESTED: string;
+		npm_config_node_gyp: string;
 		MODULEPATH: string;
 		HISTFILESIZE: string;
 		DBUS_SESSION_BUS_ADDRESS: string;
 		GOOGLE_AI_KEY: string;
 		RUST_BACKTRACE: string;
+		npm_config_update_notifier: string;
 		JWT_SECRET: string;
 		MAIL: string;
 		SSH_TTY: string;
@@ -400,8 +406,6 @@ declare module '$env/dynamic/private' {
  * Similar to [`$env/dynamic/private`](https://svelte.dev/docs/kit/$env-dynamic-private), but only includes variables that begin with [`config.kit.env.publicPrefix`](https://svelte.dev/docs/kit/configuration#env) (which defaults to `PUBLIC_`), and can therefore safely be exposed to client-side code.
  * 
  * Note that public dynamic environment variables must all be sent from the server to the client, causing larger network requests — when possible, use `$env/static/public` instead.
- * 
- * Dynamic environment variables cannot be used during prerendering.
  * 
  * ```ts
  * import { env } from '$env/dynamic/public';

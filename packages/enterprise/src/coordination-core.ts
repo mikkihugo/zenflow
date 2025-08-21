@@ -1,6 +1,6 @@
 /**
  * @fileoverview Coordination Core Strategic Facade - Real Package Delegation
- * 
+ *
  * Strategic facade providing real coordination core capabilities through delegation
  * to @claude-zen/coordination-core package.
  */
@@ -20,32 +20,66 @@ async function loadCoordinationCoreModule() {
       console.warn('Coordination core package not available, providing compatibility layer');
       coordinationCoreModuleCache = {
         QueenCoordinator: class CompatibilityQueenCoordinator extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async coordinate() { return { status: 'compatibility' }; }
-          getMetrics() { return { coordination: 0, efficiency: 0 }; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async coordinate() {
+            return { status: 'compatibility' };
+          }
+          getMetrics() {
+            return { coordination: 0, efficiency: 0 };
+          }
         },
         SwarmCommander: class CompatibilitySwarmCommander extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async command() { return { status: 'compatibility' }; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async command() {
+            return { status: 'compatibility' };
+          }
         },
         CoordinationEventBus: class CompatibilityEventBus extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          publish() { return Promise.resolve(); }
-          subscribe() { return () => {}; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          publish() {
+            return Promise.resolve();
+          }
+          subscribe() {
+            return () => {};
+          }
         },
         CoordinationEngine: class CompatibilityEngine extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async process() { return { status: 'compatibility' }; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async process() {
+            return { status: 'compatibility' };
+          }
         },
         TaskCoordinator: class CompatibilityTaskCoordinator extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async coordinate() { return { status: 'compatibility' }; }
-        }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async coordinate() {
+            return { status: 'compatibility' };
+          }
+        },
       };
     }
   }

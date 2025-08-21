@@ -39,10 +39,6 @@ import path from 'path';
 import { promisify } from 'util';
 
 import { 
-  BrainCoordinator,
-  type PromptOptimizationRequest
-} from '@claude-zen/intelligence';
-import { 
   getLogger,
   LLMProvider,
   getGlobalLLM,
@@ -51,6 +47,10 @@ import {
   type Logger,
   type LLMRequest
 } from '@claude-zen/foundation';
+import { 
+  BrainCoordinator,
+  type PromptOptimizationRequest
+} from '@claude-zen/intelligence';
 import { v4 as uuidv4 } from 'uuid';
 
 // Brain package - Simple AI coordination and learning

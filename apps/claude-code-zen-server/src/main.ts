@@ -7,21 +7,31 @@
  */
 
 // 🔧 FOUNDATION: Comprehensive infrastructure (includes database via Storage)
+import { getSPARCCommander, getWorkflowEngineAccess } from '@claude-zen/enterprise';
+import { getLogger, createContainer } from '@claude-zen/foundation';
+import { getEventBus, getDatabaseSystemAccess, getTelemetryManager, getLoadBalancingSystemAccess, getConfig } from '@claude-zen/infrastructure';
 import { 
   AISafetyOrchestrator, 
   AIDeceptionDetector,
   NeuralDeceptionDetector 
-} from '@claude-zen/intelligence';
-import { 
+, 
   BrainCoordinator, 
   NeuralBridge, 
   DSPyLLMBridge, 
   RetrainingMonitor,
   BehavioralIntelligence
-} from '@claude-zen/intelligence';
-import { getEventBus, getDatabaseSystemAccess, getTelemetryManager, getLoadBalancingSystemAccess, getConfig } from '@claude-zen/infrastructure';
-import { getLogger, createContainer } from '@claude-zen/foundation';
+, getTeamworkAccess } from '@claude-zen/intelligence';
 import { getAgentMonitoringSystem, getChaosEngine } from '@claude-zen/operations';
+
+// 🔥 MAIN APP: Only coordination system (business logic specific to claude-code-zen)
+
+import { AgentInteractionPipeline } from './coordination/agent-interaction-pipeline';
+import { QueenCommander } from './coordination/agents/queen-coordinator';
+import { QueenSafetyIntegration } from './coordination/agents/queen-safety-integration';
+import { SwarmCommander } from './coordination/agents/swarm-commander';
+import { DevCubeMatron } from './coordination/cubes/dev-cube-matron';
+import { OpsCubeMatron } from './coordination/cubes/ops-cube-matron';
+import { SafetyInterventionProtocols } from './coordination/safety-intervention-protocols';
 
 // ============================================================================ 
 // GLOBAL FOUNDATION FACADES - Available to all modules below
@@ -87,18 +97,6 @@ const {
     }
   }
 };
-
-// 🔥 MAIN APP: Only coordination system (business logic specific to claude-code-zen)
-import { getSPARCCommander, getWorkflowEngineAccess } from '@claude-zen/enterprise';
-import { getTeamworkAccess } from '@claude-zen/intelligence';
-
-import { AgentInteractionPipeline } from './coordination/agent-interaction-pipeline';
-import { QueenCommander } from './coordination/agents/queen-coordinator';
-import { QueenSafetyIntegration } from './coordination/agents/queen-safety-integration';
-import { SwarmCommander } from './coordination/agents/swarm-commander';
-import { DevCubeMatron } from './coordination/cubes/dev-cube-matron';
-import { OpsCubeMatron } from './coordination/cubes/ops-cube-matron';
-import { SafetyInterventionProtocols } from './coordination/safety-intervention-protocols';
 
 // ✅ EXTRACTED PACKAGES: All specialized systems from standalone libraries
 

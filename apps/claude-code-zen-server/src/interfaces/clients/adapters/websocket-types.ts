@@ -497,7 +497,7 @@ export const WebSocketTypeGuards = {
   },
 
   isWebSocketMessage: (message: unknown): message is WebSocketMessage => {
-    return message && typeof message === 'object' && 'data' in message;
+    return message && typeof message === 'object' && 'data' in message as any;
   },
 
   isValidReadyState: (state: unknown): state is WebSocketReadyState => {

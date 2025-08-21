@@ -57,8 +57,9 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import { getLogger, type Logger } from './logging';
 import { Result, ok, err } from 'neverthrow';
+
+import { getLogger, type Logger } from './logging';
 
 // =============================================================================
 // CORE INTERFACES

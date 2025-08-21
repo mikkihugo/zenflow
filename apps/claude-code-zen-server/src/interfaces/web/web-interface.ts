@@ -13,7 +13,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { getLogger } from '@claude-zen/foundation'
-const { getVersion } = (global as any).claudeZenFoundation;
+
 import { ProcessLifecycleManager } from '../../core/process-lifecycle';
 import type { DIContainer } from '../../di/index';
 
@@ -26,6 +26,8 @@ import { WebHtmlGenerator } from './web-html-generator';
 import { WebProcessManager } from './web-process-manager';
 import { WebSessionManager } from './web-session-manager';
 import { WebSocketManager } from './web-socket-manager';
+
+const { getVersion } = (global as any).claudeZenFoundation;
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);

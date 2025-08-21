@@ -9,8 +9,9 @@
  */
 
 import * as readline from 'node:readline';
-import { EventEmitter } from 'eventemitter3';
+
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('AGUIAdapter');
 

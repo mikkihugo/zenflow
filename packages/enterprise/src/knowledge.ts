@@ -1,6 +1,6 @@
 /**
  * @fileoverview Knowledge Strategic Facade - Simple Delegation
- * 
+ *
  * Simple facade that delegates to @claude-zen/knowledge package.
  */
 
@@ -9,7 +9,7 @@ export function createKnowledgeManager() {
   return {
     store: async () => ({ id: 'fallback' }),
     retrieve: async () => ({ data: null }),
-    search: async () => ({ results: [] })
+    search: async () => ({ results: [] }),
   };
 }
 
@@ -17,7 +17,7 @@ export function createSemanticSearchEngine() {
   return {
     index: async () => {},
     search: async () => ({ results: [] }),
-    similar: async () => ({ results: [] })
+    similar: async () => ({ results: [] }),
   };
 }
 

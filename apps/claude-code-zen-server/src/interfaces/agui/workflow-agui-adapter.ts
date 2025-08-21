@@ -13,6 +13,8 @@
  * - Production-grade performance and audit trail
  */
 
+import type { Logger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation'
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
@@ -20,8 +22,7 @@ import {
   createEvent,
   type TypeSafeEventBus,
 } from '@claude-zen/infrastructure';
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
+
 import type {
   EscalationChain,
   EscalationRecord,
@@ -35,6 +36,7 @@ import {
   getDomainValidator,
   type Result,
 } from '../../core/domain-boundary-validator';
+
 import {
   TerminalAGUI,
   type ValidationQuestion,

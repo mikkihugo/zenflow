@@ -10,9 +10,11 @@
  */
 
 import { type ChildProcess, execSync, spawn } from 'child_process';
-import { EventEmitter } from 'eventemitter3';
 import path from 'path';
+
 import { getConsoleReplacementLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
+
 import type { logger } from './core/logger';
 
 // Import existing coordination infrastructure (will be dynamically imported)

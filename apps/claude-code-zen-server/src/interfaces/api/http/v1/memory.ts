@@ -16,10 +16,11 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation'
 import { type Request, type Response, Router } from 'express';
+
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
-import { getLogger } from '@claude-zen/foundation'
 
 /**
  * Create memory management routes with @claude-zen/intelligence delegation.
@@ -30,9 +31,9 @@ export const createMemoryRoutes = (): Router => {
   const logger: Logger = getLogger('MemoryAPI');
   
   // Lazy-loaded dependencies for performance
-  let memoryController: any;
-  let memorySystem: any;
-  let memoryMonitor: any;
+  let memoryController: unknown;
+  let memorySystem: unknown;
+  let memoryMonitor: unknown;
   let initialized = false;
   
   /**

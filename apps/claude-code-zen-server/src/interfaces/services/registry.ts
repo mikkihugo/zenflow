@@ -22,7 +22,7 @@
  * @version 2.1.0
  */
 
-import { ServiceContainer, createServiceContainer, Lifetime } from '@claude-zen/foundation';
+import { ServiceContainer, createServiceContainer } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 
@@ -866,7 +866,7 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       // Update discovery info health
       const discoveryInfo = this.serviceDiscovery.get(service.name);
       if (discoveryInfo) {
-        discoveryInfo.health = status.health;
+        discoveryInfo.health = status.health as any;
         discoveryInfo.lastHeartbeat = new Date();
       }
 
@@ -1194,7 +1194,7 @@ export class ServiceRegistry extends EventEmitter implements ServiceRegistryInte
       nodes.set(name, {
         service,
         dependencies: new Set(
-          service.config.dependencies?.map((dep: any) => dep.serviceName) || []
+          service.config.dependencies?.map((dep: unknown) => dep.serviceName) || []
         ),
         dependents: new Set<string>(),
         level: 0,

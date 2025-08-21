@@ -16,8 +16,8 @@
  * @version 1.0.0
  */
 
-import { nanoid } from 'nanoid';
 import type { Logger } from '@claude-zen/foundation';
+import { nanoid } from 'nanoid';
 
 // ============================================================================
 // CORE SCHEMA TYPES

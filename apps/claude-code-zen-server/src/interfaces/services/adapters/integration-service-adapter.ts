@@ -13,10 +13,10 @@
  */
 
 import type { Logger, ServiceManager, MetricsCollector , ConnectionManager } from '@claude-zen/foundation';
-import type { WorkflowEngine } from '@claude-zen/intelligence';
-import type { CollaborationEngine } from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '@claude-zen/foundation'
+import type { WorkflowEngine , CollaborationEngine } from '@claude-zen/intelligence';
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   Service,
   ServiceConfig,

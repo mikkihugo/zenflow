@@ -16,11 +16,14 @@
  * @version 1.0.0
  */
 
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
+import { nanoid } from 'nanoid';
+
 import type { StoryEntity, TaskEntity } from '../../entities/document-entities';
 import type { DocumentType } from '../../workflows/types';
+
+import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
 import { DocumentManager } from './document-service';
-import { nanoid } from 'nanoid';
+
 
 // ============================================================================
 // STORY INTERFACES
@@ -142,11 +145,9 @@ export class StoryService extends BaseDocumentService<StoryEntity> {
     }
 
     // Enabler story specific validation
-    if (data.metadata?.storyType === 'enabler_story') {
-      if (!data.metadata?.enablerType) {
+    if (data.metadata?.storyType === 'enabler_story' && !data.metadata?.enablerType) {
         warnings.push('Enabler stories should specify their type (infrastructure, architectural, etc.)');
       }
-    }
 
     // Validation warnings
     if (data.title && data.title.length < 15) {

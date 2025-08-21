@@ -23,11 +23,11 @@
  * - Advanced analytics and reporting
  */
 
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
 import { getLogger } from '@claude-zen/foundation';
+import type { Logger } from '@claude-zen/foundation';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
-import type { Logger } from '@claude-zen/foundation';
 
 import type {
   BaseDocumentEntity,

@@ -1,10 +1,10 @@
 /**
  * @fileoverview Operations Strategic Facade
- * 
+ *
  * STRATEGIC FACADE PURPOSE:
  * This facade provides unified access to operational capabilities including
  * monitoring, telemetry, chaos engineering, and performance management.
- * 
+ *
  * DELEGATION ARCHITECTURE:
  * • @claude-zen/system-monitoring: System health monitoring and telemetry
  * • @claude-zen/agent-monitoring: Agent health and performance tracking
@@ -13,7 +13,7 @@
  * • @claude-zen/llm-routing: LLM provider routing and management
  * • @claude-zen/memory: Memory management and optimization
  * • @claude-zen/system-monitoring: System and infrastructure performance monitoring
- * 
+ *
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
  * 1. registerFacade() - Register with facade status manager
@@ -21,15 +21,15 @@
  * 3. Export all module implementations (with fallbacks)
  * 4. Export main system object for programmatic access
  * 5. Export types for external consumers
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
  */
 
-import { 
+import {
   registerFacade,
-  getLogger
+  getLogger,
 } from '@claude-zen/foundation';
 
 const logger = getLogger('operations');
@@ -37,11 +37,11 @@ const logger = getLogger('operations');
 // Register operations facade with expected packages
 registerFacade('operations', [
   '@claude-zen/agent-monitoring',
-  '@claude-zen/chaos-engineering', 
+  '@claude-zen/chaos-engineering',
   '@claude-zen/load-balancing',
   '@claude-zen/llm-routing',
   '@claude-zen/memory',
-  '@claude-zen/system-monitoring'
+  '@claude-zen/system-monitoring',
 ], [
   'Agent performance tracking and health checks',
   'Chaos engineering and resilience testing',
@@ -49,7 +49,7 @@ registerFacade('operations', [
   'LLM provider routing and management',
   'Memory management and optimization',
   'System and infrastructure performance monitoring',
-  'Real-time operational metrics and alerting'
+  'Real-time operational metrics and alerting',
 ]);
 
 // =============================================================================
@@ -61,6 +61,9 @@ export * from './chaos-engineering';
 export * from './monitoring';
 export * from './memory';
 export * from './llm-routing';
+
+// Re-export key facade functions for direct access
+export { getTelemetryManager, getPerformanceTracker } from './monitoring';
 
 // =============================================================================
 // STRATEGIC FACADE DELEGATION - System Monitoring Integration
@@ -74,50 +77,54 @@ async function loadSystemMonitoring() {
     try {
       const packageName = '@claude-zen/system-monitoring';
       systemMonitoringCache = await import(packageName);
-    } catch (error) {
+    } catch {
       // Enhanced fallback system monitoring implementation
       systemMonitoringCache = {
         SystemMonitor: class {
-          async initialize() { return this; }
-          async startMonitoring() { 
+          async initialize() {
+            return this;
+          }
+          async startMonitoring() {
             console.debug('System Monitor Fallback: Started monitoring');
-            return { result: 'fallback-monitoring', status: 'started', timestamp: Date.now() }; 
+            return { result: 'fallback-monitoring', status: 'started', timestamp: Date.now() };
           }
-          async stopMonitoring() { 
+          async stopMonitoring() {
             console.debug('System Monitor Fallback: Stopped monitoring');
-            return { result: 'fallback-stop', status: 'stopped', timestamp: Date.now() }; 
+            return { result: 'fallback-stop', status: 'stopped', timestamp: Date.now() };
           }
-          async getMetrics() { 
-            return { 
-              cpu: Math.random() * 100, 
-              memory: Math.random() * 100, 
+          async getMetrics() {
+            return {
+              cpu: Math.random() * 100,
+              memory: Math.random() * 100,
               disk: Math.random() * 100,
               status: 'fallback',
-              timestamp: Date.now()
-            }; 
+              timestamp: Date.now(),
+            };
           }
-          getStatus() { return { status: 'fallback', healthy: true, monitoring: false }; }
+          getStatus() {
+            return { status: 'fallback', healthy: true, monitoring: false };
+          }
         },
         createSystemMonitor: () => ({
           initialize: async () => Promise.resolve(),
           startMonitoring: async () => ({ result: 'fallback-start', status: 'started', timestamp: Date.now() }),
           stopMonitoring: async () => ({ result: 'fallback-stop', status: 'stopped', timestamp: Date.now() }),
-          getMetrics: async () => ({ 
+          getMetrics: async () => ({
             system: { cpu: 45, memory: 67, disk: 23 },
             network: { bytesIn: 1024, bytesOut: 512 },
             processes: { count: 156, active: 89 },
             status: 'fallback',
-            timestamp: Date.now()
+            timestamp: Date.now(),
           }),
-          getStatus: () => ({ status: 'fallback', healthy: true, monitoring: false })
+          getStatus: () => ({ status: 'fallback', healthy: true, monitoring: false }),
         }),
         getSystemMetrics: async () => ({
           uptime: Date.now(),
           loadAverage: [0.5, 0.7, 0.9],
           memoryUsage: { used: 4096, free: 4096, total: 8192 },
           cpuUsage: { user: 15, system: 5, idle: 80 },
-          status: 'fallback'
-        })
+          status: 'fallback',
+        }),
       };
     }
   }
@@ -146,29 +153,29 @@ export const operationsSystem = {
   // System monitoring with enhanced fallbacks
   monitoring: () => import('./monitoring'),
   systemMonitoring: () => loadSystemMonitoring(),
-  
-  // Memory management  
+
+  // Memory management
   memory: () => import('./memory'),
-  
+
   // Agent monitoring
   agents: () => import('./agent-monitoring'),
-  
+
   // Chaos engineering
   chaos: () => import('./chaos-engineering'),
-  
+
   // LLM routing
   llm: () => import('./llm-routing'),
-  
+
   // Direct access functions
   getSystemMonitor: getSystemMonitor,
   getSystemMetrics: getSystemMetrics,
-  
+
   // Utilities
   logger: logger,
   init: async () => {
     logger.info('Operations system initialized');
     return { success: true, message: 'Operations ready' };
-  }
+  },
 };
 
 // =============================================================================

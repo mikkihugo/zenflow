@@ -62,6 +62,7 @@ export type {
 
 // Factory functions
 import { AgentRegistry } from './agent-registry';
+import type { AgentRegistryOptions } from './types';
 
 /**
  * Create a new agent registry instance with default configuration

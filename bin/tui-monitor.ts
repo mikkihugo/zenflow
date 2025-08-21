@@ -122,7 +122,7 @@ class TUIMonitorCLI {
       // Start OpenTelemetry consumer
       console.log(chalk.yellow('📡 Starting OpenTelemetry consumer...'));
       this.otelConsumer = await this.createOTelConsumer(options.otelPort);
-      
+
       console.log(chalk.green(`✅ OTel consumer running on port ${options.otelPort}`));
       console.log(chalk.gray('   Ready to receive telemetry from:'));
       console.log(chalk.gray('   • Claude Code native telemetry'));
@@ -159,7 +159,7 @@ class TUIMonitorCLI {
 
       // Clear screen and start dashboard
       process.stdout.write('\x1B[2J\x1B[H');
-      
+
       this.dashboard.start();
 
       // Start demo data if in demo mode
@@ -183,7 +183,7 @@ class TUIMonitorCLI {
       console.log('');
 
       const consumer = await this.createOTelConsumer(parseInt(options.port));
-      
+
       console.log(chalk.green(`✅ OTel consumer running on port ${options.port}`));
       console.log(chalk.cyan('📊 Endpoints:'));
       console.log(chalk.gray(`   POST http://localhost:${options.port}/v1/metrics   - Metrics`));
@@ -220,7 +220,7 @@ class TUIMonitorCLI {
     const startTime = Date.now();
     const endTime = startTime + (parseInt(options.duration) * 1000);
     const interval = parseInt(options.interval);
-    
+
     let messageCount = 0;
 
     const generateData = () => {
@@ -289,7 +289,7 @@ class TUIMonitorCLI {
 
     // Check for Phase 3 systems (if running)
     console.log(chalk.yellow('🔍 Scanning for Phase 3 systems...'));
-    
+
     // This would check for actual systems in a real implementation
     console.log(chalk.gray('   No active Phase 3 systems detected'));
     console.log(chalk.gray('   (This is normal if no systems are currently running)'));
@@ -305,7 +305,7 @@ class TUIMonitorCLI {
    */
   private async createOTelConsumer(port: number): Promise<LocalOTelConsumer> {
     const consumer = new LocalOTelConsumer(port);
-    
+
     consumer.on('stats:updated', (stats) => {
       if (this.dashboard) {
         // Forward telemetry stats to dashboard
@@ -346,12 +346,12 @@ class TUIMonitorCLI {
    */
   private async autoDiscoverSystems(): Promise<void> {
     console.log(chalk.yellow('🔍 Auto-discovering Phase 3 systems...'));
-    
+
     // In a real implementation, this would:
     // 1. Scan for running Phase3EnsembleLearning instances
     // 2. Connect to them via their APIs or memory interfaces
     // 3. Setup real-time event forwarding
-    
+
     console.log(chalk.gray('   No Phase 3 systems found (using telemetry only)'));
     console.log(chalk.gray('   Dashboard will display data from any telemetry source'));
   }
@@ -362,15 +362,15 @@ class TUIMonitorCLI {
   private setupGracefulShutdown(): void {
     const shutdown = async () => {
       console.log(chalk.yellow('\n🛑 Shutting down TUI dashboard...'));
-      
+
       if (this.dashboard) {
         this.dashboard.shutdown();
       }
-      
+
       if (this.otelConsumer) {
         await this.otelConsumer.stop();
       }
-      
+
       console.log(chalk.green('✅ Shutdown complete'));
       process.exit(0);
     };
@@ -386,22 +386,22 @@ class TUIMonitorCLI {
     if (!this.otelConsumer) return;
 
     console.log(chalk.cyan('🎭 Demo mode: Generating simulated telemetry data'));
-    
+
     const generateDemoMetrics = () => {
       const baseAccuracy = 84.7;
       const variation = Math.sin(Date.now() / 10000) * 2;
-      
+
       // Push various demo metrics
       this.otelConsumer!.pushMetric('ensemble.accuracy', baseAccuracy + variation);
       this.otelConsumer!.pushMetric('ensemble.confidence', 82 + Math.sin(Date.now() / 8000) * 3);
       this.otelConsumer!.pushMetric('claude.tokens.used', Math.floor(Math.random() * 1000));
       this.otelConsumer!.pushMetric('agents.active', 6 + Math.floor(Math.sin(Date.now() / 15000) * 2));
-      
+
       // Tier-specific metrics
       this.otelConsumer!.pushMetric('ensemble.tier1.accuracy', 83 + Math.random() * 4);
       this.otelConsumer!.pushMetric('ensemble.tier2.accuracy', 87 + Math.random() * 3);
       this.otelConsumer!.pushMetric('ensemble.tier3.accuracy', 92 + Math.random() * 2);
-      
+
       this.otelConsumer!.pushMetric('ensemble.tier1.models', 3);
       this.otelConsumer!.pushMetric('ensemble.tier2.models', 2);
       this.otelConsumer!.pushMetric('ensemble.tier3.models', 4);

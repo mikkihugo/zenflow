@@ -10,9 +10,17 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseAccess, getServiceContainer } from '@claude-zen/infrastructure';
-import { BehavioralIntelligence } from '@claude-zen/intelligence';
+import {
+  getDatabaseAccess,
+  getServiceContainer,
+} from '@claude-zen/infrastructure';
 import type { ServiceContainer } from '@claude-zen/infrastructure';
+import { BehavioralIntelligence } from '@claude-zen/intelligence';
+import { EventEmitter } from 'eventemitter3';
+
+import { ProjectCoordinator } from './coordination';
+import { Orchestrator } from './coordination/orchestrator';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
 
 // Service tokens for dependency injection
 const TOKENS = {
@@ -23,15 +31,8 @@ const TOKENS = {
   AgentManager: 'AgentManager',
   CoordinationManager: 'CoordinationManager',
   BehavioralIntelligence: 'BehavioralIntelligence',
-  MultiSystemCoordinator: 'MultiSystemCoordinator'
+  MultiSystemCoordinator: 'MultiSystemCoordinator',
 } as const;
-
-
-import { EventEmitter } from 'eventemitter3';
-
-import { ProjectCoordinator } from './coordination';
-import { Orchestrator } from './coordination/orchestrator';
-import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
 
 // Simple EventBus interface
 interface EventBus {
@@ -54,7 +55,9 @@ class AppEventBus extends EventEmitter implements EventBus {
     return super.emit(event, ...args);
   }
 
-  emitSystemEvent(event: import('./coordination/core/event-bus').SystemEvent): boolean {
+  emitSystemEvent(
+    event: import('./coordination/core/event-bus').SystemEvent
+  ): boolean {
     return super.emit(event.type, event);
   }
 
@@ -108,7 +111,7 @@ export class ClaudeZenCore {
    */
   private async setupDependencyInjection(): Promise<ServiceContainer> {
     const container = await getServiceContainer('claude-zen-core');
-    
+
     // Register core services
     container.register(TOKENS.Logger, () => getLogger('claude-zen-core'));
     container.register(TOKENS.Config, () => this.getConfig());
@@ -122,7 +125,7 @@ export class ClaudeZenCore {
       return new Orchestrator(logger, database);
     });
 
-    // Register coordination manager  
+    // Register coordination manager
     container.register(TOKENS.CoordinationManager, (c) => {
       const logger = c.resolve(TOKENS.Logger);
       const eventBus = c.resolve(TOKENS.EventBus);
@@ -138,7 +141,7 @@ export class ClaudeZenCore {
             heartbeatInterval: 5000,
             timeout: 30000,
             enableHealthCheck: true,
-          }
+          },
         });
       }
       return coordinator;
@@ -159,7 +162,6 @@ export class ClaudeZenCore {
     return container;
   }
 
-
   /**
    * Get configuration with proper error handling.
    */
@@ -168,12 +170,12 @@ export class ClaudeZenCore {
       debug: process.env.NODE_ENV === 'development',
       database: {
         type: 'sqlite',
-        path: ':memory:'
+        path: ':memory:',
       },
       agents: {
         maxAgents: 10,
-        defaultTimeout: 30000
-      }
+        defaultTimeout: 30000,
+      },
     };
   }
 
@@ -195,12 +197,20 @@ export class ClaudeZenCore {
       }
 
       // Resolve all coordinators through DI
-      this.orchestrator = this.container.resolve(TOKENS.AgentManager) as Orchestrator;
-      this.coordinationManager = this.container.resolve(TOKENS.CoordinationManager);
-      
-      this.behavioralIntelligence = this.container.resolve(TOKENS.BehavioralIntelligence);
-      
-      this.multiSystemCoordinator = this.container.resolve(TOKENS.MultiSystemCoordinator);
+      this.orchestrator = this.container!.resolve(
+        TOKENS.AgentManager
+      ) as Orchestrator;
+      this.coordinationManager = this.container!.resolve(
+        TOKENS.CoordinationManager
+      );
+
+      this.behavioralIntelligence = this.container!.resolve(
+        TOKENS.BehavioralIntelligence
+      );
+
+      this.multiSystemCoordinator = this.container!.resolve(
+        TOKENS.MultiSystemCoordinator
+      );
 
       // Initialize all coordinators
       if (this.orchestrator?.initialize) {
@@ -285,7 +295,10 @@ export class ClaudeZenCore {
 
     try {
       // Stop all coordinators
-      if (this.coordinationManager && typeof this.coordinationManager === 'object') {
+      if (
+        this.coordinationManager &&
+        typeof this.coordinationManager === 'object'
+      ) {
         // Try different shutdown methods that might be available
         const coordinator = this.coordinationManager as any;
         if (coordinator.shutdown) {
@@ -293,7 +306,9 @@ export class ClaudeZenCore {
         } else if (coordinator.stop) {
           await coordinator.stop();
         } else if (coordinator.executeCoordination) {
-          logger.info('Coordination manager has basic interface, no shutdown method');
+          logger.info(
+            'Coordination manager has basic interface, no shutdown method'
+          );
         }
       }
 

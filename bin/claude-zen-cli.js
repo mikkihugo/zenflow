@@ -45,9 +45,9 @@ const scriptDir = join(__dirname, '..');
 const command = `cd "${scriptDir}" && npx tsx -e "
   // Set environment to avoid server initialization
   process.env.CLAUDE_ZEN_CLI_MODE = 'true';
-  
+
   import { authenticateCopilot, authStatus } from '${authCommand.replace(/\\/g, '\\\\')}';
-  
+
   (async () => {
     const provider = '${provider}';
     try {

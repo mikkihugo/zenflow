@@ -8,9 +8,9 @@
  * @file Web-session management system.
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import type { NextFunction, Request, Response } from 'express';
 
-import { getLogger } from '@claude-zen/foundation'
 
 import type { WebConfig, WebSession } from './web-config';
 

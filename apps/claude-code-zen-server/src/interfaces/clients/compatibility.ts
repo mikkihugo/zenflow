@@ -12,6 +12,7 @@ import { FACTIntegration } from '../../knowledge/knowledge-client';
 import { type APIClient, createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
 import { ExternalMCPClient } from '../mcp/external-mcp-client';
+
 import type { ClientInstance } from './types';
 import { ClientTypes } from './types';
 

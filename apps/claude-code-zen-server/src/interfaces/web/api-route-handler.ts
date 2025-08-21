@@ -8,10 +8,12 @@
  * @file Interface implementation: api-route-handler.
  */
 
-import type { Express, Request, Response } from 'express';
 import { getLogger } from '@claude-zen/foundation'
-const { getVersion } = (global as any).claudeZenFoundation;
+import type { Express, Request, Response } from 'express';
+
 import type { WebSocketCoordinator } from './web-socket-coordinator';
+
+const { getVersion } = (global as any).claudeZenFoundation;
 
 export interface ApiConfig {
   prefix: string;

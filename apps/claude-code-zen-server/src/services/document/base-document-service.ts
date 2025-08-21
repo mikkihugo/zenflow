@@ -11,12 +11,13 @@
  * @version 1.0.0
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { nanoid } from 'nanoid';
 import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '@claude-zen/foundation';
-import type { DocumentType } from '../../workflows/types';
+import { EventEmitter } from 'eventemitter3';
+
 import type { BaseDocumentEntity } from '../../entities/document-entities';
+import type { DocumentType } from '../../workflows/types';
+
 import { DocumentManager, type DocumentCreateOptions, type DocumentQueryOptions } from './document-service';
 
 // ============================================================================
@@ -325,7 +326,7 @@ export abstract class BaseDocumentService<T extends BaseDocumentEntity> extends 
         includeWorkflowState: false
       };
 
-      const result = await this.documentManager.searchDocuments<T>(searchOptions);
+      const result = await this.documentManager.searchDocuments<T>(searchOptions) as any as any;
 
       // Apply additional filters that can't be handled at the database level
       let filteredDocuments = result.documents;
@@ -378,7 +379,7 @@ export abstract class BaseDocumentService<T extends BaseDocumentEntity> extends 
       };
 
       const startTime = Date.now();
-      const result = await this.documentManager.searchDocuments<T>(searchOptions);
+      const result = await this.documentManager.searchDocuments<T>(searchOptions) as any as any;
       const executionTime = Date.now() - startTime;
 
       // Apply additional filters

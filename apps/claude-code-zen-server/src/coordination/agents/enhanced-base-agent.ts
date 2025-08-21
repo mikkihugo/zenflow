@@ -6,11 +6,13 @@
  * This ensures knowledge consistency across the entire hierarchy.
  */
 
+import { getLogger } from '@claude-zen/foundation'
+
+import type { AgentConfig } from '../types';
 import {
   withFactCapabilities,
 } from '../universal-fact-mixin';
-import { getLogger } from '@claude-zen/foundation'
-import type { AgentConfig } from '../types';
+
 import { BaseAgent } from './agent';
 
 const logger = getLogger('Enhanced-Base-Agent');
@@ -23,7 +25,7 @@ class BaseAgentAdapter extends BaseAgent {
 }
 
 // Create a FactCapable version of BaseAgent
-const FactCapableBaseAgent = withFactCapabilities(BaseAgentAdapter);
+const FactCapableBaseAgent = withFactCapabilities(BaseAgentAdapter) as any as any;
 
 /**
  * Enhanced Base Agent with Universal FACT capabilities.
@@ -31,10 +33,22 @@ const FactCapableBaseAgent = withFactCapabilities(BaseAgentAdapter);
  * This agent automatically has access to the shared FACT system
  * and can perform knowledge operations like any other hierarchy level.
  */
-export class EnhancedBaseAgent extends FactCapableBaseAgent
+export abstract class EnhancedBaseAgent extends FactCapableBaseAgent
 {
   protected hierarchyLevel: 'Agent' = 'Agent';
   private _sharedFactSystem: any = null;
+
+  // Explicitly declare inherited properties from BaseAgent for TypeScript
+  declare id: string;
+  declare config: AgentConfig;
+  declare type: import('../types').AgentType;
+  declare capabilities: import('../types').AgentCapabilities;
+  declare metrics: import('../types').AgentMetrics;
+  declare state: import('../types').AgentState;
+  declare connections: string[];
+  declare status: import('../types').AgentStatus;
+
+  // Execute method is implemented below and can be overridden by subclasses
 
   constructor(config: AgentConfig) {
     super(config);
@@ -92,7 +106,7 @@ export class EnhancedBaseAgent extends FactCapableBaseAgent
    * Enhanced task execution with FACT system integration.
    * Agents can now automatically access shared knowledge.
    */
-  public override async execute(task: any): Promise<any> {
+  public async execute(task: any): Promise<any> {
     const startTime = Date.now();
 
     try {
@@ -324,7 +338,7 @@ export class EnhancedBaseAgent extends FactCapableBaseAgent
   /**
    * Enhanced initialization with FACT system verification.
    */
-  public override async initialize(): Promise<void> {
+  public async initialize(): Promise<void> {
     await super.initialize();
 
     try {
@@ -339,7 +353,7 @@ export class EnhancedBaseAgent extends FactCapableBaseAgent
   /**
    * Enhanced shutdown with FACT system cleanup.
    */
-  public override async shutdown(): Promise<void> {
+  public async shutdown(): Promise<void> {
     try {
       // Store any final insights before shutdown
       if (
@@ -393,7 +407,7 @@ export class EnhancedResearcherAgent extends EnhancedBaseAgent {
     super({ ...config, type: 'researcher' });
   }
 
-  protected override async executeTaskByType(task: any): Promise<any> {
+  protected async executeTaskByType(task: any): Promise<any> {
     // Automatically gather research knowledge from FACT system
     if (!task?.requiresFacts && task) {
         task.requiresFacts = true;
@@ -412,7 +426,7 @@ export class EnhancedCoderAgent extends EnhancedBaseAgent {
     super({ ...config, type: 'coder' });
   }
 
-  protected override async executeTaskByType(task: any): Promise<any> {
+  protected async executeTaskByType(task: any): Promise<any> {
     // Automatically gather package and API knowledge
     if (!task?.requiresFacts && task) {
         task.requiresFacts = true;
@@ -431,7 +445,7 @@ export class EnhancedAnalystAgent extends EnhancedBaseAgent {
     super({ ...config, type: 'analyst' });
   }
 
-  protected override async executeTaskByType(task: any): Promise<any> {
+  protected async executeTaskByType(task: any): Promise<any> {
     // Automatically store analysis insights
     if (!task?.storeInsights && task) {
         task.storeInsights = true;
@@ -453,7 +467,7 @@ export function createEnhancedAgent(config: AgentConfig): EnhancedBaseAgent {
     case 'analyst':
       return new EnhancedAnalystAgent(config as Omit<AgentConfig, 'type'>);
     default:
-      return new EnhancedBaseAgent(config);
+      throw new Error(`Unknown agent type: ${config.type}`);
   }
 }
 

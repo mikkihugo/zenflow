@@ -16,12 +16,12 @@
  * ENHANCEMENT: Advanced swarm intelligence, pattern recognition, and optimization
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '../core/types';
-import type { AgentConfig, SwarmConfig } from '../types/swarm-types';
 import type { AgentType } from '../types/agent-types';
+import type { AgentConfig, SwarmConfig } from '../types/swarm-types';
 
 /**
  * Agent progress tracking interface

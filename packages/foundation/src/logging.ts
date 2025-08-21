@@ -6,6 +6,7 @@
  */
 
 import { getLogger as getLogTapeLogger } from '@logtape/logtape';
+
 import type { UnknownRecord } from './types/primitives';
 
 export enum LoggingLevel {
@@ -56,24 +57,27 @@ class LoggingConfigurationManager {
   }
 
   private loadConfiguration(): LoggingConfig {
-    // Import config after the class is defined to avoid circular dependencies
-    const { getConfig } = require('./config');
-
     try {
-      const centralConfig = getConfig();
+      // Load configuration directly from environment variables to avoid circular dependency
+      const nodeEnv = process.env['NODE_ENV'] || 'development';
+      const defaultLevel = nodeEnv === 'development' ? LoggingLevel.DEBUG : LoggingLevel.INFO;
 
-      // Convert central config to our LoggingConfig format
+      const zenLogLevel = process.env['ZEN_LOG_LEVEL'] as LoggingLevel;
+      const zenLogFormat = process.env['ZEN_LOG_FORMAT'] as 'json' | 'text';
+      const zenLogConsole = process.env['ZEN_LOG_CONSOLE'];
+      const zenLogFile = process.env['ZEN_LOG_FILE'];
+      const zenLogTimestamp = process.env['ZEN_LOG_TIMESTAMP'];
+
       const config: LoggingConfig = {
-        level: centralConfig.logging.level as LoggingLevel,
-        enableConsole: centralConfig.logging.console,
-        enableFile: centralConfig.logging.file !== '',
-        timestamp: centralConfig.logging.timestamp,
-        format: centralConfig.logging.format as 'json' | 'text',
+        level: zenLogLevel || defaultLevel,
+        enableConsole: zenLogConsole !== 'false',
+        enableFile: zenLogFile === 'true',
+        timestamp: zenLogTimestamp !== 'false',
+        format: zenLogFormat || 'text',
         components: {},
       };
 
       // Component-specific log levels from ZEN_LOG_COMPONENT_* variables
-      // Keep this for backward compatibility until we add component config to central config
       Object.keys(process.env).forEach((key) => {
         if (key.startsWith('ZEN_LOG_COMPONENT_')) {
           const component = key.replace('ZEN_LOG_COMPONENT_', '').toLowerCase();
@@ -136,14 +140,10 @@ class LoggingConfigurationManager {
     let useInternalCollector = false;
 
     try {
-      // Use central config for OTEL settings
-      const { getConfig } = require('./config');
-      const centralConfig = getConfig();
-
-      const useInternalOtelCollector = centralConfig.otel.useInternalCollector;
-      const zenOtelEnabled = centralConfig.otel.enabled;
-      const internalCollectorEndpoint =
-        centralConfig.otel.internalCollectorEndpoint;
+      // Load OTEL settings directly from environment variables to avoid circular dependency
+      const useInternalOtelCollector = process.env['ZEN_USE_INTERNAL_OTEL_COLLECTOR'] !== 'false';
+      const zenOtelEnabled = process.env['ZEN_OTEL_ENABLED'] === 'true';
+      const internalCollectorEndpoint = process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || 'http://localhost:4318';
 
       if (useInternalOtelCollector && zenOtelEnabled) {
         // Check if OTEL endpoint is reachable (foundation should not depend on other packages)
@@ -235,7 +235,7 @@ class LoggingConfigurationManager {
     }
 
     await configure({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       sinks: sinkConfig as any,
       loggers: [
         // Foundation components with internal collector if available

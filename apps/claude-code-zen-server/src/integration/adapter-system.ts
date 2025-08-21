@@ -4,7 +4,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
-
 import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('src-integration-adapter-system');

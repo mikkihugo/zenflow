@@ -154,6 +154,7 @@ import { Logger } from '@claude-zen/foundation';
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import type {
   AuthenticationConfig,
   ClientConfig,

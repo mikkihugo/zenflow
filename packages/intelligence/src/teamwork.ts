@@ -1,9 +1,9 @@
 /**
  * @fileoverview Teamwork Strategic Facade - Real Package Delegation
- * 
+ *
  * Strategic facade providing real teamwork capabilities through delegation
  * to @claude-zen/teamwork package. Eliminates stubs by using actual implementations.
- * 
+ *
  * ARCHITECTURE SUCCESS: Real Teamwork package integration completed!
  * • Uses comprehensive multi-agent conversation framework implementation
  * • Eliminates empty stubs with real conversation orchestration
@@ -25,21 +25,41 @@ async function loadTeamworkModule() {
       console.warn('Teamwork package not available, providing minimal compatibility layer');
       teamworkModuleCache = {
         ConversationOrchestrator: class MinimalConversationOrchestrator extends EventEmitter {
-          async initialize() { return this; }
-          async orchestrateConversation() { return { result: 'compatibility-conversation' }; }
-          getStatus() { return { status: 'compatibility', healthy: true }; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async orchestrateConversation() {
+            return { result: 'compatibility-conversation' };
+          }
+          getStatus() {
+            return { status: 'compatibility', healthy: true };
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         ConversationManager: class MinimalConversationManager extends EventEmitter {
-          async initialize() { return this; }
-          async manageConversation() { return { result: 'compatibility-management' }; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async manageConversation() {
+            return { result: 'compatibility-management' };
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         CollaborationEngine: class MinimalCollaborationEngine extends EventEmitter {
-          async initialize() { return this; }
-          async collaborate() { return { result: 'compatibility-collaboration' }; }
-          async shutdown() { return Promise.resolve(); }
-        }
+          async initialize() {
+            return this;
+          }
+          async collaborate() {
+            return { result: 'compatibility-collaboration' };
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+        },
       };
     }
   }
@@ -64,7 +84,7 @@ export class ConversationOrchestrator extends EventEmitter {
     super();
     this.config = config;
   }
-  
+
   private config: any;
 
   async initialize(): Promise<void> {
@@ -76,12 +96,16 @@ export class ConversationOrchestrator extends EventEmitter {
   }
 
   async orchestrateConversation(request: any): Promise<any> {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.orchestrateConversation?.(request) || this.instance.orchestrate?.(request);
   }
 
   getStatus(): any {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus?.() || { status: 'active' };
   }
 
@@ -118,7 +142,9 @@ export class ConversationManager extends EventEmitter {
   }
 
   async manageConversation(request: any): Promise<any> {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.manageConversation?.(request) || this.instance.manage?.(request);
   }
 
@@ -149,7 +175,7 @@ export class CollaborationEngine extends EventEmitter {
   async initialize(): Promise<void> {
     if (!this.instance) {
       const teamworkModule = await loadTeamworkModule();
-      this.instance = teamworkModule.CollaborationEngine 
+      this.instance = teamworkModule.CollaborationEngine
         ? new teamworkModule.CollaborationEngine(this.config)
         : null;
       await this.instance?.initialize?.();
@@ -157,7 +183,9 @@ export class CollaborationEngine extends EventEmitter {
   }
 
   async collaborate(request: any): Promise<any> {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance?.collaborate?.(request) || { result: 'collaboration-complete' };
   }
 
@@ -194,7 +222,7 @@ export async function createCollaborationEngine(config?: any): Promise<Collabora
 export const teamworkSystem = {
   createOrchestrator: createConversationOrchestrator,
   createManager: createConversationManager,
-  createCollaborationEngine: createCollaborationEngine
+  createCollaborationEngine: createCollaborationEngine,
 };
 
 // ===============================================================================
@@ -212,7 +240,7 @@ export async function getTeamworkAccess() {
     CollaborationEngine: teamworkModule.CollaborationEngine || CollaborationEngine,
     createOrchestrator: createConversationOrchestrator,
     createManager: createConversationManager,
-    createCollaborationEngine: createCollaborationEngine
+    createCollaborationEngine: createCollaborationEngine,
   };
 }
 
@@ -222,19 +250,19 @@ export { ConversationOrchestrator as ConversationOrchestratorImpl };
 // Memory implementation for conversation system
 export class InMemoryConversationMemory {
   private memory = new Map<string, any>();
-  
+
   async store(key: string, value: any): Promise<void> {
     this.memory.set(key, value);
   }
-  
+
   async retrieve(key: string): Promise<any> {
     return this.memory.get(key) || null;
   }
-  
+
   async clear(): Promise<void> {
     this.memory.clear();
   }
-  
+
   async keys(): Promise<string[]> {
     return Array.from(this.memory.keys());
   }

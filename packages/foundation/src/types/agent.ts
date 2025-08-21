@@ -36,6 +36,7 @@
  */
 
 import type { ChildProcess } from 'node:child_process';
+
 import type { UUID, Timestamp, Identifiable, Timestamped } from './index';
 
 // =============================================================================

@@ -8,10 +8,11 @@
  * @file Base service implementation.
  */
 
-import { EventEmitter } from 'eventemitter3';
 
 import type { Logger } from '@claude-zen/foundation'
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   Service,
   ServiceConfig,

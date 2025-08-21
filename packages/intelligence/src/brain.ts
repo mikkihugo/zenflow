@@ -1,25 +1,25 @@
 /**
  * @fileoverview Brain Strategic Facade - Real Package Delegation
- * 
+ *
  * STRATEGIC FACADE PURPOSE:
  * This facade provides unified access to brain coordination capabilities
  * while delegating to real implementation packages when available.
- * 
+ *
  * DELEGATION ARCHITECTURE:
  * • @claude-zen/brain: Neural coordination, behavioral intelligence, DSPy integration
- * 
+ *
  * FACADES ARE DELEGATION ONLY:
  * ❌ WRONG: Facades should NOT contain implementation classes or business logic
  * ✅ CORRECT: Facades should ONLY contain delegation patterns and runtime imports
- * 
+ *
  * GRACEFUL DEGRADATION:
  * When implementation packages are not available, provides minimal compatibility
  * layer with clear indication of required packages for full functionality.
- * 
+ *
  * RUNTIME IMPORTS:
  * Uses dynamic imports to prevent circular dependencies while providing unified
  * access to brain coordination capabilities through intelligence package.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
@@ -42,28 +42,54 @@ async function loadBrainModule() {
       brainModuleCache = {
         getBrainSystemAccess: async () => createCompatibilityBrainSystem(),
         BrainCoordinator: class MinimalBrainCoordinator extends EventEmitter {
-          async initialize() { return this; }
-          async coordinate() { return { result: 'compatibility-coordination' }; }
-          getStatus() { return { status: 'compatibility', healthy: true }; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async coordinate() {
+            return { result: 'compatibility-coordination' };
+          }
+          getStatus() {
+            return { status: 'compatibility', healthy: true };
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         NeuralBridge: class MinimalNeuralBridge extends EventEmitter {
-          static getInstance() { return new this(); }
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
+          static getInstance() {
+            return new this();
+          }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         DSPyLLMBridge: class MinimalDSPyBridge extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         RetrainingMonitor: class MinimalRetrainingMonitor extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         BehavioralIntelligence: class MinimalBehavioralIntelligence extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-        }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+        },
       };
     }
   }
@@ -77,7 +103,7 @@ function createCompatibilityBrainSystem() {
     initialize: async () => Promise.resolve(),
     shutdown: async () => Promise.resolve(),
     isHealthy: () => true,
-    getStatus: () => ({ status: 'compatibility', initialized: true })
+    getStatus: () => ({ status: 'compatibility', initialized: true }),
   };
 }
 
@@ -123,18 +149,18 @@ export const getNeuralBridge = async (config?: any) => {
 
 /**
  * BrainCoordinator - Strategic Facade for Brain Coordination
- * 
+ *
  * FACADE BEHAVIOR:
  * • Delegates to @claude-zen/brain package when available
  * • Provides compatibility layer when package not installed
  * • Zero breaking changes - same interface regardless of backend
- * 
+ *
  * REAL PACKAGE FEATURES (when @claude-zen/brain is available):
  * • Autonomous decision-making with 95%+ accuracy
- * • Neural network coordination with Rust/WASM acceleration  
+ * • Neural network coordination with Rust/WASM acceleration
  * • Behavioral intelligence and performance prediction
  * • Enterprise-grade security and multi-tenant isolation
- * 
+ *
  * FALLBACK BEHAVIOR (when @claude-zen/brain not available):
  * • Returns compatibility responses for all methods
  * • Maintains interface contracts without advanced features
@@ -146,7 +172,7 @@ export class BrainCoordinator extends EventEmitter {
     super();
     this.config = config;
   }
-  
+
   private config: any;
 
   async initialize(): Promise<void> {
@@ -158,12 +184,16 @@ export class BrainCoordinator extends EventEmitter {
   }
 
   async coordinate(task: any): Promise<any> {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.coordinate?.(task) || this.instance.coordinateTask?.(task);
   }
 
   getStatus(): any {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus?.() || { status: 'active' };
   }
 
@@ -176,17 +206,17 @@ export class BrainCoordinator extends EventEmitter {
 
 /**
  * NeuralBridge - Strategic Facade for Neural Network Integration
- * 
+ *
  * FACADE BEHAVIOR:
  * • Delegates to @claude-zen/brain package's NeuralBridge when available
  * • Singleton pattern with lazy initialization
  * • Graceful degradation when neural package not installed
- * 
+ *
  * REAL PACKAGE FEATURES (when @claude-zen/brain is available):
  * • High-performance Rust/WASM neural computation
  * • GPU acceleration support (CUDA, OpenCL, Metal)
  * • Custom neural architectures and ensemble methods
- * 
+ *
  * FALLBACK BEHAVIOR (when @claude-zen/brain not available):
  * • Minimal compatibility implementation
  * • No neural computation - compatibility stubs only
@@ -296,17 +326,17 @@ export class RetrainingMonitor extends EventEmitter {
 
 /**
  * BehavioralIntelligence - Strategic Facade for Behavioral Analysis
- * 
+ *
  * FACADE BEHAVIOR:
  * • Delegates to @claude-zen/brain package's BehavioralIntelligence when available
  * • Provides interface for agent performance prediction and learning
  * • Graceful degradation when behavioral intelligence package not installed
- * 
+ *
  * REAL PACKAGE FEATURES (when @claude-zen/brain is available):
  * • Multi-horizon predictive modeling with confidence intervals
  * • Cross-agent performance correlation and dependency analysis
  * • Advanced anomaly detection with machine learning models
- * 
+ *
  * FALLBACK BEHAVIOR (when @claude-zen/brain not available):
  * • Methods return undefined/null - no behavioral intelligence
  * • Interface maintained for compatibility
@@ -339,17 +369,23 @@ export class BehavioralIntelligence extends EventEmitter {
 
   // Behavioral intelligence methods
   async learnFromExecution(data: any): Promise<void> {
-    if (!this.realInstance) await this.initialize();
+    if (!this.realInstance) {
+      await this.initialize();
+    }
     return this.realInstance?.learnFromExecution?.(data);
   }
 
   async predictAgentPerformance(request: any): Promise<any> {
-    if (!this.realInstance) await this.initialize();
+    if (!this.realInstance) {
+      await this.initialize();
+    }
     return this.realInstance?.predictAgentPerformance?.(request);
   }
 
   async recordExecution(data: any): Promise<void> {
-    if (!this.realInstance) await this.initialize();
+    if (!this.realInstance) {
+      await this.initialize();
+    }
     return this.realInstance?.recordExecution?.(data);
   }
 }
@@ -360,7 +396,7 @@ export const brainSystem = {
   getCoordinator: getBrainCoordinator,
   getComplexityEstimator: getTaskComplexityEstimator,
   getBehavioralIntelligence: getBehavioralIntelligence,
-  getNeuralBridge: getNeuralBridge
+  getNeuralBridge: getNeuralBridge,
 };
 
 // ===============================================================================
@@ -395,10 +431,10 @@ export async function createBehavioralIntelligence(config?: any): Promise<Behavi
 }
 
 // ===============================================================================
-// NON-NEURAL BRAIN CLASSES - Memory management for server compatibility  
+// NON-NEURAL BRAIN CLASSES - Memory management for server compatibility
 // ===============================================================================
-// 
-// NOTE: Neural classes (LoadTester, NeuralML, AdaptiveOptimizer, NeuralForecastingEngine) 
+//
+// NOTE: Neural classes (LoadTester, NeuralML, AdaptiveOptimizer, NeuralForecastingEngine)
 // have been removed per architectural requirements.
 // Neural components are only available via the brain facade, not intelligence facade.
 
@@ -423,7 +459,7 @@ export class MemoryManager {
     this.memoryStore.set(key, {
       value,
       timestamp: Date.now(),
-      ttl: this.config?.defaultTTL || 3600000 // 1 hour default
+      ttl: this.config?.defaultTTL || 3600000, // 1 hour default
     });
   }
 
@@ -469,12 +505,12 @@ export class SessionMemoryStore {
         this.memoryData.delete(oldestKey);
       }
     }
-    
+
     this.memoryData.set(`${this.sessionId}:${key}`, {
       data,
       timestamp: Date.now(),
       sessionId: this.sessionId,
-      maxAge: this.config.maxAge || 3600000 // 1 hour default
+      maxAge: this.config.maxAge || 3600000, // 1 hour default
     });
   }
 
@@ -484,8 +520,8 @@ export class SessionMemoryStore {
   }
 
   async clearSession(): Promise<void> {
-    const keysToDelete = Array.from(this.memoryData.keys()).filter(key => 
-      key.startsWith(`${this.sessionId}:`)
+    const keysToDelete = Array.from(this.memoryData.keys()).filter(key =>
+      key.startsWith(`${this.sessionId}:`),
     );
     keysToDelete.forEach(key => this.memoryData.delete(key));
   }
@@ -496,5 +532,5 @@ export class SessionMemoryStore {
 }
 
 // Non-neural classes exported above with their class definitions
-// Neural components (LoadTester, NeuralML, AdaptiveOptimizer, NeuralForecastingEngine) 
+// Neural components (LoadTester, NeuralML, AdaptiveOptimizer, NeuralForecastingEngine)
 // have been removed - they are only available via brain facade per architectural requirements

@@ -1,13 +1,13 @@
 /**
  * @fileoverview SPARC Strategic Facade - Comprehensive SPARC Package Integration
- * 
+ *
  * Provides SPARC methodology through delegation to the real @claude-zen/sparc package
  * with comprehensive type exports and fallback implementations.
- * 
+ *
  * Delegates to:
  * - @claude-zen/sparc: SPARC methodology implementation with all phases
  * - @claude-zen/foundation: Logging and utilities
- * 
+ *
  * Features:
  * - Complete SPARC methodology (Specification, Pseudocode, Architecture, Refinement, Completion)
  * - Type-safe phase management and workflow execution
@@ -79,7 +79,7 @@ export interface SPARCProgress {
 
 /**
  * SPARCMethodology - Strategic facade for SPARC package
- * 
+ *
  * Provides the same interface as the stub but delegates to real implementation
  */
 export class SPARCMethodology extends EventEmitter {
@@ -95,26 +95,28 @@ export class SPARCMethodology extends EventEmitter {
       persistence: true,
       visualization: false,
       defaultTimeout: 30000,
-      ...config
+      ...config,
     };
     logger.debug('SPARCMethodology facade created', this.config);
   }
 
   async initialize(): Promise<void> {
-    if (this.initialized) return;
+    if (this.initialized) {
+      return;
+    }
 
     try {
       logger.info('Initializing SPARC methodology with real package delegation');
-      
+
       // Try to load real SPARC package
       const { SPARC } = await import('@claude-zen/sparc');
-      
+
       this.sparcEngine = SPARC.getEngine();
       this.initialized = true;
-      
+
       logger.info('SPARC methodology initialized successfully with real package');
       this.emit('initialized', { timestamp: Date.now() });
-      
+
     } catch (error) {
       logger.warn('Real SPARC package not available, using fallback implementation', error);
       this.sparcEngine = this.createFallbackEngine();
@@ -128,7 +130,7 @@ export class SPARCMethodology extends EventEmitter {
     }
 
     const startTime = Date.now();
-    
+
     try {
       logger.debug(`Executing SPARC phase: ${phase}`, { input });
 
@@ -138,34 +140,34 @@ export class SPARCMethodology extends EventEmitter {
           name: input.name || 'SPARC Project',
           domain: input.domain || 'general',
           requirements: input.requirements || [],
-          complexity: input.complexity || 'moderate'
+          complexity: input.complexity || 'moderate',
         });
-        
+
         const result = await this.sparcEngine.executePhase(project, phase);
-        
+
         return {
           phase,
           success: result.success,
           output: result.data,
           error: result.error,
           duration: Date.now() - startTime,
-          timestamp: Date.now()
+          timestamp: Date.now(),
         };
       } else {
         // Fallback implementation
         return this.executeFallbackPhase(phase, input, startTime);
       }
-      
+
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error(`SPARC phase ${phase} failed:`, error);
-      
+
       return {
         phase,
         success: false,
         error: errorMessage,
         duration: Date.now() - startTime,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
     }
   }
@@ -181,15 +183,17 @@ export class SPARCMethodology extends EventEmitter {
   }
 
   /**
-   * Create project - delegates to real engine  
+   * Create project - delegates to real engine
    */
   async createProject(name: string, domain: ProjectDomain, requirements: string[], complexity: ProjectComplexity = 'moderate'): Promise<SPARCProject> {
-    if (!this.initialized) await this.initialize();
-    
+    if (!this.initialized) {
+      await this.initialize();
+    }
+
     if (this.sparcEngine && typeof this.sparcEngine.createProject === 'function') {
       return await this.sparcEngine.createProject(name, domain, requirements, complexity);
     }
-    
+
     // Fallback implementation
     const project: SPARCProject = {
       id: `project-${Date.now()}`,
@@ -208,15 +212,15 @@ export class SPARCMethodology extends EventEmitter {
           pseudocode: 0,
           architecture: 0,
           refinement: 0,
-          completion: 0
-        }
+          completion: 0,
+        },
       },
       metadata: {
         createdAt: new Date(),
-        source: 'sparc-facade-fallback'
-      }
+        source: 'sparc-facade-fallback',
+      },
     };
-    
+
     return project;
   }
 
@@ -224,42 +228,42 @@ export class SPARCMethodology extends EventEmitter {
     return {
       executePhase: this.executeFallbackPhase.bind(this),
       listProjects: () => [],
-      createProject: this.createProject.bind(this)
+      createProject: this.createProject.bind(this),
     };
   }
 
   private executeFallbackPhase(phase: SPARCPhase, input: any, startTime: number): SPARCResult {
     logger.info(`Executing fallback SPARC phase: ${phase}`);
-    
+
     const fallbackOutputs: Record<SPARCPhase, any> = {
       specification: {
         goals: input.requirements || ['Define project goals'],
         scope: 'Project scope to be determined',
         constraints: ['Time constraints', 'Resource constraints'],
         stakeholders: ['Development team'],
-        successCriteria: ['Project completion', 'Quality standards met']
+        successCriteria: ['Project completion', 'Quality standards met'],
       },
       pseudocode: {
         algorithms: [{ name: 'Main Algorithm', steps: ['Step 1: Initialize', 'Step 2: Process', 'Step 3: Finalize'] }],
         dataStructures: [{ name: 'ProjectData', type: 'interface', properties: [] }],
-        workflows: [{ name: 'Main Workflow', steps: [] }]
+        workflows: [{ name: 'Main Workflow', steps: [] }],
       },
       architecture: {
         components: [{ name: 'MainComponent', type: 'service', purpose: 'Primary functionality' }],
         relationships: [],
         patterns: ['MVC', 'Observer'],
-        technologies: ['TypeScript', 'Node.js']
+        technologies: ['TypeScript', 'Node.js'],
       },
       refinement: {
         optimizations: ['Performance improvements', 'Code quality enhancements'],
         improvements: ['Better error handling', 'Enhanced logging'],
-        validations: ['Input validation', 'Output verification']
+        validations: ['Input validation', 'Output verification'],
       },
       completion: {
         status: 'completed',
         deliverables: ['Implementation', 'Documentation', 'Tests'],
-        qualityChecks: ['Code review', 'Testing', 'Performance validation']
-      }
+        qualityChecks: ['Code review', 'Testing', 'Performance validation'],
+      },
     };
 
     return {
@@ -267,7 +271,7 @@ export class SPARCMethodology extends EventEmitter {
       success: true,
       output: fallbackOutputs[phase],
       duration: Date.now() - startTime,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   }
 
@@ -289,7 +293,7 @@ export class SPARCMethodology extends EventEmitter {
  */
 export function createSPARCWorkflow(config?: SPARCConfig) {
   const methodology = new SPARCMethodology(config);
-  
+
   return {
     specification: async (input?: any) => await methodology.executePhase('specification', input),
     pseudocode: async (input?: any) => await methodology.executePhase('pseudocode', input),
@@ -297,7 +301,7 @@ export function createSPARCWorkflow(config?: SPARCConfig) {
     refinement: async (input?: any) => await methodology.executePhase('refinement', input),
     completion: async (input?: any) => await methodology.executePhase('completion', input),
     initialize: () => methodology.initialize(),
-    shutdown: () => methodology.shutdown()
+    shutdown: () => methodology.shutdown(),
   };
 }
 
@@ -306,17 +310,17 @@ export function createSPARCWorkflow(config?: SPARCConfig) {
  */
 export function createSPARCCommander(config?: SPARCConfig) {
   const methodology = new SPARCMethodology(config);
-  
+
   return {
     execute: async (phase: SPARCPhase, input: any) => await methodology.executePhase(phase, input),
-    getStatus: () => ({ 
-      initialized: methodology.initialized, 
-      config: methodology.config 
+    getStatus: () => ({
+      initialized: methodology.initialized,
+      config: methodology.config,
     }),
     getProjects: () => methodology.getProjects(),
     createProject: methodology.createProject.bind(methodology),
     initialize: () => methodology.initialize(),
-    shutdown: () => methodology.shutdown()
+    shutdown: () => methodology.shutdown(),
   };
 }
 
@@ -325,10 +329,24 @@ export function createSPARCCommander(config?: SPARCConfig) {
 // ============================================================================
 
 // Direct fallback exports - package not available
-export const SPARC = class { async executePhase() { return { success: false, message: 'Package not available' }; } };
-export const SPARCEngineCore = class { constructor() { /* fallback */ } };
-export const SPARCCommander = class { async execute() { return { success: false, message: 'Package not available' }; } };
-export const SafeSparcWorkflow = class { async execute() { return { success: false, message: 'Package not available' }; } };
+export const SPARC = class {
+  async executePhase() {
+    return { success: false, message: 'Package not available' };
+  }
+};
+export const SPARCEngineCore = class {
+  constructor() { /* fallback */ }
+};
+export const SPARCCommander = class {
+  async execute() {
+    return { success: false, message: 'Package not available' };
+  }
+};
+export const SafeSparcWorkflow = class {
+  async execute() {
+    return { success: false, message: 'Package not available' };
+  }
+};
 
 // Export the main class as default for compatibility
 export default SPARCMethodology;

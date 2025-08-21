@@ -16,11 +16,14 @@
  * @version 1.0.0
  */
 
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
-import type { DocumentType } from '../../workflows/types';
-import { DocumentManager } from './document-service';
-import { documentSchemaManager, type BusinessEpicSchemaV1, type BusinessEpicSchemaV2, type BusinessEpicSchemaV3 } from './document-schemas';
 import { nanoid } from 'nanoid';
+
+import type { DocumentType } from '../../workflows/types';
+
+import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
+import { documentSchemaManager } from './document-schemas';
+import { DocumentManager } from './document-service';
+
 
 // ============================================================================
 // BUSINESS EPIC INTERFACES

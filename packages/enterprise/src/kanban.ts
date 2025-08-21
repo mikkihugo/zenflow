@@ -1,6 +1,6 @@
 /**
  * @fileoverview Kanban Strategic Facade - Real Package Delegation
- * 
+ *
  * Strategic facade providing real kanban workflow coordination capabilities through delegation
  * to @claude-zen/kanban package.
  */
@@ -20,15 +20,33 @@ async function loadKanbanModule() {
       console.warn('Kanban package not available, providing compatibility layer');
       kanbanModuleCache = {
         WorkflowKanban: class CompatibilityWorkflowKanban extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async createTask() { return { success: true, data: { id: 'compat-task', status: 'backlog' } }; }
-          async moveTask() { return { success: true, data: null }; }
-          async getTask() { return { success: true, data: { id: 'compat-task', status: 'backlog' } }; }
-          async deleteTask() { return { success: true, data: null }; }
-          async getFlowMetrics() { return { throughput: 10, cycleTime: 5, wipUtilization: 0.8 }; }
-          async detectBottlenecks() { return []; }
-          async getHealthStatus() { return { healthy: true, score: 100 }; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async createTask() {
+            return { success: true, data: { id: 'compat-task', status: 'backlog' } };
+          }
+          async moveTask() {
+            return { success: true, data: null };
+          }
+          async getTask() {
+            return { success: true, data: { id: 'compat-task', status: 'backlog' } };
+          }
+          async deleteTask() {
+            return { success: true, data: null };
+          }
+          async getFlowMetrics() {
+            return { throughput: 10, cycleTime: 5, wipUtilization: 0.8 };
+          }
+          async detectBottlenecks() {
+            return [];
+          }
+          async getHealthStatus() {
+            return { healthy: true, score: 100 };
+          }
         },
         createWorkflowKanban: (config?: any) => new kanbanModuleCache.WorkflowKanban(config),
         createHighThroughputWorkflowKanban: (eventBus?: any) => new kanbanModuleCache.WorkflowKanban({}, eventBus),
@@ -36,7 +54,7 @@ async function loadKanbanModule() {
         TASK_PRIORITIES: ['critical', 'high', 'medium', 'low'],
         isValidWorkflowState: () => true,
         isValidTaskPriority: () => true,
-        getNextWorkflowState: () => null
+        getNextWorkflowState: () => null,
       };
     }
   }
@@ -73,7 +91,7 @@ export const getTaskPriorities = async () => {
 };
 
 // Static exports for immediate use (with fallback)
-export { 
+export {
   WorkflowKanban,
   createWorkflowKanban as createWorkflowKanbanSync,
   createHighThroughputWorkflowKanban as createHighThroughputWorkflowKanbanSync,
@@ -83,7 +101,7 @@ export {
   isValidTaskPriority,
   getNextWorkflowState,
   getPreviousWorkflowState,
-  isValidStateTransition
+  isValidStateTransition,
 } from '@claude-zen/kanban';
 
 // Type exports
@@ -97,5 +115,5 @@ export type {
   WorkflowBottleneck,
   WIPLimits,
   KanbanOperationResult,
-  TaskMovementResult
+  TaskMovementResult,
 } from '@claude-zen/kanban';

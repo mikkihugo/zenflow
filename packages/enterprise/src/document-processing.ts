@@ -1,6 +1,6 @@
 /**
  * @fileoverview Document Processing Strategic Facade - Direct Delegation
- * 
+ *
  * Strategic facade providing document processing capabilities through delegation
  * to @claude-zen/document-processing package when available, with professional fallbacks.
  * No translation needed - uses native implementation functions directly.
@@ -19,29 +19,53 @@ async function loadDocumentProcessingModule() {
       // Fallback implementation when document-processing package isn't available
       documentProcessingModuleCache = {
         DocumentDrivenSystem: class {
-          async processDocument() { return { result: 'fallback-processing', status: 'processed' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async processDocument() {
+            return { result: 'fallback-processing', status: 'processed' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         DocumentProcessor: class {
-          async processDocument() { return { result: 'fallback-processing', status: 'processed' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async processDocument() {
+            return { result: 'fallback-processing', status: 'processed' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         DocumentWorkflowSystem: class {
-          async executeWorkflow() { return { result: 'fallback-workflow', status: 'completed' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async executeWorkflow() {
+            return { result: 'fallback-workflow', status: 'completed' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         EnhancedDocumentScanner: class {
-          async scanDocument() { return { result: 'fallback-scan', status: 'scanned' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async scanDocument() {
+            return { result: 'fallback-scan', status: 'scanned' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         createDocumentDrivenSystem: () => createFallbackDocumentSystem(),
         createDocumentProcessor: () => createFallbackProcessor(),
         createDocumentWorkflow: () => createFallbackWorkflow(),
-        createDocumentScanner: () => createFallbackScanner()
+        createDocumentScanner: () => createFallbackScanner(),
       };
     }
   }
@@ -53,11 +77,11 @@ function createFallbackDocumentSystem() {
     processDocument: async (document: any) => ({
       result: `fallback-document-system-for-${document?.type || 'unknown'}`,
       status: 'processed',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -66,11 +90,11 @@ function createFallbackProcessor() {
     processDocument: async (document: any) => ({
       result: `fallback-processor-for-${document?.name || 'unknown'}`,
       status: 'processed',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -79,11 +103,11 @@ function createFallbackWorkflow() {
     executeWorkflow: async (workflow: any) => ({
       result: `fallback-workflow-${workflow?.id || 'unknown'}`,
       status: 'completed',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -92,11 +116,11 @@ function createFallbackScanner() {
     scanDocument: async (document: any) => ({
       result: `fallback-scan-${document?.path || 'unknown'}`,
       status: 'scanned',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -136,12 +160,16 @@ export class DocumentDrivenSystem {
   }
 
   async processDocument(document: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.processDocument(document);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 
@@ -167,12 +195,16 @@ export class DocumentProcessor {
   }
 
   async processDocument(document: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.processDocument(document);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 }
@@ -191,12 +223,16 @@ export class DocumentWorkflowSystem {
   }
 
   async executeWorkflow(workflow: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.executeWorkflow(workflow);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 }
@@ -215,12 +251,16 @@ export class EnhancedDocumentScanner {
   }
 
   async scanDocument(document: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.scanDocument(document);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 }
@@ -230,7 +270,7 @@ export const documentProcessingSystem = {
   getDrivenSystem: getDocumentDrivenSystem,
   getProcessor: getDocumentProcessor,
   getWorkflow: getDocumentWorkflow,
-  getScanner: getDocumentScanner
+  getScanner: getDocumentScanner,
 };
 
 // Additional exports for compatibility

@@ -1,6 +1,6 @@
 /**
  * @file Event bus for coordinating system-wide events and messaging
- * 
+ *
  * STRATEGIC FACADE INTEGRATION:
  * Uses @claude-zen/infrastructure facade which delegates to @claude-zen/event-system
  * for proper event coordination instead of custom EventEmitter implementation.
@@ -67,7 +67,7 @@ export class EventBus implements EventBusInterface {
         console.warn('Event system emit failed, using fallback:', error);
       }
     }
-    
+
     // Fallback for backward compatibility
     return true;
   }
@@ -75,7 +75,10 @@ export class EventBus implements EventBusInterface {
   emit(eventName: string | symbol, ...args: unknown[]): boolean {
     if (this.eventSystemAccess) {
       try {
-        this.eventSystemAccess.emit(String(eventName), args.length === 1 ? args[0] : args);
+        this.eventSystemAccess.emit(
+          String(eventName),
+          args.length === 1 ? args[0] : args
+        );
         return true;
       } catch (error) {
         console.warn('Event system emit failed:', error);
@@ -108,9 +111,11 @@ export class EventBus implements EventBusInterface {
   }
 
   removeAllListeners(eventType?: string | symbol): this {
-    // Event system facade doesn't expose removeAllListeners, 
+    // Event system facade doesn't expose removeAllListeners,
     // so we maintain backward compatibility
-    console.warn('removeAllListeners not fully supported with event system facade');
+    console.warn(
+      'removeAllListeners not fully supported with event system facade'
+    );
     return this;
   }
 

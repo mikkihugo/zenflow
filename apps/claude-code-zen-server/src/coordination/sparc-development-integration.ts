@@ -14,12 +14,16 @@
  */
 
 import { EventEmitter } from 'node:events';
+
+import { DevelopmentCoordinator, type SPARCPhase } from '@claude-zen/enterprise';
 import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '@claude-zen/foundation';
-import { DevelopmentCoordinator, type SPARCPhase } from '@claude-zen/enterprise';
-import { GitManager } from './git-manager';
-import type { ProjectUserStory } from '../services/project/project-service';
+
 import { architectureRunwayService, businessEpicService, featureService, storyService } from '../services/document';
+import type { ProjectUserStory } from '../services/project/project-service';
+
+import { GitManager } from './git-manager';
+
 
 /**
  * SPARC workflow state for a story
@@ -283,10 +287,10 @@ export class SPARCDevelopmentIntegration extends EventEmitter {
    * Gather SAFe-compliant context for SPARC workflow using existing database services
    */
   private async gatherSAFeContext(story: ProjectUserStory): Promise<{
-    businessEpics: any[];
-    features: any[];
-    architecturalRunways: any[];
-    relatedStories: any[];
+    businessEpics: unknown[];
+    features: unknown[];
+    architecturalRunways: unknown[];
+    relatedStories: unknown[];
     complianceRequirements: string[];
   }> {
     try {

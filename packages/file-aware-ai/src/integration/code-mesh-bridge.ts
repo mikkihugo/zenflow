@@ -108,7 +108,7 @@ export class CodeMeshBridge {
 
       console.log('CodeMesh WASM bridge initialized successfully with real tools!');
     } catch (error) {
-      console.warn('CodeMesh WASM not available, using fallback implementation:', error.message);
+      console.warn('CodeMesh WASM not available, using fallback implementation:', error instanceof Error ? error.message : String(error));
       await this.initializeFallback();
     }
   }

@@ -69,31 +69,6 @@
 
 // Foundation types - Shared primitives and utilities
 import type {
-  SwarmConfiguration,
-  SwarmStatus,
-  AgentStatus,
-  AgentCapability,
-  BrainMetrics,
-  SwarmIntelligence
-} from '@claude-zen/intelligence';
-import type {
-  BaseEntity,
-  EntityStatus,
-  TimestampedEntity,
-  Metrics,
-  ResourceUsage,
-  SystemConfiguration
-} from '@claude-zen/foundation/types';
-
-// Brain domain types - Neural coordination and intelligence  
-
-// Workflow domain types - Process orchestration and execution
-import type {
-  DatabaseConfig,
-  DatabaseStats,
-  HealthCheck as DatabaseHealthCheck
-} from '@claude-zen/foundation/types';
-import type {
   WorkflowDefinition,
   WorkflowStatus,
   WorkflowExecution,
@@ -102,6 +77,30 @@ import type {
   WorkflowMetrics,
   ExecutionResult
 } from '@claude-zen/enterprise';
+import type {
+  BaseEntity,
+  EntityStatus,
+  TimestampedEntity,
+  Metrics,
+  ResourceUsage,
+  SystemConfiguration
+,
+  DatabaseConfig,
+  DatabaseStats,
+  HealthCheck as DatabaseHealthCheck
+} from '@claude-zen/foundation/types';
+import type {
+  SwarmConfiguration,
+  SwarmStatus,
+  AgentStatus,
+  AgentCapability,
+  BrainMetrics,
+  SwarmIntelligence
+} from '@claude-zen/intelligence';
+
+// Brain domain types - Neural coordination and intelligence  
+
+// Workflow domain types - Process orchestration and execution
 
 // Database domain types - Data persistence and querying
 

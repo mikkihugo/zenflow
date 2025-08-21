@@ -29,6 +29,7 @@
 	const navItems = [
 		{ href: '/', icon: '🏠', label: 'Dashboard', title: 'Dashboard Overview' },
 		{ href: '/system', icon: '📊', label: 'System', title: 'System Capability Dashboard' },
+		{ href: '/facades', icon: '🏗️', label: 'Facades', title: 'Strategic Facade Monitor' },
 		{ href: '/swarm', icon: '🐝', label: 'Swarm', title: 'Advanced Swarm Management' },
 		{ href: '/agents', icon: '🤖', label: 'Agents', title: 'Agent Management' },
 		{ href: '/tasks', icon: '✅', label: 'Tasks', title: 'Task Management' },

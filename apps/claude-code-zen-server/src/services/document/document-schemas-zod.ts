@@ -16,9 +16,9 @@
  * @version 1.0.0
  */
 
-import { z } from 'zod';
-import { nanoid } from 'nanoid';
 import type { Logger } from '@claude-zen/foundation';
+import { nanoid } from 'nanoid';
+import { z } from 'zod';
 
 // ============================================================================
 // BASE SCHEMAS (KANBAN MODE)

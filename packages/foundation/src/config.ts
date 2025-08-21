@@ -12,6 +12,7 @@
  */
 
 import convict from 'convict';
+
 import { getLogger } from './logging';
 import type { JsonObject } from './types/primitives';
 
@@ -182,7 +183,7 @@ export interface Config {
 // =============================================================================
 
 export class FoundationConfig {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
   private config: convict.Config<any>;
   private isInitialized = false;
 
@@ -206,7 +207,7 @@ export class FoundationConfig {
   get(key: string): unknown {
     this.ensureInitialized();
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       return (this.config as any).get(key);
     } catch (error) {
       logger.error(`Failed to get config key '${key}':`, error);
@@ -216,7 +217,7 @@ export class FoundationConfig {
 
   getAll(): JsonObject {
     this.ensureInitialized();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     return this.config.getProperties() as any;
   }
 

@@ -27,21 +27,18 @@ import type {
   CircuitBreakerState,
   LoadBalancingStrategy
 } from '@claude-zen/foundation';
-
+import { isString } from '@claude-zen/foundation';
 import type {
   WebSocketEventType
 } from '@claude-zen/infrastructure';
-
 import type {
   KnowledgeQueryType
-} from '@claude-zen/intelligence';
-
-import type {
+,
   McpClientMessageType
 } from '@claude-zen/intelligence';
 
+
 // Type guards using foundation delegation
-import { isString } from '@claude-zen/foundation';
 
 // Re-export foundation types
 export type {

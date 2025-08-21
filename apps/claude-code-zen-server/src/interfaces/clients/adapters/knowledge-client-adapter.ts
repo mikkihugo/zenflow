@@ -19,6 +19,7 @@
 
 
 import { EventEmitter } from 'eventemitter3';
+
 // Import existing FACT integration.
 import type {
   ClientConfig,

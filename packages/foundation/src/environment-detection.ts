@@ -27,12 +27,14 @@
  */
 
 import { exec } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { access, readFile, writeFile } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
-import { homedir } from 'node:os';
+
 import { EventEmitter } from 'eventemitter3';
+
 import type { Logger } from './logging';
 import { getLogger } from './logging';
 import { WorkspaceDetector, DetectedWorkspace } from './monorepo-detector';
@@ -1096,12 +1098,23 @@ export class NixIntegration {
   }
 
   /**
-   * Check if flake.nix exists in project
+   * Check if flake.nix exists in project with enhanced validation
    */
   private hasFlakeNix(): boolean {
     try {
       const flakePath = join(this.projectRoot, 'flake.nix');
-      return existsSync(flakePath);
+      if (!existsSync(flakePath)) {
+        return false;
+      }
+
+      // Enhanced validation: check if the flake.nix file is readable and non-empty
+      try {
+        const content = readFileSync(flakePath, 'utf-8');
+        return content.trim().length > 0 && content.includes('outputs');
+      } catch {
+        // If we can't read the file, still consider it as existing
+        return true;
+      }
     } catch {
       return false;
     }

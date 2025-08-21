@@ -41,12 +41,12 @@ async function glob(pattern: string, options: any): Promise<string[]> {
             }
           } catch (statError) {
             // Skip files that can't be stat'd (e.g., broken symlinks)
-            console.warn('Cannot stat file:', fullPath, statError.message);
+            console.warn('Cannot stat file:', fullPath, statError instanceof Error ? statError.message : String(statError));
             continue;
           }
         }
       } catch (readDirError) {
-        console.warn('Cannot read directory:', dir, readDirError.message);
+        console.warn('Cannot read directory:', dir, readDirError instanceof Error ? readDirError.message : String(readDirError));
       }
       
       return fileList;

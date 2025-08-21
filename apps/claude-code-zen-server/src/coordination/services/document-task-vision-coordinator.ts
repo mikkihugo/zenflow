@@ -7,12 +7,14 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+
 import type {
   BaseDocumentEntity,
   TaskDocumentEntity,
 } from '../../database/entities/document-entities';
 import type { DocumentType } from '../../workflows/types';
 import { DocumentManager } from "../services/document/document-service"
+
 import {
   type StrategicVisionAnalysis,
   StrategicVisionService,

@@ -22,8 +22,8 @@
  * - Task execution with retry and circuit breaker logic
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
 
 // ============================================================================
 // CORE INTERFACES (Preserved for API compatibility)

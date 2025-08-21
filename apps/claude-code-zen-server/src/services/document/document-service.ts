@@ -17,13 +17,14 @@
  * - Advanced search and indexing capabilities
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
-import { getLogger } from '@claude-zen/foundation'
-import type { DocumentType } from '../../workflows/types';
+
 import type {
   BaseDocumentEntity,
 } from '../../database/entities/document-entities';
+import type { DocumentType } from '../../workflows/types';
 
 const logger = getLogger('services-document-service');
 

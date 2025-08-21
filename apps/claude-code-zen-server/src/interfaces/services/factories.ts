@@ -35,9 +35,9 @@
  * ```
  */
 
+import { getLogger, type Logger } from '@claude-zen/foundation'
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger, type Logger } from '@claude-zen/foundation'
 
 import type {
   Service,

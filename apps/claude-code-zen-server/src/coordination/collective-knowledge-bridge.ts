@@ -8,14 +8,23 @@
  * - Real-time knowledge distribution with bidirectional learning.
  */
 
+import { getLogger } from '@claude-zen/foundation';
 import {
   getCoordinationFactSystem,
-  type CoordinationFact as UniversalFact,
 } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '@claude-zen/foundation'
+
 // import type { SessionMemoryStore } from '@claude-zen/intelligence'; // TODO: Fix memory package build
 import type CollectiveSwarmCoordinator from './swarm-synchronization';
+
+// Define the fact interface locally since it's not available in facade
+interface UniversalFact {
+  id: string;
+  type: string;
+  content: any;
+  timestamp: Date;
+  metadata?: Record<string, unknown>;
+}
 
 interface SwarmContext {
   relevanceScore: number;

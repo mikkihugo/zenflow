@@ -49,34 +49,31 @@
  */
 
 import type {
-  WorkflowEngine
-} from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
+  AgentManager
+} from '@claude-zen/enterprise';
+import type { Logger ,
+  HealthMonitor,
+  PerformanceTracker,
+  ServiceMetrics
+} from '@claude-zen/foundation'
+import { getLogger ,
+  assertDefined,
+  getErrorMessage
+} from '@claude-zen/foundation'
 
 // Strategic imports from @claude-zen packages
 
 import type {
-  AgentManager
-} from '@claude-zen/enterprise';
-import type {
-  HealthMonitor,
-  PerformanceTracker,
-  ServiceMetrics
-} from '@claude-zen/foundation';
-import type {
   LoadBalancer
-} from '@claude-zen/intelligence';
-import type {
+,
   ServiceCoordinator
 } from '@claude-zen/intelligence';
 
 // Foundation utilities
-import {
-  assertDefined,
-  getErrorMessage
-} from '@claude-zen/foundation';
+import type {
+  WorkflowEngine
+} from '@claude-zen/intelligence';
+import { EventEmitter } from 'eventemitter3';
 
 // =============================================================================
 // TYPES AND INTERFACES - Service Integration Layer

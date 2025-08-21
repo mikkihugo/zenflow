@@ -11,16 +11,16 @@
  * @version 2.0.0 - SAFe LPM
  */
 
+import { getLogger } from '@claude-zen/foundation'
+import type { Logger } from '@claude-zen/foundation';
 import { Request, Response } from 'express';
+
 import { 
   createProjectSAFeLPMService,
   type ProjectUserStory, 
   type StoryCreateOptions,
-  type ProjectSAFeLPMConfig,
   type StoryQueryFilters
 } from '../../../../services/project/project-service';
-import { getLogger } from '@claude-zen/foundation'
-import type { Logger } from '@claude-zen/foundation';
 
 /**
  * Project SAFe LPM API Controller - AI-Enhanced Enterprise Portfolio Management

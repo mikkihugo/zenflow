@@ -12,6 +12,7 @@ import { getLogger } from '@claude-zen/foundation'
  */
 
 import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
+
 import {
   createCompatibleAPIClient,
   createCompatibleKnowledgeClient,

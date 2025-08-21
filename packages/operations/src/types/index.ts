@@ -1,9 +1,9 @@
 /**
  * @fileoverview Operations Package Types Index
- * 
+ *
  * Consolidated type exports for all operations systems, following the same
  * pattern as foundation types with comprehensive interface delegation types.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
@@ -14,15 +14,15 @@ export type {
   AgentMonitoringSystemAccess,
   AgentMonitoringSystemConfig,
   AgentMonitoringSystemError,
-  AgentMonitoringSystemConnectionError
+  AgentMonitoringSystemConnectionError,
 } from '../agent-monitoring';
 
-// Chaos Engineering System Types  
+// Chaos Engineering System Types
 export type {
   ChaosEngineeringSystemAccess,
   ChaosEngineeringSystemConfig,
   ChaosEngineeringSystemError,
-  ChaosEngineeringSystemConnectionError
+  ChaosEngineeringSystemConnectionError,
 } from '../chaos-engineering';
 
 // Monitoring System Types
@@ -30,7 +30,7 @@ export type {
   MonitoringSystemAccess,
   MonitoringSystemConfig,
   MonitoringSystemError,
-  MonitoringSystemConnectionError
+  MonitoringSystemConnectionError,
 } from '../monitoring';
 
 // Memory System Types
@@ -38,7 +38,7 @@ export type {
   MemorySystemAccess,
   MemorySystemConfig,
   MemorySystemError,
-  MemorySystemConnectionError
+  MemorySystemConnectionError,
 } from '../memory';
 
 /**
@@ -54,7 +54,7 @@ export interface OperationsSystemConfig {
     healthThreshold?: number;
     performanceMetrics?: string[];
   };
-  
+
   chaosEngineering?: {
     enableChaosExperiments?: boolean;
     enableResilienceTesting?: boolean;
@@ -64,7 +64,7 @@ export interface OperationsSystemConfig {
     recoveryTime?: number;
     safetyChecks?: boolean;
   };
-  
+
   monitoring?: {
     enableObservability?: boolean;
     enableTelemetryCollection?: boolean;
@@ -75,7 +75,7 @@ export interface OperationsSystemConfig {
     telemetryBuffer?: number;
     healthCheckInterval?: number;
   };
-  
+
   memory?: {
     enableMemoryOrchestration?: boolean;
     enablePersistence?: boolean;
@@ -100,7 +100,7 @@ export interface OperationsSystemStatus {
     performanceMetricsCollected: number;
     healthStatus: 'healthy' | 'warning' | 'critical';
   };
-  
+
   chaosEngineering: {
     initialized: boolean;
     experimentsRunning: number;
@@ -108,7 +108,7 @@ export interface OperationsSystemStatus {
     failuresSimulated: number;
     safetyChecksEnabled: boolean;
   };
-  
+
   monitoring: {
     initialized: boolean;
     observabilityActive: boolean;
@@ -116,7 +116,7 @@ export interface OperationsSystemStatus {
     metricsAggregated: number;
     healthChecksRunning: number;
   };
-  
+
   memory: {
     initialized: boolean;
     orchestrationActive: boolean;
@@ -141,21 +141,21 @@ export interface OperationsSystemMetrics {
       disk: number;
     };
   };
-  
+
   availability: {
     uptime: number;
     healthScore: number;
     failureCount: number;
     recoveryTime: number;
   };
-  
+
   monitoring: {
     metricsCollected: number;
     telemetryPoints: number;
     observabilityData: number;
     alertsTriggered: number;
   };
-  
+
   chaos: {
     experimentsRun: number;
     resilienceScore: number;

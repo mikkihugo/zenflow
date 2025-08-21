@@ -489,19 +489,15 @@ export function resultToOperation<T, E = Error>(
   result: Result<T, E>,
   metadata?: Record<string, unknown>,
 ): OperationResult<T, E> {
-  if (isSuccess(result)) {
-    return {
-      success: true,
-      data: result.value,
-      metadata,
-    };
-  } else {
-    return {
-      success: false,
-      error: result.error,
-      metadata,
-    };
-  }
+  return isSuccess(result) ? {
+    success: true,
+    data: result.value,
+    metadata,
+  } : {
+    success: false,
+    error: result.error,
+    metadata,
+  };
 }
 
 /**
@@ -510,11 +506,7 @@ export function resultToOperation<T, E = Error>(
 export function operationToResult<T, E = Error>(
   operation: OperationResult<T, E>,
 ): Result<T, E> {
-  if (isOperationSuccess(operation)) {
-    return createSuccess(operation.data);
-  } else {
-    return createFailure(
-      operation.error || (new Error('Operation failed') as E),
-    );
-  }
+  return isOperationSuccess(operation) ? createSuccess(operation.data) : createFailure(
+    operation.error || (new Error('Operation failed') as E),
+  );
 }

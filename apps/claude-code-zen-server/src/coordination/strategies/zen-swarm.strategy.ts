@@ -16,11 +16,12 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+
 import type { SwarmAgent } from '../../types/shared-types';
 import { ZenOrchestratorIntegration } from '../integrations/zen-orchestrator-integration';
+import { AgentHealthMonitor } from '../intelligence/agent-health-monitor';
 import { AgentLearningSystem } from '../intelligence/agent-learning-system';
 import { TaskPredictor } from '../intelligence/task-predictor';
-import { AgentHealthMonitor } from '../intelligence/agent-health-monitor';
 import type { SwarmStrategy } from '../types';
 
 const logger = getLogger('coordination-strategies-zen-swarm-strategy');

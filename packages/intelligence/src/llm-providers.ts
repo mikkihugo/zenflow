@@ -1,48 +1,48 @@
 /**
  * @fileoverview LLM Provider Strategic Facade - AI Language Model Integration
- * 
+ *
  * STRATEGIC FACADE PURPOSE:
  * This facade provides unified access to all LLM providers including CLI tools
  * and direct APIs while delegating to the @claude-zen/llm-providers package.
- * 
+ *
  * DELEGATION ARCHITECTURE:
  * • @claude-zen/llm-providers: CLI tools (Claude Code, Cursor, Gemini) and Direct APIs
  * • Claude Code CLI: Primary for file operations and agentic development
  * • GitHub Models API: Real agentic development (not command suggestions)
  * • Future: Anthropic API, OpenAI API, GitHub Copilot Chat API
- * 
+ *
  * PROVIDER CAPABILITIES:
  * - CLI Tools: File operations, codebase awareness, tool calling
  * - Direct APIs: Pure inference, conversational AI, structured output
  * - Agentic Development: Real development tasks, not just command suggestions
- * 
+ *
  * @example Basic LLM Provider Usage
  * ```typescript
  * import { getLLMProvider, executeClaudeTask } from '@claude-zen/intelligence';
- * 
+ *
  * // Get provider by capability
  * const fileProvider = getLLMProvider('file-operations');    // Claude Code CLI
  * const chatProvider = getLLMProvider('inference');          // GitHub Models API
- * 
+ *
  * // Execute development task
  * const result = await executeClaudeTask('Create a React authentication system');
  * ```
- * 
+ *
  * @example Advanced Provider Selection
  * ```typescript
  * import { createLLMProvider, listLLMProviders } from '@claude-zen/intelligence';
- * 
+ *
  * // List all available providers
  * const providers = listLLMProviders();
  * console.log(providers); // CLI tools + Direct APIs
- * 
+ *
  * // Create specific provider
  * const githubProvider = createLLMProvider('github-models-api');
  * const result = await githubProvider.execute({
  *   messages: [{ role: 'user', content: 'Design a microservices architecture' }]
  * });
  * ```
- * 
+ *
  * GRACEFUL DEGRADATION:
  * When @claude-zen/llm-providers is not available, provides basic fallback
  * implementations that maintain interface contracts for compilation compatibility.
@@ -93,7 +93,7 @@ export interface LLMProviderInfo {
 
 /**
  * LLM Provider - Main abstraction for all language model integrations
- * 
+ *
  * Delegates to @claude-zen/llm-providers package when available.
  * Provides fallback implementations for compilation compatibility.
  */
@@ -101,7 +101,7 @@ export class LLMProvider extends EventEmitter {
   private realInstance: any = null;
   private providerId: string;
 
-  constructor(providerId: string = 'claude-code') {
+  constructor(providerId = 'claude-code') {
     super();
     this.providerId = providerId;
     this.initializeProvider();
@@ -134,8 +134,8 @@ export class LLMProvider extends EventEmitter {
       metadata: {
         provider: this.providerId,
         fallback: true,
-        executionTime: Date.now()
-      }
+        executionTime: Date.now(),
+      },
     };
   }
 
@@ -157,13 +157,13 @@ export class LLMProvider extends EventEmitter {
 
 /**
  * Execute Claude Code CLI task
- * 
+ *
  * Delegates to @claude-zen/llm-providers when available.
  * Primary interface for file operations and agentic development.
  */
 export async function executeClaudeTask(
   prompt: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ): Promise<string> {
   try {
     const { executeClaudeTask: realExecuteClaudeTask } = await import('@claude-zen/llm-providers');
@@ -177,11 +177,11 @@ export async function executeClaudeTask(
 
 /**
  * Get LLM provider by capability
- * 
+ *
  * Delegates to @claude-zen/llm-providers for intelligent provider selection.
  */
 export function getLLMProvider(
-  capability: 'file-operations' | 'agentic-development' | 'code-completion' | 'chat' | 'inference' = 'file-operations'
+  capability: 'file-operations' | 'agentic-development' | 'code-completion' | 'chat' | 'inference' = 'file-operations',
 ): LLMProvider {
   try {
     const { getLLMProviderByCapability } = require('@claude-zen/llm-providers');
@@ -195,11 +195,11 @@ export function getLLMProvider(
 
 /**
  * Create LLM provider instance
- * 
+ *
  * Supports both CLI tools (file operations) and direct APIs (inference).
  */
 export function createLLMProvider(
-  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' | 'github-models-api' | 'github-copilot-api' | 'anthropic-api' | 'openai-api' = 'claude-code'
+  providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' | 'github-models-api' | 'github-copilot-api' | 'anthropic-api' | 'openai-api' = 'claude-code',
 ): LLMProvider {
   try {
     const { createLLMProvider } = require('@claude-zen/llm-providers');
@@ -213,7 +213,7 @@ export function createLLMProvider(
 
 /**
  * List all available LLM providers
- * 
+ *
  * Includes CLI tools (file operations) and direct APIs (inference).
  */
 export function listLLMProviders(): LLMProviderInfo[] {
@@ -229,21 +229,21 @@ export function listLLMProviders(): LLMProviderInfo[] {
         name: 'Claude Code CLI',
         type: 'cli',
         category: 'file-operations',
-        available: false
-      }
+        available: false,
+      },
     ];
   }
 }
 
 /**
  * Execute GitHub Models API task for real agentic development
- * 
+ *
  * Unlike GitHub CLI (which only provides command suggestions),
  * this provides actual API access to GitHub's hosted AI models.
  */
 export async function executeGitHubModelsTask(
   prompt: string,
-  options: { token: string; model?: string } = { token: '' }
+  options: { token: string; model?: string } = { token: '' },
 ): Promise<string> {
   try {
     const { executeGitHubModelsTask } = await import('@claude-zen/llm-providers');
@@ -258,7 +258,7 @@ export async function executeGitHubModelsTask(
 // Compatibility exports for swarm coordination
 export async function executeSwarmCoordinationTask(
   task: string,
-  options?: Record<string, unknown>
+  options?: Record<string, unknown>,
 ): Promise<string> {
   try {
     const { executeSwarmCoordinationTask } = await import('@claude-zen/llm-providers');
@@ -283,10 +283,10 @@ export const llmProvidersFacade = {
     'Direct API access to multiple LLM providers',
     'Intelligent provider selection by capability',
     'Swarm coordination task execution',
-    'CLI and API provider unified interface'
+    'CLI and API provider unified interface',
   ],
   delegation: {
     target: '@claude-zen/llm-providers',
-    fallback: 'Compatibility implementations for compilation safety'
-  }
+    fallback: 'Compatibility implementations for compilation safety',
+  },
 };

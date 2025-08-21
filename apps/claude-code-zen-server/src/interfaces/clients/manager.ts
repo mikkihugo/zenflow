@@ -106,7 +106,7 @@ class HTTPClientFactory implements ClientFactory {
       config,
       client: apiClient,
       status: 'initialized',
-      metrics: this.createInitialMetrics(),
+      metrics: this.createInitialMetrics()
     };
   }
 
@@ -180,7 +180,7 @@ class WebSocketClientFactory implements ClientFactory {
       config,
       client: wsClient,
       status: 'initialized',
-      metrics: this.createInitialMetrics(),
+      metrics: this.createInitialMetrics()
     };
   }
 
@@ -257,7 +257,7 @@ class KnowledgeClientFactory implements ClientFactory {
       config,
       client: factClient,
       status: 'initialized',
-      metrics: this.createInitialMetrics(),
+      metrics: this.createInitialMetrics()
     };
   }
 
@@ -331,7 +331,7 @@ class MCPClientFactory implements ClientFactory {
       config,
       client: mcpClient,
       status: 'initialized',
-      metrics: this.createInitialMetrics(),
+      metrics: this.createInitialMetrics()
     };
   }
 

@@ -28,7 +28,6 @@
  */
 
 // Database operations handled via @claude-zen/foundation package
-import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
 // Core Memory System - Delegated to @claude-zen/intelligence neural coordination
 
@@ -44,7 +43,9 @@ import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
 // Database Integration
 import type { DatabaseQuery } from '@claude-zen/foundation';
+
 import { DIContainer } from '../di/container/di-container';
+import { CORE_TOKENS, DATABASE_TOKENS } from '../di/tokens/core-tokens';
 
 // Foundation Integration (when available)
 let foundationLogger: any;

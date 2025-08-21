@@ -267,7 +267,7 @@ export class InterfaceLauncher extends EventEmitter {
     try {
       // Dynamic import of Web interface
       const { WebInterface } = await import(
-        '../interfaces/web/web-interface'
+        './interfaces/web/web-interface'
       );
 
       const webConfig: WebConfig = {
@@ -404,7 +404,7 @@ export class InterfaceLauncher extends EventEmitter {
 
       if (this.activeInterface.process) {
         // Process-based interface shutdown
-        this.activeInterface.process.kill('SIGTERM');
+        this.activeInterface.process.kill(15); // SIGTERM
       }
 
       this.emit('interface:shutdown', {

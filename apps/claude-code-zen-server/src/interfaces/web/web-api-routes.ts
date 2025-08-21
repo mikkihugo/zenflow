@@ -51,37 +51,36 @@
 import type {
   AdvancedGUI
 } from '@claude-zen/enterprise';
+import type {
+  SystemMonitor,
+
+  WebMiddleware
+} from '@claude-zen/foundation';
+import { getLogger ,
+  assertDefined,
+  getErrorMessage
+} from '@claude-zen/foundation'
+import type {
+  WorkflowEngine
+,
+  CollaborationEngine
+,
+  DocumentationManager
+} from '@claude-zen/intelligence';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { getLogger } from '@claude-zen/foundation'
-const { getVersion } = (global as any).claudeZenFoundation;
+
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 import type { WebSessionManager } from './web-session-manager';
 
 // Strategic imports from @claude-zen packages
 
-import type {
-  WorkflowEngine
-} from '@claude-zen/intelligence';
-import type {
-  SystemMonitor,
-
-  WebMiddleware
-} from '@claude-zen/foundation';
 
 
-import type {
-  CollaborationEngine
-} from '@claude-zen/intelligence';
-import type {
-  DocumentationManager
-} from '@claude-zen/intelligence';
 
 // Foundation utilities for web operations
-import {
-  assertDefined,
-  getErrorMessage
-} from '@claude-zen/foundation';
+
+const { getVersion } = (global as any).claudeZenFoundation;
 
 // Import our API types from the translation layer
 

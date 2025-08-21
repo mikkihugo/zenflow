@@ -1,6 +1,6 @@
 /**
  * @fileoverview AGUI Strategic Facade - Simple Delegation
- * 
+ *
  * Simple facade that delegates to @claude-zen/agui package.
  */
 
@@ -9,7 +9,7 @@ export function createTaskApprovalSystem() {
   return {
     approveTask: async () => ({ approved: true }),
     requestApproval: async () => ({ id: 'fallback' }),
-    getStatus: () => ({ status: 'fallback' })
+    getStatus: () => ({ status: 'fallback' }),
   };
 }
 
@@ -17,7 +17,7 @@ export function createAdvancedGUI() {
   return {
     render: () => {},
     update: () => {},
-    handleInput: () => {}
+    handleInput: () => {},
   };
 }
 

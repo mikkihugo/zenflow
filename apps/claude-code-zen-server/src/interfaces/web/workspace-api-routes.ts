@@ -5,11 +5,12 @@
  * for the command palette and file explorer.
  */
 
-import * as path from 'path';
-import type { Express, Request, Response } from 'express';
-import { getLogger } from '@claude-zen/foundation'
-import * as fs from 'fs-extra';
 import { spawn } from 'child_process';
+import * as path from 'path';
+
+import { getLogger } from '@claude-zen/foundation'
+import type { Express, Request, Response } from 'express';
+import * as fs from 'fs-extra';
 
 export class WorkspaceApiRoutes {
   private logger = getLogger('WorkspaceAPI');

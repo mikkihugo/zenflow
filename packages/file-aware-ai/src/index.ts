@@ -13,6 +13,12 @@ export * from './core/file-aware-ai-engine';
 // Integration exports
 export * from './integration/code-mesh-bridge';
 
+// Hardware detection exports
+export * from './hardware/native-detector';
+
+// Hardware detection types
+export type { HardwareInfo, OptimizationStrategy } from './hardware/native-detector';
+
 // Re-export from CodeMesh when available
 export type {
   FileAwareRequest,
@@ -49,5 +55,6 @@ export const FEATURES = {
   TYPESCRIPT_CORE: true,
   WASM_SUPPORT: true,
   CODE_MESH_INTEGRATION: true,
-  LLM_ROUTING_INTEGRATION: true
+  LLM_ROUTING_INTEGRATION: true,
+  NATIVE_HARDWARE_DETECTION: true
 } as const;

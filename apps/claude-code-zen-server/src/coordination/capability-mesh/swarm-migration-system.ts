@@ -19,21 +19,17 @@
  */
 
 import { 
-  getLogger,
-  PerformanceTracker,
-  TelemetryManager
+  getLogger
 } from '@claude-zen/foundation';
-import { 
-  queryCoordinationFacts, 
-  getCoordinationFacts,
-  BehavioralIntelligence,
-  BrainCoordinator,
-  AutonomousOptimizationEngine,
-  TaskComplexityEstimator,
-  AgentPerformancePredictor,
-  AISafetyOrchestrator
+import {
+  getBrainSystemAccess,
+  getBehavioralIntelligence,
+  getCoordinationFactSystem
 } from '@claude-zen/intelligence';
-
+import { 
+  getPerformanceTracker,
+  getTelemetryManager
+} from '@claude-zen/operations';
 import { EventEmitter } from 'eventemitter3';
 
 // Note: SharedFACTCapable removed - using knowledge package directly
@@ -42,10 +38,19 @@ import type {
   Logger,
 } from '../../core/interfaces/base-interfaces';
 
-// Agent monitoring capabilities
-import {
-  createAgentMonitor
-} from '@claude-zen/foundation';
+// Create logger adapter to match expected interface
+function createLoggerAdapter(baseLogger: any): Logger {
+  return {
+    debug: (message: string, ...args: unknown[]) => baseLogger.debug(message, ...args),
+    info: (message: string, ...args: unknown[]) => baseLogger.info(message, ...args),
+    warn: (message: string, ...args: unknown[]) => baseLogger.warn(message, ...args),
+    error: (message: string, ...args: unknown[]) => baseLogger.error(message, ...args),
+    trace: (message: string, ...args: unknown[]) => baseLogger.debug(message, ...args), // fallback to debug
+  };
+}
+
+// Agent monitoring capabilities - using facade pattern
+// createAgentMonitor not available in foundation - will use alternatives
 
 const logger = getLogger('swarm-migration-system');
 
@@ -61,7 +66,7 @@ export interface PermanentSwarmData {
       timestamp: Date;
       task: string;
       performance: number;
-      context: Record<string, any>;
+      context: Record<string, unknown>;
     }>;
   }>;
   accomplishments: Array<{
@@ -143,16 +148,17 @@ export class SwarmMigrationSystem extends EventEmitter {
   public readonly id: string;
   public readonly designation: string;
   
-  // Learning and intelligence systems
-  private behavioralIntelligence: BehavioralIntelligence;
-  private brainCoordinator: BrainCoordinator;
-  private performanceTracker: PerformanceTracker;
-  private telemetryManager: TelemetryManager;
-  private safetyOrchestrator: AISafetyOrchestrator;
+  // Learning and intelligence systems - using facade pattern
+  private behavioralIntelligence: any;
+  private brainCoordinator: any;
+  private performanceTracker: any;
+  private telemetryManager: any;
+  private safetyOrchestrator: any;
   private agentMonitor: any;
-  private optimizationEngine: AutonomousOptimizationEngine;
-  private complexityEstimator: TaskComplexityEstimator;
-  private performancePredictor: AgentPerformancePredictor;
+  private optimizationEngine: any;
+  private complexityEstimator: any;
+  private performancePredictor: any;
+  private initialized: boolean = false;
   
   // Migration state
   private discoveredSwarms = new Map<string, PermanentSwarmData>();
@@ -176,29 +182,51 @@ export class SwarmMigrationSystem extends EventEmitter {
     super();
     this.id = id;
     this.designation = `Migration-System-${id.slice(-4)}`;
-    this.logger = getLogger(`swarm-migration-${this.designation}`);
+    this.logger = createLoggerAdapter(getLogger(`swarm-migration-${this.designation}`));
     this.eventBus = eventBus;
-
-    // Initialize learning and intelligence systems using available packages
-    this.behavioralIntelligence = new BehavioralIntelligence();
-    this.brainCoordinator = new BrainCoordinator();
-    this.performanceTracker = new PerformanceTracker();
-    this.telemetryManager = new TelemetryManager({
-      serviceName: `migration-system-${id}`,
-      enableTracing: true,
-      enableMetrics: true
-    });
-    this.safetyOrchestrator = new AISafetyOrchestrator();
-    this.agentMonitor = createAgentMonitor();
-    this.optimizationEngine = new AutonomousOptimizationEngine();
-    this.complexityEstimator = new TaskComplexityEstimator();
-    this.performancePredictor = new AgentPerformancePredictor();
+    
+    // Initialize will set up facade systems asynchronously
+    this.initialized = false;
 
     // Note: Fact system now accessed via knowledge package methods directly
     this.setupEventHandlers();
 
-    this.logger.info(`🔄 Swarm Migration System ${this.designation} initialized`);
-    this.logger.info(`📚 Learning extraction capabilities: Behavioral Intelligence + Neural ML + Agent Monitoring`);
+    this.logger.info(`🔄 Swarm Migration System ${this.designation} constructed - call initialize() to complete setup`);
+  }
+  
+  async initialize(): Promise<void> {
+    if (this.initialized) return;
+    
+    try {
+      this.logger.info('Initializing Swarm Migration System with facade systems');
+      
+      // Initialize facade systems
+      this.behavioralIntelligence = await getBehavioralIntelligence();
+      const brainAccess = await getBrainSystemAccess();
+      this.brainCoordinator = await brainAccess?.createCoordinator?.({
+        sessionId: `migration-${this.id}`,
+        enableLearning: true
+      }) || null;
+      this.performanceTracker = await getPerformanceTracker();
+      this.telemetryManager = await getTelemetryManager({
+        serviceName: `migration-system-${this.id}`,
+        enableTracing: true,
+        enableMetrics: true
+      });
+      
+      // These systems may not be available - using fallbacks
+      this.safetyOrchestrator = null; // Not available via facade
+      this.agentMonitor = null; // createAgentMonitor not available
+      this.optimizationEngine = null; // Not available via facade
+      this.complexityEstimator = null; // Not available via facade
+      this.performancePredictor = null; // Not available via facade
+      
+      this.initialized = true;
+      this.logger.info(`📚 Swarm Migration System initialized with facade systems`);
+    } catch (error) {
+      this.logger.error('Failed to initialize Swarm Migration System', error);
+      throw error;
+    }
   }
 
   private setupEventHandlers(): void {
@@ -220,10 +248,14 @@ export class SwarmMigrationSystem extends EventEmitter {
    */
   public async startMigration(): Promise<{
     success: boolean;
-    phases: MigrationPhase[];
-    extractedLearning: Map<string, ExtractedLearning>;
+    phases: unknown[];
+    extractedLearning: Map<string, any>;
     migrationMetrics: typeof this.migrationMetrics;
   }> {
+    if (!this.initialized) {
+      await this.initialize();
+    }
+    
     this.logger.info(`🚀 Starting swarm migration to dynamic capability mesh`);
     
     try {
@@ -329,8 +361,9 @@ export class SwarmMigrationSystem extends EventEmitter {
     
     try {
       // Query shared facts for swarm coordination data using knowledge package
-      const swarmFacts = await getCoordinationFacts();
-      const queenFacts = await queryCoordinationFacts('queen-specialization');
+      const factSystem = await getCoordinationFactSystem();
+      const swarmFacts = await factSystem?.getFacts?.() || [];
+      const queenFacts = await factSystem?.queryFacts?.('queen-specialization') || [];
       
       // Convert facts to swarm data (simplified simulation)
       if (swarmFacts && Array.isArray(swarmFacts)) {
@@ -378,7 +411,7 @@ export class SwarmMigrationSystem extends EventEmitter {
       // Use knowledge package directly for data access
       
       // Simulate database query results using knowledge package
-      const dbResults: any[] = [];
+      const dbResults: unknown[] = [];
       
       // Convert database results to swarm data (simplified simulation)
       for (let i = 0; i < 2; i++) { // Simulate 2 database swarms
@@ -1207,7 +1240,7 @@ export class SwarmMigrationSystem extends EventEmitter {
     timestamp: Date;
     task: string;
     performance: number;
-    context: Record<string, any>;
+    context: Record<string, unknown>;
   }> {
     const history = [];
     const tasks = ['coordination', 'implementation', 'optimization', 'integration', 'testing'];

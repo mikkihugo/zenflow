@@ -35,9 +35,10 @@
  * @file Coordination system: domain-discovery-bridge.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { basename } from 'node:path';
+
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
 
 import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import type {
@@ -48,6 +49,7 @@ import type {
   DomainAnalysis,
   DomainAnalysisEngine,
 } from '../../tools/domain-splitting/analyzers/domain-analyzer';
+
 import { NeuralDomainMapper } from './neural-domain-mapper';
 import type { DependencyGraph, Domain } from './types';
 

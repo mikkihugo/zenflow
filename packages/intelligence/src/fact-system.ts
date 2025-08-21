@@ -1,6 +1,6 @@
 /**
  * @fileoverview Fact System Strategic Facade - Direct Delegation
- * 
+ *
  * Strategic facade providing fact-based reasoning capabilities through delegation
  * to @claude-zen/fact-system package when available, with professional fallbacks.
  * No translation needed - uses native implementation functions directly.
@@ -22,10 +22,16 @@ async function loadFactModule() {
         getFactEngine: async () => createFallbackFactEngine(),
         getReasoningEngine: async () => createFallbackReasoningEngine(),
         FactEngine: class FallbackFactEngine {
-          async initialize() { return this; }
-          async query() { return { result: 'fallback-query', facts: [] }; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
-        }
+          async initialize() {
+            return this;
+          }
+          async query() {
+            return { result: 'fallback-query', facts: [] };
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
+        },
       };
     }
   }
@@ -39,21 +45,21 @@ function createFallbackFactSystem() {
     initialize: async () => Promise.resolve(),
     shutdown: async () => Promise.resolve(),
     isHealthy: () => true,
-    getStatus: () => ({ status: 'fallback', initialized: true })
+    getStatus: () => ({ status: 'fallback', initialized: true }),
   };
 }
 
 function createFallbackFactEngine() {
   return {
-    query: async (query: any) => ({ 
+    query: async (query: any) => ({
       result: `fallback-query-for-${query?.question || 'unknown'}`,
       facts: [],
       confidence: 0.5,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -64,10 +70,10 @@ function createFallbackReasoningEngine() {
       conclusion: 'fallback-conclusion',
       confidence: 0.7,
       steps: ['fallback-reasoning-step'],
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
-    initialize: async () => Promise.resolve()
+    initialize: async () => Promise.resolve(),
   };
 }
 
@@ -102,12 +108,16 @@ export class FactEngine {
   }
 
   async query(query: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.query(query);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 
@@ -123,7 +133,7 @@ export class FactEngine {
 export const factSystem = {
   getAccess: getFactSystemAccess,
   getEngine: getFactEngine,
-  getReasoningEngine: getReasoningEngine
+  getReasoningEngine: getReasoningEngine,
 };
 
 // Additional exports for compatibility
@@ -158,23 +168,39 @@ export const getCoordinationFactSystem = async () => {
       // Query coordination facts using the provided query
       const results = await factSystem.queryFacts?.(query) || [];
       return { facts: results, count: results.length, query };
-    }
+    },
   };
 };
 
 export const initializeCoordinationFactSystem = async (config?: any) => {
   // Initialize coordination fact system with configuration
   const coordSystem = await getCoordinationFactSystem();
-  
+
   // Apply configuration if provided
   if (config && coordSystem.configure) {
     await coordSystem.configure(config);
   }
-  
+
   return coordSystem;
 };
 
 export const storeCoordinationFact = async (fact: any) => {
   const coordSystem = await getCoordinationFactSystem();
   return coordSystem.storeCoordinationFact(fact);
+};
+
+// Type definitions for coordination facts
+export interface CoordinationFact {
+  id: string;
+  type: 'coordination';
+  timestamp: number;
+  data: Record<string, any>;
+  metadata?: Record<string, any>;
+  source: string;
+  confidence: number;
+}
+
+export const queryCoordinationFacts = async (query: any) => {
+  const coordSystem = await getCoordinationFactSystem();
+  return coordSystem.queryCoordinationFacts(query);
 };

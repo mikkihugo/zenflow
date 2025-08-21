@@ -23,37 +23,31 @@
  * @since 2024-01-01
  */
 
-import { type Request, type Response, Router } from 'express';
-import { nanoid } from 'nanoid';
-
-import { asyncHandler } from '../middleware/errors';
-import { LogLevel, log } from '../middleware/logging';
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
 import { getLogger } from '@claude-zen/foundation';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { type Request, type Response, Router } from 'express';
 
-// Document services
-import { BaseDocumentService } from '../../../../services/document/base-document-service';
-import { ArchitectureRunwayService } from '../../../../services/document/architecture-runway-service';
-import { BusinessEpicService } from '../../../../services/document/business-epic-service';
-import { ProgramEpicService } from '../../../../services/document/program-epic-service';
-import { FeatureService } from '../../../../services/document/feature-service';
-import { StoryService } from '../../../../services/document/story-service';
-
-// Document entities and schemas
 import type {
-  ArchitectureRunwayDocumentEntity,
-  BusinessEpicDocumentEntity,
-  ProgramEpicDocumentEntity,
   FeatureDocumentEntity,
   StoryDocumentEntity,
   TaskDocumentEntity
 } from '../../../../entities/document-entities';
+import { DocumentManager } from '../../../../services/database/document-service';
+import { ArchitectureRunwayService } from '../../../../services/document/architecture-runway-service';
 
-import { DocumentSchemaManager, documentSchemaManager } from '../../../../services/document/document-schemas';
+// Document services
+import { BusinessEpicService } from '../../../../services/document/business-epic-service';
+import { documentSchemaManager } from '../../../../services/document/document-schemas';
+import { FeatureService } from '../../../../services/document/feature-service';
+import { ProgramEpicService } from '../../../../services/document/program-epic-service';
+import { StoryService } from '../../../../services/document/story-service';
+
+// Document entities and schemas
 
 // SPARC integration
 import { SPARCDocumentIntegration } from '../../../../services/sparc/sparc-document-integration';
-import { DocumentManager } from '../../../../services/database/document-service';
+import { asyncHandler } from '../middleware/errors';
+import { LogLevel, log } from '../middleware/logging';
 
 /**
  * Document type mapping for route handling

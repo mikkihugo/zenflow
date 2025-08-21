@@ -20,17 +20,13 @@
  * ```
  */
 
-import { Router, type Request, type Response } from 'express';
+import { getLogger } from '@claude-zen/foundation'
 import { 
   getSystemCapabilityData,
-  getInstallationSuggestions,
   createHealthDataProviders,
-  getCapabilityScores,
-  type SystemCapabilityData,
-  type InstallationSuggestion,
-  type FacadeSummary
+  getCapabilityScores
 } from '@claude-zen/foundation/system-capability-data-provider';
-import { getLogger } from '@claude-zen/foundation'
+import { Router, type Request, type Response } from 'express';
 
 const logger = getLogger('SystemCapabilityRoutes');
 

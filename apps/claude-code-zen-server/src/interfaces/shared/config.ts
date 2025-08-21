@@ -5,7 +5,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
-
 import { config, type InterfaceConfig } from '@claude-zen/infrastructure';
 
 const logger = getLogger('interfaces-shared-config');

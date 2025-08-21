@@ -1,6 +1,6 @@
 /**
  * @fileoverview LLM Routing Strategic Facade - Real Package Delegation
- * 
+ *
  * Strategic facade providing real LLM routing capabilities through delegation
  * to @claude-zen/llm-routing package.
  */
@@ -25,7 +25,7 @@ async function loadLLMRoutingModule() {
         updateProvider: async () => Promise.resolve(),
         getProvider: async () => ({ id: 'default', name: 'Compatibility Provider' }),
         getProviderIds: async () => ['default'],
-        getProvidersByCapability: async () => []
+        getProvidersByCapability: async () => [],
       };
     }
   }

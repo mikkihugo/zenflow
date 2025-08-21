@@ -242,7 +242,7 @@ export class McpClientAdapter
           if (!data.data.resourceUri) {
             throw new Error('Resource URI is required for resource reads');
           }
-          const resource = await this.mcpClient.getResource(data.data.resourceUri);
+          const resource = await this.mcpClient.getResource(data.data.resourceUri) as any as any;
           result = { success: true, content: resource };
           break;
         }

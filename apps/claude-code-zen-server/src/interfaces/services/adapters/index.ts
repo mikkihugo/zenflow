@@ -47,6 +47,7 @@ import type { ServiceFactory, ServiceConfig } from '../core/interfaces';
 // Integration with global service registry
 import { globalServiceRegistry } from '../factories';
 import { ServiceType } from '../types';
+
 import { CoordinationServiceAdapter } from './coordination-service-adapter';
 import { coordinationServiceFactory } from './coordination-service-factory';
 // Additional imports for default export

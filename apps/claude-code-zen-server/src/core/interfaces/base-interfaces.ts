@@ -168,6 +168,17 @@ export interface EventSubscription {
   readonly createdAt: string;
 }
 
+export interface EventBus {
+  emit(event: string | symbol, ...args: any[]): boolean;
+  on(event: string | symbol, handler: (...args: any[]) => void): this;
+  off(event: string | symbol, handler: (...args: any[]) => void): this;
+  once(event: string | symbol, handler: (...args: any[]) => void): this;
+  removeAllListeners(event?: string | symbol): this;
+  publish(event: string, data: any): void;
+  subscribe(event: string, handler: (data: any) => void): void;
+  unsubscribe(event: string, handler: (data: any) => void): void;
+}
+
 // =============================================================================
 // CONFIGURATION INTERFACES
 // =============================================================================
@@ -229,6 +240,24 @@ export interface Registry<T> {
   getAll(): readonly T[];
   has(id: string): boolean;
   clear(): void;
+}
+
+export interface Logger {
+  debug(message: string, ...args: any[]): void;
+  info(message: string, ...args: any[]): void;
+  warn(message: string, ...args: any[]): void;
+  error(message: string, ...args: any[]): void;
+  trace(message: string, ...args: any[]): void;
+}
+
+export interface KeyValueStore {
+  get<T = any>(key: string): Promise<T | null>;
+  set(key: string, value: any, ttl?: number): Promise<void>;
+  delete(key: string): Promise<boolean>;
+  has(key: string): Promise<boolean>;
+  clear(): Promise<void>;
+  keys(pattern?: string): Promise<string[]>;
+  size(): Promise<number>;
 }
 
 export interface Lifecycle {

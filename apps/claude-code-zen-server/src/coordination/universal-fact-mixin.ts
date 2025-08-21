@@ -33,14 +33,14 @@ export interface FactCapable {
   
   // External fact system access through foundation
   searchExternalFacts(query: string, sources?: string[], limit?: number): Promise<any[]>;
-  getNPMPackageInfo(packageName: string, version?: string): Promise<any>;
-  getGitHubRepoInfo(owner: string, repo: string): Promise<any>;
+  getNPMPackageInfo(packageName: string, version?: string): Promise<unknown>;
+  getGitHubRepoInfo(owner: string, repo: string): Promise<unknown>;
 }
 
 /**
  * Fact mixin constructor type
  */
-export type FactMixinConstructor<T = {}> = new (...args: any[]) => T;
+export type FactMixinConstructor<T = {}> = new (...args: unknown[]) => T;
 
 /**
  * Universal fact mixin that adds fact capabilities to any class
@@ -265,7 +265,7 @@ export function withFactCapabilities<TBase extends FactMixinConstructor<{ agentI
     /**
      * Get NPM package information using foundation fact system
      */
-    async getNPMPackageInfo(packageName: string, version?: string): Promise<any> {
+    async getNPMPackageInfo(packageName: string, version?: string): Promise<unknown> {
       try {
         logger.debug(`Agent ${this.agentId} getting NPM package: ${packageName}`);
         return await getNPMPackageInfo(packageName, version);
@@ -278,7 +278,7 @@ export function withFactCapabilities<TBase extends FactMixinConstructor<{ agentI
     /**
      * Get GitHub repository information using foundation fact system
      */
-    async getGitHubRepoInfo(owner: string, repo: string): Promise<any> {
+    async getGitHubRepoInfo(owner: string, repo: string): Promise<unknown> {
       try {
         logger.debug(`Agent ${this.agentId} getting GitHub repo: ${owner}/${repo}`);
         return await getGitHubRepoInfo(owner, repo);
@@ -309,7 +309,7 @@ export class FactCapableAgent implements FactCapable {
   }
 
   async shareFact(factId: string, targetAgentId?: string): Promise<boolean> {
-    const enhanced = withFactCapabilities(class { constructor(public agentId: string) {} });
+    const enhanced = withFactCapabilities(class { constructor(public agentId: string) {} }) as any as any;
     const instance = new enhanced(this.agentId);
     return await instance.shareFact(factId, targetAgentId);
   }
@@ -318,11 +318,11 @@ export class FactCapableAgent implements FactCapable {
     return await searchExternalFacts(query, sources, limit || 10);
   }
 
-  async getNPMPackageInfo(packageName: string, version?: string): Promise<any> {
+  async getNPMPackageInfo(packageName: string, version?: string): Promise<unknown> {
     return await getNPMPackageInfo(packageName, version);
   }
 
-  async getGitHubRepoInfo(owner: string, repo: string): Promise<any> {
+  async getGitHubRepoInfo(owner: string, repo: string): Promise<unknown> {
     return await getGitHubRepoInfo(owner, repo);
   }
 }

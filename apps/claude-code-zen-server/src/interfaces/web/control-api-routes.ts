@@ -14,13 +14,13 @@
  * For Svelte web dashboard - complete system control without passwords.
  */
 
-import { getTelemetry, recordMetric, getDatabaseAccess } from '@claude-zen/infrastructure';
+import type { Server } from 'http';
+
 import { getLogger } from '@claude-zen/foundation';
+import { getTelemetry, recordMetric, getDatabaseAccess , EventBus, createEventBus } from '@claude-zen/infrastructure';
 import type { Express, Request, Response } from 'express';
-import { EventBus, createEventBus } from '@claude-zen/infrastructure';
 import { WebSocketServer } from 'ws';
 
-import type { Server } from 'http';
 
 export class ControlApiRoutes {
   private logger = getLogger('ControlAPI');

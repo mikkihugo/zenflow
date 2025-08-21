@@ -180,6 +180,8 @@ export const getAdvancedServiceContainer = async (name?: string) => {
 
 // Direct exports for commonly used functions
 export { getServiceContainer, getDatabaseAccess } from './database';
+export { createEventSystem } from './events';
+export { getLoadBalancer, getPerformanceTracker, getTelemetryManager } from './load-balancing';
 
 // =============================================================================
 // MAIN SYSTEM OBJECT - For programmatic access to all infrastructure capabilities

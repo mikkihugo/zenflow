@@ -62,6 +62,20 @@
  */
 
 // Re-export zod for type-safe validation
+// Foundation integration utilities
+import type { Spec, CleanedEnv } from 'envalid';
+import { cleanEnv , str as envStr, bool as envBool } from 'envalid';
+import { default as pTimeout, TimeoutError } from 'p-timeout';
+import { z } from 'zod';
+
+import { Result, ok, err } from './error-handling';
+import { getLogger } from './logging';
+
+
+/**
+ * Common environment configuration schema
+ */
+
 export { z } from 'zod';
 export type { ZodSchema, ZodType, ZodError } from 'zod';
 
@@ -74,14 +88,6 @@ export { default as onExit } from 'exit-hook';
 
 // Re-export p-timeout for timeout operations
 export { default as pTimeout, TimeoutError } from 'p-timeout';
-
-// Foundation integration utilities
-import { z } from 'zod';
-import { cleanEnv } from 'envalid';
-import { default as pTimeout, TimeoutError } from 'p-timeout';
-import { Result, ok, err } from './error-handling';
-import { getLogger } from './logging';
-import type { Spec, CleanedEnv } from 'envalid';
 
 const logger = getLogger('foundation-utilities');
 
@@ -202,11 +208,6 @@ export async function withTimeout<T>(
     );
   }
 }
-
-/**
- * Common environment configuration schema
- */
-import { str as envStr, bool as envBool } from 'envalid';
 
 export const commonEnvSchema = {
   NODE_ENV: envStr({

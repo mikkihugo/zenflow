@@ -9,6 +9,7 @@
  */
 
 import { EventEmitter } from 'node:events';
+
 import type { WorkflowKanban, WorkflowTask, TaskState } from '@claude-zen/enterprise';
 import { createWorkflowKanban } from '@claude-zen/enterprise';
 import { getLogger } from '@claude-zen/foundation'
@@ -174,7 +175,7 @@ export class SimpleKanban extends EventEmitter {
     let allTasks: any[] = [];
 
     if (filters?.status) {
-      const workflowState = this.mapStatusToWorkflowState(filters.status);
+      const workflowState = this.mapStatusToWorkflowState(filters.status) as any as any;
       allTasks = await this.workflowKanban!.getTasksByState(workflowState);
     } else {
       // Get all stories from all statuses
@@ -231,7 +232,7 @@ export class SimpleKanban extends EventEmitter {
       throw new Error('Story not found');
     }
 
-    const workflowState = this.mapStatusToWorkflowState(status);
+    const workflowState = this.mapStatusToWorkflowState(status) as any as any;
     const result = await this.workflowKanban!.moveTask(storyId, workflowState, reason);
 
     if (!result.success) {

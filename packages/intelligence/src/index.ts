@@ -1,10 +1,10 @@
 /**
  * @fileoverview Intelligence Strategic Facade
- * 
+ *
  * STRATEGIC FACADE PURPOSE:
  * This facade provides unified access to AI, neural, and machine learning
  * capabilities while delegating to real implementation packages when available.
- * 
+ *
  * DELEGATION ARCHITECTURE:
  * • @claude-zen/brain: Neural network coordination and brain intelligence systems
  * • @claude-zen/ai-safety: AI safety protocols and risk management
@@ -14,7 +14,7 @@
  * • @claude-zen/llm-providers: LLM provider integrations (CLI tools and direct APIs)
  * • @claude-zen/dspy: DSPy neural optimization and prompt engineering
  * • @claude-zen/neural-ml: Neural machine learning coordination
- * 
+ *
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
  * 1. registerFacade() - Register with facade status manager
@@ -22,15 +22,15 @@
  * 3. Export all module implementations (with fallbacks)
  * 4. Export main system object for programmatic access
  * 5. Export types for external consumers
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
  */
 
-import { 
+import {
   registerFacade,
-  getLogger
+  getLogger,
 } from '@claude-zen/foundation';
 
 const logger = getLogger('intelligence');
@@ -44,7 +44,7 @@ registerFacade('intelligence', [
   '@claude-zen/workflows',
   '@claude-zen/llm-providers',
   '@claude-zen/dspy',
-  '@claude-zen/neural-ml'
+  '@claude-zen/neural-ml',
 ], [
   'Neural network coordination and brain intelligence systems',
   'AI safety protocols and risk management',
@@ -54,7 +54,7 @@ registerFacade('intelligence', [
   'LLM provider integrations (CLI tools and direct APIs)',
   'DSPy neural optimization and prompt engineering',
   'Neural machine learning coordination',
-  'AI-powered coordination and decision making'
+  'AI-powered coordination and decision making',
 ]);
 
 // =============================================================================
@@ -67,6 +67,9 @@ export * from './fact-system';
 export * from './teamwork';
 export * from './workflows';
 
+// Additional exports for missing functions that may not be in brain.ts
+export { getTaskComplexityEstimator } from './brain';
+
 // =============================================================================
 // MAIN SYSTEM OBJECT - For programmatic access to all intelligence capabilities
 // =============================================================================
@@ -78,13 +81,13 @@ export const intelligenceSystem = {
   facts: () => import('./fact-system'),
   teamwork: () => import('./teamwork'),
   workflows: () => import('./workflows'),
-  
+
   // Utilities
   logger: logger,
   init: async () => {
     logger.info('Intelligence system initialized');
     return { success: true, message: 'Intelligence ready' };
-  }
+  },
 };
 
 // =============================================================================

@@ -49,38 +49,36 @@
  */
 
 import type {
-  BrainCoordinator,
-  SwarmConfiguration,
-  SwarmStatus
-} from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '@claude-zen/foundation'
-
-// Strategic imports from @claude-zen packages
-
-import type {
-  AgentManager,
-  AgentStatus
-} from '@claude-zen/operations';
-import type {
   WorkflowEngine,
   TaskExecution,
   WorkflowResult
 } from '@claude-zen/enterprise';
-import type {
-  CollaborationEngine
-} from '@claude-zen/intelligence';
-import type {
-  PerformanceTracker,
-  HealthMonitor,
-  SystemMetrics
-} from '@claude-zen/operations';
-
-// Foundation utilities
+import { getLogger } from '@claude-zen/foundation'
 import {
   assertDefined,
   getErrorMessage
 } from '@claude-zen/infrastructure';
+import type {
+  BrainCoordinator,
+  SwarmConfiguration,
+  SwarmStatus
+,
+  CollaborationEngine
+} from '@claude-zen/intelligence';
+import type {
+  AgentManager,
+  AgentStatus
+,
+  PerformanceTracker,
+  HealthMonitor,
+  SystemMetrics
+} from '@claude-zen/operations';
+import { EventEmitter } from 'eventemitter3';
+
+// Strategic imports from @claude-zen packages
+
+
+// Foundation utilities
 
 // Import service integration layer types
 import type {

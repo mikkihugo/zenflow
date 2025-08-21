@@ -430,7 +430,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeQuery(request: any): Promise<unknown> {
+  async executeQuery(request: unknown): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -499,7 +499,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeCommand(request: any): Promise<unknown> {
+  async executeCommand(request: unknown): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -561,7 +561,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeTransaction(request: any): Promise<unknown> {
+  async executeTransaction(request: unknown): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -634,10 +634,10 @@ class SimplifiedDatabaseController {
       this.updateMetrics(executionTime, true);
 
       const totalRows = results.reduce(
-        (sum: number, r: any) => sum + (r.rowCount || r.affectedRows || 0),
+        (sum: number, r: unknown) => sum + (r.rowCount || r.affectedRows || 0),
         0
       );
-      const successfulOps = results.filter((r: any) => r.success).length;
+      const successfulOps = results.filter((r: unknown) => r.success).length;
 
       this.logger.debug(
         `Transaction completed successfully in ${executionTime}ms, ${successfulOps}/${results.length} operations successful`
@@ -741,7 +741,7 @@ class SimplifiedDatabaseController {
     }
   }
 
-  async executeMigration(request: any): Promise<unknown> {
+  async executeMigration(request: unknown): Promise<unknown> {
     const startTime = Date.now();
     
     // Type assertion with validation
@@ -793,7 +793,7 @@ class SimplifiedDatabaseController {
             description: migrationRequest.description,
             validationResults,
             totalStatements: migrationRequest.statements.length,
-            validStatements: validationResults.filter((r: any) => r.valid)
+            validStatements: validationResults.filter((r: unknown) => r.valid)
               .length,
           },
           metadata: {
@@ -850,7 +850,7 @@ class SimplifiedDatabaseController {
         },
         metadata: {
           rowCount: results.reduce(
-            (sum: number, r: any) => sum + (r.affectedRows || 0),
+            (sum: number, r: unknown) => sum + (r.affectedRows || 0),
             0
           ),
           executionTime,

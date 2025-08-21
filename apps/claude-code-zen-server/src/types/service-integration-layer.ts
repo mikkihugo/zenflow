@@ -70,6 +70,12 @@
 
 // Foundation Types - Layer 1 shared primitives
 import type {
+  WorkflowDefinition,
+  WorkflowExecution,
+  WorkflowMetrics,
+  ExecutionResult
+} from '@claude-zen/enterprise';
+import type {
   Logger,
   Result,
   ServiceError,
@@ -86,12 +92,6 @@ import type {
 } from '@claude-zen/intelligence';
 
 // Workflow Domain Types - Layer 2 process orchestration
-import type {
-  WorkflowDefinition,
-  WorkflowExecution,
-  WorkflowMetrics,
-  ExecutionResult
-} from '@claude-zen/enterprise';
 
 // Database Domain Types - Layer 2 data persistence
 

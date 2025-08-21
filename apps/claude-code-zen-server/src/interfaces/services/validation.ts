@@ -53,29 +53,24 @@
 import type {
   ValidationEngine
 } from '@claude-zen/foundation';
-
 import type {
   HealthValidator
 } from '@claude-zen/foundation';
-
-import type {
-  SecurityValidator
-} from '@claude-zen/intelligence';
-
-import type {
-  LoadTester
-} from '@claude-zen/intelligence';
-
-// Strategic facade imports for validation
-import type { getChaosEngine } from '@claude-zen/operations';
-import type { getTeamworkAccess } from '@claude-zen/intelligence';
-
-// Foundation utilities for validation operations
 import {
   assertDefined,
   getErrorMessage
 } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation'
+import type {
+  SecurityValidator
+,
+  LoadTester
+ } from '@claude-zen/intelligence';
+
+
+// Strategic facade imports for validation
+
+// Foundation utilities for validation operations
 
 // =============================================================================
 // TYPES AND INTERFACES - Service Integration Layer
@@ -163,7 +158,7 @@ export interface ValidationSectionResult {
     name: string;
     status: 'pass' | 'warning' | 'fail';
     message: string;
-    details?: any;
+    details?: unknown;
   }>;
 }
 
@@ -290,7 +285,7 @@ export class USLValidationFramework {
   /**
    * Run comprehensive validation suite
    */
-  async validateSystem(serviceManager: any): Promise<ValidationResult> {
+  async validateSystem(serviceManager: unknown): Promise<ValidationResult> {
     if (!this.initialized) await this.initialize();
     
     assertDefined(this.validationEngine, 'Validation engine not initialized');
@@ -368,7 +363,7 @@ export class USLValidationFramework {
   /**
    * Configuration validation with foundation delegation
    */
-  private async validateConfiguration(serviceManager: any): Promise<ValidationSectionResult> {
+  private async validateConfiguration(serviceManager: unknown): Promise<ValidationSectionResult> {
     assertDefined(this.validationEngine, 'Validation engine not initialized');
     
     const result = await this.validationEngine.validateConfiguration({
@@ -387,7 +382,7 @@ export class USLValidationFramework {
   /**
    * Performance validation with monitoring delegation
    */
-  private async validatePerformance(serviceManager: any): Promise<ValidationSectionResult> {
+  private async validatePerformance(serviceManager: unknown): Promise<ValidationSectionResult> {
     if (!this.healthValidator) {
       return { status: 'pass', score: 100, checks: [] };
     }
@@ -408,7 +403,7 @@ export class USLValidationFramework {
   /**
    * Security validation with ai-safety delegation
    */
-  private async validateSecurity(serviceManager: any): Promise<ValidationSectionResult> {
+  private async validateSecurity(serviceManager: unknown): Promise<ValidationSectionResult> {
     if (!this.securityValidator) {
       return { status: 'pass', score: 100, checks: [] };
     }
@@ -434,7 +429,7 @@ export class USLValidationFramework {
   /**
    * Load testing with load-balancing delegation
    */
-  private async runLoadTests(serviceManager: any): Promise<Partial<ValidationSectionResult>> {
+  private async runLoadTests(serviceManager: unknown): Promise<Partial<ValidationSectionResult>> {
     if (!this.loadTester) {
       return {};
     }
@@ -458,7 +453,7 @@ export class USLValidationFramework {
   /**
    * Integration validation with teamwork delegation
    */
-  private async validateIntegration(serviceManager: any): Promise<ValidationSectionResult> {
+  private async validateIntegration(serviceManager: unknown): Promise<ValidationSectionResult> {
     if (!this.integrationValidator) {
       return { status: 'pass', score: 100, checks: [] };
     }
@@ -483,7 +478,7 @@ export class USLValidationFramework {
   /**
    * Dependencies validation with foundation delegation
    */
-  private async validateDependencies(serviceManager: any): Promise<ValidationSectionResult> {
+  private async validateDependencies(serviceManager: unknown): Promise<ValidationSectionResult> {
     assertDefined(this.validationEngine, 'Validation engine not initialized');
     
     const result = await this.validationEngine.validateDependencies({
@@ -502,7 +497,7 @@ export class USLValidationFramework {
   /**
    * Compatibility validation with teamwork delegation
    */
-  private async validateCompatibility(serviceManager: any): Promise<ValidationSectionResult> {
+  private async validateCompatibility(serviceManager: unknown): Promise<ValidationSectionResult> {
     if (!this.integrationValidator) {
       return { status: 'pass', score: 100, checks: [] };
     }
@@ -523,7 +518,7 @@ export class USLValidationFramework {
   /**
    * Failover testing with chaos-engineering delegation
    */
-  private async runFailoverTests(serviceManager: any): Promise<Partial<ValidationSectionResult>> {
+  private async runFailoverTests(serviceManager: unknown): Promise<Partial<ValidationSectionResult>> {
     if (!this.chaosValidator) {
       return {};
     }

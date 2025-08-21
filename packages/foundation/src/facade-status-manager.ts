@@ -85,6 +85,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+
 import { getLogger } from './logging';
 import type { JsonObject, JsonValue } from './types/primitives';
 // import { createContainer, AwilixContainer, asFunction, asValue, Lifetime } from 'awilix';

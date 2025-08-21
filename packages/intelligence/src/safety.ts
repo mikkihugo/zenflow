@@ -1,6 +1,6 @@
 /**
  * @fileoverview Safety Strategic Facade - Direct Delegation
- * 
+ *
  * Strategic facade providing AI safety capabilities through delegation
  * to @claude-zen/ai-safety package when available, with professional fallbacks.
  * No translation needed - uses native implementation functions directly.
@@ -22,11 +22,19 @@ async function loadSafetyModule() {
         getSafetyOrchestrator: async () => createFallbackOrchestrator(),
         getDeceptionDetector: async () => createFallbackDeceptionDetector(),
         AISafetyOrchestrator: class FallbackSafetyOrchestrator {
-          async initialize() { return this; }
-          async orchestrate() { return { result: 'fallback-orchestration', safe: true }; }
-          async checkSafety() { return { safe: true, confidence: 0.8 }; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
-        }
+          async initialize() {
+            return this;
+          }
+          async orchestrate() {
+            return { result: 'fallback-orchestration', safe: true };
+          }
+          async checkSafety() {
+            return { safe: true, confidence: 0.8 };
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
+        },
       };
     }
   }
@@ -40,28 +48,28 @@ function createFallbackSafetySystem() {
     initialize: async () => Promise.resolve(),
     shutdown: async () => Promise.resolve(),
     isHealthy: () => true,
-    getStatus: () => ({ status: 'fallback', initialized: true })
+    getStatus: () => ({ status: 'fallback', initialized: true }),
   };
 }
 
 function createFallbackOrchestrator() {
   return {
-    orchestrate: async (request: any) => ({ 
+    orchestrate: async (request: any) => ({
       result: `fallback-orchestration-for-${request?.type || 'unknown'}`,
       safe: true,
       confidence: 0.8,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     checkSafety: async (content: any) => ({
       safe: true,
       confidence: 0.8,
       riskLevel: 'low',
       content: content || 'unknown',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -72,10 +80,10 @@ function createFallbackDeceptionDetector() {
       confidence: 0.7,
       indicators: [],
       content: content || 'unknown',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true, detectionsCount: 0 }),
-    initialize: async () => Promise.resolve()
+    initialize: async () => Promise.resolve(),
   };
 }
 
@@ -113,17 +121,23 @@ export class AISafetyOrchestrator {
   }
 
   async orchestrate(request: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.orchestrate(request);
   }
 
   async checkSafety(content: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.checkSafety(content);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 
@@ -139,7 +153,7 @@ export class AISafetyOrchestrator {
 export const aiSafetySystem = {
   getAccess: getSafetySystemAccess,
   getOrchestrator: getSafetyOrchestrator,
-  getDeceptionDetector: getDeceptionDetector
+  getDeceptionDetector: getDeceptionDetector,
 };
 
 // Additional exports for compatibility
@@ -162,7 +176,7 @@ export async function initializeSafetySystem(config?: any) {
 export class SafetyProtocols {
   private orchestrator: any = null;
   private config: any;
-  
+
   constructor(config?: any) {
     // Store config for when orchestrator is initialized
     this.config = config || {};
@@ -172,23 +186,23 @@ export class SafetyProtocols {
     if (!this.orchestrator) {
       this.orchestrator = await getSafetySystemAccess();
     }
-    
+
     // Map protocol names to orchestrator methods with config-based behavior
     const result = {
       executed: true,
       config: this.config.debug ? { configUsed: this.config } : undefined,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
-    
+
     switch (name) {
-      case 'activate':
-        return this.orchestrator.activateSafetyProtocols?.() || Promise.resolve(result);
-      case 'deactivate':
-        return this.orchestrator.deactivateSafetyProtocols?.() || Promise.resolve(result);
-      case 'escalate':
-        return this.orchestrator.escalateToHuman?.(data) || Promise.resolve({ ...result, escalated: true });
-      default:
-        return { ...result, result: `Protocol ${name} executed`, data };
+    case 'activate':
+      return this.orchestrator.activateSafetyProtocols?.() || Promise.resolve(result);
+    case 'deactivate':
+      return this.orchestrator.deactivateSafetyProtocols?.() || Promise.resolve(result);
+    case 'escalate':
+      return this.orchestrator.escalateToHuman?.(data) || Promise.resolve({ ...result, escalated: true });
+    default:
+      return { ...result, result: `Protocol ${name} executed`, data };
     }
   }
 
@@ -203,7 +217,7 @@ export class SafetyProtocols {
 // SecurityValidator compatibility class (missing from real package)
 export class SecurityValidator {
   private config: any;
-  
+
   constructor(config?: any) {
     // Store config for validation setup
     this.config = config || { strictMode: false, maxThreatLevel: 5 };
@@ -212,15 +226,15 @@ export class SecurityValidator {
   async validate(data: any): Promise<any> {
     // Delegate to safety system for security validation with actual data analysis
     const safetySystem = await getSafetySystemAccess();
-    
+
     // Use safety system for enhanced validation if available
     const enhancedValidation = await safetySystem.validateData?.(data);
-    
+
     // Use data for validation and config for validation parameters
     const dataSize = JSON.stringify(data).length;
     const threats = dataSize > 10000 ? ['large_payload'] : [];
     const isValid = threats.length === 0 && !this.config.strictMode;
-    
+
     return {
       valid: isValid,
       issues: threats,
@@ -228,7 +242,7 @@ export class SecurityValidator {
       threats,
       recommendations: threats.length > 0 ? ['Consider reducing payload size'] : [],
       validatedSize: dataSize,
-      enhancedValidation: enhancedValidation || null
+      enhancedValidation: enhancedValidation || null,
     };
   }
 
@@ -253,7 +267,9 @@ export class AIDeceptionDetector {
   }
 
   async detectDeception(interaction: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.detectDeception?.(interaction) || this.instance.detect(interaction);
   }
 }
@@ -309,7 +325,7 @@ export interface SafetyMetrics {
 // NeuralDeceptionDetector compatibility export (declared after AIDeceptionDetector)
 export class NeuralDeceptionDetector extends AIDeceptionDetector {
   private neuralConfig: any;
-  
+
   constructor(config?: any) {
     super();
     // Neural detector is a specialized deception detector with neural config
@@ -319,12 +335,12 @@ export class NeuralDeceptionDetector extends AIDeceptionDetector {
   override async detectDeception(interaction: any) {
     // Use the same detection but with neural focus and config-based thresholds
     const result = await super.detectDeception(interaction);
-    
+
     // Apply neural-specific configuration
     if (this.neuralConfig.useAdvancedPatterns && result.confidence < this.neuralConfig.neuralThreshold) {
       return { ...result, confidence: Math.min(result.confidence * 1.2, 1.0), method: 'neural-enhanced' };
     }
-    
+
     return result;
   }
 }

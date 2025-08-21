@@ -6,17 +6,18 @@
 
 import { createServer, type Server } from 'node:http';
 
+import { getLogger } from '@claude-zen/foundation'
+import { createTerminus } from '@godaddy/terminus';
+import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '@claude-zen/foundation'
+
 import LLMStatsService from '../../coordination/services/llm-stats-service';
 
-import express from 'express';
 
 import { WebApiRoutes } from './web-api-routes';
 import { createWebConfig } from './web-config';
 
-import { createTerminus } from '@godaddy/terminus';
 
 interface WebDashboardConfig {
   port: number;
@@ -33,8 +34,30 @@ export class WebDashboardServer {
   private apiRoutes: WebApiRoutes;
   
   constructor(private config: WebDashboardConfig) {
+    // Enhanced initialization with comprehensive logging and monitoring
+    const initializationMetrics = {
+      startTime: Date.now(),
+      phase: 'starting' as 'starting' | 'services' | 'proxy' | 'api' | 'complete',
+      servicesInitialized: 0,
+      totalServices: 4, // LLMStats, SvelteProxy, APIRoutes, WebSocket
+      memoryUsage: process.memoryUsage(),
+      config: this.config
+    };
+
     console.log('🔵 WebDashboardServer constructor started');
+    this.logger.info('Starting WebDashboardServer initialization', {
+      config: this.config,
+      timestamp: new Date().toISOString(),
+      processId: process.pid,
+      nodeVersion: process.version,
+      memoryUsage: initializationMetrics.memoryUsage
+    });
+
     console.log('🏗️ Creating WebDashboardServer with real API routes...');
+    this.logger.info('Creating WebDashboardServer with real API routes', {
+      phase: initializationMetrics.phase,
+      servicesPlanned: initializationMetrics.totalServices
+    });
     
     console.log('📊 Initializing LLM Stats Service...');
     // Initialize LLM Stats Service

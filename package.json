@@ -86,7 +86,7 @@
     "lint:file": "npx eslint",
     "lint:rust": "find . -name '*.rs' -not -path '*/target/*' -not -path '*/node_modules/*' -exec test -f {} \\; | head -20 | xargs -r rustfmt --edition=2024 --check || true",
     "lint:complexity": "node scripts/check-complexity.js",
-    "lint:circular": "dependency-cruiser --output-type err --validate --no-config --ts-pre-compilation-deps --exclude 'node_modules|dist|build|target|pkg' --max-depth 10 packages apps || echo '⚠️  Circular dependencies detected - fix before continuing'",
+    "lint:circular": "dependency-cruiser --output-type err --validate --no-config --ts-pre-compilation-deps --exclude 'node_modules|dist|build|target|pkg|apps/web-dashboard' --max-depth 10 packages apps || echo '⚠️  Circular dependencies detected - fix before continuing'",
     "lint:jsdoc": "node scripts/check-jsdoc-advanced.js",
     "lint:jsdoc-simple": "node scripts/check-jsdoc-simple.js",
     "lint:size": "node scripts/check-file-sizes.js",

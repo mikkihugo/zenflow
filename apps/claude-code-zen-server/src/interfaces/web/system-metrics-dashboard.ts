@@ -8,6 +8,7 @@ import { getLogger } from '@claude-zen/foundation'
 /** Real-time monitoring and analytics for Claude Zen systems */
 
 import { EventEmitter } from 'eventemitter3';
+
 // URL builders - using direct URL construction since url-builder module doesn't exist
 // import { getMCPServerURL, getWebDashboardURL } from '../config/url-builder';
 import {
@@ -17,9 +18,9 @@ import {
 } from '../../database/index';
 import type { Repository } from '../../database/interfaces';
 // Import UACL for unified client management
+import type EnhancedMemory from '../../memory/memory';
 import { UACLHelpers, uacl } from '../clients/index';
 
-import type EnhancedMemory from '../../memory/memory';
 
 const logger = getLogger('interfaces-web-system-metrics-dashboard');
 

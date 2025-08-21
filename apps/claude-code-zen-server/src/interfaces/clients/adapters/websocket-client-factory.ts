@@ -18,11 +18,11 @@ import type {
   Client,
   ClientFactory,
 } from '../core/interfaces';
+
 import { EnhancedWebSocketClient } from './enhanced-websocket-client';
 import {
   WebSocketClientAdapter,
 } from './websocket-client-adapter';
-
 import type {
   WebSocketClientConfig,
   WebSocketConnectionInfo,
@@ -61,7 +61,7 @@ export class WebSocketClientFactory
 
     if (config?.metadata?.['clientType'] === 'enhanced') {
       // Use enhanced client with backward compatibility
-      client = new EnhancedWebSocketClient(config);
+      client = new EnhancedWebSocketClient(config) as any;
     } else {
       // Use pure UACL adapter
       client = new WebSocketClientAdapter(

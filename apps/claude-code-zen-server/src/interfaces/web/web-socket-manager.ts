@@ -8,11 +8,13 @@
  * @file Web-socket management system.
  */
 
-import type { Server as SocketIOServer } from 'socket.io';
 import { getLogger } from '@claude-zen/foundation'
-const { getVersion } = (global as any).claudeZenFoundation;
+import type { Server as SocketIOServer } from 'socket.io';
+
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
+
+const { getVersion } = (global as any).claudeZenFoundation;
 
 export interface BroadcastData {
   event: string;

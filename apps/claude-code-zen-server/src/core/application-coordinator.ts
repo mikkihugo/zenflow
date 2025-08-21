@@ -15,14 +15,15 @@
  * @file Application coordination system.
  */
 
-import { BrainCoordinator } from '@claude-zen/intelligence';
-import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '@claude-zen/foundation'
-import { MemoryManager } from '../memory/index';
 import { DocumentDrivenSystem } from '@claude-zen/document-processing';
 import { DocumentationLinker } from '@claude-zen/documentation';
 import { ExportSystem as ExportManager } from '@claude-zen/exporters';
+import { getLogger } from '@claude-zen/foundation'
+import { BrainCoordinator } from '@claude-zen/intelligence';
 import { InterfaceLauncher } from '@claude-zen/interfaces';
+import { EventEmitter } from 'eventemitter3';
+
+import { MemoryManager } from '../memory/index';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 const logger = getLogger('ApplicationCoordinator');

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Intelligence Package Types
- * 
+ *
  * Centralized type exports for the Intelligence strategic interface delegation package.
  * Provides type safety for AI, Neural, ML, and Safety systems.
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
@@ -82,7 +82,7 @@ export interface IntelligenceSystemConfig {
     neuralNetworkType?: 'feedforward' | 'recurrent' | 'transformer';
     maxConcurrentTasks?: number;
   };
-  
+
   safety?: {
     enableDeceptionDetection?: boolean;
     enableNeuralSafety?: boolean;
@@ -90,9 +90,9 @@ export interface IntelligenceSystemConfig {
     safetyThreshold?: number;
     detectionSensitivity?: 'low' | 'medium' | 'high' | 'critical';
   };
-  
+
   // Note: neuralML and dspy configs are handled internally by brain package
-  
+
   factSystem?: {
     enableReasoning?: boolean;
     enableWasmTools?: boolean;
@@ -117,16 +117,16 @@ export interface IntelligenceSystemStatus {
       memoryUsage: number;
     };
   };
-  
+
   safety: {
     isConnected: boolean;
     isMonitoring: boolean;
     threatLevel: 'low' | 'medium' | 'high' | 'critical';
     detectionsCount: number;
   };
-  
+
   // Note: neuralML and dspy status are handled internally by brain package
-  
+
   factSystem: {
     isConnected: boolean;
     factsCount: number;
@@ -143,21 +143,21 @@ export interface IntelligenceSystemMetrics {
   successfulRequests: number;
   failedRequests: number;
   averageResponseTime: number;
-  
+
   brainMetrics: {
     coordinationTasks: number;
     neuralProcessingTime: number;
     autonomousDecisions: number;
   };
-  
+
   safetyMetrics: {
     threatsDetected: number;
     falsePositives: number;
     safetyScore: number;
   };
-  
+
   // Note: mlMetrics and dspyMetrics are handled internally by brain package
-  
+
   factMetrics: {
     factsProcessed: number;
     reasoningOperations: number;

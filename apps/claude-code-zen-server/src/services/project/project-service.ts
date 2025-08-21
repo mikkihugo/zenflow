@@ -16,41 +16,31 @@
 
 // Strategic facades - comprehensive delegation with tree shaking optimization
 import { 
+  DatabaseSPARCBridge,
+  SafePortfolioManager,
+  SafeProgramIncrementManager,
+  SafeValueStreamMapper
+} from '@claude-zen/enterprise';
+import { DevelopmentCoordinator, createDevelopmentConfig } from '@claude-zen/enterprise';
+import { getLogger } from '@claude-zen/foundation'
+import type { Logger } from '@claude-zen/foundation';
+import { 
   TypedEventBus, 
   createTypedEventBus 
 } from '@claude-zen/infrastructure';
 import { 
-  DatabaseSPARCBridge,
-  SafePortfolioManager,
-  SafeProgramIncrementManager,
-  SafeValueStreamMapper,
-  type WorkAssignment,
-  type ImplementationResult
-} from '@claude-zen/enterprise';
-import { 
   WorkflowEngine, 
-  WorkflowUtils,
-  type WorkflowDefinition, 
-  type WorkflowContext, 
-  type WorkflowState, 
   type StepExecutionResult,
   // Neural intelligence and DSPy integration
   BrainCoordinator,
   NeuralProcessor,
   DSPyOptimizer,
-  CognitivePatterns,
-  type NeuralConfig,
-  type CognitiveModel,
-  type OptimizationResult
+  CognitivePatterns
 } from '@claude-zen/intelligence';
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from '../document/base-document-service';
-import type { StoryEntity } from '../../entities/document-entities';
-import { getLogger } from '@claude-zen/foundation'
-import type { Logger } from '@claude-zen/foundation';
-import { nanoid } from 'nanoid';
-import { DevelopmentCoordinator, createDevelopmentConfig } from '@claude-zen/enterprise';
+
 import { GitManager, createGitManager } from '../../coordination/git-manager';
 import { SPARCDevelopmentIntegration, createSPARCDevelopmentIntegration } from '../../coordination/sparc-development-integration';
+import { type ValidationResult, type QueryFilters, type QueryResult } from '../document/base-document-service';
 
 // ============================================================================
 // PROJECT INTERFACES - SAFe LPM

@@ -24,6 +24,7 @@
 import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
+
 import type { BaseDocumentEntity } from '../../../database/entities/product-entities';
 import { DocumentService } from '../../../database/services/document-service';
 import type {

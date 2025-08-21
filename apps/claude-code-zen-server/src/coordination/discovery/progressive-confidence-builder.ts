@@ -4,9 +4,9 @@
  * Integrates with HiveFACT for online research and MCP memory for persistence.
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger } from '@claude-zen/foundation'
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '../../memory/memory';
 

@@ -9,12 +9,30 @@
  * - Register with HiveSwarmCoordinator.
  */
 
+import { getLogger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger } from '@claude-zen/foundation'
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
-import type { SessionMemoryStore } from '../../memory/memory';
-import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator';
+// import type { SessionMemoryStore } from '../../memory/memory'; // Missing - using fallback
+// import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator'; // Missing - using fallback
+
+// Define fallback types for missing modules
+interface SessionMemoryStore {
+  get(key: string): Promise<any>;
+  set(key: string, value: any): Promise<void>;
+  store(key: string, type: string, value: any): Promise<void>;
+}
+
+interface SwarmCoordinator {
+  id: string;
+  initialize(config?: any): Promise<void>;
+  shutdown(): Promise<void>;
+}
+
+interface HiveSwarmCoordinator {
+  registerSwarm(swarm: any): Promise<void>;
+  getSwarmMetrics(): Promise<any>;
+}
 
 const logger = getLogger('AutoSwarmFactory');
 
@@ -145,7 +163,7 @@ export class AutoSwarmFactory extends EventEmitter {
 
   constructor(
     private swarmCoordinator: SwarmCoordinator,
-    private hiveSync: HiveSwarmCoordinator,
+    private hiveSync: HiveSwarmCoordinator | null,
     private memoryStore: SessionMemoryStore,
     private agui?: AGUIInterface,
     config?: Partial<AutoSwarmFactoryConfig>

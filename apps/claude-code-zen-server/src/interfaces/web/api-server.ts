@@ -15,19 +15,20 @@ import { readdir, stat } from 'node:fs/promises';
 import { createServer, type Server } from 'node:http';
 import { join, resolve } from 'node:path';
 
+import { getLogger } from '@claude-zen/foundation'
 import { createTerminus } from '@godaddy/terminus';
+import compression from 'compression';
+import cors from 'cors';
 import express, { type Express, type Request, type Response } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import cors from 'cors';
-import compression from 'compression';
-import { rateLimit } from 'express-rate-limit';
 
-import { getLogger } from '@claude-zen/foundation'
-const { getVersion } = (global as any).claudeZenFoundation;
 
 import { ControlApiRoutes } from './control-api-routes';
 import { SystemCapabilityRoutes } from './system-capability-routes';
+
+const { getVersion } = (global as any).claudeZenFoundation;
 
 interface ApiServerConfig {
   port: number;
@@ -487,14 +488,53 @@ export class ApiServer {
     // Setup terminus for graceful shutdown BEFORE starting server
     this.setupTerminus();
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolveServerStart, rejectServerStart) => {
+      // Enhanced server connection monitoring and error handling
+      const connectionMonitor = {
+        startTime: Date.now(),
+        errorCount: 0,
+        lastError: null as Error | null,
+        connectionState: 'initializing' as 'initializing' | 'connecting' | 'connected' | 'error'
+      };
+
+      // Enhanced error handler with connection state tracking
       this.server.on('error', (error) => {
-        this.logger.error('❌ Server error:', error);
-        reject(error);
+        connectionMonitor.errorCount++;
+        connectionMonitor.lastError = error;
+        connectionMonitor.connectionState = 'error';
+        
+        this.logger.error('❌ Server error detected:', {
+          error: error.message,
+          errorCount: connectionMonitor.errorCount,
+          connectionState: connectionMonitor.connectionState,
+          errorCode: (error as any).code,
+          errno: (error as any).errno,
+          syscall: (error as any).syscall,
+          address: (error as any).address,
+          port: (error as any).port
+        });
+        
+        // Enhanced error analysis and recovery suggestions
+        if ((error as any).code === 'EADDRINUSE') {
+          this.logger.error(`🔴 Port ${this.config.port} is already in use. Try a different port or stop the conflicting process.`);
+        } else if ((error as any).code === 'EACCES') {
+          this.logger.error(`🔴 Permission denied for port ${this.config.port}. Try using a port > 1024 or run with elevated privileges.`);
+        } else if ((error as any).code === 'ENOTFOUND') {
+          this.logger.error(`🔴 Host '${this.config.host}' not found. Check network configuration.`);
+        }
+        
+        rejectServerStart(error);
       });
 
+      // Enhanced connection success handler with monitoring
+      connectionMonitor.connectionState = 'connecting';
       this.server.listen(this.config.port, this.config.host || 'localhost', () => {
+        connectionMonitor.connectionState = 'connected';
+        const startupTime = Date.now() - connectionMonitor.startTime;
+        
         this.logger.info(`🌐 Claude Code Zen Server started on http://${this.config.host || 'localhost'}:${this.config.port}`);
+        this.logger.info(`⚡ Startup completed in ${startupTime}ms`);
+        this.logger.info(`🔌 Connection state: ${connectionMonitor.connectionState}`);
         this.logger.info(`🎨 Web Dashboard: http://${this.config.host || 'localhost'}:${this.config.port}/ (Svelte)`);
         this.logger.info(`🏥 K8s Health Checks:`);
         this.logger.info(`  • Liveness:  http://${this.config.host || 'localhost'}:${this.config.port}/healthz`);
@@ -505,16 +545,53 @@ export class ApiServer {
         this.logger.info(`📂 Workspace API: http://${this.config.host || 'localhost'}:${this.config.port}/api/workspace/files`);
         this.logger.info('🎯 Single port deployment: API + Svelte dashboard + K8s health');
         this.logger.info('🛡️ Graceful shutdown enabled via @godaddy/terminus');
-        resolve();
+        
+        // Store connection monitoring data for future reference
+        this.logger.info(`📈 Connection metrics: startup=${startupTime}ms, errors=${connectionMonitor.errorCount}`);
+        
+        resolveServerStart();
       });
     });
   }
 
   async stop(): Promise<void> {
-    return new Promise((resolve) => {
+    return new Promise((resolveServerStop) => {
+      // Enhanced server shutdown monitoring
+      const shutdownMonitor = {
+        startTime: Date.now(),
+        activeConnections: 0,
+        shutdownState: 'initiating' as 'initiating' | 'draining' | 'stopped',
+        gracefulTimeout: 10000 // 10 seconds
+      };
+      
+      this.logger.info('🔄 Initiating server shutdown...');
+      shutdownMonitor.shutdownState = 'draining';
+      
+      // Get current connection count before shutdown
+      this.server.getConnections((err, count) => {
+        if (!err && count !== undefined) {
+          shutdownMonitor.activeConnections = count;
+          this.logger.info(`🔌 Draining ${count} active connections...`);
+        }
+      });
+      
+      // Set timeout for forceful shutdown if graceful takes too long
+      const forceShutdownTimeout = setTimeout(() => {
+        this.logger.warn(`⏰ Graceful shutdown timeout after ${shutdownMonitor.gracefulTimeout}ms, forcing shutdown`);
+        shutdownMonitor.shutdownState = 'stopped';
+        resolveServerStop();
+      }, shutdownMonitor.gracefulTimeout);
+      
       this.server.close(() => {
+        clearTimeout(forceShutdownTimeout);
+        shutdownMonitor.shutdownState = 'stopped';
+        const shutdownTime = Date.now() - shutdownMonitor.startTime;
+        
         this.logger.info('🛑 API server stopped');
-        resolve();
+        this.logger.info(`⚡ Shutdown completed in ${shutdownTime}ms`);
+        this.logger.info(`📊 Final state: connections=${shutdownMonitor.activeConnections}, state=${shutdownMonitor.shutdownState}`);
+        
+        resolveServerStop();
       });
     });
   }
@@ -547,7 +624,13 @@ export class ApiServer {
         // Keep connections alive briefly for zero-downtime restarts
         const delay = process.env.NODE_ENV === 'development' ? 100 : 1000;
         this.logger.info(`🔄 Pre-shutdown delay: ${delay}ms for connection draining...`);
-        return new Promise((resolve) => setTimeout(resolve, delay));
+        return new Promise((resolveDelay) => {
+          this.logger.info(`⏳ Connection drain delay: ${delay}ms for graceful shutdown`);
+          setTimeout(() => {
+            this.logger.info('✅ Connection drain delay completed');
+            resolveDelay();
+          }, delay);
+        });
       },
       onSignal: async () => {
         this.logger.info('🔄 Graceful shutdown initiated - keeping connections alive...');

@@ -13,21 +13,20 @@
  * - Integration with WorkflowGatesManager for quality gates
  */
 
-import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
-import { EventEmitter } from 'eventemitter3';
-import type { Logger } from '@claude-zen/foundation'
-import { getLogger } from '@claude-zen/foundation'
-import type { BrainCoordinator } from '../../core/memory-coordinator';
-
-
-
-import type { Agent } from '../agents/agent';
-// Note: SPARCEngineCore is now accessed via enterprise strategic facade as SPARCMethodology
-// SPARC methodology integration via enterprise strategic facade
 import type {
   SPARCPhase,
   SPARCProject,
 } from '@claude-zen/enterprise';
+import type { Logger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation'
+import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
+import { EventEmitter } from 'eventemitter3';
+
+import type { BrainCoordinator } from '../../core/memory-coordinator';
+import type { Agent } from '../agents/agent';
+
+// Note: SPARCEngineCore is now accessed via enterprise strategic facade as SPARCMethodology
+// SPARC methodology integration via enterprise strategic facade
 
 import type {
   AutomationConfig,

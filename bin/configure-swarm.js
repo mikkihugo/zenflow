@@ -2,16 +2,16 @@
 
 /**
  * @fileoverview claude-code-zen Swarm Configuration Utility
- * 
+ *
  * This utility helps configure Claude Code to use either our native TypeScript
  * swarm system or fallback to ruv-swarm via npm. It automatically handles
  * MCP server registration and provides easy switching between modes.
- * 
+ *
  * Usage:
  *   npx claude-zen configure-swarm native    # Use native TypeScript swarm
  *   npx claude-zen configure-swarm fallback  # Install and use ruv-swarm
  *   npx claude-zen configure-swarm status    # Show current configuration
- * 
+ *
  * @author Claude Code Zen Team
  * @version 2.0.0
  */
@@ -48,7 +48,7 @@ function checkClaudeAvailable() {
 
 function configureNativeSwarm() {
   console.log('🚀 Configuring claude-code-zen Native Swarm\n');
-  
+
   if (!checkClaudeAvailable()) {
     console.log('❌ Claude Code CLI not found. Please install it first:');
     console.log('   npm install -g @anthropic-ai/claude-code');
@@ -66,7 +66,7 @@ function configureNativeSwarm() {
 
   // Remove ruv-swarm if it exists
   executeCommand('claude mcp remove ruv-swarm 2>/dev/null || true', 'Removing any existing ruv-swarm MCP server');
-  
+
   // Add our native MCP server
   const success = executeCommand(
     'claude mcp add claude-zen npx claude-zen mcp start',
@@ -83,7 +83,7 @@ function configureNativeSwarm() {
     console.log('   • mcp__claude-zen__task_prediction - Duration prediction');
     console.log('   • mcp__claude-zen__agent_health - Health monitoring');
     console.log('   • ...and many more advanced features\n');
-    
+
     console.log('🚀 Quick start example:');
     console.log('   claude "Initialize a mesh swarm with 5 adaptive agents using mcp__claude-zen__swarm_init"');
   }
@@ -93,7 +93,7 @@ function configureNativeSwarm() {
 
 function configureFallbackSwarm() {
   console.log('🛡️ Configuring ruv-swarm Fallback Option\n');
-  
+
   if (!checkClaudeAvailable()) {
     console.log('❌ Claude Code CLI not found. Please install it first:');
     console.log('   npm install -g @anthropic-ai/claude-code');
@@ -130,7 +130,7 @@ function configureFallbackSwarm() {
 
 function showStatus() {
   console.log('📊 Current Swarm Configuration Status\n');
-  
+
   if (!checkClaudeAvailable()) {
     console.log('❌ Claude Code CLI not available');
     return;
@@ -158,7 +158,7 @@ function showHelp() {
   console.log('  fallback   Install and configure ruv-swarm as fallback');
   console.log('  status     Show current MCP server configuration');
   console.log('  help       Show this help message\n');
-  
+
   console.log('Examples:');
   console.log('  npx claude-zen configure-swarm native');
   console.log('  npx claude-zen configure-swarm fallback');

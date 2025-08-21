@@ -14,13 +14,14 @@
 
 import { access, readdir, readFile } from 'node:fs/promises';
 import { extname, join } from 'node:path';
+
 import { getLogger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
 import {
   EnvironmentDetector,
   type EnvironmentSnapshot,
   type EnvironmentTool,
 } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
 
 export interface WorkspaceFact {
   id: string;
@@ -744,12 +745,10 @@ export class WorkspaceCollectiveSystem extends EventEmitter {
 
       // 3. Sort and limit results
       const sortedResults = results.sort((a, b) => {
-        if (preferFacts) {
-          // Prioritize FACT results, then by relevance
-          if (a.source.type !== b.source.type) {
+        if (preferFacts && // Prioritize FACT results, then by relevance
+          a.source.type !== b.source.type) {
             return a.source.type === 'fact' ? -1 : 1;
           }
-        }
         return b.relevance - a.relevance;
       });
 

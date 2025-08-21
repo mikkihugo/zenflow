@@ -21,9 +21,10 @@
 import { Result, ok, err, ResultAsync, errAsync, okAsync } from 'neverthrow';
 import CircuitBreaker, { Options as CircuitBreakerOptions } from 'opossum';
 import pRetry, { AbortError, Options as PRetryOptions } from 'p-retry';
-import type { JsonObject } from './types/primitives';
 
 import { getLogger } from './logging';
+import type { JsonObject } from './types/primitives';
+
 
 const logger = getLogger('error-handling');
 
@@ -109,16 +110,26 @@ export class ContextError extends Error {
   }
 
   /**
-   * Convert to plain object for serialization
+   * Convert to plain object for serialization with enhanced context information
    */
   toObject(): JsonObject {
-    return {
+    // Enhanced context error serialization with additional metadata
+    const baseObject = {
       name: this.name,
       message: this.message,
       code: this.code ?? null,
       context: this.context as JsonObject,
       timestamp: this.timestamp.toISOString(),
       stack: this.stack ?? null,
+    };
+
+    // Add enhanced context information for ContextError
+    return {
+      ...baseObject,
+      errorType: 'ContextError',
+      contextKeys: Object.keys(this.context || {}),
+      hasContext: Boolean(this.context && Object.keys(this.context).length > 0),
+      contextSummary: Object.keys(this.context || {}).join(', ') || 'no context',
     };
   }
 }
@@ -437,8 +448,17 @@ export async function withTimeout<T>(
   timeoutMs: number,
   timeoutMessage?: string,
 ): Promise<Result<T, TimeoutError>> {
+  let timeoutHandle: NodeJS.Timeout | undefined;
+  
+  const cleanup = () => {
+    if (timeoutHandle) {
+      clearTimeout(timeoutHandle);
+      timeoutHandle = undefined;
+    }
+  };
+  
   const timeoutPromise = new Promise<never>((_, reject) => {
-    setTimeout(() => {
+    timeoutHandle = setTimeout(() => {
       reject(
         new TimeoutError(
           timeoutMessage || `Operation timed out after ${timeoutMs}ms`,
@@ -450,8 +470,10 @@ export async function withTimeout<T>(
 
   try {
     const result = await Promise.race([fn(), timeoutPromise]);
+    cleanup();
     return ok(result);
   } catch (error) {
+    cleanup();
     if (error instanceof TimeoutError) {
       return err(error);
     } else {

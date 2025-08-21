@@ -21,16 +21,9 @@
  */
 
 // SPARC methodology integration via enterprise strategic facade
-import { createSPARCCommander } from '@claude-zen/enterprise';
-import type { SPARCProject } from '@claude-zen/enterprise';
+import type { SPARCProject , WorkAssignment, ImplementationResult } from '@claude-zen/enterprise';
 import { DatabaseSPARCBridge } from '@claude-zen/enterprise';
-import type { WorkAssignment, ImplementationResult } from '@claude-zen/enterprise';
-import type { 
-  ClaudeZenIntegrationConfig,
-  AIOrchestrationConfig,
-  NeuralCoordinationConfig,
-  SwarmIntelligenceConfig
-} from '../../types/safe-sparc-integration';
+
 
 // Foundation imports
 import { getLogger } from '@claude-zen/foundation';
@@ -40,9 +33,14 @@ import { nanoid } from 'nanoid';
 import type { 
   FeatureDocumentEntity, 
   TaskDocumentEntity,
-  StoryDocumentEntity,
-  BaseDocumentEntity 
+  StoryDocumentEntity 
 } from '../../entities/document-entities';
+import type { 
+  ClaudeZenIntegrationConfig,
+  AIOrchestrationConfig,
+  NeuralCoordinationConfig,
+  SwarmIntelligenceConfig
+} from '../../types/safe-sparc-integration';
 import type { DocumentManager } from '../database/document-service';
 
 /**

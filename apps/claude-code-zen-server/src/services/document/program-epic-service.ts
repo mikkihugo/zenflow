@@ -16,11 +16,12 @@
  * @version 1.0.0
  */
 
-import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
 import type { ProgramEpicEntity, FeatureEntity } from '../../entities/document-entities';
 import type { DocumentType } from '../../workflows/types';
+
+import { BaseDocumentService, type ValidationResult, type QueryFilters, type QueryResult } from './base-document-service';
 import { DocumentManager } from './document-service';
-import { nanoid } from 'nanoid';
+
 
 // ============================================================================
 // PROGRAM EPIC INTERFACES

@@ -321,7 +321,7 @@ export class SafeAPIService {
 
   constructor(baseURL: string, apiKey?: string) {
     const headers = apiKey ? { Authorization: `Bearer ${apiKey}` } : {};
-    this.client = new SafeAPIClient(baseURL, headers) as any as any as any;
+    this.client = new SafeAPIClient(baseURL, headers) as any as any as any as any as any;
   }
 
   /**

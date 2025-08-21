@@ -32,9 +32,33 @@ export {
 // TYPE EXPORTS
 // =============================================================================
 
-export type {
-  AgentInstance,
-  AgentRegistrationConfig,
-  AgentHealthStatus,
-  AgentRegistryOptions
-} from '@claude-zen/agent-registry';
+// export type {
+//   AgentInstance,
+//   AgentRegistrationConfig,
+//   AgentHealthStatus,
+//   AgentRegistryOptions
+// } from '@claude-zen/agent-registry';
+
+// Define types locally until agent-registry package is available
+export interface AgentInstance {
+  id: string;
+  type: string;
+  status: string;
+}
+
+export interface AgentRegistrationConfig {
+  id: string;
+  type: string;
+  capabilities: string[];
+}
+
+export interface AgentHealthStatus {
+  id: string;
+  healthy: boolean;
+  lastCheck: Date;
+}
+
+export interface AgentRegistryOptions {
+  maxAgents?: number;
+  healthCheckInterval?: number;
+}

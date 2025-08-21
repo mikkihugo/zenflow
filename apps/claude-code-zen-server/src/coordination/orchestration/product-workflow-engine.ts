@@ -22,12 +22,13 @@
  * - Event-driven coordination
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { nanoid } from 'nanoid';
 import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '@claude-zen/foundation';
-import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type { TypeSafeEventBus } from '@claude-zen/infrastructure';
+import { EventEmitter } from 'eventemitter3';
+import { nanoid } from 'nanoid';
+
+import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type {
   ADRDocumentEntity,
   EpicDocumentEntity,
@@ -36,7 +37,6 @@ import type {
   TaskDocumentEntity,
   VisionDocumentEntity,
 } from '../../database/entities/product-entities';
-import type { DocumentManager } from "../services/document/document-service"
 import {
   WorkflowAGUIAdapter,
 } from '../../interfaces/agui/workflow-agui-adapter';
@@ -45,17 +45,18 @@ import type {
   WorkflowContext,
   WorkflowDefinition,
   WorkflowEngineConfig,
-} from '../../workflows/types';
+ WorkflowStep } from '../../workflows/types';
+import type { DocumentManager } from "../services/document/document-service"
 import type {
   WorkflowGateRequest,
 } from '../workflows/workflow-gate-request';
+
 import type {
   WorkflowGateContext,
   WorkflowGatePriority,
 } from './workflow-gates';
 
 // Import WorkflowStep from workflow-types
-import type { WorkflowStep } from '../../workflows/types';
 
 // Define missing types locally
 type WorkflowStatus =

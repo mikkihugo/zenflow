@@ -1,18 +1,19 @@
 /**
  * @file Shared Fact Access - Foundation Fact System Integration
- * 
+ *
  * Provides streamlined access patterns for coordination layer components
  * to interact with the foundation fact system. This module serves as an
  * abstraction layer that leverages @claude-zen/intelligence capabilities.
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { 
-  sharedFactSystem, 
+
+import {
+  sharedFactSystem,
   storeCoordinationEvent,
   searchExternalFacts,
   getNPMPackageInfo,
-  getGitHubRepoInfo
+  getGitHubRepoInfo,
 } from './shared-fact-system';
 import type { FactEntry, FactQuery } from './shared-fact-system';
 
@@ -22,13 +23,25 @@ const logger = getLogger('SharedFactAccess');
  * Coordination-specific fact access interface
  */
 export interface CoordinationFactAccess {
-  recordCoordinationEvent(event: string, data: unknown, agentId?: string): Promise<string>;
+  recordCoordinationEvent(
+    event: string,
+    data: unknown,
+    agentId?: string
+  ): Promise<string>;
   getCoordinationHistory(limit?: number): Promise<FactEntry[]>;
-  recordAgentInteraction(fromAgent: string, toAgent: string, interaction: unknown): Promise<string>;
+  recordAgentInteraction(
+    fromAgent: string,
+    toAgent: string,
+    interaction: unknown
+  ): Promise<string>;
   getAgentInteractions(agentId?: string, limit?: number): Promise<FactEntry[]>;
   recordSwarmState(swarmId: string, state: unknown): Promise<string>;
   getSwarmHistory(swarmId: string, limit?: number): Promise<FactEntry[]>;
-  recordDecision(decision: string, reasoning: string, context?: unknown): Promise<string>;
+  recordDecision(
+    decision: string,
+    reasoning: string,
+    context?: unknown
+  ): Promise<string>;
   getDecisionHistory(limit?: number): Promise<FactEntry[]>;
   query?(query: string): Promise<FactEntry[]>;
 }
@@ -91,7 +104,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
         tags: ['interaction', 'agent', 'coordination'],
       });
     } catch (error) {
-      logger.error(`Failed to record agent interaction: ${fromAgent} -> ${toAgent}`, error);
+      logger.error(
+        `Failed to record agent interaction: ${fromAgent} -> ${toAgent}`,
+        error
+      );
       throw error;
     }
   }
@@ -99,7 +115,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
   /**
    * Get agent interactions
    */
-  async getAgentInteractions(agentId?: string, limit = 30): Promise<FactEntry[]> {
+  async getAgentInteractions(
+    agentId?: string,
+    limit = 30
+  ): Promise<FactEntry[]> {
     try {
       const query: FactQuery = {
         type: 'agent_interaction',
@@ -221,7 +240,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
         tags: ['performance', 'metrics', component],
       });
     } catch (error) {
-      logger.error(`Failed to record performance metrics for: ${component}`, error);
+      logger.error(
+        `Failed to record performance metrics for: ${component}`,
+        error
+      );
       throw error;
     }
   }
@@ -229,7 +251,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
   /**
    * Get performance metrics
    */
-  async getPerformanceMetrics(component?: string, limit = 15): Promise<FactEntry[]> {
+  async getPerformanceMetrics(
+    component?: string,
+    limit = 15
+  ): Promise<FactEntry[]> {
     try {
       const query: FactQuery = {
         type: 'performance_metrics',
@@ -254,7 +279,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
   async searchFacts(searchTerm: string, limit = 20): Promise<FactEntry[]> {
     try {
       const allFacts = await sharedFactSystem.queryFacts({ limit: 1000 });
-      
+
       // Simple text search in fact data
       return allFacts
         .filter((fact) => {
@@ -271,11 +296,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
   /**
    * Search external facts using foundation fact system
    */
-  async searchExternalFacts(
-    query: string, 
-    sources?: string[], 
-    limit = 10
-  ) {
+  async searchExternalFacts(query: string, sources?: string[], limit = 10) {
     try {
       logger.debug(`Searching external facts: ${query}`);
       return await searchExternalFacts(query, sources, limit);
@@ -290,7 +311,9 @@ export class SharedFactAccess implements CoordinationFactAccess {
    */
   async getNPMPackageInfo(packageName: string, version?: string) {
     try {
-      logger.debug(`Getting NPM package info: ${packageName}${version ? '@' + version : ''}`);
+      logger.debug(
+        `Getting NPM package info: ${packageName}${version ? '@' + version : ''}`
+      );
       return await getNPMPackageInfo(packageName, version);
     } catch (error) {
       logger.error(`Failed to get NPM package info for: ${packageName}`, error);
@@ -306,7 +329,10 @@ export class SharedFactAccess implements CoordinationFactAccess {
       logger.debug(`Getting GitHub repo info: ${owner}/${repo}`);
       return await getGitHubRepoInfo(owner, repo);
     } catch (error) {
-      logger.error(`Failed to get GitHub repo info for: ${owner}/${repo}`, error);
+      logger.error(
+        `Failed to get GitHub repo info for: ${owner}/${repo}`,
+        error
+      );
       return null;
     }
   }
@@ -337,7 +363,7 @@ export class SharedFactAccess implements CoordinationFactAccess {
       for (const [source, count] of Object.entries(stats.factsBySource)) {
         if (source.startsWith('agent:')) {
           const agentId = source.replace('agent:', '');
-          agentCounts[agentId] = count;
+          agentCounts[agentId] = count as any;
         }
       }
 
@@ -381,17 +407,26 @@ export const recordEvent = (event: string, data: unknown, agentId?: string) =>
 export const getHistory = (limit?: number) =>
   coordinationFactAccess.getCoordinationHistory(limit);
 
-export const recordInteraction = (from: string, to: string, interaction: unknown) =>
-  coordinationFactAccess.recordAgentInteraction(from, to, interaction);
+export const recordInteraction = (
+  from: string,
+  to: string,
+  interaction: unknown
+) => coordinationFactAccess.recordAgentInteraction(from, to, interaction);
 
-export const recordDecision = (decision: string, reasoning: string, context?: unknown) =>
-  coordinationFactAccess.recordDecision(decision, reasoning, context);
+export const recordDecision = (
+  decision: string,
+  reasoning: string,
+  context?: unknown
+) => coordinationFactAccess.recordDecision(decision, reasoning, context);
 
 export const searchFacts = (term: string, limit?: number) =>
   coordinationFactAccess.searchFacts(term, limit);
 
-export const searchExternal = (query: string, sources?: string[], limit?: number) =>
-  coordinationFactAccess.searchExternalFacts(query, sources, limit);
+export const searchExternal = (
+  query: string,
+  sources?: string[],
+  limit?: number
+) => coordinationFactAccess.searchExternalFacts(query, sources, limit);
 
 export const getNPMInfo = (packageName: string, version?: string) =>
   coordinationFactAccess.getNPMPackageInfo(packageName, version);

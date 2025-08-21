@@ -1,0 +1,425 @@
+/**
+ * Memory Management System - Handles persistent and session memory
+ * 
+ * This module provides comprehensive memory management including session storage,
+ * persistent data management, and intelligent caching capabilities.
+ */
+
+import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
+
+const logger = getLogger('MemorySystem');
+
+export interface MemoryEntry {
+  /** Unique identifier for the memory entry */
+  id: string;
+  /** Memory key for retrieval */
+  key: string;
+  /** Stored value (can be any serializable type) */
+  value: unknown;
+  /** Entry creation timestamp */
+  createdAt: Date;
+  /** Last access timestamp */
+  lastAccessedAt: Date;
+  /** Entry expiration timestamp (optional) */
+  expiresAt?: Date;
+  /** Entry metadata */
+  metadata?: Record<string, unknown>;
+  /** Entry type/category */
+  type?: string;
+}
+
+export interface MemoryStats {
+  /** Total number of entries */
+  totalEntries: number;
+  /** Memory usage in bytes */
+  memoryUsage: number;
+  /** Cache hit rate (0-1) */
+  hitRate: number;
+  /** Number of expired entries */
+  expiredEntries: number;
+  /** Last cleanup timestamp */
+  lastCleanup: Date;
+}
+
+export interface MemoryConfig {
+  /** Maximum number of entries */
+  maxEntries?: number;
+  /** Default TTL in milliseconds */
+  defaultTtl?: number;
+  /** Enable automatic cleanup */
+  autoCleanup?: boolean;
+  /** Cleanup interval in milliseconds */
+  cleanupInterval?: number;
+  /** Persistence backend */
+  persistenceBackend?: 'memory' | 'file' | 'database';
+}
+
+export interface SessionMemory {
+  /** Session identifier */
+  sessionId: string;
+  /** Session data */
+  data: Record<string, unknown>;
+  /** Session creation time */
+  createdAt: Date;
+  /** Last activity time */
+  lastActivity: Date;
+  /** Session expiration time */
+  expiresAt?: Date;
+}
+
+export class MemoryStore extends EventEmitter {
+  private entries: Map<string, MemoryEntry> = new Map();
+  private config: MemoryConfig;
+  private stats: MemoryStats;
+  private cleanupTimer?: NodeJS.Timeout;
+
+  constructor(config: MemoryConfig = {}) {
+    super();
+    this.config = {
+      maxEntries: 10000,
+      defaultTtl: 1000 * 60 * 60, // 1 hour
+      autoCleanup: true,
+      cleanupInterval: 1000 * 60 * 5, // 5 minutes
+      persistenceBackend: 'memory',
+      ...config
+    };
+    
+    this.stats = {
+      totalEntries: 0,
+      memoryUsage: 0,
+      hitRate: 0,
+      expiredEntries: 0,
+      lastCleanup: new Date()
+    };
+
+    if (this.config.autoCleanup) {
+      this.startCleanupTimer();
+    }
+  }
+
+  /**
+   * Store a value in memory
+   */
+  async set(key: string, value: unknown, ttl?: number): Promise<void> {
+    const id = this.generateId();
+    const now = new Date();
+    const expiresAt = ttl ? new Date(now.getTime() + ttl) : 
+                     this.config.defaultTtl ? new Date(now.getTime() + this.config.defaultTtl) : 
+                     undefined;
+
+    const entry: MemoryEntry = {
+      id,
+      key,
+      value,
+      createdAt: now,
+      lastAccessedAt: now,
+      expiresAt,
+      metadata: {}
+    };
+
+    // Check capacity
+    if (this.config.maxEntries && this.entries.size >= this.config.maxEntries) {
+      await this.evictOldest();
+    }
+
+    this.entries.set(key, entry);
+    this.updateStats();
+    
+    logger.debug('Memory entry stored', { key, id, expiresAt });
+    this.emit('entry-stored', { key, entry });
+  }
+
+  /**
+   * Retrieve a value from memory
+   */
+  async get(key: string): Promise<unknown | null> {
+    const entry = this.entries.get(key);
+    
+    if (!entry) {
+      this.emit('cache-miss', { key });
+      return null;
+    }
+
+    // Check expiration
+    if (entry.expiresAt && entry.expiresAt < new Date()) {
+      await this.delete(key);
+      this.emit('cache-miss', { key, reason: 'expired' });
+      return null;
+    }
+
+    // Update access time
+    entry.lastAccessedAt = new Date();
+    this.emit('cache-hit', { key });
+    
+    return entry.value;
+  }
+
+  /**
+   * Delete a value from memory
+   */
+  async delete(key: string): Promise<boolean> {
+    const deleted = this.entries.delete(key);
+    if (deleted) {
+      this.updateStats();
+      logger.debug('Memory entry deleted', { key });
+      this.emit('entry-deleted', { key });
+    }
+    return deleted;
+  }
+
+  /**
+   * Check if a key exists
+   */
+  async has(key: string): Promise<boolean> {
+    const entry = this.entries.get(key);
+    if (!entry) return false;
+    
+    // Check expiration
+    if (entry.expiresAt && entry.expiresAt < new Date()) {
+      await this.delete(key);
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Clear all entries
+   */
+  async clear(): Promise<void> {
+    this.entries.clear();
+    this.updateStats();
+    logger.info('Memory store cleared');
+    this.emit('store-cleared');
+  }
+
+  /**
+   * Get all keys
+   */
+  async keys(): Promise<string[]> {
+    return Array.from(this.entries.keys());
+  }
+
+  /**
+   * Get memory statistics
+   */
+  getStats(): MemoryStats {
+    return { ...this.stats };
+  }
+
+  /**
+   * Perform manual cleanup
+   */
+  async cleanup(): Promise<number> {
+    const now = new Date();
+    let expiredCount = 0;
+
+    for (const [key, entry] of this.entries.entries()) {
+      if (entry.expiresAt && entry.expiresAt < now) {
+        this.entries.delete(key);
+        expiredCount++;
+      }
+    }
+
+    this.stats.expiredEntries += expiredCount;
+    this.stats.lastCleanup = now;
+    this.updateStats();
+
+    if (expiredCount > 0) {
+      logger.debug('Memory cleanup completed', { expiredCount });
+      this.emit('cleanup-completed', { expiredCount });
+    }
+
+    return expiredCount;
+  }
+
+  /**
+   * Destroy the memory store
+   */
+  async destroy(): Promise<void> {
+    if (this.cleanupTimer) {
+      clearInterval(this.cleanupTimer);
+    }
+    await this.clear();
+    this.removeAllListeners();
+    logger.info('Memory store destroyed');
+  }
+
+  private generateId(): string {
+    return `mem_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private startCleanupTimer(): void {
+    if (!this.config.cleanupInterval) return;
+    
+    this.cleanupTimer = setInterval(() => {
+      this.cleanup().catch(error => {
+        logger.error('Cleanup timer error', { error });
+      });
+    }, this.config.cleanupInterval);
+  }
+
+  private async evictOldest(): Promise<void> {
+    let oldestKey: string | null = null;
+    let oldestTime = Date.now();
+
+    for (const [key, entry] of this.entries.entries()) {
+      if (entry.lastAccessedAt.getTime() < oldestTime) {
+        oldestTime = entry.lastAccessedAt.getTime();
+        oldestKey = key;
+      }
+    }
+
+    if (oldestKey) {
+      await this.delete(oldestKey);
+      logger.debug('Evicted oldest entry', { key: oldestKey });
+    }
+  }
+
+  private updateStats(): void {
+    this.stats.totalEntries = this.entries.size;
+    
+    // Calculate memory usage (approximate)
+    let totalSize = 0;
+    for (const entry of this.entries.values()) {
+      totalSize += JSON.stringify(entry).length * 2; // Rough estimate
+    }
+    this.stats.memoryUsage = totalSize;
+  }
+}
+
+export class SessionMemoryStore extends EventEmitter {
+  private sessions: Map<string, SessionMemory> = new Map();
+  private memoryStore: MemoryStore;
+
+  constructor(memoryStore?: MemoryStore) {
+    super();
+    this.memoryStore = memoryStore || new MemoryStore();
+  }
+
+  /**
+   * Create a new session
+   */
+  async createSession(sessionId: string, data: Record<string, unknown> = {}, ttl?: number): Promise<SessionMemory> {
+    const now = new Date();
+    const session: SessionMemory = {
+      sessionId,
+      data,
+      createdAt: now,
+      lastActivity: now,
+      expiresAt: ttl ? new Date(now.getTime() + ttl) : undefined
+    };
+
+    this.sessions.set(sessionId, session);
+    await this.memoryStore.set(`session:${sessionId}`, session, ttl);
+    
+    logger.debug('Session created', { sessionId });
+    this.emit('session-created', { sessionId, session });
+    
+    return session;
+  }
+
+  /**
+   * Get session data
+   */
+  async getSession(sessionId: string): Promise<SessionMemory | null> {
+    const session = this.sessions.get(sessionId);
+    
+    if (!session) {
+      // Try to restore from memory store
+      const stored = await this.memoryStore.get(`session:${sessionId}`) as SessionMemory | null;
+      if (stored) {
+        this.sessions.set(sessionId, stored);
+        return stored;
+      }
+      return null;
+    }
+
+    // Check expiration
+    if (session.expiresAt && session.expiresAt < new Date()) {
+      await this.destroySession(sessionId);
+      return null;
+    }
+
+    // Update last activity
+    session.lastActivity = new Date();
+    return session;
+  }
+
+  /**
+   * Update session data
+   */
+  async updateSession(sessionId: string, data: Partial<Record<string, unknown>>): Promise<boolean> {
+    const session = await this.getSession(sessionId);
+    if (!session) return false;
+
+    session.data = { ...session.data, ...data };
+    session.lastActivity = new Date();
+    
+    await this.memoryStore.set(`session:${sessionId}`, session);
+    
+    this.emit('session-updated', { sessionId, data });
+    return true;
+  }
+
+  /**
+   * Destroy a session
+   */
+  async destroySession(sessionId: string): Promise<boolean> {
+    const deleted = this.sessions.delete(sessionId);
+    await this.memoryStore.delete(`session:${sessionId}`);
+    
+    if (deleted) {
+      logger.debug('Session destroyed', { sessionId });
+      this.emit('session-destroyed', { sessionId });
+    }
+    
+    return deleted;
+  }
+
+  /**
+   * Store data in session memory
+   */
+  async store(sessionId: string, key: string, value: unknown): Promise<void> {
+    const session = await this.getSession(sessionId);
+    if (!session) {
+      throw new Error(`Session ${sessionId} not found`);
+    }
+
+    session.data[key] = value;
+    session.lastActivity = new Date();
+    
+    await this.memoryStore.set(`session:${sessionId}`, session);
+    this.emit('data-stored', { sessionId, key, value });
+  }
+
+  /**
+   * Retrieve data from session memory
+   */
+  async retrieve(sessionId: string, key: string): Promise<unknown | null> {
+    const session = await this.getSession(sessionId);
+    if (!session) return null;
+
+    return session.data[key] || null;
+  }
+
+  /**
+   * Get all active sessions
+   */
+  getActiveSessions(): string[] {
+    return Array.from(this.sessions.keys());
+  }
+}
+
+// Create default instances
+export const memoryStore = new MemoryStore();
+export const sessionMemoryStore = new SessionMemoryStore(memoryStore);
+
+// Export types
+export type {
+  MemoryEntry,
+  MemoryStats,
+  MemoryConfig,
+  SessionMemory
+};

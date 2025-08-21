@@ -1,14 +1,14 @@
 /**
  * @fileoverview Enterprise Strategic Facade
- * 
+ *
  * STRATEGIC FACADE PURPOSE:
  * This facade provides unified access to enterprise business logic and coordination
  * capabilities while delegating to real implementation packages when available.
- * 
+ *
  * DELEGATION ARCHITECTURE:
  * • @claude-zen/safe-framework: Safety protocols and risk management
  * • @claude-zen/sparc: Systematic Problem Analysis and Resolution Coordination
- * • @claude-zen/agui: Advanced GUI framework and interface components  
+ * • @claude-zen/agui: Advanced GUI framework and interface components
  * • @claude-zen/knowledge: Knowledge management and semantic processing
  * • @claude-zen/kanban: Kanban workflow management and task coordination
  * • @claude-zen/multi-level-orchestration: Multi-level system orchestration
@@ -20,7 +20,7 @@
  * • @claude-zen/exporters: Data export management and formatting
  * • @claude-zen/agent-registry: Centralized agent registration and lifecycle management
  * • @claude-zen/interfaces: Interface management and detection systems
- * 
+ *
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
  * 1. registerFacade() - Register with facade status manager
@@ -28,15 +28,15 @@
  * 3. Export all module implementations (with fallbacks)
  * 4. Export main system object for programmatic access
  * 5. Export types for external consumers
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
  */
 
-import { 
+import {
   registerFacade,
-  getLogger
+  getLogger,
 } from '@claude-zen/foundation';
 import './module-declarations';
 
@@ -57,7 +57,7 @@ registerFacade('enterprise', [
   '@claude-zen/documentation',
   '@claude-zen/exporters',
   '@claude-zen/agent-registry',
-  '@claude-zen/interfaces'
+  '@claude-zen/interfaces',
 ], [
   'Safety protocols and risk management',
   'Systematic Problem Analysis and Resolution Coordination',
@@ -73,7 +73,7 @@ registerFacade('enterprise', [
   'Data export management and formatting',
   'Centralized agent registration and lifecycle management',
   'Interface management and detection systems',
-  'Enterprise business logic and coordination'
+  'Enterprise business logic and coordination',
 ]);
 
 // =============================================================================
@@ -107,9 +107,21 @@ try {
 }
 
 // Enterprise coordination systems delegation - fallback implementations when package not available
-export const DevelopmentCoordinator = class { async executeCoordination() { return { success: false, message: 'Package not available' }; } };
-export const ProjectCoordinator = class { async executeCoordination() { return { success: false, message: 'Package not available' }; } };
-export const DevelopmentManager = class { async executeCoordination() { return { success: false, message: 'Package not available' }; } };
+export const DevelopmentCoordinator = class {
+  async executeCoordination() {
+    return { success: false, message: 'Package not available' };
+  }
+};
+export const ProjectCoordinator = class {
+  async executeCoordination() {
+    return { success: false, message: 'Package not available' };
+  }
+};
+export const DevelopmentManager = class {
+  async executeCoordination() {
+    return { success: false, message: 'Package not available' };
+  }
+};
 export const createDevelopmentConfig = () => ({ mode: 'basic', enableAI: false });
 export const getProjectCoordinator = () => null;
 export const createProjectConfig = () => ({ mode: 'basic' });
@@ -130,37 +142,37 @@ export const enterpriseSystem = {
   orchestration: () => import('./multi-level-orchestration'),
   agents: () => import('./agent-manager'),
   coordination: () => import('./coordination-core'),
-  
+
   // Document processing modules
   documentProcessing: () => import('./document-processing'),
   documentation: () => import('./documentation'),
   exporters: () => import('./exporters'),
-  
+
   // Agent and interface management (with fallbacks)
   agentRegistry: () => import('@claude-zen/agent-registry').catch(() => ({ default: {} })),
   interfaces: () => import('@claude-zen/interfaces').catch(() => ({ default: {} })),
-  
+
   // Legacy coordination functions
   development: {
     coordinator: DevelopmentCoordinator,
     manager: DevelopmentManager,
     createConfig: createDevelopmentConfig,
     createManager: createDevelopmentManager,
-    createSAFEManager: createSAFEDevelopmentManager
+    createSAFEManager: createSAFEDevelopmentManager,
   },
-  
+
   project: {
     coordinator: ProjectCoordinator,
     getCoordinator: getProjectCoordinator,
-    createConfig: createProjectConfig
+    createConfig: createProjectConfig,
   },
-  
+
   // Utilities
   logger: logger,
   init: async () => {
     logger.info('Enterprise system initialized');
     return { success: true, message: 'Enterprise ready' };
-  }
+  },
 };
 
 // =============================================================================

@@ -713,14 +713,30 @@ Return your architecture design as JSON with the following structure:
   }
 
   private buildPseudocodePrompt(project: SPARCProject, epic: EpicProposal): string {
+    // Enhanced prompt that incorporates epic context for better pseudocode generation
+    const epicContext = {
+      businessValue: epic.estimatedValue,
+      costConstraints: epic.estimatedCost,
+      timeframe: epic.timeframe,
+      riskLevel: epic.riskLevel,
+      strategicObjectives: epic.strategicObjectives
+    };
+
     return `
 Create detailed pseudocode for the following SPARC project:
 
 Project: ${project.name}
 Specification: ${JSON.stringify(project.specification, null, 2)}
 
+Epic Context:
+- Business Value: $${epicContext.businessValue.toLocaleString()}
+- Budget Constraints: $${epicContext.costConstraints.toLocaleString()}
+- Timeline: ${epicContext.timeframe}
+- Risk Level: ${epicContext.riskLevel}
+- Strategic Objectives: ${epicContext.strategicObjectives.join(', ')}
+
 Provide pseudocode covering:
-1. Main algorithms and processing logic
+1. Main algorithms and processing logic (optimized for ${epicContext.riskLevel} risk)
 2. Data structures and their relationships
 3. Key workflows and user interactions
 
@@ -729,6 +745,13 @@ Format as plain text pseudocode, not actual code.
   }
 
   private buildRefinementPrompt(project: SPARCProject, epic: EpicProposal): string {
+    // Enhanced refinement that considers epic constraints and objectives
+    const performanceTargets = {
+      userLoad: epic.estimatedValue > 1000000 ? 'high' : epic.estimatedValue > 500000 ? 'medium' : 'standard',
+      scalabilityNeeds: epic.strategicObjectives.some(obj => obj.includes('scale')) ? 'enterprise' : 'standard',
+      securityLevel: epic.riskLevel === 'high' ? 'enterprise' : epic.riskLevel === 'medium' ? 'business' : 'standard'
+    };
+
     return `
 Refine and optimize the following SPARC project design:
 
@@ -736,10 +759,17 @@ Project: ${project.name}
 Architecture: ${JSON.stringify(project.architecture, null, 2)}
 Pseudocode: ${JSON.stringify(project.pseudocode, null, 2)}
 
+Epic-Driven Requirements:
+- Target Performance: ${performanceTargets.userLoad} user load capacity
+- Scalability: ${performanceTargets.scalabilityNeeds} level scaling requirements
+- Security: ${performanceTargets.securityLevel} grade security implementation
+- Budget Impact: Optimize for $${epic.estimatedCost.toLocaleString()} budget
+- Timeline Constraints: ${epic.timeframe} delivery window
+
 Provide refinements covering:
-1. Performance optimizations
-2. Risk mitigations and error handling
-3. Quality assurance checks
+1. Performance optimizations (targeting ${performanceTargets.userLoad} load)
+2. Risk mitigations and error handling (${epic.riskLevel} risk profile)
+3. Quality assurance checks aligned with strategic objectives
 
 Focus on making the design production-ready and robust.
 `;
@@ -914,9 +944,9 @@ Make it production-ready with proper structure and documentation.
       }
       
       // Fallback: extract file patterns from text
-      const fileMatches = response.match(/[\w\-\.\/]+\.(ts|js|tsx|jsx|py|go|rs|java|cpp|c|h)/g) || [];
-      const testMatches = response.match(/[\w\-\.\/]+\.(test|spec)\.(ts|js|tsx|jsx|py|go|rs)/g) || [];
-      const docMatches = response.match(/[\w\-\.\/]+\.(md|txt|rst|adoc)/g) || [];
+      const fileMatches = response.match(/[\w./-]+\.(ts|js|tsx|jsx|py|go|rs|java|cpp|c|h)/g) || [];
+      const testMatches = response.match(/[\w./-]+\.(test|spec)\.(ts|js|tsx|jsx|py|go|rs)/g) || [];
+      const docMatches = response.match(/[\w./-]+\.(md|txt|rst|adoc)/g) || [];
       
       return {
         files: Array.from(new Set(fileMatches)).slice(0, 10),
@@ -960,14 +990,19 @@ export class SafeSparcWorkflow extends EventEmitter {
     this.logger.info(`Expected ROI: ${(((epic.estimatedValue - epic.estimatedCost) / epic.estimatedCost) * 100).toFixed(1)}%`);
     
     const workflowStartTime = Date.now();
+    this.logger.info(`🚀 Starting SAFe-SPARC workflow at ${new Date(workflowStartTime).toISOString()}`);
 
     try {
       // Step 1: SAFe Role Decisions
       this.logger.info(`\n📋 STEP 1: SAFe Role Decision Process`);
+      const step1StartTime = Date.now();
       const roleDecisions = await this.executeSafeRoles(epic);
+      const step1Duration = Date.now() - step1StartTime;
+      this.logger.info(`✅ Step 1 completed in ${step1Duration}ms`);
       
       // Step 2: Determine Overall Decision  
       this.logger.info(`\n🧮 STEP 2: SAFe Decision Analysis`);
+      const step2StartTime = Date.now();
       const overallDecision = this.determineOverallDecision(roleDecisions);
       const consensusReached = this.checkConsensus(roleDecisions);
       
@@ -1070,10 +1105,24 @@ export class SafeSparcWorkflow extends EventEmitter {
     const approvals = decisions.filter(d => d.decision === 'approve').length;
     const rejections = decisions.filter(d => d.decision === 'reject').length;
     const totalDecisions = decisions.length;
+    const deferredDecisions = decisions.filter(d => d.decision === 'defer').length;
 
-    // Require majority approval (3+ out of 5 roles)
-    if (approvals >= 3) return 'approve';
-    if (rejections >= 3) return 'reject';
+    // Enhanced decision logic that considers decision quality and confidence
+    const avgConfidence = decisions.reduce((sum, d) => sum + d.confidence, 0) / totalDecisions;
+    const highConfidenceDecisions = decisions.filter(d => d.confidence > 0.8);
+    
+    this.logger.info(`Decision analysis: ${approvals}/${totalDecisions} approvals, ${rejections}/${totalDecisions} rejections, ${deferredDecisions}/${totalDecisions} deferred`);
+    this.logger.info(`Average confidence: ${(avgConfidence * 100).toFixed(1)}%, High confidence decisions: ${highConfidenceDecisions.length}/${totalDecisions}`);
+
+    // If all decisions are present and high confidence in majority
+    if (totalDecisions >= 5) {
+      if (approvals >= 3 && avgConfidence > 0.7) return 'approve';
+      if (rejections >= 3 && avgConfidence > 0.7) return 'reject';
+    }
+    
+    // Fallback to simple majority when confidence is lower or decisions incomplete
+    if (approvals >= Math.ceil(totalDecisions / 2)) return 'approve';
+    if (rejections >= Math.ceil(totalDecisions / 2)) return 'reject';
     return 'defer';
   }
 
@@ -1095,6 +1144,9 @@ export async function createSafeSparcWorkflow(): Promise<SafeSparcWorkflow> {
   
   // Initialize and verify dependencies
   const logger = getLogger('SafeSparcWorkflow');
+  
+  // Ensure workflow is properly initialized
+  await Promise.resolve(); // Placeholder for future async initialization
   logger.info('Creating standalone SAFe-SPARC workflow');
   
   return workflow;
@@ -1104,7 +1156,9 @@ export async function createSafeSparcWorkflow(): Promise<SafeSparcWorkflow> {
  * Quick test function for standalone workflow
  */
 export async function testSafeSparcWorkflow(): Promise<void> {
+  const logger = getLogger('SafeSparcWorkflowTest');
   console.log('🚀 Testing Standalone SAFe-SPARC Workflow...\n');
+  logger.info('Starting SAFe-SPARC workflow test execution');
 
   try {
     const workflow = await createSafeSparcWorkflow();
@@ -1122,6 +1176,11 @@ export async function testSafeSparcWorkflow(): Promise<void> {
     console.log(`Testing epic: ${testEpic.title}`);
     console.log(`Value: $${testEpic.estimatedValue.toLocaleString()}`);
     console.log(`Cost: $${testEpic.estimatedCost.toLocaleString()}\n`);
+    logger.info('Epic test parameters', {
+      title: testEpic.title,
+      estimatedValue: testEpic.estimatedValue,
+      estimatedCost: testEpic.estimatedCost
+    });
 
     const result = await workflow.processSafeEpic(testEpic);
 
@@ -1152,6 +1211,10 @@ export async function testSafeSparcWorkflow(): Promise<void> {
 
   } catch (error) {
     console.error('\n❌ Workflow test failed:', error);
+    logger.error('Workflow test failed', { 
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined 
+    });
     throw error;
   }
 }

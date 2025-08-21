@@ -8,9 +8,9 @@
  * - Existing entity definitions and DAL architecture
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import { nanoid } from 'nanoid';
 
-import { getLogger } from '@claude-zen/foundation'
 import { DALFactory } from '../../database/dal/dal-factory';
 import type {
   BaseDocumentEntity,

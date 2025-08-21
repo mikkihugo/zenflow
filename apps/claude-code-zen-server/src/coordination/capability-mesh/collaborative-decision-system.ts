@@ -13,10 +13,12 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { withFactCapabilities } from '../universal-fact-mixin';
+import { getLogger } from '@claude-zen/foundation'
+
 import type { EventBus } from '../../core/interfaces/base-interfaces';
 import type { CoordinationFactAccess } from '../shared-fact-access';
-import { getLogger } from '@claude-zen/foundation'
+import { withFactCapabilities } from '../universal-fact-mixin';
+
 
 // Coordination event type (simplified)
 type CoordinationEvent = any;
@@ -98,7 +100,7 @@ class BaseDecisionSystem {
   }
 }
 
-const FactCapableDecisionSystem = withFactCapabilities(BaseDecisionSystem);
+const FactCapableDecisionSystem = withFactCapabilities(BaseDecisionSystem) as any as any;
 
 // ============================================
 // Collaborative Decision System

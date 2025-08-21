@@ -1,19 +1,19 @@
 /**
  * @fileoverview Workflows Strategic Facade - Real workflows package delegation
- * 
+ *
  * **COMPREHENSIVE WORKFLOW ORCHESTRATION VIA STRATEGIC DELEGATION**
- * 
+ *
  * This strategic facade provides comprehensive workflow orchestration functionality
  * by delegating to the real @claude-zen/workflows package. It eliminates workflow
  * stub anti-patterns by providing battle-tested workflow engine capabilities with
  * full production-grade features.
- * 
+ *
  * **Delegates to:**
  * - @claude-zen/workflows: Professional workflow orchestration engine
  * - Battle-tested npm dependencies: expr-eval, async, p-limit, eventemitter3, xstate
  * - Foundation storage integration for persistence
  * - Professional naming conventions and security-first architecture
- * 
+ *
  * **Key Features Enabled:**
  * - Tree-shakable exports for optimal bundle size
  * - Security-first architecture (no arbitrary code execution)
@@ -21,7 +21,7 @@
  * - Production-ready scheduling with node-cron
  * - Professional workflow visualization with mermaid
  * - Foundation integration for battle-tested persistence
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0
  * @version 2.1.0
@@ -48,24 +48,26 @@ async function loadWorkflowsModule() {
       workflowsModuleCache = {
         WorkflowEngine: class WorkflowEngineStub extends EventEmitter {
           private config: any;
-          
+
           constructor(config?: any) {
             super();
             this.config = config || { maxConcurrentWorkflows: 10 };
           }
           async initialize() {
-            console.log(`WorkflowEngine initialized with config:`, this.config);
+            console.log('WorkflowEngine initialized with config:', this.config);
           }
-          async startWorkflow() { 
-            return { success: true, maxConcurrent: this.config.maxConcurrentWorkflows }; 
+          async startWorkflow() {
+            return { success: true, maxConcurrent: this.config.maxConcurrentWorkflows };
           }
           async pauseWorkflow() {}
           async resumeWorkflow() {}
           async stopWorkflow() {}
-          async getWorkflowState() { return {}; }
+          async getWorkflowState() {
+            return {};
+          }
           async shutdown() {}
           cleanup() {}
-        }
+        },
       };
     }
   }
@@ -78,7 +80,7 @@ async function loadWorkflowsModule() {
 
 /**
  * WorkflowEngine - Professional workflow orchestration engine
- * 
+ *
  * Delegates to the comprehensive @claude-zen/workflows implementation with:
  * • Battle-tested npm dependencies for production reliability
  * • Security-first architecture with no arbitrary code execution
@@ -157,7 +159,7 @@ export class WorkflowEngine extends EventEmitter {
   // Additional compatibility methods for server usage
   async executeWorkflow(definition: any, context?: any): Promise<any> {
     await this.initialize();
-    return await this.instance.executeWorkflow?.(definition, context) || 
+    return await this.instance.executeWorkflow?.(definition, context) ||
            await this.startWorkflow(definition, context);
   }
 
@@ -168,13 +170,13 @@ export class WorkflowEngine extends EventEmitter {
 
   async cancelWorkflow(workflowId: string): Promise<void> {
     await this.initialize();
-    return await this.instance.cancelWorkflow?.(workflowId) || 
+    return await this.instance.cancelWorkflow?.(workflowId) ||
            await this.stopWorkflow(workflowId);
   }
 
   async getWorkflowStatus(workflowId: string): Promise<any> {
     await this.initialize();
-    return await this.instance.getWorkflowStatus?.(workflowId) || 
+    return await this.instance.getWorkflowStatus?.(workflowId) ||
            await this.getWorkflowState(workflowId);
   }
 }
@@ -272,18 +274,18 @@ export async function getWorkflowSystemAccess(config?: WorkflowEngineConfig): Pr
     await engine.initialize();
     return {
       createEngine: (engineConfig?: WorkflowEngineConfig) => new WorkflowEngine(engineConfig),
-      startWorkflow: (definition: WorkflowDefinition, initialContext?: WorkflowContext) => 
+      startWorkflow: (definition: WorkflowDefinition, initialContext?: WorkflowContext) =>
         engine.startWorkflow(definition, initialContext),
       pauseWorkflow: (workflowId: string) => engine.pauseWorkflow(workflowId),
       resumeWorkflow: (workflowId: string) => engine.resumeWorkflow(workflowId),
       stopWorkflow: (workflowId: string) => engine.stopWorkflow(workflowId),
       getWorkflowState: (workflowId: string) => engine.getWorkflowState(workflowId),
-      scheduleWorkflow: (cronExpression: string, workflowId: string) => 
+      scheduleWorkflow: (cronExpression: string, workflowId: string) =>
         engine.scheduleWorkflow(cronExpression, workflowId),
-      generateVisualization: (workflow: WorkflowDefinition) => 
+      generateVisualization: (workflow: WorkflowDefinition) =>
         engine.generateWorkflowVisualization(workflow),
       listActiveWorkflows: () => engine.listActiveWorkflows(),
-      shutdown: () => engine.shutdown()
+      shutdown: () => engine.shutdown(),
     };
   }
 }
@@ -328,7 +330,7 @@ export const WORKFLOWS_INFO = {
     'Production-ready scheduling',
     'Professional workflow visualization',
     'Type-safe workflow orchestration',
-    'Tree-shakable exports'
+    'Tree-shakable exports',
   ],
   delegation: {
     target: '@claude-zen/workflows',
@@ -338,7 +340,7 @@ export const WORKFLOWS_INFO = {
       'Provides real production-grade workflow engine',
       'Battle-tested implementation with expr-eval, async, p-limit',
       'Professional naming conventions',
-      'Foundation integration for persistence'
-    ]
-  }
+      'Foundation integration for persistence',
+    ],
+  },
 } as const;

@@ -991,6 +991,51 @@ class ApiClient {
   async getSystemCapabilityScores(): Promise<any> {
     return await this.request('/v1/system/capability/scores');
   }
+
+  // ===== FACADE MONITORING API =====
+
+  async getFacadeStatus(): Promise<any> {
+    return await this.request('/v1/facades/status');
+  }
+
+  async getFacadeHealth(facadeName?: string): Promise<any> {
+    const endpoint = facadeName ? `/v1/facades/${facadeName}/health` : '/v1/facades/health';
+    return await this.request(endpoint);
+  }
+
+  async getFacadePackages(facadeName: string): Promise<any> {
+    return await this.request(`/v1/facades/${facadeName}/packages`);
+  }
+
+  async getFacadeServices(facadeName: string): Promise<any> {
+    return await this.request(`/v1/facades/${facadeName}/services`);
+  }
+
+  async refreshFacadeStatus(facadeName?: string): Promise<any> {
+    const endpoint = facadeName ? `/v1/facades/${facadeName}/refresh` : '/v1/facades/refresh';
+    return await this.request(endpoint, { method: 'POST' });
+  }
+
+  async getPackageStatus(packageName: string): Promise<any> {
+    return await this.request(`/v1/facades/packages/${encodeURIComponent(packageName)}/status`);
+  }
+
+  async getServiceStatus(serviceName: string): Promise<any> {
+    return await this.request(`/v1/facades/services/${encodeURIComponent(serviceName)}/status`);
+  }
+
+  async getFacadeMetrics(): Promise<any> {
+    return await this.request('/v1/facades/metrics');
+  }
+
+  async getFacadeHistory(facadeName: string, timeRange?: string): Promise<any> {
+    const params = timeRange ? `?timeRange=${timeRange}` : '';
+    return await this.request(`/v1/facades/${facadeName}/history${params}`);
+  }
+
+  async getSystemDependencies(): Promise<any> {
+    return await this.request('/v1/facades/dependencies');
+  }
 }
 
 // Export singleton instance

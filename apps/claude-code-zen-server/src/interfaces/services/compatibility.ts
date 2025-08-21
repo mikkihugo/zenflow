@@ -321,7 +321,7 @@ export class USLCompatibilityLayer {
    */
   getAllServices(): Map<string, Service> {
     this.logLegacyUsage('getAllServices', 'serviceManager.getAllServices()');
-    return this.serviceManager.getAllServices();
+    return this.serviceManager.getAllServices() as any;
   }
 
   /**

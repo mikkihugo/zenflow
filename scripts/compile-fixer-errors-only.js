@@ -5,7 +5,7 @@
  * FOCUS: Fix ONLY TypeScript compilation ERRORS (not warnings)
  * EXCLUDES: Test files AND files with only warnings
  * STRATEGY: Use TypeScript compiler directly, skip warning-only files
- * BONUS: Run Biome on each file AFTER it compiles successfully
+ * BONUS: Run ESLint on each file AFTER it compiles successfully
  */
 
 import { execSync } from 'child_process';
@@ -127,8 +127,8 @@ class CompileFixerErrorsOnly {
 
         if (!stillHasErrors) {
           console.log(`  🎉 File compiles successfully!`);
-          // Now apply Biome formatting since compilation is fixed
-          await this.formatWithBiome(filePath);
+          // Now apply ESLint fixing since compilation is fixed
+          await this.formatWithESLint(filePath);
         } else {
           console.log(
             `  📊 Some compilation errors remain (may need manual fixes)`
@@ -350,14 +350,14 @@ class CompileFixerErrorsOnly {
     }
   }
 
-  async formatWithBiome(filePath) {
+  async formatWithESLint(filePath) {
     try {
-      execSync(`npx biome check "${filePath}" --apply`, {
+      execSync(`npx eslint "${filePath}" --fix`, {
         stdio: ['pipe', 'pipe', 'pipe'],
       });
-      console.log(`    📐 Formatted and linted with Biome`);
+      console.log(`    📐 Formatted and linted with ESLint`);
     } catch (error) {
-      console.log(`    📐 Biome applied available fixes`);
+      console.log(`    📐 ESLint applied available fixes`);
     }
   }
 
@@ -378,16 +378,16 @@ class CompileFixerErrorsOnly {
           `\n🎉 SUCCESS! ${scope} TypeScript compilation has no ERRORS!`
         );
 
-        // Final style pass with Biome
-        console.log('\n📐 Running final Biome formatting...');
+        // Final style pass with ESLint
+        console.log('\n📐 Running final ESLint formatting...');
         try {
           const pattern = this.excludeTests
             ? 'src --ignore-pattern="**/__tests__/**" --ignore-pattern="**/*.test.*" --ignore-pattern="**/*.spec.*"'
             : 'src';
-          execSync(`npx biome format --write ${pattern}`, { stdio: 'inherit' });
+          execSync(`npx eslint ${pattern} --fix`, { stdio: 'inherit' });
           console.log('✅ All files formatted!');
         } catch (error) {
-          console.log('ℹ️  Biome formatting completed');
+          console.log('ℹ️  ESLint formatting completed');
         }
         break;
       }

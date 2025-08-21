@@ -20,34 +20,43 @@
  * - Connects with DatabaseSPARCBridge for implementation data
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '@claude-zen/foundation'
-import type {
-  EventBus,
-  Logger,
-} from '../../core/interfaces/base-interfaces';
+import { getLogger } from '@claude-zen/foundation';
+
 
 // Database access from infrastructure facade
 import { 
   getDatabaseAccess
 } from '@claude-zen/infrastructure';
-import type { DatabaseAccess, KeyValueStore } from '@claude-zen/infrastructure';
-
-// Telemetry and performance tracking from operations facade
+// Use facade getter functions instead of direct imports
+import {
+  getBrainSystemAccess
+} from '@claude-zen/intelligence';
 import { 
-  TelemetryManager,
-  PerformanceTracker
+  getTelemetryManager,
+  getPerformanceTracker
 } from '@claude-zen/operations';
 
-// Brain coordination for learning
-import { 
-  BrainCoordinator
-} from '@claude-zen/intelligence';
+// Brain coordination for learning - use facade getter
+import { EventEmitter } from 'eventemitter3';
+
+import type {
+  EventBus,
+  Logger,
+} from '../../core/interfaces/base-interfaces';
+
+// Create logger adapter to match expected interface
+function createLoggerAdapter(baseLogger: any): Logger {
+  return {
+    debug: (message: string, ...args: any[]) => baseLogger.debug(message, ...args),
+    info: (message: string, ...args: any[]) => baseLogger.info(message, ...args),
+    warn: (message: string, ...args: any[]) => baseLogger.warn(message, ...args),
+    error: (message: string, ...args: any[]) => baseLogger.error(message, ...args),
+    trace: (message: string, ...args: any[]) => baseLogger.debug(message, ...args), // fallback to debug
+  };
+}
 
 // SPARC methodology integration via enterprise facade
-import { 
-  type SPARCPhase
-} from '@claude-zen/enterprise';
+type SPARCPhase = 'specification' | 'pseudocode' | 'architecture' | 'refinement' | 'completion';
 
 const logger = getLogger('sparc-swarm-knowledge-extractor');
 
@@ -198,13 +207,13 @@ export class SPARCSwarmKnowledgeExtractor extends EventEmitter {
   public readonly designation: string;
   
   // Learning and intelligence systems
-  private brainCoordinator: BrainCoordinator;
-  private telemetryManager: TelemetryManager;
-  private performanceTracker: PerformanceTracker;
+  private brainCoordinator: any; // BrainCoordinator via facade
+  private telemetryManager: any;
+  private performanceTracker: any;
   
   // Foundation storage access (not direct database)
-  private databaseAccess: DatabaseAccess;
-  private kvStore: KeyValueStore;
+  private databaseAccess: any;
+  private kvStore: any; // KeyValueStore via facade
   private sqlStore: any;
   private vectorStore: any;
   private graphStore: any;
@@ -233,42 +242,35 @@ export class SPARCSwarmKnowledgeExtractor extends EventEmitter {
     super();
     this.id = id;
     this.designation = `SPARC-Knowledge-Extractor-${id.slice(-4)}`;
-    this.logger = getLogger(`sparc-knowledge-${this.designation}`);
+    this.logger = createLoggerAdapter(getLogger(`sparc-knowledge-${this.designation}`));
     this.eventBus = eventBus;
-
-    // Initialize autonomous brain coordinator for intelligent SPARC learning
-    this.brainCoordinator = new BrainCoordinator({
-      sessionId: `sparc-extraction-${this.id}`,
-      enableLearning: true,
-      cacheOptimizations: true,
-      logLevel: 'info'
-    });
-    
-    this.telemetryManager = new TelemetryManager({
-      serviceName: 'sparc-knowledge-extractor',
-      enableTracing: true,
-      enableMetrics: true
-    });
-    
-    this.performanceTracker = new PerformanceTracker();
-
-    this.setupEventHandlers();
-
-    this.logger.info(`🔄 SPARC Knowledge Extractor ${this.designation} initialized`);
-    this.logger.info(`📚 SPARC learning extraction capabilities: S.P.A.R.C methodology analysis + Brain Intelligence + Performance Tracking`);
   }
 
-  /**
-   * Initialize with foundation storage access
-   */
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
     try {
       this.logger.info('Initializing SPARC Knowledge Extractor with foundation storage');
 
+      // Initialize autonomous brain coordinator for intelligent SPARC learning
+      const brainAccess = await getBrainSystemAccess();
+      this.brainCoordinator = await brainAccess?.createCoordinator?.({
+        sessionId: `sparc-extraction-${this.id}`,
+        enableLearning: true,
+        cacheOptimizations: true,
+        logLevel: 'info'
+      }) || null;
+      
+      this.telemetryManager = await getTelemetryManager({
+        serviceName: 'sparc-knowledge-extractor',
+        enableTracing: true,
+        enableMetrics: true
+      });
+      
+      this.performanceTracker = await getPerformanceTracker();
+
       // Delegate to @claude-zen/foundation for all storage access
-      this.databaseAccess = getDatabaseAccess();
+      this.databaseAccess = await getDatabaseAccess();
       this.kvStore = await this.databaseAccess.getKV('sparc-knowledge-extractor');
       this.sqlStore = await this.databaseAccess.getSQL('sparc-knowledge-extractor');
       this.vectorStore = await this.databaseAccess.getVector('sparc-knowledge-extractor');
@@ -277,8 +279,11 @@ export class SPARCSwarmKnowledgeExtractor extends EventEmitter {
       await this.telemetryManager.initialize();
       await this.brainCoordinator.initialize();
 
+      this.setupEventHandlers();
+
       this.initialized = true;
-      this.logger.info('SPARC Knowledge Extractor initialized successfully');
+      this.logger.info(`🔄 SPARC Knowledge Extractor ${this.designation} initialized successfully`);
+      this.logger.info(`📚 SPARC learning extraction capabilities: S.P.A.R.C methodology analysis + Brain Intelligence + Performance Tracking`);
 
     } catch (error) {
       this.logger.error('Failed to initialize SPARC Knowledge Extractor:', error);

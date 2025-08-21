@@ -151,47 +151,47 @@ jobs:
   validate-copilot-changes:
     runs-on: ubuntu-latest
     if: github.actor == 'github-copilot[bot]'
-    
+
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "${this.config.technology_stack.version.replace('+', '')}"
           cache: 'npm'
-          
+
       - name: Install dependencies
         run: npm ci
-        
+
       - name: Validate Architecture Compliance
         run: |
           echo "Checking domain boundaries..."
           node .github/scripts/validate-architecture.js
-          
+
       - name: Run Quality Gates
         run: |
           echo "Running TypeScript strict mode..."
           npx tsc --noEmit --strict
-          
+
           echo "Running test coverage..."
           npm test -- --coverage --coverageThreshold='{"global":{"lines":${this.config.quality_gates.test_coverage}}}'
-          
+
       - name: Performance Benchmarks
         run: |
           echo "Running performance benchmarks..."
           npm run test:performance || echo "Performance tests completed"
-          
+
       - name: Validate Agent System
         run: |
           echo "Checking agent type usage..."
           grep -r "AgentType" src/ || echo "Agent types validation completed"
-          
+
       - name: MCP Validation
         run: |
           echo "Testing MCP server startup..."
           timeout 15s npm run mcp:start || echo "MCP validation completed"
-          
+
       - name: Comment on PR
         uses: actions/github-script@v7
         with:
@@ -236,7 +236,7 @@ class ArchitectureValidator {
 
   validateDomainBoundaries() {
     console.log('Validating domain boundaries...');
-    
+
     // Check for cross-domain imports that violate boundaries
     this.domains.forEach(domain => {
       const domainPath = \`src/\${domain}\`;
@@ -248,11 +248,11 @@ class ArchitectureValidator {
 
   validateDomainImports(domain, domainPath) {
     const files = this.getTypeScriptFiles(domainPath);
-    
+
     files.forEach(file => {
       const content = fs.readFileSync(file, 'utf8');
       const imports = this.extractImports(content);
-      
+
       imports.forEach(importPath => {
         if (this.isViolatingImport(domain, importPath)) {
           this.violations.push({
@@ -268,11 +268,11 @@ class ArchitectureValidator {
 
   validateAgentTypeUsage() {
     console.log('Validating agent type usage...');
-    
+
     const files = this.getTypeScriptFiles('src');
     files.forEach(file => {
       const content = fs.readFileSync(file, 'utf8');
-      
+
       // Check for generic agent type strings instead of AgentType union
       if (content.includes('type: string') && content.includes('agent')) {
         this.violations.push({
@@ -286,11 +286,11 @@ class ArchitectureValidator {
 
   validateWASMUsage() {
     console.log('Validating WASM usage in neural domain...');
-    
+
     const neuralFiles = this.getTypeScriptFiles('src/neural');
     neuralFiles.forEach(file => {
       const content = fs.readFileSync(file, 'utf8');
-      
+
       // Check for heavy computation without WASM
       if (this.hasHeavyComputation(content) && !this.usesWASM(content)) {
         this.violations.push({
@@ -306,13 +306,13 @@ class ArchitectureValidator {
   getTypeScriptFiles(dir) {
     const files = [];
     if (!fs.existsSync(dir)) return files;
-    
+
     const walk = (currentDir) => {
       const items = fs.readdirSync(currentDir);
       items.forEach(item => {
         const fullPath = path.join(currentDir, item);
         const stat = fs.statSync(fullPath);
-        
+
         if (stat.isDirectory()) {
           walk(fullPath);
         } else if (item.endsWith('.ts') || item.endsWith('.tsx')) {
@@ -320,7 +320,7 @@ class ArchitectureValidator {
         }
       });
     };
-    
+
     walk(dir);
     return files;
   }
@@ -329,23 +329,23 @@ class ArchitectureValidator {
     const importRegex = /import.*from\\s+['"]([^'"]+)['"]/g;
     const imports = [];
     let match;
-    
+
     while ((match = importRegex.exec(content)) !== null) {
       imports.push(match[1]);
     }
-    
+
     return imports;
   }
 
   isViolatingImport(currentDomain, importPath) {
     // Allow relative imports within domain
     if (importPath.startsWith('.')) return false;
-    
+
     // Allow imports from types and core
     if (importPath.startsWith('src/types') || importPath.startsWith('src/core')) {
       return false;
     }
-    
+
     // Check for cross-domain imports
     const importDomain = this.extractDomainFromPath(importPath);
     return importDomain && importDomain !== currentDomain;
@@ -364,12 +364,12 @@ class ArchitectureValidator {
       /convolution/i,
       /fft|fourier/i
     ];
-    
+
     return heavyPatterns.some(pattern => pattern.test(content));
   }
 
   usesWASM(content) {
-    return content.includes('wasm') || 
+    return content.includes('wasm') ||
            content.includes('WebAssembly') ||
            content.includes('fact-core');
   }
@@ -379,14 +379,14 @@ class ArchitectureValidator {
       console.log('✅ All architecture validations passed');
       return 0;
     }
-    
+
     console.log(\`❌ Found \${this.violations.length} architecture violations:\`);
     this.violations.forEach((violation, index) => {
       console.log(\`\\n\${index + 1}. \${violation.rule}:\`);
       console.log(\`   File: \${violation.file}\`);
       console.log(\`   Issue: \${violation.violation}\`);
     });
-    
+
     return 1;
   }
 
@@ -394,7 +394,7 @@ class ArchitectureValidator {
     this.validateDomainBoundaries();
     this.validateAgentTypeUsage();
     this.validateWASMUsage();
-    
+
     return this.report();
   }
 }
@@ -423,7 +423,7 @@ body:
       description: Clear, specific task for autonomous completion
       placeholder: |
         Implement feature X following our ${this.config.architecture.pattern} architecture...
-        
+
         Requirements:
         - Use existing AgentType from src/types/agent-types.ts (${this.config.copilot_context.agent_system.total_types}+ available)
         - Follow domain structure in src/
@@ -431,7 +431,7 @@ body:
         - Maintain performance requirements
     validations:
       required: true
-      
+
   - type: dropdown
     id: domain
     attributes:
@@ -441,7 +441,7 @@ body:
 ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join('\n')}
     validations:
       required: true
-      
+
   - type: checkboxes
     id: architecture-compliance
     attributes:
@@ -453,7 +453,7 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
         - label: "Use ${this.config.development.testing_strategy} (${this.config.development.test_breakdown.london_tdd}% London, ${this.config.development.test_breakdown.classical_tdd}% Classical)"
         - label: "Integrate with MCP servers (port ${this.config.copilot_context.mcp_integration.http_port})"
         - label: "Use WASM for performance-critical neural code"
-        
+
   - type: textarea
     id: performance-requirements
     attributes:
@@ -463,7 +463,7 @@ ${this.config.architecture.domains.map((domain) => `        - "${domain}"`).join
         ${Object.entries(this.config.development.performance_requirements)
           .map(([key, value]) => `- ${key.replace(/_/g, ' ')}: ${value}`)
           .join('\n')}
-        
+
   - type: textarea
     id: acceptance-criteria
     attributes:

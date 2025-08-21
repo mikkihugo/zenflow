@@ -1,6 +1,6 @@
 /**
  * @fileoverview Documentation Strategic Facade - Direct Delegation
- * 
+ *
  * Strategic facade providing documentation management capabilities through delegation
  * to @claude-zen/documentation package when available, with professional fallbacks.
  * No translation needed - uses native implementation functions directly.
@@ -19,17 +19,29 @@ async function loadDocumentationModule() {
       // Fallback implementation when documentation package isn't available
       documentationModuleCache = {
         DocumentationLinker: class {
-          async linkDocuments() { return { result: 'fallback-linking', status: 'linked' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async linkDocuments() {
+            return { result: 'fallback-linking', status: 'linked' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         DocumentationManager: class {
-          async manageDocumentation() { return { result: 'fallback-management', status: 'managed' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async manageDocumentation() {
+            return { result: 'fallback-management', status: 'managed' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         createDocumentationLinker: () => createFallbackLinker(),
-        createDocumentationManager: () => createFallbackManager()
+        createDocumentationManager: () => createFallbackManager(),
       };
     }
   }
@@ -41,11 +53,11 @@ function createFallbackLinker() {
     linkDocuments: async (documents: any) => ({
       result: `fallback-linker-for-${documents?.length || 0}-documents`,
       status: 'linked',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -54,11 +66,11 @@ function createFallbackManager() {
     manageDocumentation: async (docs: any) => ({
       result: `fallback-manager-for-${docs?.type || 'unknown'}`,
       status: 'managed',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -88,12 +100,16 @@ export class DocumentationLinker {
   }
 
   async linkDocuments(documents: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.linkDocuments(documents);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 
@@ -119,12 +135,16 @@ export class DocumentationManager {
   }
 
   async manageDocumentation(docs: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.manageDocumentation(docs);
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 
@@ -139,7 +159,7 @@ export class DocumentationManager {
 // Professional naming patterns - matches expected interface
 export const documentationSystem = {
   getLinker: getDocumentationLinker,
-  getManager: getDocumentationManager
+  getManager: getDocumentationManager,
 };
 
 // Additional exports for compatibility

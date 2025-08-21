@@ -7,6 +7,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+
 import type {
   BaseDocumentEntity,
   EpicDocumentEntity,

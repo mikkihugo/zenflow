@@ -9,9 +9,9 @@
  * - Confidence boosting through knowledge validation.
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger } from '@claude-zen/foundation'
 import type { DiscoveredDomain } from '../../interfaces/tui/types';
 import type { SessionMemoryStore } from '../../memory/memory';
 import type { SharedFactSystem as CollectiveFACTSystem } from '../shared-fact-system';

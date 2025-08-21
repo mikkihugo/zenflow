@@ -127,19 +127,90 @@ impl HardwareDetector {
     }
     
     async fn get_cpu_cores(&self) -> Result<u32, JsValue> {
-        // Use JavaScript navigator.hardwareConcurrency
-        let navigator = web_sys::window()
-            .ok_or_else(|| JsValue::from_str("No window object"))?
-            .navigator();
-            
-        let cores = navigator.hardware_concurrency() as u32;
-        Ok(if cores > 0 { cores } else { 1 })
+        // Try Node.js os.cpus() first (for Node.js environment)
+        if let Ok(global) = js_sys::global().dyn_into::<js_sys::Object>() {
+            if let Ok(process) = js_sys::Reflect::get(&global, &JsValue::from_str("process")) {
+                if !process.is_undefined() {
+                    // We're in Node.js, try to use os.cpus()
+                    let require_fn = js_sys::Reflect::get(&global, &JsValue::from_str("require"));
+                    if let Ok(require_fn) = require_fn {
+                        if let Ok(require_fn) = require_fn.dyn_into::<js_sys::Function>() {
+                            if let Ok(os_module) = require_fn.call1(&JsValue::NULL, &JsValue::from_str("os")) {
+                                if let Ok(cpus_fn) = js_sys::Reflect::get(&os_module, &JsValue::from_str("cpus")) {
+                                    if let Ok(cpus_fn) = cpus_fn.dyn_into::<js_sys::Function>() {
+                                        if let Ok(cpus_array) = cpus_fn.call0(&JsValue::NULL) {
+                                            if let Ok(cpus_array) = cpus_array.dyn_into::<js_sys::Array>() {
+                                                let core_count = cpus_array.length();
+                                                if core_count > 0 {
+                                                    return Ok(core_count);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Fallback to browser navigator.hardwareConcurrency
+        if let Some(window) = web_sys::window() {
+            let navigator = window.navigator();
+            let cores = navigator.hardware_concurrency() as u32;
+            if cores > 0 {
+                return Ok(cores);
+            }
+        }
+        
+        // Final fallback - default to 1 core
+        Ok(1)
     }
     
     async fn get_memory_info(&self) -> (u32, u32) {
-        // Try to get memory info from Performance API
+        // Try Node.js os.totalmem() and os.freemem() first
+        if let Ok(global) = js_sys::global().dyn_into::<js_sys::Object>() {
+            if let Ok(process) = js_sys::Reflect::get(&global, &JsValue::from_str("process")) {
+                if !process.is_undefined() {
+                    // We're in Node.js, try to use os.totalmem() and os.freemem()
+                    let require_fn = js_sys::Reflect::get(&global, &JsValue::from_str("require"));
+                    if let Ok(require_fn) = require_fn {
+                        if let Ok(require_fn) = require_fn.dyn_into::<js_sys::Function>() {
+                            if let Ok(os_module) = require_fn.call1(&JsValue::NULL, &JsValue::from_str("os")) {
+                                let total_fn = js_sys::Reflect::get(&os_module, &JsValue::from_str("totalmem"));
+                                let free_fn = js_sys::Reflect::get(&os_module, &JsValue::from_str("freemem"));
+                                
+                                if let (Ok(total_fn), Ok(free_fn)) = (total_fn, free_fn) {
+                                    if let (Ok(total_fn), Ok(free_fn)) = (
+                                        total_fn.dyn_into::<js_sys::Function>(), 
+                                        free_fn.dyn_into::<js_sys::Function>()
+                                    ) {
+                                        if let (Ok(total_bytes), Ok(free_bytes)) = (
+                                            total_fn.call0(&JsValue::NULL),
+                                            free_fn.call0(&JsValue::NULL)
+                                        ) {
+                                            if let (Some(total), Some(free)) = (
+                                                total_bytes.as_f64(),
+                                                free_bytes.as_f64()
+                                            ) {
+                                                let total_mb = (total / 1024.0 / 1024.0) as u32;
+                                                let free_mb = (free / 1024.0 / 1024.0) as u32;
+                                                return (total_mb, free_mb);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Try to get memory info from Performance API (browser)
         if let Some(window) = web_sys::window() {
-            if let Ok(performance) = window.performance() {
+            if let Some(performance) = window.performance() {
                 // Try to access memory info (may not be available in all browsers)
                 if let Ok(memory) = js_sys::Reflect::get(&performance, &JsValue::from_str("memory")) {
                     if let Ok(used) = js_sys::Reflect::get(&memory, &JsValue::from_str("usedJSHeapSize")) {
@@ -161,32 +232,32 @@ impl HardwareDetector {
     async fn detect_gpu(&self) -> (bool, Option<u32>) {
         // Try to detect WebGL capabilities
         if let Some(window) = web_sys::window() {
-            if let Ok(document) = window.document() {
+            if let Some(document) = window.document() {
                 if let Ok(canvas) = document.create_element("canvas") {
-                    let canvas: web_sys::HtmlCanvasElement = canvas.dyn_into().ok()?;
-                    
-                    // Try WebGL2 first, then WebGL1
-                    let contexts = ["webgl2", "webgl", "experimental-webgl"];
-                    
-                    for context_type in &contexts {
-                        if let Ok(Some(_context)) = canvas.get_context(context_type) {
-                            console_log!("Detected GPU with {} support", context_type);
-                            
-                            // Basic GPU memory estimation (very rough)
-                            let estimated_memory = match *context_type {
-                                "webgl2" => Some(1024),      // Assume 1GB for WebGL2 capable devices
-                                "webgl" => Some(512),        // Assume 512MB for WebGL1
-                                _ => Some(256),              // Conservative estimate
-                            };
-                            
-                            return Some((true, estimated_memory));
+                    if let Ok(canvas) = canvas.dyn_into::<web_sys::HtmlCanvasElement>() {
+                        // Try WebGL2 first, then WebGL1
+                        let contexts = ["webgl2", "webgl", "experimental-webgl"];
+                        
+                        for context_type in &contexts {
+                            if let Ok(Some(_context)) = canvas.get_context(context_type) {
+                                console_log!("Detected GPU with {} support", context_type);
+                                
+                                // Basic GPU memory estimation (very rough)
+                                let estimated_memory = match *context_type {
+                                    "webgl2" => Some(1024),      // Assume 1GB for WebGL2 capable devices
+                                    "webgl" => Some(512),        // Assume 512MB for WebGL1
+                                    _ => Some(256),              // Conservative estimate
+                                };
+                                
+                                return (true, estimated_memory);
+                            }
                         }
                     }
                 }
             }
         }
         
-        Some((false, None))
+        (false, None)
     }
     
     async fn get_platform(&self) -> String {
@@ -348,6 +419,29 @@ impl CodeMesh {
         
         Ok(serde_wasm_bindgen::to_value(&metrics)?)
     }
+    
+    #[wasm_bindgen]
+    pub async fn detect_hardware(&mut self) -> Result<JsValue, JsValue> {
+        console_log!("CodeMesh: Starting hardware detection");
+        self.hardware_detector.detect_hardware().await
+    }
+    
+    #[wasm_bindgen]
+    pub fn get_optimization_strategy(&self) -> Result<JsValue, JsValue> {
+        console_log!("CodeMesh: Getting optimization strategy");
+        self.hardware_detector.get_optimization_strategy()
+    }
+    
+    #[wasm_bindgen]
+    pub fn get_hardware_info(&self) -> Result<JsValue, JsValue> {
+        match &self.hardware_detector.detected_info {
+            Some(info) => {
+                console_log!("CodeMesh: Returning hardware info");
+                Ok(serde_wasm_bindgen::to_value(info)?)
+            }
+            None => Err(JsValue::from_str("Hardware not detected yet. Call detect_hardware() first."))
+        }
+    }
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -419,10 +513,25 @@ pub fn benchmark_performance(iterations: u32) -> Result<JsValue, JsValue> {
     let end = js_sys::Date::now();
     let duration = end - start;
     
+    let ops_per_second = if duration > 0.0 {
+        (iterations as f64) / (duration / 1000.0)
+    } else {
+        0.0
+    };
+    
+    let performance_score = if ops_per_second > 100000.0 {
+        "high"
+    } else if ops_per_second > 10000.0 {
+        "medium"
+    } else {
+        "low"
+    };
+    
     let result = serde_json::json!({
         "iterations": iterations,
-        "duration_ms": duration,
-        "ops_per_second": (iterations as f64) / (duration / 1000.0)
+        "total_time_ms": duration,
+        "ops_per_second": ops_per_second,
+        "performance_score": performance_score
     });
     
     Ok(serde_wasm_bindgen::to_value(&result)?)

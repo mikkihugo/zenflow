@@ -78,7 +78,7 @@ export class InterfaceManager extends EventEmitter {
   constructor(userConfig: InterfaceManagerConfig = {}) {
     super();
     // Use centralized configuration with user overrides
-    const centralConfig = config?.['getAll']();
+    const centralConfig = this.getCentralConfig();
     this.config = {
       defaultMode: userConfig?.defaultMode || 'auto',
       webPort: userConfig?.webPort || centralConfig?.interfaces?.web?.port,
@@ -87,7 +87,7 @@ export class InterfaceManager extends EventEmitter {
         (centralConfig?.interfaces?.shared?.theme as 'dark' | 'light'),
       enableRealTime:
         userConfig?.enableRealTime ??
-        centralConfig?.interfaces?.shared?.realTimeUpdates,
+        (centralConfig?.interfaces?.shared as any)?.realTimeUpdates ?? true,
       coreSystem: userConfig?.coreSystem,
     };
   }
@@ -153,9 +153,25 @@ export class InterfaceManager extends EventEmitter {
 
   // ==================== PRIVATE METHODS ====================
 
+  private getCentralConfig() {
+    // Fallback configuration when central config is not available
+    return {
+      interfaces: {
+        web: { port: 3000 },
+        shared: { theme: 'dark' as const }
+      },
+      environment: {
+        isCI: process.env.CI === 'true',
+        enableRealTime: true,
+        enableNotifications: true,
+        logLevel: 'info' as const
+      }
+    };
+  }
+
   private detectInterfaceMode(): InterfaceMode {
     // Use centralized environment detection
-    const centralConfig = config?.['getAll']();
+    const centralConfig = this.getCentralConfig();
     const environment = centralConfig?.environment;
 
     // CI environment detection
@@ -164,7 +180,7 @@ export class InterfaceManager extends EventEmitter {
     }
 
     // Check if we're in a terminal that supports TUI
-    const termConfig = centralConfig?.interfaces?.terminal;
+    const termConfig = (centralConfig?.interfaces as any)?.terminal;
     if (termConfig?.enableColors && termConfig?.enableProgressBars) {
       return 'tui';
     }

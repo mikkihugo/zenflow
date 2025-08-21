@@ -13,6 +13,7 @@ import { getLogger } from '@claude-zen/foundation'
  */
 
 import { getCORSOrigins, getMCPServerURL } from '@claude-zen/infrastructure';
+
 import { APIClient } from './client';
 // Import server types for internal use
 import {

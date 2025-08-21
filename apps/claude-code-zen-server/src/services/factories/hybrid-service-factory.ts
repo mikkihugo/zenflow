@@ -6,6 +6,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+
 import { DALFactory } from '../../database/dal/dal-factory';
 import { ADRManagerHybrid } from '../coordination/adr-hybrid-service';
 import { HybridDocumentManager } from '../coordination/hybrid-document-service';

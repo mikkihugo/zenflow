@@ -1,6 +1,6 @@
 /**
  * @fileoverview Agent Manager Strategic Facade - Real Package Delegation
- * 
+ *
  * Strategic facade providing real agent management capabilities through delegation
  * to @claude-zen/agent-manager package.
  */
@@ -20,28 +20,58 @@ async function loadAgentManagerModule() {
       console.warn('Agent manager package not available, providing compatibility layer');
       agentManagerModuleCache = {
         AgentManager: class CompatibilityAgentManager extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async createAgent() { return { id: 'compat-agent', status: 'active' }; }
-          async destroyAgent() { return Promise.resolve(); }
-          async getAgent() { return { id: 'compat-agent', status: 'active' }; }
-          async listAgents() { return []; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async createAgent() {
+            return { id: 'compat-agent', status: 'active' };
+          }
+          async destroyAgent() {
+            return Promise.resolve();
+          }
+          async getAgent() {
+            return { id: 'compat-agent', status: 'active' };
+          }
+          async listAgents() {
+            return [];
+          }
         },
         AgentFactory: class CompatibilityAgentFactory {
-          static createAgent() { return { id: 'compat-agent', status: 'active' }; }
+          static createAgent() {
+            return { id: 'compat-agent', status: 'active' };
+          }
         },
         AgentRegistry: class CompatibilityAgentRegistry extends EventEmitter {
-          async register() { return Promise.resolve(); }
-          async unregister() { return Promise.resolve(); }
-          async get() { return { id: 'compat-agent', status: 'active' }; }
-          async list() { return []; }
+          async register() {
+            return Promise.resolve();
+          }
+          async unregister() {
+            return Promise.resolve();
+          }
+          async get() {
+            return { id: 'compat-agent', status: 'active' };
+          }
+          async list() {
+            return [];
+          }
         },
         AgentLifecycleManager: class CompatibilityLifecycleManager extends EventEmitter {
-          async start() { return Promise.resolve(); }
-          async stop() { return Promise.resolve(); }
-          async restart() { return Promise.resolve(); }
-          async getStatus() { return 'active'; }
-        }
+          async start() {
+            return Promise.resolve();
+          }
+          async stop() {
+            return Promise.resolve();
+          }
+          async restart() {
+            return Promise.resolve();
+          }
+          async getStatus() {
+            return 'active';
+          }
+        },
       };
     }
   }

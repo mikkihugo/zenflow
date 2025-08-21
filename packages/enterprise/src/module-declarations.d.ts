@@ -125,7 +125,7 @@ declare module '@claude-zen/kanban' {
   export function getNextWorkflowState(current: string): string | null;
   export function getPreviousWorkflowState(current: string): string | null;
   export function isValidStateTransition(from: string, to: string): boolean;
-  
+
   // Type exports
   export interface WorkflowKanbanConfig { [key: string]: any; }
   export interface WorkflowTask { [key: string]: any; }

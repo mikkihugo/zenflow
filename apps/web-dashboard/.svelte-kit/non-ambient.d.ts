@@ -27,7 +27,7 @@ export {};
 
 declare module "$app/types" {
 	export interface AppTypes {
-		RouteId(): "/" | "/agui" | "/database" | "/memory" | "/roadmap" | "/swarm";
+		RouteId(): "/" | "/agui" | "/database" | "/facades" | "/memory" | "/roadmap" | "/swarm" | "/system";
 		RouteParams(): {
 			
 		};
@@ -35,12 +35,14 @@ declare module "$app/types" {
 			"/": Record<string, never>;
 			"/agui": Record<string, never>;
 			"/database": Record<string, never>;
+			"/facades": Record<string, never>;
 			"/memory": Record<string, never>;
 			"/roadmap": Record<string, never>;
-			"/swarm": Record<string, never>
+			"/swarm": Record<string, never>;
+			"/system": Record<string, never>
 		};
-		Pathname(): "/" | "/agui" | "/database" | "/memory" | "/roadmap" | "/swarm";
+		Pathname(): "/" | "/agui" | "/database" | "/facades" | "/memory" | "/roadmap" | "/swarm" | "/system";
 		ResolvedPathname(): `${"" | `/${string}`}${ReturnType<AppTypes['Pathname']>}`;
-		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf";
+		Asset(): "/favicon.png" | "/fonts/Quicksand.ttf" | string & {};
 	}
 }

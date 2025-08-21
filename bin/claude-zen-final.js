@@ -13,7 +13,7 @@ const binDir = __dirname;
 const bundleDir = join(binDir, 'bundle');
 const mainScript = join(bundleDir, 'index.js');
 
-// Pass all arguments to the main script  
+// Pass all arguments to the main script
 const args = process.argv.slice(2);
 
 // Ensure bundle directory exists
@@ -30,10 +30,10 @@ process.env.CLAUDE_ZEN_WASM_PATH = bundleDir;
 const evalScript = `
   // Change process.argv to include our args
   process.argv = ['node', '${mainScript}', ...${JSON.stringify(args)}];
-  
+
   // Change cwd to bundle dir to help with module resolution
   process.chdir('${bundleDir}');
-  
+
   // Dynamically import the bundle (handles top-level await)
   import('${mainScript}')
     .then(() => {

@@ -21,13 +21,15 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+
 import { DocumentProcessor } from '../../core/document-processor';
-import { EventBus } from '../core/event-bus';
 import { BrainCoordinator } from '../../core/memory-coordinator';
 import { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
 import { DomainAnalysisEngine } from '../../tools/domain-splitting/analyzers/domain-analyzer';
 import { WorkflowEngine } from '../../workflows/workflow-engine';
+import { EventBus } from '../core/event-bus';
+
 import { DomainDiscoveryBridge } from './domain-discovery-bridge';
 
 const logger = getLogger('DomainDiscoveryTest');

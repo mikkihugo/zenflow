@@ -17,10 +17,12 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+import type { Logger } from '@claude-zen/foundation';
+
 import type { Service } from '../core/interfaces';
 import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';
+
 import { BaseService } from './base-service';
-import type { Logger } from '@claude-zen/foundation';
 
 /**
  * Memory service implementation using @claude-zen/intelligence delegation.

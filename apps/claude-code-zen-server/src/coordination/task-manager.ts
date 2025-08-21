@@ -2,12 +2,14 @@
  * @file Task coordination system.
  */
 
+import type { DatabaseSPARCBridge } from '@claude-zen/enterprise';
+
 import type {
   FeatureDocumentEntity,
   TaskDocumentEntity,
 } from '../database/entities/product-entities';
 import type { AgentType } from '../types/agent-types';
-import type { DatabaseSPARCBridge } from '@claude-zen/enterprise';
+
 import {
   generateSubAgentConfig,
   mapToClaudeSubAgent,
@@ -129,15 +131,11 @@ export class TaskCoordinator {
 
     if (config?.source_document) {
       // Use existing document
-      if (config?.source_document?.type === 'feature') {
-        assignmentId = await this.sparcBridge.assignFeatureToSparcs(
+      assignmentId = await (config?.source_document?.type === 'feature' ? this.sparcBridge.assignFeatureToSparcs(
           config?.source_document
-        );
-      } else {
-        assignmentId = await this.sparcBridge.assignTaskToSparcs(
+        ) : this.sparcBridge.assignTaskToSparcs(
           config?.source_document
-        );
-      }
+        ));
     } else {
       // Create temporary task document for SPARC processing
       const tempTask = this.createTempTaskDocument(config);

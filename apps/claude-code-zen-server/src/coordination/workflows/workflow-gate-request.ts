@@ -16,20 +16,9 @@
  * - Battle-tested dependencies (expr-eval, async, p-limit, eventemitter3, xstate, mermaid, node-cron)
  */
 
+import { TaskApprovalSystem } from '@claude-zen/enterprise';
 import type { Logger } from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
-import { container } from 'tsyringe';
 import { getLogger } from '@claude-zen/foundation';
-
-import type { ValidationQuestion } from '../../coordination/discovery/progressive-confidence-builder';
-import {
-  Domain,
-  type DomainBoundaryValidator,
-  getDomainValidator,
-  type Result,
-  type TypeSchema,
-} from '../../core/domain-boundary-validator';
-
 import {
   type AGUIGateClosedEvent,
   type AGUIGateOpenedEvent,
@@ -39,11 +28,20 @@ import {
   type HumanValidationCompletedEvent,
   type TypeSafeEventBus,
 } from '@claude-zen/infrastructure';
+import { WorkflowEngine } from '@claude-zen/intelligence';
+import { EventEmitter } from 'eventemitter3';
+import { container } from 'tsyringe';
 
+import type { ValidationQuestion } from '../../coordination/discovery/progressive-confidence-builder';
+import {
+  Domain,
+  type DomainBoundaryValidator,
+  getDomainValidator,
+  type Result,
+  type TypeSchema,
+} from '../../core/domain-boundary-validator';
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 
-import { WorkflowEngine } from '@claude-zen/intelligence';
-import { TaskApprovalSystem } from '@claude-zen/enterprise';
 
 const logger = getLogger('workflow-gate-request');
 

@@ -25,10 +25,12 @@
  * @version 1.0.0
  */
 
-import Ajv, { type ValidateFunction } from 'ajv';
 // import addFormats from 'ajv-formats';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+
+import Ajv, { type ValidateFunction } from 'ajv';
+
 import type { Logger } from './logging';
 import type { JsonObject, JsonValue, UnknownRecord } from './types/primitives';
 

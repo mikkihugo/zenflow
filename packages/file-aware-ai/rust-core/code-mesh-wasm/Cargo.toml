@@ -62,6 +62,7 @@ web-sys = { version = "0.3", features = [
     "Element",
     "HtmlElement",
     "HtmlInputElement",
+    "HtmlCanvasElement",
     "HtmlTextAreaElement",
     "HtmlSelectElement",
     "DomRect",
@@ -73,6 +74,7 @@ web-sys = { version = "0.3", features = [
     "ReadableStream",
     "WritableStream",
     "TransformStream",
+    "WebGlRenderingContext",
 ] }
 
 # Utilities
@@ -87,17 +89,16 @@ wee_alloc = { version = "0.4", optional = true }
 base64 = "0.22"
 uuid = { version = "1.0", features = ["v4", "js"] }
 getrandom = { version = "0.2", features = ["js"] }
-thiserror = "1.0"
+thiserror = "2.0"
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3"
 proptest = "1.0"
-mockall = "0.12"
+mockall = "0.13"
 tempfile = "3.0"
 insta = "1.0"
 
-[package.metadata.wasm-pack]
-"wasm-pack" = "0.12"
+[package.metadata.wasm-pack.profile.release]
 wasm-opt = false
 
 [features]

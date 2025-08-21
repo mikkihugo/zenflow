@@ -15,7 +15,9 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "allowImportingTsExtensions": false,
-    "noEmit": false
+    "noEmit": false,
+    "composite": false,
+    "incremental": false
   },
   "include": [
     "src/**/*"

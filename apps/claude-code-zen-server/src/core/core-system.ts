@@ -130,23 +130,23 @@
  */
 
 import { getLogger, recordMetric, withTrace, createCircuitBreaker } from '@claude-zen/foundation';
-import { AgentMonitoring } from '@claude-zen/operations';
+import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
+import { BrainCoordinator , NeuralML , 
+  initializeCoordinationFactSystem,
+  storeCoordinationFact
+} from '@claude-zen/intelligence';
+import { AgentMonitoring , getChaosEngine } from '@claude-zen/operations';
 import { EventEmitter } from 'eventemitter3';
+
+import { WorkflowEngine } from '../workflows/workflow-engine';
+
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';
 import { ExportSystem as ExportManager } from './export-manager';
 import { InterfaceManager } from './interface-manager';
 
-import { BrainCoordinator , NeuralML } from '@claude-zen/intelligence';
-import { WorkflowEngine } from '../workflows/workflow-engine';
 
 // 🔥 AI-POWERED ENHANCEMENTS: Comprehensive @claude-zen package integration
-import { getChaosEngine } from '@claude-zen/operations';
-import { 
-  initializeCoordinationFactSystem,
-  storeCoordinationFact
-} from '@claude-zen/intelligence';
-import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
 
 /**
  * Export options interface for system state serialization.
@@ -1029,9 +1029,9 @@ export class System extends EventEmitter {
     const totalSystems = 4;
     
     if (availableSystems === 0) {
-      status.overallHealth = 'unavailable';
+      status.overallHealth = 'unavailable' as any;
     } else if (availableSystems < totalSystems * 0.75) {
-      status.overallHealth = 'degraded';
+      status.overallHealth = 'degraded' as any;
     }
     
     return status;

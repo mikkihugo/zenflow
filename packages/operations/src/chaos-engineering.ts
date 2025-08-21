@@ -1,15 +1,15 @@
 /**
  * @fileoverview Chaos Engineering System Interface Delegation
- * 
+ *
  * Provides interface delegation to @claude-zen/chaos-engineering package following
  * the same architectural pattern as database and monitoring delegation.
- * 
+ *
  * Runtime imports prevent circular dependencies while providing unified access
  * to chaos engineering, system resilience testing, and failure simulation through operations package.
- * 
+ *
  * Delegates to:
  * - @claude-zen/chaos-engineering: System resilience testing, failure simulation, chaos experiments
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
  * @version 1.0.0
@@ -24,7 +24,7 @@ const logger = getLogger('operations-chaos-engineering');
  */
 export class ChaosEngineeringSystemError extends Error {
   public override cause?: Error;
-  
+
   constructor(message: string, cause?: Error) {
     super(message);
     this.name = 'ChaosEngineeringSystemError';
@@ -63,17 +63,17 @@ interface ChaosEngineeringSystemAccess {
    * Create a new chaos engine
    */
   createChaosEngine(config?: any): Promise<any>;
-  
+
   /**
    * Create a new resilience test suite
    */
   createResilienceTestSuite(config?: any): Promise<any>;
-  
+
   /**
    * Create a new failure simulator
    */
   createFailureSimulator(config?: any): Promise<any>;
-  
+
   /**
    * Create an experiment runner
    */
@@ -98,7 +98,7 @@ interface ChaosEngineeringSystemConfig {
  */
 class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
   private chaosEngineeringModule: ChaosEngineeringSystemModule | null = null;
-  
+
   private async getChaosEngineeringModule(): Promise<ChaosEngineeringSystemModule> {
     if (!this.chaosEngineeringModule) {
       try {
@@ -110,31 +110,31 @@ class ChaosEngineeringSystemAccessImpl implements ChaosEngineeringSystemAccess {
       } catch (error) {
         throw new ChaosEngineeringSystemConnectionError(
           'Chaos engineering package not available. Operations requires @claude-zen/chaos-engineering for chaos operations.',
-          error instanceof Error ? error : undefined
+          error instanceof Error ? error : undefined,
         );
       }
     }
     return this.chaosEngineeringModule;
   }
-  
+
   async createChaosEngine(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
     logger.debug('Creating chaos engine via operations delegation', { config });
     return module.createChaosEngine ? module.createChaosEngine(config) : new module.ChaosEngine(config);
   }
-  
+
   async createResilienceTestSuite(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
     logger.debug('Creating resilience test suite via operations delegation', { config });
     return module.createResilienceTestSuite ? module.createResilienceTestSuite(config) : new module.ResilienceTestSuite(config);
   }
-  
+
   async createFailureSimulator(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
     logger.debug('Creating failure simulator via operations delegation', { config });
     return module.createFailureSimulator ? module.createFailureSimulator(config) : new module.FailureSimulator(config);
   }
-  
+
   async createExperimentRunner(config?: any): Promise<any> {
     const module = await this.getChaosEngineeringModule();
     logger.debug('Creating experiment runner via operations delegation', { config });
@@ -166,7 +166,7 @@ export async function getChaosEngine(config?: ChaosEngineeringSystemConfig): Pro
 }
 
 /**
- * Create a resilience test suite through operations delegation  
+ * Create a resilience test suite through operations delegation
  * @param config - Resilience test suite configuration
  */
 export async function getResilienceTestSuite(config?: ChaosEngineeringSystemConfig): Promise<any> {
@@ -175,7 +175,7 @@ export async function getResilienceTestSuite(config?: ChaosEngineeringSystemConf
 }
 
 /**
- * Create a failure simulator through operations delegation  
+ * Create a failure simulator through operations delegation
  * @param config - Failure simulator configuration
  */
 export async function getFailureSimulator(config?: ChaosEngineeringSystemConfig): Promise<any> {
@@ -184,7 +184,7 @@ export async function getFailureSimulator(config?: ChaosEngineeringSystemConfig)
 }
 
 /**
- * Create an experiment runner through operations delegation  
+ * Create an experiment runner through operations delegation
  * @param config - Experiment runner configuration
  */
 export async function getExperimentRunner(config?: ChaosEngineeringSystemConfig): Promise<any> {
@@ -198,11 +198,11 @@ export const chaosEngineeringSystem = {
   getEngine: getChaosEngine,
   getTestSuite: getResilienceTestSuite,
   getSimulator: getFailureSimulator,
-  getExperimentRunner: getExperimentRunner
+  getExperimentRunner: getExperimentRunner,
 };
 
 // Type exports for external consumers
 export type {
   ChaosEngineeringSystemAccess,
-  ChaosEngineeringSystemConfig
+  ChaosEngineeringSystemConfig,
 };

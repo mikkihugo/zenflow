@@ -30,7 +30,7 @@
  * ```
  */
 
-import { ServiceContainer, createServiceContainer, Lifetime } from '@claude-zen/foundation';
+import { ServiceContainer, createServiceContainer } from '@claude-zen/foundation';
 import { getLogger, type Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 
@@ -141,7 +141,7 @@ export class ClientRegistry extends EventEmitter {
 
     // Include any legacy clients not in ServiceContainer
     for (const client of this.clients.values()) {
-      if (!allClients.some(c => c === client)) {
+      if (!allClients.includes(client)) {
         allClients.push(client);
       }
     }

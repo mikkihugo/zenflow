@@ -5,14 +5,14 @@
  * Provides intelligent routing and coordination for cognitive processing tasks.
  */
 
-import { EventEmitter } from 'eventemitter3';
 import { getLogger } from '@claude-zen/foundation';
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   CoordinationRequest,
   CoordinationResponse,
-  SystemEvent,
-  AgentStatus,
-  Lifecycle
+  Lifecycle,
+  SystemHealth
 } from '../../core/interfaces/base-interfaces';
 
 const logger = getLogger('intelligence-cube-matron');
@@ -144,9 +144,9 @@ export class IntelligenceCubeMatron extends EventEmitter implements Lifecycle {
     return this._isRunning;
   }
 
-  getStatus() {
+  getStatus(): SystemHealth {
     return {
-      status: this._isRunning ? 'healthy' : 'offline' as const,
+      status: this._isRunning ? 'healthy' : 'unhealthy' as const,
       uptime: this._isRunning ? Date.now() : 0,
       version: '1.0.0',
       timestamp: new Date().toISOString(),
@@ -163,8 +163,9 @@ export class IntelligenceCubeMatron extends EventEmitter implements Lifecycle {
         },
         'adaptive-learning': {
           name: 'Adaptive Learning',
-          status: this.config.enableAdaptiveLearning ? 'healthy' : 'disabled' as const,
-          lastCheck: new Date().toISOString()
+          status: this.config.enableAdaptiveLearning ? 'healthy' : 'degraded' as const,
+          lastCheck: new Date().toISOString(),
+          message: this.config.enableAdaptiveLearning ? undefined : 'Adaptive learning is disabled'
         }
       }
     };
@@ -452,9 +453,3 @@ export async function initializeIntelligenceCubeMatron(config?: Partial<Intellig
 // =============================================================================
 
 export default IntelligenceCubeMatron;
-
-export type {
-  IntelligenceCubeConfig,
-  CognitiveTask,
-  IntelligenceCapability
-};

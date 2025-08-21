@@ -1,29 +1,34 @@
 #!/usr/bin/env node
 
 /**
- * @fileoverview TypeScript Auto-Fix Script
+ * @fileoverview TypeScript Auto-Fix Script with Intelligent LLM Routing
  * 
- * Automatically fixes TypeScript compilation errors using Claude CLI for files
- * that don't compile successfully. Analyzes TypeScript errors, identifies patterns,
- * and feeds them to Claude for systematic resolution until the project compiles cleanly.
+ * Automatically fixes TypeScript compilation errors using intelligent LLM provider
+ * selection and routing for optimal results. Analyzes TypeScript errors, identifies
+ * patterns, and feeds them to the most appropriate LLM provider for systematic
+ * resolution until the project compiles cleanly.
  * 
  * Features:
  * - Scans for TypeScript compilation errors across the project
- * - Uses Claude CLI with bypass permissions for automated fixes
+ * - 🧠 INTELLIGENT LLM ROUTING: Selects optimal provider based on context
+ * - Uses Claude CLI/Copilot/Gemini with bypass permissions for automated fixes
+ * - Context-aware provider selection (file operations, codebase awareness)
  * - Provides detailed prompts for systematic error resolution
  * - Supports iterative fixing until compilation succeeds
- * - Validates improvements after Claude processes files
+ * - Validates improvements after AI processes files
  * - Prioritizes by error frequency and file impact
+ * - Comprehensive logging with provider attribution
  * 
  * @author Claude Code Zen Team
  * @since 1.0.0
- * @version 1.0.0
+ * @version 2.0.0 - LLM Routing Integration
  */
 
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { spawn } from 'child_process';  // Still needed for runTypeCheck()
+import { getOptimalProvider, getProvider } from '../packages/operations/dist/llm-routing.js';
 import { executeClaudeTask } from '../packages/foundation/dist/src/claude-sdk.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -595,10 +600,41 @@ async function fixFileWithClaude(file, errors, fileAnalysis = null, fileId = nul
     const dynamicTurns = Math.min(Math.max(errors.length * 3, CONFIG.MAX_TURNS), 100);
     const dynamicTimeout = Math.min(Math.max(errors.length * 15000, CONFIG.TIMEOUT_MS), 3600000); // 15s per error, max 1 hour
     
-    console.log(colorize(`⚙️  ${filePrefix}SDK Config: ${errors.length} errors → ${dynamicTurns} turns, ${dynamicTimeout/1000}s timeout`, 'blue'));
+    // 🚀 INTELLIGENT PROVIDER SELECTION via LLM Routing
+    const routingContext = {
+      contentLength: prompt.length,
+      requiresFileOps: true, // TypeScript fixing needs file operations
+      requiresCodebaseAware: true, // Better understanding of code context
+      requiresStructuredOutput: false, // We need text responses, not JSON
+    };
+    
+    console.log(colorize(`🧠 ${filePrefix}LLM Routing: Analyzing ${prompt.length} chars with file ops + codebase awareness...`, 'magenta'));
+    
+    const optimalProviders = await getOptimalProvider(routingContext);
+    const selectedProvider = optimalProviders.length > 0 ? optimalProviders[0] : 'claude-code'; // Fallback to claude-code
+    const providerConfig = await getProvider(selectedProvider);
+    
+    console.log(colorize(`⚡ ${filePrefix}Selected Provider: ${providerConfig?.displayName || selectedProvider} (${optimalProviders.length} candidates)`, 'cyan'));
+    if (CONFIG.OUTPUT.verbose && optimalProviders.length > 1) {
+      console.log(colorize(`   Alternatives: ${optimalProviders.slice(1).join(', ')}`, 'blue'));
+    }
+    
+    // Map provider to Foundation SDK model parameter
+    const modelMapping = {
+      'claude-code': CONFIG.CLAUDE_MODEL, // Use configured model (sonnet/haiku)
+      'copilot': 'gpt-5', // Use GPT-5 for Copilot
+      'github-models': 'gpt-5', // Use GPT-5 for GitHub Models
+      'gemini-direct': 'gemini-pro', // Use Gemini Pro for direct access
+      'gemini': 'gemini-pro', // Use Gemini Pro for CLI
+      'gemini-pro': 'gemini-pro', // Gemini Pro for complex tasks
+    };
+    
+    const selectedModel = modelMapping[selectedProvider] || CONFIG.CLAUDE_MODEL;
+    
+    console.log(colorize(`⚙️  ${filePrefix}SDK Config: ${selectedProvider} → ${selectedModel}, ${errors.length} errors → ${dynamicTurns} turns, ${dynamicTimeout/1000}s timeout`, 'blue'));
     
     const messages = await executeClaudeTask(prompt, {
-      model: CONFIG.CLAUDE_MODEL,
+      model: selectedModel,
       permissionMode: 'bypassPermissions', // ✅ This is the "dangerous" flag equivalent
       additionalDirectories: [path.dirname(path.resolve(file))],
       maxTurns: dynamicTurns, // ✅ Dynamic turn limit based on error count
@@ -609,7 +645,9 @@ async function fixFileWithClaude(file, errors, fileAnalysis = null, fileId = nul
           type: 'stderr',
           timestamp: new Date().toISOString(),
           content: data,
-          file: path.basename(file)
+          file: path.basename(file),
+          provider: selectedProvider,
+          model: selectedModel
         });
         
         if (CONFIG.OUTPUT.verbose) {
@@ -646,7 +684,9 @@ async function fixFileWithClaude(file, errors, fileAnalysis = null, fileId = nul
         timestamp: new Date().toISOString(),
         content: response,
         file: path.basename(file),
-        responseNumber: i + 1
+        responseNumber: i + 1,
+        provider: selectedProvider,
+        model: selectedModel
       });
     });
 
@@ -678,10 +718,15 @@ async function fixFileWithClaude(file, errors, fileAnalysis = null, fileId = nul
             fileId: fileId || 'single',
             timestamp: new Date().toISOString(),
             errorsFixed: errors.length,
-            model: CONFIG.CLAUDE_MODEL,
+            provider: selectedProvider,
+            providerDisplayName: providerConfig?.displayName || selectedProvider,
+            model: selectedModel,
+            originalModel: CONFIG.CLAUDE_MODEL,
             permissionMode: 'bypassPermissions',
             dynamicTurns,
-            dynamicTimeout
+            dynamicTimeout,
+            routingContext,
+            availableProviders: optimalProviders
           },
           interactions: claudeInteractionLog,
           summary: {
@@ -693,14 +738,14 @@ async function fixFileWithClaude(file, errors, fileAnalysis = null, fileId = nul
         }, null, 2));
         
         if (CONFIG.OUTPUT.verbose) {
-          console.log(colorize(`💾 ${filePrefix}Detailed log: ${logFile}`, 'green'));
+          console.log(colorize(`💾 ${filePrefix}Detailed log: ${logFile} (${selectedProvider})`, 'green'));
         }
       } catch (logError) {
         console.warn(colorize(`⚠️  Could not save interaction log: ${logError.message}`, 'yellow'));
       }
     }
 
-    console.log(colorize(`✅ ${filePrefix}Claude completed TypeScript fixes for ${path.basename(file)}`, 'green'));
+    console.log(colorize(`✅ ${filePrefix}${providerConfig?.displayName || selectedProvider} completed TypeScript fixes for ${path.basename(file)}`, 'green'));
     return { success: true, output: outputText };
 
   } catch (error) {
@@ -826,8 +871,9 @@ async function main() {
   // Parse command line arguments
   if (args.includes('--help') || args.includes('-h')) {
     console.log(`
-${colorize('TypeScript Auto-Fix with Claude CLI', 'bright')}
-${colorize('Iterative error resolution until project compiles cleanly', 'cyan')}
+${colorize('TypeScript Auto-Fix with Intelligent LLM Routing', 'bright')}
+${colorize('Smart provider selection + iterative error resolution until project compiles cleanly', 'cyan')}
+${colorize('🧠 Automatically selects optimal LLM provider (Claude/Copilot/Gemini) based on context', 'magenta')}
 
 ${colorize('Usage:', 'blue')} node fix-typescript.mjs [options]
 
@@ -843,6 +889,8 @@ ${colorize('Options:', 'blue')}
   --help, -h                Show this help message
 
 ${colorize('Features:', 'blue')}
+  🧠 Intelligent LLM provider selection (Claude/Copilot/Gemini)
+  ⚡ Context-aware routing based on file operations & codebase needs
   ✅ Iterative fixing until compilation succeeds
   ✅ Smart error prioritization by file impact
   ✅ Comprehensive TypeScript error analysis
@@ -850,6 +898,7 @@ ${colorize('Features:', 'blue')}
   ✅ Progress tracking and detailed reporting
   ✅ Parallel processing for maximum performance
   ✅ Configurable batch sizes (up to 10 files per iteration)
+  📊 Provider performance tracking and attribution
 
 ${colorize('Examples:', 'blue')}
   node fix-typescript.mjs                         # Fix all TypeScript errors iteratively
@@ -907,13 +956,14 @@ ${colorize('Examples:', 'blue')}
     CONFIG.TIMEOUT_MS = parseInt(args[timeoutIndex + 1], 10) * 1000; // Convert seconds to ms
   }
 
-  console.log(colorize('🔧 TypeScript Auto-Fix with Claude CLI', 'bright'));
-  console.log(colorize(`Using model: ${CONFIG.CLAUDE_MODEL}`, 'blue'));
-  console.log(colorize(`Max iterations: ${CONFIG.MAX_ITERATIONS}`, 'blue'));
-  console.log(colorize(`Batch size: ${CONFIG.MAX_BATCH_SIZE}`, 'blue'));
-  console.log(colorize(`Parallel processing: ${CONFIG.MAX_PARALLEL_FILES} files`, 'blue'));
-  console.log(colorize(`Max turns per file: ${CONFIG.MAX_TURNS}`, 'blue'));
-  console.log(colorize(`Timeout per file: ${CONFIG.TIMEOUT_MS / 1000}s`, 'blue'));
+  console.log(colorize('🧠 TypeScript Auto-Fix with Intelligent LLM Routing', 'bright'));
+  console.log(colorize(`🎯 Smart Provider Selection: Context-aware routing enabled`, 'magenta'));
+  console.log(colorize(`📋 Fallback model: ${CONFIG.CLAUDE_MODEL}`, 'blue'));
+  console.log(colorize(`🔄 Max iterations: ${CONFIG.MAX_ITERATIONS}`, 'blue'));
+  console.log(colorize(`📦 Batch size: ${CONFIG.MAX_BATCH_SIZE}`, 'blue'));
+  console.log(colorize(`⚡ Parallel processing: ${CONFIG.MAX_PARALLEL_FILES} files`, 'blue'));
+  console.log(colorize(`🎛️  Max turns per file: ${CONFIG.MAX_TURNS}`, 'blue'));
+  console.log(colorize(`⏱️  Timeout per file: ${CONFIG.TIMEOUT_MS / 1000}s`, 'blue'));
   
   try {
     const result = await iterativeTypescriptFix();

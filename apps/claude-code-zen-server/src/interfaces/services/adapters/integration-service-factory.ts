@@ -10,9 +10,10 @@
  * @file Interface implementation: integration-service-factory.
  */
 
-import { getMCPServerURL } from '@claude-zen/infrastructure';
 import type { Logger } from '@claude-zen/foundation'
 import { getLogger } from '@claude-zen/foundation'
+import { getMCPServerURL } from '@claude-zen/infrastructure';
+
 import type {
   Service,
   ServiceFactory,

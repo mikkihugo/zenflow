@@ -1,6 +1,6 @@
 /**
  * @fileoverview Exporters Strategic Facade - Direct Delegation
- * 
+ *
  * Strategic facade providing data export capabilities through delegation
  * to @claude-zen/exporters package when available, with professional fallbacks.
  * No translation needed - uses native implementation functions directly.
@@ -19,12 +19,18 @@ async function loadExportersModule() {
       // Fallback implementation when exporters package isn't available
       exportersModuleCache = {
         ExportManager: class {
-          async exportData() { return { result: 'fallback-export', status: 'exported' }; }
-          async initialize() { return this; }
-          async getStatus() { return { status: 'fallback', healthy: true }; }
+          async exportData() {
+            return { result: 'fallback-export', status: 'exported' };
+          }
+          async initialize() {
+            return this;
+          }
+          async getStatus() {
+            return { status: 'fallback', healthy: true };
+          }
         },
         createExportManager: () => createFallbackExportManager(),
-        createExporters: () => createFallbackExporters()
+        createExporters: () => createFallbackExporters(),
       };
     }
   }
@@ -38,29 +44,29 @@ function createFallbackExportManager() {
       status: 'exported',
       format: format || 'json',
       size: JSON.stringify(data).length,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     exportToJSON: async (data: any) => ({
       result: JSON.stringify(data, null, 2),
       status: 'exported',
       format: 'json',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     exportToCSV: async (data: any) => ({
       result: Array.isArray(data) ? data.map(row => Object.values(row).join(',')).join('\n') : 'fallback-csv',
       status: 'exported',
       format: 'csv',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     exportToXML: async (data: any) => ({
       result: `<data>${JSON.stringify(data)}</data>`,
       status: 'exported',
       format: 'xml',
-      timestamp: Date.now()
+      timestamp: Date.now(),
     }),
     getStatus: () => ({ status: 'fallback', healthy: true }),
     initialize: async () => Promise.resolve(),
-    shutdown: async () => Promise.resolve()
+    shutdown: async () => Promise.resolve(),
   };
 }
 
@@ -70,7 +76,7 @@ function createFallbackExporters() {
     csv: (data: any) => Array.isArray(data) ? data.map(row => Object.values(row).join(',')).join('\n') : 'fallback-csv',
     xml: (data: any) => `<data>${JSON.stringify(data)}</data>`,
     yaml: (data: any) => `# Fallback YAML\ndata: ${JSON.stringify(data)}`,
-    getStatus: () => ({ status: 'fallback', healthy: true })
+    getStatus: () => ({ status: 'fallback', healthy: true }),
   };
 }
 
@@ -100,27 +106,37 @@ export class ExportManager {
   }
 
   async exportData(data: any, format?: string) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.exportData(data, format);
   }
 
   async exportToJSON(data: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.exportToJSON?.(data) || { result: JSON.stringify(data, null, 2), format: 'json' };
   }
 
   async exportToCSV(data: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.exportToCSV?.(data) || { result: 'fallback-csv', format: 'csv' };
   }
 
   async exportToXML(data: any) {
-    if (!this.instance) await this.initialize();
+    if (!this.instance) {
+      await this.initialize();
+    }
     return this.instance.exportToXML?.(data) || { result: `<data>${JSON.stringify(data)}</data>`, format: 'xml' };
   }
 
   getStatus() {
-    if (!this.instance) return { status: 'not-initialized' };
+    if (!this.instance) {
+      return { status: 'not-initialized' };
+    }
     return this.instance.getStatus();
   }
 
@@ -135,7 +151,7 @@ export class ExportManager {
 // Professional naming patterns - matches expected interface
 export const exportersSystem = {
   getManager: getExportManager,
-  getExporters: getExporters
+  getExporters: getExporters,
 };
 
 // Additional exports for compatibility

@@ -7,18 +7,18 @@
  * @file Project management API routes.
  */
 
-import { type Request, type Response, Router } from 'express';
-
-import { asyncHandler } from '../middleware/errors';
-import { LogLevel, log } from '../middleware/logging';
-import { ProjectSwitcher } from '../../../../core/project-switcher';
-import { getProjectModeManager, ProjectMode } from '../../../../core/project-mode-manager';
 import { 
   getRegisteredProjects, 
   getCurrentProject, 
   getDataStoragePaths,
   cleanupProjectRegistry 
 } from '@claude-zen/infrastructure';
+import { type Request, type Response, Router } from 'express';
+
+import { getProjectModeManager, ProjectMode } from '../../../../core/project-mode-manager';
+import { ProjectSwitcher } from '../../../../core/project-switcher';
+import { asyncHandler } from '../middleware/errors';
+import { LogLevel, log } from '../middleware/logging';
 
 /**
  * Create project management routes.

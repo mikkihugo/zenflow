@@ -3,21 +3,20 @@
  * Consolidates all Express servers into one with organized routes.
  */
 
+import { createServer } from 'http';
+import path from 'path';
+
+import { Logger, Config } from '@claude-zen/foundation';
+import type { SystemConfiguration } from '@claude-zen/infrastructure';
 import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
-
-import { createServer } from 'http';
-import path from 'path';
-
 import type { Server as SocketIOServer } from 'socket.io';
 // Foundation package - unified interface for all shared utilities
-import { Logger, Config } from '@claude-zen/foundation';
 
 // Type moved to @claude-zen/infrastructure
-import type { SystemConfiguration } from '@claude-zen/infrastructure';
 
 const logger = new Logger('interfaces-server');
 const config = new Config();

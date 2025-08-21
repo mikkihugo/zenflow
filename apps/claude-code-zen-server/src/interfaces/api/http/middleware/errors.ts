@@ -8,7 +8,6 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
-
 import type {
   ErrorRequestHandler,
   NextFunction,

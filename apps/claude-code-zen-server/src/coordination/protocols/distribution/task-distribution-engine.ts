@@ -9,6 +9,7 @@
 
 import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
+
 import type { EventBusInterface as EventBus } from '../../core/event-bus';
 
 // Core types for task distribution

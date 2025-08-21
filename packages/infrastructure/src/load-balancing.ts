@@ -53,23 +53,53 @@ export function getPerformanceTracker() {
   });
 }
 
-export function getTelemetryManager() {
+export function getTelemetryManager(config?: {
+  serviceName?: string;
+  enableTracing?: boolean;
+  enableMetrics?: boolean;
+}) {
+  const serviceName = config?.serviceName || 'default-service';
+  const enableTracing = config?.enableTracing !== false;
+  const enableMetrics = config?.enableMetrics !== false;
+  
   return Promise.resolve({
+    serviceName,
+    enableTracing,
+    enableMetrics,
     recordMetric: async (name: string, value = 1) => {
-      console.log(`Telemetry: ${name} = ${value}`);
+      if (enableMetrics) {
+        console.log(`Telemetry[${serviceName}]: ${name} = ${value}`);
+      }
     },
     recordHistogram: async (name: string, value: number) => {
-      console.log(`Histogram: ${name} = ${value}`);
+      if (enableMetrics) {
+        console.log(`Histogram[${serviceName}]: ${name} = ${value}`);
+      }
     },
     recordGauge: async (name: string, value: number) => {
-      console.log(`Gauge: ${name} = ${value}`);
+      if (enableMetrics) {
+        console.log(`Gauge[${serviceName}]: ${name} = ${value}`);
+      }
     },
-    withTrace: <T>(fn: () => T) => fn(),
-    withAsyncTrace: async <T>(fn: () => Promise<T>) => fn(),
+    recordCounter: async (name: string, value = 1, tags?: Record<string, string>) => {
+      if (enableMetrics) {
+        console.log(`Counter[${serviceName}]: ${name} = ${value}`, tags ? `Tags: ${JSON.stringify(tags)}` : '');
+      }
+    },
+    withTrace: <T>(fn: () => T) => enableTracing ? fn() : fn(),
+    withAsyncTrace: async <T>(fn: () => Promise<T>) => enableTracing ? fn() : fn(),
     startTrace: (name: string) => ({
-      setAttributes: (attrs: any) => console.log(`Trace ${name}:`, attrs),
-      end: () => console.log(`Trace ${name} ended`)
-    })
+      setAttributes: (attrs: any) => enableTracing && console.log(`Trace[${serviceName}] ${name}:`, attrs),
+      end: () => enableTracing && console.log(`Trace[${serviceName}] ${name} ended`)
+    }),
+    initialize: async () => {
+      console.log(`Telemetry Manager initialized for ${serviceName} (tracing: ${enableTracing}, metrics: ${enableMetrics})`);
+      return Promise.resolve();
+    },
+    shutdown: async () => {
+      console.log(`Telemetry Manager shutdown for ${serviceName}`);
+      return Promise.resolve();
+    }
   });
 }
 

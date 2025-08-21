@@ -8,9 +8,9 @@
  * @file Web-socket coordination system.
  */
 
+import { getLogger } from '@claude-zen/foundation'
 import type { Server as SocketIOServer } from 'socket.io';
 
-import { getLogger } from '@claude-zen/foundation'
 
 export interface WebSession {
   id: string;

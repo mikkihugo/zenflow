@@ -1,6 +1,6 @@
 /**
  * @fileoverview Multi-Level Orchestration Strategic Facade - Real Package Delegation
- * 
+ *
  * Strategic facade providing real multi-level orchestration capabilities through delegation
  * to @claude-zen/multi-level-orchestration package.
  */
@@ -20,31 +20,53 @@ async function loadOrchestrationModule() {
       console.warn('Multi-level orchestration package not available, providing compatibility layer');
       orchestrationModuleCache = {
         MultiLevelOrchestrationManager: class CompatibilityOrchestrationManager extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
-          async orchestratePortfolio() { return { status: 'compatibility' }; }
-          async orchestrateProgram() { return { status: 'compatibility' }; }
-          async orchestrateSwarm() { return { status: 'compatibility' }; }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
+          async orchestratePortfolio() {
+            return { status: 'compatibility' };
+          }
+          async orchestrateProgram() {
+            return { status: 'compatibility' };
+          }
+          async orchestrateSwarm() {
+            return { status: 'compatibility' };
+          }
         },
         PortfolioOrchestrator: class CompatibilityPortfolioOrchestrator extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         ProgramOrchestrator: class CompatibilityProgramOrchestrator extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         SwarmExecutionOrchestrator: class CompatibilitySwarmOrchestrator extends EventEmitter {
-          async initialize() { return this; }
-          async shutdown() { return Promise.resolve(); }
+          async initialize() {
+            return this;
+          }
+          async shutdown() {
+            return Promise.resolve();
+          }
         },
         OrchestrationLevel: {
           PORTFOLIO: 'portfolio',
           PROGRAM: 'program',
-          SWARM_EXECUTION: 'execution'
+          SWARM_EXECUTION: 'execution',
         },
         WorkflowStream: class CompatibilityWorkflowStream {},
-        MultiLevelOrchestratorState: class CompatibilityOrchestratorState {}
+        MultiLevelOrchestratorState: class CompatibilityOrchestratorState {},
       };
     }
   }

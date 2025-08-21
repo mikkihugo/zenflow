@@ -18,9 +18,10 @@
  * - Enhanced performance monitoring and optimization
  */
 
-import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '@claude-zen/foundation'
 import { getLogger } from '@claude-zen/foundation'
+import { EventEmitter } from 'eventemitter3';
+
 import type {
   Service,
   ServiceDependencyConfig,
@@ -92,7 +93,7 @@ export interface CoordinationServiceAdapterConfig {
 export interface AgentCoordinationRequest {
   readonly operation: 'spawn' | 'coordinate' | 'conversation' | 'consensus';
   readonly agents?: string[];
-  readonly context?: Record<string, any>;
+  readonly context?: Record<string, unknown>;
   readonly timeout?: number;
   readonly priority?: ServicePriority;
 }
@@ -103,8 +104,8 @@ export interface AgentCoordinationRequest {
 export interface SessionRequest {
   readonly operation: 'create' | 'restore' | 'checkpoint' | 'destroy';
   readonly sessionId?: string;
-  readonly config?: Record<string, any>;
-  readonly data?: any;
+  readonly config?: Record<string, unknown>;
+  readonly data?: unknown;
 }
 
 /**
@@ -112,7 +113,7 @@ export interface SessionRequest {
  */
 export interface CoordinationResponse {
   readonly success: boolean;
-  readonly data?: any;
+  readonly data?: unknown;
   readonly error?: string;
   readonly metrics?: {
     readonly duration: number;
@@ -136,19 +137,19 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
   private readonly config: CoordinationServiceAdapterConfig;
   
   // Package delegation instances
-  private conversationOrchestrator: any;
-  private teamworkSystem: any;
-  private workflowEngine: any;
-  private performanceTracker: any;
-  private telemetryManager: any;
-  private monitoringSystem: any;
-  private adaptiveLearning: any;
+  private conversationOrchestrator: unknown;
+  private teamworkSystem: unknown;
+  private workflowEngine: unknown;
+  private performanceTracker: unknown;
+  private telemetryManager: unknown;
+  private monitoringSystem: unknown;
+  private adaptiveLearning: unknown;
   
   // Service state
   private _status: ServiceLifecycleStatus = 'stopped';
   private initialized = false;
   private activeOperations = new Map<string, any>();
-  private sessionManager: any;
+  private sessionManager: unknown;
   
   // Performance metrics
   private operationCount = 0;
@@ -250,7 +251,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     try {
       this.activeOperations.set(operationId, { type: 'agent_coordination', started: new Date() });
 
-      let result: any;
+      let result: unknown;
 
       switch (request.operation) {
         case 'conversation':
@@ -352,7 +353,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     const timer = this.performanceTracker.startTimer('manage_session');
 
     try {
-      let result: any;
+      let result: unknown;
 
       switch (request.operation) {
         case 'create':
@@ -500,7 +501,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     if (!this.initialized) await this.initialize();
 
     try {
-      let result: any;
+      let result: unknown;
 
       switch (operation) {
         case 'coordinate_agents':
@@ -572,7 +573,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
   // PRIVATE HELPER METHODS
   // ============================================================================
 
-  private async orchestrateConversation(request: AgentCoordinationRequest): Promise<any> {
+  private async orchestrateConversation(request: AgentCoordinationRequest): Promise<unknown> {
     return await this.conversationOrchestrator.startConversation({
       participants: request.agents || [],
       context: request.context || {},
@@ -581,7 +582,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     });
   }
 
-  private async buildConsensus(request: AgentCoordinationRequest): Promise<any> {
+  private async buildConsensus(request: AgentCoordinationRequest): Promise<unknown> {
     return await this.conversationOrchestrator.buildConsensus({
       participants: request.agents || [],
       context: request.context || {},
@@ -590,7 +591,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     });
   }
 
-  private async coordinateTeamwork(request: AgentCoordinationRequest): Promise<any> {
+  private async coordinateTeamwork(request: AgentCoordinationRequest): Promise<unknown> {
     return await this.teamworkSystem.coordinate({
       agents: request.agents || [],
       context: request.context || {},
@@ -599,7 +600,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     });
   }
 
-  private async spawnAgents(request: AgentCoordinationRequest): Promise<any> {
+  private async spawnAgents(request: AgentCoordinationRequest): Promise<unknown> {
     return await this.teamworkSystem.spawnAgents({
       agentTypes: request.agents || [],
       context: request.context || {},
@@ -612,13 +613,13 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
     this.sessionManager = {
       sessions: new Map(),
       
-      async createSession(config: any) {
+      async createSession(config: unknown) {
         const sessionId = `session-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
         this.sessions.set(sessionId, { id: sessionId, config, created: new Date(), data: {} });
         return { sessionId, created: true };
       },
       
-      async restoreSession(sessionId: string, data: any) {
+      async restoreSession(sessionId: string, data: unknown) {
         const session = this.sessions.get(sessionId);
         if (!session) throw new Error(`Session not found: ${sessionId}`);
         session.data = data;
@@ -626,7 +627,7 @@ export class CoordinationServiceAdapter extends EventEmitter implements Service 
         return { sessionId, restored: true };
       },
       
-      async checkpointSession(sessionId: string, data: any) {
+      async checkpointSession(sessionId: string, data: unknown) {
         const session = this.sessions.get(sessionId);
         if (!session) throw new Error(`Session not found: ${sessionId}`);
         session.data = { ...session.data, ...data };

@@ -11,8 +11,10 @@
 
 import type { Logger } from '@claude-zen/foundation'
 import { getLogger } from '@claude-zen/foundation'
+
 import type { ServiceFactory } from '../core/interfaces';
 import { ServicePriority, ServiceType } from '../types';
+
 import {
   type CoordinationServiceAdapter,
   type CoordinationServiceAdapterConfig,

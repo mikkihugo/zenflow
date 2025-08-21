@@ -12,17 +12,17 @@
  * @version 2.0.0
  */
 
-import * as path from 'path';
-import * as fs from 'fs';
 import { EventEmitter } from 'events';
+import * as fs from 'fs';
+import * as path from 'path';
 
 import { getLogger } from '@claude-zen/foundation';
 import { 
   getRegisteredProjects, 
-  getCurrentProject, 
-  getDataStoragePaths,
+  getCurrentProject,
   ensureDataDirectories 
 } from '@claude-zen/infrastructure';
+
 import { initializeClaudeZen, shutdownClaudeZen } from '../index';
 
 const logger = getLogger('ProjectSwitcher');

@@ -1,6 +1,6 @@
 /**
  * @fileoverview Enterprise Package Types - Simple Types
- * 
+ *
  * Simple type definitions for strategic facade.
  */
 

@@ -13,7 +13,9 @@
  * Creates and configures integrated coordination systems.
  */
 import type { Logger } from '@claude-zen/foundation';
+
 import type { EventBusInterface as EventBus } from '../core/event-bus';
+
 import { CommunicationProtocols } from './communication/communication-protocols';
 import { TaskDistributionEngine } from './distribution/task-distribution-engine';
 import { AgentLifecycleManager } from './lifecycle/agent-lifecycle-manager';

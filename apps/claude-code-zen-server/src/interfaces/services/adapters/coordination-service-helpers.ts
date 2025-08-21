@@ -10,6 +10,7 @@
  */
 
 import { getLogger } from '@claude-zen/foundation'
+
 import type { SessionState } from '../../../coordination/swarm/core/session-manager';
 import type { SwarmAgent } from '../../../coordination/swarm/core/swarm-coordinator';
 import type { AgentType } from '../../../types/agent-types';

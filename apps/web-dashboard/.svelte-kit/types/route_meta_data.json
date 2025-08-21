@@ -2,7 +2,9 @@
 	"/": [],
 	"/agui": [],
 	"/database": [],
+	"/facades": [],
 	"/memory": [],
 	"/roadmap": [],
-	"/swarm": []
+	"/swarm": [],
+	"/system": []
 }

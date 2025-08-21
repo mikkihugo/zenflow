@@ -10,6 +10,7 @@
 
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
+
 import { diagnostics } from './diagnostics';
 import type { LogConfiguration, LoggerInterface } from './logging-config';
 
@@ -239,20 +240,20 @@ function formatReportAsMarkdown(report: unknown): string {
   const lines = [
     '# ruv-swarm Diagnostic Report',
     '',
-    `Generated: ${report.timestamp}`,
+    `Generated: ${(report as any).timestamp}`,
     '',
     '## Connection Diagnostics',
     '',
-    `- **Active Connections**: ${report.connection.connections.activeConnections}`,
-    `- **Failure Rate**: ${(report.connection.connections.failureRate * 100).toFixed(1)}%`,
-    `- **Total Events**: ${report.connection.connections.totalEvents}`,
+    `- **Active Connections**: ${(report as any).connection.connections.activeConnections}`,
+    `- **Failure Rate**: ${((report as any).connection.connections.failureRate * 100).toFixed(1)}%`,
+    `- **Total Events**: ${(report as any).connection.connections.totalEvents}`,
     '',
   ];
 
-  if (report.connection.patterns.recommendations.length > 0) {
+  if ((report as any).connection.patterns.recommendations.length > 0) {
     lines.push('### Recommendations');
     lines.push('');
-    report.connection.patterns.recommendations.forEach((rec: unknown) => {
+    (report as any).connection.patterns.recommendations.forEach((rec: any) => {
       lines.push(`- **${rec.severity.toUpperCase()}**: ${rec.issue}`);
       lines.push(`  - ${rec.suggestion}`);
     });
@@ -261,13 +262,13 @@ function formatReportAsMarkdown(report: unknown): string {
 
   lines.push('## System Health');
   lines.push('');
-  lines.push(`- **Status**: ${report.system.status.toUpperCase()}`);
+  lines.push(`- **Status**: ${(report as any).system.status.toUpperCase()}`);
 
-  if (report.system.metrics) {
+  if ((report as any).system.metrics) {
     lines.push('');
     lines.push('### Metrics');
     lines.push('');
-    Object.entries(report.system.metrics).forEach(([key, value]) => {
+    Object.entries((report as any).system.metrics).forEach(([key, value]) => {
       lines.push(`- **${key}**: ${value}`);
     });
   }
