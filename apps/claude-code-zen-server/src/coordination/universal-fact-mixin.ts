@@ -7,6 +7,8 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
+
+import type { FactEntry, FactQuery } from './shared-fact-system';
 import { 
   sharedFactSystem, 
   storeAgentFact, 
@@ -15,7 +17,6 @@ import {
   getNPMPackageInfo,
   getGitHubRepoInfo
 } from './shared-fact-system';
-import type { FactEntry, FactQuery } from './shared-fact-system';
 
 const logger = getLogger('UniversalFactMixin');
 

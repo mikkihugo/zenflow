@@ -48,7 +48,7 @@ export class SchemaValidationError extends Error {
   constructor(
     message: string,
     public readonly documentType?: string,
-    public readonly validationErrors?: string[]
+    public readonly validationErrors?: string[],
   ) {
     super(message);
     this.name = 'SchemaValidationError';
@@ -127,7 +127,7 @@ export class JsonSchemaManager {
       };
 
       this.logger.info(
-        `Registered schema ${name} for modes: ${modes.join(', ')}`
+        `Registered schema ${name} for modes: ${modes.join(', ')}`,
       );
     } catch (error) {
       this.logger.error(`Failed to register schema ${name}:`, error);
@@ -139,7 +139,7 @@ export class JsonSchemaManager {
    * Extract supported modes from schema metadata
    */
   private extractSupportedModes(
-    schema: JsonObject
+    schema: JsonObject,
   ): ('kanban' | 'agile' | 'safe')[] {
     // Check schema metadata for supported modes
     const metadata = schema['metadata'];
@@ -161,7 +161,7 @@ export class JsonSchemaManager {
   validate(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): {
     isValid: boolean;
     errors?: string[];
@@ -203,7 +203,7 @@ export class JsonSchemaManager {
   validateWithErrors(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): JsonValue {
     const result = this.validate(documentType, data, mode);
 
@@ -211,7 +211,7 @@ export class JsonSchemaManager {
       throw new SchemaValidationError(
         `Schema validation failed for ${documentType}`,
         documentType,
-        result.errors || []
+        result.errors || [],
       );
     }
 
@@ -226,7 +226,7 @@ export class JsonSchemaManager {
    */
   getSchema(
     documentType: string,
-    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): JsonObject {
     const schemaEntry = this.schemas[documentType];
 
@@ -236,7 +236,7 @@ export class JsonSchemaManager {
 
     if (!schemaEntry.modes.includes(mode)) {
       throw new SchemaValidationError(
-        `Document type ${documentType} not available in ${mode} mode`
+        `Document type ${documentType} not available in ${mode} mode`,
       );
     }
 
@@ -249,7 +249,7 @@ export class JsonSchemaManager {
   createDocument(
     documentType: string,
     data: JsonValue,
-    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban',
   ): JsonValue {
     // Apply schema defaults
     const schema = this.getSchema(documentType, mode);
@@ -309,7 +309,7 @@ export class JsonSchemaManager {
    */
   private getSchemaVersion(
     _documentType: string,
-    mode: 'kanban' | 'agile' | 'safe'
+    mode: 'kanban' | 'agile' | 'safe',
   ): string {
     const modeVersionMap = {
       kanban: '1.0.0',
@@ -342,7 +342,7 @@ export class JsonSchemaManager {
    */
   isAvailableInMode(
     documentType: string,
-    mode: 'kanban' | 'agile' | 'safe'
+    mode: 'kanban' | 'agile' | 'safe',
   ): boolean {
     const schema = this.schemas[documentType];
     return schema ? schema.modes.includes(mode) : false;
@@ -355,7 +355,7 @@ export class JsonSchemaManager {
     totalSchemas: number;
     schemasByMode: Record<string, number>;
     averageValidationTime: number;
-  } {
+    } {
     const schemasByMode = {
       kanban: 0,
       agile: 0,
@@ -390,7 +390,7 @@ export const JSON_SCHEMA_MANAGER_TOKEN = Symbol('JsonSchemaManager');
  */
 export function createJsonSchemaManager(
   logger: Logger,
-  schemasPath?: string
+  schemasPath?: string,
 ): JsonSchemaManager {
   return new JsonSchemaManager(logger, schemasPath);
 }

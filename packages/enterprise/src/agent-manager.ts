@@ -6,6 +6,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+import './module-declarations';
 
 // Agent manager system access with real package delegation
 let agentManagerModuleCache: any = null;
@@ -72,18 +73,6 @@ export const getAgentLifecycleManager = async (config?: any) => {
 };
 
 // Static exports for immediate use (with fallback)
-export { 
-  AgentManager,
-  AgentFactory,
-  AgentRegistry,
-  AgentLifecycleManager
-} from '@claude-zen/agent-manager';
-
-// Type exports
-export type {
-  AgentConfig,
-  Agent,
-  AgentStatus,
-  AgentMetrics,
-  LifecycleEvent
-} from '@claude-zen/agent-manager';
+// Agent manager implementations are accessed via the facade functions above
+// Static exports removed to avoid module not found errors
+// All functionality is available through getAgentManager() and related functions

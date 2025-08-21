@@ -99,7 +99,7 @@ export class ProcessLifecycleManager {
       if (this.handlers.onError) {
         try {
           await this.handlers.onError(
-            error instanceof Error ? error : new Error(String(error))
+            error instanceof Error ? error : new Error(String(error)),
           );
         } catch (handlerError) {
           logger.error('❌ Error in shutdown error handler:', handlerError);
@@ -180,7 +180,7 @@ export class ProcessLifecycleManager {
  * Simplified interface for common use cases
  */
 export function setupProcessLifecycle(
-  shutdownHandler: () => Promise<void>
+  shutdownHandler: () => Promise<void>,
 ): ProcessLifecycleManager {
   return new ProcessLifecycleManager({
     onShutdown: shutdownHandler,

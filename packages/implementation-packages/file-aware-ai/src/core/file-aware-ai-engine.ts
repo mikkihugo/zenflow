@@ -138,7 +138,8 @@ export class FileAwareAIEngine {
       contentLength: contextLength,
       requiresFileOps: true,
       requiresCodebaseAware: true,
-      requiresStructuredOutput: true
+      requiresStructuredOutput: true,
+      taskType: 'generation'
     });
 
     const providerName = providerNames[0] || 'copilot';

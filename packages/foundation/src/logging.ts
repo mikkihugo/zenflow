@@ -89,7 +89,7 @@ class LoggingConfigurationManager {
       // Fallback to environment variables if central config fails
       console.warn(
         'Failed to load central config, falling back to environment variables:',
-        error
+        error,
       );
 
       const nodeEnv = process.env['NODE_ENV'] || 'development';
@@ -159,15 +159,15 @@ class LoggingConfigurationManager {
           if (response?.ok) {
             // Create a custom sink that sends to internal collector
             internalCollectorSink = this.createInternalCollectorSink(
-              internalCollectorEndpoint
+              internalCollectorEndpoint,
             );
             useInternalCollector = true;
 
             console.log(
-              '✅ Foundation LogTape initialized with internal OTEL collector'
+              '✅ Foundation LogTape initialized with internal OTEL collector',
             );
             console.log(
-              `   Internal Collector: ${internalCollectorEndpoint}/ingest`
+              `   Internal Collector: ${internalCollectorEndpoint}/ingest`,
             );
             console.log('   Service: claude-zen-foundation');
           } else {
@@ -175,7 +175,7 @@ class LoggingConfigurationManager {
           }
         } catch {
           console.log(
-            '⚠️  Internal OTEL collector unavailable, trying external OTEL...'
+            '⚠️  Internal OTEL collector unavailable, trying external OTEL...',
           );
 
           // Fallback to external OTEL if internal collector fails
@@ -184,7 +184,7 @@ class LoggingConfigurationManager {
           if (otelLogsExporter === 'otlp' || zenOtelEnabled) {
             // OTEL integration moved to @claude-zen/infrastructure package
             console.log(
-              '⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.'
+              '⚠️  OTEL integration has been moved to @claude-zen/infrastructure package. Use getTelemetryManager() instead.',
             );
             console.log('   Foundation logging will use console-only mode.');
           }
@@ -192,7 +192,7 @@ class LoggingConfigurationManager {
       }
     } catch {
       console.log(
-        '📝 Foundation LogTape using console-only (OTEL unavailable)'
+        '📝 Foundation LogTape using console-only (OTEL unavailable)',
       );
       useInternalCollector = false;
     }
@@ -235,6 +235,7 @@ class LoggingConfigurationManager {
     }
 
     await configure({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sinks: sinkConfig as any,
       loggers: [
         // Foundation components with internal collector if available
@@ -332,7 +333,7 @@ class LoggingConfigurationManager {
             // Silently ignore fetch errors to avoid logging loops
             console.debug(
               'Failed to send log to internal collector:',
-              fetchError.message
+              fetchError.message,
             );
           });
       } catch (error) {
@@ -412,7 +413,7 @@ class LoggingConfigurationManager {
 
   private shouldLog(
     messageLevel: string,
-    componentLevel: LoggingLevel
+    componentLevel: LoggingLevel,
   ): boolean {
     const levels = ['debug', 'info', 'warning', 'error'];
     const messageLevelIndex = levels.indexOf(messageLevel);
@@ -454,12 +455,12 @@ class LoggingConfigurationManager {
     isValid: boolean;
     issues: string[];
     config: LoggingConfig;
-  } {
+    } {
     const issues: string[] = [];
 
     // Check if ZEN environment variables are properly set
     const zenVars = Object.keys(process.env).filter((key) =>
-      key.startsWith('ZEN_LOG_')
+      key.startsWith('ZEN_LOG_'),
     );
 
     if (zenVars.length === 0) {
@@ -473,7 +474,7 @@ class LoggingConfigurationManager {
 
     if (invalidLevels.length > 0) {
       issues.push(
-        `Invalid log levels for components: ${invalidLevels.join(', ')}`
+        `Invalid log levels for components: ${invalidLevels.join(', ')}`,
       );
     }
 
@@ -525,7 +526,7 @@ export function validateLoggingEnvironment(): {
   isValid: boolean;
   issues: string[];
   config: LoggingConfig;
-} {
+  } {
   return loggingManager.validateEnvironment();
 }
 

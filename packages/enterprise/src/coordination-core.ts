@@ -6,6 +6,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+import './module-declarations';
 
 // Coordination core system access with real package delegation
 let coordinationCoreModuleCache: any = null;
@@ -80,21 +81,6 @@ export const getTaskCoordinator = async (config?: any) => {
   return new module.TaskCoordinator(config);
 };
 
-// Static exports for immediate use (with fallback)
-export { 
-  QueenCoordinator,
-  SwarmCommander,
-  CoordinationEventBus,
-  CoordinationEngine,
-  TaskCoordinator
-} from '@claude-zen/coordination-core';
-
-// Type exports
-export type {
-  QueenConfig,
-  CoordinationMetrics,
-  SwarmConfig,
-  TaskConfig,
-  CoordinationEvent,
-  CoordinationResult
-} from '@claude-zen/coordination-core';
+// Coordination core implementations are accessed via the facade functions above
+// Static exports removed to avoid module not found errors
+// All functionality is available through getQueenCoordinator() and related functions

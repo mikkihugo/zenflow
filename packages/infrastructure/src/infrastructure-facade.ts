@@ -475,8 +475,8 @@ async function loadServiceContainer() {
 
     // Return a minimal fallback implementation
     return {
-      createServiceContainer: () => ({ register: () => {}, resolve: () => null }),
-      createDIContainer: () => ({ register: () => {}, resolve: () => null }),
+      createServiceContainer: (_name?: string) => ({ register: () => {}, resolve: () => null }),
+      createDIContainer: (_name?: string) => ({ register: () => {}, resolve: () => null }),
       ServiceContainer: class FallbackServiceContainer {
         register() {
           return { isOk: () => true };

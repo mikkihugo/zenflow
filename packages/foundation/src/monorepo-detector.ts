@@ -18,6 +18,17 @@ import { getLogger } from './logging';
 
 const logger = getLogger('monorepo-detector');
 
+// Type for workspace information from find-workspaces package
+interface WorkspaceInfo {
+  location: string;
+  name?: string;
+  package?: {
+    name?: string;
+    [key: string]: unknown;
+  };
+  [key: string]: unknown;
+}
+
 export interface DetectedProject {
   name: string;
   path: string;
@@ -60,7 +71,7 @@ export class WorkspaceDetector {
    * Detect monorepo workspace using @manypkg/find-root
    */
   async detectWorkspaceRoot(
-    startPath: string = process.cwd()
+    startPath: string = process.cwd(),
   ): Promise<DetectedWorkspace | null> {
     try {
       // Use @manypkg/find-root which supports Yarn, npm, Lerna, pnpm, Bun, Rush
@@ -85,7 +96,7 @@ export class WorkspaceDetector {
       workspaceInfo.totalProjects = workspaces.length;
 
       logger.info(
-        `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`
+        `Detected ${workspaceInfo.tool} workspace with ${workspaceInfo.totalProjects} projects`,
       );
       return workspaceInfo;
     } catch (error) {
@@ -98,7 +109,7 @@ export class WorkspaceDetector {
    * Get workspace packages using find-workspaces
    */
   private async getWorkspacePackages(
-    rootDir: string
+    rootDir: string,
   ): Promise<DetectedProject[]> {
     try {
       // find-workspaces returns an array of workspace package info
@@ -108,12 +119,12 @@ export class WorkspaceDetector {
         return [];
       }
 
-      return workspaces.map((workspace: any) => {
+      return workspaces.map((workspace: WorkspaceInfo) => {
         const relativePath = path.relative(rootDir, workspace.location);
         const packageFile = this.detectProjectFile(workspace.location);
         const workspaceName =
-          (workspace as any).name || path.basename(workspace.location);
-        const packageName = (workspace as any).package?.name;
+          workspace.name || path.basename(workspace.location);
+        const packageName = workspace.package?.name;
 
         return {
           name: packageName || workspaceName,
@@ -159,7 +170,7 @@ export class WorkspaceDetector {
     if (fs.existsSync(packageJsonPath)) {
       try {
         const packageJson = JSON.parse(
-          fs.readFileSync(packageJsonPath, 'utf8')
+          fs.readFileSync(packageJsonPath, 'utf8'),
         );
         if (packageJson.workspaces) {
           return 'npm'; // Default to npm if workspaces are defined but no specific tool detected
@@ -227,7 +238,7 @@ export class WorkspaceDetector {
    */
   private detectFramework(
     projectDir: string,
-    packageFile?: string
+    packageFile?: string,
   ): string | undefined {
     if (!packageFile || packageFile !== 'package.json') {
       return undefined;
@@ -291,7 +302,7 @@ export class WorkspaceDetector {
    */
   private detectLanguage(
     _projectDir: string,
-    packageFile?: string
+    packageFile?: string,
   ): string | undefined {
     if (!packageFile) {
       return undefined;
@@ -313,7 +324,7 @@ export class WorkspaceDetector {
    */
   private inferProjectType(
     relativePath: string,
-    name?: string
+    name?: string,
   ): DetectedProject['type'] {
     const pathLower = relativePath.toLowerCase();
     const nameLower = name?.toLowerCase() || '';

@@ -8,7 +8,7 @@ import js from '@eslint/js';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
 import promisePlugin from 'eslint-plugin-promise';
-import jestPlugin from 'eslint-plugin-jest';
+// import jestPlugin from 'eslint-plugin-jest';
 import nodePlugin from 'eslint-plugin-n';
 import sonarPlugin from 'eslint-plugin-sonarjs';
 import unicornPlugin from 'eslint-plugin-unicorn';
@@ -56,7 +56,7 @@ export default [
     plugins: {
       '@typescript-eslint': tsPlugin,
       promise: promisePlugin,
-      jest: jestPlugin,
+      // jest: jestPlugin,
       n: nodePlugin,
       sonarjs: sonarPlugin,
       unicorn: unicornPlugin,
@@ -93,14 +93,8 @@ export default [
       'no-async-promise-executor': 'error', // Prevent common AI async bugs
       'prefer-promise-reject-errors': 'error', // Consistent error handling
       
-      // AI testing patterns with Jest
-      'jest/no-disabled-tests': 'warn', // Don't leave disabled tests
-      'jest/no-focused-tests': 'error', // Don't commit focused tests
-      'jest/no-identical-title': 'error', // Unique test names
-      'jest/prefer-to-have-length': 'warn', // Better array assertions
-      'jest/valid-expect': 'error', // Valid expect usage
-      'jest/no-conditional-expect': 'error', // Avoid conditional expects
-      'jest/consistent-test-it': 'warn', // Consistent test/it usage
+      // AI testing patterns - using Vitest (no specific plugin needed)
+      // Standard rules apply for test files
       
       // Node.js patterns for AI CLI tools (simplified - no type-aware rules)
       'n/no-unsupported-features/es-syntax': 'off', // We use modern ES features
@@ -184,7 +178,7 @@ export default [
         sourceType: 'module'
       },
       globals: {
-        // Jest globals
+        // Vitest globals
         describe: 'readonly',
         test: 'readonly',
         it: 'readonly',
@@ -193,7 +187,7 @@ export default [
         afterEach: 'readonly',
         beforeAll: 'readonly',
         afterAll: 'readonly',
-        jest: 'readonly',
+        vi: 'readonly', // Vitest mock object
         // Node.js globals
         process: 'readonly',
         Buffer: 'readonly',
@@ -201,19 +195,12 @@ export default [
       }
     },
     plugins: {
-      jest: jestPlugin,
+      // jest: jestPlugin,
       promise: promisePlugin
     },
     rules: {
-      // Jest-specific rules for AI testing
-      'jest/expect-expect': 'warn',
-      'jest/no-alias-methods': 'error',
-      'jest/no-commented-out-tests': 'warn',
-      'jest/no-done-callback': 'error', // Prefer async/await
-      'jest/prefer-todo': 'warn',
-      'jest/require-top-level-describe': 'warn',
-      'jest/valid-describe-callback': 'error',
-      'jest/valid-title': 'error',
+      // Vitest-specific testing patterns (no specific plugin needed)
+      // Standard rules apply for test files
       
       // Promise handling in tests
       'promise/catch-or-return': 'error',

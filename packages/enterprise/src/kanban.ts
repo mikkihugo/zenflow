@@ -6,6 +6,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+import './module-declarations';
 
 // Kanban system access with real package delegation
 let kanbanModuleCache: any = null;

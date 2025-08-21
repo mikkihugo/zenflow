@@ -370,7 +370,7 @@ export function createValidationError(
     violations?: ValidationViolation[];
     context?: Record<string, unknown>;
     cause?: Error;
-  }
+  },
 ): ValidationError {
   return {
     type: 'ValidationError',
@@ -403,7 +403,7 @@ export function createSystemError(
     signal?: string;
     context?: Record<string, unknown>;
     cause?: Error;
-  }
+  },
 ): SystemError {
   return {
     type: 'SystemError',
@@ -436,7 +436,7 @@ export function createNetworkError(
     isTimeout?: boolean;
     context?: Record<string, unknown>;
     cause?: Error;
-  }
+  },
 ): NetworkError {
   return {
     type: 'NetworkError',
@@ -469,7 +469,7 @@ export function createResourceError(
     resourceExists?: boolean;
     context?: Record<string, unknown>;
     cause?: Error;
-  }
+  },
 ): ResourceError {
   return {
     type: 'ResourceError',
@@ -507,7 +507,7 @@ export function createError<E extends BaseError>(error: E): ErrorResult<E> {
  * Check if result is successful (type guard)
  */
 export function isSuccess<T, E extends BaseError>(
-  result: Result<T, E>
+  result: Result<T, E>,
 ): result is SuccessResult<T> {
   return result.success === true;
 }
@@ -516,7 +516,7 @@ export function isSuccess<T, E extends BaseError>(
  * Check if result is an error (type guard)
  */
 export function isError<T, E extends BaseError>(
-  result: Result<T, E>
+  result: Result<T, E>,
 ): result is ErrorResult<E> {
   return result.success === false;
 }

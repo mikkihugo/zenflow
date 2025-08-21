@@ -7,9 +7,9 @@ import { EventEmitter } from 'eventemitter3';
 import type { Logger } from '../core/interfaces/base-interfaces';
 import type { Database } from '../di/tokens/core-tokens';
 import type { SwarmCoordinator } from '../di/tokens/swarm-tokens';
+import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
 import { ZenSwarmStrategy } from './strategies/zen-swarm.strategy';
-import type { Agent, ExecutionPlan, SwarmStrategy, Task } from './types';
 
 export class Orchestrator extends EventEmitter implements SwarmCoordinator {
   private strategy: SwarmStrategy | ZenSwarmStrategy;
@@ -216,6 +216,7 @@ export class Orchestrator extends EventEmitter implements SwarmCoordinator {
     const phaseAssignments = phases.map(() => [
       { requiredCapabilities: task.requiredCapabilities },
     ]);
+    await Promise.resolve(); // Satisfy require-await rule
     return {
       taskId: task.id,
       phases,

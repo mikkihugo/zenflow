@@ -46,12 +46,7 @@ import {
 
 // SPARC methodology integration via enterprise facade
 import { 
-  createSPARCWorkflow,
-  createSPARCCommander,
-  type SPARCPhase,
-  type SPARCResult,
-  type SPARCConfig,
-  type SPARCProject
+  type SPARCPhase
 } from '@claude-zen/enterprise';
 
 const logger = getLogger('sparc-swarm-knowledge-extractor');

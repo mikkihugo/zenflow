@@ -18,34 +18,29 @@
  * - Utilizes @claude-zen/foundation for persistent learning storage
  */
 
-import { queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/intelligence';
+import { 
+  getLogger,
+  PerformanceTracker,
+  TelemetryManager
+} from '@claude-zen/foundation';
+import { 
+  queryCoordinationFacts, 
+  getCoordinationFacts,
+  BehavioralIntelligence,
+  BrainCoordinator,
+  AutonomousOptimizationEngine,
+  TaskComplexityEstimator,
+  AgentPerformancePredictor,
+  AISafetyOrchestrator
+} from '@claude-zen/intelligence';
+
 import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '@claude-zen/foundation'
+
 // Note: SharedFACTCapable removed - using knowledge package directly
 import type {
   EventBus,
   Logger,
 } from '../../core/interfaces/base-interfaces';
-
-// Learning and intelligence systems from our packages
-import { 
-  BehavioralIntelligence,
-  BrainCoordinator,
-  AutonomousOptimizationEngine,
-  TaskComplexityEstimator,
-  AgentPerformancePredictor
-} from '@claude-zen/intelligence';
-
-// Foundation tools and utilities  
-import { 
-  PerformanceTracker,
-  TelemetryManager
-} from '@claude-zen/foundation';
-
-// AI Safety systems
-import { 
-  AISafetyOrchestrator
-} from '@claude-zen/intelligence';
 
 // Agent monitoring capabilities
 import {

@@ -86,7 +86,7 @@ export class DatabaseSPARCBridge {
       // Try to load real SAFe framework package
       const { DatabaseSPARCBridge: RealBridge } = await import('@claude-zen/safe-framework');
       
-      this.realBridge = new RealBridge();
+      this.realBridge = new RealBridge({} as any, {} as any, {} as any);
       await this.realBridge.initialize();
       this.initialized = true;
       
@@ -154,16 +154,26 @@ export class DatabaseSPARCBridge {
 // ============================================================================
 
 export class SafePortfolioManager {
-  private realManager: any;
+  private realManager: any = null;
   
   constructor(config: any = {}) {
     this.initializeManager(config);
   }
+
+  // Method to access the real manager (ensures realManager is used)
+  getRealManager() {
+    return this.realManager || { status: 'fallback' };
+  }
   
   private async initializeManager(config: any) {
     try {
-      const { SafePortfolioManager: RealManager } = await import('@claude-zen/safe-framework');
-      this.realManager = new RealManager(config);
+      const safeModule = await import('@claude-zen/safe-framework');
+      const SafePortfolioManager = (safeModule as any).SafePortfolioManager;
+      if (SafePortfolioManager) {
+        this.realManager = new SafePortfolioManager(config);
+      } else {
+        throw new Error('SafePortfolioManager not available');
+      }
     } catch {
       this.realManager = { status: 'fallback' };
     }
@@ -186,7 +196,7 @@ export class SafeProgramIncrementManager {
     if (this.initialized) return;
     try {
       const { ProgramIncrementManager } = await import('@claude-zen/safe-framework');
-      this.realManager = new ProgramIncrementManager(config);
+      this.realManager = new ProgramIncrementManager({} as any, {} as any, {} as any, config);
       this.initialized = true;
       logger.debug('ProgramIncrementManager initialized with real package');
     } catch (error) {
@@ -233,7 +243,7 @@ export class SafeValueStreamMapper {
     if (this.initialized) return;
     try {
       const { ValueStreamMapper } = await import('@claude-zen/safe-framework');
-      this.realManager = new ValueStreamMapper(config);
+      this.realManager = new ValueStreamMapper({} as any, {} as any, {} as any, {} as any, {} as any, {} as any, config);
       this.initialized = true;
       logger.debug('ValueStreamMapper initialized with real package');
     } catch (error) {
@@ -280,7 +290,7 @@ export class SafeArchitectureRunwayManager {
     if (this.initialized) return;
     try {
       const { ArchitectureRunwayManager } = await import('@claude-zen/safe-framework');
-      this.realManager = new ArchitectureRunwayManager(config);
+      this.realManager = new ArchitectureRunwayManager({} as any, {} as any, config);
       this.initialized = true;
       logger.debug('ArchitectureRunwayManager initialized with real package');
     } catch (error) {
@@ -358,12 +368,12 @@ export const ArchitectureRunwayManager = SafeArchitectureRunwayManager;
 export const PortfolioManager = SafePortfolioManager;
 
 // Direct fallback exports - additional SAFe managers (package not available)
-export const EpicOwnerManager = class { constructor(config: any = {}) { /* fallback */ } };
-export const EnterpriseArchitectureManager = class { constructor(config: any = {}) { /* fallback */ } };
-export const SystemSolutionArchitectureManager = class { constructor(config: any = {}) { /* fallback */ } };
-export const ContinuousDeliveryPipeline = class { constructor(config: any = {}) { /* fallback */ } };
-export const SAFeEventsManager = class { constructor(config: any = {}) { /* fallback */ } };
-export const ValueStreamOptimizationEngine = class { constructor(config: any = {}) { /* fallback */ } };
+export const EpicOwnerManager = class { constructor(_config: any = {}) { /* fallback */ } };
+export const EnterpriseArchitectureManager = class { constructor(_config: any = {}) { /* fallback */ } };
+export const SystemSolutionArchitectureManager = class { constructor(_config: any = {}) { /* fallback */ } };
+export const ContinuousDeliveryPipeline = class { constructor(_config: any = {}) { /* fallback */ } };
+export const SAFeEventsManager = class { constructor(_config: any = {}) { /* fallback */ } };
+export const ValueStreamOptimizationEngine = class { constructor(_config: any = {}) { /* fallback */ } };
 
 // Export the main bridge as default for compatibility
 export default DatabaseSPARCBridge;

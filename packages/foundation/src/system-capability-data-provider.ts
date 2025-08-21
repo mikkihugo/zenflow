@@ -79,13 +79,13 @@ export async function getSystemCapabilityData(): Promise<SystemCapabilityData> {
       capability: status.capability,
       healthScore: status.healthScore,
       availablePackages: Object.values(status.packages).filter(
-        (pkg) => pkg.status === 'available' || pkg.status === 'registered'
+        (pkg) => pkg.status === 'available' || pkg.status === 'registered',
       ).length,
       totalPackages: Object.keys(status.packages).length,
       missingPackages: status.missingPackages,
       registeredServices: status.registeredServices,
       features: status.features,
-    })
+    }),
   );
 
   return {
@@ -105,7 +105,7 @@ export async function getSystemCapabilityData(): Promise<SystemCapabilityData> {
  */
 export async function getInstallationSuggestions(): Promise<
   InstallationSuggestion[]
-> {
+  > {
   const systemStatus = getSystemStatus();
   const suggestions: InstallationSuggestion[] = [];
 
@@ -139,7 +139,7 @@ export async function getInstallationSuggestions(): Promise<
   // Sort by priority
   const priorityOrder = { high: 3, medium: 2, low: 1 };
   suggestions.sort(
-    (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]
+    (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority],
   );
 
   return suggestions;
@@ -150,15 +150,15 @@ export async function getInstallationSuggestions(): Promise<
  */
 function getPackageFeatures(
   packageName: string,
-  allFeatures: string[]
+  allFeatures: string[],
 ): string[] {
   const packageKeywords = packageName.replace('@claude-zen/', '').split('-');
 
   return allFeatures
     .filter((feature) =>
       packageKeywords.some((keyword) =>
-        feature.toLowerCase().includes(keyword.toLowerCase())
-      )
+        feature.toLowerCase().includes(keyword.toLowerCase()),
+      ),
     )
     .slice(0, 3); // Limit to top 3 most relevant features
 }
@@ -180,13 +180,13 @@ export async function displaySystemStatus(): Promise<void> {
         ? '⚠️'
         : '❌';
   console.log(
-    `${statusEmoji} Overall: ${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`
+    `${statusEmoji} Overall: ${dashboard.overall.toUpperCase()} (${dashboard.systemHealthScore}% health)`,
   );
   console.log(
-    `📦 Packages: ${dashboard.availablePackages}/${dashboard.totalPackages} available`
+    `📦 Packages: ${dashboard.availablePackages}/${dashboard.totalPackages} available`,
   );
   console.log(
-    `🔧 Services: ${dashboard.registeredServices} registered in Awilix`
+    `🔧 Services: ${dashboard.registeredServices} registered in Awilix`,
   );
 
   // Facade breakdown
@@ -199,7 +199,7 @@ export async function displaySystemStatus(): Promise<void> {
           ? '⚠️'
           : '❌';
     console.log(
-      `  ${facadeEmoji} ${facade.name}: ${facade.capability} (${facade.healthScore}%)`
+      `  ${facadeEmoji} ${facade.name}: ${facade.capability} (${facade.healthScore}%)`,
     );
 
     if (facade.missingPackages.length > 0) {
@@ -306,7 +306,7 @@ export function startSystemMonitoring(): void {
           });
         }
       }
-    }
+    },
   );
 
   facadeStatusManager.on(
@@ -326,7 +326,7 @@ export function startSystemMonitoring(): void {
             : 0,
         });
       }
-    }
+    },
   );
 
   facadeStatusManager.on(
@@ -345,7 +345,7 @@ export function startSystemMonitoring(): void {
           totalPackages: status['totalPackages'] || 0,
         });
       }
-    }
+    },
   );
 
   logger.info('🔍 System monitoring started');

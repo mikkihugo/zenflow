@@ -216,7 +216,7 @@ export function validatePrompt(prompt: string): PromptValidationResult {
         // Remove problematic patterns that could interfere with output parsing
         filteredPrompt = filteredPrompt.replace(
           dangerousPattern.pattern,
-          '[FILTERED_CONTENT]'
+          '[FILTERED_CONTENT]',
         );
 
         logger.debug('🧹 Filtered parsing interference pattern from prompt');
@@ -244,17 +244,17 @@ export function validatePrompt(prompt: string): PromptValidationResult {
 
   if (criticalIssues.length > 0) {
     recommendations.push(
-      '🚨 Address critical security issues before proceeding'
+      '🚨 Address critical security issues before proceeding',
     );
     recommendations.push(
-      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
+      ...criticalIssues.map((i) => `• ${i.suggestion}`).filter(Boolean),
     );
   }
 
   if (errorIssues.length > 0) {
     recommendations.push('⚠️  Fix error-level issues for better reliability');
     recommendations.push(
-      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean)
+      ...errorIssues.map((i) => `• ${i.suggestion}`).filter(Boolean),
     );
   }
 
@@ -288,7 +288,7 @@ export function validatePrompt(prompt: string): PromptValidationResult {
  */
 export function filterClaudeOutput(
   output: string,
-  context: 'stderr' | 'stdout' = 'stdout'
+  context: 'stderr' | 'stdout' = 'stdout',
 ): {
   cleanOutput: string;
   filteredLines: string[];
@@ -336,7 +336,7 @@ export function filterClaudeOutput(
       if (isDescriptivePattern && !isActualError) {
         filteredLines.push(line);
         parsingWarnings.push(
-          `Filtered descriptive pattern from stderr: ${trimmedLine.substring(0, 80)}...`
+          `Filtered descriptive pattern from stderr: ${trimmedLine.substring(0, 80)}...`,
         );
         continue;
       }
@@ -346,7 +346,7 @@ export function filterClaudeOutput(
     if (isDescriptivePattern) {
       filteredLines.push(line);
       parsingWarnings.push(
-        `Filtered descriptive pattern: ${trimmedLine.substring(0, 80)}...`
+        `Filtered descriptive pattern: ${trimmedLine.substring(0, 80)}...`,
       );
       continue;
     }
@@ -369,13 +369,13 @@ export function validateAndRejectPrompt(prompt: string): string {
 
   if (!validation.isValid) {
     const criticalIssues = validation.issues.filter(
-      (i) => i.severity === 'critical'
+      (i) => i.severity === 'critical',
     );
 
     throw new Error(
       `Prompt validation failed with ${criticalIssues.length} critical issue(s): ${criticalIssues
         .map((i) => i.message)
-        .join('; ')}`
+        .join('; ')}`,
     );
   }
 
@@ -392,7 +392,7 @@ export function createSafePrompt(
     enableFiltering?: boolean;
     strictValidation?: boolean;
     logValidation?: boolean;
-  } = {}
+  } = {},
 ): string {
   const config = {
     enableFiltering:
@@ -409,7 +409,7 @@ export function createSafePrompt(
 
   if (config.logValidation && validation.issues.length > 0) {
     logger.info(
-      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level: ${validation.risk}`
+      `Prompt safety analysis found ${validation.issues.length} issue(s), risk level: ${validation.risk}`,
     );
   }
 
@@ -419,7 +419,7 @@ export function createSafePrompt(
       `Prompt rejected due to safety concerns: ${validation.issues
         .filter((i) => i.severity === 'critical')
         .map((i) => i.message)
-        .join('; ')}`
+        .join('; ')}`,
     );
   }
 

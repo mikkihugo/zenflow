@@ -9,15 +9,15 @@
  * This is the complete "all done" implementation requested by @mikkihugo.
  */
 
-import { EventEmitter } from 'eventemitter3';
-import { ProjectCoordinator } from './coordination';
-
-// Import DI-enhanced coordinators
-import { Orchestrator } from './coordination/orchestrator';
 import { getLogger } from '@claude-zen/foundation';
-import { getDatabaseSystem, getServiceContainer } from '@claude-zen/infrastructure';
-import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
+import { getServiceContainer } from '@claude-zen/infrastructure';
 import { BehavioralIntelligence } from '@claude-zen/intelligence';
+
+import { EventEmitter } from 'eventemitter3';
+
+import { ProjectCoordinator } from './coordination';
+import { Orchestrator } from './coordination/orchestrator';
+import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
 
 // Simple EventBus interface
 interface EventBus {
@@ -106,7 +106,6 @@ export class ClaudeZenCore {
 
     // Register coordination manager  
     container.register('CoordinationManager', (c) => {
-      const config = c.resolve('Config');
       const logger = c.resolve('Logger');
       const eventBus = c.resolve('EventBus');
 
@@ -189,6 +188,7 @@ export class ClaudeZenCore {
       logger.info('📋 Testing Orchestrator with DI...');
       // The orchestrator now uses injected logger and database
       // This would normally submit a real task
+      await Promise.resolve(); // Add await to satisfy require-await rule
       logger.info('  - Orchestrator successfully using injected dependencies');
     }
 
@@ -282,7 +282,11 @@ async function main() {
 
 // Start the application if this file is run directly
 if (import.meta.url === `file://${process.argv[1]}`) {
-  main().catch(console.error);
+  main().catch((error) => {
+    const logger = getLogger('claude-zen-core');
+    logger.error('Failed to start application:', error);
+    process.exit(1);
+  });
 }
 
 // Default export removed - use named export: import { ClaudeZenCore } js

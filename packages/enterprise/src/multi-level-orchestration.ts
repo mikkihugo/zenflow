@@ -6,6 +6,7 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
+import './module-declarations';
 
 // Multi-level orchestration system access with real package delegation
 let orchestrationModuleCache: any = null;
@@ -74,24 +75,6 @@ export const getSwarmExecutionOrchestrator = async (config?: any) => {
   return new module.SwarmExecutionOrchestrator(config);
 };
 
-// Static exports for immediate use (with fallback)
-export { 
-  MultiLevelOrchestrationManager,
-  PortfolioOrchestrator,
-  ProgramOrchestrator, 
-  SwarmExecutionOrchestrator,
-  OrchestrationLevel,
-  WorkflowStream,
-  MultiLevelOrchestratorState
-} from '@claude-zen/multi-level-orchestration';
-
-// Type exports
-export type {
-  OrchestrationConfig,
-  PortfolioItem,
-  ProgramItem,
-  SwarmExecutionItem,
-  FlowMetrics,
-  WIPLimits,
-  CrossLevelDependency
-} from '@claude-zen/multi-level-orchestration';
+// Multi-level orchestration implementations are accessed via the facade functions above
+// Static exports removed to avoid module not found errors
+// All functionality is available through getMultiLevelOrchestrator() and related functions

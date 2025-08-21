@@ -182,6 +182,7 @@ export interface Config {
 // =============================================================================
 
 export class FoundationConfig {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private config: convict.Config<any>;
   private isInitialized = false;
 
@@ -197,14 +198,15 @@ export class FoundationConfig {
     } catch (error) {
       logger.error('Foundation configuration initialization failed:', error);
       throw new Error(
-        `Configuration error: ${error instanceof Error ? error.message : 'Unknown error'}`
+        `Configuration error: ${error instanceof Error ? error.message : 'Unknown error'}`,
       );
     }
   }
 
-  get(key: string): any {
+  get(key: string): unknown {
     this.ensureInitialized();
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return (this.config as any).get(key);
     } catch (error) {
       logger.error(`Failed to get config key '${key}':`, error);
@@ -214,6 +216,7 @@ export class FoundationConfig {
 
   getAll(): JsonObject {
     this.ensureInitialized();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.config.getProperties() as any;
   }
 
@@ -230,7 +233,7 @@ export class FoundationConfig {
   private ensureInitialized(): void {
     if (!this.isInitialized) {
       throw new Error(
-        'Configuration not initialized. Call initialize() first.'
+        'Configuration not initialized. Call initialize() first.',
       );
     }
   }

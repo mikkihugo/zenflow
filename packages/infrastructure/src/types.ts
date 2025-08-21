@@ -119,12 +119,7 @@ export interface EventBus {
   readonly removeAllListeners: (event?: string) => void;
 }
 
-export interface EventSystemAccess {
-  readonly createEventBus: () => EventBus;
-  readonly emit: <T = unknown>(event: string, data: T) => Promise<void>;
-  readonly on: <T = unknown>(event: string, handler: EventHandler<T>) => () => void;
-  readonly off: <T = unknown>(event: string, handler: EventHandler<T>) => void;
-}
+// EventSystemAccess interface is defined in events.ts to avoid duplication
 
 // =============================================================================
 // LOAD BALANCING TYPES

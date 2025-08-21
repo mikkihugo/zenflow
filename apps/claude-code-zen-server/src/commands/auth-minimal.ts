@@ -7,11 +7,11 @@
  * This version avoids foundation imports to prevent LogTape initialization.
  */
 
-import { promises as fs } from 'fs';
-import { join } from 'path';
-import { homedir } from 'os';
-import { createInterface } from 'readline';
 import { spawn } from 'child_process';
+import { promises as fs } from 'fs';
+import { homedir } from 'os';
+import { join } from 'path';
+import { createInterface } from 'readline';
 
 // Simple console logger for CLI
 const logger = {
@@ -175,7 +175,7 @@ async function saveToken(token: string): Promise<void> {
   logger.info(`GitHub Copilot token saved successfully to ${tokenPath}`);
 }
 
-async function promptUser(message: string): Promise<void> {
+function promptUser(message: string): Promise<void> {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout

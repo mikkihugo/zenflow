@@ -41,21 +41,21 @@ export function isNullOrUndefined(value: unknown): value is null | undefined {
 // Property checking
 export function hasProperty<K extends string>(
   obj: unknown,
-  key: K
+  key: K,
 ): obj is Record<K, unknown> {
   return isObject(obj) && key in obj;
 }
 
 export function hasStringProperty<K extends string>(
   obj: unknown,
-  key: K
+  key: K,
 ): obj is Record<K, string> {
   return hasProperty(obj, key) && isString(obj[key]);
 }
 
 export function hasNumberProperty<K extends string>(
   obj: unknown,
-  key: K
+  key: K,
 ): obj is Record<K, number> {
   return hasProperty(obj, key) && isNumber(obj[key]);
 }
@@ -83,7 +83,7 @@ export function isError(value: unknown): value is Error {
 }
 
 export function isErrorWithContext(
-  value: unknown
+  value: unknown,
 ): value is Error & { context?: unknown } {
   return isError(value) && hasProperty(value, 'context');
 }
@@ -122,7 +122,7 @@ export function toBoolean(value: unknown): boolean {
 // Assertion utilities
 export function assertDefined<T>(
   value: T | undefined | null,
-  message = 'Value must be defined'
+  message = 'Value must be defined',
 ): asserts value is T {
   if (!isDefined(value)) {
     throw new Error(message);
@@ -131,7 +131,7 @@ export function assertDefined<T>(
 
 export function assertString(
   value: unknown,
-  message = 'Value must be a string'
+  message = 'Value must be a string',
 ): asserts value is string {
   if (!isString(value)) {
     throw new Error(message);
@@ -140,7 +140,7 @@ export function assertString(
 
 export function assertNumber(
   value: unknown,
-  message = 'Value must be a number'
+  message = 'Value must be a number',
 ): asserts value is number {
   if (!isNumber(value)) {
     throw new Error(message);
@@ -149,7 +149,7 @@ export function assertNumber(
 
 export function assertObject(
   value: unknown,
-  message = 'Value must be an object'
+  message = 'Value must be an object',
 ): asserts value is Record<string, unknown> {
   if (!isObject(value)) {
     throw new Error(message);
@@ -158,7 +158,7 @@ export function assertObject(
 
 export function assertArray(
   value: unknown,
-  message = 'Value must be an array'
+  message = 'Value must be an array',
 ): asserts value is unknown[] {
   if (!isArray(value)) {
     throw new Error(message);

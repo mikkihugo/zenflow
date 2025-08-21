@@ -107,7 +107,7 @@ export class SPARCMethodology extends EventEmitter {
       logger.info('Initializing SPARC methodology with real package delegation');
       
       // Try to load real SPARC package
-      const { SPARC, SPARCEngineCore } = await import('@claude-zen/sparc');
+      const { SPARC } = await import('@claude-zen/sparc');
       
       this.sparcEngine = SPARC.getEngine();
       this.initialized = true;

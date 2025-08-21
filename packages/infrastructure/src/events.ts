@@ -108,13 +108,13 @@ class EventSystemAccessImpl implements EventSystemAccess {
   async createEventBus<T = UnknownRecord>(config?: EventSystemConfig): Promise<T> {
     const module = await this.getEventSystemModule();
     logger.debug('Creating typed event bus via foundation delegation');
-    return module.createEventBus(config as UnknownRecord) as T;
+    return module.createEventBus(config as JsonValue) as T;
   }
 
   async createEventManager(config?: EventSystemConfig): Promise<UnknownRecord> {
     const module = await this.getEventSystemModule();
     logger.debug('Creating event manager via foundation delegation');
-    return module.createEventManager(config as UnknownRecord) as UnknownRecord;
+    return module.createEventManager(config as JsonValue) as UnknownRecord;
   }
 
   async getBaseEventManager(): Promise<UnknownRecord> {

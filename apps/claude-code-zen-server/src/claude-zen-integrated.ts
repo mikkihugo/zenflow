@@ -2,7 +2,8 @@
  * @file Claude-zen-integrated implementation.
  */
 
-import { getLogger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation';
+
 import type { ServerInstance, BaseError } from './coordination/types/interfaces';
 import { hasErrorCode } from './coordination/types/type-guards';
 
@@ -42,32 +43,81 @@ export class ClaudeZenIntegrated {
   /**
    * Parse command line arguments.
    *
-   * @param args
+   * @param args - Command line arguments
+   * @returns Parsed options
    */
   static parseArgs(args: string[]): IntegratedOptions {
     const options: IntegratedOptions = {};
 
     for (let i = 0; i < args.length; i++) {
       const arg = args[i];
-
-      if (arg === '--port' && i + 1 < args.length) {
-        const nextArg = args[i + 1];
-        if (nextArg !== undefined && options) {
-          options.port = Number.parseInt(nextArg, 10);
-        }
-        i++; // Skip next argument
-      } else if (arg === '--daemon') {
-        if (options) options.daemon = true;
-      } else if (arg === '--dev') {
-        if (options) options.dev = true;
-      } else if (arg === '--verbose' || arg === '-v') {
-        if (options) options.verbose = true;
-      } else if (arg === '--help' || arg === '-h') {
-        process.exit(0);
+      const result = this.parseArgument(arg, args, i, options);
+      if (result.skipNext) {
+        i++; // Skip next argument for port parsing
       }
     }
 
     return options;
+  }
+
+  /**
+   * Parse a single argument to reduce cognitive complexity.
+   *
+   * @param arg - Current argument
+   * @param args - All arguments
+   * @param index - Current index
+   * @param options - Options object to modify
+   * @returns Object indicating if next argument should be skipped
+   */
+  private static parseArgument(
+    arg: string,
+    args: string[],
+    index: number,
+    options: IntegratedOptions
+  ): { skipNext: boolean } {
+    switch (arg) {
+      case '--port':
+        return this.parsePortArgument(args, index, options);
+      case '--daemon':
+        options.daemon = true;
+        return { skipNext: false };
+      case '--dev':
+        options.dev = true;
+        return { skipNext: false };
+      case '--verbose':
+      case '-v':
+        options.verbose = true;
+        return { skipNext: false };
+      case '--help':
+      case '-h':
+        process.exit(0);
+        return { skipNext: false };
+      default:
+        return { skipNext: false };
+    }
+  }
+
+  /**
+   * Parse port argument with validation.
+   *
+   * @param args - All arguments
+   * @param index - Current index
+   * @param options - Options object to modify
+   * @returns Object indicating if next argument should be skipped
+   */
+  private static parsePortArgument(
+    args: string[],
+    index: number,
+    options: IntegratedOptions
+  ): { skipNext: boolean } {
+    if (index + 1 < args.length) {
+      const nextArg = args[index + 1];
+      if (nextArg !== undefined) {
+        options.port = Number.parseInt(nextArg, 10);
+      }
+      return { skipNext: true };
+    }
+    return { skipNext: false };
   }
 
   /**

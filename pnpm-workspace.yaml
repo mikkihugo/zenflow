@@ -48,3 +48,5 @@ overrides:
   '@claude-zen/load-balancing': link:packages/implementation-packages/load-balancing
   '@claude-zen/otel-collector': link:packages/implementation-packages/otel-collector
   '@claude-zen/agent-registry': link:packages/implementation-packages/agent-registry
+  '@claude-zen/file-aware-ai': link:packages/file-aware-ai
+  '@claude-zen/llm-routing': link:packages/implementation-packages/llm-routing

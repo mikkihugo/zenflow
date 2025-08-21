@@ -14,7 +14,7 @@ import { getLogger } from './logging';
 export class ValidationError extends Error {
   constructor(
     message: string,
-    public readonly field?: string
+    public readonly field?: string,
   ) {
     super(message);
     this.name = 'ValidationError';
@@ -24,7 +24,7 @@ export class ValidationError extends Error {
 export class ConfigurationError extends Error {
   constructor(
     message: string,
-    public readonly configKey?: string
+    public readonly configKey?: string,
   ) {
     super(message);
     this.name = 'ConfigurationError';
@@ -192,7 +192,7 @@ export abstract class BaseClaudeZenError extends Error {
     category: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
     context: Partial<ErrorContext> = {},
-    recoverable = true
+    recoverable = true,
   ) {
     super(message);
     this.category = category;
@@ -295,7 +295,7 @@ export class SwarmError extends BaseClaudeZenError {
     message: string,
     public readonly swarmId?: string,
     severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
-    context: Partial<ErrorContext> = {}
+    context: Partial<ErrorContext> = {},
   ) {
     super(message, 'Swarm', severity, { ...context, metadata: { swarmId } });
     this.name = 'SwarmError';
@@ -330,7 +330,7 @@ export class AgentError extends BaseClaudeZenError {
     message: string,
     public readonly agentId?: string,
     public readonly agentType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Agent', severity, { metadata: { agentId, agentType } });
     this.name = 'AgentError';
@@ -343,7 +343,7 @@ export class SwarmCommunicationError extends SwarmError {
     public readonly fromAgent: string,
     public readonly toAgent: string,
     public readonly messageType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, undefined, severity, {
       metadata: { fromAgent, toAgent, messageType },
@@ -357,7 +357,7 @@ export class SwarmCoordinationError extends SwarmError {
     message: string,
     public readonly coordinationType: string,
     public readonly participantCount?: number,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'high'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'high',
   ) {
     super(message, undefined, severity, {
       metadata: { coordinationType, participantCount },
@@ -382,7 +382,7 @@ export class TaskError extends BaseClaudeZenError {
     message: string,
     public readonly taskId?: string,
     public readonly taskType?: string,
-    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium'
+    severity: 'low' | 'medium' | 'high' | 'critical' = 'medium',
   ) {
     super(message, 'Task', severity, { metadata: { taskId, taskType } });
     this.name = 'TaskError';
@@ -396,7 +396,7 @@ export class NotFoundError extends BaseClaudeZenError {
   constructor(
     message: string,
     public readonly resource?: string,
-    public readonly resourceId?: string
+    public readonly resourceId?: string,
   ) {
     super(message, 'NotFound', 'medium', {
       metadata: { resource, resourceId },
@@ -471,7 +471,7 @@ export function isRecoverableError(error: Error): boolean {
  * ```
  */
 export function getErrorSeverity(
-  error: Error
+  error: Error,
 ): 'low' | 'medium' | 'high' | 'critical' {
   if (error instanceof BaseClaudeZenError) {
     return error.severity;
@@ -516,7 +516,7 @@ export function getErrorSeverity(
 export function shouldRetry(
   error: Error,
   attempt: number,
-  maxRetries = 3
+  maxRetries = 3,
 ): boolean {
   if (attempt >= maxRetries) {
     return false;

@@ -292,7 +292,7 @@ export class ErrorRecoverySystem extends EventEmitter {
    * Handle an error with automatic recovery.
    */
   async handleError(
-    errorInfo: ErrorInfo
+    errorInfo: ErrorInfo,
   ): Promise<Result<RecoveryResult, Error>> {
     try {
       this.logger.info('Handling error for recovery', {
@@ -390,7 +390,7 @@ export class ErrorRecoverySystem extends EventEmitter {
     activeRecoveries: number;
     strategiesCount: number;
     recentRecoveries: RecoveryResult[];
-  } {
+    } {
     const successful = this.recoveryHistory.filter((r) => r.success).length;
     const failed = this.recoveryHistory.length - successful;
     const averageDuration =
@@ -458,12 +458,12 @@ export class ErrorRecoverySystem extends EventEmitter {
   // =============================================================================
 
   private findRecoveryStrategy(
-    errorInfo: ErrorInfo
+    errorInfo: ErrorInfo,
   ): RecoveryStrategy | undefined {
     const candidates = Array.from(this.strategies.values())
       .filter(
         (strategy) =>
-          strategy.enabled && this.strategyMatches(strategy, errorInfo)
+          strategy.enabled && this.strategyMatches(strategy, errorInfo),
       )
       .sort((a, b) => b.priority - a.priority);
 
@@ -472,7 +472,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private strategyMatches(
     strategy: RecoveryStrategy,
-    errorInfo: ErrorInfo
+    errorInfo: ErrorInfo,
   ): boolean {
     // Check severity match
     const severityLevels = { low: 1, medium: 2, high: 3, critical: 4 };
@@ -497,7 +497,7 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeRecovery(
     errorInfo: ErrorInfo,
-    strategy: RecoveryStrategy
+    strategy: RecoveryStrategy,
   ): Promise<RecoveryResult> {
     const startTime = Date.now();
     const result: RecoveryResult = {
@@ -521,7 +521,7 @@ export class ErrorRecoverySystem extends EventEmitter {
         const actionResult = await this.executeRecoveryAction(
           action,
           errorInfo,
-          strategy
+          strategy,
         );
         result.actionsExecuted.push(actionResult);
 
@@ -552,7 +552,7 @@ export class ErrorRecoverySystem extends EventEmitter {
   private async executeRecoveryAction(
     action: RecoveryAction,
     errorInfo: ErrorInfo,
-    strategy: RecoveryStrategy
+    strategy: RecoveryStrategy,
   ): Promise<RecoveryActionResult> {
     const startTime = Date.now();
     const actionTimeout = action.timeout || strategy.timeout;
@@ -586,73 +586,73 @@ export class ErrorRecoverySystem extends EventEmitter {
 
   private async executeActionByType(
     action: RecoveryAction,
-    errorInfo: ErrorInfo
+    errorInfo: ErrorInfo,
   ): Promise<unknown> {
     // This is a simulation - in real implementation, these would be actual recovery operations
     switch (action.type) {
-      case 'restart':
-        this.logger.info('Simulating restart action', {
-          target: action.target,
-          component: errorInfo.component,
-        });
-        await this.delay(1000); // Simulate restart time
-        return { restarted: true, target: action.target };
+    case 'restart':
+      this.logger.info('Simulating restart action', {
+        target: action.target,
+        component: errorInfo.component,
+      });
+      await this.delay(1000); // Simulate restart time
+      return { restarted: true, target: action.target };
 
-      case 'rollback':
-        this.logger.info('Simulating rollback action', {
-          target: action.target,
-          component: errorInfo.component,
-        });
-        await this.delay(2000); // Simulate rollback time
-        return { rolledBack: true, target: action.target };
+    case 'rollback':
+      this.logger.info('Simulating rollback action', {
+        target: action.target,
+        component: errorInfo.component,
+      });
+      await this.delay(2000); // Simulate rollback time
+      return { rolledBack: true, target: action.target };
 
-      case 'failover':
-        this.logger.info('Simulating failover action', {
-          target: action.target,
-          component: errorInfo.component,
-        });
-        await this.delay(1500); // Simulate failover time
-        return { failedOver: true, target: action.target };
+    case 'failover':
+      this.logger.info('Simulating failover action', {
+        target: action.target,
+        component: errorInfo.component,
+      });
+      await this.delay(1500); // Simulate failover time
+      return { failedOver: true, target: action.target };
 
-      case 'scale':
-        this.logger.info('Simulating scale action', {
-          target: action.target,
-          component: errorInfo.component,
-        });
-        await this.delay(3000); // Simulate scaling time
-        return { scaled: true, target: action.target };
+    case 'scale':
+      this.logger.info('Simulating scale action', {
+        target: action.target,
+        component: errorInfo.component,
+      });
+      await this.delay(3000); // Simulate scaling time
+      return { scaled: true, target: action.target };
 
-      case 'notify':
-        this.logger.info('Simulating notify action', {
-          target: action.target,
-          component: errorInfo.component,
-        });
-        await this.delay(500); // Simulate notification time
-        return { notified: true, target: action.target };
+    case 'notify':
+      this.logger.info('Simulating notify action', {
+        target: action.target,
+        component: errorInfo.component,
+      });
+      await this.delay(500); // Simulate notification time
+      return { notified: true, target: action.target };
 
-      case 'repair':
-        this.logger.info('Simulating repair action', {
-          target: action.target,
-          component: errorInfo.component,
-        });
-        await this.delay(2500); // Simulate repair time
-        return { repaired: true, target: action.target };
+    case 'repair':
+      this.logger.info('Simulating repair action', {
+        target: action.target,
+        component: errorInfo.component,
+      });
+      await this.delay(2500); // Simulate repair time
+      return { repaired: true, target: action.target };
 
-      case 'custom':
-        this.logger.info('Simulating custom action', {
-          target: action.target,
-          component: errorInfo.component,
-          parameters: action.parameters,
-        });
-        await this.delay(1000); // Simulate custom action time
-        return {
-          executed: true,
-          target: action.target,
-          parameters: action.parameters,
-        };
+    case 'custom':
+      this.logger.info('Simulating custom action', {
+        target: action.target,
+        component: errorInfo.component,
+        parameters: action.parameters,
+      });
+      await this.delay(1000); // Simulate custom action time
+      return {
+        executed: true,
+        target: action.target,
+        parameters: action.parameters,
+      };
 
-      default:
-        throw new Error(`Unknown recovery action type: ${action.type}`);
+    default:
+      throw new Error(`Unknown recovery action type: ${action.type}`);
     }
   }
 
@@ -678,7 +678,7 @@ export class ErrorRecoverySystem extends EventEmitter {
  * Create a new error recovery system with default configuration.
  */
 export function createErrorRecovery(
-  config?: Partial<ErrorRecoveryConfig>
+  config?: Partial<ErrorRecoveryConfig>,
 ): ErrorRecoverySystem {
   const defaultConfig: ErrorRecoveryConfig = {
     strategies: [],
@@ -756,7 +756,7 @@ export function createCommonRecoveryStrategies(): RecoveryStrategy[] {
  * Create an error recovery system with common strategies pre-configured.
  */
 export function createErrorRecoveryWithCommonStrategies(
-  additionalConfig?: Partial<ErrorRecoveryConfig>
+  additionalConfig?: Partial<ErrorRecoveryConfig>,
 ): ErrorRecoverySystem {
   const commonStrategies = createCommonRecoveryStrategies();
 

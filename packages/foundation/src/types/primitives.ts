@@ -253,7 +253,7 @@ export function isUUID(value: unknown): value is UUID {
   return (
     typeof value === 'string' &&
     /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
-      value
+      value,
     )
   );
 }
@@ -312,7 +312,7 @@ export function isPrimitive(value: unknown): value is Primitive {
  * Runtime identity function, compile-time type branding
  */
 export function brand<T, Brand extends string | symbol>(
-  value: T
+  value: T,
 ): Branded<T, Brand> {
   return value as Branded<T, Brand>;
 }
@@ -322,7 +322,7 @@ export function brand<T, Brand extends string | symbol>(
  * Runtime identity function, compile-time unbranding
  */
 export function unbrand<T, Brand extends string | symbol>(
-  value: Branded<T, Brand>
+  value: Branded<T, Brand>,
 ): T {
   return value as T;
 }
@@ -337,7 +337,7 @@ export function generateUUID(): UUID {
       const r = (Math.random() * 16) | 0;
       const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
-    })
+    }),
   );
 }
 
@@ -367,6 +367,6 @@ export function dateFromTimestamp(timestamp: Timestamp): Date {
  */
 export function isoStringFromTimestamp(timestamp: Timestamp): ISODateString {
   return brand<string, 'ISODateString'>(
-    dateFromTimestamp(timestamp).toISOString()
+    dateFromTimestamp(timestamp).toISOString(),
   );
 }

@@ -60,7 +60,7 @@ export interface Failure<E = Error> {
  * Type guard for successful results
  */
 export function isSuccess<T, E = Error>(
-  result: Result<T, E>
+  result: Result<T, E>,
 ): result is Success<T> {
   return result?.ok === true && 'value' in result;
 }
@@ -69,7 +69,7 @@ export function isSuccess<T, E = Error>(
  * Type guard for failed results
  */
 export function isFailure<T, E = Error>(
-  result: Result<T, E>
+  result: Result<T, E>,
 ): result is Failure<E> {
   return result?.ok === false && 'error' in result;
 }
@@ -78,7 +78,7 @@ export function isFailure<T, E = Error>(
  * Type guard for OperationResult success (from patterns.ts)
  */
 export function isOperationSuccess<T, E = Error>(
-  result: OperationResult<T, E>
+  result: OperationResult<T, E>,
 ): result is OperationResult<T, E> & { success: true; data: T } {
   return result.success === true && result.data !== undefined;
 }
@@ -87,7 +87,7 @@ export function isOperationSuccess<T, E = Error>(
  * Type guard for OperationResult error (from patterns.ts)
  */
 export function isOperationError<T, E = Error>(
-  result: OperationResult<T, E>
+  result: OperationResult<T, E>,
 ): result is OperationResult<T, E> & { success: false; error: E } {
   return result.success === false && result.error !== undefined;
 }
@@ -96,7 +96,7 @@ export function isOperationError<T, E = Error>(
  * Type guard for ValidationResult success
  */
 export function isValidationSuccess(
-  result: ValidationResult
+  result: ValidationResult,
 ): result is ValidationResult & { isValid: true } {
   return result.isValid === true;
 }
@@ -105,7 +105,7 @@ export function isValidationSuccess(
  * Type guard for ValidationResult failure
  */
 export function isValidationFailure(
-  result: ValidationResult
+  result: ValidationResult,
 ): result is ValidationResult & { isValid: false } {
   return result.isValid === false && result.errors.length > 0;
 }
@@ -146,7 +146,7 @@ export interface QueryError {
  * Type guard for successful database queries
  */
 export function isQuerySuccess<T = JsonValue>(
-  result: DatabaseResult<T>
+  result: DatabaseResult<T>,
 ): result is QuerySuccess<T> {
   return result?.success === true && 'data' in result;
 }
@@ -195,7 +195,7 @@ export interface MemoryError {
  * Type guard for successful memory operations
  */
 export function isMemorySuccess<T = JsonValue>(
-  result: MemoryResult<T>
+  result: MemoryResult<T>,
 ): result is MemorySuccess<T> {
   return result?.found === true && 'data' in result;
 }
@@ -204,7 +204,7 @@ export function isMemorySuccess<T = JsonValue>(
  * Type guard for memory not found results
  */
 export function isMemoryNotFound(
-  result: MemoryResult
+  result: MemoryResult,
 ): result is MemoryNotFound {
   return result?.found === false && 'reason' in result;
 }
@@ -251,7 +251,7 @@ export interface APIError {
  * Type guard for successful API responses
  */
 export function isAPISuccess<T = JsonValue>(
-  result: APIResult<T>
+  result: APIResult<T>,
 ): result is APISuccess<T> {
   return result?.success === true && 'data' in result;
 }
@@ -303,7 +303,7 @@ export interface NeuralError {
  * Type guard for neural training results
  */
 export function isTrainingResult(
-  result: NeuralResult
+  result: NeuralResult,
 ): result is TrainingResult {
   return result?.type === 'training' && result?.success === true;
 }
@@ -312,7 +312,7 @@ export function isTrainingResult(
  * Type guard for neural inference results
  */
 export function isInferenceResult(
-  result: NeuralResult
+  result: NeuralResult,
 ): result is InferenceResult {
   return result?.type === 'inference' && result?.success === true;
 }
@@ -333,7 +333,7 @@ export function isNeuralError(result: NeuralResult): result is NeuralError {
  */
 export function hasProperty<T, K extends PropertyKey>(
   obj: T,
-  prop: K
+  prop: K,
 ): obj is T & Record<K, unknown> {
   return (
     obj !== null && obj !== undefined && typeof obj === 'object' && prop in obj
@@ -345,7 +345,7 @@ export function hasProperty<T, K extends PropertyKey>(
  */
 export function safePropertyAccess<T, K extends keyof T>(
   obj: T | null | undefined,
-  prop: K
+  prop: K,
 ): T[K] | undefined {
   if (
     obj !== null &&
@@ -386,7 +386,7 @@ export function isPositiveNumber(value: unknown): value is number {
  */
 export function isObjectArrayWithProps<T>(
   arr: unknown,
-  requiredProps: string[]
+  requiredProps: string[],
 ): arr is T[] {
   if (!Array.isArray(arr)) {
     return false;
@@ -425,7 +425,7 @@ export function extractErrorMessage(
     | NeuralResult
     | APIResult
     | OperationResult
-    | Result<JsonValue, JsonValue>
+    | Result<JsonValue, JsonValue>,
 ): string | null {
   // Handle OperationResult pattern
   if (
@@ -487,7 +487,7 @@ export function createFailure<E = Error>(error: E): Failure<E> {
  */
 export function resultToOperation<T, E = Error>(
   result: Result<T, E>,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): OperationResult<T, E> {
   if (isSuccess(result)) {
     return {
@@ -508,13 +508,13 @@ export function resultToOperation<T, E = Error>(
  * Convert OperationResult to Result
  */
 export function operationToResult<T, E = Error>(
-  operation: OperationResult<T, E>
+  operation: OperationResult<T, E>,
 ): Result<T, E> {
   if (isOperationSuccess(operation)) {
     return createSuccess(operation.data);
   } else {
     return createFailure(
-      operation.error || (new Error('Operation failed') as E)
+      operation.error || (new Error('Operation failed') as E),
     );
   }
 }

@@ -105,7 +105,7 @@ const logger = getLogger('foundation-utilities');
  */
 export function validateInput<T>(
   schema: z.ZodSchema<T>,
-  input: unknown
+  input: unknown,
 ): Result<T, Error> {
   try {
     const validated = schema.parse(input);
@@ -116,7 +116,7 @@ export function validateInput<T>(
       return err(new Error(message));
     }
     return err(
-      error instanceof Error ? error : new Error('Unknown validation error')
+      error instanceof Error ? error : new Error('Unknown validation error'),
     );
   }
 }
@@ -151,7 +151,7 @@ export function createValidator<T>(schema: z.ZodSchema<T>) {
  * ```
  */
 export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
-  specs: T
+  specs: T,
 ): CleanedEnv<T> {
   try {
     return cleanEnv(process.env, specs);
@@ -182,7 +182,7 @@ export function createEnvValidator<T extends Record<string, Spec<unknown>>>(
 export async function withTimeout<T>(
   promise: Promise<T>,
   timeoutMs: number,
-  timeoutMessage?: string
+  timeoutMessage?: string,
 ): Promise<Result<T, Error>> {
   try {
     const result = await pTimeout(promise, {
@@ -198,7 +198,7 @@ export async function withTimeout<T>(
     return err(
       errorInstance instanceof Error
         ? errorInstance
-        : new Error('Unknown timeout error')
+        : new Error('Unknown timeout error'),
     );
   }
 }

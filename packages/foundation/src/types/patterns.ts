@@ -414,7 +414,7 @@ export interface Auditable {
 export function createPaginationMetadata(
   currentPage: number,
   pageSize: number,
-  totalItems: number
+  totalItems: number,
 ): PaginationMetadata {
   const totalPages = Math.ceil(totalItems / pageSize);
   return {
@@ -434,7 +434,7 @@ export function createPaginated<T>(
   items: T[],
   currentPage: number,
   pageSize: number,
-  totalItems: number
+  totalItems: number,
 ): Paginated<T> {
   return {
     items,
@@ -447,7 +447,7 @@ export function createPaginated<T>(
  */
 export function createSuccessResult<T>(
   data: T,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): OperationResult<T> {
   return {
     success: true,
@@ -461,7 +461,7 @@ export function createSuccessResult<T>(
  */
 export function createErrorResult<E = Error>(
   error: E,
-  metadata?: Record<string, unknown>
+  metadata?: Record<string, unknown>,
 ): OperationResult<never, E> {
   return {
     success: false,
@@ -474,7 +474,7 @@ export function createErrorResult<E = Error>(
  * Check if operation result is successful (type guard)
  */
 export function isSuccessResult<T, E>(
-  result: OperationResult<T, E>
+  result: OperationResult<T, E>,
 ): result is OperationResult<T, E> & { success: true; data: T } {
   return result.success === true;
 }
@@ -483,7 +483,7 @@ export function isSuccessResult<T, E>(
  * Check if operation result is an error (type guard)
  */
 export function isErrorResult<T, E>(
-  result: OperationResult<T, E>
+  result: OperationResult<T, E>,
 ): result is OperationResult<T, E> & { success: false; error: E } {
   return result.success === false;
 }

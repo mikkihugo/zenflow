@@ -39,7 +39,7 @@ export const defaultFoundationConfig: FoundationConfig = {
  * ```
  */
 export async function initializeFoundation(
-  config: Partial<FoundationConfig> = {}
+  config: Partial<FoundationConfig> = {},
 ): Promise<void> {
   const finalConfig = { ...defaultFoundationConfig, ...config };
 
