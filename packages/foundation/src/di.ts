@@ -25,7 +25,7 @@ import {
 } from 'awilix';
 
 import { getLogger } from './logging';
-// import { ServiceContainer, createServiceContainer } from './di/service-container';
+import { ServiceContainer, createServiceContainer } from './di/service-container';
 
 const logger = getLogger('di');
 
@@ -40,17 +40,17 @@ export type {
   AwilixContainer
 };
 
-// Re-export ServiceContainer classes and types - temporarily disabled due to build issues
-// export {
-//   ServiceContainer,
-//   createServiceContainer,
-//   getGlobalServiceContainer,
-//   type ServiceRegistrationOptions,
-//   type ServiceDiscoveryOptions,
-//   type ServiceInfo,
-//   type ServiceHealthReport,
-//   ServiceContainerError
-// } from './di/service-container';
+// Re-export ServiceContainer classes and types
+export {
+  ServiceContainer,
+  createServiceContainer,
+  getGlobalServiceContainer,
+  type ServiceRegistrationOptions,
+  type ServiceDiscoveryOptions,
+  type ServiceInfo,
+  type ServiceHealthReport,
+  ServiceContainerError
+} from './di/service-container';
 
 /**
  * Modern injection token type (compatible with both awilix and legacy APIs)
@@ -154,7 +154,7 @@ export class DIContainer {
   registerFactory<T>(
     token: InjectionToken<T>,
     factory: (container: AwilixContainer) => T,
-    options?: { lifecycle?: LifecycleCompat | Lifetime }
+    options?: { lifecycle?: LifecycleCompat | typeof Lifetime }
   ): this {
     try {
       const lifecycle = this.mapLifecycle(options?.lifecycle || LifecycleCompat.Transient);
@@ -384,7 +384,7 @@ export function createContainer(name?: string, parent?: DIContainer): DIContaine
 export function registerGlobal<T>(
   token: InjectionToken<T>,
   target: any,
-  options?: { lifecycle?: LifecycleCompat | Lifetime }
+  options?: { lifecycle?: LifecycleCompat | typeof Lifetime }
 ): void {
   getGlobalContainer().register(token, target, options);
 }

@@ -1,23 +1,14 @@
 /**
- * @fileoverview Full Awilix Container - Advanced DI with Professional Features
+ * @fileoverview Advanced Dependency Injection Container
  * 
- * Comprehensive implementation leveraging Awilix's full capabilities without
- * TSyringe compatibility constraints. Provides advanced features:
- * 
+ * Comprehensive dependency injection implementation providing:
  * - Auto-discovery and registration
  * - Decorators and metadata-driven configuration
- * - Advanced resolution modes (PROXY, CLASSIC)
+ * - Advanced resolution modes and injection strategies
  * - Interceptors and middleware
  * - Module loading and service graphs
- * - Professional lifecycle management
- * - Contextual scoping and bindings
- * - Performance optimization
- * 
- * Performance Benefits Over TSyringe Compatibility:
- * - 392% faster service resolution at scale
- * - 20% better memory efficiency
- * - Advanced caching and lazy loading
- * - Module-based service organization
+ * - Lifecycle management and scoping
+ * - Health monitoring and performance tracking
  * 
  * @author Claude Code Zen Team
  * @since 2.1.0
@@ -45,37 +36,37 @@ import { getLogger, type Logger } from '../logging';
 import { Result, ok, err } from 'neverthrow';
 
 /**
- * Advanced service registration options with full Awilix features
+ * Service registration options with dependency injection features
  */
-export interface AdvancedServiceOptions<T = any> extends BuildResolverOptions<T> {
-  /** Service lifetime - leveraging Awilix advanced scoping */
+export interface ServiceRegistrationOptions<T = any> extends BuildResolverOptions<T> {
+  /** Service lifetime management */
   lifetime?: Lifetime;
-  /** Resolution mode for performance optimization */
+  /** Resolution mode strategy */
   resolutionMode?: ResolutionMode;
   /** Injection mode for constructor/property injection */
   injectionMode?: InjectionMode;
-  /** Service capabilities for discovery and routing */
+  /** Service capabilities for discovery */
   capabilities?: string[];
-  /** Service metadata for advanced filtering */
+  /** Service metadata for filtering */
   metadata?: Record<string, any>;
   /** Service health check function */
   healthCheck?: () => boolean | Promise<boolean>;
-  /** Service interceptors for AOP */
+  /** Service interceptors */
   interceptors?: ServiceInterceptor[];
-  /** Auto-discovery pattern for module loading */
+  /** Auto-discovery patterns */
   discoveryPattern?: string | string[];
-  /** Service dependencies for graph building */
+  /** Service dependencies */
   dependencies?: string[];
-  /** Service tags for advanced filtering */
+  /** Service tags */
   tags?: string[];
-  /** Service priority for resolution order */
+  /** Service priority */
   priority?: number;
-  /** Enable service monitoring */
+  /** Enable monitoring */
   enableMonitoring?: boolean;
 }
 
 /**
- * Service interceptor for aspect-oriented programming
+ * Service interceptor interface
  */
 export interface ServiceInterceptor {
   name: string;
@@ -88,7 +79,7 @@ export interface ServiceInterceptor {
 export interface DiscoveredService {
   name: string;
   service: any;
-  metadata: AdvancedServiceOptions;
+  metadata: ServiceRegistrationOptions;
   capabilities: string[];
   health: 'healthy' | 'unhealthy' | 'unknown';
   performance: {
@@ -116,14 +107,11 @@ export interface ContainerHealthStatus {
 }
 
 /**
- * Advanced Awilix Container with Professional Features
- * 
- * Unlocks the full potential of Awilix without TSyringe compatibility constraints.
- * Provides enterprise-grade dependency injection with advanced features.
+ * Dependency injection container with comprehensive features
  */
-export class AwilixContainer extends EventEmitter {
+export class DIContainer extends EventEmitter {
   private container: AwilixContainer;
-  private serviceMetadata = new Map<string, AdvancedServiceOptions>();
+  private serviceMetadata = new Map<string, ServiceRegistrationOptions>();
   private performanceMetrics = new Map<string, any>();
   private healthChecks = new Map<string, () => boolean | Promise<boolean>>();
   private interceptors = new Map<string, ServiceInterceptor[]>();
@@ -132,7 +120,7 @@ export class AwilixContainer extends EventEmitter {
   private startTime = Date.now();
 
   constructor(
-    name: string = 'awilix-container',
+    name: string = 'di-container',
     options: {
       resolutionMode?: ResolutionMode;
       injectionMode?: InjectionMode;
@@ -140,16 +128,16 @@ export class AwilixContainer extends EventEmitter {
     } = {}
   ) {
     super();
-    this.logger = getLogger(`AwilixContainer:${name}`);
+    this.logger = getLogger(`DIContainer:${name}`);
     
-    // Create container with advanced options
+    // Create container with options
     this.container = createContainer({
       resolutionMode: options.resolutionMode || ResolutionMode.PROXY,
       injectionMode: options.injectionMode || InjectionMode.PROXY,
       strict: options.strict ?? true
     });
 
-    this.logger.info(`✅ Advanced Awilix container created: ${name}`, {
+    this.logger.info(`✅ DI container created: ${name}`, {
       resolutionMode: options.resolutionMode || 'PROXY',
       injectionMode: options.injectionMode || 'PROXY',
       strict: options.strict ?? true

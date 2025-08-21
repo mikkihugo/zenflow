@@ -10,9 +10,17 @@
  * @version 1.0.0
  */
 
-// Core coordination
+// Project coordination (optional AI project management features)
 export { ProjectCoordinator, getProjectCoordinator, createProjectConfig } from './project-coordinator';
 export type { ProjectCoordinationConfig, CoordinationStatus } from './project-coordinator';
+
+// Development coordination (essential SPARC + Git + Swarms)
+export { DevelopmentCoordinator, createDevelopmentConfig } from './development-coordinator';
+export type { DevelopmentCoordinationConfig, DevelopmentTask, SPARCPhase } from './development-coordinator';
+
+// Git coordination (essential for code projects)
+export { GitManager, createGitManager } from './git-manager';
+export type { GitOperationResult, BranchInfo } from './git-manager';
 
 // Kanban coordination (keep only what's needed for MVP)
 export { KanbanFlowManager } from './kanban/flow-manager';
