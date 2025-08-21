@@ -13,6 +13,7 @@
  * • @claude-zen/repo-analyzer: Repository analysis and metrics
  * • @claude-zen/codeql: Semantic code analysis and vulnerability detection
  * • @claude-zen/beam-analyzer: BEAM ecosystem analysis (Erlang/Elixir/Gleam/LFE)
+ * • @claude-zen/architecture: Domain boundary validation and architecture management
  * 
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
@@ -43,7 +44,8 @@ registerFacade('development', [
   '@claude-zen/language-parsers',
   '@claude-zen/repo-analyzer',
   '@claude-zen/codeql',
-  '@claude-zen/beam-analyzer'
+  '@claude-zen/beam-analyzer',
+  '@claude-zen/architecture'
 ], [
   'Live code analysis with AI insights',
   'AI-powered Git operations management',
@@ -52,50 +54,153 @@ registerFacade('development', [
   'Repository analysis and metrics',
   'Semantic code analysis and vulnerability detection',
   'BEAM ecosystem static analysis and security scanning',
+  'Domain boundary validation and architecture management',
   'Development tools and utilities'
 ]);
 
-// Development implementation packages delegation using facade status manager
-// Code analyzer delegation - fallback implementations when package not available
-export const CodeAnalyzer = class { async analyzeFile() { return { analysis: 'Package not available' }; } };
-export const createCodeAnalyzer = () => null;
-export const analyzeFile = async () => ({ analysis: 'Package not available' });
-export const createLiveCodeAnalyzer = () => null;
-export const createAICodeAnalyzer = () => null;
+// =============================================================================
+// REAL IMPLEMENTATION DELEGATION - Delegate to actual implementation packages
+// =============================================================================
 
-// Git operations delegation - fallback implementations when package not available
-export const GitOperationsManager = class { async executeMethodology() { return { success: false, message: 'Package not available' }; } };
-export const createGitOperationsManager = () => null;
-export const createDevelopmentGitManager = () => null;
-export const createEnterpriseGitManager = () => null;
-export const createSAFEGitManager = () => null;
+// Code analyzer delegation with fallback patterns
+let codeAnalyzerCache: any = null;
+async function loadCodeAnalyzer() {
+  if (!codeAnalyzerCache) {
+    try {
+      codeAnalyzerCache = await import('@claude-zen/code-analyzer');
+    } catch {
+      codeAnalyzerCache = {
+        CodeAnalyzer: class { async analyzeFile() { return { analysis: 'Package not available' }; } },
+        createCodeAnalyzer: () => null,
+        analyzeFile: async () => ({ analysis: 'Package not available' }),
+        createLiveCodeAnalyzer: () => null,
+        createAICodeAnalyzer: () => null
+      };
+    }
+  }
+  return codeAnalyzerCache;
+}
 
-// CodeQL delegation for semantic analysis and security scanning - fallback implementations
-export const CodeQLBridge = class { async analyzeRepository() { return { findings: [], message: 'CodeQL not available' }; } };
-export const createCodeQLBridge = () => null;
-export const checkCodeQLAvailability = async () => false;
-export const codeqlAnalyzeRepository = async () => ({ findings: [], message: 'CodeQL not available' });
-export const performSecurityScan = async (_repositoryPath?: string, _options?: any) => ({ findings: [], message: 'CodeQL not available' });
-export const codeqlAnalyzeFile = async () => ({ findings: [], message: 'CodeQL not available' });
-export const getSecurityQueryPacks = () => [];
-export const getPerformanceQueryPacks = () => [];
-export const createCodeQLConfig = () => ({});
+export const CodeAnalyzer = class { 
+  async analyzeFile(path: string) { 
+    const analyzer = await loadCodeAnalyzer();
+    return analyzer.CodeAnalyzer ? new analyzer.CodeAnalyzer().analyzeFile(path) : { analysis: 'Package not available' };
+  } 
+};
+export const createCodeAnalyzer = async () => (await loadCodeAnalyzer()).createCodeAnalyzer?.() || null;
+export const analyzeFile = async (path: string) => (await loadCodeAnalyzer()).analyzeFile?.(path) || { analysis: 'Package not available' };
+export const createLiveCodeAnalyzer = async () => (await loadCodeAnalyzer()).createLiveCodeAnalyzer?.() || null;
+export const createAICodeAnalyzer = async () => (await loadCodeAnalyzer()).createAICodeAnalyzer?.() || null;
 
-// BEAM analyzer delegation for Erlang, Elixir, Gleam, LFE analysis - fallback implementations
-export const BeamBridge = class { async analyzeProject() { return { findings: [], message: 'BEAM analyzer not available' }; } };
-export const createBeamBridge = () => null;
-export const checkBeamAvailability = async () => false;
-export const analyzeBeamProject = async () => ({ findings: [], message: 'BEAM analyzer not available' });
-export const analyzeElixirSecurity = async (_repositoryPath?: string, _options?: any) => ({ findings: [], message: 'BEAM analyzer not available' });
-export const analyzeBeamTypes = async () => ({ findings: [], message: 'BEAM analyzer not available' });
-export const analyzeBeamPatterns = async () => ({ findings: [], message: 'BEAM analyzer not available' });
-export const analyzeBeamComprehensive = async () => ({ findings: [], message: 'BEAM analyzer not available' });
+// Git operations delegation with fallback patterns
+let gitOpsCache: any = null;
+async function loadGitOperations() {
+  if (!gitOpsCache) {
+    try {
+      gitOpsCache = await import('@claude-zen/git-operations');
+    } catch {
+      gitOpsCache = {
+        GitOperationsManager: class { async executeMethodology() { return { success: false, message: 'Package not available' }; } },
+        createGitOperationsManager: () => null,
+        createDevelopmentGitManager: () => null,
+        createEnterpriseGitManager: () => null,
+        createSAFEGitManager: () => null
+      };
+    }
+  }
+  return gitOpsCache;
+}
 
-// Re-export existing packages that are part of development ecosystem
-// TODO: Enable when implementation packages are available
-// export * from '@claude-zen/repo-analyzer';
-// export * from '@claude-zen/ai-linter';
-// export * from '@claude-zen/language-parsers';
+export const GitOperationsManager = class { 
+  async executeMethodology() { 
+    const gitOps = await loadGitOperations();
+    return gitOps.GitOperationsManager ? new gitOps.GitOperationsManager().executeMethodology() : { success: false, message: 'Package not available' };
+  } 
+};
+export const createGitOperationsManager = async () => (await loadGitOperations()).createGitOperationsManager?.() || null;
+export const createDevelopmentGitManager = async () => (await loadGitOperations()).createDevelopmentGitManager?.() || null;
+export const createEnterpriseGitManager = async () => (await loadGitOperations()).createEnterpriseGitManager?.() || null;
+export const createSAFEGitManager = async () => (await loadGitOperations()).createSAFEGitManager?.() || null;
+
+// CodeQL delegation with fallback patterns
+let codeqlCache: any = null;
+async function loadCodeQL() {
+  if (!codeqlCache) {
+    try {
+      codeqlCache = await import('@claude-zen/codeql');
+    } catch {
+      codeqlCache = {
+        CodeQLBridge: class { async analyzeRepository() { return { findings: [], message: 'CodeQL not available' }; } },
+        createCodeQLBridge: () => null,
+        checkCodeQLAvailability: async () => false,
+        codeqlAnalyzeRepository: async () => ({ findings: [], message: 'CodeQL not available' }),
+        performSecurityScan: async () => ({ findings: [], message: 'CodeQL not available' }),
+        codeqlAnalyzeFile: async () => ({ findings: [], message: 'CodeQL not available' }),
+        getSecurityQueryPacks: () => [],
+        getPerformanceQueryPacks: () => [],
+        createCodeQLConfig: () => ({})
+      };
+    }
+  }
+  return codeqlCache;
+}
+
+export const CodeQLBridge = class { 
+  async analyzeRepository() { 
+    const codeql = await loadCodeQL();
+    return codeql.CodeQLBridge ? new codeql.CodeQLBridge().analyzeRepository() : { findings: [], message: 'CodeQL not available' };
+  } 
+};
+export const createCodeQLBridge = async () => (await loadCodeQL()).createCodeQLBridge?.() || null;
+export const checkCodeQLAvailability = async () => (await loadCodeQL()).checkCodeQLAvailability?.() || false;
+export const codeqlAnalyzeRepository = async () => (await loadCodeQL()).codeqlAnalyzeRepository?.() || { findings: [], message: 'CodeQL not available' };
+export const performSecurityScan = async (repositoryPath?: string, options?: any) => (await loadCodeQL()).performSecurityScan?.(repositoryPath, options) || { findings: [], message: 'CodeQL not available' };
+export const codeqlAnalyzeFile = async () => (await loadCodeQL()).codeqlAnalyzeFile?.() || { findings: [], message: 'CodeQL not available' };
+export const getSecurityQueryPacks = async () => (await loadCodeQL()).getSecurityQueryPacks?.() || [];
+export const getPerformanceQueryPacks = async () => (await loadCodeQL()).getPerformanceQueryPacks?.() || [];
+export const createCodeQLConfig = async () => (await loadCodeQL()).createCodeQLConfig?.() || {};
+
+// BEAM analyzer delegation with fallback patterns
+let beamCache: any = null;
+async function loadBeamAnalyzer() {
+  if (!beamCache) {
+    try {
+      beamCache = await import('@claude-zen/beam-analyzer');
+    } catch {
+      beamCache = {
+        BeamBridge: class { async analyzeProject() { return { findings: [], message: 'BEAM analyzer not available' }; } },
+        createBeamBridge: () => null,
+        checkBeamAvailability: async () => false,
+        analyzeBeamProject: async () => ({ findings: [], message: 'BEAM analyzer not available' }),
+        analyzeElixirSecurity: async () => ({ findings: [], message: 'BEAM analyzer not available' }),
+        analyzeBeamTypes: async () => ({ findings: [], message: 'BEAM analyzer not available' }),
+        analyzeBeamPatterns: async () => ({ findings: [], message: 'BEAM analyzer not available' }),
+        analyzeBeamComprehensive: async () => ({ findings: [], message: 'BEAM analyzer not available' })
+      };
+    }
+  }
+  return beamCache;
+}
+
+export const BeamBridge = class { 
+  async analyzeProject() { 
+    const beam = await loadBeamAnalyzer();
+    return beam.BeamBridge ? new beam.BeamBridge().analyzeProject() : { findings: [], message: 'BEAM analyzer not available' };
+  } 
+};
+export const createBeamBridge = async () => (await loadBeamAnalyzer()).createBeamBridge?.() || null;
+export const checkBeamAvailability = async () => (await loadBeamAnalyzer()).checkBeamAvailability?.() || false;
+export const analyzeBeamProject = async () => (await loadBeamAnalyzer()).analyzeBeamProject?.() || { findings: [], message: 'BEAM analyzer not available' };
+export const analyzeElixirSecurity = async (repositoryPath?: string, options?: any) => (await loadBeamAnalyzer()).analyzeElixirSecurity?.(repositoryPath, options) || { findings: [], message: 'BEAM analyzer not available' };
+export const analyzeBeamTypes = async () => (await loadBeamAnalyzer()).analyzeBeamTypes?.() || { findings: [], message: 'BEAM analyzer not available' };
+export const analyzeBeamPatterns = async () => (await loadBeamAnalyzer()).analyzeBeamPatterns?.() || { findings: [], message: 'BEAM analyzer not available' };
+export const analyzeBeamComprehensive = async () => (await loadBeamAnalyzer()).analyzeBeamComprehensive?.() || { findings: [], message: 'BEAM analyzer not available' };
+
+// Direct exports from standalone packages with fallback patterns
+export * from '@claude-zen/repo-analyzer';
+export * from '@claude-zen/ai-linter';  
+export * from '@claude-zen/language-parsers';
+export * from '@claude-zen/architecture';
 
 // Re-export foundation utilities
 export { getLogger, Result, ok, err } from '@claude-zen/foundation';
@@ -243,6 +348,9 @@ export const developmentSystem = {
     enterprise: createEnterpriseGitManager,
     safe: createSAFEGitManager
   },
+  
+  // Architecture
+  architecture: () => import('@claude-zen/architecture'),
   
   // Utilities
   logger: logger,

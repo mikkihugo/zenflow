@@ -15,6 +15,11 @@
  * • @claude-zen/agent-manager: Agent lifecycle and coordination management
  * • @claude-zen/coordination-core: Core coordination primitives and patterns
  * • @claude-zen/enterprise-coordination: Enterprise coordination implementation
+ * • @claude-zen/document-processing: Document workflow and processing systems
+ * • @claude-zen/documentation: Documentation management and linking
+ * • @claude-zen/exporters: Data export management and formatting
+ * • @claude-zen/agent-registry: Centralized agent registration and lifecycle management
+ * • @claude-zen/interfaces: Interface management and detection systems
  * 
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
@@ -33,6 +38,7 @@ import {
   registerFacade,
   getLogger
 } from '@claude-zen/foundation';
+import './module-declarations';
 
 const logger = getLogger('enterprise');
 
@@ -46,7 +52,12 @@ registerFacade('enterprise', [
   '@claude-zen/multi-level-orchestration',
   '@claude-zen/agent-manager',
   '@claude-zen/coordination-core',
-  '@claude-zen/enterprise-coordination'
+  '@claude-zen/enterprise-coordination',
+  '@claude-zen/document-processing',
+  '@claude-zen/documentation',
+  '@claude-zen/exporters',
+  '@claude-zen/agent-registry',
+  '@claude-zen/interfaces'
 ], [
   'Safety protocols and risk management',
   'Systematic Problem Analysis and Resolution Coordination',
@@ -57,6 +68,11 @@ registerFacade('enterprise', [
   'Agent lifecycle and coordination management',
   'Core coordination primitives and patterns',
   'Enterprise coordination implementation',
+  'Document workflow and processing systems',
+  'Documentation management and linking',
+  'Data export management and formatting',
+  'Centralized agent registration and lifecycle management',
+  'Interface management and detection systems',
   'Enterprise business logic and coordination'
 ]);
 
@@ -72,6 +88,23 @@ export * from './kanban';
 export * from './multi-level-orchestration';
 export * from './agent-manager';
 export * from './coordination-core';
+export * from './document-processing';
+export * from './documentation';
+export * from './exporters';
+// Dynamic exports with fallbacks for missing packages
+try {
+  // Re-export agent registry if available
+  module.exports = { ...module.exports, ...require('@claude-zen/agent-registry') };
+} catch {
+  // agent-registry not available - using fallbacks
+}
+
+try {
+  // Re-export interfaces if available
+  module.exports = { ...module.exports, ...require('@claude-zen/interfaces') };
+} catch {
+  // interfaces not available - using fallbacks
+}
 
 // Enterprise coordination systems delegation - fallback implementations when package not available
 export const DevelopmentCoordinator = class { async executeCoordination() { return { success: false, message: 'Package not available' }; } };
@@ -97,6 +130,15 @@ export const enterpriseSystem = {
   orchestration: () => import('./multi-level-orchestration'),
   agents: () => import('./agent-manager'),
   coordination: () => import('./coordination-core'),
+  
+  // Document processing modules
+  documentProcessing: () => import('./document-processing'),
+  documentation: () => import('./documentation'),
+  exporters: () => import('./exporters'),
+  
+  // Agent and interface management (with fallbacks)
+  agentRegistry: () => import('@claude-zen/agent-registry').catch(() => ({ default: {} })),
+  interfaces: () => import('@claude-zen/interfaces').catch(() => ({ default: {} })),
   
   // Legacy coordination functions
   development: {

@@ -12,6 +12,8 @@
  * • @claude-zen/teamwork: Multi-agent conversation and collaboration
  * • @claude-zen/workflows: Intelligent workflow management and automation
  * • @claude-zen/llm-providers: LLM provider integrations (CLI tools and direct APIs)
+ * • @claude-zen/dspy: DSPy neural optimization and prompt engineering
+ * • @claude-zen/neural-ml: Neural machine learning coordination
  * 
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
@@ -40,7 +42,9 @@ registerFacade('intelligence', [
   '@claude-zen/fact-system',
   '@claude-zen/teamwork',
   '@claude-zen/workflows',
-  '@claude-zen/llm-providers'
+  '@claude-zen/llm-providers',
+  '@claude-zen/dspy',
+  '@claude-zen/neural-ml'
 ], [
   'Neural network coordination and brain intelligence systems',
   'AI safety protocols and risk management',
@@ -48,6 +52,8 @@ registerFacade('intelligence', [
   'Multi-agent conversation and collaboration',
   'Intelligent workflow management and automation',
   'LLM provider integrations (CLI tools and direct APIs)',
+  'DSPy neural optimization and prompt engineering',
+  'Neural machine learning coordination',
   'AI-powered coordination and decision making'
 ]);
 

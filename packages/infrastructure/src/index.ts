@@ -10,6 +10,8 @@
  * • @claude-zen/event-system: Type-safe event bus and management
  * • @claude-zen/load-balancing: Performance optimization and routing
  * • @claude-zen/telemetry: System telemetry and metrics collection
+ * • @claude-zen/otel-collector: OpenTelemetry collection and processing
+ * • @claude-zen/service-container: Service container and dependency injection
  * 
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
@@ -36,12 +38,16 @@ registerFacade('infrastructure', [
   '@claude-zen/database',
   '@claude-zen/event-system',
   '@claude-zen/load-balancing',
-  '@claude-zen/telemetry'
+  '@claude-zen/telemetry',
+  '@claude-zen/otel-collector',
+  '@claude-zen/service-container'
 ], [
   'Multi-backend database abstraction layer',
   'Type-safe event bus and management',
   'Performance optimization and routing',
   'System telemetry and metrics collection',
+  'OpenTelemetry collection and processing',
+  'Service container and dependency injection',
   'Infrastructure monitoring and health checks'
 ]);
 
@@ -53,6 +59,8 @@ export * from './database';
 export * from './events';
 export * from './load-balancing';
 export * from './telemetry';
+export * from '@claude-zen/otel-collector';
+export * from '@claude-zen/service-container';
 
 // =============================================================================
 // MAIN SYSTEM OBJECT - For programmatic access to all infrastructure capabilities
@@ -64,6 +72,10 @@ export const infrastructureSystem = {
   events: () => import('./events'),
   loadBalancing: () => import('./load-balancing'),
   telemetry: () => import('./telemetry'),
+  
+  // Advanced infrastructure
+  otelCollector: () => import('@claude-zen/otel-collector'),
+  serviceContainer: () => import('@claude-zen/service-container'),
   
   // Utilities
   logger: logger,

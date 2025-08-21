@@ -12,6 +12,7 @@
  * • @claude-zen/load-balancing: Performance optimization and routing
  * • @claude-zen/llm-routing: LLM provider routing and management
  * • @claude-zen/memory: Memory management and optimization
+ * • @claude-zen/system-monitoring: System and infrastructure performance monitoring
  * 
  * STANDARD FACADE PATTERN:
  * All facades follow the same architectural pattern:
@@ -35,19 +36,19 @@ const logger = getLogger('operations');
 
 // Register operations facade with expected packages
 registerFacade('operations', [
-  '@claude-zen/system-monitoring',
   '@claude-zen/agent-monitoring',
   '@claude-zen/chaos-engineering', 
   '@claude-zen/load-balancing',
   '@claude-zen/llm-routing',
-  '@claude-zen/memory'
+  '@claude-zen/memory',
+  '@claude-zen/system-monitoring'
 ], [
-  'System health monitoring and telemetry',
   'Agent performance tracking and health checks',
   'Chaos engineering and resilience testing',
   'Load balancing and performance optimization',
   'LLM provider routing and management',
   'Memory management and optimization',
+  'System and infrastructure performance monitoring',
   'Real-time operational metrics and alerting'
 ]);
 
@@ -60,6 +61,7 @@ export * from './chaos-engineering';
 export * from './monitoring';
 export * from './memory';
 export * from './llm-routing';
+export * from '@claude-zen/system-monitoring';
 
 // =============================================================================
 // MAIN SYSTEM OBJECT - For programmatic access to all operations capabilities
@@ -68,6 +70,7 @@ export * from './llm-routing';
 export const operationsSystem = {
   // System monitoring
   monitoring: () => import('./monitoring'),
+  systemMonitoring: () => import('@claude-zen/system-monitoring'),
   
   // Memory management  
   memory: () => import('./memory'),
