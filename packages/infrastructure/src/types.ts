@@ -292,3 +292,20 @@ export interface FacadeStatus {
   readonly capability: 'full' | 'partial' | 'degraded' | 'unavailable';
   readonly healthScore: number;
 }
+
+// =============================================================================
+// SERVICE CONTAINER TYPES
+// =============================================================================
+
+export interface ServiceContainer {
+  readonly register: (key: string, factory: (container: ServiceContainer) => unknown) => void;
+  readonly resolve: <T = unknown>(key: string) => T;
+  readonly has: (key: string) => boolean;
+  readonly clear: () => void;
+}
+
+export interface ServiceContainerConfig {
+  readonly name?: string;
+  readonly enableLogging?: boolean;
+  readonly validateRegistrations?: boolean;
+}

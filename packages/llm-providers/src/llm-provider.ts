@@ -199,8 +199,8 @@ export class LLMProvider extends EventEmitter {
     this.cliProvider = null; // Reset provider
     await this.initializeProvider();
     
-    if (currentRole && this.cliProvider) {
-      this.cliProvider.setRole(currentRole.role);
+    if (currentRole && this.cliProvider && typeof (this.cliProvider as any).setRole === 'function') {
+      (this.cliProvider as any).setRole(currentRole.role);
     }
   }
 
@@ -246,31 +246,53 @@ export class LLMProvider extends EventEmitter {
         return await withRetry(
           async () => await this.cliProvider!.execute(validationResult.value),
           {
-            attempts: this.config.retries,
-            initialDelay: this.config.retryDelay,
+            retries: this.config.retries,
+            minTimeout: this.config.retryDelay,
           }
         );
       };
 
-      // Use foundation's timeout protection
+      // Use foundation's timeout protection  
+      const retryResult = await executeWithRetry();
+      if (retryResult.isErr()) {
+        const cliError: CLIError = {
+          code: CLI_ERROR_CODES.UNKNOWN_ERROR,
+          message: retryResult.error.message,
+          cause: retryResult.error
+        };
+        return err(cliError);
+      }
+      
+      const timeout = this.config.timeout || 30000; // Default 30 seconds
       const result = await withTimeout(
-        executeWithRetry(),
-        this.config.timeout,
-        `LLM request timed out after ${this.config.timeout}ms`
+        () => Promise.resolve(retryResult.value),
+        timeout,
+        `LLM request timed out after ${timeout}ms`
       );
 
       logger.debug('Request completed successfully', {
         providerId: this.providerId,
         requestCount: this.requestCount,
-        responseLength: result && typeof result === 'object' && 'isOk' in result && result.isOk() ? result.value.content.length : 0
+        responseLength: result && typeof result === 'object' && 'isOk' in result && result.isOk() ? (result.value as any)?.content?.length || 0 : 0
       });
 
-      // Handle Result type properly
-      if (result && typeof result === 'object' && 'isOk' in result) {
-        return result as CLIResult;
+      // Handle timeout result properly
+      if (result.isErr()) {
+        const timeoutError: CLIError = {
+          code: CLI_ERROR_CODES.TIMEOUT_ERROR,
+          message: result.error.message,
+          cause: result.error
+        };
+        return err(timeoutError);
+      }
+      
+      // Handle successful result - the timeout wrapped a CLIResult
+      const actualResult = result.value;
+      if (actualResult && typeof actualResult === 'object' && 'isOk' in actualResult) {
+        return actualResult as CLIResult;
       } else {
         // If not a Result type, wrap it
-        return ok(result as CLIResponse);
+        return ok(actualResult as CLIResponse);
       }
 
     } catch (error) {

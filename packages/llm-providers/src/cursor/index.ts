@@ -5,7 +5,8 @@
  * Will include SDK wrapper and provider implementation.
  */
 
-import type { CLIProvider } from '../types/cli-providers';
+import type { CLIProvider, CLIRequest, CLIResult, CLIError, CLIProviderCapabilities, SwarmAgentRole } from '../types/cli-providers';
+import { Result, ok, err } from '@claude-zen/foundation';
 
 // TODO: Implement CursorProvider class
 // TODO: Implement Cursor CLI SDK wrapper
@@ -15,28 +16,61 @@ export class CursorCLI implements CLIProvider {
   readonly id = 'cursor-cli';
   readonly name = 'Cursor CLI';
 
-  getCapabilities() {
-    throw new Error('Cursor CLI provider not yet implemented.');
+  getCapabilities(): CLIProviderCapabilities {
+    return {
+      models: ['cursor-model'],
+      maxTokens: 4096,
+      contextWindow: 8192,
+      features: {
+        fileOperations: true,
+        webAccess: false,
+        codeExecution: true,
+        imageGeneration: false,
+        multimodal: false,
+        streaming: false,
+        customTools: true,
+        contextWindow: true,
+        reasoning: true,
+        coding: true,
+        planning: true
+      }
+    };
   }
 
-  async execute() {
-    throw new Error('Cursor CLI provider not yet implemented.');
+  async execute(request: CLIRequest): Promise<CLIResult> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
-  setRole() {
-    throw new Error('Cursor CLI provider not yet implemented.');
+  setRole(roleName: string): Result<void, CLIError> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED', 
+      message: 'Cursor CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
   getRole() {
     return undefined;
   }
 
-  async complete() {
-    throw new Error('Cursor CLI provider not yet implemented.');
+  async complete(prompt: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
-  async executeTask() {
-    throw new Error('Cursor CLI provider not yet implemented.');
+  async executeTask(prompt: string, options?: Record<string, unknown>): Promise<Result<unknown, CLIError>> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Cursor CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
   getUsageStats() {

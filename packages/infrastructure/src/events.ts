@@ -164,12 +164,37 @@ export async function getBaseEventManager(): Promise<UnknownRecord> {
   return eventSystem.getBaseEventManager();
 }
 
+/**
+ * Create event system - Compatibility function for capability mesh
+ */
+export function createEventSystem(config?: EventSystemConfig) {
+  return Promise.resolve({
+    emit: async (event: string, data: any) => {
+      console.log(`Event emitted: ${event}`, data);
+    },
+    on: (event: string, handler: (data: any) => void) => {
+      console.log(`Event listener registered: ${event}`);
+      return () => console.log(`Event listener removed: ${event}`);
+    },
+    off: (event: string, handler: (data: any) => void) => {
+      console.log(`Event listener removed: ${event}`);
+    },
+    once: (event: string, handler: (data: any) => void) => {
+      console.log(`One-time event listener registered: ${event}`);
+    },
+    removeAllListeners: (event?: string) => {
+      console.log(`All listeners removed${event ? ` for: ${event}` : ''}`);
+    }
+  });
+}
+
 // Professional event system object with proper naming (matches Storage/Telemetry patterns)
 export const eventSystem = {
   getAccess: getEventSystemAccess,
   createBus: getEventBus,
   createManager: getEventManager,
   getBaseManager: getBaseEventManager,
+  createSystem: createEventSystem,
 };
 
 // Type exports for external consumers

@@ -219,6 +219,27 @@ export async function getTeamworkAccess() {
 // Export compatibility aliases
 export { ConversationOrchestrator as ConversationOrchestratorImpl };
 
+// Memory implementation for conversation system
+export class InMemoryConversationMemory {
+  private memory = new Map<string, any>();
+  
+  async store(key: string, value: any): Promise<void> {
+    this.memory.set(key, value);
+  }
+  
+  async retrieve(key: string): Promise<any> {
+    return this.memory.get(key) || null;
+  }
+  
+  async clear(): Promise<void> {
+    this.memory.clear();
+  }
+  
+  async keys(): Promise<string[]> {
+    return Array.from(this.memory.keys());
+  }
+}
+
 // Export additional types and interfaces from the real package
 export async function getTeamworkTypes() {
   const teamworkModule = await loadTeamworkModule();

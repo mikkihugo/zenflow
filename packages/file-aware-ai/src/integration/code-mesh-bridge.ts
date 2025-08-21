@@ -58,20 +58,57 @@ export class CodeMeshBridge {
    * Initialize CodeMesh integration with LLM routing
    */
   async initialize(): Promise<void> {
-    // This will be implemented once CodeMesh WASM bindings are available
+    // Try to load the actual CodeMesh WASM module
     try {
-      // Dynamic import of CodeMesh WASM module
-      // const codeMesh = await import('@code-mesh/wasm');
-      // await codeMesh.init();
+      // Import the built WASM module
+      const wasmModule = require('../../rust-core/code-mesh-wasm/pkg/code_mesh_wasm.js');
       
-      // Initialize CodeMesh components
-      // this.provider = await codeMesh.createProvider('github-copilot');
-      // this.session = await codeMesh.createSession();
-      // this.tools = await codeMesh.createToolRegistry();
+      // Initialize the WASM module
+      const codeMesh = new wasmModule.CodeMesh();
+      await codeMesh.init();
+      
+      // Create tool registry
+      const toolRegistry = new wasmModule.ToolRegistry();
+      
+      // Create mock provider and session interfaces
+      this.provider = {
+        generateCompletion: async (messages: any[]) => {
+          return { 
+            content: `Generated response for: ${messages[0]?.content || 'unknown'}`,
+            model: 'code-mesh-wasm'
+          };
+        },
+        countTokens: async (input: string) => Math.ceil(input.length / 4),
+        getModel: async (modelId: string) => ({ id: modelId, name: modelId })
+      };
+      
+      this.session = {
+        addMessage: (role: string, content: string) => {
+          console.log(`Session: ${role}: ${content.substring(0, 100)}...`);
+        },
+        getMessages: () => [],
+        save: async () => `session_${Date.now()}`,
+        load: async (sessionId: string) => {
+          console.log(`Loading session: ${sessionId}`);
+        }
+      };
+      
+      this.tools = {
+        execute: async (toolName: string, params: any, context: any) => {
+          return toolRegistry.execute(toolName, params, context);
+        },
+        register: (toolName: string, tool: any) => {
+          toolRegistry.register(toolName, JSON.stringify(tool));
+        },
+        list: () => {
+          const result = toolRegistry.list();
+          return Array.isArray(result) ? result : [];
+        }
+      };
 
-      console.log('CodeMesh bridge initialized successfully');
+      console.log('CodeMesh WASM bridge initialized successfully with real tools!');
     } catch (error) {
-      console.warn('CodeMesh WASM not available, using fallback implementation');
+      console.warn('CodeMesh WASM not available, using fallback implementation:', error.message);
       await this.initializeFallback();
     }
   }
@@ -201,7 +238,7 @@ export class CodeMeshBridge {
     for (const file of files) {
       try {
         // Read file using CodeMesh read tool
-        const content = await this.tools.execute('read', { filePath: file }, context);
+        const content = await this.tools.execute('read', { file_path: file }, context);
         relevantFiles.push(file);
         
         // Extract symbols from content
@@ -319,7 +356,7 @@ export class CodeMeshBridge {
       try {
         if (change.type === 'modify' || change.type === 'create') {
           await this.tools.execute('write', {
-            filePath: change.path,
+            file_path: change.path,
             content: change.content || ''
           }, context);
           
@@ -383,7 +420,10 @@ export class CodeMeshBridge {
 /**
  * Factory function to create CodeMesh bridge
  */
-export async function createCodeMeshBridge(rootPath: string): Promise<CodeMeshBridge> {
+export async function createCodeMeshBridge(config: string | { rootPath: string; provider?: string; model?: string }): Promise<CodeMeshBridge> {
+  // Handle both string and object parameters
+  const rootPath = typeof config === 'string' ? config : config.rootPath;
+  
   const bridge = new CodeMeshBridge(rootPath);
   await bridge.initialize();
   return bridge;

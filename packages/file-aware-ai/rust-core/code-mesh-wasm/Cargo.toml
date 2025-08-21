@@ -98,6 +98,7 @@ insta = "1.0"
 
 [package.metadata.wasm-pack]
 "wasm-pack" = "0.12"
+wasm-opt = false
 
 [features]
 default = ["console_error_panic_hook"]

@@ -39,12 +39,19 @@
 // =============================================================================
 // CORE LLM PROVIDER - Main provider abstraction
 // =============================================================================
-export {
+import {
   LLMProvider,
   setGlobalLLM,
   getGlobalLLM,
   SWARM_AGENT_ROLES,
 } from './llm-provider';
+
+export {
+  LLMProvider,
+  setGlobalLLM,
+  getGlobalLLM,
+  SWARM_AGENT_ROLES,
+};
 export type { CLIMessage, CLIRequest, CLIResponse, SwarmAgentRole } from './types/cli-providers';
 
 // =============================================================================

@@ -22,45 +22,27 @@ import {
   recordMetric, 
   withTrace, 
   createCircuitBreaker,
-  withRetry
-} from '@claude-zen/foundation';
-import { EventEmitter } from 'eventemitter3';
-import type { EventBus, Logger } from '../di/index';
-import { CORE_TOKENS, inject, injectable } from '../di/index';
-
-// 🔧 FOUNDATION: Core infrastructure with telemetry and resilience
-
-// ⚡ EVENT SYSTEM: Type-safe event-driven coordination
-import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
-
-// 🔄 LOAD BALANCING: Intelligent agent selection and resource optimization
-import { LoadBalancer, type LoadBalancingStrategy } from '@claude-zen/foundation';
-
-// 📊 AGENT MONITORING: Agent health monitoring and task prediction
-import { 
+  withRetry,
+  LoadBalancer,
+  type LoadBalancingStrategy,
   AgentMonitoring, 
   CompleteIntelligenceSystem,
   SimpleTaskPredictor
 } from '@claude-zen/foundation';
-
-// 🧠 NEURAL ML: High-performance neural computing for agent optimization
+import { TypedEventBus, createEventBus } from '@claude-zen/infrastructure';
 import { 
   NeuralML, 
   AdaptiveOptimizer,
-  NeuralForecastingEngine
-} from '@claude-zen/intelligence';
-
-// 🛡️ AI SAFETY: Safety protocols and deception detection
-import { 
+  NeuralForecastingEngine,
   AISafetyOrchestrator,
   SafetyProtocols
 } from '@claude-zen/intelligence';
-
-// 🤝 TEAMWORK: Multi-agent collaboration patterns
-import { getTeamworkAccess } from '@claude-zen/intelligence';
-
-// 🔥 CHAOS ENGINEERING: System resilience testing
 import { getChaosEngine } from '@claude-zen/operations';
+
+import { EventEmitter } from 'eventemitter3';
+
+import type { EventBus, Logger } from '../di/index';
+import { CORE_TOKENS, inject, injectable } from '../di/index';
 
 export interface CoordinationConfig {
   maxAgents: number;

@@ -10,8 +10,22 @@
  */
 
 import { getLogger } from '@claude-zen/foundation';
-import { getServiceContainer } from '@claude-zen/infrastructure';
+import { getDatabaseAccess, getServiceContainer } from '@claude-zen/infrastructure';
 import { BehavioralIntelligence } from '@claude-zen/intelligence';
+import type { ServiceContainer } from '@claude-zen/infrastructure';
+
+// Service tokens for dependency injection
+const TOKENS = {
+  Logger: 'Logger',
+  Config: 'Config',
+  EventBus: 'EventBus',
+  Database: 'Database',
+  AgentManager: 'AgentManager',
+  CoordinationManager: 'CoordinationManager',
+  BehavioralIntelligence: 'BehavioralIntelligence',
+  MultiSystemCoordinator: 'MultiSystemCoordinator'
+} as const;
+
 
 import { EventEmitter } from 'eventemitter3';
 
@@ -75,92 +89,126 @@ class AppEventBus extends EventEmitter implements EventBus {
  * @example
  */
 export class ClaudeZenCore {
-  private container: any;
+  private container: ServiceContainer | null = null;
   private orchestrator?: Orchestrator;
-  private coordinationManager?: ProjectCoordinator;
+  private coordinationManager?: InstanceType<typeof ProjectCoordinator>;
   private behavioralIntelligence?: BehavioralIntelligence;
   private multiSystemCoordinator?: MultiSystemCoordinator;
 
   constructor() {
-    this.container = this.setupDependencyInjection();
+    this.initializeAsync();
+  }
+
+  private async initializeAsync() {
+    this.container = await this.setupDependencyInjection();
   }
 
   /**
    * Setup comprehensive DI container with all services.
    */
-  private setupDependencyInjection(): any {
+  private async setupDependencyInjection(): Promise<ServiceContainer> {
     const container = await getServiceContainer('claude-zen-core');
     
     // Register core services
-    container.register('Logger', () => getLogger('claude-zen-core'));
-    container.register('Config', () => getConfig());
-    container.register('EventBus', () => new AppEventBus());
-    container.register('Database', () => getDatabaseAccess());
+    container.register(TOKENS.Logger, () => getLogger('claude-zen-core'));
+    container.register(TOKENS.Config, () => this.getConfig());
+    container.register(TOKENS.EventBus, () => new AppEventBus());
+    container.register(TOKENS.Database, () => getDatabaseAccess());
 
     // Register coordination services
-    container.register('AgentManager', (c) => {
-      const logger = c.resolve('Logger');
-      const database = c.resolve('Database');
+    container.register(TOKENS.AgentManager, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
+      const database = c.resolve(TOKENS.Database);
       return new Orchestrator(logger, database);
     });
 
     // Register coordination manager  
-    container.register('CoordinationManager', (c) => {
-      const logger = c.resolve('Logger');
-      const eventBus = c.resolve('EventBus');
+    container.register(TOKENS.CoordinationManager, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
+      const eventBus = c.resolve(TOKENS.EventBus);
 
-      return new ProjectCoordinator(
-        {
-          maxAgents: 10,
-          heartbeatInterval: 5000,
-          timeout: 30000,
-          enableHealthCheck: true,
-        },
-        logger,
-        eventBus
-      );
+      const coordinator = new ProjectCoordinator();
+      // Add configuration properties if the instance supports them
+      if (coordinator && typeof coordinator === 'object') {
+        Object.assign(coordinator, {
+          logger,
+          eventBus,
+          config: {
+            maxAgents: 10,
+            heartbeatInterval: 5000,
+            timeout: 30000,
+            enableHealthCheck: true,
+          }
+        });
+      }
+      return coordinator;
     });
 
     // Register behavioral intelligence
-    container.register('BehavioralIntelligence', () => {
+    container.register(TOKENS.BehavioralIntelligence, () => {
       // BehavioralIntelligence has optional BrainJsBridge parameter - will use mock bridge if not provided
-      return new BehavioralIntelligence();
+      return new BehavioralIntelligence({});
     });
 
     // Register multi-system coordinator
-    container.register('MultiSystemCoordinator', (c) => {
-      const logger = c.resolve('Logger');
+    container.register(TOKENS.MultiSystemCoordinator, (c) => {
+      const logger = c.resolve(TOKENS.Logger);
       return new MultiSystemCoordinator(logger, {});
     });
 
     return container;
   }
 
+
+  /**
+   * Get configuration with proper error handling.
+   */
+  private getConfig() {
+    return {
+      debug: process.env.NODE_ENV === 'development',
+      database: {
+        type: 'sqlite',
+        path: ':memory:'
+      },
+      agents: {
+        maxAgents: 10,
+        defaultTimeout: 30000
+      }
+    };
+  }
+
   /**
    * Initialize all systems with DI.
    */
   async initialize(): Promise<void> {
-    const logger = this.container.resolve('Logger');
+    if (!this.container) {
+      await this.initializeAsync();
+    }
+    const logger = this.container!.resolve(TOKENS.Logger) as any;
     logger.info('🚀 Initializing Claude Code Zen with full DI integration...');
 
     try {
       // Initialize core database
-      const database = this.container.resolve('Database');
+      const database = this.container!.resolve(TOKENS.Database) as any;
       if (database?.initialize) {
-        await database?.initialize();
+        await database.initialize();
       }
 
       // Resolve all coordinators through DI
-      this.orchestrator = this.container.resolve('AgentManager') as Orchestrator;
-      this.coordinationManager = this.container.resolve('CoordinationManager');
+      this.orchestrator = this.container.resolve(TOKENS.AgentManager) as Orchestrator;
+      this.coordinationManager = this.container.resolve(TOKENS.CoordinationManager);
       
-      this.behavioralIntelligence = this.container.resolve('BehavioralIntelligence');
+      this.behavioralIntelligence = this.container.resolve(TOKENS.BehavioralIntelligence);
       
-      this.multiSystemCoordinator = this.container.resolve('MultiSystemCoordinator');
+      this.multiSystemCoordinator = this.container.resolve(TOKENS.MultiSystemCoordinator);
 
       // Initialize all coordinators
-      await this.orchestrator.initialize();
-      await this.coordinationManager.start();
+      if (this.orchestrator?.initialize) {
+        await this.orchestrator.initialize();
+      }
+      if (this.coordinationManager?.executeCoordination) {
+        await this.coordinationManager.executeCoordination();
+      }
       // Note: BehavioralIntelligence and MultiSystemCoordinator start automatically in constructor
 
       logger.info(
@@ -179,7 +227,10 @@ export class ClaudeZenCore {
    * Demonstrate that all DI-enhanced systems are working together.
    */
   private async demonstrateSystemIntegration(): Promise<void> {
-    const logger = this.container.resolve(TOKENS.Logger);
+    if (!this.container) {
+      await this.initializeAsync();
+    }
+    const logger = this.container!.resolve(TOKENS.Logger) as any;
 
     logger.info('🔗 Demonstrating DI-enhanced system integration...');
 
@@ -226,17 +277,29 @@ export class ClaudeZenCore {
    * Graceful shutdown with DI cleanup.
    */
   async shutdown(): Promise<void> {
-    const logger = this.container.resolve(TOKENS.Logger);
+    if (!this.container) {
+      return;
+    }
+    const logger = this.container.resolve(TOKENS.Logger) as any;
     logger.info('🛑 Shutting down Claude Code Zen...');
 
     try {
       // Stop all coordinators
-      if (this.coordinationManager) {
-        await this.coordinationManager.stop();
+      if (this.coordinationManager && typeof this.coordinationManager === 'object') {
+        // Try different shutdown methods that might be available
+        const coordinator = this.coordinationManager as any;
+        if (coordinator.shutdown) {
+          await coordinator.shutdown();
+        } else if (coordinator.stop) {
+          await coordinator.stop();
+        } else if (coordinator.executeCoordination) {
+          logger.info('Coordination manager has basic interface, no shutdown method');
+        }
       }
 
       // Clear the DI container
       this.container.clear();
+      this.container = null;
 
       logger.info('✅ Shutdown completed successfully');
     } catch (error) {

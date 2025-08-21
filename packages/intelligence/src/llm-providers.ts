@@ -49,25 +49,12 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import { getService, hasService } from '@claude-zen/foundation/facade-status-manager';
+import { hasService } from '@claude-zen/foundation/facade-status-manager';
 import { getLogger } from '@claude-zen/foundation';
 import './module-declarations';
 
 const logger = getLogger('Intelligence/LLMProviders');
 
-// Helper function that matches the expected 3-parameter pattern used in this file
-async function getServiceWithFallback<T>(
-  serviceName: string,
-  serviceCall: () => Promise<T> | T,
-  fallback: () => Promise<T> | T
-): Promise<T> {
-  try {
-    return await serviceCall();
-  } catch (error) {
-    logger.debug(`Service ${serviceName} not available, using fallback`, error);
-    return await fallback();
-  }
-}
 
 // Types re-exported from @claude-zen/llm-providers
 export interface CLIMessage {
@@ -196,14 +183,14 @@ export async function executeClaudeTask(
 export function getLLMProvider(
   capability: 'file-operations' | 'agentic-development' | 'code-completion' | 'chat' | 'inference' = 'file-operations'
 ): LLMProvider {
-  return getServiceWithFallback('@claude-zen/llm-providers', () => {
+  try {
     const { getLLMProviderByCapability } = require('@claude-zen/llm-providers');
     return getLLMProviderByCapability(capability);
-  }, () => {
+  } catch (error) {
     // Fallback implementation
-    logger.warn(`Using fallback LLM provider for capability: ${capability}`);
+    logger.warn(`Using fallback LLM provider for capability: ${capability}`, error);
     return new LLMProvider('claude-code');
-  }) as LLMProvider;
+  }
 }
 
 /**
@@ -214,14 +201,14 @@ export function getLLMProvider(
 export function createLLMProvider(
   providerId: 'claude-code' | 'cursor-cli' | 'gemini-cli' | 'github-models-api' | 'github-copilot-api' | 'anthropic-api' | 'openai-api' = 'claude-code'
 ): LLMProvider {
-  return getServiceWithFallback('@claude-zen/llm-providers', () => {
+  try {
     const { createLLMProvider } = require('@claude-zen/llm-providers');
     return createLLMProvider(providerId);
-  }, () => {
+  } catch (error) {
     // Fallback implementation
-    logger.warn(`Using fallback LLM provider creation for: ${providerId}`);
+    logger.warn(`Using fallback LLM provider creation for: ${providerId}`, error);
     return new LLMProvider(providerId);
-  }) as LLMProvider;
+  }
 }
 
 /**
@@ -230,12 +217,12 @@ export function createLLMProvider(
  * Includes CLI tools (file operations) and direct APIs (inference).
  */
 export function listLLMProviders(): LLMProviderInfo[] {
-  return getServiceWithFallback('@claude-zen/llm-providers', () => {
+  try {
     const { listLLMProviders } = require('@claude-zen/llm-providers');
     return listLLMProviders();
-  }, () => {
+  } catch (error) {
     // Fallback implementation
-    logger.warn('Using fallback LLM provider list');
+    logger.warn('Using fallback LLM provider list', error);
     return [
       {
         id: 'claude-code',
@@ -245,7 +232,7 @@ export function listLLMProviders(): LLMProviderInfo[] {
         available: false
       }
     ];
-  }) as LLMProviderInfo[];
+  }
 }
 
 /**
@@ -258,14 +245,14 @@ export async function executeGitHubModelsTask(
   prompt: string,
   options: { token: string; model?: string } = { token: '' }
 ): Promise<string> {
-  return await getServiceWithFallback('@claude-zen/llm-providers/github-models', async () => {
+  try {
     const { executeGitHubModelsTask } = await import('@claude-zen/llm-providers');
     return executeGitHubModelsTask(prompt, options);
-  }, async () => {
+  } catch (error) {
     // Fallback implementation
-    logger.warn('Using fallback GitHub Models task execution');
+    logger.warn('Using fallback GitHub Models task execution', error);
     return `Fallback GitHub Models result for: ${prompt}`;
-  });
+  }
 }
 
 // Compatibility exports for swarm coordination
@@ -273,14 +260,14 @@ export async function executeSwarmCoordinationTask(
   task: string,
   options?: Record<string, unknown>
 ): Promise<string> {
-  return await getServiceWithFallback('@claude-zen/llm-providers/claude-sdk', async () => {
+  try {
     const { executeSwarmCoordinationTask } = await import('@claude-zen/llm-providers');
     return executeSwarmCoordinationTask(task, options);
-  }, async () => {
+  } catch (error) {
     // Fallback implementation
-    logger.warn('Using fallback swarm coordination task execution');
+    logger.warn('Using fallback swarm coordination task execution', error);
     return `Fallback swarm coordination result for: ${task}`;
-  });
+  }
 }
 
 /**

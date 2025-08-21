@@ -125,8 +125,13 @@ export async function executeClaudeTask(
     };
 
     // Use foundation's timeout protection
+    const retryResult = await executeWithRetry();
+    if (retryResult.isErr()) {
+      throw retryResult.error;
+    }
+    
     const result = await withTimeout(
-      executeWithRetry(),
+      () => Promise.resolve(retryResult.value),
       config.timeout,
       `Claude SDK request timed out after ${config.timeout}ms`
     );

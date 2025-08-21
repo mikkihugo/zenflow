@@ -5,7 +5,8 @@
  * Will include SDK wrapper and provider implementation.
  */
 
-import type { CLIProvider } from '../types/cli-providers';
+import type { CLIProvider, CLIRequest, CLIResult, CLIError, CLIProviderCapabilities, SwarmAgentRole } from '../types/cli-providers';
+import { Result, ok, err } from '@claude-zen/foundation';
 
 // TODO: Implement GeminiProvider class
 // TODO: Implement Gemini CLI SDK wrapper
@@ -15,28 +16,61 @@ export class GeminiCLI implements CLIProvider {
   readonly id = 'gemini-cli';
   readonly name = 'Gemini CLI';
 
-  getCapabilities() {
-    throw new Error('Gemini CLI provider not yet implemented.');
+  getCapabilities(): CLIProviderCapabilities {
+    return {
+      models: ['gemini-pro', 'gemini-pro-vision'],
+      maxTokens: 8192,
+      contextWindow: 32768,
+      features: {
+        fileOperations: false,
+        webAccess: true,
+        codeExecution: false,
+        imageGeneration: true,
+        multimodal: true,
+        streaming: true,
+        customTools: false,
+        contextWindow: true,
+        reasoning: true,
+        coding: true,
+        planning: true
+      }
+    };
   }
 
-  async execute() {
-    throw new Error('Gemini CLI provider not yet implemented.');
+  async execute(request: CLIRequest): Promise<CLIResult> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Gemini CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
-  setRole() {
-    throw new Error('Gemini CLI provider not yet implemented.');
+  setRole(roleName: string): Result<void, CLIError> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED', 
+      message: 'Gemini CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
   getRole() {
     return undefined;
   }
 
-  async complete() {
-    throw new Error('Gemini CLI provider not yet implemented.');
+  async complete(prompt: string, options?: Partial<CLIRequest>): Promise<Result<string, CLIError>> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Gemini CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
-  async executeTask() {
-    throw new Error('Gemini CLI provider not yet implemented.');
+  async executeTask(prompt: string, options?: Record<string, unknown>): Promise<Result<unknown, CLIError>> {
+    const error: CLIError = {
+      code: 'NOT_IMPLEMENTED',
+      message: 'Gemini CLI provider not yet implemented.'
+    };
+    return err(error);
   }
 
   getUsageStats() {
