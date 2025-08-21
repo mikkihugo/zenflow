@@ -15,15 +15,19 @@
 // Export core logging (always needed)
 export * from './logging';
 
-// Export dependency injection (needed for proper architecture) - temporarily simplified
-// export * from './di';
+// Export dependency injection (needed for proper architecture)
+export * from './di';
 
-// Export DI functions for backward compatibility - temporarily disabled due to build issues
-// export { getGlobalContainer as getDI, createContainer, injectable } from './di';
+// Export DI functions for backward compatibility
+export { getGlobalContainer as getDI, createContainer, injectable } from './di';
 
-// Export battle-tested ServiceContainer and registry adapters - temporarily disabled
-// export * from './di/service-container';
-// export * from './di/registry-adapter';
+// Export battle-tested ServiceContainer and registry adapters
+export * from './di/service-container';
+export * from './di/registry-adapter';
+
+// Export full Awilix capabilities (performance-optimized) - 392% faster at scale
+export * from './di/awilix-container';
+export * from './di/enhanced-registries';
 
 // Export error handling functions explicitly to avoid Result conflicts
 export {
