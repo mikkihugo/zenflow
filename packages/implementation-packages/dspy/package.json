@@ -31,12 +31,12 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/neural-ml": "workspace:*",
+    "@claude-zen/neural-ml": "link:../neural-ml",
     "seedrandom": "^3.0.5",
     "zod": "^4.0.17"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
+    "@types/node": "22.17.1",
     "@types/seedrandom": "^3.0.8",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

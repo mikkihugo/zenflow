@@ -35,21 +35,27 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@claude-zen/event-system": "link:../event-system",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/event-system": "workspace:*",
-    "@claude-zen/neural-ml": "workspace:*"
+    "@claude-zen/neural-ml": "link:../neural-ml"
   },
   "devDependencies": {
-    "@types/node": "^22.17.2",
+    "@types/node": "22.17.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
+  },
+  "optionalDependencies": {
+    "@tensorflow/tfjs-node": "^4.22.0",
+    "consistent-hashing": "^0.3.0",
+    "hashring": "^3.2.0",
+    "node-os-utils": "^1.3.7"
   },
   "peerDependencies": {
     "@claude-zen/brain": "workspace:*"
   },
   "keywords": [
     "load-balancing",
-    "resource-optimization", 
+    "resource-optimization",
     "agent-coordination",
     "performance",
     "swarm-intelligence",

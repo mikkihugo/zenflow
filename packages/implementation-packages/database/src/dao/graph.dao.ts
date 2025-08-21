@@ -68,7 +68,7 @@
  * @file Database layer: graph.dao - Kuzu graph database operations
  */
 
-import 'reflect-metadata';
+// Using Awilix DI - no reflect-metadata needed
 import { BaseDao } from '../base.dao';
 import { injectable } from '@claude-zen/foundation';
 import type {

@@ -101,10 +101,15 @@ class LoggingConfigurationManager {
       const internalCollectorEndpoint = process.env['ZEN_INTERNAL_COLLECTOR_ENDPOINT'] || 'http://localhost:4318';
       
       if (useInternalOtelCollector && (zenOtelEnabled !== 'false')) {
-        // Try to use internal OTEL collector
+        // Check if OTEL endpoint is reachable (foundation should not depend on other packages)
         try {
-          const internalCollectorModule = await import('@claude-zen/otel-collector').catch(() => null);
-          if (internalCollectorModule) {
+          // Simple HTTP check for internal collector availability
+          const response = await fetch(`${internalCollectorEndpoint}/health`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+          }).catch(() => null);
+          
+          if (response?.ok) {
             // Create a custom sink that sends to internal collector
             internalCollectorSink = this.createInternalCollectorSink(internalCollectorEndpoint);
             useInternalCollector = true;
@@ -113,7 +118,7 @@ class LoggingConfigurationManager {
             console.log(`   Internal Collector: ${internalCollectorEndpoint}/ingest`);
             console.log(`   Service: claude-zen-foundation`);
           } else {
-            throw new Error('Internal OTEL collector not available');
+            throw new Error('Internal OTEL collector not reachable');
           }
         } catch (collectorError) {
           console.log('⚠️  Internal OTEL collector unavailable, trying external OTEL...');

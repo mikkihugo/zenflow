@@ -24,6 +24,9 @@ import type {
 } from './core/interfaces';
 import { ServiceType } from './types';
 
+// ServiceContainer-enhanced service registry (zero breaking changes)
+export { ServiceRegistry, createServiceRegistry } from './registry';
+
 // Re-export legacy types for compatibility
 export {
   createDataServiceAdapter,
@@ -126,8 +129,8 @@ export class USL extends EventEmitter {
       });
       await this.workflowEngine.initialize();
 
-      // Delegate to @claude-zen/foundation for storage services
-      const { getDatabaseAccess } = await import('@claude-zen/foundation');
+      // Delegate to @claude-zen/infrastructure for storage services
+      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
       this.databaseAccess = getDatabaseAccess();
 
       // Delegate to @claude-zen/monitoring for service monitoring

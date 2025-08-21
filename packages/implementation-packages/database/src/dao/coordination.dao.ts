@@ -8,7 +8,7 @@
  * @file Database layer: coordination.dao.
  */
 
-import 'reflect-metadata';
+// Using Awilix DI - no reflect-metadata needed
 import { EventEmitter } from 'eventemitter3';
 import type {
   DatabaseAdapter,

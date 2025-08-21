@@ -46,16 +46,17 @@
     "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vitest": "^2.0.0"
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
+    "@claude-zen/agui": "workspace:*",
+    "@claude-zen/kanban": "workspace:*",
+    "@claude-zen/knowledge": "workspace:*",
     "@claude-zen/safe-framework": "workspace:*",
     "@claude-zen/sparc": "workspace:*",
-    "@claude-zen/teamwork": "workspace:*",
-    "@claude-zen/agui": "workspace:*",
-    "@claude-zen/knowledge": "workspace:*",
-    "@claude-zen/kanban": "workspace:*"
+    "@claude-zen/teamwork": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@claude-zen/safe-framework": {

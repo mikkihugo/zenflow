@@ -17,9 +17,9 @@
  * 
  * @example
  * ```typescript
- * import { LoadBalancingManager, LoadBalancingConfig } from '@claude-zen/load-balancing';
+ * import { LoadBalancer, LoadBalancingConfig } from '@claude-zen/load-balancing';
  * 
- * const loadBalancer = new LoadBalancingManager({
+ * const loadBalancer = new LoadBalancer({
  *   algorithm: 'ml-predictive',
  *   healthCheckInterval: 5000,
  *   adaptiveLearning: true,
@@ -44,7 +44,11 @@
 // Export main load balancing manager and types
 export * from './main';
 export * from './types';
-export * from './interfaces';
+// Export interfaces without re-exporting duplicates
+export type { 
+  LoadBalancingAlgorithm,
+  HealthChecker as HealthCheckerInterface 
+} from './interfaces';
 
 // Export algorithm implementations
 export * from './algorithms/adaptive-learning';
@@ -56,11 +60,11 @@ export * from './algorithms/weighted-round-robin';
 // Export capacity management
 export * from './capacity/agent-capacity-manager';
 export * from './capacity/capacity-predictor';
-export * from './capacity/resource-monitor';
+export { ResourceMonitor } from './capacity/resource-monitor';
 
 // Export routing components
 export * from './routing/failover-manager';
-export * from './routing/health-checker';
+export { HealthChecker } from './routing/health-checker';
 export * from './routing/intelligent-routing-engine';
 export * from './routing/task-agent-matcher';
 
@@ -72,4 +76,4 @@ export * from './optimization/network-latency-optimizer';
 export * from './strategies/auto-scaling-strategy';
 
 // Default export for convenience
-export { LoadBalancingManager } from './main';
+export { LoadBalancer } from './main';

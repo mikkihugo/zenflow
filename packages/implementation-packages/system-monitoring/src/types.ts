@@ -50,6 +50,13 @@ export interface PerformanceMetrics {
     avgTime: number;
     minTime: number;
     maxTime: number;
+    p50?: number;
+    p90?: number;
+    p95?: number;
+    p99?: number;
+    stdDev?: number;
+    throughput?: number;
+    trend?: 'improving' | 'stable' | 'degrading';
   }>;
   /** System performance */
   system: {
@@ -74,6 +81,17 @@ export interface HealthStatus {
     value?: number;
     threshold?: number;
   }>;
+  /** Additional health details */
+  details?: {
+    systemLoad?: number[];
+    processCount?: number;
+    memoryDetails?: {
+      total: string;
+      used: string;
+      free: string;
+    };
+    [key: string]: any;
+  };
   /** Timestamp */
   timestamp: number;
 }

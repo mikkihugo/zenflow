@@ -4,7 +4,7 @@
  * Real SQLite adapter using better-sqlite3 for structured document storage
  */
 
-import 'reflect-metadata';
+// Using Awilix DI - no reflect-metadata needed
 import Database from 'better-sqlite3';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';

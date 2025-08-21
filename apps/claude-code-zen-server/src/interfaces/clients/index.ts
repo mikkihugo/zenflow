@@ -113,16 +113,16 @@ export interface ClientMetrics {
 
 // Global client manager instance
 export const globalClientManager = actualGlobalClientManager;
-// Core UACL components
+// Core UACL components with ServiceContainer implementation
+export { ClientRegistry, getClientRegistry, createClientRegistry } from './core/client-registry';
+
+// Client types and configurations
 export {
   type BaseClientConfig,
   type ClientConfig,
   type ClientFactory,
   type ClientInstance,
-  ClientRegistry,
-  ClientRegistryHelpers,
   ClientType,
-  globalClientRegistry,
   type HTTPClientConfig,
   type KnowledgeClientConfig,
   type MCPClientConfig,

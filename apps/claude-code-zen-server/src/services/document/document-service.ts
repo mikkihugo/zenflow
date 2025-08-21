@@ -107,8 +107,8 @@ export class DocumentManager extends EventEmitter {
     if (this.initialized) return;
 
     try {
-      // Delegate to @claude-zen/foundation for document storage
-      const { getDatabaseAccess, createRepository } = await import('@claude-zen/foundation');
+      // Delegate to @claude-zen/infrastructure for document storage
+      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
       this.databaseAccess = getDatabaseAccess();
       
       // Create repository facades

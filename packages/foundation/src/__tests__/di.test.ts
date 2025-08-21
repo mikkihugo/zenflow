@@ -1,5 +1,5 @@
 /**
- * @fileoverview Dependency Injection Container Tests (Jest Version)
+ * @fileoverview Dependency Injection Container Tests (Vitest Version)
  * 
  * Comprehensive test suite for the DI container including:
  * - Service registration and resolution
@@ -8,18 +8,18 @@
  * - Error handling and validation
  * - Advanced container features
  * 
- * JEST FRAMEWORK: Uses Jest testing patterns and assertions
+ * VITEST FRAMEWORK: Uses Vitest testing patterns and assertions
  */
 
-import { jest } from '@jest/globals';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock logger to avoid actual logging during tests
-jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({
+vi.mock('@claude-zen/foundation/logging', () => ({
   getLogger: () => ({
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
   })
 }));
 

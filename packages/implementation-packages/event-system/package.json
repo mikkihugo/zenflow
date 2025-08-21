@@ -83,8 +83,8 @@
     "migration-helpers"
   ],
   "dependencies": {
+    "@claude-zen/brain": "link:../brain",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/brain": "workspace:*",
     "eventemitter3": "^5.0.1",
     "koa-compose": "^4.1.0",
     "mitt": "^3.0.1",
@@ -92,7 +92,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",
-    "@types/node": "^22.17.2",
+    "@types/node": "22.17.1",
     "@vitest/coverage-v8": "^3.2.4",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

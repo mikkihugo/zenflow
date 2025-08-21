@@ -42,12 +42,13 @@
     "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vitest": "^2.0.0"
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@claude-zen/brain": "workspace:*",
     "@claude-zen/ai-safety": "workspace:*",
+    "@claude-zen/brain": "workspace:*",
     "@claude-zen/fact-system": "workspace:*"
   },
   "peerDependenciesMeta": {

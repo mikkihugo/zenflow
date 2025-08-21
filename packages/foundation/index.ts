@@ -137,7 +137,7 @@ export {
 export type { DetectedProject, DetectedWorkspace } from './src/main';
 
 // =============================================================================
-// LLM PROVIDER - High-level LLM abstraction layer (STANDARD OPERATIONS)
+// LLM PROVIDER - High-level LLM abstraction layer
 // =============================================================================
 export {
   LLMProvider,

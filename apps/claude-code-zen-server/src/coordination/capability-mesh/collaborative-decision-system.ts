@@ -152,7 +152,7 @@ export class CollaborativeDecisionSystem extends FactCapableDecisionSystem {
       this.decisionWorkflow = new WorkflowEngine();
 
       // FactSystem requires configuration - provide minimal config for now
-      const { getDatabaseAccess } = await import('@claude-zen/foundation');
+      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
       this.consensusEngine = new FactSystem({
         database: getDatabaseAccess(),
         useRustEngine: false, // Disable Rust engine for simplicity

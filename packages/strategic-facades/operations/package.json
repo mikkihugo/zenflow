@@ -45,14 +45,15 @@
     "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vitest": "^2.0.0"
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@claude-zen/agent-monitoring": "workspace:*",
     "@claude-zen/chaos-engineering": "workspace:*",
-    "@claude-zen/telemetry": "workspace:*",
-    "@claude-zen/memory": "workspace:*"
+    "@claude-zen/memory": "workspace:*",
+    "@claude-zen/telemetry": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@claude-zen/agent-monitoring": {

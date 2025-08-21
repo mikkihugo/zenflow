@@ -30,12 +30,12 @@
     "prepublishOnly": "pnpm run build"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/event-system": "workspace:*"
+    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.2.0",
-    "@types/node": "^22.17.2",
+    "@types/node": "22.17.1",
     "@vitest/coverage-v8": "^3.2.4",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"

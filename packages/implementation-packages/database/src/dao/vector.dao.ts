@@ -8,7 +8,7 @@
  * @file Database layer: vector.dao.
  */
 
-import 'reflect-metadata';
+// Using Awilix DI - no reflect-metadata needed
 import { BaseDao } from '../base.dao';
 import { injectable } from '@claude-zen/foundation';
 import type {

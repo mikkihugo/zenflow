@@ -4,11 +4,15 @@
  * Strategic facade that delegates to real implementation packages:
  * - @claude-zen/event-system for events
  * - @claude-zen/database for database access  
- * - @claude-zen/monitoring for telemetry
+ * - @claude-zen/system-monitoring for telemetry
  * - @claude-zen/load-balancing for performance
+ * - @claude-zen/foundation for facade status management
  */
 
-// Enterprise lazy loading with caching
+// Import facade status manager functions - simplified approach without dependency
+// import { facadeStatusManager, registerFacade, getService } from '@claude-zen/foundation';
+
+// Strategic facade lazy loading with caching
 let eventSystemModule: any = null;
 let databaseModule: any = null;
 let monitoringModule: any = null;
@@ -45,8 +49,23 @@ function getMonitoring() {
       monitoringModule = require('@claude-zen/system-monitoring');
     } catch {
       monitoringModule = {
+        SystemMonitor: class FallbackSystemMonitor {
+          async initialize() { return this; }
+          async getMetrics() { return {}; }
+          async getHealthStatus() { return { status: 'healthy', checks: {} }; }
+        },
+        PerformanceTracker: class FallbackPerformanceTracker {
+          startTimer() { return () => {}; }
+          recordDuration() {}
+          getMetrics() { return { operations: {} }; }
+        },
         recordMetric: async () => {},
-        withTrace: (fn: any) => fn()
+        recordHistogram: async () => {},
+        recordGauge: async () => {},
+        withTrace: (fn: any) => fn(),
+        withAsyncTrace: (fn: any) => fn(),
+        createSystemMonitor: () => new monitoringModule.SystemMonitor(),
+        createPerformanceTracker: () => new monitoringModule.PerformanceTracker()
       };
     }
   }
@@ -145,14 +164,32 @@ export type Config = ConfigManager;
 
 // SYSTEM MONITORING ACCESS - Delegate to @claude-zen/system-monitoring
 export async function getTelemetrySystemAccess(): Promise<any> {
-  const systemMonitoring = getMonitoring();
-  return {
-    recordMetric: (name: string, value?: number) => systemMonitoring.recordMetric?.(name, value) || Promise.resolve(),
-    recordHistogram: (name: string, value: number) => systemMonitoring.recordHistogram?.(name, value) || Promise.resolve(),
-    recordGauge: (name: string, value: number) => systemMonitoring.recordGauge?.(name, value) || Promise.resolve(),
-    withTrace: <T>(fn: () => T) => systemMonitoring.withTrace?.(fn) || fn(),
-    startTrace: (name: string) => systemMonitoring.startTrace?.(name) || { setAttributes: () => {}, end: () => {} }
-  };
+  try {
+    // Try to get real system-monitoring access
+    const systemMonitoringModule = await import('@claude-zen/system-monitoring');
+    const monitoringAccess = await systemMonitoringModule.getSystemMonitoring?.({
+      serviceName: 'infrastructure-facade'
+    }) || systemMonitoringModule;
+    
+    return {
+      recordMetric: (name: string, value?: number) => monitoringAccess.recordMetric?.(name, value) || Promise.resolve(),
+      recordHistogram: (name: string, value: number) => monitoringAccess.recordHistogram?.(name, value) || Promise.resolve(),
+      recordGauge: (name: string, value: number) => monitoringAccess.recordGauge?.(name, value) || Promise.resolve(),
+      withTrace: <T>(fn: () => T) => monitoringAccess.withTrace?.(fn) || fn(),
+      withAsyncTrace: <T>(fn: () => Promise<T>) => monitoringAccess.withAsyncTrace?.(fn) || fn(),
+      startTrace: (name: string) => monitoringAccess.startTrace?.(name) || { setAttributes: () => {}, end: () => {} }
+    };
+  } catch {
+    // Fallback implementation
+    return {
+      recordMetric: async () => {},
+      recordHistogram: async () => {},
+      recordGauge: async () => {},
+      withTrace: <T>(fn: () => T) => fn(),
+      withAsyncTrace: <T>(fn: () => Promise<T>) => fn(),
+      startTrace: () => ({ setAttributes: () => {}, end: () => {} })
+    };
+  }
 }
 
 export async function getTelemetryManager(config?: any): Promise<any> {
@@ -197,19 +234,32 @@ export async function getEventSystemAccess(): Promise<any> {
 
 // LOAD BALANCING ACCESS - Delegate to @claude-zen/load-balancing
 export async function getLoadBalancingSystemAccess(): Promise<any> {
-  const loadBalancing = getLoadBalancing();
-  return {
-    createBalancer: (config?: any) => loadBalancing.createBalancer?.(config) || { route: (req: any) => req },
-    route: (request: any) => loadBalancing.route?.(request) || request,
-    getStats: () => loadBalancing.getStats?.() || { requests: 0, errors: 0 }
-  };
+  try {
+    const { LoadBalancer, getLoadBalancer } = await import('@claude-zen/load-balancing');
+    const manager = await getLoadBalancer();
+    return {
+      createBalancer: (config?: any) => new LoadBalancer(config),
+      route: (request: any) => manager.routeTask(request),
+      getStats: () => ({ requests: 0, errors: 0, message: 'Stats not implemented yet' })
+    };
+  } catch (error) {
+    console.warn('LoadBalancing implementation not available, using fallback:', error);
+    return {
+      createBalancer: (config?: any) => ({ route: (req: any) => req }),
+      route: (request: any) => request,
+      getStats: () => ({ requests: 0, errors: 0 })
+    };
+  }
 }
 
 export async function getLoadBalancer(config?: any): Promise<any> {
-  const loadBalancing = getLoadBalancing();
-  return loadBalancing.LoadBalancer ? 
-    new loadBalancing.LoadBalancer(config) : 
-    { route: (req: any) => req, getStats: () => ({ requests: 0, errors: 0 }) };
+  try {
+    const { LoadBalancer } = await import('@claude-zen/load-balancing');
+    return new LoadBalancer(config);
+  } catch (error) {
+    console.warn('LoadBalancer not available, using fallback:', error);
+    return { route: (req: any) => req, getStats: () => ({ requests: 0, errors: 0 }) };
+  }
 }
 
 export async function getPerformanceTracker(): Promise<any> {
@@ -233,12 +283,14 @@ export function recordEvent(name: string, data?: any): Promise<void> {
   return getTelemetrySystemAccess().then(t => t.recordEvent?.(name, data) || Promise.resolve());
 }
 
-export function withTrace<T>(fn: () => T): Promise<T> {
-  return getTelemetrySystemAccess().then(t => t.withTrace(fn));
+export async function withTrace<T>(fn: () => T): Promise<T> {
+  const telemetry = await getTelemetrySystemAccess();
+  return telemetry.withTrace(fn);
 }
 
-export function withAsyncTrace<T>(fn: () => Promise<T>): Promise<T> {
-  return getTelemetrySystemAccess().then(t => t.withAsyncTrace?.(fn) || fn());
+export async function withAsyncTrace<T>(fn: () => Promise<T>): Promise<T> {
+  const telemetry = await getTelemetrySystemAccess();
+  return telemetry.withAsyncTrace(fn);
 }
 
 export function getTelemetry(): Promise<any> {
@@ -266,10 +318,6 @@ export class PerformanceTracker {
 
 // BasicTelemetryManager is in operations facade (monitoring)
 
-export class AgentMonitor {
-  async track() { return {}; }
-}
-
 export class MLMonitor {
   async track() { return {}; }
 }
@@ -282,9 +330,7 @@ export function createPerformanceTracker() {
   return new PerformanceTracker();
 }
 
-export function createAgentMonitor() {
-  return new AgentMonitor();
-}
+// Note: AgentMonitor moved to @claude-zen/operations facade (operational concern)
 
 export function createMLMonitor() {
   return new MLMonitor();
@@ -326,3 +372,7 @@ try {
   const loadBalancing = require('@claude-zen/load-balancing');
   Object.assign(exports, loadBalancing);
 } catch { /* use fallbacks above */ }
+
+// FACADE STATUS MANAGEMENT
+// Note: Facade registration will be enabled when foundation package is fixed
+// Current status: Using fallback implementations with graceful degradation

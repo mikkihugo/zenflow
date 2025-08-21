@@ -17,13 +17,13 @@
     "docs:fix": "node scripts/fix-tsdoc.mjs"
   },
   "dependencies": {
+    "@claude-zen/brain": "link:../brain",
+    "@claude-zen/event-system": "link:../event-system",
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/telemetry": "workspace:*",
-    "@claude-zen/brain": "workspace:*",
-    "@claude-zen/event-system": "workspace:*"
+    "@claude-zen/telemetry": "link:../telemetry"
   },
   "devDependencies": {
-    "@types/node": "^22.17.2",
+    "@types/node": "22.17.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },

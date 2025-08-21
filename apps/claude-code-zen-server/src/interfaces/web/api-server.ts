@@ -27,6 +27,7 @@ import { getLogger } from '../../config/logging-config';
 import { getVersion } from '../../config/version';
 
 import { ControlApiRoutes } from './control-api-routes';
+import { SystemCapabilityRoutes } from './system-capability-routes';
 
 interface ApiServerConfig {
   port: number;
@@ -38,6 +39,7 @@ export class ApiServer {
   private app: Express;
   private readonly logger = getLogger('ApiServer');
   private controlApiRoutes: ControlApiRoutes;
+  private systemCapabilityRoutes: SystemCapabilityRoutes;
 
   constructor(private config: ApiServerConfig) {
     this.logger.info('🚀 Creating ApiServer...');
@@ -47,6 +49,9 @@ export class ApiServer {
     
     // Initialize control API routes
     this.controlApiRoutes = new ControlApiRoutes();
+    
+    // Initialize system capability routes
+    this.systemCapabilityRoutes = new SystemCapabilityRoutes();
     
     // Setup middleware and routes
     this.setupMiddleware();
@@ -104,12 +109,25 @@ export class ApiServer {
 
     this.setupHealthRoutes();
     this.setupSystemRoutes();
+    this.setupSystemCapabilityRoutes();
     this.setupWorkspaceRoutes();
     this.setupControlRoutes();
     this.setupSvelteStaticFiles();
     this.setupDefaultRoutes();
 
     this.logger.info('✅ API routes configured');
+  }
+
+  /**
+   * Set up system capability dashboard routes
+   */
+  private setupSystemCapabilityRoutes(): void {
+    this.logger.info('📊 Setting up system capability routes...');
+    
+    // Mount system capability routes under /api/v1/system/capability
+    this.app.use('/api/v1/system/capability', this.systemCapabilityRoutes.getRouter());
+    
+    this.logger.info('✅ System capability routes configured');
   }
 
   /**

@@ -28,7 +28,8 @@ import { nanoid } from 'nanoid';
 
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log } from '../middleware/logging';
-import { getLogger, getDatabaseAccess } from '@claude-zen/foundation';
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { getLogger } from '@claude-zen/foundation';
 
 // Document services
 import { BaseDocumentService } from '../../../../services/document/base-document-service';

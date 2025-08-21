@@ -28,13 +28,14 @@
 	// Admin navigation items
 	const navItems = [
 		{ href: '/', icon: '🏠', label: 'Dashboard', title: 'Dashboard Overview' },
+		{ href: '/system', icon: '📊', label: 'System', title: 'System Capability Dashboard' },
 		{ href: '/swarm', icon: '🐝', label: 'Swarm', title: 'Advanced Swarm Management' },
 		{ href: '/agents', icon: '🤖', label: 'Agents', title: 'Agent Management' },
 		{ href: '/tasks', icon: '✅', label: 'Tasks', title: 'Task Management' },
 		{ href: '/roadmap', icon: '🗺️', label: 'Roadmap', title: 'Strategic Roadmap Tasks' },
 		{ href: '/memory', icon: '💾', label: 'Memory', title: 'Memory Management' },
 		{ href: '/database', icon: '🗃️', label: 'Database', title: 'Database Management' },
-		{ href: '/performance', icon: '📊', label: 'Analytics', title: 'Performance Analytics' },
+		{ href: '/performance', icon: '⚡', label: 'Analytics', title: 'Performance Analytics' },
 		{ href: '/logs', icon: '📝', label: 'Logs', title: 'System Logs' },
 		{ href: '/settings', icon: '⚙️', label: 'Settings', title: 'System Settings' },
 	];

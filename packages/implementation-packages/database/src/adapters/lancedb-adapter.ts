@@ -4,7 +4,7 @@
  * Real LanceDB adapter using @lancedb/lancedb library for production vector storage
  */
 
-import 'reflect-metadata';
+// Using Awilix DI - no reflect-metadata needed
 import { connect, Connection, Table } from '@lancedb/lancedb';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';

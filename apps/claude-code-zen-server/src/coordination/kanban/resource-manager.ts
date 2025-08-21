@@ -4,7 +4,7 @@
  * MIGRATION COMPLETE: 4,006 lines → 250 lines (94% reduction)
  * 
  * Replaces massive custom implementation with extracted package integration:
- * - @claude-zen/intelligence: LoadBalancingManager + ML-predictive routing + auto-scaling
+ * - @claude-zen/load-balancing: LoadBalancer + ML-predictive routing + auto-scaling
  * - @claude-zen/intelligence: Agent health monitoring + performance tracking
  * - @claude-zen/foundation: Logging and storage infrastructure
  * 
@@ -23,8 +23,8 @@ import { getLogger ,
   createIntelligenceSystem,
   createPerformanceTracker
 } from '@claude-zen/foundation';
-// Import comprehensive load balancing capabilities
-import { LoadBalancingManager } from '@claude-zen/foundation';
+// Import comprehensive load balancing capabilities via strategic facade
+import { getLoadBalancer } from '@claude-zen/infrastructure';
 import { EventEmitter } from 'eventemitter3';
 
 const logger = getLogger('resource-manager');
@@ -163,14 +163,14 @@ export interface PerformanceTracking {
  * Dynamic Resource Manager - Package Integration Facade
  * 
  * MIGRATION: 4,006 lines → ~250 lines using extracted packages:
- * - LoadBalancingManager from @claude-zen/intelligence (ML-predictive, auto-scaling)
+ * - LoadBalancer from @claude-zen/load-balancing (ML-predictive, auto-scaling)
  * - Intelligence System from @claude-zen/intelligence (health monitoring)
  * - Performance Tracker from @claude-zen/intelligence (performance tracking)
  * 
  * This maintains API compatibility while delegating to battle-tested packages.
  */
 export class DynamicResourceManager extends EventEmitter {
-  private readonly loadBalancer: LoadBalancingManager;
+  private loadBalancer: any; // LoadBalancer from strategic facade
   private readonly intelligence: CompleteIntelligenceSystem;
   private readonly performanceTracker: PerformanceTracker;
   
@@ -188,6 +188,14 @@ export class DynamicResourceManager extends EventEmitter {
 
   private isInitialized = false;
 
+  private readonly config: {
+    enableMLPredictive?: boolean;
+    enableAutoScaling?: boolean;
+    enableHealthMonitoring?: boolean;
+    maxAgents?: number;
+    targetUtilization?: number;
+  };
+
   constructor(config: {
     enableMLPredictive?: boolean;
     enableAutoScaling?: boolean;
@@ -197,28 +205,8 @@ export class DynamicResourceManager extends EventEmitter {
   } = {}) {
     super();
 
-    // Initialize load balancing with comprehensive capabilities
-    this.loadBalancer = new LoadBalancingManager({
-      algorithm: config.enableMLPredictive ? 'ml-predictive' : 'resource-aware',
-      healthCheckInterval: 5000,
-      adaptiveLearning: true,
-      autoScaling: {
-        enabled: config.enableAutoScaling ?? true,
-        minAgents: 2,
-        maxAgents: config.maxAgents ?? 20,
-        targetUtilization: config.targetUtilization ?? 0.7
-      },
-      emergencyProtocols: {
-        enabled: true,
-        maxFailureRate: 0.1,
-        circuitBreakerThreshold: 0.2
-      },
-      monitoring: {
-        enableRealTime: config.enableHealthMonitoring ?? true,
-        enableMLInsights: true,
-        enablePredictiveAnalytics: true
-      }
-    });
+    // Store config for lazy initialization
+    this.config = config;
 
     // Initialize intelligence and monitoring
     this.intelligence = createIntelligenceSystem({
@@ -255,8 +243,33 @@ export class DynamicResourceManager extends EventEmitter {
     if (this.isInitialized) return;
 
     try {
+      // Get LoadBalancer from strategic facade
+      this.loadBalancer = await getLoadBalancer({
+        algorithm: this.config.enableMLPredictive ? 'ml-predictive' : 'resource-aware',
+        healthCheckInterval: 5000,
+        adaptiveLearning: true,
+        autoScaling: {
+          enabled: this.config.enableAutoScaling ?? true,
+          minAgents: 2,
+          maxAgents: this.config.maxAgents ?? 20,
+          targetUtilization: this.config.targetUtilization ?? 0.7
+        },
+        emergencyProtocols: {
+          enabled: true,
+          maxFailureRate: 0.1,
+          circuitBreakerThreshold: 0.2
+        },
+        monitoring: {
+          enableRealTime: this.config.enableHealthMonitoring ?? true,
+          enableMLInsights: true,
+          enablePredictiveAnalytics: true
+        }
+      });
+
       // Initialize package components
-      await this.loadBalancer.start();
+      if (this.loadBalancer.start) {
+        await this.loadBalancer.start();
+      }
       await this.intelligence.initialize();
       await this.performanceTracker.start();
 
@@ -484,7 +497,9 @@ export class DynamicResourceManager extends EventEmitter {
       }
 
       // Shutdown package components
-      await this.loadBalancer.stop();
+      if (this.loadBalancer && this.loadBalancer.stop) {
+        await this.loadBalancer.stop();
+      }
       await this.performanceTracker.stop();
 
       this.isInitialized = false;

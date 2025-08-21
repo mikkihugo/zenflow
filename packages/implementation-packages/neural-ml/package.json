@@ -25,12 +25,12 @@
   },
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/infrastructure": "workspace:*",
-    "@claude-zen/operations": "workspace:*",
-    "@claude-zen/intelligence": "workspace:*"
+    "@claude-zen/infrastructure": "link:../../strategic-facades/infrastructure",
+    "@claude-zen/intelligence": "link:../../strategic-facades/intelligence",
+    "@claude-zen/operations": "link:../../strategic-facades/operations"
   },
   "devDependencies": {
-    "@types/node": "^22.17.2",
+    "@types/node": "22.17.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },

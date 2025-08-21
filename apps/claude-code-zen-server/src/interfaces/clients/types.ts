@@ -95,6 +95,25 @@ export const ProtocolToClientTypeMap: Record<ProtocolType, ClientType> = {
   custom: ClientTypes.GENERIC,
 } as const;
 
+// Basic client instance interface for UACL compatibility
+export interface ClientInstance {
+  id: string;
+  name?: string;
+  type: ClientType;
+  status: ClientStatus;
+  version?: string;
+  capabilities?: string[];
+  protocols?: string[];
+  isConnected?: boolean;
+  healthCheck?: () => boolean;
+  config?: {
+    enabled: boolean;
+    priority?: number;
+    timeout?: number;
+    [key: string]: unknown;
+  };
+}
+
 export const TypeGuards = {
   isClientType: (value: unknown): value is ClientType => {
     return isString(value) && Object.values(ClientTypes).includes(value as ClientType);

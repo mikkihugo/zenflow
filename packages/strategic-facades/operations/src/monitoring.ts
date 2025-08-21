@@ -1,14 +1,21 @@
 /**
- * @fileoverview Monitoring System Interface Delegation
+ * @fileoverview Operations Monitoring Strategic Facade
  * 
- * Provides interface delegation to @claude-zen/monitoring package following
- * the same architectural pattern as database and agent-monitoring delegation.
+ * STRATEGIC FACADE PURPOSE:
+ * This facade provides unified access to monitoring and observability capabilities
+ * while delegating to real implementation packages when available.
  * 
- * Runtime imports prevent circular dependencies while providing unified access
- * to monitoring, observability, and telemetry systems through operations package.
+ * DELEGATION ARCHITECTURE:
+ * • @claude-zen/system-monitoring: System health monitoring, operational metrics, telemetry
  * 
- * Delegates to:
- * - @claude-zen/agent-monitoring: Agent health monitoring, operational metrics, agent telemetry
+ * GRACEFUL DEGRADATION:
+ * When implementation packages are not available, throws clear errors indicating
+ * which packages are required for monitoring operations. This ensures proper
+ * error handling rather than silent failures in production monitoring.
+ * 
+ * RUNTIME IMPORTS:
+ * Uses dynamic imports to prevent circular dependencies while providing unified
+ * access to monitoring, observability, and telemetry systems through operations package.
  * 
  * @author Claude Code Zen Team
  * @since 2.1.0 (Strategic Architecture v2.0.0)
@@ -109,12 +116,12 @@ class MonitoringSystemAccessImpl implements MonitoringSystemAccess {
       try {
         // Import the monitoring package at runtime (matches database pattern)
         // Use dynamic import with string to avoid TypeScript compile-time checking
-        const packageName = '@claude-zen/agent-monitoring';
+        const packageName = '@claude-zen/system-monitoring';
         this.monitoringModule = await import(packageName) as MonitoringSystemModule;
         logger.debug('Monitoring module loaded successfully');
       } catch (error) {
         throw new MonitoringSystemConnectionError(
-          'Agent monitoring package not available. Operations requires @claude-zen/agent-monitoring for monitoring operations.',
+          'System monitoring package not available. Operations requires @claude-zen/system-monitoring for monitoring operations.',
           error instanceof Error ? error : undefined
         );
       }
@@ -213,9 +220,21 @@ export async function getHealthChecker(config?: MonitoringSystemConfig): Promise
 }
 
 /**
- * TelemetryManager - Telemetry management capabilities
- * This class provides essential telemetry functionality that can be used
- * across the system for metrics collection, tracing, and observability.
+ * TelemetryManager - Strategic Facade for Telemetry Management
+ * 
+ * FACADE BEHAVIOR:
+ * • Delegates to @claude-zen/system-monitoring package when available
+ * • Provides fallback implementation when package not installed
+ * • Essential telemetry functionality for metrics collection and tracing
+ * 
+ * REAL PACKAGE FEATURES (when @claude-zen/system-monitoring is available):
+ * • Comprehensive telemetry collection and aggregation
+ * • Distributed tracing with span management
+ * • Metrics recording with proper formatting
+ * 
+ * FALLBACK BEHAVIOR (when @claude-zen/system-monitoring not available):
+ * • No-op implementations for all telemetry methods
+ * • Interface maintained for compatibility
  */
 export class TelemetryManager {
   private enabled = true;
@@ -228,7 +247,7 @@ export class TelemetryManager {
   private async getMonitoringModule(): Promise<any> {
     if (!this.monitoringModule) {
       try {
-        const packageName = '@claude-zen/agent-monitoring';
+        const packageName = '@claude-zen/system-monitoring';
         this.monitoringModule = await import(packageName);
       } catch (error) {
         // Use fallback implementation if agent monitoring package not available

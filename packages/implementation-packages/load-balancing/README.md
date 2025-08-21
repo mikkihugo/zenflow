@@ -40,9 +40,9 @@ pnpm install
 ### Basic Load Balancing
 
 ```typescript
-import { LoadBalancingManager } from '@claude-zen/load-balancing';
+import { LoadBalancer } from '@claude-zen/load-balancing';
 
-const loadBalancer = new LoadBalancingManager({
+const loadBalancer = new LoadBalancer({
   algorithm: 'ml-predictive',
   healthCheckInterval: 5000,
   adaptiveLearning: true
@@ -64,7 +64,7 @@ console.log(`Task assigned to agent: ${assignment.agent.id}`);
 ### Auto-scaling Configuration
 
 ```typescript
-const loadBalancer = new LoadBalancingManager({
+const loadBalancer = new LoadBalancer({
   algorithm: 'resource-aware',
   autoScaling: {
     enabled: true,
@@ -129,7 +129,7 @@ pnpm type-check
 
 ## 📚 API Reference
 
-### LoadBalancingManager
+### LoadBalancer
 
 Main load balancing coordinator with ML-powered optimization.
 

@@ -397,7 +397,7 @@
  * - ✅ **Professional Monitoring**: `SystemMonitor`, `AgentMonitor` for real-time safety monitoring
  * - ✅ **Persistent Storage**: Database abstraction for experiment history and results
  * - ✅ **Configuration Management**: `convict` + `dotenv` schema validation for safety parameters
- * - ✅ **Dependency Injection**: `tsyringe` for professional architecture and testability
+ * - ✅ **Dependency Injection**: `awilix` for professional architecture and testability
  * 
  * @author Claude Zen Team
  * @version 2.0.0 (Production Chaos Engineering with Safety Guarantees)

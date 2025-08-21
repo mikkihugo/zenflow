@@ -25,7 +25,7 @@ import {
   type KnowledgeClientConfig,
   type MCPClientConfig,
   type WebSocketClientConfig,
-} from './registry';
+} from './index';
 
 /**
  * Manager configuration options.

@@ -48,14 +48,14 @@
   "author": "Claude-Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@claude-zen/event-system": "file:../event-system",
-    "@claude-zen/foundation": "file:../../foundation",
+    "@claude-zen/event-system": "link:../event-system",
     "@claude-zen/fact-system": "file:../fact-system",
+    "@claude-zen/foundation": "file:../../foundation",
     "eventemitter3": "^5.0.1"
   },
   "_comment_fact_system": "fact-system is a private implementation detail - only knowledge package should access it",
   "devDependencies": {
-    "@types/node": "^22.17.2",
+    "@types/node": "22.17.1",
     "eslint": "^9.33.0",
     "tsup": "^8.5.0",
     "typescript": "^5.9.2",

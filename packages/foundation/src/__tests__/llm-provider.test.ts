@@ -1,5 +1,5 @@
 /**
- * @fileoverview Foundation LLM Provider Tests (Jest Version)
+ * @fileoverview Foundation LLM Provider Tests (Vitest Version)
  * 
  * Comprehensive tests for the LLM provider including:
  * - Unit tests with mocks for fast feedback
@@ -8,28 +8,28 @@
  * - Performance and timeout testing
  * - All agent roles and capabilities
  * 
- * JEST FRAMEWORK: Converted from Vitest to Jest testing patterns
+ * VITEST FRAMEWORK: Converted from Jest to Vitest testing patterns
  * 
  * @author Claude Code Zen Team
  * @since 2.0.0
  */
 
-import { jest } from '@jest/globals';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 // Mock the logging system
-jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({
+vi.mock('@claude-zen/foundation/logging', () => ({
   getLogger: () => ({
-    debug: jest.fn(),
-    info: jest.fn(),
-    warn: jest.fn(),
-    error: jest.fn(),
+    debug: vi.fn(),
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
   })
 }));
 
 // Mock Claude API for unit tests
-const mockClaudeAPI = jest.fn();
-jest.unstable_mockModule('@anthropic/claude', () => ({
-  default: jest.fn().mockImplementation(() => ({
+const mockClaudeAPI = vi.fn();
+vi.mock('@anthropic/claude', () => ({
+  default: vi.fn().mockImplementation(() => ({
     messages: {
       create: mockClaudeAPI
     }
@@ -44,14 +44,14 @@ import {
 } from '../llm-provider';
 import type { LLMRequest, LLMResponse, SwarmAgentRole } from '../llm-provider';
 
-describe('LLM Provider - Unit Tests (Jest)', () => {
+describe('LLM Provider - Unit Tests (Vitest)', () => {
   let llmProvider: LLMProvider;
 
   beforeEach(() => {
     llmProvider = new LLMProvider();
     // Reset global LLM to avoid test interference
     setGlobalLLM(new LLMProvider());
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Role Management', () => {
@@ -477,12 +477,12 @@ describe('LLM Provider - Edge Cases', () => {
 
   beforeEach(() => {
     llmProvider = new LLMProvider();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should handle empty prompts gracefully', async () => {
     // Mock the internal method to avoid real API calls
-    const mockChat = jest.spyOn(llmProvider, 'chat' as any).mockResolvedValue({
+    const mockChat = vi.spyOn(llmProvider, 'chat' as any).mockResolvedValue({
       content: 'I need more information.',
       model: 'claude-3-sonnet',
       usage: { promptTokens: 10, completionTokens: 5, totalTokens: 15 }
@@ -508,7 +508,7 @@ describe('LLM Provider - Edge Cases', () => {
     llmProvider.setRole('architect');
     
     // Mock internal method
-    const mockExecuteTask = jest.spyOn(llmProvider, 'executeTask' as any).mockResolvedValue(['mocked response']);
+    const mockExecuteTask = vi.spyOn(llmProvider, 'executeTask' as any).mockResolvedValue(['mocked response']);
     
     await llmProvider.executeAsArchitect('Design a system');
     
@@ -517,7 +517,7 @@ describe('LLM Provider - Edge Cases', () => {
   });
 
   it('should handle extremely long prompts', async () => {
-    const mockComplete = jest.spyOn(llmProvider, 'complete').mockResolvedValue('Truncated response');
+    const mockComplete = vi.spyOn(llmProvider, 'complete').mockResolvedValue('Truncated response');
     
     const longPrompt = 'A'.repeat(100000); // 100k characters
     const response = await llmProvider.complete(longPrompt);
@@ -527,7 +527,7 @@ describe('LLM Provider - Edge Cases', () => {
   });
 
   it('should handle special characters in prompts', async () => {
-    const mockComplete = jest.spyOn(llmProvider, 'complete').mockResolvedValue('Handled special chars');
+    const mockComplete = vi.spyOn(llmProvider, 'complete').mockResolvedValue('Handled special chars');
     
     const specialPrompt = 'Test with émojis 🚀 and unicode: αβγδε and symbols: @#$%^&*()';
     const response = await llmProvider.complete(specialPrompt);
@@ -537,7 +537,7 @@ describe('LLM Provider - Edge Cases', () => {
   });
 
   it('should handle null and undefined inputs gracefully', async () => {
-    const mockComplete = jest.spyOn(llmProvider, 'complete').mockResolvedValue('Default response');
+    const mockComplete = vi.spyOn(llmProvider, 'complete').mockResolvedValue('Default response');
     
     // Test null
     const nullResponse = await llmProvider.complete(null as any);
@@ -570,16 +570,16 @@ describe('LLM Provider - Advanced Features', () => {
 
   beforeEach(() => {
     llmProvider = new LLMProvider();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should support streaming responses', async () => {
-    const mockStream = jest.fn().mockImplementation(async function* () {
+    const mockStream = vi.fn().mockImplementation(async function* () {
       yield { content: 'Hello ' };
       yield { content: 'world!' };
     });
     
-    jest.spyOn(llmProvider, 'streamComplete' as any).mockImplementation(mockStream);
+    vi.spyOn(llmProvider, 'streamComplete' as any).mockImplementation(mockStream);
     
     const chunks: string[] = [];
     const stream = llmProvider.streamComplete('Say hello');
@@ -592,7 +592,7 @@ describe('LLM Provider - Advanced Features', () => {
   });
 
   it('should support function calling', async () => {
-    const mockFunctionCall = jest.spyOn(llmProvider, 'callFunction' as any).mockResolvedValue({
+    const mockFunctionCall = vi.spyOn(llmProvider, 'callFunction' as any).mockResolvedValue({
       function: 'calculate',
       arguments: { operation: 'add', a: 2, b: 2 },
       result: 4
@@ -613,7 +613,7 @@ describe('LLM Provider - Advanced Features', () => {
   });
 
   it('should support multi-turn conversations', async () => {
-    const mockChat = jest.spyOn(llmProvider, 'chat').mockResolvedValue({
+    const mockChat = vi.spyOn(llmProvider, 'chat').mockResolvedValue({
       content: 'Multi-turn response',
       model: 'claude-3-sonnet',
       usage: { promptTokens: 20, completionTokens: 10, totalTokens: 30 }

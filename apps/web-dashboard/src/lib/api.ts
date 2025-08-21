@@ -965,6 +965,32 @@ class ApiClient {
       method: 'POST',
     });
   }
+
+  // ===== SYSTEM CAPABILITY API =====
+
+  async getSystemCapabilityStatus(): Promise<any> {
+    return await this.request('/v1/system/capability/status');
+  }
+
+  async getSystemCapabilityFacades(): Promise<any> {
+    return await this.request('/v1/system/capability/facades');
+  }
+
+  async getSystemCapabilitySuggestions(): Promise<any> {
+    return await this.request('/v1/system/capability/suggestions');
+  }
+
+  async getSystemCapabilityDetailed(): Promise<any> {
+    return await this.request('/v1/system/capability/detailed');
+  }
+
+  async getSystemCapabilityHealth(): Promise<any> {
+    return await this.request('/v1/system/capability/health');
+  }
+
+  async getSystemCapabilityScores(): Promise<any> {
+    return await this.request('/v1/system/capability/scores');
+  }
 }
 
 // Export singleton instance

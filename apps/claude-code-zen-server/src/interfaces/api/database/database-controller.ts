@@ -165,8 +165,8 @@ export class DatabaseController extends EventEmitter {
     try {
       this._logger.info('Initializing Database Controller with package delegation');
 
-      // Delegate to @claude-zen/foundation for database operations (private database package)
-      const { getDatabaseAccess, Storage } = await import('@claude-zen/foundation');
+      // Delegate to @claude-zen/infrastructure for database operations
+      const { getDatabaseAccess } = await import('@claude-zen/infrastructure');
       const dbAccess = getDatabaseAccess();
       
       // Use foundation's storage abstraction for multi-database access

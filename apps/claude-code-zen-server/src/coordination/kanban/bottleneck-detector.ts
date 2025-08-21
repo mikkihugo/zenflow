@@ -2,13 +2,13 @@
  * @file Bottleneck Detection Engine - Lightweight facade using @claude-zen/intelligence
  *
  * This file provides a lightweight facade for bottleneck detection functionality,
- * delegating to the comprehensive LoadBalancingManager from @claude-zen/intelligence package.
+ * delegating to the comprehensive LoadBalancer from @claude-zen/load-balancing package.
  * The package includes ML-predictive routing, bottleneck detection, resource optimization,
  * auto-scaling capabilities, and emergency protocols.
  *
  * ARCHITECTURE:
  * - Facade pattern maintaining API compatibility
- * - Delegates to @claude-zen/intelligence LoadBalancingManager
+ * - Delegates to @claude-zen/load-balancing LoadBalancer
  * - Leverages existing bottleneck detection through capacity management
  * - Uses ML-predictive routing and real-time health monitoring
  * - Integrates with auto-scaling and emergency protocols
@@ -19,7 +19,9 @@
 import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 import { container } from 'tsyringe';
-import { getLogger , LoadBalancingManager } from '@claude-zen/foundation';
+import { getLogger } from '@claude-zen/foundation';
+// Import load balancing capabilities via strategic facade
+import { getLoadBalancer } from '@claude-zen/infrastructure';
 import type { BrainCoordinator } from '../../core/memory-coordinator';
 import type {
   FlowState,
@@ -169,13 +171,13 @@ export interface BottleneckDetectionResult {
 // ============================================================================
 
 /**
- * Bottleneck Detection Engine - Lightweight facade using LoadBalancingManager
+ * Bottleneck Detection Engine - Lightweight facade using LoadBalancer
  *
  * This facade maintains API compatibility while delegating bottleneck detection,
  * resource optimization, and ML-predictive routing to the comprehensive
- * LoadBalancingManager from @claude-zen/intelligence package.
+ * LoadBalancer from @claude-zen/intelligence package.
  * 
- * Key features provided by LoadBalancingManager:
+ * Key features provided by LoadBalancer:
  * - ML-predictive routing with TensorFlow.js
  * - Real-time health monitoring
  * - Auto-scaling and resource management  
@@ -188,7 +190,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   private readonly logger: Logger;
   private readonly memory: BrainCoordinator;
   private readonly config: BottleneckDetectionConfig;
-  private readonly loadBalancer: LoadBalancingManager;
+  private loadBalancer: any; // LoadBalancer from strategic facade
 
   private detectionTimer?: NodeJS.Timeout;
   private resolutionQueue: Map<string, ResolutionAction> = new Map();
@@ -203,7 +205,6 @@ export class BottleneckDetectionEngine extends EventEmitter {
 
     this.logger = getLogger('bottleneck-detector');
     this.memory = memory;
-    this.loadBalancer = container.resolve(LoadBalancingManager);
 
     this.config = {
       enablePredictiveDetection: true,
@@ -231,8 +232,33 @@ export class BottleneckDetectionEngine extends EventEmitter {
     });
 
     try {
+      // Get LoadBalancer from strategic facade
+      this.loadBalancer = await getLoadBalancer({
+        algorithm: this.config.enablePredictiveDetection ? 'ml-predictive' : 'resource-aware',
+        healthCheckInterval: 5000,
+        adaptiveLearning: true,
+        autoScaling: {
+          enabled: this.config.enableAutomaticResolution,
+          minAgents: 2,
+          maxAgents: 20,
+          targetUtilization: 0.7
+        },
+        emergencyProtocols: {
+          enabled: true,
+          maxFailureRate: 0.1,
+          circuitBreakerThreshold: 0.2
+        },
+        monitoring: {
+          enableRealTime: true,
+          enableMLInsights: true,
+          enablePredictiveAnalytics: true
+        }
+      });
+
       // Initialize the underlying load balancer with comprehensive capabilities
-      await this.loadBalancer.initialize();
+      if (this.loadBalancer.initialize) {
+        await this.loadBalancer.initialize();
+      }
 
       // Start monitoring using load balancer's real-time monitoring
       this.startBottleneckMonitoring();
@@ -263,18 +289,20 @@ export class BottleneckDetectionEngine extends EventEmitter {
     }
 
     // Shutdown underlying load balancer
-    await this.loadBalancer.shutdown();
+    if (this.loadBalancer && this.loadBalancer.shutdown) {
+      await this.loadBalancer.shutdown();
+    }
 
     this.removeAllListeners();
     this.logger.info('Bottleneck Detection Engine shutdown complete');
   }
 
   // ============================================================================
-  // BOTTLENECK DETECTION - Task 6.1 (via LoadBalancingManager)
+  // BOTTLENECK DETECTION - Task 6.1 (via LoadBalancer)
   // ============================================================================
 
   /**
-   * Run comprehensive bottleneck detection using LoadBalancingManager
+   * Run comprehensive bottleneck detection using LoadBalancer
    */
   async runBottleneckDetection(
     flowState: FlowState
@@ -283,13 +311,13 @@ export class BottleneckDetectionEngine extends EventEmitter {
       .toString(36)
       .substr(2, 9)}`;
 
-    this.logger.info('Starting bottleneck detection via LoadBalancingManager', {
+    this.logger.info('Starting bottleneck detection via LoadBalancer', {
       detectionId,
       stageCount: Object.keys(flowState.stages).length,
     });
 
     try {
-      // Use LoadBalancingManager's comprehensive monitoring and bottleneck detection
+      // Use LoadBalancer's comprehensive monitoring and bottleneck detection
       const loadMetrics = await this.loadBalancer.getLoadMetrics();
       const healthStatus = await this.loadBalancer.getHealthStatus();
       
@@ -361,16 +389,16 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   // ============================================================================
-  // AUTOMATED RESOLUTION - Task 6.2 (via LoadBalancingManager)
+  // AUTOMATED RESOLUTION - Task 6.2 (via LoadBalancer)
   // ============================================================================
 
   /**
-   * Trigger automatic resolutions using LoadBalancingManager capabilities
+   * Trigger automatic resolutions using LoadBalancer capabilities
    */
   async triggerAutomaticResolutions(
     bottlenecks: DetectedBottleneck[]
   ): Promise<void> {
-    this.logger.info('Triggering automatic bottleneck resolutions via LoadBalancingManager', {
+    this.logger.info('Triggering automatic bottleneck resolutions via LoadBalancer', {
       bottleneckCount: bottlenecks.length,
     });
 
@@ -394,7 +422,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   /**
-   * Execute resolution using LoadBalancingManager's capabilities
+   * Execute resolution using LoadBalancer's capabilities
    */
   private async executeResolutionViaLoadBalancer(
     bottleneck: DetectedBottleneck
@@ -402,7 +430,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
     const resolutionId = `resolution-${bottleneck.id}-${Date.now()}`;
     this.activeResolutions.add(resolutionId);
 
-    this.logger.info('Executing bottleneck resolution via LoadBalancingManager', {
+    this.logger.info('Executing bottleneck resolution via LoadBalancer', {
       bottleneckId: bottleneck.id,
       resolutionId,
       strategy: bottleneck.resolutionStrategies[0],
@@ -429,7 +457,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
           break;
       }
 
-      this.logger.info('Bottleneck resolution completed via LoadBalancingManager', {
+      this.logger.info('Bottleneck resolution completed via LoadBalancer', {
         bottleneckId: bottleneck.id,
         resolutionId,
         strategy: primaryStrategy,
@@ -459,11 +487,11 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   // ============================================================================
-  // FLOW OPTIMIZATION - Task 6.3 (via LoadBalancingManager)
+  // FLOW OPTIMIZATION - Task 6.3 (via LoadBalancer)
   // ============================================================================
 
   /**
-   * Optimize overall flow using LoadBalancingManager's comprehensive optimization
+   * Optimize overall flow using LoadBalancer's comprehensive optimization
    */
   async optimizeFlow(
     flowState: FlowState,
@@ -473,7 +501,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
       .toString(36)
       .substr(2, 9)}`;
 
-    this.logger.info('Starting flow optimization via LoadBalancingManager', {
+    this.logger.info('Starting flow optimization via LoadBalancer', {
       optimizationId,
       bottleneckCount: bottlenecks.length,
     });
@@ -483,7 +511,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
     const resolvedBottlenecks: string[] = [];
 
     try {
-      // Use LoadBalancingManager's comprehensive optimization
+      // Use LoadBalancer's comprehensive optimization
       const optimizationResult = await this.loadBalancer.optimizeSystem();
       
       // Apply ML-predictive routing optimizations
@@ -517,7 +545,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
         success: optimizationResult.success || true,
       };
 
-      this.logger.info('Flow optimization completed successfully via LoadBalancingManager', {
+      this.logger.info('Flow optimization completed successfully via LoadBalancer', {
         optimizationId,
         improvements: improvementMetrics,
       });
@@ -551,7 +579,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   // ============================================================================
 
   /**
-   * Convert LoadBalancingManager metrics to bottleneck format
+   * Convert LoadBalancer metrics to bottleneck format
    */
   private async convertLoadMetricsToBottlenecks(
     loadMetrics: any,
@@ -584,7 +612,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
           detectionTime: new Date(),
           predictedDuration: this.predictDurationFromMetrics(utilizationRate),
           impactScore: utilizationRate * 100,
-          rootCauses: ['High utilization detected by LoadBalancingManager'],
+          rootCauses: ['High utilization detected by LoadBalancer'],
           affectedStreams: [stageName],
           resolutionStrategies: this.getStrategiesForUtilization(utilizationRate),
           confidence: 0.9, // High confidence from load balancer metrics
@@ -598,7 +626,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   /**
-   * Generate predictions using LoadBalancingManager's ML capabilities
+   * Generate predictions using LoadBalancer's ML capabilities
    */
   private async generatePredictionsFromLoadBalancer(
     flowState: FlowState
@@ -614,7 +642,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
         predictedAt: new Date(),
       };
     } catch (error) {
-      this.logger.warn('Failed to get predictions from LoadBalancingManager', { error });
+      this.logger.warn('Failed to get predictions from LoadBalancer', { error });
       return {
         predictedBottlenecks: [],
         timeToBottleneck: 0,
@@ -626,7 +654,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   /**
-   * Generate resolution actions using LoadBalancingManager capabilities
+   * Generate resolution actions using LoadBalancer capabilities
    */
   private async generateActionsFromLoadBalancer(
     bottlenecks: DetectedBottleneck[],
@@ -639,7 +667,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
         id: `action-${bottleneck.id}-${Date.now()}`,
         bottleneckId: bottleneck.id,
         strategy: ResolutionStrategy.CAPACITY_SCALING,
-        description: `Auto-scale capacity for ${bottleneck.stage.name} using LoadBalancingManager`,
+        description: `Auto-scale capacity for ${bottleneck.stage.name} using LoadBalancer`,
         requiredResources: ['computing_capacity'],
         estimatedDuration: 0.5, // 30 minutes
         expectedImpact: Math.min(90, bottleneck.impactScore * 1.2),
@@ -657,7 +685,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   /**
-   * Calculate flow health using LoadBalancingManager metrics
+   * Calculate flow health using LoadBalancer metrics
    */
   private calculateFlowHealthFromMetrics(
     loadMetrics: any,
@@ -683,11 +711,11 @@ export class BottleneckDetectionEngine extends EventEmitter {
   private startBottleneckMonitoring(): void {
     this.detectionTimer = setInterval(async () => {
       try {
-        // Use LoadBalancingManager's monitoring capabilities
+        // Use LoadBalancer's monitoring capabilities
         const healthStatus = await this.loadBalancer.getHealthStatus();
         const loadMetrics = await this.loadBalancer.getLoadMetrics();
         
-        this.logger.debug('Bottleneck monitoring cycle via LoadBalancingManager', {
+        this.logger.debug('Bottleneck monitoring cycle via LoadBalancer', {
           overallHealth: healthStatus?.overallHealth || 'unknown',
           avgUtilization: this.calculateAverageUtilization(loadMetrics),
         });
@@ -698,7 +726,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
   }
 
   /**
-   * Helper methods for LoadBalancingManager integration
+   * Helper methods for LoadBalancer integration
    */
   private determineSeverityFromMetrics(
     utilizationRate: number,
@@ -732,7 +760,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
     predictions: any,
     flowState: FlowState
   ): Promise<DetectedBottleneck[]> {
-    // Convert LoadBalancingManager predictions to bottleneck format
+    // Convert LoadBalancer predictions to bottleneck format
     const bottlenecks: DetectedBottleneck[] = [];
     
     if (predictions?.predictedIssues) {
@@ -753,7 +781,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
             detectionTime: new Date(),
             predictedDuration: issue.duration || 12,
             impactScore: issue.impact || 50,
-            rootCauses: ['Predicted by LoadBalancingManager ML model'],
+            rootCauses: ['Predicted by LoadBalancer ML model'],
             affectedStreams: [issue.stage],
             resolutionStrategies: [ResolutionStrategy.CAPACITY_SCALING],
             confidence: issue.confidence || 0.7,
@@ -774,7 +802,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
       id: `lb-action-${bottleneck.id}-${Date.now()}`,
       bottleneckId: bottleneck.id,
       strategy: ResolutionStrategy.CAPACITY_SCALING,
-      description: `Auto-scale using LoadBalancingManager for ${bottleneck.stage.name}`,
+      description: `Auto-scale using LoadBalancer for ${bottleneck.stage.name}`,
       requiredResources: ['computing_capacity'],
       estimatedDuration: 0.5,
       expectedImpact: Math.min(95, bottleneck.impactScore * 1.3),
@@ -856,7 +884,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
       id: `primary-action-${bottleneck.id}`,
       bottleneckId: bottleneck.id,
       strategy: ResolutionStrategy.CAPACITY_SCALING,
-      description: 'Primary scaling action via LoadBalancingManager',
+      description: 'Primary scaling action via LoadBalancer',
       requiredResources: ['computing_capacity'],
       estimatedDuration: 1,
       expectedImpact: 75,
@@ -877,7 +905,7 @@ export class BottleneckDetectionEngine extends EventEmitter {
     const nextAction = Array.from(this.resolutionQueue.values())[0];
     if (nextAction) {
       this.resolutionQueue.delete(nextAction.bottleneckId);
-      // Execute via LoadBalancingManager
+      // Execute via LoadBalancer
       this.executeResolutionViaLoadBalancer({
         id: nextAction.bottleneckId,
         type: BottleneckType.CAPACITY,

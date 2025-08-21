@@ -237,6 +237,15 @@ export async function getLLMProvider(config?: any): Promise<any> {
   };
 }
 
+// Simple AgentMonitor class for compatibility
+export class AgentMonitor {
+  async track() { return {}; }
+}
+
+export function createAgentMonitor() {
+  return new AgentMonitor();
+}
+
 // Professional agent monitoring object with proper naming (matches Storage/Telemetry patterns)
 export const agentMonitoringSystem = {
   getAccess: getAgentMonitoringSystemAccess,

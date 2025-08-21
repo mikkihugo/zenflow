@@ -107,12 +107,22 @@ export const getNeuralBridge = async (config?: any) => {
 // ===============================================================================
 
 /**
- * BrainCoordinator - Real enterprise neural coordination system
- * Delegates to the 1,358-line comprehensive implementation with:
+ * BrainCoordinator - Strategic Facade for Brain Coordination
+ * 
+ * FACADE BEHAVIOR:
+ * • Delegates to @claude-zen/brain package when available
+ * • Provides compatibility layer when package not installed
+ * • Zero breaking changes - same interface regardless of backend
+ * 
+ * REAL PACKAGE FEATURES (when @claude-zen/brain is available):
  * • Autonomous decision-making with 95%+ accuracy
  * • Neural network coordination with Rust/WASM acceleration  
  * • Behavioral intelligence and performance prediction
  * • Enterprise-grade security and multi-tenant isolation
+ * 
+ * FALLBACK BEHAVIOR (when @claude-zen/brain not available):
+ * • Returns compatibility responses for all methods
+ * • Maintains interface contracts without advanced features
  */
 export class BrainCoordinator extends EventEmitter {
   private instance: any = null;
@@ -150,11 +160,21 @@ export class BrainCoordinator extends EventEmitter {
 }
 
 /**
- * NeuralBridge - Real neural network bridge with FANN integration
- * Delegates to comprehensive implementation with:
+ * NeuralBridge - Strategic Facade for Neural Network Integration
+ * 
+ * FACADE BEHAVIOR:
+ * • Delegates to @claude-zen/brain package's NeuralBridge when available
+ * • Singleton pattern with lazy initialization
+ * • Graceful degradation when neural package not installed
+ * 
+ * REAL PACKAGE FEATURES (when @claude-zen/brain is available):
  * • High-performance Rust/WASM neural computation
  * • GPU acceleration support (CUDA, OpenCL, Metal)
  * • Custom neural architectures and ensemble methods
+ * 
+ * FALLBACK BEHAVIOR (when @claude-zen/brain not available):
+ * • Minimal compatibility implementation
+ * • No neural computation - compatibility stubs only
  */
 export class NeuralBridge extends EventEmitter {
   private static instance: NeuralBridge | null = null;
@@ -260,11 +280,21 @@ export class RetrainingMonitor extends EventEmitter {
 }
 
 /**
- * BehavioralIntelligence - Real behavioral analysis and prediction
- * Delegates to comprehensive implementation with:
+ * BehavioralIntelligence - Strategic Facade for Behavioral Analysis
+ * 
+ * FACADE BEHAVIOR:
+ * • Delegates to @claude-zen/brain package's BehavioralIntelligence when available
+ * • Provides interface for agent performance prediction and learning
+ * • Graceful degradation when behavioral intelligence package not installed
+ * 
+ * REAL PACKAGE FEATURES (when @claude-zen/brain is available):
  * • Multi-horizon predictive modeling with confidence intervals
  * • Cross-agent performance correlation and dependency analysis
  * • Advanced anomaly detection with machine learning models
+ * 
+ * FALLBACK BEHAVIOR (when @claude-zen/brain not available):
+ * • Methods return undefined/null - no behavioral intelligence
+ * • Interface maintained for compatibility
  */
 export class BehavioralIntelligence extends EventEmitter {
   private realInstance: any = null;

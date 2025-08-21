@@ -129,7 +129,8 @@
  * The API maintains compatibility while providing a much cleaner internal architecture.
  */
 
-import { getLogger, recordMetric, withTrace, createCircuitBreaker , AgentMonitoring } from '@claude-zen/foundation';
+import { getLogger, recordMetric, withTrace, createCircuitBreaker } from '@claude-zen/foundation';
+import { AgentMonitoring } from '@claude-zen/operations';
 import { EventEmitter } from 'eventemitter3';
 import { DocumentProcessor } from './document-processor';
 import { DocumentationManager } from './documentation-manager';

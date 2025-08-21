@@ -27,13 +27,17 @@ import type {
   Logger,
 } from '../../core/interfaces/base-interfaces';
 
-// Foundation storage access (not direct database)
+// Database access from infrastructure facade
 import { 
-  getDatabaseAccess,
+  getDatabaseAccess
+} from '@claude-zen/infrastructure';
+import type { DatabaseAccess, KeyValueStore } from '@claude-zen/infrastructure';
+
+// Telemetry and performance tracking from operations facade
+import { 
   TelemetryManager,
   PerformanceTracker
-} from '@claude-zen/foundation';
-import type { DatabaseAccess, KeyValueStore } from '@claude-zen/foundation';
+} from '@claude-zen/operations';
 
 // Brain coordination for learning
 import { 

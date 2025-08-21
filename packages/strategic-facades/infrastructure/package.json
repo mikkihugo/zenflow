@@ -22,7 +22,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "test": "vitest",
+    "test": "vitest run",
     "test:ci": "vitest run",
     "clean": "rm -rf dist",
     "type-check": "tsc --noEmit"
@@ -44,13 +44,15 @@
     "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
-    "vitest": "^2.0.0"
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "peerDependencies": {
     "@claude-zen/database": "workspace:*",
     "@claude-zen/event-system": "workspace:*",
-    "@claude-zen/load-balancing": "workspace:*"
+    "@claude-zen/load-balancing": "workspace:*",
+    "@claude-zen/system-monitoring": "workspace:*"
   },
   "peerDependenciesMeta": {
     "@claude-zen/database": {
@@ -60,6 +62,9 @@
       "optional": false
     },
     "@claude-zen/load-balancing": {
+      "optional": true
+    },
+    "@claude-zen/system-monitoring": {
       "optional": true
     }
   },

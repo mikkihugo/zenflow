@@ -52,8 +52,7 @@ import type { Config } from '@claude-zen/foundation';
 
 // DatabaseAdapter interface imported from interfaces.js
 
-// Foundation DI system integration
-import 'reflect-metadata';
+// Foundation DI system integration - using Awilix
 import { DIContainer, injectable, inject, TOKENS } from '@claude-zen/foundation';
 
 // Database config types

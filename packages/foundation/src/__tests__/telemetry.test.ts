@@ -1,49 +1,49 @@
 /**
- * @fileoverview Foundation Telemetry Tests (Jest Version)
+ * @fileoverview Foundation Telemetry Tests (Vitest Version)
  * 
  * Comprehensive tests for OpenTelemetry and Prometheus integration
  * in the foundation telemetry system.
  * 
- * CONVERTED FROM VITEST: Uses Jest mocking and assertions
+ * CONVERTED FROM JEST: Uses Vitest mocking and assertions
  */
 
-import { jest } from '@jest/globals';
+import { vi } from 'vitest';
 
 // Mock OpenTelemetry to avoid actual initialization in tests
-jest.unstable_mockModule('@opentelemetry/api', () => ({
+vi.mock('@opentelemetry/api', () => ({
   trace: {
-    getTracer: jest.fn(() => ({
-      startSpan: jest.fn(() => ({
-        setAttributes: jest.fn(),
-        setStatus: jest.fn(),
-        recordException: jest.fn(),
-        addEvent: jest.fn(),
-        end: jest.fn()
+    getTracer: vi.fn(() => ({
+      startSpan: vi.fn(() => ({
+        setAttributes: vi.fn(),
+        setStatus: vi.fn(),
+        recordException: vi.fn(),
+        addEvent: vi.fn(),
+        end: vi.fn()
       }))
     })),
-    getActiveSpan: jest.fn(() => ({
-      setAttributes: jest.fn(),
-      addEvent: jest.fn(),
-      end: jest.fn()
+    getActiveSpan: vi.fn(() => ({
+      setAttributes: vi.fn(),
+      addEvent: vi.fn(),
+      end: vi.fn()
     })),
-    setSpan: jest.fn()
+    setSpan: vi.fn()
   },
   metrics: {
-    getMeter: jest.fn(() => ({
-      createCounter: jest.fn(() => ({
-        add: jest.fn()
+    getMeter: vi.fn(() => ({
+      createCounter: vi.fn(() => ({
+        add: vi.fn()
       })),
-      createHistogram: jest.fn(() => ({
-        record: jest.fn()
+      createHistogram: vi.fn(() => ({
+        record: vi.fn()
       })),
-      createUpDownCounter: jest.fn(() => ({
-        add: jest.fn()
+      createUpDownCounter: vi.fn(() => ({
+        add: vi.fn()
       }))
     }))
   },
   context: {
-    with: jest.fn((context, fn) => fn()),
-    active: jest.fn()
+    with: vi.fn((context, fn) => fn()),
+    active: vi.fn()
   },
   SpanKind: {
     INTERNAL: 'internal',
@@ -56,34 +56,34 @@ jest.unstable_mockModule('@opentelemetry/api', () => ({
   }
 }));
 
-jest.unstable_mockModule('@opentelemetry/sdk-node', () => ({
-  NodeSDK: jest.fn(() => ({
-    start: jest.fn(),
-    shutdown: jest.fn()
+vi.mock('@opentelemetry/sdk-node', () => ({
+  NodeSDK: vi.fn(() => ({
+    start: vi.fn(),
+    shutdown: vi.fn()
   }))
 }));
 
-jest.unstable_mockModule('prom-client', () => ({
-  Counter: jest.fn().mockImplementation(() => ({
-    inc: jest.fn(),
-    labels: jest.fn().mockReturnThis()
+vi.mock('prom-client', () => ({
+  Counter: vi.fn().mockImplementation(() => ({
+    inc: vi.fn(),
+    labels: vi.fn().mockReturnThis()
   })),
-  Histogram: jest.fn().mockImplementation(() => ({
-    observe: jest.fn(),
-    labels: jest.fn().mockReturnThis()
+  Histogram: vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    labels: vi.fn().mockReturnThis()
   })),
-  Gauge: jest.fn().mockImplementation(() => ({
-    set: jest.fn(),
-    inc: jest.fn(),
-    dec: jest.fn(),
-    labels: jest.fn().mockReturnThis()
+  Gauge: vi.fn().mockImplementation(() => ({
+    set: vi.fn(),
+    inc: vi.fn(),
+    dec: vi.fn(),
+    labels: vi.fn().mockReturnThis()
   })),
   register: {
-    clear: jest.fn(),
-    metrics: jest.fn().mockResolvedValue('# HELP test'),
-    registerMetric: jest.fn()
+    clear: vi.fn(),
+    metrics: vi.fn().mockResolvedValue('# HELP test'),
+    registerMetric: vi.fn()
   },
-  collectDefaultMetrics: jest.fn()
+  collectDefaultMetrics: vi.fn()
 }));
 
 import {
@@ -103,7 +103,7 @@ import {
   type TelemetryConfig
 } from '../telemetry';
 
-describe('Foundation Telemetry (Jest)', () => {
+describe('Foundation Telemetry (Vitest)', () => {
   let telemetryManager: TelemetryManager;
 
   beforeEach(async () => {
@@ -218,7 +218,7 @@ describe('Foundation Telemetry (Jest)', () => {
     });
 
     it('should execute function with trace', async () => {
-      const fn = jest.fn().mockReturnValue('result');
+      const fn = vi.fn().mockReturnValue('result');
       const result = withTrace('test_operation', fn);
 
       expect(result).toBe('result');
@@ -226,7 +226,7 @@ describe('Foundation Telemetry (Jest)', () => {
     });
 
     it('should execute async function with trace', async () => {
-      const fn = jest.fn().mockResolvedValue('async-result');
+      const fn = vi.fn().mockResolvedValue('async-result');
       const result = await withAsyncTrace('async_operation', fn);
 
       expect(result).toBe('async-result');
@@ -234,7 +234,7 @@ describe('Foundation Telemetry (Jest)', () => {
     });
 
     it('should handle tracing errors gracefully', async () => {
-      const fn = jest.fn().mockRejectedValue(new Error('test error'));
+      const fn = vi.fn().mockRejectedValue(new Error('test error'));
       
       await expect(withAsyncTrace('error_operation', fn)).rejects.toThrow('test error');
       expect(fn).toHaveBeenCalled();

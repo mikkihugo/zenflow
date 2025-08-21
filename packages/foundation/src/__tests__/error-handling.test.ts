@@ -7,14 +7,14 @@
  * CONVERTED FROM VITEST: Uses Jest mocking and assertions
  */
 
-import { jest } from '@jest/globals';
+import { vi, describe, it, expect, beforeEach, afterEach } from "vitest" } from "vitest"/globals';
 
 // Mock logger to avoid actual logging during tests
-jest.unstable_mockModule('@claude-zen/foundation/logging', () => ({
+vi.unstable_mockModule('@claude-zen/foundation/logging', () => ({
   getLogger: () => ({
-    warn: jest.fn(),
-    error: jest.fn(),
-    info: jest.fn()
+    warn: vi.fn(),
+    error: vi.fn(),
+    info: vi.fn()
   })
 }));
 
@@ -66,7 +66,7 @@ import {
 describe('Foundation Error Handling (Jest)', () => {
   beforeEach(() => {
     // Don't clear all mocks as it interferes with retry logic tests
-    // jest.clearAllMocks(); 
+    // vi.clearAllMocks(); 
   });
 
   describe('Enhanced Error Classes', () => {
@@ -346,7 +346,7 @@ describe('Foundation Error Handling (Jest)', () => {
 
   describe('Retry Operations', () => {
     it('should succeed on first attempt', async () => {
-      const operation = jest.fn().mockResolvedValue('success');
+      const operation = vi.fn().mockResolvedValue('success');
       
       const result = await withRetry(operation, { retries: 3, minTimeout: 10 });
 
@@ -358,7 +358,7 @@ describe('Foundation Error Handling (Jest)', () => {
     });
 
     it('should retry and eventually succeed', async () => {
-      const operation = jest.fn()
+      const operation = vi.fn()
         .mockRejectedValueOnce(new Error('fail 1'))
         .mockRejectedValueOnce(new Error('fail 2'))
         .mockResolvedValue('success');
@@ -373,7 +373,7 @@ describe('Foundation Error Handling (Jest)', () => {
     });
 
     it('should fail after max attempts', async () => {
-      const operation = jest.fn().mockRejectedValue(new Error('persistent failure'));
+      const operation = vi.fn().mockRejectedValue(new Error('persistent failure'));
       
       const result = await withRetry(operation, { retries: 2, minTimeout: 10 });
 
@@ -387,7 +387,7 @@ describe('Foundation Error Handling (Jest)', () => {
 
     it('should use custom retry logic', async () => {
       const validationError = new ValidationError('Invalid input', { field: 'test' });
-      const operation = jest.fn().mockRejectedValue(validationError);
+      const operation = vi.fn().mockRejectedValue(validationError);
       
       // Don't retry validation errors
       const result = await withRetry(operation, { 
@@ -413,7 +413,7 @@ describe('Foundation Error Handling (Jest)', () => {
     });
 
     it('should execute operation successfully in closed state', async () => {
-      const action = jest.fn().mockResolvedValue('success');
+      const action = vi.fn().mockResolvedValue('success');
       const circuitBreaker = new CircuitBreaker(action, { timeout: 1000, errorThresholdPercentage: 50 });
 
       const result = await circuitBreaker.execute();
@@ -426,7 +426,7 @@ describe('Foundation Error Handling (Jest)', () => {
     });
 
     it('should handle circuit breaker failures', async () => {
-      const action = jest.fn().mockRejectedValue(new Error('failure'));
+      const action = vi.fn().mockRejectedValue(new Error('failure'));
       const circuitBreaker = new CircuitBreaker(action, { 
         timeout: 1000, 
         errorThresholdPercentage: 1, // Very low threshold to trigger quickly
@@ -443,7 +443,7 @@ describe('Foundation Error Handling (Jest)', () => {
     });
 
     it('should provide circuit breaker statistics', async () => {
-      const action = jest.fn().mockResolvedValue('success');
+      const action = vi.fn().mockResolvedValue('success');
       const circuitBreaker = new CircuitBreaker(action, { timeout: 1000 });
 
       await circuitBreaker.execute();

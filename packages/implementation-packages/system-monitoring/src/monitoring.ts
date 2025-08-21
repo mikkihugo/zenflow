@@ -5,9 +5,9 @@
  */
 
 import * as si from 'systeminformation';
-import * as pidusage from 'pidusage';
+import pidusage from 'pidusage';
 
-import { getLogger } from '@claude-zen/foundation/logging';
+import { getLogger } from '@claude-zen/foundation';
 import { 
   recordMetric, 
   recordHistogram, 
@@ -36,7 +36,7 @@ import type {
 export class SystemMonitor {
   private config: Required<InfrastructureConfig>;
   private logger = getLogger('SystemMonitor');
-  private monitoringInterval: NodeJS.Timer | null = null;
+  private monitoringInterval: NodeJS.Timeout | null = null;
   private initialized = false;
 
   constructor(config: InfrastructureConfig = {}) {
@@ -139,30 +139,143 @@ export class SystemMonitor {
   }
 
   /**
+   * Get process-specific metrics using pidusage
+   */
+  async getProcessMetrics(pid?: number): Promise<any> {
+    return withAsyncTrace('system.get_process_metrics', async () => {
+      try {
+        const processId = pid || process.pid;
+        const stats = await pidusage(processId);
+        
+        const processMetrics = {
+          pid: processId,
+          cpu: Math.round(stats.cpu * 100) / 100, // CPU usage percentage
+          memory: stats.memory, // Memory usage in bytes
+          ppid: stats.ppid, // Parent process ID
+          ctime: stats.ctime, // Total system and user time
+          elapsed: stats.elapsed, // Time since the process started
+          timestamp: Date.now()
+        };
+
+        // Record process metrics via telemetry
+        recordGauge('process.cpu.usage', processMetrics.cpu);
+        recordGauge('process.memory.usage', processMetrics.memory);
+        recordGauge('process.elapsed.time', processMetrics.elapsed);
+
+        return processMetrics;
+      } catch (error) {
+        this.logger.warn('Failed to get process metrics', { pid, error });
+        return {
+          pid: pid || process.pid,
+          cpu: 0,
+          memory: 0,
+          ppid: 0,
+          ctime: 0,
+          elapsed: 0,
+          error: String(error),
+          timestamp: Date.now()
+        };
+      }
+    });
+  }
+
+  /**
+   * Get all running processes metrics
+   */
+  async getAllProcessesMetrics(): Promise<any[]> {
+    return withAsyncTrace('system.get_all_processes', async () => {
+      try {
+        const processes = await si.processes();
+        const topProcesses = processes.list
+          .filter(p => p.cpu > 0.1) // Only processes using > 0.1% CPU
+          .sort((a, b) => b.cpu - a.cpu) // Sort by CPU usage desc
+          .slice(0, 10); // Top 10 processes
+
+        const processMetrics = await Promise.allSettled(
+          topProcesses.map(async (proc) => {
+            try {
+              const stats = await pidusage(proc.pid);
+              return {
+                pid: proc.pid,
+                name: proc.name,
+                command: proc.command,
+                cpu: Math.round(stats.cpu * 100) / 100,
+                memory: stats.memory,
+                memoryPercent: proc.mem,
+                state: proc.state,
+                started: proc.started,
+                user: proc.user
+              };
+            } catch {
+              // If pidusage fails, use systeminformation data
+              return {
+                pid: proc.pid,
+                name: proc.name,
+                command: proc.command,
+                cpu: proc.cpu,
+                memory: proc.memRss * 1024, // Convert to bytes
+                memoryPercent: proc.mem,
+                state: proc.state,
+                started: proc.started,
+                user: proc.user
+              };
+            }
+          })
+        );
+
+        return processMetrics
+          .filter((result): result is PromiseFulfilledResult<any> => result.status === 'fulfilled')
+          .map(result => result.value);
+      } catch (error) {
+        this.logger.warn('Failed to get all processes metrics', error);
+        return [];
+      }
+    });
+  }
+
+  /**
    * Get system health status
    */
   async getHealthStatus(): Promise<HealthStatus> {
     return withAsyncTrace('system.health_check', async () => {
-      const metrics = await this.getMetrics();
+      const [metrics, processMetrics] = await Promise.all([
+        this.getMetrics(),
+        this.getProcessMetrics()
+      ]);
       
       const checks: HealthStatus['checks'] = {
         cpu: {
           status: metrics.cpu.usage > this.config.cpuErrorThreshold ? 'error' :
                  metrics.cpu.usage > this.config.cpuWarningThreshold ? 'warning' : 'ok',
           value: metrics.cpu.usage,
-          threshold: this.config.cpuWarningThreshold
+          threshold: this.config.cpuWarningThreshold,
+          message: `System CPU usage: ${metrics.cpu.usage}%`
         },
         memory: {
           status: metrics.memory.usage > this.config.memoryErrorThreshold ? 'error' :
                  metrics.memory.usage > this.config.memoryWarningThreshold ? 'warning' : 'ok',
           value: metrics.memory.usage,
-          threshold: this.config.memoryWarningThreshold
+          threshold: this.config.memoryWarningThreshold,
+          message: `System memory usage: ${metrics.memory.usage}%`
         },
         disk: {
           status: metrics.disk.usage > this.config.diskErrorThreshold ? 'error' :
                  metrics.disk.usage > this.config.diskWarningThreshold ? 'warning' : 'ok',
           value: metrics.disk.usage,
-          threshold: this.config.diskWarningThreshold
+          threshold: this.config.diskWarningThreshold,
+          message: `Disk usage: ${metrics.disk.usage}%`
+        },
+        process: {
+          status: processMetrics.cpu > 80 ? 'warning' : 'ok',
+          value: processMetrics.cpu,
+          threshold: 80,
+          message: `Process CPU usage: ${processMetrics.cpu}%`
+        },
+        uptime: {
+          status: 'ok',
+          value: metrics.uptime,
+          threshold: 0,
+          message: `System uptime: ${Math.round(metrics.uptime / 3600)} hours`
         }
       };
 
@@ -172,11 +285,23 @@ export class SystemMonitor {
       const status: HealthStatus = {
         status: hasError ? 'unhealthy' : hasWarning ? 'degraded' : 'healthy',
         checks,
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        details: {
+          systemLoad: metrics.cpu.load,
+          processCount: (await this.getAllProcessesMetrics()).length,
+          memoryDetails: {
+            total: Math.round(metrics.memory.total / (1024 * 1024 * 1024)) + ' GB',
+            used: Math.round(metrics.memory.used / (1024 * 1024 * 1024)) + ' GB',
+            free: Math.round(metrics.memory.free / (1024 * 1024 * 1024)) + ' GB'
+          }
+        }
       };
 
-      // Record health status
-      recordMetric('system.health', status.status === 'healthy' ? 1 : 0);
+      // Record health status with detailed metrics
+      recordMetric('system.health.overall', status.status === 'healthy' ? 1 : 0);
+      recordMetric('system.health.checks.total', Object.keys(checks).length);
+      recordMetric('system.health.checks.errors', Object.values(checks).filter(c => c.status === 'error').length);
+      recordMetric('system.health.checks.warnings', Object.values(checks).filter(c => c.status === 'warning').length);
 
       return status;
     });
@@ -185,11 +310,25 @@ export class SystemMonitor {
   private startSystemMetricsCollection(): void {
     this.monitoringInterval = setInterval(async () => {
       try {
-        await this.getMetrics();
+        // Collect both system and process metrics
+        await Promise.all([
+          this.getMetrics(),
+          this.getProcessMetrics(),
+          this.config.enableHealthChecks ? this.getHealthStatus() : Promise.resolve()
+        ]);
+        
+        // Record collection success
+        recordMetric('system.metrics.collection.success', 1);
       } catch (error) {
         this.logger.error('Error collecting system metrics', error);
+        recordMetric('system.metrics.collection.error', 1);
       }
     }, this.config.systemMetricsInterval);
+    
+    this.logger.info('Started system metrics collection', { 
+      interval: this.config.systemMetricsInterval,
+      enableHealthChecks: this.config.enableHealthChecks
+    });
   }
 }
 
@@ -205,16 +344,51 @@ export class PerformanceTracker {
   private logger = getLogger('PerformanceTracker');
 
   /**
-   * Start timing an operation
+   * Start timing an operation with high precision
    */
-  startTimer(name: string): () => void {
-    const start = Date.now();
+  startTimer(name: string): () => number {
+    const start = process.hrtime.bigint();
     
     return () => {
-      const duration = Date.now() - start;
+      const end = process.hrtime.bigint();
+      const duration = Number(end - start) / 1_000_000; // Convert to milliseconds
       this.recordDuration(name, duration);
       return duration;
     };
+  }
+
+  /**
+   * Time an async operation
+   */
+  async timeAsync<T>(name: string, operation: () => Promise<T>): Promise<T> {
+    const timer = this.startTimer(name);
+    try {
+      const result = await operation();
+      timer();
+      recordMetric(`operation.${name}.success`, 1);
+      return result;
+    } catch (error) {
+      timer();
+      recordMetric(`operation.${name}.error`, 1);
+      throw error;
+    }
+  }
+
+  /**
+   * Time a sync operation
+   */
+  time<T>(name: string, operation: () => T): T {
+    const timer = this.startTimer(name);
+    try {
+      const result = operation();
+      timer();
+      recordMetric(`operation.${name}.success`, 1);
+      return result;
+    } catch (error) {
+      timer();
+      recordMetric(`operation.${name}.error`, 1);
+      throw error;
+    }
   }
 
   /**
@@ -239,7 +413,7 @@ export class PerformanceTracker {
   }
 
   /**
-   * Get performance metrics
+   * Get performance metrics with statistical analysis
    */
   getMetrics(): PerformanceMetrics {
     const operations: PerformanceMetrics['operations'] = {};
@@ -247,24 +421,74 @@ export class PerformanceTracker {
     for (const [name, durations] of this.operations.entries()) {
       if (durations.length === 0) continue;
 
+      const sorted = [...durations].sort((a, b) => a - b);
+      const count = durations.length;
+      const total = durations.reduce((sum, d) => sum + d, 0);
+      const avg = total / count;
+      
+      // Calculate percentiles
+      const p50 = sorted[Math.floor(count * 0.5)];
+      const p90 = sorted[Math.floor(count * 0.9)];
+      const p95 = sorted[Math.floor(count * 0.95)];
+      const p99 = sorted[Math.floor(count * 0.99)];
+      
+      // Calculate standard deviation
+      const variance = durations.reduce((sum, d) => sum + Math.pow(d - avg, 2), 0) / count;
+      const stdDev = Math.sqrt(variance);
+
       operations[name] = {
-        count: durations.length,
-        totalTime: durations.reduce((sum, d) => sum + d, 0),
-        avgTime: durations.reduce((sum, d) => sum + d, 0) / durations.length,
+        count,
+        totalTime: total,
+        avgTime: avg,
         minTime: Math.min(...durations),
-        maxTime: Math.max(...durations)
+        maxTime: Math.max(...durations),
+        ...(p50 !== undefined && { p50 }),
+        ...(p90 !== undefined && { p90 }),
+        ...(p95 !== undefined && { p95 }),
+        ...(p99 !== undefined && { p99 }),
+        stdDev: stdDev,
+        throughput: count / (total / 1000), // Operations per second
+        trend: this.calculateTrend(durations)
       };
     }
+
+    // Calculate system-wide metrics
+    const allOperations = Object.values(operations);
+    const systemAvgResponseTime = allOperations.length > 0 
+      ? allOperations.reduce((sum, op) => sum + op.avgTime, 0) / allOperations.length 
+      : 0;
+    const systemThroughput = allOperations.reduce((sum, op) => sum + (op.throughput || 0), 0);
 
     return {
       operations,
       system: {
-        responseTime: 0, // TODO: Calculate from operations
-        throughput: 0,   // TODO: Calculate from operations
-        errorRate: 0     // TODO: Track errors
+        responseTime: systemAvgResponseTime,
+        throughput: systemThroughput,
+        errorRate: 0 // Will be enhanced when error tracking is added
       },
       timestamp: Date.now()
     };
+  }
+
+  /**
+   * Calculate performance trend
+   */
+  private calculateTrend(durations: number[]): 'improving' | 'stable' | 'degrading' {
+    if (durations.length < 10) return 'stable';
+    
+    const recent = durations.slice(-10);
+    const earlier = durations.slice(-20, -10);
+    
+    if (earlier.length === 0) return 'stable';
+    
+    const recentAvg = recent.reduce((sum, d) => sum + d, 0) / recent.length;
+    const earlierAvg = earlier.reduce((sum, d) => sum + d, 0) / earlier.length;
+    
+    const change = (recentAvg - earlierAvg) / earlierAvg;
+    
+    if (change < -0.05) return 'improving'; // 5% improvement
+    if (change > 0.05) return 'degrading';  // 5% degradation
+    return 'stable';
   }
 
   /**
@@ -285,7 +509,6 @@ export class PerformanceTracker {
  */
 export class HealthChecker {
   private monitor: SystemMonitor;
-  private logger = getLogger('HealthChecker');
 
   constructor(config?: InfrastructureConfig) {
     this.monitor = new SystemMonitor(config);
@@ -315,7 +538,6 @@ export class HealthChecker {
  * Infrastructure-specific metrics collection
  */
 export class InfrastructureMetrics {
-  private logger = getLogger('InfrastructureMetrics');
 
   /**
    * Track system operation

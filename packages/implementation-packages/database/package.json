@@ -35,13 +35,13 @@
   "license": "MIT",
   "dependencies": {
     "@claude-zen/foundation": "workspace:*",
-    "better-sqlite3": "^11.3.0",
     "@lancedb/lancedb": "^0.21.3",
+    "better-sqlite3": "^12.2.0",
     "kuzu": "^0.11.1"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "@types/better-sqlite3": "^7.6.11",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "22.17.1",
     "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   },
@@ -58,7 +58,7 @@
       "import": "./dist/adapters/index.js"
     },
     "./dao": {
-      "types": "./dist/dao/index.d.ts", 
+      "types": "./dist/dao/index.d.ts",
       "import": "./dist/dao/index.js"
     },
     "./types": {

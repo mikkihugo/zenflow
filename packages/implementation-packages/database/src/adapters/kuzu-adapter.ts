@@ -4,7 +4,7 @@
  * Real Kuzu adapter using kuzu library for production graph database operations
  */
 
-import 'reflect-metadata';
+// Using Awilix DI - no reflect-metadata needed
 import { Database, Connection } from 'kuzu';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname } from 'path';

@@ -22,12 +22,13 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@claude-zen/foundation": "workspace:*",
-    "@claude-zen/event-system": "workspace:*"
+    "@claude-zen/event-system": "link:../event-system",
+    "@claude-zen/foundation": "workspace:*"
   },
   "devDependencies": {
-    "typescript": "^5.6.3",
-    "vitest": "^2.1.5"
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
   },
   "files": [
     "dist/**/*"

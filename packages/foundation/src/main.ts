@@ -34,7 +34,7 @@ export * from './llm-provider';
 // =============================================================================
 // CLAUDE SDK - Raw Claude Code CLI/SDK bindings
 // =============================================================================
-export * from './claude-sdk';
+export * from './cli-tools/claude/claude-sdk';
 
 // =============================================================================
 // STORAGE SYSTEM - Moved to @claude-zen/infrastructure package

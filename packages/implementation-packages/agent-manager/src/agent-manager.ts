@@ -82,12 +82,7 @@ import type {
   SwarmDecision
 } from './types';
 import {
-  registerSwarm,
-  getSwarm,
-  getAllSwarms,
-  updateSwarm,
-  removeSwarm,
-  getSwarmCount as getRegistrySwarmCount
+  getSwarmRegistry
 } from './swarm-registry';
 
 /**
@@ -234,7 +229,8 @@ export class AgentManager extends EventEmitter {
     // Register swarm in global registry for CLI persistence
     const staticLogger = getLogger('agent-manager');
     staticLogger.debug('About to register swarm in global registry');
-    registerSwarm(swarm);
+    const registry = getSwarmRegistry();
+    registry.registerSwarm(swarm);
     staticLogger.debug('Swarm registered, updating active swarms');
     manager.activeSwarms.set(swarmId, swarm);
     swarm.status = 'active';
@@ -275,7 +271,8 @@ export class AgentManager extends EventEmitter {
     let swarm = this.activeSwarms.get(swarmId);
     if (!swarm) {
       // Try to load from global registry
-      swarm = getSwarm(swarmId);
+      const registry = getSwarmRegistry();
+      swarm = registry.getSwarm(swarmId);
       if (!swarm) {
         throw new EnhancedError('Swarm not found', { swarmId });
       }
@@ -300,7 +297,8 @@ export class AgentManager extends EventEmitter {
       
       // Update swarm metrics
       swarm.performance.claudeInteractions++;
-      updateSwarm(swarm);
+      const registry = getSwarmRegistry();
+      registry.updateSwarm(swarm);
       swarm.performance.lastActivity = new Date();
       
       const result: SwarmExecutionResult = {
@@ -357,7 +355,8 @@ export class AgentManager extends EventEmitter {
   async dissolveSwarm(swarmId: string): Promise<void> {
     let swarm = this.activeSwarms.get(swarmId);
     if (!swarm) {
-      swarm = getSwarm(swarmId);
+      const registry = getSwarmRegistry();
+      swarm = registry.getSwarm(swarmId);
       if (!swarm) return;
     }
     
@@ -369,7 +368,8 @@ export class AgentManager extends EventEmitter {
     }
     
     this.activeSwarms.delete(swarmId);
-    removeSwarm(swarmId);
+    const registry = getSwarmRegistry();
+    registry.removeSwarm(swarmId);
     
     this.logger.info('🗑️ Swarm dissolved', {
       swarmId,
@@ -387,7 +387,8 @@ export class AgentManager extends EventEmitter {
   async pauseSwarm(swarmId: string): Promise<void> {
     let swarm = this.activeSwarms.get(swarmId);
     if (!swarm) {
-      swarm = getSwarm(swarmId);
+      const registry = getSwarmRegistry();
+      swarm = registry.getSwarm(swarmId);
       if (!swarm) return;
     }
     
@@ -402,7 +403,8 @@ export class AgentManager extends EventEmitter {
       }
     };
     
-    updateSwarm(swarm);
+    const registry = getSwarmRegistry();
+    registry.updateSwarm(swarm);
     this.logger.info('⏸️ Swarm paused for session restart', { swarmId });
   }
   
@@ -412,7 +414,8 @@ export class AgentManager extends EventEmitter {
   async resumeSwarm(swarmId: string): Promise<void> {
     let swarm = this.activeSwarms.get(swarmId);
     if (!swarm) {
-      swarm = getSwarm(swarmId);
+      const registry = getSwarmRegistry();
+      swarm = registry.getSwarm(swarmId);
       if (!swarm) return;
     }
     if (!swarm.resumption) return;
@@ -426,14 +429,16 @@ export class AgentManager extends EventEmitter {
     });
     
     delete swarm.resumption;
-    updateSwarm(swarm);
+    const registry = getSwarmRegistry();
+    registry.updateSwarm(swarm);
   }
   
   /**
    * Get all active swarms.
    */
   getActiveSwarms(): EphemeralSwarm[] {
-    return getAllSwarms();
+    const registry = getSwarmRegistry();
+    return registry.getAllSwarms();
   }
   
   /**
@@ -488,7 +493,8 @@ export class AgentManager extends EventEmitter {
    * Get the total number of active swarms.
    */
   getSwarmCount(): number {
-    return getRegistrySwarmCount();
+    const registry = getSwarmRegistry();
+    return registry.getSwarmCount();
   }
 
   /**

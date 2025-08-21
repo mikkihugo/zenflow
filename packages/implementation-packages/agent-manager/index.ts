@@ -534,11 +534,11 @@ export { MCPServer } from './src/mcp-server';
 export { CLIManager } from './src/cli';
 export { WASMLoader } from './src/wasm-loader';
 
-// Agent registry and swarm management
+// Agent registry and swarm management (ServiceContainer-enhanced)
 export { 
   SwarmRegistry,
-  createSwarmRegistry,
-  getGlobalSwarmRegistry
+  getSwarmRegistry as getGlobalSwarmRegistry,
+  createSwarmRegistry
 } from './src/swarm-registry';
 
 // Factory functions and utilities
