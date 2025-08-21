@@ -1,11 +1,11 @@
 /**
  * @fileoverview JSON Schema Validation System - Foundation Integration
- * 
+ *
  * **EXTRACTED FROM MAIN APP → FOUNDATION INTEGRATION**
- * 
+ *
  * Standards-compliant JSON Schema Draft 7 validation system now integrated
  * into @claude-zen/foundation for universal use across all packages.
- * 
+ *
  * Key Features:
  * - JSON Schema Draft 7 compliance (RFC 7159)
  * - AJV validation with strict mode
@@ -13,15 +13,14 @@
  * - Progressive enhancement support (Kanban → Agile → SAFe)
  * - Integration with foundation error handling
  * - Foundation DI container support
- * - Erlang/Elixir migration ready
- * 
+ *
  * **FOUNDATION INTEGRATION:**
  * - Uses foundation Logger interface
  * - Integrates with foundation error handling
  * - Available for DI injection
  * - Follows foundation patterns
- * 
- * @author Claude Code Zen Team  
+ *
+ * @author Claude Code Zen Team
  * @since 2.1.0 (extracted from main app)
  * @version 1.0.0
  */
@@ -31,6 +30,7 @@ import Ajv, { type ValidateFunction } from 'ajv';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Logger } from './logging';
+import type { JsonObject, JsonValue, UnknownRecord } from './types/primitives';
 
 // ============================================================================
 // FOUNDATION-INTEGRATED JSON SCHEMA SYSTEM
@@ -38,7 +38,7 @@ import type { Logger } from './logging';
 
 export interface SchemaRegistry {
   [schemaName: string]: {
-    schema: any; // JSON Schema Draft 7
+    schema: JsonObject; // JSON Schema Draft 7
     validator: ValidateFunction;
     modes: ('kanban' | 'agile' | 'safe')[];
   };
@@ -56,22 +56,22 @@ export class SchemaValidationError extends Error {
 }
 
 export class JsonSchemaManager {
-  private ajv: any;
+  private ajv: Ajv;
   private schemas: SchemaRegistry = {};
   private logger: Logger;
   private schemasPath: string;
 
-  constructor(logger: Logger, schemasPath: string = './schemas') {
+  constructor(logger: Logger, schemasPath = './schemas') {
     this.logger = logger;
     this.schemasPath = schemasPath;
-    
+
     // Configure AJV with standards compliance
     this.ajv = new Ajv({
-      allErrors: true,           // Return all validation errors
-      verbose: true,             // Detailed error information
-      validateSchema: true,      // Validate schemas themselves
-      addUsedSchema: false,      // Prevent schema pollution
-      loadSchema: this.loadSchemaAsync.bind(this)
+      allErrors: true, // Return all validation errors
+      verbose: true, // Detailed error information
+      validateSchema: true, // Validate schemas themselves
+      addUsedSchema: false, // Prevent schema pollution
+      loadSchema: this.loadSchemaAsync.bind(this),
     });
 
     // Add standard formats (RFC 3339 dates, UUIDs, etc.)
@@ -87,9 +87,9 @@ export class JsonSchemaManager {
     const schemaFiles = [
       'business-epic.json',
       'architecture-runway.json',
-      'program-epic.json', 
+      'program-epic.json',
       'feature.json',
-      'story.json'
+      'story.json',
     ];
 
     for (const file of schemaFiles) {
@@ -97,10 +97,9 @@ export class JsonSchemaManager {
         const schemaPath = join(this.schemasPath, file);
         const schemaContent = JSON.parse(readFileSync(schemaPath, 'utf8'));
         const schemaName = file.replace('.json', '').replace('-', '_');
-        
+
         this.registerSchema(schemaName, schemaContent);
         this.logger.info(`Loaded JSON Schema: ${schemaName}`);
-        
       } catch (error) {
         this.logger.error(`Failed to load schema ${file}:`, error);
       }
@@ -110,25 +109,26 @@ export class JsonSchemaManager {
   /**
    * Register a JSON Schema with AJV validator
    */
-  private registerSchema(name: string, schema: any): void {
+  private registerSchema(name: string, schema: JsonObject): void {
     try {
       // Validate the schema itself first
       this.ajv.validateSchema(schema);
-      
+
       // Compile validator
       const validator = this.ajv.compile(schema);
-      
+
       // Determine which modes this schema supports
       const modes = this.extractSupportedModes(schema);
-      
+
       this.schemas[name] = {
         schema,
         validator,
-        modes
+        modes,
       };
 
-      this.logger.info(`Registered schema ${name} for modes: ${modes.join(', ')}`);
-      
+      this.logger.info(
+        `Registered schema ${name} for modes: ${modes.join(', ')}`
+      );
     } catch (error) {
       this.logger.error(`Failed to register schema ${name}:`, error);
       throw error;
@@ -138,12 +138,19 @@ export class JsonSchemaManager {
   /**
    * Extract supported modes from schema metadata
    */
-  private extractSupportedModes(schema: any): ('kanban' | 'agile' | 'safe')[] {
+  private extractSupportedModes(
+    schema: JsonObject
+  ): ('kanban' | 'agile' | 'safe')[] {
     // Check schema metadata for supported modes
-    if (schema.metadata?.supportedModes) {
-      return schema.metadata.supportedModes;
+    const metadata = schema['metadata'];
+    if (metadata && typeof metadata === 'object' && !Array.isArray(metadata)) {
+      const metadataObj = metadata as JsonObject;
+      const supportedModes = metadataObj['supportedModes'];
+      if (Array.isArray(supportedModes)) {
+        return supportedModes as ('kanban' | 'agile' | 'safe')[];
+      }
     }
-    
+
     // Default: assume all modes supported
     return ['kanban', 'agile', 'safe'];
   }
@@ -151,34 +158,39 @@ export class JsonSchemaManager {
   /**
    * Validate document against JSON Schema
    */
-  validate(documentType: string, data: any, mode: 'kanban' | 'agile' | 'safe' = 'kanban'): {
+  validate(
+    documentType: string,
+    data: JsonValue,
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+  ): {
     isValid: boolean;
     errors?: string[];
-    data?: any;
+    data?: JsonValue;
   } {
     const schemaEntry = this.schemas[documentType];
-    
+
     if (!schemaEntry) {
       return {
         isValid: false,
-        errors: [`Unknown document type: ${documentType}`]
+        errors: [`Unknown document type: ${documentType}`],
       };
     }
 
     if (!schemaEntry.modes.includes(mode)) {
       return {
         isValid: false,
-        errors: [`Document type ${documentType} not available in ${mode} mode`]
+        errors: [`Document type ${documentType} not available in ${mode} mode`],
       };
     }
 
     const isValid = schemaEntry.validator(data);
-    
+
     if (!isValid) {
-      const errors = schemaEntry.validator.errors?.map(err => 
-        `${(err as any).instancePath || err.schemaPath || 'root'}: ${err.message}`
-      ) || ['Unknown validation error'];
-      
+      const errors = schemaEntry.validator.errors?.map((err) => {
+        const error = err as unknown as UnknownRecord;
+        return `${error['instancePath'] || error['schemaPath'] || 'root'}: ${error['message'] || 'Unknown error'}`;
+      }) || ['Unknown validation error'];
+
       return { isValid: false, errors };
     }
 
@@ -189,12 +201,12 @@ export class JsonSchemaManager {
    * Validate with foundation error handling integration
    */
   validateWithErrors(
-    documentType: string, 
-    data: any, 
+    documentType: string,
+    data: JsonValue,
     mode: 'kanban' | 'agile' | 'safe' = 'kanban'
-  ): any {
+  ): JsonValue {
     const result = this.validate(documentType, data, mode);
-    
+
     if (!result.isValid) {
       throw new SchemaValidationError(
         `Schema validation failed for ${documentType}`,
@@ -202,16 +214,22 @@ export class JsonSchemaManager {
         result.errors || []
       );
     }
-    
+
+    if (!result.data) {
+      throw new Error('Validation succeeded but no data returned');
+    }
     return result.data;
   }
 
   /**
    * Get schema for document type and mode
    */
-  getSchema(documentType: string, mode: 'kanban' | 'agile' | 'safe' = 'kanban'): any {
+  getSchema(
+    documentType: string,
+    mode: 'kanban' | 'agile' | 'safe' = 'kanban'
+  ): JsonObject {
     const schemaEntry = this.schemas[documentType];
-    
+
     if (!schemaEntry) {
       throw new SchemaValidationError(`Unknown document type: ${documentType}`);
     }
@@ -230,17 +248,24 @@ export class JsonSchemaManager {
    */
   createDocument(
     documentType: string,
-    data: any,
+    data: JsonValue,
     mode: 'kanban' | 'agile' | 'safe' = 'kanban'
-  ): any {
+  ): JsonValue {
     // Apply schema defaults
     const schema = this.getSchema(documentType, mode);
     const documentWithDefaults = this.applyDefaults(schema, data);
-    
+
     // Add schema metadata
-    documentWithDefaults.schema_version = this.getSchemaVersion(documentType, mode);
-    documentWithDefaults.schema_mode = mode;
-    
+    if (
+      documentWithDefaults &&
+      typeof documentWithDefaults === 'object' &&
+      !Array.isArray(documentWithDefaults)
+    ) {
+      const doc = documentWithDefaults as JsonObject;
+      doc['schema_version'] = this.getSchemaVersion(documentType, mode);
+      doc['schema_mode'] = mode;
+    }
+
     // Validate with error throwing
     return this.validateWithErrors(documentType, documentWithDefaults, mode);
   }
@@ -248,37 +273,57 @@ export class JsonSchemaManager {
   /**
    * Apply schema defaults to data
    */
-  private applyDefaults(schema: any, data: any): any {
-    const result = { ...data };
-    
-    if (schema.properties) {
-      for (const [key, prop] of Object.entries(schema.properties)) {
-        if (result[key] === undefined && (prop as any).default !== undefined) {
-          result[key] = (prop as any).default;
+  private applyDefaults(schema: JsonObject, data: JsonValue): JsonValue {
+    if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+      return data;
+    }
+
+    const result = { ...(data as JsonObject) };
+    const properties = schema['properties'];
+
+    if (
+      properties &&
+      typeof properties === 'object' &&
+      !Array.isArray(properties)
+    ) {
+      for (const [key, prop] of Object.entries(properties as JsonObject)) {
+        if (
+          result[key] === undefined &&
+          prop &&
+          typeof prop === 'object' &&
+          !Array.isArray(prop)
+        ) {
+          const propObj = prop as JsonObject;
+          if (propObj['default'] !== undefined) {
+            result[key] = propObj['default'];
+          }
         }
       }
     }
-    
+
     return result;
   }
 
   /**
    * Get schema version for mode
    */
-  private getSchemaVersion(_documentType: string, mode: 'kanban' | 'agile' | 'safe'): string {
+  private getSchemaVersion(
+    _documentType: string,
+    mode: 'kanban' | 'agile' | 'safe'
+  ): string {
     const modeVersionMap = {
       kanban: '1.0.0',
-      agile: '2.0.0', 
-      safe: '3.0.0'
+      agile: '2.0.0',
+      safe: '3.0.0',
     };
-    
+
     return modeVersionMap[mode];
   }
 
   /**
    * Load schema asynchronously (for $ref resolution)
    */
-  private async loadSchemaAsync(uri: string): Promise<any> {
+  private async loadSchemaAsync(uri: string): Promise<JsonObject> {
     // Implementation for loading external schema references
     // This would be used for schema composition and references
     this.logger.info(`Loading external schema: ${uri}`);
@@ -293,9 +338,12 @@ export class JsonSchemaManager {
   }
 
   /**
-   * Check if document type is available in mode  
+   * Check if document type is available in mode
    */
-  isAvailableInMode(documentType: string, mode: 'kanban' | 'agile' | 'safe'): boolean {
+  isAvailableInMode(
+    documentType: string,
+    mode: 'kanban' | 'agile' | 'safe'
+  ): boolean {
     const schema = this.schemas[documentType];
     return schema ? schema.modes.includes(mode) : false;
   }
@@ -311,11 +359,11 @@ export class JsonSchemaManager {
     const schemasByMode = {
       kanban: 0,
       agile: 0,
-      safe: 0
+      safe: 0,
     };
 
-    Object.values(this.schemas).forEach(schema => {
-      schema.modes.forEach(mode => {
+    Object.values(this.schemas).forEach((schema) => {
+      schema.modes.forEach((mode) => {
         schemasByMode[mode]++;
       });
     });
@@ -323,68 +371,9 @@ export class JsonSchemaManager {
     return {
       totalSchemas: Object.keys(this.schemas).length,
       schemasByMode,
-      averageValidationTime: 0 // Would track actual validation performance
+      averageValidationTime: 0, // Would track actual validation performance
     };
   }
-}
-
-// ============================================================================
-// ERLANG/ELIXIR MIGRATION HELPERS
-// ============================================================================
-
-/**
- * Export schemas in Erlang/Elixir-friendly format
- */
-export function exportSchemasForElixir(manager: JsonSchemaManager): Record<string, any> {
-  const schemas: Record<string, any> = {};
-  
-  manager.getAvailableTypes().forEach(type => {
-    schemas[type] = {
-      kanban: manager.isAvailableInMode(type, 'kanban') ? manager.getSchema(type, 'kanban') : null,
-      agile: manager.isAvailableInMode(type, 'agile') ? manager.getSchema(type, 'agile') : null, 
-      safe: manager.isAvailableInMode(type, 'safe') ? manager.getSchema(type, 'safe') : null
-    };
-  });
-
-  return schemas;
-}
-
-/**
- * Generate Elixir validation modules
- */
-export function generateElixirValidationModule(
-  documentType: string, 
-  schema: any
-): string {
-  const moduleName = documentType.split('_').map(word => 
-    word.charAt(0).toUpperCase() + word.slice(1)
-  ).join('');
-
-  return `
-defmodule DocumentSchemas.${moduleName} do
-  @moduledoc """
-  ${documentType} validation using JSON Schema
-  
-  This module was auto-generated from JSON Schema definitions
-  and provides validation compatible with the TypeScript implementation.
-  """
-
-  @schema ${JSON.stringify(schema, null, 2)}
-
-  def validate(data) do
-    case ExJsonSchema.Validator.validate(@schema, data) do
-      :ok -> {:ok, data}
-      {:error, errors} -> {:error, format_errors(errors)}
-    end
-  end
-
-  defp format_errors(errors) do
-    Enum.map(errors, fn {path, message} ->
-      "\#{path}: \#{message}"
-    end)
-  end
-end
-  `.trim();
 }
 
 // ============================================================================
@@ -399,6 +388,9 @@ export const JSON_SCHEMA_MANAGER_TOKEN = Symbol('JsonSchemaManager');
 /**
  * Create JsonSchemaManager with DI
  */
-export function createJsonSchemaManager(logger: Logger, schemasPath?: string): JsonSchemaManager {
+export function createJsonSchemaManager(
+  logger: Logger,
+  schemasPath?: string
+): JsonSchemaManager {
   return new JsonSchemaManager(logger, schemasPath);
 }

@@ -2,7 +2,7 @@
  * @file Interface implementation: validation.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 /**
  * UACL Integration Validation.

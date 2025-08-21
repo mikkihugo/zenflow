@@ -2,7 +2,7 @@
  * @file Interface implementation: system-metrics-dashboard.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 /** Unified Performance Dashboard */
 /** Real-time monitoring and analytics for Claude Zen systems */

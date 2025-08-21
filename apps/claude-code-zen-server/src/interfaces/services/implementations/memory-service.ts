@@ -16,7 +16,7 @@
  * @file Memory service implementation.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { Service } from '../core/interfaces';
 import type { MemoryServiceConfig, ServiceOperationOptions } from '../types';
 import { BaseService } from './base-service';

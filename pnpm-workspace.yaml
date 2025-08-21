@@ -1,16 +1,34 @@
 packages:
   - apps/*
   - packages/foundation
-  - packages/strategic-facades/*
+  - packages/llm-providers
+  - packages/development
+  - packages/enterprise
+  - packages/infrastructure
+  - packages/intelligence
+  - packages/operations
+  - packages/repo-analyzer
+  - packages/language-parsers
+  - packages/ai-linter
   - packages/implementation-packages/*
   - '!apps/*-backup'
 
 overrides:
-  # Strategic facades (4 interface packages)
-  '@claude-zen/infrastructure': link:packages/strategic-facades/infrastructure
-  '@claude-zen/intelligence': link:packages/strategic-facades/intelligence
-  '@claude-zen/enterprise': link:packages/strategic-facades/enterprise
-  '@claude-zen/operations': link:packages/strategic-facades/operations
+  # Core foundation and LLM providers
+  '@claude-zen/foundation': link:packages/foundation
+  '@claude-zen/llm-providers': link:packages/llm-providers
+  
+  # Strategic facades (5 interface packages) - now in packages root
+  '@claude-zen/infrastructure': link:packages/infrastructure
+  '@claude-zen/intelligence': link:packages/intelligence
+  '@claude-zen/enterprise': link:packages/enterprise
+  '@claude-zen/operations': link:packages/operations
+  '@claude-zen/development': link:packages/development
+  
+  # Supporting packages
+  '@claude-zen/repo-analyzer': link:packages/repo-analyzer
+  '@claude-zen/language-parsers': link:packages/language-parsers
+  '@claude-zen/ai-linter': link:packages/ai-linter
   
   # Updated implementation package paths
   '@claude-zen/agui': link:packages/implementation-packages/agui
@@ -29,3 +47,4 @@ overrides:
   '@claude-zen/ai-safety': link:packages/implementation-packages/ai-safety
   '@claude-zen/load-balancing': link:packages/implementation-packages/load-balancing
   '@claude-zen/otel-collector': link:packages/implementation-packages/otel-collector
+  '@claude-zen/agent-registry': link:packages/implementation-packages/agent-registry

@@ -10,7 +10,7 @@
  * a higher-level abstraction over the core adapter functionality.
  */
 
-import { getLogger, type Logger } from '../../../config/logging-config';
+import { getLogger, type Logger } from '@claude-zen/foundation'
 
 import type { DataServiceAdapter } from './data-service-adapter';
 

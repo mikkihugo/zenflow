@@ -27,11 +27,7 @@ const logger = {
  * Start with Kanban, add modes as needed
  */
 export enum ProjectMode {
-  KANBAN = 'kanban'         // Workflow engine with progressive enhancement
-  // TODO: Add when ready
-  // AGILE = 'agile',        // Kanban + Sprint planning and backlog management  
-  // SAFE = 'safe',          // Kanban + Agile + Enterprise scaling (PIs, ARTs, Value Streams)
-  // AGI_ENHANCED = 'agi'    // Universal AGI layer that can enhance any mode
+  SAFE = 'safe'          // SAFe Lean Portfolio Management - only mode supported
 }
 
 // TODO: AGI enhancement configuration will be added later
@@ -56,7 +52,7 @@ export interface ModeCapabilities {
   projects: boolean;
   
   // Kanban features (progressive enhancement capable)
-  kanbanBoards: boolean;
+  portfolioManagement: boolean;
   wipLimits: boolean;
   flowMetrics: boolean;
   continuousFlow: boolean;
@@ -181,7 +177,7 @@ export class ProjectModeManager extends EventEmitter {
       capabilities: {
         tasks: true,
         projects: true,
-        kanbanBoards: true,
+        portfolioManagement: true,
         wipLimits: true,
         flowMetrics: true,
         continuousFlow: true,
@@ -230,7 +226,7 @@ export class ProjectModeManager extends EventEmitter {
     //     'Throughput metrics'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/kanban-1.0.0-to-1.1.0.js'
+    //   migrationScript: 'migrations/safe-1.0.0-to-1.1.0.js'
     // });
     
     // this.schemaVersions.set('1.2.0', {
@@ -244,7 +240,7 @@ export class ProjectModeManager extends EventEmitter {
     //     'Service level expectations (SLE)'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/kanban-1.1.0-to-1.2.0.js'
+    //   migrationScript: 'migrations/safe-1.1.0-to-1.2.0.js'
     // });
     
     // this.schemaVersions.set('1.3.0', {
@@ -258,7 +254,7 @@ export class ProjectModeManager extends EventEmitter {
     //     'Real-time collaboration features'
     //   ],
     //   migrationRequired: true,
-    //   migrationScript: 'migrations/kanban-1.2.0-to-1.3.0.js'
+    //   migrationScript: 'migrations/safe-1.2.0-to-1.3.0.js'
     // });
   }
   
@@ -347,7 +343,7 @@ export class ProjectModeManager extends EventEmitter {
     // TODO: Add migration paths when Kanban schema upgrades are available
     // Example for future use:
     // if (fromVersion === '1.0.0' && toVersion === '1.1.0') {
-    //   return ['kanban-1.0.0-to-1.1.0'];
+    //   return ['safe-1.0.0-to-1.1.0'];
     // }
     
     return []; // No migration paths available yet
@@ -389,12 +385,8 @@ export class ProjectModeManager extends EventEmitter {
    */
   getModeArchitectureDescription(mode: ProjectMode): string {
     switch (mode) {
-      case ProjectMode.KANBAN:
-        return 'Base workflow engine with continuous flow, WIP limits, and flow metrics. Uses @claude-zen/kanban package.';
-      case ProjectMode.AGILE:
-        return 'Kanban + Sprint-based development with backlog management and retrospectives. Uses @claude-zen/kanban + @claude-zen/enterprise (Agile subset).';
       case ProjectMode.SAFE:
-        return 'Kanban + Agile + Scaled enterprise framework with Program Increments, ARTs, and Value Streams. Uses @claude-zen/kanban + @claude-zen/enterprise (full).';
+        return 'Enterprise SAFe Lean Portfolio Management with strategic coordination, neural intelligence, and comprehensive SAFe database services.';
       default:
         return 'Unknown project mode';
     }

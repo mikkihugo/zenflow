@@ -3,7 +3,7 @@
  * Provides protocol adaptation and legacy system integration.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 import { EventEmitter } from 'eventemitter3';
 

@@ -106,7 +106,7 @@ export const createDocumentRoutes = (): Router => {
         priority,
         author,
         project_id,
-        mode = 'kanban',
+        mode = 'safe',
         page = 1,
         limit = 20,
         search
@@ -131,8 +131,8 @@ export const createDocumentRoutes = (): Router => {
 
         // Migrate documents to requested mode if needed
         const migratedDocuments = result.documents.map(doc => {
-          if (documentSchemaManager.needsMigration(doc, mode as 'kanban' | 'agile' | 'safe')) {
-            return documentSchemaManager.migrateDocument(doc, mode as 'kanban' | 'agile' | 'safe');
+          if (documentSchemaManager.needsMigration(doc, mode as 'safe')) {
+            return documentSchemaManager.migrateDocument(doc, mode as 'safe');
           }
           return doc;
         });
@@ -176,13 +176,13 @@ export const createDocumentRoutes = (): Router => {
     asyncHandler(async (req: Request, res: Response) => {
       log(LogLevel.DEBUG, 'Getting document types', req);
 
-      const { mode = 'kanban' } = req.query;
+      const { mode = 'safe' } = req.query;
 
       try {
         const documentTypes = Object.values(DOCUMENT_TYPES).map(type => {
           const schemaVersion = documentSchemaManager.getVersionForMode(
             type, 
-            mode as 'kanban' | 'agile' | 'safe'
+            mode as 'safe'
           );
           
           return {
@@ -222,7 +222,7 @@ export const createDocumentRoutes = (): Router => {
     '/:documentId',
     asyncHandler(async (req: Request, res: Response) => {
       const { documentId } = req.params;
-      const { mode = 'kanban' } = req.query;
+      const { mode = 'safe' } = req.query;
 
       log(LogLevel.DEBUG, 'Getting document by ID', req, { documentId, mode });
 
@@ -239,9 +239,9 @@ export const createDocumentRoutes = (): Router => {
         // Migrate if needed
         const migratedDocument = documentSchemaManager.needsMigration(
           document, 
-          mode as 'kanban' | 'agile' | 'safe'
+          mode as 'safe'
         ) 
-          ? documentSchemaManager.migrateDocument(document, mode as 'kanban' | 'agile' | 'safe')
+          ? documentSchemaManager.migrateDocument(document, mode as 'safe')
           : document;
 
         res.json({
@@ -272,7 +272,7 @@ export const createDocumentRoutes = (): Router => {
   router.post(
     '/',
     asyncHandler(async (req: Request, res: Response) => {
-      const { mode = 'kanban' } = req.query;
+      const { mode = 'safe' } = req.query;
       const documentData = req.body;
 
       log(LogLevel.INFO, 'Creating new document', req, {
@@ -293,7 +293,7 @@ export const createDocumentRoutes = (): Router => {
         const newDocument = documentSchemaManager.createDocumentWithSchema(
           documentData.type,
           documentData,
-          mode as 'kanban' | 'agile' | 'safe'
+          mode as 'safe'
         );
 
         // Save to database
@@ -334,7 +334,7 @@ export const createDocumentRoutes = (): Router => {
     '/:documentId',
     asyncHandler(async (req: Request, res: Response) => {
       const { documentId } = req.params;
-      const { mode = 'kanban' } = req.query;
+      const { mode = 'safe' } = req.query;
       const updates = req.body;
 
       log(LogLevel.INFO, 'Updating document', req, { documentId, mode });
@@ -361,9 +361,9 @@ export const createDocumentRoutes = (): Router => {
         // Migrate if mode changed
         const finalDocument = documentSchemaManager.needsMigration(
           updatedDocument,
-          mode as 'kanban' | 'agile' | 'safe'
+          mode as 'safe'
         )
-          ? documentSchemaManager.migrateDocument(updatedDocument, mode as 'kanban' | 'agile' | 'safe')
+          ? documentSchemaManager.migrateDocument(updatedDocument, mode as 'safe')
           : updatedDocument;
 
         // Save updates
@@ -737,7 +737,7 @@ export const createDocumentRoutes = (): Router => {
     '/:documentId/children',
     asyncHandler(async (req: Request, res: Response) => {
       const { documentId } = req.params;
-      const { mode = 'kanban' } = req.query;
+      const { mode = 'safe' } = req.query;
 
       log(LogLevel.DEBUG, 'Getting child documents', req, { documentId });
 
@@ -757,8 +757,8 @@ export const createDocumentRoutes = (): Router => {
 
         // Migrate children to requested mode
         const migratedChildren = children.documents.map(doc => {
-          if (documentSchemaManager.needsMigration(doc, mode as 'kanban' | 'agile' | 'safe')) {
-            return documentSchemaManager.migrateDocument(doc, mode as 'kanban' | 'agile' | 'safe');
+          if (documentSchemaManager.needsMigration(doc, mode as 'safe')) {
+            return documentSchemaManager.migrateDocument(doc, mode as 'safe');
           }
           return doc;
         });

@@ -37,7 +37,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger, type Logger } from '../../config/logging-config';
+import { getLogger, type Logger } from '@claude-zen/foundation'
 
 import type {
   Service,
@@ -792,7 +792,7 @@ export class USLFactory implements ServiceFactory {
 
         // Fall back to generic service implementation
         const { GenericService } = await import(
-          './implementations/generic-service'
+          './implementations/base-service'
         );
         return new GenericService(config);
       }

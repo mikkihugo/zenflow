@@ -9,7 +9,7 @@
  * @file Interface implementation: infrastructure-service-helpers.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { ServiceOperationOptions } from '../core/interfaces';
 
 import type {

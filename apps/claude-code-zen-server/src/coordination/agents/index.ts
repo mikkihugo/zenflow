@@ -21,9 +21,12 @@ export * from './composite-system';
 // =============================================================================
 
 export { 
-  AgentRegistryAdapter as AgentRegistry, 
-  createAgentRegistryAdapter as createAgentRegistry 
-} from '@claude-zen/foundation';
+  getAgentRegistry as AgentRegistry,
+  createNewAgentRegistry as createAgentRegistry,
+  registerAgent,
+  getAllAgents,
+  findAgentsByCapability
+} from '@claude-zen/infrastructure';
 
 // =============================================================================
 // TYPE EXPORTS
@@ -31,5 +34,7 @@ export {
 
 export type {
   AgentInstance,
-  AgentRegistrationConfig
-} from '@claude-zen/foundation';
+  AgentRegistrationConfig,
+  AgentHealthStatus,
+  AgentRegistryOptions
+} from '@claude-zen/agent-registry';

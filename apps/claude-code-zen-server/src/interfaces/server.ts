@@ -16,7 +16,8 @@ import type { Server as SocketIOServer } from 'socket.io';
 // Foundation package - unified interface for all shared utilities
 import { Logger, Config } from '@claude-zen/foundation';
 
-import type { SystemConfiguration } from '../config/types';
+// Type moved to @claude-zen/infrastructure
+import type { SystemConfiguration } from '@claude-zen/infrastructure';
 
 const logger = new Logger('interfaces-server');
 const config = new Config();

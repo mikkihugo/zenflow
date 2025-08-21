@@ -1,0 +1,67 @@
+{
+  "name": "@claude-zen/repo-analyzer",
+  "version": "1.0.0",
+  "description": "Battle-hardened repository analysis and domain splitting toolkit",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "repository",
+    "analysis",
+    "domain",
+    "splitting", 
+    "complexity",
+    "dependencies",
+    "monorepo",
+    "refactoring",
+    "code-quality"
+  ],
+  "author": "Claude Code Zen",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@babel/parser": "^7.23.9",
+    "ts-morph": "^21.0.1",
+    "madge": "^6.1.0",
+    "complexity-report": "^2.0.0-alpha",
+    "graphlib": "^2.1.8",
+    "dagre": "^0.8.5",
+    "fast-glob": "^3.3.2",
+    "simple-git": "^3.22.0",
+    "detective": "^5.2.1",
+    "precinct": "^11.0.5",
+    "acorn": "^8.11.3",
+    "acorn-walk": "^8.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/dagre": "^0.7.52",
+    "@types/graphlib": "^2.1.12",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^9.17.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ]
+}

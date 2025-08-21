@@ -12,7 +12,7 @@
  * @file Api module exports.
  */
 
-import { getWebDashboardURL } from '../../config/config';
+import { getWebDashboardURL } from '@claude-zen/infrastructure';
 
 // Import WebSocketClient for internal use in this file
 import { WebSocketClient } from './websocket/client';

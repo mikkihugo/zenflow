@@ -7,7 +7,8 @@
  * @author Claude Code Zen Team
  * @version 2.0.0
  */
-import { type LLMProvider, type Config } from '@claude-zen/foundation';
+import { // Re-enabled in foundation
+type LLMProvider, type Config } from '@claude-zen/foundation';
 interface SharedLLMService {
     analyze(prompt: string, options?: any): Promise<string>;
     createLLMProvider(): Promise<any>;

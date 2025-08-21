@@ -7,7 +7,7 @@
  * @file REST API schemas for all domains.
  */
 
-import { getMCPServerURL } from "../../../config/config";
+// Removed broken config import - using simple fallback
 
 // Re-export coordination types that are actually available
 export type {

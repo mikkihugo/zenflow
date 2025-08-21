@@ -1,18 +1,18 @@
 /**
  * @fileoverview Modern Error Handling using Battle-Tested Libraries
- * 
+ *
  * Professional error handling using established npm packages:
  * - neverthrow: Type-safe Result<T, E> pattern
  * - p-retry: Advanced retry logic with exponential backoff
  * - opossum: Production-ready circuit breaker
- * 
+ *
  * Features:
  * - Type-safe error handling with Result pattern
  * - Advanced retry logic with configurable strategies
  * - Circuit breaker with metrics and health monitoring
  * - Error composition and transformation utilities
  * - Async error handling helpers
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.0.0
  * @version 2.0.0
@@ -21,6 +21,7 @@
 import { Result, ok, err, ResultAsync, errAsync, okAsync } from 'neverthrow';
 import CircuitBreaker, { Options as CircuitBreakerOptions } from 'opossum';
 import pRetry, { AbortError, Options as PRetryOptions } from 'p-retry';
+import type { JsonObject } from './types/primitives';
 
 import { getLogger } from './logging';
 
@@ -33,13 +34,13 @@ export type { PRetryOptions, CircuitBreakerOptions };
  * Enhanced error classes with context
  */
 export class EnhancedError extends Error {
-  public readonly context: Record<string, any>;
+  public readonly context: JsonObject;
   public readonly timestamp: Date;
   public readonly code?: string;
 
   constructor(
     message: string,
-    context: Record<string, any> = {},
+    context: JsonObject = {},
     code?: string,
     options?: ErrorOptions
   ) {
@@ -53,11 +54,11 @@ export class EnhancedError extends Error {
   /**
    * Create an enhanced error with additional context
    */
-  withContext(additionalContext: Record<string, any>): EnhancedError {
+  withContext(additionalContext: JsonObject): EnhancedError {
     return new EnhancedError(
-      this.message, 
-      { ...this.context, ...additionalContext }, 
-      this.code, 
+      this.message,
+      { ...this.context, ...additionalContext },
+      this.code,
       { cause: this }
     );
   }
@@ -65,26 +66,26 @@ export class EnhancedError extends Error {
   /**
    * Convert to plain object for serialization
    */
-  toObject(): Record<string, any> {
+  toObject(): JsonObject {
     return {
       name: this.name,
       message: this.message,
-      code: this.code,
-      context: this.context,
+      code: this.code ?? null,
+      context: this.context as JsonObject,
       timestamp: this.timestamp.toISOString(),
-      stack: this.stack
+      stack: this.stack ?? null,
     };
   }
 }
 
 export class ContextError extends Error {
-  public readonly context: Record<string, any>;
+  public readonly context: JsonObject;
   public readonly timestamp: Date;
   public readonly code?: string;
 
   constructor(
     message: string,
-    context: Record<string, any> = {},
+    context: JsonObject = {},
     code?: string,
     options?: ErrorOptions
   ) {
@@ -98,7 +99,7 @@ export class ContextError extends Error {
   /**
    * Create an enhanced error with additional context
    */
-  withContext(additionalContext: Record<string, any>): ContextError {
+  withContext(additionalContext: JsonObject): ContextError {
     return new ContextError(
       this.message,
       { ...this.context, ...additionalContext },
@@ -110,14 +111,14 @@ export class ContextError extends Error {
   /**
    * Convert to plain object for serialization
    */
-  toObject(): Record<string, any> {
+  toObject(): JsonObject {
     return {
       name: this.name,
       message: this.message,
-      code: this.code,
-      context: this.context,
+      code: this.code ?? null,
+      context: this.context as JsonObject,
       timestamp: this.timestamp.toISOString(),
-      stack: this.stack
+      stack: this.stack ?? null,
     };
   }
 }
@@ -126,35 +127,35 @@ export class ContextError extends Error {
  * Specific error types
  */
 export class ValidationError extends ContextError {
-  constructor(message: string, context: Record<string, any> = {}) {
+  constructor(message: string, context: JsonObject = {}) {
     super(message, context, 'VALIDATION_ERROR');
     this.name = 'ValidationError';
   }
 }
 
 export class ConfigurationError extends ContextError {
-  constructor(message: string, context: Record<string, any> = {}) {
+  constructor(message: string, context: JsonObject = {}) {
     super(message, context, 'CONFIGURATION_ERROR');
     this.name = 'ConfigurationError';
   }
 }
 
 export class NetworkError extends ContextError {
-  constructor(message: string, context: Record<string, any> = {}) {
+  constructor(message: string, context: JsonObject = {}) {
     super(message, context, 'NETWORK_ERROR');
     this.name = 'NetworkError';
   }
 }
 
 export class TimeoutError extends ContextError {
-  constructor(message: string, context: Record<string, any> = {}) {
+  constructor(message: string, context: JsonObject = {}) {
     super(message, context, 'TIMEOUT_ERROR');
     this.name = 'TimeoutError';
   }
 }
 
 export class ResourceError extends ContextError {
-  constructor(message: string, context: Record<string, any> = {}) {
+  constructor(message: string, context: JsonObject = {}) {
     super(message, context, 'RESOURCE_ERROR');
     this.name = 'ResourceError';
   }
@@ -172,17 +173,23 @@ export function isErrorWithContext(value: unknown): value is ContextError {
 }
 
 export function ensureError(value: unknown): Error {
-  if (isError(value)) return value;
-  if (typeof value === 'string') return new Error(value);
+  if (isError(value)) {
+    return value;
+  }
+  if (typeof value === 'string') {
+    return new Error(value);
+  }
   return new Error(String(value));
 }
 
-export function withContext(error: unknown, context: Record<string, any>): ContextError {
+export function withContext(error: unknown, context: JsonObject): ContextError {
   const baseError = ensureError(error);
   if (isErrorWithContext(baseError)) {
     return baseError.withContext(context);
   }
-  return new ContextError(baseError.message, context, undefined, { cause: baseError });
+  return new ContextError(baseError.message, context, undefined, {
+    cause: baseError,
+  });
 }
 
 /**
@@ -215,7 +222,10 @@ export function safe<T>(fn: () => T): Result<T, Error> {
  * Advanced retry configuration
  */
 export interface RetryOptions extends Omit<PRetryOptions, 'onFailedAttempt'> {
-  onFailedAttempt?: (error: Error, attemptNumber: number) => void | Promise<void>;
+  onFailedAttempt?: (
+    error: Error,
+    attemptNumber: number
+  ) => void | Promise<void>;
   shouldRetry?: (error: Error) => boolean;
   retryIf?: (error: Error) => boolean;
   abortIf?: (error: Error) => boolean;
@@ -233,13 +243,8 @@ export async function withRetry<T>(
   fn: () => Promise<T>,
   options: RetryOptions = {}
 ): Promise<Result<T, Error>> {
-  const {
-    onFailedAttempt,
-    shouldRetry,
-    retryIf,
-    abortIf,
-    ...retryOptions
-  } = options;
+  const { onFailedAttempt, shouldRetry, retryIf, abortIf, ...retryOptions } =
+    options;
 
   const finalOptions: PRetryOptions = {
     retries: 3,
@@ -250,21 +255,21 @@ export async function withRetry<T>(
     ...retryOptions,
     onFailedAttempt: (error) => {
       logger.warn(`Attempt ${error.attemptNumber} failed:`, error);
-      
+
       // Custom abort logic
       if (abortIf && abortIf(error)) {
         throw new AbortError(error);
       }
-      
+
       // Custom retry logic
       if (shouldRetry && !shouldRetry(error)) {
         throw new AbortError(error);
       }
-      
+
       if (retryIf && !retryIf(error)) {
         throw new AbortError(error);
       }
-      
+
       // Call user-provided callback
       if (onFailedAttempt) {
         const result = onFailedAttempt(error, error.attemptNumber);
@@ -273,7 +278,7 @@ export async function withRetry<T>(
         }
       }
       return Promise.resolve();
-    }
+    },
   };
 
   try {
@@ -282,8 +287,8 @@ export async function withRetry<T>(
   } catch (error) {
     const enhancedError = withContext(error, {
       operation: 'retry',
-      maxRetries: finalOptions.retries,
-      finalAttempt: true
+      maxRetries: finalOptions.retries || 0,
+      finalAttempt: true,
     });
     logger.error('Retry failed permanently:', enhancedError);
     return err(enhancedError);
@@ -293,24 +298,24 @@ export async function withRetry<T>(
 /**
  * Circuit breaker with monitoring
  */
-export class CircuitBreakerWithMonitoring<T extends any[], R> {
+export class CircuitBreakerWithMonitoring<T extends unknown[], R> {
   private breaker: CircuitBreaker<T, R>;
   private readonly name: string;
 
   constructor(
     action: (...args: T) => Promise<R>,
     options: CircuitBreakerOptions = {},
-    name: string = 'circuit-breaker'
+    name = 'circuit-breaker'
   ) {
     this.name = name;
-    
+
     const defaultOptions: CircuitBreakerOptions = {
       timeout: 5000,
       errorThresholdPercentage: 50,
       resetTimeout: 30000,
       rollingCountTimeout: 10000,
       rollingCountBuckets: 10,
-      ...options
+      ...options,
     };
 
     this.breaker = new CircuitBreaker(action, defaultOptions);
@@ -361,9 +366,9 @@ export class CircuitBreakerWithMonitoring<T extends any[], R> {
     } catch (error) {
       const enhancedError = withContext(error, {
         circuitBreaker: this.name,
-        state: this.breaker.stats,
+        state: JSON.stringify(this.breaker.stats),
         isOpen: this.breaker.opened,
-        isHalfOpen: this.breaker.halfOpen
+        isHalfOpen: this.breaker.halfOpen,
       });
       return err(enhancedError);
     }
@@ -392,7 +397,7 @@ export class CircuitBreakerWithMonitoring<T extends any[], R> {
       isOpen: this.breaker.opened,
       isHalfOpen: this.breaker.halfOpen,
       isClosed: this.breaker.closed,
-      stats: this.breaker.stats
+      stats: this.breaker.stats,
     };
   }
 
@@ -416,7 +421,7 @@ export class CircuitBreakerWithMonitoring<T extends any[], R> {
 /**
  * Create a circuit breaker with Result pattern
  */
-export function createCircuitBreaker<T extends any[], R>(
+export function createCircuitBreaker<T extends unknown[], R>(
   action: (...args: T) => Promise<R>,
   options: CircuitBreakerOptions = {},
   name?: string
@@ -434,10 +439,12 @@ export async function withTimeout<T>(
 ): Promise<Result<T, TimeoutError>> {
   const timeoutPromise = new Promise<never>((_, reject) => {
     setTimeout(() => {
-      reject(new TimeoutError(
-        timeoutMessage || `Operation timed out after ${timeoutMs}ms`,
-        { timeoutMs }
-      ));
+      reject(
+        new TimeoutError(
+          timeoutMessage || `Operation timed out after ${timeoutMs}ms`,
+          { timeoutMs }
+        )
+      );
     }, timeoutMs);
   });
 
@@ -449,7 +456,11 @@ export async function withTimeout<T>(
       return err(error);
     } else {
       const enhancedError = ensureError(error);
-      return err(new TimeoutError(enhancedError.message, { originalError: enhancedError }));
+      return err(
+        new TimeoutError(enhancedError.message, {
+          originalError: enhancedError.message,
+        })
+      );
     }
   }
 }
@@ -460,11 +471,11 @@ export async function withTimeout<T>(
 export async function executeAll<T>(
   operations: (() => Promise<T>)[]
 ): Promise<Result<T[], Error[]>> {
-  const results = await Promise.allSettled(operations.map(op => op()));
-  
+  const results = await Promise.allSettled(operations.map((op) => op()));
+
   const successes: T[] = [];
   const failures: Error[] = [];
-  
+
   for (const result of results) {
     if (result.status === 'fulfilled') {
       successes.push(result.value);
@@ -472,7 +483,7 @@ export async function executeAll<T>(
       failures.push(ensureError(result.reason));
     }
   }
-  
+
   return failures.length === 0 ? ok(successes) : err(failures);
 }
 
@@ -483,20 +494,20 @@ export async function executeAllSuccessful<T>(
   operations: (() => Promise<T>)[]
 ): Promise<Result<T[], Error[]>> {
   const result = await executeAll(operations);
-  
+
   if (result.isOk()) {
     return ok(result.value);
   } else {
     // Return successful results even if some failed
-    const results = await Promise.allSettled(operations.map(op => op()));
+    const results = await Promise.allSettled(operations.map((op) => op()));
     const successes: T[] = [];
-    
+
     for (const result of results) {
       if (result.status === 'fulfilled') {
         successes.push(result.value);
       }
     }
-    
+
     return ok(successes);
   }
 }
@@ -588,12 +599,15 @@ export function createErrorAggregator(): ErrorAggregator {
 /**
  * Utility for creating error chains
  */
-export function createErrorChain(baseError: Error, ...additionalErrors: Error[]): ContextError {
+export function createErrorChain(
+  baseError: Error,
+  ...additionalErrors: Error[]
+): ContextError {
   const allErrors = [baseError, ...additionalErrors];
-  const messages = allErrors.map(e => e.message);
+  const messages = allErrors.map((e) => e.message);
   const contexts = allErrors
     .filter(isErrorWithContext)
-    .map(e => e.context)
+    .map((e) => e.context)
     .reduce((acc, ctx) => ({ ...acc, ...ctx }), {});
 
   return new ContextError(
@@ -601,7 +615,7 @@ export function createErrorChain(baseError: Error, ...additionalErrors: Error[])
     {
       ...contexts,
       errorChain: messages,
-      errorCount: allErrors.length
+      errorCount: allErrors.length,
     },
     'ERROR_CHAIN',
     { cause: baseError }
@@ -610,25 +624,15 @@ export function createErrorChain(baseError: Error, ...additionalErrors: Error[])
 
 // Export convenience functions
 // Export p-retry and neverthrow directly
-export {
-  AbortError,
-  Result, 
-  ok, 
-  err, 
-  ResultAsync, 
-  errAsync, 
-  okAsync
-};
+export { AbortError, Result, ok, err, ResultAsync, errAsync, okAsync };
 
 // Re-export from types for backwards compatibility
-export type { 
-  BaseError
-} from './types/errors';
+export type { BaseError } from './types/errors';
 
 // Export enums with clear naming to avoid conflicts
-export { 
-  ErrorSeverity as ErrorSeverityEnum, 
-  ErrorCategory as ErrorCategoryEnum 
+export {
+  ErrorSeverity as ErrorSeverityEnum,
+  ErrorCategory as ErrorCategoryEnum,
 } from './types/errors';
 
 export const ErrorHandling = {
@@ -646,5 +650,5 @@ export const ErrorHandling = {
   withContext,
   ensureError,
   isError,
-  isErrorWithContext
+  isErrorWithContext,
 } as const;

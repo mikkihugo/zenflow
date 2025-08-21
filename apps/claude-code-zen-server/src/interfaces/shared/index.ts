@@ -16,7 +16,8 @@
  */
 
 // Re-export config types
-export type { InterfaceConfig } from '../../config/types';
+// Type moved to @claude-zen/infrastructure
+export type { InterfaceConfig } from '@claude-zen/infrastructure';
 // Re-export types from CLI advanced types
 export type {
   ComplexityLevel,

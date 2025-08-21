@@ -11,8 +11,8 @@
 
 import { EventEmitter } from 'eventemitter3';
 
-import type { Logger } from '../../../config/logging-config';
-import { getLogger } from '../../../config/logging-config';
+import type { Logger } from '@claude-zen/foundation'
+import { getLogger } from '@claude-zen/foundation'
 import type { ServiceLifecycleStatus } from '../core/interfaces';
 
 import {

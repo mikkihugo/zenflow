@@ -38,15 +38,25 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
 
   copilot: {
     name: 'copilot',
-    displayName: 'GitHub Copilot (Enterprise)',
-    models: ['gpt-4.1', 'gpt-3.5-turbo'],
-    defaultModel: 'gpt-4.1',
-    maxContextTokens: 200000, // GitHub Copilot's 200K context window
-    maxOutputTokens: 16000, // Higher output limit for enterprise
+    displayName: 'GitHub Copilot (GPT-5)',
+    models: ['gpt-5', 'o3', 'o3-mini', 'o4-mini', 'gpt-4.1', 'gpt-4o', 'gpt-4', 'claude-opus-4', 'claude-sonnet-4', 'claude-3.5-sonnet', 'gemini-2.5-pro', 'gpt-3.5-turbo'],
+    defaultModel: 'gpt-5',
+    maxContextTokens: 1000000, // Maximum context window for advanced models
+    maxOutputTokens: 16384, // Standard output limit for chat completions
     rateLimits: {
-      requestsPerMinute: 300, // Enterprise account - high limits
-      tokensPerMinute: 200000,
-      cooldownMinutes: 10, // Shorter cooldown for enterprise
+      requestsPerMinute: 60, // OAuth token limits
+      tokensPerMinute: 100000,
+      cooldownMinutes: 30, // Conservative cooldown
+    },
+    api: {
+      baseUrl: 'https://api.githubcopilot.com',
+      tokenPath: '~/.claude-zen/copilot-token.json',
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'claude-code-zen/1.0',
+        'Copilot-Integration-Id': 'vscode-chat',
+      },
+      authType: 'bearer',
     },
     features: {
       structuredOutput: true,
@@ -55,10 +65,10 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
       streaming: true,
     },
     routing: {
-      priority: 1, // High priority due to large context + enterprise
-      useForSmallContext: true, // Can handle any size efficiently
-      useForLargeContext: true, // Excellent for large contexts with 200K limit
-      fallbackOrder: 1, // Prefer over GitHub Models for large contexts
+      priority: 1, // Highest priority - GPT-5 as primary
+      useForSmallContext: true, // GPT-5 excellent for all contexts
+      useForLargeContext: true, // 400K context handles everything
+      fallbackOrder: 0, // First choice for all tasks
     },
   },
 
@@ -76,10 +86,10 @@ export const LLM_PROVIDER_CONFIG: Record<string, ProviderConfig> = {
       streaming: false,
     },
     routing: {
-      priority: 1,
+      priority: 2, // Claude Code as fallback
       useForSmallContext: true,
       useForLargeContext: true, // Excellent for codebase analysis
-      fallbackOrder: 0, // First preference when available
+      fallbackOrder: 1, // Fallback after Copilot GPT-5
     },
   },
 
@@ -179,14 +189,14 @@ export const ROUTING_STRATEGY: RoutingStrategy = {
 
   // Context-based routing rules
   RULES: {
-    // Regular tasks: GitHub Models (free) → Gemini 2.5 Flash (main) → Copilot
-    smallContext: ['github-models', 'gemini-direct', 'copilot', 'claude-code'],
+    // Regular tasks: Copilot GPT-5 → GitHub Models → Gemini 2.5 Flash → Claude Code
+    smallContext: ['copilot', 'github-models', 'gemini-direct', 'claude-code'],
 
-    // All contexts: Gemini 2.5 Flash is the main workhorse after GitHub Models
+    // All contexts: Copilot GPT-5 is the primary workhorse
     largeContext: [
+      'copilot',
       'github-models',
       'gemini-direct',
-      'copilot',
       'claude-code',
       'gemini',
     ],
@@ -194,24 +204,24 @@ export const ROUTING_STRATEGY: RoutingStrategy = {
     // File operations: Use CLI providers only
     fileOperations: ['claude-code', 'gemini'],
 
-    // Code analysis: Gemini 2.5 Flash main, Pro for complex reasoning
+    // Code analysis: Copilot GPT-5 primary, Claude Code fallback
     codeAnalysis: [
+      'copilot',
+      'claude-code',
       'github-models',
       'gemini-direct',
       'gemini-pro',
-      'copilot',
-      'claude-code',
     ],
 
-    // Complex reasoning: Use Pro model specifically
-    complexReasoning: ['gemini-pro', 'copilot', 'claude-code'],
+    // Complex reasoning: Copilot GPT-5 primary
+    complexReasoning: ['copilot', 'gemini-pro', 'claude-code'],
 
     // JSON responses: All providers support structured output
     structuredOutput: [
+      'copilot',
       'github-models',
       'gemini-direct',
       'gemini-pro',
-      'copilot',
       'claude-code',
       'gemini',
     ],

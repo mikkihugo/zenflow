@@ -17,12 +17,12 @@
 
 import { BrainCoordinator } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import { MemoryManager } from '../memory/index';
-import { DocumentDrivenSystem } from './document-driven-system';
-import { DocumentationLinker } from './documentation-linker';
-import { ExportSystem as ExportManager } from './export-manager';
-import { InterfaceLauncher } from './interface-launcher';
+import { DocumentDrivenSystem } from '@claude-zen/document-processing';
+import { DocumentationLinker } from '@claude-zen/documentation';
+import { ExportSystem as ExportManager } from '@claude-zen/exporters';
+import { InterfaceLauncher } from '@claude-zen/interfaces';
 import { WorkflowEngine } from '../workflows/workflow-engine';
 
 const logger = getLogger('ApplicationCoordinator');

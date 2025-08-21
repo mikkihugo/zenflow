@@ -1,26 +1,36 @@
 /**
- * @fileoverview Project Coordination System - MVP Kanban
+ * @fileoverview Project Coordination System
  * 
- * Project coordination exports for MVP kanban with swimlanes.
- * Removed complex Queen/Commander/Cube/Matron hierarchy in favor
- * of straightforward project coordination.
+ * Comprehensive coordination system exports including:
+ * - Essential development coordination (SPARC + Git + Swarms)
+ * - Optional project management features  
+ * - Universal SPARC development integration
+ * - Streamlined SAFe LPM workflow management
  * 
  * @author Claude Code Zen Team
  * @since 2.3.0
  * @version 1.0.0
  */
 
-// Project coordination (optional AI project management features)
-export { ProjectCoordinator, getProjectCoordinator, createProjectConfig } from './project-coordinator';
-export type { ProjectCoordinationConfig, CoordinationStatus } from './project-coordinator';
+// Project coordination - Use enterprise strategic facade
+export { ProjectCoordinator, getProjectCoordinator, createProjectConfig } from '@claude-zen/enterprise';
+export type { ProjectCoordinationConfig, CoordinationStatus } from '@claude-zen/enterprise';
 
-// Development coordination (essential SPARC + Git + Swarms)
-export { DevelopmentCoordinator, createDevelopmentConfig } from './development-coordinator';
-export type { DevelopmentCoordinationConfig, DevelopmentTask, SPARCPhase } from './development-coordinator';
+// Development coordination - Use enterprise strategic facade
+export { DevelopmentCoordinator, createDevelopmentConfig } from '@claude-zen/enterprise';
+export type { DevelopmentCoordinationConfig, DevelopmentTask, SPARCPhase } from '@claude-zen/enterprise';
 
-// Git coordination (essential for code projects)
-export { GitManager, createGitManager } from './git-manager';
-export type { GitOperationResult, BranchInfo } from './git-manager';
+// Git coordination - Use development strategic facade (delegates to git-operations)
+export { GitOperationsManager } from '@claude-zen/development';
+export type { GitOperationConfig, BranchStrategy, ConflictResolution, GitOperation } from '@claude-zen/development';
+
+// Development management (SAFE enterprise coordination) - Use enterprise strategic facade
+export { DevelopmentManager } from '@claude-zen/enterprise';
+export type { DevelopmentManagerConfig, DevelopmentTeam } from '@claude-zen/enterprise';
+
+// SPARC integration (universal development workflow)
+export { SPARCDevelopmentIntegration, createSPARCDevelopmentIntegration } from './sparc-development-integration';
+export type { SPARCWorkflowState } from './sparc-development-integration';
 
 // Kanban coordination (keep only what's needed for MVP)
 export { KanbanFlowManager } from './kanban/flow-manager';
@@ -29,8 +39,3 @@ export { FlowManagerFacade } from './kanban/flow-manager-facade';
 // Keep some existing exports that are still useful
 export * from './public-api';
 export * from './types';
-
-// Note: Complex coordination components moved to legacy backups:
-// - legacy-manager.ts.backup (complex coordination manager)
-// - legacy-memory-coordinator.ts.backup (memory-based coordination)
-// - legacy-agent-pipeline.ts.backup (agent interaction pipeline)

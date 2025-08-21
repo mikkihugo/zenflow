@@ -57,7 +57,7 @@ export { WorkflowEngine } from '../workflows/workflow-engine';
 
 export { ApplicationCoordinator } from './application-coordinator'; // Legacy - use CoreSystem
 // Keep these for backward compatibility during transition
-export { DocumentDrivenSystem } from './document-driven-system'; // Legacy - use DocumentProcessor
+export { DocumentDrivenSystem } from '@claude-zen/document-processing'; // Moved to package - legacy compatibility
 // export { MemoryCoordinator } from './memory-coordinator'; // Module not found - use BrainCoordinator
 
 // ==================== SHARED UTILITIES ====================
@@ -78,7 +78,7 @@ export {
   NetworkError,
   RAGError,
   SwarmError,
-} from './errors';
+} from '@claude-zen/foundation/errors';
 // Core utilities
 export { EventBus } from './event-bus';
 // ExportManager already exported above as UnifiedExportSystem
@@ -88,15 +88,15 @@ export type {
   ExportResult as LegacyExportResult,
 } from './exporters';
 export { ExportSystem, ExportUtils } from './exporters';
-export * from './helpers';
-export { InterfaceModeDetector } from './interface-mode-detector';
-export type { Logger, LoggerConfig, LogLevel } from './logger';
+export * from '@claude-zen/foundation/helpers';
+export { InterfaceModeDetector } from '@claude-zen/interfaces';
+export type { Logger, LoggerConfig, LogLevel } from '@claude-zen/foundation/logger';
 // Logging system
-export { createLogger, Logger } from './logger';
+export { createLogger, Logger } from '@claude-zen/foundation/logger';
 export type { LogMeta } from './logger-old';
 export { Orchestrator } from './orchestrator';
-export * from './orchestrator-provider';
+export * from '@claude-zen/foundation/orchestrator-provider';
 // External systems
-export { ProductFlowSystem } from './product-flow-system';
-export * from './type-guards';
-export * from './types';
+export { ProductFlowSystem } from '@claude-zen/document-processing';
+export * from '@claude-zen/foundation/type-guards';
+export * from '@claude-zen/foundation/types';

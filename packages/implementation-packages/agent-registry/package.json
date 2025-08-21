@@ -1,0 +1,53 @@
+{
+  "name": "@claude-zen/agent-registry",
+  "version": "1.0.0",
+  "description": "Dedicated agent registry system with DI container integration for claude-code-zen",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "type-check": "tsc --noEmit",
+    "prepublishOnly": "pnpm run clean && pnpm run build"
+  },
+  "keywords": [
+    "agent-registry",
+    "dependency-injection",
+    "claude-code-zen",
+    "agent-management",
+    "service-container",
+    "typescript"
+  ],
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "22.17.1",
+    "typescript": "^5.9.2"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen.git",
+    "directory": "packages/implementation-packages/agent-registry"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

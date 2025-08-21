@@ -12,8 +12,8 @@ import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { getLogger } from '../../config/logging-config';
-import { getVersion } from '../../config/version';
+import { getLogger } from '@claude-zen/foundation'
+const { getVersion } = (global as any).claudeZenFoundation;
 import { ProcessLifecycleManager } from '../../core/process-lifecycle';
 import type { DIContainer } from '../../di/index';
 

@@ -1,23 +1,23 @@
 /**
  * @fileoverview Foundation Types - Standard Patterns
- * 
+ *
  * Common structural patterns and interfaces used across the monorepo.
  * These represent standard ways of organizing data and behavior that are
  * domain-agnostic and universally applicable.
- * 
+ *
  * SCOPE: Structural patterns that are NOT domain-specific
- * 
+ *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
  * ```typescript
  * import type { Timestamped, Versioned, Paginated } from '@claude-zen/foundation/types';
- * 
+ *
  * interface User extends Timestamped, Versioned {
  *   id: string;
  *   email: string;
  * }
- * 
+ *
  * type UserList = Paginated<User>;
  * ```
  */
@@ -155,7 +155,12 @@ export interface Described {
 /**
  * Complete entity pattern combining common identification patterns
  */
-export interface Entity extends Identifiable<UUID>, Named, Described, Timestamped, Versioned {
+export interface Entity
+  extends Identifiable<UUID>,
+    Named,
+    Described,
+    Timestamped,
+    Versioned {
   /** Whether this entity is currently active/enabled */
   isActive: boolean;
 }
@@ -243,7 +248,8 @@ export interface OperationResult<T = void, E = Error> {
 /**
  * Async operation result with additional timing information
  */
-export interface AsyncOperationResult<T = void, E = Error> extends OperationResult<T, E> {
+export interface AsyncOperationResult<T = void, E = Error>
+  extends OperationResult<T, E> {
   /** When the operation started */
   startTime: Timestamp;
   /** When the operation completed */
@@ -417,7 +423,7 @@ export function createPaginationMetadata(
     totalPages,
     totalItems,
     hasNextPage: currentPage < totalPages,
-    hasPreviousPage: currentPage > 1
+    hasPreviousPage: currentPage > 1,
   };
 }
 
@@ -432,42 +438,52 @@ export function createPaginated<T>(
 ): Paginated<T> {
   return {
     items,
-    pagination: createPaginationMetadata(currentPage, pageSize, totalItems)
+    pagination: createPaginationMetadata(currentPage, pageSize, totalItems),
   };
 }
 
 /**
  * Create a successful operation result
  */
-export function createSuccessResult<T>(data: T, metadata?: Record<string, unknown>): OperationResult<T> {
+export function createSuccessResult<T>(
+  data: T,
+  metadata?: Record<string, unknown>
+): OperationResult<T> {
   return {
     success: true,
     data,
-    metadata
+    metadata,
   };
 }
 
 /**
  * Create a failed operation result
  */
-export function createErrorResult<E = Error>(error: E, metadata?: Record<string, unknown>): OperationResult<never, E> {
+export function createErrorResult<E = Error>(
+  error: E,
+  metadata?: Record<string, unknown>
+): OperationResult<never, E> {
   return {
     success: false,
     error,
-    metadata
+    metadata,
   };
 }
 
 /**
  * Check if operation result is successful (type guard)
  */
-export function isSuccessResult<T, E>(result: OperationResult<T, E>): result is OperationResult<T, E> & { success: true; data: T } {
+export function isSuccessResult<T, E>(
+  result: OperationResult<T, E>
+): result is OperationResult<T, E> & { success: true; data: T } {
   return result.success === true;
 }
 
 /**
  * Check if operation result is an error (type guard)
  */
-export function isErrorResult<T, E>(result: OperationResult<T, E>): result is OperationResult<T, E> & { success: false; error: E } {
+export function isErrorResult<T, E>(
+  result: OperationResult<T, E>
+): result is OperationResult<T, E> & { success: false; error: E } {
   return result.success === false;
 }

@@ -16,7 +16,7 @@ import type { Logger } from '@claude-zen/foundation';
 import { withFactCapabilities } from '../universal-fact-mixin';
 import type { EventBus } from '../../core/interfaces/base-interfaces';
 import type { CoordinationFactAccess } from '../shared-fact-access';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 // Coordination event type (simplified)
 type CoordinationEvent = any;

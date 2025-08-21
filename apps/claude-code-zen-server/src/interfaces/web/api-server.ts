@@ -23,8 +23,8 @@ import cors from 'cors';
 import compression from 'compression';
 import { rateLimit } from 'express-rate-limit';
 
-import { getLogger } from '../../config/logging-config';
-import { getVersion } from '../../config/version';
+import { getLogger } from '@claude-zen/foundation'
+const { getVersion } = (global as any).claudeZenFoundation;
 
 import { ControlApiRoutes } from './control-api-routes';
 import { SystemCapabilityRoutes } from './system-capability-routes';

@@ -19,7 +19,7 @@ import type { Logger } from '@claude-zen/foundation';
 import { type Request, type Response, Router } from 'express';
 import { asyncHandler } from '../middleware/errors';
 import { LogLevel, log, logPerformance } from '../middleware/logging';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 /**
  * Create memory management routes with @claude-zen/intelligence delegation.

@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import type { Express, Request, Response } from 'express';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import * as fs from 'fs-extra';
 import { spawn } from 'child_process';
 

@@ -10,7 +10,7 @@
 
 import { nanoid } from 'nanoid';
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import { DALFactory } from '../../database/dal/dal-factory';
 import type {
   BaseDocumentEntity,

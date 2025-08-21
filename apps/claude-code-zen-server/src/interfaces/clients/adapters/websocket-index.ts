@@ -2,7 +2,7 @@
  * @file Interface implementation: websocket-index.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 // Import for internal use
 import {

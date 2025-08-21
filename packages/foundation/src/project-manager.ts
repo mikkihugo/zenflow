@@ -1,14 +1,14 @@
 /**
  * @fileoverview Project Management System for Claude-Zen
- * 
+ *
  * Manages user projects with individual databases stored in a configurable location.
  * Projects are stored in a projects.json file with metadata, and each project
  * gets its own database directory for storing project-specific data.
- * 
+ *
  * Storage locations:
  * - Project root: .claude-zen/projects.json
  * - User home: ~/.claude-zen/projects.json (when ZEN_STORE_CONFIG_IN_USER_HOME=true)
- * 
+ *
  * Project structure:
  * .claude-zen/
  * ├── projects.json          # Main project registry
@@ -22,13 +22,14 @@
  */
 
 import * as fs from 'fs';
+import { promises as fsAsync } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 
-import { getConfig, type Config } from '../config';
+import { getConfig, type Config } from './config';
 
 import { getLogger } from './logging';
-
+import type { UnknownRecord } from './types/primitives';
 
 const logger = getLogger('project-manager');
 
@@ -46,10 +47,18 @@ export interface ProjectInfo {
     type: 'monorepo' | 'single' | 'multi' | 'bazel' | 'complex';
     workspaceFile?: string; // pnpm-workspace.yaml, lerna.json, WORKSPACE, etc.
     monorepoRoot?: string; // Path to monorepo root (only for type: 'multi')
-    buildSystem?: 'pnpm' | 'lerna' | 'nx' | 'rush' | 'bazel' | 'gradle' | 'maven' | 'custom';
+    buildSystem?:
+      | 'pnpm'
+      | 'lerna'
+      | 'nx'
+      | 'rush'
+      | 'bazel'
+      | 'gradle'
+      | 'maven'
+      | 'custom';
     structure?: {
       hasServices?: boolean; // services/ directory
-      hasDomains?: boolean; // domains/ directory  
+      hasDomains?: boolean; // domains/ directory
       hasMonolib?: boolean; // shared libraries
       hasApps?: boolean; // apps/ directory
       hasPackages?: boolean; // packages/ directory
@@ -59,10 +68,21 @@ export interface ProjectInfo {
     subProjects?: Array<{
       path: string;
       name: string;
-      type: 'service' | 'domain' | 'app' | 'lib' | 'package' | 'tool' | 'example' | 'test' | 'benchmark' | 'crate' | 'doc';
+      type:
+        | 'service'
+        | 'domain'
+        | 'app'
+        | 'lib'
+        | 'package'
+        | 'tool'
+        | 'example'
+        | 'test'
+        | 'benchmark'
+        | 'crate'
+        | 'doc';
     }>;
   };
-  metadata?: Record<string, any>;
+  metadata?: UnknownRecord;
 }
 
 export interface ProjectRegistry {
@@ -73,7 +93,7 @@ export interface ProjectRegistry {
 
 /**
  * Project Manager for Claude-Zen
- * 
+ *
  * Manages project registry and individual project databases.
  * Handles automatic directory creation and gitignore management.
  */
@@ -83,38 +103,59 @@ export class ProjectManager {
   private projectsFile: string;
   private projectsDir: string;
   private registry: ProjectRegistry | null = null;
-  
+
   private constructor() {
     const config = getConfig();
-    
+
     if (config.project.storeInUserHome) {
       // User home mode: Multi-repo support with central project registry
-      this.configDir = path.resolve(path.join(os.homedir(), config.project.configDir));
+      this.configDir = path.resolve(
+        path.join(os.homedir(), config.project.configDir)
+      );
     } else {
       // Project root mode: Single repo mode, store in current project root
       this.configDir = path.resolve(config.project.configDir);
     }
-    
+
     this.projectsFile = path.join(this.configDir, 'projects.json');
     this.projectsDir = path.join(this.configDir, 'projects');
-    
+
     this.ensureDirectoriesExist();
     this.ensureGitignore();
   }
-  
+
   static getInstance(): ProjectManager {
     if (!ProjectManager.instance) {
       ProjectManager.instance = new ProjectManager();
     }
     return ProjectManager.instance;
   }
-  
+
+  /**
+   * Get instance with async initialization
+   */
+  static async getInstanceAsync(): Promise<ProjectManager> {
+    if (!ProjectManager.instance) {
+      ProjectManager.instance = new ProjectManager();
+      await ProjectManager.instance.initializeAsync();
+    }
+    return ProjectManager.instance;
+  }
+
+  /**
+   * Initialize directories and gitignore asynchronously
+   */
+  async initializeAsync(): Promise<void> {
+    await this.ensureDirectoriesExistAsync();
+    await this.ensureGitignoreAsync();
+  }
+
   /**
    * Ensure all necessary directories exist
    */
   private ensureDirectoriesExist(): void {
     const directories = [this.configDir, this.projectsDir];
-    
+
     for (const dir of directories) {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
@@ -122,14 +163,30 @@ export class ProjectManager {
       }
     }
   }
-  
+
+  /**
+   * Ensure all necessary directories exist (async version)
+   */
+  private async ensureDirectoriesExistAsync(): Promise<void> {
+    const directories = [this.configDir, this.projectsDir];
+
+    for (const dir of directories) {
+      try {
+        await fsAsync.access(dir);
+      } catch {
+        await fsAsync.mkdir(dir, { recursive: true });
+        logger.info(`Created directory: ${dir}`);
+      }
+    }
+  }
+
   /**
    * Ensure .gitignore exists to ignore claude-zen directory
    * This creates a .gitignore file regardless of existing .gitignore
    */
   private ensureGitignore(): void {
     const gitignorePath = path.join(this.configDir, '.gitignore');
-    
+
     if (!fs.existsSync(gitignorePath)) {
       const gitignoreContent = `# Claude-Zen project configuration and databases
 # This directory contains project-specific data and should not be committed
@@ -154,12 +211,50 @@ Thumbs.db
 .vscode/
 .idea/
 `;
-      
+
       fs.writeFileSync(gitignorePath, gitignoreContent, 'utf8');
       logger.info(`Created .gitignore: ${gitignorePath}`);
     }
   }
-  
+
+  /**
+   * Ensure .gitignore exists to ignore claude-zen directory (async version)
+   */
+  private async ensureGitignoreAsync(): Promise<void> {
+    const gitignorePath = path.join(this.configDir, '.gitignore');
+
+    try {
+      await fsAsync.access(gitignorePath);
+    } catch {
+      const gitignoreContent = `# Claude-Zen project configuration and databases
+# This directory contains project-specific data and should not be committed
+
+# Project databases
+projects/*/workspace.db
+projects/*/memory/
+projects/*/cache/
+
+# Logs
+*.log
+
+# Temporary files
+.tmp/
+temp/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+`;
+
+      await fsAsync.writeFile(gitignorePath, gitignoreContent, 'utf8');
+      logger.info(`Created .gitignore: ${gitignorePath}`);
+    }
+  }
+
   /**
    * Load project registry from disk
    */
@@ -167,7 +262,7 @@ Thumbs.db
     if (this.registry) {
       return this.registry;
     }
-    
+
     if (!fs.existsSync(this.projectsFile)) {
       this.registry = {
         version: '1.0.0',
@@ -179,9 +274,14 @@ Thumbs.db
       try {
         const content = fs.readFileSync(this.projectsFile, 'utf8');
         this.registry = JSON.parse(content);
-        logger.debug(`Loaded project registry with ${Object.keys(this.registry!.projects).length} projects`);
+        logger.debug(
+          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`
+        );
       } catch (error) {
-        logger.error('Failed to load project registry, creating new one:', error);
+        logger.error(
+          'Failed to load project registry, creating new one:',
+          error
+        );
         this.registry = {
           version: '1.0.0',
           projects: {},
@@ -189,54 +289,135 @@ Thumbs.db
         };
       }
     }
-    
-    return this.registry!;
+
+    if (!this.registry) {
+      throw new Error('Registry not initialized');
+    }
+    return this.registry;
   }
-  
+
+  /**
+   * Load project registry from disk (async version)
+   */
+  private async loadRegistryAsync(): Promise<ProjectRegistry> {
+    if (this.registry) {
+      return this.registry;
+    }
+
+    try {
+      await fsAsync.access(this.projectsFile);
+      try {
+        const content = await fsAsync.readFile(this.projectsFile, 'utf8');
+        this.registry = JSON.parse(content);
+        logger.debug(
+          `Loaded project registry with ${this.registry ? Object.keys(this.registry.projects).length : 0} projects`
+        );
+      } catch (error) {
+        logger.error(
+          'Failed to load project registry, creating new one:',
+          error
+        );
+        this.registry = {
+          version: '1.0.0',
+          projects: {},
+          lastUpdated: new Date().toISOString(),
+        };
+      }
+    } catch {
+      this.registry = {
+        version: '1.0.0',
+        projects: {},
+        lastUpdated: new Date().toISOString(),
+      };
+      await this.saveRegistryAsync();
+    }
+
+    if (!this.registry) {
+      throw new Error('Registry not initialized');
+    }
+    return this.registry;
+  }
+
   /**
    * Save project registry to disk
    */
   private saveRegistry(): void {
-    if (!this.registry) return;
-    
+    if (!this.registry) {
+      return;
+    }
+
     this.registry.lastUpdated = new Date().toISOString();
-    
+
     try {
-      fs.writeFileSync(this.projectsFile, JSON.stringify(this.registry, null, 2), 'utf8');
+      fs.writeFileSync(
+        this.projectsFile,
+        JSON.stringify(this.registry, null, 2),
+        'utf8'
+      );
       logger.debug('Saved project registry');
     } catch (error) {
       logger.error('Failed to save project registry:', error);
       throw error;
     }
   }
-  
+
+  /**
+   * Save project registry to disk (async version)
+   */
+  private async saveRegistryAsync(): Promise<void> {
+    if (!this.registry) {
+      return;
+    }
+
+    this.registry.lastUpdated = new Date().toISOString();
+
+    try {
+      await fsAsync.writeFile(
+        this.projectsFile,
+        JSON.stringify(this.registry, null, 2),
+        'utf8'
+      );
+      logger.debug('Saved project registry');
+    } catch (error) {
+      logger.error('Failed to save project registry:', error);
+      throw error;
+    }
+  }
+
   /**
    * Generate unique project ID
    */
   private generateProjectId(): string {
     return `proj-${Date.now().toString(36)}-${Math.random().toString(36).substr(2, 9)}`;
   }
-  
+
   /**
    * Register a new project (synchronous version for immediate use)
    */
-  registerProjectSync(projectPath: string, options: {
-    name?: string;
-    description?: string;
-    framework?: string;
-    language?: string;
-    metadata?: Record<string, any>;
-  } = {}): string {
+  registerProjectSync(
+    projectPath: string,
+    options: {
+      name?: string;
+      description?: string;
+      framework?: string;
+      language?: string;
+      metadata?: UnknownRecord;
+    } = {}
+  ): string {
     const registry = this.loadRegistry();
     const resolvedPath = path.resolve(projectPath);
-    
+
     // Check if project already exists
-    const existingProject = Object.values(registry.projects).find(p => p.path === resolvedPath);
+    const existingProject = Object.values(registry.projects).find(
+      (p) => p.path === resolvedPath
+    );
     if (existingProject) {
-      logger.info(`Project already registered: ${existingProject.name} (${existingProject.id})`);
+      logger.info(
+        `Project already registered: ${existingProject.name} (${existingProject.id})`
+      );
       return existingProject.id;
     }
-    
+
     const projectId = this.generateProjectId();
     const projectInfo: ProjectInfo = {
       id: projectId,
@@ -249,43 +430,52 @@ Thumbs.db
       language: options.language,
       metadata: options.metadata,
     };
-    
+
     // Detect workspace information
     projectInfo.workspace = this.detectWorkspaceInfo(resolvedPath);
-    
+
     // Detect git remote
     projectInfo.gitRemote = this.detectGitRemote(resolvedPath);
-    
+
     registry.projects[projectId] = projectInfo;
     this.saveRegistry();
-    
+
     // Create project database directory
     this.createProjectDirectories(projectId);
-    
-    logger.info(`Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`);
+
+    logger.info(
+      `Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`
+    );
     return projectId;
   }
 
   /**
    * Register a new project (async version)
    */
-  async registerProject(projectPath: string, options: {
-    name?: string;
-    description?: string;
-    framework?: string;
-    language?: string;
-    metadata?: Record<string, any>;
-  } = {}): Promise<string> {
+  async registerProject(
+    projectPath: string,
+    options: {
+      name?: string;
+      description?: string;
+      framework?: string;
+      language?: string;
+      metadata?: UnknownRecord;
+    } = {}
+  ): Promise<string> {
     const registry = this.loadRegistry();
     const resolvedPath = path.resolve(projectPath);
-    
+
     // Check if project already exists
-    const existingProject = Object.values(registry.projects).find(p => p.path === resolvedPath);
+    const existingProject = Object.values(registry.projects).find(
+      (p) => p.path === resolvedPath
+    );
     if (existingProject) {
-      logger.info(`Project already registered: ${existingProject.name} (${existingProject.id})`);
+      logger.info(
+        `Project already registered: ${existingProject.name} (${existingProject.id})`
+      );
       return existingProject.id;
     }
-    
+
     const projectId = this.generateProjectId();
     const projectInfo: ProjectInfo = {
       id: projectId,
@@ -298,29 +488,31 @@ Thumbs.db
       language: options.language,
       metadata: options.metadata,
     };
-    
+
     // Detect workspace information
     projectInfo.workspace = this.detectWorkspaceInfo(resolvedPath);
-    
+
     // Detect git remote
     projectInfo.gitRemote = this.detectGitRemote(resolvedPath);
-    
+
     registry.projects[projectId] = projectInfo;
     this.saveRegistry();
-    
+
     // Create project database directory
     this.createProjectDirectories(projectId);
-    
-    logger.info(`Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`);
+
+    logger.info(
+      `Registered new project: ${projectInfo.name} (${projectId}) at ${resolvedPath}`
+    );
     return projectId;
   }
-  
+
   /**
    * Get project by ID or path
    */
   getProject(idOrPath: string): ProjectInfo | null {
     const registry = this.loadRegistry();
-    
+
     // Try by ID first
     if (registry.projects[idOrPath]) {
       const project = registry.projects[idOrPath];
@@ -328,19 +520,21 @@ Thumbs.db
       this.saveRegistry();
       return project;
     }
-    
+
     // Try by path
     const resolvedPath = path.resolve(idOrPath);
-    const project = Object.values(registry.projects).find(p => p.path === resolvedPath);
+    const project = Object.values(registry.projects).find(
+      (p) => p.path === resolvedPath
+    );
     if (project) {
       project.lastAccessedAt = new Date().toISOString();
       this.saveRegistry();
       return project;
     }
-    
+
     return null;
   }
-  
+
   /**
    * Get all projects
    */
@@ -348,28 +542,28 @@ Thumbs.db
     const registry = this.loadRegistry();
     return Object.values(registry.projects);
   }
-  
+
   /**
    * Get project database path
    */
   getProjectDatabasePath(projectId: string): string {
     return path.join(this.projectsDir, projectId, 'workspace.db');
   }
-  
+
   /**
    * Get project memory directory
    */
   getProjectMemoryDir(projectId: string): string {
     return path.join(this.projectsDir, projectId, 'memory');
   }
-  
+
   /**
    * Get project cache directory
    */
   getProjectCacheDir(projectId: string): string {
     return path.join(this.projectsDir, projectId, 'cache');
   }
-  
+
   /**
    * Create project-specific directories
    */
@@ -377,18 +571,18 @@ Thumbs.db
     const projectDir = path.join(this.projectsDir, projectId);
     const memoryDir = path.join(projectDir, 'memory');
     const cacheDir = path.join(projectDir, 'cache');
-    
+
     const directories = [projectDir, memoryDir, cacheDir];
-    
+
     for (const dir of directories) {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
     }
-    
+
     logger.debug(`Created project directories for ${projectId}`);
   }
-  
+
   /**
    * Detect workspace information from project directory
    * Supports advanced monorepo patterns including Bazel, complex structures, services/domains
@@ -396,62 +590,109 @@ Thumbs.db
   private detectWorkspaceInfo(projectPath: string): ProjectInfo['workspace'] {
     // Extended workspace file detection including Bazel and other build systems
     const workspaceFiles = [
-      { file: 'pnpm-workspace.yaml', type: 'monorepo' as const, buildSystem: 'pnpm' as const },
-      { file: 'lerna.json', type: 'monorepo' as const, buildSystem: 'lerna' as const },
-      { file: 'rush.json', type: 'monorepo' as const, buildSystem: 'rush' as const },
-      { file: 'nx.json', type: 'monorepo' as const, buildSystem: 'nx' as const },
-      { file: 'workspace.json', type: 'monorepo' as const, buildSystem: 'nx' as const },
-      { file: 'WORKSPACE', type: 'bazel' as const, buildSystem: 'bazel' as const },
-      { file: 'WORKSPACE.bazel', type: 'bazel' as const, buildSystem: 'bazel' as const },
-      { file: 'MODULE.bazel', type: 'bazel' as const, buildSystem: 'bazel' as const },
-      { file: 'build.gradle', type: 'monorepo' as const, buildSystem: 'gradle' as const },
-      { file: 'pom.xml', type: 'monorepo' as const, buildSystem: 'maven' as const },
+      {
+        file: 'pnpm-workspace.yaml',
+        type: 'monorepo' as const,
+        buildSystem: 'pnpm' as const,
+      },
+      {
+        file: 'lerna.json',
+        type: 'monorepo' as const,
+        buildSystem: 'lerna' as const,
+      },
+      {
+        file: 'rush.json',
+        type: 'monorepo' as const,
+        buildSystem: 'rush' as const,
+      },
+      {
+        file: 'nx.json',
+        type: 'monorepo' as const,
+        buildSystem: 'nx' as const,
+      },
+      {
+        file: 'workspace.json',
+        type: 'monorepo' as const,
+        buildSystem: 'nx' as const,
+      },
+      {
+        file: 'WORKSPACE',
+        type: 'bazel' as const,
+        buildSystem: 'bazel' as const,
+      },
+      {
+        file: 'WORKSPACE.bazel',
+        type: 'bazel' as const,
+        buildSystem: 'bazel' as const,
+      },
+      {
+        file: 'MODULE.bazel',
+        type: 'bazel' as const,
+        buildSystem: 'bazel' as const,
+      },
+      {
+        file: 'build.gradle',
+        type: 'monorepo' as const,
+        buildSystem: 'gradle' as const,
+      },
+      {
+        file: 'pom.xml',
+        type: 'monorepo' as const,
+        buildSystem: 'maven' as const,
+      },
     ];
-    
+
     // Check for workspace files
     for (const { file, type, buildSystem } of workspaceFiles) {
       const filePath = path.join(projectPath, file);
       if (fs.existsSync(filePath)) {
         const structure = this.analyzeProjectStructure(projectPath);
         const subProjects = this.detectSubProjects(projectPath, buildSystem);
-        
+
         // Determine if this is a complex monorepo based on structure
-        const isComplex = structure?.hasServices || structure?.hasDomains || 
-                         (subProjects && subProjects.length > 10) ||
-                         buildSystem === 'bazel';
-        
+        const isComplex =
+          structure?.hasServices ||
+          structure?.hasDomains ||
+          (subProjects && subProjects.length > 10) ||
+          buildSystem === 'bazel';
+
         return {
           type: isComplex ? 'complex' : type,
           workspaceFile: file,
           buildSystem: buildSystem,
           structure: structure,
-          subProjects: subProjects
+          subProjects: subProjects,
         };
       }
     }
-    
+
     // Check for package.json with workspaces at current level
     const packageJsonPath = path.join(projectPath, 'package.json');
     if (fs.existsSync(packageJsonPath)) {
       try {
-        const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+        const packageJson = JSON.parse(
+          fs.readFileSync(packageJsonPath, 'utf8')
+        );
         if (packageJson.workspaces) {
           const structure = this.analyzeProjectStructure(projectPath);
           const subProjects = this.detectSubProjects(projectPath, 'pnpm');
-          
+
           return {
-            type: structure?.hasServices || structure?.hasDomains ? 'complex' : 'monorepo',
+            type:
+              structure?.hasServices || structure?.hasDomains
+                ? 'complex'
+                : 'monorepo',
             workspaceFile: 'package.json',
             buildSystem: 'pnpm',
             structure: structure,
-            subProjects: subProjects
+            subProjects: subProjects,
           };
         }
       } catch (error) {
         logger.warn('Failed to parse package.json:', error);
       }
     }
-    
+
     // Check if this is part of a larger monorepo by walking up
     const monorepoRoot = this.findMonorepoRoot(projectPath);
     if (monorepoRoot && monorepoRoot !== projectPath) {
@@ -463,29 +704,41 @@ Thumbs.db
         buildSystem: rootWorkspaceInfo?.buildSystem,
         monorepoRoot: monorepoRoot,
         structure: rootWorkspaceInfo?.structure,
-        subProjects: rootWorkspaceInfo?.subProjects
+        subProjects: rootWorkspaceInfo?.subProjects,
       };
     }
-    
+
     return { type: 'single' };
   }
-  
+
   /**
    * Analyze project structure to detect services/domains/apps/packages
    */
-  private analyzeProjectStructure(projectPath: string): NonNullable<ProjectInfo['workspace']>['structure'] {
+  private analyzeProjectStructure(
+    projectPath: string
+  ): NonNullable<ProjectInfo['workspace']>['structure'] {
     const structure = {
       hasServices: false,
-      hasDomains: false, 
+      hasDomains: false,
       hasMonolib: false,
       hasApps: false,
       hasPackages: false,
       hasLibs: false,
-      customDirs: [] as string[]
+      customDirs: [] as string[],
     };
 
-    const commonDirs = ['services', 'domains', 'monolib', 'apps', 'packages', 'libs', 'tools', 'shared', 'common'];
-    
+    const commonDirs = [
+      'services',
+      'domains',
+      'monolib',
+      'apps',
+      'packages',
+      'libs',
+      'tools',
+      'shared',
+      'common',
+    ];
+
     for (const dir of commonDirs) {
       const dirPath = path.join(projectPath, dir);
       if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) {
@@ -523,10 +776,11 @@ Thumbs.db
    * Detect sub-projects within a monorepo based on build system
    */
   private detectSubProjects(
-    projectPath: string, 
+    projectPath: string,
     buildSystem: NonNullable<ProjectInfo['workspace']>['buildSystem']
   ): NonNullable<ProjectInfo['workspace']>['subProjects'] {
-    const subProjects: NonNullable<ProjectInfo['workspace']>['subProjects'] = [];
+    const subProjects: NonNullable<ProjectInfo['workspace']>['subProjects'] =
+      [];
 
     try {
       if (buildSystem === 'bazel') {
@@ -550,22 +804,28 @@ Thumbs.db
    * Scan for Bazel targets and packages
    */
   private scanBazelTargets(
-    projectPath: string, 
+    projectPath: string,
     subProjects: NonNullable<ProjectInfo['workspace']>['subProjects']
   ): void {
     const dirs = ['services', 'domains', 'apps', 'libs', 'tools'];
-    
+
     for (const dir of dirs) {
       const dirPath = path.join(projectPath, dir);
       if (fs.existsSync(dirPath)) {
         this.walkDirectory(dirPath, (filePath) => {
-          if (path.basename(filePath) === 'BUILD' || path.basename(filePath) === 'BUILD.bazel') {
-            const relativePath = path.relative(projectPath, path.dirname(filePath));
+          if (
+            path.basename(filePath) === 'BUILD' ||
+            path.basename(filePath) === 'BUILD.bazel'
+          ) {
+            const relativePath = path.relative(
+              projectPath,
+              path.dirname(filePath)
+            );
             const name = path.basename(path.dirname(filePath));
             subProjects?.push({
               path: relativePath,
               name: name,
-              type: this.inferProjectType(relativePath, dir)
+              type: this.inferProjectType(relativePath, dir),
             });
           }
         });
@@ -581,18 +841,21 @@ Thumbs.db
     subProjects: NonNullable<ProjectInfo['workspace']>['subProjects']
   ): void {
     const dirs = ['apps', 'libs', 'packages'];
-    
+
     for (const dir of dirs) {
       const dirPath = path.join(projectPath, dir);
       if (fs.existsSync(dirPath)) {
         this.walkDirectory(dirPath, (filePath) => {
           if (path.basename(filePath) === 'project.json') {
-            const relativePath = path.relative(projectPath, path.dirname(filePath));
+            const relativePath = path.relative(
+              projectPath,
+              path.dirname(filePath)
+            );
             const name = path.basename(path.dirname(filePath));
             subProjects?.push({
               path: relativePath,
               name: name,
-              type: this.inferProjectType(relativePath, dir)
+              type: this.inferProjectType(relativePath, dir),
             });
           }
         });
@@ -608,43 +871,62 @@ Thumbs.db
     subProjects: NonNullable<ProjectInfo['workspace']>['subProjects']
   ): void {
     const dirs = [
-      'apps', 'packages', 'libs', 'services', 'domains', 'tools',
-      'examples', 'test', 'tests', 'bench', 'benchmark', 'benchmarks',
-      'crates', 'docs', 'documentation', 'demo', 'demos', 'sample', 'samples'
+      'apps',
+      'packages',
+      'libs',
+      'services',
+      'domains',
+      'tools',
+      'examples',
+      'test',
+      'tests',
+      'bench',
+      'benchmark',
+      'benchmarks',
+      'crates',
+      'docs',
+      'documentation',
+      'demo',
+      'demos',
+      'sample',
+      'samples',
     ];
-    
+
     // Define project indicator files for different languages/ecosystems
     const projectFiles = [
-      'package.json',     // Node.js/TypeScript/React Native
-      'Cargo.toml',       // Rust
-      'go.mod',           // Go
-      'mix.exs',          // Elixir
-      'gleam.toml',       // Gleam
-      'rebar.config',     // Erlang (rebar3)
-      'erlang.mk',        // Erlang (erlang.mk)
-      'build.gradle',     // Android
+      'package.json', // Node.js/TypeScript/React Native
+      'Cargo.toml', // Rust
+      'go.mod', // Go
+      'build.gradle', // Android
       'build.gradle.kts', // Android (Kotlin DSL)
-      'app.json',         // React Native/Expo
-      'expo.json',        // Expo
-      'Podfile',          // iOS (CocoaPods)
-      'project.pbxproj',  // iOS (Xcode)
+      'app.json', // React Native/Expo
+      'expo.json', // Expo
+      'Podfile', // iOS (CocoaPods)
+      'project.pbxproj', // iOS (Xcode)
     ];
-    
+
     for (const dir of dirs) {
       const dirPath = path.join(projectPath, dir);
       if (fs.existsSync(dirPath)) {
-        this.walkDirectory(dirPath, (filePath) => {
-          const fileName = path.basename(filePath);
-          if (projectFiles.includes(fileName)) {
-            const relativePath = path.relative(projectPath, path.dirname(filePath));
-            const name = path.basename(path.dirname(filePath));
-            subProjects?.push({
-              path: relativePath,
-              name: name,
-              type: this.inferProjectType(relativePath, dir)
-            });
-          }
-        }, 2); // Limit depth to avoid going too deep
+        this.walkDirectory(
+          dirPath,
+          (filePath) => {
+            const fileName = path.basename(filePath);
+            if (projectFiles.includes(fileName)) {
+              const relativePath = path.relative(
+                projectPath,
+                path.dirname(filePath)
+              );
+              const name = path.basename(path.dirname(filePath));
+              subProjects?.push({
+                path: relativePath,
+                name: name,
+                type: this.inferProjectType(relativePath, dir),
+              });
+            }
+          },
+          2
+        ); // Limit depth to avoid going too deep
       }
     }
   }
@@ -652,22 +934,33 @@ Thumbs.db
   /**
    * Walk directory recursively with optional depth limit
    */
-  private walkDirectory(dirPath: string, callback: (filePath: string) => void, maxDepth: number = 3, currentDepth: number = 0): void {
-    if (currentDepth >= maxDepth) return;
+  private walkDirectory(
+    dirPath: string,
+    callback: (filePath: string) => void,
+    maxDepth = 3,
+    currentDepth = 0
+  ): void {
+    if (currentDepth >= maxDepth) {
+      return;
+    }
 
     try {
       const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-      
+
       for (const entry of entries) {
         const fullPath = path.join(dirPath, entry.name);
-        
+
         if (entry.isFile()) {
           callback(fullPath);
-        } else if (entry.isDirectory() && !entry.name.startsWith('.') && entry.name !== 'node_modules') {
+        } else if (
+          entry.isDirectory() &&
+          !entry.name.startsWith('.') &&
+          entry.name !== 'node_modules'
+        ) {
           this.walkDirectory(fullPath, callback, maxDepth, currentDepth + 1);
         }
       }
-    } catch (error) {
+    } catch {
       // Silently skip directories we can't read
     }
   }
@@ -677,40 +970,99 @@ Thumbs.db
    * Supports patterns like *-service, *-domain, etc.
    */
   private inferProjectType(
-    relativePath: string, 
+    relativePath: string,
     parentDir: string
-  ): 'service' | 'domain' | 'app' | 'lib' | 'package' | 'tool' | 'example' | 'test' | 'benchmark' | 'crate' | 'doc' {
+  ):
+    | 'service'
+    | 'domain'
+    | 'app'
+    | 'lib'
+    | 'package'
+    | 'tool'
+    | 'example'
+    | 'test'
+    | 'benchmark'
+    | 'crate'
+    | 'doc' {
     // Direct parent directory mapping
-    if (parentDir === 'services') return 'service';
-    if (parentDir === 'domains') return 'domain';
-    if (parentDir === 'apps') return 'app';
-    if (parentDir === 'libs') return 'lib';
-    if (parentDir === 'packages') return 'package';
-    if (parentDir === 'tools') return 'tool';
-    if (parentDir === 'examples') return 'example';
-    if (parentDir === 'test' || parentDir === 'tests') return 'test';
-    if (parentDir === 'bench' || parentDir === 'benchmark' || parentDir === 'benchmarks') return 'benchmark';
-    if (parentDir === 'crates') return 'crate';
-    if (parentDir === 'docs' || parentDir === 'documentation') return 'doc';
-    if (parentDir === 'demo' || parentDir === 'demos') return 'example';
-    if (parentDir === 'sample' || parentDir === 'samples') return 'example';
-    
+    if (parentDir === 'services') {
+      return 'service';
+    }
+    if (parentDir === 'domains') {
+      return 'domain';
+    }
+    if (parentDir === 'apps') {
+      return 'app';
+    }
+    if (parentDir === 'libs') {
+      return 'lib';
+    }
+    if (parentDir === 'packages') {
+      return 'package';
+    }
+    if (parentDir === 'tools') {
+      return 'tool';
+    }
+    if (parentDir === 'examples') {
+      return 'example';
+    }
+    if (parentDir === 'test' || parentDir === 'tests') {
+      return 'test';
+    }
+    if (
+      parentDir === 'bench' ||
+      parentDir === 'benchmark' ||
+      parentDir === 'benchmarks'
+    ) {
+      return 'benchmark';
+    }
+    if (parentDir === 'crates') {
+      return 'crate';
+    }
+    if (parentDir === 'docs' || parentDir === 'documentation') {
+      return 'doc';
+    }
+    if (parentDir === 'demo' || parentDir === 'demos') {
+      return 'example';
+    }
+    if (parentDir === 'sample' || parentDir === 'samples') {
+      return 'example';
+    }
+
     // Extract the actual directory/package name for pattern matching
     const packageName = path.basename(relativePath);
-    
+
     // Pattern-based detection for *-service, *-domain, etc.
-    if (packageName.endsWith('-service') || packageName.includes('service')) return 'service';
-    if (packageName.endsWith('-domain') || packageName.includes('domain')) return 'domain';
-    if (packageName.endsWith('-app') || packageName.includes('app')) return 'app';
-    if (packageName.endsWith('-lib') || packageName.includes('lib')) return 'lib';
-    if (packageName.endsWith('-tool') || packageName.includes('tool')) return 'tool';
-    
+    if (packageName.endsWith('-service') || packageName.includes('service')) {
+      return 'service';
+    }
+    if (packageName.endsWith('-domain') || packageName.includes('domain')) {
+      return 'domain';
+    }
+    if (packageName.endsWith('-app') || packageName.includes('app')) {
+      return 'app';
+    }
+    if (packageName.endsWith('-lib') || packageName.includes('lib')) {
+      return 'lib';
+    }
+    if (packageName.endsWith('-tool') || packageName.includes('tool')) {
+      return 'tool';
+    }
+
     // Fallback based on path patterns
-    if (relativePath.includes('service')) return 'service';
-    if (relativePath.includes('domain')) return 'domain';
-    if (relativePath.includes('app')) return 'app';
-    if (relativePath.includes('lib')) return 'lib';
-    
+    if (relativePath.includes('service')) {
+      return 'service';
+    }
+    if (relativePath.includes('domain')) {
+      return 'domain';
+    }
+    if (relativePath.includes('app')) {
+      return 'app';
+    }
+    if (relativePath.includes('lib')) {
+      return 'lib';
+    }
+
     return 'package';
   }
 
@@ -720,11 +1072,11 @@ Thumbs.db
    */
   private findMonorepoRoot(startPath: string): string | null {
     let currentPath = path.resolve(startPath);
-    
+
     while (currentPath !== path.dirname(currentPath)) {
       const workspaceFiles = [
         'pnpm-workspace.yaml',
-        'lerna.json', 
+        'lerna.json',
         'rush.json',
         'nx.json',
         'workspace.json',
@@ -732,35 +1084,37 @@ Thumbs.db
         'WORKSPACE.bazel',
         'MODULE.bazel',
         'build.gradle',
-        'pom.xml'
+        'pom.xml',
       ];
-      
+
       // Check for workspace files
       for (const file of workspaceFiles) {
         if (fs.existsSync(path.join(currentPath, file))) {
           return currentPath;
         }
       }
-      
+
       // Check for package.json with workspaces
       const packageJsonPath = path.join(currentPath, 'package.json');
       if (fs.existsSync(packageJsonPath)) {
         try {
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+          const packageJson = JSON.parse(
+            fs.readFileSync(packageJsonPath, 'utf8')
+          );
           if (packageJson.workspaces) {
             return currentPath;
           }
-        } catch (error) {
+        } catch {
           // Continue searching if package.json is malformed
         }
       }
-      
+
       currentPath = path.dirname(currentPath);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Detect git remote URL
    */
@@ -779,14 +1133,16 @@ Thumbs.db
     }
     return undefined;
   }
-  
+
   /**
    * Find project root for current working directory with intelligent monorepo detection
    */
-  findProjectRoot(startPath: string = process.cwd()): { projectId: string; projectPath: string; configPath: string } | null {
+  findProjectRoot(
+    startPath: string = process.cwd()
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     // First check if we have a registered project for this path or any parent path
     let currentPath = path.resolve(startPath);
-    
+
     while (currentPath !== path.dirname(currentPath)) {
       const project = this.getProject(currentPath);
       if (project) {
@@ -798,45 +1154,53 @@ Thumbs.db
       }
       currentPath = path.dirname(currentPath);
     }
-    
+
     // Smart project discovery with monorepo awareness
     return this.smartProjectDiscovery(startPath);
   }
-  
+
   /**
    * Smart project discovery that handles both monorepo and package-level projects
    */
-  private smartProjectDiscovery(startPath: string): { projectId: string; projectPath: string; configPath: string } | null {
+  private smartProjectDiscovery(
+    startPath: string
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     const resolvedStartPath = path.resolve(startPath);
-    
+
     // Step 1: Find if we're in a monorepo
     const monorepoRoot = this.findMonorepoRoot(resolvedStartPath);
-    
+
     if (monorepoRoot) {
       // We're in a monorepo - check if monorepo is already registered
       const monorepoProject = this.getProject(monorepoRoot);
       if (monorepoProject) {
-        logger.debug(`Found existing monorepo project: ${monorepoProject.name} (${monorepoProject.id})`);
+        logger.debug(
+          `Found existing monorepo project: ${monorepoProject.name} (${monorepoProject.id})`
+        );
         return {
           projectId: monorepoProject.id,
           projectPath: monorepoProject.path,
           configPath: this.configDir,
         };
       }
-      
+
       // Step 2: Decide what to register based on working directory
       if (resolvedStartPath === monorepoRoot) {
         // Working from monorepo root - register the entire monorepo
         return this.registerMonorepoProject(monorepoRoot);
       } else {
         // Working from a package - check if it's a meaningful package
-        const isSignificantPackage = this.isSignificantPackage(resolvedStartPath);
-        
+        const isSignificantPackage =
+          this.isSignificantPackage(resolvedStartPath);
+
         if (isSignificantPackage) {
           // Register the monorepo root but return the package context
-          const monorepoProjectResult = this.registerMonorepoProject(monorepoRoot);
+          const monorepoProjectResult =
+            this.registerMonorepoProject(monorepoRoot);
           if (monorepoProjectResult) {
-            logger.info(`Registered monorepo root, but working in package: ${path.relative(monorepoRoot, resolvedStartPath)}`);
+            logger.info(
+              `Registered monorepo root, but working in package: ${path.relative(monorepoRoot, resolvedStartPath)}`
+            );
             return monorepoProjectResult;
           }
         } else {
@@ -845,24 +1209,28 @@ Thumbs.db
         }
       }
     }
-    
+
     // Step 3: Fallback to traditional single project detection
     return this.traditionalProjectDiscovery(resolvedStartPath);
   }
-  
+
   /**
    * Register a monorepo project
    */
-  private registerMonorepoProject(monorepoRoot: string): { projectId: string; projectPath: string; configPath: string } | null {
+  private registerMonorepoProject(
+    monorepoRoot: string
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     try {
       // Use synchronous registration for immediate return
       const projectId = this.registerProjectSync(monorepoRoot, {
         name: path.basename(monorepoRoot),
         description: `Monorepo project at ${monorepoRoot}`,
       });
-      
-      logger.info(`Registered monorepo project: ${path.basename(monorepoRoot)} (${projectId})`);
-      
+
+      logger.info(
+        `Registered monorepo project: ${path.basename(monorepoRoot)} (${projectId})`
+      );
+
       return {
         projectId,
         projectPath: monorepoRoot,
@@ -873,7 +1241,7 @@ Thumbs.db
       return null;
     }
   }
-  
+
   /**
    * Check if a directory represents a significant package worth individual attention
    */
@@ -882,68 +1250,67 @@ Thumbs.db
     if (!fs.existsSync(packageJsonPath)) {
       return false;
     }
-    
+
     try {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-      
+
       // Consider significant if:
       // 1. Has build scripts
-      // 2. Has test scripts  
+      // 2. Has test scripts
       // 3. Has dependencies
       // 4. Is a published package
-      const hasSignificantScripts = packageJson.scripts && (
-        packageJson.scripts.build || 
-        packageJson.scripts.test ||
-        packageJson.scripts.dev ||
-        packageJson.scripts.start
-      );
-      
-      const hasDependencies = packageJson.dependencies || packageJson.devDependencies;
+      const hasSignificantScripts =
+        packageJson.scripts &&
+        (packageJson.scripts.build ||
+          packageJson.scripts.test ||
+          packageJson.scripts.dev ||
+          packageJson.scripts.start);
+
+      const hasDependencies =
+        packageJson.dependencies || packageJson.devDependencies;
       const isPublishable = !packageJson.private || packageJson.publishConfig;
-      
+
       return !!(hasSignificantScripts || hasDependencies || isPublishable);
-    } catch (error) {
+    } catch {
       return false;
     }
   }
-  
+
   /**
    * Traditional project discovery for non-monorepo projects
    */
-  private traditionalProjectDiscovery(startPath: string): { projectId: string; projectPath: string; configPath: string } | null {
+  private traditionalProjectDiscovery(
+    startPath: string
+  ): { projectId: string; projectPath: string; configPath: string } | null {
     let currentPath = startPath;
-    
+
     while (currentPath !== path.dirname(currentPath)) {
       const indicators = [
         '.git',
-        'package.json',     // Node.js/TypeScript/React Native
+        'package.json', // Node.js/TypeScript/React Native
         'CLAUDE.md',
         '.claude',
-        'Cargo.toml',       // Rust
-        'go.mod',           // Go
-        'mix.exs',          // Elixir
-        'gleam.toml',       // Gleam
-        'rebar.config',     // Erlang (rebar3)
-        'erlang.mk',        // Erlang (erlang.mk)
-        'build.gradle',     // Android
+        'Cargo.toml', // Rust
+        'go.mod', // Go
+        'build.gradle', // Android
         'build.gradle.kts', // Android (Kotlin DSL)
-        'app.json',         // React Native/Expo
-        'expo.json',        // Expo
-        'Podfile',          // iOS (CocoaPods)
-        'project.pbxproj',  // iOS (Xcode)
+        'app.json', // React Native/Expo
+        'expo.json', // Expo
+        'Podfile', // iOS (CocoaPods)
+        'project.pbxproj', // iOS (Xcode)
       ];
-      
-      const hasIndicator = indicators.some(indicator => 
+
+      const hasIndicator = indicators.some((indicator) =>
         fs.existsSync(path.join(currentPath, indicator))
       );
-      
+
       if (hasIndicator) {
         try {
           const projectId = this.registerProjectSync(currentPath, {
             name: path.basename(currentPath),
             description: `Auto-discovered project at ${currentPath}`,
           });
-          
+
           return {
             projectId,
             projectPath: currentPath,
@@ -953,27 +1320,30 @@ Thumbs.db
           logger.warn('Failed to auto-register project:', error);
         }
       }
-      
+
       currentPath = path.dirname(currentPath);
     }
-    
+
     return null;
   }
-  
+
   /**
    * Remove project from registry
    */
-  async removeProject(idOrPath: string, options: { deleteDatabase?: boolean } = {}): Promise<boolean> {
+  async removeProject(
+    idOrPath: string,
+    options: { deleteDatabase?: boolean } = {}
+  ): Promise<boolean> {
     const registry = this.loadRegistry();
     const project = this.getProject(idOrPath);
-    
+
     if (!project) {
       return false;
     }
-    
+
     delete registry.projects[project.id];
     this.saveRegistry();
-    
+
     if (options.deleteDatabase) {
       const projectDir = path.join(this.projectsDir, project.id);
       if (fs.existsSync(projectDir)) {
@@ -981,28 +1351,35 @@ Thumbs.db
         logger.info(`Deleted project database directory: ${projectDir}`);
       }
     }
-    
+
     logger.info(`Removed project: ${project.name} (${project.id})`);
     return true;
   }
-  
+
   /**
    * Update project information
    */
-  async updateProject(idOrPath: string, updates: Partial<Omit<ProjectInfo, 'id' | 'createdAt'>>): Promise<boolean> {
+  async updateProject(
+    idOrPath: string,
+    updates: Partial<Omit<ProjectInfo, 'id' | 'createdAt'>>
+  ): Promise<boolean> {
     const registry = this.loadRegistry();
     const project = this.getProject(idOrPath);
-    
+
     if (!project) {
       return false;
     }
-    
+
     // Apply updates
-    Object.assign(registry.projects[project.id]!, updates);
-    registry.projects[project.id]!.lastAccessedAt = new Date().toISOString();
-    
+    const existingProject = registry.projects[project.id];
+    if (!existingProject) {
+      throw new Error(`Project ${project.id} not found in registry`);
+    }
+    Object.assign(existingProject, updates);
+    existingProject.lastAccessedAt = new Date().toISOString();
+
     this.saveRegistry();
-    
+
     logger.info(`Updated project: ${project.name} (${project.id})`);
     return true;
   }
@@ -1013,11 +1390,19 @@ export function getProjectManager(): ProjectManager {
   return ProjectManager.getInstance();
 }
 
+export async function getProjectManagerAsync(): Promise<ProjectManager> {
+  return ProjectManager.getInstanceAsync();
+}
+
 export function getProjectConfig(): Config['project'] {
   return getConfig().project;
 }
 
-export async function findProjectRoot(startPath?: string): Promise<{ projectId: string; projectPath: string; configPath: string } | null> {
+export async function findProjectRoot(startPath?: string): Promise<{
+  projectId: string;
+  projectPath: string;
+  configPath: string;
+} | null> {
   return getProjectManager().findProjectRoot(startPath);
 }
 
@@ -1026,7 +1411,7 @@ export async function registerCurrentProject(options?: {
   description?: string;
   framework?: string;
   language?: string;
-  metadata?: Record<string, any>;
+  metadata?: UnknownRecord;
 }): Promise<string> {
   return getProjectManager().registerProject(process.cwd(), options);
 }

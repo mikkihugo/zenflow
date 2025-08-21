@@ -16,6 +16,34 @@ const mainScript = join(bundleDir, 'index.js');
 // Pass all arguments to the main script
 const args = process.argv.slice(2);
 
+// Handle auth command before checking bundle
+if (args[0] === 'auth') {
+  const authCliPath = join(binDir, 'claude-zen-cli.js');
+  const provider = args[1];
+  
+  if (!existsSync(authCliPath)) {
+    console.error('❌ Auth CLI not found. Please ensure claude-zen-cli.js exists in bin/');
+    process.exit(1);
+  }
+  
+  // Run the auth CLI directly
+  const child = spawn('node', [authCliPath, provider || '--help'], {
+    stdio: 'inherit',
+    cwd: process.cwd()
+  });
+  
+  child.on('exit', (code) => {
+    process.exit(code || 0);
+  });
+  
+  child.on('error', (error) => {
+    console.error('❌ Failed to start auth command:', error.message);
+    process.exit(1);
+  });
+  
+  return; // Don't continue to main app
+}
+
 // Ensure bundle directory exists
 if (!existsSync(bundleDir)) {
   console.error('❌ Bundle directory not found. Please run: npm run binary:build');

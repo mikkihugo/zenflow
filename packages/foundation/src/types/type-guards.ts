@@ -1,10 +1,10 @@
 /**
  * @fileoverview Comprehensive Type Guards for Foundation
- * 
+ *
  * Provides a complete set of type guard functions for safe union type property access
  * and runtime type validation. This module complements the patterns.ts module by providing
  * specific type guards for common data structures and patterns.
- * 
+ *
  * Key Features:
  * - Result pattern type guards
  * - Database result type guards
@@ -13,13 +13,13 @@
  * - Neural network result guards
  * - Generic utility type guards
  * - Safe property access utilities
- * 
+ *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
  * ```typescript
  * import { isSuccess, isOperationResult, safePropertyAccess } from '@claude-zen/foundation/types';
- * 
+ *
  * const result = await someOperation();
  * if (isSuccess(result)) {
  *   console.log('Success:', result.value); // Type-safe access
@@ -27,10 +27,8 @@
  * ```
  */
 
-import type { 
-  OperationResult, 
-  ValidationResult 
-} from './patterns';
+import type { OperationResult, ValidationResult } from './patterns';
+import type { JsonValue, UnknownRecord } from './primitives';
 
 // =============================================================================
 // RESULT PATTERN TYPE GUARDS - Integrates with patterns.ts
@@ -119,9 +117,9 @@ export function isValidationFailure(
 /**
  * Database query result types
  */
-export type DatabaseResult<T = any> = QuerySuccess<T> | QueryError;
+export type DatabaseResult<T = JsonValue> = QuerySuccess<T> | QueryError;
 
-export interface QuerySuccess<T = any> {
+export interface QuerySuccess<T = JsonValue> {
   readonly success: true;
   readonly data: T;
   readonly rowCount: number;
@@ -147,7 +145,7 @@ export interface QueryError {
 /**
  * Type guard for successful database queries
  */
-export function isQuerySuccess<T = any>(
+export function isQuerySuccess<T = JsonValue>(
   result: DatabaseResult<T>
 ): result is QuerySuccess<T> {
   return result?.success === true && 'data' in result;
@@ -164,15 +162,18 @@ export function isQueryError(result: DatabaseResult): result is QueryError {
 // MEMORY STORE RESULT TYPE GUARDS
 // =============================================================================
 
-export type MemoryResult<T = any> = MemorySuccess<T> | MemoryNotFound | MemoryError;
+export type MemoryResult<T = JsonValue> =
+  | MemorySuccess<T>
+  | MemoryNotFound
+  | MemoryError;
 
-export interface MemorySuccess<T = any> {
+export interface MemorySuccess<T = JsonValue> {
   readonly found: true;
   readonly data: T;
   readonly key: string;
   readonly timestamp: Date;
   readonly ttl?: number;
-  readonly metadata?: Record<string, unknown>;
+  readonly metadata?: UnknownRecord;
 }
 
 export interface MemoryNotFound {
@@ -193,7 +194,7 @@ export interface MemoryError {
 /**
  * Type guard for successful memory operations
  */
-export function isMemorySuccess<T = any>(
+export function isMemorySuccess<T = JsonValue>(
   result: MemoryResult<T>
 ): result is MemorySuccess<T> {
   return result?.found === true && 'data' in result;
@@ -219,9 +220,9 @@ export function isMemoryError(result: MemoryResult): result is MemoryError {
 // API RESPONSE TYPE GUARDS
 // =============================================================================
 
-export type APIResult<T = any> = APISuccess<T> | APIError;
+export type APIResult<T = JsonValue> = APISuccess<T> | APIError;
 
-export interface APISuccess<T = any> {
+export interface APISuccess<T = JsonValue> {
   readonly success: true;
   readonly data: T;
   readonly metadata?: {
@@ -249,7 +250,7 @@ export interface APIError {
 /**
  * Type guard for successful API responses
  */
-export function isAPISuccess<T = any>(
+export function isAPISuccess<T = JsonValue>(
   result: APIResult<T>
 ): result is APISuccess<T> {
   return result?.success === true && 'data' in result;
@@ -424,10 +425,15 @@ export function extractErrorMessage(
     | NeuralResult
     | APIResult
     | OperationResult
-    | Result<any, any>
+    | Result<JsonValue, JsonValue>
 ): string | null {
   // Handle OperationResult pattern
-  if ('success' in result && !result.success && 'error' in result && result.error) {
+  if (
+    'success' in result &&
+    !result.success &&
+    'error' in result &&
+    result.error
+  ) {
     if (typeof result.error === 'string') {
       return result.error;
     }
@@ -487,13 +493,13 @@ export function resultToOperation<T, E = Error>(
     return {
       success: true,
       data: result.value,
-      metadata
+      metadata,
     };
   } else {
     return {
       success: false,
       error: result.error,
-      metadata
+      metadata,
     };
   }
 }
@@ -507,6 +513,8 @@ export function operationToResult<T, E = Error>(
   if (isOperationSuccess(operation)) {
     return createSuccess(operation.data);
   } else {
-    return createFailure(operation.error!);
+    return createFailure(
+      operation.error || (new Error('Operation failed') as E)
+    );
   }
 }

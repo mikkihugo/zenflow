@@ -1,19 +1,19 @@
 /**
  * @fileoverview Foundation Types - Error Types and Patterns
- * 
+ *
  * Standardized error types and error handling patterns used across the monorepo.
  * These provide a consistent approach to error management and error propagation
  * throughout all packages.
- * 
+ *
  * SCOPE: Generic error types that are NOT domain-specific
- * 
+ *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
  * ```typescript
  * import type { BaseError, ValidationError, SystemError } from '@claude-zen/foundation/types';
  * import { createValidationError, isValidationError } from '@claude-zen/foundation/types';
- * 
+ *
  * function validateEmail(email: string): ValidationError | null {
  *   if (!email.includes('@')) {
  *     return createValidationError('Invalid email format', { field: 'email' });
@@ -145,7 +145,13 @@ export interface ResourceError extends BaseError {
   /** Resource type (file, database, API, etc.) */
   readonly resourceType?: string;
   /** Resource operation that failed */
-  readonly operation?: 'read' | 'write' | 'delete' | 'create' | 'update' | 'connect';
+  readonly operation?:
+    | 'read'
+    | 'write'
+    | 'delete'
+    | 'create'
+    | 'update'
+    | 'connect';
   /** Whether the resource exists */
   readonly resourceExists?: boolean;
 }
@@ -216,26 +222,26 @@ export interface RateLimitError extends BaseError {
  * Error severity levels
  */
 export enum ErrorSeverity {
-  LOW = 'low',           // Minor issues, system can continue normally
-  MEDIUM = 'medium',     // Notable issues, some degradation possible
-  HIGH = 'high',         // Serious issues, significant impact
-  CRITICAL = 'critical'  // System-threatening issues, immediate attention required
+  LOW = 'low', // Minor issues, system can continue normally
+  MEDIUM = 'medium', // Notable issues, some degradation possible
+  HIGH = 'high', // Serious issues, significant impact
+  CRITICAL = 'critical', // System-threatening issues, immediate attention required
 }
 
 /**
  * Error categories for classification
  */
 export enum ErrorCategory {
-  VALIDATION = 'validation',       // Input/data validation errors
+  VALIDATION = 'validation', // Input/data validation errors
   CONFIGURATION = 'configuration', // Configuration-related errors
-  SYSTEM = 'system',               // System/infrastructure errors
-  NETWORK = 'network',             // Network/connectivity errors
-  RESOURCE = 'resource',           // Resource access errors
-  PERMISSION = 'permission',       // Authorization/permission errors
-  BUSINESS = 'business',           // Business logic errors
-  TIMEOUT = 'timeout',             // Timeout-related errors
-  RATELIMIT = 'ratelimit',         // Rate limiting errors
-  UNKNOWN = 'unknown'              // Unclassified errors
+  SYSTEM = 'system', // System/infrastructure errors
+  NETWORK = 'network', // Network/connectivity errors
+  RESOURCE = 'resource', // Resource access errors
+  PERMISSION = 'permission', // Authorization/permission errors
+  BUSINESS = 'business', // Business logic errors
+  TIMEOUT = 'timeout', // Timeout-related errors
+  RATELIMIT = 'ratelimit', // Rate limiting errors
+  UNKNOWN = 'unknown', // Unclassified errors
 }
 
 /**
@@ -264,7 +270,7 @@ export interface ErrorMetadata {
  * Result type for operations that can succeed or fail
  * Alternative to exception throwing for expected failures
  */
-export type Result<T, E extends BaseError = BaseError> = 
+export type Result<T, E extends BaseError = BaseError> =
   | { success: true; data: T; error?: never }
   | { success: false; data?: never; error: E };
 
@@ -289,7 +295,9 @@ export type ErrorResult<E extends BaseError> = {
 /**
  * Async result type for promise-based operations
  */
-export type AsyncResult<T, E extends BaseError = BaseError> = Promise<Result<T, E>>;
+export type AsyncResult<T, E extends BaseError = BaseError> = Promise<
+  Result<T, E>
+>;
 
 // =============================================================================
 // ERROR HANDLER TYPES - Error processing and handling
@@ -298,22 +306,30 @@ export type AsyncResult<T, E extends BaseError = BaseError> = Promise<Result<T, 
 /**
  * Error handler function signature
  */
-export type ErrorHandler<E extends BaseError = BaseError> = (error: E) => void | Promise<void>;
+export type ErrorHandler<E extends BaseError = BaseError> = (
+  error: E
+) => void | Promise<void>;
 
 /**
  * Error recovery function signature
  */
-export type ErrorRecovery<T, E extends BaseError = BaseError> = (error: E) => T | Promise<T>;
+export type ErrorRecovery<T, E extends BaseError = BaseError> = (
+  error: E
+) => T | Promise<T>;
 
 /**
  * Error transformation function signature
  */
-export type ErrorTransform<TIn extends BaseError, TOut extends BaseError> = (error: TIn) => TOut;
+export type ErrorTransform<TIn extends BaseError, TOut extends BaseError> = (
+  error: TIn
+) => TOut;
 
 /**
  * Error filter function signature
  */
-export type ErrorFilter<E extends BaseError = BaseError> = (error: E) => boolean;
+export type ErrorFilter<E extends BaseError = BaseError> = (
+  error: E
+) => boolean;
 
 /**
  * Comprehensive error handling configuration
@@ -371,7 +387,7 @@ export function createValidationError(
     actual: options?.actual,
     violations: options?.violations,
     context: options?.context,
-    cause: options?.cause
+    cause: options?.cause,
   };
 }
 
@@ -403,7 +419,7 @@ export function createSystemError(
     exitCode: options?.exitCode,
     signal: options?.signal,
     context: options?.context,
-    cause: options?.cause
+    cause: options?.cause,
   };
 }
 
@@ -437,7 +453,7 @@ export function createNetworkError(
     timeout: options?.timeout,
     isTimeout: options?.isTimeout ?? false,
     context: options?.context,
-    cause: options?.cause
+    cause: options?.cause,
   };
 }
 
@@ -469,7 +485,7 @@ export function createResourceError(
     operation: options?.operation,
     resourceExists: options?.resourceExists,
     context: options?.context,
-    cause: options?.cause
+    cause: options?.cause,
   };
 }
 
@@ -513,40 +529,48 @@ export function isError<T, E extends BaseError>(
  * Check if error is a validation error
  */
 export function isValidationError(error: unknown): error is ValidationError {
-  return typeof error === 'object' && 
-    error !== null && 
-    'type' in error && 
-    error.type === 'ValidationError';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'type' in error &&
+    error.type === 'ValidationError'
+  );
 }
 
 /**
  * Check if error is a system error
  */
 export function isSystemError(error: unknown): error is SystemError {
-  return typeof error === 'object' && 
-    error !== null && 
-    'type' in error && 
-    error.type === 'SystemError';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'type' in error &&
+    error.type === 'SystemError'
+  );
 }
 
 /**
  * Check if error is a network error
  */
 export function isNetworkError(error: unknown): error is NetworkError {
-  return typeof error === 'object' && 
-    error !== null && 
-    'type' in error && 
-    error.type === 'NetworkError';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'type' in error &&
+    error.type === 'NetworkError'
+  );
 }
 
 /**
  * Check if error is a resource error
  */
 export function isResourceError(error: unknown): error is ResourceError {
-  return typeof error === 'object' && 
-    error !== null && 
-    'type' in error && 
-    error.type === 'ResourceError';
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'type' in error &&
+    error.type === 'ResourceError'
+  );
 }
 
 /**
@@ -560,13 +584,15 @@ export function isRetryableError(error: BaseError): boolean {
  * Check if error is a base error (has required BaseError fields)
  */
 export function isBaseError(error: unknown): error is BaseError {
-  return typeof error === 'object' && 
-    error !== null && 
-    'type' in error && 
-    'code' in error && 
-    'message' in error && 
-    'timestamp' in error && 
-    'errorId' in error && 
-    'retryable' in error && 
-    'logLevel' in error;
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'type' in error &&
+    'code' in error &&
+    'message' in error &&
+    'timestamp' in error &&
+    'errorId' in error &&
+    'retryable' in error &&
+    'logLevel' in error
+  );
 }

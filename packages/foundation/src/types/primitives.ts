@@ -1,17 +1,17 @@
 /**
  * @fileoverview Foundation Types - Basic Primitives
- * 
+ *
  * Shared primitive types that form the foundation for all packages in the monorepo.
  * These are the most basic, universally applicable types that any package can safely import.
- * 
+ *
  * SCOPE: Only fundamental types that have NO domain-specific knowledge
- * 
+ *
  * @package @claude-zen/foundation
  * @since 2.1.0
  * @example
  * ```typescript
  * import type { ID, UUID, Timestamp, Priority } from '@claude-zen/foundation/types';
- * 
+ *
  * interface Task {
  *   id: ID;
  *   userId: UUID;
@@ -71,7 +71,7 @@ export enum Priority {
   MEDIUM = 'medium',
   HIGH = 'high',
   CRITICAL = 'critical',
-  URGENT = 'urgent'
+  URGENT = 'urgent',
 }
 
 /**
@@ -84,7 +84,7 @@ export enum Status {
   FAILED = 'failed',
   CANCELLED = 'cancelled',
   PAUSED = 'paused',
-  SKIPPED = 'skipped'
+  SKIPPED = 'skipped',
 }
 
 /**
@@ -92,13 +92,13 @@ export enum Status {
  */
 export enum LogLevel {
   EMERGENCY = 'emergency', // System is unusable
-  ALERT = 'alert',         // Action must be taken immediately
-  CRITICAL = 'critical',   // Critical conditions
-  ERROR = 'error',         // Error conditions
-  WARNING = 'warning',     // Warning conditions
-  NOTICE = 'notice',       // Normal but significant condition
-  INFO = 'info',           // Informational messages
-  DEBUG = 'debug'          // Debug-level messages
+  ALERT = 'alert', // Action must be taken immediately
+  CRITICAL = 'critical', // Critical conditions
+  ERROR = 'error', // Error conditions
+  WARNING = 'warning', // Warning conditions
+  NOTICE = 'notice', // Normal but significant condition
+  INFO = 'info', // Informational messages
+  DEBUG = 'debug', // Debug-level messages
 }
 
 /**
@@ -109,7 +109,7 @@ export enum Environment {
   TESTING = 'testing',
   STAGING = 'staging',
   PRODUCTION = 'production',
-  LOCAL = 'local'
+  LOCAL = 'local',
 }
 
 // =============================================================================
@@ -126,7 +126,8 @@ export type Optional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
  * Make specific properties of T required
  * Opposite of Optional - useful for enforcing required fields
  */
-export type RequiredFields<T, K extends keyof T> = T & globalThis.Required<Pick<T, K>>;
+export type RequiredFields<T, K extends keyof T> = T &
+  globalThis.Required<Pick<T, K>>;
 
 /**
  * Array that must contain at least one element
@@ -137,7 +138,7 @@ export type NonEmptyArray<T> = [T, ...T[]];
 /**
  * Readonly version of NonEmptyArray
  */
-export type ReadonlyNonEmptyArray<T> = readonly [T, ...readonly T[]];
+export type ReadonlyNonEmptyArray<T> = readonly [T, ...(readonly T[])];
 
 /**
  * Extract the type of array elements
@@ -166,7 +167,14 @@ export type Nullable<T> = T | null | undefined;
 /**
  * Primitive types only - excludes objects, arrays, functions
  */
-export type Primitive = string | number | boolean | null | undefined | symbol | bigint;
+export type Primitive =
+  | string
+  | number
+  | boolean
+  | null
+  | undefined
+  | symbol
+  | bigint;
 
 // =============================================================================
 // BRANDED TYPES - Type-safe primitives with compile-time branding
@@ -211,6 +219,30 @@ export type Base64String = Branded<string, 'Base64String'>;
 export type HexString = Branded<string, 'HexString'>;
 
 // =============================================================================
+// JSON TYPES - Re-export from type-fest for internal use
+// =============================================================================
+
+/**
+ * JSON value type - re-exported from type-fest for convenience
+ */
+export type {
+  JsonValue,
+  JsonObject,
+  JsonArray,
+  JsonPrimitive,
+} from 'type-fest';
+
+/**
+ * Generic record type for unknown object structures
+ */
+export type UnknownRecord = Record<string, unknown>;
+
+/**
+ * Constructor type for classes
+ */
+export type Constructor<T = unknown> = new (...args: unknown[]) => T;
+
+// =============================================================================
 // TYPE GUARDS - Runtime type checking functions
 // =============================================================================
 
@@ -218,35 +250,42 @@ export type HexString = Branded<string, 'HexString'>;
  * Check if value is a valid UUID (v1, v3, v4, or v5)
  */
 export function isUUID(value: unknown): value is UUID {
-  return typeof value === 'string' && 
-    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(value);
+  return (
+    typeof value === 'string' &&
+    /^[\da-f]{8}-[\da-f]{4}-[1-5][\da-f]{3}-[89ab][\da-f]{3}-[\da-f]{12}$/i.test(
+      value
+    )
+  );
 }
 
 /**
  * Check if value is a valid timestamp
  */
 export function isTimestamp(value: unknown): value is Timestamp {
-  return typeof value === 'number' && 
-    Number.isInteger(value) && 
-    value > 0 && 
-    value <= Date.now() + 1000 * 60 * 60 * 24 * 365; // Not more than 1 year in future
+  return (
+    typeof value === 'number' &&
+    Number.isInteger(value) &&
+    value > 0 &&
+    value <= Date.now() + 1000 * 60 * 60 * 24 * 365
+  ); // Not more than 1 year in future
 }
 
 /**
  * Check if value is a valid ISO date string
  */
 export function isISODateString(value: unknown): value is ISODateString {
-  return typeof value === 'string' && 
+  return (
+    typeof value === 'string' &&
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/.test(value) &&
-    !isNaN(Date.parse(value));
+    !isNaN(Date.parse(value))
+  );
 }
 
 /**
  * Check if value is a valid email
  */
 export function isEmail(value: unknown): value is Email {
-  return typeof value === 'string' && 
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  return typeof value === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 }
 
 /**
@@ -295,8 +334,8 @@ export function unbrand<T, Brand extends string | symbol>(
 export function generateUUID(): UUID {
   return brand<string, 'UUID'>(
     'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8);
+      const r = (Math.random() * 16) | 0;
+      const v = c === 'x' ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     })
   );

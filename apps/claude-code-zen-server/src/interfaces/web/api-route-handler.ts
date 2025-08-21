@@ -9,8 +9,8 @@
  */
 
 import type { Express, Request, Response } from 'express';
-import { getLogger } from '../../config/logging-config';
-import { getVersion } from '../../config/version';
+import { getLogger } from '@claude-zen/foundation'
+const { getVersion } = (global as any).claudeZenFoundation;
 import type { WebSocketCoordinator } from './web-socket-coordinator';
 
 export interface ApiConfig {

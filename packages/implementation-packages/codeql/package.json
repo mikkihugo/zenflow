@@ -1,0 +1,62 @@
+{
+  "name": "@claude-zen/codeql",
+  "version": "1.0.0",
+  "description": "CodeQL integration for semantic code analysis and vulnerability detection",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "codeql",
+    "security",
+    "static-analysis",
+    "vulnerability-detection",
+    "semantic-analysis",
+    "sarif",
+    "taint-tracking"
+  ],
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "fast-xml-parser": "^4.3.2",
+    "glob": "^10.3.10",
+    "semver": "^7.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/semver": "^7.5.6",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0",
+    "eslint": "^9.0.0"
+  },
+  "peerDependencies": {
+    "@claude-zen/development": "workspace:*"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "Claude Code Zen Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zen-neural/claude-code-zen",
+    "directory": "packages/implementation-packages/codeql"
+  },
+  "files": [
+    "dist",
+    "queries",
+    "README.md"
+  ]
+}

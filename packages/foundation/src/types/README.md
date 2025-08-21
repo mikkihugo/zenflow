@@ -7,12 +7,15 @@ The `@claude-zen/foundation/types` package provides the foundational type system
 ## Type Architecture Philosophy
 
 ### Single Source of Truth
+
 Foundation types establish a **single source of truth** for basic primitives that all packages depend on. This ensures consistency and prevents type fragmentation across the monorepo.
 
 ### Stability First
+
 Foundation types prioritize **stability over flexibility**. These types change infrequently and maintain backward compatibility to prevent breaking changes across the entire monorepo.
 
 ### Domain Agnostic
+
 Foundation types contain **zero domain-specific knowledge**. They represent universal concepts that apply across all business domains and technical contexts.
 
 ## Package Structure
@@ -21,7 +24,7 @@ Foundation types contain **zero domain-specific knowledge**. They represent univ
 /packages/foundation/src/types/
 ├── index.ts          # Main export file with comprehensive documentation
 ├── primitives.ts     # Basic types, IDs, enums, utility types
-├── patterns.ts       # Structural patterns and interfaces  
+├── patterns.ts       # Structural patterns and interfaces
 ├── errors.ts         # Error types and handling patterns
 └── README.md         # This documentation file
 ```
@@ -33,6 +36,7 @@ Foundation types contain **zero domain-specific knowledge**. They represent univ
 **Purpose**: Most basic, universally applicable types
 
 **Contains**:
+
 - **Identifiers**: `ID`, `UUID`, `Timestamp`, `ISODateString`
 - **Enums**: `Priority`, `Status`, `LogLevel`, `Environment`
 - **Utility Types**: `Optional<T, K>`, `NonEmptyArray<T>`, `DeepReadonly<T>`
@@ -41,6 +45,7 @@ Foundation types contain **zero domain-specific knowledge**. They represent univ
 - **Utility Functions**: Helper functions for type manipulation
 
 **Examples**:
+
 ```typescript
 import type { UUID, Priority, Optional } from '@claude-zen/foundation/types';
 
@@ -58,6 +63,7 @@ type TaskUpdate = Optional<Task, 'priority'>;
 **Purpose**: Standard structural patterns for organizing data
 
 **Contains**:
+
 - **Temporal**: `Timestamped`, `Versioned`, `Auditable`
 - **Identification**: `Identifiable`, `Named`, `Described`, `Entity`
 - **Pagination**: `Paginated<T>`, `CursorPaginated<T>`
@@ -66,8 +72,13 @@ type TaskUpdate = Optional<Task, 'priority'>;
 - **Configuration**: `EnvironmentConfig<T>`, `FeatureFlag`
 
 **Examples**:
+
 ```typescript
-import type { Timestamped, Paginated, OperationResult } from '@claude-zen/foundation/types';
+import type {
+  Timestamped,
+  Paginated,
+  OperationResult,
+} from '@claude-zen/foundation/types';
 
 interface User extends Timestamped {
   id: string;
@@ -83,6 +94,7 @@ type UserResult = OperationResult<User, ValidationError>;
 **Purpose**: Standardized error handling and result patterns
 
 **Contains**:
+
 - **Base Types**: `BaseError`, `ValidationError`, `SystemError`
 - **Specialized**: `NetworkError`, `ResourceError`, `TimeoutError`
 - **Result Pattern**: `Result<T, E>`, `AsyncResult<T, E>`
@@ -90,9 +102,14 @@ type UserResult = OperationResult<User, ValidationError>;
 - **Utilities**: Error creation, type guards, result helpers
 
 **Examples**:
+
 ```typescript
 import type { Result, ValidationError } from '@claude-zen/foundation/types';
-import { createSuccess, createError, isSuccess } from '@claude-zen/foundation/types';
+import {
+  createSuccess,
+  createError,
+  isSuccess,
+} from '@claude-zen/foundation/types';
 
 function validateEmail(email: string): Result<string, ValidationError> {
   if (!email.includes('@')) {
@@ -167,12 +184,12 @@ Only types that are universal, domain-agnostic, stable, and uncoupled belong in 
 
 ```typescript
 // ✅ Import foundation types (always safe)
-import type { 
-  UUID, 
-  Timestamped, 
-  Paginated, 
+import type {
+  UUID,
+  Timestamped,
+  Paginated,
   Result,
-  ValidationError 
+  ValidationError,
 } from '@claude-zen/foundation/types';
 
 // ✅ Import domain types from appropriate packages
@@ -182,7 +199,7 @@ import type { Agent } from '@claude-zen/coordination-core/types';
 // ✅ Combine foundation and domain types
 interface UserTask extends Timestamped {
   id: UUID;
-  agent: Agent;                    // Domain-specific
+  agent: Agent; // Domain-specific
   result: Result<string, ValidationError>; // Foundation pattern
 }
 ```
@@ -190,6 +207,7 @@ interface UserTask extends Timestamped {
 ### Common Patterns
 
 #### 1. Entity Definition
+
 ```typescript
 import type { Entity, UUID } from '@claude-zen/foundation/types';
 
@@ -202,6 +220,7 @@ interface User extends Entity {
 ```
 
 #### 2. API Response Pattern
+
 ```typescript
 import type { Paginated, OperationResult } from '@claude-zen/foundation/types';
 
@@ -212,6 +231,7 @@ interface UserService {
 ```
 
 #### 3. Result Pattern for Error Handling
+
 ```typescript
 import type { Result, ValidationError } from '@claude-zen/foundation/types';
 
@@ -225,8 +245,12 @@ function processData(input: unknown): Result<ProcessedData, ValidationError> {
 ```
 
 #### 4. Configuration Pattern
+
 ```typescript
-import type { EnvironmentConfig, FeatureFlag } from '@claude-zen/foundation/types';
+import type {
+  EnvironmentConfig,
+  FeatureFlag,
+} from '@claude-zen/foundation/types';
 
 interface AppConfig {
   database: EnvironmentConfig<DatabaseConfig>;
@@ -239,22 +263,24 @@ interface AppConfig {
 ### From Untyped to Foundation Types
 
 **Before**:
+
 ```typescript
 interface User {
-  id: string;                    // Untyped ID
-  created: number;               // Raw timestamp
-  updated: number;               // Raw timestamp
-  priority: string;              // Untyped enum
+  id: string; // Untyped ID
+  created: number; // Raw timestamp
+  updated: number; // Raw timestamp
+  priority: string; // Untyped enum
 }
 ```
 
 **After**:
+
 ```typescript
 import type { UUID, Timestamped, Priority } from '@claude-zen/foundation/types';
 
 interface User extends Timestamped {
-  id: UUID;                      // Branded UUID type
-  priority: Priority;            // Typed enum
+  id: UUID; // Branded UUID type
+  priority: Priority; // Typed enum
 }
 // Timestamped provides: createdAt, updatedAt as branded Timestamp types
 ```
@@ -262,6 +288,7 @@ interface User extends Timestamped {
 ### From Custom Error Handling to Foundation Patterns
 
 **Before**:
+
 ```typescript
 function validate(data: unknown): string | null {
   if (!isValid(data)) {
@@ -272,9 +299,14 @@ function validate(data: unknown): string | null {
 ```
 
 **After**:
+
 ```typescript
 import type { Result, ValidationError } from '@claude-zen/foundation/types';
-import { createSuccess, createError, createValidationError } from '@claude-zen/foundation/types';
+import {
+  createSuccess,
+  createError,
+  createValidationError,
+} from '@claude-zen/foundation/types';
 
 function validate(data: unknown): Result<string, ValidationError> {
   if (!isValid(data)) {
@@ -287,6 +319,7 @@ function validate(data: unknown): Result<string, ValidationError> {
 ## Best Practices
 
 ### 1. Use Type Guards
+
 ```typescript
 import { isUUID, isTimestamp } from '@claude-zen/foundation/types';
 
@@ -296,6 +329,7 @@ function processId(id: unknown): UUID | null {
 ```
 
 ### 2. Brand Types for Safety
+
 ```typescript
 import type { Email, URL } from '@claude-zen/foundation/types';
 import { brand } from '@claude-zen/foundation/types';
@@ -308,6 +342,7 @@ function createUser(email: string): User {
 ```
 
 ### 3. Prefer Result Pattern Over Exceptions
+
 ```typescript
 // ✅ Good - Result pattern
 function parseJSON<T>(json: string): Result<T, ValidationError> {
@@ -325,6 +360,7 @@ function parseJSON<T>(json: string): T {
 ```
 
 ### 4. Use Utility Types for Flexibility
+
 ```typescript
 import type { Optional, Required } from '@claude-zen/foundation/types';
 
@@ -347,7 +383,12 @@ type UpdateUser = Optional<User, 'email' | name' | 'avatar'> & Required<User, 'i
 Foundation types include comprehensive test utilities:
 
 ```typescript
-import { isUUID, isTimestamp, generateUUID, now } from '@claude-zen/foundation/types';
+import {
+  isUUID,
+  isTimestamp,
+  generateUUID,
+  now,
+} from '@claude-zen/foundation/types';
 
 describe('UUID handling', () => {
   test('generates valid UUIDs', () => {
@@ -375,6 +416,7 @@ Foundation types follow **semantic versioning** with strict backward compatibili
 ### Breaking Change Policy
 
 Breaking changes to foundation types require:
+
 1. **RFC Process**: Proposal and community review
 2. **Migration Guide**: Automated migration tools where possible
 3. **Deprecation Period**: Minimum 1 major version deprecation
@@ -383,6 +425,7 @@ Breaking changes to foundation types require:
 ### Adding New Types
 
 New foundation types must meet all criteria:
+
 1. **Universal Applicability**: Used by 3+ packages
 2. **Domain Agnostic**: No business logic or domain concepts
 3. **Stable Interface**: Unlikely to change frequently

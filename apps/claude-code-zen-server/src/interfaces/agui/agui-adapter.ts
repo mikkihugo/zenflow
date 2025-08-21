@@ -10,7 +10,7 @@
 
 import * as readline from 'node:readline';
 import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('AGUIAdapter');
 

@@ -2,7 +2,7 @@
  * @file Coordination system: health-monitor.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 /**
  * HealthMonitor - Proactive health monitoring system for session persistence.

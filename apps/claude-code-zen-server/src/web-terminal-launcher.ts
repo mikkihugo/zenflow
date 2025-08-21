@@ -12,8 +12,8 @@
  */
 
 import { type ChildProcess, spawn } from 'node:child_process';
-import { getLogger } from './config/logging-config';
-import { launchTerminalBrowser } from './interfaces/web/terminal-browser/terminal-browser';
+import { getLogger } from '@claude-zen/foundation'
+// Terminal browser functionality removed - use regular web browser instead
 
 const logger = getLogger('WebTerminalLauncher');
 
@@ -113,15 +113,11 @@ class WebTerminalLauncher {
   }
 
   private async launchTerminalBrowser(): Promise<void> {
-    logger.info('🖥️  Launching terminal browser...');
-
-    // Launch the terminal browser to display the web interface
-    await launchTerminalBrowser(this.baseUrl, {
-      baseUrl: this.baseUrl,
-      enableNavigation: true,
-      enableForms: true,
-      refreshInterval: 5000,
-    });
+    logger.info('🖥️  Web interface available at: ' + this.baseUrl);
+    logger.info('💡 Open your browser and navigate to the URL above');
+    
+    // Keep the process running
+    await new Promise(() => {}); // Infinite wait
   }
 
   private async shutdown(): Promise<void> {

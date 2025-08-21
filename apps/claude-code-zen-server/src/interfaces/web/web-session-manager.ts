@@ -10,7 +10,7 @@
 
 import type { NextFunction, Request, Response } from 'express';
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 import type { WebConfig, WebSession } from './web-config';
 

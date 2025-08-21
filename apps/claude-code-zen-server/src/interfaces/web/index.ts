@@ -8,7 +8,7 @@ import { createServer, type Server } from 'node:http';
 
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import LLMStatsService from '../../coordination/services/llm-stats-service';
 
 import express from 'express';

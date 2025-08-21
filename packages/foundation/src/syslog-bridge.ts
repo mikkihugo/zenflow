@@ -1,10 +1,10 @@
 /**
  * @fileoverview LogTape Syslog Bridge for System-Wide Logging
- * 
+ *
  * Integrates LogTape with system syslog for centralized logging across
  * all claude-zen components. Provides structured logging that appears
  * in journalctl and system logs.
- * 
+ *
  * This is part of the foundation logging infrastructure, providing
  * enterprise-grade system integration for all claude-zen packages.
  */
@@ -12,13 +12,14 @@
 import { spawn } from 'child_process';
 
 import { getLogger, type Logger } from './logging';
+import type { UnknownRecord } from './types/primitives';
 
 export interface SyslogEntry {
   timestamp: string;
   level: 'debug' | 'info' | 'warn' | 'error' | 'fatal';
   component: string;
   message: string;
-  metadata?: Record<string, any>;
+  metadata?: UnknownRecord;
   sessionId?: string;
   traceId?: string;
 }
@@ -28,7 +29,7 @@ export class LogTapeSyslogBridge {
   private isEnabled = true;
   private componentName: string;
 
-  constructor(componentName: string = 'claude-zen') {
+  constructor(componentName = 'claude-zen') {
     this.componentName = componentName;
     this.logger = getLogger('SyslogBridge');
     this.setupSyslogLogging();
@@ -43,11 +44,13 @@ export class LogTapeSyslogBridge {
       this.logger.info('LogTape syslog bridge initialized', {
         component: this.componentName,
         pid: process.pid,
-        node_version: process.version
+        node_version: process.version,
       });
     } catch (error) {
       // Use direct error logging to avoid circular dependency with syslog bridge
-      process.stderr.write(`[SyslogBridge] Failed to initialize syslog bridge: ${error}\n`);
+      process.stderr.write(
+        `[SyslogBridge] Failed to initialize syslog bridge: ${error}\n`
+      );
       this.isEnabled = false;
     }
   }
@@ -56,18 +59,19 @@ export class LogTapeSyslogBridge {
    * Send structured log entry to syslog
    */
   public logToSyslog(entry: SyslogEntry): void {
-    if (!this.isEnabled) return;
+    if (!this.isEnabled) {
+      return;
+    }
 
     try {
       // Format for syslog with structured data
       const syslogMessage = this.formatSyslogMessage(entry);
-      
+
       // Send to system logger via logger command
       this.sendToSystemLog(entry.level, syslogMessage);
-      
+
       // Also log via LogTape for database storage
       this.logViaLogTape(entry);
-      
     } catch (error) {
       // Use direct error logging to avoid circular dependency with syslog bridge
       process.stderr.write(`[SyslogBridge] Syslog bridge error: ${error}\n`);
@@ -79,18 +83,22 @@ export class LogTapeSyslogBridge {
    */
   private formatSyslogMessage(entry: SyslogEntry): string {
     const { component, message, metadata, sessionId, traceId } = entry;
-    
+
     let formatted = `[${component}]`;
-    
-    if (sessionId) formatted += ` [session:${sessionId}]`;
-    if (traceId) formatted += ` [trace:${traceId}]`;
-    
+
+    if (sessionId) {
+      formatted += ` [session:${sessionId}]`;
+    }
+    if (traceId) {
+      formatted += ` [trace:${traceId}]`;
+    }
+
     formatted += ` ${message}`;
-    
+
     if (metadata && Object.keys(metadata).length > 0) {
       formatted += ` | ${JSON.stringify(metadata)}`;
     }
-    
+
     return formatted;
   }
 
@@ -101,22 +109,27 @@ export class LogTapeSyslogBridge {
     try {
       // Map LogTape levels to syslog priorities
       const syslogPriority = this.mapLogLevel(level);
-      
+
       // Use logger command to send to syslog
-      const loggerProcess = spawn('logger', [
-        '-t', this.componentName,
-        '-p', syslogPriority,
-        message
-      ], {
-        stdio: 'ignore',
-        detached: true
-      });
-      
+      const loggerProcess = spawn(
+        'logger',
+        ['-t', this.componentName, '-p', syslogPriority, message],
+        {
+          stdio: 'ignore',
+          detached: true,
+        }
+      );
+
       loggerProcess.unref();
-      
     } catch (error) {
       // Fallback to direct stdout if logger command fails (avoid circular logging)
-      process.stdout.write(`SYSLOG[${level.toUpperCase()}] ${this.componentName}: ${message}\n`);
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      process.stdout.write(
+        `SYSLOG[${level.toUpperCase()}] ${this.componentName}: ${message}\n`
+      );
+      process.stderr.write(
+        `SYSLOG_ERROR: Failed to write to syslog: ${errorMsg}\n`
+      );
     }
   }
 
@@ -144,56 +157,75 @@ export class LogTapeSyslogBridge {
    */
   private logViaLogTape(entry: SyslogEntry): void {
     // Map to LogTape methods (no 'fatal' method)
-    const logMethod = entry.level === 'fatal' ? this.logger.error : this.logger[entry.level] || this.logger.info;
+    const logMethod =
+      entry.level === 'fatal'
+        ? this.logger.error
+        : this.logger[entry.level] || this.logger.info;
     logMethod.call(this.logger, entry.message, {
       component: entry.component,
       metadata: entry.metadata,
       sessionId: entry.sessionId,
       traceId: entry.traceId,
-      syslogTimestamp: entry.timestamp
+      syslogTimestamp: entry.timestamp,
     });
   }
 
   /**
    * Convenience methods for different log levels
    */
-  public info(component: string, message: string, metadata?: Record<string, any>): void {
+  public info(
+    component: string,
+    message: string,
+    metadata?: UnknownRecord
+  ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
       level: 'info',
       component,
       message,
-      metadata
+      metadata,
     });
   }
 
-  public warn(component: string, message: string, metadata?: Record<string, any>): void {
+  public warn(
+    component: string,
+    message: string,
+    metadata?: UnknownRecord
+  ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
       level: 'warn',
       component,
       message,
-      metadata
+      metadata,
     });
   }
 
-  public error(component: string, message: string, metadata?: Record<string, any>): void {
+  public error(
+    component: string,
+    message: string,
+    metadata?: UnknownRecord
+  ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
       level: 'error',
       component,
       message,
-      metadata
+      metadata,
     });
   }
 
-  public debug(component: string, message: string, metadata?: Record<string, any>): void {
+  public debug(
+    component: string,
+    message: string,
+    metadata?: UnknownRecord
+  ): void {
     this.logToSyslog({
       timestamp: new Date().toISOString(),
       level: 'debug',
       component,
       message,
-      metadata
+      metadata,
     });
   }
 
@@ -230,13 +262,13 @@ export class LogTapeSyslogBridge {
   /**
    * Get syslog configuration status
    */
-  public getStatus(): Record<string, any> {
+  public getStatus(): UnknownRecord {
     return {
       enabled: this.isEnabled,
       component: this.componentName,
       pid: process.pid,
       loggerAvailable: this.checkLoggerCommand(),
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -258,12 +290,12 @@ export const syslogBridge = new LogTapeSyslogBridge('claude-zen');
 
 // Export convenience functions
 export const logToSyslog = {
-  info: (component: string, message: string, metadata?: Record<string, any>) => 
+  info: (component: string, message: string, metadata?: UnknownRecord) =>
     syslogBridge.info(component, message, metadata),
-  warn: (component: string, message: string, metadata?: Record<string, any>) => 
+  warn: (component: string, message: string, metadata?: UnknownRecord) =>
     syslogBridge.warn(component, message, metadata),
-  error: (component: string, message: string, metadata?: Record<string, any>) => 
+  error: (component: string, message: string, metadata?: UnknownRecord) =>
     syslogBridge.error(component, message, metadata),
-  debug: (component: string, message: string, metadata?: Record<string, any>) => 
+  debug: (component: string, message: string, metadata?: UnknownRecord) =>
     syslogBridge.debug(component, message, metadata),
 };

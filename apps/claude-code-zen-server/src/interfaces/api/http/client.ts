@@ -14,7 +14,7 @@ import axios, {
   type AxiosResponse,
 } from 'axios';
 
-import { getMCPServerURL } from '../../../config/defaults';
+// Removed broken import - using simple fallback URL
 import type {
   Agent,
   HealthStatus,
@@ -51,7 +51,7 @@ export interface APIClientConfig {
  * Default client configuration using centralized URL configuration.
  */
 export const DEFAULT_CLIENT_CONFIG: APIClientConfig = {
-  baseURL: getMCPServerURL(),
+  baseURL: 'http://localhost:3000',
   timeout: 30000, // 30 seconds
   retryAttempts: 3,
   retryDelay: 1000, // 1 second

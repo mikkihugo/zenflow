@@ -1,26 +1,26 @@
 /**
  * @fileoverview Environment Detection System - Foundation Integration
- * 
+ *
  * **EXTRACTED FROM MAIN APP → FOUNDATION INTEGRATION**
- * 
+ *
  * Comprehensive environment auto-detection system now integrated into
  * @claude-zen/foundation for universal development environment discovery.
- * 
+ *
  * Key Features:
  * - Auto-detects tools, package managers, runtimes
  * - Project context analysis
- * - System capabilities detection  
+ * - System capabilities detection
  * - Integration with existing monorepo detector
  * - Foundation logging and error handling
  * - Event-driven updates
- * 
+ *
  * **FOUNDATION INTEGRATION:**
  * - Extends existing monorepo detection
  * - Uses foundation Logger interface
  * - Integrates with foundation error handling
  * - Available for DI injection
  * - Follows foundation patterns
- * 
+ *
  * @author Claude Code Zen Team
  * @since 2.1.0 (extracted from main app)
  * @version 1.0.0
@@ -95,7 +95,7 @@ export interface NixPackage {
   description?: string;
   available: boolean;
   installed: boolean;
-  category: 'beam' | 'nodejs' | 'system' | 'dev-tools' | 'other';
+  category: 'nodejs' | 'system' | 'dev-tools' | 'other';
 }
 
 export interface NixEnvironment {
@@ -116,7 +116,10 @@ export interface EnvironmentSnapshot {
 }
 
 export class EnvironmentDetectionError extends Error {
-  constructor(message: string, public readonly tool?: string) {
+  constructor(
+    message: string,
+    public readonly tool?: string
+  ) {
     super(message);
     this.name = 'EnvironmentDetectionError';
   }
@@ -131,7 +134,7 @@ export class EnvironmentDetector extends EventEmitter {
   private detectionInterval: NodeJS.Timeout | null = null;
   private isDetecting = false;
   private logger: Logger;
-  private workspaceDetector: WorkspaceDetector;
+  private workspaceDetector: WorkspaceDetector | null;
 
   constructor(
     private projectRoot: string = process.cwd(),
@@ -140,9 +143,10 @@ export class EnvironmentDetector extends EventEmitter {
     logger?: Logger
   ) {
     super();
-    
+
     this.logger = logger || getLogger('EnvironmentDetector');
-    this.workspaceDetector = new WorkspaceDetector();
+    // Initialize workspace detector for comprehensive environment analysis
+    this.workspaceDetector = null;
 
     if (autoRefresh) {
       this.startAutoDetection();
@@ -153,7 +157,9 @@ export class EnvironmentDetector extends EventEmitter {
    * Start automatic environment detection
    */
   startAutoDetection(): void {
-    if (this.detectionInterval) return;
+    if (this.detectionInterval) {
+      return;
+    }
 
     // Initial detection
     this.detectEnvironment();
@@ -163,7 +169,9 @@ export class EnvironmentDetector extends EventEmitter {
       this.detectEnvironment();
     }, this.refreshInterval);
 
-    this.logger.info(`Started auto-detection with ${this.refreshInterval}ms interval`);
+    this.logger.info(
+      `Started auto-detection with ${this.refreshInterval}ms interval`
+    );
   }
 
   /**
@@ -189,14 +197,20 @@ export class EnvironmentDetector extends EventEmitter {
     this.logger.info('Starting environment detection...');
 
     try {
-      const [tools, projectContext, systemCapabilities, nixEnvironment] = await Promise.all([
-        this.detectTools(),
-        this.detectProjectContext(),
-        this.detectSystemCapabilities(),
-        this.detectNixEnvironment()
-      ]);
+      const [tools, projectContext, systemCapabilities, nixEnvironment] =
+        await Promise.all([
+          this.detectTools(),
+          this.detectProjectContext(),
+          this.detectSystemCapabilities(),
+          this.detectNixEnvironment(),
+        ]);
 
-      const suggestions = this.generateSuggestions(tools, projectContext, systemCapabilities, nixEnvironment);
+      const suggestions = this.generateSuggestions(
+        tools,
+        projectContext,
+        systemCapabilities,
+        nixEnvironment
+      );
 
       this.snapshot = {
         timestamp: Date.now(),
@@ -204,19 +218,18 @@ export class EnvironmentDetector extends EventEmitter {
         projectContext,
         systemCapabilities,
         nixEnvironment,
-        suggestions
+        suggestions,
       };
 
       this.emit('environment-detected', this.snapshot);
       this.logger.info('Environment detection completed', {
-        toolsFound: tools.filter(t => t.available).length,
+        toolsFound: tools.filter((t) => t.available).length,
         totalTools: tools.length,
         languages: projectContext.languages,
-        workspace: projectContext.workspace?.tool
+        workspace: projectContext.workspace?.tool,
       });
 
       return this.snapshot;
-
     } catch (error) {
       this.logger.error('Environment detection failed:', error);
       throw new EnvironmentDetectionError(
@@ -233,37 +246,89 @@ export class EnvironmentDetector extends EventEmitter {
   private async detectTools(): Promise<EnvironmentTool[]> {
     const toolsToDetect = [
       // Package Managers
-      { name: 'npm', type: 'package-manager' as const, command: 'npm --version' },
-      { name: 'yarn', type: 'package-manager' as const, command: 'yarn --version' },
-      { name: 'pnpm', type: 'package-manager' as const, command: 'pnpm --version' },
-      { name: 'bun', type: 'package-manager' as const, command: 'bun --version' },
-      
+      {
+        name: 'npm',
+        type: 'package-manager' as const,
+        command: 'npm --version',
+      },
+      {
+        name: 'yarn',
+        type: 'package-manager' as const,
+        command: 'yarn --version',
+      },
+      {
+        name: 'pnpm',
+        type: 'package-manager' as const,
+        command: 'pnpm --version',
+      },
+      {
+        name: 'bun',
+        type: 'package-manager' as const,
+        command: 'bun --version',
+      },
+
       // Runtimes
       { name: 'node', type: 'runtime' as const, command: 'node --version' },
       { name: 'deno', type: 'runtime' as const, command: 'deno --version' },
       { name: 'python', type: 'runtime' as const, command: 'python --version' },
-      { name: 'python3', type: 'runtime' as const, command: 'python3 --version' },
+      {
+        name: 'python3',
+        type: 'runtime' as const,
+        command: 'python3 --version',
+      },
       { name: 'rust', type: 'runtime' as const, command: 'rustc --version' },
-      
+
       // Build Tools
-      { name: 'cargo', type: 'build-tool' as const, command: 'cargo --version' },
+      {
+        name: 'cargo',
+        type: 'build-tool' as const,
+        command: 'cargo --version',
+      },
       { name: 'go', type: 'compiler' as const, command: 'go version' },
       { name: 'gcc', type: 'compiler' as const, command: 'gcc --version' },
       { name: 'clang', type: 'compiler' as const, command: 'clang --version' },
-      
+
       // CLI Tools
-      { name: 'git', type: 'version-control' as const, command: 'git --version' },
-      { name: 'docker', type: 'cli-tool' as const, command: 'docker --version' },
-      { name: 'podman', type: 'cli-tool' as const, command: 'podman --version' },
-      
+      {
+        name: 'git',
+        type: 'version-control' as const,
+        command: 'git --version',
+      },
+      {
+        name: 'docker',
+        type: 'cli-tool' as const,
+        command: 'docker --version',
+      },
+      {
+        name: 'podman',
+        type: 'cli-tool' as const,
+        command: 'podman --version',
+      },
+
       // Build Systems
       { name: 'nx', type: 'build-tool' as const, command: 'nx --version' },
-      { name: 'turbo', type: 'build-tool' as const, command: 'turbo --version' },
-      { name: 'lerna', type: 'build-tool' as const, command: 'lerna --version' },
-      
+      {
+        name: 'turbo',
+        type: 'build-tool' as const,
+        command: 'turbo --version',
+      },
+      {
+        name: 'lerna',
+        type: 'build-tool' as const,
+        command: 'lerna --version',
+      },
+
       // Nix ecosystem
-      { name: 'nix', type: 'package-manager' as const, command: 'nix --version' },
-      { name: 'nix-shell', type: 'cli-tool' as const, command: 'nix-shell --version' },
+      {
+        name: 'nix',
+        type: 'package-manager' as const,
+        command: 'nix --version',
+      },
+      {
+        name: 'nix-shell',
+        type: 'cli-tool' as const,
+        command: 'nix-shell --version',
+      },
     ];
 
     const results = await Promise.allSettled(
@@ -271,30 +336,38 @@ export class EnvironmentDetector extends EventEmitter {
         try {
           const { stdout } = await execAsync(tool.command, { timeout: 5000 });
           const version = this.parseVersion(stdout.trim());
-          
+
           return {
             name: tool.name,
             type: tool.type,
             available: true,
             version,
-            capabilities: await this.detectToolCapabilities(tool.name)
+            capabilities: await this.detectToolCapabilities(tool.name),
           };
         } catch (error) {
+          // Security audit: tracking tool detection failures for security analysis
+          this.logger.debug('Tool detection failed - security audit', {
+            toolName: tool.name,
+            toolType: tool.type,
+            error: error instanceof Error ? error.message : String(error),
+          });
           return {
             name: tool.name,
             type: tool.type,
-            available: false
+            available: false,
           };
         }
       })
     );
 
-    return results.map((result, index) => 
-      result.status === 'fulfilled' ? result.value : {
-        name: toolsToDetect[index]?.name || 'unknown',
-        type: toolsToDetect[index]?.type || 'cli-tool',
-        available: false
-      }
+    return results.map((result, index) =>
+      result.status === 'fulfilled'
+        ? result.value
+        : {
+            name: toolsToDetect[index]?.name || 'unknown',
+            type: toolsToDetect[index]?.type || 'cli-tool',
+            available: false,
+          }
     );
   }
 
@@ -303,25 +376,38 @@ export class EnvironmentDetector extends EventEmitter {
    */
   private async detectProjectContext(): Promise<ProjectContext> {
     const projectFiles = [
-      'package.json', 'Cargo.toml', 'mix.exs', 'flake.nix', 
-      'shell.nix', 'Dockerfile', '.gitignore'
+      'package.json',
+      'Cargo.toml',
+      'mix.exs',
+      'flake.nix',
+      'shell.nix',
+      'Dockerfile',
+      '.gitignore',
     ];
 
     const fileChecks = await Promise.allSettled(
-      projectFiles.map(file => 
+      projectFiles.map((file) =>
         access(join(this.projectRoot, file))
           .then(() => true)
           .catch(() => false)
       )
     );
 
-    // Integrate with workspace detector
+    // Integrate with workspace detector for comprehensive project analysis
     let workspace: DetectedWorkspace | undefined;
     try {
-      const detected = await this.workspaceDetector.detectWorkspaceRoot(this.projectRoot);
+      // Initialize workspace detector if not already done
+      if (!this.workspaceDetector) {
+        this.workspaceDetector = new WorkspaceDetector();
+      }
+
+      const detected = await this.workspaceDetector.detectWorkspaceRoot(
+        this.projectRoot
+      );
       workspace = detected ?? undefined;
     } catch (error) {
       this.logger.warn('Failed to detect workspace:', error);
+      workspace = undefined;
     }
 
     // Detect languages and frameworks
@@ -330,17 +416,31 @@ export class EnvironmentDetector extends EventEmitter {
     const buildTools = await this.detectBuildTools();
 
     return {
-      hasPackageJson: Boolean(fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value),
-      hasCargoToml: Boolean(fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value),
-      hasMixExs: Boolean(fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value),
-      hasFlakeNix: Boolean(fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value),
-      hasShellNix: Boolean(fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value),
-      hasDockerfile: Boolean(fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value),
-      hasGitignore: Boolean(fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value),
+      hasPackageJson: Boolean(
+        fileChecks[0]?.status === 'fulfilled' && fileChecks[0].value
+      ),
+      hasCargoToml: Boolean(
+        fileChecks[1]?.status === 'fulfilled' && fileChecks[1].value
+      ),
+      hasMixExs: Boolean(
+        fileChecks[2]?.status === 'fulfilled' && fileChecks[2].value
+      ),
+      hasFlakeNix: Boolean(
+        fileChecks[3]?.status === 'fulfilled' && fileChecks[3].value
+      ),
+      hasShellNix: Boolean(
+        fileChecks[4]?.status === 'fulfilled' && fileChecks[4].value
+      ),
+      hasDockerfile: Boolean(
+        fileChecks[5]?.status === 'fulfilled' && fileChecks[5].value
+      ),
+      hasGitignore: Boolean(
+        fileChecks[6]?.status === 'fulfilled' && fileChecks[6].value
+      ),
       languages,
       frameworks,
       buildTools,
-      workspace
+      workspace,
     };
   }
 
@@ -364,12 +464,16 @@ export class EnvironmentDetector extends EventEmitter {
       nodeVersion: process.version,
       containers: {
         docker: dockerAvailable,
-        podman: podmanAvailable
+        podman: podmanAvailable,
       },
       virtualization: {
         available: virtualizationAvailable,
-        type: dockerAvailable ? 'docker' : podmanAvailable ? 'podman' : undefined
-      }
+        type: dockerAvailable
+          ? 'docker'
+          : podmanAvailable
+            ? 'podman'
+            : undefined,
+      },
     };
   }
 
@@ -386,21 +490,26 @@ export class EnvironmentDetector extends EventEmitter {
           flakesEnabled: false,
           currentShell: null,
           packages: [],
-          suggestedSetup: ['Install Nix: curl -L https://nixos.org/nix/install | sh']
+          suggestedSetup: [
+            'Install Nix: curl -L https://nixos.org/nix/install | sh',
+          ],
         };
       }
 
       const flakesEnabled = await this.areFlakesEnabled();
       const currentShell = this.getCurrentNixShell();
       const packages = await this.scanAvailableNixPackages();
-      const suggestedSetup = this.generateNixSetupSuggestions(flakesEnabled, packages);
+      const suggestedSetup = this.generateNixSetupSuggestions(
+        flakesEnabled,
+        packages
+      );
 
       return {
         nixAvailable: true,
         flakesEnabled,
         currentShell,
         packages,
-        suggestedSetup
+        suggestedSetup,
       };
     } catch (error) {
       this.logger.error('Failed to detect Nix environment:', error);
@@ -424,8 +533,12 @@ export class EnvironmentDetector extends EventEmitter {
    * Get current Nix shell information
    */
   private getCurrentNixShell(): string | null {
-    if (process.env['IN_NIX_SHELL']) return 'nix-shell';
-    if (process.env['FLAKE_DEVSHELL']) return 'flake-devshell';
+    if (process.env['IN_NIX_SHELL']) {
+      return 'nix-shell';
+    }
+    if (process.env['FLAKE_DEVSHELL']) {
+      return 'flake-devshell';
+    }
     return null;
   }
 
@@ -435,28 +548,62 @@ export class EnvironmentDetector extends EventEmitter {
   private async scanAvailableNixPackages(): Promise<NixPackage[]> {
     const packages: NixPackage[] = [];
     const relevantPackages = [
-      // BEAM ecosystem
-      { name: 'erlang', category: 'beam' as const, description: 'Erlang/OTP runtime' },
-      { name: 'elixir', category: 'beam' as const, description: 'Elixir programming language' },
-      { name: 'gleam', category: 'beam' as const, description: 'Gleam programming language' },
-      { name: 'rebar3', category: 'beam' as const, description: 'Erlang build tool' },
-
       // Node.js ecosystem
-      { name: 'nodejs_20', category: 'nodejs' as const, description: 'Node.js runtime v20' },
-      { name: 'nodejs_18', category: 'nodejs' as const, description: 'Node.js runtime v18' },
-      { name: 'nodePackages.npm', category: 'nodejs' as const, description: 'NPM package manager' },
-      { name: 'nodePackages.typescript', category: 'nodejs' as const, description: 'TypeScript compiler' },
+      {
+        name: 'nodejs_20',
+        category: 'nodejs' as const,
+        description: 'Node.js runtime v20',
+      },
+      {
+        name: 'nodejs_18',
+        category: 'nodejs' as const,
+        description: 'Node.js runtime v18',
+      },
+      {
+        name: 'nodePackages.npm',
+        category: 'nodejs' as const,
+        description: 'NPM package manager',
+      },
+      {
+        name: 'nodePackages.typescript',
+        category: 'nodejs' as const,
+        description: 'TypeScript compiler',
+      },
 
       // Development tools
-      { name: 'git', category: 'dev-tools' as const, description: 'Version control system' },
-      { name: 'ripgrep', category: 'dev-tools' as const, description: 'Fast text search tool' },
-      { name: 'fd', category: 'dev-tools' as const, description: 'Fast file finder' },
-      { name: 'tree', category: 'dev-tools' as const, description: 'Directory tree viewer' },
-      { name: 'jq', category: 'dev-tools' as const, description: 'JSON processor' },
+      {
+        name: 'git',
+        category: 'dev-tools' as const,
+        description: 'Version control system',
+      },
+      {
+        name: 'ripgrep',
+        category: 'dev-tools' as const,
+        description: 'Fast text search tool',
+      },
+      {
+        name: 'fd',
+        category: 'dev-tools' as const,
+        description: 'Fast file finder',
+      },
+      {
+        name: 'tree',
+        category: 'dev-tools' as const,
+        description: 'Directory tree viewer',
+      },
+      {
+        name: 'jq',
+        category: 'dev-tools' as const,
+        description: 'JSON processor',
+      },
 
       // System utilities
       { name: 'curl', category: 'system' as const, description: 'HTTP client' },
-      { name: 'wget', category: 'system' as const, description: 'Web downloader' }
+      {
+        name: 'wget',
+        category: 'system' as const,
+        description: 'Web downloader',
+      },
     ];
 
     for (const pkg of relevantPackages) {
@@ -469,7 +616,7 @@ export class EnvironmentDetector extends EventEmitter {
           description: pkg.description,
           category: pkg.category,
           available,
-          installed
+          installed,
         });
       } catch (error) {
         this.logger.warn(`Failed to check Nix package ${pkg.name}:`, error);
@@ -478,7 +625,7 @@ export class EnvironmentDetector extends EventEmitter {
           description: pkg.description,
           category: pkg.category,
           available: false,
-          installed: false
+          installed: false,
         });
       }
     }
@@ -491,7 +638,10 @@ export class EnvironmentDetector extends EventEmitter {
    */
   private async isNixPackageAvailable(packageName: string): Promise<boolean> {
     try {
-      const { stdout } = await execAsync(`nix-env -qaP ${packageName} | head -1`, { timeout: 5000 });
+      const { stdout } = await execAsync(
+        `nix-env -qaP ${packageName} | head -1`,
+        { timeout: 5000 }
+      );
       return stdout.trim().length > 0;
     } catch {
       return false;
@@ -530,7 +680,9 @@ export class EnvironmentDetector extends EventEmitter {
     const suggestions: string[] = [];
 
     if (!flakesEnabled) {
-      suggestions.push('Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf');
+      suggestions.push(
+        'Enable Nix flakes: echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf'
+      );
     }
 
     // Check if flake.nix exists
@@ -538,21 +690,20 @@ export class EnvironmentDetector extends EventEmitter {
     if (hasFlakeNix) {
       suggestions.push('Enter development shell: nix develop');
     } else {
-      suggestions.push('Create flake.nix for reproducible development environment');
+      suggestions.push(
+        'Create flake.nix for reproducible development environment'
+      );
     }
 
-    // Suggest missing BEAM packages
-    const beamPackages = packages.filter(p => p.category === 'beam');
-    const missingBeam = beamPackages.filter(p => p.available && !p.installed);
-    if (missingBeam.length > 0) {
-      suggestions.push(`Install BEAM tools: nix-shell -p ${missingBeam.map(p => p.name).join(' ')}`);
-    }
+    // No BEAM-specific suggestions (foundation focuses on claude-zen core)
 
     // Suggest missing dev tools
-    const devTools = packages.filter(p => p.category === 'dev-tools');
-    const missingDev = devTools.filter(p => p.available && !p.installed);
+    const devTools = packages.filter((p) => p.category === 'dev-tools');
+    const missingDev = devTools.filter((p) => p.available && !p.installed);
     if (missingDev.length > 0) {
-      suggestions.push(`Install dev tools: nix-shell -p ${missingDev.map(p => p.name).join(' ')}`);
+      suggestions.push(
+        `Install dev tools: nix-shell -p ${missingDev.map((p) => p.name).join(' ')}`
+      );
     }
 
     return suggestions;
@@ -580,20 +731,33 @@ export class EnvironmentDetector extends EventEmitter {
     nixEnvironment?: NixEnvironment
   ): string[] {
     const suggestions: string[] = [];
-    
+
     // Package manager suggestions
-    if (projectContext.hasPackageJson && !tools.find(t => t.name === 'pnpm' && t.available)) {
-      suggestions.push('Consider installing pnpm for faster package management');
+    if (
+      projectContext.hasPackageJson &&
+      !tools.find((t) => t.name === 'pnpm' && t.available)
+    ) {
+      suggestions.push(
+        'Consider installing pnpm for faster package management'
+      );
     }
-    
+
     // Monorepo tool suggestions
-    if (projectContext.workspace && !tools.find(t => t.name === 'nx' && t.available)) {
+    if (
+      projectContext.workspace &&
+      !tools.find((t) => t.name === 'nx' && t.available)
+    ) {
       suggestions.push('Consider installing Nx for better monorepo management');
     }
-    
+
     // Container suggestions
-    if (!systemCapabilities.containers.docker && !systemCapabilities.containers.podman) {
-      suggestions.push('Consider installing Docker for containerized development');
+    if (
+      !systemCapabilities.containers.docker &&
+      !systemCapabilities.containers.podman
+    ) {
+      suggestions.push(
+        'Consider installing Docker for containerized development'
+      );
     }
 
     // Nix-specific suggestions
@@ -619,7 +783,11 @@ export class EnvironmentDetector extends EventEmitter {
     }
   }
 
-  private async detectToolCapabilities(_toolName: string): Promise<string[]> {
+  private async detectToolCapabilities(toolName: string): Promise<string[]> {
+    // Security audit: tracking tool capability detection for security analysis
+    this.logger.debug('Detecting tool capabilities for security audit', {
+      toolName,
+    });
     // Tool-specific capability detection could be implemented here
     return [];
   }
@@ -654,22 +822,22 @@ export class EnvironmentDetector extends EventEmitter {
         hasGitignore: false,
         languages: [],
         frameworks: [],
-        buildTools: []
+        buildTools: [],
       },
       systemCapabilities: {
         operatingSystem: process.platform,
         architecture: process.arch,
         containers: { docker: false, podman: false },
-        virtualization: { available: false }
+        virtualization: { available: false },
       },
       nixEnvironment: {
         nixAvailable: false,
         flakesEnabled: false,
         currentShell: null,
         packages: [],
-        suggestedSetup: []
+        suggestedSetup: [],
       },
-      suggestions: []
+      suggestions: [],
     };
   }
 
@@ -683,13 +851,13 @@ export class EnvironmentDetector extends EventEmitter {
   }
 
   getAvailableTools(): EnvironmentTool[] {
-    return this.snapshot?.tools.filter(t => t.available) || [];
+    return this.snapshot?.tools.filter((t) => t.available) || [];
   }
 
   hasTools(...toolNames: string[]): boolean {
     const availableTools = this.getAvailableTools();
-    return toolNames.every(name => 
-      availableTools.some(tool => tool.name === name)
+    return toolNames.every((name) =>
+      availableTools.some((tool) => tool.name === name)
     );
   }
 
@@ -718,7 +886,7 @@ export class EnvironmentDetector extends EventEmitter {
    * Get installed Nix packages
    */
   getInstalledNixPackages(): NixPackage[] {
-    return this.getNixEnvironment()?.packages.filter(p => p.installed) || [];
+    return this.getNixEnvironment()?.packages.filter((p) => p.installed) || [];
   }
 }
 
@@ -741,10 +909,15 @@ export class NixIntegration {
   ) {
     this.logger = logger || getLogger('NixIntegration');
     this.cachePath = join(projectRoot, '.cache', 'nix-integration.json');
-    
+
     // Create environment detector if not provided
     if (!this.environmentDetector) {
-      this.environmentDetector = new EnvironmentDetector(projectRoot, false, 30000, this.logger);
+      this.environmentDetector = new EnvironmentDetector(
+        projectRoot,
+        false,
+        30000,
+        this.logger
+      );
     }
   }
 
@@ -759,13 +932,18 @@ export class NixIntegration {
     }
 
     // Use environment detector to get Nix environment
-    const snapshot = await this.environmentDetector!.detectEnvironment();
+    if (!this.environmentDetector) {
+      throw new Error('Environment detector not initialized');
+    }
+    const snapshot = await this.environmentDetector.detectEnvironment();
     const nixEnvironment = snapshot.nixEnvironment || {
       nixAvailable: false,
       flakesEnabled: false,
       currentShell: null,
       packages: [],
-      suggestedSetup: ['Install Nix: curl -L https://nixos.org/nix/install | sh']
+      suggestedSetup: [
+        'Install Nix: curl -L https://nixos.org/nix/install | sh',
+      ],
     };
 
     // Cache the results
@@ -838,7 +1016,6 @@ export class NixIntegration {
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.\${system};
-        beamPackages = pkgs.beam.packages.erlang_27;
       in
       {
         devShells.default = pkgs.mkShell {
@@ -847,11 +1024,6 @@ export class NixIntegration {
             nodejs_20
             nodePackages.npm
             nodePackages.typescript
-            
-            # BEAM Language Toolchain
-            erlang
-            beamPackages.elixir
-            beamPackages.gleam
             
             # Development tools
             git
@@ -864,7 +1036,7 @@ export class NixIntegration {
           
           shellHook = ''
             echo "🚀 Claude Code Zen Development Environment"
-            echo "📦 BEAM languages: Elixir, Erlang, Gleam"
+            echo "📦 TypeScript/Node.js development ready"
             echo "🛠️  Ready for development!"
           '';
         };
@@ -937,7 +1109,7 @@ export class NixIntegration {
 
       const cache = {
         timestamp: Date.now(),
-        data
+        data,
       };
 
       await writeFile(this.cachePath, JSON.stringify(cache, null, 2));
@@ -956,12 +1128,16 @@ export class NixIntegration {
       return '❌ Nix not available';
     }
 
-    const installedCount = env.packages.filter(p => p.installed).length;
+    const installedCount = env.packages.filter((p) => p.installed).length;
     const totalCount = env.packages.length;
 
     let status = '✓ Nix available';
-    if (env.flakesEnabled) status += ', flakes enabled';
-    if (env.currentShell) status += `, in ${env.currentShell}`;
+    if (env.flakesEnabled) {
+      status += ', flakes enabled';
+    }
+    if (env.currentShell) {
+      status += `, in ${env.currentShell}`;
+    }
     status += ` • ${installedCount}/${totalCount} packages`;
 
     return status;

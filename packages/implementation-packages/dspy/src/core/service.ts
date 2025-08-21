@@ -10,15 +10,19 @@
 
 // Direct foundation imports for proper integration
 import {
-  getGlobalLLM,
-  type LLMProvider,
-  getDatabaseAccess,
-  type DatabaseAccess,
+  getGlobalLLM,          // Re-enabled in foundation
+  type LLMProvider,      // Re-enabled in foundation
   getLogger,
   type Logger,
   getConfig,
   type Config
 } from '@claude-zen/foundation';
+
+// Database access from infrastructure facade
+import {
+  getDatabaseAccess,
+  type DatabaseAccess
+} from '@claude-zen/infrastructure';
 
 // Legacy interfaces for backward compatibility
 interface SharedLLMService {

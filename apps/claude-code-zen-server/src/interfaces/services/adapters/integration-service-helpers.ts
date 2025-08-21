@@ -9,7 +9,7 @@
  * @file Interface implementation: integration-service-helpers.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { ArchitectureDesign } from '../../../types/shared-types';
 import type { APIResult } from '../../types/shared-types';
 

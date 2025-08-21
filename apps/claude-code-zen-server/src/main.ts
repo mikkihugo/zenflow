@@ -19,9 +19,74 @@ import {
   RetrainingMonitor,
   BehavioralIntelligence
 } from '@claude-zen/intelligence';
-import { getEventBus, getDatabaseSystemAccess, getTelemetryManager, getLoadBalancingSystemAccess } from '@claude-zen/infrastructure';
+import { getEventBus, getDatabaseSystemAccess, getTelemetryManager, getLoadBalancingSystemAccess, getConfig } from '@claude-zen/infrastructure';
 import { getLogger, createContainer } from '@claude-zen/foundation';
 import { getAgentMonitoringSystem, getChaosEngine } from '@claude-zen/operations';
+
+// ============================================================================ 
+// GLOBAL FOUNDATION FACADES - Available to all modules below
+// ============================================================================
+
+// Import ALL foundation services once for global availability
+const { 
+  initializeTelemetry, 
+  withRetry, 
+  withTrace, 
+  getProjectManager, 
+  createCircuitBreaker, 
+  recordMetric, 
+  getStorage 
+} = await import('@claude-zen/foundation');
+
+// Make ALL foundation facades globally available - eliminates scattered imports
+(global as any).claudeZenFoundation = {
+  // Core foundation services
+  getLogger,
+  createContainer,
+  getConfig,
+  
+  // Infrastructure services  
+  getEventBus,
+  getDatabaseSystemAccess,
+  getTelemetryManager,
+  getLoadBalancingSystemAccess,
+  
+  // Operations services
+  getAgentMonitoringSystem,
+  getChaosEngine,
+  
+  // Enterprise services
+  getSPARCCommander,
+  getWorkflowEngineAccess,
+  getTeamworkAccess,
+  
+  // Foundation utilities
+  initializeTelemetry,
+  withRetry,
+  withTrace,
+  getProjectManager,
+  createCircuitBreaker,
+  recordMetric,
+  getStorage,
+  
+  // New packages - Moved from core for clean separation
+  getDocumentProcessing: async () => (await import('@claude-zen/document-processing')),
+  getExporters: async () => (await import('@claude-zen/exporters')),
+  getDocumentation: async () => (await import('@claude-zen/documentation')),
+  getArchitecture: async () => (await import('@claude-zen/architecture')),
+  getCodeAnalyzer: async () => (await import('@claude-zen/code-analyzer')),
+  getInterfaces: async () => (await import('@claude-zen/interfaces')),
+  
+  // Version information - inline instead of separate config file
+  getVersion: () => {
+    try {
+      const pkg = require('../package.json');
+      return pkg.version || '1.0.0-alpha.44';
+    } catch {
+      return '1.0.0-alpha.44';
+    }
+  }
+};
 
 // 🔥 MAIN APP: Only coordination system (business logic specific to claude-code-zen)
 import { getSPARCCommander, getWorkflowEngineAccess } from '@claude-zen/enterprise';
@@ -44,6 +109,15 @@ const logger = getLogger('Main');
 // Use foundation's configuration system + command line args
 const { getConfig } = await import('@claude-zen/foundation');
 const config = getConfig();
+
+// Handle CLI commands first
+if (process.argv.includes('auth')) {
+  const { authCommand } = await import('./commands/auth');
+  const authIndex = process.argv.indexOf('auth');
+  const provider = process.argv[authIndex + 1];
+  authCommand(provider);
+  process.exit(0);
+}
 
 // Parse port from command line arguments or environment
 const portArg = process.argv.find(arg => arg.startsWith('--port'));

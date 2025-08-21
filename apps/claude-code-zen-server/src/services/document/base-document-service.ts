@@ -13,7 +13,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { nanoid } from 'nanoid';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '@claude-zen/foundation';
 import type { DocumentType } from '../../workflows/types';
 import type { BaseDocumentEntity } from '../../entities/document-entities';

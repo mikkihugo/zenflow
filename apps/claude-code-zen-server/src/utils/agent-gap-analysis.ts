@@ -2,7 +2,7 @@
  * @file agent-gap-analysis implementation
  */
 
-import { getLogger } from './logger';
+import { getLogger } from '@claude-zen/foundation';
 
 const logger = getLogger('agent-gap-analysis');
 

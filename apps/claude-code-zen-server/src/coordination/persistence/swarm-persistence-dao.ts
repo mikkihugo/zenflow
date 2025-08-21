@@ -12,7 +12,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '../../core/interfaces/base-interfaces';
 import { DatabaseProviderFactory } from '../../database/providers/database-providers';
 import type { DatabaseAdapter } from '../../database/providers/database-providers';

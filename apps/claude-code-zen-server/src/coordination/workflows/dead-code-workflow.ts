@@ -5,7 +5,7 @@
  * Provides automated scanning with human-in-the-loop decision making.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import {
   AutomatedDeadCodeManager,
   type DeadCodeDecision,

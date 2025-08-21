@@ -214,3 +214,4 @@ integration-test-report.json
 *-report.md
 *-completion*.md
 .rollup.cache/
+.aider*

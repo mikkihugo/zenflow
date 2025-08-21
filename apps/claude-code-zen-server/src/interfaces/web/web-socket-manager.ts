@@ -9,8 +9,8 @@
  */
 
 import type { Server as SocketIOServer } from 'socket.io';
-import { getLogger } from '../../config/logging-config';
-import { getVersion } from '../../config/version';
+import { getLogger } from '@claude-zen/foundation'
+const { getVersion } = (global as any).claudeZenFoundation;
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 

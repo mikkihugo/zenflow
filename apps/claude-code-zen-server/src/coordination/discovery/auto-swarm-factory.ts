@@ -11,7 +11,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { AGUIInterface } from '../../interfaces/agui/agui-adapter';
 import type { SessionMemoryStore } from '../../memory/memory';
 import type { SwarmCoordinator } from '../swarm/core/swarm-coordinator';

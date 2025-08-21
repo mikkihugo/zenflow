@@ -1,0 +1,80 @@
+{
+  "name": "@claude-zen/development",
+  "version": "2.0.0",
+  "description": "Strategic Development Facade - Repository analysis, code analysis, linting, and development tools",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "development",
+    "code-analysis", 
+    "repository-analysis",
+    "linting",
+    "static-analysis",
+    "ast",
+    "refactoring",
+    "code-quality",
+    "strategic-facade"
+  ],
+  "author": "Claude Code Zen",
+  "license": "MIT",
+  "dependencies": {
+    "@claude-zen/foundation": "workspace:*",
+    "@claude-zen/intelligence": "workspace:*",
+    "@claude-zen/enterprise": "workspace:*",
+    "@claude-zen/operations": "workspace:*",
+    "@claude-zen/infrastructure": "workspace:*",
+    "@claude-zen/repo-analyzer": "workspace:*",
+    "@claude-zen/codeql": "workspace:*",
+    "@claude-zen/beam-analyzer": "workspace:*",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/typescript-estree": "^6.21.0",
+    "@babel/parser": "^7.23.9",
+    "@babel/traverse": "^7.23.9",
+    "@babel/types": "^7.23.9",
+    "ts-morph": "^21.0.1",
+    "acorn": "^8.11.3",
+    "acorn-walk": "^8.3.2",
+    "esprima": "^4.0.1",
+    "estree-walker": "^3.0.3",
+    "magic-string": "^0.30.7",
+    "source-map": "^0.6.1",
+    "chokidar": "^3.6.0",
+    "fast-glob": "^3.3.2",
+    "picomatch": "^3.0.1",
+    "openai": "^4.28.0",
+    "@anthropic-ai/sdk": "^0.60.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/babel__traverse": "^7.20.5",
+    "@types/estree": "^1.0.5",
+    "@types/esprima": "^4.0.6",
+    "@types/source-map": "^0.5.7",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.2",
+    "eslint": "^9.17.0"
+  },
+  "peerDependencies": {
+    "typescript": ">=4.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "LICENSE"
+  ]
+}

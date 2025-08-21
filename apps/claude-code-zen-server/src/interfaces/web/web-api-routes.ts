@@ -52,8 +52,8 @@ import type {
   AdvancedGUI
 } from '@claude-zen/enterprise';
 import type { Express, Request, Response, NextFunction } from 'express';
-import { getLogger } from '../../config/logging-config';
-import { getVersion } from '../../config/version';
+import { getLogger } from '@claude-zen/foundation'
+const { getVersion } = (global as any).claudeZenFoundation;
 import type { WebConfig } from './web-config';
 import type { WebDataService } from './web-data-service';
 import type { WebSessionManager } from './web-session-manager';

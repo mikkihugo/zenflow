@@ -37,7 +37,7 @@
 
 import { EventEmitter } from 'eventemitter3';
 import { basename } from 'node:path';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 import type { IntelligenceCoordinationSystem } from '../../knowledge/intelligence-coordination-system';
 import type {

@@ -122,10 +122,14 @@ export interface Logger {
 
 // Foundation-based implementations for production usage
 import { 
-  getGlobalLLM, 
-  getDatabaseAccess, 
+  getGlobalLLM,           // Re-enabled in foundation
   getLogger as getFoundationLogger 
 } from '@claude-zen/foundation';
+
+// Database access from infrastructure facade
+import { 
+  getDatabaseAccess      // Use infrastructure facade
+} from '@claude-zen/infrastructure';
 
 export class FoundationLLMIntegrationService implements LLMIntegrationService {
   async analyze(request: LLMAnalysisRequest): Promise<LLMAnalysisResponse> {
@@ -147,7 +151,7 @@ Please provide a comprehensive analysis with specific recommendations.`;
       });
 
       return {
-        result,
+        result: result.content || result,
         confidence: 0.95,
         metadata: { 
           foundationMode: true,

@@ -17,13 +17,14 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    // Test file patterns
-    include: ['tests/**/*.test.ts', '__tests__/**/*.test.ts'],
+    // Test file patterns - gold standard structure
+    include: ['tests/**/*.test.ts'],
     exclude: ['node_modules/**', 'dist/**'],
     
     // Environment setup
     globals: true,
     environment: 'node',
+    setupFiles: ['./tests/setup/vitest.setup.ts'],
     
     // Test timeouts
     testTimeout: 120000, // 2 minutes for unit tests (Claude SDK can be slow)
@@ -37,18 +38,18 @@ export default defineConfig({
       include: ['src/**/*.ts', '*.ts'],
       exclude: [
         'tests/**/*.ts',
-        '__tests__/**/*.ts',
         '**/types.ts',
-        '**/index.ts',
+        '**/index.ts', 
         'dist/**',
-        'node_modules/**'
+        'node_modules/**',
+        'scripts/**'
       ],
       thresholds: {
         global: {
-          branches: 50, // Lower threshold initially
-          functions: 50,
-          lines: 50,
-          statements: 50
+          branches: 90, // High coverage for critical foundation package
+          functions: 95,
+          lines: 95,
+          statements: 95
         }
       }
     },
@@ -67,7 +68,7 @@ export default defineConfig({
     },
     
     // Reporter configuration
-    reporters: ['verbose'],
+    reporters: [['default', { summary: false }]],
     
     // Test categorization
     sequence: {

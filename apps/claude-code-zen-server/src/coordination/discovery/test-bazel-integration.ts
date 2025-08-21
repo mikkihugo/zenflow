@@ -15,7 +15,7 @@ import { exec } from 'node:child_process';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { promisify } from 'node:util';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import { ProjectContextAnalyzer } from '../../knowledge/project-context-analyzer';
 import { NeuralDomainMapper } from './neural-domain-mapper';
 

@@ -30,7 +30,7 @@ import {
   type InstallationSuggestion,
   type FacadeSummary
 } from '@claude-zen/foundation/system-capability-data-provider';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('SystemCapabilityRoutes');
 

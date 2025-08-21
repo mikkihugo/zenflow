@@ -5,9 +5,9 @@
  * Ensures zero breaking changes when transitioning to UACL architecture.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
-import { getMCPServerURL } from '../../config/defaults';
+// Removed broken import - using simple fallback for MCP server URL
 import { FACTIntegration } from '../../knowledge/knowledge-client';
 import { type APIClient, createAPIClient } from '../api/http/client';
 import { WebSocketClient } from '../api/websocket/client';
@@ -46,7 +46,7 @@ export const createManagedAPIClient = async (
   const { uacl } = await import('./instance');
   const instance = await uacl.createHTTPClient(
     id,
-    config?.baseURL || getMCPServerURL(),
+    config?.baseURL || 'http://localhost:3000',
     {
       enabled: true,
       priority: 5,

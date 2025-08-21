@@ -42,11 +42,34 @@ export {
   transformError
 } from '@claude-zen/foundation';
 
-// Still export error recovery as it might have app-specific logic
-export * from './error-recovery';
+// Use foundation error recovery system - comprehensive error recovery framework
+export {
+  ErrorRecoverySystem,
+  createErrorRecovery,
+  createErrorRecoveryWithCommonStrategies,
+  createCommonRecoveryStrategies,
+  type RecoveryStrategy,
+  type RecoveryAction,
+  type ErrorInfo,
+  type RecoveryResult,
+  type RecoveryActionResult,
+  type ErrorRecoveryConfig
+} from '@claude-zen/foundation';
 
-// Type guards and utilities
-export * from './type-guards';
+// Type guards from foundation - comprehensive type safety utilities
+export {
+  type APIError,
+  type APIResult,
+  type APISuccess,
+  isAPIError,
+  isAPISuccess,
+  extractErrorMessage,
+  type Result as FoundationResult,
+  type Success,
+  type Failure,
+  isSuccess,
+  isFailure,
+} from '@claude-zen/foundation';
 
 // Agent analysis utilities (excluded from build due to tsconfig exclude)
 // export * from './agent-gap-analysis';

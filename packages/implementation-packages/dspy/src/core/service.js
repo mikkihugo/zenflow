@@ -8,7 +8,10 @@
  * @version 2.0.0
  */
 // Direct foundation imports for proper integration
-import { getGlobalLLM, getDatabaseAccess, getLogger, getConfig } from '@claude-zen/foundation';
+import { getGlobalLLM, // Re-enabled in foundation
+getLogger, getConfig } from '@claude-zen/foundation';
+// Database access from infrastructure facade
+import { getDatabaseAccess } from '@claude-zen/infrastructure';
 // Types exported at end of file
 /**
  * DSPy Service - Central coordinator for @claude-zen/foundation integration

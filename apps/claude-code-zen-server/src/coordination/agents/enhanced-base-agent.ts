@@ -9,7 +9,7 @@
 import {
   withFactCapabilities,
 } from '../universal-fact-mixin';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { AgentConfig } from '../types';
 import { BaseAgent } from './agent';
 

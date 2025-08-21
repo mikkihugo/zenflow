@@ -20,7 +20,7 @@
  * ```
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import { DocumentProcessor } from '../../core/document-processor';
 import { EventBus } from '../core/event-bus';
 import { BrainCoordinator } from '../../core/memory-coordinator';

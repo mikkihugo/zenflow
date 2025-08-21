@@ -2,7 +2,7 @@
  * @file Integration module exports.
  */
 
-import { getLogger } from '../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('src-integration-index');
 

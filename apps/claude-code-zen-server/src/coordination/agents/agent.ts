@@ -2,7 +2,7 @@
  * @file Coordination system: agent.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type {
   Agent,
   AgentCapabilities,

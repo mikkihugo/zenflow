@@ -8,7 +8,7 @@
 
 import * as express from 'express';
 
-import { getLogger } from "../../../config/logging-config";
+import { getLogger } from '@claude-zen/foundation'
 import type {
   AgentConfig,
   SwarmConfig,

@@ -3,7 +3,7 @@
  * Database Domain DI Container Setup - Simplified.
  * Configures dependency injection for database operations.
  */
-import { getLogger } from '../../../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('interfaces-api-http-di-database-container');
 

@@ -529,7 +529,7 @@ export class NeuralMLEngine {
   ): Promise<Result<string, ContextError>> {
     if (!this.initialized) {
       const initResult = await this.initialize();
-      if (initResult.isErr()) return err(initResult.error);
+      if (initResult.isErr()) return err(initResult.error as ContextError);
     }
 
     return safeAsync(async () => {
@@ -1141,8 +1141,14 @@ export class NeuralMLEngine {
       memoryUsage: this.estimateMemoryUsage(),
       systemHealth: {
         circuitBreakerStatus: {
-          gpu: this.gpuCircuitBreaker?.getState()?.isOpen === true ? 'open' : (this.gpuCircuitBreaker?.getState()?.isOpen === false ? 'closed' : 'unknown'),
-          cpu: this.cpuCircuitBreaker?.getState()?.isOpen === true ? 'open' : (this.cpuCircuitBreaker?.getState()?.isOpen === false ? 'closed' : 'unknown')
+          gpu: (() => {
+            const state = this.gpuCircuitBreaker.getState?.();
+            return state?.isOpen === true ? 'open' : (state?.isOpen === false ? 'closed' : 'unknown');
+          })(),
+          cpu: (() => {
+            const state = this.cpuCircuitBreaker.getState?.();
+            return state?.isOpen === true ? 'open' : (state?.isOpen === false ? 'closed' : 'unknown');
+          })()
         },
         telemetryEnabled: this.config.enableTelemetry || false,
         monitoringActive: this.initialized && this.config.enableTelemetry || false
@@ -1327,12 +1333,18 @@ export class NeuralMLEngine {
         backend: this.detectedBackend,
         circuitBreakers: {
           gpu: { 
-            state: this.gpuCircuitBreaker?.getState()?.isOpen === true ? 'open' : (this.gpuCircuitBreaker?.getState()?.isOpen === false ? 'closed' : 'unknown'),
-            failures: this.gpuCircuitBreaker?.getStats()?.failures || 0
+            state: (() => {
+              const state = this.gpuCircuitBreaker.getState?.();
+              return state?.isOpen === true ? 'open' : (state?.isOpen === false ? 'closed' : 'unknown');
+            })(),
+            failures: this.gpuCircuitBreaker.getStats?.()?.failures || 0
           },
           cpu: { 
-            state: this.cpuCircuitBreaker?.getState()?.isOpen === true ? 'open' : (this.cpuCircuitBreaker?.getState()?.isOpen === false ? 'closed' : 'unknown'),
-            failures: this.cpuCircuitBreaker?.getStats()?.failures || 0
+            state: (() => {
+              const state = this.cpuCircuitBreaker.getState?.();
+              return state?.isOpen === true ? 'open' : (state?.isOpen === false ? 'closed' : 'unknown');
+            })(),
+            failures: this.cpuCircuitBreaker.getStats?.()?.failures || 0
           }
         },
         monitoring: {

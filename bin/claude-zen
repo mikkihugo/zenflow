@@ -1,2 +1,2 @@
 #!/bin/bash
-exec node "$(dirname "$0")/claude-zen.cjs" "$@"
+exec node "$(dirname "$0")/../lib/node_modules/claude-code-zen/bin/claude-zen.cjs" "$@"

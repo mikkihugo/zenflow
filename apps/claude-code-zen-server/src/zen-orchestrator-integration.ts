@@ -12,7 +12,7 @@
  * - Bridge to zen-code's existing LLM infrastructure
  */
 
-import { getLogger } from './config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 // Platform-specific binding resolution
 import { platform, arch } from 'os';

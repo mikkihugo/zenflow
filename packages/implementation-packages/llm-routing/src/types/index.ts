@@ -18,6 +18,12 @@ export interface ProviderConfig {
     tokensPerMinute?: number;
     cooldownMinutes?: number;
   };
+  api?: {
+    baseUrl?: string;
+    tokenPath?: string; // Path to token file
+    headers?: Record<string, string>;
+    authType?: 'bearer' | 'api-key' | 'oauth';
+  };
   features: {
     structuredOutput: boolean;
     fileOperations: boolean;

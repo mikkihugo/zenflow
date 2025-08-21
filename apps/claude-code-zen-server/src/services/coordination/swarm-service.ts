@@ -54,7 +54,7 @@ import type {
   SwarmStatus
 } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 // Strategic imports from @claude-zen packages
 

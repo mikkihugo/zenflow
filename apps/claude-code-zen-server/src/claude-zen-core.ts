@@ -10,19 +10,12 @@
  */
 
 import { EventEmitter } from 'eventemitter3';
-import { CoordinationManager } from './coordination/manager';
+import { ProjectCoordinator } from './coordination';
 
 // Import DI-enhanced coordinators
 import { Orchestrator } from './coordination/orchestrator';
-import {
-  TOKENS,
-  DIContainer,
-  TokenFactory,
-  createContainer,
-  getLogger
-} from '@claude-zen/foundation';
-import { getConfig } from '@claude-zen/infrastructure';
-import { getDatabaseAccess } from '@claude-zen/infrastructure';
+import { getLogger } from '@claude-zen/foundation';
+import { getDatabaseSystem, getServiceContainer } from '@claude-zen/infrastructure';
 import { MultiSystemCoordinator } from './integration/multi-system-coordinator';
 import { BehavioralIntelligence } from '@claude-zen/intelligence';
 
@@ -82,9 +75,9 @@ class AppEventBus extends EventEmitter implements EventBus {
  * @example
  */
 export class ClaudeZenCore {
-  private container: DIContainer;
+  private container: any;
   private orchestrator?: Orchestrator;
-  private coordinationManager?: CoordinationManager;
+  private coordinationManager?: ProjectCoordinator;
   private behavioralIntelligence?: BehavioralIntelligence;
   private multiSystemCoordinator?: MultiSystemCoordinator;
 
@@ -95,30 +88,29 @@ export class ClaudeZenCore {
   /**
    * Setup comprehensive DI container with all services.
    */
-  private setupDependencyInjection(): DIContainer {
-    const container = createContainer('claude-zen-core');
+  private setupDependencyInjection(): any {
+    const container = await getServiceContainer('claude-zen-core');
     
     // Register core services
-    container.registerInstance(TOKENS.Logger, getLogger('claude-zen-core'));
-    container.registerInstance(TOKENS.Config, getConfig());
-    container.registerInstance(TOKENS.EventBus, new AppEventBus());
-    container.registerInstance(TOKENS.Database, getDatabaseAccess());
+    container.register('Logger', () => getLogger('claude-zen-core'));
+    container.register('Config', () => getConfig());
+    container.register('EventBus', () => new AppEventBus());
+    container.register('Database', () => getDatabaseAccess());
 
     // Register coordination services
-    container.registerFactory(TOKENS.AgentManager, (c) => {
-      const logger = c.resolve(TOKENS.Logger);
-      const database = c.resolve(TOKENS.Database);
+    container.register('AgentManager', (c) => {
+      const logger = c.resolve('Logger');
+      const database = c.resolve('Database');
       return new Orchestrator(logger, database);
     });
 
-    // Register coordination manager
-    const coordinationManagerToken = TokenFactory.create<CoordinationManager>('CoordinationManager');
-    container.registerFactory(coordinationManagerToken, (c) => {
-      const config = c.resolve(TOKENS.Config);
-      const logger = c.resolve(TOKENS.Logger);
-      const eventBus = c.resolve(TOKENS.EventBus);
+    // Register coordination manager  
+    container.register('CoordinationManager', (c) => {
+      const config = c.resolve('Config');
+      const logger = c.resolve('Logger');
+      const eventBus = c.resolve('EventBus');
 
-      return new CoordinationManager(
+      return new ProjectCoordinator(
         {
           maxAgents: 10,
           heartbeatInterval: 5000,
@@ -131,16 +123,14 @@ export class ClaudeZenCore {
     });
 
     // Register behavioral intelligence
-    const behavioralIntelligenceToken = TokenFactory.create<BehavioralIntelligence>('BehavioralIntelligence');
-    container.registerFactory(behavioralIntelligenceToken, () => {
+    container.register('BehavioralIntelligence', () => {
       // BehavioralIntelligence has optional BrainJsBridge parameter - will use mock bridge if not provided
       return new BehavioralIntelligence();
     });
 
     // Register multi-system coordinator
-    const multiSystemCoordinatorToken = TokenFactory.create<MultiSystemCoordinator>('MultiSystemCoordinator');
-    container.registerFactory(multiSystemCoordinatorToken, (c) => {
-      const logger = c.resolve(TOKENS.Logger);
+    container.register('MultiSystemCoordinator', (c) => {
+      const logger = c.resolve('Logger');
       return new MultiSystemCoordinator(logger, {});
     });
 
@@ -151,27 +141,23 @@ export class ClaudeZenCore {
    * Initialize all systems with DI.
    */
   async initialize(): Promise<void> {
-    const logger = this.container.resolve(TOKENS.Logger);
+    const logger = this.container.resolve('Logger');
     logger.info('🚀 Initializing Claude Code Zen with full DI integration...');
 
     try {
       // Initialize core database
-      const database = this.container.resolve(TOKENS.Database);
+      const database = this.container.resolve('Database');
       if (database?.initialize) {
         await database?.initialize();
       }
 
       // Resolve all coordinators through DI
-      this.orchestrator = this.container.resolve(TOKENS.AgentManager) as Orchestrator;
+      this.orchestrator = this.container.resolve('AgentManager') as Orchestrator;
+      this.coordinationManager = this.container.resolve('CoordinationManager');
       
-      const coordinationManagerToken = TokenFactory.create<CoordinationManager>('CoordinationManager');
-      this.coordinationManager = this.container.resolve(coordinationManagerToken);
+      this.behavioralIntelligence = this.container.resolve('BehavioralIntelligence');
       
-      const behavioralIntelligenceToken = TokenFactory.create<BehavioralIntelligence>('BehavioralIntelligence');
-      this.behavioralIntelligence = this.container.resolve(behavioralIntelligenceToken);
-      
-      const multiSystemCoordinatorToken = TokenFactory.create<MultiSystemCoordinator>('MultiSystemCoordinator');
-      this.multiSystemCoordinator = this.container.resolve(multiSystemCoordinatorToken);
+      this.multiSystemCoordinator = this.container.resolve('MultiSystemCoordinator');
 
       // Initialize all coordinators
       await this.orchestrator.initialize();

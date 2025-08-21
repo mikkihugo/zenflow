@@ -21,7 +21,7 @@
  * - Service lifecycle management
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { Logger } from '@claude-zen/foundation';
 import { EventEmitter } from 'eventemitter3';
 import type { BaseDocumentEntity } from '../../../database/entities/product-entities';

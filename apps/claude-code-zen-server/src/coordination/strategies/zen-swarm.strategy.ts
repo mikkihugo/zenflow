@@ -15,7 +15,7 @@
  * @version 1.0.0
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { SwarmAgent } from '../../types/shared-types';
 import { ZenOrchestratorIntegration } from '../integrations/zen-orchestrator-integration';
 import { AgentLearningSystem } from '../intelligence/agent-learning-system';

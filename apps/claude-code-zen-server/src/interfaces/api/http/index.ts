@@ -2,7 +2,7 @@
  * @file Main entry point for REST API layer.
  */
 
-import { getLogger } from '../../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 /**
  * REST API Layer - Main Entry Point.
@@ -12,7 +12,7 @@ import { getLogger } from '../../../config/logging-config';
  * Clean separation between API layer and business domains.
  */
 
-import { getCORSOrigins, getMCPServerURL } from '../../../config/config';
+import { getCORSOrigins, getMCPServerURL } from '@claude-zen/infrastructure';
 import { APIClient } from './client';
 // Import server types for internal use
 import {

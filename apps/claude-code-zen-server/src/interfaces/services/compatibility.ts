@@ -9,7 +9,7 @@
  * @file Interface implementation: compatibility.
  */
 
-import { getLogger, type Logger } from '../../config/logging-config';
+import { getLogger, type Logger } from '@claude-zen/foundation'
 
 import type { Service } from './core/interfaces';
 import { ServiceManager } from './manager';

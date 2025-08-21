@@ -75,7 +75,7 @@ import {
   assertDefined,
   getErrorMessage
 } from '@claude-zen/foundation';
-import { getLogger, type Logger } from '../../config/logging-config';
+import { getLogger, type Logger } from '@claude-zen/foundation'
 
 // =============================================================================
 // TYPES AND INTERFACES - Service Integration Layer

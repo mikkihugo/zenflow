@@ -8,7 +8,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 const logger = getLogger('SvelteProxyRoute');
 

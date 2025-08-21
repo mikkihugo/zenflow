@@ -4,9 +4,9 @@
  * Interface-specific configuration utilities that integrate with the unified config system.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
-import { config, type InterfaceConfig } from "../../config/config";
+import { config, type InterfaceConfig } from '@claude-zen/infrastructure';
 
 const logger = getLogger('interfaces-shared-config');
 

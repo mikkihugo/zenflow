@@ -5,7 +5,7 @@
  * without importing the full index.ts that also imports validation.ts
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 import { ClientManager, type ClientManagerConfig } from './manager';
 

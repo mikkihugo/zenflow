@@ -6,7 +6,7 @@
  * and provides comprehensive project coordination.
  */
 
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type {
   BaseDocumentEntity,
   TaskDocumentEntity,

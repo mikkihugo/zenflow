@@ -20,7 +20,7 @@
 
 import { queryCoordinationFacts, getCoordinationFacts } from '@claude-zen/intelligence';
 import { EventEmitter } from 'eventemitter3';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 // Note: SharedFACTCapable removed - using knowledge package directly
 import type {
   EventBus,

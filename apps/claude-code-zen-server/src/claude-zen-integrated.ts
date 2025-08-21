@@ -2,7 +2,7 @@
  * @file Claude-zen-integrated implementation.
  */
 
-import { getLogger } from './config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 import type { ServerInstance, BaseError } from './coordination/types/interfaces';
 import { hasErrorCode } from './coordination/types/type-guards';
 

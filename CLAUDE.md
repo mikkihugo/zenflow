@@ -94,7 +94,7 @@ Message 4: Update config
 
 ### **Strategic Architecture v2.0.0 - Complete Implementation**
 
-claude-code-zen now uses a sophisticated **5-layer strategic facade architecture** with **22 production-ready packages**:
+claude-code-zen now uses a sophisticated **6-layer strategic facade architecture** with **22 production-ready packages**:
 
 #### **🏗️ Strategic Facade Layers:**
 1. **@claude-zen/foundation** - Core utilities, logging, error handling, type-safe primitives
@@ -102,25 +102,61 @@ claude-code-zen now uses a sophisticated **5-layer strategic facade architecture
 3. **@claude-zen/enterprise** - Business workflows, SAFE framework, portfolio management
 4. **@claude-zen/operations** - Performance tracking, monitoring, telemetry, system health
 5. **@claude-zen/infrastructure** - Database abstraction, event systems, load balancing
+6. **@claude-zen/development** - Development tools, code analysis, security scanning, Git operations
+
+#### **⚠️ CRITICAL: Strategic Facade Architecture Rules**
+
+**🎯 FACADE PURPOSE:**
+Facades are **DELEGATION ONLY** - they provide unified access while delegating to implementation packages.
+
+**✅ CORRECT Facade Pattern:**
+```typescript
+// Pure delegation facade
+export async function getBrainSystem() {
+  try {
+    const { BrainSystem } = await import('@claude-zen/brain');
+    return new BrainSystem();
+  } catch (error) {
+    throw new Error('Brain package required for neural operations');
+  }
+}
+```
+
+**❌ WRONG Facade Pattern:**
+```typescript
+// Implementation code in facade (NEVER DO THIS)
+export class BrainSystem {
+  // 500+ lines of implementation logic
+  // This belongs in @claude-zen/brain package, NOT in facade!
+}
+```
+
+**🏗️ Architectural Separation:**
+- **Facades** (6 strategic packages): Delegation, runtime imports, error handling
+- **Implementation** (28+ packages): Business logic, algorithms, data processing  
+- **Foundation**: Universal primitives only (logging, types, utilities)
 
 #### **✅ CRITICAL: Use Strategic Facades, NOT Direct Package Imports**
 
 **✅ CORRECT - Use Strategic Facades:**
 ```typescript
-// Foundation utilities
+// Foundation utilities (direct import - foundation contains primitives)
 import { getLogger, Result, ok, err, UUID } from '@claude-zen/foundation';
 
-// Intelligence systems
+// Intelligence systems (facade delegation)
 import { getBrainSystem, getConversationSystem } from '@claude-zen/intelligence';
 
-// Enterprise workflows  
+// Enterprise workflows (facade delegation)
 import { getSafeFramework, getWorkflowEngine } from '@claude-zen/enterprise';
 
-// Operations monitoring
+// Operations monitoring (facade delegation)
 import { getPerformanceTracker, getTelemetryManager } from '@claude-zen/operations';
 
-// Infrastructure services
+// Infrastructure services (facade delegation)
 import { getDatabaseSystem, getEventSystem } from '@claude-zen/infrastructure';
+
+// Development tools (facade delegation)
+import { getDevelopmentSystem, getCodeAnalyzer, getGitOperations } from '@claude-zen/development';
 ```
 
 **❌ WRONG - Direct Package Imports (DEPRECATED):**
@@ -131,6 +167,18 @@ import { WorkflowEngine } from '@claude-zen/workflows';         // Use @claude-z
 import { DatabaseProvider } from '@claude-zen/database';        // Use @claude-zen/infrastructure
 import { EventBus } from '@claude-zen/event-system';           // Use @claude-zen/infrastructure
 import { TelemetryManager } from '@claude-zen/monitoring';     // Use @claude-zen/operations
+import { CodeAnalyzer } from '@claude-zen/code-analyzer';        // Use @claude-zen/development
+import { GitOperationsManager } from '@claude-zen/git-operations'; // Use @claude-zen/development
+```
+
+**❌ WRONG - Implementation Code in Facades:**
+```typescript
+// NEVER put implementation classes in facade packages
+// This violates the delegation-only principle
+export class DatabaseSPARCBridge {
+  // 200+ lines of business logic
+  // This should be in @claude-zen/safe-framework package!
+}
 ```
 
 #### **🎯 Strategic Facade Benefits:**
@@ -283,6 +331,22 @@ const telemetry = await getTelemetryManager();          // Production-ready moni
 const performance = await getPerformanceTracker();      // Intelligent load balancing
 ```
 
+#### **Development Tools & Security:**
+```typescript
+// OLD (deprecated)
+import { CodeAnalyzer } from '@claude-zen/code-analyzer';
+import { GitOperationsManager } from '@claude-zen/git-operations';
+import { AILinter } from '@claude-zen/ai-linter';
+
+// NEW (Strategic Development Facade)  
+import { getDevelopmentSystem, getCodeAnalyzer, getGitOperations } from '@claude-zen/development';
+
+const devSystem = await getDevelopmentSystem();
+const codeAnalyzer = await getCodeAnalyzer();           // Live code analysis with AI insights
+const gitOps = await getGitOperations();               // AI-powered Git operations
+const security = devSystem.security.comprehensive;     // Multi-tool security analysis
+```
+
 ### **🔧 Migration Benefits:**
 
 - **Zero Breaking Changes** - Facades maintain identical interfaces
@@ -302,6 +366,10 @@ const performance = await getPerformanceTracker();      // Intelligent load bala
 - `@claude-zen/load-balancing` → Use `@claude-zen/operations`
 - `@claude-zen/monitoring` → Use `@claude-zen/operations`
 - `@claude-zen/memory` → Use `@claude-zen/infrastructure`
+- `@claude-zen/code-analyzer` → Use `@claude-zen/development`
+- `@claude-zen/git-operations` → Use `@claude-zen/development`
+- `@claude-zen/ai-linter` → Use `@claude-zen/development`
+- `@claude-zen/repo-analyzer` → Use `@claude-zen/development`
 
 **Continue using these foundation packages directly:**
 - `@claude-zen/foundation` ✅ (Core utilities, logging, types)

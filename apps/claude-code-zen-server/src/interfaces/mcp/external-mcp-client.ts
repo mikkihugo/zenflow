@@ -16,7 +16,7 @@
  */
 
 import type { Logger } from '@claude-zen/foundation';
-import { getLogger } from '../../config/logging-config';
+import { getLogger } from '@claude-zen/foundation'
 
 /**
  * MCP Server Configuration

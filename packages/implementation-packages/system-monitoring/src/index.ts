@@ -48,6 +48,13 @@ export {
   createHealthChecker
 } from './monitoring.js';
 
+// System metrics implementation (moved from foundation)
+export {
+  SystemMetricsCollector,
+  createSystemMetricsCollector,
+  SYSTEM_METRICS_COLLECTOR_TOKEN
+} from './system-metrics.js';
+
 export type {
   SystemMetrics,
   PerformanceMetrics,
@@ -55,6 +62,15 @@ export type {
   InfrastructureConfig,
   SystemMonitoringConfig
 } from './types.js';
+
+// System metrics types (moved from foundation)
+export type {
+  CpuMetrics,
+  MemoryMetrics,
+  SystemPerformanceTracker,
+  SystemHealth,
+  SystemMetricsError
+} from './system-metrics.js';
 
 // Default export for convenience
 export { SystemMonitor as default } from './monitoring.js';

@@ -1,10 +1,10 @@
 {
   "name": "@claude-zen/foundation",
   "version": "1.1.1",
-  "description": "Foundation utilities for claude-code-zen ecosystem - logging, telemetry, config, DI, storage, and LLM integration",
+  "description": "Foundation utilities for claude-code-zen ecosystem - logging, config, DI, error handling, and type utilities",
   "type": "module",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -12,33 +12,31 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "tsc --noEmit --watch",
     "prepublishOnly": "pnpm run clean && pnpm run build",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:integration": "RUN_INTEGRATION=true vitest run tests/integration.test.ts tests/claude-sdk.test.ts tests/llm-provider.test.ts",
-    "test:performance": "RUN_PERFORMANCE=true vitest run tests/integration.test.ts tests/claude-sdk.test.ts",
-    "test:all": "RUN_INTEGRATION=true RUN_PERFORMANCE=true vitest run",
+    "test": "vitest run tests/unit",
+    "test:watch": "vitest tests/unit",
+    "test:unit": "vitest run tests/unit",
+    "test:integration": "RUN_INTEGRATION=true vitest run tests/integration",
+    "test:e2e": "RUN_INTEGRATION=true vitest run tests/e2e",
+    "test:performance": "RUN_PERFORMANCE=true vitest run tests/integration tests/e2e",
+    "test:all": "pnpm test:unit && pnpm test:integration && pnpm test:e2e",
+    "test:coverage": "vitest run --coverage",
+    "test:ci": "vitest run --reporter=verbose --coverage",
     "docs:check": "node scripts/check-tsdoc.mjs",
     "docs:check-verbose": "node scripts/check-tsdoc.mjs --verbose --show-documented",
     "docs:check-strict": "node scripts/check-tsdoc.mjs --threshold 100",
     "docs:fix": "node scripts/fix-tsdoc.mjs",
     "docs:fix-verbose": "node scripts/fix-tsdoc.mjs --verbose",
-    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus"
+    "docs:fix-opus": "node scripts/fix-tsdoc.mjs --model opus",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix"
   },
   "keywords": [
     "foundation",
     "utilities",
     "logging",
-    "telemetry",
-    "observability",
-    "metrics",
-    "tracing",
-    "opentelemetry",
-    "prometheus",
     "dependency-injection",
     "config",
     "storage",
-    "llm",
-    "ai",
     "claude-code-zen",
     "infrastructure",
     "error-handling",
@@ -50,42 +48,44 @@
   "author": "Claude Code Zen Team",
   "license": "MIT",
   "dependencies": {
-    "@anthropic-ai/claude-code": "^1.0.85",
-    "@lancedb/lancedb": "^0.21.3",
     "@logtape/logtape": "^1.0.4",
+    "@manypkg/find-root": "^2.2.3",
     "@types/convict": "^6.1.6",
     "@types/opossum": "^8.1.9",
+    "ajv": "^8.12.0",
     "awilix": "^12.0.5",
-    "better-sqlite3": "^12.2.0",
     "convict": "^6.2.4",
     "dotenv": "^17.2.1",
     "eventemitter3": "^5.0.1",
-    "kuzu": "^0.11.1",
+    "find-workspaces": "^0.3.1",
     "neverthrow": "^8.2.0",
     "opossum": "^9.0.0",
-    "p-retry": "^6.2.1"
-  },
-  "_comment_database": "database is now integrated directly into foundation package",
-  "optionalDependencies": {
-    "@claude-zen/otel-collector": "link:../implementation-packages/otel-collector",
-    "@logtape/otel": "^1.0.4"
-  },
-  "devDependencies": {
-    "@types/node": "22.17.1",
+    "p-retry": "^6.2.1",
     "ts-essentials": "^10.1.1",
     "type-fest": "^4.41.0",
+    "validator": "^13.12.0",
+    "dompurify": "^3.1.7",
+    "@types/validator": "^13.12.2",
+    "zod": "^3.23.8",
+    "envalid": "^8.0.0",
+    "exit-hook": "^4.0.0",
+    "p-timeout": "^6.1.2"
+  },
+  "_comment_database": "database is now integrated directly into foundation package",
+  "devDependencies": {
+    "@types/node": "22.17.1",
     "typescript": "^5.9.2",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "eslint": "^9.33.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "@eslint/js": "^9.33.0"
   },
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
-    },
-    "./llm-provider": {
-      "import": "./dist/llm-provider.js",
-      "types": "./dist/llm-provider.d.ts"
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js",
+      "require": "./dist/src/index.js"
     },
     "./error-handling": {
       "import": "./dist/src/error-handling.js",
@@ -114,6 +114,18 @@
     "./types": {
       "import": "./dist/src/types/index.js",
       "types": "./dist/src/types/index.d.ts"
+    },
+    "./facade-status-manager": {
+      "import": "./dist/src/facade-status-manager.js",
+      "types": "./dist/src/facade-status-manager.d.ts"
+    },
+    "./config": {
+      "import": "./dist/config.js",
+      "types": "./dist/config.d.ts"
+    },
+    "./utilities": {
+      "import": "./dist/src/utilities.js",
+      "types": "./dist/src/utilities.d.ts"
     }
   },
   "files": [
